@@ -14,7 +14,9 @@
 class DriveTrain{
 public:
 	//Constructor
-	DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort, int lEncoderPort, int rEncoderPort, int gyroPort);
+	DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
+			   int lEncoderPortA, int lEncoderPortB, int rEncoderPortA, int rEncoderPortB,
+			   int gyroPort);
 
 	//Enumeration
 	enum driveSensor {
@@ -30,6 +32,7 @@ public:
 		Ready, Driving, Turning, Disabled
 	};
 
+	//Functions
 	//Teleop Power Setting
 	void SetDrivePower 		(float leftDrivePower, float rightDrivePower);
 
@@ -50,6 +53,9 @@ public:
 	void	EndDriveAuto			();
 
 private:
+	const float inPerTick = 0.0524;
+
+
 	float TargetDegrees;
 	float TargetDistanceIn;
 
@@ -61,7 +67,7 @@ private:
 
 	//Sensors
 	Encoder leftEncoder;
-	Encoder rightEncodr;
+	Encoder rightEncoder;
 	Gyro gyro;
 };
 

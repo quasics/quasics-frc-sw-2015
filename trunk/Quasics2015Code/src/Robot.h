@@ -16,19 +16,8 @@ public:
 	Robot ();
 
 private:
-	#define SlowMultiplier .5
-	#define NormalMultiplier .75
-	#define TurboMultiplier 1
-	#define DeadbandWidth 0.05
-	#define inPerTick 0.0524
-
-	Talon leftFront;
-	Talon leftRear;
-	Talon rightFront;
-	Talon rightRear;
-
-	Joystick powerPad;
-
+	DriveTrain driveBase;
+	Gamepad powerPad;
 
 	void RobotInit();
 	void AutonomousInit();

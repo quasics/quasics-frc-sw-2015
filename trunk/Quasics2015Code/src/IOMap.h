@@ -9,22 +9,22 @@
 #define SRC_IOMAP_H_
 
 // Motor port definitions
-#define FrontLeftTalonPort  1
-#define RearLeftTalonPort   2
-#define FrontRightTalonPort 3
-#define RearRightTalonPort  4
+const int FrontLeftTalonPort = 8;
+const int RearLeftTalonPort = 9;
+const int FrontRightTalonPort = 0;
+const int RearRightTalonPort = 1;
 
 // Encoder definitions
-#define LeftEncoderA        1
-#define LeftEncoderB        2
-#define RightEncoderA       3
-#define RightEncoderB       4
+const int LeftEncoderA = 1;//placeholder
+const int LeftEncoderB = 2;//placeholder
+const int RightEncoderA = 3;//placeholder
+const int RightEncoderB = 4;//placeholder
 
 // Gyro input port(s)
-#define GyroIn              1
+const int GyroIn = 1;//placeholder
 
 // Driver controller port(s)
-#define GamePadIn           1
+const int GamePadIn = 1;
 
 
 #endif /* SRC_IOMAP_H_ */

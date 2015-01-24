@@ -1,0 +1,21 @@
+GamePad Button/Axis Assignment
+
+-Left Thumb Stick
+	-Y axis:		Left Tank Drive
+	-X axis:		Unassigned
+	-Push Button:	Unassigned
+-Right Thumb Stick
+	-Y axis:		Right Tank Drive
+	-X axis:		Unassigned
+	-Push Button:	Unassigned
+-Trigger Axis:		Elevator
+-D-Pad
+	-X Axis:		Unassigned
+-A Button:			Unassigned
+-B Button:			Unassigned
+-X Button:			Unassigned
+-Y Button:			Unassigned
+-Left Shoulder:		Unassigned
+-Right Shoulder:	Unassigned
+-Back Button:		Unassigned
+-Start Button:		Debug

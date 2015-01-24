@@ -25,6 +25,4 @@ const int StartButton = 8;
 const int LeftStickPress = 9;
 const int RightStickPress = 10;
 
-
-
 #endif /* SRC_CONTROLLER_CONTROLLERIOMAP_H_ */

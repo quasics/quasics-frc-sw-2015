@@ -8,8 +8,4 @@
 #ifndef SRC_ELEVATOR_ELEVATOR_H_
 #define SRC_ELEVATOR_ELEVATOR_H_
 
-
-
-
-
 #endif /* SRC_ELEVATOR_ELEVATOR_H_ */

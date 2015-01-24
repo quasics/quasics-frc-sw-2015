@@ -7,19 +7,17 @@
 #include "Controller/ControllerIOMap.h"
 #include "Controller/Gamepad.h"
 
-Gamepad::Gamepad (int input, float initialDeadbandWidth) :
-	stick (input, 6, 10),
-	deadbandWidth(initialDeadbandWidth)
-{
+Gamepad::Gamepad(int input, float initialDeadbandWidth) :
+		stick(input, 6, 10), deadbandWidth(initialDeadbandWidth) {
 }
 
-void Gamepad::SetDeadband (float NewDeadbandWidth){
+void Gamepad::SetDeadband(float NewDeadbandWidth) {
 	deadbandWidth = NewDeadbandWidth;
 }
 
-float Gamepad::GetAxis (AxisType axisGet){
+float Gamepad::GetAxis(AxisType axisGet) {
 	float toReturn;
-	switch (axisGet){
+	switch (axisGet) {
 	case LeftStickX:
 		toReturn = stick.GetRawAxis(LeftStickXAxis);
 		break;
@@ -39,14 +37,14 @@ float Gamepad::GetAxis (AxisType axisGet){
 		toReturn = stick.GetRawAxis(DPadXAxis);
 		break;
 	}
-	if(fabs(toReturn) <= deadbandWidth) {
-	toReturn = 0;
+	if (fabs(toReturn) <= deadbandWidth) {
+		toReturn = 0;
 	}
 	return (toReturn);
 }
 
-bool Gamepad::GetButton (ButtonType buttonGet){
-	switch (buttonGet){
+bool Gamepad::GetButton(ButtonType buttonGet) {
+	switch (buttonGet) {
 	case A:
 		return (stick.GetRawButton(AButton));
 	case B:

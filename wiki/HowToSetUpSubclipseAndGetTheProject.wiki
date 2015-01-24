@@ -1,0 +1,32 @@
+= Introduction =
+
+How to set up your computer with Subclipse and a project (in this case, the Quasics 2015 code)
+
+= Requirements =
+
+  # Eclipse
+  # A Gmail/Google Account
+  # To be added by an admin (Mr. Healy or Raymond) for access to team code
+  # An Internet Connection
+  # For Quasics 2015 code, Eclipse setup for FRC Development in C++ c++ as of 2015    (Instructions [http://wpilib.screenstepslive.com/s/4485/m/13809/l/145002-installing-eclipse-c-java Here])
+
+= How To =
+  # Open Eclipse
+  # Choose Your Workbench
+  # Under the Help tab, click Install new software
+  # Click the "Add..." button
+  # Enter the following
+    # Under Name, put "Subclipse 1.10.x"
+    # Under URL, put "http://subclipse.tirgis.org/update_1.10.x"
+  # Download and install the following from the dropdown menus
+    # All but Mylyn Integration from Subclipse dropdown
+    # Only the SVNKit Library from the SVNKit Tab
+  # After restarting, open the Window tab, go to the other option under showview, and select SVN Repositories under SVN
+  # Right Click the new space
+  # select new repository location under new
+  # Open browser and log into gmail/google
+  # Go to code.google.com
+  # Search for your file and go through to it (For example, go to quasics 2015 code after searching for quasics)
+  # Copy first URL from source tab
+  # Paste into bar
+  # Follow instructions to download correct project.

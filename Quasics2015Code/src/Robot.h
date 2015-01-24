@@ -9,11 +9,9 @@
 #define SRC_ROBOT_H_
 #include "Includes.h"
 
-
-
 class Robot: public IterativeRobot {
 public:
-	Robot ();
+	Robot();
 
 private:
 	DriveTrain driveBase;
@@ -28,8 +26,5 @@ private:
 
 };
 
-
-
 #endif /* SRC_ROBOT_H_ */
-
 

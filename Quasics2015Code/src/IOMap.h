@@ -15,18 +15,16 @@ const int FrontRightTalonPort = 0;
 const int RearRightTalonPort = 1;
 
 // Encoder definitions
-const int LeftEncoderA = 1;//placeholder
-const int LeftEncoderB = 2;//placeholder
-const int RightEncoderA = 3;//placeholder
-const int RightEncoderB = 4;//placeholder
+const int LeftEncoderA = 1; //placeholder
+const int LeftEncoderB = 2; //placeholder
+const int RightEncoderA = 3; //placeholder
+const int RightEncoderB = 4; //placeholder
 
 // Gyro input port(s)
-const int GyroIn = 1;//placeholder
+const int GyroIn = 1; //placeholder
 
 // Driver controller port(s)
 const int GamePadIn = 1;
 
-
 #endif /* SRC_IOMAP_H_ */
-
 

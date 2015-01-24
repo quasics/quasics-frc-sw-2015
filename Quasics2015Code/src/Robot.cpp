@@ -1,28 +1,19 @@
 #include "Robot.h"
 
 	Robot::Robot() :
-	leftFront (FrontLeftTalonPort),
-	leftRear (RearLeftTalonPort),
-	rightFront (FrontRightTalonPort),
-	rightRear (RearRightTalonPort),
-	powerPad (GamePadIn,6,10)
-
+	driveBase (FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort, RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA, RightEncoderB, GyroIn),
+	powerPad (GamePadIn, 0.05)
+	// int lEncoderPort, int rEncoderPort, int gyroPort
 	{
 
 	}
 
 	void Robot::RobotInit() {
-		leftFront.Set (0);
-		leftRear.Set (0);
-		rightFront.Set (0);
-		rightRear.Set (0);
+
 	}
 
 	void Robot::AutonomousInit() {
-		leftFront.Set (0);
-		leftRear.Set (0);
-		rightFront.Set (0);
-		rightRear.Set (0);
+
 	}
 
 	void Robot::AutonomousPeriodic() {
@@ -30,38 +21,12 @@
 	}
 
 	void Robot::TeleopInit() {
-		leftFront.Set (0);
-		leftRear.Set (0);
-		rightFront.Set (0);
-		rightRear.Set (0);
+
 	}
 
 	void Robot::TeleopPeriodic() {
-		float leftPower = powerPad.GetRawAxis(2);
-		float rightPower = powerPad.GetRawAxis(5);
-		float multiplierNow;
+		driveBase.SetDrivePower(powerPad.GetAxis (Gamepad::LeftStickY), powerPad.GetAxis(Gamepad::RightStickY));
 
-		if(powerPad.GetRawButton(5) == true || powerPad.GetRawButton(6) == true){
-			multiplierNow = SlowMultiplier;
-		}
-		else if(powerPad.GetRawAxis(3) < 0 || powerPad.GetRawAxis(3) > 0){
-			multiplierNow = TurboMultiplier;
-		}
-		else{
-			multiplierNow = NormalMultiplier;
-		}
-
-		if (fabs(leftPower) <= DeadbandWidth){
-			leftPower = 0;
-		}
-		if (fabs(rightPower) <= DeadbandWidth){
-			rightPower = 0;
-		}
-
-		leftFront.Set (leftPower * multiplierNow);
-		leftRear.Set (leftPower  * multiplierNow);
-		rightFront.Set (rightPower * multiplierNow);
-		rightRear.Set (rightPower * multiplierNow);
 	}
 
 	void Robot::TestPeriodic() {

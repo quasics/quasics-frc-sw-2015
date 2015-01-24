@@ -47,7 +47,6 @@ public:
 	float GetSpeed(driveSide whichSide, speedUnit whichSpeed);
 
 	//Misc
-	float GetDrivePowerLevel(driveSide oneSide);
 	bool AutoTurning();
 	bool AutoDriving();
 	void EndDriveAuto();
@@ -55,6 +54,7 @@ public:
 private:
 	const float inPerTick = 0.0524;
 
+	autoStatus AutoStatus;
 	float TargetDegrees;
 	float TargetDistanceIn;
 

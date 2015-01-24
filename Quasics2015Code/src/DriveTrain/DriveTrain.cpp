@@ -10,7 +10,7 @@
 DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
 		int rEncoderPortB, int gyroPort) :
-		TargetDegrees(0), TargetDistanceIn(0),
+		AutoStatus(Disabled),TargetDegrees(0), TargetDistanceIn(0),
 
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
@@ -35,37 +35,65 @@ void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
 
 //Auto mode Power Setting
 void DriveTrain::AutoDriveStart(float distanceIn) {
-
+	TargetDistanceIn = distanceIn;
+	AutoStatus = Driving;
 }
 void DriveTrain::AutoTurnStart(float degrees) {
-
+	TargetDegrees = degrees;
+	AutoStatus = Turning;
 }
 void DriveTrain::AutoProcess() {
-
+	//FILL IN LATER
 }
 
 //Sensors
 void DriveTrain::ResetSensor(driveSensor whichSensor) {
-
+	switch (whichSensor){
+	case LeftEncoder:
+		leftEncoder.Reset();
+		break;
+	case RightEncoder:
+		rightEncoder.Reset();
+		break;
+	case Gyroscope:
+		gyro.Reset();
+		break;
+	}
 }
 float DriveTrain::GetSensorValue(driveSensor whichSensor) {
-	return 0;
-
+	switch (whichSensor) {
+	case LeftEncoder:
+		return leftEncoder.Get();
+	case RightEncoder:
+		return rightEncoder.Get();
+	case Gyroscope:
+		return gyro.GetAngle();
+	default:
+		return 0;
+	}
 }
 float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
-	return 0;
+	return 0;//leave for end
 }
 
 //Misc
-float DriveTrain::GetDrivePowerLevel(driveSide oneSide) {
-	return 0;
-}
+
 bool DriveTrain::AutoTurning() {
-	return false;
+		if (AutoStatus == Turning){
+			return true;
+		}
+		else{
+			return false;
+		}
 }
 bool DriveTrain::AutoDriving() {
-	return false;
+	if (AutoStatus == Driving){
+				return true;
+			}
+			else{
+				return false;
+			}
 }
 void DriveTrain::EndDriveAuto() {
-
+	AutoStatus = Disabled;
 }

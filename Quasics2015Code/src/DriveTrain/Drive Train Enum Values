@@ -1,0 +1,22 @@
+-driveSensor
+	-Differentiates sensors
+	-Used in ResetSensor and GetSensorValue
+	-Values
+		-LeftEncoder (encoder on left gear box)
+		-RightEncoder (encoder on right gear box)
+		-Gyro (gyroscope)
+-driveSide
+	-Used to differentiate Sides of drive base
+	-Used in getDrivePowerLevel (use only left or right) and GetSpeed
+	-Values
+		-Left
+		-Right
+		-Both
+-speedUnit
+	-Used to differentiate speed units
+	-Used in GetSpeed
+	-Values
+		-FeetPerSec (Ft/S)
+		-MetersPerSec (M/S)
+		-MilesPerHr (MpH)
+		-kMPerHr (kM/H)

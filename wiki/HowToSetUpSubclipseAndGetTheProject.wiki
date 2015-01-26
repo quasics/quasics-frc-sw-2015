@@ -21,7 +21,7 @@ How to set up your computer with Subclipse and a project (in this case, the Quas
   # Download and install the following from the dropdown menus
     # All but Mylyn Integration from Subclipse dropdown
     # Only the SVNKit Library from the SVNKit Tab
-      # *Mac Only* get the svn adapter to use the pure Java adapter
+      * *Mac Only* get the svn adapter to use the pure Java adapter
   # After restarting, open the Window tab, go to the other option under showview, and select SVN Repositories under SVN
   # Right Click the new space
   # select new repository location under new

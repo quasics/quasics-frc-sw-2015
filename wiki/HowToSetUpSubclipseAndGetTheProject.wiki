@@ -8,7 +8,7 @@ How to set up your computer with Subclipse and a project (in this case, the Quas
   # A Gmail/Google Account
   # To be added by an admin (Mr. Healy or Raymond) for access to team code
   # An Internet Connection
-  # For Quasics 2015 code, Eclipse setup for FRC Development in C++ c++ as of 2015    (Instructions [http://wpilib.screenstepslive.com/s/4485/m/13809/l/145002-installing-eclipse-c-java Here])
+  # For Quasics 2015 code, Eclipse setup for FRC Development in C++ as of 2015    (Instructions [http://wpilib.screenstepslive.com/s/4485/m/13809/l/145002-installing-eclipse-c-java Here])
 
 = How To =
   # Open Eclipse

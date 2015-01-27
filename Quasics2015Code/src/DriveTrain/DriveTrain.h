@@ -9,7 +9,6 @@
 #define SRC_DRIVETRAIN_DRIVETRAIN_H_
 
 #include "WPILib.h"
-#include "Gyro.h"
 
 class DriveTrain {
 public:

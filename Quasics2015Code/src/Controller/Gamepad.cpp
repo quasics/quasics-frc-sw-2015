@@ -8,7 +8,7 @@
 #include "Controller/Gamepad.h"
 
 Gamepad::Gamepad(int input, float initialDeadbandWidth) :
-		stick(input, 6, 10), deadbandWidth(initialDeadbandWidth) {
+		stick(input, 4, 12), deadbandWidth(initialDeadbandWidth) {
 }
 
 void Gamepad::SetDeadband(float NewDeadbandWidth) {
@@ -30,17 +30,14 @@ float Gamepad::GetAxis(AxisType axisGet) {
 	case RightStickY:
 		toReturn = stick.GetRawAxis(RightStickYAxis);
 		break;
-	case Trigger:
-		toReturn = stick.GetRawAxis(TriggerAxis);
-		break;
-	case DPadX:
-		toReturn = stick.GetRawAxis(DPadXAxis);
-		break;
 	}
 	if (fabs(toReturn) <= deadbandWidth) {
 		toReturn = 0;
 	}
 	return (toReturn);
+}
+int Gamepad::GetDPad (){
+	return (stick.GetPOV());
 }
 
 bool Gamepad::GetButton(ButtonType buttonGet) {

@@ -16,7 +16,7 @@ public:
 	Gamepad(int input, float DeadbandWidth);
 
 	enum AxisType {
-		LeftStickX, LeftStickY, RightStickX, RightStickY, Trigger, DPadX
+		LeftStickX, LeftStickY, RightStickX, RightStickY,
 	};
 	enum ButtonType {
 		A,
@@ -33,6 +33,7 @@ public:
 
 	void SetDeadband(float NewDeadbandWidth);
 	float GetAxis(AxisType axisGet);
+	int GetDPad ();
 	bool GetButton(ButtonType buttonGet);
 
 private:

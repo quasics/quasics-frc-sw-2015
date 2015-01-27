@@ -3,7 +3,7 @@
 Robot::Robot() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
-				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05) {
+				RightEncoderB, GyroIn), powerPad(GamePadIn) {
 
 }
 
@@ -24,8 +24,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY),
-			powerPad.GetAxis(Gamepad::RightStickY));
+	driveBase.SetDrivePower(powerPad.GetY(), powerPad.GetTwist());
 
 }
 

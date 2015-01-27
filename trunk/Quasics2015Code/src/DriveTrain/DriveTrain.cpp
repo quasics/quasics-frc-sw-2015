@@ -43,7 +43,7 @@ void DriveTrain::AutoTurnStart(float degrees) {
 	AutoStatus = Turning;
 }
 void DriveTrain::AutoProcess() {
-	//FILL IN LATER
+
 }
 
 //Sensors

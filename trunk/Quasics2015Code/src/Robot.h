@@ -15,7 +15,7 @@ public:
 
 private:
 	DriveTrain driveBase;
-	Gamepad powerPad;
+	Joystick powerPad;
 
 	void RobotInit();
 	void AutonomousInit();

@@ -24,7 +24,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	driveBase.SetDrivePower(powerPad.GetY(), powerPad.GetTwist());
+	driveBase.SetDrivePower(powerPad.GetRawAxis(0), -powerPad.GetRawAxis(3));
 
 }
 

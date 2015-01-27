@@ -9,10 +9,10 @@
 #define SRC_IOMAP_H_
 
 // Motor port definitions
-const int FrontLeftTalonPort = 8;
-const int RearLeftTalonPort = 9;
-const int FrontRightTalonPort = 0;
-const int RearRightTalonPort = 1;
+const int FrontLeftTalonPort = 0;
+const int RearLeftTalonPort = 1;
+const int FrontRightTalonPort = 8;
+const int RearRightTalonPort = 9;
 
 // Encoder definitions
 const int LeftEncoderA = 1; //placeholder

@@ -43,7 +43,12 @@ void DriveTrain::AutoTurnStart(float degrees) {
 	AutoStatus = Turning;
 }
 void DriveTrain::AutoProcess() {
+	switch (AutoStatus){
+	case Driving:
+	default:
+		break;
 
+	}
 }
 
 //Sensors
@@ -75,11 +80,11 @@ float DriveTrain::GetSensorValue(driveSensor whichSensor) {
 float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
 	return 0;//leave for end
 }
-float GetLeftDistanceIn (){
-
+float DriveTrain::GetLeftDistanceIn (){
+	return (leftEncoder.Get() * InPerTick);
 }
-float GetRightDistanceIn (){
-
+float DriveTrain::GetRightDistanceIn (){
+	return (rightEncoder.Get() * InPerTick);
 }
 
 //Misc

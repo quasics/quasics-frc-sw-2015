@@ -44,6 +44,8 @@ public:
 	void ResetSensor(driveSensor whichSensor);
 	float GetSensorValue(driveSensor whichSensor);
 	float GetSpeed(driveSide whichSide, speedUnit whichSpeed);
+	float GetLeftDistanceIn();
+	float GetRightDistanceIn();
 
 	//Misc
 	bool AutoTurning();
@@ -51,7 +53,7 @@ public:
 	void EndDriveAuto();
 
 private:
-	const float inPerTick = 0.0524;
+	const float InPerTick = 0.0524;
 
 	autoStatus AutoStatus;
 	float TargetDegrees;

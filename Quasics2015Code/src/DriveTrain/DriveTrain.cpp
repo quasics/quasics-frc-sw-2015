@@ -75,6 +75,12 @@ float DriveTrain::GetSensorValue(driveSensor whichSensor) {
 float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
 	return 0;//leave for end
 }
+float GetLeftDistanceIn (){
+
+}
+float GetRightDistanceIn (){
+
+}
 
 //Misc
 

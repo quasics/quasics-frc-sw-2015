@@ -25,6 +25,8 @@ public:
 		Y,
 		LeftShoulder,
 		RightShoulder,
+		LeftTrigger,
+		RightTrigger,
 		LeftStick,
 		RightStick,
 		Back,

@@ -22,13 +22,13 @@ float Gamepad::GetAxis(AxisType axisGet) {
 		toReturn = stick.GetRawAxis(LeftStickXAxis);
 		break;
 	case LeftStickY:
-		toReturn = stick.GetRawAxis(LeftStickYAxis);
+		toReturn = -stick.GetRawAxis(LeftStickYAxis);
 		break;
 	case RightStickX:
 		toReturn = stick.GetRawAxis(RightStickXAxis);
 		break;
 	case RightStickY:
-		toReturn = stick.GetRawAxis(RightStickYAxis);
+		toReturn = -stick.GetRawAxis(RightStickYAxis);
 		break;
 	}
 	if (fabs(toReturn) <= deadbandWidth) {

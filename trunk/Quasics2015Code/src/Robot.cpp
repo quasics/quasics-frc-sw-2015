@@ -8,19 +8,19 @@ Robot::Robot() :
 }
 
 void Robot::RobotInit() {
-
+	printf ("Robot Init\n");
 }
 
 void Robot::AutonomousInit() {
-
+	printf ("Auto Start\n");
 }
 
 void Robot::AutonomousPeriodic() {
-
+	printf ("Auto Periodic\n");
 }
 
 void Robot::TeleopInit() {
-
+	printf ("Teleop Start\n");
 }
 
 void Robot::TeleopPeriodic() {

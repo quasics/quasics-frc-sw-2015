@@ -27,16 +27,16 @@ void Robot::TeleopInit() {
 void Robot::TeleopPeriodic() {
 	if (powerPad.GetButton(Gamepad::LeftShoulder) == true
 			|| powerPad.GetButton(Gamepad::RightShoulder) == true) {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
-				powerPad.GetAxis(Gamepad::RightStickY) * .5);
+		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .25,
+				powerPad.GetAxis(Gamepad::RightStickY) * .25);
 	} else if (powerPad.GetButton(Gamepad::LeftTrigger) == true
 			|| powerPad.GetButton(Gamepad::RightTrigger) == true) {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY),
-				powerPad.GetAxis(Gamepad::RightStickY));
+		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) *.75,
+				powerPad.GetAxis(Gamepad::RightStickY) * .75);
 
 	} else {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .7,
-				powerPad.GetAxis(Gamepad::RightStickY) * .7);
+		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
+				powerPad.GetAxis(Gamepad::RightStickY) * .5);
 	}
 }
 

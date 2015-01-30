@@ -54,6 +54,10 @@ bool Gamepad::GetButton(ButtonType buttonGet) {
 		return (stick.GetRawButton(LeftShoulderButton));
 	case RightShoulder:
 		return (stick.GetRawButton(RightShoulderButton));
+	case LeftTrigger:
+		return (stick.GetRawButton(LeftTriggerButton));
+	case RightTrigger:
+		return (stick.GetRawButton(RightTriggerButton));
 	case LeftStick:
 		return (stick.GetRawButton(LeftStickPress));
 	case RightStick:

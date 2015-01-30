@@ -35,8 +35,8 @@ void Robot::TeleopPeriodic() {
 				powerPad.GetAxis(Gamepad::RightStickY));
 
 	} else {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .75,
-				powerPad.GetAxis(Gamepad::RightStickY) * .75);
+		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .7,
+				powerPad.GetAxis(Gamepad::RightStickY) * .7);
 	}
 }
 

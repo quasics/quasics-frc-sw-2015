@@ -45,6 +45,59 @@ void DriveTrain::AutoTurnStart(float degrees) {
 void DriveTrain::AutoProcess() {
 	switch (AutoStatus){
 	case Driving:
+		if (leftEncoder.Get() * InPerTick >= TargetDistanceIn){
+			leftFront.Set (0);
+			leftRear.Set (0);
+		}
+		else if (leftEncoder.Get() * InPerTick > TargetDistanceIn - .5 && leftEncoder.Get() * InPerTick < TargetDistanceIn){
+			leftFront.Set (.25);
+			leftRear.Set (.25);
+		}
+		else{
+			leftFront.Set (.75);
+			leftRear.Set (.75);
+		}
+
+		if (rightEncoder.Get() * InPerTick >= TargetDistanceIn){
+				rightFront.Set (0);
+				rightRear.Set (0);
+				TargetDistanceIn = 0;
+				AutoStatus = Ready;
+			}
+			else if (leftEncoder.Get() * InPerTick > TargetDistanceIn - .5 && leftEncoder.Get() * InPerTick < TargetDistanceIn){
+				rightFront.Set (-.25);
+				rightRear.Set (-.25);
+			}
+			else{
+				rightFront.Set (-.75);
+				rightRear.Set (-.75);
+			}
+		break;
+
+	case Turning:
+		if (TargetDegrees > 0 && TargetDegrees <= 180){
+			if (gyro.GetAngle() <= TargetDegrees - 2.5){
+				leftFront.Set (.75);
+				leftRear.Set (.75);
+				rightFront.Set (.75);
+				rightRear.Set (.75);
+			}
+			else if (gyro.GetAngle() > TargetDegrees - 2.5 && gyro.GetAngle() < TargetDegrees){
+				leftFront.Set (.25);
+				leftRear.Set (.25);
+				rightFront.Set (.25);
+				rightRear.Set (.25);
+			}
+			else
+			{
+				leftFront.Set (0);
+				leftRear.Set (0);
+				rightFront.Set (0);
+				rightRear.Set (0);
+				//Finish Turn
+			}
+		}
+		break;
 	default:
 		break;
 

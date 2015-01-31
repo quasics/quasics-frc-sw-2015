@@ -16,6 +16,9 @@ public:
 	Elevator(int leftMotorPort, int rightMotorPort);
 
 	//Commands
+	void Up (float DurationSeconds);
+	void Down (float DurationSeconds);
+	void Off (float DurationSeconds);
 private:
 	Relay leftMotor;
 	Relay rightMotor;

@@ -66,8 +66,10 @@ private:
 	Talon rightRear;
 
 	//Sensors
-	Encoder leftEncoder;
-	Encoder rightEncoder;
+	Counter leftDist;
+	Counter rightDist;
+	Counter leftSpeed;
+	Counter rightSpeed;
 	Gyro gyro;
 };
 

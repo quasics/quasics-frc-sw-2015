@@ -17,6 +17,7 @@ private:
 	DriveTrain driveBase;
 	Gamepad powerPad;
 	AxisCamera camera;
+	Elevator elevator;
 
 	void RobotInit();
 	void AutonomousInit();

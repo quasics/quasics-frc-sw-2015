@@ -3,7 +3,7 @@
 Robot::Robot() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
-				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05) {
+				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), camera (CameraHost) {
 
 }
 

@@ -16,6 +16,7 @@ public:
 private:
 	DriveTrain driveBase;
 	Gamepad powerPad;
+	AxisCamera camera;
 
 	void RobotInit();
 	void AutonomousInit();

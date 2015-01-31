@@ -17,6 +17,7 @@ const int FrontRightTalonPort = 8;
 const int RearRightTalonPort = 9;
 const int LeftElevatorMotorPort = 2;
 const int RightElevatorMotorPort = 3;
+const int GrabberMotorPort = 4;
 
 const std::string CameraHost("10.26.56.11");
 
@@ -27,7 +28,7 @@ const int RightEncoderA = 3; //placeholder
 const int RightEncoderB = 4; //placeholder
 
 // Gyro input port(s)
-const int GyroIn = 1; //placeholder
+const int GyroIn = 0;
 
 // Driver controller port(s)
 const int GamePadIn = 1;

@@ -8,11 +8,15 @@
 #ifndef SRC_IOMAP_H_
 #define SRC_IOMAP_H_
 
+#include <string>
+
 // Motor port definitions
 const int FrontLeftTalonPort = 0;
 const int RearLeftTalonPort = 1;
 const int FrontRightTalonPort = 8;
 const int RearRightTalonPort = 9;
+
+const std::string CameraHost("10.26.56.11");
 
 // Encoder definitions
 const int LeftEncoderA = 1; //placeholder

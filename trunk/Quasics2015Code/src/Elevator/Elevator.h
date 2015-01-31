@@ -16,12 +16,31 @@ public:
 	Elevator(int leftMotorPort, int rightMotorPort);
 
 	//Commands
-	void Up (float DurationSeconds);
-	void Down (float DurationSeconds);
-	void Off (float DurationSeconds);
+	void Up ();
+	void Down ();
+	void Off ();
+
+	void AutoUpInit (float durationSeconds);
+	void AutoDownInit (float durationSeconds);
+	void AutoProcess ();
+
+	bool GoingUp();
+	bool GoingDown ();
+
+
 private:
+	Timer autoTimer;
 	Relay leftMotor;
 	Relay rightMotor;
+
+	enum Status {
+		kGoingUp, kGoingDown, kOff
+	};
+
+	Status activeStatus;
+	float targetDuration;
+
+
 
 };
 

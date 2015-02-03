@@ -4,7 +4,7 @@
  *  Created on: Jan 23, 2015
  *      Author: ray
  */
-#include "Controller/ControllerIOMap.h"
+#include <Controller/GamepadIOMap.h>
 #include "Controller/Gamepad.h"
 
 Gamepad::Gamepad(int input, float initialDeadbandWidth) :
@@ -19,13 +19,13 @@ float Gamepad::GetAxis(AxisType axisGet) {
 	float toReturn;
 	switch (axisGet) {
 	case LeftStickX:
-		toReturn = stick.GetRawAxis(LeftStickXAxis);
+		toReturn = -stick.GetRawAxis(LeftStickXAxis);
 		break;
 	case LeftStickY:
 		toReturn = -stick.GetRawAxis(LeftStickYAxis);
 		break;
 	case RightStickX:
-		toReturn = stick.GetRawAxis(RightStickXAxis);
+		toReturn = -stick.GetRawAxis(RightStickXAxis);
 		break;
 	case RightStickY:
 		toReturn = -stick.GetRawAxis(RightStickYAxis);

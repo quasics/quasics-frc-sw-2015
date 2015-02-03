@@ -34,6 +34,7 @@ public:
 	//Functions
 	//Teleop Power Setting
 	void SetDrivePower(float leftDrivePower, float rightDrivePower);
+	void FPSDrive (float throttlePower, float sideScale);
 
 	//Auto mode Power Setting
 	void AutoDriveStart(float distanceIn);

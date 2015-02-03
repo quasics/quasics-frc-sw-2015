@@ -31,6 +31,22 @@ void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
 	rightFront.Set(-rightDrivePower);
 	rightRear.Set(-rightDrivePower);
 }
+void DriveTrain::FPSDrive (float throttlePower, float sideScale){
+	float leftScale = 1;
+	float rightScale = 1;
+	if  (sideScale >= 0){
+		rightScale = fabs(sideScale -1);
+		printf ("FPS Drive Status: Turning Right\n");
+	}
+	else {
+		leftScale = fabs(sideScale + 1);
+		printf ("FPS Drive Status: Turning Left\n");
+	}
+	leftFront.Set (throttlePower * leftScale);
+	leftRear.Set (throttlePower* leftScale);
+	rightFront.Set (-throttlePower * rightScale);
+	rightRear.Set (-throttlePower * rightScale);
+}
 
 //Auto mode Power Setting
 void DriveTrain::AutoDriveStart(float distanceIn) {

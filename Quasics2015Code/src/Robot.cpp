@@ -3,7 +3,10 @@
 Robot::Robot() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
-				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), camera (CameraHost), elevator (LeftElevatorMotorPort, RightElevatorMotorPort) {
+				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), camera(
+				CameraHost), elevator(LeftElevatorMotorPort,
+				RightElevatorMotorPort), FPSDriveOff(false), StartButtonPrevious(
+				false) {
 
 }
 
@@ -25,15 +28,15 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	if (powerPad.GetButton(Gamepad::LeftShoulder) == true
-			|| powerPad.GetButton(Gamepad::RightShoulder) == true) {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .25,
-				powerPad.GetAxis(Gamepad::RightStickY) * .25);
-	} else if (powerPad.GetButton(Gamepad::LeftTrigger) == true
-			|| powerPad.GetButton(Gamepad::RightTrigger) == true) {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) *.75,
-				powerPad.GetAxis(Gamepad::RightStickY) * .75);
+	if (powerPad.GetButton(Gamepad::Start) == false
+			&& StartButtonPrevious == true) {
+		FPSDriveOff = !FPSDriveOff;
+	}
+	StartButtonPrevious = powerPad.GetButton(Gamepad::Start);
 
+	if (FPSDriveOff == false) {
+		driveBase.FPSDrive(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
+				powerPad.GetAxis(Gamepad::RightStickX));
 	} else {
 		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
 				powerPad.GetAxis(Gamepad::RightStickY) * .5);

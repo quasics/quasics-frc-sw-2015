@@ -19,6 +19,9 @@ private:
 	AxisCamera camera;
 	Elevator elevator;
 
+	bool FPSDriveOff;
+	bool StartButtonPrevious;
+
 	void RobotInit();
 	void AutonomousInit();
 	void AutonomousPeriodic();

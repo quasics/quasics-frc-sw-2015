@@ -25,22 +25,31 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 
 //Functions
 //Teleop Power Setting
+/*Tank Drive
+ * Set the power to both sides manually
+ */
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
 	leftFront.Set(leftDrivePower);
 	leftRear.Set(leftDrivePower);
 	rightFront.Set(-rightDrivePower);
 	rightRear.Set(-rightDrivePower);
 }
-void DriveTrain::FPSDrive (float throttlePower, float sideScale){
+/*FPS Drive
+ * Use 2 Axes, One for Throttle and one for Yaw Control
+ *
+ * Yaw modifier modeled off of the equation Y = -|2X| + 1, converted, in this case to
+ * left_scale = 2(rudder_axis) + upper_bound and right_scale = 2(rudder_axis) + upper_bound
+ * where upper_bound = 1
+ */
+void DriveTrain::FPSDrive(float throttlePower, float sideScale){
 	float leftScale = 1;
 	float rightScale = 1;
-	if  (sideScale >= 0){
-		rightScale = fabs(sideScale -1);
-		printf ("FPS Drive Status: Turning Right\n");
+
+	if (sideScale >= 0){
+		rightScale = -2 * sideScale + 1;
 	}
 	else {
-		leftScale = fabs(sideScale + 1);
-		printf ("FPS Drive Status: Turning Left\n");
+		leftScale = 2 * sideScale + 1;
 	}
 	leftFront.Set (throttlePower * leftScale);
 	leftRear.Set (throttlePower* leftScale);
@@ -182,7 +191,6 @@ float DriveTrain::GetRightDistanceIn (){
 }
 
 //Misc
-
 bool DriveTrain::AutoTurning() {
 		if (AutoStatus == Turning){
 			return true;

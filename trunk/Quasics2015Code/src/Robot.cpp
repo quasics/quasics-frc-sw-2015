@@ -19,7 +19,13 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-
+	printf(
+			"Left Stick X: %f \n Left Stick Y: %f \n Right Stick X: %f \n Right Stick Y: %f \n",
+			powerPad.GetAxis(Gamepad::LeftStickX),
+			powerPad.GetAxis(Gamepad::LeftStickY),
+			powerPad.GetAxis(Gamepad::RightStickX),
+			powerPad.GetAxis(Gamepad::RightStickY));
+	Wait (1000);
 }
 
 void Robot::TeleopInit() {
@@ -28,19 +34,8 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	if (powerPad.GetButton(Gamepad::Start) == false
-			&& StartButtonPrevious == true) {
-		FPSDriveOff = !FPSDriveOff;
-	}
-	StartButtonPrevious = powerPad.GetButton(Gamepad::Start);
-
-	if (FPSDriveOff == false) {
-		driveBase.FPSDrive(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
-				powerPad.GetAxis(Gamepad::RightStickX));
-	} else {
-		driveBase.SetDrivePower(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
-				powerPad.GetAxis(Gamepad::RightStickY) * .5);
-	}
+	driveBase.FPSDrive(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
+			powerPad.GetAxis(Gamepad::RightStickX));
 }
 
 void Robot::TestPeriodic() {

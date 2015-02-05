@@ -11,8 +11,8 @@
 #include <string>
 
 // Motor port definitions
-const int FrontLeftTalonPort = 0;
-const int RearLeftTalonPort = 1;
+const int FrontLeftTalonPort = 6;
+const int RearLeftTalonPort = 7;
 const int FrontRightTalonPort = 8;
 const int RearRightTalonPort = 9;
 const int LeftElevatorMotorPort = 2;

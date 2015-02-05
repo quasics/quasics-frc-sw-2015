@@ -19,13 +19,13 @@ float Gamepad::GetAxis(AxisType axisGet) {
 	float toReturn;
 	switch (axisGet) {
 	case LeftStickX:
-		toReturn = -stick.GetRawAxis(LeftStickXAxis);
+		toReturn = stick.GetRawAxis(LeftStickXAxis);
 		break;
 	case LeftStickY:
 		toReturn = -stick.GetRawAxis(LeftStickYAxis);
 		break;
 	case RightStickX:
-		toReturn = -stick.GetRawAxis(RightStickXAxis);
+		toReturn = stick.GetRawAxis(RightStickXAxis);
 		break;
 	case RightStickY:
 		toReturn = -stick.GetRawAxis(RightStickYAxis);

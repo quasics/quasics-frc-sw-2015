@@ -102,74 +102,66 @@ void DriveTrain::AutoTurnStart(float degrees) {
 	AutoStatus = Turning;
 }
 void DriveTrain::AutoProcess() {
+	float leftPower = 0;
+	float rightPower = 0;
 	switch (AutoStatus) {
 	case Driving:
 		if (leftDist.Get() * InPerTick >= TargetDistanceIn) {
-			leftFront.Set(0);
-			leftRear.Set(0);
+			leftPower = 0;
 		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
 				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
-			leftFront.Set(.25);
-			leftRear.Set(.25);
+			leftPower = .25;
 		} else {
-			leftFront.Set(.75);
-			leftRear.Set(.75);
+			leftPower = .75;
 		}
 
 		if (rightDist.Get() * InPerTick >= TargetDistanceIn) {
-			rightFront.Set(0);
-			rightRear.Set(0);
-			TargetDistanceIn = 0;
-			AutoStatus = Ready;
+			rightPower = 0;
 		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
 				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
-			rightFront.Set(-.25);
-			rightRear.Set(-.25);
+			rightPower = .25;
 		} else {
-			rightFront.Set(-.75);
-			rightRear.Set(-.75);
+			rightPower = .75;
+		}
+
+		if (rightDist.Get() * InPerTick >= TargetDistanceIn
+				&& leftDist.Get() * InPerTick >= TargetDistanceIn) {
+			TargetDistanceIn = 0;
+			leftDist.Reset();
+			rightDist.Reset();
+			AutoStatus = Ready;
 		}
 		break;
 
 	case Turning:
 		if (TargetDegrees > 0 && TargetDegrees <= 180) {
 			if (gyro.GetAngle() <= TargetDegrees - 2.5) {
-				leftFront.Set(.75);
-				leftRear.Set(.75);
-				rightFront.Set(.75);
-				rightRear.Set(.75);
+				leftPower = .75;
+				rightPower = -.75;
 			} else if (gyro.GetAngle() > TargetDegrees - 2.5
 					&& gyro.GetAngle() < TargetDegrees) {
-				leftFront.Set(.25);
-				leftRear.Set(.25);
-				rightFront.Set(.25);
-				rightRear.Set(.25);
+				leftPower = .25;
+				rightPower = -.25;
 			} else {
-				leftFront.Set(0);
-				leftRear.Set(0);
-				rightFront.Set(0);
-				rightRear.Set(0);
+				leftPower = 0;
+				rightPower = 0;
 				AutoStatus = Ready;
+				gyro.Reset();
 				TargetDegrees = 0;
 			}
 		} else {
 			if (gyro.GetAngle() >= TargetDegrees + 2.5) {
-				leftFront.Set(-.75);
-				leftRear.Set(-.75);
-				rightFront.Set(-.75);
-				rightRear.Set(-.75);
+				leftPower = -.75;
+				rightPower = .75;
 			} else if (gyro.GetAngle() < TargetDegrees + 2.5
 					&& gyro.GetAngle() > TargetDegrees) {
-				leftFront.Set(-.25);
-				leftRear.Set(-.25);
-				rightFront.Set(-.25);
-				rightRear.Set(-.25);
+				leftPower = -.25;
+				rightPower = .25;
 			} else {
-				leftFront.Set(0);
-				leftRear.Set(0);
-				rightFront.Set(0);
-				rightRear.Set(0);
+				leftPower = 0;
+				rightPower = 0;
 				AutoStatus = Ready;
+				gyro.Reset();
 				TargetDegrees = 0;
 			}
 		}
@@ -178,6 +170,7 @@ void DriveTrain::AutoProcess() {
 		break;
 
 	}
+	SetDrivePower (leftPower, rightPower);
 }
 
 //Sensors

@@ -1,46 +1,77 @@
 #include "Robot.h"
 
-Robot::Robot() :
+GLaDOS::GLaDOS() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
-				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), camera(
-				CameraHost), elevator(LeftElevatorMotorPort,
-				RightElevatorMotorPort), FPSDriveOff(false), StartButtonPrevious(
+				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
+				GamePad2In, 0.05), camera(CameraHost), elevator(
+				LeftElevatorMotorPort, RightElevatorMotorPort), PissPoorDriveOn(
+				false), LogicSwitchButtonPrevious(false), PS4SwitchButtonPrevious(
 				false) {
 
 }
 
-void Robot::RobotInit() {
-	printf("Robot Init\n");
+void GLaDOS::RobotInit() {
+	printf("Loading GLaDOS: 0/100\n");
+	printf("Loading GLaDOS: 10/100\n");
+	printf("Loading GLaDOS: 23/100\n");
+	printf("Loading GLaDOS: 42/100\n");
+	printf("Loading GLaDOS: 50/100\n");
+	printf("Loading GLaDOS: 84/100\n");
+	printf("Loading GLaDOS: 100/100\n");
+	printf("GLaDOS Initialized\n");
+	printf("--------------------------\n");
+	printf("Morality Core: ");
+	Wait(100);
+	printf("Acitve\n");
+	printf("Inteligence Dampening Core: ");
+	Wait(100);
+	printf("*ERROR* Core Not Found");
+	printf("Cake Core: ");
+	Wait(100);
+	printf("Acitve\n");
+	printf("Fact Core: ");
+	Wait(100);
+	printf("Acitve\n");
+	printf("Space Core: ");
+	Wait(100);
+	printf("SPAAAAAAAAAAACE\n");
+	printf("GLaDOS Initalizer Complete \n \n \n");
 }
 
-void Robot::AutonomousInit() {
-	printf("Auto Start\n");
+void GLaDOS::AutonomousInit() {
+	printf("GLaDOS Alerts: Initiating Autonomous Mode\n");
 }
 
-void Robot::AutonomousPeriodic() {
-	printf(
-			"Left Stick X: %f \n Left Stick Y: %f \n Right Stick X: %f \n Right Stick Y: %f \n",
-			powerPad.GetAxis(PS4Controller::LeftStickX),
-			powerPad.GetAxis(PS4Controller::LeftStickY),
-			powerPad.GetAxis(PS4Controller::RightStickX),
-			powerPad.GetAxis(PS4Controller::RightStickY));
-	Wait (1000);
+void GLaDOS::AutonomousPeriodic() {
+
 }
 
-void Robot::TeleopInit() {
-	printf("Teleop Start\n");
+void GLaDOS::TeleopInit() {
+	printf("GLaDOS Alerts: Initiating Teleoperated Mode\n");
 	driveBase.EndDriveAuto();
 }
 
-void Robot::TeleopPeriodic() {
-	driveBase.FPSDrive(powerPad.GetAxis(PS4Controller::LeftStickY) * .5,
-			powerPad.GetAxis(PS4Controller::RightStickX));
+void GLaDOS::TeleopPeriodic() {
+	if (PissPoorDriveOn == false) {
+		driveBase.FPSDrive(logicPad.GetAxis(Gamepad::LeftStickY) * .5,
+				logicPad.GetAxis(Gamepad::RightStickX));
+	} else {
+		driveBase.FPSDrive(powerPad.GetAxis(PS4Controller::LeftStickY) * .5,
+				powerPad.GetAxis(PS4Controller::RightStickX));
+	}
+	if (PS4SwitchButtonPrevious
+			&& !powerPad.GetButton(PS4Controller::Touchpad)) {
+		PissPoorDriveOn = true;
+	}
+	if (LogicSwitchButtonPrevious && !logicPad.GetButton(Gamepad::Back)) {
+		PissPoorDriveOn = false;
+	}
 }
 
-void Robot::TestPeriodic() {
+void GLaDOS::TestPeriodic() {
 
 }
 
-START_ROBOT_CLASS(Robot);
+START_ROBOT_CLASS(GLaDOS);
 

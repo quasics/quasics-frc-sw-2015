@@ -32,6 +32,7 @@ const int GyroIn = 0;
 
 // Driver controller port(s)
 const int GamePadIn = 1;
+const int GamePad2In = 0;
 
 #endif /* SRC_IOMAP_H_ */
 

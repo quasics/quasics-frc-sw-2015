@@ -15,7 +15,7 @@ public:
 
 private:
 	DriveTrain driveBase;
-	Gamepad powerPad;
+	PS4Controller powerPad;
 	AxisCamera camera;
 	Elevator elevator;
 

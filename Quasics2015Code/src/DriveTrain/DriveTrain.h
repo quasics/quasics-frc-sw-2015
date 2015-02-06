@@ -33,7 +33,6 @@ public:
 
 	//Functions
 	//Teleop Power Setting
-	void SetDrivePower(float leftDrivePower, float rightDrivePower);
 	void FPSDrive (float throttlePower, float sideScale);
 
 	//Auto mode Power Setting
@@ -54,6 +53,8 @@ public:
 	void EndDriveAuto();
 
 private:
+	void SetDrivePower(float leftDrivePower, float rightDrivePower);
+
 	const float InPerTick = 0.0524;
 
 	autoStatus AutoStatus;
@@ -69,8 +70,8 @@ private:
 	//Sensors
 	Counter leftDist;
 	Counter rightDist;
-	Counter leftSpeed;
-	Counter rightSpeed;
+	Counter leftTrim;
+	Counter rightTrim;
 	Gyro gyro;
 };
 

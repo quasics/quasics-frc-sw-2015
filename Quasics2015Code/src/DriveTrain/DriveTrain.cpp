@@ -15,7 +15,7 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
 
-				leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftSpeed(lEncoderPortB), rightSpeed(rEncoderPortB),
+				leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftTrim(lEncoderPortB), rightTrim(rEncoderPortB),
 
 		gyro(gyroPort)
 
@@ -29,10 +29,19 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
  * Set the power to both sides manually
  */
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-	leftFront.Set(leftDrivePower);
-	leftRear.Set(leftDrivePower);
-	rightFront.Set(-rightDrivePower);
-	rightRear.Set(-rightDrivePower);
+	if (leftTrim.Get() >= rightTrim.Get()){
+		leftFront.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
+		leftRear.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
+		rightFront.Set(-rightDrivePower);
+		rightRear.Set(-rightDrivePower);
+	}
+	else{
+		leftFront.Set(leftDrivePower);
+		leftRear.Set(leftDrivePower);
+		rightFront.Set(-rightDrivePower * (leftTrim.Get() / rightTrim.Get()));
+		rightRear.Set(-rightDrivePower * (leftTrim.Get() / rightTrim.Get()));
+	}
+
 }
 /*FPS Drive
  * Use 2 Axes, One for Throttle and one for Yaw Control
@@ -55,6 +64,7 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale){
 	leftRear.Set (throttlePower* leftScale);
 	rightFront.Set (-throttlePower * rightScale);
 	rightRear.Set (-throttlePower * rightScale);
+	//SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
 }
 
 //Auto mode Power Setting

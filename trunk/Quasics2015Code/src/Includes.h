@@ -9,6 +9,7 @@
 #define SRC_INCLUDES_H_
 
 // System (standard) headers
+#include "Controllers/ControllerPackage.h"
 #include <math.h>
 
 // Libraries provided by FRC
@@ -16,7 +17,6 @@
 
 // Quasics-defined headers
 #include "IOMap.h"
-#include "Controller/Gamepad.h"
 #include "DriveTrain/DriveTrain.h"
 #include "Elevator/Elevator.h"
 #include "Grabber/Grabber.h"

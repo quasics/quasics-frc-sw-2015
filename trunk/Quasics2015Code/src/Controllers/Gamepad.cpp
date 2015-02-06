@@ -4,8 +4,8 @@
  *  Created on: Jan 23, 2015
  *      Author: ray
  */
-#include <Controller/GamepadIOMap.h>
-#include "Controller/Gamepad.h"
+#include "Controllers/Gamepad.h"
+#include "Controllers/GamepadIOMap.h"
 
 Gamepad::Gamepad(int input, float initialDeadbandWidth) :
 		stick(input, 4, 12), deadbandWidth(initialDeadbandWidth) {
@@ -39,7 +39,6 @@ float Gamepad::GetAxis(AxisType axisGet) {
 int Gamepad::GetDPad (){
 	return (stick.GetPOV());
 }
-
 bool Gamepad::GetButton(ButtonType buttonGet) {
 	switch (buttonGet) {
 	case A:

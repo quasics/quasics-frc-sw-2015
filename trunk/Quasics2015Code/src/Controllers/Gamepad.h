@@ -5,8 +5,8 @@
  *      Author: ray
  */
 
-#ifndef SRC_CONTROLLER_GAMEPAD_H_
-#define SRC_CONTROLLER_GAMEPAD_H_
+#ifndef SRC_CONTROLLERS_GAMEPAD_H_
+#define SRC_CONTROLLERS_GAMEPAD_H_
 
 #include "WPILib.h"
 #include <math.h>
@@ -16,7 +16,7 @@ public:
 	Gamepad(int input, float DeadbandWidth);
 
 	enum AxisType {
-		LeftStickX, LeftStickY, RightStickX, RightStickY,
+		LeftStickX, LeftStickY, RightStickX, RightStickY
 	};
 	enum ButtonType {
 		A,
@@ -35,7 +35,7 @@ public:
 
 	void SetDeadband(float NewDeadbandWidth);
 	float GetAxis(AxisType axisGet);
-	int GetDPad ();
+	int GetDPad();
 	bool GetButton(ButtonType buttonGet);
 
 private:
@@ -44,4 +44,4 @@ private:
 	float deadbandWidth;
 };
 
-#endif /* SRC_CONTROLLER_GAMEPAD_H_ */
+#endif /* SRC_CONTROLLERS_GAMEPAD_H_ */

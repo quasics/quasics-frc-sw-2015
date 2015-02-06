@@ -21,10 +21,10 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {
 	printf(
 			"Left Stick X: %f \n Left Stick Y: %f \n Right Stick X: %f \n Right Stick Y: %f \n",
-			powerPad.GetAxis(Gamepad::LeftStickX),
-			powerPad.GetAxis(Gamepad::LeftStickY),
-			powerPad.GetAxis(Gamepad::RightStickX),
-			powerPad.GetAxis(Gamepad::RightStickY));
+			powerPad.GetAxis(PS4Controller::LeftStickX),
+			powerPad.GetAxis(PS4Controller::LeftStickY),
+			powerPad.GetAxis(PS4Controller::RightStickX),
+			powerPad.GetAxis(PS4Controller::RightStickY));
 	Wait (1000);
 }
 
@@ -34,8 +34,8 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-	driveBase.FPSDrive(powerPad.GetAxis(Gamepad::LeftStickY) * .5,
-			powerPad.GetAxis(Gamepad::RightStickX));
+	driveBase.FPSDrive(powerPad.GetAxis(PS4Controller::LeftStickY) * .5,
+			powerPad.GetAxis(PS4Controller::RightStickX));
 }
 
 void Robot::TestPeriodic() {

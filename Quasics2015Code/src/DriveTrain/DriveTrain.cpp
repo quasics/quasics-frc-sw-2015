@@ -10,12 +10,13 @@
 DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
 		int rEncoderPortB, int gyroPort) :
-		AutoStatus(Disabled),TargetDegrees(0), TargetDistanceIn(0),
+		AutoStatus(Disabled), TargetDegrees(0), TargetDistanceIn(0),
 
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
 
-				leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftTrim(lEncoderPortB), rightTrim(rEncoderPortB),
+		leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftTrim(
+				lEncoderPortB), rightTrim(rEncoderPortB),
 
 		gyro(gyroPort)
 
@@ -29,13 +30,12 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
  * Set the power to both sides manually
  */
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-	if (leftTrim.Get() >= rightTrim.Get()){
+	if (leftTrim.Get() >= rightTrim.Get()) {
 		leftFront.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
 		leftRear.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
 		rightFront.Set(-rightDrivePower);
 		rightRear.Set(-rightDrivePower);
-	}
-	else{
+	} else {
 		leftFront.Set(leftDrivePower);
 		leftRear.Set(leftDrivePower);
 		rightFront.Set(-rightDrivePower * (leftTrim.Get() / rightTrim.Get()));
@@ -50,21 +50,43 @@ void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
  * left_scale = 2(rudder_axis) + upper_bound and right_scale = 2(rudder_axis) + upper_bound
  * where upper_bound = 1
  */
-void DriveTrain::FPSDrive(float throttlePower, float sideScale){
+void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	float leftScale = 1;
 	float rightScale = 1;
-
-	if (sideScale >= 0){
-		rightScale = -2 * sideScale + 1;
+	if (fabs(throttlePower) > .0625) {
+		if (throttlePower > 0)
+			if (sideScale >= 0) {
+				rightScale = -2 * sideScale + 1;
+			} else {
+				leftScale = 2 * sideScale + 1;
+			}
+		else {
+			if (sideScale >= 0) {
+				rightScale = 2 * sideScale + 1;
+			} else {
+				leftScale = -2 * sideScale + 1;
+			}
+		}
+		leftFront.Set(throttlePower * leftScale);
+		leftRear.Set(throttlePower * leftScale);
+		rightFront.Set(-throttlePower * rightScale);
+		rightRear.Set(-throttlePower * rightScale);
+		//SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
+	} else {
+		if (sideScale < 0) {
+			leftFront.Set(-sideScale * .0625);
+			leftRear.Set(-sideScale * .0625);
+			rightFront.Set(-sideScale * .0625);
+			rightRear.Set(-sideScale * .0625);
+			//SetDrivePower (-sideScale * .0625, sideScale * .0625);
+		} else {
+			leftFront.Set(sideScale * .0625);
+			leftRear.Set(sideScale * .0625);
+			rightFront.Set(sideScale * .0625);
+			rightRear.Set(sideScale * .0625);
+			//SetDrivePower (sideScale * .0625, -sideScale * .0625);
+		}
 	}
-	else {
-		leftScale = 2 * sideScale + 1;
-	}
-	leftFront.Set (throttlePower * leftScale);
-	leftRear.Set (throttlePower* leftScale);
-	rightFront.Set (-throttlePower * rightScale);
-	rightRear.Set (-throttlePower * rightScale);
-	//SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
 }
 
 //Auto mode Power Setting
@@ -80,79 +102,73 @@ void DriveTrain::AutoTurnStart(float degrees) {
 	AutoStatus = Turning;
 }
 void DriveTrain::AutoProcess() {
-	switch (AutoStatus){
+	switch (AutoStatus) {
 	case Driving:
-		if (leftDist.Get() * InPerTick >= TargetDistanceIn){
-			leftFront.Set (0);
-			leftRear.Set (0);
-		}
-		else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5 && leftDist.Get() * InPerTick < TargetDistanceIn){
-			leftFront.Set (.25);
-			leftRear.Set (.25);
-		}
-		else{
-			leftFront.Set (.75);
-			leftRear.Set (.75);
+		if (leftDist.Get() * InPerTick >= TargetDistanceIn) {
+			leftFront.Set(0);
+			leftRear.Set(0);
+		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
+				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
+			leftFront.Set(.25);
+			leftRear.Set(.25);
+		} else {
+			leftFront.Set(.75);
+			leftRear.Set(.75);
 		}
 
-		if (rightDist.Get() * InPerTick >= TargetDistanceIn){
-				rightFront.Set (0);
-				rightRear.Set (0);
-				TargetDistanceIn = 0;
-				AutoStatus = Ready;
-			}
-			else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5 && leftDist.Get() * InPerTick < TargetDistanceIn){
-				rightFront.Set (-.25);
-				rightRear.Set (-.25);
-			}
-			else{
-				rightFront.Set (-.75);
-				rightRear.Set (-.75);
-			}
+		if (rightDist.Get() * InPerTick >= TargetDistanceIn) {
+			rightFront.Set(0);
+			rightRear.Set(0);
+			TargetDistanceIn = 0;
+			AutoStatus = Ready;
+		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
+				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
+			rightFront.Set(-.25);
+			rightRear.Set(-.25);
+		} else {
+			rightFront.Set(-.75);
+			rightRear.Set(-.75);
+		}
 		break;
 
 	case Turning:
-		if (TargetDegrees > 0 && TargetDegrees <= 180){
-			if (gyro.GetAngle() <= TargetDegrees - 2.5){
-				leftFront.Set (.75);
-				leftRear.Set (.75);
-				rightFront.Set (.75);
-				rightRear.Set (.75);
-			}
-			else if (gyro.GetAngle() > TargetDegrees - 2.5 && gyro.GetAngle() < TargetDegrees){
-				leftFront.Set (.25);
-				leftRear.Set (.25);
-				rightFront.Set (.25);
-				rightRear.Set (.25);
-			}
-			else
-			{
-				leftFront.Set (0);
-				leftRear.Set (0);
-				rightFront.Set (0);
-				rightRear.Set (0);
+		if (TargetDegrees > 0 && TargetDegrees <= 180) {
+			if (gyro.GetAngle() <= TargetDegrees - 2.5) {
+				leftFront.Set(.75);
+				leftRear.Set(.75);
+				rightFront.Set(.75);
+				rightRear.Set(.75);
+			} else if (gyro.GetAngle() > TargetDegrees - 2.5
+					&& gyro.GetAngle() < TargetDegrees) {
+				leftFront.Set(.25);
+				leftRear.Set(.25);
+				rightFront.Set(.25);
+				rightRear.Set(.25);
+			} else {
+				leftFront.Set(0);
+				leftRear.Set(0);
+				rightFront.Set(0);
+				rightRear.Set(0);
 				AutoStatus = Ready;
 				TargetDegrees = 0;
 			}
-		}
-		else {
-			if (gyro.GetAngle() >= TargetDegrees + 2.5){
-				leftFront.Set (-.75);
-				leftRear.Set (-.75);
-				rightFront.Set (-.75);
-				rightRear.Set (-.75);
-			}
-			else if (gyro.GetAngle() < TargetDegrees + 2.5 && gyro.GetAngle() > TargetDegrees){
-				leftFront.Set (-.25);
-				leftRear.Set (-.25);
-				rightFront.Set (-.25);
-				rightRear.Set (-.25);
-			}
-			else {
-				leftFront.Set (0);
-				leftRear.Set (0);
-				rightFront.Set (0);
-				rightRear.Set (0);
+		} else {
+			if (gyro.GetAngle() >= TargetDegrees + 2.5) {
+				leftFront.Set(-.75);
+				leftRear.Set(-.75);
+				rightFront.Set(-.75);
+				rightRear.Set(-.75);
+			} else if (gyro.GetAngle() < TargetDegrees + 2.5
+					&& gyro.GetAngle() > TargetDegrees) {
+				leftFront.Set(-.25);
+				leftRear.Set(-.25);
+				rightFront.Set(-.25);
+				rightRear.Set(-.25);
+			} else {
+				leftFront.Set(0);
+				leftRear.Set(0);
+				rightFront.Set(0);
+				rightRear.Set(0);
 				AutoStatus = Ready;
 				TargetDegrees = 0;
 			}
@@ -166,7 +182,7 @@ void DriveTrain::AutoProcess() {
 
 //Sensors
 void DriveTrain::ResetSensor(driveSensor whichSensor) {
-	switch (whichSensor){
+	switch (whichSensor) {
 	case LeftEncoder:
 		leftDist.Reset();
 		break;
@@ -191,31 +207,29 @@ float DriveTrain::GetSensorValue(driveSensor whichSensor) {
 	}
 }
 float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
-	return 0;//leave for end
+	return 0; //leave for end
 }
-float DriveTrain::GetLeftDistanceIn (){
+float DriveTrain::GetLeftDistanceIn() {
 	return (leftDist.Get() * InPerTick);
 }
-float DriveTrain::GetRightDistanceIn (){
+float DriveTrain::GetRightDistanceIn() {
 	return (rightDist.Get() * InPerTick);
 }
 
 //Misc
 bool DriveTrain::AutoTurning() {
-		if (AutoStatus == Turning){
-			return true;
-		}
-		else{
-			return false;
-		}
+	if (AutoStatus == Turning) {
+		return true;
+	} else {
+		return false;
+	}
 }
 bool DriveTrain::AutoDriving() {
-	if (AutoStatus == Driving){
-				return true;
-			}
-			else{
-				return false;
-			}
+	if (AutoStatus == Driving) {
+		return true;
+	} else {
+		return false;
+	}
 }
 void DriveTrain::EndDriveAuto() {
 	AutoStatus = Disabled;

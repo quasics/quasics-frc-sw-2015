@@ -9,18 +9,21 @@
 #define SRC_ROBOT_H_
 #include "Includes.h"
 
-class Robot: public IterativeRobot {
+class GLaDOS: public IterativeRobot {
 public:
-	Robot();
+	GLaDOS();
 
 private:
 	DriveTrain driveBase;
 	PS4Controller powerPad;
+	Gamepad logicPad;
 	AxisCamera camera;
 	Elevator elevator;
 
-	bool FPSDriveOff;
-	bool StartButtonPrevious;
+
+	bool PissPoorDriveOn;
+	bool LogicSwitchButtonPrevious;
+	bool PS4SwitchButtonPrevious;
 
 	void RobotInit();
 	void AutonomousInit();

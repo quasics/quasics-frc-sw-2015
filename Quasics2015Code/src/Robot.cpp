@@ -13,29 +13,40 @@ GLaDOS::GLaDOS() :
 
 void GLaDOS::RobotInit() {
 	printf("Loading GLaDOS: 0/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 10/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 23/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 42/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 50/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 84/100\n");
+	Wait (.1);
 	printf("Loading GLaDOS: 100/100\n");
+	Wait (.1);
 	printf("GLaDOS Initialized\n");
 	printf("--------------------------\n");
 	printf("Morality Core: ");
-	Wait(100);
+	Wait(1);
 	printf("Acitve\n");
 	printf("Inteligence Dampening Core: ");
-	Wait(100);
+	Wait(10);
 	printf("*ERROR* Core Not Found");
 	printf("Cake Core: ");
-	Wait(100);
+	Wait(1);
 	printf("Acitve\n");
 	printf("Fact Core: ");
-	Wait(100);
+	Wait(1);
 	printf("Acitve\n");
 	printf("Space Core: ");
-	Wait(100);
+	Wait(1);
 	printf("SPAAAAAAAAAAACE\n");
+	printf("USB Image Core: ");
+	//CameraServer::GetInstance()->SetQuality(50);
+	//CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+	printf("Disabled\n");
 	printf("GLaDOS Initalizer Complete \n \n \n");
 }
 

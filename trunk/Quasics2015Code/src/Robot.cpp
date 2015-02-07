@@ -4,7 +4,7 @@ GLaDOS::GLaDOS() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
-				GamePad2In, 0.05), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
+				GamePad2In, 0.05),camera (CameraHost), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
 				false), PS4SwitchButtonPrevious(false) {
 
 }
@@ -42,8 +42,6 @@ void GLaDOS::RobotInit() {
 	Wait(1);
 	printf("SPAAAAAAAAAAACE\n");
 	printf("USB Image Core: ");
-	//CameraServer::GetInstance()->SetQuality(50);
-	//CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 	printf("Disabled\n");
 	printf("GLaDOS Initalizer Complete \n \n \n");
 }

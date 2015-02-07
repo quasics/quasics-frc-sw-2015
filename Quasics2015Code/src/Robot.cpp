@@ -4,7 +4,7 @@ GLaDOS::GLaDOS() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
-				GamePad2In, 0.05),camera (CameraHost), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
+				GamePad2In, 0.05),/*camera (CameraHost),*/ PissPoorDriveOn(false), LogicSwitchButtonPrevious(
 				false), PS4SwitchButtonPrevious(false) {
 
 }

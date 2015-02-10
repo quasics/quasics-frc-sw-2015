@@ -30,8 +30,8 @@ public:
 
 private:
 	Timer autoTimer;
-	Relay leftMotor;
-	Relay rightMotor;
+	Victor leftMotor;
+	Victor rightMotor;
 
 	enum Status {
 		kGoingUp, kGoingDown, kOff

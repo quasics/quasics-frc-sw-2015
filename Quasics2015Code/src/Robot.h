@@ -17,8 +17,8 @@ private:
 	DriveTrain driveBase;
 	PS4Controller powerPad;
 	Gamepad logicPad;
-//	AxisCamera camera;
-//	Elevator elevator;
+	AxisCamera camera;
+	Elevator elevator;
 
 
 	bool PissPoorDriveOn;

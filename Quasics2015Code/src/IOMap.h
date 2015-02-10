@@ -15,8 +15,8 @@ const int FrontLeftTalonPort = 6;
 const int RearLeftTalonPort = 7;
 const int FrontRightTalonPort = 8;
 const int RearRightTalonPort = 9;
-const int LeftElevatorMotorPort = 0;
-const int RightElevatorMotorPort = 1;
+const int LeftElevatorMotorPort = 1;
+const int RightElevatorMotorPort = 0;
 const int GrabberMotorPort = 4;
 
 const std::string CameraHost("10.26.56.11");

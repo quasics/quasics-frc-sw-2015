@@ -16,31 +16,31 @@
 	}
 
 	void Elevator::Up (){
-		leftMotor.Set(Relay::kForward);
-		rightMotor.Set(Relay::kForward);
+		leftMotor.Set(-1);
+		rightMotor.Set(.795);
 		activeStatus = kGoingUp;
 	}
 	void Elevator::Down (){
-		leftMotor.Set(Relay::kReverse);
-		rightMotor.Set(Relay::kReverse);
+		leftMotor.Set(1);
+		rightMotor.Set(-1);
 		activeStatus = kGoingDown;
 	}
 	void Elevator::Off (){
-		leftMotor.Set(Relay::kOff);
-		rightMotor.Set(Relay::kOff);
+		leftMotor.Set(0);
+		rightMotor.Set(0);
 		activeStatus = kOff;
 	}
 
 	void Elevator::AutoUpInit (float durationSeconds){
-		leftMotor.Set(Relay::kForward);
-		rightMotor.Set(Relay::kForward);
+		leftMotor.Set(-1);
+		rightMotor.Set(.795);
 		activeStatus = kGoingUp;
 		targetDuration = durationSeconds;
 		autoTimer.Start();
 	}
 	void Elevator::AutoDownInit (float durationSeconds){
-		leftMotor.Set(Relay::kReverse);
-		rightMotor.Set(Relay::kReverse);
+		leftMotor.Set(1);
+		rightMotor.Set(-1);
 		activeStatus = kGoingDown;
 		targetDuration = durationSeconds;
 		autoTimer.Start();
@@ -49,8 +49,8 @@
 		switch (activeStatus){
 		case (kGoingUp):
 			if (autoTimer.Get() >= targetDuration){
-				leftMotor.Set(Relay::kOff);
-				rightMotor.Set(Relay::kOff);
+				leftMotor.Set(0);
+				rightMotor.Set(0);
 				activeStatus = kOff;
 				autoTimer.Stop();
 				autoTimer.Reset();
@@ -59,8 +59,8 @@
 			break;
 		case (kGoingDown):
 			if (autoTimer.Get() >= targetDuration){
-				leftMotor.Set(Relay::kOff);
-				rightMotor.Set(Relay::kOff);
+				leftMotor.Set(0);
+				rightMotor.Set(0);
 				activeStatus = kOff;
 				autoTimer.Stop();
 				autoTimer.Reset();

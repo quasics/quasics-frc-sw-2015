@@ -4,8 +4,10 @@ GLaDOS::GLaDOS() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
-				GamePad2In, 0.05),/*camera (CameraHost),*/ PissPoorDriveOn(false), LogicSwitchButtonPrevious(
-				false), PS4SwitchButtonPrevious(false) {
+				GamePad2In, 0.05), camera(CameraHost), elevator(
+				LeftElevatorMotorPort, RightElevatorMotorPort), PissPoorDriveOn(
+				false), LogicSwitchButtonPrevious(false), PS4SwitchButtonPrevious(
+				false) {
 
 }
 
@@ -60,19 +62,21 @@ void GLaDOS::TeleopInit() {
 }
 
 void GLaDOS::TeleopPeriodic() {
-	if (PissPoorDriveOn == false) {
-		driveBase.FPSDrive(logicPad.GetAxis(Gamepad::LeftStickY) * .5,
-				logicPad.GetAxis(Gamepad::RightStickX));
+	driveBase.FPSDrive(logicPad.GetAxis(Gamepad::LeftStickY),
+			logicPad.GetAxis(Gamepad::RightStickX));
+	if ((logicPad.GetButton(Gamepad::LeftShoulder)
+			|| logicPad.GetButton(Gamepad::RightShoulder))
+			&& (logicPad.GetButton(Gamepad::LeftTrigger)
+					|| logicPad.GetButton(Gamepad::RightTrigger))) {
+		elevator.Off();
+	} else if (logicPad.GetButton(Gamepad::LeftShoulder)
+			|| logicPad.GetButton(Gamepad::RightShoulder)) {
+		elevator.Up();
+	} else if (logicPad.GetButton(Gamepad::LeftTrigger)
+			|| logicPad.GetButton(Gamepad::RightTrigger)) {
+		elevator.Down();
 	} else {
-		driveBase.FPSDrive(powerPad.GetAxis(PS4Controller::LeftStickY) * .5,
-				powerPad.GetAxis(PS4Controller::RightStickX));
-	}
-	if (PS4SwitchButtonPrevious
-			&& !powerPad.GetButton(PS4Controller::Touchpad)) {
-		PissPoorDriveOn = true;
-	}
-	if (LogicSwitchButtonPrevious && !logicPad.GetButton(Gamepad::Back)) {
-		PissPoorDriveOn = false;
+		elevator.Off();
 	}
 }
 

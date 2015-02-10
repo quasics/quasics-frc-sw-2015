@@ -53,40 +53,15 @@ void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
 void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	float leftScale = 1;
 	float rightScale = 1;
-	if (fabs(throttlePower) > .0625) {
-		if (throttlePower > 0)
-			if (sideScale >= 0) {
-				rightScale = -2 * sideScale + 1;
-			} else {
-				leftScale = 2 * sideScale + 1;
-			}
-		else {
-			if (sideScale >= 0) {
-				rightScale = 2 * sideScale + 1;
-			} else {
-				leftScale = -2 * sideScale + 1;
-			}
-		}
-		leftFront.Set(throttlePower * leftScale);
-		leftRear.Set(throttlePower * leftScale);
-		rightFront.Set(-throttlePower * rightScale);
-		rightRear.Set(-throttlePower * rightScale);
-		//SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
+	if (sideScale >= 0) {
+		rightScale = -2 * sideScale + 1;
 	} else {
-		if (sideScale < 0) {
-			leftFront.Set(-sideScale * .0625);
-			leftRear.Set(-sideScale * .0625);
-			rightFront.Set(-sideScale * .0625);
-			rightRear.Set(-sideScale * .0625);
-			//SetDrivePower (-sideScale * .0625, sideScale * .0625);
-		} else {
-			leftFront.Set(sideScale * .0625);
-			leftRear.Set(sideScale * .0625);
-			rightFront.Set(sideScale * .0625);
-			rightRear.Set(sideScale * .0625);
-			//SetDrivePower (sideScale * .0625, -sideScale * .0625);
-		}
+		leftScale = 2 * sideScale + 1;
 	}
+	leftFront.Set(throttlePower * leftScale);
+	leftRear.Set(throttlePower * leftScale);
+	rightFront.Set(-throttlePower * rightScale);
+	rightRear.Set(-throttlePower * rightScale);
 }
 
 //Auto mode Power Setting
@@ -170,7 +145,7 @@ void DriveTrain::AutoProcess() {
 		break;
 
 	}
-	SetDrivePower (leftPower, rightPower);
+	SetDrivePower(leftPower, rightPower);
 }
 
 //Sensors

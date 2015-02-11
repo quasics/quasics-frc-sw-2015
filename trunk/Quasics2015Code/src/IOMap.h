@@ -22,10 +22,10 @@ const int GrabberMotorPort = 4;
 const std::string CameraHost("10.26.56.11");
 
 // Encoder definitions
-const int LeftEncoderA = 1; //placeholder
-const int LeftEncoderB = 2; //placeholder
-const int RightEncoderA = 3; //placeholder
-const int RightEncoderB = 4; //placeholder
+const int LeftEncoderA = 2;
+const int LeftEncoderB = 3;
+const int RightEncoderA = 0;
+const int RightEncoderB = 1;
 
 // Gyro input port(s)
 const int GyroIn = 0;

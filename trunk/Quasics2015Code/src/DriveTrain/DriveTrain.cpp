@@ -30,18 +30,59 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
  * Set the power to both sides manually
  */
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-	if (leftTrim.Get() >= rightTrim.Get()) {
-		leftFront.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
-		leftRear.Set(leftDrivePower * (rightTrim.Get() / leftTrim.Get()));
-		rightFront.Set(-rightDrivePower);
-		rightRear.Set(-rightDrivePower);
+	bool leftTrimSafe;
+	bool rightTrimSafe;
+
+	//Check For Divide By Zero On Right Side
+	if (leftTrim.Get() == 0)
+		leftTrimSafe = false;
+	else
+		leftTrimSafe = true;
+
+	//Check For Divide By Zero On Left Side
+	if (rightTrim.Get() == 0)
+		rightTrimSafe = false;
+	else
+		rightTrimSafe = true;
+
+	if (fabs(leftDrivePower - rightDrivePower) <= 0.125) {
+		float forwardPower = (leftDrivePower + rightDrivePower) / 2;
+		if (leftTrim.Get() >= rightTrim.Get()) {
+			if (leftTrimSafe) {
+				leftFront.Set(
+						forwardPower * (rightTrim.Get() / leftTrim.Get()));
+				leftRear.Set(forwardPower * (rightTrim.Get() / leftTrim.Get()));
+				rightFront.Set(-forwardPower);
+				rightRear.Set(-forwardPower);
+			} else {
+				leftFront.Set(0);
+				leftRear.Set(0);
+				rightFront.Set(0);
+				rightRear.Set(0);
+			}
+		} else {
+			if (rightTrimSafe) {
+				leftFront.Set(forwardPower);
+				leftRear.Set(forwardPower);
+				rightFront.Set(
+						-forwardPower * (leftTrim.Get() / rightTrim.Get()));
+				rightRear.Set(
+						-forwardPower * (leftTrim.Get() / rightTrim.Get()));
+			} else {
+				leftFront.Set(0);
+				leftRear.Set(0);
+				rightFront.Set(0);
+				rightRear.Set(0);
+			}
+		}
 	} else {
 		leftFront.Set(leftDrivePower);
 		leftRear.Set(leftDrivePower);
-		rightFront.Set(-rightDrivePower * (leftTrim.Get() / rightTrim.Get()));
-		rightRear.Set(-rightDrivePower * (leftTrim.Get() / rightTrim.Get()));
+		rightFront.Set(-rightDrivePower);
+		rightRear.Set(-rightDrivePower);
 	}
-
+	leftTrim.Reset();
+	rightTrim.Reset();
 }
 /*FPS Drive
  * Use 2 Axes, One for Throttle and one for Yaw Control

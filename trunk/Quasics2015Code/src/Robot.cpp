@@ -62,22 +62,10 @@ void GLaDOS::TeleopInit() {
 }
 
 void GLaDOS::TeleopPeriodic() {
-	driveBase.FPSDrive(logicPad.GetAxis(Gamepad::LeftStickY),
-			logicPad.GetAxis(Gamepad::RightStickX));
-	if ((logicPad.GetButton(Gamepad::LeftShoulder)
-			|| logicPad.GetButton(Gamepad::RightShoulder))
-			&& (logicPad.GetButton(Gamepad::LeftTrigger)
-					|| logicPad.GetButton(Gamepad::RightTrigger))) {
-		elevator.Off();
-	} else if (logicPad.GetButton(Gamepad::LeftShoulder)
-			|| logicPad.GetButton(Gamepad::RightShoulder)) {
-		elevator.Up();
-	} else if (logicPad.GetButton(Gamepad::LeftTrigger)
-			|| logicPad.GetButton(Gamepad::RightTrigger)) {
-		elevator.Down();
-	} else {
-		elevator.Off();
-	}
+	printf("Left Encoder: %f\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder));
+	printf("Right Encoder: %f\n",driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	Wait(.1);
 }
 
 void GLaDOS::TestPeriodic() {

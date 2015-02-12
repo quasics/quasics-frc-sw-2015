@@ -33,7 +33,7 @@ void GLaDOS::RobotInit() {
 	printf("Acitve\n");
 	printf("Inteligence Dampening Core: ");
 	Wait(10);
-	printf("*ERROR* Core Not Found");
+	printf("*ERROR* Core Not Found\n");
 	printf("Cake Core: ");
 	Wait(1);
 	printf("Acitve\n");
@@ -43,7 +43,7 @@ void GLaDOS::RobotInit() {
 	printf("Space Core: ");
 	Wait(1);
 	printf("SPAAAAAAAAAAACE\n");
-	printf("USB Image Core: ");
+	printf("Ethernet Image Processor: ");
 	printf("Disabled\n");
 	printf("GLaDOS Initalizer Complete \n \n \n");
 }

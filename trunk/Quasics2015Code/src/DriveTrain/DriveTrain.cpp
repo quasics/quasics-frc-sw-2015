@@ -99,10 +99,7 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	} else {
 		leftScale = 2 * sideScale + 1;
 	}
-	leftFront.Set(throttlePower * leftScale);
-	leftRear.Set(throttlePower * leftScale);
-	rightFront.Set(-throttlePower * rightScale);
-	rightRear.Set(-throttlePower * rightScale);
+	SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
 }
 
 //Auto mode Power Setting

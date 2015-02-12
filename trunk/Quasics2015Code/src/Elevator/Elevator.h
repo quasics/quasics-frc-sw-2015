@@ -13,7 +13,7 @@
 class Elevator{
 public:
 	//Constructor
-	Elevator(int leftMotorPort, int rightMotorPort);
+	Elevator(int liftMotorPort);
 
 	//Commands
 	void Up ();
@@ -30,8 +30,7 @@ public:
 
 private:
 	Timer autoTimer;
-	Victor leftMotor;
-	Victor rightMotor;
+	Victor liftMotor;
 
 	enum Status {
 		kGoingUp, kGoingDown, kOff

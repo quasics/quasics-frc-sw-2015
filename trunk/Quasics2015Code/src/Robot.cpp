@@ -5,7 +5,7 @@ GLaDOS::GLaDOS() :
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
 				GamePad2In, 0.05), camera(CameraHost), elevator(
-				LeftElevatorMotorPort, RightElevatorMotorPort), PissPoorDriveOn(
+				ElevatorMotorPort), PissPoorDriveOn(
 				false), LogicSwitchButtonPrevious(false), PS4SwitchButtonPrevious(
 				false) {
 

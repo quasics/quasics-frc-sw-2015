@@ -15,11 +15,11 @@
 	}
 
 	void Elevator::Up (){
-		liftMotor.Set(-1);
+		liftMotor.Set(1);
 		activeStatus = kGoingUp;
 	}
 	void Elevator::Down (){
-		liftMotor.Set(1);
+		liftMotor.Set(-1);
 		activeStatus = kGoingDown;
 	}
 	void Elevator::Off (){
@@ -28,13 +28,13 @@
 	}
 
 	void Elevator::AutoUpInit (float durationSeconds){
-		liftMotor.Set(-1);
+		liftMotor.Set(1);
 		activeStatus = kGoingUp;
 		targetDuration = durationSeconds;
 		autoTimer.Start();
 	}
 	void Elevator::AutoDownInit (float durationSeconds){
-		liftMotor.Set(1);
+		liftMotor.Set(-1);
 		activeStatus = kGoingDown;
 		targetDuration = durationSeconds;
 		autoTimer.Start();

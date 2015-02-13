@@ -52,6 +52,7 @@ public:
 	bool AutoTurning();
 	bool AutoDriving();
 	void EndDriveAuto();
+	void SetTrim();
 
 private:
 
@@ -60,6 +61,11 @@ private:
 	autoStatus AutoStatus;
 	float TargetDegrees;
 	float TargetDistanceIn;
+	float leftTrimMult;
+	float rightTrimMult;
+
+	//Timers
+	Timer trimTimer;
 
 	//Motor Controllers
 	Talon leftFront;

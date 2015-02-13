@@ -77,6 +77,11 @@ void GLaDOS::TeleopPeriodic() {
 	} else {
 		elevator.Off();
 	}
+
+	if (LogicSwitchButtonPrevious == true && !logicPad.GetButton(Gamepad::A)){
+		driveBase.SetTrim();
+	}
+	LogicSwitchButtonPrevious = logicPad.GetButton(Gamepad::A);
 }
 
 void GLaDOS::TestPeriodic() {

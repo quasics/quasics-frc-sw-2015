@@ -10,7 +10,8 @@
 DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
 		int rEncoderPortB, int gyroPort) :
-		AutoStatus(Disabled), TargetDegrees(0), TargetDistanceIn(0),
+		AutoStatus(Disabled), TargetDegrees(0), TargetDistanceIn(0), leftTrimMult(
+				1), rightTrimMult(1),
 
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
@@ -30,59 +31,22 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
  * Set the power to both sides manually
  */
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-	bool leftTrimSafe;
-	bool rightTrimSafe;
-
-	//Check For Divide By Zero On Right Side
-	if (leftTrim.Get() == 0)
-		leftTrimSafe = false;
-	else
-		leftTrimSafe = true;
-
-	//Check For Divide By Zero On Left Side
-	if (rightTrim.Get() == 0)
-		rightTrimSafe = false;
-	else
-		rightTrimSafe = true;
-
+	if (AutoStatus == Disabled && trimTimer.Get() >= 1) {
+		SetTrim ();
+		trimTimer.Reset();
+}
 	if (fabs(leftDrivePower - rightDrivePower) <= 0.125) {
-		float forwardPower = (leftDrivePower + rightDrivePower) / 2;
-		if (leftTrim.Get() >= rightTrim.Get()) {
-			if (leftTrimSafe) {
-				leftFront.Set(
-						forwardPower * (rightTrim.Get() / leftTrim.Get()));
-				leftRear.Set(forwardPower * (rightTrim.Get() / leftTrim.Get()));
-				rightFront.Set(-forwardPower);
-				rightRear.Set(-forwardPower);
-			} else {
-				leftFront.Set(0);
-				leftRear.Set(0);
-				rightFront.Set(0);
-				rightRear.Set(0);
-			}
-		} else {
-			if (rightTrimSafe) {
-				leftFront.Set(forwardPower);
-				leftRear.Set(forwardPower);
-				rightFront.Set(
-						-forwardPower * (leftTrim.Get() / rightTrim.Get()));
-				rightRear.Set(
-						-forwardPower * (leftTrim.Get() / rightTrim.Get()));
-			} else {
-				leftFront.Set(0);
-				leftRear.Set(0);
-				rightFront.Set(0);
-				rightRear.Set(0);
-			}
-		}
-	} else {
+		leftFront.Set(((leftDrivePower+rightDrivePower)/2) * leftTrimMult);
+		leftRear.Set(((leftDrivePower+rightDrivePower)/2) * leftTrimMult);
+		rightFront.Set(((leftDrivePower+rightDrivePower)/2) * rightTrimMult);
+		rightRear.Set(((leftDrivePower+rightDrivePower)/2) * rightTrimMult);
+	}
+	else{
 		leftFront.Set(leftDrivePower);
 		leftRear.Set(leftDrivePower);
-		rightFront.Set(-rightDrivePower);
-		rightRear.Set(-rightDrivePower);
+		rightFront.Set(rightDrivePower);
+		rightRear.Set(rightDrivePower);
 	}
-	leftTrim.Reset();
-	rightTrim.Reset();
 }
 /*FPS Drive
  * Use 2 Axes, One for Throttle and one for Yaw Control
@@ -99,7 +63,7 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	} else {
 		leftScale = 2 * sideScale + 1;
 	}
-	SetDrivePower (throttlePower * leftScale, throttlePower * rightScale);
+	SetDrivePower(throttlePower * leftScale, throttlePower * rightScale);
 }
 
 //Auto mode Power Setting
@@ -239,4 +203,19 @@ bool DriveTrain::AutoDriving() {
 }
 void DriveTrain::EndDriveAuto() {
 	AutoStatus = Disabled;
+	trimTimer.Start();
+}
+void DriveTrain::SetTrim() {
+	if (leftTrim.Get() > rightTrim.Get() && leftTrim.Get() == !0) {
+		leftTrimMult = rightTrim.Get() / leftTrim.Get();
+		rightTrimMult = 1;
+	}
+	else if (rightTrim.Get() > leftTrim.Get() && rightTrim.Get() == !0){
+		leftTrimMult = 1;
+		rightTrimMult = leftTrim.Get() / rightTrim.Get();
+	}
+	else {
+		leftTrimMult = 1;
+		rightTrimMult = 1;
+	}
 }

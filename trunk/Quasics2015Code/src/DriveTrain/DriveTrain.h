@@ -34,6 +34,7 @@ public:
 	//Functions
 	//Teleop Power Setting
 	void FPSDrive (float throttlePower, float sideScale);
+	void SetDrivePower(float leftDrivePower, float rightDrivePower);
 
 	//Auto mode Power Setting
 	void AutoDriveStart(float distanceIn);
@@ -53,7 +54,6 @@ public:
 	void EndDriveAuto();
 
 private:
-	void SetDrivePower(float leftDrivePower, float rightDrivePower);
 
 	const float InPerTick = 0.0524;
 

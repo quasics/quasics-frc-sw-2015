@@ -52,6 +52,174 @@ void GLaDOS::AutonomousInit() {
 }
 
 void GLaDOS::AutonomousPeriodic() {
+	//-1
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-1, -1);
+	Wait(1);
+	printf("-1 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.9
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.9, -.9);
+	Wait(1);
+	printf("-.9 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.8
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.8, -.8);
+	Wait(1);
+	printf("-.8 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.7
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.7, -.7);
+	Wait(1);
+	printf("-.7 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.6
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.6, -.6);
+	Wait(1);
+	printf("-.6 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.5
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.5, -.5);
+	Wait(1);
+	printf("-.5 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.4
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.4, -.4);
+	Wait(1);
+	printf("-.4 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.3
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.3, -.3);
+	Wait(1);
+	printf("-.3 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.2
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.2, -.2);
+	Wait(1);
+	printf("-.2 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//-.1
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(-.1, -.1);
+	Wait(1);
+	printf("-.1 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//0
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(0, 0);
+	Wait(1);
+	printf("0 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.1
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.1, .1);
+	Wait(1);
+	printf(".1 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.2
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.2, .2);
+	Wait(1);
+	printf(".2 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.3
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.3, .3);
+	Wait(1);
+	printf(".3 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.4
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.4, .4);
+	Wait(1);
+	printf(".4 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.5
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.5, .5);
+	Wait(1);
+	printf(".5 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.6
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.6, .6);
+	Wait(1);
+	printf(".6 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.7
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.7, .7);
+	Wait(1);
+	printf(".7 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.8
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.8, .8);
+	Wait(1);
+	printf(".8 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//.9
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(.9, .9);
+	Wait(1);
+	printf(".9 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
+	//1
+	driveBase.ResetSensor(DriveTrain::LeftEncoder);
+	driveBase.ResetSensor(DriveTrain::RightEncoder);
+	driveBase.SetDrivePower(1, 1);
+	Wait(1);
+	printf("1 \n Left Encoder: %f \n Right Encoder: %f \n\n",
+			driveBase.GetSensorValue(DriveTrain::LeftEncoder),
+			driveBase.GetSensorValue(DriveTrain::RightEncoder));
 
 }
 
@@ -61,8 +229,10 @@ void GLaDOS::TeleopInit() {
 }
 
 void GLaDOS::TeleopPeriodic() {
-	driveBase.SetDrivePower(logicPad.GetAxis(Gamepad::LeftStickY) * .5,
-			logicPad.GetAxis(Gamepad::RightStickY) * .5);
+	float leftPower = logicPad.GetAxis(Gamepad::LeftStickY) * .5;
+	float rightPower = logicPad.GetAxis(Gamepad::RightStickY) * .5;
+
+	driveBase.SetDrivePower(leftPower, rightPower);
 	if ((logicPad.GetButton(Gamepad::LeftShoulder)
 			|| logicPad.GetButton(Gamepad::RightShoulder))
 			&& (logicPad.GetButton(Gamepad::LeftTrigger)
@@ -78,7 +248,7 @@ void GLaDOS::TeleopPeriodic() {
 		elevator.Off();
 	}
 
-	if (LogicSwitchButtonPrevious == true && !logicPad.GetButton(Gamepad::A)){
+	if (LogicSwitchButtonPrevious == true && !logicPad.GetButton(Gamepad::A)) {
 		driveBase.SetTrim();
 	}
 	LogicSwitchButtonPrevious = logicPad.GetButton(Gamepad::A);

@@ -56,8 +56,8 @@ public:
 	bool AutoTurning();
 	bool AutoDriving();
 	void EndDriveAuto();
-	void SetTrim();
 	void SmoothStick (float leftIn, float rightIn, float& leftOut, float& rightOut);
+	void TrimTest (float power);
 
 private:
 

@@ -195,76 +195,6 @@ void DriveTrain::EndDriveAuto() {
 	trimTimer.Start();
 }
 
-const float kMinPowerThreshold = 0.001f;
-
-#define USE_BROKEN_TRIM_CODE
-
-void DriveTrain::SetTrim() {
-	const int32_t leftTrimReading = leftTrim.Get();
-	const int32_t rightTrimReading = rightTrim.Get();
-//	const bool leftMovingForward = leftTrim.GetDirection();
-//	const bool rightMovingForward = rightTrim.GetDirection();
-
-//	const int32_t leftVelocity = leftTrimReading * (leftMovingForward ? +1 : -1);
-//	const int32_t rightVelocity = rightTrimReading * (rightMovingForward ? +1 : -1);
-
-#ifdef USE_BROKEN_TRIM_CODE
-	if (leftTrimReading > rightTrimReading && leftTrimReading != 0) {
-		leftTrimMult = rightTrimReading / leftTrimReading;
-		rightTrimMult = 1;
-	} else if (rightTrimReading > leftTrimReading && rightTrimReading != 0) {
-		leftTrimMult = 1;
-		rightTrimMult = leftTrimReading / rightTrimReading;
-	} else {
-		leftTrimMult = 1;
-		rightTrimMult = 1;
-	}
-#else
-	const bool rightStickZeroed = fabs(lastRightPowerValue)
-	> kMinPowerThreshold;
-	const bool leftStickZeroed = fabs(lastLeftPowerValue) > kMinPowerThreshold;
-
-	if (leftStickZeroed && rightStickZeroed) {
-		// No power: both joysticks at rest
-		leftTrimMult = 0;
-		rightTrimMult = 0;
-	} else if (leftStickZeroed) {
-		// Power on right, left is at rest position
-		leftTrimMult = 0;
-		rightTrimMult = 1;
-	} else if (rightStickZeroed) {
-		// Power on left, right is at rest position
-		leftTrimMult = 1;
-		rightTrimMult = 0;
-	} else {
-		// Power on both left and right: need to figure out
-		// correct ratio to allow encoders to be adjusted
-
-		// If both wheels aren't heading in the desired directions, then
-		// adjusting trim here (based on current encoder readings) probably
-		// isn't going to help any.  For example, if the stick says "left forward", and
-		// the wheel has been moving backward, then modifying based on
-		// old data doesn't make sense.
-		const bool wantLeftMovingForward = (lastLeftPowerValue > 0);
-		const bool wantRightMovingForward = (lastRightPowerValue > 0);
-
-		const bool leftWheelDirIsOK = (wantLeftMovingForward == leftMovingForward);
-		const bool rightWheelDirIsOK = (wantRightMovingForward == rightMovingForward);
-
-		if (leftWheelDirIsOK && rightWheelDirIsOK) {
-			// OK, perform/apply trim calc.
-
-		}
-		else {
-			// Don't bother with trim: we're changing directions now, and
-			// will deal with trim next time.  Just use the raw values
-			// for now.
-			leftTrimMult = rightTrimMult = 1;
-		}
-
-	}
-#endif
-}
 void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		float& rightOut) {
 	int leftConverted = int(leftIn * 10 + .5);
@@ -399,5 +329,24 @@ void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 	case (10):
 		rightOut = rightIn * .96;
 		break;
+	}
+}
+void DriveTrain::TrimTest(float power){
+	leftTrim.Reset();
+	rightTrim.Reset();
+	SetDrivePower (power, power);
+	Wait (1);
+	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n",power ,leftTrim.Get(), rightTrim.Get());
+	if (leftTrim.Get() == 0 || rightTrim.Get() == 0){
+		printf (" Left Multiplier: 0 \n Right Multiplier: 0 \n \n");
+	}
+	else if (leftTrim.Get() / rightTrim.Get() > rightTrim.Get() / leftTrim.Get()){
+		printf (" Left Multiplier: %f \n Right Multiplier: 1 \n \n", float(rightTrim.Get() / leftTrim.Get()));
+	}
+	else if (leftTrim.Get() / rightTrim.Get() < rightTrim.Get() / leftTrim.Get()){
+		printf(" Left Multiplier: 1 \n Right Multiplier: %f \n \n", float(leftTrim.Get() / rightTrim.Get()));
+	}
+	else if (leftTrim.Get() / rightTrim.Get() == 1 && rightTrim.Get() / leftTrim.Get() == 1){
+		printf(" Left Multiplier: 1 \n Right Multiplier: 1 \n \n");
 	}
 }

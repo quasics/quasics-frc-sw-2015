@@ -10,7 +10,12 @@ GLaDOS::GLaDOS() :
 
 }
 
+float power;
+int testLoop;
+
 void GLaDOS::RobotInit() {
+	power = -.95;
+	testLoop = 1;
 	printf("Loading GLaDOS: 0/100\n");
 	Wait(.1);
 	printf("Loading GLaDOS: 10/100\n");
@@ -87,7 +92,12 @@ void GLaDOS::TeleopPeriodic() {
 }
 
 void GLaDOS::TestPeriodic() {
+	driveBase.TrimTest(power);
+	power = power + .1;
+	testLoop = testLoop + 1;
+	while (testLoop >= 20){
 
+	}
 }
 
 START_ROBOT_CLASS(GLaDOS);

@@ -68,8 +68,8 @@ void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
 #else
 	leftFront.Set(leftDrivePower);
 	leftRear.Set(leftDrivePower);
-	rightFront.Set(rightDrivePower);
-	rightRear.Set(rightDrivePower);
+	rightFront.Set(-rightDrivePower);
+	rightRear.Set(-rightDrivePower);
 #endif
 }
 /*FPS Drive

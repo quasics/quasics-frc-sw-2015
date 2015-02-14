@@ -49,16 +49,13 @@ void GLaDOS::RobotInit() {
 
 void GLaDOS::AutonomousInit() {
 	printf("GLaDOS Alerts: Initiating Autonomous Mode\n");
-	driveBase.SetDrivePower(.8, .8 * 0.91);
-	autoTimer.Start();
 }
 
 void GLaDOS::AutonomousPeriodic() {
-	if (autoTimer.Get() >= 2){
-		driveBase.SetDrivePower(0,0);
-		autoTimer.Stop();
-		autoTimer.Reset();
-	}
+	driveBase.SetDrivePower(.7, .7 * 0.92);
+	Wait (2);
+	driveBase.SetDrivePower(0, 0);
+	Wait (13);
 }
 
 void GLaDOS::TeleopInit() {
@@ -67,10 +64,12 @@ void GLaDOS::TeleopInit() {
 }
 
 void GLaDOS::TeleopPeriodic() {
-	float leftPower = logicPad.GetAxis(Gamepad::LeftStickY) * .5;
-	float rightPower = logicPad.GetAxis(Gamepad::RightStickY) * .5;
+	float leftPower;
+	float rightPower;
 
+	driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY), logicPad.GetAxis(Gamepad::RightStickY), leftPower, rightPower);
 	driveBase.SetDrivePower(leftPower, rightPower);
+
 	if ((powerPad.GetButton(Gamepad::LeftShoulder)
 			|| powerPad.GetButton(Gamepad::RightShoulder))
 			&& (powerPad.GetButton(Gamepad::LeftTrigger)
@@ -85,11 +84,6 @@ void GLaDOS::TeleopPeriodic() {
 	} else {
 		elevator.Off();
 	}
-
-	if (LogicSwitchButtonPrevious == true && !powerPad.GetButton(Gamepad::A)) {
-		driveBase.SetTrim();
-	}
-	LogicSwitchButtonPrevious = powerPad.GetButton(Gamepad::A);
 }
 
 void GLaDOS::TestPeriodic() {

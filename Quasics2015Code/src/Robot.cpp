@@ -71,25 +71,25 @@ void GLaDOS::TeleopPeriodic() {
 	float rightPower = logicPad.GetAxis(Gamepad::RightStickY) * .5;
 
 	driveBase.SetDrivePower(leftPower, rightPower);
-	if ((logicPad.GetButton(Gamepad::LeftShoulder)
-			|| logicPad.GetButton(Gamepad::RightShoulder))
-			&& (logicPad.GetButton(Gamepad::LeftTrigger)
-					|| logicPad.GetButton(Gamepad::RightTrigger))) {
+	if ((powerPad.GetButton(Gamepad::LeftShoulder)
+			|| powerPad.GetButton(Gamepad::RightShoulder))
+			&& (powerPad.GetButton(Gamepad::LeftTrigger)
+					|| powerPad.GetButton(Gamepad::RightTrigger))) {
 		elevator.Off();
-	} else if (logicPad.GetButton(Gamepad::LeftShoulder)
-			|| logicPad.GetButton(Gamepad::RightShoulder)) {
+	} else if (powerPad.GetButton(Gamepad::LeftShoulder)
+			|| powerPad.GetButton(Gamepad::RightShoulder)) {
 		elevator.Up();
-	} else if (logicPad.GetButton(Gamepad::LeftTrigger)
-			|| logicPad.GetButton(Gamepad::RightTrigger)) {
+	} else if (powerPad.GetButton(Gamepad::LeftTrigger)
+			|| powerPad.GetButton(Gamepad::RightTrigger)) {
 		elevator.Down();
 	} else {
 		elevator.Off();
 	}
 
-	if (LogicSwitchButtonPrevious == true && !logicPad.GetButton(Gamepad::A)) {
+	if (LogicSwitchButtonPrevious == true && !powerPad.GetButton(Gamepad::A)) {
 		driveBase.SetTrim();
 	}
-	LogicSwitchButtonPrevious = logicPad.GetButton(Gamepad::A);
+	LogicSwitchButtonPrevious = powerPad.GetButton(Gamepad::A);
 }
 
 void GLaDOS::TestPeriodic() {

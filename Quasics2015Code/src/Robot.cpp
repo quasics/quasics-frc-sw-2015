@@ -95,8 +95,8 @@ void GLaDOS::TestPeriodic() {
 	driveBase.TrimTest(power);
 	power = power + .1;
 	testLoop = testLoop + 1;
-	while (testLoop >= 20){
-
+	while (testLoop >= 21){
+		driveBase.SetDrivePower (0,0);
 	}
 }
 

@@ -19,6 +19,7 @@ private:
 	Gamepad logicPad;
 	AxisCamera camera;
 	Elevator elevator;
+	Timer autoTimer;
 
 
 	bool PissPoorDriveOn;

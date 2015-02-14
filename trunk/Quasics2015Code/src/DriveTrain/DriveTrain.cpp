@@ -30,47 +30,11 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 /*Tank Drive
  * Set the power to both sides manually
  */
-//#define Dev_Mode_Off
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-#ifdef Dev_Mode_Off
-	float leftPower;
-	float rightPower;
-
-	if (AutoStatus == Disabled && trimTimer.Get() >= .1) {
-		SetTrim();
-		trimTimer.Reset();
-	}
-
-	if (fabs(leftDrivePower - rightDrivePower) <= 0.125) {
-		leftFront.Set(((leftDrivePower + rightDrivePower) / 2) * leftTrimMult);
-		leftRear.Set(((leftDrivePower + rightDrivePower) / 2) * leftTrimMult);
-		rightFront.Set(
-				((leftDrivePower + rightDrivePower) / 2) * rightTrimMult);
-		rightRear.Set(((leftDrivePower + rightDrivePower) / 2) * rightTrimMult);
-
-		leftPower = ((leftDrivePower + rightDrivePower) / 2) * leftTrimMult;
-		rightPower = ((leftDrivePower + rightDrivePower) / 2) * rightTrimMult;
-
-	} else {
-		leftFront.Set(leftDrivePower);
-		leftRear.Set(leftDrivePower);
-		rightFront.Set(rightDrivePower);
-		rightRear.Set(rightDrivePower);
-
-		leftPower = leftDrivePower;
-		rightPower = rightDrivePower;
-	}
-
-	lastLeftPowerValue = leftPower;
-	lastRightPowerValue = rightPower;
-	leftTrim.Reset();
-	rightTrim.Reset();
-#else
 	leftFront.Set(leftDrivePower);
 	leftRear.Set(leftDrivePower);
 	rightFront.Set(-rightDrivePower);
 	rightRear.Set(-rightDrivePower);
-#endif
 }
 /*FPS Drive
  * Use 2 Axes, One for Throttle and one for Yaw Control

@@ -10,14 +10,14 @@
 DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
 		int rEncoderPortB, int gyroPort) :
-		AutoStatus(Disabled), TargetDegrees(0), TargetDistanceIn(0), leftTrimMult(
-				1), rightTrimMult(1),
+		lastLeftPowerValue(0), lastRightPowerValue(0), AutoStatus(Disabled), TargetDegrees(
+				0), TargetDistanceIn(0), leftTrimMult(1), rightTrimMult(1),
 
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
 
 		leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftTrim(
-				lEncoderPortB), rightTrim(rEncoderPortB),
+				lEncoderPortA, lEncoderPortB, false), rightTrim(rEncoderPortA, rEncoderPortB, true),
 
 		gyro(gyroPort)
 
@@ -30,23 +30,47 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 /*Tank Drive
  * Set the power to both sides manually
  */
+//#define Dev_Mode_Off
 void DriveTrain::SetDrivePower(float leftDrivePower, float rightDrivePower) {
-	if (AutoStatus == Disabled && trimTimer.Get() >= 1) {
-		SetTrim ();
+#ifdef Dev_Mode_Off
+	float leftPower;
+	float rightPower;
+
+	if (AutoStatus == Disabled && trimTimer.Get() >= .1) {
+		SetTrim();
 		trimTimer.Reset();
-}
-	if (fabs(leftDrivePower - rightDrivePower) <= 0.125) {
-		leftFront.Set(((leftDrivePower+rightDrivePower)/2) * leftTrimMult);
-		leftRear.Set(((leftDrivePower+rightDrivePower)/2) * leftTrimMult);
-		rightFront.Set(((leftDrivePower+rightDrivePower)/2) * rightTrimMult);
-		rightRear.Set(((leftDrivePower+rightDrivePower)/2) * rightTrimMult);
 	}
-	else{
+
+	if (fabs(leftDrivePower - rightDrivePower) <= 0.125) {
+		leftFront.Set(((leftDrivePower + rightDrivePower) / 2) * leftTrimMult);
+		leftRear.Set(((leftDrivePower + rightDrivePower) / 2) * leftTrimMult);
+		rightFront.Set(
+				((leftDrivePower + rightDrivePower) / 2) * rightTrimMult);
+		rightRear.Set(((leftDrivePower + rightDrivePower) / 2) * rightTrimMult);
+
+		leftPower = ((leftDrivePower + rightDrivePower) / 2) * leftTrimMult;
+		rightPower = ((leftDrivePower + rightDrivePower) / 2) * rightTrimMult;
+
+	} else {
 		leftFront.Set(leftDrivePower);
 		leftRear.Set(leftDrivePower);
 		rightFront.Set(rightDrivePower);
 		rightRear.Set(rightDrivePower);
+
+		leftPower = leftDrivePower;
+		rightPower = rightDrivePower;
 	}
+
+	lastLeftPowerValue = leftPower;
+	lastRightPowerValue = rightPower;
+	leftTrim.Reset();
+	rightTrim.Reset();
+#else
+	leftFront.Set(leftDrivePower);
+	leftRear.Set(leftDrivePower);
+	rightFront.Set(rightDrivePower);
+	rightRear.Set(rightDrivePower);
+#endif
 }
 /*FPS Drive
  * Use 2 Axes, One for Throttle and one for Yaw Control
@@ -205,17 +229,74 @@ void DriveTrain::EndDriveAuto() {
 	AutoStatus = Disabled;
 	trimTimer.Start();
 }
+
+const float kMinPowerThreshold = 0.001f;
+
+ #define USE_BROKEN_TRIM_CODE
+
 void DriveTrain::SetTrim() {
-	if (leftTrim.Get() > rightTrim.Get() && leftTrim.Get() == !0) {
-		leftTrimMult = rightTrim.Get() / leftTrim.Get();
+	const int32_t leftTrimReading = leftTrim.Get();
+	const int32_t rightTrimReading = rightTrim.Get();
+//	const bool leftMovingForward = leftTrim.GetDirection();
+//	const bool rightMovingForward = rightTrim.GetDirection();
+
+//	const int32_t leftVelocity = leftTrimReading * (leftMovingForward ? +1 : -1);
+//	const int32_t rightVelocity = rightTrimReading * (rightMovingForward ? +1 : -1);
+
+#ifdef USE_BROKEN_TRIM_CODE
+	if (leftTrimReading > rightTrimReading && leftTrimReading != 0) {
+		leftTrimMult = rightTrimReading / leftTrimReading;
+		rightTrimMult = 1;
+	} else if (rightTrimReading > leftTrimReading && rightTrimReading != 0) {
+		leftTrimMult = 1;
+		rightTrimMult = leftTrimReading / rightTrimReading;
+	} else {
+		leftTrimMult = 1;
 		rightTrimMult = 1;
 	}
-	else if (rightTrim.Get() > leftTrim.Get() && rightTrim.Get() == !0){
-		leftTrimMult = 1;
-		rightTrimMult = leftTrim.Get() / rightTrim.Get();
-	}
-	else {
-		leftTrimMult = 1;
+#else
+	const bool rightStickZeroed = fabs(lastRightPowerValue)
+			> kMinPowerThreshold;
+	const bool leftStickZeroed = fabs(lastLeftPowerValue) > kMinPowerThreshold;
+
+	if (leftStickZeroed && rightStickZeroed) {
+		// No power: both joysticks at rest
+		leftTrimMult = 0;
+		rightTrimMult = 0;
+	} else if (leftStickZeroed) {
+		// Power on right, left is at rest position
+		leftTrimMult = 0;
 		rightTrimMult = 1;
+	} else if (rightStickZeroed) {
+		// Power on left, right is at rest position
+		leftTrimMult = 1;
+		rightTrimMult = 0;
+	} else {
+		// Power on both left and right: need to figure out
+		// correct ratio to allow encoders to be adjusted
+
+		// If both wheels aren't heading in the desired directions, then
+		// adjusting trim here (based on current encoder readings) probably
+		// isn't going to help any.  For example, if the stick says "left forward", and
+		// the wheel has been moving backward, then modifying based on
+		// old data doesn't make sense.
+		const bool wantLeftMovingForward = (lastLeftPowerValue > 0);
+		const bool wantRightMovingForward = (lastRightPowerValue > 0);
+
+		const bool leftWheelDirIsOK = (wantLeftMovingForward == leftMovingForward);
+		const bool rightWheelDirIsOK = (wantRightMovingForward == rightMovingForward);
+
+		if (leftWheelDirIsOK && rightWheelDirIsOK) {
+			// OK, perform/apply trim calc.
+
+		}
+		else {
+			// Don't bother with trim: we're changing directions now, and
+			// will deal with trim next time.  Just use the raw values
+			// for now.
+			leftTrimMult = rightTrimMult = 1;
+		}
+
 	}
+#endif
 }

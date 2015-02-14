@@ -12,6 +12,9 @@
 
 class DriveTrain {
 public:
+	float lastLeftPowerValue;
+	float lastRightPowerValue;
+
 	//Constructor
 	DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 			int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
@@ -30,6 +33,7 @@ public:
 	enum autoStatus {
 		Ready, Driving, Turning, Disabled
 	};
+
 
 	//Functions
 	//Teleop Power Setting
@@ -56,6 +60,10 @@ public:
 
 private:
 
+	enum direction {
+		TurningLeft, TurningRight, Forward
+	};
+
 	const float InPerTick = 0.0524;
 
 	autoStatus AutoStatus;
@@ -76,8 +84,8 @@ private:
 	//Sensors
 	Counter leftDist;
 	Counter rightDist;
-	Counter leftTrim;
-	Counter rightTrim;
+	Encoder leftTrim;
+	Encoder rightTrim;
 	Gyro gyro;
 };
 

@@ -57,6 +57,7 @@ public:
 	bool AutoDriving();
 	void EndDriveAuto();
 	void SetTrim();
+	void SmoothStick (float leftIn, float rightIn, float& leftOut, float& rightOut);
 
 private:
 
@@ -82,8 +83,8 @@ private:
 	Talon rightRear;
 
 	//Sensors
-	Counter leftDist;
-	Counter rightDist;
+//	Counter leftDist;
+//	Counter rightDist;
 	Encoder leftTrim;
 	Encoder rightTrim;
 	Gyro gyro;

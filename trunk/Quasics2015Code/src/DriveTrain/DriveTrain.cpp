@@ -16,8 +16,9 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		leftFront(fLPort), leftRear(rLPort), rightFront(fRPort), rightRear(
 				rRPort),
 
-		leftDist(lEncoderPortA), rightDist(rEncoderPortA), leftTrim(
-				lEncoderPortA, lEncoderPortB, false), rightTrim(rEncoderPortA, rEncoderPortB, true),
+		/*leftTrim(lEncoderPortA), rightTrim(rEncoderPortA),*/leftTrim(
+				lEncoderPortA, lEncoderPortB, false), rightTrim(rEncoderPortA,
+				rEncoderPortB, true),
 
 		gyro(gyroPort)
 
@@ -56,8 +57,8 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 
 //Auto mode Power Setting
 void DriveTrain::AutoDriveStart(float distanceIn) {
-	leftDist.Reset();
-	rightDist.Reset();
+	leftTrim.Reset();
+	rightTrim.Reset();
 	TargetDistanceIn = distanceIn;
 	AutoStatus = Driving;
 }
@@ -71,29 +72,29 @@ void DriveTrain::AutoProcess() {
 	float rightPower = 0;
 	switch (AutoStatus) {
 	case Driving:
-		if (leftDist.Get() * InPerTick >= TargetDistanceIn) {
+		if (leftTrim.Get() * InPerTick >= TargetDistanceIn) {
 			leftPower = 0;
-		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
-				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
+		} else if (leftTrim.Get() * InPerTick > TargetDistanceIn - .5
+				&& leftTrim.Get() * InPerTick < TargetDistanceIn) {
 			leftPower = .25;
 		} else {
 			leftPower = .75;
 		}
 
-		if (rightDist.Get() * InPerTick >= TargetDistanceIn) {
+		if (rightTrim.Get() * InPerTick >= TargetDistanceIn) {
 			rightPower = 0;
-		} else if (leftDist.Get() * InPerTick > TargetDistanceIn - .5
-				&& leftDist.Get() * InPerTick < TargetDistanceIn) {
+		} else if (leftTrim.Get() * InPerTick > TargetDistanceIn - .5
+				&& leftTrim.Get() * InPerTick < TargetDistanceIn) {
 			rightPower = .25;
 		} else {
 			rightPower = .75;
 		}
 
-		if (rightDist.Get() * InPerTick >= TargetDistanceIn
-				&& leftDist.Get() * InPerTick >= TargetDistanceIn) {
+		if (rightTrim.Get() * InPerTick >= TargetDistanceIn
+				&& leftTrim.Get() * InPerTick >= TargetDistanceIn) {
 			TargetDistanceIn = 0;
-			leftDist.Reset();
-			rightDist.Reset();
+			leftTrim.Reset();
+			rightTrim.Reset();
 			AutoStatus = Ready;
 		}
 		break;
@@ -142,10 +143,10 @@ void DriveTrain::AutoProcess() {
 void DriveTrain::ResetSensor(driveSensor whichSensor) {
 	switch (whichSensor) {
 	case LeftEncoder:
-		leftDist.Reset();
+		leftTrim.Reset();
 		break;
 	case RightEncoder:
-		rightDist.Reset();
+		rightTrim.Reset();
 		break;
 	case Gyroscope:
 		gyro.Reset();
@@ -155,9 +156,9 @@ void DriveTrain::ResetSensor(driveSensor whichSensor) {
 float DriveTrain::GetSensorValue(driveSensor whichSensor) {
 	switch (whichSensor) {
 	case LeftEncoder:
-		return leftDist.Get();
+		return leftTrim.Get();
 	case RightEncoder:
-		return rightDist.Get();
+		return rightTrim.Get();
 	case Gyroscope:
 		return gyro.GetAngle();
 	default:
@@ -168,10 +169,10 @@ float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
 	return 0; //leave for end
 }
 float DriveTrain::GetLeftDistanceIn() {
-	return (leftDist.Get() * InPerTick);
+	return (leftTrim.Get() * InPerTick);
 }
 float DriveTrain::GetRightDistanceIn() {
-	return (rightDist.Get() * InPerTick);
+	return (rightTrim.Get() * InPerTick);
 }
 
 //Misc
@@ -196,7 +197,7 @@ void DriveTrain::EndDriveAuto() {
 
 const float kMinPowerThreshold = 0.001f;
 
- #define USE_BROKEN_TRIM_CODE
+#define USE_BROKEN_TRIM_CODE
 
 void DriveTrain::SetTrim() {
 	const int32_t leftTrimReading = leftTrim.Get();
@@ -220,7 +221,7 @@ void DriveTrain::SetTrim() {
 	}
 #else
 	const bool rightStickZeroed = fabs(lastRightPowerValue)
-			> kMinPowerThreshold;
+	> kMinPowerThreshold;
 	const bool leftStickZeroed = fabs(lastLeftPowerValue) > kMinPowerThreshold;
 
 	if (leftStickZeroed && rightStickZeroed) {
@@ -263,4 +264,140 @@ void DriveTrain::SetTrim() {
 
 	}
 #endif
+}
+void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
+		float& rightOut) {
+	int leftConverted = int(leftIn * 10 + .5);
+	int rightConverted = int(rightIn * 10 + .5);
+
+	switch (leftConverted) {
+	case (-10):
+		leftOut = leftIn * 1;
+		break;
+	case (-9):
+		leftOut = leftIn * .99;
+		break;
+	case (-8):
+		leftOut = leftIn * .97;
+		break;
+	case (-7):
+		leftOut = leftIn * .96;
+		break;
+	case (-6):
+		leftOut = leftIn * .94;
+		break;
+	case (-5):
+		leftOut = leftIn * .93;
+		break;
+	case (-4):
+		leftOut = leftIn * .89;
+		break;
+	case (-3):
+		leftOut = leftIn * .83;
+		break;
+	case (-2):
+		leftOut = leftIn * .7;
+		break;
+	case (-1):
+		leftOut =0;
+		break;
+	case (0):
+		leftOut =0;
+		break;
+	case (1):
+		leftOut =0;
+		break;
+	case (2):
+		leftOut = leftIn * 1;
+		break;
+	case (3):
+		leftOut = leftIn * 1;
+		break;
+	case (4):
+		leftOut = leftIn * 1;
+		break;
+	case (5):
+		leftOut = leftIn * 1;
+		break;
+	case (6):
+		leftOut = leftIn * 1;
+		break;
+	case (7):
+		leftOut = leftIn * 1;
+		break;
+	case (8):
+		leftOut = leftIn * 1;
+		break;
+	case (9):
+		leftOut = leftIn * 1;
+		break;
+	case (10):
+		leftOut = leftIn * 1;
+		break;
+	}
+	switch (rightConverted) {
+	case (-10):
+		rightOut = rightIn * .97;
+		break;
+	case (-9):
+		rightOut = rightIn * 1;
+		break;
+	case (-8):
+		rightOut = rightIn * 1;
+		break;
+	case (-7):
+		rightOut = rightIn * 1;
+		break;
+	case (-6):
+		rightOut = rightIn * 1;
+		break;
+	case (-5):
+		rightOut = rightIn * 1;
+		break;
+	case (-4):
+		rightOut = rightIn * 1;
+		break;
+	case (-3):
+		rightOut = rightIn * 1;
+		break;
+	case (-2):
+		rightOut = rightIn * 1;
+		break;
+	case (-1):
+		rightOut =0;
+		break;
+	case (0):
+		rightOut =0;
+		break;
+	case (1):
+		rightOut =0;
+		break;
+	case (2):
+		rightOut = rightIn * .96;
+		break;
+	case (3):
+		rightOut = rightIn * .93;
+		break;
+	case (4):
+		rightOut = rightIn * .94;
+		break;
+	case (5):
+		rightOut = rightIn * .93;
+		break;
+	case (6):
+		rightOut = rightIn * .93;
+		break;
+	case (7):
+		rightOut = rightIn * .92;
+		break;
+	case (8):
+		rightOut = rightIn * .91;
+		break;
+	case (9):
+		rightOut = rightIn * .92;
+		break;
+	case (10):
+		rightOut = rightIn * .96;
+		break;
+	}
 }

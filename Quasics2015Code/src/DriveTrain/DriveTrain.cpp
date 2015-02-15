@@ -194,17 +194,47 @@ void DriveTrain::EndDriveAuto() {
 	AutoStatus = Disabled;
 	trimTimer.Start();
 }
+/*
+struct DriveTableDatum {
+	float leftMultiplier;
+	float rightMultiplier;
+};
+
+const DriveTableDatum driveData[] = {
+	{ 1, .97 },
+	{ .99, 1 },
+	{ .96, 1 },
+	{ 1, .96 },
+	// More values go here....
+	{ 1, .96 }
+};
+const int sizeOfDriveDataTable = sizeof(driveData)/sizeof(driveData[0]);
+
+void TranslateValues(float leftIn, float rightIn, float& leftOut, float& rightOut) {
+	const int leftConverted = int(leftIn * 20 + .5);
+	const int rightConverted = int(rightIn * 20 + .5);
+
+	const int leftIndex = leftConverted + 20;
+	const int rightIndex = rightConverted + 20;
+
+	const float leftMultiplier = driveData[leftIndex].leftMultiplier;
+	const float rightMultiplier = driveData[rightIndex].rightMultiplier;
+
+	leftOut = leftMultiplier * leftIn;
+	rightOut = rightMultiplier * rightIn;
+}
+*/
 
 void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		float& rightOut) {
-	int leftConverted = int(leftIn * 10 + .5);
-	int rightConverted = int(rightIn * 10 + .5);
+	int leftConverted = int(leftIn * 20 + .5);
+	int rightConverted = int(rightIn * 20 + .5);
 
 	switch (leftConverted) {
-	case (-10):
+	case (-20):
 		leftOut = leftIn * 1;
 		break;
-	case (-9):
+	case (-18):
 		leftOut = leftIn * .99;
 		break;
 	case (-8):
@@ -337,16 +367,4 @@ void DriveTrain::TrimTest(float power){
 	SetDrivePower (power, power);
 	Wait (1);
 	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n",power ,leftTrim.Get(), rightTrim.Get());
-	if (leftTrim.Get() == 0 || rightTrim.Get() == 0){
-		printf (" Left Multiplier: 0 \n Right Multiplier: 0 \n \n");
-	}
-	else if (leftTrim.Get() / rightTrim.Get() > rightTrim.Get() / leftTrim.Get()){
-		printf (" Left Multiplier: %f \n Right Multiplier: 1 \n \n", float(rightTrim.Get() / leftTrim.Get()));
-	}
-	else if (leftTrim.Get() / rightTrim.Get() < rightTrim.Get() / leftTrim.Get()){
-		printf(" Left Multiplier: 1 \n Right Multiplier: %f \n \n", float(leftTrim.Get() / rightTrim.Get()));
-	}
-	else if (leftTrim.Get() / rightTrim.Get() == 1 && rightTrim.Get() / leftTrim.Get() == 1){
-		printf(" Left Multiplier: 1 \n Right Multiplier: 1 \n \n");
-	}
 }

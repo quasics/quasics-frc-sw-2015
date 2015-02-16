@@ -235,7 +235,8 @@ const int sizeOfJoystickToPowerMultipliersTable =
 void TranslateValues(float leftIn, float rightIn,
                      float& leftOut, float& rightOut) {
   const int indexOffset = 
-      sizeOfJoystickToPowerMultipliersTable / 2;  // e.g., 41 / 2 ==> 20
+      sizeOfJoystickToPowerMultipliersTable / 2;  // e.g., 41 / 2 ==> 20, 
+                                                  // since they are integers
 
 	const int leftConverted = int(leftIn * indexOffset + .5);
 	const int rightConverted = int(rightIn * indexOffset + .5);

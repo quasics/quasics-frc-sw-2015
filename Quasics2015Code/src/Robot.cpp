@@ -72,8 +72,8 @@ void GLaDOS::TeleopPeriodic() {
 	float leftPower;
 	float rightPower;
 
-	driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY), logicPad.GetAxis(Gamepad::RightStickY), leftPower, rightPower);
-	driveBase.SetDrivePower(leftPower, rightPower);
+	driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY)* .25, logicPad.GetAxis(Gamepad::RightStickY)* .25, leftPower, rightPower);
+	driveBase.SetDrivePower(leftPower , rightPower );
 
 	if ((powerPad.GetButton(Gamepad::LeftShoulder)
 			|| powerPad.GetButton(Gamepad::RightShoulder))

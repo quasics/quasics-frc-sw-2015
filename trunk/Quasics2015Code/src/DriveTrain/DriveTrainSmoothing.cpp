@@ -12,12 +12,48 @@ struct MultiplierDataType {
 // Interval of data table
 const float joystickStep = 0.05;
 // Power Multiplier table. IMPORTANT: Keep scale consistent and update joysticStep as well
-const MultiplierDataType multiplierData[] = { { 1, .97 }, // for joystick readings of -1.00
-		{ .99, 1 },   // for joystick readings of -0.95
-		{ .96, 1 },   // for joystick readings of -0.90
-		{ 1, .96 },   // for joystick readings of -0.85
-		// More values go here....
-		{ 1, .96 }    // for joystick readings of +1.00
+const MultiplierDataType multiplierData[] = {
+		{ 1 , .97 },		//-1.00
+		{ .91 , 1 },		//-0.95
+		{ .99 , 1 },		//-0.90
+		{ .90 , 1 },		//-0.85
+		{ .97 , 1 },		//-0.80
+		{ .91 , 1 },		//-0.75
+		{ .96 , 1 },		//-0.70
+		{ .90 , 1 },		//-0.65
+		{ .94 , 1 },		//-0.60
+		{ .88 , 1 },		//-0.55
+		{ .93 , 1 },		//-0.50
+		{ .85 , 1 },		//-0.45
+		{ .89 , 1 },		//-0.40
+		{ .80 , 1 },		//-0.35
+		{ .83 , 1 },		//-0.30
+		{ .70 , 1 },		//-0.25
+		{ .71 , 1 },		//-0.20
+		{ .43 , 1 },		//-0.15
+		{ 0 , 0 },			//-0.10
+		{ 0 , 0 },			//-0.05
+		{ 0 , 0 },			//+0.00
+		{ 0 , 0 },			//+0.05
+		{ 0 , 0 },			//+0.10
+		{ .90 , 1 },		//+0.15
+		{ 1 , .96 },		//+0.20
+		{ 1 , .95 },		//+0.25
+		{ 1 , .93 },		//+0.30
+		{ 1 , .99 },		//+0.35
+		{ 1 , .94 },		//+0.40
+		{ 1 , .99 },		//+0.45
+		{ 1 , .93 },		//+0.50
+		{ 1 , .98 },		//+0.55
+		{ 1 , .93 },		//+0.60
+		{ 1 , .97 },		//+0.65
+		{ 1 , .92 },		//+0.70
+		{ 1 , .96 },		//+0.75
+		{ 1 , .91 },		//+0.80
+		{ 1 , .96 },		//+0.85
+		{ 1 , .92 },		//+0.90
+		{ 1 , .96 },		//+0.95
+		{ 1 , .96 }			//+1.00
 };
 //Number of entries in multiplierData (Total Bytes / Bytes Per Entry)
 const int sizeOfMultiplierDataTable = sizeof(multiplierData)

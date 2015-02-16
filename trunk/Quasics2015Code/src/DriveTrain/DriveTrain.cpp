@@ -232,8 +232,10 @@ const int sizeOfJoystickToPowerMultipliersTable =
 /// the joystick, rather than "jumping" from one point to another.  (See
 /// https://en.wikipedia.org/wiki/Linear_interpolation for a discussion of
 /// linear interpolation, including the formula and how to use it.)
-void TranslateValues(float leftIn, float rightIn, float& leftOut, float& rightOut) {
-  const int indexOffset = joystickToPowerMultipliers / 2;  // e.g., 41 / 2 ==> 20
+void TranslateValues(float leftIn, float rightIn,
+                     float& leftOut, float& rightOut) {
+  const int indexOffset = 
+      sizeOfJoystickToPowerMultipliersTable / 2;  // e.g., 41 / 2 ==> 20
 
 	const int leftConverted = int(leftIn * indexOffset + .5);
 	const int rightConverted = int(rightIn * indexOffset + .5);

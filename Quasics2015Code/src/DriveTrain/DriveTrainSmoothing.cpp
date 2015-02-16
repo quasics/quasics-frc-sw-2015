@@ -14,10 +14,10 @@ struct JoystickToPowerMultipliers {
 const float joystickStep = 0.5;
 
 /// Table of "power multipliers" for use by the TranslateValues() function.
-/// The values are spaced out by "joystickStep" increments on the joystick readings, so
-/// that the first represents the multipliers to be used for joystick readings
-/// of -1.00, the second for readings of -0.95, etc., on up to readings of
-/// +1.00.
+/// The values are spaced out by "joystickStep" increments on the joystick
+/// readings, so that if they are spaced by 0.05, then the first entry
+/// represents the multipliers to be used for joystick reading of -1.00, the
+/// second for readings of -0.95, etc., on up to readings for +1.00.
 const JoystickToPowerMultipliers joystickToPowerMultipliers[] = {
   { 1, .97 },   // for joystick readings of -1.00
   { .99, 1 },   // for joystick readings of -0.95
@@ -31,9 +31,9 @@ const int sizeOfJoystickToPowerMultipliersTable =
     sizeof(joystickToPowerMultipliers) / sizeof(joystickToPowerMultipliers[0]);
 
 float LinearInterpolation(
-                          float x0, float y0,   // first point on curve (x is input, y is result)
-                          float x1, float y1,   // second point on curve (ditto)
-                          float x)              // input being evaluated for the function
+    float x0, float y0,   // first point on curve (x is input, y is result)
+    float x1, float y1,   // second point on curve (ditto)
+    float x)              // input being evaluated for the function
 {
   if ( x1 == x0 ) {
     // This would be bad: either a single point is being used, or else we

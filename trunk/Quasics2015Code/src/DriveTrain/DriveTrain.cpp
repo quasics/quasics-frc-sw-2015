@@ -53,7 +53,10 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	} else {
 		leftScale = 2 * sideScale + 1;
 	}
-	SetDrivePower(throttlePower * leftScale, throttlePower * rightScale);
+	float leftPower;
+	float rightPower;
+	SmoothStick (throttlePower * leftScale, throttlePower * rightScale, leftPower, rightPower);
+	SetDrivePower(leftPower, rightPower);
 }
 
 //Auto mode Power Setting

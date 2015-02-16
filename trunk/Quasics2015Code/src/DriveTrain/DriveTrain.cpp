@@ -6,6 +6,7 @@
  */
 
 #include "DriveTrain.h"
+#include "DriveTrainSmoothing.h"
 
 DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
@@ -194,66 +195,13 @@ void DriveTrain::EndDriveAuto() {
 	AutoStatus = Disabled;
 	trimTimer.Start();
 }
-/*
-/// "Power multipliers", used to convert a pair of values used to convert a
-/// joystick reading into the (desired) output power setting for the
-/// corresponding motor.
-struct JoystickToPowerMultipliers {
-	float leftMultiplier;
-	float rightMultiplier;
-};
-
-/// Table of "power multipliers" for use by the TranslateValues() function.
-/// The values are spaced out by 0.05 increments on the joystick readings, so
-/// that the first represents the multipliers to be used for joystick readings
-/// of -1.00, the second for readings of -0.95, etc., on up to readings of
-/// +1.00.
-const JoystickToPowerMultipliers joystickToPowerMultipliers[] = {
-	{ 1, .97 },   // for joystick readings of -1.00
-	{ .99, 1 },   // for joystick readings of -0.95
-	{ .96, 1 },   // for joystick readings of -0.90
-	{ 1, .96 },   // for joystick readings of -0.85
-
-	// More values go here....
-
-	{ 1, .97 },   // for joystick readings of +0.95
-	{ 1, .96 }    // for joystick readings of +1.00
-};
-const int sizeOfJoystickToPowerMultipliersTable =
-   sizeof(joystickToPowerMultipliers) / sizeof(joystickToPowerMultipliers[0]);
-
-/// Note that this funtion assumes that joystick readings go from -1 to +1, and
-/// that the corresponding entries in the table will be spaced at intervals
-/// of 0.05 (so that there are 41 readings in the table).
-///
-/// This function could be improved to perform linear interpolation to compute
-/// approximate values for joystick readings between points used for the
-/// table, so that the drive responds in a more analog fashion to changes on
-/// the joystick, rather than "jumping" from one point to another.  (See
-/// https://en.wikipedia.org/wiki/Linear_interpolation for a discussion of
-/// linear interpolation, including the formula and how to use it.)
-void TranslateValues(float leftIn, float rightIn,
-                     float& leftOut, float& rightOut) {
-  const int indexOffset = 
-      sizeOfJoystickToPowerMultipliersTable / 2;  // e.g., 41 / 2 ==> 20, 
-                                                  // since they are integers
-
-	const int leftConverted = int(leftIn * indexOffset + .5);
-	const int rightConverted = int(rightIn * indexOffset + .5);
-
-	const int leftIndex = leftConverted + indexOffset;
-	const int rightIndex = rightConverted + indexOffset;
-
-	const float leftMultiplier = driveData[leftIndex].leftMultiplier;
-	const float rightMultiplier = driveData[rightIndex].rightMultiplier;
-
-	leftOut = leftMultiplier * leftIn;
-	rightOut = rightMultiplier * rightIn;
-}
-*/
 
 void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		float& rightOut) {
+  TrimJoystickValuesToPowerWithLinearScaling(leftIn, rightIn, leftOut, rightOut);
+/*
+  // Original code:
+ 
 	int leftConverted = int(leftIn * 20 + .5);
 	int rightConverted = int(rightIn * 20 + .5);
 
@@ -387,6 +335,7 @@ void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		rightOut = rightIn * .96;
 		break;
 	}
+ */
 }
 void DriveTrain::TrimTest(float power){
 	leftTrim.Reset();

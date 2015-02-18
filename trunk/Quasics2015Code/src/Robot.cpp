@@ -8,6 +8,7 @@ GLaDOS::GLaDOS() :
 				ElevatorMotorPort), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
 				false), PS4SwitchButtonPrevious(false) {
 
+
 }
 
 float power;

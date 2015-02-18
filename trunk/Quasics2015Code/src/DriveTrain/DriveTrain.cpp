@@ -24,7 +24,8 @@ DriveTrain::DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 		gyro(gyroPort)
 
 {
-
+	leftTrim.SetDistancePerPulse(InPerTick);
+	rightTrim.SetDistancePerPulse(InPerTick);
 }
 
 //Functions
@@ -55,7 +56,8 @@ void DriveTrain::FPSDrive(float throttlePower, float sideScale) {
 	}
 	float leftPower;
 	float rightPower;
-	SmoothStick (throttlePower * leftScale, throttlePower * rightScale, leftPower, rightPower);
+	SmoothStick(throttlePower * leftScale, throttlePower * rightScale,
+			leftPower, rightPower);
 	SetDrivePower(leftPower, rightPower);
 }
 
@@ -76,26 +78,26 @@ void DriveTrain::AutoProcess() {
 	float rightPower = 0;
 	switch (AutoStatus) {
 	case Driving:
-		if (leftTrim.Get() * InPerTick >= TargetDistanceIn) {
+		if (GetLeftDistanceIn() >= TargetDistanceIn) {
 			leftPower = 0;
-		} else if (leftTrim.Get() * InPerTick > TargetDistanceIn - .5
-				&& leftTrim.Get() * InPerTick < TargetDistanceIn) {
+		} else if (GetLeftDistanceIn() > TargetDistanceIn
+				&& GetLeftDistanceIn() * InPerTick < TargetDistanceIn) {
 			leftPower = .25;
 		} else {
 			leftPower = .75;
 		}
 
-		if (rightTrim.Get() * InPerTick >= TargetDistanceIn) {
+		if (GetRightDistanceIn() * InPerTick >= TargetDistanceIn) {
 			rightPower = 0;
-		} else if (leftTrim.Get() * InPerTick > TargetDistanceIn - .5
-				&& leftTrim.Get() * InPerTick < TargetDistanceIn) {
+		} else if (GetRightDistanceIn() * InPerTick > TargetDistanceIn
+				&& GetRightDistanceIn() * InPerTick < TargetDistanceIn) {
 			rightPower = .25;
 		} else {
 			rightPower = .75;
 		}
 
-		if (rightTrim.Get() * InPerTick >= TargetDistanceIn
-				&& leftTrim.Get() * InPerTick >= TargetDistanceIn) {
+		if (GetRightDistanceIn() >= TargetDistanceIn
+				&& GetLeftDistanceIn() * InPerTick >= TargetDistanceIn) {
 			TargetDistanceIn = 0;
 			leftTrim.Reset();
 			rightTrim.Reset();
@@ -142,6 +144,7 @@ void DriveTrain::AutoProcess() {
 	}
 	SmoothStick(leftPower, rightPower, leftPower, rightPower);
 	SetDrivePower(leftPower, rightPower);
+
 }
 
 //Sensors
@@ -171,13 +174,13 @@ float DriveTrain::GetSensorValue(driveSensor whichSensor) {
 	}
 }
 float DriveTrain::GetSpeed(driveSide whichSide, speedUnit whichSpeed) {
-	return 0; //leave for end
+	return (leftTrim.GetRate() + rightTrim.GetRate()) / 2; //leave for end
 }
 float DriveTrain::GetLeftDistanceIn() {
-	return (leftTrim.Get() * InPerTick);
+	return leftTrim.GetDistance();
 }
 float DriveTrain::GetRightDistanceIn() {
-	return (rightTrim.Get() * InPerTick);
+	return rightTrim.GetDistance();
 }
 
 //Misc
@@ -202,149 +205,151 @@ void DriveTrain::EndDriveAuto() {
 
 void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		float& rightOut) {
-  TrimJoystickValuesToPowerWithLinearScaling(leftIn, rightIn, leftOut, rightOut);
-/*
-  // Original code:
- 
-	int leftConverted = int(leftIn * 20 + .5);
-	int rightConverted = int(rightIn * 20 + .5);
+	TrimJoystickValuesToPowerWithLinearScaling(leftIn, rightIn, leftOut,
+			rightOut);
+	/*
+	 // Original code:
 
-	switch (leftConverted) {
-	case (-20):
-		leftOut = leftIn * 1;
-		break;
-	case (-18):
-		leftOut = leftIn * .99;
-		break;
-	case (-8):
-		leftOut = leftIn * .97;
-		break;
-	case (-7):
-		leftOut = leftIn * .96;
-		break;
-	case (-6):
-		leftOut = leftIn * .94;
-		break;
-	case (-5):
-		leftOut = leftIn * .93;
-		break;
-	case (-4):
-		leftOut = leftIn * .89;
-		break;
-	case (-3):
-		leftOut = leftIn * .83;
-		break;
-	case (-2):
-		leftOut = leftIn * .7;
-		break;
-	case (-1):
-		leftOut =0;
-		break;
-	case (0):
-		leftOut =0;
-		break;
-	case (1):
-		leftOut =0;
-		break;
-	case (2):
-		leftOut = leftIn * 1;
-		break;
-	case (3):
-		leftOut = leftIn * 1;
-		break;
-	case (4):
-		leftOut = leftIn * 1;
-		break;
-	case (5):
-		leftOut = leftIn * 1;
-		break;
-	case (6):
-		leftOut = leftIn * 1;
-		break;
-	case (7):
-		leftOut = leftIn * 1;
-		break;
-	case (8):
-		leftOut = leftIn * 1;
-		break;
-	case (9):
-		leftOut = leftIn * 1;
-		break;
-	case (10):
-		leftOut = leftIn * 1;
-		break;
-	}
-	switch (rightConverted) {
-	case (-10):
-		rightOut = rightIn * .97;
-		break;
-	case (-9):
-		rightOut = rightIn * 1;
-		break;
-	case (-8):
-		rightOut = rightIn * 1;
-		break;
-	case (-7):
-		rightOut = rightIn * 1;
-		break;
-	case (-6):
-		rightOut = rightIn * 1;
-		break;
-	case (-5):
-		rightOut = rightIn * 1;
-		break;
-	case (-4):
-		rightOut = rightIn * 1;
-		break;
-	case (-3):
-		rightOut = rightIn * 1;
-		break;
-	case (-2):
-		rightOut = rightIn * 1;
-		break;
-	case (-1):
-		rightOut =0;
-		break;
-	case (0):
-		rightOut =0;
-		break;
-	case (1):
-		rightOut =0;
-		break;
-	case (2):
-		rightOut = rightIn * .96;
-		break;
-	case (3):
-		rightOut = rightIn * .93;
-		break;
-	case (4):
-		rightOut = rightIn * .94;
-		break;
-	case (5):
-		rightOut = rightIn * .93;
-		break;
-	case (6):
-		rightOut = rightIn * .93;
-		break;
-	case (7):
-		rightOut = rightIn * .92;
-		break;
-	case (8):
-		rightOut = rightIn * .91;
-		break;
-	case (9):
-		rightOut = rightIn * .92;
-		break;
-	case (10):
-		rightOut = rightIn * .96;
-		break;
-	}
- */
+	 int leftConverted = int(leftIn * 20 + .5);
+	 int rightConverted = int(rightIn * 20 + .5);
+
+	 switch (leftConverted) {
+	 case (-20):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (-18):
+	 leftOut = leftIn * .99;
+	 break;
+	 case (-8):
+	 leftOut = leftIn * .97;
+	 break;
+	 case (-7):
+	 leftOut = leftIn * .96;
+	 break;
+	 case (-6):
+	 leftOut = leftIn * .94;
+	 break;
+	 case (-5):
+	 leftOut = leftIn * .93;
+	 break;
+	 case (-4):
+	 leftOut = leftIn * .89;
+	 break;
+	 case (-3):
+	 leftOut = leftIn * .83;
+	 break;
+	 case (-2):
+	 leftOut = leftIn * .7;
+	 break;
+	 case (-1):
+	 leftOut =0;
+	 break;
+	 case (0):
+	 leftOut =0;
+	 break;
+	 case (1):
+	 leftOut =0;
+	 break;
+	 case (2):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (3):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (4):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (5):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (6):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (7):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (8):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (9):
+	 leftOut = leftIn * 1;
+	 break;
+	 case (10):
+	 leftOut = leftIn * 1;
+	 break;
+	 }
+	 switch (rightConverted) {
+	 case (-10):
+	 rightOut = rightIn * .97;
+	 break;
+	 case (-9):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-8):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-7):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-6):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-5):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-4):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-3):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-2):
+	 rightOut = rightIn * 1;
+	 break;
+	 case (-1):
+	 rightOut =0;
+	 break;
+	 case (0):
+	 rightOut =0;
+	 break;
+	 case (1):
+	 rightOut =0;
+	 break;
+	 case (2):
+	 rightOut = rightIn * .96;
+	 break;
+	 case (3):
+	 rightOut = rightIn * .93;
+	 break;
+	 case (4):
+	 rightOut = rightIn * .94;
+	 break;
+	 case (5):
+	 rightOut = rightIn * .93;
+	 break;
+	 case (6):
+	 rightOut = rightIn * .93;
+	 break;
+	 case (7):
+	 rightOut = rightIn * .92;
+	 break;
+	 case (8):
+	 rightOut = rightIn * .91;
+	 break;
+	 case (9):
+	 rightOut = rightIn * .92;
+	 break;
+	 case (10):
+	 rightOut = rightIn * .96;
+	 break;
+	 }
+	 */
 }
-void DriveTrain::TrimTest(float power){
+void DriveTrain::TrimTest(float power) {
 	leftTrim.Reset();
 	rightTrim.Reset();
-	SetDrivePower (power, power);
-	Wait (1);
-	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n",power ,leftTrim.Get(), rightTrim.Get());
+	SetDrivePower(power, power);
+	Wait(1);
+	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n", power,
+			leftTrim.Get(), rightTrim.Get());
 }

@@ -140,6 +140,7 @@ void DriveTrain::AutoProcess() {
 		break;
 
 	}
+	SmoothStick(leftPower, rightPower, leftPower, rightPower);
 	SetDrivePower(leftPower, rightPower);
 }
 

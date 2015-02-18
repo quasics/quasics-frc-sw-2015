@@ -54,13 +54,11 @@ void GLaDOS::RobotInit() {
 
 void GLaDOS::AutonomousInit() {
 	printf("GLaDOS Alerts: Initiating Autonomous Mode\n");
+	driveBase.AutoDriveStart(24);
 }
 
 void GLaDOS::AutonomousPeriodic() {
-	driveBase.SetDrivePower(.7, .7 * 0.92);
-	Wait (2);
-	driveBase.SetDrivePower(0, 0);
-	Wait (13);
+	driveBase.AutoProcess();
 }
 
 void GLaDOS::TeleopInit() {

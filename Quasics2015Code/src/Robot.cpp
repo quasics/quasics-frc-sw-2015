@@ -55,7 +55,7 @@ void GLaDOS::RobotInit() {
 
 void GLaDOS::AutonomousInit() {
 	printf("GLaDOS Alerts: Initiating Autonomous Mode\n");
-	driveBase.AutoDriveStart(24);
+	driveBase.AutoDriveStart(144);
 }
 
 void GLaDOS::AutonomousPeriodic() {

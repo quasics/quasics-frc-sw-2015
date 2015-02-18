@@ -87,10 +87,10 @@ void DriveTrain::AutoProcess() {
 			leftPower = .75;
 		}
 
-		if (GetRightDistanceIn() * InPerTick >= TargetDistanceIn) {
+		if (GetRightDistanceIn() >= TargetDistanceIn) {
 			rightPower = 0;
-		} else if (GetRightDistanceIn() * InPerTick > TargetDistanceIn
-				&& GetRightDistanceIn() * InPerTick < TargetDistanceIn) {
+		} else if (GetRightDistanceIn()  > TargetDistanceIn
+				&& GetRightDistanceIn()  < TargetDistanceIn) {
 			rightPower = .25;
 		} else {
 			rightPower = .75;

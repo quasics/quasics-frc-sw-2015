@@ -12,9 +12,6 @@
 
 class DriveTrain {
 public:
-	float lastLeftPowerValue;
-	float lastRightPowerValue;
-
 	//Constructor
 	DriveTrain(int fLPort, int fRPort, int rLPort, int rRPort,
 			int lEncoderPortA, int lEncoderPortB, int rEncoderPortA,
@@ -67,6 +64,9 @@ private:
 
 	const float InPerTick = 0.0524;
 
+  float lastLeftPowerValue;
+  float lastRightPowerValue;
+  
 	autoStatus AutoStatus;
 	float TargetDegrees;
 	float TargetDistanceIn;

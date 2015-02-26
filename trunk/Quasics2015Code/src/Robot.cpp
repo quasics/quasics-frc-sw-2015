@@ -8,7 +8,6 @@ GLaDOS::GLaDOS() :
 				ElevatorMotorPort), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
 				false), PS4SwitchButtonPrevious(false) {
 
-
 }
 
 float power;
@@ -67,12 +66,35 @@ void GLaDOS::TeleopInit() {
 	driveBase.EndDriveAuto();
 }
 
+//#define USE_TOGGLING_POWER
+
 void GLaDOS::TeleopPeriodic() {
 	float leftPower;
 	float rightPower;
-
-	driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY)* .25, logicPad.GetAxis(Gamepad::RightStickY)* .25, leftPower, rightPower);
-	driveBase.SetDrivePower(leftPower , rightPower );
+	driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .5,
+			logicPad.GetAxis(Gamepad::RightStickY) * .5, leftPower, rightPower);
+#ifdef USE_TOGGLING_POWER
+	if ((logicPad.GetButton(Gamepad::LeftShoulder)
+			|| logicPad.GetButton(Gamepad::RightShoulder))
+			&& (logicPad.GetButton(Gamepad::LeftTrigger)
+					|| logicPad.GetButton(Gamepad::RightTrigger))) {
+		driveBase.SetDrivePower(leftPower * normalMult,
+				rightPower * normalMult);
+	} else if (logicPad.GetButton(Gamepad::LeftShoulder)
+			|| logicPad.GetButton(Gamepad::RightShoulder)) {
+		driveBase.SetDrivePower(leftPower * slowMult,
+				rightPower * slowMult);
+	} else if (logicPad.GetButton(Gamepad::LeftTrigger)
+			|| logicPad.GetButton(Gamepad::RightTrigger)) {
+		driveBase.SetDrivePower(leftPower * fastMult,
+				rightPower * fastMult);
+	} else {
+		driveBase.SetDrivePower(leftPower * normalMult,
+				rightPower * normalMult);
+	}
+#else
+	driveBase.SetDrivePower(leftPower * normalMult, rightPower * normalMult);
+#endif
 
 	if ((powerPad.GetButton(Gamepad::LeftShoulder)
 			|| powerPad.GetButton(Gamepad::RightShoulder))
@@ -94,8 +116,8 @@ void GLaDOS::TestPeriodic() {
 	driveBase.TrimTest(power);
 	power = power + .1;
 	testLoop = testLoop + 1;
-	while (testLoop >= 21){
-		driveBase.SetDrivePower (0,0);
+	while (testLoop >= 21) {
+		driveBase.SetDrivePower(0, 0);
 	}
 }
 

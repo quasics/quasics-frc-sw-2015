@@ -25,6 +25,9 @@ private:
 	bool PissPoorDriveOn;
 	bool LogicSwitchButtonPrevious;
 	bool PS4SwitchButtonPrevious;
+	const float slowMult = .25;
+	const float normalMult = .5;
+	const float fastMult = .75;
 
 	void RobotInit();
 	void AutonomousInit();

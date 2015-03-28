@@ -11,6 +11,7 @@
 // System (standard) headers
 #include "Controllers/ControllerPackage.h"
 #include <math.h>
+#include <string>
 
 // Libraries provided by FRC
 #include "WPILib.h"

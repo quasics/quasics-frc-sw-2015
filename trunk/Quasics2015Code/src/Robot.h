@@ -17,7 +17,8 @@ private:
 	DriveTrain driveBase;
 	Gamepad powerPad;
 	Gamepad logicPad;
-	AxisCamera camera;
+	//std::string CameraHost;
+	//AxisCamera camera;
 	Elevator elevator;
 	Timer autoTimer;
 
@@ -28,6 +29,7 @@ private:
 	const float slowMult = .25;
 	const float normalMult = .5;
 	const float fastMult = .75;
+
 
 	void RobotInit();
 	void AutonomousInit();

@@ -82,18 +82,18 @@ void DriveTrain::AutoProcess() {
 			leftPower = 0;
 		} else if (GetLeftDistanceIn() > TargetDistanceIn
 				&& GetLeftDistanceIn() * InPerTick < TargetDistanceIn) {
-			leftPower = .25;
+			leftPower = .2;
 		} else {
-			leftPower = .75;
+			leftPower = .5;
 		}
 
 		if (GetRightDistanceIn() >= TargetDistanceIn) {
 			rightPower = 0;
-		} else if (GetRightDistanceIn()  > TargetDistanceIn
-				&& GetRightDistanceIn()  < TargetDistanceIn) {
-			rightPower = .25;
+		} else if (GetRightDistanceIn() > TargetDistanceIn
+				&& GetRightDistanceIn() < TargetDistanceIn) {
+			rightPower = .2;
 		} else {
-			rightPower = .75;
+			rightPower = .5;
 		}
 
 		if (GetRightDistanceIn() >= TargetDistanceIn
@@ -108,12 +108,12 @@ void DriveTrain::AutoProcess() {
 	case Turning:
 		if (TargetDegrees > 0 && TargetDegrees <= 180) {
 			if (gyro.GetAngle() <= TargetDegrees - 2.5) {
-				leftPower = .75;
-				rightPower = -.75;
+				leftPower = .5;
+				rightPower = -.5;
 			} else if (gyro.GetAngle() > TargetDegrees - 2.5
 					&& gyro.GetAngle() < TargetDegrees) {
-				leftPower = .25;
-				rightPower = -.25;
+				leftPower = .2;
+				rightPower = -.2;
 			} else {
 				leftPower = 0;
 				rightPower = 0;
@@ -123,12 +123,12 @@ void DriveTrain::AutoProcess() {
 			}
 		} else {
 			if (gyro.GetAngle() >= TargetDegrees + 2.5) {
-				leftPower = -.75;
-				rightPower = .75;
+				leftPower = -.5;
+				rightPower = .5;
 			} else if (gyro.GetAngle() < TargetDegrees + 2.5
 					&& gyro.GetAngle() > TargetDegrees) {
-				leftPower = -.25;
-				rightPower = .25;
+				leftPower = -.2;
+				rightPower = .2;
 			} else {
 				leftPower = 0;
 				rightPower = 0;
@@ -203,147 +203,155 @@ void DriveTrain::EndDriveAuto() {
 	trimTimer.Start();
 }
 
+//#define USE_INTERPOLATION
 void DriveTrain::SmoothStick(float leftIn, float rightIn, float& leftOut,
 		float& rightOut) {
+#ifdef USE_INTERPOLATION
 	TrimJoystickValuesToPowerWithLinearScaling(leftIn, rightIn, leftOut,
 			rightOut);
-	/*
-	 // Original code:
+#else
 
-	 int leftConverted = int(leftIn * 20 + .5);
-	 int rightConverted = int(rightIn * 20 + .5);
+	// Original code:
 
-	 switch (leftConverted) {
-	 case (-20):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (-18):
-	 leftOut = leftIn * .99;
-	 break;
-	 case (-8):
-	 leftOut = leftIn * .97;
-	 break;
-	 case (-7):
-	 leftOut = leftIn * .96;
-	 break;
-	 case (-6):
-	 leftOut = leftIn * .94;
-	 break;
-	 case (-5):
-	 leftOut = leftIn * .93;
-	 break;
-	 case (-4):
-	 leftOut = leftIn * .89;
-	 break;
-	 case (-3):
-	 leftOut = leftIn * .83;
-	 break;
-	 case (-2):
-	 leftOut = leftIn * .7;
-	 break;
-	 case (-1):
-	 leftOut =0;
-	 break;
-	 case (0):
-	 leftOut =0;
-	 break;
-	 case (1):
-	 leftOut =0;
-	 break;
-	 case (2):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (3):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (4):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (5):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (6):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (7):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (8):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (9):
-	 leftOut = leftIn * 1;
-	 break;
-	 case (10):
-	 leftOut = leftIn * 1;
-	 break;
-	 }
-	 switch (rightConverted) {
-	 case (-10):
-	 rightOut = rightIn * .97;
-	 break;
-	 case (-9):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-8):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-7):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-6):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-5):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-4):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-3):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-2):
-	 rightOut = rightIn * 1;
-	 break;
-	 case (-1):
-	 rightOut =0;
-	 break;
-	 case (0):
-	 rightOut =0;
-	 break;
-	 case (1):
-	 rightOut =0;
-	 break;
-	 case (2):
-	 rightOut = rightIn * .96;
-	 break;
-	 case (3):
-	 rightOut = rightIn * .93;
-	 break;
-	 case (4):
-	 rightOut = rightIn * .94;
-	 break;
-	 case (5):
-	 rightOut = rightIn * .93;
-	 break;
-	 case (6):
-	 rightOut = rightIn * .93;
-	 break;
-	 case (7):
-	 rightOut = rightIn * .92;
-	 break;
-	 case (8):
-	 rightOut = rightIn * .91;
-	 break;
-	 case (9):
-	 rightOut = rightIn * .92;
-	 break;
-	 case (10):
-	 rightOut = rightIn * .96;
-	 break;
-	 }
-	 */
+	int leftConverted = int(leftIn * 10 + .5);
+	int rightConverted = int(rightIn * 10 + .5);
+
+	switch (leftConverted) {
+	case (-10):
+		leftOut = leftIn * 1;
+		break;
+	case (-9):
+		leftOut = leftIn * .99;
+		break;
+	case (-8):
+		leftOut = leftIn * .97;
+		break;
+	case (-7):
+		leftOut = leftIn * .96;
+		break;
+	case (-6):
+		leftOut = leftIn * .94;
+		break;
+	case (-5):
+		leftOut = leftIn * .93;
+		break;
+	case (-4):
+		leftOut = leftIn * .89;
+		break;
+	case (-3):
+		leftOut = leftIn * .83;
+		break;
+	case (-2):
+		leftOut = leftIn * .7;
+		break;
+	case (-1):
+		leftOut = 0;
+		break;
+	case (0):
+		leftOut = 0;
+		break;
+	case (1):
+		leftOut = 0;
+		break;
+	case (2):
+		leftOut = leftIn * 1;
+		break;
+	case (3):
+		leftOut = leftIn * 1;
+		break;
+	case (4):
+		leftOut = leftIn * 1;
+		break;
+	case (5):
+		leftOut = leftIn * 1;
+		break;
+	case (6):
+		leftOut = leftIn * 1;
+		break;
+	case (7):
+		leftOut = leftIn * 1;
+		break;
+	case (8):
+		leftOut = leftIn * 1;
+		break;
+	case (9):
+		leftOut = leftIn * 1;
+		break;
+	case (10):
+		leftOut = leftIn * 1;
+		break;
+	default:
+		leftOut = leftIn * 1;
+		break;
+	}
+	switch (rightConverted) {
+	case (-10):
+		rightOut = rightIn * .97;
+		break;
+	case (-9):
+		rightOut = rightIn * 1;
+		break;
+	case (-8):
+		rightOut = rightIn * 1;
+		break;
+	case (-7):
+		rightOut = rightIn * 1;
+		break;
+	case (-6):
+		rightOut = rightIn * 1;
+		break;
+	case (-5):
+		rightOut = rightIn * 1;
+		break;
+	case (-4):
+		rightOut = rightIn * 1;
+		break;
+	case (-3):
+		rightOut = rightIn * 1;
+		break;
+	case (-2):
+		rightOut = rightIn * 1;
+		break;
+	case (-1):
+		rightOut = 0;
+		break;
+	case (0):
+		rightOut = 0;
+		break;
+	case (1):
+		rightOut = 0;
+		break;
+	case (2):
+		rightOut = rightIn * .96;
+		break;
+	case (3):
+		rightOut = rightIn * .93;
+		break;
+	case (4):
+		rightOut = rightIn * .94;
+		break;
+	case (5):
+		rightOut = rightIn * .93;
+		break;
+	case (6):
+		rightOut = rightIn * .93;
+		break;
+	case (7):
+		rightOut = rightIn * .92;
+		break;
+	case (8):
+		rightOut = rightIn * .91;
+		break;
+	case (9):
+		rightOut = rightIn * .92;
+		break;
+	case (10):
+		rightOut = rightIn * .96;
+		break;
+
+	}
+
+#endif
 }
 void DriveTrain::TrimTest(float power) {
 	leftTrim.Reset();
@@ -352,4 +360,42 @@ void DriveTrain::TrimTest(float power) {
 	Wait(1);
 	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n", power,
 			leftTrim.Get(), rightTrim.Get());
+}
+
+void DriveTrain::SpeedTest(float turboPower, float normalPower, float slowPower){
+	float leftPower;
+	float rightPower;
+	leftTrim.Reset();
+	rightTrim.Reset();
+	SmoothStick (1,1,leftPower,rightPower);
+	SetDrivePower (leftPower, rightPower);
+	Wait(1);
+	printf("Absolute Max Speed: %f\n", (leftTrim.GetRate() + rightTrim.GetRate())/2);
+	SetDrivePower (0,0);
+	Wait(.5);
+	leftTrim.Reset();
+	rightTrim.Reset();
+	SmoothStick (turboPower,turboPower,leftPower,rightPower);
+	SetDrivePower (leftPower, rightPower);
+	Wait(1);
+	printf("Max Speed: %f\n", (leftTrim.GetRate() + rightTrim.GetRate())/2);
+	SetDrivePower (0,0);
+	Wait(.5);
+	leftTrim.Reset();
+	rightTrim.Reset();
+	SmoothStick (normalPower,normalPower,leftPower,rightPower);
+	SetDrivePower (leftPower, rightPower);
+	Wait(1);
+	printf("Normal Max Speed: %f\n", (leftTrim.GetRate() + rightTrim.GetRate())/2);
+	SetDrivePower (0,0);
+	Wait(.5);
+	leftTrim.Reset();
+	rightTrim.Reset();
+	SmoothStick (slowPower,slowPower,leftPower,rightPower);
+	SetDrivePower (leftPower, rightPower);
+	Wait(1);
+	printf("Slow Max Speed: %f\n", (leftTrim.GetRate() + rightTrim.GetRate())/2);
+	SetDrivePower (0,0);
+	Wait(.5);
+
 }

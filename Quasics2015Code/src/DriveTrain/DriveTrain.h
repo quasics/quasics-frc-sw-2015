@@ -55,6 +55,7 @@ public:
 	void EndDriveAuto();
 	void SmoothStick (float leftIn, float rightIn, float& leftOut, float& rightOut);
 	void TrimTest (float power);
+	void SpeedTest(float turboPower = .75f, float normalPower = .5f, float slowPower = .25f);
 
 private:
 

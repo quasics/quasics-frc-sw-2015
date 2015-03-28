@@ -17,7 +17,7 @@ How to set up your computer with Subclipse and a project (in this case, the Quas
   # Click the "Add..." button
   # Enter the following
     # Under Name, put "Subclipse 1.10.x"
-    # Under URL, put "http://subclipse.tirgis.org/update_1.10.x"
+    # Under URL, put "http://subclipse.tigris.org/update_1.10.x/"
   # Download and install the following from the dropdown menus
     # All but Mylyn Integration from Subclipse dropdown
     # Only the SVNKit Library from the SVNKit Tab

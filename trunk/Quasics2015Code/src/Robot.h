@@ -17,8 +17,8 @@ private:
 	DriveTrain driveBase;
 	Gamepad powerPad;
 	Gamepad logicPad;
-	//std::string CameraHost;
-	//AxisCamera camera;
+	std::string CameraHost;
+	AxisCamera camera;
 	Elevator elevator;
 	Timer autoTimer;
 

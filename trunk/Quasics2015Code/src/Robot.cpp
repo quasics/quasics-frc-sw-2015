@@ -4,10 +4,9 @@ GLaDOS::GLaDOS() :
 		driveBase(FrontLeftTalonPort, FrontRightTalonPort, RearLeftTalonPort,
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
-				GamePad2In, 0.05), /*CameraHost ("169.254.36.15"), camera(CameraHost),*/elevator(
+				GamePad2In, 0.05), CameraHost ("10.26.56.11"), camera(CameraHost), elevator(
 				ElevatorMotorPort), PissPoorDriveOn(false), LogicSwitchButtonPrevious(
 				false), PS4SwitchButtonPrevious(false) {
-	//camera.WriteResolution(AxisCamera::kResolution_160x120);
 }
 
 float power;
@@ -65,70 +64,6 @@ void GLaDOS::TeleopPeriodic() {
 	}
 
 void GLaDOS::TestPeriodic() {
-	driveBase.TrimTest(-1);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.9);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.8);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.7);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.6);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.5);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.4);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.3);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.2);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(-.1);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(0);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.1);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.2);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.3);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.4);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.5);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.6);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.7);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.8);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(.9);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-	driveBase.TrimTest(1);
-	driveBase.SetDrivePower(0, 0);
-	Wait(1);
-
 }
 
 START_ROBOT_CLASS(GLaDOS);

@@ -11,32 +11,30 @@
 
 class GLaDOS: public IterativeRobot {
 public:
-	GLaDOS();
+	GLaDOS();						//Constructor
 
 private:
-	DriveTrain driveBase;
-	Gamepad powerPad;
-	Gamepad logicPad;
-	std::string CameraHost;
-	AxisCamera camera;
-	Elevator elevator;
-	Timer autoTimer;
+	DriveTrain driveBase;			//Drive Base
+	Gamepad powerPad;				//Elevator Control
+	Gamepad logicPad;				//Drive Control
+	std::string CameraHost;			//Camera Location
+	AxisCamera camera;				//Camera
+	Elevator elevator;				//Elevator
 
 
-	bool PissPoorDriveOn;
-	bool LogicSwitchButtonPrevious;
-	bool PS4SwitchButtonPrevious;
-	const float slowMult = .25;
-	const float normalMult = .5;
-	const float fastMult = .75;
+	bool fpsDriveOn;				//Is FPS drive being used
+	bool DriveSwitchButtonPrevious;	//Last value of the drive mode switch
+	const float slowMult = .25;		//Slow Multiplier
+	const float normalMult = .5;	//Normal Multiplier
+	const float fastMult = .75;		//Fast Multiplier
 
 
-	void RobotInit();
-	void AutonomousInit();
-	void AutonomousPeriodic();
-	void TeleopInit();
-	void TeleopPeriodic();
-	void TestPeriodic();
+	void RobotInit();				//Initializer
+	void AutonomousInit();			//Auto Initializer
+	void AutonomousPeriodic();		//Auto Period
+	void TeleopInit();				//Teleop Initializer
+	void TeleopPeriodic();			//Teleop Period
+	void TestPeriodic();			//Test mode
 
 };
 

@@ -82,7 +82,7 @@ void DriveTrain::AutoProcess() {
 			leftPower = 0;
 		} else if (GetLeftDistanceIn() > TargetDistanceIn
 				&& GetLeftDistanceIn() * InPerTick < TargetDistanceIn) {
-			leftPower = .2;
+			leftPower = .3;
 		} else {
 			leftPower = .5;
 		}
@@ -360,6 +360,8 @@ void DriveTrain::TrimTest(float power) {
 	Wait(1);
 	printf(" %f \n Left Encoder: %d \n Right Encoder: %d \n", power,
 			leftTrim.Get(), rightTrim.Get());
+	SetDrivePower (0,0);
+	Wait(1);
 }
 
 void DriveTrain::SpeedTest(float turboPower, float normalPower, float slowPower){

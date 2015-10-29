@@ -5,62 +5,124 @@ GLaDOS::GLaDOS() :
 				RearRightTalonPort, LeftEncoderA, LeftEncoderB, RightEncoderA,
 				RightEncoderB, GyroIn), powerPad(GamePadIn, 0.05), logicPad(
 				GamePad2In, 0.05), CameraHost("10.26.56.11"), camera(
-				CameraHost), elevator(ElevatorMotorPort), fpsDriveOn(false), DriveSwitchButtonPrevious(
+				CameraHost), elevator(ElevatorMotorPort), PissPoorDriveOn(
+				false), LogicSwitchButtonPrevious(false), PS4SwitchButtonPrevious(
 				false) {
 }
 
-void GLaDOS::RobotInit() {
+float power;
+int testLoop;
 
+int autoCounter;
+
+void GLaDOS::RobotInit() {
+	power = -.95;
+	testLoop = 1;
 }
 
 void GLaDOS::AutonomousInit() {
-	driveBase.AutoDriveStart(134);//Set the robot to go forwards for 134 inches
+	printf("GLaDOS Alerts: Initiating Autonomous Mode\n");
+	//driveBase.AutoDriveStart(134);
+	autoCounter = 0;
 }
 
 void GLaDOS::AutonomousPeriodic() {
-	driveBase.AutoProcess();	//Go through the auto process
+	//driveBase.AutoProcess();
+	if (autoCounter < 50){
+		driveBase.SetDrivePower(.5, .5);
+		autoCounter = autoCounter +1;
+	}
+	else{
+		driveBase.SetDrivePower(0,0);
+	}
 }
 
 void GLaDOS::TeleopInit() {
-	driveBase.EndDriveAuto();	//End auto mode
+	printf("GLaDOS Alerts: Initiating Teleoperated Mode\n");
+	//driveBase.EndDriveAuto();
 }
 
 void GLaDOS::TeleopPeriodic() {
-	//Drive motor
-	float leftPower;	//Create a variable for left motor power
-	float rightPower;	//Create a variable for right motor power
-
-	if (logicPad.GetButton(Gamepad::LeftShoulder)
-			|| logicPad.GetButton(Gamepad::RightShoulder))//If left or right shoulder is pressed...
-	{
-		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .25,		//Slow stick inputs and trim them
-		logicPad.GetAxis(Gamepad::RightStickY) * .25, leftPower, rightPower);
-	}
-	else //otherwise
-	{
-		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .5,		//Normalize inputs and apply trim
+	float leftPower;
+	float rightPower;
+	if ((logicPad.GetButton(Gamepad::LeftShoulder)
+			|| logicPad.GetButton(Gamepad::RightShoulder))
+			&& (logicPad.GetButton(Gamepad::LeftTrigger)
+					|| logicPad.GetButton(Gamepad::RightTrigger))) {
+		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .4,
+				logicPad.GetAxis(Gamepad::RightStickY) *.4, leftPower,
+				rightPower);
+	} else if (logicPad.GetButton(Gamepad::RightShoulder)
+			|| logicPad.GetButton(Gamepad::LeftShoulder)) {
+		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .3,
+				logicPad.GetAxis(Gamepad::RightStickY) * .3, leftPower,
+				rightPower);
+	} else if (logicPad.GetButton(Gamepad::RightTrigger)
+			|| logicPad.GetButton(Gamepad::LeftShoulder)) {
+		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .5,
 				logicPad.GetAxis(Gamepad::RightStickY) * .5, leftPower,
 				rightPower);
+	} else {
+		driveBase.SmoothStick(logicPad.GetAxis(Gamepad::LeftStickY) * .4,
+				logicPad.GetAxis(Gamepad::RightStickY) * .4, leftPower,
+				rightPower);
 	}
-	driveBase.SetDrivePower(leftPower, rightPower);	//Tank Drive
+	driveBase.SetDrivePower(leftPower, rightPower);
 
-	//Elevator Control;
-	if (((powerPad.GetButton(Gamepad::LeftShoulder)	//If no buttons pushed or a mixture pushed...
+	if ((powerPad.GetButton(Gamepad::LeftShoulder)
 			|| powerPad.GetButton(Gamepad::RightShoulder))
 			&& (powerPad.GetButton(Gamepad::LeftTrigger)
-					|| powerPad.GetButton(Gamepad::RightTrigger)))
-			|| (!powerPad.GetButton(Gamepad::LeftShoulder)
-					|| !powerPad.GetButton(Gamepad::RightShoulder)
-					|| !powerPad.GetButton(Gamepad::LeftTrigger)
-					|| !powerPad.GetButton(Gamepad::RightTrigger))) {
-		elevator.Off();	//Do nothing
-	} else if (powerPad.GetButton(Gamepad::LeftShoulder)	//Otherwise, if one or both shoulders are pushed...
-			|| powerPad.GetButton(Gamepad::RightShoulder)) {
-		elevator.Up();	//Lift the elevator
-	} else if (powerPad.GetButton(Gamepad::LeftTrigger)	//Otherwise if one or both triggers are pushed...
-			|| powerPad.GetButton(Gamepad::RightTrigger)) {
-		elevator.Down();	//lower the elevator
+					|| powerPad.GetButton(Gamepad::RightTrigger))) {
+		elevator.Off();
+	} else if (powerPad.GetButton(Gamepad::LeftShoulder) || powerPad.GetButton(Gamepad::RightShoulder)) {
+		elevator.Up();
+	} else if (powerPad.GetButton(Gamepad::LeftTrigger) || powerPad.GetButton(Gamepad::RightTrigger)) {
+		elevator.Down();
+	} else {
+		elevator.Off();
 	}
+}
+
+void GLaDOS::TestInit() {
+	driveBase.TrimTest(-1);
+	driveBase.TrimTest(-.95);
+	driveBase.TrimTest(-.9);
+	driveBase.TrimTest(-.85);
+	driveBase.TrimTest(-.8);
+	driveBase.TrimTest(-.75);
+	driveBase.TrimTest(-.7);
+	driveBase.TrimTest(-.65);
+	driveBase.TrimTest(-.6);
+	driveBase.TrimTest(-.55);
+	driveBase.TrimTest(-.5);
+	driveBase.TrimTest(-.45);
+	driveBase.TrimTest(-.4);
+	driveBase.TrimTest(-.35);
+	driveBase.TrimTest(-.3);
+	driveBase.TrimTest(-.25);
+	driveBase.TrimTest(-.2);
+	driveBase.TrimTest(-.15);
+	driveBase.TrimTest(-.1);
+	driveBase.TrimTest(0);
+	driveBase.TrimTest(.1);
+	driveBase.TrimTest(.15);
+	driveBase.TrimTest(.2);
+	driveBase.TrimTest(.25);
+	driveBase.TrimTest(.3);
+	driveBase.TrimTest(.35);
+	driveBase.TrimTest(.4);
+	driveBase.TrimTest(.45);
+	driveBase.TrimTest(.5);
+	driveBase.TrimTest(.55);
+	driveBase.TrimTest(.6);
+	driveBase.TrimTest(.65);
+	driveBase.TrimTest(.7);
+	driveBase.TrimTest(.75);
+	driveBase.TrimTest(.8);
+	driveBase.TrimTest(.85);
+	driveBase.TrimTest(.9);
+	driveBase.TrimTest(.95);
+	driveBase.TrimTest(1);
 }
 
 void GLaDOS::TestPeriodic() {

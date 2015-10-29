@@ -2,7 +2,7 @@
  * Robot.h
  *
  *  Created on: Jan 20, 2015
- *      Author: raymond healy
+ *      Author: Raymond Healy
  */
 
 #ifndef SRC_ROBOT_H_

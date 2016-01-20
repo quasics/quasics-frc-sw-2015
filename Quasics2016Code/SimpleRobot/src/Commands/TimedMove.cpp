@@ -26,22 +26,25 @@ TimedMove::TimedMove(double durationSecs, double powerPercent): Command() {
 
 // Called just before this Command runs the first time
 void TimedMove::Initialize() {
-
+	convertedDuration = m_durationSecs*50;
+	Robot::driveSystem->MoveLeft(m_powerPercent);
+	Robot::driveSystem->MoveRight(m_powerPercent);
+	loopNumber = 1;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void TimedMove::Execute() {
-
+	loopNumber++;
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool TimedMove::IsFinished() {
-    return false;
+    return (loopNumber == convertedDuration);
 }
 
 // Called once after isFinished returns true
 void TimedMove::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same

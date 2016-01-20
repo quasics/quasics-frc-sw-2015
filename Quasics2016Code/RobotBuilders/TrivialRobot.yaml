@@ -21,7 +21,7 @@ Children:
             validators: &id003 [PWMOutput]
             value: '0'
         Base: Speed Controller
-        Name: Speed Controller 1
+        Name: LeftFront
       - Children: []
         Properties:
           Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -37,7 +37,7 @@ Children:
             validators: *id003
             value: '1'
         Base: Speed Controller
-        Name: Speed Controller 2
+        Name: LeftRear
       - Children: []
         Properties:
           Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -53,7 +53,7 @@ Children:
             validators: *id003
             value: '2'
         Base: Speed Controller
-        Name: Speed Controller 3
+        Name: RightFront
       - Children: []
         Properties:
           Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -69,7 +69,7 @@ Children:
             validators: *id003
             value: '3'
         Base: Speed Controller
-        Name: Speed Controller 4
+        Name: RightRear
       Properties:
         Sensitivity: !!robotbuilder.data.properties.DoubleProperty {default: 0.5,
           name: Sensitivity, validators: null, value: 0.5}
@@ -78,13 +78,13 @@ Children:
           name: Right Rear Motor
           type: PIDOutput
           validators: [RobotDrive4, ChildDropdownSelected]
-          value: DriveSystem Speed Controller 4
+          value: DriveSystem RightRear
         Right Front Motor: !!robotbuilder.data.properties.ChildSelectionProperty
           default: 2
           name: Right Front Motor
           type: PIDOutput
           validators: [RobotDrive4, ChildDropdownSelected]
-          value: DriveSystem Speed Controller 3
+          value: DriveSystem RightFront
         Maximum Output: !!robotbuilder.data.properties.DoubleProperty {default: 1,
           name: Maximum Output, validators: null, value: 1.0}
         Left Front Motor Inverted: !!robotbuilder.data.properties.BooleanProperty {
@@ -96,7 +96,7 @@ Children:
           name: Left Rear Motor
           type: PIDOutput
           validators: [RobotDrive4, ChildDropdownSelected]
-          value: DriveSystem Speed Controller 2
+          value: DriveSystem LeftRear
         Right Rear Motor Inverted: !!robotbuilder.data.properties.BooleanProperty {
           default: false, name: Right Rear Motor Inverted, validators: null, value: true}
         Safety Expiration Time: !!robotbuilder.data.properties.DoubleProperty {default: 0.1,
@@ -110,7 +110,7 @@ Children:
           name: Left Front Motor
           type: PIDOutput
           validators: [RobotDrive4, ChildDropdownSelected]
-          value: DriveSystem Speed Controller 1
+          value: DriveSystem LeftFront
       Base: Robot Drive 4
       Name: Robot Drive 4 1
     Properties:
@@ -168,7 +168,10 @@ Children:
       Requires: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
         name: Requires, type: Subsystem, validators: null, value: DriveSystem}
       Parameter presets: !!robotbuilder.data.properties.ParameterSetProperty
-        default: &id004
+        default: []
+        name: Parameter presets
+        validators: null
+        value:
         - !!robotbuilder.data.properties.ParameterSet
           name: 1 sec - ahead full
           parameters:
@@ -179,9 +182,6 @@ Children:
           parameters:
           - {name: durationSecs, type: double, value: '1'}
           - {name: powerPercent, type: double, value: '-100'}
-        name: Parameter presets
-        validators: null
-        value: *id004
       Button on SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: true,
         name: Button on SmartDashboard, validators: null, value: true}
     Base: Command
@@ -190,8 +190,9 @@ Children:
   Base: Commands
   Name: Commands
 Properties:
-  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: /Users/healym/workspace,
-    extension: null, folder: true, name: Eclipse Workspace, validators: null, value: ../}
+  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\raymond
+      healy\workspace', extension: null, folder: true, name: Eclipse Workspace, validators: null,
+    value: ../}
   Export Commands: !!robotbuilder.data.properties.BooleanProperty {default: true,
     name: Export Commands, validators: null, value: true}
   Autonomous command parameters: !!robotbuilder.data.properties.ParametersProperty
@@ -209,8 +210,9 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: /Users/healym/,
-    extension: null, folder: true, name: Wiring file location, validators: null, value: ../}
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\raymond
+      healy\', extension: null, folder: true, name: Wiring file location, validators: null,
+    value: ../}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}
 Base: Robot

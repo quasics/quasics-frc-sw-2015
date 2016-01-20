@@ -13,6 +13,7 @@
 #define DRIVESYSTEM_H
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
+#include "AHRS.h"
 
 /**
  *
@@ -35,6 +36,7 @@ private:
 	bool isRightForward;
 	double leftPower;
 	double rightPower;
+	std::shared_ptr<AHRS> navx;                         // navX-MXP
 public:
 	DriveSystem();
 	void InitDefaultCommand();

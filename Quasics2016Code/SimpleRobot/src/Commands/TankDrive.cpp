@@ -28,8 +28,8 @@ void TankDrive::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	Robot::driveSystem->MoveLeft(5);
-	Robot::driveSystem->MoveRight(double(Robot::oi->joystick1->GetRawAxis(1))*100);
+	Robot::driveSystem->MoveLeft(double(Robot::oi->getJoystick1()->GetRawAxis(1))*100);
+	Robot::driveSystem->MoveRight(double(Robot::oi->getJoystick1()->GetRawAxis(1))*100);
 }
 
 // Make this return true when this Command no longer needs to run execute()

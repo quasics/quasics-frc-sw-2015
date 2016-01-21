@@ -100,5 +100,44 @@ bool DriveSystem::IsLeftForward() {
 
 bool DriveSystem::IsRightForward() {
 	return isRightForward;
+}
 
+
+//NavX-MXP actions
+void DriveSystem::ResetYaw (){
+	DriveSystem::navx->Reset();
+}
+
+void DriveSystem::ResetDisplacement (){
+	DriveSystem::navx->ResetDisplacement();
+}
+
+
+//NavX-MXP readings
+double DriveSystem::GetPitch(){
+	return DriveSystem::navx->GetPitch();
+}
+
+double DriveSystem::GetYaw(){
+	return DriveSystem::navx->GetYaw();
+}
+
+double DriveSystem::GetContinuousYaw(){
+	return DriveSystem::navx->GetAngle();
+}
+
+double DriveSystem::GetRoll (){
+	return DriveSystem::navx->GetRoll();
+}
+
+double DriveSystem::GetDisplacementX(){
+	return DriveSystem::navx->GetDisplacementX();
+}
+
+double DriveSystem::GetDisplacementY(){
+	return DriveSystem::navx->GetDisplacementY();
+}
+
+double DriveSystem::GetDisplacementZ(){
+	return DriveSystem::navx->GetDisplacementZ();
 }

@@ -63,7 +63,7 @@ void Robot::TeleopInit() {
 	// these lines or comment it out.
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Cancel();
-	tankModeCommand->Start();
+		tankModeCommand->Start();
 }
 
 void Robot::TeleopPeriodic() {

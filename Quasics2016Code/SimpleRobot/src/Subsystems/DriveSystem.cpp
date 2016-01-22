@@ -61,8 +61,8 @@ void DriveSystem::MoveLeft(double percentPower) {
 	} else {
 		isLeftForward = false;
 	}
-	leftFront->Set(leftPower / 100);
-	leftRear->Set(leftPower / 100);
+	leftFront->Set(-leftPower / 100);
+	leftRear->Set(-leftPower / 100);
 }
 
 void DriveSystem::MoveRight(double percentPower) {
@@ -72,8 +72,8 @@ void DriveSystem::MoveRight(double percentPower) {
 	} else {
 		isRightForward = false;
 	}
-	rightFront->Set(-rightPower / 100);
-	rightRear->Set(-rightPower / 100);
+	rightFront->Set(rightPower / 100);
+	rightRear->Set(rightPower / 100);
 }
 
 void DriveSystem::StopEverything() {

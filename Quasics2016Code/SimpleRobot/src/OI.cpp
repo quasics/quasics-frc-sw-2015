@@ -18,6 +18,8 @@
 #include "Commands/AutonomousCommand.h"
 #include "Commands/DriveForDistance.h"
 #include "Commands/PointTurn.h"
+#include "Commands/StubCommand1.h"
+#include "Commands/StubCommand2.h"
 #include "Commands/SwingTurn.h"
 #include "Commands/TankDrive.h"
 #include "Commands/TimedMove.h"
@@ -32,6 +34,8 @@ OI::OI() {
     
 
     // SmartDashboard Buttons
+    SmartDashboard::PutData("Stub Command 2", new StubCommand2());
+    SmartDashboard::PutData("Stub Command 1", new StubCommand1());
     SmartDashboard::PutData("ArcadeDriveLog", new ArcadeDriveLog());
     SmartDashboard::PutData("ArcadeDriveLinear", new ArcadeDriveLinear());
     SmartDashboard::PutData("Tank Drive", new TankDrive());

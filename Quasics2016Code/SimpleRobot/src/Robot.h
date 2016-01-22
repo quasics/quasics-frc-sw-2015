@@ -31,7 +31,6 @@ class Robot : public IterativeRobot {
 public:
 	std::unique_ptr<Command> autonomousCommand;
 	std::unique_ptr<Command> tankModeCommand;
-	std::shared_ptr<USBCamera> camera;
 	static std::unique_ptr<OI> oi;
 	LiveWindow *lw = LiveWindow::GetInstance();
 

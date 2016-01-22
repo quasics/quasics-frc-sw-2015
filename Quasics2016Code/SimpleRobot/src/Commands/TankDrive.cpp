@@ -43,14 +43,14 @@ void TankDrive::Execute() {
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
 		Robot::driveSystem->MoveLeft(
-				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 100);
+				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 62.5);
 		Robot::driveSystem->MoveRight(
-				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100);
+				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 62.5);
 	} else {
 		Robot::driveSystem->MoveLeft(
-				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 75);
+				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 50);
 		Robot::driveSystem->MoveRight(
-				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 75);
+				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 50);
 	}
 }
 

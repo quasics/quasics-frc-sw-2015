@@ -25,26 +25,43 @@ PointTurn::PointTurn(double powerPercent, double degreesAntiClockwise): Command(
 
 // Called just before this Command runs the first time
 void PointTurn::Initialize() {
-
+	Robot::driveSystem->ResetYaw();
+	if(m_degreesAntiClockwise > 0){
+		turningLeft = true;
+		Robot::driveSystem->MoveLeft(-m_powerPercent);
+		Robot::driveSystem->MoveRight(m_powerPercent);
+	}
+	else{
+		turningLeft = false;
+		Robot::driveSystem->MoveLeft(m_powerPercent);
+		Robot::driveSystem->MoveRight(-m_powerPercent);
+	}
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurn::Execute() {
-
+	if(turningLeft){
+		Robot::driveSystem->MoveLeft(-m_powerPercent);
+		Robot::driveSystem->MoveRight(m_powerPercent);
+	}
+	else{
+		Robot::driveSystem->MoveLeft(m_powerPercent);
+		Robot::driveSystem->MoveRight(-m_powerPercent);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurn::IsFinished() {
-    return false;
+    return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degreesAntiClockwise));
 }
 
 // Called once after isFinished returns true
 void PointTurn::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void PointTurn::Interrupted() {
-
+	Robot::driveSystem->StopEverything();
 }

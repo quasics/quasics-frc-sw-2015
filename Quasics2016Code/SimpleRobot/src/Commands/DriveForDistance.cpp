@@ -26,26 +26,38 @@ DriveForDistance::DriveForDistance(double powerPercent, double distanceMeters): 
 
 // Called just before this Command runs the first time
 void DriveForDistance::Initialize() {
-
+	Robot::driveSystem->ResetDisplacement();
+	Robot::driveSystem->MoveLeft(m_powerPercent);
+	Robot::driveSystem->MoveRight(m_powerPercent);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void DriveForDistance::Execute() {
-
+	if(Robot::driveSystem->GetDisplacementX()>= m_distanceMeters){
+		Robot::driveSystem->StopEverything();
+	}
+	else if (Robot::driveSystem->GetDisplacementX()>=m_distanceMeters - .5){
+		Robot::driveSystem->MoveLeft(m_powerPercent/2);
+		Robot::driveSystem->MoveRight(m_powerPercent/2);
+	}
+	else{
+		Robot::driveSystem->MoveLeft(m_powerPercent);
+		Robot::driveSystem->MoveRight(m_powerPercent);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool DriveForDistance::IsFinished() {
-    return false;
+    return (Robot::driveSystem->GetDisplacementX()>= m_distanceMeters);
 }
 
 // Called once after isFinished returns true
 void DriveForDistance::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void DriveForDistance::Interrupted() {
-
+	Robot::driveSystem->StopEverything();
 }

@@ -27,26 +27,41 @@ SwingTurn::SwingTurn(double powerPercent, double degrees, bool turnLeft): Comman
 
 // Called just before this Command runs the first time
 void SwingTurn::Initialize() {
-
+	Robot::driveSystem->ResetYaw();
+	if(m_turnLeft){
+			Robot::driveSystem->MoveLeft(0);
+			Robot::driveSystem->MoveRight(m_powerPercent);
+	}
+	else{
+			Robot::driveSystem->MoveLeft(m_powerPercent);
+			Robot::driveSystem->MoveRight(0);
+	}
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SwingTurn::Execute() {
-
+	if(m_turnLeft){
+			Robot::driveSystem->MoveLeft(0);
+			Robot::driveSystem->MoveRight(m_powerPercent);
+	}
+	else{
+			Robot::driveSystem->MoveLeft(m_powerPercent);
+			Robot::driveSystem->MoveRight(0);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool SwingTurn::IsFinished() {
-    return false;
+    return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degrees));
 }
 
 // Called once after isFinished returns true
 void SwingTurn::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void SwingTurn::Interrupted() {
-
+	Robot::driveSystem->StopEverything();
 }

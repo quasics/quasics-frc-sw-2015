@@ -40,7 +40,7 @@ void PointTurn::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurn::Execute() {
-	if(turningLeft){
+if(turningLeft){
 		Robot::driveSystem->MoveLeft(-m_powerPercent);
 		Robot::driveSystem->MoveRight(m_powerPercent);
 	}
@@ -52,7 +52,7 @@ void PointTurn::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurn::IsFinished() {
-    return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degreesAntiClockwise));
+return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degreesAntiClockwise));
 }
 
 // Called once after isFinished returns true

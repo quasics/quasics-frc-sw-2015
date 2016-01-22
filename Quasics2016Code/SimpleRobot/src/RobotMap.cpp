@@ -41,7 +41,7 @@ void RobotMap::init() {
     driveSystemRobotDrive41.reset(new RobotDrive(driveSystemLeftFront, driveSystemLeftRear,
               driveSystemRightFront, driveSystemRightRear));
     
-    driveSystemRobotDrive41->SetSafetyEnabled(true);
+    driveSystemRobotDrive41->SetSafetyEnabled(false);
         driveSystemRobotDrive41->SetExpiration(0.1);
         driveSystemRobotDrive41->SetSensitivity(0.5);
         driveSystemRobotDrive41->SetMaxOutput(1.0);

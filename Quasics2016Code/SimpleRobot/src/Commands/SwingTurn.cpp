@@ -40,7 +40,7 @@ void SwingTurn::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SwingTurn::Execute() {
-	if(m_turnLeft){
+if(m_turnLeft){
 			Robot::driveSystem->MoveLeft(0);
 			Robot::driveSystem->MoveRight(m_powerPercent);
 	}
@@ -52,7 +52,7 @@ void SwingTurn::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool SwingTurn::IsFinished() {
-    return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degrees));
+      return (fabs(Robot::driveSystem->GetContinuousYaw()) >= fabs(m_degrees));
 }
 
 // Called once after isFinished returns true

@@ -28,30 +28,43 @@ void TankDrive::Initialize() {
 
 }
 
+enum SpeedMode {
+	eSlow = 0,
+	eMedium = 1,
+	eFast = 2
+};
+static const double ScalingFactors[][2] = {
+	// First is left motor scaling; second is right
+	{25, 25},		// slow
+	{50, 50},		// medium
+	{62.5, 62.5}	// fast
+};
+
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
+	// Figure out what mode the driver wants
+	SpeedMode mode = eSlow;
 	if ((Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		Robot::driveSystem->MoveLeft(
-				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 25);
-		Robot::driveSystem->MoveRight(
-				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 25);
+		mode = eSlow;
 	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		Robot::driveSystem->MoveLeft(
-				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 62.5);
-		Robot::driveSystem->MoveRight(
-				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 62.5);
+		mode = eFast;
 	} else {
-		Robot::driveSystem->MoveLeft(
-				double(Robot::oi->getPilotStick()->GetRawAxis(1)) * 50);
-		Robot::driveSystem->MoveRight(
-				double(Robot::oi->getPilotStick()->GetRawAxis(3)) * 50);
+		mode = eMedium;
 	}
+
+	// Set the drive speed, based on joystick position and speed mode.
+	const double leftFactor = ScalingFactors[int(mode)][0];
+	const double rightFactor = ScalingFactors[int(mode)][1];
+	Robot::driveSystem->MoveLeft(
+			double(Robot::oi->getPilotStick()->GetRawAxis(1)) * leftFactor);
+	Robot::driveSystem->MoveRight(
+			double(Robot::oi->getPilotStick()->GetRawAxis(3)) * rightFactor);
 }
 
 // Make this return true when this Command no longer needs to run execute()

@@ -87,16 +87,18 @@ void StubCommand2::Execute() {
 }
 // Make this return true when this Command no longer needs to run execute()
 bool StubCommand2::IsFinished() {
-	return false;
+	return timer >= 1600;
 }
 
 // Called once after isFinished returns true
 void StubCommand2::End() {
-
+Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void StubCommand2::Interrupted() {
+	Robot::driveSystem->StopEverything();
+
 
 }

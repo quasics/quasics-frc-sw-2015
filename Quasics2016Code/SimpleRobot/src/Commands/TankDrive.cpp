@@ -48,7 +48,7 @@ const double kMaxPowerSetting = 62.5;
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-#define USE_SLIDER_FOR_POWER
+//#define USE_SLIDER_FOR_POWER
 #ifdef USE_SLIDER_FOR_POWER
 	const double sliderValue = SmartDashboard::GetNumber(kSliderForDrivePower, kDefaultSliderPower);
 	const double sliderPercent = sliderValue / 5.0;

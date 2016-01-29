@@ -93,7 +93,7 @@ void AutonomousCommand::Execute() {
 
 	switch (deadliestMove) {
 	case kForward:
-		Robot::driveSystem->MoveLeft(25);
+		Robot::driveSystem->MoveLeft(30);
 		Robot::driveSystem->MoveRight(25);
 		break;
 	case kBackward:

@@ -86,12 +86,12 @@ void TankDrive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool TankDrive::IsFinished() {
-	return false;
+	return (Robot::driveSystem->GetDisplacementX() >= 1);
 }
 
 // Called once after isFinished returns true
 void TankDrive::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same

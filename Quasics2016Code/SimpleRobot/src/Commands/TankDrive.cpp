@@ -33,29 +33,33 @@ enum SpeedMode {
 };
 static const double ScalingFactors[][2] = {
 // First is left motor scaling; second is right
-		{ 25, 25 },		// slow
-		{ 50, 50 },		// medium
-		{ 62.5, 62.5 }	// fast
+		{ .25, .25 },		// slow
+		{ .5, .5 },		// medium
+		{ .625, .625 }	// fast
 };
 
-const double kMinPowerSetting = 25;
-const double kMaxPowerSetting = 62.5;
+const double kMinPowerSetting = -.2;
+const double kMaxPowerSetting = .2;
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 #define USE_SLIDER_FOR_TRIM
 #ifdef USE_SLIDER_FOR_TRIM
-	const double leftSliderValue = SmartDashboard::GetNumber("Left Trim", 2.5);
-	const double rightSliderValue = SmartDashboard::GetNumber("Right Trim",
-			2.5);
 
-	const double leftSliderPercent = leftSliderValue / 5.0;
-	const double rightSliderPercent = rightSliderValue / 5.0;
+	if (SmartDashboard::GetNumber("Left Trim", 0) > .5)
+		SmartDashboard::PutNumber("Left Trim", .5);
+	else if (SmartDashboard::GetNumber("Left Trim", 0) < -.5)
+		SmartDashboard::PutNumber("Left Trim", -.5);
 
-	const double leftPowerAdjustment = kMinPowerSetting
-			+ leftSliderPercent * (kMaxPowerSetting - kMinPowerSetting);
-	const double rightPowerAdjustment = kMinPowerSetting
-			+ rightSliderPercent * (kMaxPowerSetting - kMinPowerSetting);
+	if (SmartDashboard::GetNumber("Right Trim", 0) > .5)
+		SmartDashboard::PutNumber("Right Trim", .5);
+	else if (SmartDashboard::GetNumber("Right Trim", 0) < -.5)
+		SmartDashboard::PutNumber("Right Trim", -.5);
+
+	const double leftSliderValue = SmartDashboard::GetNumber("Left Trim", 0)
+			+ 1;
+	const double rightSliderValue = SmartDashboard::GetNumber("Right Trim", 0)
+			+ 1;
 
 	SpeedMode mode = eSlow;
 	if ((Robot::oi->getPilotStick()->GetRawButton(5)
@@ -76,11 +80,11 @@ void TankDrive::Execute() {
 	const double rightFactor = ScalingFactors[int(mode)][1];
 
 	Robot::driveSystem->MoveLeft(
-			double(Robot::oi->getPilotStick()->GetRawAxis(1))
-					* leftPowerAdjustment * leftFactor);
+			double(Robot::oi->getPilotStick()->GetRawAxis(1)) * leftSliderValue
+					* leftFactor * 100);
 	Robot::driveSystem->MoveRight(
-			double(Robot::oi->getPilotStick()->GetRawAxis(3))
-					* rightPowerAdjustment * rightFactor);
+			double(Robot::oi->getPilotStick()->GetRawAxis(3)) * rightSliderValue
+					* rightFactor * 100);
 
 #else
 	// Figure out what mode the driver wants

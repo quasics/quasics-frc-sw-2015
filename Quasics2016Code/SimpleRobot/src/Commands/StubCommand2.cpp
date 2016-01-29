@@ -71,25 +71,31 @@ void StubCommand2::Execute() {
 		isFinished = true;
 	}
 
-	if (deadliest == forward) {
+	switch (deadliest) {
+	case forward:
 		Robot::driveSystem->MoveLeft(40);
 		Robot::driveSystem->MoveRight(40);
-
-	} else if (deadliest == backward) {
+		break;
+	case backward:
 		Robot::driveSystem->MoveLeft(-40);
 		Robot::driveSystem->MoveRight(-40);
-	} else if (deadliest == turnleft) {
+		break;
+	case turnleft:
 		Robot::driveSystem->MoveLeft(-60);
 		Robot::driveSystem->MoveRight(60);
-	} else if (deadliest == turnright) {
+		break;
+	case turnright:
 		Robot::driveSystem->MoveLeft(60);
 		Robot::driveSystem->MoveRight(-60);
-	} else {
+		break;
+	default:
 		Robot::driveSystem->StopEverything();
 	}
 
 	timer++;
 }
+
+
 // Make this return true when this Command no longer needs to run execute()
 bool StubCommand2::IsFinished() {
 	return isFinished;
@@ -97,13 +103,12 @@ bool StubCommand2::IsFinished() {
 
 // Called once after isFinished returns true
 void StubCommand2::End() {
-Robot::driveSystem->StopEverything();
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void StubCommand2::Interrupted() {
 	Robot::driveSystem->StopEverything();
-
 
 }

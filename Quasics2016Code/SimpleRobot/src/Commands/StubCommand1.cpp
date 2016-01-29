@@ -27,25 +27,24 @@ StubCommand1::StubCommand1() :
 
 // Called just before this Command runs the first time
 void StubCommand1::Initialize() {
-	Robot::driveSystem->ResetDisplacement();
-	Robot::driveSystem->ResetYaw();
+
 }
 
 // Called repeatedly when this Command is scheduled to run
 void StubCommand1::Execute() {
-	if (Robot::driveSystem->GetDisplacementX() <= .5) {
+	if (cupidShuffle <= 25) {
 		Robot::driveSystem->MoveLeft(-50);
 		Robot::driveSystem->MoveRight(-50);
 	} else if (cupidShuffle <= 50) {
 		Robot::driveSystem->MoveLeft(0);
 		Robot::driveSystem->MoveRight(0);
-	} else if (Robot::driveSystem->GetDisplacementX() >= .5) {
+	} else if (cupidShuffle <= 75) {
 		Robot::driveSystem->MoveLeft(50);
 		Robot::driveSystem->MoveRight(50);
 	} else if (cupidShuffle <= 100) {
 		Robot::driveSystem->MoveLeft(0);
 		Robot::driveSystem->MoveRight(0);
-	} else if (Robot::driveSystem->GetContinuousYaw() >=.5) {
+	} else if (cupidShuffle <= 125) {
 		Robot::driveSystem->MoveLeft(-50);
 		Robot::driveSystem->MoveRight(50);
 	} else if (cupidShuffle <= 150) {
@@ -61,7 +60,7 @@ void StubCommand1::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool StubCommand1::IsFinished() {
-	return test >= 5;
+	return test >= 11;
 }
 
 // Called once after isFinished returns true

@@ -60,7 +60,7 @@ void StubCommand1::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool StubCommand1::IsFinished() {
-	return test >= 11;
+	return test >= 5;
 }
 
 // Called once after isFinished returns true

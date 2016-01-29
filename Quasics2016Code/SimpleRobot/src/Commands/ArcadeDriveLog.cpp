@@ -30,7 +30,8 @@ void ArcadeDriveLog::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ArcadeDriveLog::Execute() {
-
+	Robot::driveSystem->MoveLeft((Robot::oi->getPilotStick()->GetRawAxis(1) * 100) - (Robot::oi->getPilotStick()->GetRawAxis(0) * 100));
+	Robot::driveSystem->MoveRight((Robot::oi->getPilotStick()->GetRawAxis(1) * 100) + (Robot::oi->getPilotStick()->GetRawAxis(0) * 100));
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -40,11 +41,11 @@ bool ArcadeDriveLog::IsFinished() {
 
 // Called once after isFinished returns true
 void ArcadeDriveLog::End() {
-
+	Robot::driveSystem->StopEverything();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void ArcadeDriveLog::Interrupted() {
-
+	Robot::driveSystem->StopEverything();
 }

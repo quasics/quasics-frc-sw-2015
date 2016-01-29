@@ -62,14 +62,11 @@ void Robot::TeleopInit() {
 	// these lines or comment it out.
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Cancel();
-//		tankModeCommand->Start();
+		tankModeCommand->Start();
 }
 
 void Robot::TeleopPeriodic() {
-//	Scheduler::GetInstance()->Run();
-	printf("X: %f\n Y: %f\n Z: %f\n \n", Robot::driveSystem->GetDisplacementX(),
-			Robot::driveSystem->GetDisplacementY(),
-			Robot::driveSystem->GetDisplacementZ());
+	Scheduler::GetInstance()->Run();
 }
 
 void Robot::TestPeriodic() {

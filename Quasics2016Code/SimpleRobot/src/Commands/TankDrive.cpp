@@ -78,8 +78,8 @@ void TankDrive::Execute() {
 	Robot::driveSystem->MoveLeft(
 			double(Robot::oi->getPilotStick()->GetRawAxis(1))
 					* leftPowerAdjustment * leftFactor);
-	Robot::driveSystem->MoveLeft(
-			double(Robot::oi->getPilotStick()->GetRawAxis(1))
+	Robot::driveSystem->MoveRight(
+			double(Robot::oi->getPilotStick()->GetRawAxis(3))
 					* rightPowerAdjustment * rightFactor);
 
 #else

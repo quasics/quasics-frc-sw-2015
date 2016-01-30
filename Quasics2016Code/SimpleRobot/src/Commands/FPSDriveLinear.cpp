@@ -28,9 +28,6 @@ void FPSDriveLinear::Initialize() {
 
 }
 
-enum SpeedMode {
-	eSlow = 0, eMedium = 1, eFast = 2
-};
 static const double ScalingFactors[][2] = {
 // First is left motor scaling; second is right
 		{ .25, .25 },		// slow
@@ -41,23 +38,22 @@ static const double ScalingFactors[][2] = {
 // Called repeatedly when this Command is scheduled to run
 void FPSDriveLinear::Execute() {
 
-	SpeedMode mode = eSlow;
+	double leftFactor = ScalingFactors[2][1];
+	double rightFactor = ScalingFactors[2][2];
+
 	if ((Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		mode = eSlow;
+		leftFactor = ScalingFactors[1][1];
+		rightFactor = ScalingFactors[1][2];
 	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		mode = eFast;
-	} else {
-		mode = eMedium;
+		leftFactor = ScalingFactors[3][1];
+		rightFactor = ScalingFactors[3][2];
 	}
-
-	const double leftFactor = ScalingFactors[int(mode)][1];
-	const double rightFactor = ScalingFactors[int(mode)][2];
 
 	if ((Robot::oi->getPilotStick()->GetRawAxis(0)) >= 0) {
 		Robot::driveSystem->MoveLeft(
@@ -69,7 +65,8 @@ void FPSDriveLinear::Execute() {
 								+ 1) * rightFactor);
 	} else {
 		Robot::driveSystem->MoveRight(
-				(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100 * rightFactor);
+				(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100
+						* rightFactor);
 		Robot::driveSystem->MoveLeft(
 				Robot::oi->getPilotStick()->GetRawAxis(3) * 100
 						* (-fabs(

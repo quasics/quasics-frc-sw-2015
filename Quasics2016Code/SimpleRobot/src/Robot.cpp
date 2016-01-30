@@ -49,7 +49,6 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Start();
-	tankModeCommand->Start();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -63,6 +62,7 @@ void Robot::TeleopInit() {
 	// these lines or comment it out.
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Cancel();
+	tankModeCommand->Start();
 }
 
 void Robot::TeleopPeriodic() {

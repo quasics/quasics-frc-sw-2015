@@ -17,6 +17,7 @@
 #include "Commands/AutonomousCommand.h"
 #include "Commands/DriveForDistance.h"
 #include "Commands/FPSDrive.h"
+#include "Commands/FPSDriveLogarithmic.h"
 #include "Commands/PointTurn.h"
 #include "Commands/StubCommand1.h"
 #include "Commands/StubCommand2.h"
@@ -34,6 +35,7 @@ OI::OI() {
     
 
     // SmartDashboard Buttons
+    SmartDashboard::PutData("FPSDriveLogarithmic", new FPSDriveLogarithmic());
     SmartDashboard::PutData("FPSDrive", new FPSDrive());
     SmartDashboard::PutData("Stub Command 2", new StubCommand2());
     SmartDashboard::PutData("Stub Command 1", new StubCommand1());

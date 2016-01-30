@@ -29,7 +29,23 @@ void FPSDrive::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FPSDrive::Execute() {
-
+	if ((Robot::oi->getPilotStick()->GetRawAxis(0)) >= 0) {
+			Robot::driveSystem->MoveLeft(
+					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100);
+			Robot::driveSystem->MoveRight(
+					Robot::oi->getPilotStick()->GetRawAxis(3) * 100
+							* (-fabs(
+									2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))
+									+ 1));
+		} else {
+			Robot::driveSystem->MoveRight(
+					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100);
+			Robot::driveSystem->MoveLeft(
+					Robot::oi->getPilotStick()->GetRawAxis(3) * 100
+							* (-fabs(
+									2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))
+									+ 1));
+		}
 }
 
 // Make this return true when this Command no longer needs to run execute()

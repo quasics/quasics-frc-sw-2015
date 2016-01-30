@@ -31,10 +31,10 @@ void FPSDrive::Initialize() {
 void FPSDrive::Execute() {
 	float multiplier;
 
-	if (((Robot::oi->getPilotStick()->GetRawButton(5)
+	if ((Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
-					|| Robot::oi->getPilotStick()->GetRawButton(8)))) {
+					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
 		multiplier = 0.25;
 	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))

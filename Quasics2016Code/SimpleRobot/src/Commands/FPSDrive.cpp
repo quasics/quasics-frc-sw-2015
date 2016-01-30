@@ -29,22 +29,36 @@ void FPSDrive::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FPSDrive::Execute() {
+	float multiplier;
+
+	if ((Robot::oi->getPilotStick()->GetRawButton(5||6)&& !(Robot::oi->getPilotStick()->GetRawButton(7||8)))){
+		multiplier = 0.25;
+	}	else if (!(Robot::oi->getPilotStick()->GetRawButton(5||6))&&(Robot::oi->getPilotStick()->GetRawButton(7||8))){
+		multiplier = 0.625;
+	}
+	else{
+		multiplier = .5;
+	}
+
+
+
+
 	if ((Robot::oi->getPilotStick()->GetRawAxis(0)) >= 0) {
 			Robot::driveSystem->MoveLeft(
-					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100);
+					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100 * multiplier);
 			Robot::driveSystem->MoveRight(
 					Robot::oi->getPilotStick()->GetRawAxis(3) * 100
 							* (-fabs(
 									2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))
-									+ 1));
+									+ 1)* multiplier );
 		} else {
 			Robot::driveSystem->MoveRight(
-					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100);
+					(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100 * multiplier);
 			Robot::driveSystem->MoveLeft(
 					Robot::oi->getPilotStick()->GetRawAxis(3) * 100
 							* (-fabs(
 									2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))
-									+ 1));
+									+ 1)* multiplier);
 		}
 }
 

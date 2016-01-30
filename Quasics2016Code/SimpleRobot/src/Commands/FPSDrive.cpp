@@ -40,7 +40,7 @@ void FPSDrive::Execute() {
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		multiplier = 0.25;
+		multiplier = 0.625;
 	} else {
 		multiplier = .5;
 	}
@@ -58,9 +58,7 @@ void FPSDrive::Execute() {
 				(Robot::oi->getPilotStick()->GetRawAxis(3)) * 100 * multiplier);
 		Robot::driveSystem->MoveLeft(
 				Robot::oi->getPilotStick()->GetRawAxis(3) * 100
-						* (-fabs(
-								2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))
-								+ 1) * multiplier);
+						* (-fabs(2 * (Robot::oi->getPilotStick()->GetRawAxis(0)))+ 1) * multiplier);
 	}
 }
 

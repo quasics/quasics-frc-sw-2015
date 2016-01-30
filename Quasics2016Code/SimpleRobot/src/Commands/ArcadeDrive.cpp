@@ -27,41 +27,14 @@ void ArcadeDrive::Initialize() {
 
 }
 
-static const double ScalingFactors[][2] = {
-// First is left motor scaling; second is right
-		{ .25, .25 },		// slow
-		{ .5, .5 },		// medium
-		{ .625, .625 }	// fast
-};
-
 // Called repeatedly when this Command is scheduled to run
 void ArcadeDrive::Execute() {
-
-	double leftFactor = ScalingFactors[2][1];
-	double rightFactor = ScalingFactors[2][2];
-
-	if ((Robot::oi->getPilotStick()->GetRawButton(5)
-			|| Robot::oi->getPilotStick()->GetRawButton(6))
-			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
-					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[1][1];
-		rightFactor = ScalingFactors[1][2];
-	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
-			|| Robot::oi->getPilotStick()->GetRawButton(6))
-			&& (Robot::oi->getPilotStick()->GetRawButton(7)
-					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[3][1];
-		rightFactor = ScalingFactors[3][2];
-	}
-
 	Robot::driveSystem->MoveLeft(
 			(Robot::oi->getPilotStick()->GetRawAxis(1) * 100)
-					- (Robot::oi->getPilotStick()->GetRawAxis(0) * 100)
-							* leftFactor);
+					- (Robot::oi->getPilotStick()->GetRawAxis(0) * 100));
 	Robot::driveSystem->MoveRight(
 			(Robot::oi->getPilotStick()->GetRawAxis(1) * 100)
-					+ (Robot::oi->getPilotStick()->GetRawAxis(0) * 100)
-							* rightFactor);
+					+ (Robot::oi->getPilotStick()->GetRawAxis(0) * 100));
 }
 
 // Make this return true when this Command no longer needs to run execute()

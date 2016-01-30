@@ -28,6 +28,9 @@ void TankDrive::Initialize() {
 
 }
 
+enum SpeedMode {
+	eSlow = 0, eMedium = 1, eFast = 2
+};
 static const double ScalingFactors[][2] = {
 // First is left motor scaling; second is right
 		{ .25, .25 },		// slow
@@ -58,22 +61,23 @@ void TankDrive::Execute() {
 	const double rightSliderValue = SmartDashboard::GetNumber("Right Trim", 0)
 			+ 1;
 
-	double leftFactor = ScalingFactors[2][1];
-	double rightFactor = ScalingFactors[2][2];
-
+	SpeedMode mode = eSlow;
 	if ((Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[1][1];
-		rightFactor = ScalingFactors[1][2];
+		mode = eSlow;
 	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
 			|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[3][1];
-		rightFactor = ScalingFactors[3][2];
+		mode = eFast;
+	} else {
+		mode = eMedium;
 	}
+
+	const double leftFactor = ScalingFactors[int(mode)][0];
+	const double rightFactor = ScalingFactors[int(mode)][1];
 
 	Robot::driveSystem->MoveLeft(
 			double(Robot::oi->getPilotStick()->GetRawAxis(1)) * leftSliderValue
@@ -84,21 +88,19 @@ void TankDrive::Execute() {
 
 #else
 	// Figure out what mode the driver wants
-	double leftFactor = ScalingFactors[2][1];
-	double rightFactor = ScalingFactors[2][2];
-
+	SpeedMode mode = eSlow;
 	if ((Robot::oi->getPilotStick()->GetRawButton(5)
 					|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& !(Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[1][1];
-		rightFactor = ScalingFactors[1][2];
+		mode = eSlow;
 	} else if (!(Robot::oi->getPilotStick()->GetRawButton(5)
 					|| Robot::oi->getPilotStick()->GetRawButton(6))
 			&& (Robot::oi->getPilotStick()->GetRawButton(7)
 					|| Robot::oi->getPilotStick()->GetRawButton(8))) {
-		leftFactor = ScalingFactors[3][1];
-		rightFactor = ScalingFactors[3][2];
+		mode = eFast;
+	} else {
+		mode = eMedium;
 	}
 
 	// Set the drive speed, based on joystick position and speed mode.

@@ -33,39 +33,25 @@ void StubCommand1::Initialize() {
 void StubCommand1::Execute() {
 	if (timer <= 25) {
 		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
+	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
 		otacon = kTurnRight;
 	} else if (timer <= 75) {
 		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
+	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
 		otacon = kTurnRight;
 	} else if (timer <= 125) {
 		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
+	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
 		otacon = kTurnRight;
 	}else if (timer <= 175) {
 		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw()>= -135) {
-		otacon = kTurnRight;
-	}else if (timer <= 225) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
-		otacon = kTurnRight;
-	}else if (timer <= 275) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >=  -135) {
-		otacon = kTurnRight;
-	}else if (timer <= 325) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
-		otacon = kTurnRight;
-	}else if (timer <= 375) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -135) {
+	} else if (Robot::driveSystem->GetContinuousYaw()>= -90) {
 		otacon = kTurnRight;
 	}else{
 		otacon = kStop;
 	}
+	timer ++;
+	test ++;
 
 	switch (otacon){
 	case kForward:

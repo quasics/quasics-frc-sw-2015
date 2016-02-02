@@ -24,26 +24,26 @@ StopIntake::StopIntake(): Command() {
 
 // Called just before this Command runs the first time
 void StopIntake::Initialize() {
-
+	Robot::mrPlow->StopIntake();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void StopIntake::Execute() {
-
+	Robot::mrPlow->StopIntake();
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool StopIntake::IsFinished() {
-    return false;
+    return true;
 }
 
 // Called once after isFinished returns true
 void StopIntake::End() {
-
+	Robot::mrPlow->StopIntake();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void StopIntake::Interrupted() {
-
+	Robot::mrPlow->StopIntake();
 }

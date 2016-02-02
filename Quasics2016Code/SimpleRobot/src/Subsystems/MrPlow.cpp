@@ -40,7 +40,7 @@ void MrPlow::InitDefaultCommand() {
 void MrPlow::SetIntake(IntakeDirection whichDirection) {
 	switch (whichDirection) {
 	case (kIntake):
-		intakeBar->Set(-activePower);
+		intakeBar->Set(-activePower/2);
 		direction = kIntake;
 		break;
 	case (kOutput):

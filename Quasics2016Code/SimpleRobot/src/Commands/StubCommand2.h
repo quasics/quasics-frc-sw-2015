@@ -41,10 +41,10 @@ private:
 	bool isFinished;
 	int timer;
 
-	enum Deadlydancemoves{
-		forward, backward, turnleft, turnright, stop
+	enum Polygon{
+		kforward, kturnright, kstop
 	};
-	Deadlydancemoves deadliest;
+	Polygon duodecagon;
 };
 
 #endif

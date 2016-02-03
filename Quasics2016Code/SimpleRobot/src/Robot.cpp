@@ -68,6 +68,11 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
+	SmartDashboard::PutNumber("M/S",
+			(.5
+					* (Robot::driveSystem->GetEncoderRate(DriveSystem::kLeft)
+							+ Robot::driveSystem->GetEncoderRate(
+									DriveSystem::kLeft))));
 }
 
 void Robot::TestPeriodic() {

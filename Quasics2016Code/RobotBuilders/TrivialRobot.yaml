@@ -80,7 +80,7 @@ Children:
           validators: &id005 [DigitalChannel]
           value: '0'
         Distance Per Pulse: !!robotbuilder.data.properties.DoubleProperty {default: 1,
-          name: Distance Per Pulse, validators: null, value: 1.0}
+          name: Distance Per Pulse, validators: null, value: 4.318E-4}
         PID Source: !!robotbuilder.data.properties.ChoicesProperty
           choices: &id006 [kDisplacement, kRate]
           default: kRate
@@ -114,7 +114,7 @@ Children:
           validators: *id005
           value: '2'
         Distance Per Pulse: !!robotbuilder.data.properties.DoubleProperty {default: 1,
-          name: Distance Per Pulse, validators: null, value: 1.0}
+          name: Distance Per Pulse, validators: null, value: 4.318E-4}
         PID Source: !!robotbuilder.data.properties.ChoicesProperty
           choices: *id006
           default: kRate

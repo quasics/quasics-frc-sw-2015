@@ -42,11 +42,11 @@ void RobotMap::init() {
     
     driveSystemLeftEncoder.reset(new Encoder(0, 1, true, Encoder::k4X));
     lw->AddSensor("DriveSystem", "Left Encoder", driveSystemLeftEncoder);
-    driveSystemLeftEncoder->SetDistancePerPulse(1.0);
+    driveSystemLeftEncoder->SetDistancePerPulse(4.318E-4);
     driveSystemLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
     driveSystemRightEncoder.reset(new Encoder(2, 3, false, Encoder::k4X));
     lw->AddSensor("DriveSystem", "RightEncoder", driveSystemRightEncoder);
-    driveSystemRightEncoder->SetDistancePerPulse(1.0);
+    driveSystemRightEncoder->SetDistancePerPulse(4.318E-4);
     driveSystemRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
     mrPlowIntakeBar.reset(new Victor(4));
     lw->AddActuator("Mr Plow", "Intake Bar", (Victor&) mrPlowIntakeBar);

@@ -26,50 +26,199 @@ StubCommand1::StubCommand1() :
 
 // Called just before this Command runs the first time
 void StubCommand1::Initialize() {
-	Robot::driveSystem->ResetYaw();
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->ResetYaw()();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void StubCommand1::Execute() {
-	if (timer <= 25) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
-		otacon = kTurnRight;
-	} else if (timer <= 75) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
-		otacon = kTurnRight;
-	} else if (timer <= 125) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw() >= -90) {
-		otacon = kTurnRight;
-	}else if (timer <= 175) {
-		otacon = kForward;
-	} else if (Robot::driveSystem->GetContinuousYaw()>= -90) {
-		otacon = kTurnRight;
-	}else{
-		otacon = kStop;
-	}
-	timer ++;
-	test ++;
-
-	switch (otacon){
-	case kForward:
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= 1) {
 		Robot::driveSystem->MoveLeft(50);
 		Robot::driveSystem->MoveRight(50);
-		break;
-	case kTurnRight:
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) >= -.5) {
+		Robot::driveSystem->MoveLeft(-50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() <= -90) {
 		Robot::driveSystem->MoveLeft(50);
 		Robot::driveSystem->MoveRight(-50);
-		break;
-	case kStop:
-		Robot::driveSystem->MoveLeft(0);
-		Robot::driveSystem->MoveRight(0);
+	} else {
+		Robot::driveSystem->StopEverything();
 	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= 1) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() <= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(0);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetContinuousYaw() <= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetContinuousYaw() <= -360) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetContinuousYaw() <= 90) {
+		Robot::driveSystem->MoveLeft(-50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) >= -1) {
+		Robot::driveSystem->MoveLeft(-50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() >= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .25) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() >= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetContinuousYaw() <= 90) {
+		Robot::driveSystem->MoveLeft(-50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->StopEverything();
+	if (Robot::driveSystem->GetContinuousYaw() <= 90) {
+		Robot::driveSystem->MoveLeft(-50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() >= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .25) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	if (Robot::driveSystem->GetContinuousYaw() >= -90) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetYaw();
+	if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft) <= .5) {
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(50);
+	} else {
+		Robot::driveSystem->StopEverything();
+	}
+	Robot::driveSystem->ResetEncoders();
+	Robot::driveSystem->StopEverything();
+	test++;
 }
 // Make this return true when this Command no longer needs to run execute()
 bool StubCommand1::IsFinished() {
-	return test >= 2;
+	return test >= 1;
 }
 
 // Called once after isFinished returns true

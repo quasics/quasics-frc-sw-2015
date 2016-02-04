@@ -41,9 +41,9 @@ private:
 	bool isFinished;
 	int timer;
 	enum Polygon{
-		kforward, kturnright, kturnleft, kbackward, kstop
+		kforward, kturnright, kstop
 	};
-	Polygon hexagon;
+	Polygon pentagon;
 };
 
 #endif

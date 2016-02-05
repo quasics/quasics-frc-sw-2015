@@ -70,3 +70,7 @@ MrPlow::IntakeDirection MrPlow::WhichDirection() {
 double MrPlow::GetPowerPercent(){
 	return activePower/100;
 }
+
+void MrPlow::DirectControl (double powerPercent){
+	intakeBar->Set(powerPercent/100);
+}

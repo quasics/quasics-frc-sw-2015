@@ -30,15 +30,7 @@ void TwoPersonIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TwoPersonIntake::Execute() {
-	Robot::mrPlow->SetActivePower(fabs(Robot::oi->getIntakeStick()->GetRawAxis(1)) * 25);
-
-	if (Robot::oi->getIntakeStick()->GetRawAxis(1) < 0) {
-		Robot::mrPlow->SetIntake(MrPlow::kIntake);
-	} else if (Robot::oi->getIntakeStick()->GetRawAxis(1) > 0) {
-		Robot::mrPlow->SetIntake(MrPlow::kOutput);
-	} else {
-		Robot::mrPlow->SetIntake(MrPlow::kNone);
-	}
+	Robot::mrPlow->DirectControl(Robot::oi->getIntakeStick()->GetRawAxis(1) * 100);
 }
 
 // Make this return true when this Command no longer needs to run execute()

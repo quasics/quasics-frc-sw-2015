@@ -41,6 +41,7 @@ public:
 	void SetIntake (IntakeDirection whichDirection);
 	void StopIntake ();
 	void SetActivePower (double powerPercent = 50);
+	void DirectControl (double powerPercent = 0);
 
 	IntakeDirection WhichDirection ();
 	double GetPowerPercent ();

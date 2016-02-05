@@ -27,7 +27,7 @@ StubCommand1::StubCommand1() :
 // Called just before this Command runs the first time
 void StubCommand1::Initialize() {
 	Robot::driveSystem->ResetEncoders();
-	Robot::driveSystem->ResetYaw()();
+	Robot::driveSystem->ResetYaw();
 }
 
 // Called repeatedly when this Command is scheduled to run

@@ -43,7 +43,7 @@ private:
 	enum Polygon{
 		kforward, kturnright, kstop
 	};
-	Polygon pentagon;
+	Polygon heptagon;
 };
 
 #endif

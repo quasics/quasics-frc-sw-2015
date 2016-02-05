@@ -31,10 +31,7 @@ void DashboardUpdater::Execute() {
 	SmartDashboard::PutNumber("Voltage",
 			DriverStation::GetInstance().GetBatteryVoltage());
 	SmartDashboard::PutNumber("M/S",
-			(.5
-					* (Robot::driveSystem->GetEncoderRate(DriveSystem::kLeft)
-							+ Robot::driveSystem->GetEncoderRate(
-									DriveSystem::kRight))));
+			Robot::driveSystem->GetEncoderRate(DriveSystem::kLeft));
 }
 
 // Make this return true when this Command no longer needs to run execute()

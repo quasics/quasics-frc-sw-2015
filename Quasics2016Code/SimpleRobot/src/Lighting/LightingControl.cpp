@@ -101,3 +101,12 @@ void SimulatedLightingControl::SetMode(Mode whichMode) {
 void SimulatedLightingControl::SendHeartbeat() {
 	std::cout <<"Sending Heartbeat " <<std::endl;
 }
+
+void SimulatedLightingControl::SendBatteryState(bool isLow){
+	std::cout <<"Battery Status ";
+	if (isLow){
+		std::cout <<"Low";
+	} else {
+		std::cout <<"Good";
+	}
+}

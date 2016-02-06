@@ -24,11 +24,6 @@ public:
 	 */
 	void LightingUpkeep ();
 
-private:
-	// State used in the "upkeep" function.
-	int batteryTimer;
-	int heartbeatTimer;
-	bool isBatteryLow;
 
 // Stuff dealing with actual communications with the Arduino,
 // which will be *really* implemented in derived classes.
@@ -46,6 +41,17 @@ protected:
 	virtual void SetState (State whichState) = 0;
 	virtual void SetMode (Mode whichMode) = 0;
 	virtual void SendHeartbeat () = 0;
+	virtual void SendBatteryState (bool isLow) = 0;
+
+private:
+	// State used in the "upkeep" function.
+	int lastGoodBattery;
+	int heartbeatTimer;
+	bool isBatteryLow;
+	State PreviousState;
+	Mode PreviousMode;
+
+
 };
 
 class SimulatedLightingControl : public LightingControl {
@@ -55,6 +61,7 @@ protected:
 	virtual void SetState (State whichState);
 	virtual void SetMode (Mode whichMode);
 	virtual void SendHeartbeat ();
+	virtual void SendBatteryState (bool isLow);
 };
 
 #endif /* SRC_LIGHTING_LIGHTINGCONTROL_H_ */

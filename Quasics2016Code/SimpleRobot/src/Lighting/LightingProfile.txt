@@ -1,0 +1,18 @@
+Lighting Profile
+
+-Color (Team and Communications Status)
+	-Competition:
+		-Red Team: Red
+		-Blue Team: Blue
+	-Demo: Green
+	-No Communications/ E stopped: Yellow
+-Intensity:
+	-Below 12 volts for 5 seconds: Dim the lights
+	-Otherwise: High intensity
+-Status
+	-Disabled: Breathing
+	-Enabled:
+		-Auto: Solid
+		-Operator Control: Blinking slowly
+		-Test: Medium blink
+	-No Communications/E stopped: Blinking Insistently

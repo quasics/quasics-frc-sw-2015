@@ -1,18 +1,55 @@
-Lighting Profile
+# Lighting Profile
 
--Color (Team and Communications Status)
-	-Competition:
-		-Red Team: Red
-		-Blue Team: Blue
-	-Demo: Green
-	-No Communications/ E stopped: Yellow
--Battery Indicator:
-	-Below 12 volts for 10 seconds: Yellow
-	-Otherwise: Nominal
--Status
-	-Disabled: Breathing
-	-Enabled:
-		-Auto: Solid
-		-Operator Control: Blinking slowly
-		-Test: Medium blink
-	-No Communications/E stopped: Blinking Insistently
+## Color (Team and Communications Status)
+   * Competition:
+      * Red Team: Red
+      * Blue Team: Blue
+   * Demo: Green
+   * No Communications/ E stopped: Yellow and blinking quickly (note that
+     this overrides the patterns involved with "status")
+
+## Battery Indicator:
+   * Below 12 volts for 10 seconds (as identified by the Rio): Yellow as a mix-in (see below)
+   * Otherwise: Nominal
+
+## Status
+   * Disabled: "Breathing"
+   * Enabled:
+      * Auto: Solid
+      * Operator Control: Blinking slowly
+      * Test: Medium blink
+
+## Comments
+   * When in low-voltage mode, we'll include the yellow as a brief pulse (e.g.,
+     when we "go dark" at the end of a blink/breath, we'll flicker yellow
+     briefly).
+   * **Question:** Is the RoboRio going to update battery information on an
+     ongoing basis?  If so, what should the Arduino do if it doesn't get
+     this information: does the "battery indicator" state time out after a
+     while and return to "nominal"?  (And if so, after how long?)
+
+# Possible "wire protocol"
+   * Byte 0: Command
+      * Mode (color) = 0x01
+      * Battery = 0x02
+      * Status = 0x03
+      * Heartbeat = 0xFF
+   * Byte 1: Parameter (if applicable)
+      * Mode:
+         * Red alliance = 0x01
+         * Blue alliance = 0x02
+         * Demo = 0x03
+         * No comms = 0x04
+      * Battery:
+         * Power fine: 0x01
+         * Power low: 0xFF
+      * Status:
+         * Disabled: 0x00
+         * Auto: 0x01
+         * Operator control: 0x02
+         * Test: 0x03
+      * Heartbeat: Always 0
+   * Byte 2: Checksum (to help detect transmission errors); simplest might be
+     something like a longitudinal redundancy check (http://goo.gl/sI9TFq)
+
+

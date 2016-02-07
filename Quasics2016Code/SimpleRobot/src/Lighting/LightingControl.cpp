@@ -6,107 +6,94 @@
  */
 
 #include "LightingControl.h"
-#include <iostream>
 
 LightingControl::LightingControl() {
-	batteryTimer = 0;
-	heartbeatTimer = 0;
+	lastBatterySwitch = 0;
+	lightingTimer = 0;
 	isBatteryLow = false;
+	previousBatteryState = false;
+	previousState = kError;
+	previousMode = kSlowBlinking;
+
 	SmartDashboard::PutBoolean("In Competition?", false);
 }
 
 void LightingControl::LightingUpkeep() {
-	heartbeatTimer++;
-	if (heartbeatTimer >= 250) {
-		SendHeartbeat();
-		heartbeatTimer = 0;
+	//Timer Control
+	lightingTimer++;	//Increment the lighting control timer
+
+	//Establish local variables
+	State state = kDemo;	//Local storage of state
+	Mode mode = kBreathing;	//Local storage of mode
+
+	//Status Check
+	//Battery check
+	if (DriverStation::GetInstance().GetBatteryVoltage() < 12//If the battery is low and it wasn't at the last check...
+	&& previousBatteryState == false) {
+		isBatteryLow = true;	//Set batteryState to low
+		lastBatterySwitch = lightingTimer;	//Save the time stamp of the change
+	} else if (DriverStation::GetInstance().GetBatteryVoltage() >= 12) {//Otherwise if the voltage is above 12 volts...
+		isBatteryLow = false;	//Set battery state to good
+		lastBatterySwitch = lightingTimer;	//Save the time stamp of the change
 	}
 
-	if (DriverStation::GetInstance().GetBatteryVoltage() < 12) {
-		batteryTimer++;
-	} else {
-		batteryTimer--;
-	}
-
-	if (batteryTimer >= 500) {
-		isBatteryLow = true;
-		if (batteryTimer >= 550) {
-			batteryTimer = 599;
-		}
-	} else if (batteryTimer <= 400) {
-		isBatteryLow = false;
-	}
-
-	if (!DriverStation::GetInstance().IsDSAttached() || isBatteryLow) {
-		SetState(kError);
-	} else if (SmartDashboard::GetBoolean("In Competition?", false)) {
-		SetState(kDemo);
+	//State check
+	if (!DriverStation::GetInstance().IsDSAttached()) {	//If the driver station isn't attached...
+		state = kError;	//Set error state
+	} else if (!SmartDashboard::GetBoolean("InCompetetion", false)) {//Otherwise if we aren't in competition...
+		state = kDemo;	//Set demo state
 	} else if (DriverStation::GetInstance().GetAlliance()
-			== DriverStation::kRed) {
-		SetState(kRedTeam);
-	} else if (DriverStation::GetInstance().GetAlliance()
-			== DriverStation::kBlue) {
-		SetState(kBlueTeam);
+			== DriverStation::GetInstance().kRed) {	//Otherwise if we are on the red alliance...
+		state = kRedTeam; //Set red team state
+	} else if (DriverStation::GetInstance().GetAlliance() //Otherwise if we are on the blue alliance...
+	== DriverStation::GetInstance().kBlue) {
+		state = kBlueTeam;	//Set blue team state
+	} else {	//Otherwise...
+		state = kError; //Set error state
 	}
 
-	if (!DriverStation::GetInstance().IsDSAttached()) {
-		SetMode(kQuickBlink);
-	} else if (DriverStation::GetInstance().IsDisabled()) {
-		SetMode(kBreathing);
-	} else if (DriverStation::GetInstance().IsAutonomous()) {
-		SetMode(kSolid);
+	//Mode Check
+	if (DriverStation::GetInstance().IsDisabled()) {	//If we are disabled...
+		mode = kBreathing;
+	} else if (DriverStation::GetInstance().IsAutonomous()) {	//Otherwise if
+		mode = kSolid;
 	} else if (DriverStation::GetInstance().IsOperatorControl()) {
-		SetMode(kSlowBlinking);
+		mode = kSlowBlinking;
 	} else if (DriverStation::GetInstance().IsTest()) {
-		SetMode(kMediumBlink);
+		mode = kMediumBlink;
 	} else {
-		SetMode(kQuickBlink);
+		mode = kSlowBlinking;
 	}
-}
 
-const char * kStateNames[] = { "Red", "Blue", "Demo", "Error" };
-const unsigned int kNumStateNames = sizeof(kStateNames)
-		/ sizeof(kStateNames[0]);
-
-const char * kModeNames[] = { "Solid", "Slow Blinking", "Blinking",
-		"Fast Blinking", "Breathing" };
-const unsigned int kNumModeNames = sizeof(kModeNames) / sizeof(kModeNames [0]);
-
-std::ostream& operator<<(std::ostream& os, LightingControl::State s) {
-	if (int(s) < kNumStateNames) {
-		os << kStateNames[s];
+	//Data sending
+	//State, mode, and battery sending
+	if (lightingTimer % 1500 == 0) {
+		SetState(state);
+		SetMode(mode);
+		if (lightingTimer - lastBatterySwitch >= 500) {
+			SendBatteryState(isBatteryLow);
+		}
 	} else {
-		os << "<UNKNOWN>";
+		if (state != previousState) {
+			SetState(state);
+		}
+		if (mode != previousMode) {
+			SetMode(mode);
+		}
+		if (previousBatteryState != isBatteryLow
+				&& lightingTimer - lastBatterySwitch >= 500) {
+			SendBatteryState(isBatteryLow);
+		}
 	}
-	return os;
-}
 
-std::ostream& operator<<(std::ostream& os, LightingControl::Mode m){
-	if (int (m) < kNumModeNames){
-		os << kModeNames [m];
-	} else {
-		os << "<Unknown>";
+	//Heart beat sending
+	if (lightingTimer % 500 == 0) {
+		SendHeartbeat();
 	}
-	return os;
-}
 
-void SimulatedLightingControl::SetState(State whichState) {
-	std::cout << "Setting state to " << whichState << std::endl;
-}
 
-void SimulatedLightingControl::SetMode(Mode whichMode) {
-	std::cout <<"Setting mode to " <<whichMode <<std::endl;
-}
-
-void SimulatedLightingControl::SendHeartbeat() {
-	std::cout <<"Sending Heartbeat " <<std::endl;
-}
-
-void SimulatedLightingControl::SendBatteryState(bool isLow){
-	std::cout <<"Battery Status ";
-	if (isLow){
-		std::cout <<"Low";
-	} else {
-		std::cout <<"Good";
-	}
+	//Save previous data
+	previousBatteryState = isBatteryLow;
+	previousState = state;
+	previousMode = mode;
 }

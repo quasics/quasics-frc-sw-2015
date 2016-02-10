@@ -62,7 +62,7 @@ OI::OI() {
 			0);
 
 	chooser = new SendableChooser;
-	chooser ->AddDefault("Default", new AutonomousCommand());
+	chooser ->AddDefault("Default", new AutonomousCommand(1));
 	chooser ->AddObject("Stub 1", new StubCommand1());
 	chooser ->AddObject("Stub 2", new StubCommand2());
 

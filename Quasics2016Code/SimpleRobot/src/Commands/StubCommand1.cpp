@@ -55,21 +55,21 @@ void StubCommand1::Execute() {
 		}
 
 		if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft)
-				>= .731) {
+				>= 1.34) {
 			Robot::driveSystem->ResetEncoders();
 			Robot::driveSystem->ResetYaw();
-			autoStage = 2;
+			autoStage = 4;
 			//reset Sensors
 		}
 		break;
 	case 2:
-		Robot::driveSystem->MoveLeft(-50);
-		Robot::driveSystem->MoveRight(50);
+		Robot::driveSystem->MoveLeft(50);
+		Robot::driveSystem->MoveRight(-50);
 
-		if (Robot::driveSystem->GetContinuousYaw() <= 60) {
+		if (Robot::driveSystem->GetContinuousYaw() >= -30) {
 			Robot::driveSystem->ResetEncoders();
 			Robot::driveSystem->ResetYaw();
-			autoStage = 3;
+			autoStage = 5;
 		}
 		break;
 	case 3:
@@ -86,38 +86,7 @@ void StubCommand1::Execute() {
 		}
 
 		if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft)
-				>= 1.58) {
-			Robot::driveSystem->ResetEncoders();
-			Robot::driveSystem->ResetYaw();
-			autoStage = 4;
-			//reset Sensors
-		}
-		break;
-	case 4:
-		Robot::driveSystem->MoveLeft(50);
-		Robot::driveSystem->MoveRight(-50);
-
-		if (Robot::driveSystem->GetContinuousYaw() >= -60) {
-			Robot::driveSystem->ResetEncoders();
-			Robot::driveSystem->ResetYaw();
-			autoStage = 5;
-		}
-		break;
-	case 5:
-		//Motor Stuff
-		if (Robot::driveSystem->GetContinuousYaw() > 2.5) {
-			Robot::driveSystem->MoveLeft(50);
-			Robot::driveSystem->MoveRight(45);
-		} else if (Robot::driveSystem->GetContinuousYaw() < -2.5) {
-			Robot::driveSystem->MoveLeft(45);
-			Robot::driveSystem->MoveRight(50);
-		} else {
-			Robot::driveSystem->MoveLeft(50);
-			Robot::driveSystem->MoveRight(50);
-		}
-
-		if (Robot::driveSystem->GetEncoderDistance(DriveSystem::kLeft)
-				>= .4572) {
+				>= 2.83) {
 			Robot::driveSystem->ResetEncoders();
 			Robot::driveSystem->ResetYaw();
 			isFinished = true;

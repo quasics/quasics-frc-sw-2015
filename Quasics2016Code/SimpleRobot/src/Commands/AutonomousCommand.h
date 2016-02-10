@@ -43,7 +43,12 @@ private:
 
     bool isEndstep;
     int autoStage;
-    bool isFinished;
+
+    bool Auto1 ();
+    bool Auto2 ();
+    bool Auto3 ();
+    bool Auto4 ();
+    bool Auto5 ();
 };
 
 #endif

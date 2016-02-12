@@ -13,6 +13,12 @@ private:
 	Encoder leftEncoder;
 	Encoder rightEncoder;
 
+	enum LiftState{
+		kLifting, kDropping, kOff
+	};
+	LiftState liftState;
+	LiftState liftStatePrevious;
+
 	void RobotInit();
 	void AutonomousInit();
 	void AutonomousPeriodic();

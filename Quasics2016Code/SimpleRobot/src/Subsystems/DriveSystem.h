@@ -38,6 +38,7 @@ private:
 	bool isRightForward;					//Right set to move forward
 	double leftPower;						//Left power setting
 	double rightPower;						//Right power setting
+	const double deadbandWidth = 5;
 
 	//Extra Pointers
 	std::shared_ptr<AHRS> navx;				//NavX-MXP sensor

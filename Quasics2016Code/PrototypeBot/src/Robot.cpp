@@ -2,7 +2,7 @@
 #include <iostream>
 
 ProtoMan::ProtoMan() :
-		stick(0), left(4), right(5), leftEncoder(3, 4), rightEncoder(5, 6, true) {
+		stick(0), left(4), right(5), leftEncoder(4, 5), rightEncoder(6, 7, true) {
 	leftEncoder.SetDistancePerPulse(1);
 	rightEncoder.SetDistancePerPulse(1);
 }
@@ -21,29 +21,46 @@ void ProtoMan::AutonomousPeriodic() {
 
 }
 void ProtoMan::TeleopInit() {
-	std::cout << "Axis Controlled Intake" <<std::endl;
+	std::cout << "Axis Controlled Intake" << std::endl;
 	leftEncoder.Reset();
 	rightEncoder.Reset();
 }
 void ProtoMan::TeleopPeriodic() {
-	float power = stick.GetRawAxis(1);
+	float power = -stick.GetRawAxis(1);
 
-	if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-		left.Set(power * .5);
-		right.Set(-power * .5);
-	} else if (leftEncoder.GetRaw() > rightEncoder.GetRaw()) {
-		std::cout << "Slowing Left" << std::endl;
-		left.Set((power - .125) * .5);
-		right.Set(-(power) * .5);
+	if (power >= 0) {
+		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
+			left.Set(power * .5);
+			right.Set(-power * .5);
+		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
+			std::cout << "Slowing Left" << std::endl;
+			if (rightEncoder.GetDirection())
+				left.Set((power - .125) * .5);
+			right.Set(-(power) * .5);
+		} else {
+			std::cout << "Slowing Right" << std::endl;
+			left.Set((power) * .5);
+			right.Set(-(power - .125) * .5);
+		}
 	} else {
-		std::cout << "Slowing Right" << std::endl;
-		left.Set((power) * .5);
-		right.Set(-(power - .125) * .5);
+		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
+			left.Set(power * .5);
+			right.Set(-power * .5);
+		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
+			std::cout << "Slowing Left" << std::endl;
+			if (rightEncoder.GetDirection())
+				left.Set((power + .125) * .5);
+			right.Set(-(power) * .5);
+		} else {
+			std::cout << "Slowing Right" << std::endl;
+			left.Set((power) * .5);
+			right.Set(-(power + .125) * .5);
+		}
 	}
 
 }
 void ProtoMan::TestInit() {
-	std::cout << "Button Controlled Intake" <<std::endl;
+	std::cout << "Button Controlled Intake" << std::endl;
 	leftEncoder.Reset();
 	rightEncoder.Reset();
 }
@@ -57,17 +74,34 @@ void ProtoMan::TestPeriodic() {
 	else
 		power = 0;
 
-	if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-		left.Set(power * .5);
-		right.Set(-power * .5);
-	} else if (leftEncoder.GetRaw() > rightEncoder.GetRaw()) {
-		std::cout << "Slowing Left" << std::endl;
-		left.Set((power - .125) * .5);
-		right.Set(-(power) * .5);
+	if (power >= 0) {
+		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
+			left.Set(power * .5);
+			right.Set(-power * .5);
+		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
+			std::cout << "Slowing Left" << std::endl;
+			if (rightEncoder.GetDirection())
+				left.Set((power - .125) * .5);
+			right.Set(-(power) * .5);
+		} else {
+			std::cout << "Slowing Right" << std::endl;
+			left.Set((power) * .5);
+			right.Set(-(power - .125) * .5);
+		}
 	} else {
-		std::cout << "Slowing Right" << std::endl;
-		left.Set((power) * .5);
-		right.Set(-(power - .125) * .5);
+		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
+			left.Set(power * .5);
+			right.Set(-power * .5);
+		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
+			std::cout << "Slowing Left" << std::endl;
+			if (rightEncoder.GetDirection())
+				left.Set((power + .125) * .5);
+			right.Set(-(power) * .5);
+		} else {
+			std::cout << "Slowing Right" << std::endl;
+			left.Set((power) * .5);
+			right.Set(-(power + .125) * .5);
+		}
 	}
 }
 

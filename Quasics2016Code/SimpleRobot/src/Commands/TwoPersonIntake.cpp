@@ -29,7 +29,10 @@ void TwoPersonIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TwoPersonIntake::Execute() {
-	Robot::mrPlow->DirectControl(Robot::oi->getIntakeStick()->GetRawAxis(1) * 100);
+	if(fabs(Robot::oi->getIntakeStick()->GetRawAxis(1)) >= .05)
+		Robot::mrPlow->DirectControl(Robot::oi->getIntakeStick()->GetRawAxis(1) * 100);
+	else
+		Robot::mrPlow->DirectControl(0);
 }
 
 // Make this return true when this Command no longer needs to run execute()

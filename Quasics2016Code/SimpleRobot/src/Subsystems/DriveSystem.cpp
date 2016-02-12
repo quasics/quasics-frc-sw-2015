@@ -32,6 +32,7 @@ DriveSystem::DriveSystem() : Subsystem("DriveSystem") {
 	isRightForward = false;
 	leftPower = 0;
 	rightPower = 0;
+	
 	try {
 		/* Communicate w/navX-MXP via the MXP SPI Bus.                                       */
 		/* Alternatively:  I2C::Port::kMXP, SerialPort::Port::kMXP or SerialPort::Port::kUSB */
@@ -57,25 +58,35 @@ void DriveSystem::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void DriveSystem::MoveLeft(double percentPower) {
-	leftPower = percentPower;
+	leftPower = 0;
+	
+	if (fabs(percentPower) >= deadbandWidth){
+		leftPower = percentPower;
+	}
+	
 	if (percentPower > 0) {
 		isLeftForward = true;
 	} else {
 		isLeftForward = false;
 	}
-	leftFront->Set(-leftPower / 100);
-	leftRear->Set(-leftPower / 100);
+	leftFront->Set(leftPower / 100);
+	leftRear->Set(leftPower / 100);
 }
 
 void DriveSystem::MoveRight(double percentPower) {
-	rightPower = percentPower;
+	rightPower = 0;
+	
+	if (fabs(percentPower) >= dedbandWidth){
+		rightPower = percentPower;
+	}
+	
 	if (percentPower > 0) {
 		isRightForward = true;
 	} else {
 		isRightForward = false;
 	}
-	rightFront->Set(rightPower / 100);
-	rightRear->Set(rightPower / 100);
+	rightFront->Set(-rightPower / 100);
+	rightRear->Set(-rightPower / 100);
 }
 
 void DriveSystem::StopEverything() {

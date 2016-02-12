@@ -32,33 +32,33 @@ void ProtoMan::TeleopPeriodic() {
 	if (leftPower >= 0) {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
 			std::cout << "Balanced" << std::endl;
-			left.Set(leftPower * .5);
-			right.Set(-rightPower * .5);
+			left.Set(leftPower * .75);
+			right.Set(-rightPower * .75);
 		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
 			std::cout << "- Right" << std::endl;
 			rightPower = rightPower - .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		} else {
 			std::cout << "- Left" << std::endl;
 			leftPower = leftPower - .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		}
 	} else {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(leftPower * .5);
-			right.Set(-rightPower * .5);
+			left.Set(leftPower * .75);
+			right.Set(-rightPower * .75);
 		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
 			std::cout << "+ Right" << std::endl;
 			rightPower = rightPower + .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		} else {
 			std::cout << "+ Left" << std::endl;
 			leftPower = leftPower + .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		}
 	}
 
@@ -91,33 +91,33 @@ void ProtoMan::TestPeriodic() {
 	if (leftPower >= 0) {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
 			std::cout << "Balanced" << std::endl;
-			left.Set(leftPower * .5);
-			right.Set(-rightPower * .5);
+			left.Set(leftPower * .75);
+			right.Set(-rightPower * .75);
 		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
 			std::cout << "- Right" << std::endl;
 			rightPower = rightPower - .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		} else {
 			std::cout << "- Left" << std::endl;
 			leftPower = leftPower - .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		}
 	} else {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(leftPower * .5);
-			right.Set(-rightPower * .5);
+			left.Set(leftPower * .75);
+			right.Set(-rightPower * .75);
 		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
 			std::cout << "+ Right" << std::endl;
 			rightPower = rightPower + .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		} else {
 			std::cout << "+ Left" << std::endl;
 			leftPower = leftPower + .25;
-			left.Set((leftPower) * .5);
-			right.Set(-(rightPower) * .5);
+			left.Set((leftPower) * .75);
+			right.Set(-(rightPower) * .75);
 		}
 	}
 

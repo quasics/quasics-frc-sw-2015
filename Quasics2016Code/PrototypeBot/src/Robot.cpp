@@ -21,7 +21,7 @@ void ProtoMan::AutonomousPeriodic() {
 
 }
 void ProtoMan::TeleopInit() {
-	std::cout <<"Button Controlled Intake";
+	std::cout << "Axis Controlled Intake" <<std::endl;
 	leftEncoder.Reset();
 	rightEncoder.Reset();
 }
@@ -32,17 +32,18 @@ void ProtoMan::TeleopPeriodic() {
 		left.Set(power * .5);
 		right.Set(-power * .5);
 	} else if (leftEncoder.GetRaw() > rightEncoder.GetRaw()) {
-		std::cout <<"Slowing Left" <<std::endl;
+		std::cout << "Slowing Left" << std::endl;
 		left.Set((power - .125) * .5);
 		right.Set(-(power) * .5);
 	} else {
-		std::cout <<"Slowing Right" <<std::endl;
+		std::cout << "Slowing Right" << std::endl;
 		left.Set((power) * .5);
 		right.Set(-(power - .125) * .5);
 	}
 
 }
 void ProtoMan::TestInit() {
+	std::cout << "Button Controlled Intake" <<std::endl;
 	leftEncoder.Reset();
 	rightEncoder.Reset();
 }
@@ -60,9 +61,11 @@ void ProtoMan::TestPeriodic() {
 		left.Set(power * .5);
 		right.Set(-power * .5);
 	} else if (leftEncoder.GetRaw() > rightEncoder.GetRaw()) {
+		std::cout << "Slowing Left" << std::endl;
 		left.Set((power - .125) * .5);
 		right.Set(-(power) * .5);
 	} else {
+		std::cout << "Slowing Right" << std::endl;
 		left.Set((power) * .5);
 		right.Set(-(power - .125) * .5);
 	}

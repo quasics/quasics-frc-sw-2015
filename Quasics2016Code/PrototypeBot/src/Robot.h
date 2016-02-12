@@ -7,6 +7,11 @@ public:
 	ProtoMan();
 
 private:
+	Joystick stick;
+	Victor left;
+	Victor right;
+	Encoder leftEncoder;
+	Encoder rightEncoder;
 
 	void RobotInit();
 	void AutonomousInit();

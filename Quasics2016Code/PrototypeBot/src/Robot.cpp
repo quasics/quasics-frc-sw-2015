@@ -37,13 +37,13 @@ void ProtoMan::TeleopPeriodic() {
 			left.Set(leftPower * .75);
 			right.Set(-rightPower * .75);
 		} else if (leftEncoder.Get() > rightEncoder.Get()) {
-			std::cout << "- Right" << std::endl;
-			rightPower = rightPower - .25;
+			std::cout << "- Left" << std::endl;
+			leftPower = leftPower - .25;
 			left.Set((leftPower) * .75);
 			right.Set(-(rightPower) * .75);
 		} else {
-			std::cout << "- Left" << std::endl;
-			leftPower = leftPower - .25;
+			std::cout << "- Right" << std::endl;
+			rightPower = rightPower - .25;
 			left.Set((leftPower) * .75);
 			right.Set(-(rightPower) * .75);
 		}
@@ -52,13 +52,13 @@ void ProtoMan::TeleopPeriodic() {
 			left.Set(leftPower * .75);
 			right.Set(-rightPower * .75);
 		} else if (leftEncoder.Get() < rightEncoder.Get()) {
-			std::cout << "+ Right" << std::endl;
-			rightPower = rightPower + .25;
+			std::cout << "+ Left" << std::endl;
+			leftPower = leftPower + .25;
 			left.Set((leftPower) * .75);
 			right.Set(-(rightPower) * .75);
 		} else {
-			std::cout << "+ Left" << std::endl;
-			leftPower = leftPower + .25;
+			std::cout << "+ Right" << std::endl;
+			rightPower = rightPower + .25;
 			left.Set((leftPower) * .75);
 			right.Set(-(rightPower) * .75);
 		}

@@ -26,38 +26,48 @@ void ProtoMan::TeleopInit() {
 	rightEncoder.Reset();
 }
 void ProtoMan::TeleopPeriodic() {
-	float power = -stick.GetRawAxis(1);
+	float leftPower = -stick.GetRawAxis(1);
+	float rightPower = -stick.GetRawAxis(1);
 
-	if (power >= 0) {
+	if (leftPower >= 0) {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(power * .5);
-			right.Set(-power * .5);
+			std::cout << "Balanced" << std::endl;
+			left.Set(leftPower * .5);
+			right.Set(-rightPower * .5);
 		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
-			std::cout << "Slowing Left" << std::endl;
-			if (rightEncoder.GetDirection())
-				left.Set((power - .125) * .5);
-			right.Set(-(power) * .5);
+			std::cout << "- Right" << std::endl;
+			rightPower = rightPower - .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		} else {
-			std::cout << "Slowing Right" << std::endl;
-			left.Set((power) * .5);
-			right.Set(-(power - .125) * .5);
+			std::cout << "- Left" << std::endl;
+			leftPower = leftPower - .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		}
 	} else {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(power * .5);
-			right.Set(-power * .5);
+			left.Set(leftPower * .5);
+			right.Set(-rightPower * .5);
 		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
-			std::cout << "Slowing Left" << std::endl;
-			if (rightEncoder.GetDirection())
-				left.Set((power + .125) * .5);
-			right.Set(-(power) * .5);
+			std::cout << "+ Right" << std::endl;
+			rightPower = rightPower + .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		} else {
-			std::cout << "Slowing Right" << std::endl;
-			left.Set((power) * .5);
-			right.Set(-(power + .125) * .5);
+			std::cout << "+ Left" << std::endl;
+			leftPower = leftPower + .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		}
 	}
 
+	std::cout << "Left: " << leftEncoder.Get() << std::endl << "Left Power: "
+			<< leftPower << std::endl << "Left Rate: " << leftEncoder.GetRate()
+			<< std::endl;
+	std::cout << "Right: " << rightEncoder.Get() << std::endl << "Right Power: "
+			<< rightPower << std::endl << "Right Rate: "
+			<< rightEncoder.GetRate() << std::endl << std::endl;
 }
 void ProtoMan::TestInit() {
 	std::cout << "Button Controlled Intake" << std::endl;
@@ -66,43 +76,57 @@ void ProtoMan::TestInit() {
 }
 void ProtoMan::TestPeriodic() {
 
-	float power = 0;
-	if (stick.GetRawButton(3) && !stick.GetRawButton(2))
-		power = .5;
-	else if (stick.GetRawButton(2) && !stick.GetRawButton(3))
-		power = -.5;
-	else
-		power = 0;
+	float leftPower = 0;
+	float rightPower = 0;
 
-	if (power >= 0) {
+	if (stick.GetRawButton(3) && !stick.GetRawButton(2))
+		leftPower = .5;
+	else if (stick.GetRawButton(2) && !stick.GetRawButton(3))
+		leftPower = -.5;
+	else
+		leftPower = 0;
+	rightPower = leftPower;
+
+
+	if (leftPower >= 0) {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(power * .5);
-			right.Set(-power * .5);
+			std::cout << "Balanced" << std::endl;
+			left.Set(leftPower * .5);
+			right.Set(-rightPower * .5);
 		} else if (fabs(leftEncoder.Get()) > fabs(rightEncoder.Get())) {
-			std::cout << "Slowing Left" << std::endl;
-			if (rightEncoder.GetDirection())
-				left.Set((power - .125) * .5);
-			right.Set(-(power) * .5);
+			std::cout << "- Right" << std::endl;
+			rightPower = rightPower - .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		} else {
-			std::cout << "Slowing Right" << std::endl;
-			left.Set((power) * .5);
-			right.Set(-(power - .125) * .5);
+			std::cout << "- Left" << std::endl;
+			leftPower = leftPower - .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		}
 	} else {
 		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(power * .5);
-			right.Set(-power * .5);
+			left.Set(leftPower * .5);
+			right.Set(-rightPower * .5);
 		} else if (fabs(leftEncoder.Get()) < fabs(rightEncoder.Get())) {
-			std::cout << "Slowing Left" << std::endl;
-			if (rightEncoder.GetDirection())
-				left.Set((power + .125) * .5);
-			right.Set(-(power) * .5);
+			std::cout << "+ Right" << std::endl;
+			rightPower = rightPower + .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		} else {
-			std::cout << "Slowing Right" << std::endl;
-			left.Set((power) * .5);
-			right.Set(-(power + .125) * .5);
+			std::cout << "+ Left" << std::endl;
+			leftPower = leftPower + .25;
+			left.Set((leftPower) * .5);
+			right.Set(-(rightPower) * .5);
 		}
 	}
+
+	std::cout << "Left: " << leftEncoder.Get() << std::endl << "Left Power: "
+			<< leftPower << std::endl << "Left Rate: " << leftEncoder.GetRate()
+			<< std::endl;
+	std::cout << "Right: " << rightEncoder.Get() << std::endl << "Right Power: "
+			<< rightPower << std::endl << "Right Rate: "
+			<< rightEncoder.GetRate() << std::endl << std::endl;
 }
 
 START_ROBOT_CLASS(ProtoMan);

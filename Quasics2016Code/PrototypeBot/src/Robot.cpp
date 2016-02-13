@@ -72,10 +72,23 @@ void ProtoMan::TeleopPeriodic() {
 			<< rightEncoder.GetRate() << std::endl << std::endl;
 }
 void ProtoMan::TestInit() {
-
+	leftEncoder.Reset();
+	rightEncoder.Reset();
+	left.Set(.75);
+	right.Set(-.75);
 }
-void ProtoMan::TestPeriodic() {
 
+int TestCounter = 0;
+
+void ProtoMan::TestPeriodic() {
+	if (TestCounter == 50) {
+		std::cout << "Left/Right: "
+				<< leftEncoder.GetRate() / rightEncoder.GetRate() << std::endl
+				<< "Right/Left: "
+				<< rightEncoder.GetRate() / leftEncoder.GetRate() << std::endl;
+	}
+
+	TestCounter++;
 }
 
 START_ROBOT_CLASS(ProtoMan);

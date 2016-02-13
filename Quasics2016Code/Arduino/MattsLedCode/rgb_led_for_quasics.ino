@@ -1,7 +1,7 @@
 #include "color_def.h"
 #include "light_mgmt.h"
 
-// #define USE_REAL_LEDS
+#define USE_REAL_LEDS
 
 /*************************************************************************/
 // Output (PWM) pin definitions
@@ -16,6 +16,10 @@ void setup()
 {
   Serial.begin(115200);
 
+#ifdef HAVE_HWSERIAL1
+  Serial1.begin(115200);
+#endif
+
 #ifdef USE_REAL_LEDS
   pinMode(RED_PIN, OUTPUT); // sets the redPin to be an output
   pinMode(GREEN_PIN, OUTPUT); // sets the greenPin to be an output
@@ -28,16 +32,16 @@ void setup()
   lightManager->setMode(LightManager::eDemoMode);
   lightManager->setState(LightManager::eDisabled);
 
-  showCommands();
+  showCommands(Serial);
 }
 
-void showCommands() {
-  p("Supported operations:\n");
-  p("   Mode: red/blue/demo/error\n");
-  p("   State: disabled/auto/teleop/test\n\n");
+void showCommands(HardwareSerial& serial) {
+  fp(serial, "Supported operations:\n");
+  fp(serial, "   Mode: red/blue/demo/error\n");
+  fp(serial, "   State: disabled/auto/teleop/test\n\n");
 }
 
-void executeCommand(String s) {
+void executeCommand(HardwareSerial& serial, String s) {
   s.trim();
   if (s.length() == 0) {
     // Empty command (e.g., user just hit <Return>)
@@ -62,23 +66,34 @@ void executeCommand(String s) {
   } else if (s == "tele" || s == "teleop") {
     lightManager->setState(LightManager::eTeleOp);
   } else {
-    p("Unknown command: %s\n", s.c_str());
-    showCommands();
+    fp(serial, "Unknown command: %s\n", s.c_str());
+    showCommands(serial);
   }
 }
 
-void processCommands() {
-  static String text;
-
-  while (Serial.available() > 0) {
-    char rc = Serial.read();
+void processSerialData(const char* portName, HardwareSerial& serial, String& buffer) {
+  while (serial.available() > 0) {
+    char rc = serial.read();
     if (rc == '\n' || rc == '\r' || rc == ';') {
-      executeCommand(text);
-      text = "";
+      Serial.print(portName); Serial.print(": "); Serial.println(buffer);
+      executeCommand(serial, buffer);
+      buffer = "";
     } else {
-      text += rc;
+      buffer += rc;
     }
   }
+}
+
+// TODO(healym): Consider switching to event-based capture of data, using
+// "serialEvent()" and "serialEvent1()".
+void processCommands() {
+  static String serialText;
+  processSerialData("serial0", Serial, serialText);
+
+#ifdef HAVE_HWSERIAL1
+  static String serial1Text;
+  processSerialData("serial1", Serial1, serial1Text);
+#endif
 }
 
 /***************************************************************************/

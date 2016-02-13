@@ -19,6 +19,7 @@ struct ColorDef {
   static const ColorDef ORANGE;
   static const ColorDef INDIGO;
   static const ColorDef VIOLET;
+  static const ColorDef SEAFOAM;
 };
 
 #endif  // COLOR_DEF_H

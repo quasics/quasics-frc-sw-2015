@@ -22,6 +22,7 @@ std::shared_ptr<Encoder> RobotMap::driveSystemLeftEncoder;
 std::shared_ptr<Encoder> RobotMap::driveSystemRightEncoder;
 std::shared_ptr<SpeedController> RobotMap::intakeLeftIntakeWheel;
 std::shared_ptr<SpeedController> RobotMap::intakeRightIntakeWheel;
+std::shared_ptr<Relay> RobotMap::intakePusher;
 std::shared_ptr<SpeedController> RobotMap::intakeArmLeftArm;
 std::shared_ptr<SpeedController> RobotMap::intakeArmRightArm;
 std::shared_ptr<Encoder> RobotMap::intakeArmLeftArmEncoder;
@@ -56,8 +57,11 @@ void RobotMap::init() {
     intakeLeftIntakeWheel.reset(new Victor(4));
     lw->AddActuator("Intake", "LeftIntakeWheel", (Victor&) intakeLeftIntakeWheel);
     
-    intakeRightIntakeWheel.reset(new Talon(5));
-    lw->AddActuator("Intake", "RightIntakeWheel", (Talon&) intakeRightIntakeWheel);
+    intakeRightIntakeWheel.reset(new Victor(5));
+    lw->AddActuator("Intake", "RightIntakeWheel", (Victor&) intakeRightIntakeWheel);
+    
+    intakePusher.reset(new Relay(0));
+    lw->AddActuator("Intake", "Pusher", intakePusher);
     
     intakeArmLeftArm.reset(new Spark(6));
     lw->AddActuator("IntakeArm", "LeftArm", (Spark&) intakeArmLeftArm);

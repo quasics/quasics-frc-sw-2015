@@ -19,6 +19,8 @@
 #include "Commands/FPSDrive.h"
 #include "Commands/FPSDriveLogarithmic.h"
 #include "Commands/OneManIntake.h"
+#include "Commands/OneManIntakeArm.h"
+#include "Commands/OneManIntakeSystem.h"
 #include "Commands/PointTurn.h"
 #include "Commands/SpyBoxAutonmous.h"
 #include "Commands/StopDriveBase.h"
@@ -28,6 +30,8 @@
 #include "Commands/SwingTurn.h"
 #include "Commands/TankDrive.h"
 #include "Commands/TimedMove.h"
+#include "Commands/TwoManIntakeArm.h"
+#include "Commands/TwoManIntakeSystem.h"
 #include "Commands/TwoPersonIntake.h"
 
 
@@ -42,15 +46,14 @@ OI::OI() {
     
 
     // SmartDashboard Buttons
-    SmartDashboard::PutData("Spy Box Autonmous", new SpyBoxAutonmous());
+    SmartDashboard::PutData("Two Man Intake System", new TwoManIntakeSystem());
+    SmartDashboard::PutData("OneManIntakeSystem", new OneManIntakeSystem());
     SmartDashboard::PutData("StopDriveBase", new StopDriveBase());
-    SmartDashboard::PutData("OneManIntake", new OneManIntake());
     SmartDashboard::PutData("StopIntake", new StopIntake());
-    SmartDashboard::PutData("Two Person Intake", new TwoPersonIntake());
     SmartDashboard::PutData("FPSDriveLogarithmic", new FPSDriveLogarithmic());
     SmartDashboard::PutData("FPSDrive", new FPSDrive());
-    SmartDashboard::PutData("ArcadeDrive", new ArcadeDrive());
     SmartDashboard::PutData("Tank Drive", new TankDrive());
+    SmartDashboard::PutData("ArcadeDrive", new ArcadeDrive());
     SmartDashboard::PutData("TimedMove: 1 sec - ahead full", new TimedMove(1, 100));
     SmartDashboard::PutData("TimedMove: 1 sec - full reverse", new TimedMove(1, -100));
 

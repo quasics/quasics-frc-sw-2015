@@ -72,7 +72,7 @@ void Robot::TeleopPeriodic() {
 	Scheduler::GetInstance()->Run();
 }
 
-void Robot::TestInit() {
+void Robot::TestInit(){
 
 }
 

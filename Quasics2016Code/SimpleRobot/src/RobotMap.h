@@ -31,6 +31,7 @@ public:
 	static std::shared_ptr<Encoder> driveSystemRightEncoder;
 	static std::shared_ptr<SpeedController> intakeLeftIntakeWheel;
 	static std::shared_ptr<SpeedController> intakeRightIntakeWheel;
+	static std::shared_ptr<Relay> intakePusher;
 	static std::shared_ptr<SpeedController> intakeArmLeftArm;
 	static std::shared_ptr<SpeedController> intakeArmRightArm;
 	static std::shared_ptr<Encoder> intakeArmLeftArmEncoder;

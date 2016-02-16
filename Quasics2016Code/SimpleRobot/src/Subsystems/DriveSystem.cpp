@@ -76,7 +76,7 @@ void DriveSystem::MoveLeft(double percentPower) {
 void DriveSystem::MoveRight(double percentPower) {
 	rightPower = 0;
 	
-	if (fabs(percentPower) >= dedbandWidth){
+	if (fabs(percentPower) >= deadbandWidth){
 		rightPower = percentPower;
 	}
 	

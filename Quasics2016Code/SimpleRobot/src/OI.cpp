@@ -42,6 +42,7 @@ OI::OI() {
     
 
     // SmartDashboard Buttons
+    SmartDashboard::PutData("Spy Box Autonmous", new SpyBoxAutonmous());
     SmartDashboard::PutData("StopDriveBase", new StopDriveBase());
     SmartDashboard::PutData("OneManIntake", new OneManIntake());
     SmartDashboard::PutData("StopIntake", new StopIntake());

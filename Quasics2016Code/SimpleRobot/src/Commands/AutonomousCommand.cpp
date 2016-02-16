@@ -71,7 +71,6 @@ void AutonomousCommand::Execute() {
 		}
 	} else {
 		Robot::driveSystem->StopEverything();
-		Robot::mrPlow->SetIntake(MrPlow::kOutput);
 	}
 }
 
@@ -83,13 +82,11 @@ bool AutonomousCommand::IsFinished() {
 // Called once after isFinished returns true
 void AutonomousCommand::End() {
 	Robot::driveSystem->StopEverything();
-	Robot::mrPlow->StopIntake();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void AutonomousCommand::Interrupted() {
 	Robot::driveSystem->StopEverything();
-	Robot::mrPlow->StopIntake();
 }
 

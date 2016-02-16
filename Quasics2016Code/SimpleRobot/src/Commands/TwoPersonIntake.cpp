@@ -29,7 +29,13 @@ void TwoPersonIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TwoPersonIntake::Execute() {
-
+	if (Robot::oi->getIntakeStick()->GetRawButton(1) && !Robot::oi->getIntakeStick()->GetRawButton(3)){
+		Robot::intake->SetPower(Intake::kOutput);
+	} else if (!Robot::oi->getIntakeStick()->GetRawButton(1) && Robot::oi->getIntakeStick()->GetRawButton(3)){
+		Robot::intake->SetPower(Intake::kIntake);
+	} else {
+		Robot::intake->StopIntake();
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -39,11 +45,11 @@ bool TwoPersonIntake::IsFinished() {
 
 // Called once after isFinished returns true
 void TwoPersonIntake::End() {
-
+	Robot::intake->StopIntake();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void TwoPersonIntake::Interrupted() {
-
+	Robot::intake->StopIntake();
 }

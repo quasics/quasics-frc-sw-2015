@@ -43,6 +43,7 @@ public:
 
 	void SetArmDirection (Direction whichDirection = kOff);
 	void StopArm ();
+	void DirectArmControll (float power);
 };
 
 #endif

@@ -46,8 +46,8 @@ OI::OI() {
     
 
     // SmartDashboard Buttons
-    SmartDashboard::PutData("Two Man Intake System", new TwoManIntakeSystem());
-    SmartDashboard::PutData("OneManIntakeSystem", new OneManIntakeSystem());
+    SmartDashboard::PutData("Two Man Intake", new TwoManIntakeSystem());
+    SmartDashboard::PutData("One Man Intake", new OneManIntakeSystem());
     SmartDashboard::PutData("StopDriveBase", new StopDriveBase());
     SmartDashboard::PutData("StopIntake", new StopIntake());
     SmartDashboard::PutData("FPSDriveLogarithmic", new FPSDriveLogarithmic());

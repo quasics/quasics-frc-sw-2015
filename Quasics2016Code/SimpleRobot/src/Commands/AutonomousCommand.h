@@ -43,6 +43,7 @@ private:
 
     bool isEndstep;
     int autoStage;
+    int endstepTimer;
 
     bool Auto1 ();
     bool Auto2 ();

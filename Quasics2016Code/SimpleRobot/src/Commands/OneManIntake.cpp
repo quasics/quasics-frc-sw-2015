@@ -30,7 +30,13 @@ void OneManIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void OneManIntake::Execute() {
-
+	if (Robot::oi->getPilotStick()->GetRawButton(11) && !Robot::oi->getPilotStick()->GetRawButton(12)){
+		Robot::intake->SetPower(Intake::kIntake);
+	} else if (!Robot::oi->getPilotStick()->GetRawButton(11) && Robot::oi->getPilotStick()->GetRawButton(12)){
+		Robot::intake->SetPower(Intake::kOutput);
+	} else {
+		Robot::intake->SetPower(Intake::kOff);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -40,11 +46,11 @@ bool OneManIntake::IsFinished() {
 
 // Called once after isFinished returns true
 void OneManIntake::End() {
-
+	Robot::intake->StopIntake();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void OneManIntake::Interrupted() {
-
+	Robot::intake->StopIntake();
 }

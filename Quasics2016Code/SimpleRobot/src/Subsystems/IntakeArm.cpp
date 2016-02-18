@@ -69,9 +69,9 @@ void IntakeArm::SetArmDirection(Direction whichDirection) {
 			rightRecovery = 0;
 		} else if (leftArmEncoder->Get() > rightArmEncoder->Get()) {
 			leftRecovery = 0;
-			rightRecovery = .25;
+			rightRecovery = .5;
 		} else {
-			leftRecovery = .25;
+			leftRecovery = .5;
 			rightRecovery = 0;
 		}
 	} else {
@@ -81,9 +81,9 @@ void IntakeArm::SetArmDirection(Direction whichDirection) {
 			rightRecovery = 0;
 		} else if (leftArmEncoder->Get() < rightArmEncoder->Get()) {
 			leftRecovery = 0;
-			rightRecovery = -.25;
+			rightRecovery = -.5;
 		} else {
-			leftRecovery = -.25;
+			leftRecovery = -.5;
 			rightRecovery = 0;
 		}
 	}

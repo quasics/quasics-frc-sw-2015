@@ -40,14 +40,14 @@ void Intake::InitDefaultCommand() {
 void Intake::SetPower(Direction whichDirection) {
 	switch (whichDirection) {
 	case kIntake:
-		leftIntakeWheel->Set(-.75);
-		rightIntakeWheel->Set(-.75);
+		leftIntakeWheel->Set(.25);
+		rightIntakeWheel->Set(.25);
 		pusher->Set(Relay::kReverse);
 		break;
 	case kOutput:
-		leftIntakeWheel->Set(.75);
-		rightIntakeWheel->Set(.75);
-		pusher->Set(Relay::kForward);
+		leftIntakeWheel->Set(-.5);
+		rightIntakeWheel->Set(-.5);
+		pusher->Set(Relay::kOn);
 		break;
 	default:
 		leftIntakeWheel->Set(0);

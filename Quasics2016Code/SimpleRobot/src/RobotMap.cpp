@@ -60,7 +60,7 @@ void RobotMap::init() {
     intakeRightIntakeWheel.reset(new Victor(5));
     lw->AddActuator("Intake", "RightIntakeWheel", (Victor&) intakeRightIntakeWheel);
     
-    intakePusher.reset(new Relay(0));
+    intakePusher.reset(new Relay(0, Relay::kBothDirections));
     lw->AddActuator("Intake", "Pusher", intakePusher);
     
     intakeArmLeftArm.reset(new Spark(6));

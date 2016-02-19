@@ -20,18 +20,13 @@ void ProtoMan::TeleopInit() {
 
 }
 
-std::string m_text = ";blue;disabled;";
+const std::string sampleSerialText = ";blue;disabled;";
+
 void ProtoMan::TeleopPeriodic() {
-	static unsigned int curPos = 0;
-	if (curPos < m_text.length()) {
-			const std::string toWrite(m_text.c_str() + curPos);
-			const uint32_t bytesWritten = serialPort->Write(toWrite, toWrite.length());
-			curPos += bytesWritten;
-			std::cout << "Wrote " << curPos << " bytes of '" << toWrite << "'" << std::endl;
-		}
 }
 void ProtoMan::TestInit() {
-
+	const uint32_t bytesWritten = serialPort->Write(sampleSerialText, sampleSerialText.length());
+	std::cout << "Wrote " << bytesWritten << " bytes of '" << sampleSerialText << "'" << std::endl;
 }
 
 

@@ -94,9 +94,9 @@ void TankDrive::Execute() {
 		rightStick = 0;
 	}
 
-	Robot::driveSystem->MoveLeft(leftStick * leftSliderValue
+	Robot::driveSystem->MoveLeft(-leftStick * leftSliderValue
 					* leftFactor * 100);
-	Robot::driveSystem->MoveRight(rightStick * rightSliderValue
+	Robot::driveSystem->MoveRight(-rightStick * rightSliderValue
 					* rightFactor * 100);
 
 #else
@@ -135,9 +135,9 @@ void TankDrive::Execute() {
 	const double leftFactor = ScalingFactors[int(mode)][0];
 	const double rightFactor = ScalingFactors[int(mode)][1];
 	Robot::driveSystem->MoveLeft(
-			leftStick * leftFactor);
+			-leftStick * leftFactor);
 	Robot::driveSystem->MoveRight(
-			rightStick * rightFactor);
+			-rightStick * rightFactor);
 #endif
 }
 

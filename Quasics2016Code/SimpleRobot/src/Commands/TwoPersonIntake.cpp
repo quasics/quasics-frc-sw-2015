@@ -31,10 +31,13 @@ void TwoPersonIntake::Initialize() {
 void TwoPersonIntake::Execute() {
 	if (Robot::oi->getIntakeStick()->GetRawButton(1) && !Robot::oi->getIntakeStick()->GetRawButton(3)){
 		Robot::intake->SetPower(Intake::kOutput);
+		Robot::intake->CamGearControl(true);
 	} else if (!Robot::oi->getIntakeStick()->GetRawButton(1) && Robot::oi->getIntakeStick()->GetRawButton(3)){
 		Robot::intake->SetPower(Intake::kIntake);
+		Robot::intake->CamGearControl(true);
 	} else {
 		Robot::intake->StopIntake();
+		Robot::intake->CamGearControl(false);
 	}
 }
 

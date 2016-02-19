@@ -42,6 +42,7 @@ public:
 
 	void SetPower (Direction whichDirection);
 	void StopIntake ();
+	void CamGearControl (bool isOn);
 };
 
 #endif

@@ -42,22 +42,26 @@ void Intake::SetPower(Direction whichDirection) {
 	case kIntake:
 		leftIntakeWheel->Set(.25);
 		rightIntakeWheel->Set(.25);
-		pusher->Set(Relay::kReverse);
 		break;
 	case kOutput:
 		leftIntakeWheel->Set(-.5);
 		rightIntakeWheel->Set(-.5);
-		pusher->Set(Relay::kOn);
 		break;
 	default:
 		leftIntakeWheel->Set(0);
 		rightIntakeWheel->Set(0);
-		pusher->Set(Relay::kOff);
 		break;
 	}
 }
 
-void Intake::StopIntake(){
+void Intake::CamGearControl(bool isOn) {
+	if (isOn)
+		pusher->Set(Relay::kReverse);
+	else
+		pusher->Set(Relay::kOff);
+}
+
+void Intake::StopIntake() {
 	leftIntakeWheel->Set(0);
 	rightIntakeWheel->Set(0);
 	pusher->Set(Relay::kOff);

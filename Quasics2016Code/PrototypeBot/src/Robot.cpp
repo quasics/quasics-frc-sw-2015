@@ -1,94 +1,43 @@
 #include "Robot.h"
 #include <iostream>
 
-ProtoMan::ProtoMan() :
-		stick(0), left(4), right(5), leftEncoder(4, 5), rightEncoder(6, 7, true) {
-	leftEncoder.SetDistancePerPulse(1);
-	rightEncoder.SetDistancePerPulse(1);
-	liftState = kOff;
-	liftStatePrevious = kOff;
+ProtoMan::ProtoMan() {
+	serialPort.reset(new SerialPort(115200, SerialPort::kMXP));
 }
 
 void ProtoMan::RobotInit() {
-	leftEncoder.Reset();
-	rightEncoder.Reset();
+
 }
 
 void ProtoMan::AutonomousInit() {
-	leftEncoder.Reset();
-	rightEncoder.Reset();
+
 }
 
 void ProtoMan::AutonomousPeriodic() {
 
 }
 void ProtoMan::TeleopInit() {
-	std::cout << "Axis Controlled Intake" << std::endl;
-	leftEncoder.Reset();
-	rightEncoder.Reset();
+
 }
+
+std::string m_text = ";blue;disabled;";
 void ProtoMan::TeleopPeriodic() {
-	float leftPower = -stick.GetRawAxis(1);
-	float rightPower = leftPower;
-
-	if (leftPower >= 0) {
-		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			std::cout << "Balanced" << std::endl;
-			left.Set(leftPower * .75);
-			right.Set(-rightPower * .75);
-		} else if (leftEncoder.Get() > rightEncoder.Get()) {
-			std::cout << "+ Right" << std::endl;
-			rightPower = rightPower + .25;
-			left.Set((leftPower) * .75);
-			right.Set(-(rightPower) * .75);
-		} else {
-			std::cout << "+ Left" << std::endl;
-			leftPower = leftPower + .25;
-			left.Set((leftPower) * .75);
-			right.Set(-(rightPower) * .75);
+	static unsigned int curPos = 0;
+	if (curPos < m_text.length()) {
+			const std::string toWrite(m_text.c_str() + curPos);
+			const uint32_t bytesWritten = serialPort->Write(toWrite, toWrite.length());
+			curPos += bytesWritten;
+			std::cout << "Wrote " << curPos << " bytes of '" << toWrite << "'" << std::endl;
 		}
-	} else {
-		if (std::abs(leftEncoder.GetRaw() - rightEncoder.GetRaw()) <= 5) {
-			left.Set(leftPower * .75);
-			right.Set(-rightPower * .75);
-		} else if (leftEncoder.Get() < rightEncoder.Get()) {
-			std::cout << "- Right" << std::endl;
-			rightPower = rightPower - .25;
-			left.Set((leftPower) * .75);
-			right.Set(-(rightPower) * .75);
-		} else {
-			std::cout << "- Left" << std::endl;
-			leftPower = leftPower - leftPower;
-			left.Set((leftPower) * .75);
-			right.Set(-(rightPower) * .75);
-		}
-	}
-
-	std::cout << "Left: " << leftEncoder.Get() << std::endl << "Left Power: "
-			<< leftPower << std::endl << "Left Rate: " << leftEncoder.GetRate()
-			<< std::endl;
-	std::cout << "Right: " << rightEncoder.Get() << std::endl << "Right Power: "
-			<< rightPower << std::endl << "Right Rate: "
-			<< rightEncoder.GetRate() << std::endl << std::endl;
 }
 void ProtoMan::TestInit() {
-	leftEncoder.Reset();
-	rightEncoder.Reset();
-	left.Set(.75);
-	right.Set(-.75);
+
 }
 
-int TestCounter = 0;
+
 
 void ProtoMan::TestPeriodic() {
-	if (TestCounter == 50) {
-		std::cout << "Left/Right: "
-				<< leftEncoder.GetRate() / rightEncoder.GetRate() << std::endl
-				<< "Right/Left: "
-				<< rightEncoder.GetRate() / leftEncoder.GetRate() << std::endl;
-	}
 
-	TestCounter++;
 }
 
 START_ROBOT_CLASS(ProtoMan);

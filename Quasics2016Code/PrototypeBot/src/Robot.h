@@ -1,23 +1,15 @@
 #ifndef SRC_ROBOT_H_
 #define SRC_ROBOT_H_
 #include "WPILib.h"
+#include "SerialPort.h"
 
 class ProtoMan: public IterativeRobot {
 public:
 	ProtoMan();
+	std::unique_ptr<SerialPort> serialPort;
 
 private:
-	Joystick stick;
-	Victor left;
-	Victor right;
-	Encoder leftEncoder;
-	Encoder rightEncoder;
 
-	enum LiftState{
-		kLifting, kDropping, kOff
-	};
-	LiftState liftState;
-	LiftState liftStatePrevious;
 
 	void RobotInit();
 	void AutonomousInit();

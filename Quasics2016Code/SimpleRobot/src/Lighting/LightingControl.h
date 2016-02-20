@@ -36,7 +36,8 @@ protected:
 		kSolid = 0,
 		kSlowBlinking = 1,
 		kMediumBlink = 2,
-		kBreathing = 3
+		kBreathing = 3,
+		kErrorMode = 4
 	};
 
 	friend std::ostream& operator<<(std::ostream& os, State s);
@@ -69,4 +70,16 @@ protected:
 	virtual void SendBatteryState(bool isLow);
 };
 
+
+class SerialLightingControl: public LightingControl {
+public:
+	SerialLightingControl();
+protected:
+	static std::unique_ptr<SerialPort> serialPort;
+
+	virtual void SetState(State whichState);
+	virtual void SetMode(Mode whichMode);
+	virtual void SendHeartbeat();
+	virtual void SendBatteryState(bool isLow);
+};
 #endif /* SRC_LIGHTING_LIGHTINGCONTROL_H_ */

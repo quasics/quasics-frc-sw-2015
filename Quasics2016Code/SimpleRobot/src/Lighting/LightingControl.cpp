@@ -13,7 +13,7 @@ LightingControl::LightingControl() {
 	isBatteryLow = false;
 	previousBatteryState = false;
 	previousState = kError;
-	previousMode = kSlowBlinking;
+	previousMode = kErrorMode;
 
 	SmartDashboard::PutBoolean("In Competition?", false);
 }
@@ -62,7 +62,7 @@ void LightingControl::LightingUpkeep() {
 	} else if (DriverStation::GetInstance().IsTest()) {
 		mode = kMediumBlink;
 	} else {
-		mode = kSlowBlinking;
+		mode = kErrorMode;
 	}
 
 	//Data sending

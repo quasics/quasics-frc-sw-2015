@@ -36,7 +36,6 @@ public:
 	std::unique_ptr<Command> autonomousCommand;
 	std::unique_ptr<Command> tankModeCommand;
 	std::unique_ptr<Command> updaterCommand;
-	static std::unique_ptr<SerialPort> serialPort;
 	LiveWindow *lw = LiveWindow::GetInstance();
 
 	std::shared_ptr<LightingControl> lightingControl;

@@ -7,66 +7,77 @@
 
 #include "LightingControl.h"
 
+const char kInCompetitionDashboardFlag[] = "In Competition?";
+
 LightingControl::LightingControl() {
 	lastBatterySwitch = 0;
 	lightingTimer = 0;
-	isBatteryLow = false;
-	previousBatteryState = false;
+	previousBatteryIsLow = false;
 	previousState = kError;
 	previousMode = kErrorMode;
 
-	SmartDashboard::PutBoolean("In Competition?", false);
+	SmartDashboard::PutBoolean(kInCompetitionDashboardFlag, false);
 }
 
 void LightingControl::LightingUpkeep() {
-	//Timer Control
+	// Timer Control
 	lightingTimer++;	//Increment the lighting control timer
 
-	//Establish local variables
-	State state = kDemo;	//Local storage of state
-	Mode mode = kBreathing;	//Local storage of mode
+	// Establish local variables for current state
+	State state = kDemo;
+	Mode mode = kBreathing;
 
 	//Status Check
 	//Battery check
-	if (DriverStation::GetInstance().GetBatteryVoltage() < 12//If the battery is low and it wasn't at the last check...
-	&& previousBatteryState == false) {
-		isBatteryLow = true;	//Set batteryState to low
-		lastBatterySwitch = lightingTimer;	//Save the time stamp of the change
-	} else if (DriverStation::GetInstance().GetBatteryVoltage() >= 12) {//Otherwise if the voltage is above 12 volts...
+	bool isBatteryLow = previousBatteryIsLow;
+	if (DriverStation::GetInstance().GetBatteryVoltage() < 12 && !previousBatteryIsLow) {
+		// Battery has just gone into "low" condition.
+		isBatteryLow = true;
+		lastBatterySwitch = lightingTimer;
+	} else if (DriverStation::GetInstance().GetBatteryVoltage() >= 12) {
+		// The voltage is above 12 volts...
 		isBatteryLow = false;	//Set battery state to good
 		lastBatterySwitch = lightingTimer;	//Save the time stamp of the change
 	}
 
-	//State check
-	if (!DriverStation::GetInstance().IsDSAttached()) {	//If the driver station isn't attached...
-		state = kError;	//Set error state
-	} else if (!SmartDashboard::GetBoolean("InCompetetion", false)) {//Otherwise if we aren't in competition...
-		state = kDemo;	//Set demo state
-	} else if (DriverStation::GetInstance().GetAlliance()
-			== DriverStation::GetInstance().kRed) {	//Otherwise if we are on the red alliance...
-		state = kRedTeam; //Set red team state
-	} else if (DriverStation::GetInstance().GetAlliance() //Otherwise if we are on the blue alliance...
-	== DriverStation::GetInstance().kBlue) {
-		state = kBlueTeam;	//Set blue team state
-	} else {	//Otherwise...
-		state = kError; //Set error state
+	// State check
+	if (!DriverStation::GetInstance().IsDSAttached()) {
+		// Driver station isn't attached
+		state = kError;
+	} else if (!SmartDashboard::GetBoolean(kInCompetitionDashboardFlag, false)) {
+		// Not in competition (demo mode)
+		state = kDemo;
+	} else if (DriverStation::GetInstance().GetAlliance() == DriverStation::GetInstance().kRed) {
+		// Red alliance
+		state = kRedTeam;
+	} else if (DriverStation::GetInstance().GetAlliance() == DriverStation::GetInstance().kBlue) {
+		// Blue alliance
+		state = kBlueTeam;
+	} else {
+		// Shouldn't be possible: consider it an error
+		state = kError;
 	}
 
-	//Mode Check
-	if (DriverStation::GetInstance().IsDisabled()) {	//If we are disabled...
+	// Mode Check
+	if (DriverStation::GetInstance().IsDisabled()) {
+		// Disabled
 		mode = kBreathing;
-	} else if (DriverStation::GetInstance().IsAutonomous()) {	//Otherwise if
+	} else if (DriverStation::GetInstance().IsAutonomous()) {
+		// Autonomous
 		mode = kSolid;
 	} else if (DriverStation::GetInstance().IsOperatorControl()) {
+		// Teleop
 		mode = kSlowBlinking;
 	} else if (DriverStation::GetInstance().IsTest()) {
+		// Test
 		mode = kMediumBlink;
 	} else {
+		// ???
 		mode = kErrorMode;
 	}
 
-	//Data sending
-	//State, mode, and battery sending
+	// Data sending
+	// State, mode, and battery sending
 	if (lightingTimer % 1500 == 0) {
 		SetState(state);
 		SetMode(mode);
@@ -80,7 +91,7 @@ void LightingControl::LightingUpkeep() {
 		if (mode != previousMode) {
 			SetMode(mode);
 		}
-		if (previousBatteryState != isBatteryLow
+		if (previousBatteryIsLow != isBatteryLow
 				&& lightingTimer - lastBatterySwitch >= 500) {
 			SendBatteryState(isBatteryLow);
 		}
@@ -91,9 +102,8 @@ void LightingControl::LightingUpkeep() {
 		SendHeartbeat();
 	}
 
-
 	//Save previous data
-	previousBatteryState = isBatteryLow;
+	previousBatteryIsLow = isBatteryLow;
 	previousState = state;
 	previousMode = mode;
 }

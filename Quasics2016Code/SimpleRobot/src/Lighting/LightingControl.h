@@ -51,8 +51,7 @@ private:
 	// State used in the "upkeep" function.
 	int lastBatterySwitch;
 	int lightingTimer;
-	bool isBatteryLow;
-	bool previousBatteryState;
+	bool previousBatteryIsLow;
 	State previousState;
 	Mode previousMode;
 

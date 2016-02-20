@@ -22,6 +22,7 @@
 // Control lighting system.
 //
 
+#define DISABLE_LIGHTING
 // #define USE_LIVE_LIGHTING
 
 
@@ -35,12 +36,13 @@
 #include "Commands/TankDrive.h"
 #include "Commands/DashboardUpdater.h"
 
-#ifdef USE_LIVE_LIGHTING
-	#include "Lighting/SerialLightingControl.h"
-#else
-	#include "Lighting/SimulatedLightingControl.h"
-#endif	// USE_LIVE_LIGHTING
-
+#ifndef DISABLE_LIGHTING
+	#ifdef USE_LIVE_LIGHTING
+		#include "Lighting/SerialLightingControl.h"
+	#else
+		#include "Lighting/SimulatedLightingControl.h"
+	#endif	// USE_LIVE_LIGHTING
+#endif	// DISABLE_LIGHTING
 
 ////////////////////////////////////////////
 // "Real Code...."
@@ -77,11 +79,13 @@ void Robot::RobotInit() {
 
 	tankModeCommand.reset(new TankDrive);
 
+#ifndef DISABLE_LIGHTING
 #ifdef USE_LIVE_LIGHTING
 	lightingControl.reset(new SerialLightingControl);
 #else
 	lightingControl.reset(new SimulatedLightingControl);
 #endif	// USE_LIVE_LIGHTING
+#endif	// DISABLE_LIGHTING
 }
 
 /**
@@ -89,7 +93,7 @@ void Robot::RobotInit() {
  * You can use it to reset subsystems before shutting down.
  */
 void Robot::DisabledInit(){
-
+	updateLighting();
 }
 
 void Robot::DisabledPeriodic() {
@@ -106,13 +110,19 @@ void Robot::AutonomousInit() {
 		autonomousCommand->Start();
 	}
 #endif	// DISABLE_AUTO_MODE
+
+	updateLighting();
 }
 
 void Robot::AutonomousPeriodic() {
+	updateLighting();
+
 	Scheduler::GetInstance()->Run();
 }
 
 void Robot::TeleopInit() {
+	updateLighting();
+
 	// This makes sure that the autonomous stops running when
 	// teleop starts running. If you want the autonomous to
 	// continue until interrupted by another command, remove
@@ -123,15 +133,25 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+	updateLighting();
+
 	Scheduler::GetInstance()->Run();
 }
 
 void Robot::TestInit(){
-
+	updateLighting();
 }
 
 void Robot::TestPeriodic() {
+	updateLighting();
+
 	lw->Run();
+}
+
+void Robot::updateLighting() {
+#ifndef DISABLE_LIGHTING
+	lightingControl->LightingUpkeep();
+#endif  // DISABLE_LIGHTING
 }
 
 START_ROBOT_CLASS(Robot);

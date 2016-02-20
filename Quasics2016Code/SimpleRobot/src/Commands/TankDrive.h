@@ -12,9 +12,7 @@
 #ifndef TANKDRIVE_H
 #define TANKDRIVE_H
 
-
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <Commands/Command.h>
 
 /**
  *

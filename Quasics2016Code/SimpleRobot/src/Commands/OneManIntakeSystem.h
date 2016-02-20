@@ -13,7 +13,7 @@
 #ifndef ONEMANINTAKESYSTEM_H
 #define ONEMANINTAKESYSTEM_H
 
-#include "Commands/CommandGroup.h"
+#include <Commands/CommandGroup.h>
 
 /**
  *

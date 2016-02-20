@@ -12,9 +12,7 @@
 #ifndef STOPDRIVEBASE_H
 #define STOPDRIVEBASE_H
 
-
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <Commands/Command.h>
 
 /**
  *

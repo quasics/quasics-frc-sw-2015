@@ -1,4 +1,6 @@
 #include "AutonomousCommand.h"
+#include "../Robot.h"
+#include "../Subsystems/DriveSystem.h"
 
 bool AutonomousCommand::Auto1() {
 	static bool isFinished = false;

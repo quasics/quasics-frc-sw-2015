@@ -13,7 +13,6 @@
 #define AUTONOMOUS_COMMAND_H
 
 #include "CloneableCommand.h"
-#include "../Robot.h"
 
 /**
  *

@@ -13,8 +13,6 @@
 #define SPY_BOX_AUTONMOUS_H
 
 #include "CloneableCommand.h"
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
 
 /**
  *

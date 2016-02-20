@@ -13,7 +13,7 @@
 #ifndef TWO_MAN_INTAKE_SYSTEM_H
 #define TWO_MAN_INTAKE_SYSTEM_H
 
-#include "Commands/CommandGroup.h"
+#include <Commands/CommandGroup.h>
 
 /**
  *

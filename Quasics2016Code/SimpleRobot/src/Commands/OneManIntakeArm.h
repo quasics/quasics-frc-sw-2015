@@ -12,9 +12,7 @@
 #ifndef ONE_MAN_INTAKE_ARM_H
 #define ONE_MAN_INTAKE_ARM_H
 
-
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <Commands/Command.h>
 
 /**
  *

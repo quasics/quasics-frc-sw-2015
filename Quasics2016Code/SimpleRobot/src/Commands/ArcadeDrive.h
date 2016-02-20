@@ -12,9 +12,7 @@
 #ifndef ARCADEDRIVE_H
 #define ARCADEDRIVE_H
 
-
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <Commands/Command.h>
 
 /**
  *

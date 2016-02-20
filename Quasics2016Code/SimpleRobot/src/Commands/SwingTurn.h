@@ -12,9 +12,7 @@
 #ifndef SWINGTURN_H
 #define SWINGTURN_H
 
-
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <Commands/Command.h>
 
 /**
  *

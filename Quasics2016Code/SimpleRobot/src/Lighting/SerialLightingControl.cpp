@@ -1,4 +1,4 @@
-#include "LightingControl.h"
+#include "SerialLightingControl.h"
 
 std::unique_ptr<SerialPort> SerialLightingControl::serialPort;
 

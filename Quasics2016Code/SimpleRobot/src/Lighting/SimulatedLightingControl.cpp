@@ -1,4 +1,4 @@
-#include "LightingControl.h"
+#include "SimulatedLightingControl.h"
 
 const char * kStateNames[] = { "Red", "Blue", "Demo", "Error" };
 const unsigned int kNumStateNames = sizeof(kStateNames)

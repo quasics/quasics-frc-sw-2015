@@ -8,14 +8,13 @@
 #ifndef SRC_LIGHTING_LIGHTINGCONTROL_H_
 #define SRC_LIGHTING_LIGHTINGCONTROL_H_
 
-#include "WPILib.h"
+#include <WPILib.h>
 #include <iostream>
 
 class LightingControl {
 public:
 	LightingControl();
-	virtual ~LightingControl() {
-	}
+	virtual ~LightingControl() {}
 
 	/** Main logic control goes here, allowing this function to handle
 	 * common decision-making.  Actual communications with the Arduino
@@ -59,27 +58,4 @@ private:
 
 };
 
-class SimulatedLightingControl: public LightingControl {
-public:
-	SimulatedLightingControl() {
-	}
-protected:
-	virtual void SetState(State whichState);
-	virtual void SetMode(Mode whichMode);
-	virtual void SendHeartbeat();
-	virtual void SendBatteryState(bool isLow);
-};
-
-
-class SerialLightingControl: public LightingControl {
-public:
-	SerialLightingControl();
-protected:
-	static std::unique_ptr<SerialPort> serialPort;
-
-	virtual void SetState(State whichState);
-	virtual void SetMode(Mode whichMode);
-	virtual void SendHeartbeat();
-	virtual void SendBatteryState(bool isLow);
-};
 #endif /* SRC_LIGHTING_LIGHTINGCONTROL_H_ */

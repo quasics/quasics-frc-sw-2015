@@ -11,8 +11,9 @@
 
 #ifndef INTAKE_H
 #define INTAKE_H
-#include "Commands/Subsystem.h"
-#include "WPILib.h"
+
+#include <Commands/Subsystem.h>
+#include <WPILib.h>
 
 /**
  *

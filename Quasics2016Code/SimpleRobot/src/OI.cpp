@@ -69,13 +69,14 @@ OI::OI() {
 			0);
 
 	chooser = new SendableChooser;
-	// Note: All
-	chooser ->AddDefault("Low Bar", new AutonomousCommand(1));
-	chooser ->AddObject("Slot Two", new AutonomousCommand(2));
-	chooser ->AddObject("Slot Three", new AutonomousCommand(3));
-	chooser ->AddObject("Slot Four", new AutonomousCommand(4));
-	chooser ->AddObject("Slot Five", new AutonomousCommand(5));
-	chooser ->AddObject("Spy Box", new SpyBoxAutonmous());
+	// Note: All commands in here need to be derived from "CloneableCommand".
+	chooser->AddDefault("Low Bar", new AutonomousCommand(AutonomousCommand::ePosition1));
+	chooser->AddObject("Slot Two", new AutonomousCommand(AutonomousCommand::ePosition2));
+	chooser->AddObject("Slot Three", new AutonomousCommand(AutonomousCommand::ePosition3));
+	chooser->AddObject("Slot Four", new AutonomousCommand(AutonomousCommand::ePosition4));
+	chooser->AddObject("Slot Five", new AutonomousCommand(AutonomousCommand::ePosition5));
+	chooser->AddObject("Spy Box", new SpyBoxAutonmous());
+	chooser->AddObject("Disable Auto", new AutonomousCommand(AutonomousCommand::ePositionNull));
 
 	SmartDashboard::PutData("Auto Chooser", chooser);
 }

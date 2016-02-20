@@ -88,16 +88,17 @@ bool AutonomousCommand::IsFinished() {
 
 // Called once after isFinished returns true
 void AutonomousCommand::End() {
-	Robot::intake->StopIntake();
-	Robot::intakeArm->StopArm();
-	Robot::driveSystem->StopEverything();
+	StopOperations();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void AutonomousCommand::Interrupted() {
+	StopOperations();
+}
+
+void AutonomousCommand::StopOperations() {
 	Robot::intake->StopIntake();
 	Robot::intakeArm->StopArm();
 	Robot::driveSystem->StopEverything();
 }
-

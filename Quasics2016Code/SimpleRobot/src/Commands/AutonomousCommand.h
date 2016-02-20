@@ -60,6 +60,8 @@ private:
     bool Auto3 ();
     bool Auto4 ();
     bool Auto5 ();
+
+    void StopOperations();
 };
 
 #endif

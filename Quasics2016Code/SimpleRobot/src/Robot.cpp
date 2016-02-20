@@ -150,7 +150,9 @@ void Robot::TestPeriodic() {
 
 void Robot::updateLighting() {
 #ifndef DISABLE_LIGHTING
-	lightingControl->LightingUpkeep();
+	if (lightingControl != nullptr) {
+		lightingControl->LightingUpkeep();
+	}
 #endif  // DISABLE_LIGHTING
 }
 

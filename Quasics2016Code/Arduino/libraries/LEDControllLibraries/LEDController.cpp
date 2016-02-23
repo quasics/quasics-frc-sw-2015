@@ -1,3 +1,6 @@
+#ifndef LEDSERIALCONTROLLER_H_
+#define LEDSERIALCONTROLLER_H_
+
 #include "LEDController.h"
 #include "Arduino.h"
 
@@ -82,6 +85,6 @@ int LEDController::GetBlue (){
 int LEDController::GetBrightness (){
   return brightnessPercent;
 }
-
+#endif
 
 

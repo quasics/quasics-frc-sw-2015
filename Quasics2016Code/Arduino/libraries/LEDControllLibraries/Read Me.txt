@@ -1,0 +1,43 @@
+LEDController: Base RGB LED Controller class
+
+	LEDController (int redIn, int greenIn, int blueIn);
+		//Constructor with deffinitions of pins
+	void SetRed (int value);
+		//Set the raw red value (0-255)
+	void SetGreen (int value);
+		//Set the raw green value (0-255)
+  	void SetBlue (int value);
+		//Set the raw blue value (0-255)
+  	void SetBrightness (float percent);
+		//Set the brightness while maintaining the current ratio (0-1)
+	int GetRed ();
+		//Get the currently set red value
+  	int GetGreen ();
+		//Get the currently set green value
+  	int GetBlue ();
+		//Get the currently set blue value
+  	int GetBrightness ();
+		//Get the currently set brightness value
+	void SetHSV(double h, double s, double l);
+		//Credit to https://github.com/ratkins/RGBConverter
+		//Set an HSV Value
+
+LEDSerialController: Inherits publicly from the base LED Controller class, can read RoboRio Signals as well 
+		     (115200 baud)
+	LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin,
+	                     unsigned long heartRateSeconds);
+		//Constructor, give input pins and a heart rate from the roborio
+    	void LEDSerialProcess ();
+		//Reads and processes the serial data.
+		//Looks for strings RedTeam, BlueTeam, Demo, Disabled, Solid, SlowBlink, MediumBlink, Off,
+		//	LowBattery, GoodBattery, and Heartbeat to set states. terminator is a ';' (semicolon)
+
+LEDSerialController: Inherits publicly from the base LED Controller class, Expanded from the LEDSerialController 
+		     class, designed to communicate with the serial console (115200 baud)
+	ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, 
+				      unsigned int baseLoopSeconds);
+		//Constructor, give input pins and a cycle rate for blinking, breathing, and hsv cycle
+	void LEDSerialProcess ();
+		//Reads and processes the serial data.
+		//Looks for strings Red, Green, Blue, Yellow, Magenta, Cyan, Orange, White, Purple, Cycle,
+		//	Rainbow, Breathing, Blink, SlowBlink, QuickBlink, Solid, and Off

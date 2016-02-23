@@ -1,13 +1,16 @@
 #include "LEDSerialController.h"
 
-LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin ) {
-  lightControl = (new LEDController (redPin, greenPin, bluePin));
+LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned long heartRateSeconds):
+  LEDController (redPin, greenPin, bluePin) 
+  {
   isLowBatteryOverride = false;
   Serial.begin(9600);
+  HeartRateSecs = heartRateSeconds;
   serialIn = "";
   activeMode = kDemo;
   activeState = kBreathing;
   activeBatteryLow = false;
+  lastHeartbeat = 0;
 }
 
 void LEDSerialController::LEDSerialProcess () {
@@ -22,30 +25,38 @@ void LEDSerialController::LEDSerialProcess () {
       serialIn = "";
     }
   }
+
+  if (millis() - lastHeartbeat > HeartRateSecs * 2000) {
+     activeMode = kError;
+  }
+
+  SetMode (activeMode);
+  SetState (activeState);
+  SetBatteryLow (activeBatteryLow);
 }
 
 void LEDSerialController::SetMode (Mode mode) {
   if (!isLowBatteryOverride) {
     switch (mode) {
       case kRedTeam:
-        lightControl->SetRed (255);
-        lightControl->SetGreen (0);
-        lightControl->SetBlue (0);
+        SetRed (255);
+        SetGreen (0);
+        SetBlue (0);
         break;
       case kBlueTeam:
-        lightControl->SetRed (0);
-        lightControl->SetGreen (0);
-        lightControl->SetBlue (255);
+        SetRed (0);
+        SetGreen (0);
+        SetBlue (255);
         break;
       case kDemo:
-        lightControl->SetRed (0);
-        lightControl->SetGreen (255);
-        lightControl->SetBlue (0);
+        SetRed (0);
+        SetGreen (255);
+        SetBlue (0);
         break;
       default:
-        lightControl->SetRed (255);
-        lightControl->SetGreen (255);
-        lightControl->SetBlue (0);
+        SetRed (255);
+        SetGreen (255);
+        SetBlue (0);
         break;
     }
   }
@@ -64,9 +75,9 @@ void LEDSerialController::SetState (State state) {
         float timeHalf = float(millis() % int(halfDurration * 1000)) / 1000;
 
         if (timeLoop <= halfDurration)
-          lightControl->SetBrightness((timeHalf * timeHalf) / (halfDurration * halfDurration));
+          SetBrightness((timeHalf * timeHalf) / (halfDurration * halfDurration));
         else
-          lightControl->SetBrightness(((halfDurration * halfDurration) - (timeHalf * timeHalf)) /
+          SetBrightness(((halfDurration * halfDurration) - (timeHalf * timeHalf)) /
                                       (halfDurration * halfDurration));
       }
       break;
@@ -79,9 +90,9 @@ void LEDSerialController::SetState (State state) {
         float timeLoop = float(millis() % int(loopDurration * 1000)) / 1000;
 
         if (timeLoop <= halfDurration)
-          lightControl->SetBrightness(1);
+          SetBrightness(1);
         else
-          lightControl->SetBrightness(0);
+          SetBrightness(0);
       }
       break;
 
@@ -93,18 +104,18 @@ void LEDSerialController::SetState (State state) {
         float timeLoop = float(millis() % int(loopDurration * 1000)) / 1000;
 
         if (timeLoop <= halfDurration)
-          lightControl->SetBrightness(1);
+          SetBrightness(1);
         else
-          lightControl->SetBrightness(0);
+          SetBrightness(0);
       }
       break;
 
     case kSolid:
-      lightControl->SetBrightness(1);
+      SetBrightness(1);
       break;
 
     case kOff:
-      lightControl->SetBrightness(0);
+      SetBrightness(0);
       break;
 
     default: //and quick blink are the same thing
@@ -116,9 +127,9 @@ void LEDSerialController::SetState (State state) {
 
 
         if (timeLoop <= halfDurration)
-          lightControl->SetBrightness(1);
+          SetBrightness(1);
         else
-          lightControl->SetBrightness(0);
+          SetBrightness(0);
       }
       break;
   }
@@ -126,9 +137,9 @@ void LEDSerialController::SetState (State state) {
 
 void LEDSerialController::SetBatteryLow (bool isLow) {
   if (isLow && millis() % 5000 > 4000) {
-    lightControl->SetRed(255);
-    lightControl->SetGreen(255);
-    lightControl->SetBlue(0);
+    SetRed(255);
+    SetGreen(255);
+    SetBlue(0);
     isLowBatteryOverride = true;
   }
   else {
@@ -140,7 +151,6 @@ void LEDSerialController::Translator (const char * input, Mode & mode, State & s
   static Mode localMode = kDemo;
   static State localState = kBreathing;
   static bool localBatteryLow = false;
-  static unsigned long lastHeartbeat = 0;
 
   if (strcmp(input, "RedTeam") == 0)
     localMode = kRedTeam;
@@ -162,8 +172,10 @@ void LEDSerialController::Translator (const char * input, Mode & mode, State & s
     localBatteryLow = true;
   else if (strcmp(input, "GoodBattery") == 0)
     localBatteryLow = false;
-  else if (strcmp(input, "Heartbeat") == 0)
+  else if (strcmp(input, "Heartbeat") == 0){
     lastHeartbeat = millis();
+    Serial.println("LubDub");
+  }
   else  {
     localMode = kError;
     localState = kSolid;
@@ -171,10 +183,6 @@ void LEDSerialController::Translator (const char * input, Mode & mode, State & s
     Serial.print(input);
     Serial.println("'");
     Serial.print(";");
-  }
-
-  if (millis() - lastHeartbeat > HeartRateSecs * 2000) {
-    localMode = kError;
   }
 
 

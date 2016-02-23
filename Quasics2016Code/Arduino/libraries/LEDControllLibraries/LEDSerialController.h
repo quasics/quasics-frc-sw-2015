@@ -1,9 +1,9 @@
 #include "LEDController.h"
 #include "Arduino.h"
 
-class LEDSerialController {
+class LEDSerialController: public LEDController {
   public:
-    LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin );
+    LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned long heartRateSeconds);
     void LEDSerialProcess ();
 
   private:
@@ -13,14 +13,14 @@ class LEDSerialController {
     enum State {
       kBreathing, kBlink, kSlowBlink, kQuickBlink, kSolid, kErrorState, kOff
     };
-
-    LEDController* lightControl;
+    
     bool isLowBatteryOverride;
-    const unsigned long HeartRateSecs = 1;
+    unsigned long HeartRateSecs;
     String serialIn;
     Mode activeMode;
     State activeState;
     bool activeBatteryLow;
+    unsigned long lastHeartbeat;
 
 
     void SetMode (Mode mode = kError);

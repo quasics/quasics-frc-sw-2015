@@ -31,7 +31,6 @@ public:
 	std::unique_ptr<Command> tankModeCommand;
 	std::unique_ptr<Command> updaterCommand;
 	LiveWindow *lw = LiveWindow::GetInstance();
-	const char * cameraName = "cam0";
 
 	static std::unique_ptr<LightingControl> lightingControl;
 

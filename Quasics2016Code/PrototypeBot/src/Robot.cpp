@@ -2,7 +2,9 @@
 #include <iostream>
 
 ProtoMan::ProtoMan() {
-	serialPort.reset(new SerialPort(115200, SerialPort::kMXP));
+	CameraServer::GetInstance()->SetQuality(50);
+	//the camera name (ex "cam0") can be found through the roborio web interface
+	CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 }
 
 void ProtoMan::RobotInit() {
@@ -20,13 +22,10 @@ void ProtoMan::TeleopInit() {
 
 }
 
-const std::string sampleSerialText = ";blue;disabled;";
-
 void ProtoMan::TeleopPeriodic() {
 }
 void ProtoMan::TestInit() {
-	const uint32_t bytesWritten = serialPort->Write(sampleSerialText, sampleSerialText.length());
-	std::cout << "Wrote " << bytesWritten << " bytes of '" << sampleSerialText << "'" << std::endl;
+
 }
 
 

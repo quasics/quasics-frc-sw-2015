@@ -54,6 +54,7 @@ public:
 
 private:
 	std::shared_ptr<SpeedController> leftIntakeWheel;
+	std::shared_ptr<SpeedController> rightIntakeWheel;
 #endif
 };
 

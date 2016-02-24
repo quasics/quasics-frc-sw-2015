@@ -73,6 +73,8 @@ void Intake::StopIntake() {
 Intake::Intake() :
 		Subsystem("Intake") {
 	leftIntakeWheel = RobotMap::intakeLeftIntakeWheel;
+	rightIntakeWheel = RobotMap::intakeRightIntakeWheel;
+	rightIntakeWheel->SetInverted(true);
 }
 void Intake::InitDefaultCommand() {
 	// Set the default command for a subsystem here.
@@ -86,11 +88,14 @@ void Intake::SetPower(Direction whichDirection) {
 	switch (whichDirection) {
 	case kIntake:
 		leftIntakeWheel->Set(.25);
+		leftIntakeWheel->Set(.25);
 		break;
 	case kOutput:
 		leftIntakeWheel->Set(-.5);
+		leftIntakeWheel->Set(-.5);
 		break;
 	default:
+		leftIntakeWheel->Set(0);
 		leftIntakeWheel->Set(0);
 		break;
 	}
@@ -98,6 +103,7 @@ void Intake::SetPower(Direction whichDirection) {
 
 void Intake::StopIntake() {
 	leftIntakeWheel->Set(0);
+	rightIntakeWheel->Set(0);
 }
 
 #endif

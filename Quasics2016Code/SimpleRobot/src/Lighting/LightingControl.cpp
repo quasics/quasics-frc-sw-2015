@@ -30,7 +30,8 @@ void LightingControl::LightingUpkeep() {
 	//Status Check
 	//Battery check
 	bool isBatteryLow = previousBatteryIsLow;
-	if (DriverStation::GetInstance().GetBatteryVoltage() < 12 && !previousBatteryIsLow) {
+	if (DriverStation::GetInstance().GetBatteryVoltage() < 12
+			&& !previousBatteryIsLow) {
 		// Battery has just gone into "low" condition.
 		isBatteryLow = true;
 		lastBatterySwitch = lightingTimer;
@@ -44,15 +45,20 @@ void LightingControl::LightingUpkeep() {
 	if (!DriverStation::GetInstance().IsDSAttached()) {
 		// Driver station isn't attached
 		state = kError;
-	} else if (!SmartDashboard::GetBoolean(kInCompetitionDashboardFlag, false)) {
+	} else if (!DriverStation::GetInstance().IsFMSAttached()) {
 		// Not in competition (demo mode)
 		state = kDemo;
-	} else if (DriverStation::GetInstance().GetAlliance() == DriverStation::GetInstance().kRed) {
+	} else if (DriverStation::GetInstance().GetAlliance()
+			== DriverStation::GetInstance().kRed) {
 		// Red alliance
 		state = kRedTeam;
-	} else if (DriverStation::GetInstance().GetAlliance() == DriverStation::GetInstance().kBlue) {
+	} else if (DriverStation::GetInstance().GetAlliance()
+			== DriverStation::GetInstance().kBlue) {
 		// Blue alliance
 		state = kBlueTeam;
+	} else if (DriverStation::GetInstance().GetMatchTime() <= 30
+			&& DriverStation::GetInstance().IsOperatorControl()) {
+		state = kDemo;
 	} else {
 		// Shouldn't be possible: consider it an error
 		state = kError;

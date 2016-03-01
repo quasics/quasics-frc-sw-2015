@@ -9,7 +9,7 @@ class ExpandedLEDSerialController: public LEDController {
     ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int baseLoopSeconds);
     void LEDSerialProcess ();
 
-  private:
+  protected:
     enum Mode {
       kRed, kBlue, kGreen, kYellow, kMagenta, kCyan, kOrange, kWhite, kPurple, kCycle, kRainbow, kError
     };

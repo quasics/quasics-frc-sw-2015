@@ -32,7 +32,7 @@ LEDSerialController: Inherits publicly from the base LED Controller class, can r
 		//Looks for strings RedTeam, BlueTeam, Demo, Disabled, Solid, SlowBlink, MediumBlink, Off,
 		//	LowBattery, GoodBattery, and Heartbeat to set states. terminator is a ';' (semicolon)
 
-LEDSerialController: Inherits publicly from the base LED Controller class, Expanded from the LEDSerialController 
+ExpandedLEDSerialController: Inherits publicly from the base LED Controller class, Expanded from the LEDSerialController 
 		     class, designed to communicate with the serial console (115200 baud)
 	ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, 
 				      unsigned int baseLoopSeconds);

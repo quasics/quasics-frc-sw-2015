@@ -4,7 +4,7 @@ LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int gree
   LEDController (redPin, greenPin, bluePin) 
   {
   isLowBatteryOverride = false;
-  Serial.begin(9600);
+  Serial.begin(115200);
   HeartRateSecs = heartRateSeconds;
   serialIn = "";
   activeMode = kDemo;

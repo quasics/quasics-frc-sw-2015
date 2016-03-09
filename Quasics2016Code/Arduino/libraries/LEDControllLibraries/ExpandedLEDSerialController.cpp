@@ -4,7 +4,7 @@ ExpandedLEDSerialController::ExpandedLEDSerialController (unsigned int redPin, u
   LEDController (redPin, greenPin, bluePin)
 {
   isLowBatteryOverride = false;
-  Serial.begin(9600);
+  Serial.begin(115200);
   serialIn = "";
   activeMode = kError;
   activeState = kOff;
@@ -56,10 +56,6 @@ void ExpandedLEDSerialController::Translator (const char * input, Mode & mode, S
     localMode = kCyan;
     Serial.println("Cyan");
   }
-  else if (strcmp(input, "Cycle") == 0) {
-    localMode = kCycle;
-    Serial.println("Cycle");
-  }
   else if (strcmp(input, "Orange") == 0) {
     localMode = kOrange;
     Serial.println("Orange");
@@ -72,11 +68,16 @@ void ExpandedLEDSerialController::Translator (const char * input, Mode & mode, S
     localMode = kPurple;
     Serial.println("Purple");
   }
+
   else if (strcmp(input, "Rainbow") == 0) {
     localMode = kRainbow;
     Serial.println("Rainbow");
-
   }
+  else if (strcmp(input, "Cycle") == 0) {
+    localMode = kCycle;
+    Serial.println("Cycle");
+  }
+
   else if (strcmp(input, "Breathing") == 0) {
     localState = kBreathing;
     Serial.println("Breathing");
@@ -132,7 +133,7 @@ void ExpandedLEDSerialController::SetMode (Mode mode) {
       break;
     case kYellow:
       SetRed (255);
-      SetGreen (150);
+      SetGreen (255);
       SetBlue (0);
       break;
     case kMagenta:
@@ -147,7 +148,7 @@ void ExpandedLEDSerialController::SetMode (Mode mode) {
       break;
     case kOrange:
       SetRed (255);
-      SetGreen (31);
+      SetGreen (63);
       SetBlue (0);
       break;
     case kPurple:

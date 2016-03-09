@@ -3,31 +3,36 @@
 
 class LEDController {
 public:
-  LEDController (int redIn, int greenIn, int blueIn);
-  
-  void SetRed (int value);
-  void SetGreen (int value);
-  void SetBlue (int value);
-  void SetBrightness (float percent);
-  
-  //Credit to https://github.com/ratkins/RGBConverter
-  void SetHSV(double h, double s, double l);
+	LEDController(int redIn, int greenIn, int blueIn, int maxRed = 100,
+			int maxGreen = 127, int maxBlue = 255);
 
-  int GetRed ();
-  int GetGreen ();
-  int GetBlue ();
-  int GetBrightness ();
+	void SetRed(int value);
+	void SetGreen(int value);
+	void SetBlue(int value);
+	void SetBrightness(float percent);
+
+	//Credit to https://github.com/ratkins/RGBConverter
+	void SetHSV(double h, double s, double l);
+
+	int GetRed();
+	int GetGreen();
+	int GetBlue();
+	int GetBrightness();
 
 private:
 
-  int redPin;
-  int greenPin;
-  int bluePin;
+	int redPin;
+	int greenPin;
+	int bluePin;
 
-  float redValue;
-  float greenValue;
-  float blueValue;
-  float brightnessPercent;
+	int redMax;
+	int greenMax;
+	int blueMax;
+
+	float redValue;
+	float greenValue;
+	float blueValue;
+	float brightnessPercent;
 };
 
 #endif

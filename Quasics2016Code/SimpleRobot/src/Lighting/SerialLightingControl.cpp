@@ -3,7 +3,7 @@
 std::unique_ptr<SerialPort> SerialLightingControl::serialPort;
 
 SerialLightingControl::SerialLightingControl() {
-	serialPort.reset(new SerialPort(115200, SerialPort::kMXP));
+	serialPort.reset(new SerialPort(115200, SerialPort::kUSB));
 }
 
 void SerialLightingControl::SetState(State whichState) {

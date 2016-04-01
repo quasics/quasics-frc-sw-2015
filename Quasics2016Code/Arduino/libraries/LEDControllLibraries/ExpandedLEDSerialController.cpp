@@ -1,7 +1,7 @@
 #include "ExpandedLEDSerialController.h"
 
-ExpandedLEDSerialController::ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int baseLoopSeconds):
-  LEDController (redPin, greenPin, bluePin)
+ExpandedLEDSerialController::ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int whitePin, unsigned int baseLoopSeconds):
+  LEDController (redPin, greenPin, bluePin, whitePin)
 {
   isLowBatteryOverride = false;
   Serial.begin(115200);

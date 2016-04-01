@@ -6,7 +6,7 @@
 
 class ExpandedLEDSerialController: public LEDController {
   public:
-    ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int baseLoopSeconds);
+    ExpandedLEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int whitePin, unsigned int baseLoopSeconds);
     void LEDSerialProcess ();
 
   protected:

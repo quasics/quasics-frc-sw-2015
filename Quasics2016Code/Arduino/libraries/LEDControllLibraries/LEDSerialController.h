@@ -3,7 +3,7 @@
 
 class LEDSerialController: public LEDController {
   public:
-    LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned long heartRateSeconds);
+    LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int whitePin, unsigned long heartRateSeconds);
     void LEDSerialProcess ();
 
   private:

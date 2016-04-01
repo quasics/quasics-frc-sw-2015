@@ -1,7 +1,9 @@
 #include "LEDSerialController.h"
 
-LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned long heartRateSeconds):
-  LEDController (redPin, greenPin, bluePin) 
+#include "LEDSerialController.h"
+
+LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int greenPin, unsigned int bluePin, unsigned int whitePin, unsigned long heartRateSeconds):
+  LEDController (redPin, greenPin, bluePin, whitePin)
   {
   isLowBatteryOverride = false;
   Serial.begin(115200);
@@ -40,23 +42,27 @@ void LEDSerialController::SetMode (Mode mode) {
     switch (mode) {
       case kRedTeam:
         SetRed (255);
-        SetGreen (0);
-        SetBlue (0);
+        SetGreen ();
+        SetBlue ();
+        SetWhite ();
         break;
       case kBlueTeam:
-        SetRed (0);
-        SetGreen (0);
+        SetRed ();
+        SetGreen ();
         SetBlue (255);
+        SetWhite ();
         break;
       case kDemo:
-        SetRed (0);
+        SetRed ();
         SetGreen (255);
-        SetBlue (0);
+        SetBlue ();
+        SetWhite ();
         break;
       default:
-        SetRed (255);
+        SetRed ();
         SetGreen (255);
         SetBlue (0);
+        SetWhite ();
         break;
     }
   }
@@ -191,3 +197,4 @@ void LEDSerialController::Translator (const char * input, Mode & mode, State & s
   state = localState;
   isBatteryLow = localBatteryLow;
 }
+

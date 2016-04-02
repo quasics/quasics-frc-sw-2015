@@ -22,13 +22,12 @@
  * @author ExampleAuthor
  */
 class Intake: public Subsystem {
-#ifndef USE_INTAKE_BAR_
 private:
 	// It's desirable that everything possible is private except
 	// for methods that implement subsystem capabilities
 	std::shared_ptr<SpeedController> leftIntakeWheel;
 	std::shared_ptr<SpeedController> rightIntakeWheel;
-	std::shared_ptr<Relay> pusher;
+	std::shared_ptr<DoubleSolenoid> pusher;
 public:
 	Intake();
 	void InitDefaultCommand();
@@ -39,23 +38,7 @@ public:
 
 	void SetPower (Direction whichDirection);
 	void StopIntake ();
-	void CamGearControl (bool isOn);
-#else
-public:
-	Intake();
-	void InitDefaultCommand();
-
-	enum Direction {
-		kIntake, kOutput, kOff
-	};
-
-	void SetPower (Direction whichDirection);
-	void StopIntake ();
-
-private:
-	std::shared_ptr<SpeedController> leftIntakeWheel;
-	std::shared_ptr<SpeedController> rightIntakeWheel;
-#endif
+	void PistonControl (bool isOn);
 };
 
 #endif

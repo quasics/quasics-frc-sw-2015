@@ -49,7 +49,7 @@ void TwoPersonIntake::Execute() {
 	}
 #ifndef USE_INTAKE_BAR_
 	if (isMoving && Robot::oi->getIntakeStick()->GetRawButton(2)){
-		Robot::intake->CamGearControl(true);
+		Robot::intake->PistonControl(true);
 		SmartDashboard::PutBoolean("IsPrimed", true);
 	}
 #endif

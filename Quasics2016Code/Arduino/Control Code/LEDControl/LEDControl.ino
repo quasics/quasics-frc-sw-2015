@@ -3,7 +3,7 @@
 LEDSerialController* lightControl = NULL;
 
 void setup() {
-  lightControl = new LEDSerialController (RedPin, GreenPin, BluePin, 2);
+  lightControl = new LEDSerialController (RedPin, GreenPin, BluePin, 6, 3600);
 }
 
 void loop() {

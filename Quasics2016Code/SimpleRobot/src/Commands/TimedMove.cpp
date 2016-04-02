@@ -38,11 +38,13 @@ void TimedMove::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void TimedMove::Execute() {
 	loopNumber++;
+	Robot::driveSystem->MoveLeft(m_powerPercent);
+	Robot::driveSystem->MoveRight(m_powerPercent);
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool TimedMove::IsFinished() {
-    return (loopNumber == convertedDuration);
+    return (loopNumber >= convertedDuration);
 }
 
 // Called once after isFinished returns true

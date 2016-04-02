@@ -38,7 +38,7 @@ static const double ScalingFactors[][2] = {
 // First is left motor scaling; second is right
 		{ .25, .25 },		// slow
 		{ .5, .5 },		// medium
-		{ .625, .625 }	// fast
+		{ .75, .75 }	// fast
 };
 
 const double kMinPowerSetting = -.2;

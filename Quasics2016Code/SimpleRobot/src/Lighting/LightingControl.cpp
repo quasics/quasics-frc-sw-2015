@@ -104,7 +104,7 @@ void LightingControl::LightingUpkeep() {
 	}
 
 	//Heart beat sending
-	if (lightingTimer % 500 == 0) {
+	if (lightingTimer % 100 == 0) {
 		SendHeartbeat();
 	}
 

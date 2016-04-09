@@ -5,7 +5,8 @@
 // a nice trick that can be used to keep them all in sync that I can show you.)
 const char * kStateNames[] = { "Red", "Blue", "Demo", "Error" };
 const char * kModeNames[] = { "Solid", "Slow Blinking", "Blinking",
-		"Fast Blinking", "Breathing" };
+                              "Fast Blinking", "Breathing"
+                            };
 
 const unsigned int kNumStateNames =
     sizeof(kStateNames) / sizeof(kStateNames[0]);
@@ -13,40 +14,43 @@ const unsigned int kNumModeNames =
     sizeof(kModeNames) / sizeof(kModeNames[0]);
 
 std::ostream& operator<<(std::ostream& os, LightingControl::State s) {
-	if (int(s) < kNumStateNames) {
-		os << kStateNames[s];
-	} else {
-		os << "<UNKNOWN>";
-	}
-	return os;
+    if (int(s) < kNumStateNames) {
+        os << kStateNames[s];
+    }
+    else {
+        os << "<UNKNOWN>";
+    }
+    return os;
 }
 
 std::ostream& operator<<(std::ostream& os, LightingControl::Mode m) {
-	if (int(m) < kNumModeNames) {
-		os << kModeNames[m];
-	} else {
-		os << "<Unknown>";
-	}
-	return os;
+    if (int(m) < kNumModeNames) {
+        os << kModeNames[m];
+    }
+    else {
+        os << "<Unknown>";
+    }
+    return os;
 }
 
 void SimulatedLightingControl::SetState(State whichState) {
-	std::cout << "Setting state to " << whichState << std::endl;
+    std::cout << "Setting state to " << whichState << std::endl;
 }
 
 void SimulatedLightingControl::SetMode(Mode whichMode) {
-	std::cout << "Setting mode to " << whichMode << std::endl;
+    std::cout << "Setting mode to " << whichMode << std::endl;
 }
 
 void SimulatedLightingControl::SendHeartbeat() {
-	std::cout << "Sending Heartbeat " << std::endl;
+    std::cout << "Sending Heartbeat " << std::endl;
 }
 
 void SimulatedLightingControl::SendBatteryState(bool isLow) {
-	std::cout << "Battery Status ";
-	if (isLow) {
-		std::cout << "Low";
-	} else {
-		std::cout << "Good";
-	}
+    std::cout << "Battery Status ";
+    if (isLow) {
+        std::cout << "Low";
+    }
+    else {
+        std::cout << "Good";
+    }
 }

@@ -23,22 +23,22 @@
  */
 class Intake: public Subsystem {
 private:
-	// It's desirable that everything possible is private except
-	// for methods that implement subsystem capabilities
-	std::shared_ptr<SpeedController> leftIntakeWheel;
-	std::shared_ptr<SpeedController> rightIntakeWheel;
-	std::shared_ptr<DoubleSolenoid> pusher;
+    // It's desirable that everything possible is private except
+    // for methods that implement subsystem capabilities
+    std::shared_ptr<SpeedController> leftIntakeWheel;
+    std::shared_ptr<SpeedController> rightIntakeWheel;
+    std::shared_ptr<DoubleSolenoid> pusher;
 public:
-	Intake();
-	void InitDefaultCommand();
+    Intake();
+    void InitDefaultCommand();
 
-	enum Direction {
-		kIntake, kOutput, kOff
-	};
+    enum Direction {
+        kIntake, kOutput, kOff
+    };
 
-	void SetPower (Direction whichDirection);
-	void StopIntake ();
-	void PistonControl (bool isOn);
+    void SetPower (Direction whichDirection);
+    void StopIntake ();
+    void PistonControl (bool isOn);
 };
 
 #endif

@@ -12,13 +12,13 @@
 
 class SimulatedLightingControl: public LightingControl {
 public:
-	SimulatedLightingControl() {}
+    SimulatedLightingControl() {}
 
 protected:
-	virtual void SetState(State whichState);
-	virtual void SetMode(Mode whichMode);
-	virtual void SendHeartbeat();
-	virtual void SendBatteryState(bool isLow);
+    virtual void SetState(State whichState);
+    virtual void SetMode(Mode whichMode);
+    virtual void SendHeartbeat();
+    virtual void SendBatteryState(bool isLow);
 };
 
 #endif /* SRC_LIGHTING_SIMULATEDLIGHTINGCONTROL_H_ */

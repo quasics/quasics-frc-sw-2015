@@ -12,10 +12,10 @@
 
 class CloneableCommand: public Command {
 public:
-	CloneableCommand() {}
-	virtual ~CloneableCommand() {}
+    CloneableCommand() {}
+    virtual ~CloneableCommand() {}
 
-	virtual std::unique_ptr<Command> clone() const = 0;
+    virtual std::unique_ptr<Command> clone() const = 0;
 };
 
 #endif /* SRC_COMMANDS_CLONEABLECOMMAND_H_ */

@@ -39,13 +39,18 @@ protected:
 		kErrorMode = 4
 	};
 
-	friend std::ostream& operator<<(std::ostream& os, State s);
-	friend std::ostream& operator<<(std::ostream& os, Mode m);
-
+	// CODE_REVIEW(mjh): Should this set of functions be "const" methods?
+	// CODE_REVIEW(mjh): Naming is inconsistent.  Why are some "set", and
+	// others are "send"?
 	virtual void SetState(State whichState) = 0;
 	virtual void SetMode(Mode whichMode) = 0;
 	virtual void SendHeartbeat() = 0;
 	virtual void SendBatteryState(bool isLow) = 0;
+
+// Utility functions (isolating some decisions)
+private:
+  State ComputeCurrentState() const;
+  Mode ComputeCurrentMode() const;
 
 private:
 	// State used in the "upkeep" function.
@@ -55,6 +60,18 @@ private:
 	State previousState;
 	Mode previousMode;
 
+	friend std::ostream& operator<<(std::ostream& os, State s);
+	friend std::ostream& operator<<(std::ostream& os, Mode m);
+};
+
+// A trivial implementation of the LightingControl interface, which
+// does nothing to try to change lights.
+class NullLightingControl : public LightingControl {
+protected:
+    virtual void SetState(State whichState) {}
+    virtual void SetMode(Mode whichMode) {}
+    virtual void SendHeartbeat() {}
+    virtual void SendBatteryState(bool isLow) {}
 };
 
 #endif /* SRC_LIGHTING_LIGHTINGCONTROL_H_ */

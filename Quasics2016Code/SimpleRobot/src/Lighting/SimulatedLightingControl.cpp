@@ -1,12 +1,16 @@
 #include "SimulatedLightingControl.h"
 
+// CODE_REVIEW(mjh): These names don't seem to match what you're using in the
+// actual "ModeNames" type, and in the SerialLightingControl class.  (There's
+// a nice trick that can be used to keep them all in sync that I can show you.)
 const char * kStateNames[] = { "Red", "Blue", "Demo", "Error" };
-const unsigned int kNumStateNames = sizeof(kStateNames)
-		/ sizeof(kStateNames[0]);
-
 const char * kModeNames[] = { "Solid", "Slow Blinking", "Blinking",
 		"Fast Blinking", "Breathing" };
-const unsigned int kNumModeNames = sizeof(kModeNames) / sizeof(kModeNames[0]);
+
+const unsigned int kNumStateNames =
+    sizeof(kStateNames) / sizeof(kStateNames[0]);
+const unsigned int kNumModeNames =
+    sizeof(kModeNames) / sizeof(kModeNames[0]);
 
 std::ostream& operator<<(std::ostream& os, LightingControl::State s) {
 	if (int(s) < kNumStateNames) {

@@ -1,5 +1,7 @@
 #include "SerialLightingControl.h"
 
+#define ENABLE_NOISY_LOGGING
+
 std::unique_ptr<SerialPort> SerialLightingControl::serialPort;
 
 SerialLightingControl::SerialLightingControl() {
@@ -25,8 +27,11 @@ void SerialLightingControl::SetState(State whichState) {
 
 	const uint32_t bytesWritten = serialPort->Write(serialText,
 			serialText.length());
+
+#ifdef ENABLE_NOISY_LOGGING
 	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
 			<< std::endl;
+#endif  // ENABLE_NOISY_LOGGING
 }
 
 void SerialLightingControl::SetMode(Mode whichMode) {
@@ -51,16 +56,26 @@ void SerialLightingControl::SetMode(Mode whichMode) {
 
 	const uint32_t bytesWritten = serialPort->Write(serialText,
 			serialText.length());
+
+#ifdef ENABLE_NOISY_LOGGING
 	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
 			<< std::endl;
+#endif  // ENABLE_NOISY_LOGGING
 }
+
 void SerialLightingControl::SendHeartbeat() {
 	std::string serialText = "Heartbeat;";
+    // CODE_REVIEW(mjh): Should this start with a ";" (for safety), as you're
+    // doing for the other commands?
 	const uint32_t bytesWritten = serialPort->Write(serialText,
 			serialText.length());
+
+#ifdef ENABLE_NOISY_LOGGING
 	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
 			<< std::endl;
+#endif  // ENABLE_NOISY_LOGGING
 }
+
 void SerialLightingControl::SendBatteryState(bool isLow) {
 	std::string serialText = ";";
 	if (isLow)
@@ -70,6 +85,9 @@ void SerialLightingControl::SendBatteryState(bool isLow) {
 
 	const uint32_t bytesWritten = serialPort->Write(serialText,
 			serialText.length());
+
+#ifdef ENABLE_NOISY_LOGGING
 	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
 			<< std::endl;
+#endif  // ENABLE_NOISY_LOGGING
 }

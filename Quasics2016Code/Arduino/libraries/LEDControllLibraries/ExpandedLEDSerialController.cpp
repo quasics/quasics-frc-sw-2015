@@ -171,6 +171,7 @@ void ExpandedLEDSerialController::SetMode (Mode mode) {
       SetWhite (255);
       break;
     case kCycle:
+      SetWhite();
       SetHSV ((double(millis() % (loopSeconds * 1000)) / double(loopSeconds * 1000)), 1, 1);
       break;
     case kRainbow: {
@@ -179,41 +180,56 @@ void ExpandedLEDSerialController::SetMode (Mode mode) {
           SetRed (255);
           SetGreen (0);
           SetBlue (0);
+          SetWhite();
+
         }
         else if (timeStamp < 2000) {
           SetRed (255);
           SetGreen (31);
           SetBlue (0);
+          SetWhite();
+
         }
         else if (timeStamp < 3000) {
           SetRed (255);
           SetGreen (150);
           SetBlue (0);
+          SetWhite();
+
         }
         else if (timeStamp < 4000) {
           SetRed (0);
           SetGreen (255);
           SetBlue (0);
+          SetWhite();
+
         }
         else if (timeStamp < 5000) {
           SetRed (0);
           SetGreen (255);
           SetBlue (255);
+          SetWhite();
+
         }
         else if (timeStamp < 6000) {
           SetRed (0);
           SetGreen (0);
           SetBlue (255);
+          SetWhite();
+
         }
         else if (timeStamp < 7000) {
           SetRed (127);
           SetGreen (0);
           SetBlue (255);
+          SetWhite();
+
         }
         else {
           SetRed (255);
           SetGreen (0);
           SetBlue (255);
+          SetWhite();
         }
       }
       break;
@@ -221,6 +237,7 @@ void ExpandedLEDSerialController::SetMode (Mode mode) {
       SetRed (0);
       SetGreen (0);
       SetBlue (0);
+      SetWhite();
       break;
   }
 }

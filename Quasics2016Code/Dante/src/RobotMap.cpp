@@ -42,11 +42,11 @@ void RobotMap::init() {
     
     intakeArmLeftEncoder.reset(new Encoder(4, 5, false, Encoder::k4X));
     lw->AddSensor("IntakeArm", "LeftEncoder", intakeArmLeftEncoder);
-    intakeArmLeftEncoder->SetDistancePerPulse(1.0);
+    intakeArmLeftEncoder->SetDistancePerPulse(90/7);
     intakeArmLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
     intakeArmRightEncoder.reset(new Encoder(6, 7, true, Encoder::k4X));
     lw->AddSensor("IntakeArm", "RightEncoder", intakeArmRightEncoder);
-    intakeArmRightEncoder->SetDistancePerPulse(1.0);
+    intakeArmRightEncoder->SetDistancePerPulse(90/7);
     intakeArmRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
     intakeShooterLeftIntakeWheel.reset(new Victor(4));
     lw->AddActuator("Intake Shooter", "LeftIntakeWheel", (Victor&) intakeShooterLeftIntakeWheel);

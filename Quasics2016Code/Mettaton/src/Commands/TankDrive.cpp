@@ -106,9 +106,9 @@ void TankDrive::Execute() {
     }
 
     Robot::driveBase->SetLeftPower(-leftStick * leftSliderValue
-                                 * leftFactor * 100);
+                                 * leftFactor);
     Robot::driveBase->SetRightPower(-rightStick * rightSliderValue
-                                  * rightFactor * 100);
+                                  * rightFactor);
 
 #else
     // Figure out what mode the driver wants

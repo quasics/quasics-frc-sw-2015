@@ -52,6 +52,7 @@ void RobotMap::init() {
     lw->AddActuator("ShooterArm", "LeftArm", std::static_pointer_cast<Spark>(shooterArmLeftArm));
     
     shooterArmRightArm.reset(new Spark(7));
+    shooterArmRightArm->SetInverted(true);
     lw->AddActuator("ShooterArm", "RightArm", std::static_pointer_cast<Spark>(shooterArmRightArm));
     
     shooterArmLeftArmEncoder.reset(new Encoder(4, 5, false, Encoder::k4X));

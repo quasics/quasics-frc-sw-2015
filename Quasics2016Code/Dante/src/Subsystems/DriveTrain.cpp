@@ -58,7 +58,12 @@ void DriveTrain::Stop() {
 //Reading
 double DriveTrain::GetNavXHeading(GyroAxis whichAxis) {
 	switch (whichAxis){
-
+	case kPitch:
+	case kYaw:
+	case kRoll:
+	case kYawContinuous:
+		// TODO: Add code to handle these cases.
+		break;
 	}
 
 	return 0;

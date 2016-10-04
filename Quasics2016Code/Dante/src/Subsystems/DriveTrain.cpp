@@ -48,10 +48,8 @@ void DriveTrain::SetRightPower(double power) {
 }
 
 void DriveTrain::Stop() {
-	frontLeft->Set(0);
-	backLeft->Set(0);
-	frontRight->Set(0);
-	backRight->Set(0);
+	SetLeftPower(0);
+	SetRightPower(0);
 }
 
 //NavX

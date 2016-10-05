@@ -42,3 +42,17 @@ void DriveTrain::InitDefaultCommand() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
+void DriveTrain::SetLeftPower(double percent) {
+	frontLeft->Set(percent);
+	backLeft->Set(percent);
+}
+
+void DriveTrain::SetRightPower(double percent) {
+	frontRight->Set(percent);
+	backRight->Set(percent);
+}
+
+void DriveTrain::Stop() {
+	SetLeftPower(0);
+	SetRightPower(0);
+}

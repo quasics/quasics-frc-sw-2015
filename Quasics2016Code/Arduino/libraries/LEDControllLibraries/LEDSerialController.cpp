@@ -13,7 +13,7 @@ LEDSerialController::LEDSerialController (unsigned int redPin, unsigned int gree
   lastHeartbeat = 0;
 }
 
-void LEDSerialController::LEDSerialProcess () {
+void LEDSerialController::LEDSerialProcess() {
   while (Serial.available() > 0)
   {
     char c = char(Serial.read());
@@ -35,28 +35,28 @@ void LEDSerialController::LEDSerialProcess () {
   SetBatteryLow (activeBatteryLow);
 }
 
-void LEDSerialController::SetMode (Mode mode) {
+void LEDSerialController::SetMode(Mode mode) {
   if (!isLowBatteryOverride) {
     switch (mode) {
       case kRedTeam:
-        SetRed (255);
-        SetGreen (0);
-        SetBlue (0);
+        SetRed(255);
+        SetGreen(0);
+        SetBlue(0);
         break;
       case kBlueTeam:
-        SetRed (0);
-        SetGreen (0);
-        SetBlue (255);
+        SetRed(0);
+        SetGreen(0);
+        SetBlue(255);
         break;
       case kDemo:
-        SetRed (0);
-        SetGreen (255);
-        SetBlue (0);
+        SetRed(0);
+        SetGreen(255);
+        SetBlue(0);
         break;
       default:
-        SetRed (255);
-        SetGreen (255);
-        SetBlue (0);
+        SetRed(255);
+        SetGreen(255);
+        SetBlue(0);
         break;
     }
   }

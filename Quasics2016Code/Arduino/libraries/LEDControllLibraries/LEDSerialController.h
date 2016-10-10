@@ -8,12 +8,17 @@ class LEDSerialController: public LEDController {
 
   private:
     enum Mode {
-      kRedTeam, kBlueTeam, kDemo, kError
+        kRedTeam, kBlueTeam, kDemo, kError
     };
     enum State {
-      kBreathing, kBlink, kSlowBlink, kQuickBlink, kSolid, kErrorState, kOff
+        kBreathing, kBlink, kSlowBlink, kQuickBlink, kSolid, kErrorState, kOff
     };
     
+    void SetMode(Mode mode = kError);
+    void SetState(State state = kBreathing);
+    void SetBatteryLow(bool isLow = false);
+    void Translator(const char * input, Mode& mode, State& state, bool& isBatteryLow);
+
     bool isLowBatteryOverride;
     unsigned long HeartRateSecs;
     String serialIn;
@@ -21,10 +26,4 @@ class LEDSerialController: public LEDController {
     State activeState;
     bool activeBatteryLow;
     unsigned long lastHeartbeat;
-
-
-    void SetMode (Mode mode = kError);
-    void SetState (State state = kBreathing);
-    void SetBatteryLow (bool isLow = false);
-    void Translator (const char * input, Mode& mode, State& state, bool& isBatteryLow);
 };

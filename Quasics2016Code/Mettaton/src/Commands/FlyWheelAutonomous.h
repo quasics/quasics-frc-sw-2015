@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Set the fly wheels in a direction for a set time and then stop them
  *
  * @author ExampleAuthor
  */

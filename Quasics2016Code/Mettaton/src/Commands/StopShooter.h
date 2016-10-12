@@ -4,6 +4,7 @@
 #include "Commands/Subsystem.h"
 #include "../Robot.h"
 
+// Stop the shooter apparatus
 
 class StopShooter: public Command
 {

@@ -36,7 +36,7 @@ void Robot::RobotInit() {
 	oi.reset(new OI());
 	autonomousCommand.reset(new Autonomous());
 	automaticLighting.reset(new AutomaticLighting());
-	shooterTeleop.reset(new ShooterTeleop());
+	shooterTeleop.reset(new FullShooterTeleop());
 	tankDrive.reset(new TankDrive());
 
 	// instantiate the command used for the autonomous period

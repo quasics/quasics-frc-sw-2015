@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Move at a specified speed for a specified period of time
  *
  * @author ExampleAuthor
  */

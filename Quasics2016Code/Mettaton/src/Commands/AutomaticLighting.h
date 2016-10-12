@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ *Automatically set the Lights
  *
  * @author ExampleAuthor
  */

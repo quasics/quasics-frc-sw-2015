@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * set piston extended or retracted for specified time
  *
  * @author ExampleAuthor
  */

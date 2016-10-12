@@ -29,11 +29,11 @@ void ShooterArmTeleop::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ShooterArmTeleop::Execute() {
-	if (fabs(Robot::oi->getShooterStick()->GetRawAxis(1)) > .1)
+	if (fabs(Robot::oi->getShooterStick()->GetRawAxis(1)) > .1) //when shooter stick axis is out of the dead band...
 		Robot::shooterArm->DirectArmControll(
-				-Robot::oi->getShooterStick()->GetRawAxis(1));
+				-Robot::oi->getShooterStick()->GetRawAxis(1)); //Set the arm to the value of the shooter stick axis
 	else
-		Robot::shooterArm->StopArm();
+		Robot::shooterArm->StopArm(); //Else: Stop arm
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -43,11 +43,11 @@ bool ShooterArmTeleop::IsFinished() {
 
 // Called once after isFinished returns true
 void ShooterArmTeleop::End() {
-	Robot::shooterArm->StopArm();
+	Robot::shooterArm->StopArm(); //when finished, stop arm
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void ShooterArmTeleop::Interrupted() {
-	Robot::shooterArm->StopArm();
+	Robot::shooterArm->StopArm(); //when interrupted, stop arm
 }

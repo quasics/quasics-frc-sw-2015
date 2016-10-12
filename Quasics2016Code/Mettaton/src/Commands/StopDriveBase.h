@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Stop Drive base for the dash
  *
  * @author ExampleAuthor
  */

@@ -19,7 +19,7 @@
 #include "StopShooter.h"
 
 /**
- *
+ *  Stop All subsystems
  *
  * @author ExampleAuthor
  */

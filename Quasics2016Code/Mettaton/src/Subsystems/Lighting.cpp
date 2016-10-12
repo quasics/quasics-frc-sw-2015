@@ -46,16 +46,26 @@ void Lighting::SetColor(Colors color) {
 	case kWhite:
 		serialText = "White;";
 		break;
-	default:
+	case kGreen:
 		serialText = "Green;";
+		break;
+	case kRainbow:
+		serialText = "Cycle;";
+		break;
+	default:
+		break;
 	}
 
 	serialPort->Write(serialText, serialText.length());
+	const uint32_t bytesWritten = serialPort->Write(serialText,
+			serialText.length());
+	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
+			<< std::endl;
 }
 void Lighting::SetDynamic(Dynamics dynamic) {
 	//kBreathing, kOn, kBlinking, kOff
 	std::string serialText = ";";
-	switch (dynamic){
+	switch (dynamic) {
 	case kBreathing:
 		serialText = "Breathing;";
 		break;
@@ -70,4 +80,9 @@ void Lighting::SetDynamic(Dynamics dynamic) {
 		break;
 	}
 	serialPort->Write(serialText, serialText.length());
+	const uint32_t bytesWritten = serialPort->Write(serialText,
+			serialText.length());
+	std::cout << "Wrote " << bytesWritten << " bytes of '" << serialText << "'"
+			<< std::endl;
+
 }

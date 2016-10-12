@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Driver control for the shooter arm (not the actual shooting mechanism)
  *
  * @author ExampleAuthor
  */

@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Stop the arm (for dash)
  *
  * @author ExampleAuthor
  */

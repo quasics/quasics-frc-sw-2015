@@ -34,18 +34,18 @@ void StopDriveBase::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool StopDriveBase::IsFinished() {
-	return true;
+	return true; //stop immediately
 }
 
 // Called once after isFinished returns true
 void StopDriveBase::End() {
-	Robot::driveBase->SetLeftPower();
-	Robot::driveBase->SetLeftPower();
+	Robot::driveBase->SetLeftPower(); //when finished, stop left drive motors
+	Robot::driveBase->SetLeftPower(); //when finished, stop right drive motors
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void StopDriveBase::Interrupted() {
-	Robot::driveBase->SetLeftPower();
-	Robot::driveBase->SetLeftPower();
+	Robot::driveBase->SetLeftPower(); //when interrupted, stop left drive motors
+	Robot::driveBase->SetLeftPower(); //when interrupted, stop right drive motors
 }

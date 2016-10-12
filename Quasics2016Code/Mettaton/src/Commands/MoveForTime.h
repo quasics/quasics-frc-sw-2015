@@ -17,7 +17,7 @@
 #include "../Robot.h"
 
 /**
- *
+ * Move at specified power for specified time
  *
  * @author ExampleAuthor
  */

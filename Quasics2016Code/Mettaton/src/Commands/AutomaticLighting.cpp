@@ -29,28 +29,28 @@ void AutomaticLighting::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AutomaticLighting::Execute() {
-	if (DriverStation::GetInstance().IsDisabled())
+	if (DriverStation::GetInstance().IsDisabled()) //Set Lights to Rainbow color
 		Robot::lighting->SetColor(Lighting::kRainbow);
-	else if (!DriverStation::GetInstance().IsFMSAttached())
+	else if (!DriverStation::GetInstance().IsFMSAttached()) //Else: Set Lights to Green if no FMS
 		Robot::lighting->SetColor(Lighting::kGreen);
-	else if (DriverStation::GetInstance().GetAlliance()
+	else if (DriverStation::GetInstance().GetAlliance() //Else: Set Lights to red if FMS and on red team
 			== DriverStation::GetInstance().kRed)
 		Robot::lighting->SetColor(Lighting::kRed);
-	else if (DriverStation::GetInstance().GetAlliance()
+	else if (DriverStation::GetInstance().GetAlliance() //Else: Set lights to blue if FMS and on blue team
 			== DriverStation::GetInstance().kBlue)
 		Robot::lighting->SetColor(Lighting::kBlue);
 	else
-		Robot::lighting->SetColor(Lighting::kWhite);
+		Robot::lighting->SetColor(Lighting::kWhite); //Else: Set lights to White
 
-	if (DriverStation::GetInstance().IsDisabled())
+	if (DriverStation::GetInstance().IsDisabled()) //Set lights to Full On if Disabled
 		Robot::lighting->SetDynamic(Lighting::kOn);
-	else if (DriverStation::GetInstance().IsEnabled()
+	else if (DriverStation::GetInstance().IsEnabled() //Else: Set lights to Blink if Enabled in Autonomous
 			&& DriverStation::GetInstance().IsAutonomous())
 		Robot::lighting->SetDynamic(Lighting::kBlinking);
-	else if (DriverStation::GetInstance().IsEnabled()
+	else if (DriverStation::GetInstance().IsEnabled() //Else: Set lights to Breathe/Pulse if Enabled in Teleop
 			&& DriverStation::GetInstance().IsOperatorControl())
 		Robot::lighting->SetDynamic(Lighting::kBreathing);
-	else
+	else //Else: Set lights to Full On
 		Robot::lighting->SetDynamic(Lighting::kOn);
 }
 

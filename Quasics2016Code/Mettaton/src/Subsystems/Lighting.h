@@ -37,8 +37,8 @@ public:
 	enum Dynamics {
 		kBreathing, kOn, kBlinking, kOff
 	};
-	void SetColor (Colors color = kRainbow);
-	void SetDynamic (Dynamics dynamic = kOn);
+	virtual void SetColor (Colors color = kRainbow);
+	virtual void SetDynamic (Dynamics dynamic = kOn);
 };
 
 #endif

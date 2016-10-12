@@ -27,7 +27,7 @@
 #include "OI.h"
 #include "Commands/Autonomous.h"
 #include "Commands/AutomaticLighting.h"
-#include "Commands/ShooterTeleop.h"
+#include "Commands/FullShooterTeleop.h"
 #include "Commands/TankDrive.h"
 
 class Robot : public IterativeRobot {

@@ -18,7 +18,8 @@
 #include "ShooterArmTeleop.h"
 
 /**
- *
+ * Combines the Teleop for the shooter and the arm for the use of the
+ * co-pilot(Jasdeep)
  *
  * @author ExampleAuthor
  */

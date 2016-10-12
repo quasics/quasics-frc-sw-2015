@@ -30,15 +30,15 @@ void ShooterTeleop::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void ShooterTeleop::Execute() {
 	if (Robot::oi->getShooterStick()->GetRawButton(1)
-			&& !Robot::oi->getShooterStick()->GetRawButton(3)) {
+			&& !Robot::oi->getShooterStick()->GetRawButton(3)) { //When trigger pulled and intake button not pressed, set output
 		Robot::shooter->SetWheels(true);
 	} else if (!Robot::oi->getShooterStick()->GetRawButton(1)
-			&& Robot::oi->getShooterStick()->GetRawButton(3)) {
+			&& Robot::oi->getShooterStick()->GetRawButton(3)) { //else when intake button pressed and not trigger, set intake
 		Robot::shooter->SetWheels(false);
 	} else {
-		Robot::shooter->StopWheels();
+		Robot::shooter->StopWheels(); //else, stop the wheels
 	}
-	Robot::shooter->SetPiston(Robot::oi->getShooterStick()->GetRawButton(2));
+	Robot::shooter->SetPiston(Robot::oi->getShooterStick()->GetRawButton(2)); //Set the Piston to the value indicated by the co-pilot
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -48,13 +48,13 @@ bool ShooterTeleop::IsFinished() {
 
 // Called once after isFinished returns true
 void ShooterTeleop::End() {
-	Robot::shooter->StopWheels();
-	Robot::shooter->StopPiston();
+	Robot::shooter->StopWheels(); //when Finished, stop wheels
+	Robot::shooter->StopPiston(); //when finished, retract piston
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void ShooterTeleop::Interrupted() {
-	Robot::shooter->StopWheels();
-	Robot::shooter->StopPiston();
+	Robot::shooter->StopWheels(); //when interrupted, stop wheels
+	Robot::shooter->StopPiston(); //when interrupted, retract piston
 }

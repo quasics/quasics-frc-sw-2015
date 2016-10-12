@@ -17,7 +17,7 @@
 #include "MoveForTime.h"
 
 /**
- *
+ *	Command group for autonomous set
  *
  * @author ExampleAuthor
  */

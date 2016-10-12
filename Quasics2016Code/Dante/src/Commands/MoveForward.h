@@ -2,7 +2,7 @@
 #define MoveForward_H
 
 #include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include "WPILib.h"
 
 class MoveForward: public Command
 {
@@ -13,6 +13,7 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+
 private:
 	int counter;
 };

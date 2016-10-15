@@ -38,13 +38,23 @@ void DriveBase::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void DriveBase::SetLeftPower (float power){
+#ifndef DEMO_SLOW_SPEED
 	leftFront->Set(power);
 	leftRear->Set(power);
+#else
+	leftFront->Set(.75*power);
+	leftRear->Set(.75*power);
+#endif
 }
 
 void DriveBase::SetRightPower (float power){
+#ifndef DEMO_SLOW_SPEED
 	rightFront->Set(-power);
 	rightRear->Set(-power);
+#else
+	rightFront->Set(-.75*power);
+	rightRear->Set(-.75*power);
+#endif
 }
 void DriveBase::ResetGyro (){
 	navx->Reset();

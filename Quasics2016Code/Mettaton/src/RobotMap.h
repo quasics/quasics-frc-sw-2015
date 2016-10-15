@@ -11,6 +11,7 @@
 
 #ifndef ROBOTMAP_H
 #define ROBOTMAP_H
+#include "Switchboard.h"
 #include "WPILib.h"
 #include "ThirdParty/NavX/include/AHRS.h"
 

@@ -8,7 +8,14 @@ class MoveAheadFast: public Command
 {
 private:
 	int timesMoved;
+	int counter;
+	double m_seconds;
+	double m_power;
+	int timer;
+	int stopTime;
+
 public:
+
 	MoveAheadFast();
 	void Initialize();
 	void Execute();

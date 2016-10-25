@@ -1,12 +1,12 @@
-#include <ExpandedLEDSerialController.h>
+#include <ExpandedLEDSerialControllerMega.h>
 
 
-ExpandedLEDSerialController* ledController;
+ExpandedLEDSerialControllerMega* ledController;
 
 
 void setup() {
   // put your setup code here, to run once:
-  ledController = (new ExpandedLEDSerialController (11, 10, 9, 6, 2));
+  ledController = (new ExpandedLEDSerialControllerMega (11, 10, 9, 6, 2));
 }
 
 void loop() {

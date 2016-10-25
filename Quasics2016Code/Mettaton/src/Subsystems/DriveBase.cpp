@@ -42,8 +42,8 @@ void DriveBase::SetLeftPower (float power){
 	leftFront->Set(power);
 	leftRear->Set(power);
 #else
-	leftFront->Set(.75*power);
-	leftRear->Set(.75*power);
+	leftFront->Set(.875*power);
+	leftRear->Set(.875*power);
 #endif
 }
 
@@ -52,8 +52,8 @@ void DriveBase::SetRightPower (float power){
 	rightFront->Set(-power);
 	rightRear->Set(-power);
 #else
-	rightFront->Set(-.75*power);
-	rightRear->Set(-.75*power);
+	rightFront->Set(-.875*power);
+	rightRear->Set(-.875*power);
 #endif
 }
 void DriveBase::ResetGyro (){

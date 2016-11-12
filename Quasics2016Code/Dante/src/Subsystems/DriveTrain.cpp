@@ -48,8 +48,8 @@ void DriveTrain::SetLeftPower(double percent) {
 }
 
 void DriveTrain::SetRightPower(double percent) {
-	frontRight->Set(percent);
-	backRight->Set(percent);
+	frontRight->Set(-percent);
+	backRight->Set(-percent);
 }
 
 void DriveTrain::Stop() {

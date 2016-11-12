@@ -30,6 +30,7 @@ void Rotate::Execute() {
 
 bool Rotate::IsFinished() {
 	return counter >= m_seconds*50;
+	Robot::driveTrain->Stop();
 }
 
 void Rotate::End() {

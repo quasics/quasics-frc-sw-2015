@@ -37,7 +37,7 @@ void Rotate::End() {
 	Robot::driveTrain->Stop();
 }
 
-void Rotate:: Interrupt() {
+void Rotate:: Interrupted() {
 
 	Robot::driveTrain->Stop();
 

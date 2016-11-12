@@ -23,7 +23,9 @@ public:
 	void Execute();
 	bool IsFinished();
 	void End();
-	void Interrupt();
+	void Interrupted();
 };
+
+
 
 #endif /* SRC_COMMANDS_ROTATE_H_ */

@@ -21,26 +21,7 @@ void Rotatation::Initialize() {
 
 void Rotatation::Execute() {
 
-	while (m_seconds<= 3){
-		Robot::driveTrain->SetLeftPower(-.6);
-		Robot::driveTrain->SetRightPower(.6);
-	}
-	while (m_seconds<= 3){
-			Robot::driveTrain->SetLeftPower(0);
-			Robot::driveTrain->SetRightPower(0);
-	}
-	while (m_seconds<= 3){
-		Robot::driveTrain->SetLeftPower(-.6);
-		Robot::driveTrain->SetRightPower(-.6);
-	}
-	while (m_seconds<= 3){
-			Robot::driveTrain->SetLeftPower(0);
-			Robot::driveTrain->SetRightPower(0);
-	}
-	while (m_seconds<= 3){
-		Robot::driveTrain->SetLeftPower(.6);
-		Robot::driveTrain->SetRightPower(-.6);
-	}
+
  counter+=1;
 }
 

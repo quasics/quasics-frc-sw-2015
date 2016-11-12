@@ -20,11 +20,6 @@ void Rotate::Initialize() {
 }
 
 void Rotate::Execute() {
-
-	while (m_seconds <= 3){
-		Robot::driveTrain->SetLeftPower(.6);
-		Robot::driveTrain->SetRightPower(-.6);
-	}
 	counter+=1;
 }
 

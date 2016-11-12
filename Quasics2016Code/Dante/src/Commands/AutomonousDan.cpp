@@ -1,7 +1,6 @@
-#include "MoveAheadFast.h"
+#include "AutomonousDan.h"
 #include "../Robot.h"
-
-MoveAheadFast::MoveAheadFast()
+AutomonousDan::AutomonousDan()
 {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(chassis);
@@ -9,35 +8,36 @@ MoveAheadFast::MoveAheadFast()
 }
 
 // Called just before this Command runs the first time
-void MoveAheadFast::Initialize()
+void AutomonousDan::Initialize()
 {
-Robot::driveTrain->SetLeftPower(.75);
-Robot::driveTrain->SetRightPower(.75);
-timesMoved = 0;
+Robot::driveTrain->SetLeftPower(.6);
+Robot::driveTrain->SetRightPower(.8);
+timesMoved=0;
+
+
 }
 
 // Called repeatedly when this Command is scheduled to run
-void MoveAheadFast::Execute()
+void AutomonousDan::Execute()
 {
-timesMoved=timesMoved+1;
+ timesMoved=timesMoved+1;
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool MoveAheadFast::IsFinished()
+bool AutomonousDan::IsFinished()
 {
-	if(timesMoved>=25)return true;
 	return false;
 }
 
 // Called once after isFinished returns true
-void MoveAheadFast::End()
+void AutomonousDan::End()
 {
-Robot::driveTrain->Stop();
+	Robot::driveTrain->Stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void MoveAheadFast::Interrupted()
+void AutomonousDan::Interrupted()
 {
 Robot::driveTrain->Stop();
 }

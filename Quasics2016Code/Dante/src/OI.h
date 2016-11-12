@@ -13,6 +13,8 @@
 #define OI_H
 
 #include "WPILib.h"
+#include "Commands/MoveForward.h"
+#include "Commands/MoveAheadFast.h"
 
 class OI {
 private:

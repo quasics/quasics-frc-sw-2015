@@ -1,6 +1,7 @@
 #ifndef MoveAheadFast_H
 #define MoveAheadFast_H
 
+#include "Commands/Command.h"
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
 
@@ -14,8 +15,9 @@ private:
 	int timer;
 	int stopTime;
 
-public:
 
+
+public:
 	MoveAheadFast();
 	void Initialize();
 	void Execute();

@@ -16,7 +16,7 @@ Rotate::Rotate(double seconds, double power): Command() {
 void Rotate::Initialize() {
 	counter = 0;
 	Robot::driveTrain->SetLeftPower(m_power);
-	Robot::driveTrain->SetRightPower(m_power);
+	Robot::driveTrain->SetRightPower(-m_power);
 }
 
 void Rotate::Execute() {

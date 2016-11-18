@@ -11,19 +11,18 @@
 Rotatation::Rotatation(double seconds, double power) : Command(){
 	m_seconds = seconds;
 	m_power = power;
+	counter= 0;
+	Requires(Robot::driveTrain.get());
 
 }
 void Rotatation::Initialize() {
 	counter = 0;
-	Robot::driveTrain->SetLeftPower(m_power);
+	Robot::driveTrain->SetLeftPower(-m_power);
 	Robot::driveTrain->SetRightPower(m_power);
 }
 
 void Rotatation::Execute() {
-	while (m_seconds <= 3){
-			Robot::driveTrain->SetLeftPower(-.6);
-			Robot::driveTrain->SetRightPower(.6);
-	}
+
 
  counter+=1;
 }

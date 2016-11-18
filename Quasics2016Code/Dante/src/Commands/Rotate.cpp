@@ -11,6 +11,8 @@
 Rotate::Rotate(double seconds, double power): Command() {
 	m_seconds = seconds;
 	m_power = power;
+	counter = 0;
+	Requires (Robot::driveTrain.get());
 }
 
 void Rotate::Initialize() {

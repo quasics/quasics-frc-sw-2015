@@ -5,9 +5,8 @@
  *      Author: axf105
  */
 
-#include <Subsystems/Intake.h>
-#include "../RobotMap.h"
 #include "Intake.h"
+#include "../RobotMap.h"
 #include "WPILib.h"
 
 Intake::Intake() : Subsystem("Intake") {

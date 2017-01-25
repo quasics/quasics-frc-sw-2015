@@ -5,15 +5,18 @@
 
 class ContinousIntake : public Command {
 public:
-	ContinousIntake(double powerPercent);
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	ContinousIntake(double power);
+	virtual void Initialize();
+	virtual void Execute();
+	virtual bool IsFinished();
+	virtual void End();
+	virtual void Interrupted();
 
 private:
-	double power;
+	double powerPercent;
+	bool isMotorOn;
+	bool buttonDown;
+
 };
 
 #endif  // ContinousIntake_H

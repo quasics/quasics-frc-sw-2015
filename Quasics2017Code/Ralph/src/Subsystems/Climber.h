@@ -8,21 +8,17 @@
 #ifndef SRC_SUBSYSTEMS_CLIMBER_H_
 #define SRC_SUBSYSTEMS_CLIMBER_H_
 
-#include "../Robot.h"
+#include <Commands/Subsystem.h>
+#include "WPILib.h"
 
-class Climber: public Command {
-public:
-	Climber(double power);
-virtual void Initialize();
-	virtual void Execute();
-	virtual bool IsFinished();
-	virtual void End();
-	virtual void Interrupted();
-
+class Climber: public frc::Subsystem {
 private:
-	double powerPercent;
-	bool isMotorOn;
-	bool buttonDown;
+	std::shared_ptr<SpeedController> climberMotor;
+public:
+	Climber();
+	virtual ~Climber();
+	void TurnOn(double power);
+	void TurnOff();
 };
 
 #endif /* SRC_SUBSYSTEMS_CLIMBER_H_ */

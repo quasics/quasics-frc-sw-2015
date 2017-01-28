@@ -33,7 +33,7 @@ void RobotMap::init() {
 
     driveTrainLeftEncoder.reset(new Encoder(0, 1, false, Encoder::k4X));
     lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
-    driveTrainLeftEncoder->SetDistancePerPulse(1.0);
+    driveTrainLeftEncoder->SetDistancePerPulse(inchesPerTick);
     driveTrainLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
     driveTrainFrontLeft.reset(new Talon(0));
     lw->AddActuator("DriveTrain", "FrontLeft", std::static_pointer_cast<Talon>(driveTrainFrontLeft));
@@ -43,7 +43,7 @@ void RobotMap::init() {
     
     driveTrainRightEncoder.reset(new Encoder(2, 3, true, Encoder::k4X));
     lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
-    driveTrainRightEncoder->SetDistancePerPulse(1.0);
+    driveTrainRightEncoder->SetDistancePerPulse(inchesPerTick);
     driveTrainRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
     driveTrainFrontRight.reset(new Talon(2));
     lw->AddActuator("DriveTrain", "FrontRight", std::static_pointer_cast<Talon>(driveTrainFrontRight));

@@ -36,6 +36,7 @@ public:
 	static std::shared_ptr<SpeedController> driveTrainBackRight;
 	static std::shared_ptr<SpeedController> intakeMotor;
 	static std::shared_ptr<SpeedController> climberMotor;
+
 	static std::shared_ptr<Servo> gearServo;
 
 

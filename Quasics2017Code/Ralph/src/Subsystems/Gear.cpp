@@ -5,7 +5,7 @@
  *      Author: axf105
  */
 
-#include <Subsystems/Gear.h>
+#include "Gear.h"
 
 Gear::Gear() : Subsystem("Gear") {
 	// TODO Auto-generated constructor stub

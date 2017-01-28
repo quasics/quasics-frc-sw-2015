@@ -1,5 +1,5 @@
 #include "TankDrive.h"
-#include "Robot.h"
+
 TankDrive::TankDrive() {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
@@ -9,6 +9,7 @@ TankDrive::TankDrive() {
 void TankDrive::Initialize() {
 
 }
+
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 	float leftStick;

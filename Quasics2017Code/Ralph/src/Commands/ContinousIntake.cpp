@@ -5,8 +5,8 @@ ContinousIntake::ContinousIntake(double power) {
 	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::intake.get());
 	powerPercent = power;
-
-
+	isMotorOn = false;
+	buttonDown = false;
 }
 
 // Called just before this Command runs the first time

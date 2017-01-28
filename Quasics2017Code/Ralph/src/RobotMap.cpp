@@ -42,32 +42,35 @@ std::shared_ptr<Servo> RobotMap::gearServo;
 void RobotMap::init() {
     LiveWindow *lw = LiveWindow::GetInstance();
 
+    // Drive train hardware set-up
     driveTrainLeftEncoder.reset(
     		new Encoder(LEFT_ENCODER_A_CHANNEL, LEFT_ENCODER_B_CHANNEL,
     					false, Encoder::k4X));
-    lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
     driveTrainLeftEncoder->SetDistancePerPulse(inchesPerTick);
     driveTrainLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
-    driveTrainFrontLeft.reset(new Talon(LEFT_FRONT_MOTOR_CHANNEL));
-    lw->AddActuator("DriveTrain", "FrontLeft", std::static_pointer_cast<Talon>(driveTrainFrontLeft));
-    
-    driveTrainBackLeft.reset(new Talon(LEFT_BACK_MOTOR_CHANNEL));
-    lw->AddActuator("DriveTrain", "BackLeft", std::static_pointer_cast<Talon>(driveTrainBackLeft));
     
     driveTrainRightEncoder.reset(
     		new Encoder(RIGHT_ENCODER_A_CHANNEL, RIGHT_ENCODER_B_CHANNEL,
     					true, Encoder::k4X));
-    lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
     driveTrainRightEncoder->SetDistancePerPulse(inchesPerTick);
     driveTrainRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
+    lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
+    lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
+
+    driveTrainFrontLeft.reset(new Talon(LEFT_FRONT_MOTOR_CHANNEL));
+    driveTrainBackLeft.reset(new Talon(LEFT_BACK_MOTOR_CHANNEL));
     driveTrainFrontRight.reset(new Talon(RIGHT_FRONT_MOTOR_CHANNEL));
-    lw->AddActuator("DriveTrain", "FrontRight", std::static_pointer_cast<Talon>(driveTrainFrontRight));
     driveTrainBackRight.reset(new Talon(RIGHT_BACK_MOTOR_CHANNEL));
+    lw->AddActuator("DriveTrain", "FrontLeft", std::static_pointer_cast<Talon>(driveTrainFrontLeft));
+    lw->AddActuator("DriveTrain", "BackLeft", std::static_pointer_cast<Talon>(driveTrainBackLeft));
+    lw->AddActuator("DriveTrain", "FrontRight", std::static_pointer_cast<Talon>(driveTrainFrontRight));
     lw->AddActuator("DriveTrain", "BackRight", std::static_pointer_cast<Talon>(driveTrainBackRight));
     
+    // Intake hardware set-up
     intakeMotor.reset(new Talon(INTAKE_MOTOR_CHANNEL));
     lw->AddActuator("Intake", "Motor", std::static_pointer_cast<Talon>(intakeMotor));
 
+    // Gear-handling hardware set-up
     gearServo.reset(new Servo(GEAR_SERVO_CHANNEL));
 
 }

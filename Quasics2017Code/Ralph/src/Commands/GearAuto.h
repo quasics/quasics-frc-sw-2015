@@ -8,7 +8,6 @@ class GearAuto : public Command {
 public:
 	GearAuto(bool doorOpen);
 	void Initialize();
-	void Execute();
 	bool IsFinished();
 	void End();
 	void Interrupted();

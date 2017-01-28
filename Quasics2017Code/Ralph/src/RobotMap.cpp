@@ -73,4 +73,7 @@ void RobotMap::init() {
     // Gear-handling hardware set-up
     gearServo.reset(new Servo(GEAR_SERVO_CHANNEL));
 
+    // TODO: Fuel delivery hardware set-up
+    // TODO: Climbing hardware set-up
+
 }

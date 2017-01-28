@@ -16,7 +16,6 @@
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
 std::shared_ptr<Intake> Robot::intake;
-std::shared_ptr<Climber> Robot::climber;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
 

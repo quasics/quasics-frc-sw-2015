@@ -1,39 +1,36 @@
-#include "GearTeleop.h"
+#include "GearAuto.h"
 #include "../Robot.h"
 
-GearTeleop::GearTeleop() {
+
+GearAuto::GearAuto(bool doorOpen) {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::gear.get());
-	previousValue = false;
+	openDoor = doorOpen;
 }
 
 // Called just before this Command runs the first time
-void GearTeleop::Initialize() {
-	previousValue = false;
+void GearAuto::Initialize() {
+	Robot::gear->Set(openDoor);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void GearTeleop::Execute() {
-	if(!Robot::oi->getAuxStick()->GetRawButton(GearActuatorButton) && previousValue){
-		Robot::gear->Set(!Robot::gear->Get());
-	}
+void GearAuto::Execute() {
 
-	previousValue = Robot::oi->getAuxStick()->GetRawButton(GearActuatorButton);
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool GearTeleop::IsFinished() {
-	return false;
+bool GearAuto::IsFinished() {
+	return true;
 }
 
 // Called once after isFinished returns true
-void GearTeleop::End() {
+void GearAuto::End() {
 
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void GearTeleop::Interrupted() {
+void GearAuto::Interrupted() {
 
 }

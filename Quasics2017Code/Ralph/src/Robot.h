@@ -22,7 +22,6 @@
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Navigation.h"
 #include "Subsystems/Intake.h"
-#include "Subsystems/Climber.h"
 #include "Subsystems/Gear.h"
 
 
@@ -39,7 +38,6 @@ public:
     static std::shared_ptr<DriveTrain> driveTrain;
     static std::shared_ptr<Navigation> gyro;
     static std::shared_ptr<Intake> intake;
-    static std::shared_ptr<Climber> climber;
     static std::shared_ptr<Gear> gear;
 
 

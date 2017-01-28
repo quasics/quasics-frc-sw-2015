@@ -8,8 +8,8 @@
 #ifndef SRC_SUBSYSTEMS_INTAKE_H_
 #define SRC_SUBSYSTEMS_INTAKE_H_
 
-#include <Commands/Subsystem.h>
 #include "WPILib.h"
+#include "../RobotMap.h"
 
 class Intake: public frc::Subsystem {
 private:

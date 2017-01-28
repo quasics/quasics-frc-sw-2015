@@ -4,8 +4,8 @@
 threeSecondIntake::threeSecondIntake(double seconds, double power) {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
-	power = powerPercent;
-	seconds = m_seconds;
+	powerPercent = power;
+	m_seconds = seconds;
 	counter = 0;
 	Requires(Robot::intake.get());
 }

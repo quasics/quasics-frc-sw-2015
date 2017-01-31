@@ -31,4 +31,4 @@ public:
 
 };
 
-#endif /* SRC_SUBSYSTEMS_GEAR_H_ */
+#endif

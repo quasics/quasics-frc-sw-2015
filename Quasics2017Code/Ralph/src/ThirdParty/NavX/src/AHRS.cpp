@@ -1182,7 +1182,7 @@ float AHRS::GetRawMagZ() {
  * @return Returns the current barometric pressure (in millibar).
  */
 float AHRS::GetPressure() {
-    // TODO implement for navX-Aero.
+
     return 0;
 }
 

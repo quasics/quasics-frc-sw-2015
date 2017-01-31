@@ -21,4 +21,4 @@ public:
 	void TurnOff();
 };
 
-#endif /* SRC_SUBSYSTEMS_INTAKE_H_ */
+#endif

@@ -2,13 +2,10 @@
 #include "../Robot.h"
 
 GearTeleop::GearTeleop() {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::gear.get());
 	previousValue = false;
 }
 
-// Called just before this Command runs the first time
 void GearTeleop::Initialize() {
 	previousValue = false;
 }

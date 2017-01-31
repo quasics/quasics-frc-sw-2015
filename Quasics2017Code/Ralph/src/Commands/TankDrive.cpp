@@ -1,8 +1,7 @@
 #include "TankDrive.h"
 
 TankDrive::TankDrive() {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
+	Requires(Robot::driveTrain.get());
 }
 
 // Called just before this Command runs the first time
@@ -10,13 +9,11 @@ void TankDrive::Initialize() {
 
 }
 
+//TODO: Add in turbo and turtle modes
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	float leftStick;
-	float rightStick;
-
-	leftStick = Robot::oi->getDriveStick()->GetRawAxis(1);
-	rightStick = Robot::oi->getDriveStick()->GetRawAxis(3);
+	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(1);
+	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(3);
 
 	Robot::driveTrain->SetLeftPower(leftStick);
 	Robot::driveTrain->SetRightPower(rightStick);

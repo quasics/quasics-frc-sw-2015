@@ -46,7 +46,7 @@ bool RegisterIO_SPI::Read(uint8_t first_address, uint8_t* buffer, uint8_t buffer
     if ( port->Write(cmd, sizeof(cmd)) != sizeof(cmd) ) {
         return false; // WRITE ERROR
     }
-    // delay 200 us /* TODO:  What is min. granularity of delay()? */
+    // delay 200 us
     Wait(0.001);
     if ( port->Read(true, rx_buffer, buffer_len+1) != buffer_len+1 ) {
         if (trace) printf("navX-MXP SPI Read error\n");

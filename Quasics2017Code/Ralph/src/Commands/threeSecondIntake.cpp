@@ -2,8 +2,6 @@
 #include "../RobotMap.h"
 
 threeSecondIntake::threeSecondIntake(double seconds, double power) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	powerPercent = power;
 	m_seconds = seconds;
 	counter = 0;

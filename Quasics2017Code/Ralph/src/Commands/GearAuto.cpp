@@ -3,13 +3,10 @@
 
 
 GearAuto::GearAuto(bool doorOpen) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::gear.get());
 	openDoor = doorOpen;
 }
 
-// Called just before this Command runs the first time
 void GearAuto::Initialize() {
 	Robot::gear->Set(openDoor);
 }

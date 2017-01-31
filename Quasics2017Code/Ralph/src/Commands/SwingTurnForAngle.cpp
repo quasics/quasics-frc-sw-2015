@@ -1,8 +1,6 @@
 #include "SwingTurnForAngle.h"
 
 SwingTurnForAngle::SwingTurnForAngle(double targetDegreesAntiClockwise, double powerPercent) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	targetDegrees = targetDegreesAntiClockwise;
 	power = powerPercent;
 

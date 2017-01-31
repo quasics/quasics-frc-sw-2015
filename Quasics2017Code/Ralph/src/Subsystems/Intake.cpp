@@ -7,16 +7,16 @@
 
 #include "Intake.h"
 
-Intake::Intake() : Subsystem("Intake") {
+Intake::Intake() :
+		Subsystem("Intake") {
 	intakeMotor = RobotMap::intakeMotor;
 
 }
 
 Intake::~Intake() {
-	// TODO Auto-generated destructor stub
+	intakeMotor = 0;
 
 }
-
 
 void Intake::TurnOn(double power) {
 	intakeMotor->Set(power);

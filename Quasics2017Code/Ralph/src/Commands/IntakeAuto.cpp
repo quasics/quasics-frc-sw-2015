@@ -1,9 +1,6 @@
 #include "IntakeAuto.h"
 #include "../Robot.h"
 IntakeAuto::IntakeAuto(double power) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
-
 	Requires(Robot::intake.get());
 		powerPercent = power;
 

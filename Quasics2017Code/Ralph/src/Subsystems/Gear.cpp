@@ -8,14 +8,13 @@
 #include "Gear.h"
 
 Gear::Gear() : Subsystem("Gear") {
-	// TODO Auto-generated constructor stub
 	gearServo = RobotMap::gearServo;
 	doorOpen = false;
 
 }
 
 Gear::~Gear() {
-	// TODO Auto-generated destructor stub
+	gearServo = 0;
 }
 
 void Gear::Set(bool isOpen) {

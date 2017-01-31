@@ -85,8 +85,8 @@ void SerialIO::EnqueueIntegrationControlMessage(uint8_t action)
 void SerialIO::DispatchStreamResponse(IMUProtocol::StreamResponse& response) {
     board_state.cal_status = (uint8_t) (response.flags & NAV6_FLAG_MASK_CALIBRATION_STATE);
     board_state.capability_flags = (int16_t) (response.flags & ~NAV6_FLAG_MASK_CALIBRATION_STATE);
-    board_state.op_status = 0x04; /* TODO:  Create a symbol for this */
-    board_state.selftest_status = 0x07; /* TODO:  Create a symbol for this */
+    board_state.op_status = 0x04;
+    board_state.selftest_status = 0x07;
     board_state.accel_fsr_g = response.accel_fsr_g;
     board_state.gyro_fsr_dps = response.gyro_fsr_dps;
     board_state.update_rate_hz = (uint8_t) response.update_rate_hz;

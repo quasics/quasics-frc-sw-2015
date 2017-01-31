@@ -19,4 +19,4 @@ private:
 
 };
 
-#endif  // ContinousIntake_H
+#endif

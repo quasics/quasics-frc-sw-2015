@@ -15,4 +15,4 @@ private:
 	bool openDoor;
 };
 
-#endif  // GearAuto_H
+#endif

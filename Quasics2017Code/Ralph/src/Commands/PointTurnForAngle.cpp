@@ -1,8 +1,6 @@
 #include "PointTurnForAngle.h"
 
 PointTurnForAngle::PointTurnForAngle(double targetDegreesAntiClockwise, double powerPercent) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	targetDegrees = targetDegreesAntiClockwise;
 
 	// Normalize the heading we want to go to, so that it's in the range

@@ -20,6 +20,8 @@ std::shared_ptr<SpeedController> RobotMap::driveTrainBackRight;
 std::shared_ptr<SpeedController> RobotMap::intakeMotor;
 std::shared_ptr<Servo> RobotMap::gearServo;
 std::shared_ptr<Spark> RobotMap::outtakeMotor;
+
+
 void RobotMap::init() {
 	LiveWindow *lw = LiveWindow::GetInstance();
 
@@ -58,10 +60,10 @@ void RobotMap::init() {
 	// Intake hardware set-up
 	intakeMotor.reset(new Spark(INTAKE_MOTOR_CHANNEL));
 	lw->AddActuator("Intake", "Motor",
-			std::static_pointer_cast<Talon>(intakeMotor));
+			std::static_pointer_cast<Spark>(intakeMotor));
 
 	//Output Hardware set-up
-	outtakeMotor.reset(new Spark(6));
+	outtakeMotor.reset(new Spark(OUTPUT_MOTOR_CHANNEL));
 
 	// Gear-handling hardware set-up
 	gearServo.reset(new Servo(GEAR_SERVO_CHANNEL));

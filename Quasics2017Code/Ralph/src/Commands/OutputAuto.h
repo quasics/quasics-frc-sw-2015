@@ -2,6 +2,7 @@
 #define OutputAuto_H
 
 #include "../Robot.h"
+#include "../Subsystems/Outtake.h"
 
 class OutputAuto : public Command {
 public:

@@ -17,12 +17,16 @@ std::shared_ptr<Navigation> Robot::gyro;
 std::shared_ptr<Intake> Robot::intake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
+std::shared_ptr<Outtake> Robot::outtake;
 
 
 void Robot::RobotInit() {
 	RobotMap::init();
     driveTrain.reset(new DriveTrain());
     gyro.reset(new Navigation());
+    outtake.reset(new Outtake());
+    gear.reset(new Gear());
+    intake.reset(new Intake());
 	oi.reset(new OI());
 	autonomousCommand.reset(new MoveForTime(1, 1));
 	autoCommand.reset(new MoveInSquare());

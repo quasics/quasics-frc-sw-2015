@@ -26,15 +26,24 @@ void Robot::RobotInit() {
 	oi.reset(new OI());
 	autonomousCommand.reset(new MoveForTime(1, 1));
 	autoCommand.reset(new MoveInSquare());
+
+//Camera Commands
+#ifdef Use_Camera
+	CameraServer::GetInstance()->SetQuality(50);
+	CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+#endif
   }
 
 /**
  * This function is called when the disabled button is hit.
  * You can use it to reset subsystems before shutting down.
  */
+
+
 void Robot::DisabledInit(){
 
 }
+
 
 void Robot::DisabledPeriodic() {
 	Scheduler::GetInstance()->Run();

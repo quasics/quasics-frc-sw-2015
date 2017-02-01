@@ -20,16 +20,37 @@ void TankDrive::Execute() {
 	float rightPower = 0;
 
 #ifdef USE_TANK_DRIVE_TRIM_
-	float leftMaxRate = Robot::driveTrain->LeftEncoderVelocity()/leftStick;
-	float rightMaxRate = Robot::driveTrain->RightEncoderVelocity()/rightStick;
+	if (!(leftStick == 0 || rightStick == 0
+			|| Robot::driveTrain->LeftEncoderVelocity() == 0
+			|| Robot::driveTrain->RightEncoderVelocity() == 0)) {
+		float leftMaxRate = Robot::driveTrain->LeftEncoderVelocity()
+				/ leftStick;
+		float rightMaxRate = Robot::driveTrain->RightEncoderVelocity()
+				/ rightStick;
+		if (leftMaxRate >= rightMaxRate) {
+			leftPower = leftStick;
+			rightPower = rightStick * leftMaxRate / rightMaxRate;
+		} else {
+			leftPower = leftStick * rightMaxRate / leftMaxRate;
+			rightPower = rightStick;
+		}
+	} else {
+		if (leftStick >= rightStick) {
+			leftPower = leftStick;
+			rightPower = 0;
+		} else {
+			leftPower = 0;
+			rightPower = rightStick;
 
+		}
 
 #else
-	leftPower = leftStick;
-	rightPower = rightStick;
+		leftPower = leftStick;
+		rightPower = rightStick;
 #endif
-	Robot::driveTrain->SetLeftPower(leftPower);
-	Robot::driveTrain->SetRightPower(rightPower);
+		Robot::driveTrain->SetLeftPower(leftPower);
+		Robot::driveTrain->SetRightPower(rightPower);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

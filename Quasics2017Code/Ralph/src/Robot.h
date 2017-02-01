@@ -26,7 +26,7 @@
 
 
 //Use Auto-Trim Code for Tank Drive?
-//#define USE_TANK_DRIVE_TRIM_
+#define USE_TANK_DRIVE_TRIM_
 
 class Robot: public IterativeRobot {
 public:

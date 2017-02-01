@@ -1,5 +1,6 @@
 #include "IntakeAuto.h"
 #include "../Robot.h"
+
 IntakeAuto::IntakeAuto(double power) {
 	Requires(Robot::intake.get());
 		powerPercent = power;

@@ -18,6 +18,7 @@ std::shared_ptr<Intake> Robot::intake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
 
+
 void Robot::RobotInit() {
 	RobotMap::init();
     driveTrain.reset(new DriveTrain());

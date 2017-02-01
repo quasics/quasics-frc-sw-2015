@@ -1,4 +1,5 @@
 #include "TankDrive.h"
+#include "math.h"
 
 TankDrive::TankDrive() {
 	Requires(Robot::driveTrain.get());
@@ -12,11 +13,23 @@ void TankDrive::Initialize() {
 //TODO: Add in turbo and turtle modes
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(1);
-	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(3);
+	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);
+	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(RightYAxis);
 
-	Robot::driveTrain->SetLeftPower(leftStick);
-	Robot::driveTrain->SetRightPower(rightStick);
+	float leftPower = 0;
+	float rightPower = 0;
+
+#ifdef USE_TANK_DRIVE_TRIM_
+	float leftMaxRate = Robot::driveTrain->LeftEncoderVelocity()/leftStick;
+	float rightMaxRate = Robot::driveTrain->RightEncoderVelocity()/rightStick;
+
+
+#else
+	leftPower = leftStick;
+	rightPower = rightStick;
+#endif
+	Robot::driveTrain->SetLeftPower(leftPower);
+	Robot::driveTrain->SetRightPower(rightPower);
 }
 
 // Make this return true when this Command no longer needs to run execute()

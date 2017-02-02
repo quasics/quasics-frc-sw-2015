@@ -1,4 +1,5 @@
 #include "OutputTele.h"
+#include "RobotVariables.h"
 
 OutputTele::OutputTele(double power) {
 	// Use Requires() here to declare subsystem dependencies
@@ -15,7 +16,7 @@ void OutputTele::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void OutputTele::Execute() {
-	buttonDown = Robot::oi->getDriveStick()->GetRawButton(6);
+	buttonDown = Robot::oi->getDriveStick()->GetRawButton(OutputButton);
 	if (buttonDown && motorOn){
 		Robot::outtake->TurnOff();
 		motorOn = false;

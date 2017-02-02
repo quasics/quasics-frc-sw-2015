@@ -1,5 +1,6 @@
 #include "ContinousIntake.h"
 #include "../Robot.h"
+#include "RobotVariables.h"
 ContinousIntake::ContinousIntake(double power) {
 	Requires(Robot::intake.get());
 	powerPercent = power;
@@ -12,7 +13,7 @@ void ContinousIntake::Initialize() {
 }
 
 void ContinousIntake::Execute() {
-	bool buttonDown = Robot::oi->getDriveStick()->GetRawButton(5);
+	bool buttonDown = Robot::oi->getDriveStick()->GetRawButton(IntakeButton);
 	if (buttonDown && isMotorOn) {
 		// Take appropriate action
 		Robot::intake->TurnOff();

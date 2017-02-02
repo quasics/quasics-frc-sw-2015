@@ -36,6 +36,8 @@ extern const int inchesPerTick;
 //--------------------Co-Pilot Stick---------------------------------------------------------------
 //Buttons
 #define GearActuatorButton 0
+#define OutputButton 6
+#define IntakeButton 5
 //Axes
 #define AuxLeftYAxis 1
 #define AuxLeftXAxis 0

@@ -10,7 +10,7 @@ void TankDrive::Initialize() {
 
 }
 
-//TODO: Add in turbo and turtle modes
+/*TODO: Add in turbo and turtle modes how about normal?????*/
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);

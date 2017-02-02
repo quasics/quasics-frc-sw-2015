@@ -1,5 +1,7 @@
 #include "TankDrive.h"
 #include "math.h"
+#include "../Robot.h"
+#include <Commands/Subsystem.h>
 
 TankDrive::TankDrive() {
 	Requires(Robot::driveTrain.get());

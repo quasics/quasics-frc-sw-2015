@@ -8,7 +8,6 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 #include "Robot.h"
 #include "Commands/MoveInSquare.h"
 
@@ -19,36 +18,34 @@ std::shared_ptr<Outtake> Robot::outtake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
 
-
-
 void Robot::RobotInit() {
 	RobotMap::init();
-    driveTrain.reset(new DriveTrain());
-    gyro.reset(new Navigation());
-    outtake.reset(new Outtake());
-    gear.reset(new Gear());
-    intake.reset(new Intake());
+	driveTrain.reset(new DriveTrain());
+	gyro.reset(new Navigation());
+	outtake.reset(new Outtake());
+	gear.reset(new Gear());
+	intake.reset(new Intake());
 	oi.reset(new OI());
 	autonomousCommand.reset(new MoveForTime(1, 1));
 	autoCommand.reset(new MoveInSquare());
 
+#define Use_Camera
+
 //Camera Commands
 #ifdef Use_Camera
-	CameraServer::GetInstance()->SetQuality(50);
-	CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+	CameraServer::GetInstance()->StartAutomaticCapture(0).SetResolution(160,
+			120);
 #endif
-  }
+}
 
 /**
  * This function is called when the disabled button is hit.
  * You can use it to reset subsystems before shutting down.
  */
 
-
-void Robot::DisabledInit(){
+void Robot::DisabledInit() {
 
 }
-
 
 void Robot::DisabledPeriodic() {
 	Scheduler::GetInstance()->Run();

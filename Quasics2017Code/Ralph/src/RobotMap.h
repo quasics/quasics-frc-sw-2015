@@ -44,14 +44,15 @@
  */
 class RobotMap {
 public:
-	static std::shared_ptr<Encoder> driveTrainLeftEncoder;
 	static std::shared_ptr<SpeedController> driveTrainFrontLeft;
 	static std::shared_ptr<SpeedController> driveTrainBackLeft;
-	static std::shared_ptr<Encoder> driveTrainRightEncoder;
 	static std::shared_ptr<SpeedController> driveTrainFrontRight;
 	static std::shared_ptr<SpeedController> driveTrainBackRight;
 	static std::shared_ptr<SpeedController> intakeMotor;
 	static std::shared_ptr<SpeedController> climberMotor;
+	static std::shared_ptr<Encoder> driveTrainLeftEncoder;
+	static std::shared_ptr<Encoder> driveTrainRightEncoder;
+
 	static std::shared_ptr<Servo> gearServo;
 	static std::shared_ptr<Spark> outtakeMotor;
 

@@ -22,7 +22,7 @@
 #include "Subsystems/Gear.h"
 #include "OI.h"
 #include "Subsystems/Outtake.h"
-
+#include "Subsystems/FuelExhaustGate.h"
 
 
 //Use Auto-Trim Code for Tank Drive?
@@ -39,6 +39,7 @@ public:
 	static std::shared_ptr<Intake> intake;
 	static std::shared_ptr<Gear> gear;
     static std::shared_ptr<Outtake> outtake;
+    static std::shared_ptr<Lighting> lighting;
 
 
 	virtual void RobotInit();

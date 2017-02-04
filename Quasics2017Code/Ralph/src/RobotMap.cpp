@@ -23,6 +23,7 @@ std::shared_ptr<SpeedController> RobotMap::climberMotor;
 std::shared_ptr<Servo> RobotMap::gearServo;
 std::shared_ptr<Spark> RobotMap::outtakeMotor;
 std::shared_ptr<Servo> RobotMap::outputActuator;
+std::shared_ptr<Lighting> Robot::lighting;
 
 
 
@@ -43,6 +44,7 @@ void RobotMap::init() {
 	driveTrainRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
 	lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
 	lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
+
 
 	//Drive Motors
 	driveTrainFrontLeft.reset(new Talon(LEFT_FRONT_MOTOR_CHANNEL));

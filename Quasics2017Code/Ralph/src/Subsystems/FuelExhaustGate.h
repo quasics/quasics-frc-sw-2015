@@ -20,6 +20,7 @@ public:
 
 		void Set(bool isOpen);
 		bool Get();
+		double GetAngle();
 };
 
 #endif  // FuelExhaustGate_H

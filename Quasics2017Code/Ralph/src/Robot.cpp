@@ -27,8 +27,10 @@ void Robot::RobotInit() {
 	gear.reset(new Gear());
 	intake.reset(new Intake());
 	oi.reset(new OI());
+
 	autonomousCommand.reset(new MoveForTime(1, 1));
 	autoCommand.reset(new MoveInSquare());
+
 
 #define Use_Camera
 

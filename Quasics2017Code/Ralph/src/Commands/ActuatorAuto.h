@@ -11,8 +11,10 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+
 private:
 	bool openDoor;
+
 };
 
 #endif  // ActuatorAuto_H

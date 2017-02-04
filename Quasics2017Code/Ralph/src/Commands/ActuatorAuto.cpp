@@ -4,13 +4,13 @@
 ActuatorAuto::ActuatorAuto(bool doorOpen) {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
-	Requires(Robot::fuelexhaustgate.get());
+	Requires(Robot::fuelExhaustGate.get());
 	openDoor = doorOpen;
 }
 
 // Called just before this Command runs the first time
 void ActuatorAuto::Initialize() {
-	Robot::fuelexhaustgate->Set(openDoor);
+	Robot::fuelExhaustGate->Set(openDoor);
 }
 
 

@@ -39,7 +39,7 @@ public:
 	static std::shared_ptr<Intake> intake;
 	static std::shared_ptr<Gear> gear;
     static std::shared_ptr<Outtake> outtake;
-    static std::shared_ptr<FuelExhaustGate> fuelexhaustgate;
+    static std::shared_ptr<FuelExhaustGate> fuelExhaustGate;
 
 
 	virtual void RobotInit();

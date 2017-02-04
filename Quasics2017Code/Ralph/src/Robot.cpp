@@ -17,7 +17,7 @@ std::shared_ptr<Intake> Robot::intake;
 std::shared_ptr<Outtake> Robot::outtake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
-std::shared_ptr<FuelExhaustGate> Robot::fuelexhaustgate;
+std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
 
 void Robot::RobotInit() {
 	RobotMap::init();

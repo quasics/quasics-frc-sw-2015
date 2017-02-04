@@ -22,7 +22,6 @@
 #include "Commands/outputAuto.h"
 #include "SmartDashboard/SmartDashboard.h"
 
-
 OI::OI() {
     // Process operator interface input here.
     auxStick.reset(new Joystick(AuxStickPort));

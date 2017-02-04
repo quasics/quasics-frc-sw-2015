@@ -1,14 +1,17 @@
 #include "FuelExhaustGate.h"
 #include "../RobotMap.h"
 
-FuelExhaustGate::FuelExhaustGate() : Subsystem("FuelExhaustGate") {
-	outputActuator = RobotMap::outputActuator;
-		doorOpen = false;
+FuelExhaustGate::FuelExhaustGate()
+	: Subsystem("FuelExhaustGate"),
+	  outputActuator(RobotMap::outputActuator),
+	  doorOpen(false)
+{
+	frc::SmartDashboard::PutData("linearActuator", outputActuator.get());
 }
 
 
 FuelExhaustGate::~FuelExhaustGate() {
-	outputActuator = 0;
+	outputActuator = nullptr;
 }
 
 void FuelExhaustGate::Set(bool isOpen) {
@@ -19,6 +22,17 @@ void FuelExhaustGate::Set(bool isOpen) {
 		outputActuator->Set(closeValue);
 }
 
-bool FuelExhaustGate::Get() {
+bool FuelExhaustGate::Get() const {
 	return doorOpen;
+}
+
+FuelExhaustGate::DoorState FuelExhaustGate::GetDoorStatus() const {
+	auto position = outputActuator->Get();
+	if (position == openValue) {
+		return eOpen;
+	} else if (position == closeValue) {
+		return eClosed;
+	} else {
+		return eAjar;
+	}
 }

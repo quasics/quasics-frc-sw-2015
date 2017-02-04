@@ -6,21 +6,24 @@
 
 class FuelExhaustGate : public Subsystem {
 private:
+	enum DoorState {
+		eOpen,
+		eClosed,
+		eAjar
+	};
 	std::shared_ptr<Servo> outputActuator;
 
-		const float maxValue = 1.0;
-		const float openValue = maxValue;
-		const float minValue = 0;
-		const float closeValue = minValue;
+	const float openValue = 1.0;
+	const float closeValue = 0;
 
-		bool doorOpen;
+	bool doorOpen;
 public:
 	FuelExhaustGate();
 	virtual ~FuelExhaustGate();
 
-		void Set(bool isOpen);
-		bool Get();
-		double GetAngle();
+	void Set(bool isOpen);
+	bool Get() const;
+	DoorState GetDoorStatus() const;
 };
 
 #endif  // FuelExhaustGate_H

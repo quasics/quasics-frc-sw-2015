@@ -8,7 +8,6 @@ class ActuatorAuto : public Command {
 public:
 	ActuatorAuto(bool doorOpen);
 	void Initialize();
-	void Execute();
 	bool IsFinished();
 	void End();
 	void Interrupted();

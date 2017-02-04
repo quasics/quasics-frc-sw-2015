@@ -1,6 +1,7 @@
 #include "ContinousIntake.h"
 #include "../Robot.h"
-#include "RobotVariables.h"
+#include "../RobotVariables.h"
+
 ContinousIntake::ContinousIntake(double power) {
 	Requires(Robot::intake.get());
 	powerPercent = power / 2; //The 775 pro runs really fast, so we are going to need to slow it down

@@ -1,12 +1,11 @@
 #include "OutputTele.h"
-#include "RobotVariables.h"
+#include "../RobotVariables.h"
 
-OutputTele::OutputTele(double power) {
+OutputTele::OutputTele(double power)
+	: powerPercent(power), motorOn(false), buttonDown(false)
+{
 	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
-	powerPercent = power;
-	motorOn = false;
-	buttonDown = false;
+	Requires(Robot::outtake.get());
 }
 
 // Called just before this Command runs the first time

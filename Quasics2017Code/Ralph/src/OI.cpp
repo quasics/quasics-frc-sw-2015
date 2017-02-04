@@ -18,7 +18,7 @@
 #include "Commands/GearAuto.h"
 #include "Commands/IntakeAuto.h"
 #include "Commands/MoveForDistance.h"
-
+#include "Commands/outputAuto.h"
 #include "SmartDashboard/SmartDashboard.h"
 
 
@@ -36,6 +36,8 @@ OI::OI() {
     SmartDashboard::PutData("Servo", new GearAuto(.5));
     SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.3));
     SmartDashboard::PutData("Moves for a specified distance", new MoveForDistance(52,.5));
+    SmartDashboard::PutData("OutputAuto moves for specified time", new OutputAuto(.5));
+
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

@@ -22,4 +22,3 @@ void FuelExhaustGate::Set(bool isOpen) {
 bool FuelExhaustGate::Get() {
 	return doorOpen;
 }
-

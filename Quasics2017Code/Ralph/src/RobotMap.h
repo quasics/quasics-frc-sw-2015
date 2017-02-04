@@ -30,6 +30,7 @@
 #define OUTPUT_MOTOR_CHANNEL		6
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
+#define OUTPUT_ACTUATOR_CHANNEL		7
 //------------------------End Of Wiring Info ------------------------------------------------------
 
 

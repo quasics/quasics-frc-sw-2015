@@ -1,8 +1,8 @@
 #include "FuelExhaustGate.h"
 #include "../RobotMap.h"
 
-FuelExhaustGate::FuelExhaustGate() : Subsystem("ExampleSubsystem") {
-	outputActuator = RobotMap::gearServo;
+FuelExhaustGate::FuelExhaustGate() : Subsystem("FuelExhaustGate") {
+	outputActuator = RobotMap::outputActuator;
 		doorOpen = false;
 }
 

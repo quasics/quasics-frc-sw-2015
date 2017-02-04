@@ -36,6 +36,37 @@ void DriveTrain::SetRightPower(double percent) {
 	backRight->Set(percent);
 }
 
+void DriveTrain::SetTrimmedPower(double leftPercent, double rightPercent) {
+	double leftPower = 0;
+	double rightPower = 0;
+
+	if (!(leftPercent == 0 || rightPercent == 0 || LeftEncoderVelocity() == 0
+			|| RightEncoderVelocity() == 0)) {
+		float leftMaxRate = LeftEncoderVelocity()
+				/ leftPercent;
+		float rightMaxRate = RightEncoderVelocity()
+				/ rightPercent;
+		if (leftMaxRate >= rightMaxRate) {
+			leftPower = leftPercent;
+			rightPower = rightPercent * leftMaxRate / rightMaxRate;
+		} else {
+			leftPower = leftPercent * rightMaxRate / leftMaxRate;
+			rightPower = rightPercent;
+		}
+	} else {
+		if (leftPercent >= rightPercent) {
+			leftPower = leftPercent;
+			rightPower = 0;
+		} else {
+			leftPower = 0;
+			rightPower = rightPercent;
+		}
+	}
+
+	SetLeftPower(leftPower);
+	SetRightPower(rightPower);
+}
+
 double DriveTrain::RightEncoderVelocity() {
 	return rightEncoder->GetRate();
 }

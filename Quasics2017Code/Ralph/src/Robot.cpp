@@ -31,8 +31,7 @@ void Robot::RobotInit() {
 	autonomousCommand.reset(new MoveForTime(1, 1));
 	autoCommand.reset(new MoveInSquare());
 
-
-#define Use_Camera
+//#define Use_Camera
 
 //Camera Commands
 #ifdef Use_Camera

@@ -7,6 +7,10 @@
 extern const int wheelDiameterInches;
 extern const int driveTrainTicksPerRevolution;
 extern const int inchesPerTick;
+
+#define SlowMultiplier 0.65
+#define MediumMultiplier 0.80
+#define TurboMultiplier 0.90
 //------------------------End Of Robot Specs-------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 

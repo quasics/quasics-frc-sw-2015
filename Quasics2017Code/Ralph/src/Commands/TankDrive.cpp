@@ -18,42 +18,14 @@ void TankDrive::Execute() {
 	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);
 	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(RightYAxis);
 
-	float leftPower = 0;
-	float rightPower = 0;
-
 #ifdef USE_TANK_DRIVE_TRIM
-	if (!(leftStick == 0 || rightStick == 0
-			|| Robot::driveTrain->LeftEncoderVelocity() == 0
-			|| Robot::driveTrain->RightEncoderVelocity() == 0)) {
-		float leftMaxRate = Robot::driveTrain->LeftEncoderVelocity()
-				/ leftStick;
-		float rightMaxRate = Robot::driveTrain->RightEncoderVelocity()
-				/ rightStick;
-		if (leftMaxRate >= rightMaxRate) {
-			leftPower = leftStick;
-			rightPower = rightStick * leftMaxRate / rightMaxRate;
-		} else {
-			leftPower = leftStick * rightMaxRate / leftMaxRate;
-			rightPower = rightStick;
-		}
-	} else {
-		if (leftStick >= rightStick) {
-			leftPower = leftStick;
-			rightPower = 0;
-		} else {
-			leftPower = 0;
-			rightPower = rightStick;
-
-		}
+	Robot::driveTrain->SetTrimmedPower(leftStick, rightStick);
 
 #else
-		leftPower = leftStick;
-		rightPower = rightStick;
+	Robot::driveTrain->SetLeftPower(leftStick);
+	Robot::driveTrain->SetRightPower(rightStick);
 #endif
-		Robot::driveTrain->SetLeftPower(leftPower);
-		Robot::driveTrain->SetRightPower(rightPower);
-	}
-
+}
 
 // Make this return true when this Command no longer needs to run execute()
 bool TankDrive::IsFinished() {

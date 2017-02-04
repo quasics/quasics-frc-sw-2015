@@ -21,11 +21,18 @@ std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
 
 void Robot::RobotInit() {
 	RobotMap::init();
+
+	// Build the subsystems
 	driveTrain.reset(new DriveTrain());
 	gyro.reset(new Navigation());
 	outtake.reset(new Outtake());
 	gear.reset(new Gear());
 	intake.reset(new Intake());
+	fuelExhaustGate.reset(new FuelExhaustGate());
+
+	// Note: building the OI *must* be done after building the
+	// subsystems, so that the commands it creates will have
+	// the subsystems available.
 	oi.reset(new OI());
 
 	autonomousCommand.reset(new MoveForTime(1, 1));

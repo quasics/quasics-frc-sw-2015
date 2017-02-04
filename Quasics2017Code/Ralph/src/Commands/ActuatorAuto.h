@@ -11,6 +11,7 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+	void Execute() override;
 
 private:
 	const bool openDoor;

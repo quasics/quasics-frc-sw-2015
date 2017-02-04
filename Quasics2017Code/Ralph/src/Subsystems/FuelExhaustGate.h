@@ -6,11 +6,6 @@
 
 class FuelExhaustGate : public Subsystem {
 private:
-	enum DoorState {
-		eOpen,
-		eClosed,
-		eAjar
-	};
 	std::shared_ptr<Servo> outputActuator;
 
 	bool doorOpen;
@@ -20,6 +15,13 @@ public:
 
 	void Set(bool isOpen);
 	bool Get() const;
+	double GetPosition() const { return outputActuator->GetAngle(); }
+
+	enum DoorState {
+		eOpen,
+		eClosed,
+		eAjar
+	};
 	DoorState GetDoorStatus() const;
 };
 

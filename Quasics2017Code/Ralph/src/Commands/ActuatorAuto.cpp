@@ -1,8 +1,10 @@
 #include "ActuatorAuto.h"
 #include "../Robot.h"
+#include <cassert>
 
 ActuatorAuto::ActuatorAuto(bool doorOpen) : openDoor(doorOpen) {
 	// Use Requires() here to declare subsystem dependencies
+	// assert(Robot::fuelExhaustGate.get());
 	Requires(Robot::fuelExhaustGate.get());
 }
 
@@ -14,7 +16,13 @@ void ActuatorAuto::Initialize() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool ActuatorAuto::IsFinished() {
-	return true;
+	// TODO: Fix this.  The command isn't finished untl the actuator is either
+	// fully extended or fully retracted.  Otherwise, we run the risk of
+	// having balls jam into place if the door isn't open yet, or come
+	// out unexpectedly if it isn't closed yet.
+	auto position = Robot::fuelExhaustGate->GetDoorStatus();
+	return (openDoor && position == FuelExhaustGate::eOpen)
+			|| (!openDoor && position == FuelExhaustGate::eClosed);
 }
 
 // Called once after isFinished returns true
@@ -26,4 +34,9 @@ void ActuatorAuto::End() {
 // subsystems is scheduled to run
 void ActuatorAuto::Interrupted() {
 
+}
+
+void ActuatorAuto::Execute() {
+	printf("Actuator position: %lf\n",
+			Robot::fuelExhaustGate->GetPosition());
 }

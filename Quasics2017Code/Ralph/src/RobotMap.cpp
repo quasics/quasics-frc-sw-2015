@@ -18,6 +18,8 @@ std::shared_ptr<Encoder> RobotMap::driveTrainRightEncoder;
 std::shared_ptr<SpeedController> RobotMap::driveTrainFrontRight;
 std::shared_ptr<SpeedController> RobotMap::driveTrainBackRight;
 std::shared_ptr<SpeedController> RobotMap::intakeMotor;
+std::shared_ptr<SpeedController> RobotMap::climberMotor;
+
 std::shared_ptr<Servo> RobotMap::gearServo;
 std::shared_ptr<Spark> RobotMap::outtakeMotor;
 std::shared_ptr<Servo> RobotMap::outputActuator;

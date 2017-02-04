@@ -3,6 +3,6 @@
 #include "GearAuto.h"
 
 AutoGearPlacement::AutoGearPlacement() {
-	AddSequential(new MoveForDistance(52,.5));
-	AddSequential(new GearAuto(.5));
+	AddSequential(new MoveForDistance(-52,.5));
+	AddSequential(new GearAuto(true));
 }

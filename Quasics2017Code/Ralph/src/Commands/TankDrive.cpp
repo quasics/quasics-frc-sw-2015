@@ -21,7 +21,7 @@ void TankDrive::Execute() {
 	float leftPower = 0;
 	float rightPower = 0;
 
-#ifdef USE_TANK_DRIVE_TRIM_
+#ifdef USE_TANK_DRIVE_TRIM
 	if (!(leftStick == 0 || rightStick == 0
 			|| Robot::driveTrain->LeftEncoderVelocity() == 0
 			|| Robot::driveTrain->RightEncoderVelocity() == 0)) {

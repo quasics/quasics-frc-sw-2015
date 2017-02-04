@@ -55,6 +55,7 @@ public:
 
 	static std::shared_ptr<Servo> gearServo;
 	static std::shared_ptr<Spark> outtakeMotor;
+	static std::shared_ptr<Servo> outputActuator;
 
 	static void init();
 };

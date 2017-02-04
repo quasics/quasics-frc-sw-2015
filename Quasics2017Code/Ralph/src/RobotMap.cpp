@@ -26,6 +26,24 @@ std::shared_ptr<Servo> RobotMap::outputActuator;
 
 
 
+//------------------------Wiring Info--------------------------------------------------------------
+//------------------------Sensors------------------------------------------------------------------
+#define LEFT_ENCODER_A_CHANNEL		0
+#define LEFT_ENCODER_B_CHANNEL		1
+#define RIGHT_ENCODER_A_CHANNEL		2
+#define RIGHT_ENCODER_B_CHANNEL		3
+//------------------------Motors-------------------------------------------------------------------
+#define LEFT_FRONT_MOTOR_CHANNEL	0
+#define LEFT_BACK_MOTOR_CHANNEL		1
+#define RIGHT_FRONT_MOTOR_CHANNEL	2
+#define RIGHT_BACK_MOTOR_CHANNEL	3
+#define INTAKE_MOTOR_CHANNEL		4
+#define OUTPUT_MOTOR_CHANNEL		6
+//------------------------Other Actuators----------------------------------------------------------
+#define GEAR_SERVO_CHANNEL			5
+#define OUTPUT_ACTUATOR_CHANNEL		7
+//------------------------End Of Wiring Info ------------------------------------------------------
+
 
 void RobotMap::init() {
 	LiveWindow *lw = LiveWindow::GetInstance();

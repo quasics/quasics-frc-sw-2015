@@ -1,15 +1,15 @@
 #include "SetLightColor.h"
 
-SetLightColor::SetLightColor(Lighting::Colors color)  : Command() {
+SetLightColor::SetLightColor()   {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
-	Requires(Robot::lighting.get());
-	kColor = color;
+
+
 }
 
 // Called just before this Command runs the first time
 void SetLightColor::Initialize() {
-	Robot::lighting->SetColor(kColor);
+
 }
 
 // Called repeatedly when this Command is scheduled to run

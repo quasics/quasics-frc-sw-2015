@@ -53,7 +53,7 @@ void TankDrive::Execute() {
 		Robot::driveTrain->SetLeftPower(leftPower);
 		Robot::driveTrain->SetRightPower(rightPower);
 	}
-}
+
 
 // Make this return true when this Command no longer needs to run execute()
 bool TankDrive::IsFinished() {

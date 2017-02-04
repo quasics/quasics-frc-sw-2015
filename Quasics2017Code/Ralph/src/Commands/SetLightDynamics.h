@@ -6,7 +6,7 @@
 
 class SetLightDynamics : public Command{
 public:
-	SetLightDynamics(Lighting::Dynamics dynamic = Lighting::kOn);
+	SetLightDynamics();
 	virtual void Initialize();
 	virtual void Execute();
 	virtual bool IsFinished();
@@ -14,7 +14,7 @@ public:
 	virtual void Interrupted();
 
 private:
-	Lighting::Dynamics kDynamic = Lighting::kOn;
+
 
 };
 

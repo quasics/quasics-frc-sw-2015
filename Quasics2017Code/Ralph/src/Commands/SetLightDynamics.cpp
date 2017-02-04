@@ -1,15 +1,14 @@
 #include "SetLightDynamics.h"
 
-SetLightDynamics::SetLightDynamics(Lighting::Dynamics dynamic): Command() {
+SetLightDynamics::SetLightDynamics() {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
-	Requires(Robot::lighting.get());
-	kDynamic = dynamic;
+
 }
 
 // Called just before this Command runs the first time
 void SetLightDynamics::Initialize() {
-	Robot::lighting->SetDynamic(kDynamic);
+
 }
 
 // Called repeatedly when this Command is scheduled to run

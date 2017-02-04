@@ -1,6 +1,9 @@
 #include "FuelExhaustGate.h"
 #include "../RobotMap.h"
 
+#define OPEN_ANGLE		outputActuator->GetMaxAngle()
+#define CLOSED_ANGLE	outputActuator->GetMinAngle()
+
 FuelExhaustGate::FuelExhaustGate()
 	: Subsystem("FuelExhaustGate"),
 	  outputActuator(RobotMap::outputActuator),
@@ -17,9 +20,9 @@ FuelExhaustGate::~FuelExhaustGate() {
 void FuelExhaustGate::Set(bool isOpen) {
 	doorOpen = isOpen;
 	if (isOpen)
-		outputActuator->Set(openValue);
+		outputActuator->SetAngle(OPEN_ANGLE);
 	else
-		outputActuator->Set(closeValue);
+		outputActuator->SetAngle(CLOSED_ANGLE);
 }
 
 bool FuelExhaustGate::Get() const {
@@ -27,10 +30,10 @@ bool FuelExhaustGate::Get() const {
 }
 
 FuelExhaustGate::DoorState FuelExhaustGate::GetDoorStatus() const {
-	auto position = outputActuator->Get();
-	if (position == openValue) {
+	auto position = outputActuator->GetAngle();
+	if (position == OPEN_ANGLE) {
 		return eOpen;
-	} else if (position == closeValue) {
+	} else if (position == CLOSED_ANGLE) {
 		return eClosed;
 	} else {
 		return eAjar;

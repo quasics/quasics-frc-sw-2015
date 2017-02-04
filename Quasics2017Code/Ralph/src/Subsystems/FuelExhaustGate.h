@@ -13,9 +13,6 @@ private:
 	};
 	std::shared_ptr<Servo> outputActuator;
 
-	const float openValue = 1.0;
-	const float closeValue = 0;
-
 	bool doorOpen;
 public:
 	FuelExhaustGate();

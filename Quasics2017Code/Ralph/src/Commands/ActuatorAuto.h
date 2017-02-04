@@ -13,7 +13,7 @@ public:
 	void Interrupted();
 
 private:
-	bool openDoor;
+	const bool openDoor;
 
 };
 

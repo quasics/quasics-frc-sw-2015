@@ -1,11 +1,9 @@
 #include "ActuatorAuto.h"
 #include "../Robot.h"
 
-ActuatorAuto::ActuatorAuto(bool doorOpen) {
+ActuatorAuto::ActuatorAuto(bool doorOpen) : openDoor(doorOpen) {
 	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::fuelExhaustGate.get());
-	openDoor = doorOpen;
 }
 
 // Called just before this Command runs the first time

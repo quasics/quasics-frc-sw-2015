@@ -17,9 +17,10 @@
 #include "Commands/threeSecondIntake.h"
 #include "Commands/GearAuto.h"
 #include "Commands/IntakeAuto.h"
+#include "Commands/MoveForDistance.h"
 
 #include "SmartDashboard/SmartDashboard.h"
-#include "Commands/MoveForTime.h"
+
 
 OI::OI() {
     // Process operator interface input here.
@@ -34,6 +35,7 @@ OI::OI() {
     SmartDashboard::PutData("Intake works for 3 seconds", new threeSecondIntake(3,.5));
     SmartDashboard::PutData("Servo", new GearAuto(.5));
     SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.3));
+    SmartDashboard::PutData("Moves for a specified distance", new MoveForDistance(52,.5));
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

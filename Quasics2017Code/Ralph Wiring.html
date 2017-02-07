@@ -1,57 +1,124 @@
 <html>
-  <head>
-    <title>Ralph Wiring</title>
-    <style type="text/css" media="screen">
-      table {
-          text-align: left;
-          width: 400px;
-
-          border-top: 2px solid black;
-          border-bottom: 2px solid black;
-          border-collapse:collapse;
-          border-spacing:0px;
-      }
-      th {
-          border-top: 2px solid black;
-          border-bottom: 2px solid black;
-      }
-      .pound {
-          width: 30px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Ralph Wiring</h1>
-                    <h2>DIO</h2>
-	    <table><tr>
-	        <th class="pound">#</th>
-	        <th>Sensor</th></tr>
-	                                               		 <tr><td>0</td><td>DriveTrain LeftEncoder A</td><td></td></tr>
-            	                                         <tr><td>1</td><td>DriveTrain LeftEncoder B</td><td></td></tr>
-            	                                         <tr><td>2</td><td>DriveTrain RightEncoder A</td><td></td></tr>
-            	                                         <tr><td>3</td><td>DriveTrain RightEncoder B</td><td></td></tr>
-            	                                                                                                                                                                                                                             	    </table>
-                    <h2>PWMs</h2>
-	    <table><tr>
-	        <th class="pound">#</th>
-	        <th>Motor</th>
-                <th>Type</th></tr>
-	                                               		 <tr><td>0</td><td>DriveTrain FrontLeft</td><td>Talon MC</td></tr>
-            	                                         <tr><td>1</td><td>DriveTrain BackLeft</td><td>Talon MC</td></tr>
-            	                                         <tr><td>2</td><td>DriveTrain FrontRight</td><td>Talon MC</td></tr>
-            	                                         <tr><td>3</td><td>DriveTrain BackRight</td><td>Talon MC</td></tr>
-            	                                         <tr><td>4</td><td>Intake Motor </td><td>SPARK MC</td></tr>
-            	                                         <tr><td>5</td><td>Gear Door </td><td>Servo</td></tr>
-            	                                         <tr><td>6</td><td>Output Motor </td><td>SPARK MC</td></tr>
-            	                                         <tr><td>7</td><td>Climber Motor </td><td>TBA (Victor?) MC</td></tr>
-            	                                         
-            	                                                                                                                                                                                                                             	    </table>
-     
-        
-            
-            
-               
-            	                                                                                                                                                                                                                                                                                                     	    </table>
-                                                                                                                                                                                                                                        
-          </body>
+<head>
+	<title>Ralph Wiring</title>
+	<style type="text/css" media="screen">
+		table {
+			text-align: left;
+			width: 400px;
+          
+			border-top: 2px solid black;
+			border-bottom: 2px solid black;
+			border-collapse:collapse;
+			border-spacing:0px;
+		} th {
+			border-top: 2px solid black;
+			border-bottom: 2px solid black;
+		} .pound {
+			width: 30px;
+		}
+	</style>
+</head>
+  
+<body>
+	<h1>Ralph Wiring</h1>
+	<h2>DIO</h2>
+	<table>
+		<tr>
+			<th class="pound">#</th>
+			<th>Sensor</th>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>DriveTrain LeftEncoder A</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>DriveTrain LeftEncoder B</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>DriveTrain RightEncoder A</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>DriveTrain RightEncoder B</td>
+			<td></td>
+		</tr>
+           <tr>
+           	<td>4</td>
+           	<td>Climber Limit Switch</td>
+           	<td></td>
+           </tr>
+	</table>	                                                                                                                                                                                                                             	    </table>
+	<h2>PWMs</h2>
+    <table>
+    	<tr>
+			<th class="pound">#</th>
+			<th>Motor</th>
+			<th>Type</th>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>DriveTrain FrontLeft</td>
+			<td>Talon MC</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>DriveTrain BackLeft</td>
+			<td>Talon MC</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>DriveTrain FrontRight</td>
+			<td>Talon MC</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>DriveTrain BackRight</td>
+			<td>Talon MC</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>Intake Motor </td>
+			<td>SPARK MC</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>Gear Door </td>
+			<td>Servo</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>Output Motor </td>
+			<td>SPARK MC</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>Climber Motor </td>
+			<td>TBA (Victor?) MC</td>
+		</tr>
+	</table>
+           	                                         
+	<h2>Other Devices</h2>
+	<table>
+		<tr> 
+    		<th>Name</th>
+    		<th>Comms Port</th>
+    		<th>ID</th>
+    	</tr>
+		<tr>
+			<td>Camera</td>
+			<td>USB</td>
+			<td>Camera 0</td>
+		</tr>
+		<tr>
+			<td>PDB</td>
+			<td>CAN</td>
+			<td>0</td>
+		</tr>
+	</table>            	                                         
+</body>
 </html>

@@ -34,7 +34,7 @@ OI::OI() {
     SmartDashboard::PutData("Robot moves for 3 seconds", new MoveForTime(3,.5));
     SmartDashboard::PutData("Intake works for 3 seconds", new threeSecondIntake(3,.5));
     SmartDashboard::PutData("Servo", new GearTeleop());
-    SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.3));
+    SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.9));
     SmartDashboard::PutData("Moves for a specified distance", new MoveForDistance(52,.5));
     SmartDashboard::PutData("OutputAuto moves for specified time", new OutputAuto(.5));
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));

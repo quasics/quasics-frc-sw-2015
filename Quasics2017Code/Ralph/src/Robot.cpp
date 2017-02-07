@@ -17,7 +17,6 @@ std::shared_ptr<Intake> Robot::intake;
 std::shared_ptr<Outtake> Robot::outtake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
-std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
 
 void Robot::RobotInit() {
 	RobotMap::init();
@@ -28,7 +27,6 @@ void Robot::RobotInit() {
 	outtake.reset(new Outtake());
 	gear.reset(new Gear());
 	intake.reset(new Intake());
-	fuelExhaustGate.reset(new FuelExhaustGate());
 
 	// Note: building the OI *must* be done after building the
 	// subsystems, so that the commands it creates will have

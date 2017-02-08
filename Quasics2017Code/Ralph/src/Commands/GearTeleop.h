@@ -6,12 +6,12 @@
 
 class GearTeleop : public Command {
 public:
-	GearTeleop();
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	GearTeleop() : previousValue(false) {}
+	void Initialize() {}
+	void Execute() {}
+	bool IsFinished() { return true; }
+	void End() {}
+	void Interrupted() {}
 
 private:
 	bool previousValue;

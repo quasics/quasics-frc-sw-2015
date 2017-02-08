@@ -1,7 +1,6 @@
 #include "ThreeSecondIntake.h"
 
 #include "../Robot.h"
-#include "../RobotMap.h"
 
 ThreeSecondIntake::ThreeSecondIntake(double seconds, double power) {
 	powerPercent = power;

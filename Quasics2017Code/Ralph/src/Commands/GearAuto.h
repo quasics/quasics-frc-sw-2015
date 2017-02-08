@@ -1,8 +1,7 @@
 #ifndef GearAuto_H
 #define GearAuto_H
 
-#include "WPILib.h"
-#include "../Subsystems/Gear.h"
+#include <WPILib.h>
 
 class GearAuto : public Command {
 public:

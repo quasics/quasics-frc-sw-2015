@@ -1,8 +1,7 @@
 #ifndef OutputAuto_H
 #define OutputAuto_H
 
-#include "../Robot.h"
-#include "../Subsystems/Outtake.h"
+#include <WPILib.h>
 
 class OutputAuto : public Command {
 public:

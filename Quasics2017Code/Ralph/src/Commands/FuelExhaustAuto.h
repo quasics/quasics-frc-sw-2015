@@ -1,8 +1,7 @@
 #ifndef FuelExhaustAuto_H
 #define FuelExhaustAuto_H
 
-#include "../Robot.h"
-#include "../Subsystems/FuelExhaustGate.h"
+#include <WPILib.h>
 
 class FuelExhaustAuto : public Command {
 public:

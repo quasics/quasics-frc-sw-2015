@@ -1,7 +1,7 @@
 #ifndef AngledDriverStationGearAuto_H
 #define AngledDriverStationGearAuto_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class AngledDriverStationGearAuto : public CommandGroup {
 public:

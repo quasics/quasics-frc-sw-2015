@@ -1,12 +1,11 @@
 #ifndef threeSecondIntake_H
 #define threeSecondIntake_H
 
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <WPILib.h>
 
-class threeSecondIntake : public Command {
+class ThreeSecondIntake : public Command {
 public:
-	threeSecondIntake(double seconds, double power);
+	ThreeSecondIntake(double seconds, double power);
 	void Initialize();
 	void Execute();
 	bool IsFinished();

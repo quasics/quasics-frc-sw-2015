@@ -12,7 +12,6 @@
 #include "SerialPort.h"
 #include "../RobotMap.h"
 
-
 Navigation::Navigation() :
 		Subsystem("Gyro") {
 	navX.reset(new AHRS(SerialPort::kMXP));

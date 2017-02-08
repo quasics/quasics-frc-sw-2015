@@ -1,7 +1,7 @@
 #ifndef IntakeAuto_H
 #define IntakeAuto_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class IntakeAuto : public Command {
 public:

@@ -2,8 +2,8 @@
 #include "PointTurnForAngle.h"
 #include "MoveForDistance.h"
 #include "OutputAuto.h"
-FuelAuto::FuelAuto() {
 
+FuelAuto::FuelAuto() {
 	AddSequential(new MoveForDistance(39,.5));
 	AddSequential(new PointTurnForAngle(-45,.5));
 	AddSequential(new MoveForDistance(-4, .5));
@@ -12,7 +12,4 @@ FuelAuto::FuelAuto() {
 	AddSequential(new MoveForDistance(10,.5));
 	AddSequential(new PointTurnForAngle(45, .5));
 	AddSequential(new MoveForDistance(20, .5));
-
-
-
 }

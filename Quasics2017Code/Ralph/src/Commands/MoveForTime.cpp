@@ -8,9 +8,8 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-#include "../Robot.h"
 #include "MoveForTime.h"
-
+#include "../Robot.h"
 
 MoveForTime::MoveForTime(double seconds, double power): Command() {
     m_seconds = seconds;

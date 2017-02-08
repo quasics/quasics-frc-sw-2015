@@ -1,8 +1,7 @@
 #ifndef ActuatorAuto_H
 #define ActuatorAuto_H
 
-#include "WPILib.h"
-#include "../Subsystems/FuelExhaustGate.h"
+#include <WPILib.h>
 
 class ActuatorAuto : public Command {
 public:

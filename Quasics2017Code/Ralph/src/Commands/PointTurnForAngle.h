@@ -1,7 +1,7 @@
 #ifndef PointTurnForAngle_H
 #define PointTurnForAngle_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class PointTurnForAngle : public Command {
 public:

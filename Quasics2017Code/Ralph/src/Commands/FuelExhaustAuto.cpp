@@ -1,5 +1,7 @@
 #include "FuelExhaustAuto.h"
+
 #include "../Robot.h"
+#include "../Subsystems/FuelExhaustGate.h"
 
 FuelExhaustAuto::FuelExhaustAuto(bool doorOpen) {
 	Requires (Robot::fuelExhaustGate.get());

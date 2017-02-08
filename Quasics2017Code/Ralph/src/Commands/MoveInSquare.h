@@ -1,7 +1,7 @@
 #ifndef MoveInSquare_H
 #define MoveInSquare_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class MoveInSquare : public CommandGroup {
 public:

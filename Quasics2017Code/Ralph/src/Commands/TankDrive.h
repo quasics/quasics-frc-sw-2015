@@ -1,8 +1,7 @@
 #ifndef TankDrive_H
 #define TankDrive_H
 
-#include "../Robot.h"
-#include "Commands/Subsystem.h"
+#include <WPILib.h>
 
 class TankDrive : public Command {
 public:

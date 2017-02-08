@@ -1,6 +1,6 @@
 #include "GearAuto.h"
 #include "../Robot.h"
-
+#include "../Subsystems/Gear.h"
 
 GearAuto::GearAuto(bool doorOpen) {
 	Requires(Robot::gear.get());

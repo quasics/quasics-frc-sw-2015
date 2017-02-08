@@ -1,7 +1,7 @@
 #ifndef OutputTele_H
 #define OutputTele_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class OutputTele : public Command {
 public:

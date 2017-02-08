@@ -1,8 +1,7 @@
 #ifndef Climber_H
 #define Climber_H
 
-#include "WPILib.h"
-#include "../RobotMap.h"
+#include <WPILib.h>
 
 class Climber : public Subsystem {
 private:

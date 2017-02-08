@@ -1,19 +1,20 @@
 #include "SwingTurnForAngle.h"
+#include "../Robot.h"
 
 SwingTurnForAngle::SwingTurnForAngle(double targetDegreesAntiClockwise, double powerPercent) {
+	Requires(Robot::driveTrain.get());
+	Requires(Robot::gyro.get());
+
 	targetDegrees = targetDegreesAntiClockwise;
-	power = powerPercent;
 
 	while (targetDegrees > 180) {
-			targetDegrees -= 360;
-		}
-		while (targetDegrees < -180) {
-			targetDegrees += 360;
-		}
+		targetDegrees -= 360;
+	}
+	while (targetDegrees < -180) {
+		targetDegrees += 360;
+	}
 
-		power = fabs(powerPercent);
-		Requires(Robot::driveTrain.get());
-		Requires(Robot::gyro.get());
+	power = fabs(powerPercent);
 }
 
 // Called just before this Command runs the first time

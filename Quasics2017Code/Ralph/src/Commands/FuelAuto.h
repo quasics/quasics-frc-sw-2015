@@ -1,7 +1,7 @@
 #ifndef FuelAuto_H
 #define FuelAuto_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class FuelAuto : public CommandGroup {
 public:

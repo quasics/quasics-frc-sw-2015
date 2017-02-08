@@ -1,5 +1,7 @@
 #include "PointTurnForAngle.h"
 
+#include "../Robot.h"
+
 PointTurnForAngle::PointTurnForAngle(double targetDegreesAntiClockwise, double powerPercent) {
 	targetDegrees = targetDegreesAntiClockwise;
 

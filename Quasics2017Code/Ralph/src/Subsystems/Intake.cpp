@@ -6,6 +6,7 @@
  */
 
 #include "Intake.h"
+#include "../RobotMap.h"
 
 Intake::Intake() :
 		Subsystem("Intake") {

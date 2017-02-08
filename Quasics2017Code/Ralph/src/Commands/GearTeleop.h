@@ -1,8 +1,8 @@
 #ifndef GearTeleop_H
 #define GearTeleop_H
 
-#include "WPILib.h"
-#include "../Subsystems/Gear.h"
+#include <WPILib.h>
+// #include "../Subsystems/Gear.h"
 
 class GearTeleop : public Command {
 public:

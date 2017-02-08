@@ -2,6 +2,7 @@
 #include "PointTurnForAngle.h"
 #include "MoveForDistance.h"
 #include "OutputAuto.h"
+
 FuelAutoRed::FuelAutoRed() {
 	AddSequential(new MoveForDistance(39,.5));
 	AddSequential(new PointTurnForAngle(45,.5));

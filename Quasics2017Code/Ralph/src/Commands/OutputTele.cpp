@@ -1,4 +1,6 @@
 #include "OutputTele.h"
+
+#include "../Robot.h"
 #include "../RobotVariables.h"
 
 OutputTele::OutputTele(double power)

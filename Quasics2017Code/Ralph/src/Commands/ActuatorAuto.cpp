@@ -1,6 +1,7 @@
 #include "ActuatorAuto.h"
+
 #include "../Robot.h"
-#include <cassert>
+#include "../Subsystems/FuelExhaustGate.h"
 
 ActuatorAuto::ActuatorAuto(bool doorOpen) : openDoor(doorOpen) {
 	// Use Requires() here to declare subsystem dependencies

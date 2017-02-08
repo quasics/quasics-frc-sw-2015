@@ -17,12 +17,12 @@
 #include "Commands/Arman.h"
 #include "Commands/MoveForTime.h"
 #include "Commands/PointTurnForAngle.h"
-#include "Commands/threeSecondIntake.h"
 #include "Commands/GearTeleop.h"
 #include "Commands/IntakeAuto.h"
 #include "Commands/MoveForDistance.h"
 #include "Commands/ActuatorAuto.h"
 #include "Commands/outputAuto.h"
+#include "Commands/ThreeSecondIntake.h"
 #include "RobotVariables.h"
 
 OI::OI() {
@@ -35,7 +35,7 @@ OI::OI() {
     SmartDashboard::PutData("Robot Moves in Arman's initials", new Arman());
     SmartDashboard::PutData("Robot does a point turn", new PointTurnForAngle(90,.3));
     SmartDashboard::PutData("Robot moves for 3 seconds", new MoveForTime(3,.5));
-    SmartDashboard::PutData("Intake works for 3 seconds", new threeSecondIntake(3,.5));
+    SmartDashboard::PutData("Intake works for 3 seconds", new ThreeSecondIntake(3,.5));
     SmartDashboard::PutData("Servo", new GearTeleop());
     SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.3));
     SmartDashboard::PutData("Moves for a specified distance", new MoveForDistance(52,.5));

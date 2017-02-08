@@ -1,18 +1,18 @@
 #include "OutputAuto.h"
+
 #include "../Robot.h"
+#include "../Subsystems/Outtake.h"
 
 
 OutputAuto::OutputAuto(double power) {
 	Requires(Robot::outtake.get());
-		powerPercent = power;
+	powerPercent = power;
 }
 
 // Called just before this Command runs the first time
 void OutputAuto::Initialize() {
 	Robot::outtake->TurnOn(powerPercent);
 }
-
-
 
 // Make this return true when this Command no longer needs to run execute()
 bool OutputAuto::IsFinished() {

@@ -6,6 +6,7 @@
  */
 
 #include "Gear.h"
+#include "../RobotMap.h"
 
 Gear::Gear() : Subsystem("Gear") {
 	gearServo = RobotMap::gearServo;

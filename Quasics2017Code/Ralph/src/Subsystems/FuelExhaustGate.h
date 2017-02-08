@@ -1,8 +1,7 @@
 #ifndef FuelExhaustGate_H
 #define FuelExhaustGate_H
 
-#include "WPILib.h"
-#include "../RobotMap.h"
+#include <WPILib.h>
 
 class FuelExhaustGate : public Subsystem {
 private:

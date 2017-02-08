@@ -1,7 +1,7 @@
 #ifndef ContinousIntake_H
 #define ContinousIntake_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class ContinousIntake : public Command {
 public:

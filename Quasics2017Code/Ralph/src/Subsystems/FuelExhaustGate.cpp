@@ -1,5 +1,6 @@
 #include "FuelExhaustGate.h"
 #include "../RobotMap.h"
+#include "../RobotMap.h"
 
 #define OPEN_VAL		1
 #define CLOSED_VAL		0.19

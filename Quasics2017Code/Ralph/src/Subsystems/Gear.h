@@ -8,8 +8,7 @@
 #ifndef SRC_SUBSYSTEMS_GEAR_H_
 #define SRC_SUBSYSTEMS_GEAR_H_
 
-#include "WPILib.h"
-#include "../RobotMap.h"
+#include <WPILib.h>
 
 class Gear : public Subsystem {
 private:

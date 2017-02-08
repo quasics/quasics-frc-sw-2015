@@ -1,7 +1,7 @@
 #ifndef FuelExhaustTeleOp_H
 #define FuelExhaustTeleOp_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class FuelExhaustTeleOp : public Command {
 public:

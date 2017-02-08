@@ -1,11 +1,10 @@
 #include "MoveForDistance.h"
+#include "../Robot.h"
 
 MoveForDistance::MoveForDistance(int targetInches, float powerMagnitude) {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::driveTrain.get());
-	target = targetInches;
 
+	target = targetInches;
 	if (target >= 0)
 		power = fabs(powerMagnitude);
 	else

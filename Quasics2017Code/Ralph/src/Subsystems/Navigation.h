@@ -11,9 +11,9 @@
 
 #ifndef GYRO_H
 #define GYRO_H
-#include "../RobotMap.h"
-#include "WPILib.h"
-#include "AHRS.h"
+
+#include <WPILib.h>
+#include <AHRS.h>
 
 
 class Navigation: public Subsystem {

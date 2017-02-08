@@ -1,8 +1,7 @@
 #ifndef SetLightColor_H
 #define SetLightColor_H
 
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <WPILib.h>
 
 class SetLightColor : public Command {
 public:
@@ -12,8 +11,6 @@ public:
 	virtual bool IsFinished();
 	virtual void End();
 	virtual void Interrupted();
-private:
-
 };
 
 #endif  // SetLightColor_H

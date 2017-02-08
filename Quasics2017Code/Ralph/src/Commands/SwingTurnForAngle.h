@@ -1,7 +1,7 @@
 #ifndef SwingTurnForAngle_H
 #define SwingTurnForAngle_H
 
-#include "../Robot.h"
+#include <WPILib.h>
 
 class SwingTurnForAngle : public Command {
 public:
@@ -13,9 +13,8 @@ public:
 	void Interrupted();
 
 private:
-double targetDegrees;
-double power;
-
+	double targetDegrees;
+	double power;
 };
 
 

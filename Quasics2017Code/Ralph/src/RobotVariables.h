@@ -1,52 +1,50 @@
 #ifndef ROBOT_VARIABLES_H_
 #define ROBOT_VARIABLES_H_
 
-#include "math.h"
-
 //------------------------Robot Specs--------------------------------------------------------------
 extern const int wheelDiameterInches;
 extern const int driveTrainTicksPerRevolution;
 extern const int inchesPerTick;
 
-#define SlowMultiplier 0.65
-#define MediumMultiplier 0.80
-#define TurboMultiplier 0.90
+extern const double SlowMultiplier;
+extern const double MediumMultiplier;
+extern const double TurboMultiplier;
 //------------------------End Of Robot Specs-------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
 
 //------------------------Joysticks----------------------------------------------------------------
-#define DriverStickPort 0
-#define AuxStickPort 1
+extern const int DriverStickPort;
+extern const int AuxStickPort;
 //--------------------Driver Stick-----------------------------------------------------------------
 //Buttons
-#define AButton 2
-#define BButton 3
-#define XButton 4
-#define YButton 1
-#define LeftShoulder 5
-#define RightShoulder 6
-#define LeftTrigger 7
-#define RightTrigger 8
-#define LeftStickPress 11
-#define RightStickPress 12
-#define StartButton 9
-#define SelectButton 10
+extern const int AButton;
+extern const int BButton;
+extern const int XButton;
+extern const int YButton;
+extern const int LeftShoulder;
+extern const int RightShoulder;
+extern const int LeftTrigger;
+extern const int RightTrigger;
+extern const int LeftStickPress;
+extern const int RightStickPress;
+extern const int StartButton;
+extern const int SelectButton;
 //Axes
-#define LeftYAxis 1
-#define LeftXAxis 0
-#define RightYAxis 3
-#define RightXAxis 2
+extern const int LeftYAxis;
+extern const int LeftXAxis;
+extern const int RightYAxis;
+extern const int RightXAxis;
 //--------------------Co-Pilot Stick---------------------------------------------------------------
 //Buttons
-#define GearActuatorButton 0
-#define OutputButton 6
-#define IntakeButton 5
+extern const int GearActuatorButton;
+extern const int OutputButton;
+extern const int IntakeButton;
 //Axes
-#define AuxLeftYAxis 1
-#define AuxLeftXAxis 0
-#define AuxRightYAxis 3
-#define AuxRightXAxis 2
+extern const int AuxLeftYAxis;
+extern const int AuxLeftXAxis;
+extern const int AuxRightYAxis;
+extern const int AuxRightXAxis;
 //------------------------End Joysticks------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 #endif

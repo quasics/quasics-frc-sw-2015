@@ -12,7 +12,6 @@
 #ifndef ROBOTMAP_H
 #define ROBOTMAP_H
 
-#include "RobotVariables.h"
 #include <WPILib.h>
 
 

@@ -11,11 +11,12 @@
 #ifndef _ROBOT_H
 #define _ROBOT_H
 
-#include "WPILib.h"
-#include "Commands/Command.h"
-#include "RobotMap.h"
-#include "LiveWindow/LiveWindow.h"
+#include <Commands/Command.h>
+#include <LiveWindow/LiveWindow.h>
+#include <WPILib.h>
+
 #include "OI.h"
+#include "RobotMap.h"
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Navigation.h"
 #include "Subsystems/Intake.h"

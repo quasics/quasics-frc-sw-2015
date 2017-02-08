@@ -9,7 +9,9 @@
 // it from being updated in the future.
 
 #include "RobotMap.h"
-#include "LiveWindow/LiveWindow.h"
+
+#include <LiveWindow/LiveWindow.h>
+#include "RobotVariables.h"
 
 std::shared_ptr<Encoder> RobotMap::driveTrainLeftEncoder;
 std::shared_ptr<SpeedController> RobotMap::driveTrainFrontLeft;

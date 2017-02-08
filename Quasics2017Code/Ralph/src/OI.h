@@ -13,7 +13,6 @@
 #define OI_H
 
 #include "WPILib.h"
-#include "RobotVariables.h"
 
 class OI {
 private:

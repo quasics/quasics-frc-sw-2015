@@ -10,6 +10,9 @@
 
 
 #include "OI.h"
+
+#include <SmartDashboard/SmartDashboard.h>
+
 #include "Commands/MoveInSquare.h"
 #include "Commands/Arman.h"
 #include "Commands/MoveForTime.h"
@@ -20,7 +23,7 @@
 #include "Commands/MoveForDistance.h"
 #include "Commands/ActuatorAuto.h"
 #include "Commands/outputAuto.h"
-#include "SmartDashboard/SmartDashboard.h"
+#include "RobotVariables.h"
 
 OI::OI() {
     // Process operator interface input here.

@@ -15,14 +15,14 @@
 #include "Commands/Command.h"
 #include "RobotMap.h"
 #include "LiveWindow/LiveWindow.h"
-#include "Commands/MoveForTime.h"
+#include "OI.h"
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Navigation.h"
 #include "Subsystems/Intake.h"
 #include "Subsystems/Gear.h"
-#include "OI.h"
 #include "Subsystems/Outtake.h"
 #include "Subsystems/FuelExhaustGate.h"
+#include "Subsystems/Climber.h"
 
 
 //Use Auto-Trim Code for Tank Drive?
@@ -40,6 +40,7 @@ public:
 	static std::shared_ptr<Gear> gear;
     static std::shared_ptr<Outtake> outtake;
     static std::shared_ptr<FuelExhaustGate> fuelExhaustGate;
+    static std::shared_ptr<Climber> climber;
 
 
 	virtual void RobotInit();

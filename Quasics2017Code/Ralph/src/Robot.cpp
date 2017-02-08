@@ -10,6 +10,7 @@
 
 #include "Robot.h"
 #include "Commands/MoveInSquare.h"
+#include "Commands/MoveForTime.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
@@ -18,6 +19,7 @@ std::shared_ptr<Outtake> Robot::outtake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
+std::shared_ptr<Climber> Robot::climber;
 
 void Robot::RobotInit() {
 	RobotMap::init();

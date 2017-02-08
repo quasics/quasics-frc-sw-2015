@@ -2,16 +2,16 @@
 #define GearTeleop_H
 
 #include <WPILib.h>
-// #include "../Subsystems/Gear.h"
+#include "../Subsystems/Gear.h"
 
 class GearTeleop : public Command {
 public:
-	GearTeleop() : previousValue(false) {}
-	void Initialize() {}
-	void Execute() {}
-	bool IsFinished() { return true; }
-	void End() {}
-	void Interrupted() {}
+	GearTeleop();
+	void Initialize();
+	void Execute();
+	bool IsFinished();
+	void End();
+	void Interrupted();
 
 private:
 	bool previousValue;

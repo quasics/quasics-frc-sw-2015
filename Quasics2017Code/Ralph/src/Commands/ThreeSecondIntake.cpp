@@ -3,10 +3,11 @@
 #include "../Robot.h"
 
 ThreeSecondIntake::ThreeSecondIntake(double seconds, double power) {
+	Requires(Robot::intake.get());
+
 	powerPercent = power;
 	m_seconds = seconds;
 	counter = 0;
-	Requires(Robot::intake.get());
 }
 
 // Called just before this Command runs the first time

@@ -16,8 +16,8 @@ void TankDrive::Initialize() {
 /*TODO: Add in turbo and turtle modes how about normal?????*/
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);
-	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(RightYAxis);
+	float leftStick = -Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);
+	float rightStick = -Robot::oi->getDriveStick()->GetRawAxis(RightYAxis);
 
 #ifdef USE_TANK_DRIVE_TRIM
 	Robot::driveTrain->SetTrimmedPower(leftStick, rightStick);

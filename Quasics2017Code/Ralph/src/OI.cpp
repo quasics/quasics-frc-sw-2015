@@ -22,8 +22,8 @@
 #include "Commands/MoveForDistance.h"
 #include "Commands/ActuatorAuto.h"
 #include "Commands/outputAuto.h"
-#include "Commands/ThreeSecondIntake.h"
 #include "RobotVariables.h"
+#include "Commands/tankDrive.h"
 
 OI::OI() {
     // Process operator interface input here.
@@ -35,12 +35,12 @@ OI::OI() {
     SmartDashboard::PutData("Robot Moves in Arman's initials", new Arman());
     SmartDashboard::PutData("Robot does a point turn", new PointTurnForAngle(90,.3));
     SmartDashboard::PutData("Robot moves for 3 seconds", new MoveForTime(3,.5));
-    SmartDashboard::PutData("Intake works for 3 seconds", new ThreeSecondIntake(3,.5));
     SmartDashboard::PutData("Servo", new GearTeleop());
     SmartDashboard::PutData("IntakeAuto works for 3 seconds", new IntakeAuto(.3));
     SmartDashboard::PutData("Moves for a specified distance", new MoveForDistance(52,.5));
     SmartDashboard::PutData("OutputAuto moves for specified time", new OutputAuto(.5));
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
+    SmartDashboard::PutData("Tank Drive", new TankDrive());
     SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));
 }
 

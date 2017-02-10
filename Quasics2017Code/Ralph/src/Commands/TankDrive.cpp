@@ -3,7 +3,6 @@
 #include "../Robot.h"
 #include "../RobotVariables.h"
 
-
 TankDrive::TankDrive() {
 	Requires(Robot::driveTrain.get());
 }
@@ -13,11 +12,24 @@ void TankDrive::Initialize() {
 
 }
 
-/*TODO: Add in turbo and turtle modes how about normal?????*/
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	float leftStick = -Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis);
-	float rightStick = -Robot::oi->getDriveStick()->GetRawAxis(RightYAxis);
+	double multiplier = MediumMultiplier;
+	if ((Robot::oi->getDriveStick()->GetRawButton(LeftShoulder)
+			|| Robot::oi->getDriveStick()->GetRawButton(RightShoulder))
+			&& !(Robot::oi->getDriveStick()->GetRawButton(LeftTrigger)
+					|| Robot::oi->getDriveStick()->GetRawButton(RightTrigger)))
+		multiplier = SlowMultiplier;
+	 else if (!(Robot::oi->getDriveStick()->GetRawButton(LeftShoulder)
+			|| Robot::oi->getDriveStick()->GetRawButton(RightShoulder))
+			&& (Robot::oi->getDriveStick()->GetRawButton(LeftTrigger)
+					|| Robot::oi->getDriveStick()->GetRawButton(RightTrigger)))
+		multiplier = TurboMultiplier;
+	 else
+		 multiplier = MediumMultiplier;
+
+	float leftStick = -Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis) * multiplier;
+	float rightStick = -Robot::oi->getDriveStick()->GetRawAxis(RightYAxis) * multiplier;
 
 #ifdef USE_TANK_DRIVE_TRIM
 	Robot::driveTrain->SetTrimmedPower(leftStick, rightStick);

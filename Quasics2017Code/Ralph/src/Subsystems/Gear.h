@@ -13,12 +13,8 @@
 class Gear : public Subsystem {
 private:
 	std::shared_ptr<Servo> gearServo;
-
-	const float maxValue = 1.0;
-	const float openValue = maxValue;
-	const float minValue = 0;
-	const float closeValue = minValue;
-
+	const float openValue = .25;
+	const float closeValue = .65;
 	bool doorOpen;
 
 public:
@@ -27,6 +23,7 @@ public:
 
 	void Set(bool isOpen);
 	bool Get();
+	double GetPosition ();
 
 };
 

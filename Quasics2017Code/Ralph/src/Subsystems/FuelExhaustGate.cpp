@@ -5,14 +5,10 @@
 #define OPEN_VAL		1
 #define CLOSED_VAL		0.19
 
-FuelExhaustGate::FuelExhaustGate()
-	: Subsystem("FuelExhaustGate"),
-	  outputActuator(RobotMap::outputActuator),
-	  doorOpen(false)
-{
-	frc::SmartDashboard::PutData("linearActuator", outputActuator.get());
+FuelExhaustGate::FuelExhaustGate() :
+		Subsystem("FuelExhaustGate"), outputActuator(RobotMap::outputActuator), doorOpen(
+				false) {
 }
-
 
 FuelExhaustGate::~FuelExhaustGate() {
 	outputActuator = nullptr;

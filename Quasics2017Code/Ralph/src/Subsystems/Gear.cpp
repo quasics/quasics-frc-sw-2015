@@ -29,3 +29,7 @@ void Gear::Set(bool isOpen) {
 bool Gear::Get() {
 	return doorOpen;
 }
+
+double Gear::GetPosition (){
+	return gearServo->GetPosition();
+}

@@ -10,7 +10,7 @@
 
 static const double IO_TIMEOUT_SECONDS = 1.0;
 
-#define SERIALIO_DASHBOARD_DEBUG
+//#define SERIALIO_DASHBOARD_DEBUG
 
 SerialIO::SerialIO( SerialPort::Port port_id,
                     uint8_t update_rate_hz,

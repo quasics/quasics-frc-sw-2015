@@ -10,7 +10,7 @@ class SerialInterface{
     void SerialRead (bool& stringChanged, String& output);
     void SerialWrite (String toWrite);
   private:
-    String serialIn = "";
+    String serialIn;
 };
 
 #endif

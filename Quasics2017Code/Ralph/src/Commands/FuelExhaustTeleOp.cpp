@@ -3,8 +3,8 @@
 #include "../Robot.h"
 #include "../RobotVariables.h"
 
-FuelExhaustTeleOp::FuelExhaustTeleOp(double power)
-: powerPercent(power), actuatorOpen(false), buttonDown(false)
+FuelExhaustTeleOp::FuelExhaustTeleOp()
+:  actuatorOpen(false), buttonDown(false)
 {
 	Requires(Robot::fuelExhaustGate.get());
 }

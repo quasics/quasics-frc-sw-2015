@@ -5,7 +5,7 @@
 
 class FuelExhaustTeleOp : public Command {
 public:
-	FuelExhaustTeleOp(double power);
+	FuelExhaustTeleOp();
 	void Initialize();
 	void Execute();
 	bool IsFinished();
@@ -13,7 +13,6 @@ public:
 	void Interrupted();
 
 private:
-	double powerPercent;
 	bool actuatorOpen;
 	bool buttonDown;
 };

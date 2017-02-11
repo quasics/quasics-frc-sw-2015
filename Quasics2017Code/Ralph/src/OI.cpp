@@ -24,6 +24,7 @@
 #include "Commands/outputAuto.h"
 #include "RobotVariables.h"
 #include "Commands/tankDrive.h"
+#include "Commands/AuxiliaryCommands.h"
 
 OI::OI() {
     // Process operator interface input here.
@@ -36,6 +37,7 @@ OI::OI() {
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
     SmartDashboard::PutData("Tank Drive", new TankDrive());
     SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));
+    SmartDashboard::PutData("Auxiliary Commands", new AuxiliaryCommands());
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

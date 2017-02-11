@@ -32,7 +32,7 @@ OI::OI() {
     
     //Smart Dashboard Buttons
     SmartDashboard::PutData("Servo", new GearTeleop());
-    SmartDashboard::PutData("IntakeAuto", new IntakeAuto(1));
+    SmartDashboard::PutData("IntakeAuto", new IntakeAuto(1.7));
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
     SmartDashboard::PutData("Tank Drive", new TankDrive());
     SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));

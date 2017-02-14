@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 
+//For Blue Alliance
 class FuelAuto : public CommandGroup {
 public:
 	FuelAuto();

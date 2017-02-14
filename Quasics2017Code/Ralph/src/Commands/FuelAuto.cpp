@@ -3,6 +3,7 @@
 #include "MoveForDistance.h"
 #include "OutputAuto.h"
 
+//For Blue Alliance
 FuelAuto::FuelAuto() {
 	AddSequential(new MoveForDistance(39,.5));
 	AddSequential(new PointTurnForAngle(-45,.5));

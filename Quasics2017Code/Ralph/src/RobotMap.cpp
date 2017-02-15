@@ -25,6 +25,7 @@ std::shared_ptr<SpeedController> RobotMap::climberMotor;
 std::shared_ptr<Servo> RobotMap::gearServo;
 std::shared_ptr<Spark> RobotMap::outtakeMotor;
 std::shared_ptr<Servo> RobotMap::outputActuator;
+std::shared_ptr<Servo> RobotMap::outputActuator2;
 
 
 
@@ -44,6 +45,7 @@ std::shared_ptr<Servo> RobotMap::outputActuator;
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
 #define OUTPUT_ACTUATOR_CHANNEL		7
+#define OUTPUT_ACTUATOR_CHANNEL2	8
 //------------------------End Of Wiring Info ------------------------------------------------------
 
 

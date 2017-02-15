@@ -12,14 +12,19 @@ FuelExhaustGate::FuelExhaustGate() :
 
 FuelExhaustGate::~FuelExhaustGate() {
 	outputActuator = nullptr;
+	outputActuator2 = nullptr;
 }
 
 void FuelExhaustGate::Set(bool isOpen) {
 	doorOpen = isOpen;
-	if (isOpen)
+	if (isOpen){
 		outputActuator->Set(OPEN_VAL);
-	else
+		outputActuator->Set(OPEN_VAL);
+	}
+	else{
 		outputActuator->Set(CLOSED_VAL);
+		outputActuator->Set(CLOSED_VAL);
+	}
 }
 
 bool FuelExhaustGate::Get() const {

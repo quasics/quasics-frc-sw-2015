@@ -6,6 +6,7 @@
 class FuelExhaustGate : public Subsystem {
 private:
 	std::shared_ptr<Servo> outputActuator;
+	std::shared_ptr<Servo> outputActuator2;
 
 	bool doorOpen;
 public:

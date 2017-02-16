@@ -41,7 +41,7 @@ std::shared_ptr<Servo> RobotMap::outputActuator2;
 #define RIGHT_FRONT_MOTOR_CHANNEL	2
 #define RIGHT_BACK_MOTOR_CHANNEL	3
 #define INTAKE_MOTOR_CHANNEL		4
-#define OUTPUT_MOTOR_CHANNEL		6
+#define OUTPUT_MOTOR_CHANNEL		15
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
 #define OUTPUT_ACTUATOR_CHANNEL		7

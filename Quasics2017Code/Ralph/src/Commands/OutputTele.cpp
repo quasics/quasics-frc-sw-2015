@@ -17,7 +17,7 @@ void OutputTele::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void OutputTele::Execute() {
-	buttonDown = Robot::oi->getDriveStick()->GetRawButton(OutputButton);
+	buttonDown = Robot::oi->getDriveStick()->GetRawAxis(AuxRightXAxis);
 	if (buttonDown && motorOn){
 		Robot::outtake->TurnOff();
 		motorOn = false;

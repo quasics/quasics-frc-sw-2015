@@ -26,6 +26,7 @@
 #include "Commands/tankDrive.h"
 #include "Commands/AuxiliaryCommands.h"
 #include "Commands/ReverseIntakeAuto.h"
+#include "Commands/OutputAuto.h"
 
 OI::OI() {
     // Process operator interface input here.
@@ -34,12 +35,21 @@ OI::OI() {
     
     //Smart Dashboard Buttons
     SmartDashboard::PutData("Servo", new GearTeleop());
+
     SmartDashboard::PutData("IntakeAuto", new IntakeAuto(.25));
+
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
+
     SmartDashboard::PutData("Tank Drive", new TankDrive());
+
     SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));
-    SmartDashboard::PutData("Auxiliary Commands", new AuxiliaryCommands());
+
+    SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
+
     SmartDashboard::PutData("Reverse Intake Auto", new ReverseIntakeAuto(-.25));
+
+    SmartDashboard::PutData("Outtake Auto", new OutputAuto(.25));
+
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

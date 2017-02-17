@@ -5,7 +5,7 @@ Outtake::Outtake() : Subsystem("Outtake") {
 }
 
 void Outtake::TurnOn(double power) {
-	outputMotor->Set(power);
+	outputMotor->Set(-power);
 }
 void Outtake::TurnOff() {
 	outputMotor->StopMotor();

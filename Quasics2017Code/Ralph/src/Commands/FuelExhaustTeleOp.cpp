@@ -4,7 +4,7 @@
 #include "../RobotVariables.h"
 
 FuelExhaustTeleOp::FuelExhaustTeleOp()
-:  actuatorOpen(false), buttonDown(false)
+:  actuatorOpen(false), buttonDown(false), buttonPrevious(false)
 {
 	Requires(Robot::fuelExhaustGate.get());
 }
@@ -17,14 +17,11 @@ void FuelExhaustTeleOp::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void FuelExhaustTeleOp::Execute() {
 	buttonDown = Robot::oi->getDriveStick()->GetRawAxis(AuxRightYAxis);
-	if (buttonDown && actuatorOpen){
-		Robot::fuelExhaustGate->Set(false);
-		actuatorOpen = false;
+	if (buttonDown != buttonPrevious){
+		actuatorOpen = !actuatorOpen;
 	}
-	else if(!buttonDown && !actuatorOpen){
-		Robot::fuelExhaustGate->Set(true);
-		actuatorOpen = true;
-	}
+	Robot::fuelExhaustGate->Set(actuatorOpen);
+	buttonPrevious = buttonDown;
 
 }
 

@@ -48,6 +48,7 @@ const int RightXAxis = 2;
 const int GearActuatorButton = 2;
 const int OutputButton = 1;
 const int IntakeButton = 3;
+const int ActuatorButton = 4;
 
 //Axes
 const int AuxRightYAxis = 3;

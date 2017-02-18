@@ -15,6 +15,7 @@ public:
 private:
 	bool actuatorOpen;
 	bool buttonDown;
+	bool buttonPrevious;
 };
 
 #endif  // FuelExhaustTeleOp_H

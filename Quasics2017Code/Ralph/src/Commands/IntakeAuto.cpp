@@ -3,7 +3,7 @@
 
 IntakeAuto::IntakeAuto(double power) {
 	Requires(Robot::intake.get());
-	powerPercent = power / 2; //The 775 pro runs really fast, so we are going to need to slow it down
+	powerPercent = power; //The 775 pro runs really fast, so we are going to need to slow it down
 }
 
 // Called just before this Command runs the first time

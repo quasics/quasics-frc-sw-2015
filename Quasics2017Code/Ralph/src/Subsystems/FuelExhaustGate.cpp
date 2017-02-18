@@ -2,12 +2,13 @@
 #include "../RobotMap.h"
 #include "../RobotMap.h"
 
-#define OPEN_VAL		1
+#define OPEN_VAL		.81
 #define CLOSED_VAL		0.19
 
 FuelExhaustGate::FuelExhaustGate() :
 		Subsystem("FuelExhaustGate"), outputActuator(RobotMap::outputActuator), doorOpen(
 				false) {
+	outputActuator->Set(CLOSED_VAL);
 }
 
 FuelExhaustGate::~FuelExhaustGate() {
@@ -17,11 +18,10 @@ FuelExhaustGate::~FuelExhaustGate() {
 
 void FuelExhaustGate::Set(bool isOpen) {
 	doorOpen = isOpen;
-	if (isOpen){
+	if (isOpen) {
 		outputActuator->Set(OPEN_VAL);
 		outputActuator->Set(OPEN_VAL);
-	}
-	else{
+	} else {
 		outputActuator->Set(CLOSED_VAL);
 		outputActuator->Set(CLOSED_VAL);
 	}

@@ -17,9 +17,9 @@ const int driveTrainTicksPerRevolution = 1440;
 
 const int inchesPerTick = wheelDiameterInches * M_PI/driveTrainTicksPerRevolution;
 
-const double SlowMultiplier = 0.65;
-const double MediumMultiplier = 0.80;
-const double TurboMultiplier = 0.90;
+const double SlowMultiplier = 0.25;
+const double MediumMultiplier = 0.60;
+const double TurboMultiplier = 0.70;
 
 //------------------------Joysticks----------------------------------------------------------------
 const int DriverStickPort = 0;

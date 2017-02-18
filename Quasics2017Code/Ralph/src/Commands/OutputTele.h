@@ -14,8 +14,8 @@ public:
 
 private:
 	double powerPercent;
+	bool buttonPrev;
 	bool motorOn;
-	bool buttonDown;
 };
 
 #endif  // OutputTele_H

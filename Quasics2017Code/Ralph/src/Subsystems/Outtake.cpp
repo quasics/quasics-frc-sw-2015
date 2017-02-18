@@ -5,6 +5,7 @@ Outtake::Outtake() : Subsystem("Outtake") {
 }
 
 void Outtake::TurnOn(double power) {
+	std::cout << "Setting output motor to " << -power << std::endl;
 	outputMotor->Set(-power);
 }
 void Outtake::TurnOff() {

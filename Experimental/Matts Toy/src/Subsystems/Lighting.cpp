@@ -44,9 +44,9 @@ void Lighting::updateState(bool force) {
 
 const char* const kLightMapping[3][5] = {
 	/* Idle */          /* Teleop */      /* Auto */       /* Error */        /* Test */
-	{"breathe-red\n",   "updown-red\n",   "chase-red\n",   "breath-yellow\n", "chase-red\n"},
-	{"breathe-blue\n",  "updown-blue\n",  "chase-blue\n",  "breath-yellow\n", "chase-blue\n"},
-	{"breathe-green\n", "updown-green\n", "chase-green\n", "breath-yellow\n", "chase-green\n"},
+	{"breathe-red\n",   "updown-red\n",   "chase-red\n",   "breath-yellow\n", "flash-red\n"},
+	{"breathe-blue\n",  "updown-blue\n",  "chase-blue\n",  "breath-yellow\n", "flash-blue\n"},
+	{"breathe-green\n", "updown-green\n", "chase-green\n", "breath-yellow\n", "flash-green\n"},
 };
 
 void Lighting::setAlliance(Alliance alliance) {

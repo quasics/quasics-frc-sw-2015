@@ -2,7 +2,7 @@
 #define AuxiliaryCommands_H
 
 #include <Commands/CommandGroup.h>
-#include "ContinousIntake.h"
+#include "IntakeTeleop.h"
 #include <Commands/FuelExhaustTeleop.h>
 #include <Commands/GearTeleop.h>
 #include <Commands/OutputTele.h>

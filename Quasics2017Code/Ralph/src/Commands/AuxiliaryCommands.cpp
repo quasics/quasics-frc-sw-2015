@@ -17,7 +17,7 @@ AuxiliaryCommands::AuxiliaryCommands() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
-	AddParallel (new ContinousIntake(.5));	//IntakeMoves
+	AddParallel (new IntakeTeleop(.5));	//IntakeMoves
 	AddParallel (new FuelExhaustTeleOp());
 	AddParallel (new GearTeleop());
 	AddParallel (new OutputTele(.5));

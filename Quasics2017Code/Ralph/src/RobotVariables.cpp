@@ -45,7 +45,7 @@ const int RightYAxis = 3;
 const int RightXAxis = 2;
 //--------------------Co-Pilot Stick---------------------------------------------------------------
 //Buttons
-const int GearActuatorButton = 6;
+const int GearActuatorButton = 2;
 const int OutputButton = 1;
 const int IntakeButton = 3;
 

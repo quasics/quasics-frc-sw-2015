@@ -1,5 +1,6 @@
 #include "GearTeleop.h"
 #include "../Robot.h"
+#include "RobotVariables.h"
 #include "iostream"
 
 GearTeleop::GearTeleop() {
@@ -12,7 +13,7 @@ void GearTeleop::Initialize() {
 
 }
 
-#define DSGearTeleop
+//#define DSGearTeleop
 // Called repeatedly when this Command is scheduled to run
 void GearTeleop::Execute() {
 #ifndef DSGearTeleop

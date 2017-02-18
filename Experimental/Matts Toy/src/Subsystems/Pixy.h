@@ -8,7 +8,7 @@
 #ifndef SRC_SUBSYSTEMS_PIXY_H_
 #define SRC_SUBSYSTEMS_PIXY_H_
 
-#include <Commands/Subsystem.h>
+#include <WPILib.h>
 #include "../ThirdParty/pixy/PixyI2C.h"
 
 class Pixy: public frc::Subsystem {

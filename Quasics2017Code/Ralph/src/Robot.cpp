@@ -9,8 +9,7 @@
 // it from being updated in the future.
 
 #include "Robot.h"
-#include "Commands/MoveInSquare.h"
-#include "Commands/MoveForTime.h"
+#include "Commands/MoveForDistance.h"
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
@@ -37,8 +36,6 @@ void Robot::RobotInit() {
 	// the subsystems available.
 	oi.reset(new OI());
 
-	autonomousCommand.reset(new MoveForTime(1, 1));
-	autoCommand.reset(new MoveInSquare());
 
 //#define Use_Camera
 

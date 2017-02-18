@@ -13,8 +13,7 @@
 #define SIMPLE_AUTO_COMMAND_H
 
 
-#include "Commands/Subsystem.h"
-#include "../Robot.h"
+#include <WPILib.h>
 
 /**
  *

@@ -27,25 +27,31 @@
 #include "Commands/AuxiliaryCommands.h"
 #include "Commands/ReverseIntakeAuto.h"
 #include "Commands/OutputAuto.h"
+#include "Commands/ClimberAuto.h"
 
+#define simpleInterface
 OI::OI() {
     // Process operator interface input here.
     auxStick.reset(new Joystick(AuxStickPort));
     driveStick.reset(new Joystick(DriverStickPort));
     
+#ifndef simpleInterface
     //Smart Dashboard Buttons
     SmartDashboard::PutData("Servo", new GearTeleop());
-
     SmartDashboard::PutData("Intake Auto", new IntakeAuto(.50));
-    SmartDashboard::PutData("Reverse Intake Auto", new ReverseIntakeAuto(-.5));
     SmartDashboard::PutData("Outtake Auto", new OutputAuto(.5));
-
     SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
-
+#else
     SmartDashboard::PutData("Tank Drive", new TankDrive());
-
+    SmartDashboard::PutData("Intake Backwash", new ReverseIntakeAuto(-.5));
     SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
+
+    SmartDashboard::PutData("Climber Forwards", new ClimberAuto(.5));
+    SmartDashboard::PutData("Climber Backwards", new ClimberAuto(-.5));
+    SmartDashboard::PutData("Climber Stop", new ClimberAuto(0));
+
+#endif
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

@@ -16,8 +16,8 @@ void FuelExhaustTeleOp::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FuelExhaustTeleOp::Execute() {
-	buttonDown = Robot::oi->getDriveStick()->GetRawAxis(AuxRightYAxis);
-	if (buttonDown != buttonPrevious){
+	buttonDown = Robot::oi->getAuxStick()->GetRawButton(ActuatorButton);
+	if (buttonDown && !buttonPrevious){
 		actuatorOpen = !actuatorOpen;
 	}
 	Robot::fuelExhaustGate->Set(actuatorOpen);

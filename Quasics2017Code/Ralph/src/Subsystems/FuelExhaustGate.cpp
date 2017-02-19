@@ -1,13 +1,13 @@
 #include "FuelExhaustGate.h"
 #include "../RobotMap.h"
-#include "../RobotMap.h"
+#include "WPILib.h"
 
 #define OPEN_VAL		.81
 #define CLOSED_VAL		0.19
 
 FuelExhaustGate::FuelExhaustGate() :
 		Subsystem("FuelExhaustGate"), outputActuator(RobotMap::outputActuator), doorOpen(
-				false) {
+		false) {
 	outputActuator->Set(CLOSED_VAL);
 }
 
@@ -20,10 +20,10 @@ void FuelExhaustGate::Set(bool isOpen) {
 	doorOpen = isOpen;
 	if (isOpen) {
 		outputActuator->Set(OPEN_VAL);
-		outputActuator->Set(OPEN_VAL);
+		SmartDashboard::PutBoolean("Gate Up", true);
 	} else {
 		outputActuator->Set(CLOSED_VAL);
-		outputActuator->Set(CLOSED_VAL);
+		SmartDashboard::PutBoolean("Gate Up", false);
 	}
 }
 

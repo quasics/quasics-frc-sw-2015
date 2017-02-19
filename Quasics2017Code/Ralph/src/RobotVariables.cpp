@@ -26,7 +26,7 @@ const int DriverStickPort = 0;
 const int AuxStickPort = 1;
 //--------------------Driver Stick-----------------------------------------------------------------
 //Buttons
-const int AButton = 2;
+const int AButtonL = 2;
 const int BButton = 3;
 const int XButton = 4;
 const int YButton = 1;

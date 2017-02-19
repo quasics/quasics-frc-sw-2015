@@ -47,10 +47,12 @@ OI::OI() {
     SmartDashboard::PutData("Intake Backwash", new ReverseIntakeAuto(-.5));
     SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
 
-    SmartDashboard::PutData("Climber Forwards", new ClimberAuto(.5));
-    SmartDashboard::PutData("Climber Backwards", new ClimberAuto(-.5));
+    SmartDashboard::PutData("Climber Forwards", new ClimberAuto(-1));
+    SmartDashboard::PutData("Climber Backwards", new ClimberAuto(1));
     SmartDashboard::PutData("Climber Stop", new ClimberAuto(0));
 
+    SmartDashboard::PutBoolean("Gear Door Open", false);
+    SmartDashboard::PutBoolean("Gate Up", false);
 #endif
 }
 

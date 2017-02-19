@@ -7,8 +7,10 @@
 
 #include "Gear.h"
 #include "../RobotMap.h"
+#include "WPILib.h"
 
-Gear::Gear() : Subsystem("Gear") {
+Gear::Gear() :
+		Subsystem("Gear") {
 	gearServo = RobotMap::gearServo;
 	doorOpen = false;
 
@@ -20,16 +22,19 @@ Gear::~Gear() {
 
 void Gear::Set(bool isOpen) {
 	doorOpen = isOpen;
-	if (isOpen)
+	if (isOpen) {
 		gearServo->Set(openValue);
-	else
+		SmartDashboard::PutBoolean("Gear Door Open", true);
+	} else {
 		gearServo->Set(closeValue);
+		SmartDashboard::PutBoolean("Gear Door Open", false);
+	}
 }
 
 bool Gear::Get() {
 	return doorOpen;
 }
 
-double Gear::GetPosition (){
+double Gear::GetPosition() {
 	return gearServo->GetPosition();
 }

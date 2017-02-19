@@ -30,6 +30,7 @@ void Robot::RobotInit() {
 	gear.reset(new Gear());
 	intake.reset(new Intake());
 	fuelExhaustGate.reset(new FuelExhaustGate());
+	climber.reset(new Climber);
 
 	// Note: building the OI *must* be done after building the
 	// subsystems, so that the commands it creates will have

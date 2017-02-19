@@ -18,7 +18,7 @@ extern const int DriverStickPort;
 extern const int AuxStickPort;
 //--------------------Driver Stick-----------------------------------------------------------------
 //Buttons
-extern const int AButton;
+extern const int AButtonL;
 extern const int BButton;
 extern const int XButton;
 extern const int YButton;

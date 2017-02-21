@@ -1,6 +1,6 @@
 #include "GearTeleop.h"
 #include "../Robot.h"
-#include "RobotVariables.h"
+#include "../RobotVariables.h"
 #include "iostream"
 
 GearTeleop::GearTeleop() {

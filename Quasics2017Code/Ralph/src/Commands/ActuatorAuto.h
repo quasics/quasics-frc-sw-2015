@@ -6,15 +6,12 @@
 class ActuatorAuto : public Command {
 public:
 	ActuatorAuto(bool doorOpen);
-	void Initialize();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	void Initialize() override;
+	bool IsFinished() override;
 	void Execute() override;
 
 private:
 	const bool openDoor;
-
 };
 
 #endif  // ActuatorAuto_H

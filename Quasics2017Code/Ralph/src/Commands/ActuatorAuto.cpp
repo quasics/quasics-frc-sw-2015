@@ -24,17 +24,6 @@ bool ActuatorAuto::IsFinished() {
 	return true;
 }
 
-// Called once after isFinished returns true
-void ActuatorAuto::End() {
-
-}
-
-// Called when another command which requires one or more of the same
-// subsystems is scheduled to run
-void ActuatorAuto::Interrupted() {
-
-}
-
 void ActuatorAuto::Execute() {
 	printf("Actuator position: %lf\n",
 			Robot::fuelExhaustGate->GetPosition());

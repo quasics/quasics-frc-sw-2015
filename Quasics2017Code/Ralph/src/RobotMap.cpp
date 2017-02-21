@@ -23,6 +23,7 @@ std::shared_ptr<SpeedController> RobotMap::intakeMotor;
 std::shared_ptr<SpeedController> RobotMap::climberMotor;
 
 std::shared_ptr<Servo> RobotMap::gearServo;
+std::shared_ptr<Servo>RobotMap::gearServoKicker;
 std::shared_ptr<Spark> RobotMap::outtakeMotor;
 std::shared_ptr<Servo> RobotMap::outputActuator;
 
@@ -45,6 +46,7 @@ std::shared_ptr<Servo> RobotMap::outputActuator;
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
 #define OUTPUT_ACTUATOR_CHANNEL		7
+#define KICKER_SERVO_CHANNEL		8
 //------------------------End Of Wiring Info ------------------------------------------------------
 
 
@@ -94,6 +96,9 @@ void RobotMap::init() {
 
 	// Gear-handling hardware set-up
 	gearServo.reset(new Servo(GEAR_SERVO_CHANNEL));
+
+	//Gear Kicker hardware setup
+	gearServoKicker.reset (new Servo (KICKER_SERVO_CHANNEL));
 
 	//Fuel
 	outputActuator.reset(new Servo(OUTPUT_ACTUATOR_CHANNEL));

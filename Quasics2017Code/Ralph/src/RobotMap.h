@@ -36,6 +36,7 @@ public:
 	static std::shared_ptr<Encoder> driveTrainRightEncoder;
 
 	static std::shared_ptr<Servo> gearServo;
+	static std::shared_ptr<Servo> gearServoKicker;
 	static std::shared_ptr<Spark> outtakeMotor;
 	static std::shared_ptr<Servo> outputActuator;
 	static std::shared_ptr<Servo> outputActuator2;

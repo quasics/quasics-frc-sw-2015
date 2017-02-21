@@ -7,34 +7,50 @@
 
 #include "Gear.h"
 #include "../RobotMap.h"
-#include "WPILib.h"
 
-Gear::Gear() :
-		Subsystem("Gear") {
+Gear::Gear() : Subsystem("Gear") {
 	gearServo = RobotMap::gearServo;
+	gearServoKicker = RobotMap::gearServoKicker;
 	doorOpen = false;
+	kickerExtended = false;
 
 }
 
 Gear::~Gear() {
 	gearServo = 0;
+	gearServoKicker = 0;
 }
 
 void Gear::Set(bool isOpen) {
 	doorOpen = isOpen;
-	if (isOpen) {
+	if (isOpen)
 		gearServo->Set(openValue);
-		SmartDashboard::PutBoolean("Gear Door Open", true);
-	} else {
+	else
 		gearServo->Set(closeValue);
-		SmartDashboard::PutBoolean("Gear Door Open", false);
-	}
 }
+
+
+void Gear::SetKicker(bool isExtended){
+	kickerExtended = isExtended;
+	if (isExtended)
+		gearServoKicker->Set(kickerOut);
+	else
+		gearServoKicker->Set(kickerIn);
+}
+
+
 
 bool Gear::Get() {
 	return doorOpen;
 }
 
-double Gear::GetPosition() {
+
+bool Gear::GetKicker(){
+	return kickerExtended;
+
+}
+
+double Gear::GetPosition (){
 	return gearServo->GetPosition();
+	return gearServoKicker->GetPosition();
 }

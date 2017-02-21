@@ -1,5 +1,4 @@
 #include "ClimberAuto.h"
-#include "WPILib.h"
 #include "../Robot.h"
 
 ClimberAuto::ClimberAuto(double power) {
@@ -16,7 +15,7 @@ void ClimberAuto::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 
-// Make this return true when this Command no longer needs to run execute()
+// TODO: Make this return true when this Command no longer needs to run execute()
 bool ClimberAuto::IsFinished() {
 	return false;
 }

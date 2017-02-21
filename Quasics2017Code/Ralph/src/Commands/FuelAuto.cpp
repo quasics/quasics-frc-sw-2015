@@ -3,6 +3,7 @@
 #include "MoveForDistance.h"
 #include "OutputAuto.h"
 
+// CODE_REVIEW(mjh): What does the following comment mean?
 //For Blue Alliance
 FuelAuto::FuelAuto() {
 	AddSequential(new MoveForDistance(39,.5));

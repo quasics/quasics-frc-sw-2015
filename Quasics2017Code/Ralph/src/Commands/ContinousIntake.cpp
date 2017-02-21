@@ -4,6 +4,12 @@
 
 ContinousIntake::ContinousIntake(double power) {
 	Requires(Robot::intake.get());
+
+	// CODE_REVIEW(mjh): This adjustment (/2) should probably be applied at the subsystem level,
+	// rather than in an individual command, especially since it's likely to be needed in
+	// *any* command that interacts with the intake motors.  (And if we swap out the motor
+	// or change the underlying mechanism, we just want to change this in one place -- the
+	// subsystem -- rather than in multiple independent commands.)
 	powerPercent = power / 2; //The 775 pro runs really fast, so we are going to need to slow it down
 	isMotorOn = false;
 	buttonDown = false;
@@ -36,5 +42,4 @@ void ContinousIntake::End() {
 
 void ContinousIntake::Interrupted() {
 	Robot::intake->TurnOff();
-
 }

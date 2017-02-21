@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class AngledDriverStationGearAuto : public CommandGroup {
 public:
 	AngledDriverStationGearAuto();

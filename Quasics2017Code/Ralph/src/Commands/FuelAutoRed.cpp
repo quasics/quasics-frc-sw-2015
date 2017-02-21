@@ -3,6 +3,7 @@
 #include "MoveForDistance.h"
 #include "OutputAuto.h"
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 //For Red Alliance
 FuelAutoRed::FuelAutoRed() {
 	AddSequential(new MoveForDistance(39,.5));

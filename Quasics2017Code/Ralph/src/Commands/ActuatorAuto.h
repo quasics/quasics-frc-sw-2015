@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class ActuatorAuto : public Command {
 public:
 	ActuatorAuto(bool doorOpen);

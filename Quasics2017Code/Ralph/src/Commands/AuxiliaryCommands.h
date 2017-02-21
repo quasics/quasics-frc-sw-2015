@@ -2,6 +2,7 @@
 #define AuxiliaryCommands_H
 
 #include <Commands/CommandGroup.h>
+
 // CODE_REVIEW(mjh): All of these should be moved into the .cpp file, since
 // the underlying types the define aren't used here.  (Including them here
 // will increase build time, since everyone that pulls in this header will
@@ -11,6 +12,7 @@
 #include "GearTeleop.h"
 #include "OutputTele.h"
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class AuxiliaryCommands : public CommandGroup {
 public:
 	AuxiliaryCommands();

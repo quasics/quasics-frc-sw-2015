@@ -8,17 +8,20 @@
 #include "Gear.h"
 #include "../RobotMap.h"
 
+// CODE_REVIEW(mjh): Would it make sense to break this into two separate
+// subsystems (one for the door, one for the kicker), and then use them
+// together in a CommandGroup (running in parallel)?  This seems like it
+// might yield a cleaner breakdown.
 Gear::Gear() : Subsystem("Gear") {
 	gearServo = RobotMap::gearServo;
 	gearServoKicker = RobotMap::gearServoKicker;
 	doorOpen = false;
 	kickerExtended = false;
-
 }
 
 Gear::~Gear() {
-	gearServo = 0;
-	gearServoKicker = 0;
+	gearServo = nullptr;
+	gearServoKicker = nullptr;
 }
 
 void Gear::Set(bool isOpen) {

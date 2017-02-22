@@ -29,12 +29,14 @@
 //Use Auto-Trim Code for Tank Drive?
 //#define USE_TANK_DRIVE_TRIM_
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class Robot: public IterativeRobot {
+// CODE_REVIEW(mjh): Consider trying to make these private (to the extent feasible).
 public:
 	std::unique_ptr<Command> autonomousCommand;
 	static std::unique_ptr<OI> oi;
 	std::unique_ptr<Command> autoCommand;
-	LiveWindow *lw = LiveWindow::GetInstance();
+	LiveWindow * const lw = LiveWindow::GetInstance();
 	static std::shared_ptr<DriveTrain> driveTrain;
 	static std::shared_ptr<Navigation> gyro;
 	static std::shared_ptr<Intake> intake;
@@ -43,14 +45,14 @@ public:
     static std::shared_ptr<FuelExhaustGate> fuelExhaustGate;
     static std::shared_ptr<Climber> climber;
 
-
-	virtual void RobotInit();
-	virtual void DisabledInit();
-	virtual void DisabledPeriodic();
-	virtual void AutonomousInit();
-	virtual void AutonomousPeriodic();
-	virtual void TeleopInit();
-	virtual void TeleopPeriodic();
-	virtual void TestPeriodic();
+public:
+	void RobotInit() override;
+	void DisabledInit() override;
+	void DisabledPeriodic() override;
+	void AutonomousInit() override;
+	void AutonomousPeriodic() override;
+	void TeleopInit() override;
+	void TeleopPeriodic() override;
+	void TestPeriodic() override;
 };
 #endif

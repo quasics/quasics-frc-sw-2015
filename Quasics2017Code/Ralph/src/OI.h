@@ -12,12 +12,14 @@
 #ifndef OI_H
 #define OI_H
 
-#include "WPILib.h"
+#include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class OI {
 private:
 	std::shared_ptr<Joystick> auxStick;
 	std::shared_ptr<Joystick> driveStick;
+
 public:
 	OI();
 

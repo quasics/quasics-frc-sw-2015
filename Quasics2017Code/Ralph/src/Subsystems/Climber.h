@@ -3,10 +3,9 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class Climber : public Subsystem {
 private:
-	// It's desirable that everything possible under private except
-	// for methods that implement subsystem capabilities
 	std::shared_ptr<SpeedController> climberMotor;
 
 public:

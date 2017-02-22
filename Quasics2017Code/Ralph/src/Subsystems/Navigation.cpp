@@ -17,10 +17,6 @@ Navigation::Navigation() :
 	navX.reset(new AHRS(SerialPort::kMXP));
 }
 
-void Navigation::InitDefaultCommand() {
-
-}
-
 double Navigation::ReadCurrentHeading() {
 	return navX->GetYaw();
 }

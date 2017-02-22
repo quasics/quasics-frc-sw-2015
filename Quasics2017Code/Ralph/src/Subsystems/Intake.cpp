@@ -11,12 +11,10 @@
 Intake::Intake() :
 		Subsystem("Intake") {
 	intakeMotor = RobotMap::intakeMotor;
-
 }
 
 Intake::~Intake() {
 	intakeMotor = 0;
-
 }
 
 void Intake::TurnOn(double power) {

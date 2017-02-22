@@ -16,13 +16,14 @@
 #include <AHRS.h>
 
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class Navigation: public Subsystem {
 private:
 	std::shared_ptr<AHRS> navX;
 
 public:
 	Navigation();
-	void InitDefaultCommand();
+
 	double ReadCurrentHeading();
 	void Reset();
 };

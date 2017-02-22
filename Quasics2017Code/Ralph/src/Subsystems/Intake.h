@@ -10,12 +10,14 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class Intake: public frc::Subsystem {
 private:
 	std::shared_ptr<SpeedController> intakeMotor;
 public:
 	Intake();
 	virtual ~Intake();
+
 	void TurnOn(double power);
 	void TurnOff();
 };

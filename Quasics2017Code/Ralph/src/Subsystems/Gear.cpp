@@ -32,7 +32,6 @@ void Gear::Set(bool isOpen) {
 		gearServo->Set(closeValue);
 }
 
-
 void Gear::SetKicker(bool isExtended){
 	kickerExtended = isExtended;
 	if (isExtended)
@@ -41,16 +40,12 @@ void Gear::SetKicker(bool isExtended){
 		gearServoKicker->Set(kickerIn);
 }
 
-
-
 bool Gear::Get() {
 	return doorOpen;
 }
 
-
 bool Gear::GetKicker(){
 	return kickerExtended;
-
 }
 
 double Gear::GetPosition (){

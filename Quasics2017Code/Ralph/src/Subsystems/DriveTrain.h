@@ -14,6 +14,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 /**
  *
  *
@@ -30,18 +31,19 @@ private:
 
 public:
 	DriveTrain();
-	void InitDefaultCommand();
+
 	void SetLeftPower(double percent);
 	void SetRightPower(double percent);
 	void SetTrimmedPower (double leftPercent, double rightPercent);
-	double RightEncoderVelocity();
-	double LeftEncoderVelocity();
 	void RightEncoderReset();
 	void LeftEncoderReset();
-	double RightEncoderDistance();
-	double LeftEncoderDistance();
 	void Stop();
 
+	// CODE_REVIEW(mjh): These methods should probably be "const"
+	double RightEncoderVelocity();
+	double LeftEncoderVelocity();
+	double RightEncoderDistance();
+	double LeftEncoderDistance();
 };
 
 #endif

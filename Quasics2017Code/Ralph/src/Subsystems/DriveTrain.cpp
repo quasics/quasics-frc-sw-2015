@@ -21,14 +21,9 @@ DriveTrain::DriveTrain() :
 	backRight = RobotMap::driveTrainBackRight;
 }
 
-void DriveTrain::InitDefaultCommand() {
-
-}
-
 void DriveTrain::SetLeftPower(double percent) {
 	frontLeft->Set(percent);
 	backLeft->Set(percent);
-
 }
 
 void DriveTrain::SetRightPower(double percent) {

@@ -10,6 +10,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class Gear : public Subsystem {
 private:
 	// CODE_REVIEW(mjh): These constants should probably be "const static",

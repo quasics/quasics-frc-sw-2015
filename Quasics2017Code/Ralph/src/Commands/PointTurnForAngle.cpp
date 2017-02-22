@@ -3,6 +3,9 @@
 #include "../Robot.h"
 
 PointTurnForAngle::PointTurnForAngle(double targetDegreesAntiClockwise, double powerPercent) {
+	Requires(Robot::driveTrain.get());
+	Requires(Robot::gyro.get());
+
 	targetDegrees = targetDegreesAntiClockwise;
 
 	// Normalize the heading we want to go to, so that it's in the range
@@ -15,8 +18,6 @@ PointTurnForAngle::PointTurnForAngle(double targetDegreesAntiClockwise, double p
 	}
 
 	power = fabs(powerPercent);
-	Requires(Robot::driveTrain.get());
-	Requires(Robot::gyro.get());
 }
 
 // Called just before this Command runs the first time
@@ -31,11 +32,6 @@ void PointTurnForAngle::Initialize() {
 			Robot::driveTrain->SetRightPower(power);
 		}
 	}
-}
-
-// Called repeatedly when this Command is scheduled to run
-void PointTurnForAngle::Execute() {
-
 }
 
 // Make this return true when this Command no longer needs to run execute()

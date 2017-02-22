@@ -2,16 +2,19 @@
 #define GearTeleop_H
 
 #include <WPILib.h>
+
+// CODE_REVIEW(mjh): This #include should be moved into the .cpp file.  (Build-time
+// improvements.)
 #include "../Subsystems/Gear.h"
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class GearTeleop : public Command {
 public:
 	GearTeleop();
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
 
 private:
 	bool previousValue;

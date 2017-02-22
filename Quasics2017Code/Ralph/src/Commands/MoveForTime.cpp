@@ -11,18 +11,14 @@
 #include "MoveForTime.h"
 #include "../Robot.h"
 
-MoveForTime::MoveForTime(double seconds, double power): Command() {
-    m_seconds = seconds;
-    m_power = power;
+MoveForTime::MoveForTime(double seconds, double power): Command(), m_seconds(seconds), m_power(power), counter(0) {
 	Requires(Robot::driveTrain.get());
-	counter = 0;
 }
 
 void MoveForTime::Initialize() {
 	Robot::driveTrain->SetLeftPower(m_power);
 	Robot::driveTrain->SetRightPower(m_power);
 	counter = 0;
-
 }
 
 // Called repeatedly when this Command is scheduled to run

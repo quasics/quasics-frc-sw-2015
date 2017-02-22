@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class IntakeTeleop : public Command {
 public:
 	IntakeTeleop(double power);

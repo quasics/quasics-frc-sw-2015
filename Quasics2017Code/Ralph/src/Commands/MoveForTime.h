@@ -15,21 +15,23 @@
 #include <WPILib.h>
 
 
+// CODE_REVIEW(mjh): Document what this class actually does.
+// CODE_REVIEW(mjh): Consider rewriting this class to be derived from the
+// frc::TimedCommand class, rather than re-implementing its functionality.
 class MoveForTime: public Command {
 public:
 	MoveForTime(double seconds, double power);
 
-	virtual void Initialize();
-	virtual void Execute();
-	virtual bool IsFinished();
-	virtual void End();
-	virtual void Interrupted();
+	virtual void Initialize() override;
+	virtual void Execute() override;
+	virtual bool IsFinished() override;
+	virtual void End() override;
+	virtual void Interrupted() override;
 
 private:
     double m_seconds;
     double m_power;
     int counter;
-
 };
 
 #endif

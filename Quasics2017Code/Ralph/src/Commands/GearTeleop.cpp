@@ -3,17 +3,18 @@
 #include "../RobotVariables.h"
 #include "iostream"
 
-GearTeleop::GearTeleop() {
+GearTeleop::GearTeleop() : previousValue(false) {
 	Requires(Robot::gear.get());
-	previousValue = false;
 }
 
 void GearTeleop::Initialize() {
 	previousValue = false;
-
 }
 
+// CODE_REVIEW(mjh): Document what this #define is used for, and why it should
+// be enabled (or disabled).
 //#define DSGearTeleop
+
 // Called repeatedly when this Command is scheduled to run
 void GearTeleop::Execute() {
 #ifndef DSGearTeleop
@@ -27,22 +28,11 @@ void GearTeleop::Execute() {
 #endif
 }
 
-// Make this return true when this Command no longer needs to run execute()
+// TODO: Make this return true when this Command no longer needs to run execute()
 bool GearTeleop::IsFinished() {
 #ifndef DSGearTeleop
 	return false;
 #else
 	return true;
 #endif
-}
-
-// Called once after isFinished returns true
-void GearTeleop::End() {
-
-}
-
-// Called when another command which requires one or more of the same
-// subsystems is scheduled to run
-void GearTeleop::Interrupted() {
-
 }

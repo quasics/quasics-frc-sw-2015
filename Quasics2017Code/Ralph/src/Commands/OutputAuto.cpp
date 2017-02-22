@@ -4,9 +4,8 @@
 #include "../Subsystems/Outtake.h"
 
 
-OutputAuto::OutputAuto(double power) {
+OutputAuto::OutputAuto(double power) : powerPercent(power) {
 	Requires(Robot::outtake.get());
-	powerPercent = power;
 }
 
 // Called just before this Command runs the first time

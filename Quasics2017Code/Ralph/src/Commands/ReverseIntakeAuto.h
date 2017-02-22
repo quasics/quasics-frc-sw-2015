@@ -1,8 +1,9 @@
 #ifndef ReverseIntakeAuto_H
 #define ReverseIntakeAuto_H
 
-#include "WPILib.h"
+#include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class ReverseIntakeAuto : public Command {
 public:
 	ReverseIntakeAuto(double power);

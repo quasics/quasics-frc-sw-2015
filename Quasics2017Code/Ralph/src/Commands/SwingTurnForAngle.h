@@ -3,6 +3,7 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class SwingTurnForAngle : public Command {
 public:
 	SwingTurnForAngle(double targetDegreesAntiClockwise, double powerPercent);

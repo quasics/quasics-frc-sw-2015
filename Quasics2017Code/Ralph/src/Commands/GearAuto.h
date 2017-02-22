@@ -3,14 +3,15 @@
 
 #include <WPILib.h>
 
+// CODE_REVIEW(mjh): Document what this class actually does.
 class GearAuto : public Command {
 public:
 	GearAuto(bool doorOpen);
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
 private:
 	bool openDoor;
 	bool kickerDelay;

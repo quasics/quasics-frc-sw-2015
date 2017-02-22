@@ -7,11 +7,6 @@ TankDrive::TankDrive() {
 	Requires(Robot::driveTrain.get());
 }
 
-// Called just before this Command runs the first time
-void TankDrive::Initialize() {
-
-}
-
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 	double multiplier = MediumMultiplier;

@@ -1,9 +1,8 @@
 #include "ReverseIntakeAuto.h"
 #include "../Robot.h"
 
-ReverseIntakeAuto::ReverseIntakeAuto(double power) {
+ReverseIntakeAuto::ReverseIntakeAuto(double power) : powerPercent(power) {
 	Requires(Robot::intake.get());
-	powerPercent = power;
 }
 
 // Called just before this Command runs the first time

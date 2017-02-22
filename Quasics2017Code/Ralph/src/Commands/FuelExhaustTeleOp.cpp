@@ -33,12 +33,10 @@ bool FuelExhaustTeleOp::IsFinished() {
 // Called once after isFinished returns true
 void FuelExhaustTeleOp::End() {
 	Robot::fuelExhaustGate->Set(false);
-
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void FuelExhaustTeleOp::Interrupted() {
 	Robot::fuelExhaustGate->Set(false);
-
 }

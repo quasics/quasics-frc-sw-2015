@@ -12,6 +12,10 @@ public:
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
+
+private:
+	bool lastButton;
+	bool isInverted;
 };
 
 #endif  // TankDrive_H

@@ -46,7 +46,7 @@ std::shared_ptr<Servo> RobotMap::outputActuator;
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
 #define OUTPUT_ACTUATOR_CHANNEL		7
-#define KICKER_SERVO_CHANNEL		8
+#define KICKER_SERVO_CHANNEL		9
 //------------------------End Of Wiring Info ------------------------------------------------------
 
 
@@ -74,8 +74,8 @@ void RobotMap::init() {
 	driveTrainBackLeft.reset(new Talon(LEFT_BACK_MOTOR_CHANNEL));
 	driveTrainFrontRight.reset(new Talon(RIGHT_FRONT_MOTOR_CHANNEL));
 	driveTrainBackRight.reset(new Talon(RIGHT_BACK_MOTOR_CHANNEL));
-	driveTrainFrontRight->SetInverted(true);
-	driveTrainBackRight->SetInverted(true);
+	driveTrainFrontLeft->SetInverted(true);
+	driveTrainBackLeft->SetInverted(true);
 	lw->AddActuator("DriveTrain", "FrontLeft",
 			std::static_pointer_cast<Talon>(driveTrainFrontLeft));
 	lw->AddActuator("DriveTrain", "BackLeft",

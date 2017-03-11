@@ -19,11 +19,13 @@
 #include "Commands/PointTurnForAngle.h"
 #include "Commands/GearTeleop.h"
 #include "Commands/IntakeAuto.h"
+#include "Commands/GearAuto.h"
 #include "Commands/MoveForDistance.h"
 #include "Commands/ActuatorAuto.h"
 #include "Commands/outputAuto.h"
 #include "RobotVariables.h"
-#include "Commands/tankDrive.h"
+#include "Commands/TankDrive.h"
+#include "Commands/TankDriveInverted.h"
 #include "Commands/AuxiliaryCommands.h"
 #include "Commands/ReverseIntakeAuto.h"
 #include "Commands/OutputAuto.h"
@@ -44,6 +46,7 @@ OI::OI() {
     SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
 #else
     SmartDashboard::PutData("Tank Drive", new TankDrive());
+    SmartDashboard::PutData("BackwardsTankDrive", new TankDriveInverted);
     SmartDashboard::PutData("Intake Backwash", new ReverseIntakeAuto(-.5));
     SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
 
@@ -53,6 +56,9 @@ OI::OI() {
 
     SmartDashboard::PutBoolean("Gear Door Open", false);
     SmartDashboard::PutBoolean("Gate Up", false);
+
+    SmartDashboard::PutData("Gear door open", new GearAuto (true));
+    SmartDashboard::PutData("Gear door closed", new GearAuto (false));
 #endif
 }
 

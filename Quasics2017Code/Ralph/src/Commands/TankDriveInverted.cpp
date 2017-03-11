@@ -1,16 +1,18 @@
-#include "TankDrive.h"
-
+#include "TankDriveInverted.h"
 #include "../Robot.h"
 #include "../RobotVariables.h"
 
-TankDrive::TankDrive() {
+TankDriveInverted::TankDriveInverted() {
 	Requires(Robot::driveTrain.get());
-	lastButton = false;
-	isInverted = false;
+}
+
+// Called just before this Command runs the first time
+void TankDriveInverted::Initialize() {
+
 }
 
 // Called repeatedly when this Command is scheduled to run
-void TankDrive::Execute() {
+void TankDriveInverted::Execute() {
 	double multiplier = MediumMultiplier;
 	if ((Robot::oi->getDriveStick()->GetRawButton(LeftShoulder)
 			|| Robot::oi->getDriveStick()->GetRawButton(RightShoulder))
@@ -30,32 +32,27 @@ void TankDrive::Execute() {
 	float rightStick = -Robot::oi->getDriveStick()->GetRawAxis(RightYAxis)
 			* multiplier;
 
-	if (lastButton && !Robot::oi->getDriveStick()->GetRawButton(XButton))
-		isInverted = !isInverted;
+#ifdef USE_TANK_DRIVE_TRIM
+	Robot::driveTrain->SetTrimmedPower(leftStick, rightStick);
 
-	if (!isInverted) {
-		Robot::driveTrain->SetLeftPower(-leftStick * 1.2);
-		Robot::driveTrain->SetRightPower(-rightStick * .7);
-	} else {
-		Robot::driveTrain->SetLeftPower(rightStick * 1.2);
-		Robot::driveTrain->SetRightPower(leftStick * .7);
-	}
-
-	lastButton = Robot::oi->getDriveStick()->GetRawButton(XButton);
+#else
+	Robot::driveTrain->SetLeftPower(rightStick * 1.2);
+	Robot::driveTrain->SetRightPower(leftStick * .7);
+#endif
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool TankDrive::IsFinished() {
+bool TankDriveInverted::IsFinished() {
 	return false;
 }
 
 // Called once after isFinished returns true
-void TankDrive::End() {
+void TankDriveInverted::End() {
 	Robot::driveTrain->Stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void TankDrive::Interrupted() {
+void TankDriveInverted::Interrupted() {
 	Robot::driveTrain->Stop();
 }

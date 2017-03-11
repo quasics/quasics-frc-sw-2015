@@ -15,9 +15,13 @@ public:
 	void Initialize() override;
 	void Execute() override;
 	bool IsFinished() override;
+	void End ();
+	void Interrupted();
 
 private:
 	bool previousValue;
+	uint32_t counter;
+	bool isOpening;
 };
 
 #endif  // GearTeleop_H

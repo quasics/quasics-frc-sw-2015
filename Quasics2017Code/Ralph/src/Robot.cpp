@@ -38,7 +38,7 @@ void Robot::RobotInit() {
 	oi.reset(new OI());
 
 
-//#define Use_Camera
+#define Use_Camera
 
 //Camera Commands
 #ifdef Use_Camera

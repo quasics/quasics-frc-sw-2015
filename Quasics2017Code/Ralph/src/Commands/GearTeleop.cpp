@@ -35,7 +35,7 @@ void GearTeleop::Execute() {
 		counter = 0;
 		isOpening = false;
 	}
-
+	SmartDashboard::PutBoolean("GateOpen", Robot::gear->Get());
 	previousValue = Robot::oi->getAuxStick()->GetRawButton(GearActuatorButton);
 }
 

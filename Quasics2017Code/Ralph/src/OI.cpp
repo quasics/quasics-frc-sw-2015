@@ -24,14 +24,11 @@
 #include "Commands/AuxiliaryCommands.h"
 #include "Commands/ClimberAuto.h"
 
-#define simpleInterface
 OI::OI() {
     // Process operator interface input here.
     auxStick.reset(new Joystick(AuxStickPort));
     driveStick.reset(new Joystick(DriverStickPort));
     
-#ifndef simpleInterface
-#else
     SmartDashboard::PutData("Tank Drive", new TankDrive());
     SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
 
@@ -41,7 +38,8 @@ OI::OI() {
 
     SmartDashboard::PutData("Gear door open", new GearAuto (true));
     SmartDashboard::PutData("Gear door closed", new GearAuto (false));
-#endif
+
+    SmartDashboard::PutBoolean("GateOpen", false);
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {

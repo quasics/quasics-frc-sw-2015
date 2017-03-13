@@ -11,6 +11,8 @@
 #include "Robot.h"
 #include "Commands/MoveForDistance.h"
 
+#define Use_Camera
+
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
 std::shared_ptr<Intake> Robot::intake;
@@ -19,6 +21,7 @@ std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
 std::shared_ptr<Climber> Robot::climber;
+std::shared_ptr<Arduino> Robot::arduino;
 
 void Robot::RobotInit() {
 	RobotMap::init();
@@ -31,16 +34,16 @@ void Robot::RobotInit() {
 	intake.reset(new Intake());
 	fuelExhaustGate.reset(new FuelExhaustGate());
 	climber.reset(new Climber);
+	arduino.reset(new Arduino);
 
 	// Note: building the OI *must* be done after building the
 	// subsystems, so that the commands it creates will have
 	// the subsystems available.
 	oi.reset(new OI());
 
-
-#define Use_Camera
-
-//Camera Commands
+	tankDrive.reset(new TankDrive);
+	auxCommands.reset(new AuxiliaryCommands);
+//Camera Init
 #ifdef Use_Camera
 	CameraServer::GetInstance()->StartAutomaticCapture(0).SetResolution(160,
 			120);
@@ -72,6 +75,8 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Cancel();
+	tankDrive->Start();
+	auxCommands->Start();
 }
 
 void Robot::TeleopPeriodic() {

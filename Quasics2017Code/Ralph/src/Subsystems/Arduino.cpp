@@ -16,14 +16,22 @@ std::string Arduino::GetCameraData() {
 	char buffer[200] = "";
 	std::string returnString = "";
 	if (serialPort->GetBytesReceived() > 0) {
-		int bytesRead = 0;
+		uint32_t bytesRead = 0;
 		bytesRead = serialPort->Read(buffer, sizeof(buffer) - 1);
 		if (bytesRead >= 0) {
 			buffer[bytesRead] = 0;
 		}
+
+		bool isTerminated = false;
+		for (uint32_t i = 0; i < bytesRead || isTerminated;i++){
+			returnString += buffer[i];
+			if (buffer[i] == ';'){
+				isTerminated = true;
+			}
+		}
 	}
 
-	return buffer;
+	return returnString;
 }
 
 void Arduino::SetLEDColor(ColorMode whichColor) {
@@ -100,8 +108,9 @@ void Arduino::GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar) {
 	static bool farLeft = false;
 	static bool aligned = true;
 	static bool badDistance = true;
+
 	std::string CameraData = GetCameraData();
-	if (strncmp(CameraData.c_str(), "Camera ", 7) == 0
+	if (strncmp(CameraData.c_str(), "Camera", 6) == 0
 			&& CameraData[12] == ';') {
 		if (CameraData[7] == 'L')
 			farLeft = true;

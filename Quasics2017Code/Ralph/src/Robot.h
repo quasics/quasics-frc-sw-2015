@@ -24,6 +24,10 @@
 #include "Subsystems/Outtake.h"
 #include "Subsystems/FuelExhaustGate.h"
 #include "Subsystems/Climber.h"
+#include "Subsystems/Arduino.h"
+
+#include "Commands/AuxiliaryCommands.h"
+#include "Commands/TankDrive.h"
 
 
 //Use Auto-Trim Code for Tank Drive?
@@ -36,6 +40,9 @@ public:
 	std::unique_ptr<Command> autonomousCommand;
 	static std::unique_ptr<OI> oi;
 	std::unique_ptr<Command> autoCommand;
+	std::unique_ptr<Command> tankDrive;
+	std::unique_ptr<Command> auxCommands;
+
 	LiveWindow * const lw = LiveWindow::GetInstance();
 	static std::shared_ptr<DriveTrain> driveTrain;
 	static std::shared_ptr<Navigation> gyro;
@@ -44,7 +51,7 @@ public:
     static std::shared_ptr<Outtake> outtake;
     static std::shared_ptr<FuelExhaustGate> fuelExhaustGate;
     static std::shared_ptr<Climber> climber;
-
+    static std::shared_ptr<Arduino> arduino;
 public:
 	void RobotInit() override;
 	void DisabledInit() override;

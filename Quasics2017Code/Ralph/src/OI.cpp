@@ -18,17 +18,11 @@
 #include "Commands/MoveForTime.h"
 #include "Commands/PointTurnForAngle.h"
 #include "Commands/GearTeleop.h"
-#include "Commands/IntakeAuto.h"
 #include "Commands/GearAuto.h"
 #include "Commands/MoveForDistance.h"
-#include "Commands/ActuatorAuto.h"
-#include "Commands/outputAuto.h"
 #include "RobotVariables.h"
 #include "Commands/TankDrive.h"
-#include "Commands/TankDriveInverted.h"
 #include "Commands/AuxiliaryCommands.h"
-#include "Commands/ReverseIntakeAuto.h"
-#include "Commands/OutputAuto.h"
 #include "Commands/ClimberAuto.h"
 
 #define simpleInterface
@@ -38,24 +32,13 @@ OI::OI() {
     driveStick.reset(new Joystick(DriverStickPort));
     
 #ifndef simpleInterface
-    //Smart Dashboard Buttons
-    SmartDashboard::PutData("Servo", new GearTeleop());
-    SmartDashboard::PutData("Intake Auto", new IntakeAuto(.50));
-    SmartDashboard::PutData("Outtake Auto", new OutputAuto(.5));
-    SmartDashboard::PutData("Linear Actuator in", new ActuatorAuto (false));
-    SmartDashboard::PutData("Linear Actuator Out", new ActuatorAuto (true));
 #else
     SmartDashboard::PutData("Tank Drive", new TankDrive());
-    SmartDashboard::PutData("BackwardsTankDrive", new TankDriveInverted);
-    SmartDashboard::PutData("Intake Backwash", new ReverseIntakeAuto(-.5));
     SmartDashboard::PutData("Auxillary Commands", new AuxiliaryCommands());
 
     SmartDashboard::PutData("Climber Forwards", new ClimberAuto(-1));
     SmartDashboard::PutData("Climber Backwards", new ClimberAuto(1));
     SmartDashboard::PutData("Climber Stop", new ClimberAuto(0));
-
-    SmartDashboard::PutBoolean("Gear Door Open", false);
-    SmartDashboard::PutBoolean("Gate Up", false);
 
     SmartDashboard::PutData("Gear door open", new GearAuto (true));
     SmartDashboard::PutData("Gear door closed", new GearAuto (false));

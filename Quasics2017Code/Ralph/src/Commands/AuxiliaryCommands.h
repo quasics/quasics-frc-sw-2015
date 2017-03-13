@@ -7,10 +7,7 @@
 // the underlying types the define aren't used here.  (Including them here
 // will increase build time, since everyone that pulls in this header will
 // then also pull *them* in, even though they aren't used by client code.)
-#include "IntakeTeleop.h"
-#include "FuelExhaustTeleop.h"
 #include "GearTeleop.h"
-#include "OutputTele.h"
 
 // CODE_REVIEW(mjh): Document what this class actually does.
 class AuxiliaryCommands : public CommandGroup {

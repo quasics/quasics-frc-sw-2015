@@ -19,15 +19,10 @@ std::shared_ptr<SpeedController> RobotMap::driveTrainBackLeft;
 std::shared_ptr<Encoder> RobotMap::driveTrainRightEncoder;
 std::shared_ptr<SpeedController> RobotMap::driveTrainFrontRight;
 std::shared_ptr<SpeedController> RobotMap::driveTrainBackRight;
-std::shared_ptr<SpeedController> RobotMap::intakeMotor;
 std::shared_ptr<SpeedController> RobotMap::climberMotor;
 
 std::shared_ptr<Servo> RobotMap::gearServo;
 std::shared_ptr<Servo> RobotMap::gearServoKicker;
-std::shared_ptr<Spark> RobotMap::outtakeMotor;
-std::shared_ptr<Servo> RobotMap::outputActuator;
-
-
 
 //------------------------Wiring Info--------------------------------------------------------------
 //------------------------Sensors------------------------------------------------------------------
@@ -40,15 +35,11 @@ std::shared_ptr<Servo> RobotMap::outputActuator;
 #define LEFT_BACK_MOTOR_CHANNEL		1
 #define RIGHT_FRONT_MOTOR_CHANNEL	2
 #define RIGHT_BACK_MOTOR_CHANNEL	3
-#define INTAKE_MOTOR_CHANNEL		4
-#define OUTPUT_MOTOR_CHANNEL		6
 #define CLIMBER_MOTOR_CHANNEL		8
 //------------------------Other Actuators----------------------------------------------------------
 #define GEAR_SERVO_CHANNEL			5
-#define OUTPUT_ACTUATOR_CHANNEL		7
 #define KICKER_SERVO_CHANNEL		9
 //------------------------End Of Wiring Info ------------------------------------------------------
-
 
 void RobotMap::init() {
 	LiveWindow *lw = LiveWindow::GetInstance();
@@ -68,10 +59,25 @@ void RobotMap::init() {
 	lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
 	lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
 
-
 	//Drive Motors
+#ifdef Practice_Bot
+	driveTrainFrontLeft.reset(new Jaguar(LEFT_FRONT_MOTOR_CHANNEL));
+	driveTrainBackLeft.reset(new Jaguar(LEFT_BACK_MOTOR_CHANNEL));
+	driveTrainFrontRight.reset(new Jaguar(RIGHT_FRONT_MOTOR_CHANNEL));
+	driveTrainBackRight.reset(new Jaguar(RIGHT_BACK_MOTOR_CHANNEL));
+	driveTrainFrontLeft->SetInverted(true);
+	driveTrainBackLeft->SetInverted(true);
+	lw->AddActuator("DriveTrain", "FrontLeft",
+			std::static_pointer_cast<Jaguar>(driveTrainFrontLeft));
+	lw->AddActuator("DriveTrain", "BackLeft",
+			std::static_pointer_cast<Jaguar>(driveTrainBackLeft));
+	lw->AddActuator("DriveTrain", "FrontRight",
+			std::static_pointer_cast<Jaguar>(driveTrainFrontRight));
+	lw->AddActuator("DriveTrain", "BackRight",
+			std::static_pointer_cast<Jaguar>(driveTrainBackRight));
+#else
 	driveTrainFrontLeft.reset(new Talon(LEFT_FRONT_MOTOR_CHANNEL));
-	driveTrainBackLeft.reset(new Talon(LEFT_BACK_MOTOR_CHANNEL));
+	driveTrainBackLeft.reset(new Talon (LEFT_BACK_MOTOR_CHANNEL));
 	driveTrainFrontRight.reset(new Talon(RIGHT_FRONT_MOTOR_CHANNEL));
 	driveTrainBackRight.reset(new Talon(RIGHT_BACK_MOTOR_CHANNEL));
 	driveTrainFrontLeft->SetInverted(true);
@@ -84,26 +90,14 @@ void RobotMap::init() {
 			std::static_pointer_cast<Talon>(driveTrainFrontRight));
 	lw->AddActuator("DriveTrain", "BackRight",
 			std::static_pointer_cast<Talon>(driveTrainBackRight));
-
-
-	// Intake hardware set-up
-	intakeMotor.reset(new Spark(INTAKE_MOTOR_CHANNEL));
-	lw->AddActuator("Intake", "Motor",
-			std::static_pointer_cast<Spark>(intakeMotor));
-
-	//Output Hardware set-up
-	outtakeMotor.reset(new Spark(OUTPUT_MOTOR_CHANNEL));
+#endif
 
 	// Gear-handling hardware set-up
 	gearServo.reset(new Servo(GEAR_SERVO_CHANNEL));
 
 	//Gear Kicker hardware setup
-	gearServoKicker.reset (new Servo (KICKER_SERVO_CHANNEL));
+	gearServoKicker.reset(new Servo(KICKER_SERVO_CHANNEL));
 
-	//Fuel
-	outputActuator.reset(new Servo(OUTPUT_ACTUATOR_CHANNEL));
-	// TODO: Fuel delivery hardware set-up
-	// TODO: Climbing hardware set-up
 	//Climber
 	climberMotor.reset(new Spark(CLIMBER_MOTOR_CHANNEL));
 

@@ -31,7 +31,7 @@ public:
 
 	void SetLEDColor(ColorMode whichColor);
 	void SetBrightnessMode(BrightnessMode whichMode);
-	void GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar);
+	bool GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar);
 
 private:
 	std::shared_ptr<SerialPort> serialPort;

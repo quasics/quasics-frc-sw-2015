@@ -21,6 +21,8 @@ const double SlowMultiplier = 0.25;
 const double MediumMultiplier = 0.60;
 const double TurboMultiplier = 0.70;
 
+const double AutoTimeOut = 10;
+
 //------------------------Joysticks----------------------------------------------------------------
 const int DriverStickPort = 0;
 const int AuxStickPort = 1;

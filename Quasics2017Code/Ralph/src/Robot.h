@@ -19,10 +19,7 @@
 #include "RobotMap.h"
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Navigation.h"
-#include "Subsystems/Intake.h"
 #include "Subsystems/Gear.h"
-#include "Subsystems/Outtake.h"
-#include "Subsystems/FuelExhaustGate.h"
 #include "Subsystems/Climber.h"
 #include "Subsystems/Arduino.h"
 
@@ -32,6 +29,9 @@
 
 //Use Auto-Trim Code for Tank Drive?
 //#define USE_TANK_DRIVE_TRIM_
+#define Use_Camera
+#define Use_Pixy_Auto
+
 
 // CODE_REVIEW(mjh): Document what this class actually does.
 class Robot: public IterativeRobot {
@@ -46,10 +46,7 @@ public:
 	LiveWindow * const lw = LiveWindow::GetInstance();
 	static std::shared_ptr<DriveTrain> driveTrain;
 	static std::shared_ptr<Navigation> gyro;
-	static std::shared_ptr<Intake> intake;
 	static std::shared_ptr<Gear> gear;
-    static std::shared_ptr<Outtake> outtake;
-    static std::shared_ptr<FuelExhaustGate> fuelExhaustGate;
     static std::shared_ptr<Climber> climber;
     static std::shared_ptr<Arduino> arduino;
 public:

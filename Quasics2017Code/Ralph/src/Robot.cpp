@@ -11,15 +11,12 @@
 #include "Robot.h"
 #include "Commands/MoveForDistance.h"
 
-#define Use_Camera
+
 
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
-std::shared_ptr<Intake> Robot::intake;
-std::shared_ptr<Outtake> Robot::outtake;
 std::shared_ptr<Gear> Robot::gear;
 std::unique_ptr<OI> Robot::oi;
-std::shared_ptr<FuelExhaustGate> Robot::fuelExhaustGate;
 std::shared_ptr<Climber> Robot::climber;
 std::shared_ptr<Arduino> Robot::arduino;
 
@@ -29,10 +26,7 @@ void Robot::RobotInit() {
 	// Build the subsystems
 	driveTrain.reset(new DriveTrain());
 	gyro.reset(new Navigation());
-	outtake.reset(new Outtake());
 	gear.reset(new Gear());
-	intake.reset(new Intake());
-	fuelExhaustGate.reset(new FuelExhaustGate());
 	climber.reset(new Climber);
 	arduino.reset(new Arduino);
 

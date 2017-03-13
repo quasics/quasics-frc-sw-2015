@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "../RobotMap.h"
 #include <string.h>
+#include "SerialPort.h"
 
 Arduino::Arduino() :
 		Subsystem("ExampleSubsystem") {
@@ -104,14 +105,16 @@ void Arduino::SetBrightnessMode(BrightnessMode whichMode) {
 
 }
 
-void Arduino::GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar) {
+bool Arduino::GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar) {
 	static bool farLeft = false;
 	static bool aligned = true;
 	static bool badDistance = true;
 
+	bool gotData = false;
 	std::string CameraData = GetCameraData();
 	if (strncmp(CameraData.c_str(), "Camera", 6) == 0
 			&& CameraData[12] == ';') {
+		gotData = true;
 		if (CameraData[7] == 'L')
 			farLeft = true;
 		else
@@ -127,9 +130,13 @@ void Arduino::GetCameraData(bool& isFarLeft, bool& isAligned, bool& isTooFar) {
 		else
 			aligned = false;
 
+	} else {
+		gotData = false;
 	}
 
 	isFarLeft = farLeft;
 	isAligned = aligned;
 	isTooFar = badDistance;
+
+	return gotData;
 }

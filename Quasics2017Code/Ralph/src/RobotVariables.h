@@ -1,9 +1,10 @@
 #ifndef ROBOT_VARIABLES_H_
 #define ROBOT_VARIABLES_H_
 
+#define Practice_Bot
+
 // CODE_REVIEW(mjh): Document what this file actually does (i.e., why all the constants).
 // CODE_REVIEW(mjh): Document the purpose of each of the frickin' constants. :-)
-
 
 //------------------------Robot Specs--------------------------------------------------------------
 extern const int wheelDiameterInches;
@@ -16,6 +17,7 @@ extern const double TurboMultiplier;
 //------------------------End Of Robot Specs-------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
+extern const double AutoTimeOut;
 
 //------------------------Joysticks----------------------------------------------------------------
 extern const int DriverStickPort;

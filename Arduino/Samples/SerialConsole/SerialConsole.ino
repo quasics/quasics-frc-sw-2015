@@ -21,13 +21,13 @@ void setup() {
 
 void loop() {
   // read from port 1, send to port 0:
-  while (Serial1.available()) {
+  if (Serial1.available()) {
     int inByte = Serial1.read();
     Serial.write(inByte);
   }
 
   // read from port 0, send to port 1:
-  while (Serial.available()) {
+  if (Serial.available()) {
     int inByte = Serial.read();
     Serial1.write(inByte);
   }

@@ -4,7 +4,7 @@
 NeoPixelController::NeoPixelController(uint32_t stripLength, uint32_t pin,
 		uint32_t brightnessInit) {
 	//Neopixel object Setup
-	strip = new Adafruit_NeoPixel(stripLength, pin, NEO_GRBW + NEO_KHZ800);
+	strip = new Adafruit_NeoPixel(stripLength, pin, NEO_GRB + NEO_KHZ800);
 	strip->begin();
 	strip->setBrightness(brightnessInit);
 	strip->show();

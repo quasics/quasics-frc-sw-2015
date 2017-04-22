@@ -16,7 +16,7 @@ MoveForTime::MoveForTime(double seconds, double power): Command(), m_seconds(sec
 }
 
 void MoveForTime::Initialize() {
-	Robot::driveTrain->SetLeftPower(m_power);
+	Robot::driveTrain->SetLeftPower(m_power * .75);
 	Robot::driveTrain->SetRightPower(m_power);
 	counter = 0;
 }

@@ -1,8 +1,8 @@
 #include <Commands/CrossingBaseline.h>
-#include "MoveForDistance.h"
+#include "MoveForTime.h"
 
-CrossingBaselineRed::CrossingBaselineRed() {
+CrossingBaseline::CrossingBaseline() {
 
-AddSequential(new MoveForDistance(96, .3));
+AddSequential(new MoveForTime(3, .25));
 
 }

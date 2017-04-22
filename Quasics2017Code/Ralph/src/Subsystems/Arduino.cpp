@@ -24,9 +24,9 @@ std::string Arduino::GetCameraData() {
 		}
 
 		bool isTerminated = false;
-		for (uint32_t i = 0; i < bytesRead || isTerminated;i++){
+		for (uint32_t i = 0; i < bytesRead || isTerminated; i++) {
 			returnString += buffer[i];
-			if (buffer[i] == ';'){
+			if (buffer[i] == ';') {
 				isTerminated = true;
 			}
 		}
@@ -39,34 +39,48 @@ void Arduino::SetLEDColor(ColorMode whichColor) {
 	std::string PrintString = ";";
 	switch (whichColor) {
 	case kRed:
-		PrintString = "Red";
+		PrintString = "Red;";
 		break;
 	case kGreen:
-		PrintString = "Green";
+		PrintString = "Green;";
 		break;
 	case kBlue:
-		PrintString = "Blue";
+		PrintString = "Blue;";
 		break;
 	case kWhite:
-		PrintString = "White";
+		PrintString = "White;";
 		break;
 	case kRainbow:
-		PrintString = "Rainbow";
+		PrintString = "Rainbow;";
 		break;
 	case kOldCycle:
-		PrintString = "OldCycle";
+		PrintString = "OldCycle;";
 		break;
 	case kYellow:
-		PrintString = "Yellow";
+		PrintString = "Yellow;";
 		break;
 	case kQuasics:
-		PrintString = "Quasics";
+		PrintString = "Quasics;";
 		break;
 	case kBrown:
-		PrintString = "Brown";
+		PrintString = "Brown;";
+		break;
+	case kTeam:
+		if (DriverStation::GetInstance().IsFMSAttached()
+				&& DriverStation::GetInstance().GetAlliance()
+						!= DriverStation::kInvalid) {
+			if (DriverStation::GetInstance().GetAlliance()
+					!= DriverStation::kRed) {
+				PrintString = "Red;";
+			} else {
+				PrintString = "Blue;";
+			}
+		} else {
+			PrintString = "Quasics;";
+		}
 		break;
 	default:
-		PrintString = "NoColor";
+		PrintString = "NoColor;";
 		break;
 	}
 	serialPort->Write(PrintString);
@@ -75,7 +89,6 @@ void Arduino::SetLEDColor(ColorMode whichColor) {
 void Arduino::SetBrightnessMode(BrightnessMode whichMode) {
 	std::string PrintString = ";";
 	switch (whichMode) {
-	//kOff, kOn, kBreathing, kBlinking, kDashed, kRollIn, kRollOut, kRolling
 	case kOn:
 		PrintString = "On";
 		break;

@@ -10,6 +10,7 @@
 
 #include "DriveTrain.h"
 #include "../RobotMap.h"
+#include "../RobotVariables.h"
 
 DriveTrain::DriveTrain() :
 		Subsystem("DriveTrain") {
@@ -37,10 +38,8 @@ void DriveTrain::SetTrimmedPower(double leftPercent, double rightPercent) {
 
 	if (!(leftPercent == 0 || rightPercent == 0 || LeftEncoderVelocity() == 0
 			|| RightEncoderVelocity() == 0)) {
-		float leftMaxRate = LeftEncoderVelocity()
-				/ leftPercent;
-		float rightMaxRate = RightEncoderVelocity()
-				/ rightPercent;
+		float leftMaxRate = LeftEncoderVelocity() / leftPercent;
+		float rightMaxRate = RightEncoderVelocity() / rightPercent;
 		if (leftMaxRate >= rightMaxRate) {
 			leftPower = leftPercent;
 			rightPower = rightPercent * leftMaxRate / rightMaxRate;
@@ -79,16 +78,16 @@ void DriveTrain::LeftEncoderReset() {
 }
 
 double DriveTrain::RightEncoderDistance() {
-	return rightEncoder->GetDistance();
+	return float(rightEncoder->GetRaw() * inchesPerTick);
 }
 
 double DriveTrain::LeftEncoderDistance() {
-	return leftEncoder->GetDistance();
+	return float(leftEncoder->GetRaw() * inchesPerTick);
 }
 
 void DriveTrain::Stop() {
-	frontRight->StopMotor();
-	frontLeft->StopMotor();
-	backRight->StopMotor();
-	backLeft->StopMotor();
+	frontRight->Set(0);
+	frontLeft->Set(0);
+	backRight->Set(0);
+	backLeft->Set(0);
 }

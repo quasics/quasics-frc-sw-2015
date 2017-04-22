@@ -1,12 +1,13 @@
 #include "SetLightDynamics.h"
 
-SetLightDynamics::SetLightDynamics() {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
+SetLightDynamics::SetLightDynamics(Arduino::BrightnessMode mode) {
+	Requires (Robot::arduino.get());
+	kMode = mode;
 }
 
 // Called just before this Command runs the first time
 void SetLightDynamics::Initialize() {
+	Robot::arduino->SetBrightnessMode(kMode);
 }
 
 // Called repeatedly when this Command is scheduled to run

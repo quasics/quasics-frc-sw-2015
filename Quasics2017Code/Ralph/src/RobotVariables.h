@@ -46,7 +46,7 @@ extern const int RightXAxis;
 extern const int GearActuatorButton;
 extern const int OutputButton;
 extern const int IntakeButton;
-extern const int ActuatorButton;
+extern const int ClimberButton;
 //Axes
 extern const int AuxLeftYAxis;
 extern const int AuxLeftXAxis;

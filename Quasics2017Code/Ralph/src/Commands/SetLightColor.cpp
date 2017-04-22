@@ -1,6 +1,7 @@
 #include "SetLightColor.h"
 
-SetLightColor::SetLightColor()   {
+SetLightColor::SetLightColor(Arduino::ColorMode mode) {
+	kMode = mode;
 }
 
 // Called just before this Command runs the first time

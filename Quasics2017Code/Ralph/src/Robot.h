@@ -25,6 +25,8 @@
 
 #include "Commands/AuxiliaryCommands.h"
 #include "Commands/TankDrive.h"
+#include "Commands/AutomaticLighting.h"
+#include "Commands/CrossingBaseline.h"
 
 
 //Use Auto-Trim Code for Tank Drive?
@@ -42,6 +44,7 @@ public:
 	std::unique_ptr<Command> autoCommand;
 	std::unique_ptr<Command> tankDrive;
 	std::unique_ptr<Command> auxCommands;
+	std::unique_ptr<Command> automaticLighting;
 
 	LiveWindow * const lw = LiveWindow::GetInstance();
 	static std::shared_ptr<DriveTrain> driveTrain;

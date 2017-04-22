@@ -34,11 +34,11 @@ void TankDrive::Execute() {
 		isInverted = !isInverted;
 
 	if (!isInverted) {
-		Robot::driveTrain->SetLeftPower(-leftStick * 1.2);
-		Robot::driveTrain->SetRightPower(-rightStick * .7);
+		Robot::driveTrain->SetLeftPower(-leftStick);
+		Robot::driveTrain->SetRightPower(-rightStick);
 	} else {
-		Robot::driveTrain->SetLeftPower(rightStick * 1.2);
-		Robot::driveTrain->SetRightPower(leftStick * .7);
+		Robot::driveTrain->SetLeftPower(rightStick);
+		Robot::driveTrain->SetRightPower(leftStick);
 	}
 
 	lastButton = Robot::oi->getDriveStick()->GetRawButton(XButton);

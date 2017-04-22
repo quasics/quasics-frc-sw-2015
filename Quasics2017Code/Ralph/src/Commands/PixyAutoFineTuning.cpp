@@ -17,6 +17,8 @@ PixyAutoFineTuning::PixyAutoFineTuning() {
 // Called just before this Command runs the first time
 void PixyAutoFineTuning::Initialize() {
 	//Todo: Add in a one-time NeoPixel set
+	Robot::arduino->SetBrightnessMode(Arduino::kBlinking);
+	Robot::arduino->SetLEDColor(Arduino::kTeam);
 	timer = 0;
 	isFarLeft = false;
 	isAligned = false;

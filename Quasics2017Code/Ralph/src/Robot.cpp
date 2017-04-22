@@ -11,8 +11,6 @@
 #include "Robot.h"
 #include "Commands/MoveForDistance.h"
 
-
-
 std::shared_ptr<DriveTrain> Robot::driveTrain;
 std::shared_ptr<Navigation> Robot::gyro;
 std::shared_ptr<Gear> Robot::gear;
@@ -37,6 +35,9 @@ void Robot::RobotInit() {
 
 	tankDrive.reset(new TankDrive);
 	auxCommands.reset(new AuxiliaryCommands);
+	automaticLighting.reset(new AutomaticLighting);
+	autonomousCommand.reset(new CrossingBaseline);
+
 //Camera Init
 #ifdef Use_Camera
 	CameraServer::GetInstance()->StartAutomaticCapture(0).SetResolution(160,
@@ -50,7 +51,7 @@ void Robot::RobotInit() {
  */
 
 void Robot::DisabledInit() {
-
+	automaticLighting->Start();
 }
 
 void Robot::DisabledPeriodic() {
@@ -60,6 +61,8 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Start();
+	else
+		automaticLighting->Start();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -71,6 +74,7 @@ void Robot::TeleopInit() {
 		autonomousCommand->Cancel();
 	tankDrive->Start();
 	auxCommands->Start();
+	automaticLighting->Start();
 }
 
 void Robot::TeleopPeriodic() {

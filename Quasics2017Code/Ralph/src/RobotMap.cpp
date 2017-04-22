@@ -46,18 +46,14 @@ void RobotMap::init() {
 
 	// Drive train hardware set-up
 	//Encoders
-	driveTrainLeftEncoder.reset(
-			new Encoder(LEFT_ENCODER_A_CHANNEL, LEFT_ENCODER_B_CHANNEL,
-			false, Encoder::k4X));
-	driveTrainRightEncoder.reset(
-			new Encoder(RIGHT_ENCODER_A_CHANNEL, RIGHT_ENCODER_B_CHANNEL,
-			true, Encoder::k4X));
+	driveTrainLeftEncoder.reset(new Encoder(0, 1,
+	false));
+	driveTrainRightEncoder.reset(new Encoder(2, 3,
+	true));
 	driveTrainLeftEncoder->SetDistancePerPulse(inchesPerTick);
 	driveTrainRightEncoder->SetDistancePerPulse(inchesPerTick);
 	driveTrainLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
 	driveTrainRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
-	lw->AddSensor("DriveTrain", "LeftEncoder", driveTrainLeftEncoder);
-	lw->AddSensor("DriveTrain", "RightEncoder", driveTrainRightEncoder);
 
 	//Drive Motors
 #ifdef Practice_Bot

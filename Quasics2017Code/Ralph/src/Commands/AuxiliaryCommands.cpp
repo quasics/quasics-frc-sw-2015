@@ -18,4 +18,5 @@ AuxiliaryCommands::AuxiliaryCommands() {
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
 	AddParallel (new GearTeleop());
+	AddParallel (new ClimberTeleop);
 }

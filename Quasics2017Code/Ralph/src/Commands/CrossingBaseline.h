@@ -3,9 +3,9 @@
 
 #include <WPILib.h>
 
-class CrossingBaselineRed : public CommandGroup {
+class CrossingBaseline : public CommandGroup {
 public:
-	CrossingBaselineRed();
+	CrossingBaseline();
 
 };
 

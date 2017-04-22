@@ -18,8 +18,8 @@ const int driveTrainTicksPerRevolution = 1440;
 const int inchesPerTick = wheelDiameterInches * M_PI/driveTrainTicksPerRevolution;
 
 const double SlowMultiplier = 0.25;
-const double MediumMultiplier = 0.60;
-const double TurboMultiplier = 0.70;
+const double MediumMultiplier = 0.425;
+const double TurboMultiplier = 0.60;
 
 const double AutoTimeOut = 10;
 
@@ -50,7 +50,7 @@ const int RightXAxis = 2;
 const int GearActuatorButton = 2;
 const int OutputButton = 1;
 const int IntakeButton = 3;
-const int ActuatorButton = 4;
+const int ClimberButton = 5;
 
 //Axes
 const int AuxRightYAxis = 3;

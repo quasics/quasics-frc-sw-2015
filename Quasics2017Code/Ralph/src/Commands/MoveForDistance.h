@@ -8,7 +8,7 @@ class MoveForDistance : public Command {
 public:
 	MoveForDistance(int targetInches, float powerMagnitude);
 	void Initialize();
-	void Execute();
+	void Execute ();
 	bool IsFinished();
 	void End();
 	void Interrupted();

@@ -22,7 +22,8 @@ public:
 		kOldCycle,
 		kYellow,
 		kQuasics,
-		kBrown
+		kBrown,
+		kTeam
 	};
 
 	enum BrightnessMode {

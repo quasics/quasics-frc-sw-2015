@@ -1,5 +1,6 @@
 #include "MoveForDistance.h"
 #include "../Robot.h"
+#include <iostream>
 
 MoveForDistance::MoveForDistance(int targetInches, float powerMagnitude) {
 	Requires(Robot::driveTrain.get());
@@ -19,21 +20,20 @@ void MoveForDistance::Initialize() {
 	Robot::driveTrain->LeftEncoderReset();
 	Robot::driveTrain->RightEncoderReset();
 
-	Robot::driveTrain->SetLeftPower(power);
+	Robot::driveTrain->SetLeftPower(power * .8);
 	Robot::driveTrain->SetRightPower(power);
 }
 
-// Called repeatedly when this Command is scheduled to run
 void MoveForDistance::Execute() {
-	if(fabs(Robot::driveTrain->LeftEncoderDistance()) >= fabs (target))
-		Robot::driveTrain->SetLeftPower(0);
-	if(fabs(Robot::driveTrain->RightEncoderDistance()) >= fabs (target))
-			Robot::driveTrain->SetRightPower(0);
-};
+	std::cout << "\n Target:" << target << "\n LeftEncoder: "
+			<< Robot::driveTrain->LeftEncoderDistance()<< "\n RightEncoder: "
+			<< Robot::driveTrain->RightEncoderDistance();
+}
 
 // Make this return true when this Command no longer needs to run execute()
 bool MoveForDistance::IsFinished() {
-	return (fabs(Robot::driveTrain->LeftEncoderDistance()) >= fabs (target) && fabs(Robot::driveTrain->RightEncoderDistance()) >= fabs (target));
+	return (fabs(Robot::driveTrain->LeftEncoderDistance()) >= fabs(target)
+			|| fabs(Robot::driveTrain->RightEncoderDistance()) >= fabs(target));
 }
 
 // Called once after isFinished returns true

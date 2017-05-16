@@ -41,7 +41,7 @@ double DriveBase::ReadCurrentHeading() {
 	return navX->GetYaw();
 }
 
-void DriveBase::Reset() {
+void DriveBase::ResetYaw() {
 	navX->ZeroYaw();
 }
 

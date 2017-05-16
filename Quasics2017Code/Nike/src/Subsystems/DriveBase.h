@@ -10,9 +10,8 @@
 
 #ifndef DRIVEBASE_H
 #define DRIVEBASE_H
-#include "Commands/Subsystem.h"
 #include "WPILib.h"
-#include "../ThirdParty/NavX/include/AHRS.h"
+#include <ThirdParty/NavX/include/AHRS.h>
 
 /**
  *
@@ -33,18 +32,20 @@ public:
 	void InitDefaultCommand();
 
 	double ReadCurrentHeading();
-	void Reset();
+	void ResetYaw();
 
 	void SetLeftPower(double percent = 0);
 	void SetRightPower(double percent = 0);
+
 	double RightEncoderVelocity();
 	double LeftEncoderVelocity();
-	void RightEncoderReset();
-	void LeftEncoderReset();
 	double RightEncoderDistance();
 	double LeftEncoderDistance();
 	uint32_t LeftEncoderRaw();
 	uint32_t RightEncoderRaw();
+
+	void RightEncoderReset();
+	void LeftEncoderReset();
 	void Stop();
 };
 

@@ -8,7 +8,7 @@
 #endif
 
 #define wheelDiameterInches 6
-#define driveTrainTicksPerRevolution 1440
+#define driveTrainTicksPerRevolution 360
 #define InchesPerTick wheelDiameterInches * M_PI/driveTrainTicksPerRevolution
 
 #endif //ROBOT_VARIABLES_H_

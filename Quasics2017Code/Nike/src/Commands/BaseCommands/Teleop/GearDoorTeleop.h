@@ -16,6 +16,7 @@ public:
 
 private:
 	bool previousButton;
+	bool previousKickerButton;
 };
 
 #endif  // GearDoorTeleop_H

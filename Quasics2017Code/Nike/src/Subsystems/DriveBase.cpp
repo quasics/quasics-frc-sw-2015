@@ -38,7 +38,7 @@ void DriveBase::InitDefaultCommand() {
 }
 
 double DriveBase::ReadCurrentHeading() {
-	return navX->GetYaw();
+	return navX->GetAngle() * 4 / 3;
 }
 
 void DriveBase::ResetYaw() {

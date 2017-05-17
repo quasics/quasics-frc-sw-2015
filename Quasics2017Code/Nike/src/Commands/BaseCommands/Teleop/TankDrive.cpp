@@ -8,7 +8,7 @@ TankDrive::TankDrive() {
 
 // Called just before this Command runs the first time
 void TankDrive::Initialize() {
-
+	Robot::driveBase->ResetYaw();
 }
 
 #define MediumMultiplier .6
@@ -50,6 +50,7 @@ void TankDrive::Execute() {
 	}
 
 	lastButton = Robot::oi->getDriveStick()->GetRawButton(XButton);
+	SmartDashboard::PutNumber("Current Angle", Robot::driveBase->ReadCurrentHeading());
 }
 
 // Make this return true when this Command no longer needs to run execute()

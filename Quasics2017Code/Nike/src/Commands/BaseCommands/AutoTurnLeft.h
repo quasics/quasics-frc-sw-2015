@@ -7,8 +7,8 @@
 class AutoTurnLeft : public Command {
 
 private:
-	double m_seconds;
-	double power;
+	const double m_seconds;
+	const double power;
 	int counter;
 public:
 	AutoTurnLeft(double seconds, double powerLevel);

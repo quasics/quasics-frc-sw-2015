@@ -1,9 +1,8 @@
 #include "AutoTurnLeft.h"
 
-AutoTurnLeft::AutoTurnLeft(double seconds, double powerLevel) {
+AutoTurnLeft::AutoTurnLeft(double seconds, double powerLevel)
+: m_seconds(seconds), power(powerLevel) {
 	Requires(Robot::driveBase.get());
-	m_seconds = seconds;
-	power = powerLevel;
 	counter = 0;
 }
 
@@ -11,14 +10,29 @@ AutoTurnLeft::AutoTurnLeft(double seconds, double powerLevel) {
 void AutoTurnLeft::Initialize() {
 	Robot::driveBase->RightEncoderReset();
 	counter = 0;
-	Robot::driveBase->SetRightPower(power);
+	Robot::driveBase->SetRightPower(0);		// Power gets ramped up during "Execute()"
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutoTurnLeft::Execute() {
 	counter+=1;
-	if (m_seconds <1.5) {
-		power = .2;
+
+	/*
+	 * Note: the following will only be done when the # of seconds is > .2 seconds, or 10 cycles
+	 */
+	int maxCycles = int(m_seconds*50);
+	const int cyclesForChange = 5;
+	if (counter <= cyclesForChange) {
+		// Speed up
+		double percentPowerApplied = counter / double(cyclesForChange);
+		Robot::driveBase->SetRightPower(power * percentPowerApplied);
+	} else if (counter > (maxCycles - cyclesForChange) ) {
+		// Slow down
+		double percentPowerApplied = (150 - cyclesForChange) / double(cyclesForChange);
+		Robot::driveBase->SetRightPower(power * percentPowerApplied);
+	} else {
+		// Running at full power....
+		Robot::driveBase->SetRightPower(power);
 	}
 }
 

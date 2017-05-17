@@ -2,7 +2,7 @@
 #define MoveForDistance_H
 
 #include "WPILib.h"
-#include "../../Robot.h"
+#include <Robot.h>
 
 class MoveForDistance : public Command {
 public:

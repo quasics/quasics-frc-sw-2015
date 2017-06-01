@@ -27,7 +27,7 @@ private:
 	std::shared_ptr<Servo> gearDoorServo;
 	std::shared_ptr<Servo> gearKickerServo;
 	const float openValue = .4;
-	const float closeValue = .1;
+	const float closeValue = .05;
 	const float kickOutValue = .9;
 	const float kickBackValue = .3;
 

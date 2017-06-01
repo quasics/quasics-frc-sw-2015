@@ -1,4 +1,5 @@
 #include <Commands/CommandGroups/Autonomous.h>
+#include <Commands/BaseCommands/Autonomous/MoveForDistance.h>
 
 Autonomous::Autonomous() {
 	// Add Commands here:
@@ -17,4 +18,5 @@ Autonomous::Autonomous() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
+	AddSequential(new MoveForDistance(72, .7));
 }

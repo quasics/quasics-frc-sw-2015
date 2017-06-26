@@ -1,28 +1,49 @@
 #include "Robot.h"
-std::unique_ptr<SpeedController> driveBaseleftFront;
-std::unique_ptr<SpeedController> driveBaseleftRear;
-std::unique_ptr<SpeedController> driveBaserightFront;
-std::unique_ptr<SpeedController> driveBaserightRear;
-std::unique_ptr<Joystick> pilotStick;
 
 void Robot::RobotInit() {
-	driveBaseleftFront.reset(new Jaguar(0));
-	driveBaseleftRear.reset(new Jaguar(1));
-	driveBaserightFront.reset(new Jaguar(2));
-	driveBaserightRear.reset(new Jaguar(3));
-	pilotStick.reset(new Joystick(0));
+	leftFront.reset(new Jaguar(leftFrontPort));
+	leftRear.reset(new Jaguar(leftRearPort));
+	rightFront.reset(new Jaguar(rightFrontPort));
+	rightRear.reset(new Jaguar(rightRearPort));
 
-	driveBaseleftFront->SetInverted(true);
-	driveBaseleftRear->SetInverted(true);
+	pilotStick.reset(new Joystick(joystickPort));
+
+	if (isLeftReversed) {
+		leftFront->SetInverted(true);
+		leftRear->SetInverted(true);
+		rightFront->SetInverted(false);
+		rightRear->SetInverted(false);
+	} else {
+		leftFront->SetInverted(false);
+		leftRear->SetInverted(false);
+		rightFront->SetInverted(true);
+		rightRear->SetInverted(true);
+	}
 }
 
-const unsigned char leftYAxis = 1;
-const unsigned char rightYAxis = 3;
-const double multiplier = -0.65;
-
 void Robot::TeleopPeriodic() {
-	driveBaseleftFront->Set(pilotStick->GetRawAxis(leftYAxis) * multiplier);
-	driveBaseleftRear->Set(pilotStick->GetRawAxis(leftYAxis) * multiplier);
-	driveBaserightFront->Set(pilotStick->GetRawAxis(leftYAxis) * multiplier);
-	driveBaserightRear->Set(pilotStick->GetRawAxis(leftYAxis) * multiplier);
+	if ((pilotStick->GetRawButton(LeftShoulder)
+			|| pilotStick->GetRawButton(RightShoulder))
+			&& !(pilotStick->GetRawButton(LeftTrigger)
+					|| pilotStick->GetRawButton(RightTrigger))) {
+		leftFront->Set(pilotStick->GetRawAxis(leftYAxis) * slowMultiplier);
+		leftRear->Set(pilotStick->GetRawAxis(leftYAxis) * slowMultiplier);
+		rightFront->Set(pilotStick->GetRawAxis(leftYAxis) * slowMultiplier);
+		rightRear->Set(pilotStick->GetRawAxis(leftYAxis) * slowMultiplier);
+	} else if (!(pilotStick->GetRawButton(LeftShoulder)
+			|| pilotStick->GetRawButton(RightShoulder))
+			&& (pilotStick->GetRawButton(LeftTrigger)
+					|| pilotStick->GetRawButton(RightTrigger))) {
+		leftFront->Set(pilotStick->GetRawAxis(leftYAxis) * turboMultiplier);
+		leftRear->Set(pilotStick->GetRawAxis(leftYAxis) * turboMultiplier);
+		rightFront->Set(pilotStick->GetRawAxis(leftYAxis) * turboMultiplier);
+		rightRear->Set(pilotStick->GetRawAxis(leftYAxis) * turboMultiplier);
+	} else {
+		leftFront->Set(pilotStick->GetRawAxis(leftYAxis) * middleMultiplier);
+		leftRear->Set(pilotStick->GetRawAxis(leftYAxis) * middleMultiplier);
+		rightFront->Set(pilotStick->GetRawAxis(leftYAxis) * middleMultiplier);
+		rightRear->Set(pilotStick->GetRawAxis(leftYAxis) * middleMultiplier);
+
+	}
+
 }

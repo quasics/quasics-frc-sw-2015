@@ -19,7 +19,7 @@ const int inchesPerTick = wheelDiameterInches * M_PI/driveTrainTicksPerRevolutio
 
 const double SlowMultiplier = 0.25;
 const double MediumMultiplier = 0.425;
-const double TurboMultiplier = 0.60;
+const double TurboMultiplier = 1;
 
 const double AutoTimeOut = 10;
 

@@ -11,7 +11,7 @@ void TankDrive::Initialize() {
 	Robot::driveBase->ResetYaw();
 }
 
-#define MediumMultiplier .6
+#define MediumMultiplier .4
 #define SlowMultiplier .25
 #define TurboMultiplier .7
 

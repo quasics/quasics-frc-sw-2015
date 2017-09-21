@@ -13,7 +13,7 @@ void TankDrive::Initialize() {
 
 #define MediumMultiplier .4
 #define SlowMultiplier .25
-#define TurboMultiplier .7
+#define TurboMultiplier 1
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {

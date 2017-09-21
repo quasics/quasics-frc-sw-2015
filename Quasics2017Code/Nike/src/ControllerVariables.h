@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_VARIABLES_H_
 #define CONTROLLER_VARIABLES_H_
 
+//Define Shortcuts for each of the controllers we use, to make code easier and more readable
+
 //--------------------Logitech Gamepad-----------------------------------------------------------------
 //Buttons
 #define AButton 2
@@ -20,7 +22,7 @@
 #define LeftXAxis  0
 #define RightYAxis  3
 #define RightXAxis  2
-//--------------------Co-Pilot Stick---------------------------------------------------------------
+//--------------------X-Box Controller-----------------------------------------------------------------
 //Buttons
 #define aButtonX  1
 #define bButtonX  2

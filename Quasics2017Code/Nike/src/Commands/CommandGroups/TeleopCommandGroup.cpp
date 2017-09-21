@@ -1,4 +1,4 @@
-#include <Commands/CommandGroups/TeleopCommandGroup.h>
+#include "TeleopCommandGroup.h"
 
 TeleopCommandGroup::TeleopCommandGroup() {
 	// Add Commands here:

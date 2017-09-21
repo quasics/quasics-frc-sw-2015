@@ -1,7 +1,7 @@
 #include "GearTeleop.h"
 #include "../Robot.h"
-#include "RobotVariables.h"
-#include "iostream"
+#include "../RobotVariables.h"
+#include <iostream>
 
 GearTeleop::GearTeleop() {
 	Requires(Robot::gear.get());

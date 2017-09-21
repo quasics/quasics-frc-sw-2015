@@ -2,7 +2,7 @@
 #define SetLightDynamics_H
 
 #include <WPILib.h>
-#include "Robot.h"
+#include "../Robot.h"
 
 // CODE_REVIEW(mjh): Document what this class actually does.
 // CODE_REVIEW(mjh): Is this class actually required?  (It's currently a set of null-ops.)

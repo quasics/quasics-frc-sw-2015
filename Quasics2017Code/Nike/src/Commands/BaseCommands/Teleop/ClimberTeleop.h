@@ -1,9 +1,9 @@
 #ifndef ClimberTeleop_H
 #define ClimberTeleop_H
 
-#include "WPILib.h"
-#include <Robot.h>
-#include <ControllerVariables.h>
+#include <WPILib.h>
+#include "../../Robot.h"
+#include "../../ControllerVariables.h"
 
 class ClimberTeleop : public Command {
 public:

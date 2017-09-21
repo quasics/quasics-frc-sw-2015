@@ -2,8 +2,8 @@
 #define GearDoorTeleop_H
 
 #include "WPILib.h"
-#include <Robot.h>
-#include <ControllerVariables.h>
+#include "../../../Robot.h"
+#include "../../../ControllerVariables.h"
 
 class GearDoorTeleop : public Command {
 public:

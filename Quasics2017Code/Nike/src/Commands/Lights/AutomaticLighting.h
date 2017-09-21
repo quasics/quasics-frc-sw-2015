@@ -1,9 +1,9 @@
 #ifndef AutomaticLighting_H
 #define AutomaticLighting_H
 
-#include "Robot.h"
-#include "WPILib.h"
-#include <Subsystems/ArduinoController.h>
+#include "../Robot.h"
+#include <WPILib.h>
+#include "../Subsystems/ArduinoController.h"
 
 class AutomaticLighting : public Command {
 public:

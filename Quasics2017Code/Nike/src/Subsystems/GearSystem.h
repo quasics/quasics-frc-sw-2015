@@ -12,7 +12,7 @@
 #ifndef GEARSYSTEM_H
 #define GEARSYSTEM_H
 #include "Commands/Subsystem.h"
-#include "WPILib.h"
+#include <WPILib.h>
 
 /**
  *

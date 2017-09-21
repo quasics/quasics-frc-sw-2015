@@ -10,9 +10,8 @@
 
 #ifndef DRIVEBASE_H
 #define DRIVEBASE_H
-#include "WPILib.h"
-#include <ThirdParty/NavX/include/AHRS.h>
-
+#include <WPILib.h>
+#include "../ThirdParty/NavX/include/AHRS.h"
 
 /**
  *
@@ -28,7 +27,6 @@ private:
 	std::shared_ptr<Encoder> leftEncoder;
 	std::shared_ptr<Encoder> rightEncoder;
 	std::shared_ptr<AHRS> navX;
-
 public:
 	DriveBase();
 	void InitDefaultCommand();

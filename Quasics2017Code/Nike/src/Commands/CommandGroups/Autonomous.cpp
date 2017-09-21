@@ -1,5 +1,5 @@
-#include <Commands/CommandGroups/Autonomous.h>
-#include <Commands/BaseCommands/Autonomous/MoveForDistance.h>
+#include "Autonomous.h"
+#include "../BaseCommands/Autonomous/MoveForDistance.h"
 
 Autonomous::Autonomous() {
 	// Add Commands here:

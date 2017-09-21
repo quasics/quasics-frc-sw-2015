@@ -1,7 +1,7 @@
 #ifndef OI_H
 #define OI_H
 
-#include "WPILib.h"
+#include <WPILib.h>
 
 /*
  * Joystic and driver station setup, and joystick interface

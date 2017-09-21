@@ -1,9 +1,9 @@
 #ifndef SetLightDynamics_H
 #define SetLightDynamics_H
 
-#include <Robot.h>
-#include "WPILib.h"
-#include <Subsystems/ArduinoController.h>
+#include <WPILib.h>
+#include "../../Robot.h"
+#include "../../Subsystems/ArduinoController.h"
 
 class SetLightDynamics : public Command {
 public:

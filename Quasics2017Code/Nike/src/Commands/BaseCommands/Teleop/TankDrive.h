@@ -1,9 +1,9 @@
 #ifndef TankDrive_H
 #define TankDrive_H
 
-#include "WPILib.h"
-#include <Robot.h>
-#include <ControllerVariables.h>
+#include <WPILib.h>
+#include "../../../Robot.h"
+#include "../../../ControllerVariables.h"
 
 class TankDrive : public Command {
 public:

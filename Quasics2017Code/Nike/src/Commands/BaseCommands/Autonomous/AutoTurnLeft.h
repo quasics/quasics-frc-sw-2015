@@ -1,8 +1,8 @@
 #ifndef AutoTurnLeft_H
 #define AutoTurnLeft_H
 
-#include "WPILib.h"
-#include <Robot.h>
+#include <WPILib.h>
+#include "../../../Robot.h"
 
 class AutoTurnLeft : public Command {
 

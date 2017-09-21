@@ -8,7 +8,7 @@
 #ifndef SRC_AHRS_H_
 #define SRC_AHRS_H_
 
-#include <WPILib.h>
+#include "WPILib.h"
 #include "ITimestampedDataSubscriber.h"
 #include <thread>
 
@@ -192,6 +192,8 @@ public:
 
     int GetActualUpdateRate();
     int GetRequestedUpdateRate();
+
+    void EnableLogging(bool enable);
 
 private:
     void SPIInit( SPI::Port spi_port_id, uint32_t bitrate, uint8_t update_rate_hz );

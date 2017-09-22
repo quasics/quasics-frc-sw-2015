@@ -1,4 +1,5 @@
 #include "NeoPixelUSBController.h"
+
 NeoPixelUSBController::NeoPixelUSBController (uint32_t pin, float loopSeconds, uint8_t brightness, uint32_t stripLength, neoPixelType type) {
   strip = new NeoPixelController (pin, loopSeconds, brightness, stripLength, type);
   Serial1.begin(115200);

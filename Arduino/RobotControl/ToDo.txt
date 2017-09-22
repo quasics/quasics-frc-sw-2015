@@ -1,0 +1,11 @@
+Things that should be done:
+
+* Consolidate code between the two serial-oriented controllers
+(NeoPixelSerialController and NeoPixelUSBController).  There's some largely
+duplicate stuff in there that could be better managed.
+
+* Try to eliminate the dependency on having a Mega, by conditionally disabling
+the use of Serial1.  Similarly, try *expanding* support to include other
+serial ports when they are available on a board.
+
+* Formatting clean-up.

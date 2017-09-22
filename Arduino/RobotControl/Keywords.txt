@@ -1,0 +1,42 @@
+"Red;"
+	Set color to red
+"Green;"
+	Set color to green
+"Blue;"
+	Set color to blue
+"White;"
+	Set color to white
+"Rainbow;"
+	Set color to a chasing rainbow
+"OldCycle;"
+	Set Color to unified rainbow
+"Yellow;"
+	Set color to yellow
+"Quasics;"
+	Set Color to Quasics green
+"Brown;"
+	Set Color to brown
+"On;"
+	Turn the lights solidly on
+"Breathing;"
+	Make the lights pulse
+"Blinking;"
+	Make the lights blink
+"Dashed;"
+	Make dashes move around the strip
+"RollIn;"
+	Make the lights dot in
+"RollOut;"
+	Make the lights dot out
+"Rolling;"
+	Make the lights switch between dotting in and out after each is completed
+"Off;"
+	Turn off all colors and states
+"SpeedUp;"
+	Decrease the period of everything involving deltas
+"SpeedDown;"
+	Increase the period of everything involving change
+"MaxUp;"
+	Increase the max possible brightness
+"MaxDown;"
+	Decrease the max possible brightness

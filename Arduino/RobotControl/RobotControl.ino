@@ -5,11 +5,14 @@
 const uint32_t pin = 6;
 const uint8_t brightness = 255;
 const float loopLength = 1.5;
+
 #ifdef USE_NEOPIXEL_RING
+// Assuming that we're pointing at a medium-sized ring, like Matt's.
 const uint32_t stripLength = 16;
 const neoPixelType stripType = NEOPIXEL_RING_TYPE;
 #else
-const uint32_t stripLength = 24;
+// Assuming that we're pointing at the lighting on Dante.
+const uint32_t stripLength = 31;
 const neoPixelType stripType = NEOPIXEL_RGB_STRIP_TYPE;
 #endif
 

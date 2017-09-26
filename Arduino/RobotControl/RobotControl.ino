@@ -1,6 +1,6 @@
 #include "NeoPixelController.h"
 
-#define USE_NEOPIXEL_RING
+// #define USE_NEOPIXEL_RING
 
 const uint32_t pin = 6;
 const uint8_t brightness = 255;

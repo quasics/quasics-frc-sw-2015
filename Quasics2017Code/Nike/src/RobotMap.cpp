@@ -33,7 +33,7 @@ void RobotMap::init() {
     driveBaseleftRear.reset(new Talon(1));
     driveBaseleftRear->SetInverted(true);
     
-    driveBaserightFront.reset(new Talon(4));
+    driveBaserightFront.reset(new Talon(2));
     
     driveBaserightRear.reset(new Talon(3));
     

@@ -6,7 +6,7 @@
 #include "RGBConverter.h"
 
 #define NEOPIXEL_RING_TYPE        (NEO_GRBW + NEO_KHZ800)
-#define NEOPIXEL_RGB_STRIP_TYPE   (NEO_GRB + NEO_KHZ800)
+#define NEOPIXEL_RGB_STRIP_TYPE   (NEO_GRB)
 
 class NeoPixelController {
   public:

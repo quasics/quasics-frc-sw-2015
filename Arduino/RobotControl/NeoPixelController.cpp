@@ -1,5 +1,13 @@
 #include "NeoPixelController.h"
 NeoPixelController::NeoPixelController(uint32_t pin, float loopSecondsIn, uint8_t brightness, uint32_t stripLength, neoPixelType type) {
+  // Note: some of the logic in SetPixelsPerSegment() makes bad assumptions about the
+  // strip length, allowing it to go into an infinite loop.)  We *really* need to fix
+  // this, but for now we'll at least work around some of the more eggregious cases by
+  // making sure that the strip length is an even number (possibly by adding a "ghost"
+  // pixel on the end, which is safe).
+  if (stripLength % 2 != 0) {
+    ++stripLength;
+  }
   strip = new Adafruit_NeoPixel(stripLength, pin, type);
 
   modeIteration = 0;
@@ -108,6 +116,9 @@ uint32_t NeoPixelController::GetPixelsPerSegment () {
   return pixelsPerSegment;
 }
 
+// Note: this function has a bug, in that if we can't generate an integer divisor of
+// the strip's length, it will go into an infinite loop.  (Example: using a strip
+// length of an odd size, and specifying the input "pixels" value as any even number.)
 void NeoPixelController::SetPixelsPerSegment (uint32_t pixels) {
   if (pixels % 2 != 0) {  //Make the number of pixels a round number
     if (pixels > pixelsPerSegment) { //increase or decrease with translation direction
@@ -123,7 +134,7 @@ void NeoPixelController::SetPixelsPerSegment (uint32_t pixels) {
   if (!atLimit) { //if not at the limit
     bool isIncreasing = pixels > pixelsPerSegment;  //determine whether or not to increment
 
-    while (strip->numPixels() % pixels != 0) {  //do this until the number of pixels is a multiple of the strip length
+    while (strip->numPixels() % pixels != 0) {  //do this until the strip length is a multiple of the number of pixels
       if (isIncreasing) {
         pixels = pixels + 2;
       } else {

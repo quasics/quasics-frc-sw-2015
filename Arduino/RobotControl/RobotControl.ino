@@ -12,7 +12,7 @@ const uint32_t stripLength = 16;
 const neoPixelType stripType = NEOPIXEL_RING_TYPE;
 #else
 // Assuming that we're pointing at the lighting on Dante.
-const uint32_t stripLength = 31;
+const uint32_t stripLength = 35;
 const neoPixelType stripType = NEOPIXEL_RGB_STRIP_TYPE;
 #endif
 

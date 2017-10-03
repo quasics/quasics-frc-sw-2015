@@ -9,7 +9,7 @@ class NeoPixelSerialController {
     NeoPixelSerialController (uint32_t pin, float loopSeconds, uint8_t brightness, uint32_t stripLength,
                               neoPixelType type = NEOPIXEL_RGB_STRIP_TYPE);
     void NeoPixelSerialProcess ();
-  
+
   private:
     NeoPixelController* strip;
 

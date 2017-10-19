@@ -25,11 +25,14 @@ AutonomousCommand::AutonomousCommand(): Command() {
 // Called just before this Command runs the first time
 void AutonomousCommand::Initialize() {
 	//practice code
+	Robot::driveBase->SetLeftPower(power);
+	Robot::driveBase->SetRightPower(power);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
-
+	Robot::driveBase->SetLeftPower(.15);
+	Robot::driveBase->SetRightPower(.15);
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -39,11 +42,11 @@ bool AutonomousCommand::IsFinished() {
 
 // Called once after isFinished returns true
 void AutonomousCommand::End() {
-
+	Robot::driveBase->Stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void AutonomousCommand::Interrupted() {
-
+	Robot::driveBase->Stop();
 }

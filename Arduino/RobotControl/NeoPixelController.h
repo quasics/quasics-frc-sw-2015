@@ -6,7 +6,7 @@
 #include "RGBConverter.h"
 
 #define NEOPIXEL_RING_TYPE        (NEO_GRBW + NEO_KHZ800)
-#define NEOPIXEL_RGB_STRIP_TYPE   (NEO_GRB)
+#define NEOPIXEL_RGB_STRIP_TYPE   (NEO_GRB + NEO_KHZ800)
 
 class NeoPixelController {
   public:
@@ -14,7 +14,8 @@ class NeoPixelController {
                        neoPixelType type = NEOPIXEL_RGB_STRIP_TYPE);
 
     enum ColorMode {
-      kNone, kRed, kGreen, kBlue, kWhite, kRainbow, kRainbowReverse, kOldCycle, kYellow, kQuasics, kBrown, kPurple
+      kNone, kRed, kGreen, kBlue, kWhite, kRainbow, kRainbowReverse, kOldCycle, kYellow, kQuasics, kBrown, kPurple,
+      kOrange   // For use at Halloween stuff
     };
 
     enum BrightnessMode {

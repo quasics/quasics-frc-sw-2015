@@ -25,6 +25,8 @@ void NeoPixelSerialController::NeoPixelSerialProcess () {
 void NeoPixelSerialController::Translator (const char * input) {
   if (strcmp(input, "Red") == 0) {
     strip->SetColorMode(NeoPixelController::kRed);
+  } else if (strcmp(input, "Orange") == 0 || strcmp(input, "Halloween") == 0) {
+    strip->SetColorMode(NeoPixelController::kOrange);
   } else if (strcmp(input, "Green") == 0) {
     strip->SetColorMode(NeoPixelController::kGreen);
   } else if (strcmp(input, "Blue") == 0) {

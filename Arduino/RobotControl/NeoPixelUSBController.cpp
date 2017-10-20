@@ -39,6 +39,9 @@ void NeoPixelUSBController::Translator (String input) {
   } else if (equal(input, "PURPLE")) {
     strip->SetColorMode(NeoPixelController::kPurple);
     Serial1.println("     Color  : Purple");
+  } else if (equal(input, "ORANGE") || equal(input, "HALLOWEEN")) {
+    strip->SetColorMode(NeoPixelController::kOrange);
+    Serial1.println("     Color  : Orange");
   } else if (equal(input, "HELP")) {
     PrintHelpInfo();
   } else if (equal(input, "GREEN")) {
@@ -175,6 +178,8 @@ void NeoPixelUSBController::PrintHelpInfo() {
   Serial1.println("    Quasics;");
   Serial1.println("    Brown;");
   Serial1.println("    Purple;");
+  Serial1.println("    Orange;");
+  Serial1.println("    Halloween;");
   Serial1.println("Dynamics:");
   Serial1.println("    On;");
   Serial1.println("    Breathing;");

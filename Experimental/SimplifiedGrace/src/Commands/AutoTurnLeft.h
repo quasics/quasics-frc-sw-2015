@@ -2,6 +2,7 @@
 #define AutoTurnLeft_H
 
 #include "../CommandBase.h"
+#include "../Robot.h"
 
 class AutoTurnLeft : public CommandBase {
 public:
@@ -11,6 +12,9 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+
+private:
+	double power;
 };
 
 #endif  // AutoTurnLeft_H

@@ -4,9 +4,9 @@
 #include "../CommandBase.h"
 #include "../Robot.h"
 
-class moveForward : public CommandBase {
+class MoveForward : public CommandBase {
 public:
-	moveForward(double powerLevel, double seconds);
+	MoveForward(double powerLevel, double seconds);
 	void Initialize();
 	void Execute();
 	bool IsFinished();

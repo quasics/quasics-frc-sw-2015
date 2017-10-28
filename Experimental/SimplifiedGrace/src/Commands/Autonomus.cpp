@@ -1,5 +1,5 @@
+#include <Commands/MoveForward.h>
 #include "Autonomus.h"
-#include "../Commands/moveForward.h"
 
 Autonomus::Autonomus() {
 	// Add Commands here:
@@ -18,5 +18,5 @@ Autonomus::Autonomus() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
-	AddSequential(new moveForward(.7, 5));
+	AddSequential(new MoveForward(.7, 5));
 }

@@ -1,6 +1,6 @@
-#include "moveForward.h"
+#include <Commands/MoveForward.h>
 
-moveForward::moveForward(double powerLevel, double seconds) {
+MoveForward::MoveForward(double powerLevel, double seconds) {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
 	Requires (Robot::driveBase.get());
@@ -9,14 +9,14 @@ moveForward::moveForward(double powerLevel, double seconds) {
 }
 
 // Called just before this Command runs the first time
-void moveForward::Initialize() {
+void MoveForward::Initialize() {
 	Robot::driveBase->SetLeftPower(0);
 	Robot::driveBase->SetRightPower(0);
 	counter = 0;
 }
 
 // Called repeatedly when this Command is scheduled to run
-void moveForward::Execute() {
+void MoveForward::Execute() {
 	if (counter < (sec * 50) - 10){
 		Robot::driveBase->SetLeftPower(power);
 		Robot::driveBase->SetRightPower(power);
@@ -28,17 +28,17 @@ void moveForward::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool moveForward::IsFinished() {
+bool MoveForward::IsFinished() {
 	return counter >= sec;
 }
 
 // Called once after isFinished returns true
-void moveForward::End() {
+void MoveForward::End() {
 	Robot::driveBase->Stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void moveForward::Interrupted() {
+void MoveForward::Interrupted() {
 	Robot::driveBase->Stop();
 }

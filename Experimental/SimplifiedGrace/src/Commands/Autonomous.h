@@ -3,9 +3,9 @@
 
 #include <Commands/CommandGroup.h>
 
-class Autonomus : public CommandGroup {
+class Autonomous : public CommandGroup {
 public:
-	Autonomus();
+	Autonomous();
 };
 
 #endif  // Autonomus_H

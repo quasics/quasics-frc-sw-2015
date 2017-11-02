@@ -1,7 +1,7 @@
+#include <Commands/Autonomous.h>
 #include <Commands/MoveForward.h>
-#include "Autonomus.h"
 
-Autonomus::Autonomus() {
+Autonomous::Autonomous() {
 	// Add Commands here:
 	// e.g. AddSequential(new Command1());
 	//      AddSequential(new Command2());

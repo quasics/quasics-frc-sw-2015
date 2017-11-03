@@ -8,8 +8,8 @@ AutoTurnLeft::AutoTurnLeft() {
 
 // Called just before this Command runs the first time
 void AutoTurnLeft::Initialize() {
-	Robot::driveBase->SetLeftPower(.15);
-	Robot::driveBase->SetRightPower(-.15);
+	Robot::driveBase->SetLeftPower(-.15);
+	Robot::driveBase->SetRightPower(.15);
 }
 
 // Called repeatedly when this Command is scheduled to run

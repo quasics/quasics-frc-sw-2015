@@ -4,9 +4,9 @@
 #include "../CommandBase.h"
 #include "../Robot.h"
 
-class AutoTurnLeft : public CommandBase {
+class TurnLeftContinuous : public CommandBase {
 public:
-	AutoTurnLeft();
+	TurnLeftContinuous();
 	void Initialize();
 	void Execute();
 	bool IsFinished();

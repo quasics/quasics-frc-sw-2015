@@ -14,6 +14,7 @@
 
 #include "WPILib.h"
 
+
 class OI {
 private:
 	std::shared_ptr<Joystick> auxStick;		//Second controller, controls all but drive base

@@ -53,7 +53,7 @@ void DriveBase::SetRightPower(double percent){
 }
 
 void DriveBase::Stop(){
-	frontRight->Set(0);
-	backRight->Set(0);
+	SetLeftPower(0);
+	SetRightPower(0);
 }
 

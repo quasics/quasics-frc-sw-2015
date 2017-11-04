@@ -1,6 +1,9 @@
 #include "TurnLeftContinuous.h"
+#include "../Robot.h"
 
-TurnLeftContinuous::TurnLeftContinuous() {
+TurnLeftContinuous::TurnLeftContinuous()
+: CommandBase("TurnLeftContinuous")
+{
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::driveBase.get());

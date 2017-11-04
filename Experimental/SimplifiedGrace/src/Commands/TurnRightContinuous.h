@@ -8,10 +8,9 @@
 #ifndef SRC_COMMANDS_TURNRIGHTCONTINUOUS_H_
 #define SRC_COMMANDS_TURNRIGHTCONTINUOUS_H_
 
-#include <Commands/Command.h>
-#include "../Robot.h"
+#include "../CommandBase.h"
 
-class TurnRightContinuous: public frc::Command {
+class TurnRightContinuous: public CommandBase {
 public:
 	TurnRightContinuous();
 	void Initialize();

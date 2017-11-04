@@ -12,7 +12,7 @@
 #ifndef OI_H
 #define OI_H
 
-#include "WPILib.h"
+#include <WPILib.h>
 
 
 class OI {
@@ -25,7 +25,6 @@ public:
 
 	std::shared_ptr<Joystick> getDriveStick();		//Returns a pointer to the primary control stick
 	std::shared_ptr<Joystick> getAuxStick();		//Returns a pointer to the secondary control stick
-
 };
 
 #endif

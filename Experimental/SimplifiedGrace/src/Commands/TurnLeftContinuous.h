@@ -2,7 +2,6 @@
 #define AutoTurnLeft_H
 
 #include "../CommandBase.h"
-#include "../Robot.h"
 
 class TurnLeftContinuous : public CommandBase {
 public:

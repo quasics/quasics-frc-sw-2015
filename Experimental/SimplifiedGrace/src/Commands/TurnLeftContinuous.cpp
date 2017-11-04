@@ -8,8 +8,8 @@ TurnLeftContinuous::TurnLeftContinuous() {
 
 // Called just before this Command runs the first time
 void TurnLeftContinuous::Initialize() {
-	Robot::driveBase->SetLeftPower(-.15);
-	Robot::driveBase->SetRightPower(.15);
+	Robot::driveBase->SetLeftPower(-.25);
+	Robot::driveBase->SetRightPower(-.25);
 }
 
 // Called repeatedly when this Command is scheduled to run

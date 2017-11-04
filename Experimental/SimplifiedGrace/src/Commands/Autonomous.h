@@ -1,5 +1,5 @@
-#ifndef Autonomus_H
-#define Autonomus_H
+#ifndef AUTONOMOUS_H
+#define AUTONOMOUS_H
 
 #include <Commands/CommandGroup.h>
 
@@ -8,4 +8,4 @@ public:
 	Autonomous();
 };
 
-#endif  // Autonomus_H
+#endif  // AUTONOMOUS_H

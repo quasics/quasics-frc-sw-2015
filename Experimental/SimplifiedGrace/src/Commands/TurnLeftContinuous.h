@@ -1,5 +1,5 @@
-#ifndef AutoTurnLeft_H
-#define AutoTurnLeft_H
+#ifndef TURN_LEFT_CONTINUOUS_H
+#define TURN_LEFT_CONTINUOUS_H
 
 #include "../CommandBase.h"
 
@@ -13,4 +13,4 @@ public:
 	void Interrupted();
 };
 
-#endif  // AutoTurnLeft_H
+#endif  // TURN_LEFT_CONTINUOUS_H

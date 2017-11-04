@@ -1,5 +1,5 @@
-#ifndef moveForward_H
-#define moveForward_H
+#ifndef MOVE_FORWARD_H
+#define MOVE_FORWARD_H
 
 #include <cstdint>
 #include "../CommandBase.h"
@@ -22,4 +22,4 @@ private:
 	uint32_t counter;
 };
 
-#endif  // moveForward_H
+#endif  // MOVE_FORWARD_H

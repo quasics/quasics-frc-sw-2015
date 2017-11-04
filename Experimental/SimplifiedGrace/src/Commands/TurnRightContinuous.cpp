@@ -1,10 +1,3 @@
-/*
- * TurnRightContinuous.cpp
- *
- *  Created on: Nov 3, 2017
- *      Author: Developer
- */
-
 #include "TurnRightContinuous.h"
 #include "../Robot.h"
 

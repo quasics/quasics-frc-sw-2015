@@ -1,8 +1,8 @@
 #ifndef moveForward_H
 #define moveForward_H
 
-#include "../CommandBase.h"
 #include <cstdint>
+#include "../CommandBase.h"
 
 // TODO: We should *seriously* consider rewriting this to use the WPILib's
 // "frc::TimedCommand" class as a base, rather than re-rolling time management

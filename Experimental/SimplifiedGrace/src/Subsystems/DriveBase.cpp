@@ -48,8 +48,10 @@ void DriveBase::SetLeftPower(double percent){
 }
 
 void DriveBase::SetRightPower(double percent){
-	frontRight->Set(percent);
-	backRight->Set(percent);
+	// Note: the right-side motors are oriented so that they run in reverse.
+	// So, we need to negate their power setting.
+	frontRight->Set(-percent);
+	backRight->Set(-percent);
 }
 
 void DriveBase::Stop(){

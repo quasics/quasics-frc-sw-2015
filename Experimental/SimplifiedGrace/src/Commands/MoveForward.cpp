@@ -1,4 +1,4 @@
-#include <Commands/MoveForward.h>
+#include "MoveForward.h"
 #include "../Robot.h"
 
 // The number of times per second that Execute() is called while the command
@@ -22,7 +22,7 @@ void MoveForward::Initialize() {
 	// low power, ramping up to speed, and ramping down as we get close to
 	// the end of the allotted time.
 	Robot::driveBase->SetLeftPower(power);
-	Robot::driveBase->SetRightPower(-power);
+	Robot::driveBase->SetRightPower(power);
 	counter = 0;
 }
 

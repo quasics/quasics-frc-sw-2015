@@ -56,6 +56,26 @@ public:
 			return 0;
 		}
 	}
+
+	float getCompassHeading() {
+		if (isReady()) {
+			return ahrs->GetCompassHeading();
+		}
+		else {
+			return 0;
+		}
+	}
+
+	float getAngle() {
+		if (isReady()) {
+			return ahrs->GetAngle();
+		}
+		else {
+			return 0;
+		}
+	}
+
+
 };
 
 #endif /* SRC_SUBSYSTEMS_NAVIGATION_H_ */

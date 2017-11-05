@@ -1,6 +1,7 @@
 #include "Autonomous.h"
 #include "TurnRightContinuous.h"
 #include "MoveForward.h"
+#include "ExecuteTurn.h"
 
 Autonomous::Autonomous() {
 	// Add Commands here:
@@ -19,6 +20,15 @@ Autonomous::Autonomous() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
-	AddSequential(new MoveForward(.25, .5));
-	AddSequential(new TurnRightContinuous());
+
+	// Go in a simple square.
+	AddSequential(new MoveForward(.25, 1));
+	AddSequential(new ExecuteTurn(90, .2));
+	AddSequential(new MoveForward(.25, 1));
+	AddSequential(new ExecuteTurn(90, .2));
+	AddSequential(new MoveForward(.25, 1));
+	AddSequential(new ExecuteTurn(90, .2));
+	AddSequential(new MoveForward(.25, 1));
+	AddSequential(new ExecuteTurn(90, .2));
+	AddSequential(new MoveForward(.25, 1));
 }

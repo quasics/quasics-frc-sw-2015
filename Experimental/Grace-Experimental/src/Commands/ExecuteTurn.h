@@ -11,8 +11,20 @@
 #include "../CommandBase.h"
 
 class ExecuteTurn: public CommandBase {
+private:
+	float degrees;
+	double powerLevel;
+	float targetHeading;
+
 public:
-	ExecuteTurn();
+	ExecuteTurn(float degrees, double powerLevel);
+
+	// From Command interface
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
 };
 
 #endif /* SRC_COMMANDS_EXECUTETURN_H_ */

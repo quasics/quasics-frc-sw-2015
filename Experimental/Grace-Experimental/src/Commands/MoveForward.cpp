@@ -22,7 +22,7 @@ void MoveForward::Initialize() {
 	// low power, ramping up to speed, and ramping down as we get close to
 	// the end of the allotted time.
 	Robot::driveBase->SetLeftPower(power);
-	Robot::driveBase->SetRightPower(-power);
+	Robot::driveBase->SetRightPower(power);
 	counter = 0;
 }
 

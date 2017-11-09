@@ -1,14 +1,9 @@
 #include "MoveForward.h"
 #include "../Robot.h"
 
-// The number of times per second that Execute() is called while the command
-// is running.
-const uint32_t kCyclesPerSecond = 50;
-
 MoveForward::MoveForward(double powerLevel, double seconds)
 : power(powerLevel),
-  cyclesToRun(uint32_t(kCyclesPerSecond * seconds) + .5),
-  counter(0)
+  secondsToRun(seconds)
 {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
@@ -23,17 +18,16 @@ void MoveForward::Initialize() {
 	// the end of the allotted time.
 	Robot::driveBase->SetLeftPower(power);
 	Robot::driveBase->SetRightPower(power);
-	counter = 0;
+	SetTimeout(secondsToRun);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void MoveForward::Execute() {
-	++counter;
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool MoveForward::IsFinished() {
-	return counter >= cyclesToRun;
+	return IsTimedOut();
 }
 
 // Called once after isFinished returns true
@@ -44,5 +38,5 @@ void MoveForward::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void MoveForward::Interrupted() {
-	Robot::driveBase->Stop();
+	End();
 }

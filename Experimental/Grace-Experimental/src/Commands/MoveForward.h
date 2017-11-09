@@ -2,12 +2,12 @@
 #define MOVE_FORWARD_H
 
 #include <cstdint>
-#include "../CommandBase.h"
+#include <Commands/Command.h>
 
 // TODO: We should *seriously* consider rewriting this to use the WPILib's
 // "frc::TimedCommand" class as a base, rather than re-rolling time management
 // for ourselves.
-class MoveForward : public CommandBase {
+class MoveForward : public frc::Command {
 public:
 	MoveForward(double powerLevel, double seconds);
 	void Initialize();

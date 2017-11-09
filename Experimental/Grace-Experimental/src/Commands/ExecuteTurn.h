@@ -8,9 +8,9 @@
 #ifndef SRC_COMMANDS_EXECUTETURN_H_
 #define SRC_COMMANDS_EXECUTETURN_H_
 
-#include "../CommandBase.h"
+#include <Commands/Command.h>
 
-class ExecuteTurn: public CommandBase {
+class ExecuteTurn: public frc::Command {
 private:
 	float degrees;
 	double powerLevel;

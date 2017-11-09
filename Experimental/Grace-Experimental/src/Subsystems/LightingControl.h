@@ -15,7 +15,7 @@ class LightingControl: public frc::Subsystem {
 public:
 	LightingControl();
 
-	void InitDefaultCommand();
+	void InitDefaultCommand() override;
 
 	//
 	// Functions for manual configuration of lighting in Commands

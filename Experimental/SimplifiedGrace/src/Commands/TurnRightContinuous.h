@@ -1,9 +1,9 @@
 #ifndef TURN_RIGHT_CONTINUOUS_H
 #define TURN_RIGHT_CONTINUOUS_H
 
-#include "../CommandBase.h"
+#include <Commands/Command.h>
 
-class TurnRightContinuous: public CommandBase {
+class TurnRightContinuous: public frc::Command {
 public:
 	TurnRightContinuous();
 	void Initialize();

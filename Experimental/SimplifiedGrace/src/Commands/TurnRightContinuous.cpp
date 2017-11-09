@@ -2,7 +2,6 @@
 #include "../Robot.h"
 
 TurnRightContinuous::TurnRightContinuous()
-: CommandBase("TurnRightContinuous")
 {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());

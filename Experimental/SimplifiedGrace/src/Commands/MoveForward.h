@@ -2,9 +2,9 @@
 #define MOVE_FORWARD_H
 
 #include <cstdint>
-#include "../CommandBase.h"
+#include <Commands/Command.h>
 
-class MoveForward : public CommandBase {
+class MoveForward : public frc::Command {
 public:
 	MoveForward(double powerLevel, double seconds);
 	void Initialize();

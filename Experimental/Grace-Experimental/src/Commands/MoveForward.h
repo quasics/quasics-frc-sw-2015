@@ -18,8 +18,7 @@ public:
 
 private:
 	const double power;
-	const uint32_t cyclesToRun;
-	uint32_t counter;
+	const double secondsToRun;
 };
 
 #endif  // MOVE_FORWARD_H

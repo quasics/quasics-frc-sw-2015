@@ -11,6 +11,7 @@
 
 #include "Robot.h"
 
+#include "RobotMap.h"
 #include "Commands/Autonomous.h"
 #include "Commands/MoveForward.h"
 #include "Commands/TurnLeftContinuous.h"

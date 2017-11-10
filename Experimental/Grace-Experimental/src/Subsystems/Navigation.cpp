@@ -6,7 +6,6 @@
  */
 
 #include "Navigation.h"
-#include "../RobotMap.h"
 
 Navigation::Navigation()
 : Subsystem("Navigation	")

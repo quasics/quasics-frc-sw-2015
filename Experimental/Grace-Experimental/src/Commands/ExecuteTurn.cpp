@@ -8,6 +8,18 @@
 #include "ExecuteTurn.h"
 #include "../Robot.h"
 
+#include <iomanip>
+
+//
+// Debugging control flags
+//
+
+// If defined, disable motor engagement (so that we will just report angles if NOISY is defined).
+#undef DONT_RUN_MOTORS
+
+// If defined, report angular position data while command is executing.
+#undef NOISY
+
 ExecuteTurn::ExecuteTurn(float degrees, double powerLevel)
 : degrees(degrees), powerLevel(powerLevel)
 {
@@ -25,17 +37,29 @@ void ExecuteTurn::Initialize() {
 		rightPower *= -1;
 	}
 
-	std::cout << "Starting turn by " << degrees << " degrees" << std::endl;
 	float startingPosition = Robot::navigation->getAngle();
 	targetHeading = (startingPosition + degrees);
 
-	std::cout << "Current bearing is: " << startingPosition << std::endl;
-	std::cout << "Target bearing is: " << targetHeading << std::endl;
+#ifdef NOISY
+	std::cout << "Starting turn by " << degrees << " degrees" << std::endl;
+	std::cout << "Target angular bearing is: " << targetHeading << std::endl;
+	std::cout << "Compass heading: " << std::setw(7) << Robot::navigation->getCompassHeading()
+			  << " Angular bearing: " << std::setw(7) << startingPosition << std::endl;
+#endif	// NOISY
+
+#ifdef DONT_RUN_MOTORS
+	Robot::driveBase->Stop();
+#else
 	Robot::driveBase->SetLeftPower(leftPower);
 	Robot::driveBase->SetRightPower(rightPower);
+#endif	// DONT_RUN_MOTORS
 }
 
 void ExecuteTurn::Execute() {
+#ifdef NOISY
+	std::cout << "Compass heading: " << std::setw(7) << Robot::navigation->getCompassHeading()
+			  << " Angular bearing: " << std::setw(7) << Robot::navigation->getAngle() << std::endl;
+#endif	// NOISY
 }
 
 bool ExecuteTurn::IsFinished() {

@@ -12,9 +12,10 @@ class NeoPixelController {
   public:
     NeoPixelController(uint32_t pin, float loopSeconds, uint8_t brightness, uint32_t stripLength,
                        neoPixelType type = NEOPIXEL_RGB_STRIP_TYPE);
-    
+
     enum ColorMode {
-      kNone, kRed, kGreen, kBlue, kWhite, kRainbow, kRainbowReverse, kOldCycle, kYellow, kQuasics, kBrown, kPurple
+      kNone, kRed, kGreen, kBlue, kWhite, kRainbow, kRainbowReverse, kOldCycle, kYellow, kQuasics, kBrown, kPurple,
+      kOrange   // For use at Halloween stuff
     };
 
     enum BrightnessMode {
@@ -32,14 +33,14 @@ class NeoPixelController {
     float GetMaxBrightness ();
     uint32_t GetPixelsPerSegment ();
     void SetPixelsPerSegment (uint32_t pixels);
-    
+
   private:
     void SetRangeRGB (uint32_t startPixel, uint32_t endPixel, uint32_t red, uint32_t green, uint32_t blue) ;
     void SetRangeHSV(uint32_t startPixel, uint32_t endPixel, float hue, float saturation, float value);
     void CycleBrightnessData (uint32_t numberOfSpaces);
     void CycleColorData (uint32_t numberOfSpaces);
     void SetRangeBrightness(uint32_t first, uint32_t last, float brightnessLevel);
-    
+
     uint32_t pixelsPerSegment = 6;
     float loopSeconds;
     const float deltaHueForCycle = 2.5;
@@ -52,7 +53,7 @@ class NeoPixelController {
     BrightnessMode brightnessMode;
     bool colorInitialized;
     bool modeInitialized;
-    
+
     Adafruit_NeoPixel* strip;
     RGBConverter rgbConverter;
 };

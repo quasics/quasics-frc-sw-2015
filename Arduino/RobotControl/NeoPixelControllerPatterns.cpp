@@ -293,11 +293,41 @@ void NeoPixelController::NeoPixelProcess () {
 
   //------------------------------------------------------------Color Mode Switch------------------------------------------------------------
   switch (colorMode) {
-    case kPurple: {
-        SetRangeRGB(0, strip->numPixels() - 1, 192, 0, 255);
-      }
+    //
+    // Simple color modes (just one color)
+    //
+    case kPurple:
+      SetRangeRGB(0, strip->numPixels() - 1, 192, 0, 255);
       break;
-    case kRainbowReverse: {
+     case kBrown:
+      SetRangeRGB(0, strip->numPixels() - 1, 54, 27, 0);
+      break;
+    case kQuasics:
+      SetRangeRGB(0, strip->numPixels() - 1, 6 * .25, 50 * .25, 3.25 * .25);
+      break;
+    case kYellow:
+      SetRangeRGB(0, strip->numPixels() - 1, 255, 255, 0);
+      break;
+    case kOrange:
+      SetRangeRGB(0, strip->numPixels() - 1, 255, 140, 0);
+      break;
+    case kRed:
+      SetRangeRGB(0, strip->numPixels() - 1, 255, 0, 0);
+      break;
+    case kGreen:
+      SetRangeRGB(0, strip->numPixels() - 1, 0, 255, 0);
+      break;
+    case kBlue:
+      SetRangeRGB(0, strip->numPixels() - 1, 0, 0, 255);
+      break;
+    case kWhite:
+      SetRangeRGB(0, strip->numPixels() - 1, 255, 255, 255);
+      break;
+
+    //
+    // More complicated stuff/color patterns follow
+    //
+   case kRainbowReverse: {
         float baseHue = float(millis() % int(loopSeconds * 1000)) * -360 / loopSeconds / 1000;
 
         while (baseHue < 0) {
@@ -308,31 +338,6 @@ void NeoPixelController::NeoPixelProcess () {
         for (uint32_t pixel = 0; pixel <= strip->numPixels() - 1; pixel++) {
           SetRangeHSV(pixel, pixel, baseHue +  pixel * 360 / strip->numPixels(), 1, 1);
         }
-      }
-      break;
-    case kBrown:
-      SetRangeRGB(0, strip->numPixels() - 1, 54, 27, 0);
-      break;
-    case kQuasics:
-      SetRangeRGB(0, strip->numPixels() - 1, 6 * .25, 50 * .25, 3.25 * .25);
-      break;
-    case kYellow:
-      SetRangeRGB(0, strip->numPixels() - 1, 255, 255, 0);
-      break;
-    case kRed: {
-        SetRangeRGB(0, strip->numPixels() - 1, 255, 0, 0);
-      }
-      break;
-    case kGreen: {
-        SetRangeRGB(0, strip->numPixels() - 1, 0, 255, 0);
-      }
-      break;
-    case kBlue: {
-        SetRangeRGB(0, strip->numPixels() - 1, 0, 0, 255);
-      }
-      break;
-    case kWhite: {
-        SetRangeRGB(0, strip->numPixels() - 1, 255, 255, 255);
       }
       break;
     case kRainbow: {
@@ -348,13 +353,15 @@ void NeoPixelController::NeoPixelProcess () {
         }
       }
       break;
-    case kOldCycle: {
-        SetRangeHSV(0, strip->numPixels() - 1, float(millis() % int(loopSeconds * 1000)) * 360 / loopSeconds / 1000, 1, 1);
-      }
+    case kOldCycle:
+      SetRangeHSV(0, strip->numPixels() - 1, float(millis() % int(loopSeconds * 1000)) * 360 / loopSeconds / 1000, 1, 1);
       break;
-    default: {
-        SetRangeRGB(0, strip->numPixels() - 1, 0, 0, 0);
-      }
+
+    //
+    // Fall-back case: set everything to black (i.e., off).
+    //
+    default:
+      SetRangeRGB(0, strip->numPixels() - 1, 0, 0, 0);
       break;
   }
 

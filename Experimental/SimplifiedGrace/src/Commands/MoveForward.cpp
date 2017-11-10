@@ -23,6 +23,7 @@ void MoveForward::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void MoveForward::Execute() {
+	// Nothing to be done....
 }
 
 // Make this return true when this Command no longer needs to run execute()

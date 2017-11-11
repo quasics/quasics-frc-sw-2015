@@ -5,8 +5,8 @@
  *      Author: sth101
  */
 
-#ifndef SRC_COMMANDS_TURNLEFTFORTYFIVE_H_
-#define SRC_COMMANDS_TURNLEFTFORTYFIVE_H_
+#ifndef SRC_COMMANDS_TURNRIGHTFORTYFIVE_H_
+#define SRC_COMMANDS_TURNRIGHTFORTYFIVE_H_
 
 #include <Commands/Command.h>
 

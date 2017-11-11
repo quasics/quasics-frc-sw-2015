@@ -5,7 +5,7 @@
  *      Author: sth101
  */
 
-#include <Commands/TurnLeftFortyFive.h>
+#include "TurnLeftFortyFive.h"
 #include "../Robot.h"
 
 TurnLeftFortyFive::TurnLeftFortyFive() {
@@ -34,7 +34,7 @@ void TurnLeftFortyFive::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool TurnLeftFortyFive::IsFinished() {
-	return {Robot::navigation->getBearing() >= -45};
+	return (Robot::navigation->getBearing() < -45);
 }
 
 // Called once after isFinished returns true

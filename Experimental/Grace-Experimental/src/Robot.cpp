@@ -16,6 +16,7 @@
 #include "Commands/MoveForward.h"
 #include "Commands/TurnLeftContinuous.h"
 #include "Commands/TurnRightContinuous.h"
+#include "Commands/MoveInASquare.h"
 
 #include <SmartDashboard/SmartDashboard.h>
 
@@ -49,8 +50,9 @@ void Robot::RobotInit() {
 
 	// SmartDashboard Buttons
 	SmartDashboard::PutData("Move forward 1sec @ 50%", new MoveForward(.5, 1));
-//	SmartDashboard::PutData("Turn left continuous", new TurnLeftContinuous());
-//	SmartDashboard::PutData("Turn right continuous", new TurnRightContinuous());
+	SmartDashboard::PutData("Turn left continuous", new TurnLeftContinuous());
+	SmartDashboard::PutData("Turn right continuous", new TurnRightContinuous());
+	SmartDashboard::PutData("Square dancing", new MoveInASquare());
 }
 
 /**

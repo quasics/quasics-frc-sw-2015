@@ -16,6 +16,7 @@
 
 #include "RobotMap.h"
 #include "Commands/Autonomous.h"
+#include "Commands/DancingRobot.h"
 #include "Commands/MoveForward.h"
 #include "Commands/TurnLeftContinuous.h"
 #include "Commands/TurnLeftFortyFive.h"

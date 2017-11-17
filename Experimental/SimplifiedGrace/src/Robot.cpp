@@ -16,6 +16,7 @@
 
 #include "RobotMap.h"
 #include "Commands/Autonomous.h"
+#include "Commands/BekahsTurnLeft.h"
 #include "Commands/DancingRobot.h"
 #include "Commands/MoveForward.h"
 #include "Commands/TurnLeftContinuous.h"
@@ -71,7 +72,9 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("Turn right forty-five degrees", new TurnRightFortyFive());
 	SmartDashboard::PutData("Turn towards north", new TurnToNorthHeading);
 	SmartDashboard::PutData("Make the robot dance", new DancingRobot);
+	SmartDashboard::PutData("Turn Left", new BekahsTurnLeft);
 }
+
 
 /**
  * This function is called when the disabled button is hit.

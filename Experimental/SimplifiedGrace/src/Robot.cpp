@@ -69,6 +69,7 @@ void Robot::RobotInit() {
 	SmartDashboard::PutData("Turn left forty-five degrees", new TurnLeftFortyFive());
 	SmartDashboard::PutData("Turn right forty-five degrees", new TurnRightFortyFive());
 	SmartDashboard::PutData("Turn towards north", new TurnToNorthHeading);
+	SmartDashboard::PutData("Make the robot dance", new DancingRobot);
 }
 
 /**

@@ -7,11 +7,11 @@
 class MoveForward : public frc::Command {
 public:
 	MoveForward(double powerLevel, double seconds);
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
 
 private:
 	const double power;

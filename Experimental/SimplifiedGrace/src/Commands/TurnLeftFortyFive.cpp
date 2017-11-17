@@ -21,8 +21,8 @@ TurnLeftFortyFive::~TurnLeftFortyFive() {
 
 // Called just before this Command runs the first time
 void TurnLeftFortyFive::Initialize() {
-	Robot::driveBase->SetLeftPower(-.25);
-	Robot::driveBase->SetRightPower(.25);
+	Robot::driveBase->SetLeftPower(-.10);
+	Robot::driveBase->SetRightPower(.10);
 	Robot::navigation->resetBearing();
 }
 

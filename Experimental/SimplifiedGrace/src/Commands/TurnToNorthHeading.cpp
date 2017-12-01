@@ -19,17 +19,19 @@ void TurnToNorthHeading::Initialize() {
 	double currentHeading = Robot::navigation->getCompassHeading();
 	Robot::driveBase->SetLeftPower(0);
 	Robot::driveBase->SetRightPower(0);
-	std::cout << "Initial heading: " << currentHeading << std::endl;
-	if (currentHeading > 0 ){
+	if (currentHeading > 10 ){
 		std::cout << "Heading is positive: turning left" << std::endl;
 		Robot::driveBase->SetLeftPower(-.25);
 		Robot::driveBase->SetRightPower(.25);
 		wasTurningToLeft = true;
-	} else if (currentHeading < 0){
+	} else if (currentHeading < -10){
 		std::cout << "Heading is negative: turning right" << std::endl;
 		Robot::driveBase->SetLeftPower(.25);
 		Robot::driveBase->SetRightPower(-.25);
 		wasTurningToLeft = false;
+	} else if (currentHeading < 5 && currentHeading > -5) {
+		Robot::driveBase->SetLeftPower(0);
+		Robot::driveBase->SetRightPower(0);
 	}
 
 }

@@ -18,6 +18,7 @@ void MoveForward::Initialize() {
 	// the end of the allotted time.
 	Robot::driveBase->SetLeftPower(power);
 	Robot::driveBase->SetRightPower(power);
+
 	SetTimeout(secondsToRun);
 }
 

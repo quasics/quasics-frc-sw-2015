@@ -14,6 +14,7 @@ public:
 
 private:
 	const double DegreesToTurn;
+	double Goal;
+	bool PassingSouth;
 };
-
 #endif /* SRC_COMMANDS_TURNLEFTINPUT_H_ */

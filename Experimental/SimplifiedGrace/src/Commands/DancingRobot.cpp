@@ -2,5 +2,5 @@
 #include "TurnLeftInput.h"
 
 DancingRobot::DancingRobot() {
-	AddSequential(new TurnLeftInput(30));
+	AddSequential(new TurnLeftInput(90));
 }

@@ -1,5 +1,5 @@
-#ifndef SRC_COMMANDS_TURNLEFTINPUT_H_
-#define SRC_COMMANDS_TURNLEFTINPUT_H_
+#ifndef SRC_COMMANDS_TURNRIGHTINPUT_H_
+#define SRC_COMMANDS_TURNRIGHTINPUT_H_
 
 #include <Commands/Command.h>
 
@@ -16,4 +16,4 @@ private:
 	const double DegreesToTurn;
 	double Goal;
 };
-#endif /* SRC_COMMANDS_TURNLEFTINPUT_H_ */
+#endif /* SRC_COMMANDS_TURNRIGHTINPUT_H_ */

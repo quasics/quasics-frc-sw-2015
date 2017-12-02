@@ -66,6 +66,16 @@ public:
 		}
 	}
 
+	/**
+	 * Returns the cumulative angle that the robot has passed through.
+	 *
+	 * Unlike "getBearing()", which is always in the range of -180 to
+	 * +180, this is fully continuous.  In other words, if you turn in
+	 * a full circle to the right twice, you should get 720; if you
+     * then turned 3 full circles to the left, you'd get -360 (with the
+     * first 2 circles canceling out the ones to the right, and then
+     * -360 for the 3rd circle).
+	 */
 	float getAngle() {
 		if (isReady()) {
 			return ahrs->GetAngle();

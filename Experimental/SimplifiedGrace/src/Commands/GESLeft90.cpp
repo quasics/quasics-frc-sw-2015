@@ -24,16 +24,23 @@ void GESLeft90::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool GESLeft90::IsFinished() {
-	return (Robot::navigation->getBearing() > 89);
+	if (Robot::navigation->getBearing() > 89) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 // Called once after isFinished returns true
 void GESLeft90::End() {
 	Robot::driveBase->Stop();
+	Robot::navigation->resetBearing();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void GESLeft90::Interrupted() {
 	Robot::driveBase->Stop();
+	Robot::navigation->resetBearing();
 }

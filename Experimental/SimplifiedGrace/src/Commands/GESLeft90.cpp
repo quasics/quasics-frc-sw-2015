@@ -24,7 +24,7 @@ void GESLeft90::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool GESLeft90::IsFinished() {
-	if (Robot::navigation->getBearing() > 89) {
+	if (Robot::navigation->getBearing() > 45) {
 		return true;
 	}
 	else {

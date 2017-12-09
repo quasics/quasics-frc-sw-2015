@@ -25,7 +25,9 @@ void ExperimentalTwo::Execute()
 bool ExperimentalTwo::IsFinished()
 {
 
-
+	// TODO: Add an implementation as needed.  (Mr. Healy added the next line
+	// in order to eliminate a compiler warning.)
+	return false;
 
 }
 void ExperimentalTwo::End()

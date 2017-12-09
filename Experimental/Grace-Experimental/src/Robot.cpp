@@ -60,7 +60,6 @@ void Robot::RobotInit() {
  * You can use it to reset subsystems before shutting down.
  */
 void Robot::DisabledInit(){
-
 }
 
 void Robot::DisabledPeriodic() {
@@ -68,10 +67,13 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
-	if(autonomousCommand != NULL) autonomousCommand->Start();
+	if(autonomousCommand != NULL) {
+		autonomousCommand->Start();
+	}
 }
 
 void Robot::AutonomousPeriodic() {
+	// Gives any commands that were started in AutonomousInit() a chance to go.
 	Scheduler::GetInstance()->Run();
 }
 
@@ -86,9 +88,24 @@ void Robot::TeleopInit() {
 	// continue until interrupted by another command, remove
 	// these lines or comment it out.
 	StopAutoModeCommand();
+
+	// TODO: Decide if there should be a command running here.  (Hint: if you
+	// want the robot to do anything during tele-op mode, then yeah, you
+	// probably do.)  If so, then set it up to run.
+	//
+	// For example, if we had a data member named "tankDriveCmd" that pointed
+	// to a Command object that should run during this mode, we could say
+	// things like:
+	//
+	//     if (tankDriveCmd != null) { tankDriveCmd->Start(); }
+	//
+	// If there are other commands that should run in this mode as well (e.g.,
+	// to control an elevator, shooter, etc.), they can also be started up
+	// here.
 }
 
 void Robot::TeleopPeriodic() {
+	// Gives any commands that were started in TeleopInit() a chance to go.
 	Scheduler::GetInstance()->Run();
 }
 
@@ -96,7 +113,7 @@ void Robot::TestInit() {
 	StopAutoModeCommand();
 
 	// TODO: Decide if there should be a command running here.  If so, then
-	// Set it up to run.
+	// set it up to run.  (See comments in TeleopInit().)
 }
 
 void Robot::TestPeriodic() {

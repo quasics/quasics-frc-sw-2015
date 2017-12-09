@@ -107,6 +107,20 @@ void Robot::TeleopInit() {
 	// continue until interrupted by another command, remove
 	// these lines or comment it out.
 	StopAutoModeCommand();
+
+	// TODO: Decide if there should be a command running here.  (Hint: if you
+	// want the robot to do anything during tele-op mode, then yeah, you
+	// probably do.)  If so, then set it up to run.
+	//
+	// For example, if we had a data member named "tankDriveCmd" that pointed
+	// to a Command object that should run during this mode, we could say
+	// things like:
+	//
+	//     if (tankDriveCmd != null) { tankDriveCmd->Start(); }
+	//
+	// If there are other commands that should run in this mode as well (e.g.,
+	// to control an elevator, shooter, etc.), they can also be started up
+	// here.
 }
 
 void Robot::TeleopPeriodic() {
@@ -117,7 +131,7 @@ void Robot::TestInit() {
 	StopAutoModeCommand();
 
 	// TODO: Decide if there should be a command running here.  If so, then
-	// Set it up to run.
+	// set it up to run.  (See comments in TeleopInit().)
 }
 
 void Robot::TestPeriodic() {

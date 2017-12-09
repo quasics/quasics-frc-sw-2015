@@ -14,11 +14,10 @@
 
 #include <WPILib.h>
 
-
 class OI {
 private:
-	std::shared_ptr<Joystick> auxStick;		//Second controller, controls all but drive base
 	std::shared_ptr<Joystick> driveStick;		//Primary controller, controls drive base
+	std::shared_ptr<Joystick> auxStick;			//Second controller, controls all but drive base
 
 public:
 	OI();

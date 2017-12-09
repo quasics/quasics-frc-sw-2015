@@ -23,8 +23,15 @@ private:
 public:
 	OI();
 
-	std::shared_ptr<Joystick> getDriveStick();		//Returns a pointer to the primary control stick
-	std::shared_ptr<Joystick> getAuxStick();		//Returns a pointer to the secondary control stick
+	//Returns a pointer to the primary control stick
+	std::shared_ptr<Joystick> getDriveStick() {
+		return driveStick;
+	}
+
+	//Returns a pointer to the secondary control stick
+	std::shared_ptr<Joystick> getAuxStick() {
+		return auxStick;
+	}
 };
 
 #endif

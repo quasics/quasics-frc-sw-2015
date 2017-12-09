@@ -12,25 +12,25 @@
 
 //--------------------Logitech Gamepad-----------------------------------------------------------------
 // Buttons
-#define AButton 			2
-#define BButton  			3
-#define XButton  			4
-#define YButton  			1
-#define LeftShoulder  		5
-#define RightShoulder  		6
-#define LeftTrigger  		7
-#define RightTrigger  		8
-#define LeftStickPress  	11
-#define RightStickPress  	12
-#define StartButton  		9
-#define SelectButton  		10
+#define LogitechGamePad_AButton 			2
+#define LogitechGamePad_BButton  			3
+#define LogitechGamePad_XButton  			4
+#define LogitechGamePad_YButton  			1
+#define LogitechGamePad_LeftShoulder  		5
+#define LogitechGamePad_RightShoulder  		6
+#define LogitechGamePad_LeftTrigger  		7
+#define LogitechGamePad_RightTrigger  		8
+#define LogitechGamePad_LeftStickPress  	11
+#define LogitechGamePad_RightStickPress  	12
+#define LogitechGamePad_StartButton  		9
+#define LogitechGamePad_SelectButton  		10
 
 // Axes - Used with the "getRawAxis()" function to access the X/Y data for the individual sticks on
 // the controller (e.g., for "tank drive" coding).
-#define LeftYAxis  			1
-#define LeftXAxis 			0
-#define RightYAxis  		3
-#define RightXAxis  		2
+#define LogitechGamePad_LeftXAxis 			0
+#define LogitechGamePad_LeftYAxis  			1
+#define LogitechGamePad_RightXAxis  		2
+#define LogitechGamePad_RightYAxis  		3
 
 //--------------------X-Box Controller-----------------------------------------------------------------
 // Buttons

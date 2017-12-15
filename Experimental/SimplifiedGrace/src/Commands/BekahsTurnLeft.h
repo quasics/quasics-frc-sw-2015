@@ -14,10 +14,10 @@ class BekahsTurnLeft: public frc::Command {
 public:
 	BekahsTurnLeft();
 	void Initialize();
-		void Execute();
-		bool IsFinished();
-		void End();
-		void Interrupted();
+	void Execute();
+	bool IsFinished();
+	void End();
+	void Interrupted();
 };
 
 #endif /* SRC_COMMANDS_BEKAHSTURNLEFT_H_ */

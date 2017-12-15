@@ -15,6 +15,7 @@ void TankDrive::Execute(){
 	std::shared_ptr<Joystick> joystick = Robot::oi->getDriveStick();
 	const bool leftTurbo = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
 	const bool rightTurbo = joystick->GetRawButton(LogitechGamePad_RightTrigger);
+	double mult=.4;
 	if(leftTurbo && rightTurbo){
 		mult = .7;
 	}

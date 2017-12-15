@@ -16,7 +16,6 @@ public:
 private:
 	int counter = 0;
 	bool pressedLastTime = false;
-	double mult = .4;
 };
 
 #endif  // TANK_DRIVE_H

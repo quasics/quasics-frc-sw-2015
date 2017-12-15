@@ -14,6 +14,8 @@ public:
 	void Interrupted() override;
 
 private:
+	int counter = 0;
+	bool pressedLastTime = false;
 };
 
 #endif  // TANK_DRIVE_H

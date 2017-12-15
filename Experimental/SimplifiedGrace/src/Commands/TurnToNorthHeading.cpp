@@ -20,19 +20,13 @@ void TurnToNorthHeading::Initialize() {
 	Robot::driveBase->SetLeftPower(0);
 	Robot::driveBase->SetRightPower(0);
 	std::cout << "Trying to turn to North (heading 0)" << std::endl;
-	if (currentHeading > 10 ){
-	//	std::cout << "Heading is positive: turning left" << std::endl;
+	if (currentHeading > 10 || currentHeading < 350){
+		std::cout << "Heading is positive: turning left" << std::endl;
 		Robot::driveBase->SetLeftPower(-.25);
 		Robot::driveBase->SetRightPower(.25);
 		wasTurningToLeft = true;
-	} else if (currentHeading < -10){
-	//	std::cout << "Heading is negative: turning right" << std::endl;
-		Robot::driveBase->SetLeftPower(.25);
-		Robot::driveBase->SetRightPower(-.25);
-		wasTurningToLeft = false;
-	} else if (currentHeading < 5 && currentHeading > -5) {
-		Robot::driveBase->SetLeftPower(0);
-		Robot::driveBase->SetRightPower(0);
+	} else {
+		Robot::driveBase->Stop();
 	}
 
 }
@@ -45,14 +39,14 @@ bool TurnToNorthHeading::IsFinished() {
 	double currentHeading = Robot::navigation->getCompassHeading();
 	if (wasTurningToLeft) {
 		std::cout << "(L) Current heading: " << currentHeading << std::endl;
-		if (currentHeading > -5 && currentHeading < 5) {
+		if (currentHeading > 350 || currentHeading < 10) {
 			// Either at North, or (hopefully slightly) overshot
 			std::cout << "Stopping!" << std::endl;
 			return true;
 		}
 	} else if (!wasTurningToLeft) {
 		std::cout << "(R) Current heading: " << currentHeading << std::endl;
-		if (currentHeading >= 0) {
+		if (currentHeading > 350 || currentHeading < 10) {
 			// Either at North, or (hopefully slightly) overshot
 			std::cout << "Stopping!" << std::endl;
 			return true;

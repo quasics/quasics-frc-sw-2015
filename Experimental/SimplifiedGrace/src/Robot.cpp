@@ -95,8 +95,8 @@ void Robot::DisabledPeriodic() {
 }
 
 void Robot::AutonomousInit() {
-	if(autonomousCommand != NULL) autonomousCommand->Start();
 	std::cout << "Starting autonomous mode" << std::endl;
+	if(autonomousCommand != NULL) autonomousCommand->Start();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -106,6 +106,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::StopAutoModeCommand() {
 	if (autonomousCommand.get() != nullptr)
 		autonomousCommand->Cancel();
+	std::cout << "Stopping autonomous mode" << std::endl;
 }
 
 void Robot::TeleopInit() {

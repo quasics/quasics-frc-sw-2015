@@ -60,11 +60,11 @@ void LightingControl::setMode(Mode mode) {
 	sendLightingCommand(false);
 }
 
-const char* const kLightMapping[3][5] = {
-	/* Idle */          /* Teleop */      /* Auto */       /* Error */        /* Test */
-	{"breathe-red\n",   "updown-red\n",   "chase-red\n",   "breath-yellow\n", "flash-red\n"},
-	{"breathe-blue\n",  "updown-blue\n",  "chase-blue\n",  "breath-yellow\n", "flash-blue\n"},
-	{"breathe-green\n", "updown-green\n", "chase-green\n", "breath-yellow\n", "flash-green\n"},
+const char* const kLightMapping[3 /* alliance */][5 /* mode */] = {
+				/* Idle */          /* Teleop */      /* Auto */       /* Error */        /* Test */
+/* Red */		{"breathe-red\n",   "updown-red\n",   "chase-red\n",   "breath-yellow\n", "flash-red\n"},
+/* Blue */		{"breathe-blue\n",  "updown-blue\n",  "chase-blue\n",  "breath-yellow\n", "flash-blue\n"},
+/* Invalid */	{"breathe-green\n", "updown-green\n", "chase-green\n", "breath-yellow\n", "flash-green\n"},
 };
 
 // TODO: Determine what the commands to the Arduino will look like.
@@ -74,7 +74,7 @@ void LightingControl::sendLightingCommand(bool force) {
 	const bool canSendCommand = cmd && serialPort_;
 
 	// Note that if we have a timeout on the Arduino (handling brownout, reset, etc.),
-	// then we may want to force resending the command every so often, even if it has
+	// then we may want to force re-sending the command every so often, even if it has
 	// not changed.
 	const bool shouldSendCommand = (cmd != lastCommand_) || force;
 

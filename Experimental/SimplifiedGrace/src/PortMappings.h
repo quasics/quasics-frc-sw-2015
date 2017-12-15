@@ -18,5 +18,8 @@ const int BACK_RIGHT_MOTOR_PORT = 0;
 const int FRONT_LEFT_MOTOR_PORT = 4;
 const int BACK_LEFT_MOTOR_PORT = 3;
 
+const int SPARE_MOTOR_1_PORT = 5;
+const int SPARE_MOTOR_2_PORT = 6;
+
 
 #endif /* SRC_PORTMAPPINGS_H_ */

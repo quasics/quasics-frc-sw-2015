@@ -28,8 +28,8 @@ void TankDrive::Execute(){
 		double leftY_value = joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* .4;
 		double rightY_value = joystick->GetRawAxis(LogitechGamePad_RightYAxis)* .4;
 
-		Robot::driveBase->SetLeftPower(leftY_value);
-		Robot::driveBase->SetRightPower(rightY_value);
+		Robot::driveBase->SetLeftPower(rightY_value);
+		Robot::driveBase->SetRightPower(leftY_value);
 	}
 
 	pressedLastTime = buttonIsPressedNow;

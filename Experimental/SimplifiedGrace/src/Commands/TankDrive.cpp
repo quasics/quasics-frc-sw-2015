@@ -13,20 +13,25 @@ void TankDrive::Initialize(){
 
 void TankDrive::Execute(){
 	std::shared_ptr<Joystick> joystick = Robot::oi->getDriveStick();
+	const bool leftTurbo = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
+	const bool rightTurbo = joystick->GetRawButton(LogitechGamePad_RightTrigger);
+	if(leftTurbo && rightTurbo){
+		mult = .7;
+	}
 	const bool buttonIsPressedNow = joystick->GetRawButton(LogitechGamePad_AButton);
 	if(!buttonIsPressedNow && pressedLastTime){
 		counter = counter + 1;
 	}
 	if (counter%2 == 0){
-	double leftY_value = joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -.4;
-	double rightY_value = joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -.4;
+	double leftY_value = joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -mult;
+	double rightY_value = joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult;
 
 	Robot::driveBase->SetLeftPower(leftY_value);
 	Robot::driveBase->SetRightPower(rightY_value);
 	}
 	else{
-		double leftY_value = joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* .4;
-		double rightY_value = joystick->GetRawAxis(LogitechGamePad_RightYAxis)* .4;
+		double leftY_value = joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* mult;
+		double rightY_value = joystick->GetRawAxis(LogitechGamePad_RightYAxis)* mult;
 
 		Robot::driveBase->SetLeftPower(rightY_value);
 		Robot::driveBase->SetRightPower(leftY_value);

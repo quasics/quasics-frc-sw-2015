@@ -28,6 +28,7 @@
 class Robot : public IterativeRobot {
 private:
 	std::unique_ptr<Command> autonomousCommand;
+	std::unique_ptr<Command> tankDriveCommand;
 
 public:
 	static std::unique_ptr<OI> oi;

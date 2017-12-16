@@ -85,6 +85,21 @@ public:
 		}
 	}
 
+	float getForwardMotion() {
+		if (isReady()){
+			return ahrs->GetDisplacementY() * -1;
+		}
+		else{
+			return 0;
+		}
+	}
+
+	void resetForwardMotion() {
+			if (ahrs.get() != nullptr) {
+				ahrs->ResetDisplacement();
+			}
+		}
+
 
 };
 

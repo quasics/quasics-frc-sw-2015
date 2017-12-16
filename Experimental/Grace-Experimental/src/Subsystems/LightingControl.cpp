@@ -79,6 +79,7 @@ void LightingControl::sendLightingCommand(bool force) {
 	const bool shouldSendCommand = (cmd != lastCommand_) || force;
 
 	if (canSendCommand && shouldSendCommand) {
+		std::cout << "Sending lighting command: " << cmd;
 		serialPort_->Write(cmd);
 		lastCommand_ = cmd;
 	}

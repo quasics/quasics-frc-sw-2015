@@ -13,13 +13,21 @@ void TankDrive::Initialize(){
 
 void TankDrive::Execute(){
 	std::shared_ptr<Joystick> joystick = Robot::oi->getDriveStick();
-	const bool leftTurbo = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
-	const bool rightTurbo = joystick->GetRawButton(LogitechGamePad_RightTrigger);
+	const bool leftTrigger = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
+	const bool rightTrigger = joystick->GetRawButton(LogitechGamePad_RightTrigger);
 	double mult=.4;
-	if(leftTurbo && rightTurbo){
-		mult = .7;
+	if(leftTrigger && rightTrigger){
+		mult = .8;
 	}
+	else if(leftTrigger){
+		mult = .6;
+	}
+	else if(rightTrigger){
+		mult = .2;
+	}
+
 	const bool buttonIsPressedNow = joystick->GetRawButton(LogitechGamePad_AButton);
+
 	if(!buttonIsPressedNow && pressedLastTime){
 		counter = counter + 1;
 	}

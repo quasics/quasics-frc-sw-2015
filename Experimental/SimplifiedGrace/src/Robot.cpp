@@ -71,15 +71,14 @@ void Robot::RobotInit() {
 
 	// SmartDashboard Buttons for commands in practice mode.
 	SmartDashboard::PutData("Drive the Robot!", new TankDrive());
-
 	SmartDashboard::PutData("Move forward 1sec @ 50%", new MoveForward(.5, 1));
 	SmartDashboard::PutData("Make the robot dance", new DancingRobot);
 	SmartDashboard::PutData("BekahsBox", new BekahsBox);
 	SmartDashboard::PutData("GESLeft90", new GESLeft90);
-	// SmartDashboard::PutData("Shane's motor test", new ShanesMotorTest(.5));
-	// SmartDashboard::PutData("Turn left continuous", new TurnLeftContinuous());
-	// SmartDashboard::PutData("Turn right forty-five degrees", new TurnRightFortyFive());
-	// SmartDashboard::PutData("Turn towards north", new TurnToNorthHeading);
+	SmartDashboard::PutData("Shane's motor test", new ShanesMotorTest(.5));
+	SmartDashboard::PutData("Turn left continuous", new TurnLeftContinuous());
+	SmartDashboard::PutData("Turn right forty-five degrees", new TurnRightFortyFive());
+	SmartDashboard::PutData("Turn towards north", new TurnToNorthHeading);
 }
 
 

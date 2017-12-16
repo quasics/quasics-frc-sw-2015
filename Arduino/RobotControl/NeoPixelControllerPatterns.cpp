@@ -309,7 +309,7 @@ void NeoPixelController::NeoPixelProcess () {
       SetRangeRGB(0, strip->numPixels() - 1, 255, 255, 0);
       break;
     case kOrange:
-      SetRangeRGB(0, strip->numPixels() - 1, 255, 140, 0);
+      SetRangeRGB(0, strip->numPixels() - 1, 118, 6, 0);
       break;
     case kRed:
       SetRangeRGB(0, strip->numPixels() - 1, 255, 0, 0);

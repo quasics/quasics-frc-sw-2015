@@ -6,6 +6,7 @@
  */
 
 #include "Navigation.h"
+#include <iostream>
 
 Navigation::Navigation()
 : Subsystem("Navigation	")

@@ -149,7 +149,8 @@ void Robot::TestInit() {
 }
 
 void Robot::TestPeriodic() {
-	lw->Run();
+	// Note: this is now deprecated as of 2018
+	// lw->Run();
 }
 
 START_ROBOT_CLASS(Robot);

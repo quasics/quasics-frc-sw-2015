@@ -8,9 +8,12 @@
 #include "TurnToNorthHeading.h"
 
 #include "../Robot.h"
+#include <iostream>
 
+// CODE_REVIEW(mjh): You're not initializing "wasTurningToLeft" in here.  As a
+// result, you're going to get a "garbage value" for this field, and it's likely
+// to evaluate as "true".
 TurnToNorthHeading::TurnToNorthHeading() {
-	// TODO Auto-generated constructor stub
 	Requires(Robot::driveBase.get());
 	Requires(Robot::navigation.get());
 }

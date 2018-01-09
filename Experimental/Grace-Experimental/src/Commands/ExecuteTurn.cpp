@@ -8,6 +8,7 @@
 #include "ExecuteTurn.h"
 #include "../Robot.h"
 
+#include <iostream>
 #include <iomanip>
 
 //

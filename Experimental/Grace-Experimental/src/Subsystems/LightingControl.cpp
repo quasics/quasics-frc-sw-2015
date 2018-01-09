@@ -7,6 +7,7 @@
 
 #include "LightingControl.h"
 #include "../Commands/AutomaticLighting.h"
+#include <iostream>
 
 LightingControl::LightingControl()
 : Subsystem("Lighting control")
@@ -41,7 +42,7 @@ void LightingControl::updateState(bool force) {
 		mode_ = eTeleOp;
 	} else if (driverStation.IsTest()) {
 		mode_ = eTest;
-	} else if (driverStation.IsBrownedOut() || !driverStation.IsSysActive()) {
+	} else if (RobotController::IsBrownedOut() || !RobotController::IsSysActive()) {
 		mode_ = eError;
 	} else {
 		mode_ = eIdle;

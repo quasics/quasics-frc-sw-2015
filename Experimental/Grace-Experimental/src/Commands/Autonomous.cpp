@@ -21,7 +21,7 @@ Autonomous::Autonomous() {
 	// arm.
 
 	// Execute a few simple movements.
-	AddSequential(new MoveForward(.25, 1));
-	AddSequential(new MoveInASquare);
-	AddSequential(new MoveForward(.25, 1));
+//	AddSequential(new MoveForward(.25, 1));
+//	AddSequential(new MoveInASquare);
+//	AddSequential(new MoveForward(.25, 1));
 }

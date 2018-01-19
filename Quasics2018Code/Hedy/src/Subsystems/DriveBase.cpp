@@ -39,16 +39,14 @@ void DriveBase::InitDefaultCommand() {
 }
 
 void DriveBase::SetLeftPower(double percent){
-	leftFrontMotor->Set(percent);
-	leftRearMotor->Set(percent);
+	leftMotors->Set(percent);
 }
 
 
 
 
 void DriveBase::SetRightPower(double percent){
-	rightFrontMotor->Set(percent);
-	rightRearMotor->Set(percent);
+	rightMotors->Set(percent);
 }
 
 

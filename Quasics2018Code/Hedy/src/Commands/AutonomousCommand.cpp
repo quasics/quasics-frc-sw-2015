@@ -45,7 +45,7 @@ void AutonomousCommand::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool AutonomousCommand::IsFinished() {
-    return false;
+    return count >= 10;
 }
 
 // Called once after isFinished returns true

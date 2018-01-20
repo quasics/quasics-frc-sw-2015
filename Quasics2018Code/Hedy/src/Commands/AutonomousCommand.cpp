@@ -27,6 +27,7 @@ void AutonomousCommand::Initialize() {
 	Robot::driveBase->SetRightPower(power);
 	int count = 0;
 	SetTimeout(secondsToRun);
+	//determine what alliance we are
 	// interpret FMS signal to determine which side the switch is on
 }
 

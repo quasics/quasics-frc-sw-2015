@@ -32,14 +32,14 @@ void AutoLeft::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void AutoLeft::Execute() {
 
-	while(count <= 20){
+	while(count <= 6){
 		count = count + 1;
 	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool AutoLeft::IsFinished() {
-	return count >= 20;
+	return count >= 6;
 }
 
 // Called once after isFinished returns true

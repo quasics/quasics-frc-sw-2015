@@ -31,7 +31,15 @@ void AutonomousCommand::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
+	int count = 0;
+	 while(count <= 10){
 
+		 count = count + 1;
+	 }
+	 if(count >= 10){
+		 Robot::driveBase->Stop();
+
+	 }
 }
 
 // Make this return true when this Command no longer needs to run execute()

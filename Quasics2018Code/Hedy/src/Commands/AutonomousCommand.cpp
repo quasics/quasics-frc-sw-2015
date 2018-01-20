@@ -25,15 +25,16 @@ AutonomousCommand::AutonomousCommand(): frc::Command() {
 void AutonomousCommand::Initialize() {
 	Robot::driveBase->SetLeftPower(power);
 	Robot::driveBase->SetRightPower(power);
-
+	int count = 0;
 	SetTimeout(secondsToRun);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
-	int count = 0;
-	 while(count <= 10){
 
+	 while(count <= 10){
+		 Robot::driveBase->SetLeftPower(.4);
+		 Robot::driveBase->SetRightPower(.4);
 		 count = count + 1;
 	 }
 	 if(count >= 10){

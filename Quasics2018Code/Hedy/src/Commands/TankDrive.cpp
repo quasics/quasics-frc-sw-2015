@@ -19,8 +19,20 @@ void TankDrive::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-	double mult = .4;
 	std::shared_ptr<Joystick> joystick = Robot::oi->getdriveStick();
+	const bool leftTrigger = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
+	const bool rightTrigger = joystick->GetRawButton(LogitechGamePad_RightTrigger);
+
+	double mult = .4;
+	if(leftTrigger && rightTrigger){
+		mult = .8;
+	}
+	else if(leftTrigger && !rightTrigger){
+		mult = .6;
+	}
+	else if(rightTrigger && !leftTrigger){
+		mult = .2;
+	}
 	Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -mult);
 	Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult);
 }

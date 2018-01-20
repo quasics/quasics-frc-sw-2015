@@ -134,10 +134,10 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Debug">
+		<configuration configurationName="Simulate">
 			<resource resourceType="PROJECT" workspacePath="/Hedy"/>
 		</configuration>
-		<configuration configurationName="Simulate">
+		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/Hedy"/>
 		</configuration>
 	</storageModule>

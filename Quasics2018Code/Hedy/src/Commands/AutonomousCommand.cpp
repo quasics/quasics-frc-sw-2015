@@ -23,40 +23,23 @@ AutonomousCommand::AutonomousCommand(): frc::Command() {
 
 // Called just before this Command runs the first time
 void AutonomousCommand::Initialize() {
-	Robot::driveBase->SetLeftPower(power);
-	Robot::driveBase->SetRightPower(power);
-	int count = 0;
-	SetTimeout(secondsToRun);
 	// interpret FMS signal to determine which side the switch is on
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
-// if FMS sent R as the first letter, turn left, else turn right
-	 while(count <= 10){
-		 Robot::driveBase->SetLeftPower(.4);
-		 Robot::driveBase->SetRightPower(.4);
-		 count = count + 1;
-	 }
-	 if(count >= 10){
-		 Robot::driveBase->Stop();
-
-	 }
-	 //activate cube manipulator to deposit cube in switch
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool AutonomousCommand::IsFinished() {
-    return count >= 10;
+	return false;
 }
 
 // Called once after isFinished returns true
 void AutonomousCommand::End() {
-	Robot::driveBase->Stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void AutonomousCommand::Interrupted() {
-	End();
 }

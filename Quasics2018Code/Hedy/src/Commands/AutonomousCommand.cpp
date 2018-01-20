@@ -27,13 +27,12 @@ void AutonomousCommand::Initialize() {
 	Robot::driveBase->SetRightPower(power);
 	int count = 0;
 	SetTimeout(secondsToRun);
-	//determine what alliance we are
 	// interpret FMS signal to determine which side the switch is on
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
-// turn to face our side of the switch
+// if FMS sent R as the first letter, turn left, else turn right
 	 while(count <= 10){
 		 Robot::driveBase->SetLeftPower(.4);
 		 Robot::driveBase->SetRightPower(.4);

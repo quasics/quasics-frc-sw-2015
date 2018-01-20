@@ -25,6 +25,7 @@ PointTurnLeft::PointTurnLeft(): frc::Command() {
 // Called just before this Command runs the first time
 void PointTurnLeft::Initialize() {
 	// interpret FMS signal to determine which side the switch is on
+	//robot turns left
 	Robot::driveBase->SetLeftPower(.5);
 	Robot::driveBase->SetRightPower(-.5);
 }

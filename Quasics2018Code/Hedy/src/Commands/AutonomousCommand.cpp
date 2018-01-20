@@ -27,11 +27,12 @@ void AutonomousCommand::Initialize() {
 	Robot::driveBase->SetRightPower(power);
 	int count = 0;
 	SetTimeout(secondsToRun);
+	// interpret FMS signal to determine which side the switch is on
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutonomousCommand::Execute() {
-
+// turn to face our side of the switch
 	 while(count <= 10){
 		 Robot::driveBase->SetLeftPower(.4);
 		 Robot::driveBase->SetRightPower(.4);
@@ -41,6 +42,7 @@ void AutonomousCommand::Execute() {
 		 Robot::driveBase->Stop();
 
 	 }
+	 //activate cube manipulator to deposit cube in switch
 }
 
 // Make this return true when this Command no longer needs to run execute()

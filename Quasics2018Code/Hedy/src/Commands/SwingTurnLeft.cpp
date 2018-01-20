@@ -26,7 +26,7 @@ SwingTurnLeft::SwingTurnLeft(): frc::Command() {
 void SwingTurnLeft::Initialize() {
 	// interpret FMS signal to determine which side the switch is on
 	Robot::driveBase->SetLeftPower(.5);
-	Robot::driveBase->SetRightPower(-.5);
+	Robot::driveBase->SetRightPower(0);
 }
 
 // Called repeatedly when this Command is scheduled to run

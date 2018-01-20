@@ -1,4 +1,4 @@
-#include "GripPipeline.h"
+#include "Vision.h"
 
 namespace grip {
 

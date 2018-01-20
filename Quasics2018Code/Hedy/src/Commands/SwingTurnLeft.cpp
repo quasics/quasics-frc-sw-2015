@@ -9,7 +9,7 @@
 // it from being updated in the future.
 
 
-#include <Commands/SwingTurnLeft.h>
+#include "SwingTurnLeft.h"
 SwingTurnLeft::SwingTurnLeft(double seconds, double power): frc::Command() {
 	count = 0;
 	m_seconds = seconds;

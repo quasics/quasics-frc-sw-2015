@@ -1,5 +1,5 @@
 #include "UsingGrip.h"
-#include "GripPipeline.h"
+#include "Vision.h"
 #include "../Robot.h"
 
 #include <iostream>

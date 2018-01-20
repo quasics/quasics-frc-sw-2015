@@ -1,9 +1,9 @@
 #ifndef UsingGrip_H
 #define UsingGrip_H
 
-#include "../CommandBase.h"
+#include <WPILib.h>
 
-class UsingGrip : public CommandBase {
+class UsingGrip : public frc::Command {
 public:
 	UsingGrip();
 	void Initialize();

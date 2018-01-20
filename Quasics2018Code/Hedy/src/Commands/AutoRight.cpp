@@ -25,8 +25,8 @@ AutoRight::AutoRight(): frc::Command() {
 // Called just before this Command runs the first time
 void AutoRight::Initialize() {
 	// interpret FMS signal to determine which side the switch is on
-	Robot::driveBase->SetLeftPower(.5);
-	Robot::driveBase->SetRightPower(-.5);
+	Robot::driveBase->SetLeftPower(-.5);
+	Robot::driveBase->SetRightPower(.5);
 }
 
 // Called repeatedly when this Command is scheduled to run

@@ -21,8 +21,8 @@ Intake::Intake(double seconds, double power): frc::Command() {
 // Called just before this Command runs the first time
 void Intake::Initialize() {
 	// interpret FMS signal to determine which side the switch is on
-	Robot::driveBase->SetLeftPower(m_power);
-	Robot::driveBase->SetRightPower(m_power);
+	Robot::cubeManipulation->SetIntakePower(m_power);
+
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -40,12 +40,12 @@ bool Intake::IsFinished() {
 
 // Called once after isFinished returns true
 void Intake::End() {
-	Robot::driveBase->Stop();
+	Robot::cubeManipulation->Stop();
 
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void Intake::Interrupted() {
-	Robot::driveBase->Stop();
+	Robot::cubeManipulation->Stop();
 }

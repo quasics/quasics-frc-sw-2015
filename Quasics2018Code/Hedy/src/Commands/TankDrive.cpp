@@ -22,6 +22,7 @@ void TankDrive::Execute() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getdriveStick();
 	const bool leftTrigger = joystick->GetRawButton(LogitechGamePad_LeftTrigger);
 	const bool rightTrigger = joystick->GetRawButton(LogitechGamePad_RightTrigger);
+	const bool XButton = joystick->GetRawButton(LogitechGamePad_XButton);
 
 	double mult = .4;
 	if(leftTrigger && rightTrigger){
@@ -33,8 +34,20 @@ void TankDrive::Execute() {
 	else if(rightTrigger && !leftTrigger){
 		mult = .2;
 	}
-	Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -mult);
-	Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult);
+
+	if(!XButton && pressedLastTime){
+		counter = counter + 1;
+	}
+
+
+	if(counter % 2 == 0){
+		Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -mult);
+		Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult);
+	}
+	else{
+		Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* mult);
+		Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* mult);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

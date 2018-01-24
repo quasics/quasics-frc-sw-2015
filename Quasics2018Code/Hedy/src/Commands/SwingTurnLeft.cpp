@@ -26,7 +26,7 @@ SwingTurnLeft::SwingTurnLeft(double seconds, double power): frc::Command() {
 
 // Called just before this Command runs the first time
 void SwingTurnLeft::Initialize() {
-	// interpret FMS signal to determine which side the switch is on
+
 	//robot turns left without using right motor
 	Robot::driveBase->SetLeftPower(m_power);
 	Robot::driveBase->SetRightPower(0);

@@ -26,7 +26,7 @@ PointTurnRight::PointTurnRight(double seconds, double power): frc::Command() {
 
 // Called just before this Command runs the first time
 void PointTurnRight::Initialize() {
-	// interpret FMS signal to determine which side the switch is on
+
 	//robot turns right
 	Robot::driveBase->SetLeftPower(-m_power);
 	Robot::driveBase->SetRightPower(m_power);

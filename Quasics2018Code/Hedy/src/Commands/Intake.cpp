@@ -20,7 +20,7 @@ Intake::Intake(double seconds, double power): frc::Command() {
 
 // Called just before this Command runs the first time
 void Intake::Initialize() {
-	// interpret FMS signal to determine which side the switch is on
+
 	Robot::cubeManipulation->SetIntakePower(m_power);
 
 }

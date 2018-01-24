@@ -9,8 +9,8 @@
 // it from being updated in the future.
 
 
-#include "Intake.h"
-Intake::Intake(double seconds, double power): frc::Command() {
+#include "Outtake.h"
+Outtake::Outtake(double seconds, double power): frc::Command() {
 	count = 0;
 	m_seconds = seconds;
 	m_power = power;
@@ -19,13 +19,13 @@ Intake::Intake(double seconds, double power): frc::Command() {
 }
 
 // Called just before this Command runs the first time
-void Intake::Initialize() {
+void Outtake::Initialize() {
 	Robot::cubeManipulation->SetIntakePower(-m_power);
 
 }
 
 // Called repeatedly when this Command is scheduled to run
-void Intake::Execute() {
+void Outtake::Execute() {
 
 	while(count <= m_seconds){
 		count = count + 1;
@@ -33,18 +33,18 @@ void Intake::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool Intake::IsFinished() {
+bool Outtake::IsFinished() {
 	return count >= m_seconds;
 }
 
 // Called once after isFinished returns true
-void Intake::End() {
+void Outtake::End() {
 	Robot::cubeManipulation->Stop();
 
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void Intake::Interrupted() {
+void Outtake::Interrupted() {
 	Robot::cubeManipulation->Stop();
 }

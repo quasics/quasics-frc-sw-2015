@@ -66,6 +66,7 @@ cv::Mat* GripPipeline::GetHsvThresholdOutput(){
  */
 cv::Mat* GripPipeline::GetCvErodeOutput(){
 	return &(this->cvErodeOutput);
+
 }
 /**
  * This method is a generated getter for the output of a Mask.

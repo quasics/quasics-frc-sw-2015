@@ -1,4 +1,4 @@
-#include "AutoSwitch.h"
+#include <Commands/AutoSwitchLeft.h>
 #include "MoveForDistance.h"
 #include "PointTurnRight.h"
 #include "ShoulderMove.h"

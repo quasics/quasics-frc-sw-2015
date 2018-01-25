@@ -1,5 +1,5 @@
-#ifndef AutoSwitch_H
-#define AutoSwitch_H
+#ifndef AutoSwitchLeft_H
+#define AutoSwitchLeft_H
 
 #include <Commands/CommandGroup.h>
 

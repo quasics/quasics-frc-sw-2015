@@ -3,7 +3,7 @@
 #include "PointTurnRight.h"
 #include "ShoulderMove.h"
 #include "Outtake.h"
-AutoSwitch::AutoSwitch() {
+AutoSwitchLeft::AutoSwitchLeft() {
 
 	AddSequential(new MoveForDistance(192, .4));
 	//14 feet

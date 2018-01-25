@@ -3,9 +3,9 @@
 
 #include <Commands/CommandGroup.h>
 
-class AutoSwitch : public CommandGroup {
+class AutoSwitchRight : public CommandGroup {
 public:
-	AutoSwitch();
+	AutoSwitchRight();
 };
 
 #endif

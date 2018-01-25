@@ -1,9 +1,9 @@
-#include <Commands/AutoSwitchLeft.h>
+#include <Commands/AutoSwitchRight.h>
 #include "MoveForDistance.h"
 #include "PointTurnLeft.h"
 #include "ShoulderMove.h"
 #include "Outtake.h"
-AutoSwitch::AutoSwitch() {
+AutoSwitchRight::AutoSwitchRight() {
 
 	AddSequential(new MoveForDistance(192, .4));
 	//14 feet

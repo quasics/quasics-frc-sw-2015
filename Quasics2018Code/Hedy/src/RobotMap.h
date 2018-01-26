@@ -40,7 +40,7 @@ public:
 	static std::shared_ptr<frc::SpeedController> cubeManipulationrightIntakeMotor;
 	static std::shared_ptr<frc::SpeedControllerGroup> cubeManipulationIntakeMotors;
 
-	//For Pneumatics
+	// For Pneumatics
 	static std::shared_ptr<frc::SpeedControllerGroup> Left1Pneumatics;
 	static std::shared_ptr<frc::SpeedControllerGroup> Left2Pneumatics;
 	static std::shared_ptr<frc::SpeedControllerGroup> Right1Pneumatics;

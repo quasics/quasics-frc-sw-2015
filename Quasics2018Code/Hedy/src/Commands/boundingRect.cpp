@@ -1,8 +1,16 @@
-#include "boundingRect.h"
+/*#include "boundingRect.h"
 
-/*boundingRect::boundingRect() {
+boundingRect::boundingRect() {
 	// Use Requires() here to declare subsystem dependencies
 	// eg. Requires(Robot::chassis.get());
+
+	top = std::max(rectangle1.y, rectangle2.y);
+
+				bottom = std::max(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height);
+
+				left = std::max(rectangle1.x, rectangle2.x);
+
+				right = std::max(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width);
 }
 
 // Called just before this Command runs the first time
@@ -30,4 +38,5 @@ void boundingRect::End() {
 void boundingRect::Interrupted() {
 
 }
+
 */

@@ -42,6 +42,21 @@ void Vision::Process(cv::Mat& source0){
 	cv::Mat findContoursInput = cvErodeOutput;
 	bool findContoursExternalOnly = false;  // default Boolean
 	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
+	//Step Filter_Contours0:
+	//input
+	std::vector<std::vector<cv::Point> > filterContoursContours = findContoursOutput;
+	double filterContoursMinArea = 0;  // default Double
+	double filterContoursMinPerimeter = 0;  // default Double
+	double filterContoursMinWidth = 10.0;  // default Double
+	double filterContoursMaxWidth = 1000.0;  // default Double
+	double filterContoursMinHeight = 10.0;  // default Double
+	double filterContoursMaxHeight = 1000;  // default Double
+	double filterContoursSolidity[] = {0.0, 100};
+	double filterContoursMaxVertices = 100000.0;  // default Double
+	double filterContoursMinVertices = 0;  // default Double
+	double filterContoursMinRatio = 0;  // default Double
+	double filterContoursMaxRatio = 1000;  // default Double
+	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 }
 
 /**
@@ -78,6 +93,13 @@ cv::Mat* Vision::GetMaskOutput(){
  */
 std::vector<std::vector<cv::Point> >* Vision::GetFindContoursOutput(){
 	return &(this->findContoursOutput);
+}
+/**
+ * This method is a generated getter for the output of a Filter_Contours.
+ * @return ContoursReport output from Filter_Contours.
+ */
+std::vector<std::vector<cv::Point> >* Vision::GetFilterContoursOutput(){
+	return &(this->filterContoursOutput);
 }
 	/**
 	 * Resizes an Image.
@@ -146,6 +168,43 @@ std::vector<std::vector<cv::Point> >* Vision::GetFindContoursOutput(){
 		int mode = externalOnly ? cv::RETR_EXTERNAL : cv::RETR_LIST;
 		int method = cv::CHAIN_APPROX_SIMPLE;
 		cv::findContours(input, contours, hierarchy, mode, method);
+	}
+
+
+	/**
+	 * Filters through contours.
+	 * @param inputContours is the input vector of contours.
+	 * @param minArea is the minimum area of a contour that will be kept.
+	 * @param minPerimeter is the minimum perimeter of a contour that will be kept.
+	 * @param minWidth minimum width of a contour.
+	 * @param maxWidth maximum width.
+	 * @param minHeight minimum height.
+	 * @param maxHeight  maximimum height.
+	 * @param solidity the minimum and maximum solidity of a contour.
+	 * @param minVertexCount minimum vertex Count of the contours.
+	 * @param maxVertexCount maximum vertex Count.
+	 * @param minRatio minimum ratio of width to height.
+	 * @param maxRatio maximum ratio of width to height.
+	 * @param output vector of filtered contours.
+	 */
+	void Vision::filterContours(std::vector<std::vector<cv::Point> > &inputContours, double minArea, double minPerimeter, double minWidth, double maxWidth, double minHeight, double maxHeight, double solidity[], double maxVertexCount, double minVertexCount, double minRatio, double maxRatio, std::vector<std::vector<cv::Point> > &output) {
+		std::vector<cv::Point> hull;
+		output.clear();
+		for (std::vector<cv::Point> contour: inputContours) {
+			cv::Rect bb = boundingRect(contour);
+			if (bb.width < minWidth || bb.width > maxWidth) continue;
+			if (bb.height < minHeight || bb.height > maxHeight) continue;
+			double area = cv::contourArea(contour);
+			if (area < minArea) continue;
+			if (arcLength(contour, true) < minPerimeter) continue;
+			cv::convexHull(cv::Mat(contour, true), hull);
+			double solid = 100 * area / cv::contourArea(hull);
+			if (solid < solidity[0] || solid > solidity[1]) continue;
+			if (contour.size() < minVertexCount || contour.size() > maxVertexCount)	continue;
+			double ratio = (double) bb.width / (double) bb.height;
+			if (ratio < minRatio || ratio > maxRatio) continue;
+			output.push_back(contour);
+		}
 	}
 
 

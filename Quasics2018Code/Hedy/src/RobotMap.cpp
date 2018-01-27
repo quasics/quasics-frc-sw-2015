@@ -80,8 +80,12 @@ void RobotMap::init() {
 	// which means that it's easier to see what's *really* wrong when the compiler finds
 	// something funky.)
 
-	driveBaseLeftEncoder.reset(createEncoder(0, 1, true, DRIVE_TRAIN_INCHES_PER_TICK, PIDSourceType::kRate, "DriveBase", "Left Encoder"));
-	driveBaseRightEncoder.reset(createEncoder(2, 3, false, DRIVE_TRAIN_INCHES_PER_TICK, PIDSourceType::kRate, "DriveBase", "Right Encoder"));
+	driveBaseLeftEncoder.reset(createEncoder(
+			0, 1, true, DRIVE_TRAIN_INCHES_PER_TICK,
+			PIDSourceType::kRate, "DriveBase", "Left Encoder"));
+	driveBaseRightEncoder.reset(createEncoder(
+			2, 3, false, DRIVE_TRAIN_INCHES_PER_TICK,
+			PIDSourceType::kRate, "DriveBase", "Right Encoder"));
 
 	driveBaserightFrontMotor.reset(createMotor<Jaguar>(0, "Drive Base", "rightFrontMotor"));
 	driveBaserightRearMotor.reset(createMotor<Jaguar>(1, "Drive Base", "rightRearMotor"));

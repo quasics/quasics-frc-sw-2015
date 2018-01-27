@@ -1,4 +1,4 @@
-#include <Commands/AutoStartMid.h>
+#include "AutoStartMid.h"
 #include "AutoSwitchLeft.h"
 #include "AutoSwitchRight.h"
 #include "PointTurnLeft.h"

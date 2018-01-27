@@ -8,7 +8,9 @@
 #endif
 
 #define wheelDiameterInches 6
-#define driveTrainTicksPerRevolution 360
-#define InchesPerTick wheelDiameterInches * M_PI/driveTrainTicksPerRevolution
+#define driveTrainTicksPerRevolution 1440 //resolution of E4T
+// #define InchesPerTick wheelDiameterInches * M_PI/driveTrainTicksPerRevolution
+
+#define InchesPerTick		(wheelDiameterInches/driveTrainTicksPerRevolution)
 
 #endif

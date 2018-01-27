@@ -42,11 +42,11 @@ void TankDrive::Execute() {
 
 	if(counter % 2 == 0){
 		Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* -mult);
-		Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult);
+		Robot::driveBase->SetRightPower(-(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* -mult));
 	}
 	else{
 		Robot::driveBase->SetLeftPower(joystick->GetRawAxis(LogitechGamePad_LeftYAxis)* mult);
-		Robot::driveBase->SetRightPower(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* mult);
+		Robot::driveBase->SetRightPower(-(joystick->GetRawAxis(LogitechGamePad_RightYAxis)* mult));
 	}
 }
 

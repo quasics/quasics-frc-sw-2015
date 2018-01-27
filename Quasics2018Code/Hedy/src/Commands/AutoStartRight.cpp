@@ -1,4 +1,4 @@
-#include <Commands/AutoStartRight.h>
+#include "AutoStartRight.h"
 #include "AutoSwitchLeft.h"
 #include "AutoSwitchRight.h"
 #include "AutoFMS.h"

@@ -12,6 +12,7 @@ public:
 	bool IsFinished();
 	void End();
 	void Interrupted();
+	//ds
 };
 
 #endif  // findingBox_H

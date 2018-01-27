@@ -40,25 +40,25 @@ std::shared_ptr<frc::SpeedControllerGroup> RobotMap::cubeManipulationIntakeMotor
 // that Robot Builder currently generates.  (It's still generating code like it
 // did for 2017 and earlier, but things are different in 2018.)
 template <class Controller>
-inline Controller* createMotor(int port, const char* const subsystem, const char* const name) {
-	Controller* const motor = new Controller(port);
+inline std::shared_ptr<Controller> createMotor(int port, const char* const subsystem, const char* const name) {
+	std::shared_ptr<Controller> const motor(new Controller(port));
 	motor->SetSubsystem(subsystem);
 	motor->SetName(name);
 	return motor;
 }
-inline SpeedControllerGroup* createSpeedControllerGroup(SpeedController& motor1, SpeedController& motor2, const char* const subsystem, const char* const name) {
-	SpeedControllerGroup* const speedControllerGroup = new SpeedControllerGroup(motor1, motor2);
+inline frc::SpeedControllerGroup* createSpeedControllerGroup(frc::SpeedController& motor1, frc::SpeedController& motor2, const char* const subsystem, const char* const name) {
+	frc::SpeedControllerGroup* const speedControllerGroup = new frc::SpeedControllerGroup(motor1, motor2);
 	speedControllerGroup->SetSubsystem(subsystem);
 	speedControllerGroup->SetName(name);
 	return speedControllerGroup;
 }
-inline Encoder* createEncoder(
+inline std::shared_ptr<frc::Encoder> createEncoder(
 		int channelA, int channelB,
 		bool reverseDirection, double distancePerPulse,
-		PIDSourceType sourceType,
+		frc::PIDSourceType sourceType,
 		const char* const subsystem, const char* const name)
 {
-	Encoder* encoder = new Encoder(channelA, channelB, reverseDirection);
+	std::shared_ptr<frc::Encoder> encoder(new frc::Encoder(channelA, channelB, reverseDirection));
 	encoder->SetDistancePerPulse(distancePerPulse);
 	encoder->SetPIDSourceType(sourceType);
 	encoder->SetSubsystem(subsystem);
@@ -80,25 +80,25 @@ void RobotMap::init() {
 	// which means that it's easier to see what's *really* wrong when the compiler finds
 	// something funky.)
 
-	driveBaseLeftEncoder.reset(createEncoder(
+	driveBaseLeftEncoder = createEncoder(
 			0, 1, true, DRIVE_TRAIN_INCHES_PER_TICK,
-			PIDSourceType::kRate, "DriveBase", "Left Encoder"));
-	driveBaseRightEncoder.reset(createEncoder(
+			frc::PIDSourceType::kRate, "DriveBase", "Left Encoder");
+	driveBaseRightEncoder = createEncoder(
 			2, 3, false, DRIVE_TRAIN_INCHES_PER_TICK,
-			PIDSourceType::kRate, "DriveBase", "Right Encoder"));
+			frc::PIDSourceType::kRate, "DriveBase", "Right Encoder");
 
-	driveBaserightFrontMotor.reset(createMotor<Jaguar>(0, "Drive Base", "rightFrontMotor"));
-	driveBaserightRearMotor.reset(createMotor<Jaguar>(1, "Drive Base", "rightRearMotor"));
-    driveBaseleftFrontMotor.reset(createMotor<Jaguar>(2, "Drive Base", "leftFrontMotor"));
-    driveBaseleftRearMotor.reset(createMotor<Jaguar>(3, "Drive Base", "leftRearMotor"));
+	driveBaserightFrontMotor = createMotor<frc::Jaguar>(0, "Drive Base", "rightFrontMotor");
+	driveBaserightRearMotor = createMotor<frc::Jaguar>(1, "Drive Base", "rightRearMotor");
+    driveBaseleftFrontMotor = createMotor<frc::Jaguar>(2, "Drive Base", "leftFrontMotor");
+    driveBaseleftRearMotor = createMotor<frc::Jaguar>(3, "Drive Base", "leftRearMotor");
 
     driveBaseLeftMotors.reset(createSpeedControllerGroup(*driveBaseleftFrontMotor, *driveBaseleftRearMotor, "DriveBase", "LeftDriveMotors"));
     driveBaseRightMotors.reset(createSpeedControllerGroup(*driveBaserightFrontMotor, *driveBaserightRearMotor, "DriveBase", "RightDriveMotors"));
 
-    cubeManipulationleftShoulderMotor.reset(createMotor<Spark>(4, "CubeManipulation", "leftShoulderMotor"));
-    cubeManipulationrightShoulderMotor.reset(createMotor<Spark>(5, "CubeManipulation", "rightShoulderMotor"));
-    cubeManipulationleftIntakeMotor.reset(createMotor<Spark>(6, "CubeManipulation", "leftIntakeMotor"));
-    cubeManipulationrightIntakeMotor.reset(createMotor<Spark>(7, "CubeManipulation", "rightIntakeMotor"));
+    cubeManipulationleftShoulderMotor = createMotor<frc::Spark>(4, "CubeManipulation", "leftShoulderMotor");
+    cubeManipulationrightShoulderMotor = createMotor<frc::Spark>(5, "CubeManipulation", "rightShoulderMotor");
+    cubeManipulationleftIntakeMotor = createMotor<frc::Spark>(6, "CubeManipulation", "leftIntakeMotor");
+    cubeManipulationrightIntakeMotor = createMotor<frc::Spark>(7, "CubeManipulation", "rightIntakeMotor");
 
     cubeManipulationShoulderMotors.reset(createSpeedControllerGroup(*cubeManipulationleftShoulderMotor, *cubeManipulationrightShoulderMotor, "CubeManipulation", "ShoulderMotors"));
     cubeManipulationIntakeMotors.reset(createSpeedControllerGroup(*cubeManipulationleftIntakeMotor, *cubeManipulationrightIntakeMotor, "CubeManipulation", "IntakeMotors"));

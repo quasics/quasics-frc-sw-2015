@@ -1,7 +1,7 @@
 /*#ifndef boundingRect_H
 #define boundingRect_H
 
-/*#include <WPILib.h>
+#include <WPILib.h>
 
 class boundingRect : public frc::Command {
 public:
@@ -22,5 +22,4 @@ public:
 };
 
 #endif  // boundingRect_H
-
 */

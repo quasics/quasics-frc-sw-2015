@@ -14,7 +14,7 @@ void findingBox::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void findingBox::Execute() {
 
-		std::cout<<"Yellow Box Found!";
+		std::cout<<"Yellow Box Found!" << std::endl;
 
 }
 

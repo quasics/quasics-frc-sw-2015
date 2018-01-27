@@ -250,7 +250,7 @@ Children:
             validators: *id003
             value: '7'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-            name: Inverted, validators: null, value: false}
+            name: Inverted, validators: null, value: true}
         Base: Speed Controller
         Name: rightIntakeMotor
       Properties:

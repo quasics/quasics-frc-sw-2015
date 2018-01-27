@@ -2,7 +2,7 @@
 #include "AutoForward.h"
 AutoLineCross::AutoLineCross() {
 
-	AddSequential(new AutoForward(10, .4));
+	AddSequential(new AutoForward(10, .15));
 
 
 }

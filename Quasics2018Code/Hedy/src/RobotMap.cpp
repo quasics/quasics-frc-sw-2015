@@ -67,11 +67,11 @@ void RobotMap::init() {
 	// something funky.)
 
     driveBaseleftEncoder.reset(new Encoder(0, 1, true));
-    driveBaseleftEncoder->SetDistancePerPulse(InchesPerTick);
+    driveBaseleftEncoder->SetDistancePerPulse(DRIVE_TRAIN_INCHES_PER_TICK);
     driveBaseleftEncoder->SetPIDSourceType(PIDSourceType::kRate);
 
     driveBaserightEncoder.reset(new Encoder(2, 3, false));
-    driveBaserightEncoder->SetDistancePerPulse(InchesPerTick);
+    driveBaserightEncoder->SetDistancePerPulse(DRIVE_TRAIN_INCHES_PER_TICK);
     driveBaserightEncoder->SetPIDSourceType(PIDSourceType::kRate);
 
 

@@ -4,13 +4,14 @@
 #include <math.h>
 
 #ifndef M_PI
-#define M_PI atan(1)*4
+#define M_PI (atan(1)*4)
 #endif
 
-#define wheelDiameterInches 6
-#define driveTrainTicksPerRevolution 1440.0f //resolution of E4T
-// #define InchesPerTick wheelDiameterInches * M_PI/driveTrainTicksPerRevolution
+#define DRIVE_TRAIN_TICKS_PER_REVOLUTION	360.0f // resolution of E4T (in cycles per revolution, NOT pulses/rev!!!)
 
-#define InchesPerTick		((wheelDiameterInches/driveTrainTicksPerRevolution)*4)
+#define WHEEL_DIAMETER_INCHES				6
+#define WHEEL_CIRCUMFERENCE_INCHES			(WHEEL_DIAMETER_INCHES * M_PI)
+
+#define DRIVE_TRAIN_INCHES_PER_TICK 		(WHEEL_CIRCUMFERENCE_INCHES/DRIVE_TRAIN_TICKS_PER_REVOLUTION)
 
 #endif

@@ -40,7 +40,7 @@ OI::OI() {
 
     frc::SmartDashboard::PutData("Auto Line Cross", new AutoLineCross());
     frc::SmartDashboard::PutData("Drive Stuff", new Teleop());
-    frc::SmartDashboard::PutData("Move For Distance", new MoveForDistance(10 * WHEEL_CIRCUMFERENCE_INCHES, .1));
+    frc::SmartDashboard::PutData("Move For Distance", new MoveForDistance(WHEEL_CIRCUMFERENCE_INCHES, .1));
     frc::SmartDashboard::PutData("CubeTracker", new findingBox());
 }
 

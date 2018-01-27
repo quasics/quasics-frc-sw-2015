@@ -18,7 +18,7 @@ MoveForDistance::MoveForDistance(uint32_t targetInches, double powerLevel): frc:
 void MoveForDistance::Initialize() {
 	Robot::driveBase->RightEncoderReset();
 	Robot::driveBase->LeftEncoderReset();
-	Robot::driveBase->SetLeftPower(power);
+	Robot::driveBase->SetLeftPower(-(power));
 	Robot::driveBase->SetRightPower(power);
 }
 

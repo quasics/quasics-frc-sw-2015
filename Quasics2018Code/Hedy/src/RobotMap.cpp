@@ -52,6 +52,19 @@ inline SpeedControllerGroup* createSpeedControllerGroup(SpeedController& motor1,
 	speedControllerGroup->SetName(name);
 	return speedControllerGroup;
 }
+inline Encoder* createEncoder(
+		int channelA, int channelB,
+		bool reverseDirection, double distancePerPulse,
+		PIDSourceType sourceType,
+		const char* const subsystem, const char* const name)
+{
+	Encoder* encoder = new Encoder(channelA, channelB, reverseDirection);
+	encoder->SetDistancePerPulse(distancePerPulse);
+	encoder->SetPIDSourceType(sourceType);
+	encoder->SetSubsystem(subsystem);
+	encoder->SetName(name);
+	return encoder;
+}
 
 // #define USE_ROBOT_BUILDER_INIT
 
@@ -67,17 +80,8 @@ void RobotMap::init() {
 	// which means that it's easier to see what's *really* wrong when the compiler finds
 	// something funky.)
 
-	driveBaseLeftEncoder.reset(new Encoder(0, 1, true));
-	driveBaseLeftEncoder->SetDistancePerPulse(DRIVE_TRAIN_INCHES_PER_TICK);
-	driveBaseLeftEncoder->SetPIDSourceType(PIDSourceType::kRate);
-    driveBaseLeftEncoder->SetSubsystem("DriveBase");
-    driveBaseLeftEncoder->SetName("Left Encoder");
-
-    driveBaseRightEncoder.reset(new Encoder(2, 3, false));
-    driveBaseRightEncoder->SetDistancePerPulse(DRIVE_TRAIN_INCHES_PER_TICK);
-    driveBaseRightEncoder->SetPIDSourceType(PIDSourceType::kRate);
-    driveBaseRightEncoder->SetSubsystem("DriveBase");
-    driveBaseRightEncoder->SetName("Right Encoder");
+	driveBaseLeftEncoder.reset(createEncoder(0, 1, true, DRIVE_TRAIN_INCHES_PER_TICK, PIDSourceType::kRate, "DriveBase", "Left Encoder"));
+	driveBaseRightEncoder.reset(createEncoder(2, 3, false, DRIVE_TRAIN_INCHES_PER_TICK, PIDSourceType::kRate, "DriveBase", "Right Encoder"));
 
 	driveBaserightFrontMotor.reset(createMotor<Jaguar>(0, "Drive Base", "rightFrontMotor"));
 	driveBaserightRearMotor.reset(createMotor<Jaguar>(1, "Drive Base", "rightRearMotor"));

@@ -2,26 +2,26 @@
 
 namespace grip {
 
-GripPipeline::GripPipeline() {
+Vision::Vision() {
 }
 /**
 * Runs an iteration of the pipeline and updates outputs.
 */
-void GripPipeline::Process(cv::Mat& source0){
+void Vision::Process(cv::Mat& source0){
 	//Step CV_resize0:
 	//input
 	cv::Mat cvResizeSrc = source0;
 	cv::Size cvResizeDsize(0, 0);
-	double cvResizeFx = 0.6;  // default Double
-	double cvResizeFy = 0.6;  // default Double
+	double cvResizeFx = 0.7;  // default Double
+	double cvResizeFy = 0.7;  // default Double
     int cvResizeInterpolation = cv::INTER_LINEAR;
 	cvResize(cvResizeSrc, cvResizeDsize, cvResizeFx, cvResizeFy, cvResizeInterpolation, this->cvResizeOutput);
 	//Step HSV_Threshold0:
 	//input
 	cv::Mat hsvThresholdInput = cvResizeOutput;
-	double hsvThresholdHue[] = {27.51798561151079, 86.31399317406142};
-	double hsvThresholdSaturation[] = {121.53776978417265, 189.72696245733786};
-	double hsvThresholdValue[] = {116.95143884892086, 255.0};
+	double hsvThresholdHue[] = {19.424460431654676, 93.99317406143345};
+	double hsvThresholdSaturation[] = {130.71043165467623, 202.78156996587032};
+	double hsvThresholdValue[] = {66.50179856115108, 255.0};
 	hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->hsvThresholdOutput);
 	//Step CV_erode0:
 	//input
@@ -37,50 +37,47 @@ void GripPipeline::Process(cv::Mat& source0){
 	cv::Mat maskInput = cvResizeOutput;
 	cv::Mat maskMask = cvErodeOutput;
 	mask(maskInput, maskMask, this->maskOutput);
-	//Step Find_Blobs0:
+	//Step Find_Contours0:
 	//input
-	cv::Mat findBlobsInput = maskOutput;
-	double findBlobsMinArea = 100.0;  // default Double
-	double findBlobsCircularity[] = {0.0, 1.0};
-	bool findBlobsDarkBlobs = false;  // default Boolean
-	findBlobs(findBlobsInput, findBlobsMinArea, findBlobsCircularity, findBlobsDarkBlobs, this->findBlobsOutput);
+	cv::Mat findContoursInput = cvErodeOutput;
+	bool findContoursExternalOnly = false;  // default Boolean
+	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
 }
 
 /**
  * This method is a generated getter for the output of a CV_resize.
  * @return Mat output from CV_resize.
  */
-cv::Mat* GripPipeline::GetCvResizeOutput(){
+cv::Mat* Vision::GetCvResizeOutput(){
 	return &(this->cvResizeOutput);
 }
 /**
  * This method is a generated getter for the output of a HSV_Threshold.
  * @return Mat output from HSV_Threshold.
  */
-cv::Mat* GripPipeline::GetHsvThresholdOutput(){
+cv::Mat* Vision::GetHsvThresholdOutput(){
 	return &(this->hsvThresholdOutput);
 }
 /**
  * This method is a generated getter for the output of a CV_erode.
  * @return Mat output from CV_erode.
  */
-cv::Mat* GripPipeline::GetCvErodeOutput(){
+cv::Mat* Vision::GetCvErodeOutput(){
 	return &(this->cvErodeOutput);
-
 }
 /**
  * This method is a generated getter for the output of a Mask.
  * @return Mat output from Mask.
  */
-cv::Mat* GripPipeline::GetMaskOutput(){
+cv::Mat* Vision::GetMaskOutput(){
 	return &(this->maskOutput);
 }
 /**
- * This method is a generated getter for the output of a Find_Blobs.
- * @return BlobsReport output from Find_Blobs.
+ * This method is a generated getter for the output of a Find_Contours.
+ * @return ContoursReport output from Find_Contours.
  */
-std::vector<cv::KeyPoint>* GripPipeline::GetFindBlobsOutput(){
-	return &(this->findBlobsOutput);
+std::vector<std::vector<cv::Point> >* Vision::GetFindContoursOutput(){
+	return &(this->findContoursOutput);
 }
 	/**
 	 * Resizes an Image.
@@ -91,7 +88,7 @@ std::vector<cv::KeyPoint>* GripPipeline::GetFindBlobsOutput(){
 	 * @param interpolation type of interpolation to use.
 	 * @param dst output image.
 	 */
-	void GripPipeline::cvResize(cv::Mat &src, cv::Size &dSize, double fx, double fy, int interpolation, cv::Mat &dst) {
+	void Vision::cvResize(cv::Mat &src, cv::Size &dSize, double fx, double fy, int interpolation, cv::Mat &dst) {
 		cv::resize(src, dst, dSize, fx, fy, interpolation);
 	}
 
@@ -104,7 +101,7 @@ std::vector<cv::KeyPoint>* GripPipeline::GetFindBlobsOutput(){
 	 * @param val The min and max value.
 	 * @param output The image in which to store the output.
 	 */
-	void GripPipeline::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
+	void Vision::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
 		cv::cvtColor(input, out, cv::COLOR_BGR2HSV);
 		cv::inRange(out,cv::Scalar(hue[0], sat[0], val[0]), cv::Scalar(hue[1], sat[1], val[1]), out);
 	}
@@ -119,7 +116,7 @@ std::vector<cv::KeyPoint>* GripPipeline::GetFindBlobsOutput(){
 	 * @param borderValue value to be used for a constant border.
 	 * @param dst Output Image.
 	 */
-	void GripPipeline::cvErode(cv::Mat &src, cv::Mat &kernel, cv::Point &anchor, double iterations, int borderType, cv::Scalar &borderValue, cv::Mat &dst) {
+	void Vision::cvErode(cv::Mat &src, cv::Mat &kernel, cv::Point &anchor, double iterations, int borderType, cv::Scalar &borderValue, cv::Mat &dst) {
 		cv::erode(src, dst, kernel, anchor, (int)iterations, borderType, borderValue);
 	}
 
@@ -130,39 +127,25 @@ std::vector<cv::KeyPoint>* GripPipeline::GetFindBlobsOutput(){
 		 * @param mask The binary image that is used to filter.
 		 * @param output The image in which to store the output.
 		 */
-		void GripPipeline::mask(cv::Mat &input, cv::Mat &mask, cv::Mat &output) {
+		void Vision::mask(cv::Mat &input, cv::Mat &mask, cv::Mat &output) {
 			mask.convertTo(mask, CV_8UC1);
 			cv::bitwise_xor(output, output, output);
 			input.copyTo(output, mask);
 		}
 
 	/**
-	 * Detects groups of pixels in an image.
+	 * Finds contours in an image.
 	 *
-	 * @param input The image on which to perform the find blobs.
-	 * @param minArea The minimum size of a blob that will be found.
-	 * @param circularity The minimum and maximum circularity of blobs that will be found.
-	 * @param darkBlobs The boolean that determines if light or dark blobs are found.
-	 * @param blobList The output where the MatOfKeyPoint is stored.
+	 * @param input The image to find contours in.
+	 * @param externalOnly if only external contours are to be found.
+	 * @param contours vector of contours to put contours in.
 	 */
-	//void findBlobs(Mat *input, double *minArea, double circularity[2],
-		//bool *darkBlobs, vector<KeyPoint> *blobList) {
-	void GripPipeline::findBlobs(cv::Mat &input, double minArea, double circularity[], bool darkBlobs, std::vector<cv::KeyPoint> &blobList) {
-		blobList.clear();
-		cv::SimpleBlobDetector::Params params;
-		params.filterByColor = 1;
-		params.blobColor = (darkBlobs ? 0 : 255);
-		params.minThreshold = 10;
-		params.maxThreshold = 220;
-		params.filterByArea = true;
-		params.minArea = minArea;
-		params.filterByCircularity = true;
-		params.minCircularity = circularity[0];
-		params.maxCircularity = circularity[1];
-		params.filterByConvexity = false;
-		params.filterByInertia = false;
-		cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
-		detector->detect(input, blobList);
+	void Vision::findContours(cv::Mat &input, bool externalOnly, std::vector<std::vector<cv::Point> > &contours) {
+		std::vector<cv::Vec4i> hierarchy;
+		contours.clear();
+		int mode = externalOnly ? cv::RETR_EXTERNAL : cv::RETR_LIST;
+		int method = cv::CHAIN_APPROX_SIMPLE;
+		cv::findContours(input, contours, hierarchy, mode, method);
 	}
 
 

@@ -11,7 +11,7 @@
 #include <Commands/Subsystem.h>
 #include <WPILib.h>
 #include <opencv2/core.hpp>
-#include "../Commands/Vision.h"		// FINDME: This header (and the .cpp) really shouldn't be in "Commands".
+#include "Vision.h"
 
 class CubeTracker: public frc::Subsystem {
 private:

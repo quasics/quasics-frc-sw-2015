@@ -17,14 +17,21 @@
 
 class OI {
 private:
-	std::shared_ptr<Joystick> auxStick;		//Second controller, controls all but drive base
 	std::shared_ptr<Joystick> driveStick;		//Primary controller, controls drive base
+	std::shared_ptr<Joystick> auxStick;		//Second controller, controls all but drive base
 
 public:
 	OI();
 
-	std::shared_ptr<Joystick> getDriveStick();		//Returns a pointer to the primary control stick
-	std::shared_ptr<Joystick> getAuxStick();		//Returns a pointer to the secondary control stick
+	//Returns a pointer to the primary control stick
+	std::shared_ptr<Joystick> getDriveStick() {
+		return driveStick;
+	}
+
+	//Returns a pointer to the secondary control stick
+	std::shared_ptr<Joystick> getAuxStick() {
+		return auxStick;
+	}
 };
 
 #endif

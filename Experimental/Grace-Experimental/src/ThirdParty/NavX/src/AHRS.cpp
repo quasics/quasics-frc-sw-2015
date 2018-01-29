@@ -984,7 +984,6 @@ void AHRS::commonInit( uint8_t update_rate_hz ) {
     last_sensor_timestamp = 0;
     last_update_time = 0;
 
-    table = 0;
     io = 0;
 
     for ( int i = 0; i < MAX_NUM_CALLBACKS; i++) {
@@ -1268,35 +1267,13 @@ std::string AHRS::GetFirmwareVersion() {
     return fw_version;
 }
 
-    /***********************************************************/
-    /* LiveWindowSendable Interface Implementation             */
-    /***********************************************************/
-
-void AHRS::UpdateTable() {
-    if (table != 0) {
-        table->PutNumber("Value", GetYaw());
-    }
-}
-
-void AHRS::StartLiveWindowMode() {
-}
-
-void AHRS::StopLiveWindowMode() {
-}
-
-/* Are the two following functions still needed? */
-
-void AHRS::InitTable(std::shared_ptr<ITable> itable) {
-    table = itable;
-    UpdateTable();
-}
-
-std::shared_ptr<ITable> AHRS::GetTable() const {
-    return table;
-}
-
-std::string AHRS::GetSmartDashboardType() const {
-    return "Gyro";
+/***********************************************************/
+/* Sendable Interface Implementation             */
+/***********************************************************/
+void AHRS::InitSendable(SendableBuilder& builder) {
+  builder.SetSmartDashboardType("Gyro");
+  builder.AddDoubleProperty("Value", [=]() { return GetYaw(); },
+                        nullptr);
 }
 
 /***********************************************************/

@@ -18,11 +18,13 @@ void MoveForward::Initialize() {
 	// the end of the allotted time.
 	Robot::driveBase->SetLeftPower(power);
 	Robot::driveBase->SetRightPower(power);
+
 	SetTimeout(secondsToRun);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void MoveForward::Execute() {
+	// Nothing to be done....
 }
 
 // Make this return true when this Command no longer needs to run execute()

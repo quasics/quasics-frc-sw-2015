@@ -1,6 +1,8 @@
 #include "Autonomous.h"
 #include "TurnRightContinuous.h"
 #include "MoveForward.h"
+#include "TurnLeftFortyFive.h"
+#include "TurnRightFortyFive.h"
 
 Autonomous::Autonomous() {
 	// Add Commands here:
@@ -19,6 +21,8 @@ Autonomous::Autonomous() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
-	AddSequential(new MoveForward(.25, .5));
-	AddSequential(new TurnRightContinuous());
+//	AddSequential(new MoveForward(.25, .5));
+//	AddSequential(new TurnRightContinuous());
+
+	AddSequential(new TurnRightFortyFive);
 }

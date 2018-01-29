@@ -8,6 +8,7 @@
 #include "ExecuteTurn.h"
 #include "../Robot.h"
 
+#include <iostream>
 #include <iomanip>
 
 //
@@ -21,7 +22,7 @@
 #undef NOISY
 
 ExecuteTurn::ExecuteTurn(float degrees, double powerLevel)
-: degrees(degrees), powerLevel(powerLevel)
+: degrees(degrees), powerLevel(powerLevel), targetHeading(0)
 {
 	Requires (Robot::driveBase.get());
 	Requires (Robot::navigation.get());

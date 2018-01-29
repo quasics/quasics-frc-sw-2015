@@ -1,0 +1,33 @@
+#include "TurnRightInput.h"
+#include "DancingRobot.h"
+#include "TurnLeftInput.h"
+#include "MoveForward.h"
+
+DancingRobot::DancingRobot() {
+	AddSequential(new TurnRightInput(30));
+	AddSequential(new TurnLeftInput(60));
+	AddSequential(new TurnRightInput(30));
+	AddSequential(new TurnLeftInput(120));
+	AddSequential(new TurnRightInput(240));
+	AddSequential(new TurnLeftInput(120));
+	AddSequential(new TurnRightInput(180));
+	AddSequential(new TurnLeftInput(360));
+	AddSequential(new TurnRightInput(180));
+	AddSequential(new MoveForward(.25,2));
+	AddSequential(new TurnLeftInput(180));
+	AddSequential(new TurnRightInput(180));
+	AddSequential(new MoveForward(-.25,2));
+	AddSequential(new TurnRightInput(180));
+	AddSequential(new TurnLeftInput(180));
+	AddSequential(new MoveForward(.25,1));
+	AddSequential(new MoveForward(-.25,1));
+	AddSequential(new TurnRightInput(90));
+	AddSequential(new TurnLeftInput(180));
+	AddSequential(new TurnRightInput(90));
+	AddSequential(new MoveForward(-.25,1));
+	AddSequential(new MoveForward(.25,1));
+	AddSequential(new TurnLeftInput(90));
+	AddSequential(new TurnRightInput(180));
+	AddSequential(new TurnLeftInput(90));
+	AddSequential(new TurnRightInput(360));
+}

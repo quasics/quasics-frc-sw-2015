@@ -16,6 +16,7 @@
 class IIOCompleteNotification {
 public:
     IIOCompleteNotification() {}
+    virtual ~IIOCompleteNotification() {}
     struct BoardState {
         uint8_t op_status;
         int16_t sensor_status;

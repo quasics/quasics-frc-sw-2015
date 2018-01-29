@@ -22,14 +22,13 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			{
 				//This code is called each time the pipeline completes. Here we process the results of the pipeline
 
-				//If we have at least 1 contours, we might have a target
-/*
+				//If we have at least 1 contour, we might have a target
  				if (pipeline.GetFilterContoursOutput()->size() > 0)
 				{
 					int bestArea = 0;
 					cv::Rect bestRectangle;
-					//Iterate through list of found contours
-					for(int i=0; i < pipeline.GetFilterContoursOutput()->size(); i++)
+					//Iterate through list of found contours, and find the biggest one.
+					for(unsigned int i=0; i < pipeline.GetFilterContoursOutput()->size(); i++)
 					{
 						cv::Rect rectangle1 = cv::boundingRect(cv::Mat(pipeline.GetFilterContoursOutput()[i]));
 						int area = rectangle1.width * rectangle1.height;
@@ -42,8 +41,6 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 					currentRect = bestRectangle;
 					m_lock->unlock();
 				}
-*/
-
 			});
 }
 

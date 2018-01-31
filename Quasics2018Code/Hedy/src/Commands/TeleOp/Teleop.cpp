@@ -2,6 +2,7 @@
 #include "../Primitives/TankDrive.h"
 #include "TeleOut.h"
 #include "TeleIn.h"
+#include "ArmMoveUp.h"
 
 Teleop::Teleop() {
 	// Add Commands here:
@@ -23,4 +24,5 @@ Teleop::Teleop() {
 	AddParallel(new TankDrive());
 	AddParallel(new TeleOut());
 	AddParallel(new TeleIn());
+	AddParallel(new ArmMoveUp());
 }

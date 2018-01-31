@@ -46,21 +46,13 @@ void CubeManipulation::SetShoulderPower(double percent){
 }
 
 
-
-
 void CubeManipulation::SetIntakePower(double percent){
 	intakeMotors->Set(percent);
 }
 
-
-
 void CubeManipulation::Stop(){
 	SetIntakePower(0);
 	SetShoulderPower(0);
-}
-void CubeManipulation::Periodic() {
-    // Put code here to be run every loop
-
 }
 
 

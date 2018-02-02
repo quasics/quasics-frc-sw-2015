@@ -28,7 +28,7 @@
 #include "Commands/Teleop/Teleop.h"
 #include "EncoderVariables.h"
 #include "Commands/Primitives/ShoulderMove.h"
-#include "Commands/TurnLeft.h"
+#include "Commands/Primitives/TurnLeft.h"
 
 OI::OI() {
     // Process operator interface input here.

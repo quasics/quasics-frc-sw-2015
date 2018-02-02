@@ -9,7 +9,7 @@
 #include "Robot.h"
 
 TurnLeft::TurnLeft(double degrees)
-: DegreesToTurn(degrees)
+: degreesToTurn(degrees), goal(0)
 {
 	// TODO Auto-generated constructor stub
 	Requires(Robot::driveBase.get());
@@ -17,18 +17,14 @@ TurnLeft::TurnLeft(double degrees)
 }
 
 void TurnLeft::Initialize() {
-	double DegreesStart = Robot::navigation->getAngle();
-	Goal = DegreesStart - DegreesToTurn;
+	goal = Robot::navigation->getAngle() - degreesToTurn;
 	// Start the motors running....
 	Robot::driveBase->SetLeftPower(-.25);
 	Robot::driveBase->SetRightPower(.25);
 }
 
-void TurnLeft::Execute() {
-}
-
 bool TurnLeft::IsFinished() {
-	return(Robot::navigation->getAngle() < Goal);
+	return(Robot::navigation->getAngle() < goal);
 }
 
 void TurnLeft::End() {
@@ -36,7 +32,7 @@ void TurnLeft::End() {
 }
 
 void TurnLeft::Interrupted() {
-	Robot::driveBase->Stop();
+	End();
 }
 
 

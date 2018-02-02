@@ -12,16 +12,16 @@
 
 class TurnLeft : public frc::Command {
 public:
+	// Makes the turn running motors @ 25% power.
 	TurnLeft(double degrees);
 	void Initialize() override;
-	void Execute() override;
 	bool IsFinished() override;
 	void End() override;
 	void Interrupted() override;
 
 private:
-	const double DegreesToTurn;
-	double Goal;
+	const double degreesToTurn;
+	double goal;
 };
 #endif /* SRC_COMMANDS_TURNLEFTINPUT_H_ */
 

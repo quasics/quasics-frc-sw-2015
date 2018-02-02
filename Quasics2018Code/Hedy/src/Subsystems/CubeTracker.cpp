@@ -11,8 +11,11 @@
 #define IMG_HEIGHT	240
 
 CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
-	// TODO Auto-generated constructor stub
-	cs::UsbCamera camera = CameraServer::GetInstance()->StartAutomaticCapture();
+	/*
+	 * The following code is based on an example provided at:
+	 * https://github.com/wpilibsuite/roboRIOVisionExamples/tree/master/2018/2018VisionSampleCPP
+	 */
+	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 	m_lock = new std::mutex;
 

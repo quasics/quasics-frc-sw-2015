@@ -27,7 +27,7 @@ void Winch::Initialize() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
 	const bool	RightTrigger = joystick->GetRawAxis(3);
 	if(RightTrigger) {
-		Robot::climber->SetWinchMotor(1);
+		Robot::climber->SetWinchMotor(.6);
 	} else {
 		Robot::climber->SetWinchMotor(0);
 	}

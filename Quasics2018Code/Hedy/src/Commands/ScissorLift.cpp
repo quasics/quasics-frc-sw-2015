@@ -27,7 +27,7 @@ void ScissorLift::Initialize() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
 	const bool LeftTrigger = joystick->GetRawAxis(2);
 	if(LeftTrigger) {
-		Robot::climber->SetScissorLiftMotor(1);
+		Robot::climber->SetScissorLiftMotor(.6);
 	} else {
 		Robot::climber->SetScissorLiftMotor(0);
 	}

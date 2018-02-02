@@ -31,6 +31,9 @@
 #include "OI.h"
 
 class Robot : public frc::TimedRobot {
+private:
+	frc::Command* leftAutoCommand = nullptr;
+
 public:
 	frc::Command* autonomousCommand = nullptr;
 	static std::unique_ptr<OI> oi;

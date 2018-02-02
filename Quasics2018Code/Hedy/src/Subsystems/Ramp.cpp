@@ -43,6 +43,14 @@ void Ramp::ExtendRightRamp(){
 
 }
 
+void Ramp::Shutdown() {
+	leftRamp1->Set(false);
+	leftRamp2->Set(false);
+	rightRamp1->Set(false);
+	rightRamp2->Set(false);
+
+}
+
 void Ramp::InitDefaultCommand(){
 
     // Set the default command for a subsystem here.

@@ -23,6 +23,7 @@ TestRamp::TestRamp(): frc::Command() {
 
 // Called just before this Command runs the first time
 void TestRamp::Initialize() {
+Robot::ramp->ExtendLeftRamp();
 
 }
 
@@ -38,11 +39,11 @@ bool TestRamp::IsFinished() {
 
 // Called once after isFinished returns true
 void TestRamp::End() {
-
+	Robot::ramp->Shutdown();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void TestRamp::Interrupted() {
-
+	End();
 }

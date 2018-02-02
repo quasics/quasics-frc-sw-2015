@@ -24,18 +24,19 @@ ScissorLift::ScissorLift(): frc::Command() {
 
 // Called just before this Command runs the first time
 void ScissorLift::Initialize() {
-	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
-	const bool LeftTrigger = joystick->GetRawAxis(2);
-	if(LeftTrigger) {
-		Robot::climber->SetScissorLiftMotor(.6);
-	} else {
-		Robot::climber->SetScissorLiftMotor(0);
-	}
+
+
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ScissorLift::Execute() {
-
+	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
+	const bool LeftTrigger = joystick->GetRawAxis(2);
+	if(LeftTrigger) {
+			Robot::climber->SetScissorLiftMotor(.6);
+		} else {
+			Robot::climber->SetScissorLiftMotor(0);
+		}
 }
 
 // Make this return true when this Command no longer needs to run execute()

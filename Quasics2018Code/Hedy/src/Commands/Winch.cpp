@@ -24,7 +24,13 @@ Winch::Winch(): frc::Command() {
 
 // Called just before this Command runs the first time
 void Winch::Initialize() {
-
+	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
+	const bool	RightTrigger = joystick->GetRawAxis(3);
+	if(RightTrigger) {
+		Robot::climber->SetWinchMotor(1);
+	} else {
+		Robot::climber->SetWinchMotor(0);
+	}
 }
 
 // Called repeatedly when this Command is scheduled to run

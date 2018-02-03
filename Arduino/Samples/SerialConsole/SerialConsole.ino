@@ -1,14 +1,16 @@
 /*
- "Console" application for a device connected to Serial1
-
- Receives from the main serial port, sends to Serial1.
- Receives from serial port 1, sends to the main serial (Serial 0).
-
- This example works only with boards with more than one serial like Arduino Mega, Due, Zero etc
-
- The circuit:
- * Any serial device attached to Serial port 1
- * Serial monitor open on Serial port 0:
+ * "Console" application for a device connected to Serial1
+ *
+ * Receives from the main serial port, sends to Serial1.
+ * Receives from serial port 1, sends to the main serial (Serial 0).
+ *
+ * Note: This example works *only* with boards with more than one serial
+ * port, like Arduino Mega, Due, Zero etc.  (It will fail to compile for
+ * boards with only one serial port.)
+ *
+ * The circuit:
+ *   * Any serial device attached to Serial port 1
+ *   * Serial monitor open on Serial port 0:
  */
 
 

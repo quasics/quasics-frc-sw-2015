@@ -29,6 +29,8 @@ public:
 
 	cv::Rect getCurrentRect() const;
 	cv::Rect getImageRect() const;
+
+	void getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const;
 };
 
 #endif /* SRC_SUBSYSTEMS_CUBETRACKER_H_ */

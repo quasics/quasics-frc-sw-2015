@@ -65,15 +65,24 @@ void CubeTracker::visionExecuter()
 	visionTrackingTask->RunForever();
 }
 
-cv::Rect CubeTracker::getImageRect() const {
-	cv::Rect result;
+void CubeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const {
 	m_lock->lock();
-	result = imageRect;
+	imageRect = this->imageRect;
+	currentRect = this->currentRect;
 	m_lock->unlock();
-	return result;
+}
+
+cv::Rect CubeTracker::getImageRect() const {
+	cv::Rect imageRect, ignored;
+	getBoundingRects(imageRect, ignored);
+	return imageRect;
 }
 
 cv::Rect CubeTracker::getCurrentRect() const {
+	cv::Rect currentRect, ignored;
+	getBoundingRects(ignored, currentRect);
+	return imageRect;
+
 	cv::Rect result;
 	m_lock->lock();
 	result = currentRect;

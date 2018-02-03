@@ -3,9 +3,9 @@
 
 #include <WPILib.h>
 
-class ArmMoveUp : public frc::Command {
+class ArmControl : public frc::Command {
 public:
-	ArmMoveUp();
+	ArmControl();
 	void Initialize();
 	void Execute();
 	bool IsFinished();

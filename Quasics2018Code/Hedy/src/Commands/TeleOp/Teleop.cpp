@@ -1,8 +1,8 @@
+#include <Commands/TeleOp/ArmControl.h>
 #include <Commands/TeleOp/CubeIntakeControl.h>
 #include "Teleop.h"
 #include "../Primitives/TankDrive.h"
 #include "CubeIntakeControl.h"
-#include "ArmMoveUp.h"
 
 Teleop::Teleop() {
 	// Add Commands here:
@@ -23,5 +23,5 @@ Teleop::Teleop() {
 	// arm.
 	AddParallel(new TankDrive());
 	AddParallel(new CubeIntakeControl());
-	AddParallel(new ArmMoveUp());
+	AddParallel(new ArmControl());
 }

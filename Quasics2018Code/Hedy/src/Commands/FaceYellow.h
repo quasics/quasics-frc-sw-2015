@@ -1,17 +1,16 @@
 #ifndef FaceYellow_H
 #define FaceYellow_H
 
-#include "../Robot.h"
-#include "Commands/Subsystem.h"
+#include <WPILib.h>
 
-class FaceYellow : public Command {
+class FaceYellow : public frc::Command {
 public:
 	FaceYellow();
-	void Initialize();
-	void Execute();
-	bool IsFinished();
-	void End();
-	void Interrupted();
+	void Initialize() override;
+	void Execute() override;
+	bool IsFinished() override;
+	void End() override;
+	void Interrupted() override;
 };
 
 #endif  // FaceYellow_H

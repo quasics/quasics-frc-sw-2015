@@ -1,4 +1,5 @@
 #include "FaceYellow.h"
+#include "../Robot.h"
 
 FaceYellow::FaceYellow() {
 	// Use Requires() here to declare subsystem dependencies

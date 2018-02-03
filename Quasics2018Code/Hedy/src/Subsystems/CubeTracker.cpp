@@ -23,18 +23,18 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			camera, new grip::Vision(),
 			[&](grip::Vision& pipeline)
 			{
-				//This code is called each time the pipeline completes. Here we process the results of the pipeline
-
 				//If we have at least 1 contour, we might have a target
- 				if (pipeline.GetFilterContoursOutput()->size() > 0)
+				const auto * filterCountoursOutput = pipeline.GetFilterContoursOutput();
+ 				if (filterCountoursOutput->size() > 0)
 				{
 					int bestArea = 0;
 					cv::Rect bestRectangle;
 					//Iterate through list of found contours, and find the biggest one.
 					for(unsigned int i=0; i < pipeline.GetFilterContoursOutput()->size(); i++)
 					{
-						cv::Rect rectangle1 = cv::boundingRect(cv::Mat(pipeline.GetFilterContoursOutput()[i]));
-						int area = rectangle1.width * rectangle1.height;
+						const std::vector<cv::Point> & countourPoints = (*filterCountoursOutput)[i];
+						const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints));
+						const int area = rectangle1.width * rectangle1.height;
 						if (area > bestArea) {
 							bestArea = area;
 							bestRectangle = rectangle1;
@@ -45,6 +45,13 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 					m_lock->unlock();
 				}
 			});
+	m_visionThread = new std::thread(&CubeTracker::visionExecuter, this);
+}
+
+void CubeTracker::visionExecuter()
+{
+	std::cerr << "Starting up vision execution" << std::endl;
+	visionTrackingTask->RunForever();
 }
 
 cv::Rect CubeTracker::getCurrentRect() {

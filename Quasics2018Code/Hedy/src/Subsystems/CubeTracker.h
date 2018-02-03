@@ -17,8 +17,10 @@ private:
 	frc::VisionRunner<grip::Vision> * visionTrackingTask;
 	cv::Rect currentRect;
 	std::mutex* m_lock;
+	std::thread* m_visionThread;
 public:
 	CubeTracker();
+	void visionExecuter();
 
 	cv::Rect getCurrentRect();
 };

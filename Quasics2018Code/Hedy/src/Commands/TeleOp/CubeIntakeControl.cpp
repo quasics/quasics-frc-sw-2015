@@ -22,10 +22,10 @@ void CubeIntakeControl::Execute() {
 	const bool buttonB = joystick->GetRawButton(XBox_ButtonB);
 
 	if(buttonA && !Robot::cubeIntake->IsLimitSwitchTriggered()){
-		Robot::cubeIntake->SetIntakePower(.6);
+		Robot::cubeIntake->SetIntakePower(.40);
 	}
 	else if (buttonB) {
-		Robot::cubeIntake->SetIntakePower(-.6);
+		Robot::cubeIntake->SetIntakePower(-.40);
 	}
 	else{
 		Robot::cubeIntake->SetIntakePower(0);

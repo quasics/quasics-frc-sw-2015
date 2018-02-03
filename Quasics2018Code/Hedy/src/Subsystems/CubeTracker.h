@@ -8,7 +8,6 @@
 #ifndef SRC_SUBSYSTEMS_CUBETRACKER_H_
 #define SRC_SUBSYSTEMS_CUBETRACKER_H_
 
-#include <Commands/Subsystem.h>
 #include <WPILib.h>
 #include <opencv2/core.hpp>
 #include "Vision.h"

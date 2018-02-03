@@ -8,11 +8,10 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 #ifndef RAMP_H
 #define RAMP_H
-#include "Commands/Subsystem.h"
-#include "WPILib.h"
+
+#include <WPILib.h>
 
 /**
  *

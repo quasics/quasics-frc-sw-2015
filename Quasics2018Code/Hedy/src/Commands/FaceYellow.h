@@ -1,9 +1,10 @@
 #ifndef FaceYellow_H
 #define FaceYellow_H
 
-#include "../CommandBase.h"
+#include "../Robot.h"
+#include "Commands/Subsystem.h"
 
-class FaceYellow : public CommandBase {
+class FaceYellow : public Command {
 public:
 	FaceYellow();
 	void Initialize();

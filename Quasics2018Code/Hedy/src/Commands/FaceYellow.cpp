@@ -3,7 +3,7 @@
 
 FaceYellow::FaceYellow() {
 	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
+	Requires(Robot::driveBase.get());
 }
 
 // Called just before this Command runs the first time
@@ -13,7 +13,12 @@ void FaceYellow::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FaceYellow::Execute() {
-	//
+	/*if (getImageRect)
+	{
+
+	}
+
+	*/
 }
 
 // Make this return true when this Command no longer needs to run execute()

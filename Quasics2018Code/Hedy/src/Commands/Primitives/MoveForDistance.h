@@ -1,7 +1,7 @@
 #ifndef MOVE_FOR_DISTANCE_H
 #define MOVE_FOR_DISTANCE_H
 
-#include "../../Robot.h"
+#include <Commands/Command.h>
 
 class MoveForDistance: public frc::Command {
 public:

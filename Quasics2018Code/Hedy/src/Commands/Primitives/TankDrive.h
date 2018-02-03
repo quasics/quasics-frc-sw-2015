@@ -12,8 +12,7 @@
 #ifndef TANK_DRIVE_H
 #define TANK_DRIVE_H
 
-
-#include <WPILib.h>
+#include <Commands/Command.h>
 
 /**
  *

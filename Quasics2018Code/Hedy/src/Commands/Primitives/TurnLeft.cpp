@@ -11,7 +11,6 @@
 TurnLeft::TurnLeft(double degrees)
 : degreesToTurn(degrees), goal(0)
 {
-	// TODO Auto-generated constructor stub
 	Requires(Robot::driveBase.get());
 	Requires(Robot::navigation.get());
 }

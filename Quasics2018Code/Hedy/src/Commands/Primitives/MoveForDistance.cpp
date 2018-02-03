@@ -1,5 +1,5 @@
-
 #include "MoveForDistance.h"
+#include "../../Robot.h"
 
 MoveForDistance::MoveForDistance(uint32_t targetInches, double powerLevel)
 : frc::Command(), target(targetInches), power(powerLevel) {

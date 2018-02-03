@@ -4,8 +4,6 @@
 #include "../../Subsystems/CubeIntake.h"
 
 CubeIntakeControl::CubeIntakeControl() {
-	// Use Requires() here to declare subsystem dependencies
-	// eg. Requires(Robot::chassis.get());
 	Requires(Robot::cubeIntake.get());
 }
 
@@ -40,7 +38,6 @@ bool CubeIntakeControl::IsFinished() {
 // Called once after isFinished returns true
 void CubeIntakeControl::End() {
 	Robot::cubeIntake->Stop();
-
 }
 
 // Called when another command which requires one or more of the same

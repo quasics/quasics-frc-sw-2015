@@ -384,18 +384,6 @@ Children:
     Base: Subsystem
     Name: Navigation
   - Children:
-    - Children: []
-      Properties:
-        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
-          choices: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
-            '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23',
-            '24', '25']
-          default: '0'
-          name: Input Channel (Digital)
-          validators: [DigitalChannel]
-          value: '4'
-      Base: Digital Input
-      Name: Limit Switch
     - Children:
       - Children: []
         Properties:
@@ -454,6 +442,24 @@ Children:
           value: CubeManipulation leftShoulderMotor
       Base: Speed Controller Group
       Name: ShoulderMotors
+    Properties:
+      Send to SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: false,
+        name: Send to SmartDashboard, validators: null, value: false}
+      Default command parameters: !!robotbuilder.data.properties.ParametersProperty
+        default: []
+        name: Default command parameters
+        validators: null
+        value: []
+      Default Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
+        name: Default Command, type: Command, validators: null, value: None}
+      Constants: !!robotbuilder.data.properties.ConstantsProperty
+        default: []
+        name: Constants
+        validators: null
+        value: []
+    Base: Subsystem
+    Name: CubeManipulation
+  - Children:
     - Children:
       - Children: []
         Properties:
@@ -472,7 +478,7 @@ Children:
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: false}
         Base: Speed Controller
-        Name: leftIntakeMotor
+        Name: Left Intake Motor
       - Children: []
         Properties:
           Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -490,7 +496,7 @@ Children:
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: true}
         Base: Speed Controller
-        Name: rightIntakeMotor
+        Name: Right Intake Motor
       Properties:
         SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
           default: null, name: SpeedController4, type: PIDOutput, validators: null,
@@ -503,15 +509,27 @@ Children:
           name: SpeedController2
           type: PIDOutput
           validators: *id017
-          value: CubeManipulation rightIntakeMotor
+          value: Cube Intake Right Intake Motor
         SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
           default: 0
           name: SpeedController1
           type: PIDOutput
           validators: *id018
-          value: CubeManipulation leftIntakeMotor
+          value: Cube Intake Left Intake Motor
       Base: Speed Controller Group
       Name: IntakeMotors
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
+            '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23',
+            '24', '25']
+          default: '0'
+          name: Input Channel (Digital)
+          validators: [DigitalChannel]
+          value: '4'
+      Base: Digital Input
+      Name: Limit Switch
     Properties:
       Send to SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: false,
         name: Send to SmartDashboard, validators: null, value: false}
@@ -528,7 +546,7 @@ Children:
         validators: null
         value: []
     Base: Subsystem
-    Name: CubeManipulation
+    Name: Cube Intake
   Properties: {}
   Base: Subsystems
   Name: Subsystems
@@ -716,10 +734,10 @@ Children:
       Requires: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
         name: Requires, type: Subsystem, validators: null, value: Ramp}
       Parameter presets: !!robotbuilder.data.properties.ParameterSetProperty
-        default: &id022 []
+        default: []
         name: Parameter presets
         validators: null
-        value: *id022
+        value: []
       Button on SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: true,
         name: Button on SmartDashboard, validators: null, value: true}
     Base: Command
@@ -728,7 +746,7 @@ Children:
   Base: Commands
   Name: Commands
 Properties:
-  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\rad100\workspace',
+  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sxm100\workspace',
     extension: null, folder: true, name: Eclipse Workspace, validators: null, value: ../}
   Export Commands: !!robotbuilder.data.properties.BooleanProperty {default: true,
     name: Export Commands, validators: null, value: true}
@@ -747,7 +765,7 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\rad100\',
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sxm100\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: /Users/healym/}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}

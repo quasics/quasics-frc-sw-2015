@@ -1,7 +1,7 @@
+#include <Commands/TeleOp/CubeIntakeControl.h>
 #include "Teleop.h"
 #include "../Primitives/TankDrive.h"
-#include "TeleOut.h"
-#include "TeleIn.h"
+#include "CubeIntakeControl.h"
 #include "ArmMoveUp.h"
 
 Teleop::Teleop() {
@@ -22,7 +22,6 @@ Teleop::Teleop() {
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
 	AddParallel(new TankDrive());
-	AddParallel(new TeleOut());
-	AddParallel(new TeleIn());
+	AddParallel(new CubeIntakeControl());
 	AddParallel(new ArmMoveUp());
 }

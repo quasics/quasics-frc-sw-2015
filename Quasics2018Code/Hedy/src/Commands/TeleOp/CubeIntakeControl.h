@@ -3,9 +3,12 @@
 
 #include <WPILib.h>
 
-class TeleIn : public frc::Command {
+/**
+ * Handles operator input to activate the cube intake (or expulsion) as signaled.
+ */
+class CubeIntakeControl : public frc::Command {
 public:
-	TeleIn();
+	CubeIntakeControl();
 	void Initialize();
 	void Execute();
 	bool IsFinished();

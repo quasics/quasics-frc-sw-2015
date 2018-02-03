@@ -36,7 +36,7 @@ public:
 private:
 	int count;
 	double m_power;
-	double m_seconds;
+	double m_ticksToRun;
 };
 
 #endif

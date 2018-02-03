@@ -30,6 +30,9 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			camera, new grip::Vision(),
 			[&](grip::Vision& pipeline)
 			{
+				// Remember how big the source image was.
+				cv::Rect srcRect = cv::boundingRect(*pipeline.GetCvResizeOutput());
+
 				//If we have at least 1 contour, we might have a target
 				const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();
  				if (filterCountoursOutput.size() > 0)
@@ -49,6 +52,7 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 					}
 					m_lock->lock();
 					currentRect = bestRectangle;
+					imageRect = srcRect;
 					m_lock->unlock();
 				}
 			});
@@ -61,7 +65,15 @@ void CubeTracker::visionExecuter()
 	visionTrackingTask->RunForever();
 }
 
-cv::Rect CubeTracker::getCurrentRect() {
+cv::Rect CubeTracker::getImageRect() const {
+	cv::Rect result;
+	m_lock->lock();
+	result = imageRect;
+	m_lock->unlock();
+	return result;
+}
+
+cv::Rect CubeTracker::getCurrentRect() const {
 	cv::Rect result;
 	m_lock->lock();
 	result = currentRect;

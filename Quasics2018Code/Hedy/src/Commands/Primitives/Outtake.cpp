@@ -17,13 +17,11 @@ Outtake::Outtake(double seconds, double power): frc::Command() {
 	m_ticksToRun = seconds * 50;		// Because Execute is called at 50Hz
 	m_power = power;
 	Requires (Robot::cubeIntake.get());
-
 }
 
 // Called just before this Command runs the first time
 void Outtake::Initialize() {
 	Robot::cubeIntake->SetIntakePower(-m_power);
-
 }
 
 // Called repeatedly when this Command is scheduled to run

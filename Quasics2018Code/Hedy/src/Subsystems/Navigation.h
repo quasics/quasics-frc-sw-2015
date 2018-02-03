@@ -10,6 +10,7 @@
 
 #include <Commands/Subsystem.h>
 #include "../ThirdParty/NavX/include/AHRS.h"
+#include <iostream>
 
 class Navigation: public frc::Subsystem {
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,7 @@ public:
 		if (isReady()) {
 			return ahrs->GetYaw();
 		} else {
+			std::cerr << "*** Warning: NavX not ready ("  << __PRETTY_FUNCTION__ << "....\n";
 			return 0;
 		}
 	}
@@ -62,6 +64,7 @@ public:
 			return ahrs->GetCompassHeading();
 		}
 		else {
+			std::cerr << "*** Warning: NavX not ready ("  << __PRETTY_FUNCTION__ << "....\n";
 			return 0;
 		}
 	}
@@ -81,12 +84,10 @@ public:
 			return ahrs->GetAngle();
 		}
 		else {
+			std::cerr << "*** Warning: NavX not ready ("  << __PRETTY_FUNCTION__ << "....\n";
 			return 0;
 		}
 	}
-
-
-
 
 };
 

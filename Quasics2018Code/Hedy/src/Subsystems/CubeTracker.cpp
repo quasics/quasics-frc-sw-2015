@@ -14,6 +14,13 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 	/*
 	 * The following code is based on an example provided at:
 	 * https://github.com/wpilibsuite/roboRIOVisionExamples/tree/master/2018/2018VisionSampleCPP
+	 *
+	 * It was then modified to:
+	 * a) Fix a bug on line 79 of the original code (where a "*" is missing).
+	 * b) Look for the single largest bounding box, since the sample pipeline that
+	 *    we're currently using it with is trying to find one of the yellow game
+	 *    cubes, rather than looking for the 2 reflective tape stripes marking a
+	 *    point on the Switch in the 2018 FRC game.
 	 */
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
@@ -24,15 +31,15 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			[&](grip::Vision& pipeline)
 			{
 				//If we have at least 1 contour, we might have a target
-				const auto * filterCountoursOutput = pipeline.GetFilterContoursOutput();
- 				if (filterCountoursOutput->size() > 0)
+				const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();
+ 				if (filterCountoursOutput.size() > 0)
 				{
 					int bestArea = 0;
 					cv::Rect bestRectangle;
 					//Iterate through list of found contours, and find the biggest one.
-					for(unsigned int i=0; i < pipeline.GetFilterContoursOutput()->size(); i++)
+					for(unsigned int i=0; i < filterCountoursOutput.size(); i++)
 					{
-						const std::vector<cv::Point> & countourPoints = (*filterCountoursOutput)[i];
+						const std::vector<cv::Point> & countourPoints = filterCountoursOutput[i];
 						const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints));
 						const int area = rectangle1.width * rectangle1.height;
 						if (area > bestArea) {

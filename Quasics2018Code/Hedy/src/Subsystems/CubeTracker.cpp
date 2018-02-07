@@ -6,6 +6,7 @@
  */
 
 #include "CubeTracker.h"
+#include <iostream>
 
 #define IMG_WIDTH	320
 #define IMG_HEIGHT	240
@@ -31,7 +32,8 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			[&](grip::Vision& pipeline)
 			{
 				// Remember how big the source image was.
-				cv::Rect srcRect = cv::boundingRect(*pipeline.GetCvResizeOutput());
+				cv::Rect srcRect;
+				// srcRect = cv::boundingRect(*pipeline.GetCvResizeOutput());
 
 				//If we have at least 1 contour, we might have a target
 				const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();

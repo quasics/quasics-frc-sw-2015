@@ -26,7 +26,9 @@ TestRamp::TestRamp(): frc::Command() {
 // Called just before this Command runs the first time
 void TestRamp::Initialize() {
 	std::cerr << "Activating left ramp" << std::endl;
-Robot::ramp->ExtendLeftRamp();
+	Robot::ramp->ExtendLeftRamp();
+	std::cout << "Activating Right Ramp\n";
+	Robot::ramp->ExtendRightRamp();
 
 }
 

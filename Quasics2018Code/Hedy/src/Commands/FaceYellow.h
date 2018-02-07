@@ -2,6 +2,8 @@
 #define FaceYellow_H
 
 #include <WPILib.h>
+#include "../Robot.h"
+#include "Commands/Subsystem.h"
 
 class FaceYellow : public frc::Command {
 public:

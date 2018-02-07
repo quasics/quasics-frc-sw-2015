@@ -1,9 +1,12 @@
 #include "FaceYellow.h"
-#include "../Robot.h"
+
+
 
 FaceYellow::FaceYellow() {
 	// Use Requires() here to declare subsystem dependencies
 	Requires(Robot::driveBase.get());
+	Requires(Robot::cubeTracker.get());
+
 }
 
 // Called just before this Command runs the first time
@@ -13,12 +16,16 @@ void FaceYellow::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FaceYellow::Execute() {
-	/*if (getImageRect)
+	if (Robot::cubeTracker->getCurrentRect().width < Robot::cubeTracker->getImageRect().width && Robot::cubeTracker->getCurrentRect().height < Robot::cubeTracker->getImageRect().height)
 	{
-
+		std::cout<<"Turn left or right: "  << std::endl;
+	}
+	else
+	{
+		std::cout<<"Stay "  << std::endl;
 	}
 
-	*/
+
 }
 
 // Make this return true when this Command no longer needs to run execute()

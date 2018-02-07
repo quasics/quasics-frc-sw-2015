@@ -29,11 +29,11 @@ public:
 	static std::shared_ptr<frc::SpeedController> climberScissorLiftScissorLiftMotor;
 	static std::shared_ptr<frc::SpeedController> climberWinchWinchMotor;
 	static std::shared_ptr<frc::Servo> rampRightLinearActuatorServo;
-	static std::shared_ptr<frc::Solenoid> rampLeftRamp1;
-	static std::shared_ptr<frc::Solenoid> rampLeftRamp2;
-	static std::shared_ptr<frc::Solenoid> rampRightRamp1;
-	static std::shared_ptr<frc::Solenoid> rampRightRamp2;
 	static std::shared_ptr<frc::Servo> rampLeftLinearActuatorServo;
+	static std::shared_ptr<frc::DoubleSolenoid> rampLeftRamp1;
+	static std::shared_ptr<frc::DoubleSolenoid> rampLeftRamp2;
+	static std::shared_ptr<frc::DoubleSolenoid> rampRightRamp1;
+	static std::shared_ptr<frc::DoubleSolenoid> rampRightRamp2;
 	static std::shared_ptr<frc::Encoder> driveBaseLeftEncoder;
 	static std::shared_ptr<frc::Encoder> driveBaseRightEncoder;
 	static std::shared_ptr<frc::SpeedController> driveBaseleftRearMotor;

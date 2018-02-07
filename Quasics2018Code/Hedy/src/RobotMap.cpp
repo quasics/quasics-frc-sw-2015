@@ -21,11 +21,11 @@
 std::shared_ptr<frc::SpeedController> RobotMap::climberScissorLiftScissorLiftMotor;
 std::shared_ptr<frc::SpeedController> RobotMap::climberWinchWinchMotor;
 std::shared_ptr<frc::Servo> RobotMap::rampRightLinearActuatorServo;
-std::shared_ptr<frc::Solenoid> RobotMap::rampLeftRamp1;
-std::shared_ptr<frc::Solenoid> RobotMap::rampLeftRamp2;
-std::shared_ptr<frc::Solenoid> RobotMap::rampRightRamp1;
-std::shared_ptr<frc::Solenoid> RobotMap::rampRightRamp2;
 std::shared_ptr<frc::Servo> RobotMap::rampLeftLinearActuatorServo;
+std::shared_ptr<frc::DoubleSolenoid> RobotMap::rampLeftRamp1;
+std::shared_ptr<frc::DoubleSolenoid> RobotMap::rampLeftRamp2;
+std::shared_ptr<frc::DoubleSolenoid> RobotMap::rampRightRamp1;
+std::shared_ptr<frc::DoubleSolenoid> RobotMap::rampRightRamp2;
 std::shared_ptr<frc::Encoder> RobotMap::driveBaseLeftEncoder;
 std::shared_ptr<frc::Encoder> RobotMap::driveBaseRightEncoder;
 std::shared_ptr<frc::SpeedController> RobotMap::driveBaseleftRearMotor;
@@ -140,16 +140,16 @@ void RobotMap::init() {
 
     //
     // Ramp setup
-    rampLeftRamp1.reset(new frc::Solenoid(0, 0));
+    rampLeftRamp1.reset(new frc::DoubleSolenoid(0, 0, 1));
 	setNameAndSubsystem(*rampLeftRamp1, "Ramp", "Left Ramp 1");
 
-    rampLeftRamp2.reset(new frc::Solenoid(0, 1));
+    rampLeftRamp2.reset(new frc::DoubleSolenoid(0,2,3));
 	setNameAndSubsystem(*rampLeftRamp2, "Ramp", "Left Ramp 2");
 
-    rampRightRamp1.reset(new frc::Solenoid(0, 2));
+    rampRightRamp1.reset(new frc::DoubleSolenoid(0,4,5));
 	setNameAndSubsystem(*rampRightRamp1, "Ramp", "Right Ramp 1");
 
-    rampRightRamp2.reset(new frc::Solenoid(0, 3));
+    rampRightRamp2.reset(new frc::DoubleSolenoid(0,6,7));
 	setNameAndSubsystem(*rampRightRamp2, "Ramp", "Right Ramp 2");
 
     rampRightLinearActuatorServo.reset(new frc::Servo(10));
@@ -171,20 +171,20 @@ void RobotMap::init() {
     rampRightLinearActuatorServo.reset(new frc::Servo(10));
     lw->AddActuator("Ramp", "RightLinearActuatorServo", rampRightLinearActuatorServo);
     
-    rampLeftRamp1.reset(new frc::Solenoid(0, 0));
-    lw->AddActuator("Ramp", "Left Ramp 1", rampLeftRamp1);
-    
-    rampLeftRamp2.reset(new frc::Solenoid(0, 1));
-    lw->AddActuator("Ramp", "Left Ramp 2", rampLeftRamp2);
-    
-    rampRightRamp1.reset(new frc::Solenoid(0, 2));
-    lw->AddActuator("Ramp", "Right Ramp 1", rampRightRamp1);
-    
-    rampRightRamp2.reset(new frc::Solenoid(0, 3));
-    lw->AddActuator("Ramp", "Right Ramp 2", rampRightRamp2);
-    
     rampLeftLinearActuatorServo.reset(new frc::Servo(11));
     lw->AddActuator("Ramp", "LeftLinearActuatorServo", rampLeftLinearActuatorServo);
+    
+    rampLeftRamp1.reset(new frc::DoubleSolenoid(0, 0, 1));
+    lw->AddActuator("Ramp", "Left Ramp 1", rampLeftRamp1);
+    
+    rampLeftRamp2.reset(new frc::DoubleSolenoid(0, 2, 3));
+    lw->AddActuator("Ramp", "Left Ramp 2", rampLeftRamp2);
+    
+    rampRightRamp1.reset(new frc::DoubleSolenoid(0, 4, 5));
+    lw->AddActuator("Ramp", "Right Ramp 1", rampRightRamp1);
+    
+    rampRightRamp2.reset(new frc::DoubleSolenoid(0, 6, 7));
+    lw->AddActuator("Ramp", "Right Ramp 2", rampRightRamp2);
     
     driveBaseLeftEncoder.reset(new frc::Encoder(0, 1, true, frc::Encoder::k4X));
     lw->AddSensor("DriveBase", "Left Encoder", driveBaseLeftEncoder);

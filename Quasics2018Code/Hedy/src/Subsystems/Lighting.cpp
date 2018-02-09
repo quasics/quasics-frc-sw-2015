@@ -31,7 +31,7 @@ Lighting::Lighting() : frc::Subsystem("Lighting") {
 
 	// As an example, to send a command string out the serial port, you would say:
 	//
-	//     		serialPort_->Write(cmd);
+	//     		serialPort->Write(cmd);
 	//
 }
 
@@ -49,6 +49,9 @@ void Lighting::Periodic() {
 
 }
 
+void Lighting::SendTestString() {
+	serialPort->Write("Does it work?");
+}
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

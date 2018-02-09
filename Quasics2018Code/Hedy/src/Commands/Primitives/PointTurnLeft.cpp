@@ -1,9 +1,9 @@
 #include "PointTurnLeft.h"
 #include "../../Robot.h"
 
-PointTurnLeft::PointTurnLeft(double seconds, double power): frc::Command() {
-	count = 0;
-	m_ticksToExecute = seconds;		// because Execute() is run at 50Hz
+PointTurnLeft::PointTurnLeft(double angle, double power): frc::Command() {
+
+	m_angle = angle;		// because Execute() is run at 50Hz
 	m_power = power;
 	Requires (Robot::driveBase.get());
 }
@@ -11,19 +11,24 @@ PointTurnLeft::PointTurnLeft(double seconds, double power): frc::Command() {
 // Called just before this Command runs the first time
 void PointTurnLeft::Initialize() {
 	//robot turns left
-	count = 0;
 	Robot::driveBase->SetLeftPower(m_power);
 	Robot::driveBase->SetRightPower(-m_power);
+	Robot::navigation->resetBearing();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
-	count = count + 1;
+
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurnLeft::IsFinished() {
-	return count >= m_ticksToExecute;
+	if (Robot::navigation->getBearing() > m_angle) {
+			return true;
+		}
+		else {
+			return false;
+		}
 }
 
 // Called once after isFinished returns true

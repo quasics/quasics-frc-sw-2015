@@ -64,6 +64,11 @@ void Robot::RobotInit() {
 	leftAutoCommand = new AutoScoreOnLeftSwitchCommand();
 	chooser.AddObject("Left Auto", leftAutoCommand);
 	frc::SmartDashboard::PutData("Auto Modes", &chooser);
+
+#ifdef CONFIGURE_CAMERA
+	CameraServer::GetInstance()->SetQuality(100);
+	CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+#endif
 }
 
 /**

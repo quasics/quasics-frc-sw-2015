@@ -50,7 +50,7 @@ void Lighting::Periodic() {
 }
 
 void Lighting::SendTestString() {
-	serialPort->Write("Does it work?");
+	serialPort->Write("Does it work?;\n");
 }
 
 // Put methods for controlling this subsystem

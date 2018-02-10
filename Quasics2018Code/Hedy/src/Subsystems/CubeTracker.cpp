@@ -11,6 +11,12 @@
 #define IMG_WIDTH	320
 #define IMG_HEIGHT	240
 
+// Note: the following values mirror those that are currently hard-coded into Vision.cpp,
+// based on the GRIP pipeline configuration.  If we change the sizing in the pipeline,
+// then we'll need to update the values here, too.
+#define WIDTH_SCALING		.7
+#define HEIGHT_SCALING		.7
+
 CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 	/*
 	 * The following code is based on an example provided at:
@@ -33,7 +39,10 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 			{
 				// Remember how big the source image was.
 				cv::Rect srcRect;
-				// srcRect = cv::boundingRect(*pipeline.GetCvResizeOutput());
+				srcRect.x = 0;
+				srcRect.y = 0;
+				srcRect.width = IMG_WIDTH * WIDTH_SCALING;
+				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
 
 				//If we have at least 1 contour, we might have a target
 				const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();

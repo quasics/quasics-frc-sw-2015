@@ -15,7 +15,7 @@ void ArmControl::Initialize() {
 void ArmControl::Execute() {
 
 	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
-	const double rightYAxisValue = joystick->GetRawAxis(XBox_RightYAxis);
+	const double rightYAxisValue = joystick->GetRawAxis(-(XBox_RightYAxis));
 
 	// If it's far enough away from the mid-point of the joystick, then
 	// we'll treat it as a real power setting.  Otherwise, it's in the

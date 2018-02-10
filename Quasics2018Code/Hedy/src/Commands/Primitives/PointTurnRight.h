@@ -12,7 +12,7 @@
 // instead of rolling our own timer in the code for the class.
 class PointTurnRight: public frc::Command {
 public:
-	PointTurnRight(double seconds, double power);
+	PointTurnRight(double angle, double power);
 
 	void Initialize() override;
 	void Execute() override;
@@ -20,8 +20,7 @@ public:
 	void End() override;
 	void Interrupted() override;
 private:
-	int count;
-	double m_ticksToExecute;
+	double m_angle;
 	double m_power;
 
 };

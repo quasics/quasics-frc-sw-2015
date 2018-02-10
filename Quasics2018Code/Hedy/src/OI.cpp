@@ -64,7 +64,6 @@ OI::OI() {
     frc::SmartDashboard::PutData("Move Shoulder Auto", new ShoulderMove(5, .4));
     frc::SmartDashboard::PutData("Turn Left 90 degrees", new TurnLeft(90));
     frc::SmartDashboard::PutData("Turning", new PointTurnLeft(90, .2));
-    frc::SmartDashboard::PutData("winch", new Winch());
     frc::SmartDashboard::PutData("Turn an arduino light on", new TurnLightOn());
     frc::SmartDashboard::PutData("Turn an arduino light off", new TurnLightOff());
     frc::SmartDashboard::PutData("winch", new Winch());

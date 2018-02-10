@@ -18,12 +18,15 @@ void CubeIntakeControl::Execute() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
 	const bool buttonA = joystick->GetRawButton(XBox_ButtonA);
 	const bool buttonB = joystick->GetRawButton(XBox_ButtonB);
-
-	if(buttonA && !Robot::cubeIntake->IsLimitSwitchTriggered()){
+	const bool buttonY = joystick->GetRawButton(XBox_ButtonY);
+	if(buttonB && !Robot::cubeIntake->IsLimitSwitchTriggered()){
+		Robot::cubeIntake->SetIntakePower(-.40);
+	}
+	else if (buttonA) {
 		Robot::cubeIntake->SetIntakePower(.40);
 	}
-	else if (buttonB) {
-		Robot::cubeIntake->SetIntakePower(-.40);
+	else if (buttonY){
+		Robot::cubeIntake->SetIntakePower(.60);
 	}
 	else{
 		Robot::cubeIntake->SetIntakePower(0);

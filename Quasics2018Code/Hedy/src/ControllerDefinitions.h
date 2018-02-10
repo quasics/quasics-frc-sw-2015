@@ -35,7 +35,6 @@
 
 // Axes
 #define XBox_RightXAxis  	2
-#define XBox_RightYAxis  	3
-
+#define XBox_RightYAxis  	5
 
 #endif /* SRC_CONTROLLERDEFINITIONS_H_ */

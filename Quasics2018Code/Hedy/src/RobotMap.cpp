@@ -198,4 +198,5 @@ void RobotMap::init() {
     // manual init above).  However, it looks like there's a bug in Robot Builder.
     // (Shocking, I know.... :-)
     cubeIntakeRightIntakeMotor->SetInverted(true);
+    cubeManipulationrightShoulderMotor->SetInverted(true);
 }

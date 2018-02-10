@@ -12,17 +12,17 @@ PointTurnLeft::PointTurnLeft(double angle, double power): frc::Command() {
 void PointTurnLeft::Initialize() {
 	//robot turns left
 	Robot::driveBase->SetPowerToMotors(m_power, -m_power);
-	Robot::navigation->resetBearing();
+
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
-
+	std::cout << "Angle: " << Robot::navigation->getAngle() << "\n";
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurnLeft::IsFinished() {
-	if (Robot::navigation->getBearing() > m_angle) {
+	if (Robot::navigation->getAngle() >= m_angle) {
 			return true;
 		}
 		else {

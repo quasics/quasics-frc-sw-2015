@@ -32,6 +32,12 @@ inline Jaguar* createMotor(int port, const char* const subsystem, const char* co
 	motor->SetName(name);
 	return motor;
 }
+inline SpeedControllerGroup* createSpeedControllerGroup(SpeedController& motor1, SpeedController& motor2, const char* const subsystem, const char* const name) {
+	SpeedControllerGroup* const speedControllerGroup = new SpeedControllerGroup(motor1, motor2);
+	speedControllerGroup->SetSubsystem(subsystem);
+	speedControllerGroup->SetName(name);
+	return speedControllerGroup;
+}
 
 void RobotMap::init() {
 #if 1
@@ -40,13 +46,8 @@ void RobotMap::init() {
     driveBaseFrontRightMotor.reset(createMotor(1, "DriveBase", "frontLeftMotor"));
     driveBaseRearRightMotor.reset(createMotor(1, "DriveBase", "frontLeftMotor"));
 
-    driveBaseLeftDriveMotors = std::make_shared<frc::SpeedControllerGroup>(*driveBaseFrontLeftMotor, *driveBaseRearLeftMotor);
-    driveBaseLeftDriveMotors->SetSubsystem("DriveBase");
-    driveBaseLeftDriveMotors->SetName("LeftDriveMotors");
-
-    driveBaseRightDriveMotors = std::make_shared<frc::SpeedControllerGroup>(*driveBaseFrontRightMotor, *driveBaseRearRightMotor);
-    driveBaseRightDriveMotors->SetSubsystem("DriveBase");
-    driveBaseRightDriveMotors->SetName("RightDriveMotors");
+    driveBaseLeftDriveMotors.reset(createSpeedControllerGroup(*driveBaseFrontLeftMotor, *driveBaseRearLeftMotor, "DriveBase", "LeftDriveMotors"));
+    driveBaseRightDriveMotors.reset(createSpeedControllerGroup(*driveBaseFrontRightMotor, *driveBaseRearRightMotor, "DriveBase", "RightDriveMotors"));
 
     driveBaseDifferentialDrive.reset(new frc::DifferentialDrive(*driveBaseLeftDriveMotors, *driveBaseRightDriveMotors));
     driveBaseDifferentialDrive->SetSubsystem("DriveBase");

@@ -53,6 +53,14 @@ void Lighting::SendTestString() {
 	serialPort->Write("Does it work?;\n");
 }
 
+void Lighting::WriteOn(){
+	serialPort->Write("On;\n");
+}
+
+void Lighting::WriteOff(){
+	serialPort->Write("Off;\n");
+}
+
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 

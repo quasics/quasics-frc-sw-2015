@@ -10,8 +10,7 @@ MoveForDistance::MoveForDistance(uint32_t targetInches, double powerLevel)
 void MoveForDistance::Initialize() {
 	Robot::driveBase->RightEncoderReset();
 	Robot::driveBase->LeftEncoderReset();
-	Robot::driveBase->SetLeftPower(-(power));
-	Robot::driveBase->SetRightPower(power);
+	Robot::driveBase->SetPowerToMotors(-(power), power);
 }
 
 // Called repeatedly when this Command is scheduled to run

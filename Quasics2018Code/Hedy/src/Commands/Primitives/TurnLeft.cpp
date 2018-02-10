@@ -18,8 +18,7 @@ TurnLeft::TurnLeft(double degrees)
 void TurnLeft::Initialize() {
 	goal = Robot::navigation->getAngle() - degreesToTurn;
 	// Start the motors running....
-	Robot::driveBase->SetLeftPower(-.25);
-	Robot::driveBase->SetRightPower(.25);
+	Robot::driveBase->SetPowerToMotors(-.25, .25);
 }
 
 bool TurnLeft::IsFinished() {

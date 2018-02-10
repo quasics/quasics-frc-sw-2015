@@ -11,8 +11,7 @@ PointTurnLeft::PointTurnLeft(double angle, double power): frc::Command() {
 // Called just before this Command runs the first time
 void PointTurnLeft::Initialize() {
 	//robot turns left
-	Robot::driveBase->SetLeftPower(m_power);
-	Robot::driveBase->SetRightPower(-m_power);
+	Robot::driveBase->SetPowerToMotors(m_power, -m_power);
 	Robot::navigation->resetBearing();
 }
 

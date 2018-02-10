@@ -12,8 +12,7 @@ PointTurnRight::PointTurnRight(double seconds, double power): frc::Command() {
 void PointTurnRight::Initialize() {
 	//robot turns right
 	count = 0;
-	Robot::driveBase->SetLeftPower(-m_power);
-	Robot::driveBase->SetRightPower(m_power);
+	Robot::driveBase->SetPowerToMotors(-m_power, m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run

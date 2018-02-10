@@ -52,6 +52,11 @@ void DriveBase::SetRightPower(double percent){
 	rightMotors->Set(percent);
 }
 
+void DriveBase::SetPowerToMotors(double leftPower, double rightPower) {
+	SetLeftPower(leftPower);
+	SetRightPower(rightPower);
+}
+
 //Encoders start here
 
 double DriveBase::RightEncoderVelocity() {

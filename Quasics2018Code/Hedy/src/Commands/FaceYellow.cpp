@@ -12,37 +12,28 @@ FaceYellow::FaceYellow() {
 
 // Called just before this Command runs the first time
 void FaceYellow::Initialize() {
-	Robot::driveBase->SetLeftPower(0);
-	Robot::driveBase->SetRightPower(0);
-
+	Robot::driveBase->Stop();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void FaceYellow::Execute() {
 	cv::Rect image, box;
 	Robot::cubeTracker->getBoundingRects(image, box);
-//	image.width
-//	box.left
-//	box.width
+	//	image.width
+	//	box.left
+	//	box.width
 
-double centerBox = box.width / 2;
-double centerImage = image.width / 2;
- if (centerImage > box.x + centerBox)
-	{
-		Robot::driveBase->SetLeftPower(-.2);
-		Robot::driveBase->SetRightPower(.2);
+	double centerBox = box.width / 2;
+	double centerImage = image.width / 2;
+	if (centerImage > box.x + centerBox) {
+		Robot::driveBase->SetPowerToMotors(-.2, .2);
 	}
-	else if (centerImage < box.x + centerBox)
-	{
-		Robot::driveBase->SetLeftPower(.2);
-		Robot::driveBase->SetRightPower(-.2);
+	else if (centerImage < box.x + centerBox) {
+		Robot::driveBase->SetPowerToMotors(.2, -.2);
 	}
-	else
-	{
-		Robot::driveBase->SetLeftPower(0);
-		Robot::driveBase->SetRightPower(0);
+	else {
+		Robot::driveBase->SetPowerToMotors(0, 0);
 	}
-
 }
 
 // Make this return true when this Command no longer needs to run execute()

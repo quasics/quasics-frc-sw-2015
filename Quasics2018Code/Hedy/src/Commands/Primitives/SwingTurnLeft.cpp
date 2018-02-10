@@ -24,8 +24,7 @@ SwingTurnLeft::SwingTurnLeft(double seconds, double power): frc::Command() {
 void SwingTurnLeft::Initialize() {
 
 	//robot turns left without using right motor
-	Robot::driveBase->SetLeftPower(m_power);
-	Robot::driveBase->SetRightPower(0);
+	Robot::driveBase->SetPowerToMotors(m_power, 0);
 }
 
 // Called repeatedly when this Command is scheduled to run

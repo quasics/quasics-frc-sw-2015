@@ -41,13 +41,11 @@ void TankDrive::Execute() {
 	}
 
 
-	if(counter % 2 == 0){
-		Robot::driveBase->SetLeftPower(leftTrackPower * -mult);
-		Robot::driveBase->SetRightPower(-(rightTrackPower* -mult));
+	if(counter % 2 == 0) {
+		Robot::driveBase->SetPowerToMotors(leftTrackPower * -mult, (rightTrackPower * mult));
 	}
-	else{
-		Robot::driveBase->SetLeftPower(leftTrackPower * mult);
-		Robot::driveBase->SetRightPower(-(rightTrackPower * mult));
+	else {
+		Robot::driveBase->SetPowerToMotors(leftTrackPower * mult, -(rightTrackPower * mult));
 	}
 }
 

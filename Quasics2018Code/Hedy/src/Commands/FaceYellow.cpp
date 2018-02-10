@@ -1,7 +1,5 @@
 #include "FaceYellow.h"
-
-
-
+#include <iostream>
 
 FaceYellow::FaceYellow() {
 	// Use Requires() here to declare subsystem dependencies
@@ -19,20 +17,33 @@ void FaceYellow::Initialize() {
 void FaceYellow::Execute() {
 	cv::Rect image, box;
 	Robot::cubeTracker->getBoundingRects(image, box);
-	//	image.width
-	//	box.left
-	//	box.width
 
-	double centerBox = box.width / 2;
-	double centerImage = image.width / 2;
-	if (centerImage > box.x + centerBox) {
-		Robot::driveBase->SetPowerToMotors(-.2, .2);
+	int centerBox = box.x + box.width / 2;
+	int centerImage = image.width / 2;
+	int boxOffsetFromMiddle = centerBox - centerImage;
+	const double turningSpeed = .10;
+
+	// If the box is seen within this many pixels of the center, then we're good enough!
+	const int allowedOffset = 40;
+
+//	std::cerr << "Image rect: " << image << ", box rect: " << box << std::endl;
+//	std::cerr << "   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox << std::endl;
+
+	if (box.width == 0) {
+		// Note: Come back and revisit this.
+		// For now, if we don't see it, don't move.
+		Robot::driveBase->Stop();
 	}
-	else if (centerImage < box.x + centerBox) {
-		Robot::driveBase->SetPowerToMotors(.2, -.2);
+	else if (boxOffsetFromMiddle > allowedOffset) {
+		// Box is to the right of center, so turn right.
+		Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
+	}
+	else if (boxOffsetFromMiddle < -allowedOffset) {
+		// Box is to the left of center, so turn left
+		Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
 	}
 	else {
-		Robot::driveBase->SetPowerToMotors(0, 0);
+		Robot::driveBase->Stop();
 	}
 }
 

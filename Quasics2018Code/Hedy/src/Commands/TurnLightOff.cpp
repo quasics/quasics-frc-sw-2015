@@ -24,7 +24,7 @@ TurnLightOff::TurnLightOff(): frc::Command() {
 
 // Called just before this Command runs the first time
 void TurnLightOff::Initialize() {
-	Robot::lighting->WriteOn();
+	Robot::lighting->WriteOff();
 }
 
 // Called repeatedly when this Command is scheduled to run

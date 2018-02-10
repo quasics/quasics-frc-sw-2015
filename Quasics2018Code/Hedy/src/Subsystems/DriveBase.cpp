@@ -50,8 +50,9 @@ void DriveBase::InitDefaultCommand() {
 // here. Call these from Commands.
 
 void DriveBase::SetPowerToMotors(double leftPercent, double rightPercent) {
-	leftMotors->Set(leftPercent);
-	rightMotors->Set(rightPercent);
+	differentialDrive->TankDrive(leftPercent, rightPercent, false);
+//	leftMotors->Set(leftPercent);
+//	rightMotors->Set(rightPercent);
 }
 
 //Encoders start here

@@ -6,7 +6,16 @@
  */
 
 #include "CubeTracker.h"
+
+// Standard C++ headers
 #include <iostream>
+#include <mutex>
+#include <thread>
+
+// WPILib headers
+#include <CameraServer.h>
+#include <Commands/Subsystem.h>
+#include <vision/VisionRunner.h>
 
 #define IMG_WIDTH	320
 #define IMG_HEIGHT	240

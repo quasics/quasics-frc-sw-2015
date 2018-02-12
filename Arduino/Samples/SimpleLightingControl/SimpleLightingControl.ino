@@ -48,7 +48,7 @@ void setup() {
 
 #ifdef ENABLE_DEBUGGING_OUTPUT
   // Display start-up message.
-  Serial.println("SerialConsole now running....");
+  Serial.println("SimpleLightingControl now running....");
 #endif  // ENABLE_DEBUGGING_OUTPUT
 
   // Enable using the built-in LED.

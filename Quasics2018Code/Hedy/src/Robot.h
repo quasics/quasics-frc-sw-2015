@@ -33,7 +33,7 @@
 class Robot : public frc::TimedRobot {
 private:
 	frc::Command* leftAutoCommand = nullptr;
-
+	int autoSelector;
 public:
 	frc::Command* autonomousCommand = nullptr;
 	static std::unique_ptr<OI> oi;

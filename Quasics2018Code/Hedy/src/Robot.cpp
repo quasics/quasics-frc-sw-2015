@@ -95,25 +95,59 @@ void Robot::AutonomousInit() {
 		{
 			//Sample Left Auto
 			std::cout<< "Score in Left Switch \n";
+			autoSelector = 1;
 		} else {
 			// Sample Right Auto
 			std::cout<< "Cross Auto Line \n";
+			autoSelector = 2;
+		}
+	}
+	else if (chooser.GetSelected() == leftAutoCommand){
+		if(gameData[0] == 'L')
+		{
+			//Sample Left Auto
+			std::cout<< "Cross Auto Line \n";
+			autoSelector = 3;
+		} else {
+			// Sample Right Auto
+			std::cout<< "Score in Right Switch \n";
+			autoSelector = 4;
 		}
 	}
 	else{
 		if(gameData[0] == 'L')
 		{
 			//Sample Left Auto
-			std::cout<< "Cross Auto Line \n";
+			std::cout<< "Score in Left Switch \n";
+			autoSelector = 5;
 		} else {
 			// Sample Right Auto
 			std::cout<< "Score in Right Switch \n";
+			autoSelector = 6;
 		}
 	}
 }
 
 void Robot::AutonomousPeriodic() {
 	frc::Scheduler::GetInstance()->Run();
+	if (autoSelector == 1){
+		//run future code
+	}
+	else if (autoSelector == 2){
+		//run future code
+	}
+	else if (autoSelector == 3){
+		//run future code
+	}
+	else if (autoSelector == 4){
+		//run future code
+	}
+	else if (autoSelector == 5){
+		//run future code
+	}
+	else if (autoSelector == 6){
+		//run future code
+	}
 }
 
 void Robot::TeleopInit() {

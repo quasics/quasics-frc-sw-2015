@@ -19,9 +19,9 @@ void GreenSeeking::Process(cv::Mat& source0){
 	//Step HSV_Threshold0:
 	//input
 	cv::Mat hsvThresholdInput = cvResizeOutput;
-	double hsvThresholdHue[] = {50.17985611510791, 95.52901023890786};
-	double hsvThresholdSaturation[] = {87.14028776978417, 218.01194539249144};
-	double hsvThresholdValue[] = {146.7625899280575, 255.0};
+	double hsvThresholdHue[] = {42.086330935251794, 98.60068259385666};
+	double hsvThresholdSaturation[] = {0.0, 255.0};
+	double hsvThresholdValue[] = {204.09172661870505, 255.0};
 	hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->hsvThresholdOutput);
 	//Step CV_erode0:
 	//input
@@ -48,14 +48,14 @@ void GreenSeeking::Process(cv::Mat& source0){
 	double filterContoursMinArea = 20.0;  // default Double
 	double filterContoursMinPerimeter = 20.0;  // default Double
 	double filterContoursMinWidth = 10.0;  // default Double
-	double filterContoursMaxWidth = 1000;  // default Double
+	double filterContoursMaxWidth = 1000.0;  // default Double
 	double filterContoursMinHeight = 10.0;  // default Double
-	double filterContoursMaxHeight = 1000;  // default Double
+	double filterContoursMaxHeight = 1000.0;  // default Double
 	double filterContoursSolidity[] = {0, 100};
-	double filterContoursMaxVertices = 1000000;  // default Double
-	double filterContoursMinVertices = 0;  // default Double
-	double filterContoursMinRatio = 0;  // default Double
-	double filterContoursMaxRatio = 1000;  // default Double
+	double filterContoursMaxVertices = 1000000.0;  // default Double
+	double filterContoursMinVertices = 0.0;  // default Double
+	double filterContoursMinRatio = 0.0;  // default Double
+	double filterContoursMaxRatio = 1000.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 }
 

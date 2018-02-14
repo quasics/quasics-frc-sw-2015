@@ -13,7 +13,7 @@ void FindBoxCommand::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void FindBoxCommand::Execute() {
 
-		std::cout<<"Yellow box data: " << Robot::cubeTracker->getCurrentRect() << std::endl;
+	std::cout<<"Yellow box data: " << Robot::cubeTracker->getCurrentRect() << std::endl;
 
 }
 

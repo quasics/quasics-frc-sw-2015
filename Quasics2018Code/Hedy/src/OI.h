@@ -39,8 +39,10 @@ public:
 	bool isHighBoostSignaled();
 	double getLeftTrackPower();
 	double getRightTrackPower();
+	double getYAxis();
 
 	bool isScissorLiftSignaled();
+
 };
 
 #endif

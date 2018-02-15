@@ -148,9 +148,9 @@
   </settings>
   <codeGenerationSettings>
     <language>C++</language>
-    <className>Green</className>
+    <className>GreenSeeking</className>
     <implementWpilibPipeline>true</implementWpilibPipeline>
-    <saveDir>C:\Users\axf105\GRIP</saveDir>
+    <saveDir>C:\Users\dxc101\eclipse-workspace\Hedy\src\Subsystems</saveDir>
     <packageName></packageName>
     <moduleName>grip</moduleName>
   </codeGenerationSettings>

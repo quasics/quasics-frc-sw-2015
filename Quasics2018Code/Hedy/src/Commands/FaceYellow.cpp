@@ -1,4 +1,6 @@
 #include "FaceYellow.h"
+
+#ifdef VISION_TRACK_CUBES
 #include <iostream>
 
 FaceYellow::FaceYellow() {
@@ -62,3 +64,4 @@ void FaceYellow::End() {
 void FaceYellow::Interrupted() {
 	Robot::driveBase->Stop();
 }
+#endif	// VISION_TRACK_CUBES

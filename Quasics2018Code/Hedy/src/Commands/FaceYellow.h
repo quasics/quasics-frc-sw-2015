@@ -3,6 +3,9 @@
 
 #include <WPILib.h>
 #include "../Robot.h"
+
+#ifdef VISION_TRACK_CUBES
+
 #include "Commands/Subsystem.h"
 
 class FaceYellow : public frc::Command {
@@ -15,4 +18,5 @@ public:
 	void Interrupted() override;
 };
 
+#endif	// VISION_TRACK_CUBES
 #endif  // FaceYellow_H

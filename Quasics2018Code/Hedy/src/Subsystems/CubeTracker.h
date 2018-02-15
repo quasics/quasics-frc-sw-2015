@@ -1,10 +1,3 @@
-/*
- * CubeTracker.h
- *
- *  Created on: Jan 27, 2018
- *      Author: dxc101
- */
-
 #ifndef SRC_SUBSYSTEMS_CUBETRACKER_H_
 #define SRC_SUBSYSTEMS_CUBETRACKER_H_
 
@@ -23,6 +16,7 @@ private:
 	cv::Rect imageRect;
 	mutable std::mutex* m_lock;
 	std::thread* m_visionThread;
+
 public:
 	CubeTracker();
 	void visionExecuter();

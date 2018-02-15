@@ -1,9 +1,3 @@
-/*
- * CubeTracker.cpp
- *
- *  Created on: Jan 27, 2018
- *      Author: dxc101
- */
 
 #include "CubeTracker.h"
 
@@ -33,7 +27,7 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 	 *
 	 * It was then modified to:
 	 * a) Fix a bug on line 79 of the original code (where a "*" is missing).
-	 * b) Look for the single largest bounding box, since the sample pipeline that
+* b) Look for the single largest bounding box, since the sample pipeline that
 	 *    we're currently using it with is trying to find one of the yellow game
 	 *    cubes, rather than looking for the 2 reflective tape stripes marking a
 	 *    point on the Switch in the 2018 FRC game.
@@ -54,11 +48,11 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
 
 				//If we have at least 1 contour, we might have a target
+				cv::Rect bestRectangle;
 				const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();
  				if (filterCountoursOutput.size() > 0)
 				{
 					int bestArea = 0;
-					cv::Rect bestRectangle;
 					//Iterate through list of found contours, and find the biggest one.
 					for(unsigned int i=0; i < filterCountoursOutput.size(); i++)
 					{
@@ -70,11 +64,11 @@ CubeTracker::CubeTracker() : frc::Subsystem("CubeTracker") {
 							bestRectangle = rectangle1;
 						}
 					}
-					m_lock->lock();
-					currentRect = bestRectangle;
-					imageRect = srcRect;
-					m_lock->unlock();
 				}
+				m_lock->lock();
+				currentRect = bestRectangle;
+				imageRect = srcRect;
+				m_lock->unlock();
 			});
 	m_visionThread = new std::thread(&CubeTracker::visionExecuter, this);
 }

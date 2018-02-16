@@ -39,11 +39,11 @@
 class Robot : public frc::TimedRobot {
 private:
 	frc::Command* leftAutoCommand = nullptr;
-	int autoSelector;
-public:
-	frc::Command* autonomousCommand = nullptr;
-	static std::unique_ptr<OI> oi;
+	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
+
+public:
+	static std::unique_ptr<OI> oi;
 
 	////////////////////////////////////////////////////////////
 	// Subsystems
@@ -76,5 +76,16 @@ public:
 	void AutonomousPeriodic() override;
 	void TeleopInit() override;
 	void TeleopPeriodic() override;
+
+	////////////////////////////////////////////////////////////
+	// Custom information
+	////////////////////////////////////////////////////////////
+	enum RobotStartingPosition {
+		eStartingInMiddle,
+		eStartingOnLeft,
+		eStartingOnRight
+	};
+	static RobotStartingPosition getStartingPosition();
+
 };
 #endif

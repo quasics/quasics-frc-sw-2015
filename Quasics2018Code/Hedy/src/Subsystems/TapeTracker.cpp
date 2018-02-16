@@ -18,7 +18,7 @@
 #define HEIGHT_SCALING		.7
 
 TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
-
+/*
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 		m_lock = new std::mutex;
@@ -46,11 +46,20 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 							const std::vector<cv::Point> & countourPoints = filterCountoursOutput[i];
 							const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints));
 
+							for(unsigned int i=0; i < findCountoursOutput.size(); i++){
+
+
+
+							}
+
+
 							// TODO: Add code to look at pairs of spotted contours, and find
 							// the best pair.  Then, save the bounding box for the pair in
 							// "bestRectangle".
 							//code that is assumed to be used is down below
 						}
+
+
 					}
 					m_lock->lock();
 					currentRect = bestRectangle;
@@ -58,11 +67,13 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					m_lock->unlock();
 				});
 
+*/
 }
 
 
-/*
 
+
+/*
  * cv::Mat findContoursInput = cvErodeOutput;
 	bool findContoursExternalOnly = false;  // default Boolean
 	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
@@ -81,5 +92,7 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 	double filterContoursMinRatio = 0.0;  // default Double
 	double filterContoursMaxRatio = 1000.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
+
+
  */
 

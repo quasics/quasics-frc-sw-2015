@@ -61,6 +61,34 @@ void Lighting::WriteOff(){
 	serialPort->Write("Off;\n");
 }
 
+void Lighting::WriteBlue(){
+	serialPort->Write("Blue;\n");
+}
+
+void Lighting::WriteGreen(){
+	serialPort->Write("Green;\n");
+}
+
+void Lighting::WriteRed(){
+	serialPort->Write("Red;\n");
+}
+
+void Lighting::WriteAuto(){
+	serialPort->Write("Auto;\n");
+}
+
+void Lighting::WriteTeleOp(){
+	serialPort->Write("TeleOp;\n");
+}
+
+void Lighting::WriteWarning(){
+	serialPort->Write("Warning;\n");
+}
+
+void Lighting::WriteLimitSwitch(){
+	serialPort->Write("LimitSwitch;\n");
+}
+
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 

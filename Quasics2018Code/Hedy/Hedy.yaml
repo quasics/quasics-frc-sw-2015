@@ -78,164 +78,26 @@ Children:
     Base: Subsystem
     Name: Climber Winch
   - Children:
-    - Children:
-      - Children:
-        - Children: []
-          Properties:
-            Type: !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id001
-              default: Spark
-              name: Type
-              validators: null
-              value: PWMVictorSPX
-            Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id002
-              default: '0'
-              name: Output Channel (PWM)
-              validators: *id003
-              value: '2'
-            Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-              name: Inverted, validators: null, value: false}
-          Base: Speed Controller
-          Name: Left Front Motor
-        - Children: []
-          Properties:
-            Type: !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id001
-              default: Spark
-              name: Type
-              validators: null
-              value: Spark
-            Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id002
-              default: '0'
-              name: Output Channel (PWM)
-              validators: *id003
-              value: '3'
-            Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-              name: Inverted, validators: null, value: false}
-          Base: Speed Controller
-          Name: Left Rear Motor
-        Properties:
-          SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
-            default: null, name: SpeedController4, type: PIDOutput, validators: null,
-            value: null}
-          SpeedController3: !!robotbuilder.data.properties.ChildSelectionProperty {
-            default: null, name: SpeedController3, type: PIDOutput, validators: null,
-            value: null}
-          SpeedController2: !!robotbuilder.data.properties.ChildSelectionProperty
-            default: 1
-            name: SpeedController2
-            type: PIDOutput
-            validators: &id004 [SpeedControllerGroup, ChildDropdownSelected]
-            value: DriveBase Left Rear Motor
-          SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
-            default: 0
-            name: SpeedController1
-            type: PIDOutput
-            validators: &id005 [SpeedControllerGroup, ChildDropdownSelected]
-            value: DriveBase Left Front Motor
-        Base: Speed Controller Group
-        Name: Left Motors
-      - Children:
-        - Children: []
-          Properties:
-            Type: !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id001
-              default: Spark
-              name: Type
-              validators: null
-              value: Spark
-            Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id002
-              default: '0'
-              name: Output Channel (PWM)
-              validators: *id003
-              value: '0'
-            Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-              name: Inverted, validators: null, value: false}
-          Base: Speed Controller
-          Name: Right Front Motor
-        - Children: []
-          Properties:
-            Type: !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id001
-              default: Spark
-              name: Type
-              validators: null
-              value: Spark
-            Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
-              choices: *id002
-              default: '0'
-              name: Output Channel (PWM)
-              validators: *id003
-              value: '1'
-            Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-              name: Inverted, validators: null, value: false}
-          Base: Speed Controller
-          Name: Right Rear Motor
-        Properties:
-          SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
-            default: null, name: SpeedController4, type: PIDOutput, validators: null,
-            value: null}
-          SpeedController3: !!robotbuilder.data.properties.ChildSelectionProperty {
-            default: null, name: SpeedController3, type: PIDOutput, validators: null,
-            value: null}
-          SpeedController2: !!robotbuilder.data.properties.ChildSelectionProperty
-            default: 1
-            name: SpeedController2
-            type: PIDOutput
-            validators: *id004
-            value: DriveBase Right Rear Motor
-          SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
-            default: 0
-            name: SpeedController1
-            type: PIDOutput
-            validators: *id005
-            value: DriveBase Right Front Motor
-        Base: Speed Controller Group
-        Name: Right Motors
-      Properties:
-        Right Motor: !!robotbuilder.data.properties.ChildSelectionProperty
-          default: 1
-          name: Right Motor
-          type: PIDOutput
-          validators: [RobotDrive2, ChildDropdownSelected]
-          value: DriveBase Right Motors
-        Maximum Output: !!robotbuilder.data.properties.DoubleProperty {default: 1,
-          name: Maximum Output, validators: null, value: 1.0}
-        Left Motor: !!robotbuilder.data.properties.ChildSelectionProperty
-          default: 0
-          name: Left Motor
-          type: PIDOutput
-          validators: [RobotDrive2, ChildDropdownSelected]
-          value: DriveBase Left Motors
-        Safety Expiration Time: !!robotbuilder.data.properties.DoubleProperty {default: 0.1,
-          name: Safety Expiration Time, validators: null, value: 0.1}
-        Safety Enabled: !!robotbuilder.data.properties.BooleanProperty {default: true,
-          name: Safety Enabled, validators: null, value: true}
-      Base: Differential Drive
-      Name: Differential Drive
     - Children: []
       Properties:
         Channel A Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
-          choices: &id006 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+          choices: &id004 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
             '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
             '23', '24', '25']
           default: '0'
           name: Channel A Channel (Digital)
-          validators: &id007 [DigitalChannel]
+          validators: &id005 [DigitalChannel]
           value: '0'
         Distance Per Pulse: !!robotbuilder.data.properties.DoubleProperty {default: 1,
           name: Distance Per Pulse, validators: null, value: 0.05235987755}
         PID Source: !!robotbuilder.data.properties.ChoicesProperty
-          choices: &id008 [kDisplacement, kRate]
+          choices: &id006 [kDisplacement, kRate]
           default: kRate
           name: PID Source
           validators: null
           value: kRate
         Encoding Type: !!robotbuilder.data.properties.ChoicesProperty
-          choices: &id009 [k4X, k2X, k1X]
+          choices: &id007 [k4X, k2X, k1X]
           default: k4X
           name: Encoding Type
           validators: null
@@ -243,33 +105,33 @@ Children:
         Reverse Direction: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Reverse Direction, validators: null, value: true}
         Channel B Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
-          choices: &id010 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+          choices: &id008 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
             '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
             '23', '24', '25']
           default: '0'
           name: Channel B Channel (Digital)
-          validators: &id011 [DigitalChannel]
+          validators: &id009 [DigitalChannel]
           value: '1'
       Base: Quadrature Encoder
       Name: Left Encoder
     - Children: []
       Properties:
         Channel A Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
-          choices: *id006
+          choices: *id004
           default: '0'
           name: Channel A Channel (Digital)
-          validators: *id007
+          validators: *id005
           value: '2'
         Distance Per Pulse: !!robotbuilder.data.properties.DoubleProperty {default: 1,
           name: Distance Per Pulse, validators: null, value: 0.05235987755}
         PID Source: !!robotbuilder.data.properties.ChoicesProperty
-          choices: *id008
+          choices: *id006
           default: kRate
           name: PID Source
           validators: null
           value: kRate
         Encoding Type: !!robotbuilder.data.properties.ChoicesProperty
-          choices: *id009
+          choices: *id007
           default: k4X
           name: Encoding Type
           validators: null
@@ -277,13 +139,129 @@ Children:
         Reverse Direction: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Reverse Direction, validators: null, value: false}
         Channel B Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
-          choices: *id010
+          choices: *id008
           default: '0'
           name: Channel B Channel (Digital)
-          validators: *id011
+          validators: *id009
           value: '3'
       Base: Quadrature Encoder
       Name: Right Encoder
+    - Children:
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: PWMVictorSPX
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '2'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Left Front Motor
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: PWMVictorSPX
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '3'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Left Rear Motor
+      Properties:
+        SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController4, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController3: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController3, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController2: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 1
+          name: SpeedController2
+          type: PIDOutput
+          validators: &id010 [SpeedControllerGroup, ChildDropdownSelected]
+          value: DriveBase Left Rear Motor
+        SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 0
+          name: SpeedController1
+          type: PIDOutput
+          validators: &id011 [SpeedControllerGroup, ChildDropdownSelected]
+          value: DriveBase Left Front Motor
+      Base: Speed Controller Group
+      Name: Left Motors
+    - Children:
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: PWMVictorSPX
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '0'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Right Front Motor
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: PWMVictorSPX
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '1'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Right Rear Motor
+      Properties:
+        SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController4, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController3: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController3, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController2: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 1
+          name: SpeedController2
+          type: PIDOutput
+          validators: *id010
+          value: DriveBase Right Rear Motor
+        SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 0
+          name: SpeedController1
+          type: PIDOutput
+          validators: *id011
+          value: DriveBase Right Front Motor
+      Base: Speed Controller Group
+      Name: Right Motors
     Properties:
       Send to SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: false,
         name: Send to SmartDashboard, validators: null, value: false}
@@ -368,13 +346,13 @@ Children:
           default: 1
           name: SpeedController2
           type: PIDOutput
-          validators: *id004
+          validators: *id010
           value: CubeManipulation rightShoulderMotor
         SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
           default: 0
           name: SpeedController1
           type: PIDOutput
-          validators: *id005
+          validators: *id011
           value: CubeManipulation leftShoulderMotor
       Base: Speed Controller Group
       Name: ShoulderMotors
@@ -444,13 +422,13 @@ Children:
           default: 1
           name: SpeedController2
           type: PIDOutput
-          validators: *id004
+          validators: *id010
           value: Cube Intake Right Intake Motor
         SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
           default: 0
           name: SpeedController1
           type: PIDOutput
-          validators: *id005
+          validators: *id011
           value: Cube Intake Left Intake Motor
       Base: Speed Controller Group
       Name: IntakeMotors
@@ -695,12 +673,12 @@ Children:
       Button on SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: true,
         name: Button on SmartDashboard, validators: null, value: true}
     Base: Command
-    Name: Scissor Lift Control
+    Name: Linear Slide Control
   Properties: {}
   Base: Commands
   Name: Commands
 Properties:
-  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\workspace',
+  Eclipse Workspace: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\workspace',
     extension: null, folder: true, name: Eclipse Workspace, validators: null, value: ../}
   Export Commands: !!robotbuilder.data.properties.BooleanProperty {default: true,
     name: Export Commands, validators: null, value: true}
@@ -719,7 +697,7 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\',
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: /Users/healym/}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}

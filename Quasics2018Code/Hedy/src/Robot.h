@@ -39,8 +39,11 @@
 class Robot : public frc::TimedRobot {
 private:
 	frc::Command* leftAutoCommand = nullptr;
+	frc::Command* rightAutoCommand = nullptr;
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
+
+	static Robot* theOneRobot;
 
 public:
 	static std::unique_ptr<OI> oi;
@@ -69,6 +72,17 @@ public:
 	////////////////////////////////////////////////////////////
 	// Basic robot functionality
 	////////////////////////////////////////////////////////////
+	Robot() {
+		if (theOneRobot == nullptr) {
+			theOneRobot = this;
+		}
+	}
+	~Robot() {
+		if (theOneRobot == this) {
+			theOneRobot = nullptr;
+		}
+	}
+
 	void RobotInit() override;
 	void DisabledInit() override;
 	void DisabledPeriodic() override;
@@ -86,6 +100,9 @@ public:
 		eStartingOnRight
 	};
 	static RobotStartingPosition getStartingPosition();
+
+private:
+	RobotStartingPosition determineStartingPosition();
 
 };
 #endif

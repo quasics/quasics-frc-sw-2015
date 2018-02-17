@@ -34,7 +34,7 @@ std::shared_ptr<CubeTracker> Robot::cubeTracker;
 #else
 std::shared_ptr<TapeTracker> Robot::tapeTracker;
 #endif
-std::shared_ptr<CommandGroup> Robot::teleopCommand;
+std::shared_ptr<frc::CommandGroup> Robot::teleopCommand;
 
 
 // ENABLE this define, if we want to actually take some action when in Auto mode.

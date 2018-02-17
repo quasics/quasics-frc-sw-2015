@@ -14,10 +14,8 @@
 #define IMG_WIDTH 320
 #define IMG_HEIGHT 240
 
-
 #define WIDTH_SCALING .7
 #define HEIGHT_SCALING .7
-
 
 #define WIDTH_SCALING		.7
 #define HEIGHT_SCALING		.7
@@ -100,7 +98,6 @@ double heightRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
 	return ratioToScore(rectangle1.height/rectangle2.height);
 }
 
-
 TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
@@ -164,10 +161,3 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 				});
 
 }
-
-
-/*
-
- *
- */
-

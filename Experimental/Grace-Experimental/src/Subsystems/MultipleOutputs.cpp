@@ -19,16 +19,16 @@ void MultipleOutputs::Process(cv::Mat& source0){
 	//Step HSV_Threshold0:
 	//input
 	cv::Mat hsvThreshold0Input = cvResizeOutput;
-	double hsvThreshold0Hue[] = {0.0, 180.0};
-	double hsvThreshold0Saturation[] = {105.64971751412429, 236.91489361702128};
-	double hsvThreshold0Value[] = {84.03954802259886, 216.56914893617022};
+	double hsvThreshold0Hue[] = {42.086330935251794, 98.60068259385666};
+	double hsvThreshold0Saturation[] = {0.0, 255.0};
+	double hsvThreshold0Value[] = {204.09172661870505, 255.0};
 	hsvThreshold(hsvThreshold0Input, hsvThreshold0Hue, hsvThreshold0Saturation, hsvThreshold0Value, this->hsvThreshold0Output);
 	//Step CV_erode0:
 	//input
 	cv::Mat cvErode0Src = hsvThreshold0Output;
 	cv::Mat cvErode0Kernel;
 	cv::Point cvErode0Anchor(-1, -1);
-	double cvErode0Iterations = 1.0;  // default Double
+	double cvErode0Iterations = 5.0;  // default Double
     int cvErode0Bordertype = cv::BORDER_CONSTANT;
 	cv::Scalar cvErode0Bordervalue(-1);
 	cvErode(cvErode0Src, cvErode0Kernel, cvErode0Anchor, cvErode0Iterations, cvErode0Bordertype, cvErode0Bordervalue, this->cvErode0Output);
@@ -40,15 +40,15 @@ void MultipleOutputs::Process(cv::Mat& source0){
 	//Step Filter_Contours0:
 	//input
 	std::vector<std::vector<cv::Point> > filterContours0Contours = findContours0Output;
-	double filterContours0MinArea = 9.0;  // default Double
-	double filterContours0MinPerimeter = 0.0;  // default Double
-	double filterContours0MinWidth = 0.0;  // default Double
+	double filterContours0MinArea = 20.0;  // default Double
+	double filterContours0MinPerimeter = 20.0;  // default Double
+	double filterContours0MinWidth = 10.0;  // default Double
 	double filterContours0MaxWidth = 1000.0;  // default Double
-	double filterContours0MinHeight = 20.0;  // default Double
+	double filterContours0MinHeight = 10.0;  // default Double
 	double filterContours0MaxHeight = 1000.0;  // default Double
 	double filterContours0Solidity[] = {0, 100};
 	double filterContours0MaxVertices = 1000000.0;  // default Double
-	double filterContours0MinVertices = 36.0;  // default Double
+	double filterContours0MinVertices = 0.0;  // default Double
 	double filterContours0MinRatio = 0.0;  // default Double
 	double filterContours0MaxRatio = 1000.0;  // default Double
 	filterContours(filterContours0Contours, filterContours0MinArea, filterContours0MinPerimeter, filterContours0MinWidth, filterContours0MaxWidth, filterContours0MinHeight, filterContours0MaxHeight, filterContours0Solidity, filterContours0MaxVertices, filterContours0MinVertices, filterContours0MinRatio, filterContours0MaxRatio, this->filterContours0Output);

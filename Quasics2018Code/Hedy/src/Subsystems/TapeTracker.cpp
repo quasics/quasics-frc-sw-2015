@@ -145,6 +145,7 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 
 								if (scoreTotal > bestScore){
 									bestScore = scoreTotal;
+									//bestRectangle = boundingRect(rectangle1, rectangle2);
 								}
 
 								// TODO: Add code to look at pairs of spotted contours, and find

@@ -27,10 +27,10 @@ void TankDrive::Execute() {
 
 	double mult = .4;
 	if(highBoost && lowBoost){
-		mult = .8;
+		mult = 1;
 	}
 	else if(highBoost && !lowBoost){
-		mult = .6;
+		mult = .7;
 	}
 	else if(lowBoost && !highBoost){
 		mult = .2;

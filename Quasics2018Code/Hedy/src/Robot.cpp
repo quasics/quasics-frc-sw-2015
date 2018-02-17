@@ -98,7 +98,7 @@ void Robot::RobotInit() {
 
 	//-------------------SET Default Commands---------------------------------//
 
-	autonomousCommand.reset(new AutoCrossTheLineCommand);
+	autonomousCommand.reset(new AutoModeScoringCommand);
 	teleopCommand.reset(new Teleop);
 
 

@@ -19,7 +19,6 @@ void PointTurnLeft::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
 	roboAngle = fabs(Robot::navigation->getBearing());
-	std::cout << "Angle: " << roboAngle << " Wanted Angle: " << m_angle << "\n";
 	if(Robot::navigation->getBearing()  < m_angle/2){
 		Robot::driveBase->SetPowerToMotors(m_power, m_power);
 	}else{

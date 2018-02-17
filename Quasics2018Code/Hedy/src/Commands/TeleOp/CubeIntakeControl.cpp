@@ -23,10 +23,10 @@ void CubeIntakeControl::Execute() {
 		Robot::cubeIntake->SetIntakePower(-.40);
 	}
 	else if (buttonA) {
-		Robot::cubeIntake->SetIntakePower(.40);
+		Robot::cubeIntake->SetIntakePower(.60);
 	}
 	else if (buttonY){
-		Robot::cubeIntake->SetIntakePower(.60);
+		Robot::cubeIntake->SetIntakePower(1);
 	}
 	else{
 		Robot::cubeIntake->SetIntakePower(0);

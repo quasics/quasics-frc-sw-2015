@@ -21,7 +21,8 @@ void ArmControl::Execute() {
 	// we'll treat it as a real power setting.  Otherwise, it's in the
 	// "dead zone", and we'll bring the power to 0.
 	if (joystick->GetRawAxis(XBox_RightYAxis)) {
-		Robot::cubeManipulation->SetShoulderPower(rightPower);
+		std::cout << rightPower << "\n";
+		Robot::cubeManipulation->SetShoulderPower(-(rightPower));
 	} else {
 		Robot::cubeManipulation->SetShoulderPower(0);
 	}

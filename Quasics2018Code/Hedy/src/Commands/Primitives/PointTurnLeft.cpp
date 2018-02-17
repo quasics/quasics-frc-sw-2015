@@ -17,7 +17,7 @@ void PointTurnLeft::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
-	std::cout << "Angle: " << Robot::navigation->getAngle() << "\n";
+	std::cout << "Angle: " << Robot::navigation->getAngle() << " Wanted Angle: " << m_power << "\n";
 }
 
 // Make this return true when this Command no longer needs to run execute()

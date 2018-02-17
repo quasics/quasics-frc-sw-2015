@@ -14,11 +14,95 @@
 #define IMG_WIDTH 320
 #define IMG_HEIGHT 240
 
+
+#define WIDTH_SCALING .7
+#define HEIGHT_SCALING .7
+
+
 #define WIDTH_SCALING		.7
 #define HEIGHT_SCALING		.7
 
+
+class boundingRect
+{
+	public:
+		int top;
+		int bottom;
+		int left;
+		int right;
+
+	boundingRect (cv::Rect rectangle1, cv::Rect rectangle2)
+	{
+		top = std::max(rectangle1.y, rectangle2.y);
+		bottom = std::max(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height);
+		left = std::max(rectangle1.x, rectangle2.x);
+		right = std::max(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width);
+	}
+
+	boundingRect()
+	{
+		top = bottom = left = right = 0;
+	}
+};
+
+
+/**
+ * Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
+ * linear going from (0,0) to (1,100) to (2,0) and is 0 for all inputs outside the range 0-2
+ */
+double ratioToScore(double ratio)
+{
+	return (std::max(0.0, std::min(100*(1-std::abs(1-ratio)), 100.0)));
+}
+
+//The height of the bounding box around both rectangles should be approximately double the width
+double boundingRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	boundingRect* bounding = new boundingRect(rectangle1, rectangle2);
+
+	return ratioToScore((bounding->top-bounding->bottom)/(2*(bounding->left-bounding->right)));
+}
+
+//The width of either contour should be approximately 1/4 of the total bounding box width
+double contourWidthScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	boundingRect* bounding = new boundingRect(rectangle1, rectangle2);
+
+	return ratioToScore(rectangle1.width*4/(bounding->right-bounding->left));
+}
+
+//The top edges should be very close together. Find the difference, then scale it by the bounding box height.
+//This results in an ideal 0 instead of an ideal 1, so add 1
+double topEdgeScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	boundingRect* bounding = new boundingRect(rectangle1, rectangle2);
+
+	return ratioToScore(1 + (rectangle1.y - rectangle2.y)/(bounding->top-bounding->bottom));
+}
+
+//The spacing between the left edges should be 3/4 of the target width
+double leftSpacingScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	boundingRect* bounding = new boundingRect(rectangle1, rectangle2);
+
+	return ratioToScore(std::abs(rectangle2.x - rectangle1.x)*3/(4*bounding->right-bounding->left));
+}
+
+//The width of the two contours should match
+double widthRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	return ratioToScore(rectangle1.width/rectangle2.width);
+}
+
+//The height of the two contours should match
+double heightRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
+{
+	return ratioToScore(rectangle1.height/rectangle2.height);
+}
+
+
 TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
-/*
+
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 		m_lock = new std::mutex;
@@ -43,23 +127,34 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 						//Iterate through list of found contours.
 						for(unsigned int i=0; i < filterCountoursOutput.size(); i++)
 						{
-							const std::vector<cv::Point> & countourPoints = filterCountoursOutput[i];
-							const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints));
+							const std::vector<cv::Point> & countourPoints1 = filterCountoursOutput[i];
+							const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
 
-							for(unsigned int i=0; i < findCountoursOutput.size(); i++){
+							for(unsigned int j = i + 1; j < filterCountoursOutput.size(); j++) {
+								const std::vector<cv::Point> & countourPoints2 = filterCountoursOutput[j];
+								const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
 
+								//Calculate a total score across all 6 measurements
+								double scoreTotal = 0;
+								scoreTotal += boundingRatioScore(rectangle1, rectangle2);
+								scoreTotal += contourWidthScore(rectangle1, rectangle2);
+								scoreTotal += topEdgeScore(rectangle1, rectangle2);
+								scoreTotal += leftSpacingScore(rectangle1, rectangle2);
+								scoreTotal += widthRatioScore(rectangle1, rectangle2);
+								scoreTotal += heightRatioScore(rectangle1, rectangle2);
 
+								if (scoreTotal > bestScore){
+									bestScore = scoreTotal;
+								}
+
+								// TODO: Add code to look at pairs of spotted contours, and find
+								// the best pair.  Then, save the bounding box for the pair in
 
 							}
 
-
-							// TODO: Add code to look at pairs of spotted contours, and find
-							// the best pair.  Then, save the bounding box for the pair in
 							// "bestRectangle".
 							//code that is assumed to be used is down below
 						}
-
-
 					}
 					m_lock->lock();
 					currentRect = bestRectangle;
@@ -67,32 +162,11 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					m_lock->unlock();
 				});
 
-*/
 }
 
 
-
-
 /*
- * cv::Mat findContoursInput = cvErodeOutput;
-	bool findContoursExternalOnly = false;  // default Boolean
-	findContours(findContoursInput, findContoursExternalOnly, this->findContoursOutput);
-	//Step Filter_Contours0:
-	//input
-	std::vector<std::vector<cv::Point> > filterContoursContours = findContoursOutput;
-	double filterContoursMinArea = 20.0;  // default Double
-	double filterContoursMinPerimeter = 20.0;  // default Double
-	double filterContoursMinWidth = 10.0;  // default Double
-	double filterContoursMaxWidth = 1000.0;  // default Double
-	double filterContoursMinHeight = 10.0;  // default Double
-	double filterContoursMaxHeight = 1000.0;  // default Double
-	double filterContoursSolidity[] = {0, 100};
-	double filterContoursMaxVertices = 1000000.0;  // default Double
-	double filterContoursMinVertices = 0.0;  // default Double
-	double filterContoursMinRatio = 0.0;  // default Double
-	double filterContoursMaxRatio = 1000.0;  // default Double
-	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 
-
+ *
  */
 

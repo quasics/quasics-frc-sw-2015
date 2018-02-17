@@ -11,22 +11,21 @@ PointTurnRight::PointTurnRight(double angle, double power): frc::Command() {
 void PointTurnRight::Initialize() {
 	//robot turns right
 
-	Robot::driveBase->SetPowerToMotors(-m_power, m_power);
+	Robot::driveBase->SetPowerToMotors(-m_power, -m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurnRight::Execute() {
-
+	if(Robot::navigation->getBearing()  < m_angle/2){
+		Robot::driveBase->SetPowerToMotors(m_power, m_power);
+	}else{
+		Robot::driveBase->SetPowerToMotors(m_power / 2, m_power / 2);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurnRight::IsFinished() {
-	if (Robot::navigation->getAngle() >= m_angle) {
-			return true;
-	}
-	else {
-		return false;
-	}
+	return (Robot::navigation->getBearing() > m_angle);
 }
 
 // Called once after isFinished returns true

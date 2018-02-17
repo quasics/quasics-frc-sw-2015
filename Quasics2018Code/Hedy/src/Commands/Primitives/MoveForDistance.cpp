@@ -15,6 +15,11 @@ void MoveForDistance::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void MoveForDistance::Execute() {
+	if(Robot::driveBase->LeftEncoderDistance() < target/2){
+		Robot::driveBase->SetPowerToMotors(-(power), power);
+	}else{
+		Robot::driveBase->SetPowerToMotors(-(power /2), power /2);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

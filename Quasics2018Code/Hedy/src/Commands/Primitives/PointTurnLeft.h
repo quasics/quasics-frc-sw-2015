@@ -20,7 +20,7 @@ public:
 	void End() override;
 	void Interrupted() override;
 private:
-
+	double roboAngle;
 	double m_angle;
 	double m_power;
 };

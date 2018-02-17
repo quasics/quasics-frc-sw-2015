@@ -2,32 +2,34 @@
 #include "../../Robot.h"
 
 PointTurnLeft::PointTurnLeft(double angle, double power): frc::Command() {
-
+	roboAngle = 0;
 	m_angle = angle;		// because Execute() is run at 50Hz
 	m_power = power;
 	Requires (Robot::driveBase.get());
+	Requires (Robot::navigation.get());
 }
 
 // Called just before this Command runs the first time
 void PointTurnLeft::Initialize() {
 	//robot turns left
-	Robot::driveBase->SetPowerToMotors(m_power, -m_power);
-
+	Robot::driveBase->SetPowerToMotors(m_power, m_power);
+	Robot::navigation->resetBearing();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
-	std::cout << "Angle: " << Robot::navigation->getAngle() << " Wanted Angle: " << m_power << "\n";
+	roboAngle = fabs(Robot::navigation->getBearing());
+	std::cout << "Angle: " << roboAngle << " Wanted Angle: " << m_angle << "\n";
+	if(Robot::navigation->getBearing()  < m_angle/2){
+		Robot::driveBase->SetPowerToMotors(m_power, m_power);
+	}else{
+		Robot::driveBase->SetPowerToMotors(m_power / 2, m_power / 2);
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool PointTurnLeft::IsFinished() {
-	if (Robot::navigation->getAngle() >= m_angle) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	return (Robot::navigation->getBearing() > m_angle);
 }
 
 // Called once after isFinished returns true

@@ -169,18 +169,18 @@ Robot::RobotStartingPosition Robot::getStartingPosition() {
 Robot::RobotStartingPosition Robot::determineStartingPosition() {
 	frc::Command* chosenValue = chooser.GetSelected();
 	if (chosenValue == leftPlacementCommand) {
-		std::cout << "--- Left" << std::endl;
+		return eStartingOnLeft;
 	}
 	else if (chosenValue == rightPlacementCommand) {
-		std::cout << "--- Right" << std::endl;
+		return eStartingOnRight;
 	}
 	else if (chosenValue == middlePlacementCommand) {
-		std::cout << "--- Middle" << std::endl;
+		return eStartingInMiddle;
+
 	} else {
-		std::cout << "--- Don't know!" << std::endl;
+		return eStartingInMiddle;
+
 	}
-	std::cout << chosenValue << "\n";
-	return eStartingInMiddle;
 }
 
 START_ROBOT_CLASS(Robot);

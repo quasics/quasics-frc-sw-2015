@@ -20,7 +20,7 @@ void ArmControl::Execute() {
 	// If it's far enough away from the mid-point of the joystick, then
 	// we'll treat it as a real power setting.  Otherwise, it's in the
 	// "dead zone", and we'll bring the power to 0.
-	if (fabs(joystick->GetRawAxis(XBox_RightYAxis) > .05f)) {
+	if (joystick->GetRawAxis(XBox_RightYAxis)) {
 		Robot::cubeManipulation->SetShoulderPower(rightPower);
 	} else {
 		Robot::cubeManipulation->SetShoulderPower(0);

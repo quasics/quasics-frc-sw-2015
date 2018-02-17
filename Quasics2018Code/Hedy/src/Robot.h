@@ -38,8 +38,9 @@
 
 class Robot : public frc::TimedRobot {
 private:
-	frc::Command* leftAutoCommand = nullptr;
-	frc::Command* rightAutoCommand = nullptr;
+	frc::Command* leftPlacementCommand = nullptr;
+	frc::Command* rightPlacementCommand = nullptr;
+	frc::Command* middlePlacementCommand = nullptr;
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
 

@@ -51,8 +51,7 @@ void ExecuteTurn::Initialize() {
 #ifdef DONT_RUN_MOTORS
 	Robot::driveBase->Stop();
 #else
-	Robot::driveBase->SetLeftPower(leftPower);
-	Robot::driveBase->SetRightPower(rightPower);
+	Robot::driveBase->SetPower(leftPower, rightPower);
 #endif	// DONT_RUN_MOTORS
 }
 

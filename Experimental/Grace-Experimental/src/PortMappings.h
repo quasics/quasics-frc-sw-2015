@@ -15,7 +15,7 @@ const int AUX_JOYSTICK_PORT = 1;
 // Motor port mappings
 const int FRONT_RIGHT_MOTOR_PORT = 1;
 const int BACK_RIGHT_MOTOR_PORT = 0;
-const int FRONT_LEFT_MOTOR_PORT = 4;
+const int FRONT_LEFT_MOTOR_PORT = 2;
 const int BACK_LEFT_MOTOR_PORT = 3;
 
 

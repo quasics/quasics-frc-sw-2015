@@ -9,8 +9,7 @@ TurnRightContinuous::TurnRightContinuous()
 }
 
 void TurnRightContinuous::Initialize() {
-	Robot::driveBase->SetLeftPower(.25);
-	Robot::driveBase->SetRightPower(-.25);
+	Robot::driveBase->SetPower(.25, -.25);
 }
 
 void TurnRightContinuous::Execute() {

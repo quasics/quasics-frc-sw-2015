@@ -14,7 +14,7 @@
 #include "Commands/TeleOp/Teleop.h"
 #include "Commands/AutoModeScoringCommand.h"
 #include "Commands/DummyCommand.h"
-
+#include "Commands/AutoCrossTheLineCommand.h"
 #include <SmartDashboard/SmartDashboard.h>
 #include <LiveWindow/LiveWindow.h>		// 	If needed, access via "frc::LiveWindow::GetInstance()"
 #include <iostream>
@@ -98,7 +98,7 @@ void Robot::RobotInit() {
 
 	//-------------------SET Default Commands---------------------------------//
 
-	autonomousCommand.reset(new AutoModeScoringCommand);
+	autonomousCommand.reset(new AutoCrossTheLineCommand);
 	teleopCommand.reset(new Teleop);
 
 
@@ -125,7 +125,6 @@ void Robot::DisabledPeriodic() {
 
 void Robot::AutonomousInit() {
 	const std::string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-	std::cout << "Game data: " << gameData << std::endl;
 	determineStartingPosition();
 	if (autonomousCommand != nullptr) {
 		autonomousCommand->Start();

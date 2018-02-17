@@ -25,7 +25,9 @@ bool AutoModeScoringCommand::Condition(){
 	// If we're on the same side of the "arena" as our target on the switch, then we'll go for it.
 	// If not, we'll just move forward.
 	const std::string gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-
+	if (gameData.empty()){
+		return false;
+	}
 	const bool ourSideIsLeftOnSwitch = (gameData[0] == 'L');
 	Robot::RobotStartingPosition startingPosition = Robot::getStartingPosition();
 

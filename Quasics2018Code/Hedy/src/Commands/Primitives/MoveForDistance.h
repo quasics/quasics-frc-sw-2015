@@ -3,6 +3,8 @@
 
 #include <Commands/Command.h>
 
+inline uint32_t feetToInches(double feet) { return uint32_t(feet * 12); }
+
 class MoveForDistance: public frc::Command {
 public:
 

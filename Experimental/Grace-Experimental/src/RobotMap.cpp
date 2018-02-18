@@ -89,5 +89,6 @@ void RobotMap::init() {
     SetNameAndSubsystem(*driveBaseLeftMotors, "DriveBase", "Left Motors");
 #endif
 
+    // The right-hand side motors are inverted on Nike.  (Which I'll assume we're building for.)
     driveBaseRightMotors->SetInverted(true);
 }

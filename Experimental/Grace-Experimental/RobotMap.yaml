@@ -13,7 +13,7 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: Jaguar
+            value: Talon
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: &id002 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
               '11', '12', '13', '14', '15', '16', '17', '18', '19']
@@ -32,7 +32,7 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: Jaguar
+            value: Talon
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
@@ -72,7 +72,7 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: Jaguar
+            value: Talon
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
@@ -90,7 +90,7 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: Jaguar
+            value: Talon
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
@@ -213,15 +213,15 @@ Children:
       Run When Disabled: !!robotbuilder.data.properties.BooleanProperty {default: false,
         name: Run When Disabled, validators: null, value: false}
       Parameter presets: !!robotbuilder.data.properties.ParameterSetProperty
-        default: &id007 []
+        default: []
         name: Parameter presets
         validators: null
-        value: *id007
+        value: []
       Commands: !!robotbuilder.data.properties.ListProperty
-        default: &id008 []
+        default: []
         name: Commands
         validators: [List]
-        value: *id008
+        value: []
       Button on SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: true,
         name: Button on SmartDashboard, validators: null, value: true}
     Base: Command Group

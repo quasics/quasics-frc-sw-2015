@@ -19,7 +19,7 @@ void PointTurnLeft::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void PointTurnLeft::Execute() {
 	roboAngle = fabs(Robot::navigation->getBearing());
-	if(Robot::navigation->getBearing()  < m_angle/2){
+	if(Robot::navigation->getBearing()  < m_angle/1.5){
 		Robot::driveBase->SetPowerToMotors(m_power, m_power);
 	}else{
 		Robot::driveBase->SetPowerToMotors(m_power / 2, m_power / 2);

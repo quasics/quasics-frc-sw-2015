@@ -18,7 +18,7 @@
 #define LogitechGamePad_StartButton  		9
 #define LogitechGamePad_SelectButton  		10
 
-// Axes - Used with the "getRawAxis()" function to access the X/Y data for the individual sticks on
+// Axes - Used with the "getRawAxis()" function to access the data for the individual sticks on
 // the controller (e.g., for "tank drive" coding).
 #define LogitechGamePad_LeftXAxis 			0
 #define LogitechGamePad_LeftYAxis  			1
@@ -32,7 +32,7 @@
 #define XBox_ButtonX  		3
 #define XBox_ButtonY  		4
 #define XBox_LeftTrigger 	5
-
+#define XBox_RightButton	6
 // Axes
 #define XBox_RightXAxis  	2
 #define XBox_RightYAxis  	5

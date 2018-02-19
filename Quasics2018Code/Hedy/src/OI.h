@@ -39,9 +39,13 @@ public:
 	bool isHighBoostSignaled();
 	double getLeftTrackPower();
 	double getRightTrackPower();
-	double getYAxis();
 
-	bool isScissorLiftSignaled();
+	bool isLinearSlideSignaled();
+	bool isWinchSignaled();
+	double getWinchPower();
+	bool isCubeIntakeSignaled();
+	bool isCubeHighSpeedExhaustSignaled();
+	bool isCubeLowSpeedExhaustSignaled();
 
 };
 

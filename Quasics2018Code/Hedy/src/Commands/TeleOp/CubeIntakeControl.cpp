@@ -1,5 +1,4 @@
 #include <Commands/TeleOp/CubeIntakeControl.h>
-#include "../../ControllerDefinitions.h"
 #include "../../Robot.h"
 #include "../../Subsystems/CubeIntake.h"
 
@@ -14,18 +13,13 @@ void CubeIntakeControl::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void CubeIntakeControl::Execute() {
-
-	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
-	const bool buttonA = joystick->GetRawButton(XBox_ButtonA);
-	const bool buttonB = joystick->GetRawButton(XBox_ButtonB);
-	const bool buttonY = joystick->GetRawButton(XBox_ButtonY);
-	if(buttonB && !Robot::cubeIntake->IsLimitSwitchTriggered()){
+	if(Robot::oi->isCubeIntakeSignaled() && !Robot::cubeIntake->IsLimitSwitchTriggered()){
 		Robot::cubeIntake->SetIntakePower(-.40);
 	}
-	else if (buttonA) {
+	else if (Robot::oi->isCubeLowSpeedExhaustSignaled()) {
 		Robot::cubeIntake->SetIntakePower(.60);
 	}
-	else if (buttonY){
+	else if (Robot::oi->isCubeHighSpeedExhaustSignaled()){
 		Robot::cubeIntake->SetIntakePower(1);
 	}
 	else{

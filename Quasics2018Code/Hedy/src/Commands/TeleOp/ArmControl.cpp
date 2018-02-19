@@ -1,5 +1,4 @@
 #include <Commands/TeleOp/ArmControl.h>
-#include "../../ControllerDefinitions.h"
 #include "../../Robot.h"
 
 ArmControl::ArmControl() {
@@ -14,13 +13,15 @@ void ArmControl::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void ArmControl::Execute() {
 
-	std::shared_ptr<Joystick> joystick = Robot::oi->getauxStick();
-	double rightPower = Robot::oi->getYAxis();
+	double rightPower = Robot::oi->getWinchPower();
 
 	// If it's far enough away from the mid-point of the joystick, then
 	// we'll treat it as a real power setting.  Otherwise, it's in the
 	// "dead zone", and we'll bring the power to 0.
-	if (joystick->GetRawAxis(XBox_RightYAxis)) {
+	//
+	// TODO: Define the dead zone.  Right now, there is none.
+	//       (Example: "if (fabs(rightPower) > SOME_NUMBER) {....} else {....}")
+	if (rightPower) {
 		Robot::cubeManipulation->SetShoulderPower(-(rightPower));
 	} else {
 		Robot::cubeManipulation->SetShoulderPower(0);

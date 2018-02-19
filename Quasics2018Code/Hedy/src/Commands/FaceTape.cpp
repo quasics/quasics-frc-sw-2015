@@ -7,9 +7,10 @@
 
 #include "FaceTape.h"
 
-
+#ifndef VISION_TRACK_TAPE
 FaceTape::FaceTape() {
 	Requires(Robot::driveBase.get());
+	Requires(Robot::tapeTracker.get());
 	//Requires(Robot::tapeTracker.get());
 }
 
@@ -21,6 +22,11 @@ void FaceTape::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FaceTape::Execute() {
+
+
+
+
+
 
 }
 
@@ -39,3 +45,5 @@ void FaceTape::End() {
 void FaceTape::Interrupted() {
 	Robot::driveBase->Stop();
 }
+
+#endif VISION_TRACK_TAPE

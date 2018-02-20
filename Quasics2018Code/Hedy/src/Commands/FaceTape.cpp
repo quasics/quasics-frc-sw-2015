@@ -22,10 +22,39 @@ void FaceTape::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FaceTape::Execute() {
+/*
+	cv::Rect image, box;
+		Robot::tapeTracker->getBoundingRects(image, box);
 
+		int centerBox = box.x + box.width / 2;
+		int centerImage = image.width / 2;
+		int boxOffsetFromMiddle = centerBox - centerImage;
+		const double turningSpeed = .10;
 
+		// If the box is seen within this many pixels of the center, then we're good enough!
+		const int allowedOffset = 40;
 
+	//	std::cerr << "Image rect: " << image << ", box rect: " << box << std::endl;
+	//	std::cerr << "   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox << std::endl;
 
+		if (box.width == 0) {
+			// Note: Come back and revisit this.
+			// For now, if we don't see it, don't move.
+			Robot::driveBase->Stop();
+		}
+		else if (boxOffsetFromMiddle > allowedOffset) {
+			// Box is to the right of center, so turn right.
+			Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
+		}
+		else if (boxOffsetFromMiddle < -allowedOffset) {
+			// Box is to the left of center, so turn left
+			Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
+		}
+		else {
+			Robot::driveBase->Stop();
+		}
+
+*/
 
 
 }
@@ -46,4 +75,4 @@ void FaceTape::Interrupted() {
 	Robot::driveBase->Stop();
 }
 
-#endif VISION_TRACK_TAPE
+#endif

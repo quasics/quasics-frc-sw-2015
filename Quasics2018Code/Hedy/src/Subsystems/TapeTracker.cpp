@@ -147,6 +147,8 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 									bestRectangle.y = bounds.right;
 									bestRectangle.width = bounds.right - bounds.left;
 									bestRectangle.height = bounds.bottom - bounds.top;
+
+
 								}
 
 								// TODO: Add code to look at pairs of spotted contours, and find

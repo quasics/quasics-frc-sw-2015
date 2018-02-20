@@ -44,13 +44,6 @@ class boundingRect
 	}
 };
 
-void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const {
-	m_lock->lock();
-	imageRect = this->imageRect;
-	currentRect = this->currentRect;
-	m_lock->unlock();
-}
-
 
 
 /**
@@ -127,6 +120,7 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					//If we have at least 2 contours, we might have a target
 					cv::Rect bestRectangle;
 					const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();
+					// std::cerr << "# of countours: " << filterCountoursOutput.size() << std::endl;
 	 				if (filterCountoursOutput.size() > 1)
 					{
 						int bestScore = 0;
@@ -173,5 +167,20 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					imageRect = srcRect;
 					m_lock->unlock();
 				});
+		m_visionThread = new std::thread(&TapeTracker::visionExecuter, this);
 
+}
+
+
+void TapeTracker::visionExecuter()
+{
+	std::cerr << "Starting up vision execution" << std::endl;
+	visionTrackingTask->RunForever();
+}
+
+void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const {
+	m_lock->lock();
+	imageRect = this->imageRect;
+	currentRect = this->currentRect;
+	m_lock->unlock();
 }

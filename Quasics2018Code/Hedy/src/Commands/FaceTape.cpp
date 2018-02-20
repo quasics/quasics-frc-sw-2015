@@ -44,10 +44,12 @@ void FaceTape::Execute() {
 			Robot::driveBase->Stop();
 		}
 		else if (boxOffsetFromMiddle > allowedOffset) {
+			std::cerr << "Turning right" << std::endl;
 			// Box is to the right of center, so turn right.
 			Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
 		}
 		else if (boxOffsetFromMiddle < -allowedOffset) {
+			std::cerr << "Turning right" << std::endl;
 			// Box is to the left of center, so turn left
 			Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
 		}

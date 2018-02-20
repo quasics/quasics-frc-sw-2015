@@ -78,13 +78,13 @@ std::shared_ptr<frc::Joystick> OI::getauxStick() {
 
 
 bool OI::isLinearSlideSignaled() {
-	const bool signalled = auxStick->GetRawButton(XBox_RightButton);
-	return signalled;
+	const bool signaled = auxStick->GetRawButton(XBox_RightButton);
+	return signaled;
 }
 
 bool OI::isWinchSignaled() {
-	const bool signalled = auxStick->GetRawButton(XBox_ButtonX);
-	return signalled;
+	const bool signaled = auxStick->GetRawButton(XBox_ButtonX);
+	return signaled;
 }
 
 bool OI::isLowBoostSignaled() {

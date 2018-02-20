@@ -38,6 +38,7 @@ std::shared_ptr<frc::SpeedControllerGroup> RobotMap::driveBaseRightMotors;
 std::shared_ptr<frc::SpeedController> RobotMap::cubeManipulationleftShoulderMotor;
 std::shared_ptr<frc::SpeedController> RobotMap::cubeManipulationrightShoulderMotor;
 std::shared_ptr<frc::SpeedControllerGroup> RobotMap::cubeManipulationShoulderMotors;
+std::shared_ptr<frc::DoubleSolenoid> RobotMap::cubeManipulationWrist;
 std::shared_ptr<frc::SpeedController> RobotMap::cubeIntakeLeftIntakeMotor;
 std::shared_ptr<frc::SpeedController> RobotMap::cubeIntakeRightIntakeMotor;
 std::shared_ptr<frc::SpeedControllerGroup> RobotMap::cubeIntakeIntakeMotors;
@@ -183,6 +184,9 @@ void RobotMap::init() {
     
     cubeManipulationShoulderMotors = std::make_shared<frc::SpeedControllerGroup>(*cubeManipulationleftShoulderMotor, *cubeManipulationrightShoulderMotor  );
     lw->AddActuator("CubeManipulation", "ShoulderMotors", cubeManipulationShoulderMotors);
+    
+    cubeManipulationWrist.reset(new frc::DoubleSolenoid(0, 0, 1));
+    lw->AddActuator("CubeManipulation", "Wrist", cubeManipulationWrist);
     
     cubeIntakeLeftIntakeMotor.reset(new frc::Spark(6));
     lw->AddActuator("CubeIntake", "Left Intake Motor", std::static_pointer_cast<frc::Spark>(cubeIntakeLeftIntakeMotor));

@@ -39,6 +39,7 @@ public:
 	static std::shared_ptr<frc::SpeedController> cubeManipulationleftShoulderMotor;
 	static std::shared_ptr<frc::SpeedController> cubeManipulationrightShoulderMotor;
 	static std::shared_ptr<frc::SpeedControllerGroup> cubeManipulationShoulderMotors;
+	static std::shared_ptr<frc::DoubleSolenoid> cubeManipulationWrist;
 	static std::shared_ptr<frc::SpeedController> cubeIntakeLeftIntakeMotor;
 	static std::shared_ptr<frc::SpeedController> cubeIntakeRightIntakeMotor;
 	static std::shared_ptr<frc::SpeedControllerGroup> cubeIntakeIntakeMotors;

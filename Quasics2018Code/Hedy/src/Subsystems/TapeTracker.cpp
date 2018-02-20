@@ -4,6 +4,7 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <cmath>
 
 // WPILib headers
 #include <CameraServer.h>
@@ -42,6 +43,14 @@ class boundingRect
 		top = bottom = left = right = 0;
 	}
 };
+
+void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const {
+	m_lock->lock();
+	imageRect = this->imageRect;
+	currentRect = this->currentRect;
+	m_lock->unlock();
+}
+
 
 
 /**

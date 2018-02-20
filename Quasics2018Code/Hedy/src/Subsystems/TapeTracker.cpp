@@ -142,14 +142,17 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 
 								if (scoreTotal > bestScore){
 									bestScore = scoreTotal;
-									//bestRectangle = boundingRect(rectangle1, rectangle2);
+									boundingRect bounds(rectangle1, rectangle2);
+									bestRectangle.x  = bounds.left;
+									bestRectangle.y = bounds.right;
+									bestRectangle.width = bounds.right - bounds.left;
+									bestRectangle.height = bounds.bottom - bounds.top;
 								}
 
 								// TODO: Add code to look at pairs of spotted contours, and find
 								// the best pair.  Then, save the bounding box for the pair in
 
 							}
-
 							// "bestRectangle".
 							//code that is assumed to be used is down below
 						}

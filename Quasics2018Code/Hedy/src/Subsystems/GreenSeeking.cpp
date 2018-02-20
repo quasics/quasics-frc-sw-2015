@@ -28,7 +28,7 @@ void GreenSeeking::Process(cv::Mat& source0){
 	cv::Mat cvErodeSrc = hsvThresholdOutput;
 	cv::Mat cvErodeKernel;
 	cv::Point cvErodeAnchor(-1, -1);
-	double cvErodeIterations = 5.0;  // default Double
+	double cvErodeIterations = 2.0;  // default Double
     int cvErodeBordertype = cv::BORDER_CONSTANT;
 	cv::Scalar cvErodeBordervalue(-1);
 	cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, this->cvErodeOutput);
@@ -47,8 +47,8 @@ void GreenSeeking::Process(cv::Mat& source0){
 	std::vector<std::vector<cv::Point> > filterContoursContours = findContoursOutput;
 	double filterContoursMinArea = 20.0;  // default Double
 	double filterContoursMinPerimeter = 20.0;  // default Double
-	double filterContoursMinWidth = 10.0;  // default Double
-	double filterContoursMaxWidth = 1000.0;  // default Double
+	double filterContoursMinWidth = 6.0;  // default Double
+	double filterContoursMaxWidth = 1.0E7;  // default Double
 	double filterContoursMinHeight = 10.0;  // default Double
 	double filterContoursMaxHeight = 1000.0;  // default Double
 	double filterContoursSolidity[] = {0, 100};

@@ -57,9 +57,10 @@ OI::OI() {
     frc::SmartDashboard::PutData("Turn an arduino light on", new TurnLightOn());
     frc::SmartDashboard::PutData("Turn an arduino light off", new TurnLightOff());
     frc::SmartDashboard::PutData("winch", new Winch());
-    frc::SmartDashboard::PutData("Tape", new FaceTape());
 #ifdef VISION_TRACK_CUBES
     frc::SmartDashboard::PutData("Facing Yellow", new FaceYellow());
+#else
+    frc::SmartDashboard::PutData("Tape", new FaceTape());
 #endif
 }
 

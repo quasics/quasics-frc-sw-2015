@@ -4,7 +4,7 @@
 #include <WPILib.h>
 #include "../Robot.h"
 
-#ifndef VISION_TRACK_TAPE
+#ifndef VISION_TRACK_CUBES
 
 #include "Commands/Subsystem.h"
 
@@ -19,5 +19,5 @@ public:
 };
 
 
-#endif
+#endif	// VISION_TRACK_CUBES
 #endif

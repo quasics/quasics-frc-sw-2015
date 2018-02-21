@@ -7,8 +7,19 @@
 
 #include "FaceTape.h"
 #include <iostream>
+#include <opencv2/core.hpp>
 
-#ifndef VISION_TRACK_TAPE
+#define ENABLE_DEBUGGING_OUTPUT
+#define DISABLE_MOTION
+
+#ifdef ENABLE_DEBUGGING_OUTPUT
+#define LOG(x)	do { std::cerr << x << std::endl; } while(0)
+#else
+#define LOG(x)
+#endif
+
+#ifndef VISION_TRACK_CUBES
+
 FaceTape::FaceTape() {
 	Requires(Robot::driveBase.get());
 	Requires(Robot::tapeTracker.get());
@@ -18,48 +29,51 @@ FaceTape::FaceTape() {
 // Called just before this Command runs the first time
 void FaceTape::Initialize() {
 	Robot::driveBase->Stop();
-
 }
 
 // Called repeatedly when this Command is scheduled to run
 void FaceTape::Execute() {
 
 	cv::Rect image, box;
-		Robot::tapeTracker->getBoundingRects(image, box);
+	Robot::tapeTracker->getBoundingRects(image, box);
+	LOG("Image rect: " << image << ", box rect: " << box);
 
-		int centerBox = box.x + box.width / 2;
-		int centerImage = image.width / 2;
-		int boxOffsetFromMiddle = centerBox - centerImage;
-		const double turningSpeed = .2;
+	if (box.width == 0) {
+		// Note: Come back and revisit this.
+		// For now, if we don't see it, don't move.
+		LOG("   We don't see the box....");
+		Robot::driveBase->Stop();
+		return;
+	}
 
-		// If the box is seen within this many pixels of the center, then we're good enough!
-		const int allowedOffset = 15;
+	int centerBox = box.x + box.width / 2;
+	int centerImage = image.width / 2;
+	int boxOffsetFromMiddle = centerBox - centerImage;
+#ifdef DISABLE_MOTION
+	const double turningSpeed = 0;
+#else
+	const double turningSpeed = .2;
+#endif	// DISABLE_MOTION
 
-		std::cerr << "Image rect: " << image << ", box rect: " << box << std::endl;
-		std::cerr << "   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox << std::endl;
+	// If the box is seen within this many pixels of the center, then we're good enough!
+	const int allowedOffset = 15;
 
-		if (box.width == 0) {
-			// Note: Come back and revisit this.
-			// For now, if we don't see it, don't move.
-			Robot::driveBase->Stop();
-		}
-		else if (boxOffsetFromMiddle > allowedOffset) {
-			std::cerr << "Turning right" << std::endl;
-			// Box is to the right of center, so turn right.
-			Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
-		}
-		else if (boxOffsetFromMiddle < -allowedOffset) {
-			std::cerr << "Turning right" << std::endl;
-			// Box is to the left of center, so turn left
-			Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
-		}
-		else {
-			Robot::driveBase->Stop();
-		}
+	LOG("   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox);
 
-
-
-
+	if (boxOffsetFromMiddle > allowedOffset) {
+		LOG("   Turning right");
+		// Box is to the right of center, so turn right.
+		Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
+	}
+	else if (boxOffsetFromMiddle < -allowedOffset) {
+		LOG("   Turning right");
+		// Box is to the left of center, so turn left
+		Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
+	}
+	else {
+		LOG("   Roughly dialed in");
+		Robot::driveBase->Stop();
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -78,4 +92,4 @@ void FaceTape::Interrupted() {
 	Robot::driveBase->Stop();
 }
 
-#endif
+#endif	// VISION_TRACK_CUBES

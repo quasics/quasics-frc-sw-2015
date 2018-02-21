@@ -33,7 +33,7 @@ void FaceTape::Execute() {
 		const double turningSpeed = .2;
 
 		// If the box is seen within this many pixels of the center, then we're good enough!
-		const int allowedOffset = 25;
+		const int allowedOffset = 15;
 
 		std::cerr << "Image rect: " << image << ", box rect: " << box << std::endl;
 		std::cerr << "   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox << std::endl;

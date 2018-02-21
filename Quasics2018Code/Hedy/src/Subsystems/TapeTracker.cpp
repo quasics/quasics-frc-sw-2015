@@ -11,17 +11,21 @@
 #include <Commands/Subsystem.h>
 #include <vision/VisionRunner.h>
 
-
+#ifdef USE_NATIVE_RESOLUTION
+// Natural resolution: 720p (1280 x 720)
+#define IMG_WIDTH 1280
+#define IMG_HEIGHT 720
+#else
 #define IMG_WIDTH 320
 #define IMG_HEIGHT 240
-
-#define WIDTH_SCALING .7
-#define HEIGHT_SCALING .7
+#endif
 
 #define WIDTH_SCALING		.7
 #define HEIGHT_SCALING		.7
 
+#define ENABLE_DEBUGGING_OUTPUT
 
+// Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
 {
 	public:
@@ -119,19 +123,23 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 
 					//If we have at least 2 contours, we might have a target
 					cv::Rect bestRectangle;
-					const auto & filterCountoursOutput = *pipeline.GetFilterContoursOutput();
-					// std::cerr << "# of countours: " << filterCountoursOutput.size() << std::endl;
-	 				if (filterCountoursOutput.size() > 1)
+					const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
+
+#ifdef ENABLE_DEBUGGING_OUTPUT
+					std::cerr << "# of contours: " << filterContoursOutput.size() << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUT
+
+					if (filterContoursOutput.size() > 1)
 					{
 						int bestScore = 0;
 						//Iterate through list of found contours.
-						for(unsigned int i=0; i < filterCountoursOutput.size(); i++)
+						for(unsigned int i=0; i < filterContoursOutput.size(); i++)
 						{
-							const std::vector<cv::Point> & countourPoints1 = filterCountoursOutput[i];
+							const std::vector<cv::Point> & countourPoints1 = filterContoursOutput[i];
 							const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
 
-							for(unsigned int j = i + 1; j < filterCountoursOutput.size(); j++) {
-								const std::vector<cv::Point> & countourPoints2 = filterCountoursOutput[j];
+							for(unsigned int j = i + 1; j < filterContoursOutput.size(); j++) {
+								const std::vector<cv::Point> & countourPoints2 = filterContoursOutput[j];
 								const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
 
 								//Calculate a total score across all 6 measurements
@@ -146,20 +154,12 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 								if (scoreTotal > bestScore){
 									bestScore = scoreTotal;
 									boundingRect bounds(rectangle1, rectangle2);
-									bestRectangle.x  = bounds.left;
-									bestRectangle.y = bounds.right;
+									bestRectangle.x = bounds.left;
+									bestRectangle.y = bounds.top;
 									bestRectangle.width = bounds.right - bounds.left;
 									bestRectangle.height = bounds.bottom - bounds.top;
-
-
 								}
-
-								// TODO: Add code to look at pairs of spotted contours, and find
-								// the best pair.  Then, save the bounding box for the pair in
-
 							}
-							// "bestRectangle".
-							//code that is assumed to be used is down below
 						}
 					}
 					m_lock->lock();

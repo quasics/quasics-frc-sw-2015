@@ -25,8 +25,12 @@ Winch::Winch(): frc::Command() {
 // Called repeatedly when this Command is scheduled to run
 void Winch::Execute() {
 	if(Robot::oi->isWinchSignaled()) {
-		Robot::climberWinch->SetWinchMotor(.6);
-	} else {
+		Robot::climberWinch->SetWinchMotor(1);
+	}
+	else if(Robot::oi->getWinchPower()) {
+		Robot::climberWinch->SetWinchMotor(-.6);
+	}
+	else {
 		Robot::climberWinch->SetWinchMotor(0);
 	}
 }

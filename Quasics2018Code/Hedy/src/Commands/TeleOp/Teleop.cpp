@@ -5,7 +5,7 @@
 #include "CubeIntakeControl.h"
 #include "../Winch.h"
 #include <Commands/LinearSlideControl.h>
-#include "Wrist.h"
+
 
 Teleop::Teleop() {
 	// Add Commands here:
@@ -24,10 +24,9 @@ Teleop::Teleop() {
 	// e.g. if Command1 requires chassis, and Command2 requires arm,
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
-//	AddParallel(new TankDrive());
-//	AddParallel(new CubeIntakeControl());
-//	AddParallel(new ArmControl());
-//	AddParallel(new Winch());
-//	AddParallel(new LinearSlideControl());
-	AddParallel(new Wrist());
+	AddParallel(new TankDrive());
+	AddParallel(new CubeIntakeControl());
+	AddParallel(new ArmControl());
+	AddParallel(new Winch());
+	AddParallel(new LinearSlideControl());
 }

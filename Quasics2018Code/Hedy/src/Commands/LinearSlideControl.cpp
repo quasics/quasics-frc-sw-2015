@@ -30,9 +30,14 @@ void LinearSlideControl::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void LinearSlideControl::Execute() {
-	const bool RightButton = Robot::oi->isLinearSlideSignaled();
+	const bool RightButton = Robot::oi->isLinearSlideUpSignaled();
+	const bool LeftButton = Robot::oi->isLinearSlideDownSignaled();
 	if(RightButton) {
 		Robot::climberLinearSlide->SetLinearSlideMotor(.4);
+	}
+
+	else if(LeftButton) {
+		Robot::climberLinearSlide->SetLinearSlideMotor(-.4);
 	} else {
 		Robot::climberLinearSlide->SetLinearSlideMotor(0);
 	}

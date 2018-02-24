@@ -31,8 +31,9 @@
 #define XBox_ButtonB  		2
 #define XBox_ButtonX  		3
 #define XBox_ButtonY  		4
-#define XBox_LeftTrigger 	5
-#define XBox_RightButton		6
+#define XBox_LeftButton 	5
+#define XBox_RightButton	6
+
 // Axes
 #define XBox_RightXAxis  	2
 #define XBox_RightYAxis  	5

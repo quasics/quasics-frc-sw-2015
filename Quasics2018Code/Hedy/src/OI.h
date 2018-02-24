@@ -40,7 +40,8 @@ public:
 	double getLeftTrackPower();
 	double getRightTrackPower();
 
-	bool isLinearSlideSignaled();
+	bool isLinearSlideUpSignaled();
+	bool isLinearSlideDownSignaled();
 	bool isWinchSignaled();
 	double getWinchPower();
 	bool isCubeIntakeSignaled();

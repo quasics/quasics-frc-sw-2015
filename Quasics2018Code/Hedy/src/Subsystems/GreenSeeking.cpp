@@ -28,10 +28,15 @@ void GreenSeeking::Process(cv::Mat& source0){
 	cv::Mat cvErodeSrc = hsvThresholdOutput;
 	cv::Mat cvErodeKernel;
 	cv::Point cvErodeAnchor(-1, -1);
-	double cvErodeIterations = 2.0;  // default Double
+	double cvErodeIterations = 5.0;  // default Double
     int cvErodeBordertype = cv::BORDER_CONSTANT;
 	cv::Scalar cvErodeBordervalue(-1);
 	cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, this->cvErodeOutput);
+	//Step Mask0:
+	//input
+	cv::Mat maskInput = cvResizeOutput;
+	cv::Mat maskMask = cvErodeOutput;
+	mask(maskInput, maskMask, this->maskOutput);
 	//Step Find_Contours0:
 	//input
 	cv::Mat findContoursInput = cvErodeOutput;
@@ -42,8 +47,8 @@ void GreenSeeking::Process(cv::Mat& source0){
 	std::vector<std::vector<cv::Point> > filterContoursContours = findContoursOutput;
 	double filterContoursMinArea = 20.0;  // default Double
 	double filterContoursMinPerimeter = 20.0;  // default Double
-	double filterContoursMinWidth = 6.0;  // default Double
-	double filterContoursMaxWidth = 1.0E7;  // default Double
+	double filterContoursMinWidth = 10.0;  // default Double
+	double filterContoursMaxWidth = 1000.0;  // default Double
 	double filterContoursMinHeight = 10.0;  // default Double
 	double filterContoursMaxHeight = 1000.0;  // default Double
 	double filterContoursSolidity[] = {0, 100};
@@ -74,6 +79,13 @@ cv::Mat* GreenSeeking::GetHsvThresholdOutput(){
  */
 cv::Mat* GreenSeeking::GetCvErodeOutput(){
 	return &(this->cvErodeOutput);
+}
+/**
+ * This method is a generated getter for the output of a Mask.
+ * @return Mat output from Mask.
+ */
+cv::Mat* GreenSeeking::GetMaskOutput(){
+	return &(this->maskOutput);
 }
 /**
  * This method is a generated getter for the output of a Find_Contours.
@@ -129,6 +141,19 @@ std::vector<std::vector<cv::Point> >* GreenSeeking::GetFilterContoursOutput(){
 	void GreenSeeking::cvErode(cv::Mat &src, cv::Mat &kernel, cv::Point &anchor, double iterations, int borderType, cv::Scalar &borderValue, cv::Mat &dst) {
 		cv::erode(src, dst, kernel, anchor, (int)iterations, borderType, borderValue);
 	}
+
+		/**
+		 * Filter out an area of an image using a binary mask.
+		 *
+		 * @param input The image on which the mask filters.
+		 * @param mask The binary image that is used to filter.
+		 * @param output The image in which to store the output.
+		 */
+		void GreenSeeking::mask(cv::Mat &input, cv::Mat &mask, cv::Mat &output) {
+			mask.convertTo(mask, CV_8UC1);
+			cv::bitwise_xor(output, output, output);
+			input.copyTo(output, mask);
+		}
 
 	/**
 	 * Finds contours in an image.

@@ -1,4 +1,6 @@
 #include "GreenSeeking.h"
+#include "WPILib.h"
+#include "NetworkTables/NetworkTable.h"
 
 namespace grip {
 
@@ -58,6 +60,7 @@ void GreenSeeking::Process(cv::Mat& source0){
 	double filterContoursMaxRatio = 1000.0;  // default Double
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 }
+
 
 /**
  * This method is a generated getter for the output of a CV_resize.
@@ -205,8 +208,8 @@ std::vector<std::vector<cv::Point> >* GreenSeeking::GetFilterContoursOutput(){
 			if (ratio < minRatio || ratio > maxRatio) continue;
 			output.push_back(contour);
 		}
-	}
 
+	}
 
 
 } // end grip namespace

@@ -1,4 +1,6 @@
 #include "TapeTracker.h"
+#include "WPILib.h"
+#include "NetworkTables/NetworkTable.h"
 
 // Standard C++ headers
 #include <iostream>
@@ -25,6 +27,28 @@
 
 #define ENABLE_DEBUGGING_OUTPUT
 
+/*class Networks : public Networks
+{
+public:
+	NetworkTable *table;
+
+	void TapeTracker::NTPublishContoursReport(){
+		table = NetworkTable::GetTable("datatable");
+	}
+
+	void OperatorControl(void) {
+		double x = 0;
+		double y = 0;
+		while (IsOperatorControl() && IsEnabled()) {
+			Wait(1.0);
+			table->PutNumber("x", x);
+			table->PutNumber("y", y);
+			x += 0.25;
+			y += 0.25;
+		}
+	}
+}
+*/
 // Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
 {
@@ -50,7 +74,7 @@ class boundingRect
 
 
 
-/**
+/*
  * Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
  * linear going from (0,0) to (1,100) to (2,0) and is 0 for all inputs outside the range 0-2
  */
@@ -184,3 +208,4 @@ void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) c
 	currentRect = this->currentRect;
 	m_lock->unlock();
 }
+

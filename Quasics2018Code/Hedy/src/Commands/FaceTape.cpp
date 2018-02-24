@@ -8,6 +8,7 @@
 #include "FaceTape.h"
 #include <iostream>
 #include <opencv2/core.hpp>
+#include "WPILib.h"
 
 #define ENABLE_DEBUGGING_OUTPUT
 #define DISABLE_MOTION

@@ -6,12 +6,14 @@
 /*----------------------------------------------------------------------------*/
 
 #include "FaceTape.h"
+
 #include <iostream>
 #include <opencv2/core.hpp>
 #include "WPILib.h"
 
 #define ENABLE_DEBUGGING_OUTPUT
 #define DISABLE_MOTION
+
 
 #ifdef ENABLE_DEBUGGING_OUTPUT
 #define LOG(x)	do { std::cerr << x << std::endl; } while(0)
@@ -20,8 +22,11 @@
 #endif
 
 #ifndef VISION_TRACK_CUBES
+#include <iostream>
+
 
 FaceTape::FaceTape() {
+
 	Requires(Robot::driveBase.get());
 	Requires(Robot::tapeTracker.get());
 	//Requires(Robot::tapeTracker.get());
@@ -75,6 +80,7 @@ void FaceTape::Execute() {
 		LOG("   Roughly dialed in");
 		Robot::driveBase->Stop();
 	}
+
 }
 
 // Make this return true when this Command no longer needs to run execute()

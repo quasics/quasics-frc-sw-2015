@@ -81,10 +81,6 @@ void Lighting::WriteTeleOp(){
 	serialPort->Write("TeleOp;\n");
 }
 
-void Lighting::WriteWarning(){
-	serialPort->Write("Warning;\n");
-}
-
 void Lighting::WriteLimitSwitch(){
 	serialPort->Write("LimitSwitch;\n");
 }

@@ -33,7 +33,7 @@ public:
 	NetworkTable *table;
 
 	void TapeTracker::NTPublishContoursReport(){
-		table = NetworkTable::GetTable("datatable");
+		table = NetworkTable::GetTable("datatable"); k
 	}
 
 	void OperatorControl(void) {

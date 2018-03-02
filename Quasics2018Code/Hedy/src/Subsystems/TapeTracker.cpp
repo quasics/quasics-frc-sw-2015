@@ -28,16 +28,6 @@
 #define ENABLE_DEBUGGING_OUTPUT
 
 
-/*class Networks : public Networks
-{
-public:
-	NetworkTable *table;
-
-	void TapeTracker::NTPublishContoursReport(){
-		table = NetworkTable::GetTable("datatable"); k
-	}
-
-
 // Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
 {

@@ -101,27 +101,55 @@
       </grip:Input>
       <grip:Output step="4" socket="0" previewed="true"/>
     </grip:Step>
+    <grip:Step name="NTPublish ContoursReport">
+      <grip:Input step="5" socket="0"/>
+      <grip:Input step="5" socket="1">
+        <value>ContourReport</value>
+      </grip:Input>
+      <grip:Input step="5" socket="2">
+        <value>true</value>
+      </grip:Input>
+      <grip:Input step="5" socket="3">
+        <value>true</value>
+      </grip:Input>
+      <grip:Input step="5" socket="4">
+        <value>true</value>
+      </grip:Input>
+      <grip:Input step="5" socket="5">
+        <value>true</value>
+      </grip:Input>
+      <grip:Input step="5" socket="6">
+        <value>true</value>
+      </grip:Input>
+      <grip:Input step="5" socket="7">
+        <value>true</value>
+      </grip:Input>
+    </grip:Step>
   </steps>
   <connections>
     <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="true"/>
+      <grip:Input step="2" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
       <grip:Output step="3" socket="0" previewed="true"/>
       <grip:Input step="4" socket="0"/>
-    </grip:Connection>
-    <grip:Connection>
-      <grip:Output source="0" socket="0" previewed="false"/>
-      <grip:Input step="0" socket="0"/>
-    </grip:Connection>
-    <grip:Connection>
-      <grip:Output step="0" socket="0" previewed="true"/>
-      <grip:Input step="1" socket="0"/>
     </grip:Connection>
     <grip:Connection>
       <grip:Output step="2" socket="0" previewed="true"/>
       <grip:Input step="3" socket="0"/>
     </grip:Connection>
     <grip:Connection>
-      <grip:Output step="1" socket="0" previewed="true"/>
-      <grip:Input step="2" socket="0"/>
+      <grip:Output step="0" socket="0" previewed="true"/>
+      <grip:Input step="1" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="4" socket="0" previewed="true"/>
+      <grip:Input step="5" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output source="0" socket="0" previewed="false"/>
+      <grip:Input step="0" socket="0"/>
     </grip:Connection>
   </connections>
   <settings>
@@ -137,7 +165,7 @@
     <language>C++</language>
     <className>GreenSeeking</className>
     <implementWpilibPipeline>true</implementWpilibPipeline>
-    <saveDir>C:\Users\Developer\GRIP</saveDir>
+    <saveDir>C:\Users\Developer\mjh-workspace\Hedy\src\Subsystems</saveDir>
     <packageName></packageName>
     <moduleName>grip</moduleName>
   </codeGenerationSettings>

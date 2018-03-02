@@ -27,6 +27,7 @@
 
 #define ENABLE_DEBUGGING_OUTPUT
 
+
 /*class Networks : public Networks
 {
 public:
@@ -36,19 +37,7 @@ public:
 		table = NetworkTable::GetTable("datatable"); k
 	}
 
-	void OperatorControl(void) {
-		double x = 0;
-		double y = 0;
-		while (IsOperatorControl() && IsEnabled()) {
-			Wait(1.0);
-			table->PutNumber("x", x);
-			table->PutNumber("y", y);
-			x += 0.25;
-			y += 0.25;
-		}
-	}
-}
-*/
+
 // Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
 {
@@ -129,6 +118,7 @@ double heightRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
 }
 
 TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
+	//table = NetworkTable::GetTable("datatable");
 
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
@@ -139,6 +129,8 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 				[&](grip::Vision& pipeline)
 				{
 					// Remember how big the source image was.
+					//
+
 					cv::Rect srcRect;
 					srcRect.x = 0;
 					srcRect.y = 0;
@@ -157,6 +149,14 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					{
 						int bestScore = 0;
 						//Iterate through list of found contours.
+						//ToDo
+						std::vector<double> centerX = table -> GetNumberArray("centerX", llvm::ArrayRef<double>());
+						std::vector<double> centerY = table -> GetNumberArray("centerY", llvm::ArrayRef<double>());
+						std::vector<double> height = table -> GetNumberArray("height", llvm::ArrayRef<double>());
+						std::vector<double> area = table -> GetNumberArray("area", llvm::ArrayRef<double>());
+						std::vector<double> width = table -> GetNumberArray("width", llvm::ArrayRef<double>());
+					//	std::cout << centerX << centerY << area << height << width;
+
 						for(unsigned int i=0; i < filterContoursOutput.size(); i++)
 						{
 							const std::vector<cv::Point> & countourPoints1 = filterContoursOutput[i];

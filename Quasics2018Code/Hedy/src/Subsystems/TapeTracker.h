@@ -16,6 +16,7 @@ private:
 	mutable std::mutex* m_lock = nullptr;
 	cv::Rect currentRect;
 	cv::Rect imageRect;
+	NetworkTable *table;
 
 
 public:
@@ -24,6 +25,7 @@ public:
 
 	cv::Rect getCurrentRect() const;
 	cv::Rect getImageRect() const;
+
 
 	void getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) const;
 };

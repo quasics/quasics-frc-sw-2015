@@ -108,7 +108,7 @@ double heightRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
 }
 
 TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
-	//table = NetworkTable::GetTable("datatable");
+		//table = NetworkTable::GetTable("datatable");
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
 		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 		m_lock = new std::mutex;
@@ -131,19 +131,23 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 
 					//TODO: Read data from the network table;
 
-					std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
-					std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
-					std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
-					std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
-
+						std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
+						std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
+						std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
+						std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
 
 					// Note that we'll assume all arrays are of the same size (and nothing changes while we
 					// were grabbing them).
 					if (centerXs.empty()) {
-						// No contours were apparently seen
-						std::cout << "Got rects: ";
-
+					// No contours were apparently seen
+						std::cout << "Don't got rects ";
 					}
+					else{
+						std::cout << "Got rects: ";
+					}
+
+
+
 
 
 /*#ifdef ENABLE_DEBUGGING_OUTPUT

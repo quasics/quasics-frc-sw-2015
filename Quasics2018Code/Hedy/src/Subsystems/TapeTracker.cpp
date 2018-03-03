@@ -22,6 +22,8 @@
 #define IMG_HEIGHT 240
 #endif
 
+#define ENABLE_EXTERNAL_PIPELINE
+
 #define WIDTH_SCALING		.7
 #define HEIGHT_SCALING		.7
 
@@ -107,107 +109,120 @@ double heightRatioScore(cv::Rect rectangle1, cv::Rect rectangle2)
 	return ratioToScore(rectangle1.height/rectangle2.height);
 }
 
-TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
-		//table = NetworkTable::GetTable("datatable");
+TapeTracker::TapeTracker()
+: frc::Subsystem("TapeTracker"),
+  m_lock(new std::mutex),
+  table(NetworkTable::GetTable("GRIP/ContourReport"))
+{
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
-		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
-		m_lock = new std::mutex;
+	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 
-		visionTrackingTask = new frc::VisionRunner<grip::Vision>(
-				camera, new grip::Vision(),
-				[&](grip::Vision& pipeline)
-				{
-					// Remember how big the source image was.
-					//
-					cv::Rect srcRect;
-					srcRect.x = 0;
-					srcRect.y = 0;
-					srcRect.width = IMG_WIDTH * WIDTH_SCALING;
-					srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
+	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
+			camera, new grip::Vision(),
+			[&](grip::Vision& pipeline)
+			{
+				// Remember how big the source image was.
+				//
+				cv::Rect srcRect;
+				srcRect.x = 0;
+				srcRect.y = 0;
+				srcRect.width = IMG_WIDTH * WIDTH_SCALING;
+				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
 
-					//If we have at least 2 contours, we might have a target
-					cv::Rect bestRectangle;
-					//const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
+				//If we have at least 2 contours, we might have a target
+				cv::Rect bestRectangle;
 
-					//TODO: Read data from the network table;
-
-						std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
-						std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
-						std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
-						std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
-
-					// Note that we'll assume all arrays are of the same size (and nothing changes while we
-					// were grabbing them).
-					if (centerXs.empty()) {
-					// No contours were apparently seen
-						std::cout << "Don't got rects " << std::endl;
-					}
-					else{
-						std::cout << "Got rects: " << std::endl;
-
-					}
+#ifdef ENABLE_EXTERNAL_PIPELINE
+				// const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
+				processDriverStationData(bestRectangle);
+#else
+				processLocalCameraData(pipeline, bestRectangle);
+#endif	// ENABLE_EXTERNAL_PIPELINE
 
 
-
-
-
-/*#ifdef ENABLE_DEBUGGING_OUTPUT
-					std::cerr << "# of contours: " << filterContoursOutput.size() << std::endl;
-#endif	// ENABLE_DEBUGGING_OUTPUT
-
-					if (filterContoursOutput.size() > 1)
-					{
-						int bestScore = 0;
-						//Iterate through list of found contours.
-						//ToDo
-						std::vector<double> centerX = table -> GetNumberArray("centerX", llvm::ArrayRef<double>());
-						std::vector<double> centerY = table -> GetNumberArray("centerY", llvm::ArrayRef<double>());
-						std::vector<double> height = table -> GetNumberArray("height", llvm::ArrayRef<double>());
-						std::vector<double> area = table -> GetNumberArray("area", llvm::ArrayRef<double>());
-						std::vector<double> width = table -> GetNumberArray("width", llvm::ArrayRef<double>());
-					//	std::cout << centerX << centerY << area << height << width;
-
-						for(unsigned int i=0; i < filterContoursOutput.size(); i++)
-						{
-							const std::vector<cv::Point> & countourPoints1 = filterContoursOutput[i];
-							const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
-
-							for(unsigned int j = i + 1; j < filterContoursOutput.size(); j++) {
-								const std::vector<cv::Point> & countourPoints2 = filterContoursOutput[j];
-								const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
-
-								//Calculate a total score across all 6 measurements
-								double scoreTotal = 0;
-								scoreTotal += boundingRatioScore(rectangle1, rectangle2);
-								scoreTotal += contourWidthScore(rectangle1, rectangle2);
-								scoreTotal += topEdgeScore(rectangle1, rectangle2);
-								scoreTotal += leftSpacingScore(rectangle1, rectangle2);
-								scoreTotal += widthRatioScore(rectangle1, rectangle2);
-								scoreTotal += heightRatioScore(rectangle1, rectangle2);
-
-								if (scoreTotal > bestScore){
-									bestScore = scoreTotal;
-									boundingRect bounds(rectangle1, rectangle2);
-									bestRectangle.x = bounds.left;
-									bestRectangle.y = bounds.top;
-									bestRectangle.width = bounds.right - bounds.left;
-									bestRectangle.height = bounds.bottom - bounds.top;
-								}
-							}
-						}
-					}
-					*/
-
-
-					m_lock->lock();
-					currentRect = bestRectangle;
-					imageRect = srcRect;
-					m_lock->unlock();
-				});
-		m_visionThread = new std::thread(&TapeTracker::visionExecuter, this);
-
+				m_lock->lock();
+				currentRect = bestRectangle;
+				imageRect = srcRect;
+				m_lock->unlock();
+			});
+	m_visionThread = new std::thread(&TapeTracker::visionExecuter, this);
 }
 
+void TapeTracker::processLocalCameraData(grip::Vision& pipeline, cv::Rect& bestRectangle) {
+	bestRectangle = cv::Rect();		// Clear it to all zero values.
+
+	const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
+
+#ifdef ENABLE_DEBUGGING_OUTPUT
+	std::cerr << "# of contours: " << filterContoursOutput.size() << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUT
+
+	if (filterContoursOutput.size() > 1)
+	{
+		int bestScore = 0;
+		//Iterate through list of found contours.
+		//ToDo
+		std::vector<double> centerX = table -> GetNumberArray("centerX", llvm::ArrayRef<double>());
+		std::vector<double> centerY = table -> GetNumberArray("centerY", llvm::ArrayRef<double>());
+		std::vector<double> height = table -> GetNumberArray("height", llvm::ArrayRef<double>());
+		std::vector<double> area = table -> GetNumberArray("area", llvm::ArrayRef<double>());
+		std::vector<double> width = table -> GetNumberArray("width", llvm::ArrayRef<double>());
+
+		for(unsigned int i=0; i < filterContoursOutput.size(); i++)
+		{
+			const std::vector<cv::Point> & countourPoints1 = filterContoursOutput[i];
+			const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
+
+			for(unsigned int j = i + 1; j < filterContoursOutput.size(); j++) {
+				const std::vector<cv::Point> & countourPoints2 = filterContoursOutput[j];
+				const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
+
+				//Calculate a total score across all 6 measurements
+				double scoreTotal = 0;
+				scoreTotal += boundingRatioScore(rectangle1, rectangle2);
+				scoreTotal += contourWidthScore(rectangle1, rectangle2);
+				scoreTotal += topEdgeScore(rectangle1, rectangle2);
+				scoreTotal += leftSpacingScore(rectangle1, rectangle2);
+				scoreTotal += widthRatioScore(rectangle1, rectangle2);
+				scoreTotal += heightRatioScore(rectangle1, rectangle2);
+
+				if (scoreTotal > bestScore){
+					bestScore = scoreTotal;
+					boundingRect bounds(rectangle1, rectangle2);
+					bestRectangle.x = bounds.left;
+					bestRectangle.y = bounds.top;
+					bestRectangle.width = bounds.right - bounds.left;
+					bestRectangle.height = bounds.bottom - bounds.top;
+				}
+			}
+		}
+	}
+}
+
+void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
+	bestRectangle = cv::Rect();		// Clear it to all zero values.
+
+	const std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
+	const std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
+	const std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
+	const std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
+
+	// Note that we'll assume all arrays are of the same size (and nothing changes while we
+	// were grabbing them).
+	if (centerXs.empty()) {
+		// N	o contours were apparently seen
+#ifdef ENABLE_DEBUGGING_OUTPUT
+		std::cout << "Didn't receive any rects from GRIP" << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUT
+	}
+	else{
+#ifdef ENABLE_DEBUGGING_OUTPUT
+		std::cout << "Received " << centerXs.size() << " rects from GRIP" << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUT
+	}
+
+	// TODO: Process the data from the network table, in order to fill in "bestRectangle".
+}
 
 void TapeTracker::visionExecuter()
 {

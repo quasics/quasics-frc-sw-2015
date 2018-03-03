@@ -16,7 +16,11 @@ private:
 	mutable std::mutex* m_lock = nullptr;
 	cv::Rect currentRect;
 	cv::Rect imageRect;
-	NetworkTable *table;
+	std::shared_ptr<nt::NetworkTable> table;
+
+private:
+	void processLocalCameraData(grip::Vision& pipeline, cv::Rect& bestRectangle);
+	void processDriverStationData(cv::Rect& bestRectangle);
 
 
 public:

@@ -140,10 +140,11 @@ TapeTracker::TapeTracker() : frc::Subsystem("TapeTracker") {
 					// were grabbing them).
 					if (centerXs.empty()) {
 					// No contours were apparently seen
-						std::cout << "Don't got rects ";
+						std::cout << "Don't got rects " << std::endl;
 					}
 					else{
-						std::cout << "Got rects: ";
+						std::cout << "Got rects: " << std::endl;
+
 					}
 
 

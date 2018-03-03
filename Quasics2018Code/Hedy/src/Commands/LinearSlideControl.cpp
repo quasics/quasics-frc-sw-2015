@@ -35,7 +35,6 @@ void LinearSlideControl::Execute() {
 	if(RightButton) {
 		Robot::climberLinearSlide->SetLinearSlideMotor(.4);
 	}
-
 	else if(LeftButton) {
 		Robot::climberLinearSlide->SetLinearSlideMotor(-.4);
 	} else {

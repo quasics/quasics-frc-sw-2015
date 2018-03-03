@@ -5,7 +5,7 @@
 
 //--------------------Logitech Gamepad-----------------------------------------------------------------
 // Buttons
-#define LogitechGamePad_AButton 				2
+#define LogitechGamePad_AButton 			2
 #define LogitechGamePad_BButton  			3
 #define LogitechGamePad_XButton  			4
 #define LogitechGamePad_YButton  			1
@@ -13,7 +13,7 @@
 #define LogitechGamePad_RightShoulder  		6
 #define LogitechGamePad_LeftTrigger  		7
 #define LogitechGamePad_RightTrigger  		8
-#define LogitechGamePad_LeftStickPress  		11
+#define LogitechGamePad_LeftStickPress  	11
 #define LogitechGamePad_RightStickPress  	12
 #define LogitechGamePad_StartButton  		9
 #define LogitechGamePad_SelectButton  		10
@@ -22,8 +22,8 @@
 // the controller (e.g., for "tank drive" coding).
 #define LogitechGamePad_LeftXAxis 			0
 #define LogitechGamePad_LeftYAxis  			1
-#define LogitechGamePad_RightXAxis  			2
-#define LogitechGamePad_RightYAxis  			3
+#define LogitechGamePad_RightXAxis  		2
+#define LogitechGamePad_RightYAxis  		3
 
 //--------------------X-Box Controller-----------------------------------------------------------------
 // Buttons

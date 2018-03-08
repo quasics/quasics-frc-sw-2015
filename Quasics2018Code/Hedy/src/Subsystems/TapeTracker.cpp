@@ -115,41 +115,7 @@ TapeTracker::TapeTracker()
   table(NetworkTable::GetTable("GRIP/ContourReport"))
 {
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
-
-
-		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
-		m_lock = new std::mutex;
-
-		visionTrackingTask = new frc::VisionRunner<grip::Vision>(
-				camera, new grip::Vision(),
-				[&](grip::Vision& pipeline)
-				{
-					// Remember how big the source image was.
-
-
-					cv::Rect srcRect;
-					srcRect.x = 0;
-					srcRect.y = 0;
-					srcRect.width = IMG_WIDTH * WIDTH_SCALING;
-					srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
-
-					//If we have at least 2 contours, we might have a target
-					cv::Rect bestRectangle;
-					//const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
-
-					//TODO: Read data from the network table;
-
 	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
-
-					if (table == nullptr) {
-							// Can't talk to the network table
-							return;
-						}
-
-						std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
-						std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
-						std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
-			std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
 
 	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
 			camera, new grip::Vision(),
@@ -162,13 +128,13 @@ TapeTracker::TapeTracker()
 				srcRect.y = 0;
 				srcRect.width = IMG_WIDTH * WIDTH_SCALING;
 				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
+
 				//If we have at least 2 contours, we might have a target
 				cv::Rect bestRectangle;
-/*
+
 #ifdef ENABLE_EXTERNAL_PIPELINE
 				// const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
-			processDriverStationData(bestRectangle);
-
+				processDriverStationData(bestRectangle);
 #else
 				processLocalCameraData(pipeline, bestRectangle);
 #endif	// ENABLE_EXTERNAL_PIPELINE
@@ -183,8 +149,6 @@ TapeTracker::TapeTracker()
 }
 
 void TapeTracker::processLocalCameraData(grip::Vision& pipeline, cv::Rect& bestRectangle) {
-
-}
 	bestRectangle = cv::Rect();		// Clear it to all zero values.
 
 	const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
@@ -259,7 +223,7 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 
 	// TODO: Process the data from the network table, in order to fill in "bestRectangle".
 }
-*/
+
 void TapeTracker::visionExecuter()
 {
 	std::cerr << "Starting up vision execution" << std::endl;

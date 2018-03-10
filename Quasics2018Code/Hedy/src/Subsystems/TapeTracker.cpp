@@ -250,10 +250,22 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 		std::cout << "Received " << centerXs.size() << " rects from GRIP" << std::endl;
 #endif	// ENABLE_DEBUGGING_OUTPUT
 	}
-	std::vector<cv::Rect> createdRects;
-	createdRects.reserve(centerXs.size());
-	cv::Rect newRect;
-	for(unsigned i = 0; i < centerXs.size(); i++)
+
+	// Process the data from the network table, in order to fill in "bestRectangle".
+	/*
+	 * If we have > 1 thing (centerX, or centerY, ....) coming back
+	 *    1) Build a vector of cv::Rect objects using the data from GRIP.
+	 *    2) Loop through the vector we built (start @ 0, go to size - 2); call this "i"
+	 *       a) Loop through the succeeding rects, and evaluate the pair to see if it's
+	 *          a better fit than what we've seen so far.
+	 *
+	 */
+	if (centerXs.size() > 1)
+	{
+		std::vector<cv::Rect> createdRects;
+		createdRects.reserve(centerXs.size());
+		cv::Rect newRect;
+		for(unsigned i = 0; i < centerXs.size(); i++)
 		{
 			newRect.height = heights[i];
 			newRect.width = widths[i];
@@ -262,51 +274,36 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 			createdRects.push_back(newRect);
 		}
 
-	if (centerXs.size() > 1)
+		int bestScore = 0;
+		//Iterate through list of found contours.
+		//ToDo
+		for(unsigned int i=0; i < createdRects.size(); i++)
 		{
-			int bestScore = 0;
-			//Iterate through list of found contours.
-			//ToDo
-			for(unsigned int i=0; i < centerXs.size(); i++)
-			{
-				const std::vector<cv::Point> & countourPoints1 = centerXs[i];
-				const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
+			const cv::Rect & rectangle1 = createdRects[i];
 
-				for(unsigned int j = i + 1; j < centerXs.size(); j++) {
-					const std::vector<cv::Point> & countourPoints2 = centerXs[j];
-					const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
+			for(unsigned int j = i + 1; j < createdRects.size(); j++) {
+				const cv::Rect & rectangle2 = createdRects[j];
 
-					//Calculate a total score across all 6 measurements
-					double scoreTotal = 0;
-					scoreTotal += boundingRatioScore(rectangle1, rectangle2);
-					scoreTotal += contourWidthScore(rectangle1, rectangle2);
-					scoreTotal += topEdgeScore(rectangle1, rectangle2);
-					scoreTotal += leftSpacingScore(rectangle1, rectangle2);
-					scoreTotal += widthRatioScore(rectangle1, rectangle2);
-					scoreTotal += heightRatioScore(rectangle1, rectangle2);
+				//Calculate a total score across all 6 measurements
+				double scoreTotal = 0;
+				scoreTotal += boundingRatioScore(rectangle1, rectangle2);
+				scoreTotal += contourWidthScore(rectangle1, rectangle2);
+				scoreTotal += topEdgeScore(rectangle1, rectangle2);
+				scoreTotal += leftSpacingScore(rectangle1, rectangle2);
+				scoreTotal += widthRatioScore(rectangle1, rectangle2);
+				scoreTotal += heightRatioScore(rectangle1, rectangle2);
 
-					if (scoreTotal > bestScore){
-						bestScore = scoreTotal;
-						boundingRect bounds(rectangle1, rectangle2);
-						bestRectangle.x = bounds.left;
-						bestRectangle.y = bounds.top;
-						bestRectangle.width = bounds.right - bounds.left;
-						bestRectangle.height = bounds.bottom - bounds.top;
-					}
+				if (scoreTotal > bestScore){
+					bestScore = scoreTotal;
+					boundingRect bounds(rectangle1, rectangle2);
+					bestRectangle.x = bounds.left;
+					bestRectangle.y = bounds.top;
+					bestRectangle.width = bounds.right - bounds.left;
+					bestRectangle.height = bounds.bottom - bounds.top;
 				}
 			}
 		}
-
-
-	// TODO: Process the data from the network table, in order to fill in "bestRectangle".
-
-	/*
-	 * If we have > 1 thing (centerX, or centerY, ....) coming back
-	 *    1) Build a vector of cv::Rect objects.
-	 *    2) Loop through the vector we built (start @ 0, go to size - 2); call this "i"
-	 *       a) Loop through the following
-	 *
-	 */
+	}
 }
 
 void TapeTracker::visionExecuter()

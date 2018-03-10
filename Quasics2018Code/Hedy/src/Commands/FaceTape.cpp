@@ -12,7 +12,7 @@
 #include "WPILib.h"
 
 #define ENABLE_DEBUGGING_OUTPUT
-#define DISABLE_MOTION
+// #define DISABLE_MOTION
 
 
 #ifdef ENABLE_DEBUGGING_OUTPUT
@@ -55,7 +55,7 @@ void FaceTape::Execute() {
 	int centerImage = image.width / 2;
 	int rectOffset = centerRect - centerImage;
 #ifdef DISABLE_MOTION
-	const double turningSpeed = .1;
+	const double turningSpeed = 0;
 #else
 	const double turningSpeed = .2;
 #endif	// DISABLE_MOTION

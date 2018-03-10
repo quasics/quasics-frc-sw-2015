@@ -272,6 +272,7 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 	}
 #ifdef ENABLE_DEBUGGING_OUTPUT
 	std::cout << "Size of rect is: "  << bestRectangle.height << " by " << bestRectangle.width << std::endl;
+	std::cout << "Image Rect: " << imageRect << "Best Rectangle " << bestRectangle << std::endl;
 #endif	// ENABLE_DEBUGGING_OUTPUTdasfj
 }
 

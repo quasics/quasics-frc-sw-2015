@@ -118,40 +118,6 @@ TapeTracker::TapeTracker()
 		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
 		m_lock = new std::mutex;
 
-	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
-			camera, new grip::Vision(),
-			[&](grip::Vision& pipeline)
-			{
-				// Remember how big the source image was.
-
-
-				cv::Rect srcRect;
-				srcRect.x = 0;
-				srcRect.y = 0;
-				srcRect.width = IMG_WIDTH * WIDTH_SCALING;
-				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
-
-				//If we have at least 2 contours, we might have a target
-				cv::Rect bestRectangle;
-				//const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
-
-				//TODO: Read data from the network table;
-
-	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
-
-				if (table == nullptr) {
-					// Can't talk to the network table
-						return;
-					}
-
-					std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
-					std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
-					std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
-					std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
-
-
-
-					}
 
 	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
 			camera, new grip::Vision(),
@@ -248,7 +214,8 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 	else{
 #ifdef ENABLE_DEBUGGING_OUTPUT
 		std::cout << "Received " << centerXs.size() << " rects from GRIP" << std::endl;
-#endif	// ENABLE_DEBUGGING_OUTPUT
+		std::cout << "Size of rect is: "  << bestRectangle.height << " by " << bestRectangle.width << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUTdasfj
 	}
 
 	// Process the data from the network table, in order to fill in "bestRectangle".
@@ -318,5 +285,3 @@ void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) c
 	currentRect = this->currentRect;
 	m_lock->unlock();
 }
-
-

@@ -39,14 +39,10 @@ void FaceTape::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void FaceTape::Execute() {
-
 	cv::Rect image, box;
 	Robot::tapeTracker->getBoundingRects(image, box);
-	LOG("Image rect: " << image << ", box rect: " << box);
-
 	if (box.width == 0) {
-
-		LOG("   We don't see the rectangles....");
+		LOG("   We don't see the target....");
 		Robot::driveBase->Stop();
 		return;
 	}
@@ -63,6 +59,7 @@ void FaceTape::Execute() {
 	// If the box is seen within this many pixels of the center, then we're good enough!
 	const int allowedOffset = 15;
 
+	LOG("Image rect: " << image << ", box rect: " << box);
 	LOG("   rectOffsetFromMiddle: " << rectOffset << ", centerImage: " << centerImage << ", center of rectangles: " << centerRect);
 
 	if (rectOffset > allowedOffset) {

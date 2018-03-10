@@ -214,7 +214,6 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 	else{
 #ifdef ENABLE_DEBUGGING_OUTPUT
 		std::cout << "Received " << centerXs.size() << " rects from GRIP" << std::endl;
-		std::cout << "Size of rect is: "  << bestRectangle.height << " by " << bestRectangle.width << std::endl;
 #endif	// ENABLE_DEBUGGING_OUTPUTdasfj
 	}
 
@@ -271,6 +270,9 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 			}
 		}
 	}
+#ifdef ENABLE_DEBUGGING_OUTPUT
+	std::cout << "Size of rect is: "  << bestRectangle.height << " by " << bestRectangle.width << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUTdasfj
 }
 
 void TapeTracker::visionExecuter()

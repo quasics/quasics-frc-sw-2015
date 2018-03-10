@@ -141,9 +141,11 @@ TapeTracker::TapeTracker()
 				processLocalCameraData(pipeline, bestRectangle);
 #endif	// ENABLE_EXTERNAL_PIPELINE
 
+#ifdef ENABLE_DEBUGGING_OUTPUT
 				std::cerr << "Rectangles: \n"
 						  << "  - Image:  " << srcRect << '\n'
 						  << "  - Target: " << bestRectangle << std::endl;
+#endif	// ENABLE_DEBUGGING_OUTPUT
 
 				m_lock->lock();
 				currentRect = bestRectangle;

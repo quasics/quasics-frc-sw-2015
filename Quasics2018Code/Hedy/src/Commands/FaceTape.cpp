@@ -45,16 +45,15 @@ void FaceTape::Execute() {
 	LOG("Image rect: " << image << ", box rect: " << box);
 
 	if (box.width == 0) {
-		// Note: Come back and revisit this.
-		// For now, if we don't see it, don't move.
-		LOG("   We don't see the box....");
+
+		LOG("   We don't see the rectangles....");
 		Robot::driveBase->Stop();
 		return;
 	}
 
-	int centerBox = box.x + box.width / 2;
+	int centerRect = box.x + box.width / 2;
 	int centerImage = image.width / 2;
-	int boxOffsetFromMiddle = centerBox - centerImage;
+	int rectOffset = centerRect - centerImage;
 #ifdef DISABLE_MOTION
 	const double turningSpeed = 0;
 #else
@@ -64,14 +63,14 @@ void FaceTape::Execute() {
 	// If the box is seen within this many pixels of the center, then we're good enough!
 	const int allowedOffset = 15;
 
-	LOG("   boxOffsetFromMiddle: " << boxOffsetFromMiddle << ", centerImage: " << centerImage << ", centerBox: " << centerBox);
+	LOG("   rectOffsetFromMiddle: " << rectOffset << ", centerImage: " << centerImage << ", center of rectangles: " << centerRect);
 
-	if (boxOffsetFromMiddle > allowedOffset) {
+	if (rectOffset > allowedOffset) {
 		LOG("   Turning right");
 		// Box is to the right of center, so turn right.
 		Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
 	}
-	else if (boxOffsetFromMiddle < -allowedOffset) {
+	else if (rectOffset < -allowedOffset) {
 		LOG("   Turning right");
 		// Box is to the left of center, so turn left
 		Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);

@@ -71,7 +71,7 @@ void FaceTape::Execute() {
 		Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
 	}
 	else if (rectOffset < -allowedOffset) {
-		LOG("   Turning right");
+		LOG("   Turning left");
 		// Box is to the left of center, so turn left
 		Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
 	}

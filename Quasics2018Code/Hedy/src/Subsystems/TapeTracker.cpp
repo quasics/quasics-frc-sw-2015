@@ -27,7 +27,7 @@
 #define WIDTH_SCALING		.7
 #define HEIGHT_SCALING		.7
 
-#define ENABLE_DEBUGGING_OUTPUT
+// #define ENABLE_DEBUGGING_OUTPUT
 
 // Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
@@ -141,6 +141,9 @@ TapeTracker::TapeTracker()
 				processLocalCameraData(pipeline, bestRectangle);
 #endif	// ENABLE_EXTERNAL_PIPELINE
 
+				std::cerr << "Rectangles: \n"
+						  << "  - Image:  " << srcRect << '\n'
+						  << "  - Target: " << bestRectangle << std::endl;
 
 				m_lock->lock();
 				currentRect = bestRectangle;
@@ -226,13 +229,11 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 	 *          a better fit than what we've seen so far.
 	 *
 	 */
-	if (centerXs.size() > 1)
-	{
+	if (centerXs.size() > 1) {
 		std::vector<cv::Rect> createdRects;
 		createdRects.reserve(centerXs.size());
 		cv::Rect newRect;
-		for(unsigned i = 0; i < centerXs.size(); i++)
-		{
+		for(unsigned i = 0; i < centerXs.size(); i++) {
 			newRect.height = heights[i];
 			newRect.width = widths[i];
 			newRect.x = centerXs[i] - (newRect.width / 2);
@@ -243,8 +244,7 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 		int bestScore = 0;
 		//Iterate through list of found contours.
 		//ToDo
-		for(unsigned int i=0; i < createdRects.size(); i++)
-		{
+		for(unsigned int i=0; i < createdRects.size(); i++) {
 			const cv::Rect & rectangle1 = createdRects[i];
 
 			for(unsigned int j = i + 1; j < createdRects.size(); j++) {

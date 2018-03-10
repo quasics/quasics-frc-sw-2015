@@ -29,7 +29,6 @@
 
 #define ENABLE_DEBUGGING_OUTPUT
 
-
 // Helper class, used in evaluating pairs of rectangles for scoring.
 class boundingRect
 {
@@ -55,8 +54,7 @@ class boundingRect
 
 
 
-/*
- * Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
+ /* Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
  * linear going from (0,0) to (1,100) to (2,0) and is 0 for all inputs outside the range 0-2
  */
 double ratioToScore(double ratio)
@@ -115,7 +113,45 @@ TapeTracker::TapeTracker()
   table(NetworkTable::GetTable("GRIP/ContourReport"))
 {
 	cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture();
+
+
+		camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
+		m_lock = new std::mutex;
+
+	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
+			camera, new grip::Vision(),
+			[&](grip::Vision& pipeline)
+			{
+				// Remember how big the source image was.
+
+
+				cv::Rect srcRect;
+				srcRect.x = 0;
+				srcRect.y = 0;
+				srcRect.width = IMG_WIDTH * WIDTH_SCALING;
+				srcRect.height = IMG_HEIGHT * HEIGHT_SCALING;
+
+				//If we have at least 2 contours, we might have a target
+				cv::Rect bestRectangle;
+				//const auto & filterContoursOutput = *pipeline.GetFilterContoursOutput();
+
+				//TODO: Read data from the network table;
+
 	camera.SetResolution(IMG_WIDTH, IMG_HEIGHT);
+
+				if (table == nullptr) {
+					// Can't talk to the network table
+						return;
+					}
+
+					std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
+					std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
+					std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
+					std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
+
+
+
+					}
 
 	visionTrackingTask = new frc::VisionRunner<grip::Vision>(
 			camera, new grip::Vision(),
@@ -162,12 +198,6 @@ void TapeTracker::processLocalCameraData(grip::Vision& pipeline, cv::Rect& bestR
 		int bestScore = 0;
 		//Iterate through list of found contours.
 		//ToDo
-		std::vector<double> centerX = table -> GetNumberArray("centerX", llvm::ArrayRef<double>());
-		std::vector<double> centerY = table -> GetNumberArray("centerY", llvm::ArrayRef<double>());
-		std::vector<double> height = table -> GetNumberArray("height", llvm::ArrayRef<double>());
-		std::vector<double> area = table -> GetNumberArray("area", llvm::ArrayRef<double>());
-		std::vector<double> width = table -> GetNumberArray("width", llvm::ArrayRef<double>());
-
 		for(unsigned int i=0; i < filterContoursOutput.size(); i++)
 		{
 			const std::vector<cv::Point> & countourPoints1 = filterContoursOutput[i];
@@ -220,8 +250,63 @@ void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 		std::cout << "Received " << centerXs.size() << " rects from GRIP" << std::endl;
 #endif	// ENABLE_DEBUGGING_OUTPUT
 	}
+	std::vector<cv::Rect> createdRects;
+	createdRects.reserve(centerXs.size());
+	cv::Rect newRect;
+	for(unsigned i = 0; i < centerXs.size(); i++)
+		{
+			newRect.height = heights[i];
+			newRect.width = widths[i];
+			newRect.x = centerXs[i] - (newRect.width / 2);
+			newRect.y = centerYs[i] - (newRect.height / 2);
+			createdRects.push_back(newRect);
+		}
+
+	if (centerXs.size() > 1)
+		{
+			int bestScore = 0;
+			//Iterate through list of found contours.
+			//ToDo
+			for(unsigned int i=0; i < centerXs.size(); i++)
+			{
+				const std::vector<cv::Point> & countourPoints1 = centerXs[i];
+				const cv::Rect rectangle1 = cv::boundingRect(cv::Mat(countourPoints1));
+
+				for(unsigned int j = i + 1; j < centerXs.size(); j++) {
+					const std::vector<cv::Point> & countourPoints2 = centerXs[j];
+					const cv::Rect rectangle2 = cv::boundingRect(cv::Mat(countourPoints2));
+
+					//Calculate a total score across all 6 measurements
+					double scoreTotal = 0;
+					scoreTotal += boundingRatioScore(rectangle1, rectangle2);
+					scoreTotal += contourWidthScore(rectangle1, rectangle2);
+					scoreTotal += topEdgeScore(rectangle1, rectangle2);
+					scoreTotal += leftSpacingScore(rectangle1, rectangle2);
+					scoreTotal += widthRatioScore(rectangle1, rectangle2);
+					scoreTotal += heightRatioScore(rectangle1, rectangle2);
+
+					if (scoreTotal > bestScore){
+						bestScore = scoreTotal;
+						boundingRect bounds(rectangle1, rectangle2);
+						bestRectangle.x = bounds.left;
+						bestRectangle.y = bounds.top;
+						bestRectangle.width = bounds.right - bounds.left;
+						bestRectangle.height = bounds.bottom - bounds.top;
+					}
+				}
+			}
+		}
+
 
 	// TODO: Process the data from the network table, in order to fill in "bestRectangle".
+
+	/*
+	 * If we have > 1 thing (centerX, or centerY, ....) coming back
+	 *    1) Build a vector of cv::Rect objects.
+	 *    2) Loop through the vector we built (start @ 0, go to size - 2); call this "i"
+	 *       a) Loop through the following
+	 *
+	 */
 }
 
 void TapeTracker::visionExecuter()
@@ -236,4 +321,5 @@ void TapeTracker::getBoundingRects(cv::Rect& imageRect, cv::Rect& currentRect) c
 	currentRect = this->currentRect;
 	m_lock->unlock();
 }
+
 

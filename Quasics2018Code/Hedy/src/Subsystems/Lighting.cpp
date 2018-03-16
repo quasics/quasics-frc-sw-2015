@@ -81,8 +81,28 @@ void Lighting::WriteTeleOp(){
 	serialPort->Write("TeleOp;\n");
 }
 
-void Lighting::WriteLimitSwitch(){
-	serialPort->Write("LimitSwitch;\n");
+char Lighting::GetColor() {
+	auto& driverStation = frc::DriverStation::GetInstance();
+	auto ds_alliance = driverStation.GetAlliance();
+	switch (ds_alliance) {
+		case DriverStation::kRed:
+			return 'r';
+		case DriverStation::kBlue:
+			return 'b';
+		default:
+			return 'g';
+	}
+}
+
+char Lighting::GetMode(){
+	auto& driverStation = frc::DriverStation::GetInstance();
+	if (driverStation.IsAutonomous()) {
+			return 'a';
+	}
+	else if(driverStation.IsOperatorControl()){
+			return 't';
+	}
+	return 'u';
 }
 
 // Put methods for controlling this subsystem

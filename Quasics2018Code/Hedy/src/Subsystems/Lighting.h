@@ -13,6 +13,7 @@
 #define LIGHTING_H
 
 #include <WPILib.h>
+#include <SerialPort.h>
 
 /**
  *
@@ -21,7 +22,7 @@
  */
 class Lighting: public frc::Subsystem {
 private:
-	std::shared_ptr<SerialPort> serialPort;
+	std::shared_ptr<frc::SerialPort> serialPort;
 
 	// It's desirable that everything possible is private except
 	// for methods that implement subsystem capabilities

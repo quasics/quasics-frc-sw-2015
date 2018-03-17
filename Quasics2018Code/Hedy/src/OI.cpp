@@ -56,7 +56,8 @@ OI::OI() {
     frc::SmartDashboard::PutData("Facing Yellow", new FaceYellow());
 #else
     frc::SmartDashboard::PutData("Tape", new FaceTape());
-    //frc::SmartDashboard::PutData("Turn Right", new PointTurnRight());
+    frc::SmartDashboard::PutData("Turn Right", new PointTurnRight(45,.1));
+
 #endif
 }
 

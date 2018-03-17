@@ -8,17 +8,24 @@
 #include "FaceTape.h"
 
 #include <iostream>
+#include <sstream>
 #include <opencv2/core.hpp>
 #include "WPILib.h"
 
 #define ENABLE_DEBUGGING_OUTPUT
-#define DISABLE_MOTION
+// #define DISABLE_MOTION
 
 
 #ifdef ENABLE_DEBUGGING_OUTPUT
+#define CREATE_SLOG		std::ostringstream sout
+#define SLOG(x)	do { sout << x; } while(0)
 #define LOG(x)	do { std::cerr << x << std::endl; } while(0)
+#define SLOG_DUMP	LOG(sout.str())
 #else
+#define CREATE_SLOG
+#define SLOG(x)
 #define LOG(x)
+#define SLOG_DUMP
 #endif
 
 #ifndef VISION_TRACK_CUBES
@@ -40,6 +47,8 @@ void FaceTape::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void FaceTape::Execute() {
 	cv::Rect image, box;
+	CREATE_SLOG;
+
 	Robot::tapeTracker->getBoundingRects(image, box);
 	if (box.width == 0) {
 		LOG("   We don't see the target....");
@@ -53,30 +62,30 @@ void FaceTape::Execute() {
 #ifdef DISABLE_MOTION
 	const double turningSpeed = 0;
 #else
-	const double turningSpeed = .2;
+	const double turningSpeed = .15;
 #endif	// DISABLE_MOTION
 
 	// If the box is seen within this many pixels of the center, then we're good enough!
-	const int allowedOffset = 35;
+	const int allowedOffset = 40;
 
 	// LOG("Image rect: " << image << ", box rect: " << box);
-	LOG("   rectOffsetFromMiddle: " << rectOffset /*<< ", centerImage: " << centerImage << ", center of rectangles: " << centerRect*/);
+	SLOG("   rectOffsetFromMiddle: " << rectOffset /*<< ", centerImage: " << centerImage << ", center of rectangles: " << centerRect*/ << '\t');
 
 	if (rectOffset > allowedOffset) {
-		// LOG("   Turning right");
+		SLOG("   Turning right");
 		// Box is to the right of center, so turn right.
-		Robot::driveBase->SetPowerToMotors(-turningSpeed, -turningSpeed);
+		Robot::driveBase->SetPowerToMotors(.15, .15);
 	}
 	else if (rectOffset < -allowedOffset) {
-		// LOG("   Turning left");
+		SLOG("   Turning left");
 		// Box is to the left of center, so turn left
-		Robot::driveBase->SetPowerToMotors(turningSpeed, turningSpeed);
+		Robot::driveBase->SetPowerToMotors(-.1, -.1);
 	}
 	else {
-		// LOG("   Roughly dialed in");
+		SLOG("   Roughly dialed in");
 		Robot::driveBase->Stop();
 	}
-
+	SLOG_DUMP;
 }
 
 // Make this return true when this Command no longer needs to run execute()

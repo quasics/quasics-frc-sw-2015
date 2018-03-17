@@ -83,8 +83,7 @@ void FaceTape::Execute() {
 	}
 	else {
 		SLOG("   Roughly dialed in");
-		Robot::driveBase->Stop();
-	}
+		Robot::driveBase->SetPowerToMotors(.1,-.1);	}
 	SLOG_DUMP;
 }
 

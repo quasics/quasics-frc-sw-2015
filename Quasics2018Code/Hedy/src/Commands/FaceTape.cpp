@@ -60,9 +60,11 @@ void FaceTape::Execute() {
 	int centerImage = image.width / 2;
 	int rectOffset = centerRect - centerImage;
 #ifdef DISABLE_MOTION
-	const double turningSpeed = 0;
+	const double rightTurningSpeed = 0;
+	const double leftTurningSpeed = 0;
 #else
-	const double turningSpeed = .15;
+	const double rightTurningSpeed = .15;
+	const double leftTurningSpeed = .1;
 #endif	// DISABLE_MOTION
 
 	// If the box is seen within this many pixels of the center, then we're good enough!
@@ -74,16 +76,17 @@ void FaceTape::Execute() {
 	if (rectOffset > allowedOffset) {
 		SLOG("   Turning right");
 		// Box is to the right of center, so turn right.
-		Robot::driveBase->SetPowerToMotors(.15, .15);
+		Robot::driveBase->SetPowerToMotors(rightTurningSpeed, rightTurningSpeed);
 	}
 	else if (rectOffset < -allowedOffset) {
 		SLOG("   Turning left");
 		// Box is to the left of center, so turn left
-		Robot::driveBase->SetPowerToMotors(-.1, -.1);
+		Robot::driveBase->SetPowerToMotors(-leftTurningSpeed, -leftTurningSpeed);
 	}
 	else {
 		SLOG("   Roughly dialed in");
-		Robot::driveBase->SetPowerToMotors(.1,-.1);	}
+		Robot::driveBase->Stop();
+	}
 	SLOG_DUMP;
 }
 

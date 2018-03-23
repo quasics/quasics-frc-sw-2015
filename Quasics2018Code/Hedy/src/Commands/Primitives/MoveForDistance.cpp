@@ -27,13 +27,16 @@ void MoveForDistance::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void MoveForDistance::Execute() {
-	static const double deltaDown = 0.95;
-	static const double deltaUp = 1.05;
-	LOG("Left dist: " << std::setw(5) << Robot::driveBase->LeftEncoderDistance()
-		  << " Right dist: " << std::setw(5) << Robot::driveBase->RightEncoderDistance()
+	static constexpr double deltaDown = 0.95;
+	static constexpr double deltaUp = 1.04;
+	const double leftDistance = fabs(Robot::driveBase->LeftEncoderDistance());
+	const double rightDistance = fabs(Robot::driveBase->RightEncoderDistance());
+
+	LOG("Left dist: " << std::setw(5) << leftDistance
+		  << " Right dist: " << std::setw(5) << rightDistance
 		  << " / Left power: " << std::setw(5) << leftPower
 		  << " Right power: " << std::setw(5) << rightPower);
-	if(Robot::driveBase->LeftEncoderDistance()  > Robot::driveBase->RightEncoderDistance()) {
+	if(leftDistance  > rightDistance) {
 		double v = leftPower * deltaDown;
 		if (fabs(v) >= fabs(power * .8)) {
 			leftPower = v;
@@ -47,7 +50,7 @@ void MoveForDistance::Execute() {
 		// rightPower *= 1.1;
 		Robot::driveBase->SetPowerToMotors(-leftPower, rightPower);
 	}
-	else if(Robot::driveBase->LeftEncoderDistance() < Robot::driveBase->RightEncoderDistance()){
+	else if(leftDistance < rightDistance){
 		double v = rightPower * deltaDown;
 		if (fabs(v) >= fabs(power * .8)) {
 			rightPower = v;

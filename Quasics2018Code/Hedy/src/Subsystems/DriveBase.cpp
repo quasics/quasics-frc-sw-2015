@@ -49,12 +49,23 @@ void DriveBase::InitDefaultCommand() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
+///////////////////////////////////////////////////////////////////////////
+// Motor control starts here
+
 void DriveBase::SetPowerToMotors(double leftPercent, double rightPercent) {
 	leftMotors->Set(leftPercent);
 	rightMotors->Set(rightPercent);
 }
 
-//Encoders start here
+void DriveBase::Stop(){
+	SetPowerToMotors(0, 0);
+}
+
+// Motor control ends here
+///////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
+// Encoders start here
 
 double DriveBase::RightEncoderVelocity() {
 	return rightEncoder->GetRate();
@@ -63,7 +74,6 @@ double DriveBase::RightEncoderVelocity() {
 double DriveBase::LeftEncoderVelocity() {
 	return leftEncoder->GetRate();
 }
-
 
 double DriveBase::RightEncoderDistance(){
 	return rightEncoder->GetDistance();
@@ -78,7 +88,6 @@ uint32_t DriveBase::RightEncoderRaw(){
 	return leftEncoder->GetRaw();
 }
 
-
 void DriveBase::RightEncoderReset(){
 	leftEncoder->Reset();
 }
@@ -87,7 +96,4 @@ void DriveBase::LeftEncoderReset(){
 }
 
 //Encoders end here
-
-void DriveBase::Stop(){
-	SetPowerToMotors(0, 0);
-}
+///////////////////////////////////////////////////////////////////////////

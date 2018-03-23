@@ -14,7 +14,7 @@ void CubeIntakeControl::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void CubeIntakeControl::Execute() {
 	if(Robot::oi->isCubeIntakeSignaled() && !Robot::cubeIntake->IsLimitSwitchTriggered()){
-		Robot::cubeIntake->SetIntakePower(-.40);
+		Robot::cubeIntake->SetIntakePower(-.8);
 	}
 	else if (Robot::oi->isCubeLowSpeedExhaustSignaled()) {
 		Robot::cubeIntake->SetIntakePower(.60);

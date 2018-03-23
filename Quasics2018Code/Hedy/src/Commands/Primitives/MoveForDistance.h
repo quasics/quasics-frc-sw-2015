@@ -18,6 +18,8 @@ public:
 private:
 	const uint32_t target;
 	const double power;
+	double leftPower;
+	double rightPower;
 };
 
 #endif

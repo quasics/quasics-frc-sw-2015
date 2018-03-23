@@ -25,15 +25,15 @@ void TankDrive::Execute() {
 	const double leftTrackPower = Robot::oi->getLeftTrackPower();
 	const double rightTrackPower = Robot::oi->getRightTrackPower();
 
-	double mult = .4;
+	double mult = 1;
 	if(highBoost && lowBoost){
 		mult = 1;
 	}
 	else if(highBoost && !lowBoost){
-		mult = .7;
+		mult = .6;
 	}
 	else if(lowBoost && !highBoost){
-		mult = .2;
+		mult = .4;
 	}
 
 	if(!switchDirection && pressedLastTime){

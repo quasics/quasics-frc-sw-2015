@@ -83,10 +83,21 @@ void FaceTape::Execute() {
 		// Box is to the left of center, so turn left
 		Robot::driveBase->SetPowerToMotors(-leftTurningSpeed, -leftTurningSpeed);
 	}
+
 	else {
 		SLOG("   Roughly dialed in");
 		Robot::driveBase->Stop();
 	}
+
+	/*
+	 // Code That I will continue working on to get the robot to move forward once centered
+	  while(rectOffset == allowedOffset){
+		  SLOG("	Moving Forward");
+		  //Once the box is centered, the robot will begin to move forward
+		  Robot::driveBase->SetPowerToMotors(rightTurningSpeed, leftTurningSpeed);
+	  }
+
+	 */
 	SLOG_DUMP;
 }
 

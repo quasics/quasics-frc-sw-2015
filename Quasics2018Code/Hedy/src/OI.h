@@ -20,6 +20,7 @@ private:
 	
 	
 	
+	
 	std::shared_ptr<frc::Joystick> auxStick;
 	std::shared_ptr<frc::Joystick> driveStick;
 

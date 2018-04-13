@@ -41,6 +41,14 @@ void GyroADXRS::Periodic() {
 
 }
 
+void GyroADXRS::Reset(){
+	analogGyro1->Reset();
+}
+
+double GyroADXRS::GetAngle() {
+	return analogGyro1->GetAngle();
+}
+
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

@@ -33,7 +33,7 @@ void GyroTurn::Initialize() {
 	Robot::gyroADXRS->Calibrate();
 	Robot::gyroADXRS->Reset();
 	Robot::driveBase->SetPowerToMotors(m_power, m_power);
-	SmartDashboard::PutString("DB/String 0", "Code has passed calibrate, reset, and motors.");
+
 }
 
 // Called repeatedly when this Command is scheduled to run

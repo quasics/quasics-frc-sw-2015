@@ -5,6 +5,7 @@
 #include <iomanip>
 
 double normalizeAngle(double angleDegrees) {
+
 	double result = 0;
 	if (angleDegrees >= 0 && angleDegrees < 360) {
 		result = angleDegrees;
@@ -42,12 +43,14 @@ void GyroTurn::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool GyroTurn::IsFinished() {
-	const double currentAngle = Robot::gyroADXRS->GetAngle();
+	const double currentAngle = (Robot::gyroADXRS->GetAngle() + .1) * 360;
 	std::cerr << "Target angle: " << std::setw(6) << m_angle
 			  << "\tCurrent angle: " << std::setw(6) << currentAngle
 			  << std::endl;
 
 	if (currentAngle >= m_angle){
+
+
 		return true;
 	}
 	return false;

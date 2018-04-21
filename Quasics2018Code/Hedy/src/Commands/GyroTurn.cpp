@@ -34,6 +34,7 @@ void GyroTurn::Initialize() {
 	Robot::gyroADXRS->Reset();
 	Robot::driveBase->SetPowerToMotors(m_power, m_power);
 
+
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -45,12 +46,11 @@ void GyroTurn::Execute() {
 bool GyroTurn::IsFinished() {
 	const double currentAngle = (Robot::gyroADXRS->GetAngle() + .1) * 360;
 	std::cerr << "Target angle: " << std::setw(6) << m_angle
+
 			  << "\tCurrent angle: " << std::setw(6) << currentAngle
 			  << std::endl;
 
 	if (currentAngle >= m_angle){
-
-
 		return true;
 	}
 	return false;

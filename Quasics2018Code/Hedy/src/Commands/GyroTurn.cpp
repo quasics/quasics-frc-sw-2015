@@ -29,6 +29,7 @@ GyroTurn::GyroTurn(float angle, double power): frc::Command() {
 // Called just before this Command runs the first time
 void GyroTurn::Initialize() {
 	std::cerr << "Initializing GyroTurn(" << m_angle << ", " << m_power << ")\n";
+	Robot::gyroADXRS->Calibrate();
 	Robot::gyroADXRS->Reset();
 	Robot::driveBase->SetPowerToMotors(m_power, m_power);
 }

@@ -45,6 +45,10 @@ void GyroADXRS::Reset(){
 	analogGyro1->Reset();
 }
 
+void GyroADXRS::Calibrate(){
+	analogGyro1->Calibrate();
+}
+
 double GyroADXRS::GetAngle() {
 	return analogGyro1->GetAngle();
 }

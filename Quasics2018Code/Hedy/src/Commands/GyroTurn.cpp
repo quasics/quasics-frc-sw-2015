@@ -54,6 +54,11 @@ void GyroTurn::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void GyroTurn::Execute() {
 
+	const double currentAngle = Robot::gyroADXRS->GetAngle();
+	if (currentAngle + 10 >= m_angle){
+		Robot::driveBase->SetPowerToMotors(.1, .1);
+
+	}
 }
 
 // Make this return true when this Command no longer needs to run execute()

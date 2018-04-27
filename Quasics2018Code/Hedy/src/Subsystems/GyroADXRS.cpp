@@ -53,6 +53,10 @@ double GyroADXRS::GetAngle() {
 	return analogGyro1->GetAngle();
 }
 
+double GyroADXRS::GetRate() {
+	return analogGyro1->GetRate();
+}
+
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.

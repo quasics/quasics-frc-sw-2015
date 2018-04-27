@@ -15,6 +15,9 @@ public:
 	void Interrupted() override;
 private:
 
+	void DumpStats(std::string prefix);
+	void DumpStats() { DumpStats(std::string()); }
+
 	double m_power;
 	float m_angle;
 };

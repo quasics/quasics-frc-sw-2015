@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 
+#define NOISY
+
 double normalizeAngle(double angleDegrees) {
 
 	double result = 0;
@@ -27,13 +29,26 @@ GyroTurn::GyroTurn(float angle, double power): frc::Command() {
 	m_power = power;
 }
 
+void GyroTurn::DumpStats(std::string prefix) {
+#ifdef NOISY
+	const double turnRate = Robot::gyroADXRS->GetRate();
+	const double currentAngle = Robot::gyroADXRS->GetAngle();
+	std::cerr << prefix
+			  << "Target angle: " << std::setw(6) << m_angle
+			  << "\tCurrent angle: " << std::setw(6) << currentAngle
+			  << "\tCurrent rate: " << std::setw(6) << turnRate
+			  << std::endl;
+#endif	// NOISY
+}
+
 // Called just before this Command runs the first time
 void GyroTurn::Initialize() {
 	std::cerr << "Initializing GyroTurn(" << m_angle << ", " << m_power << ")\n";
 	Robot::gyroADXRS->Reset();
+
+	DumpStats("At init: ");
+
 	Robot::driveBase->SetPowerToMotors(m_power, m_power);
-
-
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -43,12 +58,8 @@ void GyroTurn::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool GyroTurn::IsFinished() {
-	const double currentAngle = (Robot::gyroADXRS->GetAngle() + .1) * 360;
-	std::cerr << "Target angle: " << std::setw(6) << m_angle
-
-			  << "\tCurrent angle: " << std::setw(6) << currentAngle
-			  << std::endl;
-
+	DumpStats();
+	const double currentAngle = Robot::gyroADXRS->GetAngle();
 	if (currentAngle >= m_angle){
 		return true;
 	}
@@ -59,6 +70,7 @@ bool GyroTurn::IsFinished() {
 void GyroTurn::End() {
 	Robot::driveBase->Stop();
 
+	DumpStats("At end: ");
 }
 
 // Called when another command which requires one or more of the same

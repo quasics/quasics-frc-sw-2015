@@ -10,6 +10,7 @@
 #include "Primitives/PointTurnLeft.h"
 #include "Primitives/PointTurnRight.h"
 #include "Primitives/Outtake.h"
+#include "GyroTurn.h"
 #include <iostream>
 
 
@@ -31,13 +32,22 @@ AutoExchange::AutoExchange() {
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
 	AddSequential(new MoveForDistance(120, -.4));		// Move 10' forward, to cross the line.
-	AddSequential(new PointTurnLeft(180, -.4));		    // Turn 180 degrees.
+	AddSequential(new GyroTurn(180, .15));
+
+	//AddSequential(new PointTurnLeft(180, -.4));		    // Turn 180 degrees.
+
 	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
-	AddSequential(new PointTurnLeft(90, -.4));		    // Turn 90 degrees left.
+	AddSequential(new GyroTurn(270, .15));
+	//AddSequential(new PointTurnLeft(90, -.4));		    // Turn 90 degrees left.
+
 	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
-	AddSequential(new PointTurnRight(90, -.4));		    // Turn 90 degrees right. to face the exchange.
+	AddSequential(new GyroTurn(90, .15));
+	//AddSequential(new PointTurnRight(90, -.4));		    // Turn 90 degrees right. to face the exchange.
+
 	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
+
 	AddSequential(new Outtake(2, -.7));		            // Spit cube into exchange window.
+
 	AddSequential(new MoveForDistance(24, .4));		    // Move 2' reverse.
 
 }

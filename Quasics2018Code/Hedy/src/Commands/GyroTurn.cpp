@@ -9,13 +9,11 @@
 double normalizeAngle(double angleDegrees) {
 
 	double result = 0;
-	if (angleDegrees >= 0 && angleDegrees < 360) {
+	if (angleDegrees < 360) {
 		result = angleDegrees;
-	} else if (angleDegrees < 0) {
-		// Angle is negative (and for now, we'll only turn to the left), so
-		// convert it.
-		result = angleDegrees - (((int(angleDegrees) / 360) - 1) * 360);
-	} else {
+	}
+
+	else if (angleDegrees >= 361) {
 		// Angle is too big: reduce it
 		result = angleDegrees - ((int(angleDegrees) / 360) * 360);
 	}
@@ -55,7 +53,7 @@ void GyroTurn::Initialize() {
 void GyroTurn::Execute() {
 
 	const double currentAngle = Robot::gyroADXRS->GetAngle();
-	if (currentAngle + 10 >= m_angle){
+	if (currentAngle + 10 >= m_angle && m_angle > 0){
 		Robot::driveBase->SetPowerToMotors(.1, .1);
 
 	}
@@ -65,10 +63,15 @@ void GyroTurn::Execute() {
 bool GyroTurn::IsFinished() {
 	DumpStats();
 	const double currentAngle = Robot::gyroADXRS->GetAngle();
-	if (currentAngle >= m_angle){
+	if (currentAngle >= m_angle && m_angle > 0){
 		return true;
 	}
+	else if (m_angle < 0 && currentAngle <= m_angle){
+		return true;
+
+	}
 	return false;
+
 }
 
 // Called once after isFinished returns true

@@ -32,24 +32,45 @@ AutoExchange::AutoExchange() {
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
 
-	AddSequential(new MoveForDistance(120, -.3));		// Move 10' forward, to cross the line.
+	//Power levels should be ~30% for forward moves, and ~15% for turns on tile. ~30% for turns on carpet.
 
-	AddSequential(new GyroTurn(180, .15));              //Turn 180 degrees.
+	AddSequential(new MoveForDistance(120, -.3));		// Move forward, to cross the line.
 
-	AddSequential(new MoveForDistance(55, -.3));		// Move 5' forward.
+	//Either the triangle or the box can be used, depending on placement.
 
-	AddSequential(new GyroTurn(-90, -.15));              //Turn 270 degrees right (90 left)
+	//triangular moving
 
-	AddSequential(new MoveForDistance(50, -.3));		// Move 3' forward.
+	AddSequential(new GyroTurn(135, .3));               //Turn 135 degrees.
 
-	AddSequential(new GyroTurn(90, .15));               //Turn 90 degrees right to face the exchange.
+	AddSequential(new MoveForDistance(60, -.3));        //Move forward.
+
+	AddSequential(new GyroTurn(30, .3));                //Turn 20 degrees.
+
+	AddSequential(new MoveForDistance(60, -.3));        //Move to the exchange.
+
+	//end triangle code
+/*
+    //box moving
+     *
+	AddSequential(new GyroTurn(180, .3));               //Turn 180 degrees.
+
+	AddSequential(new MoveForDistance(55, -.3));		// Move forward.
+
+	AddSequential(new GyroTurn(-90, -.25));             //Turn 90 degrees left
+
+	AddSequential(new MoveForDistance(50, -.3));		// Move forward.
+
+	AddSequential(new GyroTurn(90, .3));                //Turn 90 degrees right to face the exchange.
 
 	AddSequential(new MoveForDistance(48, -.3));		// Move forward to the exchange.
 
+	//end box moving
+
+*/
 	//AddSequential(new Outtake(2, -.7));		            // Spit cube into exchange window.
 
-	AddSequential(new MoveForDistance(36, .3));		    // Move 3' reverse.
+	AddSequential(new MoveForDistance(36, .4));		    // Move 3' reverse.
 
-	AddSequential(new GyroTurn(160, .15));              //Turn 160 degrees.
+	AddSequential(new GyroTurn(160, .3));               //Turn 160 degrees.
 
 }

@@ -54,7 +54,7 @@ void GyroTurn::Execute() {
 
 	const double currentAngle = Robot::gyroADXRS->GetAngle();
 	if (currentAngle + 10 >= m_angle && m_angle > 0){
-		Robot::driveBase->SetPowerToMotors(.1, .1);
+		Robot::driveBase->SetPowerToMotors(.15, .15);
 
 	}
 }

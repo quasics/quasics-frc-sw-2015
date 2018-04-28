@@ -32,17 +32,16 @@ AutoExchange::AutoExchange() {
 	// a CommandGroup containing them would require both the chassis and the
 	// arm.
 	AddSequential(new MoveForDistance(120, -.4));		// Move 10' forward, to cross the line.
-	AddSequential(new GyroTurn(180, .15));
 
-	//AddSequential(new PointTurnLeft(180, -.4));		    // Turn 180 degrees.
-
-	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
-	AddSequential(new GyroTurn(270, .15));
-	//AddSequential(new PointTurnLeft(90, -.4));		    // Turn 90 degrees left.
+	AddSequential(new GyroTurn(180, .15));              //Turn 180 degrees.
 
 	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
-	AddSequential(new GyroTurn(90, .15));
-	//AddSequential(new PointTurnRight(90, -.4));		    // Turn 90 degrees right. to face the exchange.
+
+	AddSequential(new GyroTurn(270, .15));              //Turn 270 degrees right (90 left)
+
+	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
+
+	AddSequential(new GyroTurn(90, .15));               //Turn 90 degrees right to face the exchange.
 
 	AddSequential(new MoveForDistance(60, -.4));		// Move 5' forward.
 

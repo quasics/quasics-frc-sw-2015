@@ -86,7 +86,8 @@ void FaceTape::Execute() {
 
 	else {
 		SLOG("   Roughly dialed in");
-		Robot::driveBase->Stop();
+		//Robot::driveBase->Stop();
+		Robot::driveBase->SetPowerToMotors(rightTurningSpeed, leftTurningSpeed);
 	}
 
 	/*
@@ -96,8 +97,8 @@ void FaceTape::Execute() {
 		  //Once the box is centered, the robot will begin to move forward
 		  Robot::driveBase->SetPowerToMotors(rightTurningSpeed, leftTurningSpeed);
 	  }
+	*/
 
-	 */
 	SLOG_DUMP;
 }
 

@@ -37,7 +37,7 @@ AutoExchange::AutoExchange() {
 	AddSequential(new MoveForDistance(120, -.3));		// Move forward, to cross the line.
 
 	//Either the triangle or the box can be used, depending on placement.
-
+	//Until we get to test it on a field, we will not know for sure which set of code works best.
 	//triangular moving
 
 	AddSequential(new GyroTurn(135, .3));               //Turn 135 degrees.
@@ -51,7 +51,7 @@ AutoExchange::AutoExchange() {
 	//end triangle code
 /*
     //box moving
-     *
+
 	AddSequential(new GyroTurn(180, .3));               //Turn 180 degrees.
 
 	AddSequential(new MoveForDistance(55, -.3));		// Move forward.

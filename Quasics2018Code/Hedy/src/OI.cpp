@@ -66,7 +66,7 @@ OI::OI() {
 
 
     // frc::SmartDashboard::PutData("Test Negative GyroTurn", new GyroTurn(-90, -.15));
-    // frc::SmartDashboard::PutData("winch", new Winch());
+    frc::SmartDashboard::PutData("winch", new Winch());
     frc::SmartDashboard::PutData("MoveForDistance", new MoveForDistance(100, -.3));
     frc::SmartDashboard::PutData("AutoLeftSwitch", new AutoLeftSwitch());
     frc::SmartDashboard::PutData("AutoRightSwitch", new AutoRightSwitch());

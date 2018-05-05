@@ -109,7 +109,7 @@ private:
     long                last_sensor_timestamp;
     double              last_update_time;
 
-    std::shared_ptr<ITable>	table;
+    std::shared_ptr<NetworkTable>	table;
 
     InertialDataIntegrator *integrator;
     ContinuousAngleTracker *yaw_angle_tracker;
@@ -203,8 +203,8 @@ private:
     static int ThreadFunc(IIOProvider *io_provider);
 
     /* LiveWindowSendable implementation */
-    void InitTable(std::shared_ptr<ITable> subtable);
-    std::shared_ptr<ITable> GetTable() const;
+    void InitTable(std::shared_ptr<NetworkTable> subtable);
+    std::shared_ptr<NetworkTable> GetTable() const;
     std::string GetSmartDashboardType() const;
     void UpdateTable();
     void StartLiveWindowMode();

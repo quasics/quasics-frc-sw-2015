@@ -32,11 +32,11 @@ AutoLeftSwitch::AutoLeftSwitch() {
 
 	//Power levels should be ~30% for forward moves, and ~15% for turns on tile. ~30% for turns on carpet.
 
-	AddSequential(new MoveForDistance(168, -.3));		// Move forward, to the switch.
+	AddSequential(new MoveForDistance(144, -.3));		// Move forward, to the switch.
 
 	AddSequential(new GyroTurn(90, .3));               //Turn 90 degrees right to face the switch
 
-	AddSequential(new MoveForDistance(36, -.3));		// Move forward, to the switch.
+	AddSequential(new MoveForDistance(18, -.3));		// Move forward, to the switch.
 
 	//AddSequential(new Outtake(2, -.7));		        // Spit cube into switch.
 

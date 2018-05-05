@@ -29,6 +29,9 @@ void MoveForDistance::Initialize() {
 void MoveForDistance::Execute() {
 	static constexpr double deltaDown = 0.95;
 	static constexpr double deltaUp = 1.04;
+	static constexpr double maxOffset = 1.2;
+	static constexpr double minOffset = 0.8;
+
 	const double leftDistance = fabs(Robot::driveBase->LeftEncoderDistance());
 	const double rightDistance = fabs(Robot::driveBase->RightEncoderDistance());
 
@@ -38,16 +41,15 @@ void MoveForDistance::Execute() {
 		  << " Right power: " << std::setw(5) << rightPower);
 	if(leftDistance  > rightDistance) {
 		double v = leftPower * deltaDown;
-		if (fabs(v) >= fabs(power * .8)) {
+		if (fabs(v) >= fabs(power * minOffset)) {
 			leftPower = v;
 		} else {
-			if (fabs(rightPower * deltaUp) <= fabs(power * 1.2)) {
+			if (fabs(rightPower * deltaUp) <= fabs(power * maxOffset)) {
 				rightPower = rightPower * deltaUp;
 			} else {
-				rightPower = power * 1.2;
+				rightPower = power * maxOffset;
 			}
-		}
-		// rightPower *= 1.1;
+		}		// rightPower *= 1.1;
 		Robot::driveBase->SetPowerToMotors(-leftPower, rightPower);
 	}
 	else if(leftDistance < rightDistance){

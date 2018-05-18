@@ -12,14 +12,14 @@
 #include <Commands/AutoCrossTheLineFromSideCommand.h>
 #include "OI.h"
 #include "ControllerDefinitions.h"
-#include "Commands/FaceTape.h"
+
 #include "Commands/LightingTestCommand.h"
-#include "Commands/LinearSlideControl.h"
+
 #include "Commands/Primitives/PointTurnRight.h"
 #include "Commands/Primitives/MoveForDistance.h"
 #include "Commands/Teleop/Teleop.h"
 #include "Commands/AutoExchange.h"
-#include "Commands/Winch.h"
+
 #include "Commands/GyroTurn.h"
 #include "Commands/AutoLeftSwitch.h"
 #include "Commands/AutoRightSwitch.h"
@@ -36,7 +36,7 @@
 #include "Commands/AutoScoreOnSwitchCommand.h"
 #include "Commands/AutonomousCommand.h"
 #include "Commands/DummyCommand.h"
-#include "Commands/LinearSlideControl.h"
+
 #include "Commands/TurnWithGyro.h"
 
 
@@ -57,7 +57,7 @@ OI::OI() {
 
     // SmartDashboard Buttons
     frc::SmartDashboard::PutData("TurnWithGyro", new TurnWithGyro());
-    frc::SmartDashboard::PutData("Linear Slide Control", new LinearSlideControl());
+
     frc::SmartDashboard::PutData("Auto Score On Right Switch Command", new AutoScoreOnRightSwitchCommand());
     frc::SmartDashboard::PutData("Auto Score On Left Switch Command", new AutoScoreOnLeftSwitchCommand());
     frc::SmartDashboard::PutData("Auto Score On Switch Command", new AutoScoreOnSwitchCommand());
@@ -69,7 +69,7 @@ OI::OI() {
 
 
     // frc::SmartDashboard::PutData("Test Negative GyroTurn", new GyroTurn(-90, -.15));
-    frc::SmartDashboard::PutData("winch", new Winch());
+
     frc::SmartDashboard::PutData("Cross the line", new MoveForDistance(100, -.3));
     frc::SmartDashboard::PutData("AutoLeftSwitch", new AutoLeftSwitch());
     frc::SmartDashboard::PutData("AutoRightSwitch", new AutoRightSwitch());
@@ -80,11 +80,7 @@ OI::OI() {
     frc::SmartDashboard::PutData("Intake", new Outtake(10, .8));
     frc::SmartDashboard::PutData("Outtake", new Outtake(10, -1));
 
-#ifdef VISION_TRACK_CUBES
-    frc::SmartDashboard::PutData("Facing Yellow", new FaceYellow());
-#else
-    frc::SmartDashboard::PutData("Tape", new FaceTape());
-#endif
+
 
     //    frc::SmartDashboard::PutData("Turn Right", new PointTurnRight(45,.1));
     //    frc::SmartDashboard::PutData("Test lighting command", new LightingTestCommand());

@@ -3,8 +3,7 @@
 #include "Teleop.h"
 #include "../Primitives/TankDrive.h"
 #include "CubeIntakeControl.h"
-#include "../Winch.h"
-#include <Commands/LinearSlideControl.h>
+
 
 
 Teleop::Teleop() {
@@ -27,6 +26,5 @@ Teleop::Teleop() {
 	AddParallel(new TankDrive());
 	AddParallel(new CubeIntakeControl());
 	AddParallel(new ArmControl());
-	AddParallel(new Winch());
-	AddParallel(new LinearSlideControl());
+
 }

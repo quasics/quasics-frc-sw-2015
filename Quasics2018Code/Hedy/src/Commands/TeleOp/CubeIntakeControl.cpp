@@ -6,11 +6,6 @@ CubeIntakeControl::CubeIntakeControl() {
 	Requires(Robot::cubeIntake.get());
 }
 
-// Called just before this Command runs the first time
-void CubeIntakeControl::Initialize() {
-
-}
-
 // Called repeatedly when this Command is scheduled to run
 void CubeIntakeControl::Execute() {
 	if(Robot::oi->isCubeIntakeSignaled() && !Robot::cubeIntake->IsLimitSwitchTriggered()){

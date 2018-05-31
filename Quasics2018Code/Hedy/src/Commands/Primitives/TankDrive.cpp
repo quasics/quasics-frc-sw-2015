@@ -11,11 +11,6 @@ TankDrive::TankDrive(): frc::Command() {
 
 }
 
-// Called just before this Command runs the first time
-void TankDrive::Initialize() {
-
-}
-
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getdriveStick();
@@ -62,5 +57,5 @@ void TankDrive::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void TankDrive::Interrupted() {
-	Robot::driveBase->Stop();
+	End();
 }

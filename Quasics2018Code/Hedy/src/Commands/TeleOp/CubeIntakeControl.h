@@ -9,7 +9,6 @@
 class CubeIntakeControl : public frc::Command {
 public:
 	CubeIntakeControl();
-	void Initialize();
 	void Execute();
 	bool IsFinished();
 	void End();

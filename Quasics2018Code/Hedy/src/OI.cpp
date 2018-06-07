@@ -111,11 +111,11 @@ bool OI::isLowBoostSignaled() {
 double OI::getWinchPower() {
 	return auxStick->GetRawAxis(XBox_RightYAxis);
 }
-
-bool OI::isCubeIntakeSignaled() {
-	const bool buttonB = auxStick->GetRawButton(XBox_ButtonB);
-	return buttonB;
-}
+//
+//bool OI::isCubeIntakeSignaled() {
+//	const bool buttonA = auxStick->GetRawButton(XBox_ButtonA);
+//	return buttonA;
+//}
 
 bool OI::isCubeHighSpeedExhaustSignaled() {
 	const bool buttonY = auxStick->GetRawButton(XBox_ButtonY);

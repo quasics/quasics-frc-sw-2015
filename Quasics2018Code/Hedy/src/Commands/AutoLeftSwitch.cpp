@@ -1,6 +1,7 @@
 #include "AutoLeftSwitch.h"
 #include "Primitives/MoveForDistance.h"
 #include "Primitives/Outtake.h"
+#include "Primitives/ShoulderMove.h"
 #include "GyroTurn.h"
 
 
@@ -30,6 +31,6 @@ AutoLeftSwitch::AutoLeftSwitch() {
 
 	AddSequential(new MoveForDistance(18, -.3));		// Move forward, to the switch.
 
-	//AddSequential(new Outtake(2, -.7));		        // Spit cube into switch.
+	AddSequential(new Outtake(2, -.7));		        // Spit cube into switch.
 
 }

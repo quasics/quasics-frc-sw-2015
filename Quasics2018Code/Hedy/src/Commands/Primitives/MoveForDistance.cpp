@@ -66,7 +66,7 @@ void MoveForDistance::Execute() {
 		Robot::driveBase->SetPowerToMotors(-(leftPower), (rightPower));
 	}
 	else{
-		Robot::driveBase->SetPowerToMotors(-(leftPower), rightPower);
+		Robot::driveBase->SetPowerToMotors(-(leftPower .2ZE21``````W-), rightPower);
 	}
 }
 

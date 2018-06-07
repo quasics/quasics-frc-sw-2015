@@ -101,7 +101,7 @@ void RobotMap::init() {
 			0, 1, true, DRIVE_TRAIN_INCHES_PER_TICK,
 			frc::PIDSourceType::kRate, "DriveBase", "Left Encoder");
 	driveBaseRightEncoder = createEncoder(
-			2, 3, false, DRIVE_TRAIN_INCHES_PER_TICK,
+			4, 5, false, DRIVE_TRAIN_INCHES_PER_TICK,
 			frc::PIDSourceType::kRate, "DriveBase", "Right Encoder");
 
 	driveBaseRightFrontMotor = createMotor<frc::PWMVictorSPX>(0, "Drive Base", "rightFrontMotor");
@@ -156,7 +156,7 @@ void RobotMap::init() {
     lw->AddSensor("DriveBase", "Left Encoder", driveBaseLeftEncoder);
     driveBaseLeftEncoder->SetDistancePerPulse(0.05235987755);
     driveBaseLeftEncoder->SetPIDSourceType(frc::PIDSourceType::kRate);
-    driveBaseRightEncoder.reset(new frc::Encoder(2, 3, false, frc::Encoder::k4X));
+    driveBaseRightEncoder.reset(new frc::Encoder(4, 5, false, frc::Encoder::k4X));
     lw->AddSensor("DriveBase", "Right Encoder", driveBaseRightEncoder);
     driveBaseRightEncoder->SetDistancePerPulse(0.05235987755);
     driveBaseRightEncoder->SetPIDSourceType(frc::PIDSourceType::kRate);

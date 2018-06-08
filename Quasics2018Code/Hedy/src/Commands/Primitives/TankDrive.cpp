@@ -25,10 +25,10 @@ void TankDrive::Execute() {
 		mult = 1;
 	}
 	else if(highBoost && !lowBoost){
-		mult = .5;
+		mult = .6;
 	}
 	else if(lowBoost && !highBoost){
-		mult = .3;
+		mult = .4;
 	}
 
 	if(!switchDirection && pressedLastTime){

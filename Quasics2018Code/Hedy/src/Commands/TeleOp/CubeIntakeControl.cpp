@@ -17,6 +17,9 @@ void CubeIntakeControl::Execute() {
 	else if (Robot::oi->isCubeHighSpeedExhaustSignaled()){
 		Robot::cubeIntake->SetIntakePower(1);
 	}
+	else if (Robot::oi->isCubeOutLowSpeedExhaustSignaled()){
+		Robot::cubeIntake->SetIntakePower(.5);
+	}
 	else{
 		Robot::cubeIntake->SetIntakePower(0);
 	}

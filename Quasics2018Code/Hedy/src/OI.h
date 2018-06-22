@@ -48,6 +48,7 @@ public:
 	bool isCubeIntakeSignaled();
 	bool isCubeHighSpeedExhaustSignaled();
 	bool isCubeLowSpeedExhaustSignaled();
+	bool isCubeOutLowSpeedExhaustSignaled();
 
 };
 

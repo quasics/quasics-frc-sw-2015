@@ -127,6 +127,11 @@ bool OI::isCubeLowSpeedExhaustSignaled() {
 	return buttonA;
 }
 
+bool OI::isCubeOutLowSpeedExhaustSignaled() {
+	const bool buttonB = auxStick->GetRawButton(XBox_ButtonB);
+	return buttonB;
+}
+
 bool OI::isHighBoostSignaled() {
 	const bool highBoost = driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
 	return highBoost;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Hedy</name>
+	<name>Katherine</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,10 +24,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>edu.wpi.first.wpilib.plugins.core.nature.FRCProjectNature</nature>
+		<nature>org.eclipse.linuxtools.tmf.project.nature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1419649143453</id>
+			<id>0</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

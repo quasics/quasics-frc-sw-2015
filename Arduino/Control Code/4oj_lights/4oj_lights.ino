@@ -37,7 +37,6 @@ void loop() {
   static int counter = 0;
   if (button.advancePosition()) {
     Serial.println("Advancing...");
-    counter = (counter + 1) % 4;
     Serial.print("Counter == ");
     Serial.print(counter);
     Serial.println();
@@ -65,6 +64,7 @@ void loop() {
     default:
       // If it's not a color being used, then reset back to 0.
       counter = 0;
+      Serial.print("Resetting counter");
       break;
   }
 }

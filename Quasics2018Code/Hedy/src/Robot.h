@@ -30,13 +30,30 @@
 
 #include "OI.h"
 
+// ENABLE this define, if we want to turn the camera during RobotInit() and enable
+// a stream back to the driver station.
+// DISABLE it if we don't (e.g., if a vision-tracking subsystem will do camera
+// setup.
+#define CONFIGURE_CAMERA
+
+
+
 class Robot : public frc::TimedRobot {
 private:
+	struct CameraWrapper {
+		CameraWrapper();
+		cs::UsbCamera camera;
+	};
+
 	frc::Command* leftPlacementCommand = nullptr;
 	frc::Command* rightPlacementCommand = nullptr;
 	frc::Command* middlePlacementCommand = nullptr;
 	std::unique_ptr<frc::Command> autonomousCommand;
 	frc::SendableChooser<frc::Command*> chooser;
+
+#ifdef CONFIGURE_CAMERA
+	std::unique_ptr<CameraWrapper> cameraWrapper;
+#endif	// CONFIGURE_CAMERA
 
 	static Robot* theOneRobot;
 

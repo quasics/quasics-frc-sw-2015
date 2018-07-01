@@ -42,6 +42,10 @@ std::shared_ptr<frc::CommandGroup> Robot::teleopCommand;
 // DISABLE it, if we want to do nothing when in Auto mode.
 //#define ENABLE_AUTO_MODE_OPERATION
 
+Robot::CameraWrapper::CameraWrapper()
+	: camera(CameraServer::GetInstance()->StartAutomaticCapture())
+{
+}
 
 void Robot::RobotInit() {
 	RobotMap::init();
@@ -100,8 +104,8 @@ void Robot::RobotInit() {
     // Misc. set-up
 
 #ifdef CONFIGURE_CAMERA
-	CameraServer::GetInstance()->SetQuality(100);
-	CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+	cameraWrapper.reset(new CameraWrapper);
+	cameraWrapper->camera.SetResolution(320, 240);
 #endif
 }
 

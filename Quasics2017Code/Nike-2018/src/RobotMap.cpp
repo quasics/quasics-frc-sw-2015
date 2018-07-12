@@ -45,7 +45,7 @@ void RobotMap::init() {
     driveBaserightEncoder->SetDistancePerPulse(InchesPerTick);
     driveBaserightEncoder->SetPIDSourceType(PIDSourceType::kRate);
 
-    gearSystemgearDoorServo.reset(new Servo(5));
+    gearSystemgearDoorServo.reset(new Servo(4));
     
     gearSystemgearKickerServo.reset(new Servo(9));
 

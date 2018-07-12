@@ -33,7 +33,7 @@ void TankDrive::Execute() {
 	}
 
 	float leftStick = Robot::oi->getDriveStick()->GetRawAxis(LeftYAxis)
-			* multiplier * 1.5;
+			* multiplier;
 	float rightStick = Robot::oi->getDriveStick()->GetRawAxis(RightYAxis)
 			* multiplier;
 

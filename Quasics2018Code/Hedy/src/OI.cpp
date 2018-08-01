@@ -109,7 +109,7 @@ bool KatTrainerOI::isLowBoostSignaled() {
 }
 
 double KatTrainerOI::getWinchPower() {
-	return auxStick->GetRawAxis(XBox_RightYAxis);
+	return auxStick->GetRawAxis(XBox_LeftYAxis);
 }
 //
 //bool OI::isCubeIntakeSignaled() {

@@ -35,6 +35,8 @@
 #define XBox_RightButton	6
 
 // Axes
+#define XBox_LeftXAxis      0
+#define XBox_LeftYAxis      1
 #define XBox_RightXAxis  	2
 #define XBox_RightYAxis  	5
 

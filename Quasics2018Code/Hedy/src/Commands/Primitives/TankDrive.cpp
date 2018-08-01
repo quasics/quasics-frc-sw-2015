@@ -31,7 +31,7 @@ void TankDrive::Execute() {
 		mult = .4;
 	}
 
-	if(!switchDirection && pressedLastTime){
+	if(!switchDirection){
 		counter = counter + 1;
 	}
 

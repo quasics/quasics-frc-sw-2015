@@ -20,7 +20,7 @@ void TankDrive::Execute() {
 	const double leftTrackPower = Robot::oi->getLeftTrackPower();
 	const double rightTrackPower = Robot::oi->getRightTrackPower();
 
-	double mult = .4;
+	double mult = .6;
 	if(highBoost && lowBoost){
 		mult = 1;
 	}

@@ -98,7 +98,7 @@ void RobotMap::init() {
 	//
 	// Drive base setup
 	driveBaseLeftEncoder = createEncoder(
-			2, 3, true, DRIVE_TRAIN_INCHES_PER_TICK,
+			8, 9, true, DRIVE_TRAIN_INCHES_PER_TICK,
 			frc::PIDSourceType::kRate, "DriveBase", "Left Encoder");
 	driveBaseRightEncoder = createEncoder(
 			0, 1, false, DRIVE_TRAIN_INCHES_PER_TICK,

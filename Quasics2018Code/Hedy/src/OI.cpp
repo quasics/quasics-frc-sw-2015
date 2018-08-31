@@ -146,5 +146,5 @@ double KatTrainerOI::getRightTrackPower() {
 }
 
 bool KatTrainerOI::isSwitchDirectionSignaled() {
-	return driveStick->GetRawButton(LogitechGamePad_XButton);
+	return driveStick->GetRawButton(LogitechGamePad_YButton);
 }

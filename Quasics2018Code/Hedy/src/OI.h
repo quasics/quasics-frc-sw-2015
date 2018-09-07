@@ -38,6 +38,8 @@ public:
 	bool isSwitchDirectionSignaled();
 	bool isLowBoostSignaled();
 	bool isHighBoostSignaled();
+	bool isLowToggled();
+	bool isHighToggled();
 	double getLeftTrackPower();
 	double getRightTrackPower();
 

@@ -108,6 +108,16 @@ bool KatTrainerOI::isLowBoostSignaled() {
 	return lowBoost;
 }
 
+bool KatTrainerOI::isLowToggled() {
+	const bool lowToggle = driveStick->GetRawButton(LogitechGamePad_XButton);
+	return lowToggle;
+}
+
+bool KatTrainerOI::isHighToggled() {
+	const bool highToggle = driveStick->GetRawButton(LogitechGamePad_AButton);
+	return highToggle;
+}
+
 double KatTrainerOI::getWinchPower() {
 	return auxStick->GetRawAxis(XBox_LeftYAxis);
 }

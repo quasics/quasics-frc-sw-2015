@@ -103,18 +103,18 @@ bool KatTrainerOI::isWinchSignaled() {
 	return signaled;
 }
 
-bool KatTrainerOI::isLowBoostSignaled() {
+/*bool KatTrainerOI::isLowBoostSignaled() {
 	const bool lowBoost = driveStick->GetRawButton(LogitechGamePad_RightTrigger);
 	return lowBoost;
-}
+}*/
 
 bool KatTrainerOI::isLowToggled() {
-	const bool lowToggle = driveStick->GetRawButton(LogitechGamePad_XButton);
+	const bool lowToggle = driveStick->GetRawButton(LogitechGamePad_RightTrigger);
 	return lowToggle;
 }
 
 bool KatTrainerOI::isHighToggled() {
-	const bool highToggle = driveStick->GetRawButton(LogitechGamePad_AButton);
+	const bool highToggle = driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
 	return highToggle;
 }
 
@@ -142,10 +142,10 @@ bool KatTrainerOI::isCubeOutLowSpeedExhaustSignaled() {
 	return buttonB;
 }
 
-bool KatTrainerOI::isHighBoostSignaled() {
+/*bool KatTrainerOI::isHighBoostSignaled() {
 	const bool highBoost = driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
 	return highBoost;
-}
+}*/
 
 double KatTrainerOI::getLeftTrackPower() {
 	return driveStick->GetRawAxis(LogitechGamePad_LeftYAxis);

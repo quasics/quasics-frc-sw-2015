@@ -14,8 +14,8 @@ TankDrive::TankDrive(): frc::Command() {
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getdriveStick();
-	const bool highBoost = Robot::oi->isHighBoostSignaled();
-	const bool lowBoost = Robot::oi->isLowBoostSignaled();
+	//const bool highBoost = Robot::oi->isHighBoostSignaled();
+	//const bool lowBoost = Robot::oi->isLowBoostSignaled();
 	const bool highToggle = Robot::oi->isHighToggled();
 	const bool lowToggle = Robot::oi->isLowToggled();
 	const bool switchDirection = Robot::oi->isSwitchDirectionSignaled();
@@ -34,7 +34,7 @@ void TankDrive::Execute() {
 		mult = .4;
 	}
 	*/
-
+/*
 	double mult = .6;
 	if(lowToggle){
 		mult = .4;
@@ -45,6 +45,21 @@ void TankDrive::Execute() {
 	else if(!highToggle && !lowToggle){
 		mult = .6;
 	}
+*/
+
+	double mult = .6;
+	if(lowToggle){
+		lowCount = lowCount + 1;
+	}
+	if(lowCount % 2 != 0){
+		mult = .4;
+	}
+	if(highToggle){
+		highCount = highCount + 1;
+	}
+	if(highCount % 2 != 0){
+			mult = 1;
+		}
 
 	if(switchDirection){
 		counter = counter + 1;

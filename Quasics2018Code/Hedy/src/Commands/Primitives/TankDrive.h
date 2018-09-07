@@ -33,6 +33,8 @@ public:
 
 private:
 	int counter = 0;
+	int lowCount = 0;
+	int highCount = 0;
 	bool pressedLastTime = false;
 };
 

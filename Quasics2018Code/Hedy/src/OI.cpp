@@ -142,10 +142,10 @@ bool KatTrainerOI::isCubeOutLowSpeedExhaustSignaled() {
 	return buttonB;
 }
 
-/*bool KatTrainerOI::isHighBoostSignaled() {
+bool KatTrainerOI::isHighBoostSignaled() {
 	const bool highBoost = driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
 	return highBoost;
-}*/
+}
 
 double KatTrainerOI::getLeftTrackPower() {
 	return driveStick->GetRawAxis(LogitechGamePad_LeftYAxis);

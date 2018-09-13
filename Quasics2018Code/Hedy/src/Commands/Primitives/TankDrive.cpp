@@ -16,7 +16,7 @@ void TankDrive::Execute() {
 	std::shared_ptr<Joystick> joystick = Robot::oi->getdriveStick();
 	const bool highBoost = Robot::oi->isHighBoostSignaled();
 	//const bool lowBoost = Robot::oi->isLowBoostSignaled();
-	const bool highToggle = Robot::oi->isHighToggled();
+	//const bool highToggle = Robot::oi->isHighToggled();
 	const bool lowToggle = Robot::oi->isLowToggled();
 	const bool switchDirection = Robot::oi->isSwitchDirectionSignaled();
 	const double leftTrackPower = Robot::oi->getLeftTrackPower();

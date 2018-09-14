@@ -1,6 +1,8 @@
 #include "TankDrive.h"
+#include <iostream>
 
 TankDrive::TankDrive() {
+	std::cerr << "Building tank drive." << std::endl;
 	Requires(Robot::driveBase.get());
 	lastButton = false;
 	isReversed = false;
@@ -8,7 +10,8 @@ TankDrive::TankDrive() {
 
 // Called just before this Command runs the first time
 void TankDrive::Initialize() {
-	Robot::driveBase->ResetYaw();
+	std::cerr << "Initializing tank drive." << std::endl;
+
 }
 
 #define MediumMultiplier .4
@@ -49,8 +52,7 @@ void TankDrive::Execute() {
 		Robot::driveBase->SetRightPower(rightStick);
 	}
 
-	lastButton = Robot::oi->getDriveStick()->GetRawButton(XButton);
-	SmartDashboard::PutNumber("Current Angle", Robot::driveBase->ReadCurrentHeading());
+	// lastButton = Robot::oi->getDriveStick()->GetRawButton(XButton);
 }
 
 // Make this return true when this Command no longer needs to run execute()

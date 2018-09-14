@@ -20,8 +20,8 @@
 //Axes
 #define LeftYAxis  1
 #define LeftXAxis  0
-#define RightYAxis  3
-#define RightXAxis  2
+#define RightYAxis  5
+#define RightXAxis  4
 //--------------------X-Box Controller-----------------------------------------------------------------
 //Buttons
 #define aButtonX  1

@@ -1,13 +1,12 @@
 //---------------------Header Include--------------------------------------------------------------
 #include "Robot.h"
+#include <iostream>
 
 //-------------------------------------------------------------------------------------------------
 
 //---------------------Subsystem Pointers----------------------------------------------------------
 std::unique_ptr<OI> Robot::oi;		//Operator interface (i.e. the joysticks)
 std::shared_ptr<DriveBase> Robot::driveBase;		//What it says on the tin
-std::shared_ptr<GearSystem> Robot::gearSystem;		//Gear door and kicker
-std::shared_ptr<ClimberSystem> Robot::climberSystem;		//Climber motor
 std::shared_ptr<ArduinoController> Robot::arduinoController;//Arduino serial interface
 
 //---------------------Command Pointers------------------------------------------------------------
@@ -24,18 +23,21 @@ void Robot::RobotInit() {		//Runs on startup
 	oi.reset(new OI());
 	//---------------------Start Subsystems------------------------------------------------------------
 	driveBase.reset(new DriveBase);		//Initialize the drive base subsystem
-	gearSystem.reset(new GearSystem);		//Initialize the gear subsystem
-	climberSystem.reset(new ClimberSystem);	//Initialize the climber subsystem
 	arduinoController.reset(new ArduinoController);	//Initialize the arduino interface subsystem
 	//-------------------------------------------------------------------------------------------------
 
 	//---------------------Set deault Commands---------------------------------------------------------
 	teleopCommand.reset(new TeleopCommandGroup);	//Set default teleop command
 	lightingCommand.reset(new AutomaticLighting);//Set decault lighting command
-	autonomousCommand.reset(new Autonomous);		//Set autonomous command
+
 	//-------------------------------------------------------------------------------------------------
 
 	lightingCommand->Start();		//Start the default lighting command
+
+
+	//Put Command buttons on the smart dashboard
+
+	SmartDashboard::PutData("Default Teleop", new TeleopCommandGroup());//Teleop commands (tank drive and aux controls)
 }
 
 void Robot::DisabledInit() {

@@ -15,10 +15,9 @@
 #include "SmartDashboard/SmartDashboard.h"
 
 //-----------------------------Command Includes--------------------------------
-#include "Commands/BaseCommands/Autonomous/PointTurnForAngleRaymond.h"
-#include "Commands/BaseCommands/Autonomous/MoveForDistance.h"
+
 #include "Commands/CommandGroups/TeleopCommandGroup.h"
-#include "Commands/BaseCommands/Autonomous/AutoTurnLeft.h"
+
 //-----------------------------------------------------------------------------
 
 //#define PRACTICE_COMMANDS
@@ -28,13 +27,6 @@ OI::OI() {		//Constructor
 	auxStick.reset(new Joystick(1));
 	driveStick.reset(new Joystick(0));
 
-	//Put Command buttons on the smart dashboard
-#ifdef PRACTICE_COMMANDS
-	SmartDashboard::PutData("move for distance", new MoveForDistance(36, .35));	//autonomously move for x inches at y% speed
-	SmartDashboard::PutData("Turn 90 Degrees", new PointTurnForAngle(-90, .2));//Point turn x degrees counter clockwise at y% speed
-	SmartDashboard::PutData("turn for time", new AutoTurnLeft(3, .5));//Point turn counter clockwise for x seconds
-#endif //PRACTICE_COMMANDS
-	SmartDashboard::PutData("Default Teleop", new TeleopCommandGroup());//Teleop commands (tank drive and aux controls)
 }
 
 std::shared_ptr<Joystick> OI::getDriveStick() {		//Call the drive stick

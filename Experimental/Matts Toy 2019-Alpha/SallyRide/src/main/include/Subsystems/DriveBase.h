@@ -10,8 +10,9 @@
 #include <WPILib.h>
 #include "RobotMap.h"
 
-class DriveBase : public frc::Subsystem {
- private:
+class DriveBase : public frc::Subsystem
+{
+  private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 
@@ -25,8 +26,8 @@ class DriveBase : public frc::Subsystem {
 	frc::SpeedControllerGroup rightMotors{rightFrontMotor, rightRearMotor};
 	frc::SpeedControllerGroup leftMotors{leftFrontMotor, leftRearMotor};
 
- public:
- 	DriveBase();
+  public:
+	DriveBase();
 	void InitDefaultCommand() override;
 
 	void SetPowerToMotors(double leftPercent, double rightPercent);

@@ -9,14 +9,17 @@
 
 #include <Commands/Scheduler.h>
 #include <SmartDashboard/SmartDashboard.h>
+#include "Commands/MoveForDuration.h"
 
 ExampleSubsystem Robot::m_subsystem;
+DriveBase Robot::m_driveBase;
 OI Robot::m_oi;
 
 void Robot::RobotInit() {
   m_chooser.AddDefault("Default Auto", &m_defaultAuto);
   m_chooser.AddObject("My Auto", &m_myAuto);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  frc::SmartDashboard::PutData("Auto Score On Right Switch Command", new MoveForDuration(1));
 }
 
 /**

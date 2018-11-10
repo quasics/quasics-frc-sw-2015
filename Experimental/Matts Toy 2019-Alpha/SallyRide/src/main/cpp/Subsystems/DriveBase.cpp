@@ -33,6 +33,8 @@ DriveBase::DriveBase() : Subsystem("DriveBase") {
   setNameAndSubsystem(leftMotors, "DriveBase", "Left Motors");
   setNameAndSubsystem(rightMotors, "DriveBase", "Right Motors");
 
+  leftMotors.SetInverted(true);
+
   configureEncoder(leftEncoder, DRIVE_TRAIN_INCHES_PER_TICK,
                    frc::PIDSourceType::kRate, "DriveBase", "Left Encoder");
   configureEncoder(rightEncoder, DRIVE_TRAIN_INCHES_PER_TICK,

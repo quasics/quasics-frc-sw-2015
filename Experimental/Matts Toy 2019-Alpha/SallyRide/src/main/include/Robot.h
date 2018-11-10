@@ -16,7 +16,6 @@
 #include "OI.h"
 #include "Subsystems/ExampleSubsystem.h"
 #include "Subsystems/DriveBase.h"
-#include "Commands/MoveForDuration.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -40,7 +39,6 @@ class Robot : public frc::TimedRobot {
   frc::Command* m_autonomousCommand = nullptr;
   ExampleCommand m_defaultAuto;
   MyAutoCommand m_myAuto;
-  std::shared_ptr<Command> m_testMovement;
-
+ 
   frc::SendableChooser<frc::Command*> m_chooser;
 };

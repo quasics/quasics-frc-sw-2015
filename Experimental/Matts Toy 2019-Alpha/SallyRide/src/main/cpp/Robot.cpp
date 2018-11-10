@@ -17,13 +17,14 @@ DriveBase Robot::m_driveBase;
 OI Robot::m_oi;
 
 void Robot::RobotInit() {
+  frc::SmartDashboard::PutData("0.5 sec forwards", new MoveForDuration(.5));
+  frc::SmartDashboard::PutData("1.0 sec forwards", new MoveForDuration(1));
+  frc::SmartDashboard::PutData("2.0 sec forwards", new MoveForDuration(2));
+
   m_chooser.AddDefault("Default Auto", &m_defaultAuto);
   m_chooser.AddObject("My Auto", &m_myAuto);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  m_testMovement.reset(new MoveForDuration(1));
-
-  frc::SmartDashboard::PutData("Auto Score On Right Switch Command", new MoveForDuration(1));
   std::cout << "Finished robot initialization" << std::endl;
 }
 
@@ -66,8 +67,7 @@ void Robot::AutonomousInit() {
   //   m_autonomousCommand = &m_defaultAuto;
   // }
 
-  // m_autonomousCommand = m_chooser.GetSelected();
-  m_autonomousCommand = m_testMovement.get();
+  m_autonomousCommand = m_chooser.GetSelected();
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Start();

@@ -10,6 +10,7 @@
 #include <Commands/Scheduler.h>
 #include <SmartDashboard/SmartDashboard.h>
 #include "Commands/MoveForDuration.h"
+#include <iostream>
 
 ExampleSubsystem Robot::m_subsystem;
 DriveBase Robot::m_driveBase;
@@ -19,7 +20,11 @@ void Robot::RobotInit() {
   m_chooser.AddDefault("Default Auto", &m_defaultAuto);
   m_chooser.AddObject("My Auto", &m_myAuto);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  m_testMovement.reset(new MoveForDuration(1));
+
   frc::SmartDashboard::PutData("Auto Score On Right Switch Command", new MoveForDuration(1));
+  std::cout << "Finished robot initialization" << std::endl;
 }
 
 /**
@@ -61,7 +66,8 @@ void Robot::AutonomousInit() {
   //   m_autonomousCommand = &m_defaultAuto;
   // }
 
-  m_autonomousCommand = m_chooser.GetSelected();
+  // m_autonomousCommand = m_chooser.GetSelected();
+  m_autonomousCommand = m_testMovement.get();
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Start();

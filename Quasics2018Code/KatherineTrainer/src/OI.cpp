@@ -3,15 +3,19 @@
 #include <SmartDashboard/SmartDashboard.h>
 
 #include "Commands/AutonomousCommand.h"
+#include "Commands/SimpleMoveSequence.h"
 #include "Commands/TimedMove.h"
+#include "Commands/LeftTurn.h"
 
 OI::OI() {
     // Process operator interface input here.
 
 	// SmartDashboard Buttons
-    frc::SmartDashboard::PutData("Autonomous Command", new AutonomousCommand());
+    // frc::SmartDashboard::PutData("Autonomous Command", new AutonomousCommand());
 
-    frc::SmartDashboard::PutData("50% for 1 second", new TimedMove(1, .50));
-    frc::SmartDashboard::PutData("100% for 1 second", new TimedMove(1, 1));
-    frc::SmartDashboard::PutData("50% (backward) for 1 second", new TimedMove(1, -.50));
+    frc::SmartDashboard::PutData("20% (backward) for 1/2 second", new TimedMove(.5, -.20));
+    frc::SmartDashboard::PutData("20% for 1/2 second", new TimedMove(.5, .20));
+    frc::SmartDashboard::PutData("20% for 1 second", new TimedMove(1, .2));
+    frc::SmartDashboard::PutData("Sequence", new SimpleMoveSequence);
+    frc::SmartDashboard::PutData("Turn Left", new LeftTurn(.5, .2));
 }

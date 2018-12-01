@@ -21,6 +21,12 @@ DriveBase::DriveBase()
     rightFrontMotor = RobotMap::driveBaseRightFrontMotor;
     rightRearMotor = RobotMap::driveBaseRightRearMotor;
     rightMotors = RobotMap::driveBaseRightMotors;
+
+    // For the "Grace base", the left motors are oriented in reverse, so that
+    // "50% power" would run them backward, while "50% power" for the right
+    // motors will run them forward.  So we'll configure the left motors as
+    // "inverted", so that positive values will mean "forward" for both sides.
+    leftMotors->SetInverted(true);
 }
 
 void DriveBase::InitDefaultCommand() {

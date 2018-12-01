@@ -25,8 +25,8 @@
 
 
 class Robot : public frc::TimedRobot {
-private:
-	std::shared_ptr<DriveBase> driveBase;
+public:
+	static std::shared_ptr<DriveBase> driveBase;
 
 public:
 	frc::Command* autonomousCommand = nullptr;

@@ -7,14 +7,18 @@
 
 #include <Commands/SimpleMoveSequence.h>
 #include "Commands/TimedMove.h"
-#include "LeftTurn.h"
+#include "Commands/LeftTurn.h"
+
 
 SimpleMoveSequence::SimpleMoveSequence() {
-	// TODO Auto-generated constructor stub
-	AddSequential(new TimedMove(1.0, .2));
-	AddSequential(new LeftTurn(.5, .2));
-	AddSequential(new TimedMove(1.0, .2));
-	AddSequential(new LeftTurn(.5, .2));
-	AddSequential(new TimedMove(1.0, .2));
+	// I Made a Square!!!
+	AddSequential(new TimedMove(1.00, .2, .3));
+	AddSequential(new LeftTurn(.5, .27));
+	AddSequential(new TimedMove(1.00, .2, .3));
+	AddSequential(new LeftTurn(.5, .27));
+	AddSequential(new TimedMove(1.00, .2, .3));
+	AddSequential(new LeftTurn(.5, .27));
+	AddSequential(new TimedMove(1.00, .2, .3));
+
 }
 

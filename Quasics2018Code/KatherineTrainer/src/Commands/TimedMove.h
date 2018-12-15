@@ -12,10 +12,11 @@
 
 class TimedMove: public frc::TimedCommand {
 private:
-	double percentPower_;
-
+	double leftPercentPower_;
+	double rightPercentPower_;
 public:
 	TimedMove(double duration, double percentPower);
+	TimedMove(double duration, double leftPercentPower, double rightPercentPower);
 
 	void Initialize() override;
 	void End() override;

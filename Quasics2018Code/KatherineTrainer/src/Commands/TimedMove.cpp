@@ -9,13 +9,19 @@
 #include "../Robot.h"
 
 TimedMove::TimedMove(double duration, double percentPower)
-	: TimedCommand(duration), percentPower_(percentPower)
+	: TimedCommand(duration), leftPercentPower_(percentPower), rightPercentPower_(percentPower)
+{
+	Requires(Robot::driveBase.get());
+}
+
+TimedMove::TimedMove(double duration, double leftPercentPower, double rightPercentPower)
+	: TimedCommand(duration), leftPercentPower_(leftPercentPower), rightPercentPower_(rightPercentPower)
 {
 	Requires(Robot::driveBase.get());
 }
 
 void TimedMove::Initialize() {
-	Robot::driveBase->SetPowerToMotors(percentPower_, percentPower_);
+	Robot::driveBase->SetPowerToMotors(leftPercentPower_, rightPercentPower_);
 }
 
 void TimedMove::End() {

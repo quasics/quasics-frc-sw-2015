@@ -3,6 +3,7 @@
 
 #include <Commands/Subsystem.h>
 #include "../ThirdParty/NavX/include/AHRS.h"
+#include <iostream>
 
 class Navigation: public frc::Subsystem {
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,9 +40,21 @@ public:
 		}
 	}
 
+	/// Returns a value in the range of -180 to +180, with 0 meaning "North".
+	float getCompassHeadingRelativeToNorth() {
+		float heading = getCompassHeading();
+		if (heading > 180) {
+			heading -= 360;
+		}
+		return heading;
+	}
+
+	/// Returns a compass heading in the range 0 to 360, with 0 meaning "North".
 	float getCompassHeading() {
 		if (isReady()) {
-			return ahrs->GetCompassHeading();
+			float result = ahrs->GetCompassHeading();
+			std::cout << "Current heading: " << result << std::endl;
+			return result;
 		}
 		else {
 			return 0;

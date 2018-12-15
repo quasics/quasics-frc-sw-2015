@@ -13,6 +13,7 @@
 
 std::unique_ptr<OI> Robot::oi;
 std::shared_ptr<DriveBase> Robot::driveBase;
+std::shared_ptr<Navigation> Robot::navigation;
 
 void Robot::RobotInit() {
 	RobotMap::init();
@@ -21,6 +22,7 @@ void Robot::RobotInit() {
 	// Subsystem creation
 
     driveBase.reset(new DriveBase());
+    navigation.reset(new Navigation());
 
 	//////////////////////////////////////////////////////////////////////
 	// OI creation
@@ -32,10 +34,10 @@ void Robot::RobotInit() {
 	// news. Don't move it.
 	oi.reset(new OI());
 
-	// Add commands to Autonomous Sendable Chooser
-	chooser.AddDefault("Autonomous Command", new AutonomousCommand());
-
-	frc::SmartDashboard::PutData("Auto Modes", &chooser);
+//	// Add commands to Autonomous Sendable Chooser
+//	chooser.AddDefault("Autonomous Command", new AutonomousCommand());
+//
+//	frc::SmartDashboard::PutData("Auto Modes", &chooser);
 }
 
 /**

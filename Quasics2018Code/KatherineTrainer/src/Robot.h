@@ -20,6 +20,7 @@
 #include "Commands/Command.h"
 
 #include "Subsystems/DriveBase.h"
+#include "Subsystems/Navigation.h"
 
 #include "Commands/AutonomousCommand.h"
 
@@ -27,6 +28,7 @@
 class Robot : public frc::TimedRobot {
 public:
 	static std::shared_ptr<DriveBase> driveBase;
+	static std::shared_ptr<Navigation> navigation;
 
 public:
 	frc::Command* autonomousCommand = nullptr;

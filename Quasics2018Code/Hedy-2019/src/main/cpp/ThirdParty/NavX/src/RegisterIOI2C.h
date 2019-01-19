@@ -9,7 +9,9 @@
 #define SRC_REGISTERIOI2C_H_
 
 #include "RegisterIO.h"
-#include "WPILib.h"
+#include "frc/I2C.h"
+
+using namespace frc;
 
 class RegisterIO_I2C : public IRegisterIO {
 public:

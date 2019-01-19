@@ -13,7 +13,6 @@
 class IIOProvider {
 public:
     IIOProvider() {}
-    virtual ~IIOProvider() {}
     virtual bool   IsConnected() = 0;
     virtual double GetByteCount() = 0;
     virtual double GetUpdateCount() = 0;

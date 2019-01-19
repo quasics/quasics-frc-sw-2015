@@ -8,7 +8,13 @@
 #ifndef SRC_AHRS_H_
 #define SRC_AHRS_H_
 
-#include "WPILib.h"
+#include "frc/smartdashboard/SendableBase.h"
+#include "frc/smartdashboard/SendableBuilder.h"
+#include "frc/I2C.h"
+#include "frc/SPI.h"
+#include "frc/SerialPort.h"
+#include "frc/PIDSource.h"
+#include "frc/Timer.h"
 #include "ITimestampedDataSubscriber.h"
 #include "networktables/NetworkTableEntry.h"
 #include <thread>
@@ -19,7 +25,10 @@ class InertialDataIntegrator;
 class OffsetTracker;
 class AHRSInternal;
 
-class AHRS : public SensorBase,
+using namespace frc;
+
+class AHRS : public SendableBase,
+             public ErrorBase,
              public PIDSource  {
 public:
 
@@ -193,6 +202,9 @@ public:
 
     void EnableLogging(bool enable);
 
+    int16_t GetGyroFullScaleRangeDPS();
+    int16_t GetAccelFullScaleRangeG();
+
 private:
     void SPIInit( SPI::Port spi_port_id, uint32_t bitrate, uint8_t update_rate_hz );
     void I2CInit( I2C::Port i2c_port_id, uint8_t update_rate_hz );
@@ -200,8 +212,8 @@ private:
     void commonInit( uint8_t update_rate_hz );
     static int ThreadFunc(IIOProvider *io_provider);
 
-    /* Sendable implementation */
-    void InitSendable(frc::SendableBuilder&);
+    /* SendableBase implementation */
+    void InitSendable(SendableBuilder& builder) override;
 
     /* PIDSource implementation */
     double PIDGet();

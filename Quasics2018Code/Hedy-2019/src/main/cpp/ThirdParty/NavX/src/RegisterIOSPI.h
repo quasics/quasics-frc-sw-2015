@@ -9,7 +9,9 @@
 #define SRC_REGISTERIOSPI_H_
 
 #include "RegisterIO.h"
-#include "WPILib.h"
+#include "frc/SPI.h"
+
+using namespace frc;
 
 static const int MAX_SPI_MSG_LENGTH = 256;
 

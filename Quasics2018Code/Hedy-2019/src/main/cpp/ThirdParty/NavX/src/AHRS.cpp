@@ -8,8 +8,8 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
-#include "../include/AHRS.h"
-#include "../include/AHRSProtocol.h"
+#include <AHRS.h>
+#include <AHRSProtocol.h>
 #include "IIOProvider.h"
 #include "IIOCompleteNotification.h"
 #include "IBoardCapabilities.h"
@@ -893,6 +893,13 @@ void AHRS::EnableLogging(bool enable) {
 	}
 }
 
+int16_t AHRS::GetGyroFullScaleRangeDPS() {
+	return gyro_fsr_dps;
+}
+
+int16_t AHRS::GetAccelFullScaleRangeG() {
+	return accel_fsr_g;
+}
 
 #define NAVX_IO_THREAD_NAME "navXIOThread"
 
@@ -1267,13 +1274,13 @@ std::string AHRS::GetFirmwareVersion() {
     return fw_version;
 }
 
-/***********************************************************/
-/* Sendable Interface Implementation             */
-/***********************************************************/
+    /***********************************************************/
+    /* SendableBase Interface Implementation                   */
+    /***********************************************************/
+
 void AHRS::InitSendable(SendableBuilder& builder) {
-  builder.SetSmartDashboardType("Gyro");
-  builder.AddDoubleProperty("Value", [=]() { return GetYaw(); },
-                        nullptr);
+	builder.SetSmartDashboardType("Gyro");
+	builder.AddDoubleProperty("Value", [=]() { return GetYaw(); }, nullptr);
 }
 
 /***********************************************************/

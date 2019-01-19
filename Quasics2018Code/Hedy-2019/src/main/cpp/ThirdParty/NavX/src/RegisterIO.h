@@ -11,11 +11,11 @@
 #include <stdint.h>
 #include "IIOProvider.h"
 #include "IRegisterIO.h"
-#include "../include/IMUProtocol.h"
-#include "../include/AHRSProtocol.h"
+#include "IMUProtocol.h"
+#include "AHRSProtocol.h"
 #include "IBoardCapabilities.h"
 #include "IIOCompleteNotification.h"
-#include "WPILib.h"
+#include "frc/Timer.h"
 
 class RegisterIO : public IIOProvider {
 private:

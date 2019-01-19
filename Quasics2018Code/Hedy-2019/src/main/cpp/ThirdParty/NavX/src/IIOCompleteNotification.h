@@ -10,13 +10,12 @@
 
 #include <stdint.h>
 
-#include "../include/IMUProtocol.h"
-#include "../include/AHRSProtocol.h"
+#include "IMUProtocol.h"
+#include "AHRSProtocol.h"
 
 class IIOCompleteNotification {
 public:
     IIOCompleteNotification() {}
-    virtual ~IIOCompleteNotification() {}
     struct BoardState {
         uint8_t op_status;
         int16_t sensor_status;

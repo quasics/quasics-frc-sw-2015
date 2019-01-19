@@ -8,13 +8,16 @@
 #ifndef SRC_SERIALIO_H_
 #define SRC_SERIALIO_H_
 
-#include "WPILib.h"
 #include "IIOProvider.h"
 #include <stdint.h>
-#include "../include/AHRSProtocol.h"
-#include "../include/IMUProtocol.h"
+#include "AHRSProtocol.h"
+#include "IMUProtocol.h"
 #include "IIOCompleteNotification.h"
 #include "IBoardCapabilities.h"
+#include "frc/SerialPort.h"
+#include "frc/smartdashboard/SmartDashboard.h"
+
+using namespace frc;
 
 class SerialIO : public IIOProvider {
 

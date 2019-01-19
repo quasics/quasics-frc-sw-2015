@@ -1,7 +1,7 @@
 #ifndef SRC_SUBSYSTEMS_NAVIGATION_H_
 #define SRC_SUBSYSTEMS_NAVIGATION_H_
 
-#include <Commands/Subsystem.h>
+#include <frc/commands/Subsystem.h>
 #include "../ThirdParty/NavX/include/AHRS.h"
 
 class Navigation: public frc::Subsystem {

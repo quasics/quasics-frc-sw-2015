@@ -1,7 +1,7 @@
 #ifndef TeleIn_H
 #define TeleIn_H
 
-#include <WPILib.h>
+#include <frc/WPILib.h>
 
 /**
  * Handles operator input to activate the cube intake (or expulsion) as signaled.

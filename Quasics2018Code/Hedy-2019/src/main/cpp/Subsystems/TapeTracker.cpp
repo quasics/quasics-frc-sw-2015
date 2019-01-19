@@ -16,7 +16,7 @@
  */
 
 #include "TapeTracker.h"
-#include "WPILib.h"
+#include <frc/WPILib.h>
 #include "NetworkTables/NetworkTable.h"
 
 // Standard C++ headers
@@ -27,7 +27,7 @@
 
 // WPILib headers
 #include <CameraServer.h>
-#include <Commands/Subsystem.h>
+#include <frc/commands/Subsystem.h>
 #include <vision/VisionRunner.h>
 
 #ifdef USE_NATIVE_RESOLUTION
@@ -137,10 +137,10 @@ TapeTracker::TapeTracker()
 void TapeTracker::processDriverStationData(cv::Rect& bestRectangle) {
 	bestRectangle = cv::Rect();		// Clear it to all zero values.
 
-	const std::vector<double> centerXs = table->GetNumberArray("centerX", llvm::ArrayRef<double>());
-	const std::vector<double> centerYs = table->GetNumberArray("centerY", llvm::ArrayRef<double>());
-	const std::vector<double> widths = table->GetNumberArray("width", llvm::ArrayRef<double>());
-	const std::vector<double> heights = table->GetNumberArray("height", llvm::ArrayRef<double>());
+	const std::vector<double> centerXs = table->GetNumberArray("centerX", wpi::ArrayRef<double>());
+	const std::vector<double> centerYs = table->GetNumberArray("centerY", wpi::ArrayRef<double>());
+	const std::vector<double> widths = table->GetNumberArray("width", wpi::ArrayRef<double>());
+	const std::vector<double> heights = table->GetNumberArray("height", wpi::ArrayRef<double>());
 
 	// Note that we'll assume all arrays are of the same size (and nothing changes while we
 	// were grabbing them).

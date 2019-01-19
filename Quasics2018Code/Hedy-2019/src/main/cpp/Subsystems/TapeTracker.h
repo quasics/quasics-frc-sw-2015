@@ -18,8 +18,8 @@
 #ifndef TapeTracker_H
 #define TapeTracker_H
 
-#include <Commands/Subsystem.h>
-#include <WPILib.h>
+#include <frc/commands//Subsystem.h>
+#include <frc/WPILib.h>
 #include <opencv2/core.hpp>
 
 class TapeTracker : public frc::Subsystem {

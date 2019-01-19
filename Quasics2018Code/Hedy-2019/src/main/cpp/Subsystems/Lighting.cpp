@@ -99,9 +99,9 @@ char Lighting::GetColor() {
 	auto& driverStation = frc::DriverStation::GetInstance();
 	auto ds_alliance = driverStation.GetAlliance();
 	switch (ds_alliance) {
-		case DriverStation::kRed:
+		case frc::DriverStation::kRed:
 			return 'r';
-		case DriverStation::kBlue:
+		case frc::DriverStation::kBlue:
 			return 'b';
 		default:
 			return 'g';

@@ -1,7 +1,7 @@
 #ifndef DUMMY_COMMAND_H
 #define DUMMY_COMMAND_H
 
-#include "Commands/Subsystem.h"
+#include "frc/commands/Subsystem.h"
 #include "../Robot.h"
 
 /**

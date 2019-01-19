@@ -12,8 +12,8 @@
 #ifndef LIGHTING_H
 #define LIGHTING_H
 
-#include <WPILib.h>
-#include <SerialPort.h>
+#include <frc/WPILib.h>
+#include <frc/SerialPort.h>
 
 /**
  *

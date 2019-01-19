@@ -1,7 +1,7 @@
 #ifndef ArmMoveUp_H
 #define ArmMoveUp_H
 
-#include <WPILib.h>
+#include <frc/WPILib.h>
 
 class ArmControl : public frc::Command {
 public:

@@ -6,7 +6,7 @@
  */
 
 
-#include <Commands/Command.h>
+#include <frc/commands/Command.h>
 
 class LightingDefault: public frc::Command {
 public:

@@ -1,7 +1,7 @@
 #ifndef GYROADXRS_H
 #define GYROADXRS_H
 
-#include <Commands/Subsystem.h>
+#include <frc/commands//Subsystem.h>
 #include <ADXRS450_Gyro.h>
 
 class GyroADXRS: public frc::Subsystem {

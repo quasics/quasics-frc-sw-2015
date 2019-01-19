@@ -1,9 +1,9 @@
 #ifndef Teleop_H
 #define Teleop_H
 
-#include <WPILib.h>
+#include <frc/WPILib.h>
 
-class Teleop : public CommandGroup {
+class Teleop : public frc::CommandGroup {
 public:
 	Teleop();
 };

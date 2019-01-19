@@ -8,8 +8,8 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
-#include <AHRS.h>
-#include <AHRSProtocol.h>
+#include "../include/AHRS.h"
+#include "../include/AHRSProtocol.h"
 #include "IIOProvider.h"
 #include "IIOCompleteNotification.h"
 #include "IBoardCapabilities.h"

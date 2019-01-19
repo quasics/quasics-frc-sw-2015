@@ -10,8 +10,8 @@
 
 #include <stdint.h>
 
-#include "IMUProtocol.h"
-#include "AHRSProtocol.h"
+#include "../include/IMUProtocol.h"
+#include "../include/AHRSProtocol.h"
 
 class IIOCompleteNotification {
 public:

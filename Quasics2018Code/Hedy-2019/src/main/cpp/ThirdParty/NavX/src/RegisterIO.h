@@ -11,8 +11,8 @@
 #include <stdint.h>
 #include "IIOProvider.h"
 #include "IRegisterIO.h"
-#include "IMUProtocol.h"
-#include "AHRSProtocol.h"
+#include "../include/IMUProtocol.h"
+#include "../include/AHRSProtocol.h"
 #include "IBoardCapabilities.h"
 #include "IIOCompleteNotification.h"
 #include "frc/Timer.h"

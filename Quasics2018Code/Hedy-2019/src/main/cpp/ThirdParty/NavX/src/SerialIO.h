@@ -10,8 +10,8 @@
 
 #include "IIOProvider.h"
 #include <stdint.h>
-#include "AHRSProtocol.h"
-#include "IMUProtocol.h"
+#include "../include/AHRSProtocol.h"
+#include "../include/IMUProtocol.h"
 #include "IIOCompleteNotification.h"
 #include "IBoardCapabilities.h"
 #include "frc/SerialPort.h"

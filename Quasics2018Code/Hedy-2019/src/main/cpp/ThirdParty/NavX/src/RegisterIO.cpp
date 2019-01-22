@@ -6,7 +6,7 @@
  */
 
 #include "RegisterIO.h"
-#include "IMURegisters.h"
+#include "../include/IMURegisters.h"
 #include "delay.h"
 
 using namespace frc;

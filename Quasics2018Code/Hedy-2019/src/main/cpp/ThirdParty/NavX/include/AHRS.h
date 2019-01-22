@@ -216,7 +216,7 @@ private:
     void InitSendable(SendableBuilder& builder) override;
 
     /* PIDSource implementation */
-    double PIDGet();
+    double PIDGet() override;
 
     uint8_t GetActualUpdateRateInternal(uint8_t update_rate);
 

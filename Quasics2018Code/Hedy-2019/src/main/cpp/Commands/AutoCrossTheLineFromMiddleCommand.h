@@ -8,7 +8,7 @@
 #ifndef SRC_COMMANDS_AUTOCROSSTHELINEFROMMIDDLECOMMAND_H_
 #define SRC_COMMANDS_AUTOCROSSTHELINEFROMMIDDLECOMMAND_H_
 
-#include <Commands/CommandGroup.h>
+#include <frc/commands/CommandGroup.h>
 
 class AutoCrossTheLineFromMiddleCommand: public frc::CommandGroup {
 public:

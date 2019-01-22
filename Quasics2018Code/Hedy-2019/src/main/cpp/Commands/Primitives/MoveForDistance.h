@@ -1,7 +1,7 @@
 #ifndef MOVE_FOR_DISTANCE_H
 #define MOVE_FOR_DISTANCE_H
 
-#include <Commands/Command.h>
+#include <frc/commands/Command.h>
 
 inline uint32_t feetToInches(double feet) { return uint32_t(feet * 12); }
 

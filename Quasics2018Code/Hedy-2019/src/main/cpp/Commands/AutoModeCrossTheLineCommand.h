@@ -8,7 +8,7 @@
 #ifndef SRC_COMMANDS_AUTOMODECROSSTHELINECOMMAND_H_
 #define SRC_COMMANDS_AUTOMODECROSSTHELINECOMMAND_H_
 
-#include <Commands/ConditionalCommand.h>
+#include <frc/commands/ConditionalCommand.h>
 
 class AutoModeCrossTheLineCommand: public frc::ConditionalCommand {
 public:

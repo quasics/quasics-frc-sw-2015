@@ -13,7 +13,7 @@
 #ifndef AUTO_SCORE_ON_LEFT_SWITCH_COMMAND_H
 #define AUTO_SCORE_ON_LEFT_SWITCH_COMMAND_H
 
-#include "Commands/CommandGroup.h"
+#include "frc/commands/CommandGroup.h"
 
 /**
  *

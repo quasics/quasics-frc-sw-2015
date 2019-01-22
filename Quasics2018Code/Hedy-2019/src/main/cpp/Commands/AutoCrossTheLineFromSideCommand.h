@@ -13,7 +13,7 @@
 #ifndef AUTO_CROSS_THE_LINE_COMMAND_H
 #define AUTO_CROSS_THE_LINE_COMMAND_H
 
-#include "Commands/CommandGroup.h"
+#include "frc/commands/CommandGroup.h"
 
 /**
  *

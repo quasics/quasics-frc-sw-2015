@@ -8,7 +8,7 @@
 #ifndef TURNLIGHTON_H_
 #define TURNLIGHTON_H_
 
-#include <Commands/Command.h>
+#include <frc/commands/Command.h>
 
 class TurnLightOn: public frc::Command {
 public:

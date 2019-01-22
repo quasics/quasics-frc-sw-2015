@@ -12,7 +12,7 @@
 #ifndef CUBEMANIPULATION_H
 #define CUBEMANIPULATION_H
 
-#include <WPILib.h>
+#include <frc/WPILib.h>
 
 /**
  *

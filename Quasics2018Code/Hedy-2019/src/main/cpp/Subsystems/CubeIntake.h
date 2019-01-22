@@ -12,7 +12,7 @@
 #ifndef CUBE_INTAKE_H
 #define CUBE_INTAKE_H
 
-#include <WPILib.h>
+#include <frc/WPILib.h>
 
 /**
  *

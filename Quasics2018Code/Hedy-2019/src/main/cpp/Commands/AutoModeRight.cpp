@@ -1,7 +1,7 @@
 
 #include "AutoModeRight.h"
 #include "Robot.h"
-#include <DriverStation.h>
+#include <frc/DriverStation.h>
 #include "Commands/AutoRightSwitch.h"
 #include "Commands/AutoExchange.h"
 #include "Primitives/MoveForDistance.h"

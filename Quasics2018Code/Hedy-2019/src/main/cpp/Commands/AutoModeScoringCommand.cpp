@@ -11,7 +11,7 @@
 
 #include "AutoModeScoringCommand.h"
 #include "Robot.h"
-#include <DriverStation.h>
+#include <frc/DriverStation.h>
 #include "Commands/AutoModeCrossTheLineCommand.h"
 #include "Commands/AutoScoreOnSwitchCommand.h"
 

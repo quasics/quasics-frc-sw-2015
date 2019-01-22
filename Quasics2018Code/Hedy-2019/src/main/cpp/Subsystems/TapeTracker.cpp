@@ -17,7 +17,7 @@
 
 #include "TapeTracker.h"
 #include <frc/WPILib.h>
-#include "NetworkTables/NetworkTable.h"
+#include "networktables/NetworkTable.h"
 
 // Standard C++ headers
 #include <iostream>
@@ -26,7 +26,7 @@
 #include <cmath>
 
 // WPILib headers
-#include <CameraServer.h>
+#include <cameraserver/CameraServer.h>
 #include <frc/commands/Subsystem.h>
 #include <vision/VisionRunner.h>
 

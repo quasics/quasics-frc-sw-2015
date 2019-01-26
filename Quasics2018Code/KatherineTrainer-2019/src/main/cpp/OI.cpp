@@ -17,6 +17,7 @@ OI::OI() {
 //    frc::SmartDashboard::PutData("20% for 1/2 second", new TimedMove(.5, .20));
 //    frc::SmartDashboard::PutData("20% for 1 second", new TimedMove(1, .2));
     frc::SmartDashboard::PutData("Square", new SimpleMoveSequence);
-    frc::SmartDashboard::PutData("Straight", new TimedMove(1.00, .2,.3));
+    frc::SmartDashboard::PutData("Forward", new TimedMove(3.00, 1.00));
     frc::SmartDashboard::PutData("Compass", new TurnToNorth);
+     frc::SmartDashboard::PutData("Reverse", new TimedMove(3.00, -1.00));
 }

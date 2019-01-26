@@ -13,6 +13,17 @@ deploy {
             // or from command line. If not found an exception will be thrown.
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
+
+            /*locations {        //<-----fix Gavin found on google - not tried yet
+                ssh {
+                    address = "roborio-2656-frc.lan"
+                    user = "admin"
+                    password = ""
+                    ipv6 = false
+                }
+
+            }*/
+
             team = frc.getTeamNumber()
         }
     }

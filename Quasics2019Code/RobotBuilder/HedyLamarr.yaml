@@ -172,10 +172,54 @@ Children:
         default: []
         name: Constants
         validators: null
-        value: &id006 []
+        value: &id010 []
     Base: Subsystem
     Name: Manipulator
   - Children:
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: &id006 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+            '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
+            '23', '24', '25']
+          default: '0'
+          name: Input Channel (Digital)
+          validators: &id007 [DigitalChannel]
+          value: '8'
+      Base: Limit Switch
+      Name: Elevator Firm Stop Low
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id006
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id007
+          value: '7'
+      Base: Limit Switch
+      Name: Elevator Firm Stop High
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: &id008 ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+            '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22',
+            '23', '24', '25']
+          default: '0'
+          name: Input Channel (Digital)
+          validators: &id009 [DigitalChannel]
+          value: '0'
+      Base: Digital Input
+      Name: Hall Effect Low Elevator
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id008
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id009
+          value: '1'
+      Base: Digital Input
+      Name: Hall Effect High Elevator
     - Children: []
       Properties:
         Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -208,10 +252,30 @@ Children:
         default: []
         name: Constants
         validators: null
-        value: *id006
+        value: *id010
     Base: Subsystem
     Name: Elevator
   - Children:
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id008
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id009
+          value: '4'
+      Base: Digital Input
+      Name: Hall Effect High Lifter
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id008
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id009
+          value: '3'
+      Base: Digital Input
+      Name: Hall Effect Low Lifter
     - Children: []
       Properties:
         Type: !!robotbuilder.data.properties.ChoicesProperty
@@ -230,6 +294,26 @@ Children:
           name: Inverted, validators: null, value: false}
       Base: Speed Controller
       Name: Lifter Motor
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id006
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id007
+          value: '5'
+      Base: Limit Switch
+      Name: Lifter Firm Stop High
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id006
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id007
+          value: '6'
+      Base: Limit Switch
+      Name: Lifter Firm Stop Low
     Properties:
       Send to SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: false,
         name: Send to SmartDashboard, validators: null, value: false}
@@ -244,7 +328,7 @@ Children:
         default: []
         name: Constants
         validators: null
-        value: *id006
+        value: *id010
     Base: Subsystem
     Name: Lifter
   - Children:
@@ -280,7 +364,7 @@ Children:
         default: []
         name: Constants
         validators: null
-        value: *id006
+        value: *id010
     Base: Subsystem
     Name: Elbow
   - Children: []
@@ -298,7 +382,7 @@ Children:
         default: []
         name: Constants
         validators: null
-        value: *id006
+        value: *id010
     Base: Subsystem
     Name: Lighting
   Properties: {}
@@ -308,20 +392,20 @@ Children:
   - Children: []
     Properties:
       Number: !!robotbuilder.data.properties.ChoicesProperty
-        choices: &id007 ['0', '1', '2', '3', '4', '5']
+        choices: &id011 ['0', '1', '2', '3', '4', '5']
         default: 1
         name: Number
-        validators: &id008 [Joystick]
+        validators: &id012 [Joystick]
         value: '0'
     Base: Joystick
     Name: Drive Stick
   - Children: []
     Properties:
       Number: !!robotbuilder.data.properties.ChoicesProperty
-        choices: *id007
+        choices: *id011
         default: 1
         name: Number
-        validators: *id008
+        validators: *id012
         value: '1'
     Base: Joystick
     Name: Operator Stick

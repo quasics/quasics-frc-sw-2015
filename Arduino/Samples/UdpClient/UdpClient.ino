@@ -38,7 +38,7 @@ char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// MAC address management
+// Network and MAC address management
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -89,13 +89,7 @@ void generateMacAddress(byte mac[MAC_LENGTH]) {
 #endif
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// Set-up handling
-//
-////////////////////////////////////////////////////////////////////////////////////////
-
-bool configureNetwork(byte mac[6], IPAddress* staticAddress = 0, IPAddress* staticDns = 0) {
+bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress = 0, IPAddress* staticDns = 0) {
   if (Ethernet.begin(mac) == 0) {
     LOG("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
@@ -120,20 +114,28 @@ bool configureNetwork(byte mac[6], IPAddress* staticAddress = 0, IPAddress* stat
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// 
+//
+////////////////////////////////////////////////////////////////////////////////////////
+
 void setup() {
-  // put your setup code here, to run once:
-  // Open serial communications and wait for port to open:
+  // Open serial communications and wait for port to open.
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+
+  // Initialize digital pin LED_BUILTIN as an output.
+  pinMode(LED_BUILTIN, OUTPUT);
 
 #ifdef USE_RANDOM_MAC_ADDRESS
   Serial.println("Generating random MAC address...");
   generateMacAddress(mac);
 #endif
 
-  // start the Ethernet connection:
+  // Start the Ethernet connection.
   Serial.println("Initializing Ethernet...");
   if (!configureNetwork(mac)) {
     Serial.println("Failed to configure network: I refuse to proceed....");
@@ -142,7 +144,7 @@ void setup() {
     }
   }
 
-  // start UDP
+  // Start UDP.
   udp.begin(kLocalPort);
   Serial.print("Waiting for UDP packets on port ");
   Serial.println(kLocalPort);
@@ -180,11 +182,28 @@ void loop() {
 #endif
 
   // Read the packet's data into packetBufffer
-  udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-  packetBuffer[min(packetSize, UDP_TX_PACKET_MAX_SIZE)] = 0;
+  int len = udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+  if (packetBuffer[len - 1] != 0) {
+    // Null-terminate the string, so that it's safe to use "normally".
+    // (But be paranoid about it.)
+    if (len < UDP_TX_PACKET_MAX_SIZE) {
+      packetBuffer[len] = 0;
+    } else {
+      packetBuffer[len - 1] = 0;
+    }
+  }
+
   Serial.print("Received command: \"");
   Serial.print(packetBuffer);
   Serial.println("\"");
+
+  if (strcmp(packetBuffer, "on") == 0) {
+    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
+  } else if (strcmp(packetBuffer, "off") == 0) {
+    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off
+  } else {
+    Serial.print("  --- Unknown command\n");
+  }
 
 //  // send a reply to the IP address and port that sent us the packet we received
 //  udp.beginPacket(udp.remoteIP(), udp.remotePort());

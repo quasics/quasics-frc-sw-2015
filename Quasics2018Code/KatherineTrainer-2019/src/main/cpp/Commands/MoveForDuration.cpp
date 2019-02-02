@@ -17,7 +17,7 @@ MoveForDuration::MoveForDuration(double timeout)
 
 // Called just before this Command runs the first time
 void MoveForDuration::Initialize() {
-  Robot::driveBase->SetPowerToMotors(0.25, 0.25);
+  Robot::driveBase->SetPowerToMotors(-0.25, -0.25);
 }
 
 // Called repeatedly when this Command is scheduled to run

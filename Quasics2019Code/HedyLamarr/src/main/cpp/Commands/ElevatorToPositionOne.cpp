@@ -50,6 +50,7 @@ void ElevatorToPositionOne::Execute() {
       Robot::elevator->moveDown();
       moving_down = true;
     }
+    needs_to_switch = false;
   }
 }
 

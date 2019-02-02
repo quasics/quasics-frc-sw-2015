@@ -11,6 +11,7 @@
 #include "Commands/MoveForDuration.h"
 
 ZigZagSequential::ZigZagSequential() {
+  
   //Nurfadil: Created a Zig Zag
   AddSequential(new MoveForDuration(1.00));
   AddSequential(new LeftTurnN(1.00));
@@ -21,4 +22,5 @@ ZigZagSequential::ZigZagSequential() {
   AddSequential(new MoveForDuration(1.00));
   AddSequential(new LeftTurnN(1.00));
   AddSequential(new MoveForDuration(1.00)); 
+
 }

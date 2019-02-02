@@ -35,6 +35,10 @@ public:
 
 	double getLeftTankSpeed();
 	double getRightTankSpeed();
+
+	bool isIntakeSignaledPositive(); //in
+	bool isIntakeSignaledLowNegative(); //out, slowly
+	bool isIntakeSignaledHighNegative(); //out, quickly
 };
 
 #endif

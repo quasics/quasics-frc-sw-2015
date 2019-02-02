@@ -55,3 +55,18 @@ double OI::getLeftTankSpeed() {
 double OI::getRightTankSpeed() {
     return driveStick->GetRawAxis(LogitechGamePad_RightYAxis);
 }
+
+bool OI::isIntakeSignaledPositive() { //in
+    const bool buttonA = operatorStick->GetRawButton(XBox_ButtonA);
+    return buttonA;
+}
+
+bool OI::isIntakeSignaledLowNegative() { //out, slowly
+    const bool buttonB = operatorStick->GetRawButton(XBox_ButtonB);
+    return buttonB;
+}
+
+bool OI::isIntakeSignaledHighNegative() { //out, quickly
+    const bool buttonY = operatorStick->GetRawButton(XBox_ButtonY);
+    return buttonY;
+}

@@ -31,13 +31,16 @@
 #define XBox_ButtonB  		2      //slow extake
 #define XBox_ButtonX  		3
 #define XBox_ButtonY  		4      //fast extake
-#define XBox_LeftButton 	5
-#define XBox_RightButton	6
+#define XBox_LeftButton 	5      //elevator to position 2
+#define XBox_RightButton	6      //elevator to position 1
 
 // Axes
 #define XBox_LeftXAxis      0
 #define XBox_LeftYAxis      1
 #define XBox_RightXAxis  	2
 #define XBox_RightYAxis  	5          //elbow
+
+#define XBox_LeftTrigger    2          //elevator to top
+#define XBox_RightTrigger   3          //elevator to bottom
 
 #endif /* SRC_CONTROLLERDEFINITIONS_H_ */

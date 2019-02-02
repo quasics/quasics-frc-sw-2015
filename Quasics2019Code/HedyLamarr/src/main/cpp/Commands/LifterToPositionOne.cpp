@@ -16,28 +16,63 @@ LifterToPositionOne::LifterToPositionOne() {
 
 // Called just before this Command runs the first time
 void LifterToPositionOne::Initialize() {
-   if(Robot::lifter->atPositionOne()){
+   if (Robot::lifter->atPositionOne()) {
     Robot::lifter->stop();
-  }
-  else if(Robot::lifter->atBottom()){
+    moving_down = false;
+  } 
+  else if (Robot::lifter->atBottom()) {
     Robot::lifter->moveUp();
+    moving_down = false;
+  } 
+  else if(Robot::lifter->atPositionTwo()){
+    Robot::lifter->moveDown();
+    moving_down = true;
+  }
+  else if(Robot::lifter->atTop()){
+    Robot::lifter->moveDown();
+    moving_down = true;
   }
   else{
     Robot::lifter->moveDown();
+    moving_down = true;
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
-void LifterToPositionOne::Execute() {}
+void LifterToPositionOne::Execute() {
+  if (needs_to_switch){
+    if(moving_down){
+      Robot::lifter->moveUp();
+      moving_down = false;
+
+    }
+    else{
+      Robot::lifter->moveDown();
+      moving_down = true;
+    }
+    needs_to_switch = false; 
+  }
+}
 
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToPositionOne::IsFinished() { 
-  if(Robot::lifter->atPositionOne()){
+  if (Robot::lifter->atPositionOne()) {
     return true;
   }
-  else{
-    return false;
+
+  //if we aren't, do we need to move differently?
+  if(Robot::lifter->atBottom()&& moving_down) {
+    needs_to_switch = true;
   }
+  else if(Robot::lifter->atTop()&& !moving_down){
+    needs_to_switch = true;
+  }
+  else if(Robot::lifter->atPositionTwo()&& !moving_down){
+    needs_to_switch = true;
+  }
+
+  //just keep swimmin'
+  return false;
 }
 
 // Called once after isFinished returns true

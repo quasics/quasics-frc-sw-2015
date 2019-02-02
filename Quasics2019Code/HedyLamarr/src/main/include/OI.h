@@ -35,6 +35,9 @@ class OI {
   double getRightTankSpeed();
   double getElbowDirection();
 
+	bool isTurtleTriggerDown();
+	bool isFullSpeedTriggered();
+
   bool isIntakeSignaledPositive();      // in
   bool isIntakeSignaledLowNegative();   // out, slowly
   bool isIntakeSignaledHighNegative();  // out, quickly

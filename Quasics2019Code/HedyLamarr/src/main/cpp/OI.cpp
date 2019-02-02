@@ -91,3 +91,19 @@ bool OI::isElbowSignaledDown() {
     return false;
   }
 }
+
+bool OI::isFullSpeedTriggered() {
+    const bool RightTrigger= driveStick->GetRawButton(LogitechGamePad_RightTrigger);
+    const bool LeftTrigger= driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
+    if(RightTrigger && LeftTrigger){
+        return true;
+    }
+    else{
+        return false;
+    }
+}    
+
+bool OI::isTurtleTriggerDown() {
+    const bool RightShoulder= driveStick->GetRawButton(LogitechGamePad_RightShoulder);
+    return RightShoulder;
+}

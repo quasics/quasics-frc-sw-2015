@@ -18,8 +18,7 @@ ElevatorToTop::ElevatorToTop() {
 // Called just before this Command runs the first time
 void ElevatorToTop::Initialize() {
   if (Robot::elevator->atTop()) {
-    // CODE_REVIEW (mjh): This call to stop() (hopefully) isn't needed here,
-    // since the elevator (again, hopefully) isn't already in motion.
+    // better to have a stop and not need it (even if we shouldn't ever need it)
     Robot::elevator->stop();
   } else {
     Robot::elevator->moveUp();
@@ -36,7 +35,8 @@ bool ElevatorToTop::IsFinished() {
     // CODE_REVIEW (mjh): Be paranoid, and check both "atBottom" and "atTop"
     // here. (Just in case motors are configured in reverse, etc.)
     return true;
-  } else {
+  } 
+  else {
     return false;
   }
 }

@@ -18,4 +18,8 @@ class ElevatorToPositionOne : public frc::Command {
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
+
+ private:
+  bool needs_to_switch = false;
+  bool moving_down = false;
 };

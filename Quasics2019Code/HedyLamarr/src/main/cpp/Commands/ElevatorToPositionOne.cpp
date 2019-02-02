@@ -19,41 +19,60 @@ ElevatorToPositionOne::ElevatorToPositionOne() {
 void ElevatorToPositionOne::Initialize() {
   if (Robot::elevator->atPositionOne()) {
     Robot::elevator->stop();
-  } else if (Robot::elevator->atBottom()) {
+    moving_down = false;
+  } 
+  else if (Robot::elevator->atBottom()) {
     Robot::elevator->moveUp();
-  } else {
-    // CODE_REVIEW (mjh): I think you're making an assumption here that the
-    // elevator will always be stopped at one of the defined positions.  If so,
-    // you should document it.
-
-    // CODE_REVIEW (mjh): I think you're making some assumptions here about the
-    // relative positions (in terms of height) for stops 1&2.  This is probably
-    // OK, but would be good to document.
+    moving_down = false;
+  } 
+  else if(Robot::elevator->atPositionTwo()){
     Robot::elevator->moveDown();
-
-    // CODE_REVIEW (mh): What if the elevator isn't at position 2?  What if the
-    // robot was stopped between the bottom and position 1?  How are you going
-    // to handle that?  (More immediately, what's going to happen in this case
-    // with the current code?)
+    moving_down = true;
+  }
+  else if(Robot::elevator->atTop()){
+    Robot::elevator->moveDown();
+    moving_down = true;
+  }
+  else{
+    Robot::elevator->moveDown();
+    moving_down = true;
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorToPositionOne::Execute() {
+  if (needs_to_switch){
+    if(moving_down){
+      Robot::elevator->moveUp();
+      moving_down = false;
+    }
+    else{
+      Robot::elevator->moveDown();
+      moving_down = true;
+    }
+  }
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool ElevatorToPositionOne::IsFinished() {
+  //see if we're here
   if (Robot::elevator->atPositionOne()) {
-    // CODE_REVIEW (mjh): You need to handle the case where we "overrun" a
-    // position, and don't sense it.  To be specific, what if we hit the
-    // top/bottom sensor?  You've got nothing in here to stop us from
-    // overrunning the elevator, and the h/w team is expecting the "hard stops"
-    // to be implemented in s/w.
     return true;
-  } else {
-    return false;
   }
+
+  //if we aren't, do we need to move differently?
+  if(Robot::elevator->atBottom()&& moving_down) {
+    needs_to_switch = true;
+  }
+  else if(Robot::elevator->atTop()&& !moving_down){
+    needs_to_switch = true;
+  }
+  else if(Robot::elevator->atPositionTwo()&& !moving_down){
+    needs_to_switch = true;
+  }
+
+  //just keep swimmin'
+  return false;
 }
 
 // Called once after isFinished returns true

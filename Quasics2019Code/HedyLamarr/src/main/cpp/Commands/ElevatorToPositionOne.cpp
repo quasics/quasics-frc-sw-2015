@@ -20,20 +20,16 @@ void ElevatorToPositionOne::Initialize() {
   if (Robot::elevator->atPositionOne()) {
     Robot::elevator->stop();
     moving_down = false;
-  } 
-  else if (Robot::elevator->atBottom()) {
+  } else if (Robot::elevator->atBottom()) {
     Robot::elevator->moveUp();
     moving_down = false;
-  } 
-  else if(Robot::elevator->atPositionTwo()){
+  } else if (Robot::elevator->atPositionTwo()) {
     Robot::elevator->moveDown();
     moving_down = true;
-  }
-  else if(Robot::elevator->atTop()){
+  } else if (Robot::elevator->atTop()) {
     Robot::elevator->moveDown();
     moving_down = true;
-  }
-  else{
+  } else {
     Robot::elevator->moveDown();
     moving_down = true;
   }
@@ -41,12 +37,11 @@ void ElevatorToPositionOne::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorToPositionOne::Execute() {
-  if (needs_to_switch){
-    if(moving_down){
+  if (needs_to_switch) {
+    if (moving_down) {
       Robot::elevator->moveUp();
       moving_down = false;
-    }
-    else{
+    } else {
       Robot::elevator->moveDown();
       moving_down = true;
     }
@@ -56,23 +51,21 @@ void ElevatorToPositionOne::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool ElevatorToPositionOne::IsFinished() {
-  //see if we're here
+  // see if we're here
   if (Robot::elevator->atPositionOne()) {
     return true;
   }
 
-  //if we aren't, do we need to move differently?
-  if(Robot::elevator->atBottom()&& moving_down) {
+  // if we aren't, do we need to move differently?
+  if (Robot::elevator->atBottom() && moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::elevator->atTop()&& !moving_down){
+  } else if (Robot::elevator->atTop() && !moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::elevator->atPositionTwo()&& !moving_down){
+  } else if (Robot::elevator->atPositionTwo() && !moving_down) {
     needs_to_switch = true;
   }
 
-  //just keep swimmin'
+  // just keep swimmin'
   return false;
 }
 

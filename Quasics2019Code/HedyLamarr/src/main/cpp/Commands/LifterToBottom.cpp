@@ -9,34 +9,32 @@
 #include "Robot.h"
 #include "Subsystems/Lifter.h"
 
-
 LifterToBottom::LifterToBottom() {
- // Use Requires() here to declare subsystem dependencies
- // eg. Requires(Robot::chassis.get());
+  // Use Requires() here to declare subsystem dependencies
+  // eg. Requires(Robot::chassis.get());
   Requires(Robot::lifter.get());
 }
 
 // Called just before this Command runs the first time
 void LifterToBottom::Initialize() {
-if(Robot::lifter->atBottom()){
-   Robot::lifter->stop();
-  }
-  else{
-     Robot::lifter->moveDown();
+  if (Robot::lifter->atBottom()) {
+    Robot::lifter->stop();
+  } else {
+    Robot::lifter->moveDown();
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
-void LifterToBottom::Execute() {}
+void LifterToBottom::Execute() {
+}
 
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToBottom::IsFinished() {
- if(Robot::lifter->atBottom()){
-   return true;
- }
- else{
-   return false;
- }
+  if (Robot::lifter->atBottom()) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // Called once after isFinished returns true
@@ -47,5 +45,5 @@ void LifterToBottom::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void LifterToBottom::Interrupted() {
- End();
+  End();
 }

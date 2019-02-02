@@ -35,8 +35,7 @@ bool ElevatorToTop::IsFinished() {
     // CODE_REVIEW (mjh): Be paranoid, and check both "atBottom" and "atTop"
     // here. (Just in case motors are configured in reverse, etc.)
     return true;
-  } 
-  else {
+  } else {
     return false;
   }
 }

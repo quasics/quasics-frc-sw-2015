@@ -13,25 +13,24 @@ ElbowControl::ElbowControl() {
 }
 
 // Called just before this Command runs the first time
-void ElbowControl::Initialize() {}
+void ElbowControl::Initialize() {
+}
 
 // Called repeatedly when this Command is scheduled to run
 void ElbowControl::Execute() {
   if (Robot::oi->OI::isElbowSignaledUp()) {
     Robot::elbow->ElbowUp();
-  }
-  else if (Robot::oi->OI::isElbowSignaledDown()) {
+  } else if (Robot::oi->OI::isElbowSignaledDown()) {
     Robot::elbow->ElbowDown();
-  }
-  else {
+  } else {
     Robot::elbow->Stop();
   }
-
-
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool ElbowControl::IsFinished() { return false; }
+bool ElbowControl::IsFinished() {
+  return false;
+}
 
 // Called once after isFinished returns true
 void ElbowControl::End() {
@@ -41,6 +40,5 @@ void ElbowControl::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void ElbowControl::Interrupted() {
-
   End();
 }

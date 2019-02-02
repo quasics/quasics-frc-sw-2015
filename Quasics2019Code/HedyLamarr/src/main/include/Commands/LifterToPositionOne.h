@@ -13,12 +13,12 @@ class LifterToPositionOne : public frc::Command {
  public:
   LifterToPositionOne();
   void Initialize() override;
-  void Execute() override;  
+  void Execute() override;
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
 
-   private:
+ private:
   bool needs_to_switch = false;
   bool moving_down = false;
 };

@@ -9,6 +9,7 @@
 #include "Commands/ElevatorToTop.h"
 #include "Commands/LifterToTop.h"
 #include "Robot.h"
+
 MoveToTop::MoveToTop() {
   Requires(Robot::elevator.get());
   Requires(Robot::lifter.get());

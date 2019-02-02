@@ -4,9 +4,9 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-#include "Subsystems/Lifter.h"
 #include "Commands/LifterToPositionTwo.h"
 #include "Robot.h"
+#include "Subsystems/Lifter.h"
 
 LifterToPositionTwo::LifterToPositionTwo() {
   // Use Requires() here to declare subsystem dependencies
@@ -16,23 +16,19 @@ LifterToPositionTwo::LifterToPositionTwo() {
 
 // Called just before this Command runs the first time
 void LifterToPositionTwo::Initialize() {
-   if (Robot::lifter->atPositionTwo()) {
+  if (Robot::lifter->atPositionTwo()) {
     Robot::lifter->stop();
     moving_down = false;
-  } 
-  else if (Robot::lifter->atBottom()) {
+  } else if (Robot::lifter->atBottom()) {
     Robot::lifter->moveUp();
     moving_down = false;
-  } 
-  else if(Robot::lifter->atPositionOne()){
+  } else if (Robot::lifter->atPositionOne()) {
     Robot::lifter->moveUp();
     moving_down = false;
-  }
-  else if(Robot::lifter->atTop()){
+  } else if (Robot::lifter->atTop()) {
     Robot::lifter->moveDown();
     moving_down = true;
-  }
-  else{
+  } else {
     Robot::lifter->moveUp();
     moving_down = false;
   }
@@ -40,12 +36,11 @@ void LifterToPositionTwo::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void LifterToPositionTwo::Execute() {
-   if (needs_to_switch){
-    if(moving_down){
+  if (needs_to_switch) {
+    if (moving_down) {
       Robot::lifter->moveUp();
       moving_down = false;
-    }
-    else{
+    } else {
       Robot::lifter->moveDown();
       moving_down = true;
     }
@@ -55,27 +50,25 @@ void LifterToPositionTwo::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToPositionTwo::IsFinished() {
-   if (Robot::lifter->atPositionTwo()) {
+  if (Robot::lifter->atPositionTwo()) {
     return true;
   }
-  //if we aren't, do we need to move differently?
-  if(Robot::lifter->atBottom()&& moving_down) {
+  // if we aren't, do we need to move differently?
+  if (Robot::lifter->atBottom() && moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::lifter->atTop()&& !moving_down){
+  } else if (Robot::lifter->atTop() && !moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::lifter->atPositionOne()&& moving_down){
+  } else if (Robot::lifter->atPositionOne() && moving_down) {
     needs_to_switch = true;
   }
 
-  //just keep swimmin'
+  // just keep swimmin'
   return false;
- }
+}
 
 // Called once after isFinished returns true
 void LifterToPositionTwo::End() {
-   Robot::lifter->stop();
+  Robot::lifter->stop();
 }
 
 // Called when another command which requires one or more of the same

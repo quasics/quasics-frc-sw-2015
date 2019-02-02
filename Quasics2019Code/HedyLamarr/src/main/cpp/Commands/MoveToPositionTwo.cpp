@@ -16,4 +16,3 @@ MoveToPositionTwo::MoveToPositionTwo() {
   AddParallel(new LifterToPositionTwo);
 }
 
-

@@ -12,26 +12,23 @@ IntakeControl::IntakeControl() {
   // eg. Requires(Robot::chassis.get());
 }
 
-
 // Called repeatedly when this Command is scheduled to run
 void IntakeControl::Execute() {
-if(Robot::oi->OI::isIntakeSignaledPositive()) {
-  Robot::manipulator->SetIntakePower(1);
-}
-else if(Robot::oi->OI::isIntakeSignaledHighNegative()) {
-  Robot::manipulator->SetIntakePower(-1);
-}
-else if(Robot::oi->OI::isIntakeSignaledLowNegative()) {
-  Robot::manipulator->SetIntakePower(-.5);
-}
-else {
-  Robot::manipulator->SetIntakePower(0);
-}
-
+  if (Robot::oi->OI::isIntakeSignaledPositive()) {
+    Robot::manipulator->SetIntakePower(1);
+  } else if (Robot::oi->OI::isIntakeSignaledHighNegative()) {
+    Robot::manipulator->SetIntakePower(-1);
+  } else if (Robot::oi->OI::isIntakeSignaledLowNegative()) {
+    Robot::manipulator->SetIntakePower(-.5);
+  } else {
+    Robot::manipulator->SetIntakePower(0);
+  }
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool IntakeControl::IsFinished() { return false; }
+bool IntakeControl::IsFinished() {
+  return false;
+}
 
 // Called once after isFinished returns true
 void IntakeControl::End() {

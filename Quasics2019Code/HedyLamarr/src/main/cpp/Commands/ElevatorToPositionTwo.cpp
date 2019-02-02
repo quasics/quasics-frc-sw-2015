@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/ElevatorToPositionTwo.h"
-#include "Subsystems/Elevator.h"
 #include "Robot.h"
+#include "Subsystems/Elevator.h"
 
 ElevatorToPositionTwo::ElevatorToPositionTwo() {
   // Use Requires() here to declare subsystem dependencies
@@ -20,20 +20,16 @@ void ElevatorToPositionTwo::Initialize() {
   if (Robot::elevator->atPositionTwo()) {
     Robot::elevator->stop();
     moving_down = false;
-  } 
-  else if (Robot::elevator->atBottom()) {
+  } else if (Robot::elevator->atBottom()) {
     Robot::elevator->moveUp();
     moving_down = false;
-  } 
-  else if(Robot::elevator->atPositionOne()){
+  } else if (Robot::elevator->atPositionOne()) {
     Robot::elevator->moveUp();
     moving_down = false;
-  }
-  else if(Robot::elevator->atTop()){
+  } else if (Robot::elevator->atTop()) {
     Robot::elevator->moveDown();
     moving_down = true;
-  }
-  else{
+  } else {
     Robot::elevator->moveUp();
     moving_down = false;
   }
@@ -41,12 +37,11 @@ void ElevatorToPositionTwo::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorToPositionTwo::Execute() {
-  if (needs_to_switch){
-    if(moving_down){
+  if (needs_to_switch) {
+    if (moving_down) {
       Robot::elevator->moveUp();
       moving_down = false;
-    }
-    else{
+    } else {
       Robot::elevator->moveDown();
       moving_down = true;
     }
@@ -56,22 +51,20 @@ void ElevatorToPositionTwo::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool ElevatorToPositionTwo::IsFinished() {
-  //see if we're here
+  // see if we're here
   if (Robot::elevator->atPositionTwo()) {
     return true;
   }
-  //if we aren't, do we need to move differently?
-  if(Robot::elevator->atBottom()&& moving_down) {
+  // if we aren't, do we need to move differently?
+  if (Robot::elevator->atBottom() && moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::elevator->atTop()&& !moving_down){
+  } else if (Robot::elevator->atTop() && !moving_down) {
     needs_to_switch = true;
-  }
-  else if(Robot::elevator->atPositionOne()&& moving_down){
+  } else if (Robot::elevator->atPositionOne() && moving_down) {
     needs_to_switch = true;
   }
 
-  //just keep swimmin'
+  // just keep swimmin'
   return false;
 }
 

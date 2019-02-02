@@ -35,10 +35,14 @@ public:
 
 	double getLeftTankSpeed();
 	double getRightTankSpeed();
+	double getElbowDirection();
 
 	bool isIntakeSignaledPositive(); //in
 	bool isIntakeSignaledLowNegative(); //out, slowly
 	bool isIntakeSignaledHighNegative(); //out, quickly
+	
+	bool isElbowSignaledUp();
+	bool isElbowSignaledDown();
 };
 
 #endif

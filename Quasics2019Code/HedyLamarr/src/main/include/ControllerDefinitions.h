@@ -27,10 +27,10 @@
 
 //--------------------X-Box Controller-----------------------------------------------------------------
 // Buttons
-#define XBox_ButtonA  		1
-#define XBox_ButtonB  		2
+#define XBox_ButtonA  		1      //intake
+#define XBox_ButtonB  		2      //slow extake
 #define XBox_ButtonX  		3
-#define XBox_ButtonY  		4
+#define XBox_ButtonY  		4      //fast extake
 #define XBox_LeftButton 	5
 #define XBox_RightButton	6
 
@@ -38,6 +38,6 @@
 #define XBox_LeftXAxis      0
 #define XBox_LeftYAxis      1
 #define XBox_RightXAxis  	2
-#define XBox_RightYAxis  	5
+#define XBox_RightYAxis  	5          //elbow
 
 #endif /* SRC_CONTROLLERDEFINITIONS_H_ */

@@ -13,7 +13,8 @@ class ElevatorToPositionOne : public frc::Command {
  public:
   ElevatorToPositionOne();
   void Initialize() override;
-  void Execute() override;
+  void Execute() override;  // CODE_REVIEW (mjh): This function isn't actually
+                            // needed for this class.
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;

@@ -6,8 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/ElevatorToBottom.h"
-#include "Subsystems/Elevator.h"
 #include "Robot.h"
+#include "Subsystems/Elevator.h"
 
 ElevatorToBottom::ElevatorToBottom() {
   // Use Requires() here to declare subsystem dependencies
@@ -17,23 +17,26 @@ ElevatorToBottom::ElevatorToBottom() {
 
 // Called just before this Command runs the first time
 void ElevatorToBottom::Initialize() {
-  if(Robot::elevator->atBottom()){
+  if (Robot::elevator->atBottom()) {
+    // CODE_REVIEW (mjh): This call to stop() (hopefully) isn't needed here,
+    // since the elevator (again, hopefully) isn't already in motion.
     Robot::elevator->stop();
-  }
-  else{
+  } else {
     Robot::elevator->moveDown();
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ElevatorToBottom::Execute() {}
+void ElevatorToBottom::Execute() {
+}
 
 // Make this return true when this Command no longer needs to run execute()
-bool ElevatorToBottom::IsFinished() { 
-  if(Robot::elevator->atBottom()){
+bool ElevatorToBottom::IsFinished() {
+  if (Robot::elevator->atBottom()) {
+    // CODE_REVIEW (mjh): Be paranoid, and check both "atBottom" and "atTop"
+    // here. (Just in case motors are configured in reverse, etc.)
     return true;
-  }
-  else{
+  } else {
     return false;
   }
 }

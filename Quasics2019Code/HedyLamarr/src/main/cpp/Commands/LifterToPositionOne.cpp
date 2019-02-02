@@ -40,7 +40,6 @@ void LifterToPositionOne::Execute() {
     if (moving_down) {
       Robot::lifter->moveUp();
       moving_down = false;
-
     } else {
       Robot::lifter->moveDown();
       moving_down = true;
@@ -51,6 +50,7 @@ void LifterToPositionOne::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToPositionOne::IsFinished() {
+  // Are we where we want to be?
   if (Robot::lifter->atPositionOne()) {
     return true;
   }

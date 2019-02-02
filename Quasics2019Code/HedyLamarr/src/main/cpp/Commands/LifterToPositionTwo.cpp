@@ -50,9 +50,11 @@ void LifterToPositionTwo::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToPositionTwo::IsFinished() {
+  // Are we where we want to be?
   if (Robot::lifter->atPositionTwo()) {
     return true;
   }
+
   // if we aren't, do we need to move differently?
   if (Robot::lifter->atBottom() && moving_down) {
     needs_to_switch = true;

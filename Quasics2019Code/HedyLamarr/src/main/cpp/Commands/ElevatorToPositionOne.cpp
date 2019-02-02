@@ -30,6 +30,8 @@ void ElevatorToPositionOne::Initialize() {
     Robot::elevator->moveDown();
     moving_down = true;
   } else {
+    // Don't know where we are, so (for now) we'll assume that we're too high.
+    // If we figure out something different later, we'll adjust.
     Robot::elevator->moveDown();
     moving_down = true;
   }

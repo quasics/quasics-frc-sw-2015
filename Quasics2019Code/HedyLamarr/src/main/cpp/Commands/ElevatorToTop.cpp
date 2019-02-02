@@ -32,8 +32,6 @@ void ElevatorToTop::Execute() {
 // Make this return true when this Command no longer needs to run execute()
 bool ElevatorToTop::IsFinished() {
   if (Robot::elevator->atTop()) {
-    // CODE_REVIEW (mjh): Be paranoid, and check both "atBottom" and "atTop"
-    // here. (Just in case motors are configured in reverse, etc.)
     return true;
   } else {
     return false;

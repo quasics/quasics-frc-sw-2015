@@ -13,6 +13,7 @@
 MoveToTop::MoveToTop() {
   Requires(Robot::elevator.get());
   Requires(Robot::lifter.get());
+
   AddParallel(new ElevatorToTop);
   AddParallel(new LifterToTop);
 }

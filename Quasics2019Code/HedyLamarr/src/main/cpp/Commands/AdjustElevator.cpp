@@ -26,6 +26,9 @@ void AdjustElevator::Execute() {
   else if(Robot::oi->isMoveDownSignaled()&& !Robot::lifter->atBottom()){
     Robot::elevator->moveSlowlyDown();
   }
+  else{
+    Robot::lifter->stop();
+  }
 }
 
 // Make this return true when this Command no longer needs to run execute()

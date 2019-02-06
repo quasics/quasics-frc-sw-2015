@@ -21,18 +21,12 @@ void AdjustLifter::Initialize() {
 void AdjustLifter::Execute() {
   if(Robot::oi->isMoveUpSignaled() && !Robot::lifter->atTop()){
     Robot::elevator->moveSlowlyUp();
-    moving_up = true;
-    moving_down = false;
   }
   else if(Robot::oi->isMoveDownSignaled()&& !Robot::lifter->atBottom()){
     Robot::lifter->moveSlowlyDown();
-    moving_up = false;
-    moving_down = true;
   }
   else{
     Robot::lifter->stop();
-    moving_up = false;
-    moving_down = false;
   }
 }
 

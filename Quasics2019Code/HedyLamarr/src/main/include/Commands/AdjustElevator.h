@@ -17,8 +17,4 @@ class AdjustElevator : public frc::Command {
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;
-
-  private:
-  bool moving_up = false;
-  bool moving_down = false;
 };

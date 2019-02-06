@@ -19,20 +19,19 @@ void AdjustLifter::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AdjustLifter::Execute() {
-  if(Robot::oi->isMoveUpSignaled() && !Robot::lifter->atTop()){
+  if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
     Robot::elevator->moveSlowlyUp();
-  }
-  else if(Robot::oi->isMoveDownSignaled()&& !Robot::lifter->atBottom()){
+  } else if (Robot::oi->isElevatorMoveDownSignaled() &&
+             !Robot::lifter->atBottom()) {
     Robot::lifter->moveSlowlyDown();
-  }
-  else{
+  } else {
     Robot::lifter->stop();
   }
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool AdjustLifter::IsFinished() {
-return false;
+  return false;
 }
 
 // Called once after isFinished returns true

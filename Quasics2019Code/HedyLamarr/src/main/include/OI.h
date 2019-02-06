@@ -51,6 +51,9 @@ class OI {
 
   bool isElbowSignaledUp();
   bool isElbowSignaledDown();
+
+  bool isMoveUpSignaled();
+  bool isMoveDownSignaled();
 };
 
 #endif

@@ -124,3 +124,23 @@ bool OI::isTurtleTriggerDown() {
     const bool RightShoulder= driveStick->GetRawButton(LogitechGamePad_RightShoulder);
     return RightShoulder;
 }
+
+bool OI::isMoveUpSignaled(){
+  const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  if(joystick >= .3){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+bool OI::isMoveDownSignaled(){
+  const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  if(joystick <= -.3){
+    return true;
+  }
+  else{
+    return false;
+  }
+}

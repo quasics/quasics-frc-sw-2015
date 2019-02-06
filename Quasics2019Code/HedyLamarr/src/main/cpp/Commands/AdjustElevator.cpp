@@ -20,10 +20,10 @@ void AdjustElevator::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AdjustElevator::Execute() {
-  if(Robot::oi->isMoveUpSignaled()){
+  if(Robot::oi->isMoveUpSignaled()&& !Robot::lifter->atTop()){
     Robot::elevator->moveSlowlyUp();
   }
-  else if(Robot::oi->isMoveDownSignaled()){
+  else if(Robot::oi->isMoveDownSignaled()&& !Robot::lifter->atBottom()){
     Robot::elevator->moveSlowlyDown();
   }
 }

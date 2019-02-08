@@ -20,7 +20,7 @@ OI::OI() {
     frc::SmartDashboard::PutData("Square", new SimpleMoveSequence);
     frc::SmartDashboard::PutData("Forward", new TimedMove(3.00, 1.00));
     frc::SmartDashboard::PutData("Compass", new TurnToNorth);
-    frc::SmartDashboard::PutData("Turning", new Rotate(2));
+    frc::SmartDashboard::PutData("Turning", new Rotate(1));
      frc::SmartDashboard::PutData("Reverse", new TimedMove(3.00, -1.00));
     frc::SmartDashboard::PutData("Move forward", new MoveForDuration(1.00));
     frc::SmartDashboard::PutData("Zig Zag", new ZigZagSequential);

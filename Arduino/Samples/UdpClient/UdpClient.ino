@@ -17,7 +17,7 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#undef ENABLE_LOGGING
+#define ENABLE_LOGGING
 #undef USE_RANDOM_MAC_ADDRESS
 
 #ifdef ENABLE_LOGGING
@@ -33,7 +33,9 @@ EthernetUDP udp;
 
 const unsigned int kLocalPort = 10900;
 
-char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
+// Pin wired to an LED being controlled by remote commands.
+// Note that we can't use LED_BUILTIN, because it's used by the Ethernet shield.
+constexpr int LED_PIN = 7;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -116,32 +118,41 @@ bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress = 0, IPAddr
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
-// 
+// Set-up code, run at the start of the program.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
+void signalSetupErrorForever() {
+  bool turnOn = true;
+  while (true) {
+    digitalWrite(LED_PIN, turnOn ? HIGH : LOW);
+    turnOn = !turnOn;
+    delay(100);                       // wait for 1/10th of a second
+  }
+}
+
 void setup() {
   // Open serial communications and wait for port to open.
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-
-  // Initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
 
 #ifdef USE_RANDOM_MAC_ADDRESS
   Serial.println("Generating random MAC address...");
   generateMacAddress(mac);
 #endif
 
+  // Initialize the designated digital pin as an output (controlling an external LED),
+  // and turn on the light.
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, HIGH);
+
   // Start the Ethernet connection.
   Serial.println("Initializing Ethernet...");
   if (!configureNetwork(mac)) {
     Serial.println("Failed to configure network: I refuse to proceed....");
-    while (true) {
-      delay(1); // do nothing, no point running without Ethernet hardware
-    }
+    signalSetupErrorForever();
   }
 
   // Start UDP.
@@ -181,7 +192,8 @@ void loop() {
   LOG(udp.remotePort());
 #endif
 
-  // Read the packet's data into packetBufffer
+  // Read in the packet's data
+  static char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
   int len = udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
   if (packetBuffer[len - 1] != 0) {
     // Null-terminate the string, so that it's safe to use "normally".
@@ -198,11 +210,13 @@ void loop() {
   Serial.println("\"");
 
   if (strcmp(packetBuffer, "on") == 0) {
-    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
+    Serial.println("Turn on the lights");
+    digitalWrite(LED_PIN, HIGH);
   } else if (strcmp(packetBuffer, "off") == 0) {
-    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off
+    Serial.println("Turn off the lights");
+    digitalWrite(LED_PIN, LOW);
   } else {
-    Serial.print("  --- Unknown command\n");
+    Serial.println("  --- Unknown command");
   }
 
 //  // send a reply to the IP address and port that sent us the packet we received

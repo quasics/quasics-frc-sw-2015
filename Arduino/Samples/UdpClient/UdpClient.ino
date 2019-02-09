@@ -168,6 +168,9 @@ void setup() {
 ////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
+  // Make sure that we keep our lease on our IP address, if we were set up using DHCP.
+  Ethernet.maintain();
+
   // Look for UDP packets
   int packetSize = udp.parsePacket();
   if (packetSize <= 0) {

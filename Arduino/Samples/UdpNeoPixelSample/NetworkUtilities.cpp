@@ -46,6 +46,7 @@ void generateMacAddress(byte mac[MAC_LENGTH]) {
 }
 
 bool configureStaticNetwork(byte mac[MAC_LENGTH], IPAddress staticAddress, IPAddress staticDns) {
+  LOG("Initializing Ethernet (static only)...");
   Ethernet.begin(mac, staticAddress, staticDns);
   
   // Check for Ethernet possible causes of failure
@@ -64,6 +65,7 @@ bool configureStaticNetwork(byte mac[MAC_LENGTH], IPAddress staticAddress, IPAdd
 }
 
 bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress, IPAddress* staticDns) {
+  LOG("Initializing Ethernet (DHCP)...");
   if (!Ethernet.begin(mac)) {
     LOG("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present
@@ -81,6 +83,7 @@ bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress, IPAddress*
     }
 
     // Try to configure using static IP/DNS address
+    LOG("- Falling back on static configuration");
     Ethernet.begin(mac, *staticAddress, *staticDns);
   }
   

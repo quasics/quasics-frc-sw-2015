@@ -63,13 +63,14 @@ void setup() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
+  initializeNeoPixels(NEOPIXEL_PIN, NEOPIXEL_LENGTH, NEOPIXEL_TYPE);
+
 #ifdef USE_RANDOM_MAC_ADDRESS
   Serial.println("Generating random MAC address...");
   generateMacAddress(mac);
 #endif
 
   // Start the Ethernet connection.
-  Serial.println("Initializing Ethernet...");
 #if defined( ALLOW_STATIC_IP_ADDRESS ) && defined( SKIP_DHCP )
   bool networkOK = configureStaticNetwork(mac, staticIP, staticDNS);
 #elif defined( ALLOW_STATIC_IP_ADDRESS )
@@ -79,18 +80,19 @@ void setup() {
 #endif
   if (!networkOK) {
     Serial.println("Failed to configure network: I refuse to proceed....");
+    setNeoPixelMode(NeoPixelMode::eError);
     while(true) {
+      stepNeoPixels();
       delay(1);
     }
   }
-
-  initializeNeoPixels(NEOPIXEL_PIN, NEOPIXEL_LENGTH, NEOPIXEL_TYPE);
-  setNeoPixelMode(NeoPixelMode::eOn);
 
   // Start listening for UDP packets on our designated port.
   udp.begin(kLocalPort);
   Serial.print("Waiting for UDP packets on port ");
   Serial.println(kLocalPort);
+
+  setNeoPixelMode(NeoPixelMode::eOn);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

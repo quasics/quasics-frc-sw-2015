@@ -21,8 +21,7 @@ void AdjustLifter::Initialize() {
 void AdjustLifter::Execute() {
   if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
     Robot::elevator->moveSlowlyUp();
-  } else if (Robot::oi->isElevatorMoveDownSignaled() &&
-             !Robot::lifter->atBottom()) {
+  } else if (Robot::oi->isElevatorMoveDownSignaled() &&!Robot::lifter->atBottom()) {
     Robot::lifter->moveSlowlyDown();
   } else {
     Robot::lifter->stop();

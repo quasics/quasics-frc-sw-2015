@@ -19,15 +19,19 @@
 #include "ConfigurationFlags.h"
 #include "Logging.h"
 #include "NetworkUtilities.h"
+#include "NeoPixelControl.h"
 
 // An EthernetUDP instance to let us send and receive packets over UDP
 EthernetUDP udp;
 
 const unsigned int kLocalPort = 10900;
 
-// Pin wired to an LED being controlled by remote commands.
-// Note that we can't use LED_BUILTIN, because it's used by the Ethernet shield.
-constexpr int LED_PIN = 7;
+// Pin wired to control the NeoPixels.
+// Note that pins 10-13 are used by the Ethernet Shield. (https://playground.arduino.cc/Main/ShieldPinUsage)
+constexpr int NEOPIXEL_PIN = 7;
+
+constexpr int NEOPIXEL_LENGTH = 24;
+constexpr neoPixelType NEOPIXEL_TYPE = NEOPIXEL_RING_RGBW;
 
 // Enter a MAC address for your controller below (or generate a random one).
 //
@@ -49,15 +53,6 @@ IPAddress staticDNS(8, 8, 8, 8);    // Google's DNS server
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-void signalSetupErrorForever() {
-  bool turnOn = true;
-  while (true) {
-    digitalWrite(LED_PIN, turnOn ? HIGH : LOW);
-    turnOn = !turnOn;
-    delay(100);                       // wait for 1/10th of a second
-  }
-}
-
 void setup() {
   // Open serial communications and wait for port to open.
   Serial.begin(115200);
@@ -70,11 +65,6 @@ void setup() {
   generateMacAddress(mac);
 #endif
 
-  // Initialize the designated digital pin as an output (controlling an external LED),
-  // and turn off the light.
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, LOW);
-
   // Start the Ethernet connection.
   Serial.println("Initializing Ethernet...");
 #if defined( ALLOW_STATIC_IP_ADDRESS ) && defined( SKIP_DHCP )
@@ -86,16 +76,18 @@ void setup() {
 #endif
   if (!networkOK) {
     Serial.println("Failed to configure network: I refuse to proceed....");
-    signalSetupErrorForever();
+    while(true) {
+      delay(1);
+    }
   }
+
+  initializeNeoPixels(NEOPIXEL_PIN, NEOPIXEL_LENGTH, NEOPIXEL_TYPE);
+  setNeoPixelMode(NeoPixelMode::eOn);
 
   // Start listening for UDP packets on our designated port.
   udp.begin(kLocalPort);
   Serial.print("Waiting for UDP packets on port ");
   Serial.println(kLocalPort);
-
-  // Turn on the light to show that we're ready to proceed
-  digitalWrite(LED_PIN, HIGH);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +102,8 @@ void loop() {
   Ethernet.maintain();
 #endif
 
+  stepNeoPixels();
+
   String command;
   if (!getPacketData(udp, command)) {
     // No data, but pause briefly (to allow something to come in) before we bail out.
@@ -123,10 +117,10 @@ void loop() {
 
   if (command == "on") {
     Serial.println("Turn on the lights");
-    digitalWrite(LED_PIN, HIGH);
+    setNeoPixelMode(NeoPixelMode::eOn);
   } else if (command == "off") {
     Serial.println("Turn off the lights");
-    digitalWrite(LED_PIN, LOW);
+    setNeoPixelMode(NeoPixelMode::eOff);
   } else {
     Serial.println("  --- Unknown command");
   }
@@ -136,3 +130,4 @@ void loop() {
 //  udp.write("ACK");
 //  udp.endPacket();
 }
+

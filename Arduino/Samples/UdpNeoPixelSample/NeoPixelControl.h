@@ -16,7 +16,8 @@ constexpr neoPixelType NEOPIXEL_WS2811_RGB = NEO_RGB;
 
 enum class NeoPixelMode {
   eOff,
-  eOn
+  eOn,
+  eError
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -8,8 +8,9 @@ static Adafruit_NeoPixel * strip = 0;
 // The current mode for the lights.
 static NeoPixelMode mode = NeoPixelMode::eOff;
 
-// Convenient color definition.
+// Convenient color definitions.
 const uint32_t QUASICS_GREEN = Adafruit_NeoPixel::Color(40, 255, 0, 0);
+const uint32_t YELLOW = Adafruit_NeoPixel::Color(255, 255, 0, 0);
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -58,6 +59,7 @@ void turnOnEveryOtherLight(uint32_t color, bool lightTheFirstPixel) {
 // Lighting control functions (usable outside this file).
 
 void initializeNeoPixels(int pin, int length, neoPixelType type) {
+  LOG("Initializing NeoPixel strip...");
   if (strip != 0) {
     delete strip;
     strip = 0;
@@ -79,16 +81,27 @@ void setNeoPixelMode(NeoPixelMode newMode) {
 }
 
 void stepNeoPixels() {
+  if (strip == 0) {
+    // We never called "initializeNeoPixels()" (or it failed): bail out.
+    return;
+  }
   unsigned long int curTime = millis();
   if (curTime < nextTick) {
     return;
   }
 
-  if (mode == NeoPixelMode::eOn) {
-    turnOnEveryOtherLight(QUASICS_GREEN, !firstPixelWasLit);
-    firstPixelWasLit = !firstPixelWasLit;
-  } else {
-    turnLightsOff();
+  switch(mode) {
+    case NeoPixelMode::eOn:
+      turnOnEveryOtherLight(QUASICS_GREEN, !firstPixelWasLit);
+      firstPixelWasLit = !firstPixelWasLit;
+      break;
+    case NeoPixelMode::eOff:
+      turnLightsOff();
+      break;
+    case NeoPixelMode::eError:
+      turnOnEveryOtherLight(YELLOW, !firstPixelWasLit);
+      firstPixelWasLit = !firstPixelWasLit;
+      break;
   }
   strip->show();
 

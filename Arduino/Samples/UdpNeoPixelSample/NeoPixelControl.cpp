@@ -15,7 +15,8 @@ const uint32_t QUASICS_GREEN = Adafruit_NeoPixel::Color(40, 255, 0, 0);
 ///////////////////////////////////////////////////////////////////////////
 // Data used to keep track of whether or not we need to update the lights
 
-// How often things should change
+// How often things should change.  (Too fast, and you may not see the lights
+// actually turning off.)
 static unsigned long STEP_INTERVAL_MSEC = 100;
 
 // When is the next time (reported by millis()) that we should update the lights?
@@ -26,11 +27,35 @@ static unsigned long int nextTick = 0;
 // Data used for the "on" mode.
 
 // Was the first pixel lit up the last time that we changed the pattern?
-static bool firstPixelLit = false;
+static bool firstPixelWasLit = false;
 
 
 ///////////////////////////////////////////////////////////////////////////
-// Function definitions
+// "Helper" functions, used only inside this file.
+
+namespace {
+
+// Turns all of the lights off on the LED strip.
+void turnLightsOff() {
+  for(uint16_t i = 0; i < strip->numPixels(); i++) {
+    strip->setPixelColor(i, 0);
+  }
+}
+
+// Turns every other light on, using the specified color.
+void turnOnEveryOtherLight(uint32_t color, bool lightTheFirstPixel) {
+  bool curPixelLit = lightTheFirstPixel;
+  for(uint16_t i = 0; i < strip->numPixels(); i++) {
+    strip->setPixelColor(i, curPixelLit ? color : 0);
+    curPixelLit = !curPixelLit;
+  }
+}
+
+} // end of anonymous namespace
+
+
+///////////////////////////////////////////////////////////////////////////
+// Lighting control functions (usable outside this file).
 
 void initializeNeoPixels(int pin, int length, neoPixelType type) {
   if (strip != 0) {
@@ -43,9 +68,7 @@ void initializeNeoPixels(int pin, int length, neoPixelType type) {
   strip->begin();
 
   // Initialize all pixels to 'off'.
-  for(uint16_t i = 0; i < strip->numPixels(); i++) {
-    strip->setPixelColor(i, 0);
-  }
+  turnLightsOff();
   strip->show();
   nextTick = 0;
 }
@@ -62,17 +85,10 @@ void stepNeoPixels() {
   }
 
   if (mode == NeoPixelMode::eOn) {
-    bool curPixelLit = !firstPixelLit;
-    for(uint16_t i = 0; i < strip->numPixels(); i++) {
-      strip->setPixelColor(i, curPixelLit ? QUASICS_GREEN : 0);
-      curPixelLit = !curPixelLit;
-    }
-    firstPixelLit = !firstPixelLit;
+    turnOnEveryOtherLight(QUASICS_GREEN, !firstPixelWasLit);
+    firstPixelWasLit = !firstPixelWasLit;
   } else {
-    // We must be off.
-    for(uint16_t i = 0; i < strip->numPixels(); i++) {
-      strip->setPixelColor(i, 0);
-    }
+    turnLightsOff();
   }
   strip->show();
 

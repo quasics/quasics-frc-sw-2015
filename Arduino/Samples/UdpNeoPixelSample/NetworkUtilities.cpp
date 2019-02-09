@@ -1,7 +1,6 @@
 #include "NetworkUtilities.h"
 
 #include <Ethernet.h>
-// #include <EthernetUdp.h>
 #include "Logging.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +58,8 @@ bool configureStaticNetwork(byte mac[MAC_LENGTH], IPAddress staticAddress, IPAdd
     return false;
   }
 
+  LOG_INLINE("Network configured as IP ");
+  LOG(Ethernet.localIP());
   return true;
 }
 

@@ -59,6 +59,10 @@ JAVACFLAGS += -deprecation
 JAVACFLAGS += -Xlint:all
 
 JAVAFLAGS  +=  -classpath "$(CLASSPATH)$(CLASSPATH_SEP)$(CLASSDIR)"
+
+# This flag is apparently needed for broadcasting support if you're running
+# on a device that supports IPv6.  (There are equivalent techniques *under*
+# IPv6, but they require different code.)
 JAVAFLAGS  +=  -Djava.net.preferIPv4Stack=true 
 
 JDOCFLAGS  += -classpath "$(CLASSPATH)$(CLASSPATH_SEP)$(CLASSDIR)"

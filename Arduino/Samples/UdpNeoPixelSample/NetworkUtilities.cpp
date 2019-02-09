@@ -65,7 +65,10 @@ bool configureStaticNetwork(byte mac[MAC_LENGTH], IPAddress staticAddress, IPAdd
 }
 
 bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress, IPAddress* staticDns) {
-  LOG("Initializing Ethernet (DHCP)...");
+  LOG((staticAddress && staticDns)
+        ? "Initializing Ethernet (DHCP/static fallback)..."
+        : "Initializing Ethernet (DHCP only)...");
+
   if (!Ethernet.begin(mac)) {
     LOG("Failed to configure Ethernet using DHCP");
     // Check for Ethernet hardware present

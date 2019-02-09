@@ -30,7 +30,10 @@ const unsigned int kLocalPort = 10900;
 // Note that pins 10-13 are used by the Ethernet Shield. (https://playground.arduino.cc/Main/ShieldPinUsage)
 constexpr int NEOPIXEL_PIN = 7;
 
+// How many LEDs are on the NeoPixel strip being controlled.
 constexpr int NEOPIXEL_LENGTH = 24;
+
+// The type of NeoPixel strip.
 constexpr neoPixelType NEOPIXEL_TYPE = NEOPIXEL_RING_RGBW;
 
 // Enter a MAC address for your controller below (or generate a random one).
@@ -68,9 +71,9 @@ void setup() {
   // Start the Ethernet connection.
   Serial.println("Initializing Ethernet...");
 #if defined( ALLOW_STATIC_IP_ADDRESS ) && defined( SKIP_DHCP )
-  bool networkOK = configureStaticNetwork(mac, &staticIP, &staticDNS);
+  bool networkOK = configureStaticNetwork(mac, staticIP, staticDNS);
 #elif defined( ALLOW_STATIC_IP_ADDRESS )
-  bool networkOK = configureNetwork(mac, staticIP, staticDNS);
+  bool networkOK = configureNetwork(mac, &staticIP, &staticDNS);
 #else
   bool networkOK = configureNetwork(mac);
 #endif

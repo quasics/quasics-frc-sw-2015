@@ -14,13 +14,13 @@ ZigZagSequential::ZigZagSequential() {
   
   //Nurfadil: Created a Zig Zag
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new LeftTurnN(0.75));
+  AddSequential(new LeftTurnN(0.60));
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new RightTurnN(0.75));
+  AddSequential(new RightTurnN(0.60));
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new RightTurnN(0.75));
+  AddSequential(new RightTurnN(0.60));
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new LeftTurnN(0.75));
+  AddSequential(new LeftTurnN(0.60));
   AddSequential(new MoveForDuration(1.00)); 
 
 }

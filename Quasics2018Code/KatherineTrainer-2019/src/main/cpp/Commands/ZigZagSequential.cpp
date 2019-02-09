@@ -16,9 +16,9 @@ ZigZagSequential::ZigZagSequential() {
   AddSequential(new MoveForDuration(1.00));
   AddSequential(new LeftTurnN(0.65));
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new RightTurnN(0.65));
+  AddSequential(new RightTurnN(0.70));
   AddSequential(new MoveForDuration(1.00));
-  AddSequential(new RightTurnN(0.65));
+  AddSequential(new RightTurnN(0.70));
   AddSequential(new MoveForDuration(1.00));
   AddSequential(new LeftTurnN(0.65));
   AddSequential(new MoveForDuration(1.00)); 

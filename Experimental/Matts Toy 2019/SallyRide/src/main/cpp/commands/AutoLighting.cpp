@@ -26,10 +26,14 @@ void AutoLighting::Execute() {
     return;
   }
 
-  if (!driverStation.IsFMSAttached()) {
-    // Send command to indicate that we don't have an FMS to tell us what's
-    // going on.
-    transmitStatus("no-FMS");
+  // TODO: Figure out if we want to do anything with the rest of this state.
+  const bool enabled = driverStation.IsEnabled();
+  const auto ds_alliance = driverStation.GetAlliance();
+  const bool fmsAttached = driverStation.IsFMSAttached();
+
+  const bool brownout = frc::RobotController::IsBrownedOut();
+  if (brownout) {
+    transmitStatus("brownout");
     return;
   }
 
@@ -43,9 +47,6 @@ void AutoLighting::Execute() {
   } else {
     modeCmd += "mode:unknown";
   }
-  const bool enabled = driverStation.IsEnabled();
-  const bool brownout = frc::RobotController::IsBrownedOut();
-  const auto ds_alliance = driverStation.GetAlliance();
 
   std::string color = "default";
   switch (ds_alliance) {

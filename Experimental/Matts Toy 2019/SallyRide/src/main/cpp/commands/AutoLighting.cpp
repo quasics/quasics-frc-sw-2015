@@ -66,7 +66,7 @@ void AutoLighting::Execute() {
   //
   // Assumption is that the different piece of status will all be strung
   // together into a single command, with the pieces separated by semicolons.
-  transmitStatus(modeCmd + ';' + colorCmd, true);
+  transmitStatus(modeCmd + ';' + colorCmd);
 }
 
 // Make this return true when this Command no longer needs to run execute()

@@ -51,6 +51,8 @@
     "type_traits": "cpp",
     "tuple": "cpp",
     "typeinfo": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "atomic": "cpp",
+    "iostream": "cpp"
   }
 }

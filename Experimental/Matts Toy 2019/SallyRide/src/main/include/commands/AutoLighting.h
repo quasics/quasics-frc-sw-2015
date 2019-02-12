@@ -10,8 +10,14 @@
 #include <frc/commands/Command.h>
 
 class AutoLighting : public frc::Command {
+ private:
+  std::string lastCommand = "";
+
  public:
   AutoLighting();
   void Execute() override;
   bool IsFinished() override;
+
+ private:
+  void transmitStatus(std::string statusCommand, bool alwaysSend = false);
 };

@@ -6,6 +6,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/LightingSubsystem.h"
+#include "commands/AutoLighting.h"
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -64,6 +66,7 @@ LightingSubsystem::~LightingSubsystem() {
 void LightingSubsystem::InitDefaultCommand() {
   // Set the default command for a subsystem here.
   // SetDefaultCommand(new MySpecialCommand());
+  SetDefaultCommand(new AutoLighting);
 }
 
 // Put methods for controlling this subsystem

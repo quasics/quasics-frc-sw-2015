@@ -77,7 +77,8 @@ bool LightingSubsystem::sendCommandToArduino(std::string cmd) {
     return false;
   }
 
-  return (sendto(udpSocket, cmd.c_str(), cmd.length() + 1, 0,
+  const int bytesToSend = cmd.length() + 1;
+  return (sendto(udpSocket, cmd.c_str(), bytesToSend, 0,
                  reinterpret_cast<const sockaddr *>(&broadcastAddress),
-                 sizeof(broadcastAddress)) == -1);
+                 sizeof(broadcastAddress)) == bytesToSend);
 }

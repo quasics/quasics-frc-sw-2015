@@ -66,9 +66,7 @@ void AutoLighting::Execute() {
   //
   // Assumption is that the different piece of status will all be strung
   // together into a single command, with the pieces separated by semicolons.
-  if (!Robot::m_lighting.sendCommandToArduino(modeCmd + ';' + colorCmd)) {
-    std::cerr << "Failed to send color command for '" << color << "'\n";
-  }
+  transmitStatus(modeCmd + ';' + colorCmd, true);
 }
 
 // Make this return true when this Command no longer needs to run execute()
@@ -76,9 +74,12 @@ bool AutoLighting::IsFinished() { return false; }
 
 void AutoLighting::transmitStatus(std::string statusCommand, bool alwaysSend) {
   if (alwaysSend || statusCommand != lastCommand) {
+    std::cout << "Sending command: '" << statusCommand << "'" << std::endl;
     // If the command (state) has changed, or if we're forcing a re-send, pass
     // the current status on to the Arduino.
-    Robot::m_lighting.sendCommandToArduino(statusCommand);
+    if (!Robot::m_lighting.sendCommandToArduino(statusCommand)) {
+      std::cerr << "--- Error sending command!\n";
+    }
   }
 
   // Remember for the next time, so that we don't send the same command 50 times

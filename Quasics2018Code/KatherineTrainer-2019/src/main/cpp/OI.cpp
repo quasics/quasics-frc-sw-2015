@@ -10,6 +10,7 @@
 #include "Commands/Rotate.h"
 #include "Commands/MoveForDuration.h"
 #include "Commands/ZigZagSequential.h"
+#include "Square.h"
 OI::OI() {
     // Process operator interface input here.
 	// SmartDashboard Buttons
@@ -24,4 +25,5 @@ OI::OI() {
      frc::SmartDashboard::PutData("Reverse", new TimedMove(3.00, -1.00));
     frc::SmartDashboard::PutData("Move forward", new MoveForDuration(1.00));
     frc::SmartDashboard::PutData("Zig Zag", new ZigZagSequential);
+    frc::SmartDashboard::PutData("Square", new Square);
 }

@@ -24,6 +24,8 @@
 #include "Commands/MoveToPositionOne.h"
 #include "Commands/MoveToPositionTwo.h"
 #include "Commands/MoveToTop.h"
+#include "Commands/OnlyLifter.h"
+#include "Commands/OnlyElevator.h"
 
 OI::OI() {
   // Process operator interface input here.
@@ -41,6 +43,8 @@ OI::OI() {
 
   frc::SmartDashboard::PutData("Intake", new IntakeControl());
   frc::SmartDashboard::PutData("Elbow Control", new ElbowControl());
+  frc::SmartDashboard::PutData("Test Lifter", new OnlyLifter());
+  frc::SmartDashboard::PutData("Test Elevator", new OnlyElevator());
 
 //maps Left Trigger on the Xbox Controller to moving the Elevator to the Top
   TopElevatorButton.reset(

@@ -24,7 +24,7 @@ void AdjustLifter::Execute() {
   //tests whether the lifter is signaled to go up, and if it isn't at the top
   if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
     //continues if both states are true
-    Robot::elevator->moveSlowlyUp();
+    Robot::lifter->moveSlowlyUp();
   }
   //tests whether the lifter is signaled to go down, and if it isn't at the bottom
    else if (Robot::oi->isElevatorMoveDownSignaled() &&!Robot::lifter->atBottom()) {

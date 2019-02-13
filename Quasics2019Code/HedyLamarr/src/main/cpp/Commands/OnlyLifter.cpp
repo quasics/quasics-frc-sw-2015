@@ -4,54 +4,52 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-//getting all the files it needs
-#include "Commands/AdjustElevator.h"
+
+#include "Commands/OnlyLifter.h"
 #include "OI.h"
 #include "Robot.h"
+#include "Subsystems/Lifter.h"
 #include "Subsystems/Elevator.h"
 
-AdjustElevator::AdjustElevator() {
-  //gets the elevator subsystem
+OnlyLifter::OnlyLifter() {
+  // Use Requires() here to declare subsystem dependencies
+  // eg. Requires(Robot::chassis.get());
+  Requires(Robot::lifter.get());
   Requires(Robot::elevator.get());
 }
 
 // Called just before this Command runs the first time
-void AdjustElevator::Initialize() {
+void OnlyLifter::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void AdjustElevator::Execute() {
-  //tests whether the elevator is signaled to go up, and if it isn't at the top
+void OnlyLifter::Execute() {
+  //tests whether the lifter is signaled to go up, and if it isn't at the top
   if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
     //continues if both states are true
-    Robot::elevator->moveSlowlyUp();
-  } 
-  //tests whether the elevator is signaled to go up, and if it isn't at the top
-  else if (Robot::oi->isElevatorMoveDownSignaled() && !Robot::lifter->atBottom()) {
-    //continues if both states are true
-    Robot::elevator->moveSlowlyDown();
+    Robot::lifter->moveSlowlyUp();
+  }
+  //tests whether the lifter is signaled to go down, and if it isn't at the bottom
+   else if (Robot::oi->isElevatorMoveDownSignaled() &&!Robot::lifter->atBottom()) {
+     //continues if both states are true
+    Robot::lifter->moveSlowlyDown();
   } 
   else {
-    //if neither is true, it stops
-    Robot::elevator->stop();
+     //if neither is true, it stops
+    Robot::lifter->stop();
   }
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool AdjustElevator::IsFinished() {
-   //this command is default for the elevator and never stops, it is only interrupted
-  return false;
-}
+bool OnlyLifter::IsFinished() { return false; }
 
 // Called once after isFinished returns true
-void AdjustElevator::End() {
-  //putting in an end state to stop because I'm paranoid
-  Robot::elevator->stop();
+void OnlyLifter::End() {
+  Robot::lifter->stop();
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void AdjustElevator::Interrupted() {
-  //when it's interrupted it needs to stop
-  Robot::elevator->stop();
+void OnlyLifter::Interrupted() {
+  End();
 }

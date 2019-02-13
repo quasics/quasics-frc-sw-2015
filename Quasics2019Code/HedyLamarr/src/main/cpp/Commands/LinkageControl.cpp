@@ -19,10 +19,10 @@ void LinkageControl::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void LinkageControl::Execute() {
-  if(Robot::oi->OI::isElevatorMoveUpSignaled()){
+  if(Robot::oi->OI::isElbowSignaledUp()){
     Robot::twoBarLinkage->LinkageUp();
   }
-  else if(Robot::oi->OI::isElevatorMoveDownSignaled()){
+  else if(Robot::oi->OI::isElbowSignaledDown()){
     Robot::twoBarLinkage->LinkageDown();
   }
   else{

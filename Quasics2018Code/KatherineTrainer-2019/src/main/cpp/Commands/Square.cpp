@@ -6,9 +6,20 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/Square.h"
-
+#include "Robot.h"
+#include "Commands/MoveForDuration.h"
+#include "Commands/LeftTurnT.h"
+#include "Commands/RightTurnT.h"
 Square::Square() {
-  // Add Commands here:
+
+AddSequential(new MoveForDuration(1.0));
+AddSequential(new LeftTurnT(0.7));
+AddSequential(new MoveForDuration(1.0));
+AddSequential(new LeftTurnT(0.7));
+AddSequential(new MoveForDuration(1.0));
+AddSequential(new LeftTurnT(0.7));
+AddSequential(new MoveForDuration(1.0));
+AddSequential(new LeftTurnT(0.7));
   // e.g. AddSequential(new Command1());
   //      AddSequential(new Command2());
   // these will run in order.

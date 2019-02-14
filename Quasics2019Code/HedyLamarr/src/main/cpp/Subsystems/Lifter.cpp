@@ -65,11 +65,11 @@ void Lifter::moveDown() {
 }
 
 void Lifter::moveSlowlyUp() {
-  lifterMotor->Set(.2);
+  lifterMotor->Set(.4);
 }
 
 void Lifter::moveSlowlyDown() {
-  lifterMotor->Set(-.2);
+  lifterMotor->Set(-.4);
 }
 
 void Lifter::stop() {

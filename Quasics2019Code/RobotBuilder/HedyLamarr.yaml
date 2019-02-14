@@ -345,7 +345,7 @@ Children:
           default: '0'
           name: Output Channel (PWM)
           validators: *id003
-          value: '7'
+          value: '9'
         Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Inverted, validators: null, value: false}
       Base: Speed Controller
@@ -399,7 +399,7 @@ Children:
           default: '0'
           name: Output Channel (PWM)
           validators: *id003
-          value: '8'
+          value: '7'
         Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Inverted, validators: null, value: false}
       Base: Speed Controller
@@ -417,9 +417,9 @@ Children:
           default: '0'
           name: Output Channel (PWM)
           validators: *id003
-          value: '9'
+          value: '8'
         Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-          name: Inverted, validators: null, value: false}
+          name: Inverted, validators: null, value: true}
       Base: Speed Controller
       Name: LeftLinkageMotor
     Properties:
@@ -532,9 +532,9 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\',
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: .\}
-  Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\FRCProjects',
+  Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\FRCProjects',
     extension: null, folder: true, name: Export Directory, validators: null, value: ..\}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}

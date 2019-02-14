@@ -65,11 +65,11 @@ void Elevator::moveDown() {
 }
 
 void Elevator::moveSlowlyUp() {
-  elevatorMotor->Set(.2);
+  elevatorMotor->Set(.4);
 }
 
 void Elevator::moveSlowlyDown() {
-  elevatorMotor->Set(-.2);
+  elevatorMotor->Set(-.4);
 }
 
 void Elevator::stop() {

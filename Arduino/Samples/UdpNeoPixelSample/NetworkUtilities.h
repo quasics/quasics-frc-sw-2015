@@ -19,5 +19,8 @@ bool configureStaticNetwork(byte mac[MAC_LENGTH], IPAddress staticAddress, IPAdd
 
 bool getPacketData(EthernetUDP & udp, String & result);
 
+void sendPacket(EthernetUDP & udp, IPAddress destination, unsigned short remotePort, const String & packetText);
+
+
 #endif // NETWORK_UTILITIES_H
 

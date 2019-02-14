@@ -96,6 +96,11 @@ bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress, IPAddress*
 }
 
 bool getPacketData(EthernetUDP & udp, String & result) {
+#if !(defined( ALLOW_STATIC_IP_ADDRESS ) && defined( SKIP_DHCP ))
+  // Make sure that we keep our lease on our IP address, if DHCP was enabled during startup.
+  Ethernet.maintain();
+#endif
+
   result = "";    // Clear the output
 
   // Look for UDP packets
@@ -126,21 +131,14 @@ bool getPacketData(EthernetUDP & udp, String & result) {
   for (int i = 0; i < packetSize; ++i) {
     result += char(udp.read());
   }
-/*
-  static char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
-  int len = udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-  if (packetBuffer[len - 1] != 0) {
-    // Null-terminate the string, so that it's safe to use "normally".
-    // (But be paranoid about it.)
-    if (len < UDP_TX_PACKET_MAX_SIZE) {
-      packetBuffer[len] = 0;
-    } else {
-      packetBuffer[len - 1] = 0;
-    }
-  }
-  result = packetBuffer;
-*/
 
   return true;
+}
+
+void sendPacket(EthernetUDP & udp, IPAddress destination, unsigned short remotePort, const String & packetText) {
+  // send a reply to the IP address and port that sent us the packet we received
+  udp.beginPacket(destination, remotePort);
+  udp.write(packetText.c_str());
+  udp.endPacket();
 }
 

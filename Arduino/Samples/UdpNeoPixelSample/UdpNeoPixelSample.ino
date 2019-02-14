@@ -13,6 +13,9 @@
    to reduce the risk of "collisions" with other devices on the network.  This functionality
    can be enabled by defining the "USE_RANDOM_MAC_ADDRESS" symbol; if this is not defined,
    a fixed MAC address will be used.
+
+   For the purposes of testing Neopixel pattern code, the program can also handle commands
+   received via the Serial monitor.
 */
 #include <Ethernet.h>
 

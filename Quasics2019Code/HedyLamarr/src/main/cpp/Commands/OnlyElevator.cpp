@@ -26,6 +26,7 @@ void OnlyElevator::Initialize() {
 void OnlyElevator::Execute() {
   if (Robot::oi->isElevatorMoveUpSignaled()) {
     if (!Robot::elevator->atTop()) {
+      std::cerr << "Telling elevator to move up\n";
       Robot::elevator->moveSlowlyUp();
     } else {
       std::cerr
@@ -34,6 +35,7 @@ void OnlyElevator::Execute() {
     }
   } else if (Robot::oi->isElevatorMoveDownSignaled()) {
     if (!Robot::elevator->atBottom()) {
+      std::cerr << "Telling elevator to move down\n";
       Robot::elevator->moveSlowlyDown();
     } else {
       std::cerr << "Cowardly refusing to move elevator down, since we're at "
@@ -42,6 +44,7 @@ void OnlyElevator::Execute() {
     }
   } else {
     // if neither is true, it stops
+    std::cerr << "Stopping elevator\n";
     Robot::elevator->stop();
   }
 }

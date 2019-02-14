@@ -6,16 +6,16 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/OnlyLifter.h"
+
+#include <iostream>
 #include "OI.h"
 #include "Robot.h"
 #include "Subsystems/Lifter.h"
-#include "Subsystems/Elevator.h"
 
 OnlyLifter::OnlyLifter() {
   // Use Requires() here to declare subsystem dependencies
   // eg. Requires(Robot::chassis.get());
   Requires(Robot::lifter.get());
-  Requires(Robot::elevator.get());
 }
 
 // Called just before this Command runs the first time
@@ -24,24 +24,34 @@ void OnlyLifter::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void OnlyLifter::Execute() {
-  //tests whether the lifter is signaled to go up, and if it isn't at the top
-  if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
-    //continues if both states are true
-    Robot::lifter->moveSlowlyUp();
+  if (Robot::oi->isElevatorMoveUpSignaled()) {
+    if (!Robot::lifter->atTop()) {
+      Robot::lifter->moveSlowlyUp();
+    } else {
+      std::cerr
+          << "Cowardly refusing to move lifter up, since we're at the top\n";
+    }
   }
-  //tests whether the lifter is signaled to go down, and if it isn't at the bottom
-   else if (Robot::oi->isElevatorMoveDownSignaled() &&!Robot::lifter->atBottom()) {
-     //continues if both states are true
-    Robot::lifter->moveSlowlyDown();
-  } 
-  else {
-     //if neither is true, it stops
+  // tests whether the lifter is signaled to go down, and if it isn't at the
+  // bottom
+  else if (Robot::oi->isElevatorMoveDownSignaled()) {
+    if (!Robot::lifter->atBottom()) {
+      Robot::lifter->moveSlowlyDown();
+    } else {
+      std::cerr << "Cowardly refusing to move lifter down, since we're at the "
+                   "bottom\n";
+      Robot::lifter->stop();
+    }
+  } else {
+    // if neither is true, it stops
     Robot::lifter->stop();
   }
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool OnlyLifter::IsFinished() { return false; }
+bool OnlyLifter::IsFinished() {
+  return false;
+}
 
 // Called once after isFinished returns true
 void OnlyLifter::End() {

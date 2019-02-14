@@ -19,5 +19,10 @@
 // Note: only works if "ALLOW_STATIC_IP_ADDRESS" is also defined.
 #undef SKIP_DHCP
 
+// If defined, don't do *anything* with networking.  (Useful when
+// testing on a device without an Ethernet shield.)
+// DO NOT USE IN COMPETITON!
+#undef SKIP_NETWORKING
+
 #endif  // CONFIGURATION_FLAGS_H
 

@@ -25,12 +25,12 @@ void OnlyElevator::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void OnlyElevator::Execute() {
     //tests whether the elevator is signaled to go up, and if it isn't at the top
-  if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::lifter->atTop()) {
+  if (Robot::oi->isElevatorMoveUpSignaled() && !Robot::elevator->atTop()) {
     //continues if both states are true
     Robot::elevator->moveSlowlyUp();
   } 
   //tests whether the elevator is signaled to go up, and if it isn't at the top
-  else if (Robot::oi->isElevatorMoveDownSignaled() && !Robot::lifter->atBottom()) {
+  else if (Robot::oi->isElevatorMoveDownSignaled() && !Robot::elevator->atBottom()) {
     //continues if both states are true
     Robot::elevator->moveSlowlyDown();
   } 

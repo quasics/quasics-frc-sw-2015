@@ -26,6 +26,8 @@
 #include "Commands/MoveToTop.h"
 #include "Commands/OnlyLifter.h"
 #include "Commands/OnlyElevator.h"
+#include "Commands/AdjustElevator.h"
+#include "Commands/AdjustLifter.h"
 
 OI::OI() {
   // Process operator interface input here.
@@ -45,6 +47,9 @@ OI::OI() {
   frc::SmartDashboard::PutData("Elbow Control", new ElbowControl());
   frc::SmartDashboard::PutData("Test Lifter", new OnlyLifter());
   frc::SmartDashboard::PutData("Test Elevator", new OnlyElevator());
+
+  frc::SmartDashboard::PutData("Adjust Lifter", new AdjustLifter());
+  frc::SmartDashboard::PutData("Adjust Elevator", new AdjustElevator());
 
 //maps Left Trigger on the Xbox Controller to moving the Elevator to the Top
   TopElevatorButton.reset(
@@ -158,6 +163,7 @@ constexpr double kElevatorDeadZoneWidth = 0.3;
 //tests the Left Joystick on the Xbox Controller to see if the Elevator is signaled to go Up
 bool OI::isElevatorMoveUpSignaled() {
   const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  constexpr double kElevatorDeadZoneWidth = 0.3;
   if (joystick >= kElevatorDeadZoneWidth) {
     return true;
   } else {
@@ -168,6 +174,7 @@ bool OI::isElevatorMoveUpSignaled() {
 //tests the Left Joystick on the Xbox Controller to see if the Elevator is signaled to go Down
 bool OI::isElevatorMoveDownSignaled() {
   const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  constexpr double kElevatorDeadZoneWidth = 0.3;
   if (joystick <= -kElevatorDeadZoneWidth) {
     return true;
   } else {

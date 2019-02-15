@@ -49,7 +49,9 @@ class OI {
   bool isIntakeSignaledLowNegative();   // out, slowly
   bool isIntakeSignaledHighNegative();  // out, quickly
 
+  // Returns true iff operator wants the manipulator to be raised.
   bool isElbowSignaledUp();
+  // Returns true iff operator wants the manipulator to be lowered.
   bool isElbowSignaledDown();
 
   /// Returns true iff the elevator (and lifter) should be moved up.

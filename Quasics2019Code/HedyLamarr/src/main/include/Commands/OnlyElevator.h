@@ -12,7 +12,6 @@
 class OnlyElevator : public frc::Command {
  public:
   OnlyElevator();
-  void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;

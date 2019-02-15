@@ -12,7 +12,6 @@
 class OnlyLifter : public frc::Command {
  public:
   OnlyLifter();
-  void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;

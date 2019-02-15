@@ -18,10 +18,6 @@ OnlyElevator::OnlyElevator() {
   Requires(Robot::elevator.get());
 }
 
-// Called just before this Command runs the first time
-void OnlyElevator::Initialize() {
-}
-
 // Called repeatedly when this Command is scheduled to run
 void OnlyElevator::Execute() {
   auto& liftingBody = Robot::elevator;

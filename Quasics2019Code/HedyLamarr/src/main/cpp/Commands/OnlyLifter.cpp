@@ -13,13 +13,7 @@
 #include "Subsystems/Lifter.h"
 
 OnlyLifter::OnlyLifter() {
-  // Use Requires() here to declare subsystem dependencies
-  // eg. Requires(Robot::chassis.get());
   Requires(Robot::lifter.get());
-}
-
-// Called just before this Command runs the first time
-void OnlyLifter::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -51,7 +45,6 @@ void OnlyLifter::Execute() {
   }
 }
 
-// Make this return true when this Command no longer needs to run execute()
 bool OnlyLifter::IsFinished() {
   return false;
 }

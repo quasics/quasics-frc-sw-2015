@@ -78,19 +78,19 @@ bool Elevator::atPositionTwo() {
 }
 
 void Elevator::moveUp() {
-  elevatorMotor->Set(.4);
+  elevatorMotor->Set(.65);
 }
 
 void Elevator::moveDown() {
-  elevatorMotor->Set(-.4);
+  elevatorMotor->Set(-.5);
 }
 
 void Elevator::moveSlowlyUp() {
-  elevatorMotor->Set(.4);
+  elevatorMotor->Set(.65);
 }
 
 void Elevator::moveSlowlyDown() {
-  elevatorMotor->Set(-.4);
+  elevatorMotor->Set(-.5);
 }
 
 void Elevator::stop() {

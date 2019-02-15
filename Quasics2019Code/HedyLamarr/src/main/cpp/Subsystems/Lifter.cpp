@@ -78,19 +78,19 @@ bool Lifter::atPositionTwo() {
 }
 
 void Lifter::moveUp() {
-  lifterMotor->Set(.4);
+  lifterMotor->Set(-.65);
 }
 
 void Lifter::moveDown() {
-  lifterMotor->Set(-.4);
+  lifterMotor->Set(.5);
 }
 
 void Lifter::moveSlowlyUp() {
-  lifterMotor->Set(.4);
+  lifterMotor->Set(-.65);
 }
 
 void Lifter::moveSlowlyDown() {
-  lifterMotor->Set(-.4);
+  lifterMotor->Set(.5);
 }
 
 void Lifter::stop() {

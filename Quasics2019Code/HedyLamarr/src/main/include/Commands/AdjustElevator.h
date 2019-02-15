@@ -12,7 +12,6 @@
 class AdjustElevator : public frc::Command {
  public:
   AdjustElevator();
-  void Initialize() override;
   void Execute() override;
   bool IsFinished() override;
   void End() override;

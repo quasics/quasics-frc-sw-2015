@@ -10,7 +10,8 @@
 #include "Commands/Rotate.h"
 #include "Commands/MoveForDuration.h"
 #include "Commands/ZigZagSequential.h"
-#include "Square.h"
+#include "Commands/Square.h"
+
 OI::OI() {
     // Process operator interface input here.
 	// SmartDashboard Buttons

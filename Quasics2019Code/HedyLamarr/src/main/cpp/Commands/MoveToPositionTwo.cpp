@@ -11,9 +11,6 @@
 #include "Robot.h"
 
 MoveToPositionTwo::MoveToPositionTwo() {
-  Requires(Robot::elevator.get());
-  Requires(Robot::lifter.get());
-
   AddParallel(new ElevatorToPositionTwo);
   AddParallel(new LifterToPositionTwo);
 }

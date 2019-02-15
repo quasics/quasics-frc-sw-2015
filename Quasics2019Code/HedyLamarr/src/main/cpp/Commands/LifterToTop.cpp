@@ -23,10 +23,6 @@ void LifterToTop::Initialize() {
   }
 }
 
-// Called repeatedly when this Command is scheduled to run
-void LifterToTop::Execute() {
-}
-
 // Make this return true when this Command no longer needs to run execute()
 bool LifterToTop::IsFinished() {
   if (Robot::lifter->atTop()) {

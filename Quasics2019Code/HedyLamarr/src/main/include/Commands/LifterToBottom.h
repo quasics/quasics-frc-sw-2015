@@ -13,8 +13,6 @@ class LifterToBottom : public frc::Command {
  public:
   LifterToBottom();
   void Initialize() override;
-  void Execute() override;  // CODE_REVIEW (mjh): This function isn't actually
-                            // needed for this class.
   bool IsFinished() override;
   void End() override;
   void Interrupted() override;

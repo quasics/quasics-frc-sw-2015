@@ -26,10 +26,6 @@ void ElevatorToBottom::Initialize() {
   }
 }
 
-// Called repeatedly when this Command is scheduled to run
-void ElevatorToBottom::Execute() {
-}
-
 // Make this return true when this Command no longer needs to run execute()
 bool ElevatorToBottom::IsFinished() {
   if (Robot::elevator->atBottom()) {

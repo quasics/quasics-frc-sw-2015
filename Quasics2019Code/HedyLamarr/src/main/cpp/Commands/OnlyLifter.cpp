@@ -25,25 +25,14 @@ void OnlyLifter::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void OnlyLifter::Execute() {
   if (Robot::oi->isElevatorMoveUpSignaled()) {
-    if (!Robot::lifter->atTop()) {
       std::cerr << "Telling lifter to move up\n";
       Robot::lifter->moveSlowlyUp();
-    } else {
-      std::cerr
-          << "Cowardly refusing to move lifter up, since we're at the top\n";
-    }
   }
   // tests whether the lifter is signaled to go down, and if it isn't at the
   // bottom
   else if (Robot::oi->isElevatorMoveDownSignaled()) {
-    if (!Robot::lifter->atBottom()) {
-      std::cerr << "Telling lifter to move down\n";
-      Robot::lifter->moveSlowlyDown();
-    } else {
-      std::cerr << "Cowardly refusing to move lifter down, since we're at the "
-                   "bottom\n";
-      Robot::lifter->stop();
-    }
+    std::cerr << "Telling lifter to move down\n";
+    Robot::lifter->moveSlowlyDown();
   } else {
     // if neither is true, it stops
     std::cerr << "Telling lifter to stop\n";

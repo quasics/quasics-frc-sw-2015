@@ -56,7 +56,7 @@ void TankDrive::Execute() {
 
     // Set the speed using the drive stick values and the active speed multiplier.
     Robot::driveBase->SetMotorSpeed(
-        LeftTankSpeed * speedMultiplier,
+        LeftTankSpeed * -speedMultiplier,
         RightTankSpeed * speedMultiplier);
 
     // Remember the state for the "turtle trigger", for the next time around

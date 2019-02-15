@@ -24,16 +24,29 @@ void OnlyElevator::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void OnlyElevator::Execute() {
+  auto& liftingBody = Robot::elevator;
   if (Robot::oi->isElevatorMoveUpSignaled()) {
-    std::cerr << "Telling elevator to move up\n";
-    Robot::elevator->moveSlowlyUp();
+    if (!liftingBody->atTop()) {
+      std::cerr << "Telling elevator to move up\n";
+      liftingBody->moveSlowlyUp();
+    } else {
+      std::cerr
+          << "Cowardly refusing to move Elevator up, since we're at the top\n";
+      liftingBody->stop();
+    }
   } else if (Robot::oi->isElevatorMoveDownSignaled()) {
-    std::cerr << "Telling elevator to move down\n";
-    Robot::elevator->moveSlowlyDown();
+    if (!liftingBody->atBottom()) {
+      std::cerr << "Telling elevator to move down\n";
+      liftingBody->moveSlowlyDown();
+    } else {
+      std::cerr << "Cowardly refusing to move Elevator down, since we're at "
+                   "the bottom\n";
+      liftingBody->stop();
+    }
   } else {
     // if neither is true, it stops
     std::cerr << "Stopping elevator\n";
-    Robot::elevator->stop();
+    liftingBody->stop();
   }
 }
 

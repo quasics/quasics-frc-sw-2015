@@ -43,6 +43,7 @@ class OI {
   double getElbowDirection();
 
   bool isTurtleTriggerDown();
+  bool isElevatorToggleDown();
   bool isFullSpeedTriggered();
 
   bool isIntakeSignaledPositive();      // in

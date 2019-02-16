@@ -29,6 +29,7 @@
 #include "Commands/MoveToTop.h"
 #include "Commands/OnlyElevator.h"
 #include "Commands/OnlyLifter.h"
+#include "Commands/FullElevatorControl.h"
 
 OI::OI() {
   // Process operator interface input here.
@@ -51,6 +52,9 @@ OI::OI() {
                                new ElevatorSingleStageTest(*Robot::lifter));
   frc::SmartDashboard::PutData("Test Elevator",
                                new ElevatorSingleStageTest(*Robot::elevator));
+                               
+  frc::SmartDashboard::PutData("Full Elevator Command",
+                               new FullElevatorControl());
 
   // frc::SmartDashboard::PutData("Adjust Lifter", new AdjustLifter());
   // frc::SmartDashboard::PutData("Adjust Elevator", new AdjustElevator());
@@ -167,6 +171,12 @@ bool OI::isTurtleTriggerDown() {
   const bool RightShoulder =
       driveStick->GetRawButton(LogitechGamePad_RightShoulder);
   return RightShoulder;
+}
+
+bool OI::isElevatorToggleDown() {
+  const bool X_button =
+      operatorStick->GetRawButton(XBox_ButtonX);
+  return X_button;
 }
 
 constexpr double kElevatorDeadZoneWidth = 0.3;

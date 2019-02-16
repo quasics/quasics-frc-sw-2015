@@ -32,7 +32,7 @@
 // Buttons
 #define XBox_ButtonA 1  // intake
 #define XBox_ButtonB 2  // slow extake
-#define XBox_ButtonX 3
+#define XBox_ButtonX 3  // toggle for elevator
 #define XBox_ButtonY 4      // fast extake
 #define XBox_LeftButton 5   // elevator to position 2
 #define XBox_RightButton 6  // elevator to position 1

@@ -9,6 +9,9 @@
 
 #include <frc/commands/Command.h>
 
+// CODE_REVIEW(mjh): This can be replaced by the ElevatorSingleStageTest
+//                   command. (Talk to Mr. Healy about how/why.)
+
 class OnlyLifter : public frc::Command {
  public:
   OnlyLifter();

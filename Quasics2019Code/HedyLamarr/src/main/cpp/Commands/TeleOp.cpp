@@ -6,12 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/TeleOp.h"
-#include "Commands/TankDrive.h"
 #include "Commands/ElevatorSingleStageTest.h"
-#include "Commands/StopElevator.h"
-#include "Commands/StopLifter.h"
-#include "Commands/LinkageControl.h"
 #include "Commands/IntakeControl.h"
+#include "Commands/LinkageControl.h"
+#include "Commands/TankDrive.h"
 #include "OI.h"
 
 TeleOp::TeleOp() {

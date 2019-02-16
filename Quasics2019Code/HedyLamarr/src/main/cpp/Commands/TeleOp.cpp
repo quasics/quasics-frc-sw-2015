@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/TeleOp.h"
-#include "Commands/ElevatorSingleStageTest.h"
+#include "Commands/FullElevatorControl.h"
 #include "Commands/IntakeControl.h"
 #include "Commands/LinkageControl.h"
 #include "Commands/TankDrive.h"
@@ -29,4 +29,8 @@ TeleOp::TeleOp() {
   // e.g. if Command1 requires chassis, and Command2 requires arm,
   // a CommandGroup containing them would require both the chassis and the
   // arm.
+  AddParallel(new TankDrive());
+  AddParallel(new FullElevatorControl());
+  AddParallel(new IntakeControl());
+  AddParallel(new LinkageControl());
 }

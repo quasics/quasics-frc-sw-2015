@@ -1,8 +1,8 @@
 #ifndef ELEVATOR_STAGE_H
 #define ELEVATOR_STAGE_H
 
-// #include <frc/WPILib.h>
 #include <frc/commands/Subsystem.h>
+#include "ConfigurationFlags.h"
 
 /**
  *
@@ -11,10 +11,10 @@
  */
 class ElevatorStage : public frc::Subsystem {
  public:
-  ElevatorStage(const char* name) : frc::Subsystem(name) {
-  }
-  virtual ~ElevatorStage() {
-  }
+  ElevatorStage(const char* name);
+  virtual ~ElevatorStage();
+
+  void InitDefaultCommand() override;
 
   virtual bool atTop() = 0;
   virtual bool atBottom() = 0;

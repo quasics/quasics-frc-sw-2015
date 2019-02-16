@@ -6,7 +6,9 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Commands/FullElevatorControl.h"
+
 #include "Robot.h"
+#include <iostream>
 
 FullElevatorControl::FullElevatorControl() {
   // Use Requires() here to declare subsystem dependencies
@@ -48,19 +50,37 @@ void FullElevatorControl::Execute() {
   }
 }
 
+#undef SIMULATE_MOTION
+#undef NOISY
+
+#ifdef NOISY
+  #define LOG(x)  std::cerr << x
+#else
+  #define LOG(x)  
+#endif
+
 void FullElevatorControl::adjustElevatorStage(ElevatorStage & stage) {
   // tests whether the elevator is signaled to go up, and if it isn't at the top
   if (Robot::oi->isElevatorMoveUpSignaled() && !stage.atTop()) {
     // continues if both states are true
+    LOG("Start moving " << stage.GetName() << " up\n");
+#ifndef SIMULATE_MOTION
     stage.moveSlowlyUp();
+#endif
   }
   // tests whether the elevator is signaled to go up, and if it isn't at the top
   else if (Robot::oi->isElevatorMoveDownSignaled() && !stage.atBottom()) {
     // continues if both states are true
+    LOG("Start moving " << stage.GetName() << " down\n");
+#ifndef SIMULATE_MOTION
     stage.moveSlowlyDown();
+#endif
   } else {
     // if neither is true, it stops
+    LOG("Stop moving " << stage.GetName() << "\n");
+#ifndef SIMULATE_MOTION
     stage.stop();
+#endif
   }
 }
 
@@ -76,5 +96,6 @@ void FullElevatorControl::End() {
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void FullElevatorControl::Interrupted() {
+  LOG("******** Full elevator control was interrupted!\n");
   End();
 }

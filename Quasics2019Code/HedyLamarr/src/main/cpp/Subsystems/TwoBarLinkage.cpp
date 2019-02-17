@@ -42,13 +42,13 @@ void TwoBarLinkage::Periodic() {
 }
 
 void TwoBarLinkage::LinkageUp() {
-    rightLinkageMotor->Set(.45);
-    leftLinkageMotor->Set(.45);
+    rightLinkageMotor->Set(.8);
+    leftLinkageMotor->Set(.8);
 }
 
 void TwoBarLinkage::LinkageDown() {
-    rightLinkageMotor->Set(-.45);
-    leftLinkageMotor->Set(-.45);
+    rightLinkageMotor->Set(-.6);
+    leftLinkageMotor->Set(-.6);
 }
 
 void TwoBarLinkage::Stop(){

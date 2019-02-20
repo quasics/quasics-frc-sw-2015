@@ -8,26 +8,46 @@
 #include "Commands/AdjustElevatorStage.h"
 
 #include "Robot.h"
+#include <iostream>
 
 AdjustElevatorSingleStage::AdjustElevatorSingleStage(ElevatorStage& stage)
     : stage(stage) {
   Requires(&stage);
 }
 
+#undef DISABLE_MOTION
+
 // Called repeatedly when this Command is scheduled to run
 void AdjustElevatorSingleStage::Execute() {
   // tests whether the elevator is signaled to go up, and if it isn't at the top
-  if (Robot::oi->isElevatorMoveUpSignaled() && !stage.atTop()) {
-    // continues if both states are true
-    stage.moveSlowlyUp();
+  if (Robot::oi->isElevatorMoveUpSignaled()) {
+    if (!stage.atTop()) {
+      // continues if both states are true
+      std::cerr << "Moving up towards the top of the " << GetName() << std::endl;
+#ifndef DISABLE_MOTION
+      stage.moveSlowlyUp();
+#endif
+    } else {
+      std::cerr << "Cowardly refusing to go up when we're at the top of the " << GetName() << std::endl;
+    }
   }
   // tests whether the elevator is signaled to go up, and if it isn't at the top
-  else if (Robot::oi->isElevatorMoveDownSignaled() && !stage.atBottom()) {
-    // continues if both states are true
-    stage.moveSlowlyDown();
+  else if (Robot::oi->isElevatorMoveDownSignaled()) {
+    if (!stage.atBottom()) {
+      // continues if both states are true
+      std::cerr << "Moving down towards the bottom of the " << GetName() << std::endl;
+#ifndef DISABLE_MOTION
+      stage.moveSlowlyDown();
+#endif
+    } else {
+      std::cerr << "Cowardly refusing to go down when we're at the bottom of the " << GetName() << std::endl;
+    }
   } else {
     // if neither is true, it stops
+    std::cerr << "Not moving the " << GetName() << std::endl;
+#ifndef DISABLE_MOTION
     stage.stop();
+#endif
   }
 }
 

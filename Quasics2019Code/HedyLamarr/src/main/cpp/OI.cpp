@@ -194,7 +194,7 @@ constexpr double kElevatorDeadZoneWidth = 0.3;
 // signaled to go Up
 bool OI::isElevatorMoveUpSignaled() {
   const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
-  if (joystick >= kElevatorDeadZoneWidth) {
+  if (joystick <= -kElevatorDeadZoneWidth) {
     return true;
   } else {
     return false;
@@ -205,7 +205,7 @@ bool OI::isElevatorMoveUpSignaled() {
 // signaled to go Down
 bool OI::isElevatorMoveDownSignaled() {
   const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
-  if (joystick <= -kElevatorDeadZoneWidth) {
+  if (joystick >= kElevatorDeadZoneWidth) {
     return true;
   } else {
     return false;

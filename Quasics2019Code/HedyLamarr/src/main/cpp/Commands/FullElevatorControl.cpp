@@ -39,14 +39,17 @@ void FullElevatorControl::Execute() {
     //move both stages at once
     adjustElevatorStage(*Robot::elevator);
     adjustElevatorStage(*Robot::lifter);
+    Robot::SetLifterMode(Robot::eBoth);
   }
   else if(toggleCounter == 1){
     //move lifter only
     adjustElevatorStage(*Robot::lifter);
+    Robot::SetLifterMode(Robot::eLifter);
   }
   else if(toggleCounter == 2){
     //move elevator only
     adjustElevatorStage(*Robot::elevator);
+    Robot::SetLifterMode(Robot::eElevator);
   }
 }
 

@@ -53,5 +53,17 @@ class Robot : public frc::TimedRobot {
   void AutonomousPeriodic() override;
   void TeleopInit() override;
   void TeleopPeriodic() override;
+
+  enum LifterMode{
+    eElevator,
+    eLifter,
+    eBoth
+  };
+
+  static void SetLifterMode(LifterMode newm);
+  static LifterMode GetLifterMode();
+
+ private:
+  static LifterMode currentLifterMode;
 };
 #endif

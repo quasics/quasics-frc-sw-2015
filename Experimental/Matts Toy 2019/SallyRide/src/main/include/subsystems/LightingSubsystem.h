@@ -22,5 +22,5 @@ class LightingSubsystem : public frc::Subsystem {
   virtual ~LightingSubsystem();
   void InitDefaultCommand() override;
 
-  bool sendCommandToArduino(std::string cmd);
+  bool sendCommandToArduino(const std::string& cmd);
 };

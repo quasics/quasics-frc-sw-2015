@@ -16,9 +16,14 @@
 
 constexpr unsigned short USE_PORT = 10900;
 
+//////////////////////////////////////////////////////////////////////////////
+// "Boilerplate" code, used to set up a socket that can send command packets,
+// and to build the destination address we'll send them to.
+
 namespace {
 // Returns a reference to the socket, or -1 on failure.
 int setupUdpSocket() {
+  // Try to get a socket
   int sock;
   if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1) {
     return -1;
@@ -32,8 +37,15 @@ int setupUdpSocket() {
   return sock;
 }
 
-bool getBroadcastAddress(sockaddr_in &result, std::string ipAddress,
-                         unsigned short port) {
+// Translates the string version of an IP address (plus a port number) into
+// the underlying data format that's required when we send messages.
+//
+// This is used to build up the destination address that we'll be sending
+// our commands to (which in our case is expected to be a "broadcast" address
+// that any number of computers could be listening to, but in practice will
+// just be the Arduino controlling our lights).
+bool getDestinationAddress(sockaddr_in &result, std::string ipAddress,
+                           unsigned short port) {
   memset((char *)&result, 0, sizeof(result));
   if (inet_aton(ipAddress.c_str(), &result.sin_addr) == 0) {
     return false;
@@ -44,34 +56,48 @@ bool getBroadcastAddress(sockaddr_in &result, std::string ipAddress,
 }
 }  // namespace
 
+//////////////////////////////////////////////////////////////////////////////
+// Basic definition of standard "Subsystem" stuff for the Lighting control.
+
+// Constructor, used to build a LightingSubsystem object.
 LightingSubsystem::LightingSubsystem()
-    : Subsystem("ExampleSubsystem"), udpSocket(setupUdpSocket()) {
+    : Subsystem("LightingSubsystem"), udpSocket(setupUdpSocket()) {
   if (udpSocket == -1) {
+    // We weren't able to create/set up the socket.
     std::cerr
         << "***** Warning: Failed to allocate socket for Lighting subsystem!\n";
-  }
-  if (!getBroadcastAddress(broadcastAddress, "255.255.255.255", USE_PORT)) {
+  } else if (!getDestinationAddress(broadcastAddress, "255.255.255.255",
+                                    USE_PORT)) {
     std::cerr << "***** Warning: Failed to get broadcast address for Lighting "
                  "subsystem!\n";
+
+    // If we don't know who to broadcast to, we might as well close up the
+    // socket, since we won't be able to use it later.
+    std::cerr << "               (Closing socket....)\n";
+    ::close(udpSocket);
+    udpSocket = -1;
   }
 }
 
+// Destructor, used to clean up when the Subsystem goes away.
 LightingSubsystem::~LightingSubsystem() {
+  // Be polite, and close the socket now that we're done with it.
   if (udpSocket != -1) {
     ::close(udpSocket);
     udpSocket = -1;
   }
 }
 
+// Set the default command for the subsystem.
 void LightingSubsystem::InitDefaultCommand() {
-  // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
   SetDefaultCommand(new AutoLighting);
 }
 
-// Put methods for controlling this subsystem
-// here. Call these from Commands.
-bool LightingSubsystem::sendCommandToArduino(std::string cmd) {
+//////////////////////////////////////////////////////////////////////////////
+// Functions to be used by Commands to do things with the lights will go here.
+
+// Sends the specified command out (via broadcast) to the Arduino.
+bool LightingSubsystem::sendCommandToArduino(const std::string &cmd) {
   if (udpSocket == -1) {
     std::cerr << "Warning: Can't send '" << cmd << "' to Arduino (no socket)\n";
     return false;

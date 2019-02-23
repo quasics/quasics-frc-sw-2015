@@ -26,6 +26,7 @@
 
 # The various source files for our program(s)
 MAIN_JAVA_FILES  =  BroadcastGUI.java BroadcastingClient.java
+MAIN_JAVA_FILES  += BroadcastListenerGUI.java
 OTHER_JAVA_FILES = 
 
 # Other files for your project, such as a 'ReadMe', etc.
@@ -172,6 +173,16 @@ BroadcastGUI:	$(CLASSFILES)
 
 BroadcastingClient:	$(CLASSFILES) 
 	$(JAVA) $(JAVAFLAGS) BroadcastingClient 
+
+BroadcastListenerGUI:	$(CLASSFILES) 
+	$(JAVA) $(JAVAFLAGS) BroadcastListenerGUI 
+
+$(CLASSDIR)/%.mf:
+	printf "Manifest-Version: 1.0\nMain-Class: $*\n" > $@
+
+BroadcastListenerGUI.jar: $(CLASSFILES) $(CLASSDIR)/BroadcastListenerGUI.mf
+	cd $(CLASSDIR) ; jar cmf BroadcastListenerGUI.mf ../$@ *.class
+
 
 ####
 # Code beautification targets

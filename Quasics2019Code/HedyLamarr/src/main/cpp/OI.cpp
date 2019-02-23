@@ -31,6 +31,7 @@
 #include "Commands/OnlyLifter.h"
 #include "Commands/FullElevatorControl.h"
 #include "Commands/TestLimitSwitches.h"
+#include "Commands/AutoLighting.h"
 
 OI::OI() {
   // Process operator interface input here.
@@ -66,6 +67,9 @@ OI::OI() {
 
    frc::SmartDashboard::PutData("Test Limit Switches",
                                new TestLimitSwitches());
+
+  frc::SmartDashboard::PutData("Test Lighting",
+                               new AutoLighting());
 
   // // maps Left Trigger on the Xbox Controller to moving the Elevator to the Top
   // TopElevatorButton.reset(

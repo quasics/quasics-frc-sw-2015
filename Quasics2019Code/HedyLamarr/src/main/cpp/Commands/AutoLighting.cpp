@@ -61,6 +61,11 @@ void AutoLighting::Execute() {
 // Make this return true when this Command no longer needs to run execute()
 bool AutoLighting::IsFinished() { return false; }
 
+void AutoLighting::Initialize() {
+  lastColorCommand = "";
+  lastModeCommand = "";
+}
+
 void AutoLighting::transmitMode(std::string modeCommand, bool alwaysSend) {
   if (alwaysSend || modeCommand != lastModeCommand) {
     std::cout << "Sending command: '" << modeCommand << "'" << std::endl;
@@ -69,6 +74,8 @@ void AutoLighting::transmitMode(std::string modeCommand, bool alwaysSend) {
     if (!Robot::lighting->sendCommandToArduino(modeCommand)) {
       std::cerr << "--- Error sending command!\n";
     }
+
+    lastModeCommand = modeCommand;
   }
 }
 
@@ -80,5 +87,6 @@ void AutoLighting::transmitColor(std::string colorCommand, bool alwaysSend) {
     if (!Robot::lighting->sendCommandToArduino(colorCommand)) {
       std::cerr << "--- Error sending command!\n";
     }
+    lastColorCommand = colorCommand;
   }
 }

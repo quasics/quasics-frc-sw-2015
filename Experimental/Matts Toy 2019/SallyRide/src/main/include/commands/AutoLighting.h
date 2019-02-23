@@ -11,7 +11,9 @@
 
 class AutoLighting : public frc::Command {
  private:
-  std::string lastCommand = "";
+  // Stores the last command we sent out, so that we can try to avoid just
+  // resending the same thing 50x a second.
+  std::string lastStatusCommand = "";
 
  public:
   AutoLighting();
@@ -19,5 +21,6 @@ class AutoLighting : public frc::Command {
   bool IsFinished() override;
 
  private:
-  void transmitStatus(std::string statusCommand, bool alwaysSend = false);
+  void transmitStatusCommands(std::string statusCommand,
+                              bool alwaysSend = false);
 };

@@ -19,7 +19,6 @@ std::shared_ptr<DriveBase> Robot::driveBase;
 std::shared_ptr<Manipulator> Robot::manipulator;
 std::shared_ptr<Elevator> Robot::elevator;
 std::shared_ptr<Lifter> Robot::lifter;
-std::shared_ptr<Elbow> Robot::elbow;
 std::shared_ptr<Lighting> Robot::lighting;
 std::shared_ptr<TwoBarLinkage> Robot::twoBarLinkage;
 std::unique_ptr<OI> Robot::oi;
@@ -35,7 +34,6 @@ void Robot::RobotInit() {
   manipulator.reset(new Manipulator());
   elevator.reset(new Elevator());
   lifter.reset(new Lifter());
-  elbow.reset(new Elbow());
   lighting.reset(new Lighting());
   twoBarLinkage.reset(new TwoBarLinkage());
 

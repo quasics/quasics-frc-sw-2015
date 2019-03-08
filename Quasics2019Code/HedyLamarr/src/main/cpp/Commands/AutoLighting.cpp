@@ -16,7 +16,10 @@ AutoLighting::AutoLighting() {
   Requires(Robot::lighting.get());
 }
 
-
+void AutoLighting::Initialize() {
+  lastColorCommand = "";
+  lastModeCommand = "";
+}
 // Called repeatedly when this Command is scheduled to run
 void AutoLighting::Execute() {
   auto& driverStation = frc::DriverStation::GetInstance();
@@ -60,11 +63,6 @@ void AutoLighting::Execute() {
 
 // Make this return true when this Command no longer needs to run execute()
 bool AutoLighting::IsFinished() { return false; }
-
-void AutoLighting::Initialize() {
-  lastColorCommand = "";
-  lastModeCommand = "";
-}
 
 void AutoLighting::transmitMode(std::string modeCommand, bool alwaysSend) {
   if (alwaysSend || modeCommand != lastModeCommand) {

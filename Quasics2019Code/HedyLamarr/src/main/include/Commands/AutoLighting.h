@@ -12,6 +12,7 @@
 class AutoLighting : public frc::Command {
  public:
   AutoLighting();
+  void Initialize();
   void Execute() override;
   bool IsFinished() override;
   private:

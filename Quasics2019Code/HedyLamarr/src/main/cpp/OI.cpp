@@ -159,11 +159,21 @@ bool OI::isElbowSignaledDown() {
 // tests the Left Trigger and Right Trigger on the Logitech Controller to see if
 // both are pressed for Full Speed
 bool OI::isFullSpeedTriggered() {
-  const bool RightTrigger =
-      driveStick->GetRawButton(LogitechGamePad_RightTrigger);
+  // const bool RightTrigger =
+  //     driveStick->GetRawButton(LogitechGamePad_RightTrigger);
   const bool LeftTrigger =
       driveStick->GetRawButton(LogitechGamePad_LeftTrigger);
-  if (RightTrigger && LeftTrigger) {
+  if (LeftTrigger) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool OI::isSwitchDriveToggled() {
+  const bool LeftShoulder =
+      driveStick->GetRawButton(LogitechGamePad_LeftShoulder);
+  if(LeftShoulder) {
     return true;
   } else {
     return false;

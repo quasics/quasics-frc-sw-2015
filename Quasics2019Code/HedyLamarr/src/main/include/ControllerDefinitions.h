@@ -11,10 +11,10 @@
 #define LogitechGamePad_BButton 3
 #define LogitechGamePad_XButton 4
 #define LogitechGamePad_YButton 1
-#define LogitechGamePad_LeftShoulder 5
+#define LogitechGamePad_LeftShoulder 5    //Switch drive (hold)
 #define LogitechGamePad_RightShoulder 6
-#define LogitechGamePad_LeftTrigger 7
-#define LogitechGamePad_RightTrigger 8
+#define LogitechGamePad_LeftTrigger 7    //Full speed (hold)
+#define LogitechGamePad_RightTrigger 8   //Turtle mode (toggle)
 #define LogitechGamePad_LeftStickPress 11
 #define LogitechGamePad_RightStickPress 12
 #define LogitechGamePad_StartButton 9

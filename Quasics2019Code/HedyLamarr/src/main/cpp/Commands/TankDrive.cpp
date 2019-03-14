@@ -55,9 +55,16 @@ void TankDrive::Execute() {
     }
 
     // Set the speed using the drive stick values and the active speed multiplier.
-    Robot::driveBase->SetMotorSpeed(
-        LeftTankSpeed * -speedMultiplier,
-        RightTankSpeed * speedMultiplier);
+    if(Robot::oi->OI::isSwitchDriveToggled()) {
+        Robot::driveBase->SetMotorSpeed(
+            RightTankSpeed * speedMultiplier,
+            LeftTankSpeed * -speedMultiplier);
+    } else {
+        Robot::driveBase->SetMotorSpeed(
+            LeftTankSpeed * -speedMultiplier,
+            RightTankSpeed * speedMultiplier);
+    }
+    
 
     // Remember the state for the "turtle trigger", for the next time around
     wasTurtleSignalledLastTime = isTurtleSignalledNow;

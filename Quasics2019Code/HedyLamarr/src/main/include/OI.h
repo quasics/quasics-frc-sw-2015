@@ -45,6 +45,7 @@ class OI {
   bool isTurtleTriggerDown();
   bool isElevatorToggleDown();
   bool isFullSpeedTriggered();
+  bool isSwitchDriveToggled();
 
   bool isIntakeSignaledPositive();      // in
   bool isIntakeSignaledLowNegative();   // out, slowly

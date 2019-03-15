@@ -184,29 +184,29 @@ String getCommandFromSerialMonitor() {
 
 // Loop function is called over and over and over (after setup() completes).
 void loop() {
-  // Holds the current color value to be used by the LED strip.
+  // Holds the current color to be used by the LED strip.
   //
   // This is "static", so it will retain its data between one call to this function
   // and the next.  The assignment below will *only* happen the first time that the
   // function is executed; after that, it will keep the value it had the *last* time
-  // that the function ran.  (So the color value will stick around between calls.)
-  static uint32_t color = GREEN;
+  // that the function ran.  (So the pattern color will stick around between calls.)
+  static PatternColor patternColor = eGreen;
 
-  // See if we have a command to be executed.
+  // See if we have a command to be executed; if we do, then process it (e.g., to change
+  // the current pattern color).
   String command = getCommandFromSerialMonitor();
-
-  // If we have a command, do something with it.
   if (command != "") {
     if (command == "red")  {
-      color = RED;
+      patternColor = eRed;
     } else if (command == "blue") {
-      color = BLUE;
+      patternColor = eBlue;
     } else if (command == "green") {
-      color = GREEN;
+      patternColor = eGreen;
     }
   }
 
   // Run through 1 cycle of the lighting pattern, using the current color.
-  showOneCycle(color);
+  const uint32_t colorValue = getColorValue(patternColor);
+  showOneCycle(colorValue);
 }
 

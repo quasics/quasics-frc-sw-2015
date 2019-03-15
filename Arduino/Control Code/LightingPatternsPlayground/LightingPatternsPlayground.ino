@@ -1,6 +1,6 @@
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
-  #include <avr/power.h>
+#include <avr/power.h>
 #endif
 
 // Which pin on the Arduino is connected to the NeoPixels?
@@ -15,7 +15,11 @@
 // example for more information on possible values.
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-int delayval = 30; // delay for half a second
+const uint32_t BLACK = Adafruit_NeoPixel::Color(0, 0, 0);
+const uint32_t RED = Adafruit_NeoPixel::Color(150, 0, 0);
+const uint32_t BLUE = Adafruit_NeoPixel::Color(0, 0, 150);
+const uint32_t GREEN = Adafruit_NeoPixel::Color(0, 150, 0);
+const uint32_t YELLOW = Adafruit_NeoPixel::Color(150, 150, 0);
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -26,20 +30,13 @@ void setup() {
 
   pixels.begin(); // This initializes the NeoPixel library.
 
-   for(int i=0;i<NUMPIXELS;i++){
-
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
-
-    pixels.show(); // This sends the updated pixel color to the hardware.
-
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, BLACK);
   }
+  pixels.show(); // This sends the updated pixel color to the hardware.
 }
 
 void loop() {
-  const uint32_t RED = pixels.Color(150,0,0);
-  const uint32_t BLUE = pixels.Color(0,0,150);
-  const uint32_t GREEN = pixels.Color(0,150,0);
   chase(RED);
   chase(BLUE);
   chase(GREEN);
@@ -52,85 +49,77 @@ void loop() {
 }
 
 void chase(uint32_t c) {
+  const int delayval = 30; // delay for 3/100ths of a second
 
   // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
-
-  for(int i=0;i<NUMPIXELS;i++){
-
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i,c); // Moderately bright green color.
-
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, c);
     pixels.show(); // This sends the updated pixel color to the hardware.
-
-    delay(delayval); // Delay for a period of time (in milliseconds).
-
+    delay(delayval);
   }
 
-  for(int i=0;i<NUMPIXELS;i++){
-
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
-
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, BLACK);
     pixels.show(); // This sends the updated pixel color to the hardware.
-
-    delay(delayval); // Delay for a period of time (in milliseconds).
-
+    delay(delayval);
   }
 }
 
-void pulse(String colorName){
-    for(int b = 0; b<150; b = b + 10){
-       for(int i=0;i<NUMPIXELS;i++){
-      if(colorName == "GREEN"){
-        pixels.setPixelColor(i, pixels.Color(0, b, 0));
-      }
-      if(colorName == "RED"){
-        pixels.setPixelColor(i, pixels.Color(b, 0, 0));
-      }
-      if(colorName == "BLUE"){
-        pixels.setPixelColor(i, pixels.Color(0, 0, b));
-      }
-      delay(5);
-      pixels.show();
-      }
+uint32_t getColorFromNameAndIntensity(String colorName, int intensity) {
+    if (colorName == "GREEN") {
+      return pixels.Color(0, intensity, 0);
     }
-    for(int b = 150; b>0; b = b - 10){
-       for(int i=0;i<NUMPIXELS;i++){
-      if(colorName == "GREEN"){
-        pixels.setPixelColor(i, pixels.Color(0, b, 0));
-      }
-      if(colorName == "RED"){
-        pixels.setPixelColor(i, pixels.Color(b, 0, 0));
-      }
-      if(colorName == "BLUE"){
-        pixels.setPixelColor(i, pixels.Color(0, 0, b));
-      }
-      delay(5);
-      pixels.show();
-      }
+    else if (colorName == "RED") {
+      return pixels.Color(intensity, 0, 0);
     }
+    else if (colorName == "BLUE") {
+      return pixels.Color(0, 0, intensity);
+    }
+    else {
+      // Yellow
+      return pixels.Color(intensity, intensity, 0);
+    }
+}
+
+void pulse(String colorName) {
+  const int delayval = 5; // delay for 0.005 seconds
+
+  // Ramp the lights up
+  for (int b = 0; b <= 150; b = b + 10) {
+    const uint32_t newColor = getColorFromNameAndIntensity(colorName, b);
+    for (int i = 0; i < NUMPIXELS; i++) {
+      pixels.setPixelColor(i, newColor);
+      pixels.show();
+      delay(delayval);
+    }
+  }
+
+  // Ramp them back down
+  for (int b = 150; b >= 0; b = b - 10) {
+    const uint32_t newColor = getColorFromNameAndIntensity(colorName, b);
+    for (int i = 0; i < NUMPIXELS; i++) {
+      pixels.setPixelColor(i, newColor);
+      pixels.show();
+      delay(delayval);
+    }
+  }
 }
 
 void blinking(uint32_t c) {
+  const int delayval = 400;   // Delay time in milliseconds (4/10ths sec)
 
-  // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
-  for(int i=0;i<NUMPIXELS;i++){
-
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i,c); // Moderately bright green color.
-
-    pixels.show(); // This sends the updated pixel color to the hardware.
-
+  // Turn them all on
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, c);
   }
-  delay(400); // Delay for a period of time (in milliseconds).
+  pixels.show(); // This sends the updated pixel color to the hardware.
+  delay(delayval);
 
-  for(int i=0;i<NUMPIXELS;i++){
-
-    // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
-
-    pixels.show(); // This sends the updated pixel color to the hardware.
-
+  // Turn them all off
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, BLACK);
   }
-   delay(400); // Delay for a period of time (in milliseconds).
+  pixels.show(); // This sends the updated pixel color to the hardware.
+  delay(delayval);
 }
+

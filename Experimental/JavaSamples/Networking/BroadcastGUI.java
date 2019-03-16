@@ -51,6 +51,7 @@ public class BroadcastGUI {
         final JButton send = new JButton("Send");
         final ActionListener action = event -> {
             String text = message.getText();
+            message.selectAll();
             // Note: we'll tack a null character on at the end as a marker
             // to make it easier for any C/C++ code.
             text += '\000';

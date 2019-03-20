@@ -11,7 +11,7 @@
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
 // example for more information on possible values.
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +153,7 @@ void showOneCycle(uint32_t color) {
 void setup() {
   pixels.begin(); // This initializes the NeoPixel library.
   Serial.begin(115200);
+  Serial.println("Running....");
 }
 
 // Returns a command (i.e., a line of text entered by the user) obtained from the
@@ -191,22 +192,35 @@ void loop() {
   // function is executed; after that, it will keep the value it had the *last* time
   // that the function ran.  (So the pattern color will stick around between calls.)
   static PatternColor patternColor = eGreen;
+  static String patternName = "Both";
 
   // See if we have a command to be executed; if we do, then process it (e.g., to change
   // the current pattern color).
   String command = getCommandFromSerialMonitor();
   if (command != "") {
+    Serial.println("Got: '" + command + "'");
     if (command == "red")  {
       patternColor = eRed;
     } else if (command == "blue") {
       patternColor = eBlue;
-    } else if (command == "green") {
+    } else if (command == "demo") {
       patternColor = eGreen;
     }
+   else if (command == "Lifter" || command == "Both" || command == "Elevator"){
+    patternName = command;
+   }
   }
 
-  // Run through 1 cycle of the lighting pattern, using the current color.
-  const uint32_t colorValue = getColorValue(patternColor);
-  showOneCycle(colorValue);
+  // Apply whatever the current pattern is, using the current color.
+  if (patternName == "Lifter"){  
+    pulse(patternColor);
+  }
+  else if (patternName == "Elevator"){ 
+    blinking(patternColor);
+  }  
+  else {
+    // By default, we'll show the "chase" pattern.
+    Serial.println("Chasing");
+    chase(patternColor);
+  }
 }
-

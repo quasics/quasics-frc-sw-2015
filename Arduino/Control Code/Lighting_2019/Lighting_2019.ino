@@ -1,9 +1,29 @@
 #include <Adafruit_NeoPixel.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
 #include "PatternColor.h"
+
+#define USE_NETWORK
+#define ENABLE_LOGGING
+#undef USE_RANDOM_MAC_ADDRESS
+
+#ifdef ENABLE_LOGGING
+  #define LOG_INLINE   Serial.print
+  #define LOG          Serial.println
+#else
+  #define LOG_INLINE   (void)
+  #define LOG          (void)
+#endif
+
+// An EthernetUDP instance to let us send and receive packets over UDP
+EthernetUDP udp;
+
+const unsigned int kLocalPort = 10900;
+
 
 // Which pin on the Arduino is connected to the NeoPixels?
 // On a Trinket or Gemma we suggest changing this to 1
-#define PIN            6
+#define PIN            7
 
 // How many NeoPixels are attached to the Arduino?
 #define NUMPIXELS      25
@@ -22,6 +42,84 @@ const uint32_t RED = Adafruit_NeoPixel::Color(150, 0, 0);
 const uint32_t BLUE = Adafruit_NeoPixel::Color(0, 0, 150);
 const uint32_t GREEN = Adafruit_NeoPixel::Color(0, 150, 0);
 const uint32_t YELLOW = Adafruit_NeoPixel::Color(150, 150, 0);
+
+////////////////////////////////////////////////////////////////////////////////////////
+//
+// Network and MAC address management
+//
+////////////////////////////////////////////////////////////////////////////////////////
+
+#define MAC_LENGTH    6
+
+// Enter a MAC address for your controller below (or generate a random one).
+//
+// Newer Ethernet shields have a MAC address printed on a sticker on the shield; if
+// yours doesn't, you can pick a reasonably-random combination of 6 bytes, cross your
+// fingers, and pray.
+//
+// See also: https://forum.arduino.cc/index.php?topic=243104.0
+byte mac[MAC_LENGTH] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+
+// A simple hash function from Robert Sedgwick's "Algorithms in C" book.
+// Code taken from http://www.partow.net/programming/hashfunctions/
+unsigned long int RSHash(const char* str)
+{
+   unsigned long int b    = 378551;
+   unsigned long int a    = 63689;
+   unsigned long int hash = 0;
+   unsigned long int i    = 0;
+
+   for (; *str != 0; ++str, ++i) {
+      hash = hash * a + (*str);
+      a    = a * b;
+   }
+
+   return hash;
+}
+
+// Function to generate a random MAC address.  (Reasonably safe of collisions, given
+// the random seed being generated from the date/time at which the code was compiled.)
+void generateMacAddress(byte mac[MAC_LENGTH]) {
+  // Seed the random # generator, based on the compilation date/time.
+  randomSeed(RSHash(__DATE__ " " __TIME__));
+
+  for (int i = 0; i < MAC_LENGTH; ++i) {
+    mac[i] = byte(random(256));
+  }
+
+#ifdef ENABLE_LOGGING
+  LOG_INLINE("Generated MAC address: ");
+  for (int i = 0; i < MAC_LENGTH; ++i) {
+    LOG_INLINE(mac[i], HEX);
+    LOG_INLINE(i < (MAC_LENGTH - 1) ? ':' : '\n');
+  }
+#endif
+}
+
+bool configureNetwork(byte mac[MAC_LENGTH], IPAddress* staticAddress = 0, IPAddress* staticDns = 0) {
+  if (Ethernet.begin(mac) == 0) {
+    LOG("Failed to configure Ethernet using DHCP");
+    // Check for Ethernet hardware present
+    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
+      LOG("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+      return false;
+    }
+    if (Ethernet.linkStatus() == LinkOFF) {
+      LOG("Ethernet cable is not connected.");
+      return false;
+    }
+    if (staticAddress && staticDns) {
+      // try to congifure using IP address instead of DHCP:
+      Ethernet.begin(mac, *staticAddress, *staticDns);
+      return true;
+    }
+    return false;
+  } else {
+    LOG_INLINE("  DHCP assigned IP ");
+    LOG(Ethernet.localIP());
+    return true;
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Utility functions from "LightingPatternsPlayground" code file
@@ -128,32 +226,44 @@ void blinking(PatternColor patternColor) {
   delay(delayval);
 }
 
-void showOneCycle(uint32_t color) {
-  int delayval = 43; // delay for 43/1000ths of a second.
-
-  // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, color);
-    pixels.show();
-    delay(delayval);
-  }
-
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-    pixels.show();
-    delay(delayval); // Delay for a period of time (150 miliseconds).
-
-  }
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Lighting control code for 2019 robot.
+
+void signalSetupErrorForever() {
+  bool turnOn = true;
+  while (true) {
+    blinking(eYellow);
+    turnOn = !turnOn;
+  }
+}
 
 // Set up is called one time (at program start).
 void setup() {
   pixels.begin(); // This initializes the NeoPixel library.
   Serial.begin(115200);
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
   Serial.println("Running....");
+
+  //////////////////////////////////
+  // Set up networking
+#ifdef USE_RANDOM_MAC_ADDRESS
+  Serial.println("Generating random MAC address...");
+  generateMacAddress(mac);
+#endif
+
+  // Start the Ethernet connection.
+  Serial.println("Initializing Ethernet...");
+  if (!configureNetwork(mac)) {
+    Serial.println("Failed to configure network: I refuse to proceed....");
+    signalSetupErrorForever();
+  }
+
+  // Start UDP.
+  udp.begin(kLocalPort);
+  Serial.print("Waiting for UDP packets on port ");
+  Serial.println(kLocalPort);
 }
 
 // Returns a command (i.e., a line of text entered by the user) obtained from the
@@ -183,6 +293,31 @@ String getCommandFromSerialMonitor() {
   return "";
 }
 
+String getCommandFromNetwork() {
+  // Make sure that we keep our lease on our IP address, if we were set up using DHCP.
+  Ethernet.maintain();
+
+  // Look for UDP packets
+  int packetSize = udp.parsePacket();
+  if (packetSize <= 0) {
+    return "";
+  }
+
+  // Read in the packet's data
+  static char packetBuffer[UDP_TX_PACKET_MAX_SIZE];  // buffer to hold incoming packet,
+  int len = udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+  if (packetBuffer[len - 1] != 0) {
+    // Null-terminate the string, so that it's safe to use "normally".
+    // (But be paranoid about it.)
+    if (len < UDP_TX_PACKET_MAX_SIZE) {
+      packetBuffer[len] = 0;
+    } else {
+      packetBuffer[len - 1] = 0;
+    }
+  }
+  return packetBuffer;
+}
+
 // Loop function is called over and over and over (after setup() completes).
 void loop() {
   // Holds the current color to be used by the LED strip.
@@ -196,7 +331,13 @@ void loop() {
 
   // See if we have a command to be executed; if we do, then process it (e.g., to change
   // the current pattern color).
-  String command = getCommandFromSerialMonitor();
+  String command;
+#ifdef USE_NETWORK
+  command = getCommandFromNetwork();
+#else
+  command = getCommandFromSerialMonitor();
+#endif
+
   if (command != "") {
     Serial.println("Got: '" + command + "'");
     if (command == "red")  {
@@ -212,6 +353,7 @@ void loop() {
   }
 
   // Apply whatever the current pattern is, using the current color.
+  Serial.println("Applying pattern: " + patternName);
   if (patternName == "Lifter"){  
     pulse(patternColor);
   }
@@ -220,7 +362,6 @@ void loop() {
   }  
   else {
     // By default, we'll show the "chase" pattern.
-    Serial.println("Chasing");
     chase(patternColor);
   }
 }

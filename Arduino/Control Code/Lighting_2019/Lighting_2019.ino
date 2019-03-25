@@ -22,7 +22,7 @@ const unsigned int kLocalPort = 10900;
 byte mac[MAC_LENGTH] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // Number of times that we'll retry network initialization.
-const unsigned int kNumNetworkInitRetries = 100;
+const unsigned int kNumNetworkInitRetries = 2;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,7 @@ const int NUMPIXELS = 25;
 // example for more information on possible values.
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRBW + NEO_KHZ800);
 
+// What color should be used when there's a failure during networking initialization?
 const PatternColor ERROR_COLOR = eGreen;
 
 

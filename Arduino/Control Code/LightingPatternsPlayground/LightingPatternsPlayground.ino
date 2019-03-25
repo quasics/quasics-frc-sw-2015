@@ -22,35 +22,6 @@ const uint32_t BLUE = Adafruit_NeoPixel::Color(0, 0, 150);
 const uint32_t GREEN = Adafruit_NeoPixel::Color(0, 150, 0);
 const uint32_t YELLOW = Adafruit_NeoPixel::Color(150, 150, 0);
 
-void setup() {
-  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-#if defined (__AVR_ATtiny85__)
-  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-#endif
-  // End of trinket special code
-
-  pixels.begin(); // This initializes the NeoPixel library.
-
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, BLACK);
-  }
-  pixels.show(); // This sends the updated pixel color to the hardware.
-}
-
-void loop() {
-  chase(eRed);
-  chase(eBlue);
-  chase(eGreen);
-  
-  pulse(eRed);
-  pulse(eBlue);
-  pulse(eGreen);
-  
-  blinking(eRed);
-  blinking(eBlue);
-  blinking(eGreen);
-}
-
 uint32_t getColorValue(PatternColor patternColor) {
   if (patternColor == eRed)
     return RED;
@@ -84,9 +55,19 @@ uint32_t getColorValueUsingIntensity(PatternColor patternColor, int intensity) {
   }
 }
 
-void chase(PatternColor patternColor) {
+void showSolid(PatternColor patternColor) {
   const uint32_t c = getColorValue(patternColor);
-  const int delayval = 30; // delay for 3/100ths of a second
+  // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, c);
+  }
+  pixels.show(); // This sends the updated pixel color to the hardware.
+}
+
+void chaseLights(PatternColor primaryColor, PatternColor secondaryColor = eBlack) {
+  const uint32_t c = getColorValue(primaryColor);
+  const uint32_t clearColor = getColorValue(secondaryColor);
+  const int delayval = 25; // delay between steps in the chase
 
   // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
   for (int i = 0; i < NUMPIXELS; i++) {
@@ -96,39 +77,41 @@ void chase(PatternColor patternColor) {
   }
 
   for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, BLACK);
+    pixels.setPixelColor(i, clearColor);
     pixels.show(); // This sends the updated pixel color to the hardware.
     delay(delayval);
   }
 }
 
-void pulse(PatternColor patternColor) {
-  const int delayval = 5; // delay for 0.005 seconds
+void pulseLights(PatternColor patternColor) {
+  const int delayval = 18; // delay betweek steps "up" and "down"
+  const int stepSize = 5;
 
   // Ramp the lights up
-  for (int b = 0; b <= 150; b = b + 10) {
+  for (int b = 0; b <= 150; b += stepSize) {
     const uint32_t newColor = getColorValueUsingIntensity(patternColor, b);
     for (int i = 0; i < NUMPIXELS; i++) {
       pixels.setPixelColor(i, newColor);
-      pixels.show();
-      delay(delayval);
     }
+    pixels.show();
+    delay(delayval);
   }
 
   // Ramp them back down
-  for (int b = 150; b >= 0; b = b - 10) {
+  for (int b = 150; b >= 0; b -= stepSize) {
     const uint32_t newColor = getColorValueUsingIntensity(patternColor, b);
     for (int i = 0; i < NUMPIXELS; i++) {
       pixels.setPixelColor(i, newColor);
-      pixels.show();
-      delay(delayval);
     }
+    pixels.show();
+    delay(delayval);
   }
 }
 
-void blinking(PatternColor patternColor) {
+void blinkLights(PatternColor patternColor, PatternColor secondaryColor = eBlack) {
   const uint32_t c = getColorValue(patternColor);
-  const int delayval = 400;   // Delay time in milliseconds (4/10ths sec)
+  const uint32_t clearColor = getColorValue(secondaryColor);
+  const int delayval = 400;   // Delay time in milliseconds
 
   // Turn them all on
   for (int i = 0; i < NUMPIXELS; i++) {
@@ -139,9 +122,38 @@ void blinking(PatternColor patternColor) {
 
   // Turn them all off
   for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, BLACK);
+    pixels.setPixelColor(i, clearColor);
   }
   pixels.show(); // This sends the updated pixel color to the hardware.
   delay(delayval);
+}
+
+void setup() {
+  // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+  // End of trinket special code
+
+  pixels.begin(); // This initializes the NeoPixel library.
+
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, BLACK);
+  }
+  pixels.show(); // This sends the updated pixel color to the hardware.
+}
+
+void loop() {
+  chaseLights(eRed);
+  chaseLights(eBlue);
+  chaseLights(eGreen);
+  
+  pulseLights(eRed);
+  pulseLights(eBlue);
+  pulseLights(eGreen);
+  
+  blinkLights(eRed);
+  blinkLights(eBlue);
+  blinkLights(eGreen);
 }
 

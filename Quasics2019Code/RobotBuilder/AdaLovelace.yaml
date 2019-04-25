@@ -20,7 +20,7 @@ Children:
             default: '0'
             name: Output Channel (PWM)
             validators: &id003 [PWMOutput]
-            value: '0'
+            value: '5'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: false}
         Base: Speed Controller
@@ -38,9 +38,9 @@ Children:
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '1'
+            value: '4'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-            name: Inverted, validators: null, value: false}
+            name: Inverted, validators: null, value: true}
         Base: Speed Controller
         Name: Back Shooter
       Properties:
@@ -90,15 +90,15 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: PWMVictorSPX
+            value: PWMTalonSRX
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '2'
+            value: '0'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-            name: Inverted, validators: null, value: false}
+            name: Inverted, validators: null, value: true}
         Base: Speed Controller
         Name: Left Front Motor
       - Children: []
@@ -108,15 +108,15 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: PWMVictorSPX
+            value: PWMTalonSRX
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '3'
+            value: '1'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
-            name: Inverted, validators: null, value: false}
+            name: Inverted, validators: null, value: true}
         Base: Speed Controller
         Name: Left Back Motor
       Properties:
@@ -148,13 +148,13 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: PWMVictorSPX
+            value: PWMTalonSRX
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '4'
+            value: '2'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: false}
         Base: Speed Controller
@@ -166,13 +166,13 @@ Children:
             default: Spark
             name: Type
             validators: null
-            value: PWMVictorSPX
+            value: PWMTalonSRX
           Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
             choices: *id002
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '5'
+            value: '3'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: false}
         Base: Speed Controller
@@ -315,9 +315,9 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\',
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: 'C:\Users\sth101\'}
-  Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\FRCProjects',
+  Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\FRCProjects',
     extension: null, folder: true, name: Export Directory, validators: null, value: 'C:\Users\sth101\Desktop\quasics-frc-sw-2015.git\trunk\Quasics2019Code\RobotBuilder'}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}

@@ -318,7 +318,7 @@ Properties:
   Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: 'C:\Users\sth101\'}
   Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\Developer\FRCProjects',
-    extension: null, folder: true, name: Export Directory, validators: null, value: 'C:\Users\sth101\Desktop\quasics-frc-sw-2015.git\trunk\Quasics2019Code\RobotBuilder'}
+    extension: null, folder: true, name: Export Directory, validators: null, value: ..\}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: Autonomous Command}
 Base: Robot

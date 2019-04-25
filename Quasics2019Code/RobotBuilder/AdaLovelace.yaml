@@ -96,7 +96,7 @@ Children:
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '0'
+            value: '1'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: true}
         Base: Speed Controller
@@ -114,7 +114,7 @@ Children:
             default: '0'
             name: Output Channel (PWM)
             validators: *id003
-            value: '1'
+            value: '0'
           Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
             name: Inverted, validators: null, value: true}
         Base: Speed Controller

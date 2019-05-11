@@ -16,11 +16,11 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  for (int b = 1; b < 360; b = b + 1) {
+  for (int b = 0; b < 360; b = b + 1) {
     for (int pixel = 0; pixel < NUMPIXELS; pixel++) {
-      float hue = (b + pixel * 360/NUMPIXELS) % 360;
-      float saturation = 100;
-      float value = 20;
+      const float hue = (b + pixel * ((360/NUMPIXELS)*1)) % 360;
+      const float saturation = 100;
+      const float value = 100;
       byte red;
       byte green;
       byte blue;

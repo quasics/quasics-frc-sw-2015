@@ -42,6 +42,7 @@ bool Elevator::atTop() {
 }
 
 bool Elevator::atBottom() {
+  return false;
 #ifdef DISABLE_ELEVATOR_LIMIT_SWITCHES
   return false;
 #else

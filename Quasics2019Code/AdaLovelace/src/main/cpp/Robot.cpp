@@ -12,7 +12,6 @@
 
 #include <frc/Commands/Scheduler.h>
 #include <frc/SmartDashboard/SmartDashboard.h>
-
 #include "Commands/Testing/TestMotor.h"
 #include "Commands/Testing/TestShooter.h"
 
@@ -66,13 +65,22 @@ void Robot::RobotInit() {
     Shooter::TestAccess shooterTestAccess = shooter->getTestAccess();
     frc::SmartDashboard::PutData(
         "Test front shooter",
-        new TestMotor(*shooter, shooterTestAccess.getFrontMotor(), 1));
+        new TestMotor(*shooter, shooterTestAccess.getFrontMotor(), .50));
     frc::SmartDashboard::PutData(
         "Test back shooter",
-        new TestMotor(*shooter, shooterTestAccess.getFrontMotor(), 1));
+        new TestMotor(*shooter, shooterTestAccess.getBackMotor(), .50));
   }
-
   frc::SmartDashboard::PutData("Test shooter (50%)", new TestShooter(0.50));
+
+  {
+    Loader::TestAccess loaderTestAccess = loader->getTestAccess();
+    frc::SmartDashboard::PutData(
+        "Test front loader",
+        new TestMotor(*loader, loaderTestAccess.getFrontMotor(), .50));
+    frc::SmartDashboard::PutData(
+        "Test back loader",
+        new TestMotor(*loader, loaderTestAccess.getBackMotor(), .50));
+  }
 }
 
 /**

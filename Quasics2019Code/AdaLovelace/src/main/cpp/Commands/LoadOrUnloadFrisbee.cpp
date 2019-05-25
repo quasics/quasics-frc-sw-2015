@@ -5,36 +5,40 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "Commands/ShootFrisbee.h"
+#include "Commands/LoadOrUnloadFrisbee.h"
+#include "Robot.h"
 
-ShootFrisbee::ShootFrisbee() {
+LoadOrUnloadFrisbee::LoadOrUnloadFrisbee() {
   // Use Requires() here to declare subsystem dependencies
-  Requires(Robot::shooter.get());
+  Requires(Robot::loader.get());
 }
 
 // Called just before this Command runs the first time
-void ShootFrisbee::Initialize() {}
+void LoadOrUnloadFrisbee::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
-void ShootFrisbee::Execute() {
-  if(Robot::oi->ShooterIsTriggered()){
-    Robot::shooter->SetShooterMotors(.8);
+void LoadOrUnloadFrisbee::Execute() {
+  if(Robot::oi->ShouldLoad()){
+    Robot::loader->SetLoaderMotors(.5);
   }
-  else if(!Robot::oi->ShooterIsTriggered()){
-    Robot::shooter->SetShooterMotors(0);
+  if(Robot::oi->ShouldUnload()){
+    Robot::loader->SetLoaderMotors(-.5);
+  }
+  else{
+    Robot::loader->SetLoaderMotors(0);
   }
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool ShootFrisbee::IsFinished() { return false; }
+bool LoadOrUnloadFrisbee::IsFinished() { return false; }
 
 // Called once after isFinished returns true
-void ShootFrisbee::End() {
-  Robot::shooter->SetShooterMotors(0);
+void LoadOrUnloadFrisbee::End() {
+  Robot::loader->SetLoaderMotors(0);
 }
 
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
-void ShootFrisbee::Interrupted() {
+void LoadOrUnloadFrisbee::Interrupted() {
   End();
 }

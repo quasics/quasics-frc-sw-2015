@@ -10,6 +10,6 @@
 // subsystems.
 //
 // This is intended for use when the limit switches aren't installed.
-#undef DISABLE_ELEVATOR_LIMIT_SWITCHES
+#define DISABLE_ELEVATOR_LIMIT_SWITCHES
 
 #endif  // CONFIGURATION_FLAGS_H

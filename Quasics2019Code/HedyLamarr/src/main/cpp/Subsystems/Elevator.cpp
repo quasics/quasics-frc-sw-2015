@@ -34,6 +34,7 @@ Elevator::Elevator() : ElevatorStage("Elevator") {
 }
 
 bool Elevator::atTop() {
+  return false;
 #ifdef DISABLE_ELEVATOR_LIMIT_SWITCHES
   return false;
 #else

@@ -18,7 +18,7 @@ void ShootFrisbee::Initialize() {}
 // Called repeatedly when this Command is scheduled to run
 void ShootFrisbee::Execute() {
   if(Robot::oi->ShooterIsTriggered()){
-    Robot::shooter->SetShooterMotors(.8);
+    Robot::shooter->SetShooterMotors(1);
   }
   else if(!Robot::oi->ShooterIsTriggered()){
     Robot::shooter->SetShooterMotors(0);

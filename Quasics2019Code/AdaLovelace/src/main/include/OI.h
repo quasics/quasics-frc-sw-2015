@@ -37,6 +37,7 @@ public:
 	bool ShooterIsTriggered();
 	bool ShouldLoad();
 	bool ShouldUnload();
+	bool ShouldPush();
 };
 
 #endif

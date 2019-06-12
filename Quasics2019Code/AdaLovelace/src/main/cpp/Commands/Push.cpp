@@ -15,7 +15,7 @@ Push::Push() {
 
 // Called just before this Command runs the first time
 void Push::Initialize() {
-    //Robot::pusher->SetPusherExtension(2000);
+  Robot::pusher->SetPusherExtension(490);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -25,7 +25,7 @@ void Push::Execute() {
     Robot::pusher->SetPusherExtension(2000);
   }
   else{
-    Robot::pusher->SetPusherExtension(2050);
+    Robot::pusher->SetPusherExtension(490);
     //490
   }
 }
@@ -35,7 +35,7 @@ bool Push::IsFinished() { return false; }
 
 // Called once after isFinished returns true
 void Push::End() {
-  Robot::pusher->SetPusherExtension(-1.0);
+  Robot::pusher->SetPusherExtension(490);
 }
 
 // Called when another command which requires one or more of the same

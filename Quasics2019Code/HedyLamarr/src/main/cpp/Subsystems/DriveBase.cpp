@@ -43,8 +43,8 @@ void DriveBase::Periodic() {
 }
 
 void DriveBase::SetMotorSpeed(double left, double right) {
-  rightMotors->Set(right);
-  leftMotors->Set(left);
+  rightMotors->Set(-left);
+  leftMotors->Set(-right);
 }
 
 void DriveBase::Stop() {

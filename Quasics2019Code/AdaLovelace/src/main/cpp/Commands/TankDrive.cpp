@@ -20,8 +20,8 @@ void TankDrive::Initialize() {}
 void TankDrive::Execute() {
   const double leftSpeed = Robot::oi->GetLeftDriveStick();
   const double rightSpeed = Robot::oi->GetRightDriveStick();
-  double speedMult = 0.6;
-  
+  double speedMult = 1;
+
   Robot::driveBase->SetMotorSpeed(leftSpeed * speedMult, rightSpeed * speedMult);
 }
 

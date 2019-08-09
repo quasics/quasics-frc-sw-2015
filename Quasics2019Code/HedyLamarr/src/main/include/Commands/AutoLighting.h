@@ -16,8 +16,12 @@ class AutoLighting : public frc::Command {
   void Execute() override;
   bool IsFinished() override;
   private:
+  #ifdef ENABLE_OLD_ELEVATOR
   std::string lastModeCommand = "";
+  #endif // ENABLE_OLD_ELEVATOR
   std::string lastColorCommand = "";
   void transmitColor(std::string colorCommand, bool alwaysSend = false);
+  #ifdef ENABLE_OLD_ELEVATOR
   void transmitMode(std::string modeCommand, bool alwaysSend = false);
+  #endif // ENABLE_OLD_ELEVATOR
 };

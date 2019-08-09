@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #pragma once
 
 #include <frc/commands/CommandGroup.h>
@@ -13,3 +13,4 @@ class MoveToTop : public frc::CommandGroup {
  public:
   MoveToTop();
 };
+#endif // ENABLE_OLD_ELEVATOR

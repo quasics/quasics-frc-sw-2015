@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/ElevatorToPositionOne.h"
 #include "Robot.h"
 #include "Subsystems/Elevator.h"
@@ -81,3 +81,4 @@ void ElevatorToPositionOne::End() {
 void ElevatorToPositionOne::Interrupted() {
   End();
 }
+#endif // ENABLE_OLD_ELEVATOR

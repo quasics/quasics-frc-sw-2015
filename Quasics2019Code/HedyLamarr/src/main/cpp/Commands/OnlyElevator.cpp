@@ -5,6 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/OnlyElevator.h"
 
 #include <iostream>
@@ -61,3 +62,4 @@ void OnlyElevator::End() {
 void OnlyElevator::Interrupted() {
   End();
 }
+#endif // ENABLE_OLD_ELEVATOR

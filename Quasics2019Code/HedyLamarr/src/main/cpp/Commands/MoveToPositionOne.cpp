@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/MoveToPositionOne.h"
 #include "Commands/ElevatorToPositionOne.h"
 #include "Commands/LifterToPositionOne.h"
@@ -14,3 +14,4 @@ MoveToPositionOne::MoveToPositionOne() {
   AddParallel(new ElevatorToPositionOne);
   AddParallel(new LifterToPositionOne);
 }
+#endif // ENABLE_OLD_ELEVATOR

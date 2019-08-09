@@ -1,3 +1,4 @@
+#ifdef ENABLE_OLD_ELEVATOR
 #ifndef ELEVATOR_STAGE_H
 #define ELEVATOR_STAGE_H
 
@@ -29,3 +30,4 @@ class ElevatorStage : public frc::Subsystem {
 };
 
 #endif  // ELEVATOR_STAGE_H
+#endif // ENABLE_OLD_ELEVATOR

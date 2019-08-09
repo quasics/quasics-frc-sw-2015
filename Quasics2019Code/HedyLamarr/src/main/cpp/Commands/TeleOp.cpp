@@ -30,7 +30,9 @@ TeleOp::TeleOp() {
   // a CommandGroup containing them would require both the chassis and the
   // arm.
   AddParallel(new TankDrive());
+  #ifdef ENABLE_OLD_ELEVATOR
   AddParallel(new FullElevatorControl());
+  #endif // ENABLE_OLD_ELEVATOR
   AddParallel(new IntakeControl());
   AddParallel(new LinkageControl());
 }

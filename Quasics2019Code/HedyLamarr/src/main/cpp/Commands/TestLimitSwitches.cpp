@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/TestLimitSwitches.h"
 #include "Robot.h"
 #include <iostream>
@@ -52,3 +52,4 @@ void TestLimitSwitches::End() {}
 // Called when another command which requires one or more of the same
 // subsystems is scheduled to run
 void TestLimitSwitches::Interrupted() {}
+#endif // ENABLE_OLD_ELEVATOR

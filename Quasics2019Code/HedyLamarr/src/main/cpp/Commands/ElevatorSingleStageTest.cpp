@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/ElevatorSingleStageTest.h"
 
 #include <iostream>
@@ -53,3 +53,4 @@ void ElevatorSingleStageTest::End() {
 void ElevatorSingleStageTest::Interrupted() {
   End();
 }
+#endif // ENABLE_OLD_ELEVATOR

@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #pragma once
 
 #include <frc/commands/Command.h>
@@ -21,3 +21,4 @@ class AdjustElevatorSingleStage : public frc::Command {
   void End() override;
   void Interrupted() override;
 };
+#endif // ENABLE_OLD_ELEVATOR

@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #pragma once
 
 #include <frc/commands/Command.h>
@@ -22,3 +22,4 @@ class ElevatorToPositionTwo : public frc::Command {
   bool needs_to_switch = false;
   bool moving_down = false;
 };
+#endif // ENABLE_OLD_ELEVATOR

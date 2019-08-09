@@ -18,7 +18,9 @@ AutoLighting::AutoLighting() {
 
 void AutoLighting::Initialize() {
   lastColorCommand = "";
+  #ifdef ENABLE_OLD_ELEVATOR
   lastModeCommand = "";
+  #endif // ENABLE_OLD_ELEVATOR
 }
 // Called repeatedly when this Command is scheduled to run
 void AutoLighting::Execute() {
@@ -26,12 +28,14 @@ void AutoLighting::Execute() {
 
   if (!driverStation.IsDSAttached()) {
     // Send command to signal that the Driver Station isn't connected (yet).
+    #ifdef ENABLE_OLD_ELEVATOR
     transmitMode("no-ds");
     return;
+    #endif // ENABLE_OLD_ELEVATOR
   }
 
   const auto ds_alliance = driverStation.GetAlliance();
-  const auto elevatorMode = Robot::GetLifterMode();
+  //const auto elevatorMode = Robot::GetLifterMode();
   
   std::string color = "default";
   switch (ds_alliance) {
@@ -45,7 +49,7 @@ void AutoLighting::Execute() {
       color = "demo";
       break;
   }
-
+#ifdef ENABLE_OLD_ELEVATOR
   std::string mode = "default";
   if(elevatorMode == Robot::eBoth){
     mode = "Both";
@@ -58,12 +62,13 @@ void AutoLighting::Execute() {
   }
 
   transmitMode(mode);
+  #endif // ENABLE_OLD_ELEVATOR
   transmitColor(color);
 }
 
 // Make this return true when this Command no longer needs to run execute()
 bool AutoLighting::IsFinished() { return false; }
-
+#ifdef ENABLE_OLD_ELEVATOR
 void AutoLighting::transmitMode(std::string modeCommand, bool alwaysSend) {
   if (alwaysSend || modeCommand != lastModeCommand) {
     std::cout << "Sending command: '" << modeCommand << "'" << std::endl;
@@ -76,7 +81,7 @@ void AutoLighting::transmitMode(std::string modeCommand, bool alwaysSend) {
     lastModeCommand = modeCommand;
   }
 }
-
+#endif // ENABLE_OLD_ELEVATOR
 void AutoLighting::transmitColor(std::string colorCommand, bool alwaysSend) {
   if (alwaysSend || colorCommand != lastColorCommand) {
     std::cout << "Sending command: '" << colorCommand << "'" << std::endl;

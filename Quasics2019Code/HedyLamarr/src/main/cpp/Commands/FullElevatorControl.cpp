@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#ifdef ENABLE_OLD_ELEVATOR
 #include "Commands/FullElevatorControl.h"
 
 #include "Robot.h"
@@ -102,3 +102,4 @@ void FullElevatorControl::Interrupted() {
   LOG("******** Full elevator control was interrupted!\n");
   End();
 }
+#endif // ENABLE_OLD_ELEVATOR

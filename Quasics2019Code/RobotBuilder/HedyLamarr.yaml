@@ -207,7 +207,7 @@ Children:
           default: '0'
           name: Input Channel (Digital)
           validators: &id009 [DigitalChannel]
-          value: '0'
+          value: '16'
       Base: Digital Input
       Name: Hall Effect Low Elevator
     - Children: []
@@ -217,7 +217,7 @@ Children:
           default: '0'
           name: Input Channel (Digital)
           validators: *id009
-          value: '1'
+          value: '19'
       Base: Digital Input
       Name: Hall Effect High Elevator
     - Children: []
@@ -233,7 +233,7 @@ Children:
           default: '0'
           name: Output Channel (PWM)
           validators: *id003
-          value: '5'
+          value: '19'
         Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Inverted, validators: null, value: false}
       Base: Speed Controller
@@ -273,7 +273,7 @@ Children:
           default: '0'
           name: Input Channel (Digital)
           validators: *id009
-          value: '3'
+          value: '20'
       Base: Digital Input
       Name: Hall Effect Low Lifter
     - Children: []
@@ -289,7 +289,7 @@ Children:
           default: '0'
           name: Output Channel (PWM)
           validators: *id003
-          value: '6'
+          value: '12'
         Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
           name: Inverted, validators: null, value: false}
       Base: Speed Controller
@@ -439,6 +439,122 @@ Children:
         value: []
     Base: Subsystem
     Name: TwoBarLinkage
+  - Children:
+    - Children:
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: Spark
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '5'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Left Elevator Motor
+      - Children: []
+        Properties:
+          Type: !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id001
+            default: Spark
+            name: Type
+            validators: null
+            value: Spark
+          Output Channel (PWM): !!robotbuilder.data.properties.ChoicesProperty
+            choices: *id002
+            default: '0'
+            name: Output Channel (PWM)
+            validators: *id003
+            value: '6'
+          Inverted: !!robotbuilder.data.properties.BooleanProperty {default: false,
+            name: Inverted, validators: null, value: false}
+        Base: Speed Controller
+        Name: Right Elevator Motor
+      Properties:
+        SpeedController4: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController4, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController3: !!robotbuilder.data.properties.ChildSelectionProperty {
+          default: null, name: SpeedController3, type: PIDOutput, validators: null,
+          value: null}
+        SpeedController2: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 1
+          name: SpeedController2
+          type: PIDOutput
+          validators: *id004
+          value: Right Elevator Motor
+        SpeedController1: !!robotbuilder.data.properties.ChildSelectionProperty
+          default: 0
+          name: SpeedController1
+          type: PIDOutput
+          validators: *id005
+          value: Left Elevator Motor
+      Base: Speed Controller Group
+      Name: Elevator Motors
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id006
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id007
+          value: '3'
+      Base: Limit Switch
+      Name: High Stop
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id006
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id007
+          value: '0'
+      Base: Limit Switch
+      Name: Low Stop
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id008
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id009
+          value: '1'
+      Base: Digital Input
+      Name: Low Scoring
+    - Children: []
+      Properties:
+        Input Channel (Digital): !!robotbuilder.data.properties.ChoicesProperty
+          choices: *id008
+          default: '0'
+          name: Input Channel (Digital)
+          validators: *id009
+          value: '2'
+      Base: Digital Input
+      Name: Middle Scoring
+    Properties:
+      Send to SmartDashboard: !!robotbuilder.data.properties.BooleanProperty {default: false,
+        name: Send to SmartDashboard, validators: null, value: false}
+      Default command parameters: !!robotbuilder.data.properties.ParametersProperty
+        default: []
+        name: Default command parameters
+        validators: null
+        value: []
+      Default Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
+        name: Default Command, type: Command, validators: null, value: None}
+      Constants: !!robotbuilder.data.properties.ConstantsProperty
+        default: []
+        name: Constants
+        validators: null
+        value: []
+    Base: Subsystem
+    Name: NewElevator
   Properties: {}
   Base: Subsystems
   Name: Subsystems
@@ -510,9 +626,9 @@ Properties:
     name: Export Subsystems, validators: null, value: true}
   Simulation World File: !!robotbuilder.data.properties.StringProperty {default: /usr/share/frcsim/worlds/GearsBotDemo.world,
     name: Simulation World File, validators: null, value: /usr/share/frcsim/worlds/GearsBotDemo.world}
-  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: /Users/healym/,
+  Wiring file location: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\',
     extension: null, folder: true, name: Wiring file location, validators: null, value: .\}
-  Export Directory: !!robotbuilder.data.properties.FileProperty {default: /Users/healym/FRCProjects,
+  Export Directory: !!robotbuilder.data.properties.FileProperty {default: 'C:\Users\sth101\FRCProjects',
     extension: null, folder: true, name: Export Directory, validators: null, value: ..\}
   Autonomous Command: !!robotbuilder.data.properties.TypeSelectionProperty {default: None,
     name: Autonomous Command, type: Command, validators: null, value: None}

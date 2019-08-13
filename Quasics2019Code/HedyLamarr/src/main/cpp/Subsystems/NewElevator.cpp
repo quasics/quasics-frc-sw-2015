@@ -62,3 +62,7 @@ bool NewElevator::atLow() {
 bool NewElevator::atMedium() {
     return middleScoring->Get();
 }
+
+void NewElevator::move(double speed){
+    elevatorMotors->Set(speed);
+}

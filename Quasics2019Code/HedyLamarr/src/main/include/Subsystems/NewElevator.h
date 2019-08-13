@@ -43,6 +43,7 @@ public:
 	bool atLow();
 	bool atMedium();
 
+	void move(double speed);
 };
 
 #endif

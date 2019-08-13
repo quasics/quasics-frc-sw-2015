@@ -47,4 +47,18 @@ void NewElevator::Periodic() {
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
+bool NewElevator::atTop() {
+    return highStop->Get();
+}
 
+bool NewElevator::atBottom() {
+    return lowStop->Get();
+}
+
+bool NewElevator::atLow() {
+    return lowScoring->Get();
+}
+
+bool NewElevator::atMedium() {
+    return middleScoring->Get();
+}

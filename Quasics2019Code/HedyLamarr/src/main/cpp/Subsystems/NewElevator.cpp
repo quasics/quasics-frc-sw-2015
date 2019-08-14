@@ -66,3 +66,7 @@ bool NewElevator::atMedium() {
 void NewElevator::move(double speed){
     elevatorMotors->Set(speed);
 }
+
+void NewElevator::stop() {
+    elevatorMotors->Set(0);
+}

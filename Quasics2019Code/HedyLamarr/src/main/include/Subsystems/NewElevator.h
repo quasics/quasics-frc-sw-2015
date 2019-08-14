@@ -44,6 +44,7 @@ public:
 	bool atMedium();
 
 	void move(double speed);
+	void stop();
 };
 
 #endif

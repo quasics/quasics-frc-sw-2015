@@ -22,7 +22,7 @@ void TankDrive::Execute() {
   const double rightSpeed = Robot::oi->GetRightDriveStick();
   double speedMult = .6;
 
-  Robot::driveBase->SetMotorSpeed(leftSpeed * speedMult, rightSpeed * speedMult);
+  Robot::driveBase->SetMotorSpeed(leftSpeed * -speedMult, rightSpeed * speedMult);
 }
 
 // Make this return true when this Command no longer needs to run execute()

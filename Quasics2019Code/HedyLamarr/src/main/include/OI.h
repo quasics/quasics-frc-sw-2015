@@ -57,10 +57,10 @@ class OI {
   bool isElbowSignaledDown();
 
   /// Returns true iff the elevator (and lifter) should be moved up.
-  //bool isElevatorMoveUpSignaled();
+  bool isElevatorMoveUpSignaled();
 
   /// Returns true iff the elevator (and lifter) should be moved down.
-  //bool isElevatorMoveDownSignaled();
+  bool isElevatorMoveDownSignaled();
 };
 
 #endif

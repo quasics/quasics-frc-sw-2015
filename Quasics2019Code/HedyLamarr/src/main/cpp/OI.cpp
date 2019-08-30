@@ -204,26 +204,26 @@ bool OI::isTurtleTriggerDown() {
 //  return X_button;
 //}
 
-//constexpr double kElevatorDeadZoneWidth = 0.3;
+constexpr double kElevatorDeadZoneWidth = 0.3;
 
-// tests the Left Joystick on the Xbox Controller to see if the Elevator is
+//tests the Left Joystick on the Xbox Controller to see if the Elevator is
 // signaled to go Up
-//bool OI::isElevatorMoveUpSignaled() {
-//  const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
-//  if (joystick <= -kElevatorDeadZoneWidth) {
-//    return true;
-//  } else {
-//    return false;
-//  }
-//}
+bool OI::isElevatorMoveUpSignaled() {
+  const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  if (joystick <= -kElevatorDeadZoneWidth) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // tests the Left Joystick on the Xbox Controller to see if the Elevator is
 // signaled to go Down
-//bool OI::isElevatorMoveDownSignaled() {
-//  const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
-//  if (joystick >= kElevatorDeadZoneWidth) {
-//    return true;
-//  } else {
-//    return false;
-//  }
-//}
+bool OI::isElevatorMoveDownSignaled() {
+ const double joystick = operatorStick->GetRawAxis(XBox_LeftYAxis);
+  if (joystick >= kElevatorDeadZoneWidth) {
+    return true;
+  } else {
+    return false;
+  }
+}

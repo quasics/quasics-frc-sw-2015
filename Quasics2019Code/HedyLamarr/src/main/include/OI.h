@@ -27,6 +27,10 @@ class OI {
   //std::shared_ptr<frc::JoystickButton> BottomElevatorButton;
   //std::shared_ptr<frc::JoystickButton> PositionOneElevatorButton;
   //std::shared_ptr<frc::JoystickButton> PositionTwoElevatorButton;
+  std::shared_ptr<frc::JoystickButton> LowNewElevatorButton;
+  std::shared_ptr<frc::JoystickButton> MiddleNewElevatorButton;
+  std::shared_ptr<frc::JoystickButton> TopNewElevatorButton;
+  std::shared_ptr<frc::JoystickButton> BottomNewElevatorButton;
 
  public:
   OI();

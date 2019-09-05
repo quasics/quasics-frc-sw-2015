@@ -10,6 +10,7 @@
 
 #ifndef OI_H
 #define OI_H
+//#define ENABLE_NEW_SENSOR_CODE
 
 #include "frc/WPILib.h"
 
@@ -27,10 +28,12 @@ class OI {
   //std::shared_ptr<frc::JoystickButton> BottomElevatorButton;
   //std::shared_ptr<frc::JoystickButton> PositionOneElevatorButton;
   //std::shared_ptr<frc::JoystickButton> PositionTwoElevatorButton;
+  #ifdef ENABLE_NEW_SENSOR_CODE
   std::shared_ptr<frc::JoystickButton> LowNewElevatorButton;
   std::shared_ptr<frc::JoystickButton> MiddleNewElevatorButton;
   std::shared_ptr<frc::JoystickButton> TopNewElevatorButton;
   std::shared_ptr<frc::JoystickButton> BottomNewElevatorButton;
+  #endif
 
  public:
   OI();

@@ -9,6 +9,7 @@
 #include "Subsystems/NewElevator.h"
 #include "OI.h"
 #include "Robot.h"
+//#define ENABLE_NEW_SENSOR_CODE
 
 AdjustNewElevator::AdjustNewElevator() {
   // Use Requires() here to declare subsystem dependencies
@@ -23,20 +24,28 @@ void AdjustNewElevator::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void AdjustNewElevator::Execute() {
   if(Robot::oi->isElevatorMoveUpSignaled()){
+    #ifdef ENABLE_NEW_SENSOR_CODE
     if(Robot::newElevator->atTop()){
       Robot::newElevator->stop();
     }
     else{
+    #endif
       Robot::newElevator->move(.6);
+    #ifdef ENABLE_NEW_SENSOR_CODE
     }
+    #endif
   }
   else if(Robot::oi->isElevatorMoveDownSignaled()){
+    #ifdef ENABLE_NEW_SENSOR_CODE
     if(Robot::newElevator->atBottom()){
       Robot::newElevator->stop();
     }
     else{
+      #endif
       Robot::newElevator->move(-.6);
+      #ifdef ENABLE_NEW_SENSOR_CODE
     }
+    #endif
   }
   else{
     Robot::newElevator->stop();

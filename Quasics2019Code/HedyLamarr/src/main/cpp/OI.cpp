@@ -32,7 +32,7 @@
 //#include "Commands/FullElevatorControl.h"
 //#include "Commands/TestLimitSwitches.h"
 #include "Commands/AutoLighting.h"
-
+#include "Commands/SetHatch.h"
 #include "Commands/NewElevatorToBottom.h"
 #include "Commands/NewElevatorToLow.h"
 #include "Commands/NewElevatorToMiddle.h"
@@ -80,6 +80,8 @@ OI::OI() {
   frc::SmartDashboard::PutData("Test Lighting",
                                new AutoLighting());
 
+  frc::SmartDashboard::PutData("Test Hatch Manipulator",
+                               new SetHatch());
   // // maps Left Trigger on the Xbox Controller to moving the Elevator to the Top
   // TopElevatorButton.reset(
   //     new frc::JoystickButton(operatorStick.get(), XBox_LeftTrigger));

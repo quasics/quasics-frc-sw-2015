@@ -7,10 +7,11 @@
 
 #include "subsystems/TestSubsystem.h"
 #include "RobotMap.h"
+#include <iostream>
 
 TestSubsystem::TestSubsystem()
     : Subsystem("ExampleSubsystem"),
-      motorController(new TalonSRX{kTestMotorCantroller_CanId})
+      motorController(new VictorSPX{kTestMotorCantroller_CanId})
 {
   motorController->Set(ControlMode::PercentOutput, 0);
 }
@@ -23,5 +24,6 @@ void TestSubsystem::InitDefaultCommand() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 void TestSubsystem::setMotorPower(double percent) {
+  std::cerr << "Setting motor power to " << percent << std::endl;
   motorController->Set(ControlMode::PercentOutput, percent);
 }

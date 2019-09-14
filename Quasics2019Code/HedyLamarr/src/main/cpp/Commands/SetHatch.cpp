@@ -17,27 +17,19 @@ SetHatch::SetHatch() {
 }
 
 // Called just before this Command runs the first time
-void SetHatch::Initialize() {}
+void SetHatch::Initialize() {
+  Robot::hatchPanelManipulator->MoveDown();
+}
 
 // Called repeatedly when this Command is scheduled to run
 void SetHatch::Execute() {
   if(Robot::oi->isElbowSignaledUp()){
-    if(Robot::hatchPanelManipulator->GetHatchAngle() == upperLimit){
-      Robot::hatchPanelManipulator->Stop();
-      std::cerr << "I'm not going  up  because we're already at " << upperLimit;
-    }
-    else{
+    std::cerr << "Signaled up" << std::endl;
       Robot::hatchPanelManipulator->MoveUp();
-    }
   }
   else if(Robot::oi->isElbowSignaledDown()){
-    if(Robot::hatchPanelManipulator->GetHatchAngle() == lowerLimit){
-      Robot::hatchPanelManipulator->Stop();
-      std::cerr << "I'm not going down because we're already at " << lowerLimit;
-    }
-    else{
+    std::cerr << "Signaled down" << std::endl;
       Robot::hatchPanelManipulator->MoveDown();
-    }
   }
   else{
     Robot::hatchPanelManipulator->Stop();

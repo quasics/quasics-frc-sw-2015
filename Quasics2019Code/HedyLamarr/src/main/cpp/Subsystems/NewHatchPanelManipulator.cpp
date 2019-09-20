@@ -46,3 +46,10 @@ void NewHatchPanelManipulator::Periodic() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 
+void NewHatchPanelManipulator::SetPower(double percent) {
+    newHatchMotor->Set(percent);
+}
+
+void NewHatchPanelManipulator::Stop() {
+    SetPower(0);
+}

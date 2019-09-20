@@ -68,6 +68,9 @@ class OI {
 
   /// Returns true iff the elevator (and lifter) should be moved down.
   bool isElevatorMoveDownSignaled();
+
+  bool isHatchManipulatorSignaledOpen();
+  bool isHatchManipulatorSignaledClose();
 };
 
 #endif

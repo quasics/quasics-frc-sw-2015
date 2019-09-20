@@ -10,6 +10,7 @@
 #include "Commands/IntakeControl.h"
 #include "Commands/LinkageControl.h"
 #include "Commands/TankDrive.h"
+#include "Commands/NewHatchPanelManipulatorControl.h"
 #include "OI.h"
 
 TeleOp::TeleOp() {
@@ -35,4 +36,5 @@ TeleOp::TeleOp() {
   #endif // ENABLE_OLD_ELEVATOR
   AddParallel(new IntakeControl());
   AddParallel(new LinkageControl());
+  AddParallel(new NewHatchPanelManipulatorControl());
 }

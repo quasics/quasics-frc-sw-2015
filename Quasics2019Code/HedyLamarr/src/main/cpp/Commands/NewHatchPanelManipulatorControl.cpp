@@ -16,9 +16,9 @@ NewHatchPanelManipulatorControl::NewHatchPanelManipulatorControl() {
 // Called repeatedly when this Command is scheduled to run
 void NewHatchPanelManipulatorControl::Execute() {
   if (Robot::oi->OI::isHatchManipulatorSignaledOpen()) {
-    Robot::newHatchPanelManipulator->SetPower(.3);
+    Robot::newHatchPanelManipulator->SetPower(.9);
   } else if (Robot::oi->OI::isHatchManipulatorSignaledClose()) {
-    Robot::newHatchPanelManipulator->SetPower(-.3);
+    Robot::newHatchPanelManipulator->SetPower(-.9);
   } else {
     Robot::newHatchPanelManipulator->SetPower(0);
   }

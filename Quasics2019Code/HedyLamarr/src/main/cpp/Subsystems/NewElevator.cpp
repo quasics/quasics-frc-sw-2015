@@ -53,11 +53,19 @@ void NewElevator::Periodic() {
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
 bool NewElevator::atTop() {
-    return highStop->Get();
+#ifdef ENABLE_NEW_SENSOR_CODE
+  return highStop->Get();
+#else
+    return false;
+#endif
 }
 
 bool NewElevator::atBottom() {
-    return lowStop->Get();
+#ifdef ENABLE_NEW_SENSOR_CODE
+  return lowStop->Get();
+#else
+  return false;
+#endif
 }
 
 bool NewElevator::atLow() {

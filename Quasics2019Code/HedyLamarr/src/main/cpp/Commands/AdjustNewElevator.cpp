@@ -21,31 +21,26 @@ void AdjustNewElevator::Initialize() {
   Robot::newElevator->stop();
 }
 
+const double kSpeedDown = -.3;
+const double kSpeedUp = .6;
+
 // Called repeatedly when this Command is scheduled to run
 void AdjustNewElevator::Execute() {
   if(Robot::oi->isElevatorMoveUpSignaled()){
-    #ifdef ENABLE_NEW_SENSOR_CODE
     if(Robot::newElevator->atTop()){
       Robot::newElevator->stop();
     }
     else{
-    #endif
-      Robot::newElevator->move(.6);
-    #ifdef ENABLE_NEW_SENSOR_CODE
+      Robot::newElevator->move(kSpeedUp);
     }
-    #endif
   }
   else if(Robot::oi->isElevatorMoveDownSignaled()){
-    #ifdef ENABLE_NEW_SENSOR_CODE
     if(Robot::newElevator->atBottom()){
       Robot::newElevator->stop();
     }
     else{
-      #endif
-      Robot::newElevator->move(-.6);
-      #ifdef ENABLE_NEW_SENSOR_CODE
+      Robot::newElevator->move(kSpeedDown);
     }
-    #endif
   }
   else{
     Robot::newElevator->stop();
@@ -53,8 +48,8 @@ void AdjustNewElevator::Execute() {
 }
 
 // Make this return true when this Command no longer needs to run execute()
-bool AdjustNewElevator::IsFinished() { 
-  return false; 
+bool AdjustNewElevator::IsFinished() {
+  return false;
 }
 
 // Called once after isFinished returns true

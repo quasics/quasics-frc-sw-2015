@@ -37,25 +37,25 @@ void HatchPanelManipulator::InitDefaultCommand() {
 
 void HatchPanelManipulator::Periodic() {
     // Put code here to be run every loop
-    std::cerr << "   -> Position: " << hatchMotor->GetAngle() << std::endl;
+    //  std::cerr << "   -> Position: " << hatchMotor->GetAngle() << std::endl;
 }
 
 void HatchPanelManipulator::Stop() {
     int pos = hatchMotor->GetAngle();
     hatchMotor->SetAngle(pos);
-    std::cerr << "Stopping at " << pos << std::endl;
+    // std::cerr << "Stopping at " << pos << std::endl;
 }
 
 void HatchPanelManipulator::MoveUp(){
     int max = hatchMotor->GetMaxAngle();
     hatchMotor->SetAngle(max);
-    std::cerr << "Moving to maximum " << max << std::endl;
+    // std::cerr << "Moving to maximum " << max << std::endl;
 }
 
 void HatchPanelManipulator::MoveDown(){
     int min = hatchMotor->GetMinAngle();
     hatchMotor->SetAngle(min);
-    std::cerr << "Moving to minimum " << min << std::endl;
+    // std::cerr << "Moving to minimum " << min << std::endl;
 }
 
 void HatchPanelManipulator::SetHatchAngle(int pos){
@@ -78,4 +78,3 @@ int HatchPanelManipulator::GetHatchAngle(){
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
-

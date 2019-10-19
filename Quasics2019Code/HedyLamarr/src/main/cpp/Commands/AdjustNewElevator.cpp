@@ -9,7 +9,9 @@
 #include "Subsystems/NewElevator.h"
 #include "OI.h"
 #include "Robot.h"
-//#define ENABLE_NEW_SENSOR_CODE
+
+const double kSpeedDown = -.3;
+const double kSpeedUp = .6;
 
 AdjustNewElevator::AdjustNewElevator() {
   // Use Requires() here to declare subsystem dependencies
@@ -20,9 +22,6 @@ AdjustNewElevator::AdjustNewElevator() {
 void AdjustNewElevator::Initialize() {
   Robot::newElevator->stop();
 }
-
-const double kSpeedDown = -.3;
-const double kSpeedUp = .6;
 
 // Called repeatedly when this Command is scheduled to run
 void AdjustNewElevator::Execute() {

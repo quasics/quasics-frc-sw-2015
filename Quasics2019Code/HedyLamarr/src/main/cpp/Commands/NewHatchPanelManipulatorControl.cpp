@@ -7,6 +7,9 @@
 
 #include "Commands/NewHatchPanelManipulatorControl.h"
 
+const double kOpenSpeed = .4;
+const double kCloseSpeed = -.4;
+
 NewHatchPanelManipulatorControl::NewHatchPanelManipulatorControl() {
   // Use Requires() here to declare subsystem dependencies
   // eg. Requires(Robot::chassis.get());
@@ -16,9 +19,9 @@ NewHatchPanelManipulatorControl::NewHatchPanelManipulatorControl() {
 // Called repeatedly when this Command is scheduled to run
 void NewHatchPanelManipulatorControl::Execute() {
   if (Robot::oi->OI::isHatchManipulatorSignaledOpen()) {
-    Robot::newHatchPanelManipulator->SetPower(.9);
+    Robot::newHatchPanelManipulator->SetPower(kOpenSpeed);
   } else if (Robot::oi->OI::isHatchManipulatorSignaledClose()) {
-    Robot::newHatchPanelManipulator->SetPower(-.9);
+    Robot::newHatchPanelManipulator->SetPower(kCloseSpeed);
   } else {
     Robot::newHatchPanelManipulator->SetPower(0);
   }

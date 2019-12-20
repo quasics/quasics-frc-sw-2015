@@ -9,6 +9,7 @@
 
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+
 #include "commands/RunTestMotor.h"
 
 ExampleSubsystem Robot::m_subsystem;
@@ -20,6 +21,7 @@ void Robot::RobotInit() {
   m_chooser.AddOption("My Auto", &m_myAuto);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
   frc::SmartDashboard::PutData("Test VictorSPX (CAN)", new RunTestMotor);
+  frc::SmartDashboard::PutData("Stop Nike drive base", new RunTestMotor);
 }
 
 /**

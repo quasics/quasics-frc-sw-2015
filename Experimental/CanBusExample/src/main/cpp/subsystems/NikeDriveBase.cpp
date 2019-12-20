@@ -26,3 +26,10 @@ void NikeDriveBase::InitDefaultCommand() {
 
 // Put methods for controlling this subsystem
 // here. Call these from Commands.
+
+void NikeDriveBase::SetMotorPower(double leftSpeed, double rightSpeed) {
+  leftFront.Set(leftSpeed);
+  leftRear.Set(leftSpeed);
+  rightFront.Set(rightSpeed);
+  rightRear.Set(rightSpeed);
+}

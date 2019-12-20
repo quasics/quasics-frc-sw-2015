@@ -23,10 +23,7 @@ class NikeDriveBase : public frc::Subsystem {
   NikeDriveBase();
   void InitDefaultCommand() override;
 
-  void SetMotorPower(double leftSpeed, double rightSpeed) {
-    leftFront.Set(leftSpeed);
-    leftRear.Set(leftSpeed);
-  }
+  void SetMotorPower(double leftSpeed, double rightSpeed);
 
   void Stop() { SetMotorPower(0.0, 0.0); }
 

@@ -10,13 +10,29 @@
 #include <frc/commands/Scheduler.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "Commands/TestNikeDriveBaseMotor.h"
+
 ExampleSubsystem Robot::m_subsystem;
+NikeDriveBase Robot::m_nikeDriveBase;
 OI Robot::m_oi;
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption("Default Auto", &m_defaultAuto);
   m_chooser.AddOption("My Auto", &m_myAuto);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  frc::SmartDashboard::PutData(
+      "Test Nike (CAN) - Left front",
+      new TestNikeDriveBaseMotor(NikeDriveBase::eLeftFront, 0.5, 1));
+  frc::SmartDashboard::PutData(
+      "Test Nike (CAN) - Left rear",
+      new TestNikeDriveBaseMotor(NikeDriveBase::eLeftRear, 0.5, 1));
+  frc::SmartDashboard::PutData(
+      "Test Nike (CAN) - Right front",
+      new TestNikeDriveBaseMotor(NikeDriveBase::eRightFront, 0.5, 1));
+  frc::SmartDashboard::PutData(
+      "Test Nike (CAN) - Right rear",
+      new TestNikeDriveBaseMotor(NikeDriveBase::eRightRear, 0.5, 1));
   // frc::SmartDashboard::PutData("Stop Nike drive base", new RunTestMotor);
 }
 

@@ -18,5 +18,5 @@ class TankDrive : public frc::Command {
   void End() override;
   void Interrupted() override;
 private:
-float mult = .6;
+float mult = .45;
 };

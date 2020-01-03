@@ -6,21 +6,25 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/DriveBase.h"
+#include "commands/TankDrive.h"
 
 constexpr int Left_Front_No = 4;
 constexpr int Left_Rear_No = 3;
 constexpr int Right_Front_No = 2;
 constexpr int Right_Rear_No = 1;
 
-DriveBase::DriveBase() : Subsystem("DriveBase"), 
+DriveBase::DriveBase() : Subsystem("DriveBase"),
   leftFront(Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-  leftRear(Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-  rightFront(Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-  rightRear(Left_Front_No, rev::CANSparkMax::MotorType::kBrushless){}
+  leftRear(Left_Rear_No, rev::CANSparkMax::MotorType::kBrushless),
+  rightFront(Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
+  rightRear(Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless){
+    leftFront.SetInverted(true);
+    leftRear.SetInverted(true);
+  }
 
 void DriveBase::InitDefaultCommand() {
   // Set the default command for a subsystem here.
-  // SetDefaultCommand(new MySpecialCommand());
+  SetDefaultCommand(new TankDrive());
 }
 
 void DriveBase::SetMotorSpeed(double LeftSpeed, double RightSpeed){

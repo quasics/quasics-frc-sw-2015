@@ -22,10 +22,10 @@
 
 // Axes - Used with the "getRawAxis()" function to access the data for the
 // individual sticks on the controller (e.g., for "tank drive" coding).
-#define LogitechGamePad_LeftXAxis 2
-#define LogitechGamePad_LeftYAxis 5
-#define LogitechGamePad_RightXAxis 0
-#define LogitechGamePad_RightYAxis 1
+#define LogitechGamePad_LeftXAxis 0
+#define LogitechGamePad_LeftYAxis 1
+#define LogitechGamePad_RightXAxis 2
+#define LogitechGamePad_RightYAxis 5
 
 //--------------------X-Box
 //Controller-----------------------------------------------------------------

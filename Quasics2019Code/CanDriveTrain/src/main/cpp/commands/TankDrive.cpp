@@ -10,6 +10,8 @@
 #include "Robot.h"
 #include "OI.h"
 
+const float kDeadBandSize = 0.015;
+
 TankDrive::TankDrive() {
   // Use Requires() here to declare subsystem dependencies
   // eg. Requires(Robot::chassis.get());
@@ -21,7 +23,20 @@ void TankDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-  Robot::driveBase->SetMotorSpeed(Robot::m_oi.GetLeftJoystick()*mult, Robot::m_oi.GetRightJoystick()*mult);
+  double leftStickReading = Robot::m_oi.GetLeftJoystick();
+  double rightStickReading = Robot::m_oi.GetRightJoystick();
+
+  // Software dead-band handling.
+  if (std::abs(leftStickReading) < kDeadBandSize) {
+    leftStickReading = 0.0;
+  }
+  if (std::abs(rightStickReading) < kDeadBandSize) {
+    rightStickReading = 0.0;
+  }
+
+  Robot::driveBase->SetMotorSpeed(
+      leftStickReading * mult,
+      rightStickReading * mult);
 }
 
 // Make this return true when this Command no longer needs to run execute()

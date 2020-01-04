@@ -26,12 +26,12 @@ RobotContainer::RobotContainer() {
   m_driveBase.SetDefaultCommand(TankDriveCommand(
       &m_driveBase,
       [this] {
-        return applyDeadBandAdjustment(
-            m_driverController.GetY(frc::GenericHID::kLeftHand));
+        double stickValue = m_logitechController.GetRawAxis(OIConstants::LogitechGamePad_LeftYAxis);
+        return applyDeadBandAdjustment(stickValue);
       },
       [this] {
-        return applyDeadBandAdjustment(
-            m_driverController.GetX(frc::GenericHID::kRightHand));
+        double stickValue = m_logitechController.GetRawAxis(OIConstants::LogitechGamePad_RightYAxis);
+        return applyDeadBandAdjustment(stickValue);
       }));
 
   // Configure the button bindings
@@ -40,11 +40,11 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
   // Trivial example, just for demo purposes.
-  frc2::JoystickButton(&m_driverController, int(frc::XboxController::Button::kA))
-      .WhenPressed(new frc2::PrintCommand("Button 'A' was pressed"));
+  frc2::JoystickButton(&m_xboxController, int(frc::XboxController::Button::kA))
+      .WhenPressed(new frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
   // While holding the shoulder button, enable turbo mode
-  frc2::JoystickButton(&m_driverController, int(frc::XboxController::Button::kBumperRight))
+  frc2::JoystickButton(&m_logitechController, OIConstants::LogitechGamePad_LeftShoulder)
       .WhenPressed(&m_enableTurbo)
       .WhenReleased(&m_disableTurbo);
 }

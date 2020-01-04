@@ -8,6 +8,7 @@
 #pragma once
 
 #include <frc/XboxController.h>
+#include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
 
@@ -41,7 +42,9 @@ class RobotContainer {
       [this] { m_driveBase.DisableTurboMode(); }, {}};
 
   // The driver's controller
-  frc::XboxController m_driverController{OIConstants::kDriverControllerPort};
+  frc::Joystick m_logitechController{OIConstants::kDriverControllerPort};
+
+  frc::XboxController m_xboxController{OIConstants::kOperatorControllerPort};
 
   ExampleCommand m_autonomousCommand;
 };

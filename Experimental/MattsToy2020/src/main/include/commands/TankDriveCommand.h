@@ -22,16 +22,23 @@
 class TankDriveCommand
     : public frc2::CommandHelper<frc2::CommandBase, TankDriveCommand> {
  public:
+  /**
+   * Constructor.
+   *
+   * Note that the functions to supply left and right power are assumed to be
+   * fully self-contained, and include both "dead zone" support (as needed) and
+   * any power-limiting.
+   *
+   * @param driveBase pointer to the drive base subsystem
+   * @param leftPower function returning the power setting for the left side
+   * @param rightPower function returning the power setting for the right side
+   */
   TankDriveCommand(DriveBase* driveBase, std::function<double()> leftPower,
                    std::function<double()> rightPower);
-
-  void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   DriveBase* driveBase;

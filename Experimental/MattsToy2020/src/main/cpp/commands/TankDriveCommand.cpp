@@ -11,11 +11,8 @@ TankDriveCommand::TankDriveCommand(DriveBase* driveBase,
                                    std::function<double()> leftPower,
                                    std::function<double()> rightPower)
     : driveBase(driveBase), m_leftPower(leftPower), m_rightPower(rightPower) {
-  // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(driveBase);
 }
-
-// Called when the command is initially scheduled.
-void TankDriveCommand::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void TankDriveCommand::Execute() {
@@ -24,6 +21,3 @@ void TankDriveCommand::Execute() {
 
 // Called once the command ends or is interrupted.
 void TankDriveCommand::End(bool interrupted) { driveBase->Stop(); }
-
-// Returns true when the command should end.
-bool TankDriveCommand::IsFinished() { return false; }

@@ -31,7 +31,8 @@ class RobotContainer {
  private:
   void ConfigureButtonBindings();
 
-  // The robot's subsystems and commands are defined here...
+  // Robot subsystems and commands
+ private:
   DriveBase m_driveBase;
 
   frc2::InstantCommand m_enableTurbo{[this] { m_driveBase.EnableTurboMode(); },

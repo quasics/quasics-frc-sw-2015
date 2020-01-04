@@ -24,5 +24,27 @@ constexpr double kTurboPowerScalingFactor = 0.45;
 
 namespace OIConstants {
 constexpr double kDriveControllerDeadBandSize = 0.015;
-constexpr int kDriverControllerPort = 1;
+constexpr int kDriverControllerPort = 0;
+constexpr int kOperatorControllerPort = 1;
+
+// Axes - Used with the "getRawAxis()" function to access the data for the
+// individual sticks on the controller (e.g., for "tank drive" coding).
+constexpr int LogitechGamePad_LeftXAxis = 0;
+constexpr int LogitechGamePad_LeftYAxis = 1;
+constexpr int LogitechGamePad_RightXAxis = 2;
+constexpr int LogitechGamePad_RightYAxis = 5;
+
+// Buttons
+constexpr int LogitechGamePad_AButton = 2;
+constexpr int LogitechGamePad_BButton = 3;
+constexpr int LogitechGamePad_XButton = 4;
+constexpr int LogitechGamePad_YButton = 1;
+constexpr int LogitechGamePad_LeftShoulder = 5;
+constexpr int LogitechGamePad_RightShoulder = 6;
+constexpr int LogitechGamePad_LeftTrigger = 7;
+constexpr int LogitechGamePad_RightTrigger = 8;
+constexpr int LogitechGamePad_LeftStickPress = 11;
+constexpr int LogitechGamePad_RightStickPress = 12;
+constexpr int LogitechGamePad_StartButton = 9;
+constexpr int LogitechGamePad_SelectButton = 10;
 }  // namespace OIConstants

@@ -24,8 +24,8 @@ DriveBase::DriveBase()
 void DriveBase::Periodic() {}
 
 void DriveBase::SetMotorPower(double leftPower, double rightPower) {
-  leftFront.Set(leftPower);
-  leftRear.Set(leftPower);
-  rightFront.Set(rightPower);
-  rightRear.Set(rightPower);
+  leftFront.Set(leftPower * powerScaling);
+  leftRear.Set(leftPower * powerScaling);
+  rightFront.Set(rightPower * powerScaling);
+  rightRear.Set(rightPower * powerScaling);
 }

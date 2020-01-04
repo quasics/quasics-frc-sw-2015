@@ -9,11 +9,11 @@
 
 #include <frc/XboxController.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/InstantCommand.h>
 
 #include "Constants.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
-#include "subsystems/ExampleSubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -29,14 +29,18 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
-  // The robot's subsystems and commands are defined here...
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
+  void ConfigureButtonBindings();
 
+  // The robot's subsystems and commands are defined here...
   DriveBase m_driveBase;
+
+  frc2::InstantCommand m_enableTurbo{[this] { m_driveBase.EnableTurboMode(); },
+                                     {}};
+  frc2::InstantCommand m_disableTurbo{
+      [this] { m_driveBase.DisableTurboMode(); }, {}};
 
   // The driver's controller
   frc::XboxController m_driverController{OIConstants::kDriverControllerPort};
 
-  void ConfigureButtonBindings();
+  ExampleCommand m_autonomousCommand;
 };

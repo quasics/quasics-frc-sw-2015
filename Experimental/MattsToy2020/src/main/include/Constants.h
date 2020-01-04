@@ -17,6 +17,12 @@
  * they are needed.
  */
 
+namespace DriveBaseConstants {
+constexpr double kStandardPowerScalingFactor = 0.45;
+constexpr double kTurboPowerScalingFactor = 0.45;
+}  // namespace DriveBaseConstants
+
 namespace OIConstants {
+constexpr double kDriveControllerDeadBandSize = 0.015;
 constexpr int kDriverControllerPort = 1;
 }  // namespace OIConstants

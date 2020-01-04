@@ -26,8 +26,8 @@ class TankDriveCommand
    * Constructor.
    *
    * Note that the functions to supply left and right power are assumed to be
-   * fully self-contained, and include both "dead zone" support (as needed) and
-   * any power-limiting.
+   * fully self-contained, and includes "dead zone" support adjustments (as
+   * needed).
    *
    * @param driveBase pointer to the drive base subsystem
    * @param leftPower function returning the power setting for the left side

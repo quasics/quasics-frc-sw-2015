@@ -10,6 +10,8 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
+#include "Constants.h"
+
 class DriveBase : public frc2::SubsystemBase {
  public:
   DriveBase();
@@ -22,6 +24,13 @@ class DriveBase : public frc2::SubsystemBase {
   void SetMotorPower(double leftPower, double rightPower);
   void Stop() { SetMotorPower(0, 0); }
 
+  void EnableTurboMode() {
+    powerScaling = DriveBaseConstants::kTurboPowerScalingFactor;
+  }
+  void DisableTurboMode() {
+    powerScaling = DriveBaseConstants::kStandardPowerScalingFactor;
+  }
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -29,4 +38,6 @@ class DriveBase : public frc2::SubsystemBase {
   rev::CANSparkMax leftRear;
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
+
+  double powerScaling = DriveBaseConstants::kStandardPowerScalingFactor;
 };

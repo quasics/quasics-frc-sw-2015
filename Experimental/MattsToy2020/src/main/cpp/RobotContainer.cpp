@@ -7,32 +7,31 @@
 
 #include "RobotContainer.h"
 
-#include "commands/TankDriveCommand.h"
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/button/JoystickButton.h>
 
-const double kDeadBandSize = 0.015;
-const double kPowerScalingFactor = 0.45;
+#include "Constants.h"
+#include "commands/TankDriveCommand.h"
 
 // Software dead-band handling on readings from the driver's control.
 inline double applyDeadBandAdjustment(double stickValue) {
-  if (std::abs(stickValue) < kDeadBandSize) {
+  if (std::abs(stickValue) < OIConstants::kDriveControllerDeadBandSize) {
     return 0;
   }
   return stickValue;
 }
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   m_driveBase.SetDefaultCommand(TankDriveCommand(
       &m_driveBase,
       [this] {
-        return kPowerScalingFactor *
-               applyDeadBandAdjustment(
-                   m_driverController.GetY(frc::GenericHID::kLeftHand));
+        return applyDeadBandAdjustment(
+            m_driverController.GetY(frc::GenericHID::kLeftHand));
       },
       [this] {
-        return kPowerScalingFactor *
-               applyDeadBandAdjustment(
-                   m_driverController.GetX(frc::GenericHID::kRightHand));
+        return applyDeadBandAdjustment(
+            m_driverController.GetX(frc::GenericHID::kRightHand));
       }));
 
   // Configure the button bindings
@@ -40,7 +39,14 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
-  // Configure your button bindings here
+  // Trivial example, just for demo purposes.
+  frc2::JoystickButton(&m_driverController, 1)
+      .WhenPressed(new frc2::PrintCommand("Button 'A' was pressed"));
+
+  // While holding the shoulder button, enable turbo mode
+  frc2::JoystickButton(&m_driverController, 6)
+      .WhenPressed(&m_enableTurbo)
+      .WhenReleased(&m_disableTurbo);
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

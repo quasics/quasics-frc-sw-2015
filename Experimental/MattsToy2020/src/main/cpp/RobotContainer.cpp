@@ -40,11 +40,11 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
   // Trivial example, just for demo purposes.
-  frc2::JoystickButton(&m_driverController, 1)
+  frc2::JoystickButton(&m_driverController, int(frc::XboxController::Button::kA))
       .WhenPressed(new frc2::PrintCommand("Button 'A' was pressed"));
 
   // While holding the shoulder button, enable turbo mode
-  frc2::JoystickButton(&m_driverController, 6)
+  frc2::JoystickButton(&m_driverController, int(frc::XboxController::Button::kBumperRight))
       .WhenPressed(&m_enableTurbo)
       .WhenReleased(&m_disableTurbo);
 }

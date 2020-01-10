@@ -68,7 +68,16 @@ class Robot : public frc::TimedRobot {
     frc::Color detectedColor = m_colorSensor.GetColor();
 
     /**
-     * Run the color match algorithm on our detected color
+     * Run the color match algorithm on our detected color.
+     * 
+     * Observations by mjh (09Jan2020):
+     *    * There's an awful lot of false detect going on with the color
+     *      matcher code.  While it was really good at picking up the
+     *      stock colors with the sample vinyl on the adhesive strip
+     *      (especially when the LED was turned on), I also tried testing
+     *      a *lot* of other random colors (including empty air scanning
+     *      around the workshop), and I *never* saw "Unknown" reported, and
+     *      the confidence never dropped below ~82% (and was usually at >92%).
      */
     std::string colorString;
     double confidence = 0.0;

@@ -16,3 +16,16 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+namespace OIConstants {
+    // Axes - Used with the "getRawAxis()" function to access the data for the
+
+// individual sticks on the controller (e.g., for "tank drive" coding).
+
+constexpr int LogitechGamePad_LeftXAxis = 0;
+
+constexpr int LogitechGamePad_LeftYAxis = 1;
+
+constexpr int LogitechGamePad_RightXAxis = 2;
+
+constexpr int LogitechGamePad_RightYAxis = 5;
+}

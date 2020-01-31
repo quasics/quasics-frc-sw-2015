@@ -32,7 +32,7 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
   Drivebase drivebase;
-  frc::Joystick driverjoystick{0};
+  frc::Joystick driverJoystick{0};
 
   void ConfigureButtonBindings();
 };

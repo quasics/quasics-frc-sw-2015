@@ -6,10 +6,31 @@
 /*----------------------------------------------------------------------------*/
 
 #include "RobotContainer.h"
+#include "commands/TankDrive.h"
+#include "Constants.h"
 
+inline double DeadBand (double stickValue) {
+if (stickValue > -.1 && stickValue < .1) {
+           return 0;
+}
+    return (stickValue);
+}
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
+drivebase.SetDefaultCommand(TankDrive(&drivebase, 
+ [this] {
 
+        double stickValue = driverJoystick.GetRawAxis(OIConstants::LogitechGamePad_RightYAxis);
+        return DeadBand(stickValue);
+ 
+ } 
+      ,[this] {
+
+        double stickValue = driverJoystick.GetRawAxis(OIConstants::LogitechGamePad_LeftYAxis);
+        return DeadBand (stickValue);
+        
+
+      }));
   // Configure the button bindings
   ConfigureButtonBindings();
 }

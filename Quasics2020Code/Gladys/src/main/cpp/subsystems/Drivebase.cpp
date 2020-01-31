@@ -18,8 +18,9 @@ Drivebase::Drivebase()
 void Drivebase::Periodic() {}
   void Drivebase::Stop(){SetPower(0, 0);}
   void Drivebase::SetPower(double rightPower, double leftPower){
-      rightFront.Set(rightPower);
-      rightRear.Set(rightPower);
-      leftFront.Set(leftPower);
-      leftRear.Set(leftPower);
+    const double maxPower = .45;
+      rightFront.Set(rightPower * maxPower);
+      rightRear.Set(rightPower * maxPower);
+      leftFront.Set(leftPower * maxPower);
+      leftRear.Set(leftPower * maxPower);
   }

@@ -48,3 +48,16 @@ constexpr int LogitechGamePad_RightStickPress = 12;
 constexpr int LogitechGamePad_StartButton = 9;
 constexpr int LogitechGamePad_SelectButton = 10;
 }  // namespace OIConstants
+
+namespace CANBusConstants {
+namespace SparkMaxIds {
+constexpr int DriveBaseLeftFrontId = 4;
+constexpr int DriveBaseLeftRearId = 3;
+constexpr int DriveBaseRightFrontId = 2;
+constexpr int DriveBaseRightRearId = 1;
+}  // namespace SparkMaxIds
+
+namespace VictorSpxIds {
+constexpr int ShoulderJointId = 1;
+}
+}  // namespace CANBusConstants

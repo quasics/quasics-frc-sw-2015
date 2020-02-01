@@ -7,16 +7,17 @@
 
 #include "subsystems/DriveBase.h"
 
-constexpr int Left_Front_No = 4;
-constexpr int Left_Rear_No = 3;
-constexpr int Right_Front_No = 2;
-constexpr int Right_Rear_No = 1;
+#include "Constants.h"
 
 DriveBase::DriveBase()
-    : leftFront(Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-      leftRear(Left_Rear_No, rev::CANSparkMax::MotorType::kBrushless),
-      rightFront(Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-      rightRear(Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless) {
+    : leftFront(CANBusConstants::SparkMaxIds::DriveBaseLeftFrontId,
+                rev::CANSparkMax::MotorType::kBrushless),
+      leftRear(CANBusConstants::SparkMaxIds::DriveBaseLeftRearId,
+               rev::CANSparkMax::MotorType::kBrushless),
+      rightFront(CANBusConstants::SparkMaxIds::DriveBaseRightFrontId,
+                 rev::CANSparkMax::MotorType::kBrushless),
+      rightRear(CANBusConstants::SparkMaxIds::DriveBaseRightRearId,
+                rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("DriveBase");
 }
 

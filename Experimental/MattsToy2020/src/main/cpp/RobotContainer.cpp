@@ -13,7 +13,8 @@
 #include "Constants.h"
 #include "commands/TankDriveCommand.h"
 
-// Software dead-band handling on readings from the driver's control.
+// Function to perform software dead-band handling on readings from the driver's
+// control.
 inline double applyDeadBandAdjustment(double stickValue) {
   if (std::abs(stickValue) < OIConstants::kDriveControllerDeadBandSize) {
     return 0;
@@ -21,8 +22,8 @@ inline double applyDeadBandAdjustment(double stickValue) {
   return stickValue;
 }
 
+// Initialize all of your commands and subsystems here.
 RobotContainer::RobotContainer() {
-  // Initialize all of your commands and subsystems here
   m_driveBase.SetDefaultCommand(TankDriveCommand(
       &m_driveBase,
       [this] {

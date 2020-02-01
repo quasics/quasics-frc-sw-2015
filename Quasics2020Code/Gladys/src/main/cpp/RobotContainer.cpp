@@ -10,10 +10,10 @@
 #include "Constants.h"
 
 inline double DeadBand (double stickValue) {
-if (stickValue > -.1 && stickValue < .1) {
-           return 0;
-}
-    return (stickValue);
+  if (stickValue > OIConstants::DeadBand_LowValue && stickValue < OIConstants::DeadBand_HighValue) {
+    return 0;
+  }
+  return (stickValue);
 }
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here

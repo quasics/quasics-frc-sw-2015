@@ -18,14 +18,24 @@
  */
 namespace OIConstants {
     // Axes - Used with the "getRawAxis()" function to access the data for the
+    // individual sticks on the controller (e.g., for "tank drive" coding).
+    constexpr int LogitechGamePad_LeftXAxis = 0;
+    constexpr int LogitechGamePad_LeftYAxis = 1;
+    constexpr int LogitechGamePad_RightXAxis = 2;
+    constexpr int LogitechGamePad_RightYAxis = 5;
 
-// individual sticks on the controller (e.g., for "tank drive" coding).
+    // "Dead band" values for the drive joysticks
+    constexpr double DeadBand_LowValue = -0.01;
+    constexpr double DeadBand_HighValue = +0.01;
+}
 
-constexpr int LogitechGamePad_LeftXAxis = 0;
+namespace DriveBaseConstants {
+    // CAN bus IDs for the 4 motors used for the drive base.
+    constexpr int Left_Front_No = 4;
+    constexpr int Left_Rear_No = 3;
+    constexpr int Right_Front_No = 2;
+    constexpr int Right_Rear_No = 1;
 
-constexpr int LogitechGamePad_LeftYAxis = 1;
-
-constexpr int LogitechGamePad_RightXAxis = 2;
-
-constexpr int LogitechGamePad_RightYAxis = 5;
+    // Maximum power setting
+    constexpr double MaxPower = 0.45;
 }

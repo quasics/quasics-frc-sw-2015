@@ -9,12 +9,14 @@
 
 constexpr int BallIntakeMotor = 5;
 constexpr int IntakeArmMotor = 6;
+constexpr int BallShooterMotor = 7;
 
 Intake::Intake()
 
 
 : BallIntake(BallIntakeMotor, rev::CANSparkMax::MotorType::kBrushless),
-  IntakeArm(IntakeArmMotor, rev::CANSparkMax::MotorType::kBrushless){}
+  IntakeArm(IntakeArmMotor, rev::CANSparkMax::MotorType::kBrushless),
+  BallShooter(BallShooterMotor, rev::CANSparkMax::MotorType::kBrushless){}
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
@@ -32,4 +34,10 @@ void Intake::Periodic() {}
     }
     void Intake::TurnShoulderOff() {
         IntakeArm.Set(0);
+    }
+    void Intake::TurnShooterOn() {
+        BallShooter.Set(1);
+    }
+    void Intake::TurnShooterOff() {
+        BallShooter.Set(0);
     }

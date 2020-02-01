@@ -8,7 +8,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
-#include "rev/CANSparkMax.h"
+#include <ctre/Phoenix.h>
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -23,11 +23,6 @@ class Intake : public frc2::SubsystemBase {
   void TurnSuctionOn();
   void TurnSuctionOff();
 
-  //Controlling the motor that shoots the balls.
-
-  void TurnShooterOn();
-  void TurnShooterOff();
-
   // Controlling the motor at the shoulder joint.
 
   void RotateShoulderUp();
@@ -35,9 +30,12 @@ class Intake : public frc2::SubsystemBase {
   void TurnShoulderOff();
 
  private:
+  
+  // Convenience definition (shortening the name).
+  typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  rev::CANSparkMax BallIntake;
-  rev::CANSparkMax IntakeArm;
-  rev::CANSparkMax BallShooter;
+  WPI_TalonSRX BallIntake;
+  WPI_TalonSRX Shoulder;
 };

@@ -7,37 +7,28 @@
 
 #include "subsystems/Intake.h"
 
-constexpr int BallIntakeMotor = 5;
-constexpr int IntakeArmMotor = 6;
-constexpr int BallShooterMotor = 7;
+constexpr int BallIntakeMotor = 1;
+constexpr int ShoulderMotor = 2;
 
 Intake::Intake()
-
-
-: BallIntake(BallIntakeMotor, rev::CANSparkMax::MotorType::kBrushless),
-  IntakeArm(IntakeArmMotor, rev::CANSparkMax::MotorType::kBrushless),
-  BallShooter(BallShooterMotor, rev::CANSparkMax::MotorType::kBrushless){}
+  : BallIntake(BallIntakeMotor),
+    Shoulder(ShoulderMotor){}
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
-    void Intake::TurnSuctionOn () {
-        BallIntake.Set(0.5);
-    }
-    void Intake::TurnSuctionOff () {
-        BallIntake.Set(0);
-    }
-    void Intake::RotateShoulderUp() {
-        IntakeArm.Set(0.5);
-    }
-    void Intake::RotateShoulderDown() {
-        IntakeArm.Set(-0.5);
-    }
-    void Intake::TurnShoulderOff() {
-        IntakeArm.Set(0);
-    }
-    void Intake::TurnShooterOn() {
-        BallShooter.Set(1);
-    }
-    void Intake::TurnShooterOff() {
-        BallShooter.Set(0);
-    }
+
+void Intake::TurnSuctionOn () {
+    BallIntake.Set(0.5);
+}
+void Intake::TurnSuctionOff () {
+    BallIntake.Set(0);
+}
+void Intake::RotateShoulderUp() {
+    Shoulder.Set(0.5);
+}
+void Intake::RotateShoulderDown() {
+    Shoulder.Set(-0.5);
+}
+void Intake::TurnShoulderOff() {
+    Shoulder.Set(0);
+}

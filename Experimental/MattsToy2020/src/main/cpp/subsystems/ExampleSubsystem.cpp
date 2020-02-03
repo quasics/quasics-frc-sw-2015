@@ -11,3 +11,9 @@ ExampleSubsystem::ExampleSubsystem() {}
 
 // This method will be called once per scheduler run
 void ExampleSubsystem::Periodic() {}
+
+void ExampleSubsystem::RotateShoulderDown() { shoulder.Set(0.25); }
+
+void ExampleSubsystem::RotateShoulderUp() { shoulder.Set(-0.25); }
+
+void ExampleSubsystem::StopMovingShoulder() { shoulder.Set(0); }

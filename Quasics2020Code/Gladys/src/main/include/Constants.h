@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <frc/util/Color.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -42,11 +44,20 @@ namespace CANBusIds {
     // CAN bus IDs for the motors used in the intake subsystem
     constexpr int BallIntakeMotor = 1;
     constexpr int ShoulderMotor = 2;
+
+    // CAN bus IDs for the motors used in command panel manipulator subsystem
+    constexpr int SpinMotor = 7;
   }  // namespace VictorSpx
 }  // namespace CANBusIds
 
 namespace DriveBaseConstants {
-
   // Maximum power setting
   constexpr double MaxPower = 0.45;
 }  // namespace DriveBaseConstants
+
+namespace CommandPanelConstants {
+  static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
+  static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
+  static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
+  static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
+}  // namespace CommandPanelConstants

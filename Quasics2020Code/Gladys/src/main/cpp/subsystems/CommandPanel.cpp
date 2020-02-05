@@ -7,78 +7,82 @@
 
 #include "subsystems/CommandPanel.h"
 
-  constexpr int SpinMotor = 7;
-CommandPanel::CommandPanel():motor(SpinMotor){}
-static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
-  rev::ColorSensorV3 m_colorSensor{i2cPort};
-  rev::ColorMatch m_colorMatcher;
-  static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
-  static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
-  static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
-  static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
-// This method will be called once per scheduler run
-void CommandPanel::Periodic() {}
+#include "Constants.h"
 
-//if mode is 0, no turbo, else TURBO!!!
+CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
+}
+
+// TODO(RJ): Get rid of the globals here.  These should be members of the
+// CommandPanel class, not defined at the file scope.
+rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
+rev::ColorMatch m_colorMatcher;
+
+// This method will be called once per scheduler run
+void CommandPanel::Periodic() {
+}
 
 void CommandPanel::TurnWheelMotorOn() {
-    motor.Set(0.5);
+  motor.Set(0.5);
 }
 void CommandPanel::TurnWheelMotorOff() {
-    motor.Set(0);
-}
-CommandPanel::Color CommandPanel::getCurrentColor(){
-    Color colorID = UNKNOWN;
-    
-    m_colorMatcher.AddColorMatch(kBlueTarget);
-    m_colorMatcher.AddColorMatch(kGreenTarget);
-    m_colorMatcher.AddColorMatch(kRedTarget);
-    m_colorMatcher.AddColorMatch(kYellowTarget);
-
-    frc::Color detectedColor = m_colorSensor.GetColor();
-
-     std::string colorString;
-    double confidence = 0.0;
-    frc::Color matchedColor =
-        m_colorMatcher.MatchClosestColor(detectedColor, confidence);
-
-    if (matchedColor == kBlueTarget && confidence>90) {
-      colorID = BLUE;
-    } else if (matchedColor == kRedTarget && confidence>90) {
-      colorID = RED;
-    } else if (matchedColor == kGreenTarget && confidence>90) {
-      colorID = GREEN;
-    } else if (matchedColor == kYellowTarget && confidence>90) {
-      colorID = YELLOW;
-    } else {
-      colorID = UNKNOWN;
-    }
-
-    return colorID;
+  motor.Set(0);
 }
 
-std::string CommandPanel::getColorName(Color c){
-    std::string colorName="";
-    switch (c)
-    {
+CommandPanel::Color CommandPanel::getCurrentColor() {
+  Color colorID = UNKNOWN;
+
+  m_colorMatcher.AddColorMatch(CommandPanelConstants::kBlueTarget);
+  m_colorMatcher.AddColorMatch(CommandPanelConstants::kGreenTarget);
+  m_colorMatcher.AddColorMatch(CommandPanelConstants::kRedTarget);
+  m_colorMatcher.AddColorMatch(CommandPanelConstants::kYellowTarget);
+
+  frc::Color detectedColor = m_colorSensor.GetColor();
+
+  std::string colorString;
+  double confidence = 0.0;
+  frc::Color matchedColor =
+      m_colorMatcher.MatchClosestColor(detectedColor, confidence);
+
+  // TODO(RJ): Turn the confidence #s into a named constant (in Constants.h).
+  if (matchedColor == CommandPanelConstants::kBlueTarget && confidence > 90) {
+    colorID = BLUE;
+  } else if (matchedColor == CommandPanelConstants::kRedTarget &&
+             confidence > 90) {
+    colorID = RED;
+  } else if (matchedColor == CommandPanelConstants::kGreenTarget &&
+             confidence > 90) {
+    colorID = GREEN;
+  } else if (matchedColor == CommandPanelConstants::kYellowTarget &&
+             confidence > 90) {
+    colorID = YELLOW;
+  } else {
+    colorID = UNKNOWN;
+  }
+
+  return colorID;
+}
+
+std::string CommandPanel::getColorName(Color c) {
+  std::string colorName = "";
+  switch (c) {
     case BLUE:
-        colorName = "Blue";
-        break;
+      colorName = "Blue";
+      break;
     case RED:
-        colorName = "Red";
-        break;
+      colorName = "Red";
+      break;
     case GREEN:
-        colorName = "Green";
-        break;
+      colorName = "Green";
+      break;
     case YELLOW:
-        colorName = "Yellow";
-        break;
+      colorName = "Yellow";
+      break;
     case UNKNOWN:
-        colorName = "Unknown";
-        break;
+      colorName = "Unknown";
+      break;
     default:
-        colorName = "ERROR! ERROR! ERROR! Does not compute.";
-        break;
-    }
-    return colorName;
+      colorName = "ERROR! ERROR! ERROR! Does not compute.";
+      break;
+  }
+  return colorName;
 }

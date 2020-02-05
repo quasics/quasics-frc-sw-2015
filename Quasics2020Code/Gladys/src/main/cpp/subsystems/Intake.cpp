@@ -7,31 +7,32 @@
 
 #include "subsystems/Intake.h"
 
-constexpr int BallIntakeMotor = 1;
-constexpr int ShoulderMotor = 2;
+#include "Constants.h"
 
 Intake::Intake()
-  : BallIntake(BallIntakeMotor),
-    Shoulder(ShoulderMotor){}
+    : BallIntake(CANBusIds::VictorSpx::BallIntakeMotor),
+      Shoulder(CANBusIds::VictorSpx::ShoulderMotor) {
+}
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void Intake::Periodic() {
+}
 
-void Intake::TurnSuctionOn () {
-    BallIntake.Set(1);
+void Intake::TurnSuctionOn() {
+  BallIntake.Set(1);
 }
-void Intake::TurnSuctionOff () {
-    BallIntake.Set(0);
+void Intake::TurnSuctionOff() {
+  BallIntake.Set(0);
 }
-void Intake::TurnSuctionOnReverse () {
-    BallIntake.Set(-1);
+void Intake::TurnSuctionOnReverse() {
+  BallIntake.Set(-1);
 }
 void Intake::RotateShoulderUp() {
-    Shoulder.Set(1);
+  Shoulder.Set(1);
 }
 void Intake::RotateShoulderDown() {
-    Shoulder.Set(-1);
+  Shoulder.Set(-1);
 }
 void Intake::TurnShoulderOff() {
-    Shoulder.Set(0);
+  Shoulder.Set(0);
 }

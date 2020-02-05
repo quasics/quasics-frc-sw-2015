@@ -17,25 +17,36 @@
  * they are needed.
  */
 namespace OIConstants {
-    // Axes - Used with the "getRawAxis()" function to access the data for the
-    // individual sticks on the controller (e.g., for "tank drive" coding).
-    constexpr int LogitechGamePad_LeftXAxis = 0;
-    constexpr int LogitechGamePad_LeftYAxis = 1;
-    constexpr int LogitechGamePad_RightXAxis = 2;
-    constexpr int LogitechGamePad_RightYAxis = 5;
+  // Axes - Used with the "getRawAxis()" function to access the data for the
+  // individual sticks on the controller (e.g., for "tank drive" coding).
+  constexpr int LogitechGamePad_LeftXAxis = 0;
+  constexpr int LogitechGamePad_LeftYAxis = 1;
+  constexpr int LogitechGamePad_RightXAxis = 2;
+  constexpr int LogitechGamePad_RightYAxis = 5;
 
-    // "Dead band" values for the drive joysticks
-    constexpr double DeadBand_LowValue = -0.01;
-    constexpr double DeadBand_HighValue = +0.01;
-}
+  // "Dead band" values for the drive joysticks
+  constexpr double DeadBand_LowValue = -0.01;
+  constexpr double DeadBand_HighValue = +0.01;
+}  // namespace OIConstants
 
-namespace DriveBaseConstants {
+namespace CANBusIds {
+  namespace SparkMax {
     // CAN bus IDs for the 4 motors used for the drive base.
     constexpr int Left_Front_No = 4;
     constexpr int Left_Rear_No = 3;
     constexpr int Right_Front_No = 2;
     constexpr int Right_Rear_No = 1;
+  }  // namespace SparkMax
 
-    // Maximum power setting
-    constexpr double MaxPower = 0.45;
-}
+  namespace VictorSpx {
+    // CAN bus IDs for the motors used in the intake subsystem
+    constexpr int BallIntakeMotor = 1;
+    constexpr int ShoulderMotor = 2;
+  }  // namespace VictorSpx
+}  // namespace CANBusIds
+
+namespace DriveBaseConstants {
+
+  // Maximum power setting
+  constexpr double MaxPower = 0.45;
+}  // namespace DriveBaseConstants

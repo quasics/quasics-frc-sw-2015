@@ -5,33 +5,30 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "subsystems/Intake.h"
+#include "subsystems/Exhaust.h"
 
-constexpr int BallIntakeMotor = 1;
-constexpr int ShoulderMotor = 2;
+constexpr int PushUpMotor = 3;
+constexpr int ShootMotor = 4;
 
-Intake::Intake()
-  : BallIntake(BallIntakeMotor),
-    Shoulder(ShoulderMotor){}
+Exhaust::Exhaust()
+ : Push(PushUpMotor),
+   Shoot(ShootMotor){}
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void Exhaust::Periodic() {}
 
-void Intake::TurnSuctionOn () {
-    BallIntake.Set(1);
+void Exhaust::PushBallUp () {
+    Push.Set(1);
 }
-void Intake::TurnSuctionOff () {
-    BallIntake.Set(0);
+void Exhaust::PushBallDown () {
+    Push.Set(-1);
 }
-void Intake::TurnSuctionOnReverse () {
-    BallIntake.Set(-1);
+void Exhaust::PushBallOff () {
+    Push.Set(0);
 }
-void Intake::RotateShoulderUp() {
-    Shoulder.Set(1);
+void Exhaust::ShootBallOn () {
+    Shoot.Set(1);
 }
-void Intake::RotateShoulderDown() {
-    Shoulder.Set(-1);
-}
-void Intake::TurnShoulderOff() {
-    Shoulder.Set(0);
+void Exhaust::ShootBallOff () {
+    Shoot.Set(0);
 }

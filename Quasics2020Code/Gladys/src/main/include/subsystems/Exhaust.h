@@ -10,33 +10,31 @@
 #include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
 
-class Intake : public frc2::SubsystemBase {
+
+class Exhaust : public frc2::SubsystemBase {
  public:
-  Intake();
+  Exhaust();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic();
 
-  // Controlling the motor that actually sucks in balls from the floor.
-  void TurnSuctionOn();
-  void TurnSuctionOnReverse();
-  void TurnSuctionOff();
+  void PushBallUp();
+  void PushBallDown();
+  void ShootBallOn();
 
-  // Controlling the motor at the shoulder joint.
+  void PushBallOff();
+  void ShootBallOff();
 
-  void RotateShoulderUp();
-  void RotateShoulderDown();
-  void TurnShoulderOff();
 
  private:
-  
-  // Convenience definition (shortening the name).
-  typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+
+   typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  WPI_TalonSRX BallIntake;
-  WPI_TalonSRX Shoulder;
+  WPI_TalonSRX Shoot;
+  WPI_TalonSRX Push; 
 };

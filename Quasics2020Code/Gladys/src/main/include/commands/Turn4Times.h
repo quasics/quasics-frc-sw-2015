@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "subsystems\CommandPanel.h"
+#include "subsystems/CommandPanel.h"
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 

@@ -9,7 +9,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems\CommandPanel.h"
+#include "subsystems/CommandPanel.h"
 /**
  * An example command.
  *

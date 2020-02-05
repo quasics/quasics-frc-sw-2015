@@ -10,25 +10,25 @@
 constexpr int PushUpMotor = 3;
 constexpr int ShootMotor = 4;
 
-Exhaust::Exhaust()
- : Push(PushUpMotor),
-   Shoot(ShootMotor){}
+Exhaust::Exhaust() : Shoot(ShootMotor), Push(PushUpMotor) {
+}
 
 // This method will be called once per scheduler run
-void Exhaust::Periodic() {}
+void Exhaust::Periodic() {
+}
 
-void Exhaust::PushBallUp () {
-    Push.Set(1);
+void Exhaust::PushBallUp() {
+  Push.Set(1);
 }
-void Exhaust::PushBallDown () {
-    Push.Set(-1);
+void Exhaust::PushBallDown() {
+  Push.Set(-1);
 }
-void Exhaust::PushBallOff () {
-    Push.Set(0);
+void Exhaust::PushBallOff() {
+  Push.Set(0);
 }
-void Exhaust::ShootBallOn () {
-    Shoot.Set(1);
+void Exhaust::ShootBallOn() {
+  Shoot.Set(1);
 }
-void Exhaust::ShootBallOff () {
-    Shoot.Set(0);
+void Exhaust::ShootBallOff() {
+  Shoot.Set(0);
 }

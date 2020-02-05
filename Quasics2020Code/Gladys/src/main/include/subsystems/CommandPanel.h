@@ -31,7 +31,7 @@ class CommandPanel : public frc2::SubsystemBase {
   void Periodic();
   //Motor control
   void TurnWheelMotorOff();
-  //mode is for turbo
+
   void TurnWheelMotorOn();
   //changes the color recieved to an int
   Color getCurrentColor();

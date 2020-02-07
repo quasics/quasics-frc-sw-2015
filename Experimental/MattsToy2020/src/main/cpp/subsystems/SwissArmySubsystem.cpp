@@ -6,8 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/SwissArmySubsystem.h"
+#include <iostream>
 
 SwissArmySubsystem::SwissArmySubsystem() {
+  std::cout << "Built swiss army subsystem" << std::endl;
 }
 
 // This method will be called once per scheduler run
@@ -27,6 +29,7 @@ void SwissArmySubsystem::StopMovingShoulder() {
 }
 
 void SwissArmySubsystem::SetElevatorPower(double left, double right) {
+  std::cout << "Setting elevator power: left=" << left << ", right=" << right << std::endl;
   this->leftElevatorMotor.Set(left);
   this->rightElevatorMotor.Set(right);
 }

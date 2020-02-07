@@ -11,6 +11,8 @@
 #include <frc2/command/button/JoystickButton.h>
 
 #include "Constants.h"
+#include "commands/LowerElevatorCommand.h"
+#include "commands/RaiseElevatorCommand.h"
 #include "commands/TankDriveCommand.h"
 
 // Function to perform software dead-band handling on readings from the driver's
@@ -27,11 +29,13 @@ RobotContainer::RobotContainer() {
   m_driveBase.SetDefaultCommand(TankDriveCommand(
       &m_driveBase,
       [this] {
-        double stickValue = m_logitechController.GetRawAxis(OIConstants::LogitechGamePad_LeftYAxis);
+        double stickValue = m_logitechController.GetRawAxis(
+            OIConstants::LogitechGamePad_LeftYAxis);
         return applyDeadBandAdjustment(stickValue);
       },
       [this] {
-        double stickValue = m_logitechController.GetRawAxis(OIConstants::LogitechGamePad_RightYAxis);
+        double stickValue = m_logitechController.GetRawAxis(
+            OIConstants::LogitechGamePad_RightYAxis);
         return applyDeadBandAdjustment(stickValue);
       }));
 
@@ -42,12 +46,23 @@ RobotContainer::RobotContainer() {
 void RobotContainer::ConfigureButtonBindings() {
   // Trivial example, just for demo purposes.
   frc2::JoystickButton(&m_xboxController, int(frc::XboxController::Button::kA))
-      .WhenPressed(new frc2::PrintCommand("Button 'A' on XBox was pressed"));
+      .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
-  // While holding the shoulder button, enable turbo mode
-  frc2::JoystickButton(&m_logitechController, OIConstants::LogitechGamePad_LeftShoulder)
+  // While the left shoulder button is held down, enable turbo mode
+  frc2::JoystickButton(&m_logitechController,
+                       OIConstants::LogitechGamePad_LeftShoulder)
       .WhenPressed(&m_enableTurbo)
       .WhenReleased(&m_disableTurbo);
+
+  // While holding the right shoulder button, move the elevator up.
+  frc2::JoystickButton(&m_logitechController,
+                       OIConstants::LogitechGamePad_RightShoulder)
+      .WhenActive(RaiseElevatorCommand(&swissArmySubsystem));
+
+  // While holding the right trigger button, move the elevator down.
+  frc2::JoystickButton(&m_logitechController,
+                       OIConstants::LogitechGamePad_RightShoulder)
+      .WhenActive(LowerElevatorCommand(&swissArmySubsystem));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

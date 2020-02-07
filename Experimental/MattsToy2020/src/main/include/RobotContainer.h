@@ -7,14 +7,15 @@
 
 #pragma once
 
-#include <frc/XboxController.h>
 #include <frc/Joystick.h>
+#include <frc/XboxController.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
 
 #include "Constants.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
+#include "subsystems/ExampleSubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -34,12 +35,16 @@ class RobotContainer {
 
   // Robot subsystems and commands
  private:
+  // Drive base stuff, allowing us to move around.
   DriveBase m_driveBase;
 
   frc2::InstantCommand m_enableTurbo{[this] { m_driveBase.EnableTurboMode(); },
                                      {}};
   frc2::InstantCommand m_disableTurbo{
       [this] { m_driveBase.DisableTurboMode(); }, {}};
+
+  // The "Swiss Army Subsystem"
+  SwissArmySubsystem swissArmySubsystem;
 
   // The driver's controller
   frc::Joystick m_logitechController{OIConstants::kDriverControllerPort};

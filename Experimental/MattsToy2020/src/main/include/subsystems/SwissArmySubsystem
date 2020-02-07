@@ -21,9 +21,25 @@ class ExampleSubsystem : public frc2::SubsystemBase {
    */
   void Periodic();
 
+  void ClimbUp() {
+    SetElevatorPower(ElevatorConstants::kRisingPower,
+                     ElevatorConstants::kRisingPower);
+  }
+  void ClimbDown() {
+    SetElevatorPower(-ElevatorConstants::kLoweringPower,
+                     -ElevatorConstants::kLoweringPower);
+  }
+  void StopClimbing() {
+    SetElevatorPower(0, 0);
+  }
+
   void RotateShoulderDown();
   void RotateShoulderUp();
   void StopMovingShoulder();
+
+ private:
+  // Positive values == lifting; negative values == lowering
+  void SetElevatorPower(double left, double right);
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -32,6 +48,12 @@ class ExampleSubsystem : public frc2::SubsystemBase {
   // Convenience definition (shortening the name).
   typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
 
-  // Shoulder joint on an example subsystem.
+  // Example: shoulder joint on an example subsystem.
   WPI_TalonSRX shoulder{CANBusConstants::VictorSpxIds::ShoulderJointId};
+
+  // Example: elevator motors on an example subsystem.
+  WPI_TalonSRX rightElevatorMotor{
+      CANBusConstants::VictorSpxIds::RightElevatorMotorId};
+  WPI_TalonSRX leftElevatorMotor{
+      CANBusConstants::VictorSpxIds::LeftElevatorMotorId};
 };

@@ -18,46 +18,54 @@
  */
 
 namespace DriveBaseConstants {
-constexpr double kStandardPowerScalingFactor = 0.45;
-constexpr double kTurboPowerScalingFactor = 0.45;
+  constexpr double kStandardPowerScalingFactor = 0.45;
+  constexpr double kTurboPowerScalingFactor = 0.45;
 }  // namespace DriveBaseConstants
 
+namespace ElevatorConstants {
+  constexpr double kRisingPower = 0.40;
+  constexpr double kLoweringPower = 0.40;
+}  // namespace ElevatorConstants
+
 namespace OIConstants {
-constexpr double kDriveControllerDeadBandSize = 0.015;
-constexpr int kDriverControllerPort = 0;
-constexpr int kOperatorControllerPort = 1;
+  constexpr double kDriveControllerDeadBandSize = 0.015;
+  constexpr int kDriverControllerPort = 0;
+  constexpr int kOperatorControllerPort = 1;
 
-// Axes - Used with the "getRawAxis()" function to access the data for the
-// individual sticks on the controller (e.g., for "tank drive" coding).
-constexpr int LogitechGamePad_LeftXAxis = 0;
-constexpr int LogitechGamePad_LeftYAxis = 1;
-constexpr int LogitechGamePad_RightXAxis = 2;
-constexpr int LogitechGamePad_RightYAxis = 5;
+  // Axes - Used with the "getRawAxis()" function to access the data for the
+  // individual sticks on the controller (e.g., for "tank drive" coding).
+  constexpr int LogitechGamePad_LeftXAxis = 0;
+  constexpr int LogitechGamePad_LeftYAxis = 1;
+  constexpr int LogitechGamePad_RightXAxis = 2;
+  constexpr int LogitechGamePad_RightYAxis = 5;
 
-// Buttons
-constexpr int LogitechGamePad_AButton = 2;
-constexpr int LogitechGamePad_BButton = 3;
-constexpr int LogitechGamePad_XButton = 4;
-constexpr int LogitechGamePad_YButton = 1;
-constexpr int LogitechGamePad_LeftShoulder = 5;
-constexpr int LogitechGamePad_RightShoulder = 6;
-constexpr int LogitechGamePad_LeftTrigger = 7;
-constexpr int LogitechGamePad_RightTrigger = 8;
-constexpr int LogitechGamePad_LeftStickPress = 11;
-constexpr int LogitechGamePad_RightStickPress = 12;
-constexpr int LogitechGamePad_StartButton = 9;
-constexpr int LogitechGamePad_SelectButton = 10;
+  // Buttons
+  constexpr int LogitechGamePad_AButton = 2;
+  constexpr int LogitechGamePad_BButton = 3;
+  constexpr int LogitechGamePad_XButton = 4;
+  constexpr int LogitechGamePad_YButton = 1;
+  constexpr int LogitechGamePad_LeftShoulder = 5;
+  constexpr int LogitechGamePad_RightShoulder = 6;
+  constexpr int LogitechGamePad_LeftTrigger = 7;
+  constexpr int LogitechGamePad_RightTrigger = 8;
+  constexpr int LogitechGamePad_LeftStickPress = 11;
+  constexpr int LogitechGamePad_RightStickPress = 12;
+  constexpr int LogitechGamePad_StartButton = 9;
+  constexpr int LogitechGamePad_SelectButton = 10;
 }  // namespace OIConstants
 
 namespace CANBusConstants {
-namespace SparkMaxIds {
-constexpr int DriveBaseLeftFrontId = 4;
-constexpr int DriveBaseLeftRearId = 3;
-constexpr int DriveBaseRightFrontId = 2;
-constexpr int DriveBaseRightRearId = 1;
-}  // namespace SparkMaxIds
+  namespace SparkMaxIds {
+    constexpr int DriveBaseLeftFrontId = 4;
+    constexpr int DriveBaseLeftRearId = 3;
+    constexpr int DriveBaseRightFrontId = 2;
+    constexpr int DriveBaseRightRearId = 1;
+  }  // namespace SparkMaxIds
 
-namespace VictorSpxIds {
-constexpr int ShoulderJointId = 1;
-}
+  namespace VictorSpxIds {
+    constexpr int ShoulderJointId = 1;
+
+    constexpr int LeftElevatorMotorId = 2;
+    constexpr int RightElevatorMotorId = 3;
+  }  // namespace VictorSpxIds
 }  // namespace CANBusConstants

@@ -52,6 +52,23 @@ namespace OIConstants {
   constexpr int LogitechGamePad_RightStickPress = 12;
   constexpr int LogitechGamePad_StartButton = 9;
   constexpr int LogitechGamePad_SelectButton = 10;
+
+constexpr int XBox_ButtonA = 1; 
+constexpr int XBox_ButtonB = 2;  
+constexpr int XBox_ButtonX = 3;  
+constexpr int XBox_ButtonY = 4;     
+constexpr int XBox_LeftButton = 5;   
+constexpr int XBox_RightButton = 6;  
+
+
+constexpr int XBox_LeftXAxis = 0;
+constexpr int XBox_LeftYAxis = 1;
+constexpr int XBox_RightXAxis = 2;
+constexpr int XBox_RightYAxis = 5; 
+
+constexpr int XBox_LeftTrigger = 2;   
+constexpr int XBox_RightTrigger =3;  
+
 }  // namespace OIConstants
 
 namespace CANBusConstants {

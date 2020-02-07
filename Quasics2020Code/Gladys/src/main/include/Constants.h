@@ -26,6 +26,20 @@ namespace OIConstants {
   constexpr int LogitechGamePad_RightXAxis = 2;
   constexpr int LogitechGamePad_RightYAxis = 5;
 
+  //Buttons
+  constexpr int LogitechGamePad_AButton = 2;
+  constexpr int LogitechGamePad_BButton = 3;
+  constexpr int LogitechGamePad_XButton = 4;
+  constexpr int LogitechGamePad_YButton = 1;
+  constexpr int LogitechGamePad_LeftShoulder = 5;
+  constexpr int LogitechGamePad_RightShoulder = 6;
+  constexpr int LogitechGamePad_LeftTrigger = 7;
+  constexpr int LogitechGamePad_RightTrigger = 8;
+  constexpr int LogitechGamePad_LeftStickPress = 11;
+  constexpr int LogitechGamePad_RightStickPress = 12;
+  constexpr int LogitechGamePad_StartButton = 9;
+  constexpr int LogitechGamePad_SelectButton = 10;
+
   // "Dead band" values for the drive joysticks
   constexpr double DeadBand_LowValue = -0.01;
   constexpr double DeadBand_HighValue = +0.01;
@@ -44,6 +58,8 @@ namespace CANBusIds {
     // CAN bus IDs for the motors used in the intake subsystem
     constexpr int BallIntakeMotor = 1;
     constexpr int ShoulderMotor = 2;
+    constexpr int PushUpMotor = 3;
+    constexpr int ShootMotor = 4;
 
     // CAN bus IDs for the motors used in command panel manipulator subsystem
     constexpr int SpinMotor = 7;

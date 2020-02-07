@@ -10,6 +10,8 @@
 
 SwissArmySubsystem::SwissArmySubsystem() {
   std::cout << "Built swiss army subsystem" << std::endl;
+  this->leftElevatorMotor.SetInverted(false);
+  this->rightElevatorMotor.SetInverted(true);
 }
 
 // This method will be called once per scheduler run

@@ -15,7 +15,7 @@
 #include "Constants.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
-#include "subsystems/ExampleSubsystem.h"
+#include "subsystems/SwissArmySubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since

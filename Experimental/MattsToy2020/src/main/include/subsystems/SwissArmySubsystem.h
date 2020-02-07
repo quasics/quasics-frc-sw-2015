@@ -12,9 +12,9 @@
 
 #include "Constants.h"
 
-class ExampleSubsystem : public frc2::SubsystemBase {
+class SwissArmySubsystem : public frc2::SubsystemBase {
  public:
-  ExampleSubsystem();
+  SwissArmySubsystem();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

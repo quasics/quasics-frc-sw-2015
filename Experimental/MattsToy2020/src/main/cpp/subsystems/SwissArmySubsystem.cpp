@@ -5,28 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "subsystems/ExampleSubsystem.h"
+#include "subsystems/SwissArmySubsystem.h"
 
-ExampleSubsystem::ExampleSubsystem() {
+SwissArmySubsystem::SwissArmySubsystem() {
 }
 
 // This method will be called once per scheduler run
-void ExampleSubsystem::Periodic() {
+void SwissArmySubsystem::Periodic() {
 }
 
-void ExampleSubsystem::RotateShoulderDown() {
+void SwissArmySubsystem::RotateShoulderDown() {
   shoulder.Set(0.25);
 }
 
-void ExampleSubsystem::RotateShoulderUp() {
+void SwissArmySubsystem::RotateShoulderUp() {
   shoulder.Set(-0.25);
 }
 
-void ExampleSubsystem::StopMovingShoulder() {
+void SwissArmySubsystem::StopMovingShoulder() {
   shoulder.Set(0);
 }
 
-void ExampleSubsystem::SetElevatorPower(double left, double right) {
+void SwissArmySubsystem::SetElevatorPower(double left, double right) {
   this->leftElevatorMotor.Set(left);
   this->rightElevatorMotor.Set(right);
 }

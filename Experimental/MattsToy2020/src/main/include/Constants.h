@@ -48,10 +48,10 @@ namespace OIConstants {
   constexpr int LogitechGamePad_RightShoulder = 6;
   constexpr int LogitechGamePad_LeftTrigger = 7;
   constexpr int LogitechGamePad_RightTrigger = 8;
-  constexpr int LogitechGamePad_LeftStickPress = 11;
-  constexpr int LogitechGamePad_RightStickPress = 12;
   constexpr int LogitechGamePad_StartButton = 9;
   constexpr int LogitechGamePad_SelectButton = 10;
+  constexpr int LogitechGamePad_LeftStickPress = 11;
+  constexpr int LogitechGamePad_RightStickPress = 12;
 
 constexpr int XBox_ButtonA = 1; 
 constexpr int XBox_ButtonB = 2;  

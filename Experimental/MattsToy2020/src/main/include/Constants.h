@@ -40,10 +40,10 @@ namespace OIConstants {
   constexpr int LogitechGamePad_RightYAxis = 5;
 
   // Buttons
-  constexpr int LogitechGamePad_AButton = 2;
-  constexpr int LogitechGamePad_BButton = 3;
-  constexpr int LogitechGamePad_XButton = 4;
-  constexpr int LogitechGamePad_YButton = 1;
+  constexpr int LogitechGamePad_AButton = 1;
+  constexpr int LogitechGamePad_BButton = 2;
+  constexpr int LogitechGamePad_XButton = 3;
+  constexpr int LogitechGamePad_YButton = 4;
   constexpr int LogitechGamePad_LeftShoulder = 5;
   constexpr int LogitechGamePad_RightShoulder = 6;
   constexpr int LogitechGamePad_LeftTrigger = 7;

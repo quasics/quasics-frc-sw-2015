@@ -5,6 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "commands/LowerElevatorCommand.h"
 
 LowerElevatorCommand::LowerElevatorCommand(SwissArmySubsystem* targetSubsystem)
@@ -15,6 +17,7 @@ LowerElevatorCommand::LowerElevatorCommand(SwissArmySubsystem* targetSubsystem)
 
 // Called when the command is initially scheduled.
 void LowerElevatorCommand::Initialize() {
+  std::cout << "Lowering the elevator." << std::endl;
   targetSubsystem->ClimbDown();
 }
 

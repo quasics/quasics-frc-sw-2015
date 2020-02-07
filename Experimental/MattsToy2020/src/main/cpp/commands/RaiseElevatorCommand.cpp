@@ -5,6 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <iostream>
+
 #include "commands/RaiseElevatorCommand.h"
 
 RaiseElevatorCommand::RaiseElevatorCommand(SwissArmySubsystem* targetSubsystem)
@@ -15,6 +17,7 @@ RaiseElevatorCommand::RaiseElevatorCommand(SwissArmySubsystem* targetSubsystem)
 
 // Called when the command is initially scheduled.
 void RaiseElevatorCommand::Initialize() {
+  std::cout << "Raising the elevator." << std::endl;
   targetSubsystem->ClimbUp();
 }
 

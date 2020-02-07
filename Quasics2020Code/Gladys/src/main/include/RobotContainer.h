@@ -12,6 +12,8 @@
 #include "commands/ExampleCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drivebase.h"
+#include "subsystems/Intake.h"
+#include "subsystems/Exhaust.h"
 #include <frc/Joystick.h>
 
 /**
@@ -32,6 +34,8 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
   Drivebase drivebase;
+  Intake intake;
+  Exhaust exhaust;
   frc::Joystick driverJoystick{0};
 
   void ConfigureButtonBindings();

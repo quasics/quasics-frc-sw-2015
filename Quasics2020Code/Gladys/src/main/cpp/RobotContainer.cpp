@@ -8,6 +8,10 @@
 #include "RobotContainer.h"
 #include "commands/TankDrive.h"
 #include "Constants.h"
+#include "commands/PushBallUpCommand.h"
+#include "commands/IntakeBallsCommand.h"
+#include <frc2/command/button/JoystickButton.h>
+
 
 inline double DeadBand (double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue && stickValue < OIConstants::DeadBand_HighValue) {
@@ -31,12 +35,16 @@ drivebase.SetDefaultCommand(TankDrive(&drivebase,
         
 
       }));
+
   // Configure the button bindings
   ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
+  frc2::JoystickButton(&driverJoystick, OIConstants::LogitechGamePad_LeftShoulder)
+    .WhenActive(new IntakeBallsCommand())
+    .WhenActive();
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

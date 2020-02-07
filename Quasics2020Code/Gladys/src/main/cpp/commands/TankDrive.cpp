@@ -18,7 +18,7 @@ void TankDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
-  drivebase->SetPower(right(), left());
+  drivebase->SetMotorPower(right(), left());
 }
 
 // Called once the command ends or is interrupted.

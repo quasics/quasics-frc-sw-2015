@@ -8,26 +8,33 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
-#include "rev/CANSparkMax.h"
+#include <rev/CANSparkMax.h>
+#include "Constants.h"
 
 class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();
-  
-  void Stop ();
-  void SetPower(double rightPower, double leftPower);
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic();
+  void SetMotorPower(double leftPower, double rightPower);
+  void Stop() { SetMotorPower(0,0); }
+  void EnableTurboMode() {
+    powerScaling = DriveBaseConstants::TurboMaxPower;
+  }
+  void DisableTurboMode() {
+    powerScaling = DriveBaseConstants::StandardMaxPower;
+  }
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-
   rev::CANSparkMax leftFront;
+  rev::CANSparkMax leftRear;
   rev::CANSparkMax rightFront;
-  rev::CANSparkMax leftRear; 
-  rev::CANSparkMax rightRear; 
-  
+  rev::CANSparkMax rightRear;
+
+  double powerScaling = DriveBaseConstants::StandardMaxPower;
 };

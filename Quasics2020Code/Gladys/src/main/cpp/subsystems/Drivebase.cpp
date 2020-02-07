@@ -6,24 +6,20 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/Drivebase.h"
-#include "Constants.h"
 
-Drivebase::Drivebase()
-: leftFront(CANBusIds::SparkMax::Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-  rightFront(CANBusIds::SparkMax::Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
-  leftRear(CANBusIds::SparkMax::Left_Rear_No, rev::CANSparkMax::MotorType::kBrushless),
-  rightRear(CANBusIds::SparkMax::Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless){}
-
+Drivebase::Drivebase() 
+    : leftFront(CANBusIds::SparkMax::Left_Front_No, rev::CANSparkMax::MotorType::kBrushless),
+      leftRear(CANBusIds::SparkMax::Left_Rear_No, rev::CANSparkMax::MotorType::kBrushless),
+      rightFront(CANBusIds::SparkMax::Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
+      rightRear(CANBusIds::SparkMax::Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless){
+    SetSubsystem("Drivebase");
+}
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {}
 
-void Drivebase::Stop(){
-  SetPower(0, 0);
-}
-
-void Drivebase::SetPower(double rightPower, double leftPower){
-    rightFront.Set(rightPower * DriveBaseConstants::MaxPower);
-    rightRear.Set(rightPower * DriveBaseConstants::MaxPower);
-    leftFront.Set(leftPower * DriveBaseConstants::MaxPower);
-    leftRear.Set(leftPower * DriveBaseConstants::MaxPower);
+void Drivebase::SetMotorPower(double leftPower, double rightPower) {
+    leftFront.Set(leftPower * powerScaling);
+    leftRear.Set(leftPower * powerScaling);
+    rightFront.Set(rightPower * powerScaling);
+    rightRear.Set(rightPower * powerScaling);
 }

@@ -51,8 +51,9 @@ namespace CANBusIds {
 }  // namespace CANBusIds
 
 namespace DriveBaseConstants {
-  // Maximum power setting
-  constexpr double MaxPower = 0.45;
+    // Maximum power setting
+    constexpr double StandardMaxPower = 0.45;
+    constexpr double TurboMaxPower = 0.65;
 }  // namespace DriveBaseConstants
 
 namespace CommandPanelConstants {
@@ -60,4 +61,4 @@ namespace CommandPanelConstants {
   static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
   static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
   static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
-}  // namespace CommandPanelConstants
+}  // namespace CommandPanelConstants>>>>>>> .r1415

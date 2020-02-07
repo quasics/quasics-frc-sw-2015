@@ -46,14 +46,14 @@ class SwissArmySubsystem : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   // Convenience definition (shortening the name).
-  typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+  typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 
   // Example: shoulder joint on an example subsystem.
-  WPI_TalonSRX shoulder{CANBusConstants::VictorSpxIds::ShoulderJointId};
+  WPI_VictorSPX shoulder{CANBusConstants::VictorSpxIds::ShoulderJointId};
 
   // Example: elevator motors on an example subsystem.
-  WPI_TalonSRX rightElevatorMotor{
+  WPI_VictorSPX rightElevatorMotor{
       CANBusConstants::VictorSpxIds::RightElevatorMotorId};
-  WPI_TalonSRX leftElevatorMotor{
+  WPI_VictorSPX leftElevatorMotor{
       CANBusConstants::VictorSpxIds::LeftElevatorMotorId};
 };

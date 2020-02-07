@@ -61,7 +61,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // While holding the right trigger button, move the elevator down.
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_RightShoulder)
+                       OIConstants::LogitechGamePad_RightTrigger)
       .WhenActive(LowerElevatorCommand(&swissArmySubsystem));
 }
 

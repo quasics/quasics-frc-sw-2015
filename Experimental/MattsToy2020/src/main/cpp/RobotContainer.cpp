@@ -56,13 +56,13 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // While holding the right shoulder button, move the elevator up.
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_RightShoulder)
-      .WhenActive(RaiseElevatorCommand(&swissArmySubsystem));
+                       OIConstants::LogitechGamePad_YButton)
+      .WhileHeld(RaiseElevatorCommand(&swissArmySubsystem));
 
-  // While holding the right trigger button, move the elevator down.
+  // While holding the left shoulder button, move the elevator down.
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_RightTrigger)
-      .WhenActive(LowerElevatorCommand(&swissArmySubsystem));
+                       OIConstants::LogitechGamePad_AButton)
+      .WhileHeld(LowerElevatorCommand(&swissArmySubsystem));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

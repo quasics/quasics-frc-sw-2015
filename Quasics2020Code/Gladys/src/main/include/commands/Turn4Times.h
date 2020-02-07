@@ -12,11 +12,7 @@
 #include <frc2/command/CommandHelper.h>
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * A command that turns 3 and a half times.
  */
 class Turn4Times
     : public frc2::CommandHelper<frc2::CommandBase, Turn4Times> {

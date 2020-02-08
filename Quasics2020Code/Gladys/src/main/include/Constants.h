@@ -61,6 +61,9 @@ namespace CANBusIds {
     constexpr int PushUpMotor = 3;
     constexpr int ShootMotor = 4;
 
+    constexpr int RightClimberNumber = 5;
+    constexpr int LeftClimberNumber = 6;
+
     // CAN bus IDs for the motors used in command panel manipulator subsystem
     constexpr int SpinMotor = 7;
   }  // namespace VictorSpx

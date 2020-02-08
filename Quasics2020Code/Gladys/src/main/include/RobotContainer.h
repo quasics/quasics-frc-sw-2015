@@ -10,7 +10,8 @@
 #include <frc2/command/Command.h>
 
 #include "commands/ExampleCommand.h"
-#include "subsystems/ExampleSubsystem.h"
+
+#include "subsystems/CommandPanel.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Exhaust.h"

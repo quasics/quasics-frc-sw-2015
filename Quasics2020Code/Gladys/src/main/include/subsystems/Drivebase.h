@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
@@ -23,14 +24,18 @@ class Drivebase : public frc2::SubsystemBase {
   void SetMotorPower(double leftPower, double rightPower);
   void Stop() { SetMotorPower(0,0); }
   void EnableTurboMode() {
+    std::cout << "Switching to TURBO" << std::endl;
     powerScaling = DriveBaseConstants::TurboMaxPower;
   }
   void DisableTurboMode() {
+    std::cout << "Switching to normal" << std::endl;
     powerScaling = DriveBaseConstants::StandardMaxPower;
   }
   void SwitchFace() {
     frontIsForward = !frontIsForward;
-     
+    std::cout << "Switching to front being "
+              << (frontIsForward ? "forward" : "backward")
+              << std::endl;
       }
 
   void DisplayEncoderValues() {

@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
+#include <iostream>
 #include "subsystems/Drivebase.h"
 
 Drivebase::Drivebase() 
@@ -18,7 +18,9 @@ Drivebase::Drivebase()
 void Drivebase::Periodic() {}
 
 
-void Drivebase::SetMotorPower(double leftPower, double rightPower) {
+void Drivebase::SetMotorPower(double rightPower, double leftPower) {
+   std:: cout<< "Left =" << leftPower;
+   std:: cout<< "Right =" << rightPower;
    if (frontIsForward) {
       leftFront.Set(leftPower * powerScaling);
       leftRear.Set(leftPower * powerScaling);

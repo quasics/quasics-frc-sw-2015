@@ -64,8 +64,8 @@ namespace OIConstants {
   }  // namespace XBox
 
   // "Dead band" values for the drive joysticks
-  constexpr double DeadBand_LowValue = -0.01;
-  constexpr double DeadBand_HighValue = +0.01;
+  constexpr double DeadBand_LowValue = -0.055;
+  constexpr double DeadBand_HighValue = +0.055;
 }  // namespace OIConstants
 
 namespace CANBusIds {

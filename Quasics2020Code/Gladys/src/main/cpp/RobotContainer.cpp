@@ -15,6 +15,7 @@
 #include "commands/TurnToColor.h"
 #include "commands/Turn4Times.h"
 #include <frc2/command/button/JoystickButton.h>
+#include "subsystems/Drivebase.h"
 
 
 inline double DeadBand (double stickValue) {
@@ -48,8 +49,15 @@ void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
   frc2::JoystickButton(&driverJoystick, OIConstants::LogitechGamePad_LeftShoulder)
     .WhileHeld(IntakeBallsCommand(&intake));
-    //.WhenActive();
+    
+ frc2::JoystickButton(&driverJoystick, OIConstants::LogitechGamePad_LeftTrigger)
+    .WhenPressed(enableTurboMode)
+    .WhenReleased(disableTurboMode);
+
+  frc2::JoystickButton(&driverJoystick, OIConstants::LogitechGamePad_RightTrigger)
+    .WhenPressed(frontIsForward);
 }
+
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous

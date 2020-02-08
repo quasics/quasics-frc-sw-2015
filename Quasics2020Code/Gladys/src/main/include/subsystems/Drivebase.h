@@ -27,7 +27,10 @@ class Drivebase : public frc2::SubsystemBase {
   void DisableTurboMode() {
     powerScaling = DriveBaseConstants::StandardMaxPower;
   }
-
+  void SwitchFace() {
+    frontIsForward = !frontIsForward;
+     
+      }
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -37,4 +40,5 @@ class Drivebase : public frc2::SubsystemBase {
   rev::CANSparkMax rightRear;
 
   double powerScaling = DriveBaseConstants::StandardMaxPower;
+  bool frontIsForward = true;
 };

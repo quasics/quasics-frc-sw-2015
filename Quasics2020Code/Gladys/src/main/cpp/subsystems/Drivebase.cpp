@@ -17,9 +17,17 @@ Drivebase::Drivebase()
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {}
 
+
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {
-    leftFront.Set(leftPower * powerScaling);
-    leftRear.Set(leftPower * powerScaling);
-    rightFront.Set(rightPower * powerScaling);
-    rightRear.Set(rightPower * powerScaling);
+   if (frontIsForward) {
+      leftFront.Set(leftPower * powerScaling);
+      leftRear.Set(leftPower * powerScaling);
+      rightFront.Set(rightPower * powerScaling);
+      rightRear.Set(rightPower * powerScaling);
+  } else {
+      leftFront.Set(-rightPower * powerScaling);
+      leftRear.Set(-rightPower * powerScaling);
+      rightFront.Set(-leftPower * powerScaling);
+      rightRear.Set(-leftPower * powerScaling);
+  }
 }

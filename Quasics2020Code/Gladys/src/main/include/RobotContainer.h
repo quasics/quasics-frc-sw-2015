@@ -8,6 +8,7 @@
 #pragma once
 
 #include <frc2/command/Command.h>
+#include <frc2/command/InstantCommand.h>
 
 #include "commands/ExampleCommand.h"
 
@@ -36,10 +37,14 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
   Drivebase drivebase;
+  frc2::InstantCommand enableTurboMode {[this] {drivebase.EnableTurboMode();}, {}};
+  frc2::InstantCommand disableTurboMode {[this] {drivebase.DisableTurboMode();}, {}};
+  frc2::InstantCommand frontIsForward {[this] {drivebase.SwitchFace();}, {}};
   Intake intake;
   Exhaust exhaust;
   Climber climber;
   frc::Joystick driverJoystick{0};
 
   void ConfigureButtonBindings();
+
 };

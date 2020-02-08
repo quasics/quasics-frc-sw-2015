@@ -43,8 +43,8 @@ drivebase.SetDefaultCommand(TankDrive(&drivebase,
 void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
   frc2::JoystickButton(&driverJoystick, OIConstants::LogitechGamePad_LeftShoulder)
-    .WhenActive(new IntakeBallsCommand())
-    .WhenActive();
+    .WhileHeld(IntakeBallsCommand(&intake));
+    //.WhenActive();
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

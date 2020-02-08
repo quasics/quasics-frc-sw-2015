@@ -14,6 +14,7 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Exhaust.h"
+#include "subsystems/Climber.h"
 #include <frc/Joystick.h>
 
 /**
@@ -36,6 +37,7 @@ class RobotContainer {
   Drivebase drivebase;
   Intake intake;
   Exhaust exhaust;
+  Climber climber;
   frc::Joystick driverJoystick{0};
 
   void ConfigureButtonBindings();

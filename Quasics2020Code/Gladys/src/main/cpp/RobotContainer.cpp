@@ -7,6 +7,8 @@
 
 #include "RobotContainer.h"
 #include "commands/TankDrive.h"
+#include "commands/ClimberUp.h"
+#include "commands/ClimberDown.h"
 #include "Constants.h"
 #include "commands/PushBallUpCommand.h"
 #include "commands/IntakeBallsCommand.h"

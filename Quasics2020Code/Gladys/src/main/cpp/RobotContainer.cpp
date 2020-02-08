@@ -12,6 +12,8 @@
 #include "Constants.h"
 #include "commands/PushBallUpCommand.h"
 #include "commands/IntakeBallsCommand.h"
+#include "commands/TurnToColor.h"
+#include "commands/Turn4Times.h"
 #include <frc2/command/button/JoystickButton.h>
 
 

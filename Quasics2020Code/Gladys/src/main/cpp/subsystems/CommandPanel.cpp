@@ -7,8 +7,8 @@
 
 #include "subsystems/CommandPanel.h"
 
-  constexpr int SpinMotor = 7;
-CommandPanel::CommandPanel():motor(SpinMotor){}
+  
+CommandPanel::CommandPanel():motor(CANBusIds::VictorSpx::SpinMotor){}
 static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
   rev::ColorSensorV3 m_colorSensor{i2cPort};
   rev::ColorMatch m_colorMatcher;

@@ -32,43 +32,50 @@ namespace OIConstants {
   constexpr int kDriverControllerPort = 0;
   constexpr int kOperatorControllerPort = 1;
 
-  // Axes - Used with the "getRawAxis()" function to access the data for the
-  // individual sticks on the controller (e.g., for "tank drive" coding).
-  constexpr int LogitechGamePad_LeftXAxis = 0;
-  constexpr int LogitechGamePad_LeftYAxis = 1;
-  constexpr int LogitechGamePad_RightXAxis = 2;
-  constexpr int LogitechGamePad_RightYAxis = 5;
+  namespace LogitechGamePad {
+    // Axes - Used with the "getRawAxis()" function to access the data for the
+    // individual sticks on the controller (e.g., for "tank drive" coding).
+    //
+    // Note that the left and right triggers aren't treated as buttons: they
+    // report to the driver's station software as if they're joysticks (with a
+    // range of [0.0, 1.0], unlike regular joysticks).
+    constexpr int LeftXAxis = 0;
+    constexpr int LeftYAxis = 1;
+    constexpr int LeftTriggerAxis = 2;
+    constexpr int RightTriggerAxis = 3;
+    constexpr int RightXAxis = 4;
+    constexpr int RightYAxis = 5;
 
-  // Buttons
-  constexpr int LogitechGamePad_AButton = 1;
-  constexpr int LogitechGamePad_BButton = 2;
-  constexpr int LogitechGamePad_XButton = 3;
-  constexpr int LogitechGamePad_YButton = 4;
-  constexpr int LogitechGamePad_LeftShoulder = 5;
-  constexpr int LogitechGamePad_RightShoulder = 6;
-  constexpr int LogitechGamePad_LeftTrigger = 7;
-  constexpr int LogitechGamePad_RightTrigger = 8;
-  constexpr int LogitechGamePad_StartButton = 9;
-  constexpr int LogitechGamePad_SelectButton = 10;
-  constexpr int LogitechGamePad_LeftStickPress = 11;
-  constexpr int LogitechGamePad_RightStickPress = 12;
+    // Buttons
+    constexpr int AButton = 1;
+    constexpr int BButton = 2;
+    constexpr int XButton = 3;
+    constexpr int YButton = 4;
+    constexpr int LeftShoulder = 5;
+    constexpr int RightShoulder = 6;
+    constexpr int BackButton = 7;
+    constexpr int StartButton = 8;
+    constexpr int LeftStickPress = 9;
+    constexpr int RightStickPress = 10;
+  }
 
-constexpr int XBox_ButtonA = 1; 
-constexpr int XBox_ButtonB = 2;  
-constexpr int XBox_ButtonX = 3;  
-constexpr int XBox_ButtonY = 4;     
-constexpr int XBox_LeftButton = 5;   
-constexpr int XBox_RightButton = 6;  
+  namespace XBox {
+    constexpr int ButtonA = 1; 
+    constexpr int ButtonB = 2;  
+    constexpr int ButtonX = 3;  
+    constexpr int ButtonY = 4;     
+    constexpr int LeftButton = 5;   
+    constexpr int RightButton = 6;  
 
 
-constexpr int XBox_LeftXAxis = 0;
-constexpr int XBox_LeftYAxis = 1;
-constexpr int XBox_RightXAxis = 2;
-constexpr int XBox_RightYAxis = 5; 
+    constexpr int LeftXAxis = 0;
+    constexpr int LeftYAxis = 1;
+    constexpr int RightXAxis = 2;
+    constexpr int RightYAxis = 5; 
 
-constexpr int XBox_LeftTrigger = 2;   
-constexpr int XBox_RightTrigger =3;  
-
+    constexpr int LeftTrigger = 2;   
+    constexpr int RightTrigger =3;  
+  }
 }  // namespace OIConstants
 
 namespace CANBusConstants {

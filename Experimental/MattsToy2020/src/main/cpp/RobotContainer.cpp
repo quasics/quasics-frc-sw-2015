@@ -30,12 +30,12 @@ RobotContainer::RobotContainer() {
       &m_driveBase,
       [this] {
         double stickValue = m_logitechController.GetRawAxis(
-            OIConstants::LogitechGamePad_LeftYAxis);
+            OIConstants::LogitechGamePad::LeftYAxis);
         return applyDeadBandAdjustment(stickValue);
       },
       [this] {
         double stickValue = m_logitechController.GetRawAxis(
-            OIConstants::LogitechGamePad_RightYAxis);
+            OIConstants::LogitechGamePad::RightYAxis);
         return applyDeadBandAdjustment(stickValue);
       }));
 
@@ -50,18 +50,18 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // While the left shoulder button is held down, enable turbo mode
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_LeftShoulder)
+                       OIConstants::LogitechGamePad::LeftShoulder)
       .WhenPressed(&m_enableTurbo)
       .WhenReleased(&m_disableTurbo);
 
   // While holding the right shoulder button, move the elevator up.
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_YButton)
+                       OIConstants::LogitechGamePad::YButton)
       .WhileHeld(RaiseElevatorCommand(&swissArmySubsystem));
 
   // While holding the left shoulder button, move the elevator down.
   frc2::JoystickButton(&m_logitechController,
-                       OIConstants::LogitechGamePad_AButton)
+                       OIConstants::LogitechGamePad::AButton)
       .WhileHeld(LowerElevatorCommand(&swissArmySubsystem));
 }
 

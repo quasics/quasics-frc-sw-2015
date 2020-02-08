@@ -18,6 +18,7 @@
 #include "subsystems/Exhaust.h"
 #include "subsystems/Climber.h"
 #include <frc/Joystick.h>
+#include <frc/XboxController.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -43,7 +44,9 @@ class RobotContainer {
   Intake intake;
   Exhaust exhaust;
   Climber climber;
+  CommandPanel commandPanel;
   frc::Joystick driverJoystick{0};
+  frc::XboxController operatorController{1};
 
   void ConfigureButtonBindings();
 

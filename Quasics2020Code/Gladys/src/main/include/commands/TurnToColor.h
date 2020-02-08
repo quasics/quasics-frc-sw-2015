@@ -16,7 +16,7 @@
 class TurnToColor
     : public frc2::CommandHelper<frc2::CommandBase, TurnToColor> {
  public:
-  TurnToColor(CommandPanel*controlPanel, CommandPanel::Color aimColor);
+  TurnToColor(CommandPanel*controlPanel);
 
   void Initialize() override;
 
@@ -26,6 +26,6 @@ class TurnToColor
 
   bool IsFinished() override;
  private:
-  CommandPanel*m_controlPanel;
+  CommandPanel* m_controlPanel;
   CommandPanel::Color m_aimColor;
 };

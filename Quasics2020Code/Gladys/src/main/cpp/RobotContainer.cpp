@@ -18,6 +18,7 @@
 #include "commands/Turn4Times.h"
 #include "commands/TurnToColor.h"
 #include "subsystems/Drivebase.h"
+#include <frc2/command/button/Trigger.h>
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -59,6 +60,11 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
+  frc2::JoystickButton(&operatorController, OIConstants::XBox_LeftButton)
+  .WhileHeld(Turn4Times(&commandPanel));
+
+   frc2::JoystickButton(&operatorController, OIConstants::XBox_LeftTrigger)
+  .WhileHeld(TurnToColor(&commandPanel));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

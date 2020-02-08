@@ -6,34 +6,33 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/CommandPanel.h"
-
+#include "Constants.h"
   
 CommandPanel::CommandPanel():motor(CANBusIds::VictorSpx::SpinMotor){}
-static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
-  rev::ColorSensorV3 m_colorSensor{i2cPort};
+
+// TODO(RJ): Turn these into members of the CommandPanel class, rather than
+// being global variables.
+  rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
   rev::ColorMatch m_colorMatcher;
-  static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
-  static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
-  static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
-  static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
+
 // This method will be called once per scheduler run
 void CommandPanel::Periodic() {}
-
-//if mode is 0, no turbo, else TURBO!!!
 
 void CommandPanel::TurnWheelMotorOn() {
     motor.Set(0.5);
 }
+
 void CommandPanel::TurnWheelMotorOff() {
     motor.Set(0);
 }
+
 CommandPanel::Color CommandPanel::getCurrentColor(){
     Color colorID = UNKNOWN;
     
-    m_colorMatcher.AddColorMatch(kBlueTarget);
-    m_colorMatcher.AddColorMatch(kGreenTarget);
-    m_colorMatcher.AddColorMatch(kRedTarget);
-    m_colorMatcher.AddColorMatch(kYellowTarget);
+    m_colorMatcher.AddColorMatch(CommandPanelConstants::kBlueTarget);
+    m_colorMatcher.AddColorMatch(CommandPanelConstants::kGreenTarget);
+    m_colorMatcher.AddColorMatch(CommandPanelConstants::kRedTarget);
+    m_colorMatcher.AddColorMatch(CommandPanelConstants::kYellowTarget);
 
     frc::Color detectedColor = m_colorSensor.GetColor();
 
@@ -42,13 +41,15 @@ CommandPanel::Color CommandPanel::getCurrentColor(){
     frc::Color matchedColor =
         m_colorMatcher.MatchClosestColor(detectedColor, confidence);
 
-    if (matchedColor == kBlueTarget && confidence>90) {
+    // TODO(RJ): Turn the constant value for the confidence into a named constant.
+
+    if (matchedColor == CommandPanelConstants::kBlueTarget && confidence>90) {
       colorID = BLUE;
-    } else if (matchedColor == kRedTarget && confidence>90) {
+    } else if (matchedColor == CommandPanelConstants::kRedTarget && confidence>90) {
       colorID = RED;
-    } else if (matchedColor == kGreenTarget && confidence>90) {
+    } else if (matchedColor == CommandPanelConstants::kGreenTarget && confidence>90) {
       colorID = GREEN;
-    } else if (matchedColor == kYellowTarget && confidence>90) {
+    } else if (matchedColor == CommandPanelConstants::kYellowTarget && confidence>90) {
       colorID = YELLOW;
     } else {
       colorID = UNKNOWN;

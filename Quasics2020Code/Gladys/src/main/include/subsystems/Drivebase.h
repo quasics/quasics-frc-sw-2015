@@ -10,6 +10,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include "Constants.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -31,6 +32,21 @@ class Drivebase : public frc2::SubsystemBase {
     frontIsForward = !frontIsForward;
      
       }
+
+  void DisplayEncoderValues() {
+    frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetVelocity());
+  }
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -38,6 +54,10 @@ class Drivebase : public frc2::SubsystemBase {
   rev::CANSparkMax leftRear;
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
+  rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();  //.GetPosition and .GetVelocity
+  rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
+  rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
+  rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
 
   double powerScaling = DriveBaseConstants::StandardMaxPower;
   bool frontIsForward = true;

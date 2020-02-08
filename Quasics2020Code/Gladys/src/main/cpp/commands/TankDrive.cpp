@@ -7,6 +7,7 @@
 
 #include "commands/TankDrive.h"
 
+
 TankDrive::TankDrive(Drivebase*drivebase, std::function<double()> right, std::function<double()> left)
 :drivebase(drivebase), right(right), left(left) { 
   // Use addRequirements() here to declare subsystem dependencies.
@@ -19,6 +20,7 @@ void TankDrive::Initialize() {}
 // Called repeatedly when this Command is scheduled to run
 void TankDrive::Execute() {
   drivebase->SetMotorPower(right(), left());
+  drivebase->DisplayEncoderValues();
 }
 
 // Called once the command ends or is interrupted.

@@ -60,10 +60,10 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
-  frc2::JoystickButton(&operatorController, OIConstants::XBox_LeftButton)
+  frc2::JoystickButton(&operatorController, OIConstants::XBox::LeftButton)
   .WhileHeld(Turn4Times(&commandPanel));
 
-   frc2::JoystickButton(&operatorController, OIConstants::XBox_LeftTrigger)
+   frc2::JoystickButton(&operatorController, OIConstants::XBox::LeftTrigger)
   .WhileHeld(TurnToColor(&commandPanel));
 }
 

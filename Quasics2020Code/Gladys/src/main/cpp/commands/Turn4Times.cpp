@@ -6,8 +6,12 @@
 /*----------------------------------------------------------------------------*/
 
 #include "commands/Turn4Times.h"
+
+// TODO(RJ): Turn these global variables into local variables, or members of
+// this class, as appropriate.
 int counter=0;
 CommandPanel::Color initColor=CommandPanel::UNKNOWN, prevColor=CommandPanel::UNKNOWN, currColor=CommandPanel::UNKNOWN;
+
 Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_controlPanel);
@@ -15,27 +19,36 @@ Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
 
 // Called when the command is initially scheduled.
 void Turn4Times::Initialize() {
+  std::cout << "Initializing 'Turn 4 times'" << std::endl;
   initColor = prevColor = m_controlPanel->getCurrentColor();
+  std::cout << "Initial color is " << m_controlPanel->getColorName(initColor) << std::endl;
+  counter = 0;  // Because we haven't done anything yet...
   m_controlPanel->TurnWheelMotorOn(); 
 }
 
 // Called repeatedly when this Command is scheduled to run
 void Turn4Times::Execute() {
+// TODO(RJ): Remove this empty function (both here and in header).
   ;
 }
 
 // Called once the command ends or is interrupted.
 void Turn4Times::End(bool interrupted) {
+  std::cout << "Ending 'Turn 4 times'" << std::endl;
   m_controlPanel->TurnWheelMotorOff();
 }
 
 // Returns true when the command should end.
 bool Turn4Times::IsFinished() {
   currColor = m_controlPanel->getCurrentColor();
-  if(prevColor!=currColor && initColor == currColor){
-    counter++;
-    if(counter>7){
-      return true;
+  if (prevColor != currColor) {
+    std::cout << "New color is " << m_controlPanel->getColorName(initColor) << std::endl;
+    if(initColor == currColor){
+      std::cout << "Bump the count!" << std::endl;
+      counter++;
+      if(counter>7){
+        return true;
+      }
     }
   }
   return false;

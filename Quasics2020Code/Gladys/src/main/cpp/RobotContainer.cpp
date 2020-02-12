@@ -63,7 +63,7 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&operatorController, OIConstants::XBox::LeftButton)
   .WhileHeld(Turn4Times(&commandPanel));
 
-   frc2::JoystickButton(&operatorController, OIConstants::XBox::ButtonB)
+   frc2::JoystickButton(&operatorController, OIConstants::XBox::RightButton)
   .WhileHeld(TurnToColor(&commandPanel));
 
   //frc2::JoystickButton(&operatorController, OIConstants::XBox::)

@@ -53,6 +53,8 @@ namespace OIConstants {
     constexpr int ButtonY = 4;
     constexpr int LeftButton = 5;
     constexpr int RightButton = 6;
+    constexpr int BackButton = 7;
+    constexpr int StartButton = 8;
 
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;

@@ -52,6 +52,7 @@ class Drivebase : public frc2::SubsystemBase {
     frc::SmartDashboard::PutNumber("Right Rear Encoder Velocity", rightRearEncoder.GetVelocity());
 
     //There are 42 encoder ticks in a revolution. (The output from .GetPosition() is in ticks)
+    // formula for encoder value to inches: (encoder output in ticks)/(42 ticks)/(10.71 revolutions)*(6Pi inches forward)
   }
 
  private:

@@ -49,5 +49,6 @@ class RobotContainer {
   frc::XboxController operatorController{1};
 
   void ConfigureButtonBindings();
+  void ConfigureSmartDashboard();
 
 };

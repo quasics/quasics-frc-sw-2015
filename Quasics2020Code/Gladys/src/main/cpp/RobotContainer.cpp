@@ -19,6 +19,7 @@
 #include "commands/TurnToColor.h"
 #include "subsystems/Drivebase.h"
 #include <frc2/command/button/Trigger.h>
+#include "commands/MoveForTime.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -73,4 +74,8 @@ void RobotContainer::ConfigureButtonBindings() {
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return &m_autonomousCommand;
+}
+
+void RobotContainer::ConfigureSmartDashboard(){
+  frc::SmartDashboard::PutData("Move off the line", new MoveForTime(&drivebase, 3, .4));
 }

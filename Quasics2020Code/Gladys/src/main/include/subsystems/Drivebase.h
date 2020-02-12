@@ -40,16 +40,18 @@ class Drivebase : public frc2::SubsystemBase {
 
   void DisplayEncoderValues() {
     frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Left Front Encoder Velocity", leftFrontEncoder.GetVelocity());
 
     frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Left Rear Encoder Velocity", leftRearEncoder.GetVelocity());
 
     frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Right Front Encoder Velocity", rightFrontEncoder.GetVelocity());
 
     frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetVelocity());
+    frc::SmartDashboard::PutNumber("Right Rear Encoder Velocity", rightRearEncoder.GetVelocity());
+
+    //There are 42 encoder ticks in a revolution. (The output from .GetPosition() is in ticks)
   }
 
  private:

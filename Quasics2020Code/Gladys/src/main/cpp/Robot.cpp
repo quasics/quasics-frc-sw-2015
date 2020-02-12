@@ -23,7 +23,7 @@ void Robot::RobotInit() {}
 void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
 
 /**
- * This function is called once each time the robot enters Disabled mode. You
+ * This function is called once each time the robot enters D  isabled mode. You
  * can use it to reset any subsystem information you want to clear when the
  * robot is disabled.
  */

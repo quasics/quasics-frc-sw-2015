@@ -32,7 +32,7 @@ class CommandPanel : public frc2::SubsystemBase {
   //Motor control
   void TurnWheelMotorOff();
 
-  void TurnWheelMotorOn(bool f);
+  void TurnWheelMotorOn();
   //changes the color recieved to an int
   Color getCurrentColor();
   static std::string getColorName(Color c);

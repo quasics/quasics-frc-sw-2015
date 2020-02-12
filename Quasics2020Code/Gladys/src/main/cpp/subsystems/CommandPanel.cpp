@@ -18,7 +18,8 @@ CommandPanel::CommandPanel():motor(CANBusIds::VictorSpx::SpinMotor){}
 // This method will be called once per scheduler run
 void CommandPanel::Periodic() {}
 
-void CommandPanel::TurnWheelMotorOn(bool f) {
+void CommandPanel::TurnWheelMotorOn() {
+  bool f=true;
     if(f){
     motor.Set(0.5);
     }else{

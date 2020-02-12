@@ -21,6 +21,8 @@
 #include <frc2/command/button/Trigger.h>
 #include "commands/MoveForTime.h"
 
+#include <iostream>
+
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
       stickValue < OIConstants::DeadBand_HighValue) {
@@ -48,6 +50,7 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+  std::cout << "Configuring button bindings" << std::endl;
   // Configure your button bindings here
   // frc2::JoystickButton(&driverJoystick,
   //                      OIConstants::LogitechGamePad::LeftShoulder)
@@ -61,14 +64,19 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
-  frc2::JoystickButton(&operatorController, OIConstants::XBox::LeftButton)
+
+  frc2::JoystickButton(&operatorController, int(frc::XboxController::Button::kBumperLeft))
   .WhileHeld(Turn4Times(&commandPanel));
 
-   frc2::JoystickButton(&operatorController, OIConstants::XBox::RightButton)
+  // frc2::JoystickButton(&m_xboxController, int(frc::XboxController::Button::kA))
+  //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
+
+   frc2::JoystickButton(&operatorController, int(frc::XboxController::Button::kBumperRight))
   .WhileHeld(TurnToColor(&commandPanel));
 
   //frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
   //.WhileHeld((commandPanel.TurnWheelMotorOn(false)));
+  std::cout << "Done configuring button bindings" << std::endl;
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

@@ -19,8 +19,8 @@ void Drivebase::Periodic() {}
 
 
 void Drivebase::SetMotorPower(double rightPower, double leftPower) {
-   std:: cout<< "Left =" << leftPower;
-   std:: cout<< "Right =" << rightPower;
+  //  std:: cout<< "Left =" << leftPower;
+  //  std:: cout<< "Right =" << rightPower << std::endl;
    if (frontIsForward) {
       leftFront.Set(leftPower * powerScaling);
       leftRear.Set(leftPower * powerScaling);

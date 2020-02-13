@@ -6,26 +6,30 @@
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/Climber.h"
+
 #include "Constants.h"
 
-Climber::Climber() 
+Climber::Climber()
     : RightClimber(CANBusIds::VictorSpx::RightClimberNumber),
-      LeftClimber(CANBusIds::VictorSpx::LeftClimberNumber) {}
+      LeftClimber(CANBusIds::VictorSpx::LeftClimberNumber) {
+  SetSubsystem("Climber");
+}
 
 // This method will be called once per scheduler run
-void Climber::Periodic() {}
+void Climber::Periodic() {
+}
 
 void Climber::MoveClimberUp() {
-    RightClimber.Set(-1);
-    LeftClimber.Set(1);
+  RightClimber.Set(-1);
+  LeftClimber.Set(1);
 }
 
 void Climber::MoveClimberDown() {
-    RightClimber.Set(1);
-    LeftClimber.Set(-1);
+  RightClimber.Set(1);
+  LeftClimber.Set(-1);
 }
 
 void Climber::StopClimber() {
-    RightClimber.Set(0);
-    LeftClimber.Set(0);
+  RightClimber.Set(0);
+  LeftClimber.Set(0);
 }

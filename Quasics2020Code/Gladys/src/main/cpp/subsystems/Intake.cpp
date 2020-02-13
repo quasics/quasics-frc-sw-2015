@@ -12,6 +12,7 @@
 Intake::Intake()
     : BallIntake(CANBusIds::VictorSpx::BallIntakeMotor),
       Shoulder(CANBusIds::VictorSpx::ShoulderMotor) {
+  SetSubsystem("Intake");
 }
 
 // This method will be called once per scheduler run

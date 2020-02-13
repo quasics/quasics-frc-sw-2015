@@ -11,6 +11,7 @@ constexpr int PushUpMotor = 3;
 constexpr int ShootMotor = 4;
 
 Exhaust::Exhaust() : Shoot(ShootMotor), Push(PushUpMotor) {
+  SetSubsystem("Exhaust");
 }
 
 // This method will be called once per scheduler run

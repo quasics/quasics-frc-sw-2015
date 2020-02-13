@@ -8,20 +8,20 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/button/JoystickButton.h>
+#include <frc2/command/button/Trigger.h>
+
+#include <iostream>
 
 #include "Constants.h"
 #include "commands/ClimberDown.h"
 #include "commands/ClimberUp.h"
 #include "commands/IntakeBallsCommand.h"
+#include "commands/MoveForTime.h"
 #include "commands/PushBallUpCommand.h"
 #include "commands/TankDrive.h"
 #include "commands/Turn4Times.h"
 #include "commands/TurnToColor.h"
 #include "subsystems/Drivebase.h"
-#include <frc2/command/button/Trigger.h>
-#include "commands/MoveForTime.h"
-
-#include <iostream>
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -30,7 +30,7 @@ inline double DeadBand(double stickValue) {
   }
   return (stickValue);
 }
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   drivebase.SetDefaultCommand(TankDrive(
       &drivebase,
@@ -65,16 +65,19 @@ void RobotContainer::ConfigureButtonBindings() {
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
 
-  frc2::JoystickButton(&operatorController, int(frc::XboxController::Button::kBumperLeft))
-  .WhileHeld(Turn4Times(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kBumperLeft))
+      .WhileHeld(Turn4Times(&commandPanel));
 
-  // frc2::JoystickButton(&m_xboxController, int(frc::XboxController::Button::kA))
+  // frc2::JoystickButton(&m_xboxController,
+  // int(frc::XboxController::Button::kA))
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
-   frc2::JoystickButton(&operatorController, int(frc::XboxController::Button::kBumperRight))
-  .WhileHeld(TurnToColor(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kBumperRight))
+      .WhileHeld(TurnToColor(&commandPanel));
 
-  //frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
+  // frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
   //.WhileHeld((commandPanel.TurnWheelMotorOn(false)));
   std::cout << "Done configuring button bindings" << std::endl;
 }
@@ -84,6 +87,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
   return &m_autonomousCommand;
 }
 
-void RobotContainer::ConfigureSmartDashboard(){
-  frc::SmartDashboard::PutData("Move off the line", new MoveForTime(&drivebase, 3, .4));
+void RobotContainer::ConfigureSmartDashboard() {
+  frc::SmartDashboard::PutData("Move off the line",
+                               new MoveForTime(&drivebase, 3, .4));
 }

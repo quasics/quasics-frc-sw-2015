@@ -7,18 +7,17 @@
 
 #pragma once
 
-#include <frc2/command/Command.h>
-#include <frc2/command/InstantCommand.h>
-
-#include "commands/ExampleCommand.h"
-
-#include "subsystems/CommandPanel.h"
-#include "subsystems/Drivebase.h"
-#include "subsystems/Intake.h"
-#include "subsystems/Exhaust.h"
-#include "subsystems/Climber.h"
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/PrintCommand.h>
+
+#include "subsystems/Climber.h"
+#include "subsystems/CommandPanel.h"
+#include "subsystems/Drivebase.h"
+#include "subsystems/Exhaust.h"
+#include "subsystems/Intake.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -35,12 +34,12 @@ class RobotContainer {
 
  private:
   // The robot's subsystems and commands are defined here...
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
   Drivebase drivebase;
-  frc2::InstantCommand enableTurboMode {[this] {drivebase.EnableTurboMode();}, {}};
-  frc2::InstantCommand disableTurboMode {[this] {drivebase.DisableTurboMode();}, {}};
-  frc2::InstantCommand frontIsForward {[this] {drivebase.SwitchFace();}, {}};
+  frc2::InstantCommand enableTurboMode{[this] { drivebase.EnableTurboMode(); },
+                                       {}};
+  frc2::InstantCommand disableTurboMode{
+      [this] { drivebase.DisableTurboMode(); }, {}};
+  frc2::InstantCommand frontIsForward{[this] { drivebase.SwitchFace(); }, {}};
   Intake intake;
   Exhaust exhaust;
   Climber climber;
@@ -48,7 +47,12 @@ class RobotContainer {
   frc::Joystick driverJoystick{0};
   frc::XboxController operatorController{1};
 
+  // TODO(Scott): Replace this with a real command for autonomous mode.  (Or
+  // more than one.)
+  frc2::PrintCommand m_autonomousCommand{"Doing something autonomously...."};
+
+ private:
+  // Private utility/configuration functions are defined here.
   void ConfigureButtonBindings();
   void ConfigureSmartDashboard();
-
 };

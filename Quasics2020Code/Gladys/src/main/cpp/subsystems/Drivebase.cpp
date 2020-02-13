@@ -13,6 +13,10 @@ Drivebase::Drivebase()
       rightFront(CANBusIds::SparkMax::Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
       rightRear(CANBusIds::SparkMax::Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless){
     SetSubsystem("Drivebase");
+    leftFrontEncoder.SetInverted(true);
+    leftRearEncoder.SetInverted(true);
+    rightFrontEncoder.SetInverted(true);
+    rightRearEncoder.SetInverted(true);
 }
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {}

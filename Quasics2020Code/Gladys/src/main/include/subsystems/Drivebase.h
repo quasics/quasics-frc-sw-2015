@@ -55,6 +55,21 @@ class Drivebase : public frc2::SubsystemBase {
     // formula for encoder value to inches: (encoder output in ticks)/(42 ticks)/(10.71 revolutions)*(6Pi inches forward)
   }
 
+  double GetLeftFrontEncoderPosition() {
+    return leftFrontEncoder.GetPosition();
+  }
+
+  double GetRightFrontEncoderPosition() {
+    return rightFrontEncoder.GetPosition();
+  }
+
+  void ResetEncoderPositions() {
+    leftFrontEncoder.SetPosition(0.0);
+    leftRearEncoder.SetPosition(0.0);
+    rightFrontEncoder.SetPosition(0.0);
+    rightRearEncoder.SetPosition(0.0);
+  }
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

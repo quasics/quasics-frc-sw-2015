@@ -80,6 +80,13 @@ void RobotContainer::ConfigureButtonBindings() {
       //.WhileHeld(TurnToColor(&commandPanel));
       frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kBack)).WhileHeld(SpinTheWheel(&commandPanel, false));
       frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kStart)).WhileHeld(SpinTheWheel(&commandPanel, true));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kA))
+      .WhileHeld(ClimberUp(&climber));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kY))
+      .WhileHeld(ClimberDown(&climber));
+
   // frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
   //.WhileHeld((commandPanel.TurnWheelMotorOn(false)));
   std::cout << "Done configuring button bindings" << std::endl;

@@ -30,11 +30,11 @@ class Exhaust : public frc2::SubsystemBase {
 
  private:
 
-   typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+  typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  WPI_TalonSRX Shoot;
-  WPI_TalonSRX Push; 
+  WPI_VictorSPX Shoot;
+  WPI_VictorSPX Push; 
 };

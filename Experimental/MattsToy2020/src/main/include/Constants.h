@@ -80,10 +80,10 @@ namespace OIConstants {
 
 namespace CANBusConstants {
   namespace SparkMaxIds {
-    constexpr int DriveBaseLeftFrontId = 4;
-    constexpr int DriveBaseLeftRearId = 3;
-    constexpr int DriveBaseRightFrontId = 2;
-    constexpr int DriveBaseRightRearId = 1;
+    constexpr int DriveBaseLeftFrontId = 3;
+    constexpr int DriveBaseLeftRearId = 4;
+    constexpr int DriveBaseRightFrontId = 1;
+    constexpr int DriveBaseRightRearId = 2;
   }  // namespace SparkMaxIds
 
   namespace VictorSpxIds {

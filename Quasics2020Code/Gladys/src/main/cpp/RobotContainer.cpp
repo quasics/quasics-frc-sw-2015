@@ -88,9 +88,9 @@ void RobotContainer::ConfigureButtonBindings() {
   //                      OIConstants::LogitechGamePad::LeftShoulder)
   //     .WhileHeld(IntakeBallsCommand(&intake));
 
-  //frc2::JoystickButton(&operatorController,
-                 //int(frc::XboxController::Button::kBumperLeft))
-      //.WhileHeld(Turn4Times(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                 int(frc::XboxController::Button::kBumperLeft))
+  .WhenPressed(Turn4Times(&commandPanel));
 
   // frc2::JoystickButton(&m_xboxController,
   // int(frc::XboxController::Button::kA))
@@ -137,9 +137,9 @@ void RobotContainer::ConfigureButtonBindings() {
     ).WhileHeld(ClimberDown(&climber));
   
 
-  //frc2::JoystickButton(&operatorController,
-    //                   int(frc::XboxController::Button::kBumperRight))
-      //.WhileHeld(TurnToColor(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kBumperRight))
+      .WhenPressed(TurnToColor(&commandPanel));
 
   // Going to map the following buttons:
   //    * left bumper --> push the ball up (TODO) fu=ind other binding

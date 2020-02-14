@@ -19,6 +19,8 @@
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
 
+// #define DISABLE_DRIVE_BASE
+
 /**
  * This class is where the bulk of the robot should be declared.  Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -33,6 +35,7 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
+ #ifndef DISABLE_DRIVE_BASE
   // The robot's subsystems and commands are defined here...
   Drivebase drivebase;
   // "Instant" commands, to quietly modify the drive base's state
@@ -41,6 +44,7 @@ class RobotContainer {
   frc2::InstantCommand disableTurboMode{
       [this] { drivebase.DisableTurboMode(); }, {}};
   frc2::InstantCommand frontIsForward{[this] { drivebase.SwitchFace(); }, {}};
+#endif  // DISABLE_DRIVE_BASE
 
   // Other subsystems
   Intake intake;

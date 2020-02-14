@@ -40,6 +40,7 @@ inline double DeadBand(double stickValue) {
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
+#ifndef DISABLE_DRIVE_BASE
   drivebase.SetDefaultCommand(TankDrive(
       &drivebase,
       [this] {
@@ -52,6 +53,8 @@ RobotContainer::RobotContainer() {
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
         return DeadBand(stickValue);
       }));
+#endif  // DISABLE_DRIVE_BASE
+
   intake.SetDefaultCommand(ShoulderControl(
       &intake,
       [this] {
@@ -70,6 +73,7 @@ RobotContainer::RobotContainer() {
 void RobotContainer::ConfigureButtonBindings() {
   std::cout << "Configuring button bindings for Driver controls" << std::endl;
 
+#ifndef DISABLE_DRIVE_BASE
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::LeftShoulder)
       .WhenPressed(enableTurboMode)
@@ -78,6 +82,7 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
+#endif  // DISABLE_DRIVE_BASE
 
   // frc2::JoystickButton(&driverJoystick,
   //                      OIConstants::LogitechGamePad::LeftShoulder)
@@ -137,7 +142,7 @@ void RobotContainer::ConfigureButtonBindings() {
       //.WhileHeld(TurnToColor(&commandPanel));
 
   // Going to map the following buttons:
-  //    * left bumper --> push the ball up
+  //    * left bumper --> push the ball up (TODO) fu=ind other binding
   //    * B button    --> run the exhaust to push out a ball
   //    * X button    --> intake balls
   //    * back button --> ????
@@ -151,7 +156,9 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
+#ifndef DISABLE_DRIVE_BASE
   frc::SmartDashboard::PutData("Move off the line",
                                new MoveForTime(&drivebase, 3, .4));
    std::cout << "Done configuring smart dashboard" << std::endl;
+#endif  // DISABLE_DRIVE_BASE
 }

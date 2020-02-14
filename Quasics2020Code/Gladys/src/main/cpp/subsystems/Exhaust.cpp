@@ -31,6 +31,9 @@ void Exhaust::PushBallOff() {
 void Exhaust::ShootBallOn() {
   Shoot.Set(1);
 }
+void Exhaust::ShootBallDown() {
+  Shoot.Set(-1);
+}
 void Exhaust::ShootBallOff() {
   Shoot.Set(0);
 }

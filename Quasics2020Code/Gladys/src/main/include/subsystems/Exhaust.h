@@ -23,6 +23,7 @@ class Exhaust : public frc2::SubsystemBase {
   void PushBallUp();
   void PushBallDown();
   void ShootBallOn();
+  void ShootBallDown();
 
   void PushBallOff();
   void ShootBallOff();

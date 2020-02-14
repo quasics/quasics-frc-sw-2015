@@ -17,7 +17,7 @@
 #include "commands/ClimberUp.h"
 #include "commands/IntakeBallsCommand.h"
 #include "commands/MoveForTime.h"
-#include "commands/PushBallUpCommand.h"
+#include "commands/IntakeBallsReverseCommand.h"
 #include "commands/TankDrive.h"
 #include "commands/Turn4Times.h"
 #include "commands/TurnToColor.h"
@@ -25,6 +25,10 @@
 #include "subsystems/Drivebase.h"
 #include "commands/ShoulderControl.h"
 #include "subsystems/Intake.h"
+#include "commands/ShootBallsCommand.h"
+#include "commands/ShootBallsReverseCommand.h"
+#include "commands/IntakeBallsCommand.h"
+#include "commands/IntakeBallsReverseCommand.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -87,6 +91,29 @@ void RobotContainer::ConfigureButtonBindings() {
   // int(frc::XboxController::Button::kA))
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
+
+//Intake
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kX)
+    ).WhileHeld(ShootBallsCommand(&exhaust));
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kB)
+    ).WhileHeld(ShootBallsReverseCommand(&exhaust));
+//
+
+//Exhaust
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kBumperLeft)
+    ).WhileHeld(IntakeBallsCommand(&intake));
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kBumperRight)
+    ).WhileHeld(IntakeBallsReverseCommand(&intake));
+//
+
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kBack)
@@ -103,6 +130,7 @@ void RobotContainer::ConfigureButtonBindings() {
       &operatorController,
       int(frc::XboxController::Button::kY)
     ).WhileHeld(ClimberDown(&climber));
+  
 
   //frc2::JoystickButton(&operatorController,
     //                   int(frc::XboxController::Button::kBumperRight))

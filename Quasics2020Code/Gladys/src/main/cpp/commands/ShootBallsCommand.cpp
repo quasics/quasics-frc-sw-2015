@@ -14,9 +14,11 @@ ShootBallsCommand::ShootBallsCommand(Exhaust*exhaust):exhaust(exhaust) {
 // Called when the command is initially scheduled.
 void ShootBallsCommand::Initialize() {
   exhaust -> ShootBallOn();
+  exhaust -> PushBallUp();
 }
 
 // Called once the command ends or is interrupted.
 void ShootBallsCommand::End(bool interrupted) {
   exhaust -> ShootBallOff();
+  exhaust -> PushBallOff();
 }

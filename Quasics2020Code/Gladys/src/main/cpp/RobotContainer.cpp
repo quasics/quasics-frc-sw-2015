@@ -97,26 +97,26 @@ void RobotContainer::ConfigureButtonBindings() {
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
 
+//Exhaust
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kB)
+    ).WhileHeld(ShootBallsCommand(&exhaust));
+  // frc2::JoystickButton(
+  //     &operatorController,
+  //     int(frc::XboxController::Button::kB)
+  //   ).WhileHeld(ShootBallsReverseCommand(&exhaust));
+//
+
 //Intake
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kX)
-    ).WhileHeld(ShootBallsCommand(&exhaust));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kB)
-    ).WhileHeld(ShootBallsReverseCommand(&exhaust));
-//
-
-//Exhaust
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kBumperLeft)
     ).WhileHeld(IntakeBallsCommand(&intake));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kBumperRight)
-    ).WhileHeld(IntakeBallsReverseCommand(&intake));
+  // frc2::JoystickButton(
+    //   &operatorController,
+    //   int(frc::XboxController::Button::kBumperRight)
+    // ).WhileHeld(IntakeBallsReverseCommand(&intake));
 //
 
   frc2::JoystickButton(

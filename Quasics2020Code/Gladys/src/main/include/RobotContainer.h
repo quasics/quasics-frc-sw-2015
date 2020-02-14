@@ -40,6 +40,11 @@ class RobotContainer {
   frc2::InstantCommand disableTurboMode{
       [this] { drivebase.DisableTurboMode(); }, {}};
   frc2::InstantCommand frontIsForward{[this] { drivebase.SwitchFace(); }, {}};
+  frc2::InstantCommand pushBallUp{[this] { exhaust.PushBallUp(); }, {}};
+  frc2::InstantCommand pushBallDown{[this] { exhaust.PushBallDown(); }, {}};
+  frc2::InstantCommand shootBalls{[this] { exhaust.ShootBallOn(); }, {}};
+  frc2::InstantCommand intakeBalls{[this] { intake.TurnSuctionOn(); }, {}};
+  frc2::InstantCommand shoulderUp{[this] { intake.RotateShoulderUp(); }, {}};
   Intake intake;
   Exhaust exhaust;
   Climber climber;

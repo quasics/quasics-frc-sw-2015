@@ -23,6 +23,8 @@
 #include "commands/TurnToColor.h"
 #include "commands/SpinTheWheel.h"
 #include "subsystems/Drivebase.h"
+#include "commands/ShoulderControl.h"
+#include "subsystems/Intake.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -46,6 +48,15 @@ RobotContainer::RobotContainer() {
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
         return DeadBand(stickValue);
       }));
+  intake.SetDefaultCommand(ShoulderControl(
+      &intake,
+      [this] {
+        double stickValue =
+            operatorController.GetRawAxis(OIConstants::XBox::LeftYAxis);
+        return DeadBand(stickValue);
+            
+      }
+  ));
 
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -86,6 +97,18 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kY))
       .WhileHeld(ClimberDown(&climber));
+
+  frc2::JoystickButton(&operatorController,
+                      int(frc::XboxController::Button::kBumperLeft))
+      .WhileHeld(pushBallUp);
+
+  frc2::JoystickButton(&operatorController,
+                      int(frc::XboxController::Button::kB))
+      .WhileHeld(shootBalls);
+
+  frc2::JoystickButton(&operatorController,
+                      int(frc::XboxController::Button::kX))
+      .WhileHeld(intakeBalls);
 
   // frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
   //.WhileHeld((commandPanel.TurnWheelMotorOn(false)));

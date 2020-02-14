@@ -7,10 +7,11 @@
 
 #include "subsystems/Exhaust.h"
 
-constexpr int PushUpMotor = 3;
-constexpr int ShootMotor = 4;
+#include "Constants.h"
 
-Exhaust::Exhaust() : Shoot(ShootMotor), Push(PushUpMotor) {
+Exhaust::Exhaust() 
+  : Shoot(CANBusIds::VictorSpx::ShootMotor),
+    Push(CANBusIds::VictorSpx::PushUpMotor) {
   SetSubsystem("Exhaust");
 }
 

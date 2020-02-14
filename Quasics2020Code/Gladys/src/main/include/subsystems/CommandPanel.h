@@ -37,8 +37,9 @@ class CommandPanel : public frc2::SubsystemBase {
   Color getCurrentColor();
   static std::string getColorName(Color c);
  private:
-   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
-   WPI_VictorSPX motor;
+  typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
+  WPI_VictorSPX motor;
+  
   rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
   rev::ColorMatch m_colorMatcher;
   };

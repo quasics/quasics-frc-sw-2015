@@ -35,20 +35,20 @@ class RobotContainer {
  private:
   // The robot's subsystems and commands are defined here...
   Drivebase drivebase;
+  // "Instant" commands, to quietly modify the drive base's state
   frc2::InstantCommand enableTurboMode{[this] { drivebase.EnableTurboMode(); },
                                        {}};
   frc2::InstantCommand disableTurboMode{
       [this] { drivebase.DisableTurboMode(); }, {}};
   frc2::InstantCommand frontIsForward{[this] { drivebase.SwitchFace(); }, {}};
-  frc2::InstantCommand pushBallUp{[this] { exhaust.PushBallUp(); }, {}};
-  frc2::InstantCommand pushBallDown{[this] { exhaust.PushBallDown(); }, {}};
-  frc2::InstantCommand shootBalls{[this] { exhaust.ShootBallOn(); }, {}};
-  frc2::InstantCommand intakeBalls{[this] { intake.TurnSuctionOn(); }, {}};
-  frc2::InstantCommand shoulderUp{[this] { intake.RotateShoulderUp(); }, {}};
+
+  // Other subsystems
   Intake intake;
   Exhaust exhaust;
   Climber climber;
   CommandPanel commandPanel;
+
+  // Controllers
   frc::Joystick driverJoystick{0};
   frc::XboxController operatorController{1};
 

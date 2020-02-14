@@ -19,6 +19,7 @@ Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
 void Turn4Times::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
   initColor = prevColor = m_controlPanel->getCurrentColor();
+  std::cout << "New color is " << m_controlPanel->getColorName(initColor) << std::endl;
   m_controlPanel->TurnWheelMotorOn(true); 
 }
 

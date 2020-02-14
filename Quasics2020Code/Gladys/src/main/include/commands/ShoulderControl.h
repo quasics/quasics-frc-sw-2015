@@ -9,6 +9,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Intake.h"
 /**
  * An example command.
@@ -20,7 +21,7 @@
 class ShoulderControl
     : public frc2::CommandHelper<frc2::CommandBase, ShoulderControl> {
  public:
-  ShoulderControl(Intake*intake, std::function<double()> upValue);
+  ShoulderControl(Intake* intake, std::function<double()> upValue);
 
   void Initialize() override;
 
@@ -30,9 +31,7 @@ class ShoulderControl
 
   bool IsFinished() override;
 
-private:
-
-std::function<double()> upValue;
-Intake*intake;
-
+ private:
+  Intake* intake;
+  std::function<double()> upValue;
 };

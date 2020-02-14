@@ -10,7 +10,7 @@
 #include "Constants.h"
 
 CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
-  SetSubsystem("CommandPAnel");
+  SetSubsystem("CommandPanel");
 }
 
 

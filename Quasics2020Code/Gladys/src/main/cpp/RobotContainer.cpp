@@ -79,17 +79,15 @@ void RobotContainer::ConfigureButtonBindings() {
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
 
-  //frc2::JoystickButton(&operatorController,
-                 //int(frc::XboxController::Button::kBumperLeft))
-      //.WhileHeld(Turn4Times(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                int(frc::XboxController::Button::kBumperLeft))
+      .WhenPressed(Turn4Times(&commandPanel));
 
-  // frc2::JoystickButton(&m_xboxController,
-  // int(frc::XboxController::Button::kA))
-  //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
+  
 
-  //frc2::JoystickButton(&operatorController,
-    //                   int(frc::XboxController::Button::kBumperRight))
-      //.WhileHeld(TurnToColor(&commandPanel));
+  frc2::JoystickButton(&operatorController,
+                     int(frc::XboxController::Button::kBumperRight))
+  .WhenPressed(TurnToColor(&commandPanel));
       frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kBack)).WhileHeld(SpinTheWheel(&commandPanel, false));
       frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kStart)).WhileHeld(SpinTheWheel(&commandPanel, true));
   frc2::JoystickButton(&operatorController,
@@ -99,9 +97,9 @@ void RobotContainer::ConfigureButtonBindings() {
                        int(frc::XboxController::Button::kY))
       .WhileHeld(ClimberDown(&climber));
 
-  frc2::JoystickButton(&operatorController,
-                      int(frc::XboxController::Button::kBumperLeft))
-      .WhileHeld(pushBallUp);
+    // frc2::JoystickButton(&operatorController,
+    //                   int(frc::XboxController::Button::kBumperLeft))
+    //   .WhileHeld(pushBallUp);
 
   frc2::JoystickButton(&operatorController,
                       int(frc::XboxController::Button::kB))

@@ -12,7 +12,7 @@ bool noData = false;
 
 TurnToColor::TurnToColor(CommandPanel*controlPanel):m_controlPanel(controlPanel),m_aimColor(CommandPanel::UNKNOWN) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(m_controlPanel);
+    
 }
 
 // Called when the command is initially scheduled.

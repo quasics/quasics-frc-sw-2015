@@ -9,8 +9,6 @@
 
 // TODO(RJ): Turn these global variables into local variables, or members of
 // this class, as appropriate.
-int counter=0;
-CommandPanel::Color initColor=CommandPanel::UNKNOWN, prevColor=CommandPanel::UNKNOWN, currColor=CommandPanel::UNKNOWN;
 
 Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
   // Use addRequirements() here to declare subsystem dependencies.
@@ -21,9 +19,7 @@ Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
 void Turn4Times::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
   initColor = prevColor = m_controlPanel->getCurrentColor();
-  std::cout << "Initial color is " << m_controlPanel->getColorName(initColor) << std::endl;
-  counter = 0;  // Because we haven't done anything yet...
-  m_controlPanel->TurnWheelMotorOn(); 
+  m_controlPanel->TurnWheelMotorOn(true); 
 }
 
 // Called repeatedly when this Command is scheduled to run

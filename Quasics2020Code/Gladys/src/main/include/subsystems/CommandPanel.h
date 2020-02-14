@@ -32,12 +32,13 @@ class CommandPanel : public frc2::SubsystemBase {
   //Motor control
   void TurnWheelMotorOff();
 
-  void TurnWheelMotorOn();
+  void TurnWheelMotorOn(bool);
   //changes the color recieved to an int
   Color getCurrentColor();
   static std::string getColorName(Color c);
  private:
    typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
    WPI_VictorSPX motor;
-
+  rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
+  rev::ColorMatch m_colorMatcher;
   };

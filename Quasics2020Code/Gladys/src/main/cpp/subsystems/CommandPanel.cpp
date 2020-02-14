@@ -13,18 +13,15 @@ CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
   SetSubsystem("CommandPAnel");
 }
 
-// TODO(RJ): Turn these into members of the CommandPanel class, rather than
-// being global variables.
-rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
-rev::ColorMatch m_colorMatcher;
+
 
 // This method will be called once per scheduler run
 void CommandPanel::Periodic() {
 }
 
-void CommandPanel::TurnWheelMotorOn() {
-  bool f = true;
-  if (f) {
+void CommandPanel::TurnWheelMotorOn(bool f) {
+  
+    if(f){
     motor.Set(0.5);
   } else {
     motor.Set(-0.5);

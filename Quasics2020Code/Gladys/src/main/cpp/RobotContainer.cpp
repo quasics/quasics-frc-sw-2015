@@ -21,6 +21,7 @@
 #include "commands/TankDrive.h"
 #include "commands/Turn4Times.h"
 #include "commands/TurnToColor.h"
+#include "commands/SpinTheWheel.h"
 #include "subsystems/Drivebase.h"
 
 inline double DeadBand(double stickValue) {
@@ -66,18 +67,19 @@ void RobotContainer::ConfigureButtonBindings() {
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
 
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperLeft))
-      .WhileHeld(Turn4Times(&commandPanel));
+  //frc2::JoystickButton(&operatorController,
+                 //int(frc::XboxController::Button::kBumperLeft))
+      //.WhileHeld(Turn4Times(&commandPanel));
 
   // frc2::JoystickButton(&m_xboxController,
   // int(frc::XboxController::Button::kA))
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperRight))
-      .WhileHeld(TurnToColor(&commandPanel));
-
+  //frc2::JoystickButton(&operatorController,
+    //                   int(frc::XboxController::Button::kBumperRight))
+      //.WhileHeld(TurnToColor(&commandPanel));
+      frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kBack)).WhileHeld(SpinTheWheel(&commandPanel, false));
+      frc2::JoystickButton(&operatorController,int(frc::XboxController::Button::kStart)).WhileHeld(SpinTheWheel(&commandPanel, true));
   // frc2::JoystickButton(&operatorController, OIConstants::XBox::BackButton)
   //.WhileHeld((commandPanel.TurnWheelMotorOn(false)));
   std::cout << "Done configuring button bindings" << std::endl;

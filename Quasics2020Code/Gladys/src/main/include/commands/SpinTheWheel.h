@@ -12,12 +12,16 @@
 #include <frc2/command/CommandHelper.h>
 
 /**
- * A command that turns 3 and a half times.
+ * An example command.
+ *
+ * <p>Note that this extends CommandHelper, rather extending CommandBase
+ * directly; this is crucially important, or else the decorator functions in
+ * Command will *not* work!
  */
-class Turn4Times
-    : public frc2::CommandHelper<frc2::CommandBase, Turn4Times> {
+class SpinTheWheel
+    : public frc2::CommandHelper<frc2::CommandBase, SpinTheWheel> {
  public:
-  Turn4Times(CommandPanel*controlPanel);
+  SpinTheWheel(CommandPanel*controlPanel, bool in);
 
   void Initialize() override;
 
@@ -26,9 +30,7 @@ class Turn4Times
   void End(bool interrupted) override;
 
   bool IsFinished() override;
-private:
-  CommandPanel*m_controlPanel;
-  int counter=0;
-  CommandPanel::Color initColor=CommandPanel::UNKNOWN, prevColor=CommandPanel::UNKNOWN, currColor=CommandPanel::UNKNOWN;
-
+  private:
+    CommandPanel*m_controlPanel;
+    bool f;
 };

@@ -47,7 +47,7 @@ void TurnToColor::Initialize() {
         m_aimColor = CommandPanel::UNKNOWN;
         break;
     }
-    m_controlPanel->TurnWheelMotorOn();
+    m_controlPanel->TurnWheelMotorOn(true);
   } else {
     //Code for no data received yet
     noData = true;

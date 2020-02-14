@@ -10,7 +10,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-#include "Constants.h"
+#include <functional>
 
 class DriveBase : public frc2::SubsystemBase {
  public:
@@ -22,13 +22,15 @@ class DriveBase : public frc2::SubsystemBase {
   void Periodic();
 
   void SetMotorPower(double leftPower, double rightPower);
-  void Stop() { SetMotorPower(0, 0); }
+  void Stop() {
+    SetMotorPower(0, 0);
+  }
 
   void EnableTurboMode() {
-    powerScaling = DriveBaseConstants::kTurboPowerScalingFactor;
+    powerAdjuster = turboPowerAdjuster;
   }
   void DisableTurboMode() {
-    powerScaling = DriveBaseConstants::kStandardPowerScalingFactor;
+    powerAdjuster = standardPowerAdjuster;
   }
 
  private:
@@ -39,5 +41,9 @@ class DriveBase : public frc2::SubsystemBase {
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
 
-  double powerScaling = DriveBaseConstants::kStandardPowerScalingFactor;
+  static const std::function<double(double)> joystickRangeLimiter;
+  static const std::function<double(double)> standardPowerAdjuster;
+  static const std::function<double(double)> turboPowerAdjuster;
+
+  std::function<double(double)> powerAdjuster = turboPowerAdjuster;
 };

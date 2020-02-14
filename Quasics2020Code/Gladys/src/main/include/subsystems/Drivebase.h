@@ -38,37 +38,13 @@ class Drivebase : public frc2::SubsystemBase {
               << std::endl;
       }
 
-  void DisplayEncoderValues() {
-    frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Left Front Encoder Velocity", leftFrontEncoder.GetVelocity());
+  void DisplayEncoderValues();
 
-    frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Left Rear Encoder Velocity", leftRearEncoder.GetVelocity());
+  double GetLeftFrontEncoderPosition();
 
-    frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Right Front Encoder Velocity", rightFrontEncoder.GetVelocity());
+  double GetRightFrontEncoderPosition();
 
-    frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetPosition());
-    frc::SmartDashboard::PutNumber("Right Rear Encoder Velocity", rightRearEncoder.GetVelocity());
-
-    //There are 42 encoder ticks in a revolution. (The output from .GetPosition() is in ticks)
-    // formula for encoder value to inches: (encoder output in ticks)/(42 ticks)/(10.71 revolutions)*(6Pi inches forward)
-  }
-
-  double GetLeftFrontEncoderPosition() {
-    return leftFrontEncoder.GetPosition();
-  }
-
-  double GetRightFrontEncoderPosition() {
-    return rightFrontEncoder.GetPosition();
-  }
-
-  void ResetEncoderPositions() {
-    leftFrontEncoder.SetPosition(0.0);
-    leftRearEncoder.SetPosition(0.0);
-    rightFrontEncoder.SetPosition(0.0);
-    rightRearEncoder.SetPosition(0.0);
-  }
+  void ResetEncoderPositions();
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be

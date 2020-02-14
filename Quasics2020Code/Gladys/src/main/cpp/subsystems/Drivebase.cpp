@@ -13,13 +13,46 @@ Drivebase::Drivebase()
       rightFront(CANBusIds::SparkMax::Right_Front_No, rev::CANSparkMax::MotorType::kBrushless),
       rightRear(CANBusIds::SparkMax::Right_Rear_No, rev::CANSparkMax::MotorType::kBrushless){
     SetSubsystem("Drivebase");
-    leftFrontEncoder.SetInverted(true);
-    leftRearEncoder.SetInverted(true);
-    rightFrontEncoder.SetInverted(true);
-    rightRearEncoder.SetInverted(true);
 }
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {}
+
+
+  void Drivebase::DisplayEncoderValues() {
+    frc::SmartDashboard::PutNumber("Left Front Encoder Position", leftFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Left Front Encoder Velocity", leftFrontEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Left Rear Encoder Position", leftRearEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Left Rear Encoder Velocity", leftRearEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Right Front Encoder Position", rightFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Right Front Encoder Velocity", rightFrontEncoder.GetVelocity());
+
+    frc::SmartDashboard::PutNumber("Right Rear Encoder Position", rightRearEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Right Rear Encoder Velocity", rightRearEncoder.GetVelocity());
+
+    //There are 42 encoder ticks in a revolution. (The output from .GetPosition() is in ticks)
+    // formula for encoder value to inches: (encoder output in ticks)/(42 ticks)/(10.71 revolutions)*(6Pi inches forward)
+  }
+
+  double Drivebase::GetLeftFrontEncoderPosition() {
+    // Note: we're negating the values to match live behavior (e.g., so
+    // that we get positive numbers when the motor is moving us forward).
+    return -leftFrontEncoder.GetPosition();
+  }
+
+  double Drivebase::GetRightFrontEncoderPosition() {
+    // Note: we're negating the values to match live behavior (e.g., so
+    // that we get positive numbers when the motor is moving us forward).
+    return -rightFrontEncoder.GetPosition();
+  }
+
+  void Drivebase::ResetEncoderPositions() {
+    leftFrontEncoder.SetPosition(0.0);
+    leftRearEncoder.SetPosition(0.0);
+    rightFrontEncoder.SetPosition(0.0);
+    rightRearEncoder.SetPosition(0.0);
+  }
 
 
 void Drivebase::SetMotorPower(double rightPower, double leftPower) {

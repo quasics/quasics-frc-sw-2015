@@ -58,8 +58,9 @@ RobotContainer::RobotContainer() {
       }
   ));
 
-  // Configure the button bindings
+  // Configure the operator interface
   ConfigureButtonBindings();
+  ConfigureSmartDashboard();
 }
 
 void RobotContainer::ConfigureButtonBindings() {

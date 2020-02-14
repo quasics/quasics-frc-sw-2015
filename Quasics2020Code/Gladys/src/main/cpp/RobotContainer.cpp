@@ -100,4 +100,5 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Move off the line",
                                new MoveForTime(&drivebase, 3, .4));
+   std::cout << "Done configuring smart dashboard" << std::endl;
 }

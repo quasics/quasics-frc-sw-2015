@@ -90,7 +90,7 @@ namespace CANBusIds {
     constexpr int LeftClimberNumber = 6;
 
     // CAN bus IDs for the motors used in command panel manipulator subsystem
-    constexpr int SpinMotor = 7;
+    constexpr int SpinMotor = 1;
   }  // namespace VictorSpx
 }  // namespace CANBusIds
 

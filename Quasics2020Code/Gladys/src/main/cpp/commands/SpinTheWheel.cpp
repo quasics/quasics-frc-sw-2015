@@ -26,4 +26,7 @@ void SpinTheWheel::End(bool interrupted) {
 }
 
 // Returns true when the command should end.
-bool SpinTheWheel::IsFinished() { return true; }
+bool SpinTheWheel::IsFinished() { 
+  
+  return false;
+   }

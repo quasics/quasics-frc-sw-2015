@@ -33,10 +33,10 @@ class Intake : public frc2::SubsystemBase {
  private:
   
   // Convenience definition (shortening the name).
-  typedef ctre::phoenix::motorcontrol::can::WPI_TalonSRX WPI_TalonSRX;
+  typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  WPI_TalonSRX BallIntake;
-  WPI_TalonSRX Shoulder;
+  WPI_VictorSPX BallIntake;
+  WPI_VictorSPX Shoulder;
 };

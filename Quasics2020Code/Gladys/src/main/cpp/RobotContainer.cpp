@@ -38,22 +38,30 @@ inline double DeadBand(double stickValue) {
   return (stickValue);
 }
 
-RobotContainer::RobotContainer() {
-  // Initialize all of your commands and subsystems here
-#ifndef DISABLE_DRIVE_BASE
-  drivebase.SetDefaultCommand(TankDrive(
-      &drivebase,
-      [this] {
-        double stickValue =
-            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
-        return DeadBand(stickValue);
-      },
-      [this] {
-        double stickValue =
-            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
-        return DeadBand(stickValue);
-      }));
+RobotContainer::RobotContainer() :
+drivebase(
+#ifdef DISABLE_DRIVE_BASE
+nullptr
+#else
+new Drivebase
 #endif  // DISABLE_DRIVE_BASE
+)
+{
+  // Initialize all of your commands and subsystems here
+  if (drivebase) {
+    drivebase->SetDefaultCommand(TankDrive(
+        drivebase.get(),
+        [this] {
+          double stickValue =
+              driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+          return DeadBand(stickValue);
+        },
+        [this] {
+          double stickValue =
+              driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+          return DeadBand(stickValue);
+        }));
+  }
 
   intake.SetDefaultCommand(ShoulderControl(
       &intake,
@@ -71,7 +79,7 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
-  std::cout << "Configuring button bindings for Driver controls" << std::endl;
+  std::cout << "Beginning button binding configuration" << std::endl;
 
 #ifndef DISABLE_DRIVE_BASE
   frc2::JoystickButton(&driverJoystick,
@@ -147,18 +155,22 @@ void RobotContainer::ConfigureButtonBindings() {
   //    * X button    --> intake balls
   //    * back button --> ????
 
-  std::cout << "Done configuring button bindings" << std::endl;
+  std::cout << "Completed button binding configuration" << std::endl;
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
+#ifndef DISABLE_DRIVE_BASE
+  return &m_trivialAutonmousCommand;
+#else
   return &m_autonomousCommand;
+#endif  // DISABLE_DRIVE_BASE
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
-#ifndef DISABLE_DRIVE_BASE
-  frc::SmartDashboard::PutData("Move off the line",
-                               new MoveForTime(&drivebase, 3, .4));
-   std::cout << "Done configuring smart dashboard" << std::endl;
-#endif  // DISABLE_DRIVE_BASE
+  std::cout << "Beginning smart dashboard configuration" << std::endl;
+  if (drivebase) {
+    frc::SmartDashboard::PutData("Move off the line",
+                                new MoveForTime(drivebase.get(), 3, .4));
+  }
+  std::cout << "Completed smart dashboard configuration" << std::endl;
 }

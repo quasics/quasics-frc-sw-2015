@@ -80,17 +80,20 @@ namespace CANBusIds {
   }  // namespace SparkMax
 
   namespace VictorSpx {
-    // CAN bus IDs for the motors used in the intake subsystem
+    // CAN bus IDs for the motors used in the (floor) intake subsystem
     constexpr int BallIntakeMotor = 1;
-    constexpr int ShoulderMotor = 7;
+    constexpr int ShoulderMotor = 2;
+
+    // CAN bus IDs for the motors used in the "exhaust" subsystem
     constexpr int PushUpMotor = 3;
     constexpr int ShootMotor = 4;
 
+    // CAN bus IDs for the motors used on the climbing subsystem
     constexpr int RightClimberNumber = 5;
     constexpr int LeftClimberNumber = 6;
 
     // CAN bus IDs for the motors used in command panel manipulator subsystem
-    constexpr int SpinMotor = 2;
+    constexpr int SpinMotor = 7;
   }  // namespace VictorSpx
 }  // namespace CANBusIds
 

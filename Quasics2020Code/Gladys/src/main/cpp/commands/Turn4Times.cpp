@@ -39,7 +39,7 @@ void Turn4Times::End(bool interrupted) {
 bool Turn4Times::IsFinished() {
   currColor = m_controlPanel->getCurrentColor();
   if (prevColor != currColor) {
-    std::cout << "New color is " << m_controlPanel->getColorName(initColor) << std::endl;
+    std::cout << "New color is " << m_controlPanel->getColorName(currColor) << std::endl;
     if(initColor == currColor){
       std::cout << "Bump the count!" << std::endl;
       counter++;

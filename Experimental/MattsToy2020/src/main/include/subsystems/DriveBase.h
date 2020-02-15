@@ -11,6 +11,7 @@
 #include <rev/CANSparkMax.h>
 
 #include <functional>
+#include <iostream>
 
 class DriveBase : public frc2::SubsystemBase {
  public:
@@ -27,9 +28,11 @@ class DriveBase : public frc2::SubsystemBase {
   }
 
   void EnableTurboMode() {
+    std::cout << "Enabling turbo mode" << std::endl;
     powerAdjuster = turboPowerAdjuster;
   }
   void DisableTurboMode() {
+    std::cout << "Disabling turbo mode" << std::endl;
     powerAdjuster = standardPowerAdjuster;
   }
 

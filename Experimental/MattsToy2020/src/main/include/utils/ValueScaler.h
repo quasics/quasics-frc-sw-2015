@@ -11,13 +11,19 @@
 
 #include <cmath>
 
+/**
+ * Utility class to encapsulate scaling an input value (e.g., as provided by a
+ * joystick) by a fixed amount.
+ */
 template <typename ValueType>
 class ValueScaler {
  public:
+  /** Constructor. */
   constexpr ValueScaler(ValueType scalingFactor)
       : scalingFactor(scalingFactor) {
   }
 
+  /** Applies the scaling factor to the parameter value. */
   ValueType operator()(ValueType val) const {
     return val * scalingFactor;
   }

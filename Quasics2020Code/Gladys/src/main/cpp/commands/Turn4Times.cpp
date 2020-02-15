@@ -48,5 +48,6 @@ bool Turn4Times::IsFinished() {
       }
     }
   }
+    prevColor = currColor;
   return false;
 }

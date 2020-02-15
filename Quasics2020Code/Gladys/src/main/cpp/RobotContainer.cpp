@@ -90,33 +90,33 @@ void RobotContainer::ConfigureButtonBindings() {
 
   frc2::JoystickButton(&operatorController,
                  int(frc::XboxController::Button::kBumperLeft))
-  .WhenPressed(Turn4Times(&commandPanel));
+      .WhenPressed(Turn4Times(&commandPanel));
 
   // frc2::JoystickButton(&m_xboxController,
   // int(frc::XboxController::Button::kA))
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
 
-//Exhaust
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kB)
-    ).WhileHeld(ShootBallsCommand(&exhaust));
-  // frc2::JoystickButton(
-  //     &operatorController,
-  //     int(frc::XboxController::Button::kB)
-  //   ).WhileHeld(ShootBallsReverseCommand(&exhaust));
-//
-
 //Intake
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kX)
+    ).WhileHeld(ShootBallsCommand(&exhaust));
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kB)
+    ).WhileHeld(ShootBallsReverseCommand(&exhaust));
+//
+
+//Exhaust
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kB)
     ).WhileHeld(IntakeBallsCommand(&intake));
-  // frc2::JoystickButton(
-    //   &operatorController,
-    //   int(frc::XboxController::Button::kBumperRight)
-    // ).WhileHeld(IntakeBallsReverseCommand(&intake));
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kX)
+    ).WhileHeld(IntakeBallsReverseCommand(&intake));
 //
 
   frc2::JoystickButton(
@@ -139,7 +139,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperRight))
-      .WhenPressed(TurnToColor(&commandPanel));
+      .WhileHeld(TurnToColor(&commandPanel));
 
   // Going to map the following buttons:
   //    * left bumper --> push the ball up (TODO) fu=ind other binding

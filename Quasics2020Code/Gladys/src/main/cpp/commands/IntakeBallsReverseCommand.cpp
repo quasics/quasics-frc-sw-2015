@@ -20,5 +20,5 @@ void IntakeBallsReverseCommand::Initialize() {
 // Called once the command ends or is interrupted.
 void IntakeBallsReverseCommand::End(bool interrupted) {
 
-  intake -> TurnSuctionOnReverse();
+  intake -> TurnSuctionOff();
 }

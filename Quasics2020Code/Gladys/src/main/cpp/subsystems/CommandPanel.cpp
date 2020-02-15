@@ -46,7 +46,7 @@ CommandPanel::Color CommandPanel::getCurrentColor() {
   const frc::Color matchedColor =
       m_colorMatcher.MatchClosestColor(detectedColor, confidence);
 
-\  constexpr double kMinimumConfidence = 0.90;
+  constexpr double kMinimumConfidence = 0.90;
 
   if (matchedColor == CommandPanelConstants::kBlueTarget && confidence > kMinimumConfidence) {
     colorID = BLUE;

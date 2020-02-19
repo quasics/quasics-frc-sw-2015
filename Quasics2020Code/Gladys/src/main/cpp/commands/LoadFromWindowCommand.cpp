@@ -7,18 +7,20 @@
 
 #include "commands/LoadFromWindowCommand.h"
 
-LoadFromWindowCommand::LoadFromWindowCommand() {
+LoadFromWindowCommand::LoadFromWindowCommand(Exhaust*exhaust):exhaust(exhaust) {
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
-void LoadFromWindowCommand::Initialize() {}
+void LoadFromWindowCommand::Initialize() {
+  //pushes ball into storage from window
+  exhaust->PushBallDown();
+}
 
-// Called repeatedly when this Command is scheduled to run
-void LoadFromWindowCommand::Execute() {}
 
 // Called once the command ends or is interrupted.
-void LoadFromWindowCommand::End(bool interrupted) {}
+void LoadFromWindowCommand::End(bool interrupted) {
+  //turns off loading motor
+  exhaust->PushBallOff();
+}
 
-// Returns true when the command should end.
-bool LoadFromWindowCommand::IsFinished() { return false; }

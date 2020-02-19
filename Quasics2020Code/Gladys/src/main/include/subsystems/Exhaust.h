@@ -20,12 +20,14 @@ class Exhaust : public frc2::SubsystemBase {
    */
   void Periodic();
 
+  // Lower motor, only used to move the ball into the primary holding area.
   void PushBallUp();
   void PushBallDown();
+  void PushBallOff();
+
   void ShootBallOn();
   void ShootBallDown();
 
-  void PushBallOff();
   void ShootBallOff();
 
 

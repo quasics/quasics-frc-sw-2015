@@ -14,13 +14,13 @@ LoadFromWindowCommand::LoadFromWindowCommand(Exhaust*exhaust):exhaust(exhaust) {
 // Called when the command is initially scheduled.
 void LoadFromWindowCommand::Initialize() {
   //pushes ball into storage from window
-  exhaust->PushBallDown();
+  exhaust->ShootBallDown();
 }
 
 
 // Called once the command ends or is interrupted.
 void LoadFromWindowCommand::End(bool interrupted) {
   //turns off loading motor
-  exhaust->PushBallOff();
+  exhaust->ShootBallOff();
 }
 

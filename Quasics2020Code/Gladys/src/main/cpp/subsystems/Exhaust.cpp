@@ -22,9 +22,9 @@ void Exhaust::Periodic() {
 void Exhaust::PushBallUp() {
   Push.Set(1);
 }
-void Exhaust::PushBallDown() {
+ void Exhaust::PushBallDown() {
   Push.Set(-1);
-}
+ }
 void Exhaust::PushBallOff() {
   Push.Set(0);
 }

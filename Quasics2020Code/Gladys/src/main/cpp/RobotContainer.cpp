@@ -29,6 +29,7 @@
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
+#include "commands/LoadFromWindowCommand.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -109,7 +110,7 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kY)
-    ).WhileHeld(ShootBallsCommand(&exhaust));
+    ).WhileHeld(LoadFromWindowCommand(&exhaust));
   //frc2::JoystickButton(
       //&operatorController,
       //int(frc::XboxController::Button::kB)

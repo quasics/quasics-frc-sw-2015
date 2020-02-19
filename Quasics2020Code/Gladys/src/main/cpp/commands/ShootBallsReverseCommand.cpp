@@ -15,7 +15,7 @@ ShootBallsReverseCommand::ShootBallsReverseCommand(Exhaust*exhaust):exhaust(exha
 // Called when the command is initially scheduled.
 void ShootBallsReverseCommand::Initialize() {
   exhaust -> ShootBallOn();
-  exhaust -> PushBallDown();
+  exhaust -> PushBallUp();
 }
 
 // Called once the command ends or is interrupted.

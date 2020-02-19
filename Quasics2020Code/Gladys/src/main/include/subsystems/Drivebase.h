@@ -7,11 +7,13 @@
 
 #pragma once
 
-#include <iostream>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+
+#include <iostream>
+
 #include "Constants.h"
-#include <frc/smartdashboard/SmartDashboard.h>
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -22,7 +24,9 @@ class Drivebase : public frc2::SubsystemBase {
    */
   void Periodic();
   void SetMotorPower(double leftPower, double rightPower);
-  void Stop() { SetMotorPower(0,0); }
+  void Stop() {
+    SetMotorPower(0, 0);
+  }
   void EnableTurboMode() {
     std::cout << "Switching to TURBO" << std::endl;
     powerScaling = DriveBaseConstants::TurboMaxPower;
@@ -34,9 +38,8 @@ class Drivebase : public frc2::SubsystemBase {
   void SwitchFace() {
     frontIsForward = !frontIsForward;
     std::cout << "Switching to front being "
-              << (frontIsForward ? "forward" : "backward")
-              << std::endl;
-      }
+              << (frontIsForward ? "forward" : "backward") << std::endl;
+  }
 
   void DisplayEncoderValues();
 
@@ -53,7 +56,8 @@ class Drivebase : public frc2::SubsystemBase {
   rev::CANSparkMax leftRear;
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
-  rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();  //.GetPosition and .GetVelocity
+  rev::CANEncoder leftFrontEncoder =
+      leftFront.GetEncoder();  //.GetPosition and .GetVelocity
   rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();

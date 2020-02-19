@@ -1,15 +1,42 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Copyright (c) 2020 Quasics Robotics and Matthew J. Healy                   */
+/* All Rights Reserved.                                                       */
+/*                                                                            */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
+/* must be accompanied by the BSD license file in the root directory of the   */
+/* project repository.                                                        */
 /*----------------------------------------------------------------------------*/
 
 #include "subsystems/DriveBase.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
+#include <cmath>
+
 #include "Constants.h"
+#include "utils/EncoderHelpers.h"
 #include "utils/RangeLimiter.h"
 #include "utils/ValueScaler.h"
+
+/// Ticks per revolution on the Rev Neo motors.
+constexpr double kTicksPerRevolution_NeoMotor = 42;
+
+/// Gear ratio used for the 2020 robots.
+constexpr double kGearRatio_2020 = 10.71;
+
+/// Wheel diameter on the 2020 robots.
+constexpr double kWheelDiameter_Inches_2020 = 6;
+
+/// Constant for Pi.  (Not included in math library until C++20.)
+constexpr double PI = 4.0 * std::atan(1);
+
+static constexpr EncoderTicksToUnitsConverter ticksToInchesConverter(
+    kTicksPerRevolution_NeoMotor, kGearRatio_2020, kWheelDiameter_Inches_2020);
+
+/// List of DriveBase motor specifiers that map to a single motor (vs. a group).
+static constexpr auto kPrimaryMotorPositions = {
+    DriveBase::Motors::LeftFront, DriveBase::Motors::LeftRear,
+    DriveBase::Motors::RightFront, DriveBase::Motors::RightRear};
 
 // Allows us to limit values to the legal range of the joystick (in case someone
 // feeds us bad data).
@@ -51,4 +78,67 @@ void DriveBase::SetMotorPower(double leftPower, double rightPower) {
   leftRear.Set(appliedLeftPower);
   rightFront.Set(appliedRightPower);
   rightRear.Set(appliedRightPower);
+}
+
+rev::CANEncoder* DriveBase::GetEncoder(DriveBase::Motors motor) {
+  // Map the enumerated value to a (single) motor encoder, if possible.
+  switch (motor) {
+    case Motors::LeftFront:
+      return &leftFrontEncoder;
+    case Motors::LeftRear:
+      return &leftRearEncoder;
+    case Motors::RightFront:
+      return &rightFrontEncoder;
+    case Motors::RightRear:
+      return &rightRearEncoder;
+    default:
+      return nullptr;
+  }
+}
+
+double DriveBase::GetEncoderPosition(DriveBase::Motors motor) {
+  int count = 0;
+  double positionTotal = 0.0;
+
+  for (Motors m : kPrimaryMotorPositions) {
+    if (int(m) & int(motor)) {
+      auto* encoder = GetEncoder(m);
+      if (encoder) {
+        ++count;
+        positionTotal += encoder->GetPosition();
+      }
+    }
+  }
+
+  double result = count > 1 ? (positionTotal / count) : positionTotal;
+  return result;
+}
+
+void DriveBase::ResetEncoderPosition(DriveBase::Motors motor) {
+  for (Motors m : kPrimaryMotorPositions) {
+    if (int(m) & int(motor)) {
+      auto* encoder = GetEncoder(m);
+      if (encoder) {
+        encoder->SetPosition(0.0);
+      }
+    }
+  }
+}
+
+void DriveBase::ReportEncoderDataToSmartDashboard(std::string prefix,
+                                                  rev::CANEncoder& encoder) {
+  const double posInTicks = encoder.GetPosition();
+  const double posInInches = ticksToInchesConverter(posInTicks);
+
+  frc::SmartDashboard::PutNumber(prefix + " encoder position (ticks)",
+                                 posInTicks);
+  frc::SmartDashboard::PutNumber(prefix + " encoder position (in)",
+                                 posInInches);
+}
+
+void DriveBase::ReportEncoderDataToSmartDashboard() {
+  ReportEncoderDataToSmartDashboard("Right front", rightFrontEncoder);
+  ReportEncoderDataToSmartDashboard("Right rear", rightRearEncoder);
+  ReportEncoderDataToSmartDashboard("Left front", leftFrontEncoder);
+  ReportEncoderDataToSmartDashboard("Left rear", leftRearEncoder);
 }

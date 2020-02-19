@@ -105,21 +105,21 @@ void RobotContainer::ConfigureButtonBindings() {
   //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
 
-//Intake
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kX)
-    ).WhileHeld(ShootBallsCommand(&exhaust));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kB)
-    ).WhileHeld(ShootBallsReverseCommand(&exhaust));
-//
-
 //Exhaust
   frc2::JoystickButton(
       &operatorController,
-      int(frc::XboxController::Button::kB)
+      int(frc::XboxController::Button::kY)
+    ).WhileHeld(ShootBallsCommand(&exhaust));
+  //frc2::JoystickButton(
+      //&operatorController,
+      //int(frc::XboxController::Button::kB)
+    //).WhileHeld(ShootBallsReverseCommand(&exhaust));
+//
+
+//Intake
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kA)
     ).WhileHeld(IntakeBallsCommand(&intake));
   frc2::JoystickButton(
       &operatorController,
@@ -127,27 +127,24 @@ void RobotContainer::ConfigureButtonBindings() {
     ).WhileHeld(IntakeBallsReverseCommand(&intake));
 //
 
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kBack)
-    ).WhileHeld(SpinTheWheel(&commandPanel, false));
+
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kStart)
     ).WhileHeld(SpinTheWheel(&commandPanel, true));
   frc2::JoystickButton(
       &operatorController,
-      int(frc::XboxController::Button::kA)
+      int(frc::XboxController::Button::kBumperLeft)
     ).WhileHeld(ClimberUp(&climber));
   frc2::JoystickButton(
       &operatorController,
-      int(frc::XboxController::Button::kY)
+      int(frc::XboxController::Button::kBumperRight)
     ).WhileHeld(ClimberDown(&climber));
   
 
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperRight))
-      .WhileHeld(TurnToColor(&commandPanel));
+  //frc2::JoystickButton(&operatorController,
+                       //int(frc::XboxController::Button::kBumperRight))
+      //.WhileHeld(TurnToColor(&commandPanel));
 
   // Going to map the following buttons:
   //    * left bumper --> push the ball up (TODO) fu=ind other binding
@@ -172,5 +169,10 @@ void RobotContainer::ConfigureSmartDashboard() {
     frc::SmartDashboard::PutData("Move off the line",
                                 new MoveForTime(drivebase.get(), 3, .4));
   }
+  frc::SmartDashboard::PutData("Turn Four Times",
+                                new Turn4Times(&commandPanel));
   std::cout << "Completed smart dashboard configuration" << std::endl;
+
+  frc::SmartDashboard::PutData("Turn To Color",
+                                new TurnToColor(&commandPanel));
 }

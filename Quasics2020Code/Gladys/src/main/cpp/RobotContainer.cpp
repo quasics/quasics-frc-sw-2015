@@ -30,6 +30,7 @@
 #include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
 #include "commands/LoadFromWindowCommand.h"
+#include "commands/DeliverToLowGoalCommand.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -101,9 +102,9 @@ void RobotContainer::ConfigureButtonBindings() {
                  int(frc::XboxController::Button::kBumperLeft))
       .WhenPressed(Turn4Times(&commandPanel));
 
-  // frc2::JoystickButton(&m_xboxController,
-  // int(frc::XboxController::Button::kA))
-  //     .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
+   frc2::JoystickButton(&operatorController,
+   int(frc::XboxController::Button::kA))
+       .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
 
 //Exhaust
@@ -111,17 +112,17 @@ void RobotContainer::ConfigureButtonBindings() {
       &operatorController,
       int(frc::XboxController::Button::kY)
     ).WhileHeld(LoadFromWindowCommand(&exhaust));
-  //frc2::JoystickButton(
-      //&operatorController,
-      //int(frc::XboxController::Button::kB)
-    //).WhileHeld(ShootBallsReverseCommand(&exhaust));
+  frc2::JoystickButton(
+      &operatorController,
+      int(frc::XboxController::Button::kB)
+    ).WhileHeld(DeliverToLowGoalCommand(&exhaust));
 //
 
 //Intake
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kA)
-    ).WhileHeld(IntakeBallsCommand(&intake));
+  //frc2::JoystickButton(
+      //&operatorController,
+      //int(frc::XboxController::Button::kA)
+    //).WhileHeld(IntakeBallsCommand(&intake));
   frc2::JoystickButton(
       &operatorController,
       int(frc::XboxController::Button::kX)

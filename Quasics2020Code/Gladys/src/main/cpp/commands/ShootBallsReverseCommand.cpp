@@ -7,19 +7,21 @@
 
 #include "commands/ShootBallsReverseCommand.h"
 
+ShootBallsReverseCommand::ShootBallsReverseCommand(Exhaust* exhaust)
+    : exhaust(exhaust) {
+  // Use AddRequirements() here to declare subsystem dependencies.
 
-ShootBallsReverseCommand::ShootBallsReverseCommand(Exhaust*exhaust):exhaust(exhaust) {
-  // Use addRequirements() here to declare subsystem dependencies.
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void ShootBallsReverseCommand::Initialize() {
-  exhaust -> ShootBallOn();
-  exhaust -> PushBallUp();
+  exhaust->ShootBallOn();
+  exhaust->PushBallUp();
 }
 
 // Called once the command ends or is interrupted.
 void ShootBallsReverseCommand::End(bool interrupted) {
-  exhaust -> ShootBallOff();
-  exhaust -> PushBallOff();
+  exhaust->ShootBallOff();
+  exhaust->PushBallOff();
 }

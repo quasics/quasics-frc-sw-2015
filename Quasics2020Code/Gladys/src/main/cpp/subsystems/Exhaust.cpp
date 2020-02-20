@@ -9,9 +9,9 @@
 
 #include "Constants.h"
 
-Exhaust::Exhaust() 
-  : Shoot(CANBusIds::VictorSpx::ShootMotor),
-    Push(CANBusIds::VictorSpx::PushUpMotor) {
+Exhaust::Exhaust()
+    : Shoot(CANBusIds::VictorSpx::ShootMotor),
+      Push(CANBusIds::VictorSpx::PushUpMotor) {
   SetSubsystem("Exhaust");
 }
 
@@ -22,18 +22,23 @@ void Exhaust::Periodic() {
 void Exhaust::PushBallUp() {
   Push.Set(1);
 }
- void Exhaust::PushBallDown() {
+
+void Exhaust::PushBallDown() {
   Push.Set(-1);
- }
+}
+
 void Exhaust::PushBallOff() {
   Push.Set(0);
 }
+
 void Exhaust::ShootBallOn() {
   Shoot.Set(1);
 }
+
 void Exhaust::ShootBallDown() {
   Shoot.Set(-1);
 }
+
 void Exhaust::ShootBallOff() {
   Shoot.Set(0);
 }

@@ -7,8 +7,11 @@
 
 #include "commands/DeliverToLowGoalCommand.h"
 
-DeliverToLowGoalCommand::DeliverToLowGoalCommand(Exhaust*exhaust):exhaust(exhaust) {
-  // Use addRequirements() here to declare subsystem dependencies.
+DeliverToLowGoalCommand::DeliverToLowGoalCommand(Exhaust* exhaust)
+    : exhaust(exhaust) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
@@ -22,5 +25,3 @@ void DeliverToLowGoalCommand::End(bool interrupted) {
   exhaust->PushBallOff();
   exhaust->ShootBallOff();
 }
-
-

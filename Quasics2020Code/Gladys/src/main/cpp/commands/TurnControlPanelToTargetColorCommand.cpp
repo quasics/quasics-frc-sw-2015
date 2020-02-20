@@ -9,6 +9,8 @@
 
 #include <frc/DriverStation.h>
 
+// TODO(RJ): (Bug) Remove this global variable.  (Make it local to the function
+// where it's used.)
 bool noData = false;
 
 TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(

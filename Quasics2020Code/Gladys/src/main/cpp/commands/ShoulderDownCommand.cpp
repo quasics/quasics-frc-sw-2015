@@ -7,16 +7,18 @@
 
 #include "commands/ShoulderDownCommand.h"
 
-ShoulderDownCommand::ShoulderDownCommand(Intake*intake):intake(intake) {
-  // Use addRequirements() here to declare subsystem dependencies.
+ShoulderDownCommand::ShoulderDownCommand(Intake* intake) : intake(intake) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void ShoulderDownCommand::Initialize() {
-  intake -> RotateShoulderDown();
+  intake->RotateShoulderDown();
 }
 
 // Called once the command ends or is interrupted.
 void ShoulderDownCommand::End(bool interrupted) {
-  intake -> TurnShoulderOff();
+  intake->TurnShoulderOff();
 }

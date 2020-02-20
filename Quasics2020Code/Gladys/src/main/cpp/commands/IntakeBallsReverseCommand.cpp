@@ -7,18 +7,19 @@
 
 #include "commands/IntakeBallsReverseCommand.h"
 
-IntakeBallsReverseCommand::IntakeBallsReverseCommand(Intake*intake):intake(intake) {
-  // Use addRequirements() here to declare subsystem dependencies.
+IntakeBallsReverseCommand::IntakeBallsReverseCommand(Intake* intake)
+    : intake(intake) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void IntakeBallsReverseCommand::Initialize() {
-
-  intake -> TurnSuctionOnReverse();
+  intake->TurnSuctionOnReverse();
 }
 
 // Called once the command ends or is interrupted.
 void IntakeBallsReverseCommand::End(bool interrupted) {
-
-  intake -> TurnSuctionOff();
+  intake->TurnSuctionOff();
 }

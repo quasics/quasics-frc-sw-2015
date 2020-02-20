@@ -7,20 +7,21 @@
 
 #include "commands/LoadFromWindowCommand.h"
 
-LoadFromWindowCommand::LoadFromWindowCommand(Exhaust*exhaust):exhaust(exhaust) {
-  // Use addRequirements() here to declare subsystem dependencies.
+LoadFromWindowCommand::LoadFromWindowCommand(Exhaust* exhaust)
+    : exhaust(exhaust) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void LoadFromWindowCommand::Initialize() {
-  //pushes ball into storage from window
+  // pushes ball into storage from window
   exhaust->ShootBallDown();
 }
 
-
 // Called once the command ends or is interrupted.
 void LoadFromWindowCommand::End(bool interrupted) {
-  //turns off loading motor
+  // turns off loading motor
   exhaust->ShootBallOff();
 }
-

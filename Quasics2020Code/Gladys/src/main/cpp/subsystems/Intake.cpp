@@ -22,18 +22,23 @@ void Intake::Periodic() {
 void Intake::TurnSuctionOn() {
   BallIntake.Set(1);
 }
+
 void Intake::TurnSuctionOff() {
   BallIntake.Set(0);
 }
+
 void Intake::TurnSuctionOnReverse() {
   BallIntake.Set(-1);
 }
+
 void Intake::RotateShoulderUp() {
   Shoulder.Set(1);
 }
+
 void Intake::RotateShoulderDown() {
   Shoulder.Set(-1);
 }
+
 void Intake::TurnShoulderOff() {
   Shoulder.Set(0);
 }

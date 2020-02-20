@@ -18,15 +18,12 @@ CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
   m_colorMatcher.AddColorMatch(CommandPanelConstants::kYellowTarget);
 }
 
-
-
 // This method will be called once per scheduler run
 void CommandPanel::Periodic() {
 }
 
 void CommandPanel::TurnWheelMotorOn(bool f) {
-  
-    if(f){
+  if (f) {
     motor.Set(0.5);
   } else {
     motor.Set(-0.5);
@@ -48,7 +45,8 @@ CommandPanel::Color CommandPanel::getCurrentColor() {
 
   constexpr double kMinimumConfidence = 0.90;
 
-  if (matchedColor == CommandPanelConstants::kBlueTarget && confidence > kMinimumConfidence) {
+  if (matchedColor == CommandPanelConstants::kBlueTarget &&
+      confidence > kMinimumConfidence) {
     colorID = BLUE;
   } else if (matchedColor == CommandPanelConstants::kRedTarget &&
              confidence > kMinimumConfidence) {

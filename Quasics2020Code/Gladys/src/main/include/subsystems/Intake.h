@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
+#include <frc2/command/SubsystemBase.h>
 
+// TODO(Nurfadil): Document this class.
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -25,13 +26,11 @@ class Intake : public frc2::SubsystemBase {
   void TurnSuctionOff();
 
   // Controlling the motor at the shoulder joint.
-
   void RotateShoulderUp();
   void RotateShoulderDown();
   void TurnShoulderOff();
 
  private:
-  
   // Convenience definition (shortening the name).
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 

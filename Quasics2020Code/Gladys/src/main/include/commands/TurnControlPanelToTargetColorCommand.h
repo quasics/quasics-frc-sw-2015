@@ -11,6 +11,8 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/CommandPanel.h"
+
+// TODO(RJ): Document this class.
 /**
  * A command that turns to a color.
  */

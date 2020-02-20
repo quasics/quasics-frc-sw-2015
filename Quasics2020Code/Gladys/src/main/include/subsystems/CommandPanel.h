@@ -7,39 +7,37 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
-#include "Constants.h"
 #include <frc/smartdashboard/smartdashboard.h>
 #include <frc/util/color.h>
-#include "rev/ColorMatch.h"
-#include "rev/ColorSensorV3.h"
+#include <frc2/command/SubsystemBase.h>
+
 #include <string>
 
+#include "Constants.h"
+#include "rev/ColorMatch.h"
+#include "rev/ColorSensorV3.h"
+
+// TODO(RJ): Document this class.
 class CommandPanel : public frc2::SubsystemBase {
  public:
-  enum Color{
-    UNKNOWN=0,
-    BLUE=1,
-    RED=2,
-    GREEN=3,
-    YELLOW=4
-  };
-  
+  enum Color { UNKNOWN = 0, BLUE = 1, RED = 2, GREEN = 3, YELLOW = 4 };
+
   CommandPanel();
   //~CommandPanel();
   void Periodic();
-  //Motor control
+  // Motor control
   void TurnWheelMotorOff();
 
   void TurnWheelMotorOn(bool);
-  //changes the color recieved to an int
+  // changes the color recieved to an int
   Color getCurrentColor();
   static std::string getColorName(Color c);
+
  private:
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
   WPI_VictorSPX motor;
-  
+
   rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
   rev::ColorMatch m_colorMatcher;
-  };
+};

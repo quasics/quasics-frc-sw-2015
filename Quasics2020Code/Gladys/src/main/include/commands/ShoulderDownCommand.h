@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Intake.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,15 +23,14 @@
 class ShoulderDownCommand
     : public frc2::CommandHelper<frc2::CommandBase, ShoulderDownCommand> {
  public:
-  ShoulderDownCommand(Intake*intake);
+  ShoulderDownCommand(Intake* intake);
 
-//Rotate arm down.
+  // Rotate arm down.
   void Initialize() override;
 
-//Stop rotation of arm.
+  // Stop rotation of arm.
   void End(bool interrupted) override;
 
-private:
-Intake*intake;
-
+ private:
+  Intake* intake;
 };

@@ -7,17 +7,18 @@
 
 #include "commands/IntakeBallsCommand.h"
 
-IntakeBallsCommand::IntakeBallsCommand(Intake*intake):intake(intake) {
-  // Use addRequirements() here to declare subsystem dependencies.
+IntakeBallsCommand::IntakeBallsCommand(Intake* intake) : intake(intake) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void IntakeBallsCommand::Initialize() {
-  intake -> TurnSuctionOn();
+  intake->TurnSuctionOn();
 }
 
 // Called once the command ends or is interrupted.
 void IntakeBallsCommand::End(bool interrupted) {
-  intake -> TurnSuctionOff();
+  intake->TurnSuctionOff();
 }
-

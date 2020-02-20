@@ -13,6 +13,7 @@
 
 #include "subsystems/Drivebase.h"
 
+// TODO(Scott): Document this class.
 /**
  * An example command.
  *

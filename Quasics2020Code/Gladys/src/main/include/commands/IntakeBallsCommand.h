@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Intake.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,15 +23,14 @@
 class IntakeBallsCommand
     : public frc2::CommandHelper<frc2::CommandBase, IntakeBallsCommand> {
  public:
-  IntakeBallsCommand(Intake*intake);
+  IntakeBallsCommand(Intake* intake);
 
-// Starts the motor on the intake subsystem
+  // Starts the motor on the intake subsystem
   void Initialize() override;
 
-// Stops the motor on th eintake subsystem
+  // Stops the motor on th eintake subsystem
   void End(bool interrupted) override;
 
-private:
-Intake*intake;
-
+ private:
+  Intake* intake;
 };

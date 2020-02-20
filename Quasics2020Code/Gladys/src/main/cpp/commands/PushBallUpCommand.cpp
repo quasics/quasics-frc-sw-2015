@@ -7,16 +7,18 @@
 
 #include "commands/PushBallUpCommand.h"
 
-PushBallUpCommand::PushBallUpCommand(Exhaust*exhaust):exhaust(exhaust) {
-  // Use addRequirements() here to declare subsystem dependencies.
+PushBallUpCommand::PushBallUpCommand(Exhaust* exhaust) : exhaust(exhaust) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void PushBallUpCommand::Initialize() {
-  exhaust -> PushBallUp();
+  exhaust->PushBallUp();
 }
 
 // Called once the command ends or is interrupted.
 void PushBallUpCommand::End(bool interrupted) {
-  exhaust -> PushBallOff();
+  exhaust->PushBallOff();
 }

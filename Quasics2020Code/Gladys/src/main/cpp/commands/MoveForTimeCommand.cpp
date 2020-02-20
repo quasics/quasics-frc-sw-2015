@@ -13,7 +13,6 @@ MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
       duration(duration),
       left_power(power),
       right_power(power) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 

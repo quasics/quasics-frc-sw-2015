@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
+#include <frc2/command/SubsystemBase.h>
 
+// TODO(Gavin): Document this class.
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
@@ -20,7 +21,7 @@ class Climber : public frc2::SubsystemBase {
   void Periodic();
 
   void MoveClimberUp();
-  
+
   void MoveClimberDown();
 
   void StopClimber();
@@ -30,7 +31,7 @@ class Climber : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX VictorSPX;
-  
+
   VictorSPX RightClimber;
   VictorSPX LeftClimber;
 };

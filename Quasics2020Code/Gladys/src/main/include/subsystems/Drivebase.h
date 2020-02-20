@@ -15,6 +15,7 @@
 
 #include "Constants.h"
 
+// TODO(Kat): Document this class.
 class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();

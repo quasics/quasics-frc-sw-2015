@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Exhaust.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,13 +23,12 @@
 class DeliverToLowGoalCommand
     : public frc2::CommandHelper<frc2::CommandBase, DeliverToLowGoalCommand> {
  public:
-  DeliverToLowGoalCommand(Exhaust*exhaust);
+  DeliverToLowGoalCommand(Exhaust* exhaust);
 
   void Initialize() override;
 
   void End(bool interrupted) override;
 
-  private:
-  Exhaust*exhaust;
-
+ private:
+  Exhaust* exhaust;
 };

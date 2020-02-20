@@ -7,10 +7,10 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
+#include <frc2/command/SubsystemBase.h>
 
-
+// TODO(Nurfadil): Document this class.
 class Exhaust : public frc2::SubsystemBase {
  public:
   Exhaust();
@@ -30,14 +30,11 @@ class Exhaust : public frc2::SubsystemBase {
 
   void ShootBallOff();
 
-
  private:
-
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
-
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
   WPI_VictorSPX Shoot;
-  WPI_VictorSPX Push; 
+  WPI_VictorSPX Push;
 };

@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Exhaust.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,14 +23,14 @@
 class ShootBallsCommand
     : public frc2::CommandHelper<frc2::CommandBase, ShootBallsCommand> {
  public:
-  ShootBallsCommand(Exhaust*exhaust);
+  ShootBallsCommand(Exhaust* exhaust);
 
-//Shoot balls.
+  // Shoot balls.
   void Initialize() override;
 
-//Stops ball shoooter.
+  // Stops ball shoooter.
   void End(bool interrupted) override;
 
-private:
-  Exhaust*exhaust;
+ private:
+  Exhaust* exhaust;
 };

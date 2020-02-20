@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Intake.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,15 +23,14 @@
 class IntakeBallsReverseCommand
     : public frc2::CommandHelper<frc2::CommandBase, IntakeBallsReverseCommand> {
  public:
-  IntakeBallsReverseCommand(Intake*intake);
+  IntakeBallsReverseCommand(Intake* intake);
 
-//Reverses the ball intaker.
+  // Reverses the ball intaker.
   void Initialize() override;
 
-//Stops ball intake rotation.
+  // Stops ball intake rotation.
   void End(bool interrupted) override;
 
-  private:
-  Intake*intake;
-
+ private:
+  Intake* intake;
 };

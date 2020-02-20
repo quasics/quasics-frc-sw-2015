@@ -7,18 +7,20 @@
 
 #include "commands/ShootBallsCommand.h"
 
-ShootBallsCommand::ShootBallsCommand(Exhaust*exhaust):exhaust(exhaust) {
-  // Use addRequirements() here to declare subsystem dependencies.
+ShootBallsCommand::ShootBallsCommand(Exhaust* exhaust) : exhaust(exhaust) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }
 
 // Called when the command is initially scheduled.
 void ShootBallsCommand::Initialize() {
-  exhaust -> ShootBallOn();
-  exhaust -> PushBallUp();
+  exhaust->ShootBallOn();
+  exhaust->PushBallUp();
 }
 
 // Called once the command ends or is interrupted.
 void ShootBallsCommand::End(bool interrupted) {
-  exhaust -> ShootBallOff();
-  exhaust -> PushBallOff();
+  exhaust->ShootBallOff();
+  exhaust->PushBallOff();
 }

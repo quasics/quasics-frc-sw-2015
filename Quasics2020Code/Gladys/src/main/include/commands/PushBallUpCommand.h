@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Exhaust.h"
 
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -21,15 +23,14 @@
 class PushBallUpCommand
     : public frc2::CommandHelper<frc2::CommandBase, PushBallUpCommand> {
  public:
-  PushBallUpCommand(Exhaust*exhaust);
+  PushBallUpCommand(Exhaust* exhaust);
 
-//Turns on the ball pusher.
+  // Turns on the ball pusher.
   void Initialize() override;
 
-//Turns off the ball pusher.
+  // Turns off the ball pusher.
   void End(bool interrupted) override;
 
  private:
- Exhaust*exhaust;
-
+  Exhaust* exhaust;
 };

@@ -5,36 +5,38 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/ShoulderControl.h"
+#include "commands/ShoulderControlCommand.h"
 
-ShoulderControl::ShoulderControl(Intake*intake, std::function<double()> upValue)
-:intake(intake), upValue(upValue) {
-  // Use addRequirements() here to declare subsystem dependencies.
-
-AddRequirements(intake);
+ShoulderControlCommand::ShoulderControlCommand(Intake* intake,
+                                               std::function<double()> upValue)
+    : intake(intake), upValue(upValue) {
+  AddRequirements(intake);
 }
 
+// TODO(Nurfadil): Remove unneede function (from .cpp and .h).
 // Called when the command is initially scheduled.
-void ShoulderControl::Initialize() {}
+void ShoulderControlCommand::Initialize() {
+}
 
 // Called repeatedly when this Command is scheduled to run
-void ShoulderControl::Execute() {
+void ShoulderControlCommand::Execute() {
   if (upValue() > 0) {
-    intake -> RotateShoulderUp();
+    intake->RotateShoulderUp();
   }
   if (upValue() < 0) {
-    intake -> RotateShoulderDown();
-  }
-  else {
-    intake -> TurnShoulderOff();
+    intake->RotateShoulderDown();
+  } else {
+    intake->TurnShoulderOff();
   }
 }
 
 // Called once the command ends or is interrupted.
-void ShoulderControl::End(bool interrupted) {
-
-  intake->TurnShoulderOff(); 
+void ShoulderControlCommand::End(bool interrupted) {
+  intake->TurnShoulderOff();
 }
 
+// TODO(Nurfadil): Remove unneede function (from .cpp and .h).
 // Returns true when the command should end.
-bool ShoulderControl::IsFinished() { return false; }
+bool ShoulderControlCommand::IsFinished() {
+  return false;
+}

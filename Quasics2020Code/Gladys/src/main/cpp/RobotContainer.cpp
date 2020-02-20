@@ -22,7 +22,7 @@
 #include "commands/MoveForTimeCommand.h"
 #include "commands/ShootBallsCommand.h"
 #include "commands/ShootBallsReverseCommand.h"
-#include "commands/ShoulderControl.h"
+#include "commands/ShoulderControlCommand.h"
 #include "commands/SpinTheWheelCommand.h"
 #include "commands/TankDriveCommand.h"
 #include "commands/TurnControlPanel4TimesCommand.h"
@@ -62,7 +62,7 @@ RobotContainer::RobotContainer()
         }));
   }
 
-  intake.SetDefaultCommand(ShoulderControl(&intake, [this] {
+  intake.SetDefaultCommand(ShoulderControlCommand(&intake, [this] {
     double stickValue =
         operatorController.GetRawAxis(OIConstants::XBox::LeftYAxis);
     return DeadBand(stickValue);

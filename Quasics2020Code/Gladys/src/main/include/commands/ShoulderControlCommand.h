@@ -18,10 +18,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ShoulderControl
-    : public frc2::CommandHelper<frc2::CommandBase, ShoulderControl> {
+class ShoulderControlCommand
+    : public frc2::CommandHelper<frc2::CommandBase, ShoulderControlCommand> {
  public:
-  ShoulderControl(Intake* intake, std::function<double()> upValue);
+  ShoulderControlCommand(Intake* intake, std::function<double()> upValue);
 
   void Initialize() override;
 

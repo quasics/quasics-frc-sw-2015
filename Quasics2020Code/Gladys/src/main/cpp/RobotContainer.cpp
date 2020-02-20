@@ -24,7 +24,7 @@
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControl.h"
 #include "commands/SpinTheWheelCommand.h"
-#include "commands/TankDrive.h"
+#include "commands/TankDriveCommand.h"
 #include "commands/TurnControlPanel4TimesCommand.h"
 #include "commands/TurnControlPanelToTargetColorCommand.h"
 #include "subsystems/Drivebase.h"
@@ -48,7 +48,7 @@ RobotContainer::RobotContainer()
       ) {
   // Initialize all of your commands and subsystems here
   if (drivebase) {
-    drivebase->SetDefaultCommand(TankDrive(
+    drivebase->SetDefaultCommand(TankDriveCommand(
         drivebase.get(),
         [this] {
           double stickValue = driverJoystick.GetRawAxis(

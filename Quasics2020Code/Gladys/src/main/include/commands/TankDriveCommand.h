@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Drivebase.h"
 
+// TODO(Kat): Document this command.
 /**
  * An example command.
  *
@@ -18,26 +20,22 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class TankDrive
-    : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
+class TankDriveCommand
+    : public frc2::CommandHelper<frc2::CommandBase, TankDriveCommand> {
  public:
-  TankDrive(Drivebase*drivebase, std::function<double()> right, std::function<double()> left);
-
+  TankDriveCommand(Drivebase* drivebase, std::function<double()> right,
+                   std::function<double()> left);
 
   void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
-  
+
   bool IsFinished() override;
 
-
-private:
- Drivebase*drivebase;
- std::function<double()> right;
- std::function<double()> left;
-
-
-
+ private:
+  Drivebase* drivebase;
+  std::function<double()> right;
+  std::function<double()> left;
 };

@@ -5,28 +5,33 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/TankDrive.h"
+#include "commands/TankDriveCommand.h"
 
-
-TankDrive::TankDrive(Drivebase*drivebase, std::function<double()> right, std::function<double()> left)
-:drivebase(drivebase), right(right), left(left) { 
-  // Use addRequirements() here to declare subsystem dependencies.
-AddRequirements(drivebase);
+TankDriveCommand::TankDriveCommand(Drivebase* drivebase,
+                                   std::function<double()> right,
+                                   std::function<double()> left)
+    : drivebase(drivebase), right(right), left(left) {
+  AddRequirements(drivebase);
 }
 
+// TODO(Kat): Remove this unneeded function (from both .cpp and .h).
 // Called when the command is initially scheduled.
-void TankDrive::Initialize() {}
+void TankDriveCommand::Initialize() {
+}
 
 // Called repeatedly when this Command is scheduled to run
-void TankDrive::Execute() {
+void TankDriveCommand::Execute() {
   drivebase->SetMotorPower(right(), left());
   drivebase->DisplayEncoderValues();
 }
 
 // Called once the command ends or is interrupted.
-void TankDrive::End(bool interrupted) {
+void TankDriveCommand::End(bool interrupted) {
   drivebase->Stop();
 }
 
+// TODO(Kat): Remove this unneeded function (from both .cpp and .h).
 // Returns true when the command should end.
-bool TankDrive::IsFinished() { return false; }
+bool TankDriveCommand::IsFinished() {
+  return false;
+}

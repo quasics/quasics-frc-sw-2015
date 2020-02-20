@@ -5,28 +5,31 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/SpinTheWheel.h"
+#include "commands/SpinTheWheelCommand.h"
 
-SpinTheWheel::SpinTheWheel(CommandPanel*controlPanel, bool forward):m_controlPanel(controlPanel),f(forward)  {
-  // Use addRequirements() here to declare subsystem dependencies.
+SpinTheWheelCommand::SpinTheWheelCommand(CommandPanel* controlPanel,
+                                         bool forward)
+    : m_controlPanel(controlPanel), f(forward) {
   AddRequirements(m_controlPanel);
 }
 
 // Called when the command is initially scheduled.
-void SpinTheWheel::Initialize() {
+void SpinTheWheelCommand::Initialize() {
   m_controlPanel->TurnWheelMotorOn(f);
 }
 
+// TODO(RJ): Remove this unneeded method (from .cpp and header).
 // Called repeatedly when this Command is scheduled to run
-void SpinTheWheel::Execute() {}
+void SpinTheWheelCommand::Execute() {
+}
 
 // Called once the command ends or is interrupted.
-void SpinTheWheel::End(bool interrupted) {
+void SpinTheWheelCommand::End(bool interrupted) {
   m_controlPanel->TurnWheelMotorOff();
 }
 
+// TODO(RJ): Remove this unneeded method (from .cpp and header).
 // Returns true when the command should end.
-bool SpinTheWheel::IsFinished() { 
-  
+bool SpinTheWheelCommand::IsFinished() {
   return false;
-   }
+}

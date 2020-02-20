@@ -7,10 +7,12 @@
 
 #pragma once
 
-#include "subsystems/CommandPanel.h"
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/CommandPanel.h"
+
+// TODO(RJ): Document this command.
 /**
  * An example command.
  *
@@ -18,10 +20,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class SpinTheWheel
-    : public frc2::CommandHelper<frc2::CommandBase, SpinTheWheel> {
+class SpinTheWheelCommand
+    : public frc2::CommandHelper<frc2::CommandBase, SpinTheWheelCommand> {
  public:
-  SpinTheWheel(CommandPanel*controlPanel, bool in);
+  SpinTheWheelCommand(CommandPanel* controlPanel, bool in);
 
   void Initialize() override;
 
@@ -30,7 +32,8 @@ class SpinTheWheel
   void End(bool interrupted) override;
 
   bool IsFinished() override;
-  private:
-    CommandPanel*m_controlPanel;
-    bool f;
+
+ private:
+  CommandPanel* m_controlPanel;
+  bool f;
 };

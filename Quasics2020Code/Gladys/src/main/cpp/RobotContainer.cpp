@@ -23,7 +23,7 @@
 #include "commands/ShootBallsCommand.h"
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControl.h"
-#include "commands/SpinTheWheel.h"
+#include "commands/SpinTheWheelCommand.h"
 #include "commands/TankDrive.h"
 #include "commands/TurnControlPanel4TimesCommand.h"
 #include "commands/TurnControlPanelToTargetColorCommand.h"
@@ -120,7 +120,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kStart))
-      .WhileHeld(SpinTheWheel(&commandPanel, true));
+      .WhileHeld(SpinTheWheelCommand(&commandPanel, true));
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperLeft))
       .WhileHeld(ClimberUpCommand(&climber));

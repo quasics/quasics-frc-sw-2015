@@ -5,68 +5,66 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/TurnToColor.h"
+#include "commands/TurnControlPanelToTargetColorCommand.h"
+
 #include <frc/DriverStation.h>
 
 bool noData = false;
 
-TurnToColor::TurnToColor(CommandPanel*controlPanel):m_controlPanel(controlPanel),m_aimColor(CommandPanel::UNKNOWN) {
+TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
+    CommandPanel* controlPanel)
+    : m_controlPanel(controlPanel), m_aimColor(CommandPanel::UNKNOWN) {
   // Use addRequirements() here to declare subsystem dependencies.
-    
 }
 
 // Called when the command is initially scheduled.
-void TurnToColor::Initialize() {
-
-
+void TurnControlPanelToTargetColorCommand::Initialize() {
   std::string gameData;
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-  if(gameData.length() > 0)
-  {
-    noData=false;
-    switch (gameData[0])
-    {
-      case 'B' :
-        //Blue case code
+  if (gameData.length() > 0) {
+    noData = false;
+    switch (gameData[0]) {
+      case 'B':
+        // Blue case code
         m_aimColor = CommandPanel::BLUE;
         break;
-      case 'G' :
-        //Green case code
+      case 'G':
+        // Green case code
         m_aimColor = CommandPanel::GREEN;
         break;
-      case 'R' :
-        //Red case code
+      case 'R':
+        // Red case code
         m_aimColor = CommandPanel::RED;
         break;
-      case 'Y' :
-        //Yellow case code
+      case 'Y':
+        // Yellow case code
         m_aimColor = CommandPanel::YELLOW;
         break;
-      default :
-        //This is corrupt data
+      default:
+        // This is corrupt data
         m_aimColor = CommandPanel::UNKNOWN;
         break;
     }
     m_controlPanel->TurnWheelMotorOn(true);
   } else {
-    //Code for no data received yet
+    // Code for no data received yet
     noData = true;
   }
-  
 }
 
 // Called repeatedly when this Command is scheduled to run
-void TurnToColor::Execute() {}
+void TurnControlPanelToTargetColorCommand::Execute() {
+}
 
 // Called once the command ends or is interrupted.
-void TurnToColor::End(bool interrupted) {
+void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
   m_controlPanel->TurnWheelMotorOff();
 }
 
 // Returns true when the command should end.
-bool TurnToColor::IsFinished() { 
-  if(m_aimColor == m_controlPanel->getCurrentColor() || !noData){
+bool TurnControlPanelToTargetColorCommand::IsFinished() {
+  if (m_aimColor == m_controlPanel->getCurrentColor() || !noData) {
     return true;
   }
-  return false; 
+  return false;
 }

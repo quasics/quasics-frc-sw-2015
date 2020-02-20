@@ -7,16 +7,18 @@
 
 #pragma once
 
-#include "subsystems/CommandPanel.h"
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
+#include "subsystems/CommandPanel.h"
 /**
  * A command that turns to a color.
  */
-class TurnToColor
-    : public frc2::CommandHelper<frc2::CommandBase, TurnToColor> {
+class TurnControlPanelToTargetColorCommand
+    : public frc2::CommandHelper<frc2::CommandBase,
+                                 TurnControlPanelToTargetColorCommand> {
  public:
-  TurnToColor(CommandPanel*controlPanel);
+  TurnControlPanelToTargetColorCommand(CommandPanel* controlPanel);
 
   void Initialize() override;
 
@@ -25,6 +27,7 @@ class TurnToColor
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
  private:
   CommandPanel* m_controlPanel;
   CommandPanel::Color m_aimColor;

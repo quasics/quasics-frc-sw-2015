@@ -7,17 +7,20 @@
 
 #pragma once
 
-#include "subsystems/CommandPanel.h"
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/CommandPanel.h"
+
+// TODO(RJ): Improve the documentation (description, at least) for this class.
 /**
  * A command that turns 3 and a half times.
  */
-class Turn4Times
-    : public frc2::CommandHelper<frc2::CommandBase, Turn4Times> {
+class TurnControlPanel4TimesCommand
+    : public frc2::CommandHelper<frc2::CommandBase,
+                                 TurnControlPanel4TimesCommand> {
  public:
-  Turn4Times(CommandPanel*controlPanel);
+  TurnControlPanel4TimesCommand(CommandPanel* controlPanel);
 
   void Initialize() override;
 
@@ -26,9 +29,11 @@ class Turn4Times
   void End(bool interrupted) override;
 
   bool IsFinished() override;
-private:
-  CommandPanel*m_controlPanel;
-  int counter=0;
-  CommandPanel::Color initColor=CommandPanel::UNKNOWN, prevColor=CommandPanel::UNKNOWN, currColor=CommandPanel::UNKNOWN;
 
+ private:
+  CommandPanel* m_controlPanel;
+  int counter = 0;
+  CommandPanel::Color initColor = CommandPanel::UNKNOWN,
+                      prevColor = CommandPanel::UNKNOWN,
+                      currColor = CommandPanel::UNKNOWN;
 };

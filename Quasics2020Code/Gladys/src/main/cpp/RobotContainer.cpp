@@ -15,22 +15,20 @@
 #include "Constants.h"
 #include "commands/ClimberDown.h"
 #include "commands/ClimberUp.h"
-#include "commands/IntakeBallsCommand.h"
-#include "commands/MoveForTime.h"
-#include "commands/IntakeBallsReverseCommand.h"
-#include "commands/TankDrive.h"
-#include "commands/Turn4Times.h"
-#include "commands/TurnToColor.h"
-#include "commands/SpinTheWheel.h"
-#include "subsystems/Drivebase.h"
-#include "commands/ShoulderControl.h"
-#include "subsystems/Intake.h"
-#include "commands/ShootBallsCommand.h"
-#include "commands/ShootBallsReverseCommand.h"
+#include "commands/DeliverToLowGoalCommand.h"
 #include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
 #include "commands/LoadFromWindowCommand.h"
-#include "commands/DeliverToLowGoalCommand.h"
+#include "commands/MoveForTime.h"
+#include "commands/ShootBallsCommand.h"
+#include "commands/ShootBallsReverseCommand.h"
+#include "commands/ShoulderControl.h"
+#include "commands/SpinTheWheel.h"
+#include "commands/TankDrive.h"
+#include "commands/TurnControlPanel4TimesCommand.h"
+#include "commands/TurnControlPanelToTargetColorCommand.h"
+#include "subsystems/Drivebase.h"
+#include "subsystems/Intake.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -40,40 +38,35 @@ inline double DeadBand(double stickValue) {
   return (stickValue);
 }
 
-RobotContainer::RobotContainer() :
-drivebase(
+RobotContainer::RobotContainer()
+    : drivebase(
 #ifdef DISABLE_DRIVE_BASE
-nullptr
+          nullptr
 #else
-new Drivebase
+          new Drivebase
 #endif  // DISABLE_DRIVE_BASE
-)
-{
+      ) {
   // Initialize all of your commands and subsystems here
   if (drivebase) {
     drivebase->SetDefaultCommand(TankDrive(
         drivebase.get(),
         [this] {
-          double stickValue =
-              driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+          double stickValue = driverJoystick.GetRawAxis(
+              OIConstants::LogitechGamePad::RightYAxis);
           return DeadBand(stickValue);
         },
         [this] {
-          double stickValue =
-              driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+          double stickValue = driverJoystick.GetRawAxis(
+              OIConstants::LogitechGamePad::LeftYAxis);
           return DeadBand(stickValue);
         }));
   }
 
-  intake.SetDefaultCommand(ShoulderControl(
-      &intake,
-      [this] {
-        double stickValue =
-            operatorController.GetRawAxis(OIConstants::XBox::LeftYAxis);
-        return DeadBand(stickValue);
-            
-      }
-  ));
+  intake.SetDefaultCommand(ShoulderControl(&intake, [this] {
+    double stickValue =
+        operatorController.GetRawAxis(OIConstants::XBox::LeftYAxis);
+    return DeadBand(stickValue);
+  }));
 
   // Configure the operator interface
   ConfigureButtonBindings();
@@ -99,54 +92,45 @@ void RobotContainer::ConfigureButtonBindings() {
   //     .WhileHeld(IntakeBallsCommand(&intake));
 
   frc2::JoystickButton(&operatorController,
-                 int(frc::XboxController::Button::kBumperLeft))
-      .WhenPressed(Turn4Times(&commandPanel));
+                       int(frc::XboxController::Button::kBumperLeft))
+      .WhenPressed(TurnControlPanel4TimesCommand(&commandPanel));
 
-   frc2::JoystickButton(&operatorController,
-   int(frc::XboxController::Button::kA))
-       .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kA))
+      .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
+  // Exhaust
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kY))
+      .WhileHeld(LoadFromWindowCommand(&exhaust));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kB))
+      .WhileHeld(DeliverToLowGoalCommand(&exhaust));
+  //
 
-//Exhaust
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kY)
-    ).WhileHeld(LoadFromWindowCommand(&exhaust));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kB)
-    ).WhileHeld(DeliverToLowGoalCommand(&exhaust));
-//
+  // Intake
+  // frc2::JoystickButton(
+  //&operatorController,
+  // int(frc::XboxController::Button::kA)
+  //).WhileHeld(IntakeBallsCommand(&intake));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kX))
+      .WhileHeld(IntakeBallsReverseCommand(&intake));
+  //
 
-//Intake
-  //frc2::JoystickButton(
-      //&operatorController,
-      //int(frc::XboxController::Button::kA)
-    //).WhileHeld(IntakeBallsCommand(&intake));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kX)
-    ).WhileHeld(IntakeBallsReverseCommand(&intake));
-//
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kStart))
+      .WhileHeld(SpinTheWheel(&commandPanel, true));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kBumperLeft))
+      .WhileHeld(ClimberUp(&climber));
+  frc2::JoystickButton(&operatorController,
+                       int(frc::XboxController::Button::kBumperRight))
+      .WhileHeld(ClimberDown(&climber));
 
-
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kStart)
-    ).WhileHeld(SpinTheWheel(&commandPanel, true));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kBumperLeft)
-    ).WhileHeld(ClimberUp(&climber));
-  frc2::JoystickButton(
-      &operatorController,
-      int(frc::XboxController::Button::kBumperRight)
-    ).WhileHeld(ClimberDown(&climber));
-  
-
-  //frc2::JoystickButton(&operatorController,
-                       //int(frc::XboxController::Button::kBumperRight))
-      //.WhileHeld(TurnToColor(&commandPanel));
+  // frc2::JoystickButton(&operatorController,
+  // int(frc::XboxController::Button::kBumperRight))
+  //.WhileHeld(TurnControlPanelToTargetColorCommand(&commandPanel));
 
   // Going to map the following buttons:
   //    * left bumper --> push the ball up (TODO) fu=ind other binding
@@ -169,12 +153,12 @@ void RobotContainer::ConfigureSmartDashboard() {
   std::cout << "Beginning smart dashboard configuration" << std::endl;
   if (drivebase) {
     frc::SmartDashboard::PutData("Move off the line",
-                                new MoveForTime(drivebase.get(), 3, .4));
+                                 new MoveForTime(drivebase.get(), 3, .4));
   }
-  frc::SmartDashboard::PutData("Turn Four Times",
-                                new Turn4Times(&commandPanel));
+  frc::SmartDashboard::PutData(
+      "Turn Four Times", new TurnControlPanel4TimesCommand(&commandPanel));
   std::cout << "Completed smart dashboard configuration" << std::endl;
 
-  frc::SmartDashboard::PutData("Turn To Color",
-                                new TurnToColor(&commandPanel));
+  frc::SmartDashboard::PutData(
+      "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
 }

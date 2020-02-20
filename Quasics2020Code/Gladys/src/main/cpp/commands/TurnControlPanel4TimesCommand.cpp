@@ -5,49 +5,53 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/Turn4Times.h"
+#include "commands/TurnControlPanel4TimesCommand.h"
 
-// TODO(RJ): Turn these global variables into local variables, or members of
-// this class, as appropriate.
-
-Turn4Times::Turn4Times(CommandPanel*controlPanel):m_controlPanel(controlPanel) {
-  // Use addRequirements() here to declare subsystem dependencies.
+TurnControlPanel4TimesCommand::TurnControlPanel4TimesCommand(
+    CommandPanel* controlPanel)
+    : m_controlPanel(controlPanel) {
   AddRequirements(m_controlPanel);
 }
 
 // Called when the command is initially scheduled.
-void Turn4Times::Initialize() {
+void TurnControlPanel4TimesCommand::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
   initColor = prevColor = m_controlPanel->getCurrentColor();
-  std::cout << "New color is " << m_controlPanel->getColorName(initColor) << std::endl;
-  m_controlPanel->TurnWheelMotorOn(true); 
+  std::cout << "Initial color is " << m_controlPanel->getColorName(initColor)
+            << std::endl;
+  // TODO(RJ): What if you can't get the initial color?  (In other words, what
+  // if the sensor hands back an unknown/unexpected value?  How should this case
+  // be handled?)
+
+  m_controlPanel->TurnWheelMotorOn(true);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void Turn4Times::Execute() {
-// TODO(RJ): Remove this empty function (both here and in header).
+void TurnControlPanel4TimesCommand::Execute() {
+  // TODO(RJ): Remove this empty function (both here and in header).
   ;
 }
 
 // Called once the command ends or is interrupted.
-void Turn4Times::End(bool interrupted) {
+void TurnControlPanel4TimesCommand::End(bool interrupted) {
   std::cout << "Ending 'Turn 4 times'" << std::endl;
   m_controlPanel->TurnWheelMotorOff();
 }
 
 // Returns true when the command should end.
-bool Turn4Times::IsFinished() {
+bool TurnControlPanel4TimesCommand::IsFinished() {
   currColor = m_controlPanel->getCurrentColor();
   if (prevColor != currColor) {
-    std::cout << "New color is " << m_controlPanel->getColorName(currColor) << std::endl;
-    if(initColor == currColor){
+    std::cout << "New detected color is "
+              << m_controlPanel->getColorName(currColor) << std::endl;
+    if (initColor == currColor) {
       std::cout << "Bump the count!" << std::endl;
       counter++;
-      if(counter>7){
+      if (counter > 7) {
         return true;
       }
     }
   }
-    prevColor = currColor;
+  prevColor = currColor;
   return false;
 }

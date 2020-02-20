@@ -19,7 +19,7 @@
 #include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
 #include "commands/LoadFromWindowCommand.h"
-#include "commands/MoveForTime.h"
+#include "commands/MoveForTimeCommand.h"
 #include "commands/ShootBallsCommand.h"
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControl.h"
@@ -152,8 +152,8 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 void RobotContainer::ConfigureSmartDashboard() {
   std::cout << "Beginning smart dashboard configuration" << std::endl;
   if (drivebase) {
-    frc::SmartDashboard::PutData("Move off the line",
-                                 new MoveForTime(drivebase.get(), 3, .4));
+    frc::SmartDashboard::PutData(
+        "Move off the line", new MoveForTimeCommand(drivebase.get(), 3, .4));
   }
   frc::SmartDashboard::PutData(
       "Turn Four Times", new TurnControlPanel4TimesCommand(&commandPanel));

@@ -5,36 +5,45 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/MoveForTime.h"
+#include "commands/MoveForTimeCommand.h"
 
-MoveForTime::MoveForTime(Drivebase*drivebase, double duration, double power)
-:drivebase(drivebase), duration(duration), left_power(power), right_power(power){
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
+                                       double power)
+    : drivebase(drivebase),
+      duration(duration),
+      left_power(power),
+      right_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 
-MoveForTime::MoveForTime(Drivebase*drivebase, double duration, double left_power, double right_power)
-:drivebase(drivebase), duration(duration), left_power(left_power), right_power(right_power){
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
+                                       double left_power, double right_power)
+    : drivebase(drivebase),
+      duration(duration),
+      left_power(left_power),
+      right_power(right_power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.
-void MoveForTime::Initialize() {
+void MoveForTimeCommand::Initialize() {
   tikTok.Start();
   tikTok.Reset();
   drivebase->SetMotorPower(left_power, right_power);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void MoveForTime::Execute() {}
+void MoveForTimeCommand::Execute() {
+}
 
 // Called once the command ends or is interrupted.
-void MoveForTime::End(bool interrupted) {
+void MoveForTimeCommand::End(bool interrupted) {
   drivebase->Stop();
 }
 
 // Returns true when the command should end.
-bool MoveForTime::IsFinished() { 
+bool MoveForTimeCommand::IsFinished() {
   return tikTok.HasPeriodPassed(units::second_t(duration));
- }
+}

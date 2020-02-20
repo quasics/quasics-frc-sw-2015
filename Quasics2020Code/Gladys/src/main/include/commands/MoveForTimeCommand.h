@@ -7,9 +7,10 @@
 
 #pragma once
 
+#include <frc2/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc2/Timer.h>
+
 #include "subsystems/Drivebase.h"
 
 /**
@@ -19,11 +20,12 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class MoveForTime
-    : public frc2::CommandHelper<frc2::CommandBase, MoveForTime> {
+class MoveForTimeCommand
+    : public frc2::CommandHelper<frc2::CommandBase, MoveForTimeCommand> {
  public:
-  MoveForTime(Drivebase*drivebase, double duration, double power);
-  MoveForTime(Drivebase*drivebase, double duration, double left_power, double right_power);
+  MoveForTimeCommand(Drivebase* drivebase, double duration, double power);
+  MoveForTimeCommand(Drivebase* drivebase, double duration, double left_power,
+                     double right_power);
 
   void Initialize() override;
 
@@ -33,8 +35,8 @@ class MoveForTime
 
   bool IsFinished() override;
 
-  private:
-  Drivebase*drivebase;
+ private:
+  Drivebase* drivebase;
   frc2::Timer tikTok;
   double duration;
   double left_power;

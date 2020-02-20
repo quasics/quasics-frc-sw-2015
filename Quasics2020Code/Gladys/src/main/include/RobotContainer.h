@@ -7,15 +7,15 @@
 
 #pragma once
 
-#include <memory>
-
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/PrintCommand.h>
 
-#include "commands/MoveForTime.h"
+#include <memory>
+
+#include "commands/MoveForTimeCommand.h"
 #include "subsystems/Climber.h"
 #include "subsystems/CommandPanel.h"
 #include "subsystems/Drivebase.h"
@@ -41,11 +41,24 @@ class RobotContainer {
  private:
   std::unique_ptr<Drivebase> drivebase;
   // "Instant" commands, to quietly modify the drive base's state
-  frc2::InstantCommand enableTurboMode{[this] { if (drivebase) { drivebase->EnableTurboMode(); } },
+  frc2::InstantCommand enableTurboMode{[this] {
+                                         if (drivebase) {
+                                           drivebase->EnableTurboMode();
+                                         }
+                                       },
                                        {}};
-  frc2::InstantCommand disableTurboMode{
-      [this] { if (drivebase) { drivebase->DisableTurboMode(); } }, {}};
-  frc2::InstantCommand frontIsForward{[this] { if (drivebase) { drivebase->SwitchFace(); } }, {}};
+  frc2::InstantCommand disableTurboMode{[this] {
+                                          if (drivebase) {
+                                            drivebase->DisableTurboMode();
+                                          }
+                                        },
+                                        {}};
+  frc2::InstantCommand frontIsForward{[this] {
+                                        if (drivebase) {
+                                          drivebase->SwitchFace();
+                                        }
+                                      },
+                                      {}};
 
   // Other subsystems
   Intake intake;
@@ -60,7 +73,7 @@ class RobotContainer {
   // TODO(Scott): Replace this with a real command for autonomous mode.  (Or
   // more than one.)
 #ifndef DISABLE_DRIVE_BASE
-  MoveForTime m_trivialAutonmousCommand{drivebase.get(), 2, -.40};
+  MoveForTimeCommand m_trivialAutonmousCommand{drivebase.get(), 2, -.40};
 #else
   frc2::PrintCommand m_autonomousCommand{"Doing something autonomously...."};
 #endif  // DISABLE_DRIVE_BASE

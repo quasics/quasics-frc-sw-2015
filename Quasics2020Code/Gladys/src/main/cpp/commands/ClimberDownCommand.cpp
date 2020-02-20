@@ -5,19 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/ClimberDown.h"
+#include "commands/ClimberDownCommand.h"
 
-ClimberDown::ClimberDown(Climber*climber) :climber(climber){
-  // Use addRequirements() here to declare subsystem dependencies.
+ClimberDownCommand::ClimberDownCommand(Climber* climber) : climber(climber) {
+  // Use AddRequirements() here to declare subsystem dependencies.
+
+  // TODO(Gavin): (BUG) Add the climber as a required subsystem!
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ClimberDown::Execute() {
+void ClimberDownCommand::Execute() {
   climber->MoveClimberDown();
 }
 
 // Called once the command ends or is interrupted.
-void ClimberDown::End(bool interrupted) {
+void ClimberDownCommand::End(bool interrupted) {
   climber->StopClimber();
 }
-

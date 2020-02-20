@@ -12,6 +12,7 @@
 
 #include "subsystems/Climber.h"
 
+// TODO(Gavin): Document this class.
 /**
  * An example command.
  *
@@ -19,16 +20,15 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ClimberUp
-    : public frc2::CommandHelper<frc2::CommandBase, ClimberUp> {
+class ClimberDownCommand
+    : public frc2::CommandHelper<frc2::CommandBase, ClimberDownCommand> {
  public:
-  ClimberUp(Climber*climber);
-
+  ClimberDownCommand(Climber* climber);
 
   void Execute() override;
 
   void End(bool interrupted) override;
 
-  private:
-  Climber*climber;
+ private:
+  Climber* climber;
 };

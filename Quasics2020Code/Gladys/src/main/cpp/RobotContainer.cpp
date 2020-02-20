@@ -13,8 +13,8 @@
 #include <iostream>
 
 #include "Constants.h"
-#include "commands/ClimberDown.h"
-#include "commands/ClimberUp.h"
+#include "commands/ClimberDownCommand.h"
+#include "commands/ClimberUpCommand.h"
 #include "commands/DeliverToLowGoalCommand.h"
 #include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
@@ -123,10 +123,10 @@ void RobotContainer::ConfigureButtonBindings() {
       .WhileHeld(SpinTheWheel(&commandPanel, true));
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperLeft))
-      .WhileHeld(ClimberUp(&climber));
+      .WhileHeld(ClimberUpCommand(&climber));
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperRight))
-      .WhileHeld(ClimberDown(&climber));
+      .WhileHeld(ClimberDownCommand(&climber));
 
   // frc2::JoystickButton(&operatorController,
   // int(frc::XboxController::Button::kBumperRight))

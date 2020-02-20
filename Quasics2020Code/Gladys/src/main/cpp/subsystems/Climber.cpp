@@ -15,10 +15,6 @@ Climber::Climber()
   SetSubsystem("Climber");
 }
 
-// This method will be called once per scheduler run
-void Climber::Periodic() {
-}
-
 void Climber::MoveClimberUp() {
   RightClimber.Set(-1);
   LeftClimber.Set(1);

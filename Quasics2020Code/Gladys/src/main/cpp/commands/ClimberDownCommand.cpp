@@ -9,8 +9,8 @@
 
 ClimberDownCommand::ClimberDownCommand(Climber* climber) : climber(climber) {
   // Use AddRequirements() here to declare subsystem dependencies.
-
-  // TODO(Gavin): (BUG) Add the climber as a required subsystem!
+  AddRequirements(climber);
+  
 }
 
 // Called repeatedly when this Command is scheduled to run

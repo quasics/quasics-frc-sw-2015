@@ -12,7 +12,7 @@
 
 #include "subsystems/Climber.h"
 
-// TODO(Gavin): Document this class.
+
 /**
  * An example command.
  *
@@ -25,9 +25,9 @@ class ClimberUpCommand
  public:
   ClimberUpCommand(Climber* climber);
 
-  void Execute() override;
+  void Execute() override; //tell the climber to go up
 
-  void End(bool interrupted) override;
+  void End(bool interrupted) override; //tell climber to stop moving
 
  private:
   Climber* climber;

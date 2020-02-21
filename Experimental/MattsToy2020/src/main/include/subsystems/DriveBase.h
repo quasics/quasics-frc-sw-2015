@@ -102,7 +102,7 @@ class DriveBase : public frc2::SubsystemBase {
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
 
-  // Encoders (associated with the motors), yielding position/velocity data
+  // Encoders (associated with the motors), yielding position/velocity data.
   rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
   rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
@@ -114,7 +114,10 @@ class DriveBase : public frc2::SubsystemBase {
   static const std::function<double(double)> turboPowerAdjuster;
 
   // Current limiter on motor power
-  std::function<double(double)> powerAdjuster = turboPowerAdjuster;
+  std::function<double(double)> powerAdjuster = standardPowerAdjuster;
 
-  ShuffleboardWrappers::BooleanToggle loggingOn;
+  // Control on the Shuffleboard UI to turn debugging output on/off.  (Default
+  // is off.)
+  ShuffleboardWrappers::BooleanToggle loggingOn{"DriveBase noisy" /* title */,
+                                                "Logging" /* tab name */};
 };

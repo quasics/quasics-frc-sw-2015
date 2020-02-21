@@ -19,21 +19,6 @@
 #include "utils/RangeLimiter.h"
 #include "utils/ValueScaler.h"
 
-/// Ticks per revolution on the Rev Neo motors.
-constexpr double kTicksPerRevolution_NeoMotor = 42;
-
-/// Gear ratio used for the 2020 robots.
-constexpr double kGearRatio_2020 = 10.71;
-
-/// Wheel diameter on the 2020 robots.
-constexpr double kWheelDiameter_Inches_2020 = 6;
-
-/// Constant for Pi.  (Not included in math library until C++20.)
-constexpr double PI = 4.0 * std::atan(1);
-
-static constexpr EncoderTicksToUnitsConverter ticksToInchesConverter(
-    kTicksPerRevolution_NeoMotor, kGearRatio_2020, kWheelDiameter_Inches_2020);
-
 /// List of DriveBase motor specifiers that map to a single motor (vs. a group).
 static constexpr auto kPrimaryMotorPositions = {
     DriveBase::Motors::LeftFront, DriveBase::Motors::LeftRear,
@@ -58,9 +43,7 @@ DriveBase::DriveBase()
       rightFront(CANBusConstants::SparkMaxIds::DriveBaseRightFrontId,
                  rev::CANSparkMax::MotorType::kBrushless),
       rightRear(CANBusConstants::SparkMaxIds::DriveBaseRightRearId,
-                rev::CANSparkMax::MotorType::kBrushless),
-      powerAdjuster(standardPowerAdjuster),
-      loggingOn("DriveBase noisy", "Logging") {
+                rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("DriveBase");
   ResetEncoderPosition(Motors::All);
 }
@@ -148,6 +131,22 @@ void DriveBase::ResetEncoderPosition(DriveBase::Motors motor) {
     }
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Debugging support: reporting encoder data to the Smart Dashboard/Shuffleboad
+
+/// Ticks per revolution on the Rev Neo motors.
+constexpr double kTicksPerRevolution_NeoMotor = 42;
+
+/// Gear ratio used for the 2020 robots.
+constexpr double kGearRatio_2020 = 10.71;
+
+/// Wheel diameter on the 2020 robots.
+constexpr double kWheelDiameter_Inches_2020 = 6;
+
+/// Converts "ticks" from the encoders to inches.
+static constexpr EncoderTicksToUnitsConverter ticksToInchesConverter(
+    kTicksPerRevolution_NeoMotor, kGearRatio_2020, kWheelDiameter_Inches_2020);
 
 void DriveBase::ReportEncoderDataToSmartDashboard(std::string prefix,
                                                   rev::CANEncoder& encoder) {

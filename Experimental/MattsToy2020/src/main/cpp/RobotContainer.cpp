@@ -16,15 +16,10 @@
 #include "commands/LowerElevatorCommand.h"
 #include "commands/RaiseElevatorCommand.h"
 #include "commands/TankDriveCommand.h"
+#include "utils/DeadBandLimiter.h"
 
-// Function to perform software dead-band handling on readings from the driver's
-// control.
-inline double applyDeadBandAdjustment(double stickValue) {
-  if (std::abs(stickValue) < OIConstants::kDriveControllerDeadBandSize) {
-    return 0;
-  }
-  return stickValue;
-}
+const DeadBandLimiter<double> JoystickDeadbandLimiter(
+    OIConstants::kDriveControllerDeadBandSize);
 
 // Initialize all of your commands and subsystems here.
 RobotContainer::RobotContainer() {
@@ -33,12 +28,12 @@ RobotContainer::RobotContainer() {
       [this] {
         double stickValue = m_logitechController.GetRawAxis(
             OIConstants::LogitechGamePad::LeftYAxis);
-        return applyDeadBandAdjustment(stickValue);
+        return JoystickDeadbandLimiter(stickValue);
       },
       [this] {
         double stickValue = m_logitechController.GetRawAxis(
             OIConstants::LogitechGamePad::RightYAxis);
-        return applyDeadBandAdjustment(stickValue);
+        return JoystickDeadbandLimiter(stickValue);
       }));
 
   // Configure the button bindings

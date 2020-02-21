@@ -7,4 +7,8 @@
 
 #include "commands/ExampleCommand.h"
 
-ExampleCommand::ExampleCommand() {}
+#include <iostream>
+
+void ExampleCommand::Initialize() {
+  std::cout << m_message << std::endl;
+}

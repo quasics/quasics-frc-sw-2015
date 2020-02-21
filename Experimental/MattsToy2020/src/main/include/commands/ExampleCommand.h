@@ -23,5 +23,21 @@ class ExampleCommand
   /**
    * Creates a new ExampleCommand.
    */
-  explicit ExampleCommand();
+  explicit ExampleCommand(std::string message) : m_message(message) {
+  }
+
+  void Initialize() override;
+
+  bool IsFinished() override {
+    return true;
+  }
+
+ private:
+  std::string m_message;
+};
+
+class DoNothingCommand : public ExampleCommand {
+ public:
+  DoNothingCommand() : ExampleCommand("Do nothing") {
+  }
 };

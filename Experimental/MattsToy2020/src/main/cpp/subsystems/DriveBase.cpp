@@ -63,11 +63,6 @@ DriveBase::DriveBase()
       loggingOn("DriveBase noisy", "Logging") {
   SetSubsystem("DriveBase");
   ResetEncoderPosition(Motors::All);
-  // frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab("Logging");
-  // debuggingOnEntry = tab.Add("DriveBase noisy", false)
-  //                        .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
-  //                        .GetEntry();
-  // frc::SmartDashboard::GetBoolean("DriveBase noisy", false);
 }
 
 // This method will be called once per scheduler run

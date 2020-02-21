@@ -20,7 +20,7 @@ class RangeLimiter {
  public:
   /** Constructor: will bind limits to +/- the parameter value. */
   constexpr RangeLimiter(ValueType absoluteLimit)
-      : RangeLimiter(std::abs(absoluteLimit)) {
+      : RangeLimiter(-absoluteLimit, absoluteLimit) {
   }
 
   /**

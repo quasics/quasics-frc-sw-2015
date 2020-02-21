@@ -9,16 +9,17 @@
 
 #include "subsystems/DriveBase.h"
 
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <cmath>
+#include <iostream>
 
 #include "Constants.h"
 #include "utils/EncoderHelpers.h"
 #include "utils/RangeLimiter.h"
 #include "utils/ValueScaler.h"
-
-static constexpr bool NOISY = false;
 
 /// Ticks per revolution on the Rev Neo motors.
 constexpr double kTicksPerRevolution_NeoMotor = 42;
@@ -63,11 +64,29 @@ DriveBase::DriveBase()
       powerAdjuster(standardPowerAdjuster) {
   SetSubsystem("DriveBase");
   ResetEncoderPosition(Motors::All);
+  frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab("Logging");
+  debuggingOnEntry = tab.Add("DriveBase noisy", false)
+                         .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
+                         .GetEntry();
+  // frc::SmartDashboard::GetBoolean("DriveBase noisy", false);
 }
 
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
   ReportEncoderDataToSmartDashboard();
+}
+
+/** Enables "turbo" mode, where we increase maximum speed.  (Will take effect
+ * the next time thst SetMotorPower() is invoked.) */
+void DriveBase::EnableTurboMode() {
+  std::cout << "Enabling turbo mode" << std::endl;
+  powerAdjuster = turboPowerAdjuster;
+}
+/** Disables "turbo" mode.  (Will take effect the next time thst
+ * SetMotorPower() is invoked.) */
+void DriveBase::DisableTurboMode() {
+  std::cout << "Disabling turbo mode" << std::endl;
+  powerAdjuster = standardPowerAdjuster;
 }
 
 void DriveBase::SetMotorPower(double leftPower, double rightPower) {
@@ -77,10 +96,11 @@ void DriveBase::SetMotorPower(double leftPower, double rightPower) {
   const double appliedRightPower =
       powerAdjuster(joystickRangeLimiter(rightPower));
 
-  if (NOISY) {
-    std::cout << "Raw power: left=" << leftPower << ", right=" << rightPower
-              << "\nAdj power: left=" << appliedLeftPower
-              << ", right=" << appliedRightPower << std::endl;
+  if (debuggingOnEntry.GetBoolean(false)) {
+    std::cout << "Drive power: leftRaw=" << leftPower
+              << ", rightRaw=" << rightPower
+              << " | leftAdj=" << appliedLeftPower
+              << ", rightAdj=" << appliedRightPower << std::endl;
   }
 
   // Apply power to motors.

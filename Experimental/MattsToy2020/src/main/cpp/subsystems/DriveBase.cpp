@@ -18,6 +18,8 @@
 #include "utils/RangeLimiter.h"
 #include "utils/ValueScaler.h"
 
+static constexpr bool NOISY = false;
+
 /// Ticks per revolution on the Rev Neo motors.
 constexpr double kTicksPerRevolution_NeoMotor = 42;
 
@@ -60,10 +62,12 @@ DriveBase::DriveBase()
                 rev::CANSparkMax::MotorType::kBrushless),
       powerAdjuster(standardPowerAdjuster) {
   SetSubsystem("DriveBase");
+  ResetEncoderPosition(Motors::All);
 }
 
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
+  ReportEncoderDataToSmartDashboard();
 }
 
 void DriveBase::SetMotorPower(double leftPower, double rightPower) {
@@ -72,6 +76,12 @@ void DriveBase::SetMotorPower(double leftPower, double rightPower) {
       powerAdjuster(joystickRangeLimiter(leftPower));
   const double appliedRightPower =
       powerAdjuster(joystickRangeLimiter(rightPower));
+
+  if (NOISY) {
+    std::cout << "Raw power: left=" << leftPower << ", right=" << rightPower
+              << "\nAdj power: left=" << appliedLeftPower
+              << ", right=" << appliedRightPower << std::endl;
+  }
 
   // Apply power to motors.
   leftFront.Set(appliedLeftPower);
@@ -130,15 +140,13 @@ void DriveBase::ReportEncoderDataToSmartDashboard(std::string prefix,
   const double posInTicks = encoder.GetPosition();
   const double posInInches = ticksToInchesConverter(posInTicks);
 
-  frc::SmartDashboard::PutNumber(prefix + " encoder position (ticks)",
-                                 posInTicks);
-  frc::SmartDashboard::PutNumber(prefix + " encoder position (in)",
-                                 posInInches);
+  frc::SmartDashboard::PutNumber(prefix + " pos (tx)", posInTicks);
+  frc::SmartDashboard::PutNumber(prefix + " pos (in)", posInInches);
 }
 
 void DriveBase::ReportEncoderDataToSmartDashboard() {
-  ReportEncoderDataToSmartDashboard("Right front", rightFrontEncoder);
-  ReportEncoderDataToSmartDashboard("Right rear", rightRearEncoder);
-  ReportEncoderDataToSmartDashboard("Left front", leftFrontEncoder);
-  ReportEncoderDataToSmartDashboard("Left rear", leftRearEncoder);
+  ReportEncoderDataToSmartDashboard("R. front", rightFrontEncoder);
+  ReportEncoderDataToSmartDashboard("R. rear", rightRearEncoder);
+  ReportEncoderDataToSmartDashboard("L. front", leftFrontEncoder);
+  ReportEncoderDataToSmartDashboard("L. rear", leftRearEncoder);
 }

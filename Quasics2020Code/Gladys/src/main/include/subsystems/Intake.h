@@ -9,6 +9,7 @@
 
 #include <ctre/Phoenix.h>
 #include <frc2/command/SubsystemBase.h>
+#include "subsystems/Climber.h"
 
 // TODO(Nurfadil): Document this class.
 class Intake : public frc2::SubsystemBase {

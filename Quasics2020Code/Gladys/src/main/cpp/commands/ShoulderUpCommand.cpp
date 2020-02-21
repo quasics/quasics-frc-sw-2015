@@ -9,6 +9,7 @@
 
 ShoulderUpCommand::ShoulderUpCommand(Intake* intake) : intake(intake) {
   // Use AddRequirements() here to declare subsystem dependencies.
+  AddRequirements(intake);
 
   // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }

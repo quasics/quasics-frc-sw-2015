@@ -11,7 +11,7 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Intake.h"
-
+//Rotates the shoulder down
 // TODO(Nurfadil): Document this class.
 /**
  * An example command.

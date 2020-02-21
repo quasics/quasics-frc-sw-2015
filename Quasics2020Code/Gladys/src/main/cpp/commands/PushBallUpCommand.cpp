@@ -9,6 +9,7 @@
 
 PushBallUpCommand::PushBallUpCommand(Exhaust* exhaust) : exhaust(exhaust) {
   // Use AddRequirements() here to declare subsystem dependencies.
+  AddRequirements(exhaust);
 
   // TODO(Nurfadil): (BUG) Add the climber as a required subsystem!
 }

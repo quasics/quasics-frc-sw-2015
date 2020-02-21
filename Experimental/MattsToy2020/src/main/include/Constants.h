@@ -19,7 +19,7 @@
 
 namespace DriveBaseConstants {
   constexpr double kStandardPowerScalingFactor = 0.45;
-  constexpr double kTurboPowerScalingFactor = 0.45;
+  constexpr double kTurboPowerScalingFactor = 0.65;
 }  // namespace DriveBaseConstants
 
 namespace ElevatorConstants {
@@ -57,25 +57,24 @@ namespace OIConstants {
     constexpr int StartButton = 8;
     constexpr int LeftStickPress = 9;
     constexpr int RightStickPress = 10;
-  }
+  }  // namespace LogitechGamePad
 
   namespace XBox {
-    constexpr int ButtonA = 1; 
-    constexpr int ButtonB = 2;  
-    constexpr int ButtonX = 3;  
-    constexpr int ButtonY = 4;     
-    constexpr int LeftButton = 5;   
-    constexpr int RightButton = 6;  
-
+    constexpr int ButtonA = 1;
+    constexpr int ButtonB = 2;
+    constexpr int ButtonX = 3;
+    constexpr int ButtonY = 4;
+    constexpr int LeftButton = 5;
+    constexpr int RightButton = 6;
 
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;
     constexpr int RightXAxis = 2;
-    constexpr int RightYAxis = 5; 
+    constexpr int RightYAxis = 5;
 
-    constexpr int LeftTrigger = 2;   
-    constexpr int RightTrigger =3;  
-  }
+    constexpr int LeftTrigger = 2;
+    constexpr int RightTrigger = 3;
+  }  // namespace XBox
 }  // namespace OIConstants
 
 namespace CANBusConstants {
@@ -91,6 +90,6 @@ namespace CANBusConstants {
 
     constexpr int LeftElevatorMotorId = 2;
     constexpr int RightElevatorMotorId = 3;
-    
+
   }  // namespace VictorSpxIds
 }  // namespace CANBusConstants

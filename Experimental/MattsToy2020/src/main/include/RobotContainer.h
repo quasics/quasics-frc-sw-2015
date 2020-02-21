@@ -9,11 +9,11 @@
 
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
 
 #include "Constants.h"
-#include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
 #include "subsystems/SwissArmySubsystem.h"
 
@@ -32,6 +32,7 @@ class RobotContainer {
 
  private:
   void ConfigureButtonBindings();
+  void ConfigureSmartDashboard();
 
   // Robot subsystems and commands
  private:
@@ -51,5 +52,5 @@ class RobotContainer {
 
   frc::XboxController m_xboxController{OIConstants::kOperatorControllerPort};
 
-  ExampleCommand m_autonomousCommand;
+  frc::SendableChooser<frc2::Command*> autoChooser;
 };

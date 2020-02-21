@@ -7,10 +7,12 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 
 #include "Constants.h"
+#include "commands/ExampleCommand.h"
 #include "commands/LowerElevatorCommand.h"
 #include "commands/RaiseElevatorCommand.h"
 #include "commands/TankDriveCommand.h"
@@ -41,6 +43,16 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureButtonBindings();
+
+  // Configure the smart dashboard/shuffleboard
+  ConfigureSmartDashboard();
+}
+
+void RobotContainer::ConfigureSmartDashboard() {
+  // Configure the set of commands we want to choose from in autonomous mode.
+  autoChooser.SetDefaultOption("Do nothing", new DoNothingCommand);
+  autoChooser.AddOption("Do something", new ExampleCommand("Do something"));
+  frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
 }
 
 void RobotContainer::ConfigureButtonBindings() {
@@ -66,6 +78,5 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
-  return &m_autonomousCommand;
+  return autoChooser.GetSelected();
 }

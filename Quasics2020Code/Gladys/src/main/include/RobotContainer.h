@@ -21,6 +21,7 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
+#include "subsystems/CameraStand.h"
 
 // #define DISABLE_DRIVE_BASE
 
@@ -65,6 +66,7 @@ class RobotContainer {
   Exhaust exhaust;
   Climber climber;
   CommandPanel commandPanel;
+  CameraStand cameraStand;
 
   // Controllers
   frc::Joystick driverJoystick{0};

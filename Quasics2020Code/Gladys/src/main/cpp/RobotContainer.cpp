@@ -29,6 +29,9 @@
 #include "commands/TurnControlPanelToTargetColorCommand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/CameraStand.h"
+#include "commands/TurnCameraBackward.h"
+#include "commands/TurnCameraForward.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -161,4 +164,10 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
+
+  frc::SmartDashboard::PutData(
+      "Turn the Camera Forward", new TurnCameraForward(&cameraStand));
+
+  frc::SmartDashboard::PutData(
+      "Turn the Camera Backwards", new TurnCameraBackward(&cameraStand));
 }

@@ -16,6 +16,8 @@ class CameraStand : public frc2::SubsystemBase {
   CameraStand();
   void TurnCameraMax();
   void TurnCameraMin();
+  double GetCameraPosition();
+  bool IsForward();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

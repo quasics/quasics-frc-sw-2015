@@ -23,3 +23,19 @@ void CameraStand::TurnCameraMin(){
     double Min = standServo.GetMinAngle();
     standServo.SetAngle(Min);
 }
+
+double CameraStand::GetCameraPosition(){
+    double Angle = standServo.GetAngle();
+    return Angle;
+}
+
+bool CameraStand::IsForward(){
+    double Angle = standServo.GetAngle();
+    double Max = standServo.GetMaxAngle();
+    double Min = standServo.GetMinAngle();
+    double Mid = (Max + Min)/2;
+    if(Angle < Mid){
+        return true;
+    }
+    return false;
+}

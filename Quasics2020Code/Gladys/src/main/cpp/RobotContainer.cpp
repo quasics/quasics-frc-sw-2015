@@ -32,6 +32,7 @@
 #include "subsystems/CameraStand.h"
 #include "commands/TurnCameraBackward.h"
 #include "commands/TurnCameraForward.h"
+#include "commands/SwitchCameraDirection.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -170,4 +171,7 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "Turn the Camera Backwards", new TurnCameraBackward(&cameraStand));
+
+  frc::SmartDashboard::PutData(
+      "Toggle Camera Direction", new SwitchCameraDirection(&cameraStand));
 }

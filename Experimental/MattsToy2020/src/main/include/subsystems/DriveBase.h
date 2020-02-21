@@ -30,6 +30,9 @@ class DriveBase : public frc2::SubsystemBase {
    */
   void Periodic();
 
+  ////////////////////////////
+  // Basic motor control
+ public:
   /**
    * Sets the power to be applied to the drive motors.
    *
@@ -46,18 +49,26 @@ class DriveBase : public frc2::SubsystemBase {
   /** Enables "turbo" mode, where we increase maximum speed.  (Will take effect
    * the next time thst SetMotorPower() is invoked.) */
   void EnableTurboMode();
+
   /** Disables "turbo" mode.  (Will take effect the next time thst
    * SetMotorPower() is invoked.) */
   void DisableTurboMode();
 
+  ////////////////////////////
+  // Encoder support
+ public:
+  /**
+   * Enumerates individual motors and sets of motors, for use with encoder
+   * functions.
+   */
   enum class Motors {
-    LeftFront = 0x001,
-    LeftRear = 0x002,
-    LeftAll = 0x003,
-    RightFront = 0x004,
-    RightRear = 0x008,
-    RightAll = 0x00C,
-    All = 0x00F
+    LeftFront = 0b00001,   // 0x001,
+    LeftRear = 0b00010,    // 0x002,
+    LeftAll = 0b00011,     // 0x003,
+    RightFront = 0b00100,  // 0x004,
+    RightRear = 0b01000,   // 0x008,
+    RightAll = 0b01101,    // 0x00C,
+    All = 0b01111,         // 0x00F
   };
 
   /**
@@ -81,12 +92,17 @@ class DriveBase : public frc2::SubsystemBase {
    */
   void ResetEncoderPosition(Motors motor);
 
+  ////////////////////////////
+  // Debugging support
+ public:
   /**
    * Utility function (for debugging): display current encoder data to the smart
    * dashboard.
    */
   void ReportEncoderDataToSmartDashboard();
 
+  ////////////////////////////
+  // Private utility functions
  private:
   /** Returns a pointer to the specified (single) encoder, or nullptr. */
   rev::CANEncoder* GetEncoder(Motors motor);
@@ -95,6 +111,8 @@ class DriveBase : public frc2::SubsystemBase {
   void ReportEncoderDataToSmartDashboard(std::string prefix,
                                          rev::CANEncoder& encoder);
 
+  ////////////////////////////
+  // Data members
  private:
   // Motors
   rev::CANSparkMax leftFront;

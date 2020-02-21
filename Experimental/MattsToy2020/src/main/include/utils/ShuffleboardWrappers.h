@@ -9,8 +9,8 @@
 namespace ShuffleboardWrappers {
 
   /**
-   * Utility class, simplifying the task of putting an "on/off" toggle on the
-   * Smart Dashboard/Shuffleboard, which can be read by the robot code.
+   * Utility class, simplifying the task of putting an "on/off" toggle switch on
+   * the Smart Dashboard/Shuffleboard, which can be read by the robot code.
    */
   class BooleanToggle {
    public:
@@ -37,6 +37,16 @@ namespace ShuffleboardWrappers {
      */
     bool GetValue(bool defaultValue = false) {
       return entry.GetBoolean(defaultValue);
+    }
+
+    /**
+     * Sets a new value for the toggle (e.g., if the robot has decided it can't
+     * comply with the user's request).
+     *
+     * @param value  the new value for the toggle
+     */
+    void SetValue(bool value) {
+      entry.SetBoolean(value);
     }
 
    private:

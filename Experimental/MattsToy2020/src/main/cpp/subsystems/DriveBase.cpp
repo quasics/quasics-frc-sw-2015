@@ -9,8 +9,6 @@
 
 #include "subsystems/DriveBase.h"
 
-#include <frc/shuffleboard/Shuffleboard.h>
-#include <frc/shuffleboard/ShuffleboardTab.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <cmath>
@@ -61,13 +59,14 @@ DriveBase::DriveBase()
                  rev::CANSparkMax::MotorType::kBrushless),
       rightRear(CANBusConstants::SparkMaxIds::DriveBaseRightRearId,
                 rev::CANSparkMax::MotorType::kBrushless),
-      powerAdjuster(standardPowerAdjuster) {
+      powerAdjuster(standardPowerAdjuster),
+      loggingOn("DriveBase noisy", "Logging") {
   SetSubsystem("DriveBase");
   ResetEncoderPosition(Motors::All);
-  frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab("Logging");
-  debuggingOnEntry = tab.Add("DriveBase noisy", false)
-                         .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
-                         .GetEntry();
+  // frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab("Logging");
+  // debuggingOnEntry = tab.Add("DriveBase noisy", false)
+  //                        .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
+  //                        .GetEntry();
   // frc::SmartDashboard::GetBoolean("DriveBase noisy", false);
 }
 
@@ -96,7 +95,7 @@ void DriveBase::SetMotorPower(double leftPower, double rightPower) {
   const double appliedRightPower =
       powerAdjuster(joystickRangeLimiter(rightPower));
 
-  if (debuggingOnEntry.GetBoolean(false)) {
+  if (loggingOn.GetValue()) {
     std::cout << "Drive power: leftRaw=" << leftPower
               << ", rightRaw=" << rightPower
               << " | leftAdj=" << appliedLeftPower

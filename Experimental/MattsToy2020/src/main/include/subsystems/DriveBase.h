@@ -10,10 +10,11 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
-#include <networktables/NetworkTableEntry.h>
 #include <rev/CANSparkMax.h>
 
 #include <functional>
+
+#include "utils/ShuffleboardWrappers.h"
 
 /**
  * Sample code for a drive base, written to operate in "tank drive"
@@ -115,5 +116,5 @@ class DriveBase : public frc2::SubsystemBase {
   // Current limiter on motor power
   std::function<double(double)> powerAdjuster = turboPowerAdjuster;
 
-  nt::NetworkTableEntry debuggingOnEntry;
+  ShuffleboardWrappers::BooleanToggle loggingOn;
 };

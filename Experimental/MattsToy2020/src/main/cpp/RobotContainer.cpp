@@ -55,7 +55,11 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&m_xboxController, int(frc::XboxController::Button::kA))
       .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
 
-  // While the left shoulder button is held down, enable turbo mode
+  // While the left shoulder button is held down, enable turbo mode.
+  //
+  // (Another option would be to have a non-instant command that would enable
+  // turbo in Initialize(), disable it in End(), and then bind it "WhileHeld",
+  // but this lets me show a couple of InstantCommands being used.)
   frc2::JoystickButton(&m_logitechController,
                        OIConstants::LogitechGamePad::LeftShoulder)
       .WhenPressed(&m_enableTurbo)

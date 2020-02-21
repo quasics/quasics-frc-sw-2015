@@ -28,7 +28,7 @@ namespace ElevatorConstants {
 }  // namespace ElevatorConstants
 
 namespace OIConstants {
-  constexpr double kDriveControllerDeadBandSize = 0.015;
+  constexpr double kDriveControllerDeadBandSize = 0.02;
   constexpr int kDriverControllerPort = 0;
   constexpr int kOperatorControllerPort = 1;
 

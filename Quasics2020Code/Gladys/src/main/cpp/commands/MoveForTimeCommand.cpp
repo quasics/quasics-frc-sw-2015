@@ -7,8 +7,7 @@
 
 #include "commands/MoveForTimeCommand.h"
 
-MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
-                                       double power)
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration, double power)
     : drivebase(drivebase),
       duration(duration),
       left_power(power),
@@ -16,8 +15,7 @@ MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
   AddRequirements(drivebase);
 }
 
-MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
-                                       double left_power, double right_power)
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration, double left_power, double right_power)
     : drivebase(drivebase),
       duration(duration),
       left_power(left_power),

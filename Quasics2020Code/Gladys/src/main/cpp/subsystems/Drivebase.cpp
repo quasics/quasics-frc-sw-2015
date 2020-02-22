@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 #include "subsystems/Drivebase.h"
-
+#include "utils/EncoderHelpers.h"
 #include <iostream>
 
 Drivebase::Drivebase()
@@ -86,3 +86,17 @@ void Drivebase::SetMotorPower(double rightPower, double leftPower) {
     rightRear.Set(-leftPower * powerScaling);
   }
 }
+
+constexpr double kTicksPerRevolution_NeoMotor = 42;
+constexpr double kGearRatio_2020 = 10.71;
+constexpr double kWheelDiameter_Inches_2020 = 6;
+
+static constexpr EncoderRevolutionsToUnitsConverter EncoderRevolutionsToUnitsConverter(kGearRatio_2020, kWheelDiameter_Inches_2020);
+
+
+  double Drivebase::GetLeftEncoderInInches(){
+    return EncoderRevolutionsToUnitsConverter(leftFrontEncoder.GetPosition());
+  }
+  double Drivebase::GetRightEncoderInInches(){
+    return EncoderRevolutionsToUnitsConverter(rightFrontEncoder.GetPosition());
+  }

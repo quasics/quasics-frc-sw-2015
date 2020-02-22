@@ -51,3 +51,36 @@ class EncoderTicksToUnitsConverter {
   const double gearRatio;
   const double wheelDiameter;
 };
+
+/**
+ * Utility class/functor to convert full revolutions of a motor (as reported by
+ * an encoder) to inches or other "human units".
+ */
+class EncoderRevolutionsToUnitsConverter {
+ public:
+  /**
+   * Constructor
+   *
+   * @param gearRatio ratio of motor revolutions to wheel revolutions
+   * @param wheelDiameter diameter of the wheel, in output units
+   *
+   * @see #GetEncoderPosition
+   */
+  constexpr EncoderRevolutionsToUnitsConverter(double gearRatio,
+                                               double wheelDiameter)
+      : gearRatio(gearRatio), wheelDiameter(wheelDiameter) {
+  }
+
+  /**
+   * Converts the specified number of motor revolutions to "human units".
+   */
+  double operator()(double revolutions) const {
+    return ((revolutions) / gearRatio) * (wheelDiameter * PI);
+  }
+
+ private:
+  /// Constant for Pi.  (Not included in math library until C++20.)
+  static constexpr double PI = 4.0 * std::atan(1);
+  const double gearRatio;
+  const double wheelDiameter;
+};

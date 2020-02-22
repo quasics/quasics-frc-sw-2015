@@ -50,6 +50,9 @@ class Drivebase : public frc2::SubsystemBase {
 
   void ResetEncoderPositions();
 
+  double GetLeftEncoderInInches();
+  double GetRightEncoderInInches();
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

@@ -28,8 +28,14 @@ namespace ElevatorConstants {
 }  // namespace ElevatorConstants
 
 namespace OIConstants {
-  constexpr double kDriveControllerDeadBandSize = 0.02;
+  /// Offset from center on the driver's joysticks that is needed to start drive
+  /// wheels moving. (Compensating for calibration issues.)
+  constexpr double kDriveControllerDeadBandSize = 0.05;
+
+  /// Joystick port ID for the driver's controller.
   constexpr int kDriverControllerPort = 0;
+
+  /// Joystick port ID for the operator's controller.
   constexpr int kOperatorControllerPort = 1;
 
   namespace LogitechGamePad {

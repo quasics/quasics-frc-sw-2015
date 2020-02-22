@@ -12,6 +12,11 @@
 
 namespace ShuffleboardWrappers {
 
+  /**
+   * Defines a container (list) widget on a Shuffleboard tab, which can be used
+   * to group other widgets together in a logical (and more space-efficient)
+   * fashion.
+   */
   class Collection {
    public:
     Collection(const std::string& title,
@@ -27,26 +32,25 @@ namespace ShuffleboardWrappers {
    private:
     frc::ShuffleboardLayout& layout;
   };
-
   class SimpleDisplay {
    public:
     explicit SimpleDisplay(const std::string& title,
                            const std::string& tabName = std::string())
         : SimpleDisplay("", title, tabName) {
     }
-    SimpleDisplay(const std::string& title, Collection& collection)
-        : SimpleDisplay("", title, collection.Get()) {
-    }
-    SimpleDisplay(const std::string defaultValue, const std::string& title,
+    SimpleDisplay(const std::string& defaultValue, const std::string& title,
                   const std::string& tabName)
         : SimpleDisplay(defaultValue, title,
                         frc::Shuffleboard::GetTab(tabName)) {
     }
-    SimpleDisplay(const std::string defaultValue, const std::string& title,
+    SimpleDisplay(const std::string& title, Collection& collection)
+        : SimpleDisplay("", title, collection) {
+    }
+    SimpleDisplay(const std::string& defaultValue, const std::string& title,
                   Collection& collection)
         : SimpleDisplay(defaultValue, title, collection.Get()) {
     }
-    SimpleDisplay(const std::string defaultValue, const std::string& title,
+    SimpleDisplay(const std::string& defaultValue, const std::string& title,
                   frc::ShuffleboardContainer& container) {
       entry = container.Add(title, "")
                   .WithWidget(frc::BuiltInWidgets::kTextView)
@@ -118,6 +122,20 @@ namespace ShuffleboardWrappers {
                   const std::string& tabName) {
       frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab(tabName);
       entry = tab.Add(title, defaultValue)
+                  .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
+                  .GetEntry();
+    }
+
+    BooleanToggle(const std::string& title, Collection& container)
+        : BooleanToggle(false, title, container) {
+    }
+    BooleanToggle(bool defaultValue, const std::string& title,
+                  Collection& container)
+        : BooleanToggle(defaultValue, title, container.Get()) {
+    }
+    BooleanToggle(bool defaultValue, const std::string& title,
+                  frc::ShuffleboardContainer& container) {
+      entry = container.Add(title, defaultValue)
                   .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
                   .GetEntry();
     }

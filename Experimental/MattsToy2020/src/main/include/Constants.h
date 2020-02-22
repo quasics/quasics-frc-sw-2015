@@ -77,7 +77,19 @@ namespace OIConstants {
   }  // namespace XBox
 }  // namespace OIConstants
 
+// IDs for devices connected via PWM.
+//
+// Note: these IDs must be unique.
+namespace PwmAssignments {
+  constexpr int CameraSpinnerId = 0;
+}
+
+// IDs for devices on the CAN bus.
+//
+// Note: CAN allows multiple devices to have the same IDs, as long as they are
+// different types of hardware.
 namespace CANBusConstants {
+
   namespace SparkMaxIds {
     constexpr int DriveBaseLeftFrontId = 3;
     constexpr int DriveBaseLeftRearId = 4;

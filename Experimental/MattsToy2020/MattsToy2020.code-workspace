@@ -69,7 +69,11 @@
 			"thread": "cpp",
 			"cinttypes": "cpp",
 			"typeinfo": "cpp",
-			"*.inc": "cpp"
+			"*.inc": "cpp",
+			"__debug": "cpp",
+			"__functional_base": "cpp",
+			"__tuple": "cpp",
+			"bit": "cpp"
 		}
 	}
 }

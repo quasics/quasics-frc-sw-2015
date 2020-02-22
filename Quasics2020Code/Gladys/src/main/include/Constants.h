@@ -115,5 +115,5 @@ namespace ServoConstants {
 }
 
 namespace PhysicalConstants{
-  const int radius = 11;
+  const double radiusWheelToWheel = 11.0;
 }

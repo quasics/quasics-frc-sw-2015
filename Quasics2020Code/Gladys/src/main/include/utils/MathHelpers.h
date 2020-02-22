@@ -7,16 +7,18 @@
 
 #pragma once
 #include <math.h>
+#include "Constants.h"
 
 class MathHelpers {
  public:
   MathHelpers();
 
   double degreesToInchesConverter(double inches){
-    double angle = 360*inches/(M_1_PI*2*radius);
+    double angle = 360*inches/(pi*2*radius);
     return angle;
   }
 
   private:
-  const double radius = 11.0;
+  const double radius = PhysicalConstants::radiusWheelToWheel;
+  const double pi = 355/113;
 };

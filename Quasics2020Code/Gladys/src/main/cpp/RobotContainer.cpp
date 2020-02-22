@@ -33,6 +33,7 @@
 #include "subsystems/CameraStand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "commands/DriveADistance.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -165,4 +166,7 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData("Toggle Camera Direction",
                                new SwitchCameraDirection(&cameraStand));
+          
+  frc::SmartDashboard::PutData("Move Distance (36 inches)",
+                               new DriveADistance(&drivebase, 36.00, 0.25));
 }

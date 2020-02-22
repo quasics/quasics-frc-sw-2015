@@ -32,12 +32,15 @@ class DriveBase : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.  (Used to
    * update the view of the encoders on the Shuffleboard.)
    *
-   * @see #ReportEncoderDataToSmartDashboard()
+   * @see #ReportEncoderDataToShuffleboard()
    */
   void Periodic();
 
-  ////////////////////////////
+  ////////////////////////////////////
+  //
   // Basic motor control
+  //
+  ////////////////////////////////////
  public:
   /**
    * Sets the power to be applied to the drive motors.
@@ -66,8 +69,11 @@ class DriveBase : public frc2::SubsystemBase {
    */
   void SetCoastingEnabled(bool enabled);
 
-  ////////////////////////////
+  ////////////////////////////////////
+  //
   // Encoder support
+  //
+  ////////////////////////////////////
  public:
   /**
    * Enumerates individual motors and sets of motors, for use with encoder
@@ -104,14 +110,17 @@ class DriveBase : public frc2::SubsystemBase {
    */
   void ResetEncoderPosition(Motors motor);
 
-  ////////////////////////////
+  ////////////////////////////////////
+  //
   // Debugging support
+  //
+  ////////////////////////////////////
  public:
   /**
    * Utility function (for debugging): display current encoder data to the smart
    * dashboard.
    */
-  void ReportEncoderDataToSmartDashboard();
+  void ReportEncoderDataToShuffleboard();
 
   ////////////////////////////
   // Private utility functions
@@ -119,10 +128,13 @@ class DriveBase : public frc2::SubsystemBase {
   /** Returns a pointer to the specified (single) encoder, or nullptr. */
   rev::CANEncoder* GetEncoder(Motors motor);
 
-  ////////////////////////////
-  // Data members
  private:
-  // Motors
+  ////////////////////////////////////
+  //
+  // Motor/encoder support
+  //
+  ////////////////////////////////////
+
   rev::CANSparkMax leftFront;
   rev::CANSparkMax leftRear;
   rev::CANSparkMax rightFront;
@@ -134,13 +146,19 @@ class DriveBase : public frc2::SubsystemBase {
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
 
-  // Fucntors used to scale/limit motor power.
+  // Functors used to scale/limit motor power.
   static const std::function<double(double)> joystickRangeLimiter;
   static const std::function<double(double)> standardPowerAdjuster;
   static const std::function<double(double)> turboPowerAdjuster;
 
   // Current limiter on motor power
   std::function<double(double)> powerAdjuster = standardPowerAdjuster;
+
+  ////////////////////////////////////
+  //
+  // Shuffleboard/OI stuff
+  //
+  ////////////////////////////////////
 
   // Control on the Shuffleboard UI to turn debugging output on/off.  (Default
   // is off.)
@@ -149,6 +167,7 @@ class DriveBase : public frc2::SubsystemBase {
                                                 "Logging" /* tab name */};
 
   ShuffleboardWrappers::Collection encodersList{"Encoders", "Drive base"};
+
   ShuffleboardWrappers::SimpleDisplay leftFrontEncoderTicksDisplay{
       "L. front (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftRearEncoderTicksDisplay{

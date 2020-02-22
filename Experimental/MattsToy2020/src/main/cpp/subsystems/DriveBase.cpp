@@ -51,7 +51,7 @@ DriveBase::DriveBase()
 
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
-  ReportEncoderDataToSmartDashboard();
+  ReportEncoderDataToShuffleboard();
 }
 
 /** Enables "turbo" mode, where we increase maximum speed.  (Will take effect
@@ -163,7 +163,7 @@ constexpr double kWheelDiameter_Inches_2020 = 6;
 static constexpr EncoderRevolutionsToUnitsConverter revsToInchesConverter(
     kGearRatio_2020, kWheelDiameter_Inches_2020);
 
-void DriveBase::ReportEncoderDataToSmartDashboard() {
+void DriveBase::ReportEncoderDataToShuffleboard() {
   leftFrontEncoderTicksDisplay.SetValue(leftFrontEncoder.GetPosition());
   leftRearEncoderTicksDisplay.SetValue(leftRearEncoder.GetPosition());
   rightFrontEncoderTicksDisplay.SetValue(rightFrontEncoder.GetPosition());

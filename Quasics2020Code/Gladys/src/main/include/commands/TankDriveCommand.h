@@ -26,14 +26,11 @@ class TankDriveCommand
   TankDriveCommand(Drivebase* drivebase, std::function<double()> right,
                    std::function<double()> left);
 
-  void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
-
+  
  private:
   Drivebase* drivebase;
   std::function<double()> right;

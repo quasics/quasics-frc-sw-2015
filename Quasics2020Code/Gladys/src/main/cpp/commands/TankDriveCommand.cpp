@@ -14,11 +14,6 @@ TankDriveCommand::TankDriveCommand(Drivebase* drivebase,
   AddRequirements(drivebase);
 }
 
-// TODO(Kat): Remove this unneeded function (from both .cpp and .h).
-// Called when the command is initially scheduled.
-void TankDriveCommand::Initialize() {
-}
-
 // Called repeatedly when this Command is scheduled to run
 void TankDriveCommand::Execute() {
   drivebase->SetMotorPower(right(), left());
@@ -28,10 +23,4 @@ void TankDriveCommand::Execute() {
 // Called once the command ends or is interrupted.
 void TankDriveCommand::End(bool interrupted) {
   drivebase->Stop();
-}
-
-// TODO(Kat): Remove this unneeded function (from both .cpp and .h).
-// Returns true when the command should end.
-bool TankDriveCommand::IsFinished() {
-  return false;
 }

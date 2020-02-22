@@ -6,19 +6,18 @@
 /*----------------------------------------------------------------------------*/
 
 #pragma once
-#include <math.h>
+
+#include <cmath>
 #include "Constants.h"
 
 class MathHelpers {
  public:
-  MathHelpers();
-
-  double degreesToInchesConverter(double inches){
+  static double inchesToDegreesConverter(double inches){
     double angle = 360*inches/(pi*2*radius);
     return angle;
   }
 
-  private:
-  const double radius = PhysicalConstants::radiusWheelToWheel;
-  const double pi = 355/113;
+ private:
+  static constexpr double radius = PhysicalConstants::radiusWheelToWheel;
+  static constexpr double pi = 4.0 * std::atan(1);
 };

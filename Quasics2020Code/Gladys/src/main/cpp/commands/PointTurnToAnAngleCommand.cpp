@@ -26,10 +26,10 @@ void PointTurnToAnAngleCommand::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void PointTurnToAnAngleCommand::Execute() {
   if(isTurningRight){
-    drivebase->SetMotorPower(-.2, .2);
+    drivebase->SetMotorPower(.2, -.2);
   }
   else{
-    drivebase->SetMotorPower(.2, -.2);
+    drivebase->SetMotorPower(-.2, .2);
   }
 }
 

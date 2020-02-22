@@ -171,6 +171,16 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Move Distance (36 inches)",
                                new DriveADistance(&drivebase, 36.00, 0.25));
 
+  frc::SmartDashboard::PutData("Turn 90 Degrees to the Right",
+                               new PointTurnToAnAngleCommand(&drivebase, true, 90.0));
+  
+  frc::SmartDashboard::PutData("Turn 90 Degrees to the Left",
+                               new PointTurnToAnAngleCommand(&drivebase, false, 90.0));
+  
   frc::SmartDashboard::PutData("Turn 45 Degrees to the Right",
                                new PointTurnToAnAngleCommand(&drivebase, true, 45.0));
+  
+  frc::SmartDashboard::PutData("Turn 45 Degrees to the Left",
+                               new PointTurnToAnAngleCommand(&drivebase, false, 45.0));
+
 }

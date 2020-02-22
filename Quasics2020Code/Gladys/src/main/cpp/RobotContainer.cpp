@@ -24,15 +24,15 @@
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControlCommand.h"
 #include "commands/SpinTheWheelCommand.h"
+#include "commands/SwitchCameraDirection.h"
 #include "commands/TankDriveCommand.h"
-#include "commands/TurnControlPanel4TimesCommand.h"
-#include "commands/TurnControlPanelToTargetColorCommand.h"
-#include "subsystems/Drivebase.h"
-#include "subsystems/Intake.h"
-#include "subsystems/CameraStand.h"
 #include "commands/TurnCameraBackward.h"
 #include "commands/TurnCameraForward.h"
-#include "commands/SwitchCameraDirection.h"
+#include "commands/TurnControlPanel4TimesCommand.h"
+#include "commands/TurnControlPanelToTargetColorCommand.h"
+#include "subsystems/CameraStand.h"
+#include "subsystems/Drivebase.h"
+#include "subsystems/Intake.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -42,29 +42,20 @@ inline double DeadBand(double stickValue) {
   return (stickValue);
 }
 
-RobotContainer::RobotContainer()
-    : drivebase(
-#ifdef DISABLE_DRIVE_BASE
-          nullptr
-#else
-          new Drivebase
-#endif  // DISABLE_DRIVE_BASE
-      ) {
+RobotContainer::RobotContainer() : m_autonomousCommand(&exhaust, &drivebase) {
   // Initialize all of your commands and subsystems here
-  if (drivebase) {
-    drivebase->SetDefaultCommand(TankDriveCommand(
-        drivebase.get(),
-        [this] {
-          double stickValue = driverJoystick.GetRawAxis(
-              OIConstants::LogitechGamePad::RightYAxis);
-          return DeadBand(stickValue);
-        },
-        [this] {
-          double stickValue = driverJoystick.GetRawAxis(
-              OIConstants::LogitechGamePad::LeftYAxis);
-          return DeadBand(stickValue);
-        }));
-  }
+  drivebase.SetDefaultCommand(TankDriveCommand(
+      &drivebase,
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+        return DeadBand(stickValue);
+      },
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+        return DeadBand(stickValue);
+      }));
 
   intake.SetDefaultCommand(ShoulderControlCommand(&intake, [this] {
     double stickValue =
@@ -80,7 +71,9 @@ RobotContainer::RobotContainer()
 void RobotContainer::ConfigureButtonBindings() {
   std::cout << "Beginning button binding configuration" << std::endl;
 
-#ifndef DISABLE_DRIVE_BASE
+  //
+  // Configuring buttons on the driver's controller.
+  //
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::LeftShoulder)
       .WhenPressed(enableTurboMode)
@@ -89,12 +82,14 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&driverJoystick,
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
-#endif  // DISABLE_DRIVE_BASE
 
   // frc2::JoystickButton(&driverJoystick,
   //                      OIConstants::LogitechGamePad::LeftShoulder)
   //     .WhileHeld(IntakeBallsCommand(&intake));
 
+  //
+  // Configuring buttons on the operator's controller.
+  //
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperLeft))
       .WhenPressed(TurnControlPanel4TimesCommand(&commandPanel));
@@ -146,19 +141,15 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-#ifndef DISABLE_DRIVE_BASE
-  return &m_trivialAutonmousCommand;
-#else
   return &m_autonomousCommand;
-#endif  // DISABLE_DRIVE_BASE
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
   std::cout << "Beginning smart dashboard configuration" << std::endl;
-  if (drivebase) {
-    frc::SmartDashboard::PutData(
-        "Move off the line", new MoveForTimeCommand(drivebase.get(), 3, .4));
-  }
+  frc::SmartDashboard::PutData("Move off the line",
+                               new MoveForTimeCommand(&drivebase, 3, .4));
+  frc::SmartDashboard::PutData("Auto mode ball delivery",
+                               new AutoModeBallDelivery(&exhaust, &drivebase));
   frc::SmartDashboard::PutData(
       "Turn Four Times", new TurnControlPanel4TimesCommand(&commandPanel));
   std::cout << "Completed smart dashboard configuration" << std::endl;
@@ -166,12 +157,12 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
 
-  frc::SmartDashboard::PutData(
-      "Turn the Camera Forward", new TurnCameraForward(&cameraStand));
+  frc::SmartDashboard::PutData("Turn the Camera Forward",
+                               new TurnCameraForward(&cameraStand));
 
-  frc::SmartDashboard::PutData(
-      "Turn the Camera Backwards", new TurnCameraBackward(&cameraStand));
+  frc::SmartDashboard::PutData("Turn the Camera Backwards",
+                               new TurnCameraBackward(&cameraStand));
 
-  frc::SmartDashboard::PutData(
-      "Toggle Camera Direction", new SwitchCameraDirection(&cameraStand));
+  frc::SmartDashboard::PutData("Toggle Camera Direction",
+                               new SwitchCameraDirection(&cameraStand));
 }

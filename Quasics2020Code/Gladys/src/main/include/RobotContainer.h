@@ -15,15 +15,14 @@
 
 #include <memory>
 
+#include "commands/AutoModeBallDelivery.h"
 #include "commands/MoveForTimeCommand.h"
+#include "subsystems/CameraStand.h"
 #include "subsystems/Climber.h"
 #include "subsystems/CommandPanel.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
-#include "subsystems/CameraStand.h"
-
-// #define DISABLE_DRIVE_BASE
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -40,26 +39,13 @@ class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
  private:
-  std::unique_ptr<Drivebase> drivebase;
+  Drivebase drivebase;
   // "Instant" commands, to quietly modify the drive base's state
-  frc2::InstantCommand enableTurboMode{[this] {
-                                         if (drivebase) {
-                                           drivebase->EnableTurboMode();
-                                         }
-                                       },
+  frc2::InstantCommand enableTurboMode{[this] { drivebase.EnableTurboMode(); },
                                        {}};
-  frc2::InstantCommand disableTurboMode{[this] {
-                                          if (drivebase) {
-                                            drivebase->DisableTurboMode();
-                                          }
-                                        },
-                                        {}};
-  frc2::InstantCommand frontIsForward{[this] {
-                                        if (drivebase) {
-                                          drivebase->SwitchFace();
-                                        }
-                                      },
-                                      {}};
+  frc2::InstantCommand disableTurboMode{
+      [this] { drivebase.DisableTurboMode(); }, {}};
+  frc2::InstantCommand frontIsForward{[this] { drivebase.SwitchFace(); }, {}};
 
   // Other subsystems
   Intake intake;
@@ -74,11 +60,8 @@ class RobotContainer {
 
   // TODO(Scott): Replace this with a real command for autonomous mode.  (Or
   // more than one.)
-#ifndef DISABLE_DRIVE_BASE
-  MoveForTimeCommand m_trivialAutonmousCommand{drivebase.get(), 2, -.40};
-#else
-  frc2::PrintCommand m_autonomousCommand{"Doing something autonomously...."};
-#endif  // DISABLE_DRIVE_BASE
+  // MoveForTimeCommand m_trivialAutonmousCommand{drivebase.get(), 2, -.40};
+  AutoModeBallDelivery m_autonomousCommand;
 
  private:
   // Private utility/configuration functions are defined here.

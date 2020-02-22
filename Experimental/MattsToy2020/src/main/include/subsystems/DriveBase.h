@@ -107,10 +107,6 @@ class DriveBase : public frc2::SubsystemBase {
   /** Returns a pointer to the specified (single) encoder, or nullptr. */
   rev::CANEncoder* GetEncoder(Motors motor);
 
-  /** Reports data for one encoder on the smart dashboard. */
-  void ReportEncoderDataToSmartDashboard(std::string prefix,
-                                         rev::CANEncoder& encoder);
-
   ////////////////////////////
   // Data members
  private:
@@ -136,6 +132,25 @@ class DriveBase : public frc2::SubsystemBase {
 
   // Control on the Shuffleboard UI to turn debugging output on/off.  (Default
   // is off.)
-  ShuffleboardWrappers::BooleanToggle loggingOn{"DriveBase noisy" /* title */,
+  ShuffleboardWrappers::BooleanToggle loggingOn{false /* default value */,
+                                                "DriveBase noisy" /* title */,
                                                 "Logging" /* tab name */};
+
+  ShuffleboardWrappers::SimpleDisplay leftFrontEncoderTicksDisplay{
+      "L. front (tx)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay leftRearEncoderTicksDisplay{
+      "L. rear (tx)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay leftFrontEncoderInchesDisplay{
+      "L. front (in)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay leftRearEncoderInchesDisplay{
+      "L. rear (in)", "Encoders"};
+
+  ShuffleboardWrappers::SimpleDisplay rightFrontEncoderTicksDisplay{
+      "R. front (tx)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay rightRearEncoderTicksDisplay{
+      "R. rear (tx)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay rightFrontEncoderInchesDisplay{
+      "R. front (in)", "Encoders"};
+  ShuffleboardWrappers::SimpleDisplay rightRearEncoderInchesDisplay{
+      "R. rear (in)", "Encoders"};
 };

@@ -152,18 +152,18 @@ constexpr double kWheelDiameter_Inches_2020 = 6;
 static constexpr EncoderTicksToUnitsConverter ticksToInchesConverter(
     kTicksPerRevolution_NeoMotor, kGearRatio_2020, kWheelDiameter_Inches_2020);
 
-void DriveBase::ReportEncoderDataToSmartDashboard(std::string prefix,
-                                                  rev::CANEncoder& encoder) {
-  const double posInTicks = encoder.GetPosition();
-  const double posInInches = ticksToInchesConverter(posInTicks);
-
-  frc::SmartDashboard::PutNumber(prefix + " pos (tx)", posInTicks);
-  frc::SmartDashboard::PutNumber(prefix + " pos (in)", posInInches);
-}
-
 void DriveBase::ReportEncoderDataToSmartDashboard() {
-  ReportEncoderDataToSmartDashboard("R. front", rightFrontEncoder);
-  ReportEncoderDataToSmartDashboard("R. rear", rightRearEncoder);
-  ReportEncoderDataToSmartDashboard("L. front", leftFrontEncoder);
-  ReportEncoderDataToSmartDashboard("L. rear", leftRearEncoder);
+  leftFrontEncoderTicksDisplay.SetValue(leftFrontEncoder.GetPosition());
+  leftRearEncoderTicksDisplay.SetValue(leftRearEncoder.GetPosition());
+  rightFrontEncoderTicksDisplay.SetValue(rightFrontEncoder.GetPosition());
+  rightRearEncoderTicksDisplay.SetValue(rightRearEncoder.GetPosition());
+
+  leftFrontEncoderInchesDisplay.SetValue(
+      ticksToInchesConverter(leftFrontEncoder.GetPosition()));
+  leftRearEncoderInchesDisplay.SetValue(
+      ticksToInchesConverter(leftRearEncoder.GetPosition()));
+  rightFrontEncoderInchesDisplay.SetValue(
+      ticksToInchesConverter(rightFrontEncoder.GetPosition()));
+  rightRearEncoderInchesDisplay.SetValue(
+      ticksToInchesConverter(rightRearEncoder.GetPosition()));
 }

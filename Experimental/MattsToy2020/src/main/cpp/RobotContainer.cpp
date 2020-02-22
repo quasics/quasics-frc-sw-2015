@@ -14,6 +14,7 @@
 #include "Constants.h"
 #include "commands/ExampleCommand.h"
 #include "commands/LowerElevatorCommand.h"
+#include "commands/MoveForTimeCommand.h"
 #include "commands/RaiseElevatorCommand.h"
 #include "commands/TankDriveCommand.h"
 #include "utils/DeadBandLimiter.h"
@@ -48,6 +49,9 @@ void RobotContainer::ConfigureSmartDashboard() {
   autoChooser.SetDefaultOption("Do nothing", new DoNothingCommand);
   autoChooser.AddOption("Do something", new ExampleCommand("Do something"));
   frc::SmartDashboard::PutData("Auto Chooser", &autoChooser);
+
+  frc::SmartDashboard::PutData("Forward 1s/25%",
+                               new MoveForTimeCommand(&m_driveBase, 1, 0.25));
 }
 
 void RobotContainer::ConfigureButtonBindings() {

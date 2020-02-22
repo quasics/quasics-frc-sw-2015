@@ -56,13 +56,17 @@ void DriveBase::Periodic() {
 /** Enables "turbo" mode, where we increase maximum speed.  (Will take effect
  * the next time thst SetMotorPower() is invoked.) */
 void DriveBase::EnableTurboMode() {
-  std::cout << "Enabling turbo mode" << std::endl;
+  if (loggingOn.GetValue()) {
+    std::cout << "Enabling turbo mode" << std::endl;
+  }
   powerAdjuster = turboPowerAdjuster;
 }
 /** Disables "turbo" mode.  (Will take effect the next time thst
  * SetMotorPower() is invoked.) */
 void DriveBase::DisableTurboMode() {
-  std::cout << "Disabling turbo mode" << std::endl;
+  if (loggingOn.GetValue()) {
+    std::cout << "Disabling turbo mode" << std::endl;
+  }
   powerAdjuster = standardPowerAdjuster;
 }
 

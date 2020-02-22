@@ -17,20 +17,18 @@ TurnControlPanel4TimesCommand::TurnControlPanel4TimesCommand(
 void TurnControlPanel4TimesCommand::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
   initColor = prevColor = m_controlPanel->getCurrentColor();
+  while(initColor == CommandPanel::UNKNOWN){
+    initColor = prevColor = m_controlPanel->getCurrentColor();
+  }
   std::cout << "Initial color is " << m_controlPanel->getColorName(initColor)
             << std::endl;
   // TODO(RJ): What if you can't get the initial color?  (In other words, what
   // if the sensor hands back an unknown/unexpected value?  How should this case
-  // be handled?)
+  // be handled?) (Resolved!!!)
 
   m_controlPanel->TurnWheelMotorOn(true);
 }
 
-// Called repeatedly when this Command is scheduled to run
-void TurnControlPanel4TimesCommand::Execute() {
-  // TODO(RJ): Remove this empty function (both here and in header).
-  ;
-}
 
 // Called once the command ends or is interrupted.
 void TurnControlPanel4TimesCommand::End(bool interrupted) {

@@ -14,7 +14,7 @@
 
 // TODO(RJ): Document this class.
 /**
- * A command that turns to a color.
+ * A command that turns the colorwheel to a color.
  */
 class TurnControlPanelToTargetColorCommand
     : public frc2::CommandHelper<frc2::CommandBase,
@@ -22,13 +22,12 @@ class TurnControlPanelToTargetColorCommand
  public:
   TurnControlPanelToTargetColorCommand(CommandPanel* controlPanel);
 
-  void Initialize() override;
+  void Initialize() override; //gets target color and stops if no data is recieved.
 
-  void Execute() override;
 
-  void End(bool interrupted) override;
+  void End(bool interrupted) override; //ends the search for the color by turning off the motor
 
-  bool IsFinished() override;
+  bool IsFinished() override; //looks to see if the sensor has found the color
 
  private:
   CommandPanel* m_controlPanel;

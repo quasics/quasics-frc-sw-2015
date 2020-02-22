@@ -11,7 +11,7 @@
 
 // TODO(RJ): (Bug) Remove this global variable.  (Make it local to the function
 // where it's used.)
-bool noData = false;
+
 
 TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
     CommandPanel* controlPanel)
@@ -22,6 +22,7 @@ TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
 // Called when the command is initially scheduled.
 void TurnControlPanelToTargetColorCommand::Initialize() {
   std::string gameData;
+  bool noData = false;
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
   if (gameData.length() > 0) {
     noData = false;
@@ -51,12 +52,12 @@ void TurnControlPanelToTargetColorCommand::Initialize() {
   } else {
     // Code for no data received yet
     noData = true;
+    m_aimColor = CommandPanel::NO_DATA;
+
   }
 }
 
-// Called repeatedly when this Command is scheduled to run
-void TurnControlPanelToTargetColorCommand::Execute() {
-}
+
 
 // Called once the command ends or is interrupted.
 void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
@@ -65,7 +66,7 @@ void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TurnControlPanelToTargetColorCommand::IsFinished() {
-  if (m_aimColor == m_controlPanel->getCurrentColor() || !noData) {
+  if (m_aimColor == m_controlPanel->getCurrentColor() || m_aimColor == CommandPanel::NO_DATA) {
     return true;
   }
   return false;

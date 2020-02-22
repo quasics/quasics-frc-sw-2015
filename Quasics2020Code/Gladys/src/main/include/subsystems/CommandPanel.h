@@ -21,7 +21,7 @@
 // TODO(RJ): Document this class.
 class CommandPanel : public frc2::SubsystemBase {
  public:
-  enum Color { UNKNOWN = 0, BLUE = 1, RED = 2, GREEN = 3, YELLOW = 4 };
+  enum Color { NO_DATA = -1, UNKNOWN = 0, BLUE = 1, RED = 2, GREEN = 3, YELLOW = 4 };
 
   CommandPanel();
   //~CommandPanel();

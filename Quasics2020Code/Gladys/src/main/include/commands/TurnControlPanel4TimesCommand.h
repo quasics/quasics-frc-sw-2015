@@ -14,7 +14,7 @@
 
 // TODO(RJ): Improve the documentation (description, at least) for this class.
 /**
- * A command that turns 3 and a half times.
+ * A command that turns the commandpanel 3 and a half times.
  */
 class TurnControlPanel4TimesCommand
     : public frc2::CommandHelper<frc2::CommandBase,
@@ -22,13 +22,13 @@ class TurnControlPanel4TimesCommand
  public:
   TurnControlPanel4TimesCommand(CommandPanel* controlPanel);
 
-  void Initialize() override;
+  void Initialize() override; //finds initcolor
 
-  void Execute() override;
 
-  void End(bool interrupted) override;
 
-  bool IsFinished() override;
+  void End(bool interrupted) override; //ends turning
+
+  bool IsFinished() override; //checks to see if the cmd panel has turned 4 times
 
  private:
   CommandPanel* m_controlPanel;

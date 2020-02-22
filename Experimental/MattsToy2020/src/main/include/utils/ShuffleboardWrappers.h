@@ -8,6 +8,26 @@
 
 namespace ShuffleboardWrappers {
 
+  inline frc::ShuffleboardTab& getTab(const std::string& tabName) {
+    return frc::Shuffleboard::GetTab(tabName.empty() ? "SmartDashboard"
+                                                     : tabName);
+  }
+
+  // class NumberBar {
+  //  public:
+  //   NumberBar(double min, double max, const std::string& title,
+  //                const std::string& tabName = std::string()) {
+  //     frc::ShuffleboardTab& tab = getTab(tabName);
+  //     entry = tab.Add(title, false)
+  //                 .WithWidget(frc::BuiltInWidgets::kNumberBar)
+  //                 .GetEntry();
+  //   }
+  //
+  //  private:
+  //   /// NetworkTable entry associated with the slider.
+  //   nt::NetworkTableEntry entry;
+  // };
+
   /**
    * Utility class, simplifying the task of putting an "on/off" toggle switch on
    * the Smart Dashboard/Shuffleboard, which can be read by the robot code.
@@ -22,9 +42,9 @@ namespace ShuffleboardWrappers {
      *                unspecified, it will be put on the default
      *                "SmartDashboard" tab
      */
-    explicit BooleanToggle(std::string title, std::string tabName = "") {
-      frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab(
-          tabName.empty() ? "SmartDashboard" : tabName);
+    explicit BooleanToggle(const std::string& title,
+                           const std::string& tabName = std::string()) {
+      frc::ShuffleboardTab& tab = getTab(tabName);
       entry = tab.Add(title, false)
                   .WithWidget(frc::BuiltInWidgets::kToggleSwitch)
                   .GetEntry();

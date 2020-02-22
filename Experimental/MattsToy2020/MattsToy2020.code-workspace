@@ -73,7 +73,11 @@
 			"__debug": "cpp",
 			"__functional_base": "cpp",
 			"__tuple": "cpp",
-			"bit": "cpp"
+			"bit": "cpp",
+			"__errc": "cpp",
+			"__mutex_base": "cpp",
+			"__string": "cpp",
+			"__threading_support": "cpp"
 		}
 	}
 }

@@ -1,14 +1,32 @@
 #pragma once
 
 #include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
 #include <networktables/NetworkTableEntry.h>
 
+#include <functional>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 namespace ShuffleboardWrappers {
+
+  class Collection {
+   public:
+    Collection(const std::string& title,
+               const std::string& tabName = std::string())
+        : layout(frc::Shuffleboard::GetTab(tabName).GetLayout(
+              title, frc::BuiltInLayouts::kList)) {
+    }
+
+    frc::ShuffleboardLayout& Get() {
+      return layout;
+    }
+
+   private:
+    frc::ShuffleboardLayout& layout;
+  };
 
   class SimpleDisplay {
    public:
@@ -16,10 +34,21 @@ namespace ShuffleboardWrappers {
                            const std::string& tabName = std::string())
         : SimpleDisplay("", title, tabName) {
     }
+    SimpleDisplay(const std::string& title, Collection& collection)
+        : SimpleDisplay("", title, collection.Get()) {
+    }
     SimpleDisplay(const std::string defaultValue, const std::string& title,
-                  const std::string& tabName) {
-      frc::ShuffleboardTab& tab = frc::Shuffleboard::GetTab(tabName);
-      entry = tab.Add(title, "")
+                  const std::string& tabName)
+        : SimpleDisplay(defaultValue, title,
+                        frc::Shuffleboard::GetTab(tabName)) {
+    }
+    SimpleDisplay(const std::string defaultValue, const std::string& title,
+                  Collection& collection)
+        : SimpleDisplay(defaultValue, title, collection.Get()) {
+    }
+    SimpleDisplay(const std::string defaultValue, const std::string& title,
+                  frc::ShuffleboardContainer& container) {
+      entry = container.Add(title, "")
                   .WithWidget(frc::BuiltInWidgets::kTextView)
                   .GetEntry();
     }

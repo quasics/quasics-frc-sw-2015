@@ -113,3 +113,7 @@ static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
 namespace ServoConstants {
   constexpr int ServoNumber = 1;
 }
+
+namespace PhysicalConstants{
+  const int radius = 32.2;
+}

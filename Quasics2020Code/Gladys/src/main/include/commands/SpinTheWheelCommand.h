@@ -13,27 +13,30 @@
 #include "subsystems/CommandPanel.h"
 
 // TODO(RJ): Document this command.
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
 class SpinTheWheelCommand
     : public frc2::CommandHelper<frc2::CommandBase, SpinTheWheelCommand> {
  public:
-  SpinTheWheelCommand(CommandPanel* controlPanel, bool in);
-
+ /**
+   * adds the dependancy to the ControlPanel and initializes the controlPanel and direction
+   * @param controlPanel used by the big red button to stop everything
+   * @param inverted inverts the direction
+   **/
+  SpinTheWheelCommand(CommandPanel* controlPanel, bool inverted);
+  /**
+   * turns the motor on
+  **/
   void Initialize() override;
-
-  void Execute() override;
-
+  /**
+   * this method ends the turning of the motor.
+   * @param interrupted used by the big red button to stop everything
+   **/
   void End(bool interrupted) override;
-
+  //make sure it runs
   bool IsFinished() override;
 
  private:
+ //CommandPanel object
   CommandPanel* m_controlPanel;
+  //direction
   bool f;
 };

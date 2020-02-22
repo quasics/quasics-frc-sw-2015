@@ -22,10 +22,8 @@ TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
 // Called when the command is initially scheduled.
 void TurnControlPanelToTargetColorCommand::Initialize() {
   std::string gameData;
-  bool noData = false;
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
   if (gameData.length() > 0) {
-    noData = false;
     switch (gameData[0]) {
       case 'B':
         // Blue case code
@@ -51,7 +49,6 @@ void TurnControlPanelToTargetColorCommand::Initialize() {
     m_controlPanel->TurnWheelMotorOn(true);
   } else {
     // Code for no data received yet
-    noData = true;
     m_aimColor = CommandPanel::NO_DATA;
 
   }

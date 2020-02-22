@@ -21,11 +21,6 @@ void TurnControlPanel4TimesCommand::Initialize() {
   while(initColor == CommandPanel::UNKNOWN){
     initColor = prevColor = m_controlPanel->getCurrentColor();
   }
-  std::cout << "Initial color is " << m_controlPanel->getColorName(initColor)
-            << std::endl;
-  // TODO(RJ): What if you can't get the initial color?  (In other words, what
-  // if the sensor hands back an unknown/unexpected value?  How should this case
-  // be handled?) (Resolved!!!)
 
   m_controlPanel->TurnWheelMotorOn(true);
 }

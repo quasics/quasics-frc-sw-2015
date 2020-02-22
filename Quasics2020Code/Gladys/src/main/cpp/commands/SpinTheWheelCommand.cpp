@@ -18,10 +18,6 @@ void SpinTheWheelCommand::Initialize() {
   m_controlPanel->TurnWheelMotorOn(f);
 }
 
-// TODO(RJ): Remove this unneeded method (from .cpp and header).
-// Called repeatedly when this Command is scheduled to run
-void SpinTheWheelCommand::Execute() {
-}
 
 // Called once the command ends or is interrupted.
 void SpinTheWheelCommand::End(bool interrupted) {

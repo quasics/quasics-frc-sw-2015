@@ -149,8 +149,8 @@ constexpr double kGearRatio_2020 = 10.71;
 constexpr double kWheelDiameter_Inches_2020 = 6;
 
 /// Converts "ticks" from the encoders to inches.
-static constexpr EncoderTicksToUnitsConverter ticksToInchesConverter(
-    kTicksPerRevolution_NeoMotor, kGearRatio_2020, kWheelDiameter_Inches_2020);
+static constexpr EncoderRevolutionsToUnitsConverter revsToInchesConverter(
+    kGearRatio_2020, kWheelDiameter_Inches_2020);
 
 void DriveBase::ReportEncoderDataToSmartDashboard() {
   leftFrontEncoderTicksDisplay.SetValue(leftFrontEncoder.GetPosition());
@@ -159,11 +159,11 @@ void DriveBase::ReportEncoderDataToSmartDashboard() {
   rightRearEncoderTicksDisplay.SetValue(rightRearEncoder.GetPosition());
 
   leftFrontEncoderInchesDisplay.SetValue(
-      ticksToInchesConverter(leftFrontEncoder.GetPosition()));
+      revsToInchesConverter(leftFrontEncoder.GetPosition()));
   leftRearEncoderInchesDisplay.SetValue(
-      ticksToInchesConverter(leftRearEncoder.GetPosition()));
+      revsToInchesConverter(leftRearEncoder.GetPosition()));
   rightFrontEncoderInchesDisplay.SetValue(
-      ticksToInchesConverter(rightFrontEncoder.GetPosition()));
+      revsToInchesConverter(rightFrontEncoder.GetPosition()));
   rightRearEncoderInchesDisplay.SetValue(
-      ticksToInchesConverter(rightRearEncoder.GetPosition()));
+      revsToInchesConverter(rightRearEncoder.GetPosition()));
 }

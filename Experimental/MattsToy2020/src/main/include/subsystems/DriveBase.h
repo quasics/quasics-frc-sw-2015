@@ -136,21 +136,22 @@ class DriveBase : public frc2::SubsystemBase {
                                                 "DriveBase noisy" /* title */,
                                                 "Logging" /* tab name */};
 
+  ShuffleboardWrappers::Collection encodersList{"Encoders", "Drive base"};
   ShuffleboardWrappers::SimpleDisplay leftFrontEncoderTicksDisplay{
-      "L. front (tx)", "Encoders"};
+      "L. front (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftRearEncoderTicksDisplay{
-      "L. rear (tx)", "Encoders"};
+      "L. rear (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftFrontEncoderInchesDisplay{
-      "L. front (in)", "Encoders"};
+      "L. front (in)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftRearEncoderInchesDisplay{
-      "L. rear (in)", "Encoders"};
+      "L. rear (in)", encodersList};
 
   ShuffleboardWrappers::SimpleDisplay rightFrontEncoderTicksDisplay{
-      "R. front (tx)", "Encoders"};
+      "R. front (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay rightRearEncoderTicksDisplay{
-      "R. rear (tx)", "Encoders"};
+      "R. rear (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay rightFrontEncoderInchesDisplay{
-      "R. front (in)", "Encoders"};
+      "R. front (in)", encodersList};
   ShuffleboardWrappers::SimpleDisplay rightRearEncoderInchesDisplay{
-      "R. rear (in)", "Encoders"};
+      "R. rear (in)", encodersList};
 };

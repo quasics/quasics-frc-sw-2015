@@ -100,7 +100,7 @@ namespace CANBusIds {
 namespace DriveBaseConstants {
   // Maximum power setting
   constexpr double StandardMaxPower = 0.60;
-  constexpr double TurboMaxPower = 0.80;
+  constexpr double TurboMaxPower = 0.85;
 }  // namespace DriveBaseConstants
 
 namespace CommandPanelConstants {
@@ -115,5 +115,5 @@ namespace ServoConstants {
 }
 
 namespace PhysicalConstants{
-  const int radius = 32.2;
+  const int radius = 22;
 }

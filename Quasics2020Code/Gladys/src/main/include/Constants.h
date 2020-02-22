@@ -115,5 +115,5 @@ namespace ServoConstants {
 }
 
 namespace PhysicalConstants{
-  const int radius = 22;
+  const int radius = 11;
 }

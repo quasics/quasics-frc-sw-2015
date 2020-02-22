@@ -36,6 +36,8 @@ class TankDriveCommand
   TankDriveCommand(DriveBase* driveBase, std::function<double()> leftPower,
                    std::function<double()> rightPower);
 
+  void Initialize() override;
+
   void Execute() override;
 
   void End(bool interrupted) override;

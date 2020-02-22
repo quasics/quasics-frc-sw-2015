@@ -54,6 +54,12 @@ class DriveBase : public frc2::SubsystemBase {
    * SetMotorPower() is invoked.) */
   void DisableTurboMode();
 
+  /**
+   * Establishes if the motors should coast to a stop (true) or come to a hard
+   * stop (false).
+   */
+  void SetCoastingEnabled(bool enabled);
+
   ////////////////////////////
   // Encoder support
  public:

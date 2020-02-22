@@ -46,6 +46,7 @@ DriveBase::DriveBase()
                 rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("DriveBase");
   ResetEncoderPosition(Motors::All);
+  SetCoastingEnabled(false);
 }
 
 // This method will be called once per scheduler run
@@ -89,6 +90,16 @@ void DriveBase::SetMotorPower(double leftPower, double rightPower) {
   leftRear.Set(appliedLeftPower);
   rightFront.Set(appliedRightPower);
   rightRear.Set(appliedRightPower);
+}
+
+void DriveBase::SetCoastingEnabled(bool enabled) {
+  rev::CANSparkMax::IdleMode mode =
+      (enabled ? rev::CANSparkMax::IdleMode::kCoast
+               : rev::CANSparkMax::IdleMode::kBrake);
+  leftFront.SetIdleMode(mode);
+  leftRear.SetIdleMode(mode);
+  rightFront.SetIdleMode(mode);
+  rightRear.SetIdleMode(mode);
 }
 
 rev::CANEncoder* DriveBase::GetEncoder(DriveBase::Motors motor) {

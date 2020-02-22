@@ -14,10 +14,17 @@ TankDriveCommand::TankDriveCommand(DriveBase* driveBase,
   AddRequirements(driveBase);
 }
 
+void TankDriveCommand::Initialize() {
+  driveBase->SetCoastingEnabled(true);
+}
+
 // Called repeatedly when this Command is scheduled to run
 void TankDriveCommand::Execute() {
   driveBase->SetMotorPower(m_leftPower(), m_rightPower());
 }
 
 // Called once the command ends or is interrupted.
-void TankDriveCommand::End(bool interrupted) { driveBase->Stop(); }
+void TankDriveCommand::End(bool interrupted) {
+  driveBase->SetCoastingEnabled(false);
+  driveBase->Stop();
+}

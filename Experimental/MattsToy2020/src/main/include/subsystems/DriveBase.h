@@ -22,11 +22,17 @@
  */
 class DriveBase : public frc2::SubsystemBase {
  public:
-  /** Constructor. */
+  /**
+   * Constructor.  Drive base will be set up with the motors configured for
+   * "hard stop", and the encoders reset to 0 values.
+   */
   DriveBase();
 
   /**
-   * Will be called periodically whenever the CommandScheduler runs.
+   * Will be called periodically whenever the CommandScheduler runs.  (Used to
+   * update the view of the encoders on the Shuffleboard.)
+   *
+   * @see #ReportEncoderDataToSmartDashboard()
    */
   void Periodic();
 

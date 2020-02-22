@@ -29,14 +29,17 @@ class MoveForTimeCommand
         duration(duration),
         leftPower(leftPower),
         rightPower(rightPower) {
+    AddRequirements(drivebase);
   }
 
   void Initialize() override {
     timer.Reset();
+    timer.Start();
     drivebase->SetMotorPower(leftPower, rightPower);
   }
 
   void End(bool interrupted) override {
+    timer.Stop();
     drivebase->Stop();
   }
 

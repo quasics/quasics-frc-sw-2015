@@ -32,7 +32,7 @@ class TurnControlPanel4TimesCommand
 
  private:
   CommandPanel* m_controlPanel;
-  int counter = 0;
+  int counter;
   CommandPanel::Color initColor = CommandPanel::UNKNOWN,
                       prevColor = CommandPanel::UNKNOWN,
                       currColor = CommandPanel::UNKNOWN;

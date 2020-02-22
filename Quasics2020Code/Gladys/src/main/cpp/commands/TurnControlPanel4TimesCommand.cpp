@@ -16,6 +16,7 @@ TurnControlPanel4TimesCommand::TurnControlPanel4TimesCommand(
 // Called when the command is initially scheduled.
 void TurnControlPanel4TimesCommand::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
+  counter = 0;
   initColor = prevColor = m_controlPanel->getCurrentColor();
   while(initColor == CommandPanel::UNKNOWN){
     initColor = prevColor = m_controlPanel->getCurrentColor();
@@ -50,6 +51,6 @@ bool TurnControlPanel4TimesCommand::IsFinished() {
       }
     }
   }
-  prevColor = currColor;
+  prevColor = m_controlPanel->getCurrentColor();
   return false;
 }

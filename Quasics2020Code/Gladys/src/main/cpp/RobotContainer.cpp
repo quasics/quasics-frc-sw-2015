@@ -35,6 +35,7 @@
 #include "subsystems/Intake.h"
 #include "commands/DriveADistance.h"
 #include "commands/PointTurnToAnAngleCommand.h"
+#include "commands/IntakeBallsFromFloorCommand.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -115,8 +116,8 @@ void RobotContainer::ConfigureButtonBindings() {
   // int(frc::XboxController::Button::kA)
   //).WhileHeld(IntakeBallsCommand(&intake));
   frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kX))
-      .WhileHeld(IntakeBallsReverseCommand(&intake));
+                       int(frc::XboxController::Button::kA))
+      .WhileHeld(IntakeBallsFromFloorCommand(&intake,&exhaust));
   //
 
   frc2::JoystickButton(&operatorController,

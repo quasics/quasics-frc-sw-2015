@@ -16,9 +16,12 @@
 #include "commands/ClimberDownCommand.h"
 #include "commands/ClimberUpCommand.h"
 #include "commands/DeliverToLowGoalCommand.h"
+#include "commands/DriveADistanceCommand.h"
+#include "commands/IntakeBallsFromFloorCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
 #include "commands/LoadFromWindowCommand.h"
 #include "commands/MoveForTimeCommand.h"
+#include "commands/PointTurnToAnAngleCommand.h"
 #include "commands/ShootBallsCommand.h"
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControlCommand.h"
@@ -32,9 +35,6 @@
 #include "subsystems/CameraStand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
-#include "commands/DriveADistance.h"
-#include "commands/PointTurnToAnAngleCommand.h"
-#include "commands/IntakeBallsFromFloorCommand.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -113,7 +113,7 @@ void RobotContainer::ConfigureButtonBindings() {
   //).WhileHeld(IntakeBallsCommand(&intake));
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kA))
-      .WhileHeld(IntakeBallsFromFloorCommand(&intake,&exhaust));
+      .WhileHeld(IntakeBallsFromFloorCommand(&intake, &exhaust));
   //
 
   frc2::JoystickButton(&operatorController,
@@ -125,7 +125,6 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kBumperRight))
       .WhileHeld(ClimberDownCommand(&climber));
-
 
   // frc2::JoystickButton(&operatorController,
   //                      int(frc::XboxController::Button::kBumperLeft))
@@ -160,6 +159,7 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
 
+#ifdef ENABLE_CAMERA_TEST_COMMANDS
   frc::SmartDashboard::PutData("Turn the Camera Forward",
                                new TurnCameraForward(&cameraStand));
 
@@ -168,20 +168,27 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData("Toggle Camera Direction",
                                new SwitchCameraDirection(&cameraStand));
-          
-  frc::SmartDashboard::PutData("Move Distance (36 inches)",
-                               new DriveADistance(&drivebase, 36.00, 0.25));
+#endif  // ENABLE_CAMERA_TEST_COMMANDS
 
-  frc::SmartDashboard::PutData("Turn 90 Degrees to the Right",
-                               new PointTurnToAnAngleCommand(&drivebase, true, 90.0));
-  
-  frc::SmartDashboard::PutData("Turn 90 Degrees to the Left",
-                               new PointTurnToAnAngleCommand(&drivebase, false, 90.0));
-  
-  frc::SmartDashboard::PutData("Turn 45 Degrees to the Right",
-                               new PointTurnToAnAngleCommand(&drivebase, true, 45.0));
-  
-  frc::SmartDashboard::PutData("Turn 45 Degrees to the Left",
-                               new PointTurnToAnAngleCommand(&drivebase, false, 45.0));
+#ifdef ENABLE_AUTO_DRIVING_TEST_COMMANDS
+  frc::SmartDashboard::PutData(
+      "Move Distance (36 inches)",
+      new DriveADistanceCommand(&drivebase, 36.00, 0.25));
 
+  frc::SmartDashboard::PutData(
+      "Turn 90 Degrees to the Right",
+      new PointTurnToAnAngleCommand(&drivebase, true, 90.0));
+
+  frc::SmartDashboard::PutData(
+      "Turn 90 Degrees to the Left",
+      new PointTurnToAnAngleCommand(&drivebase, false, 90.0));
+
+  frc::SmartDashboard::PutData(
+      "Turn 45 Degrees to the Right",
+      new PointTurnToAnAngleCommand(&drivebase, true, 45.0));
+
+  frc::SmartDashboard::PutData(
+      "Turn 45 Degrees to the Left",
+      new PointTurnToAnAngleCommand(&drivebase, false, 45.0));
+#endif  // ENABLE_AUTO_DRIVING_TEST_COMMANDS
 }

@@ -13,6 +13,7 @@
 
 #include "subsystems/Exhaust.h"
 
+// TODO(Scott): Document this class (using JavaDoc format).
 /**
  * An example command.
  *
@@ -20,10 +21,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class DeliverForTime
-    : public frc2::CommandHelper<frc2::CommandBase, DeliverForTime> {
+class DeliverForTimeCommand
+    : public frc2::CommandHelper<frc2::CommandBase, DeliverForTimeCommand> {
  public:
-  DeliverForTime(Exhaust* exhaust, double duration);
+  DeliverForTimeCommand(Exhaust* exhaust, double duration);
 
   void Initialize() override;
 

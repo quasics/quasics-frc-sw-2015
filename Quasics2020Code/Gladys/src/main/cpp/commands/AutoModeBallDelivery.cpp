@@ -7,7 +7,7 @@
 
 #include "commands/AutoModeBallDelivery.h"
 
-#include "commands/DeliverForTime.h"
+#include "commands/DeliverForTimeCommand.h"
 #include "commands/MoveForTimeCommand.h"
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.
@@ -21,7 +21,7 @@ AutoModeBallDelivery::AutoModeBallDelivery(Exhaust* exhaust,
       // Move to the wall
       MoveForTimeCommand(drivebase, 3, -.3),
       // Deliver Balls
-      DeliverForTime(exhaust, 8),
+      DeliverForTimeCommand(exhaust, 8),
       // Back up again
       MoveForTimeCommand(drivebase, 3.5, .3));
 }

@@ -5,16 +5,16 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/DeliverForTime.h"
+#include "commands/DeliverForTimeCommand.h"
 
-DeliverForTime::DeliverForTime(Exhaust* exhaust, double duration)
+DeliverForTimeCommand::DeliverForTimeCommand(Exhaust* exhaust, double duration)
     : exhaust(exhaust), duration(duration) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(exhaust);
 }
 
 // Called when the command is initially scheduled.
-void DeliverForTime::Initialize() {
+void DeliverForTimeCommand::Initialize() {
   tiktok.Start();
   tiktok.Reset();
   exhaust->PushBallDown();
@@ -22,12 +22,12 @@ void DeliverForTime::Initialize() {
 }
 
 // Called once the command ends or is interrupted.
-void DeliverForTime::End(bool interrupted) {
+void DeliverForTimeCommand::End(bool interrupted) {
   exhaust->PushBallOff();
   exhaust->ShootBallOff();
 }
 
 // Returns true when the command should end.
-bool DeliverForTime::IsFinished() {
+bool DeliverForTimeCommand::IsFinished() {
   return tiktok.HasPeriodPassed(units::second_t(duration));
 }

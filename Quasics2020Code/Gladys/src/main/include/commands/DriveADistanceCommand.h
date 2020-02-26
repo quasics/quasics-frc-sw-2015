@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Drivebase.h"
 
+// TODO(Scott): Document this class (using JavaDoc format).
 /**
  * An example command.
  *
@@ -18,28 +20,35 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class DriveADistance
-    : public frc2::CommandHelper<frc2::CommandBase, DriveADistance> {
+class DriveADistanceCommand
+    : public frc2::CommandHelper<frc2::CommandBase, DriveADistanceCommand> {
  public:
-  DriveADistance(Drivebase* drivebase, double distance, double power);
-  DriveADistance(Drivebase* drivebase, double distance, double leftPower, double rightPower);
+  /**
+   * @param distance   distince (in inches) to move, as reported by *either* the
+   *                   left or right encoders (i.e., once either side reports
+   *                   this distance, we'll stop)
+   */
+  DriveADistanceCommand(Drivebase* drivebase, double distance, double power);
+
+  /**
+   * @param distance   distince (in inches) to move, as reported by *either* the
+   *                   left or right encoders (i.e., once either side reports
+   *                   this distance, we'll stop)
+   */
+  DriveADistanceCommand(Drivebase* drivebase, double distance, double leftPower,
+                        double rightPower);
 
   void Initialize() override;
 
   void Execute() override;
 
-  
-
   void End(bool interrupted) override;
 
   bool IsFinished() override;
 
-
-
-  private:
-Drivebase* drivebase;
-double distance; 
-double leftPower;
-double rightPower; 
-
+ private:
+  Drivebase* drivebase;
+  const double distance;
+  const double leftPower;
+  const double rightPower;
 };

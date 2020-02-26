@@ -11,7 +11,8 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Exhaust.h"
-//Loads balls into the robot from window using the PushBall function.
+
+// Loads balls into the robot from window using the PushBall function.
 // TODO(Nurfadil): Document this class.
 /**
  * An example command.

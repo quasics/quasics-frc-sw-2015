@@ -13,6 +13,8 @@
 #include "subsystems/Exhaust.h"
 
 // TODO(Nurfadil): Document this class.
+// TODO(Nurfadil): Rename this class. to be something more meaningful (or remove
+// it).
 /**
  * An example command.
  *

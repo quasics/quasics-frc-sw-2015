@@ -7,7 +7,8 @@
 
 #include "commands/MoveForTimeCommand.h"
 
-MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration, double power)
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
+                                       double power)
     : drivebase(drivebase),
       duration(duration),
       left_power(power),
@@ -15,7 +16,8 @@ MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration, do
   AddRequirements(drivebase);
 }
 
-MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration, double left_power, double right_power)
+MoveForTimeCommand::MoveForTimeCommand(Drivebase* drivebase, double duration,
+                                       double left_power, double right_power)
     : drivebase(drivebase),
       duration(duration),
       left_power(left_power),
@@ -31,6 +33,7 @@ void MoveForTimeCommand::Initialize() {
   drivebase->SetMotorPower(left_power, right_power);
 }
 
+// TODO(Scott): Remove this unneeded function (in both .cpp and .h).
 // Called repeatedly when this Command is scheduled to run
 void MoveForTimeCommand::Execute() {
 }

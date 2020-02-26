@@ -11,8 +11,10 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Exhaust.h"
-//reverses the top intake/low goal motor
+// reverses the top intake/low goal motor
 // TODO(Nurfadil): Document this class.
+// TODO(Nurfadil): Rename this class. to be something more meaningful (or remove
+// it).
 /**
  * An example command.
  *

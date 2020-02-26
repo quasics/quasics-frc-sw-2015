@@ -9,9 +9,11 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Intake.h"
-#include "subsystems/Exhaust.h"
 
+#include "subsystems/Exhaust.h"
+#include "subsystems/Intake.h"
+
+// TODO(Nurfadil): Document this class.
 /**
  * An example command.
  *
@@ -20,16 +22,16 @@
  * Command will *not* work!
  */
 class IntakeBallsFromFloorCommand
-    : public frc2::CommandHelper<frc2::CommandBase, IntakeBallsFromFloorCommand> {
+    : public frc2::CommandHelper<frc2::CommandBase,
+                                 IntakeBallsFromFloorCommand> {
  public:
-  IntakeBallsFromFloorCommand(Intake*intake, Exhaust*exhaust);
+  IntakeBallsFromFloorCommand(Intake* intake, Exhaust* exhaust);
 
   void Initialize() override;
 
-
   void End(bool interrupted) override;
 
-private:
-Intake*intake;
-Exhaust*exhaust;
+ private:
+  Intake* intake;
+  Exhaust* exhaust;
 };

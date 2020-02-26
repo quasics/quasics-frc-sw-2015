@@ -11,8 +11,11 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Intake.h"
-//Controls the shoulder with joystick using the shoulderdown and shoulderup command.
-// TODO(Nurfadil): Document this class.
+
+// TODO(Nurfadil): Document this class using JavaDoc format (see Mr. Healy); the
+// following comment is incorrect.
+// Controls the shoulder with joystick using the shoulderdown and shoulderup
+// command.
 /**
  * An example command.
  *

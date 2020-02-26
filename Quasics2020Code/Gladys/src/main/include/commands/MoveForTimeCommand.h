@@ -12,20 +12,20 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Drivebase.h"
-//pushes balls up and down the storage
-// Moves the robot at a certain percent power over a certain time
+
+// TODO(Scott): Consider deleting this class, now that we have distance-based
+// movement control.
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * Moves the robot at a certain percent power over a certain time.  (Intended as
+ * a first approximation of movement support required for autonomous mode; needs
+ * to be replaced by moving for distance.)
  */
 class MoveForTimeCommand
     : public frc2::CommandHelper<frc2::CommandBase, MoveForTimeCommand> {
  public:
   MoveForTimeCommand(Drivebase* drivebase, double duration, double power);
-  MoveForTimeCommand(Drivebase* drivebase, double duration, double left_power, double right_power);
+  MoveForTimeCommand(Drivebase* drivebase, double duration, double left_power,
+                     double right_power);
 
   void Initialize() override;
 

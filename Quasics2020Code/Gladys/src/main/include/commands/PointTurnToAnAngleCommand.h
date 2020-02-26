@@ -9,8 +9,10 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Drivebase.h"
 
+// TODO(Scott): Document this class.
 /**
  * An example command.
  *
@@ -21,7 +23,8 @@
 class PointTurnToAnAngleCommand
     : public frc2::CommandHelper<frc2::CommandBase, PointTurnToAnAngleCommand> {
  public:
-  PointTurnToAnAngleCommand(Drivebase * drivebase, bool isTurningRight, double angle);
+  PointTurnToAnAngleCommand(Drivebase* drivebase, bool isTurningRight,
+                            double angle);
 
   void Initialize() override;
 
@@ -31,8 +34,8 @@ class PointTurnToAnAngleCommand
 
   bool IsFinished() override;
 
-  private:
-  Drivebase * drivebase;
+ private:
+  Drivebase* drivebase;
   bool isTurningRight;
   double angle;
 };

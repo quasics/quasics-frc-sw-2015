@@ -81,16 +81,16 @@ namespace CANBusIds {
 
   namespace VictorSpx {
     // CAN bus IDs for the motors used in the (floor) intake subsystem
-    constexpr int BallIntakeMotor = 1;
-    constexpr int ShoulderMotor = 2;
+    constexpr int BallIntakeMotor = 5;
+    constexpr int ShoulderMotor = 6;
 
     // CAN bus IDs for the motors used in the "exhaust" subsystem
     constexpr int PushUpMotor = 3;
     constexpr int ShootMotor = 4;
 
     // CAN bus IDs for the motors used on the climbing subsystem
-    constexpr int RightClimberNumber = 5;
-    constexpr int LeftClimberNumber = 6;
+    constexpr int RightClimberNumber = 1;
+    constexpr int LeftClimberNumber = 2;
 
     // CAN bus IDs for the motors used in command panel manipulator subsystem
     constexpr int SpinMotor = 7;

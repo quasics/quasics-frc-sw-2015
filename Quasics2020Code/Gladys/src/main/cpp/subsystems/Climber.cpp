@@ -16,16 +16,20 @@ Climber::Climber()
 }
 
 void Climber::MoveClimberUp() {
+  std::cout << "Turning climber to 'up'" << std::endl;
   RightClimber.Set(-1);
   LeftClimber.Set(1);
 }
 
 void Climber::MoveClimberDown() {
+  std::cout << "Turning climber to 'down'" << std::endl;
   RightClimber.Set(1);
   LeftClimber.Set(-1);
 }
 
 void Climber::StopClimber() {
+  std::cout << "Turning climber off" << std::endl;
   RightClimber.Set(0);
   LeftClimber.Set(0);
+  std::cout << "Done with climber" << std::endl;
 }

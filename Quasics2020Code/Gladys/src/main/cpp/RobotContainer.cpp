@@ -92,9 +92,6 @@ void RobotContainer::ConfigureButtonBindings() {
   //
   // Configuring buttons on the operator's controller.
   //
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperLeft))
-      .WhenPressed(TurnControlPanel4TimesCommand(&commandPanel));
 
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kA))
@@ -129,6 +126,10 @@ void RobotContainer::ConfigureButtonBindings() {
                        int(frc::XboxController::Button::kBumperRight))
       .WhileHeld(ClimberDownCommand(&climber));
 
+
+  // frc2::JoystickButton(&operatorController,
+  //                      int(frc::XboxController::Button::kBumperLeft))
+  //     .WhenPressed(TurnControlPanel4TimesCommand(&commandPanel));
   // frc2::JoystickButton(&operatorController,
   // int(frc::XboxController::Button::kBumperRight))
   //.WhileHeld(TurnControlPanelToTargetColorCommand(&commandPanel));

@@ -16,7 +16,6 @@
 #include "commands/ClimberDownCommand.h"
 #include "commands/ClimberUpCommand.h"
 #include "commands/DeliverToLowGoalCommand.h"
-#include "commands/IntakeBallsCommand.h"
 #include "commands/IntakeBallsReverseCommand.h"
 #include "commands/LoadFromWindowCommand.h"
 #include "commands/MoveForTimeCommand.h"

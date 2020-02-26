@@ -116,4 +116,5 @@ namespace ServoConstants {
 
 namespace PhysicalConstants{
   constexpr double radiusWheelToWheel = 11.0;
+  constexpr double middleWheelToFront = 17.5;
 }

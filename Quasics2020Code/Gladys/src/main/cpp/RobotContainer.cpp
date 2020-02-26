@@ -22,7 +22,6 @@
 #include "commands/LoadFromWindowCommand.h"
 #include "commands/MoveForTimeCommand.h"
 #include "commands/PointTurnToAnAngleCommand.h"
-#include "commands/ShootBallsCommand.h"
 #include "commands/ShootBallsReverseCommand.h"
 #include "commands/ShoulderControlCommand.h"
 #include "commands/SpinTheWheelCommand.h"
@@ -85,10 +84,6 @@ void RobotContainer::ConfigureButtonBindings() {
                        OIConstants::LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
 
-  // frc2::JoystickButton(&driverJoystick,
-  //                      OIConstants::LogitechGamePad::LeftShoulder)
-  //     .WhileHeld(IntakeBallsCommand(&intake));
-
   //
   // Configuring buttons on the operator's controller.
   //
@@ -104,17 +99,11 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kB))
       .WhileHeld(DeliverToLowGoalCommand(&exhaust));
-  //
 
   // Intake
-  // frc2::JoystickButton(
-  //&operatorController,
-  // int(frc::XboxController::Button::kA)
-  //).WhileHeld(IntakeBallsCommand(&intake));
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kA))
       .WhileHeld(IntakeBallsFromFloorCommand(&intake, &exhaust));
-  //
 
   frc2::JoystickButton(&operatorController,
                        int(frc::XboxController::Button::kStart))

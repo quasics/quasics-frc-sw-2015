@@ -68,66 +68,83 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&exhaust, &drivebase) {
   ConfigureSmartDashboard();
 }
 
-void RobotContainer::ConfigureButtonBindings() {
-  std::cout << "Beginning button binding configuration" << std::endl;
+//
+// Configuring buttons on the driver's controller.
+//
+void RobotContainer::ConfigureDriverButtonBindings() {
+  std::cout << "Beginning button binding configuration (Driver)" << std::endl;
 
-  //
-  // Configuring buttons on the driver's controller.
-  //
-  frc2::JoystickButton(&driverJoystick,
-                       OIConstants::LogitechGamePad::LeftShoulder)
+  namespace LogitechGamePad = OIConstants::LogitechGamePad;
+  using frc2::JoystickButton;
+
+  JoystickButton(&driverJoystick, LogitechGamePad::LeftShoulder)
       .WhenPressed(enableTurboMode)
       .WhenReleased(disableTurboMode);
 
-  frc2::JoystickButton(&driverJoystick,
-                       OIConstants::LogitechGamePad::RightShoulder)
+  JoystickButton(&driverJoystick, LogitechGamePad::RightShoulder)
       .WhenPressed(frontIsForward);
 
-  //
-  // Configuring buttons on the operator's controller.
-  //
+  std::cout << "Completed button binding configuration (Driver)" << std::endl;
+}
 
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kA))
-      .WhenPressed(frc2::PrintCommand("Button 'A' on XBox was pressed"));
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    frc::XboxController::Button buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&operatorController, int(buttonId)).WhileHeld(command);
+}
+
+void RobotContainer::RunCommandWhenOperatorButtonIsPressed(
+    frc::XboxController::Button buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&operatorController, int(buttonId)).WhenPressed(command);
+}
+
+//
+// Configuring buttons on the operator's controller.
+//
+void RobotContainer::ConfigureOperatorButtonBindings() {
+  std::cout << "Beginning button binding configuration (Operator)" << std::endl;
+
+  typedef frc::XboxController::Button Button;  // For convenient/shorter naming
+
+  //
+  // Commands that we want to let the operator's controller trigger.
+  static LoadFromWindowCommand loadFromWindow(&exhaust);
+  static DeliverToLowGoalCommand deliverToGoal(&exhaust);
+  static SpinTheWheelCommand spinTheWheel(&commandPanel, true);
+  static ClimberUpCommand climberUp(&climber);
+  static ClimberDownCommand climberDown(&climber);
+  static IntakeBallsFromFloorCommand intakeFromFloor(&intake, &exhaust);
+  static TurnControlPanel4TimesCommand turnPanel4Times(&commandPanel);
+  static TurnControlPanelToTargetColorCommand turnPanelToColor(&commandPanel);
+
+  //
+  // Bind the commands to the buttons.
 
   // Exhaust
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kY))
-      .WhileHeld(LoadFromWindowCommand(&exhaust));
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kB))
-      .WhileHeld(DeliverToLowGoalCommand(&exhaust));
+  RunCommandWhenOperatorButtonIsHeld(Button::kY, &loadFromWindow);
+  RunCommandWhenOperatorButtonIsHeld(Button::kB, &deliverToGoal);
 
   // Intake
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kA))
-      .WhileHeld(IntakeBallsFromFloorCommand(&intake, &exhaust));
+  RunCommandWhenOperatorButtonIsHeld(Button::kA, &intakeFromFloor);
+  RunCommandWhenOperatorButtonIsHeld(Button::kBumperLeft, &climberUp);
+  RunCommandWhenOperatorButtonIsHeld(Button::kBumperRight, &climberDown);
 
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kStart))
-      .WhileHeld(SpinTheWheelCommand(&commandPanel, true));
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperLeft))
-      .WhileHeld(ClimberUpCommand(&climber));
-  frc2::JoystickButton(&operatorController,
-                       int(frc::XboxController::Button::kBumperRight))
-      .WhileHeld(ClimberDownCommand(&climber));
+  // Control panel
+  RunCommandWhenOperatorButtonIsHeld(Button::kStart, &spinTheWheel);
+#if 0
+  //    ***
+  //    *** These are currently disabled: the buttons are already in use....
+  //    ***
+  RunCommandWhenOperatorButtonIsPressed(Button::kBumperLeft, &turnPanel4Times);
+  RunCommandWhenOperatorButtonIsPressed(Button::kBumperRight,
+                                        &turnPanelToColor);
+#endif
 
-  // frc2::JoystickButton(&operatorController,
-  //                      int(frc::XboxController::Button::kBumperLeft))
-  //     .WhenPressed(TurnControlPanel4TimesCommand(&commandPanel));
-  // frc2::JoystickButton(&operatorController,
-  // int(frc::XboxController::Button::kBumperRight))
-  //.WhileHeld(TurnControlPanelToTargetColorCommand(&commandPanel));
+  std::cout << "Completed button binding configuration (Operator)" << std::endl;
+}
 
-  // Going to map the following buttons:
-  //    * left bumper --> push the ball up (TODO) fu=ind other binding
-  //    * B button    --> run the exhaust to push out a ball
-  //    * X button    --> intake balls
-  //    * back button --> ????
-
-  std::cout << "Completed button binding configuration" << std::endl;
+void RobotContainer::ConfigureButtonBindings() {
+  ConfigureDriverButtonBindings();
+  ConfigureOperatorButtonBindings();
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

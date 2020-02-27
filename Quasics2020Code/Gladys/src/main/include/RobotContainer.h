@@ -65,6 +65,14 @@ class RobotContainer {
 
  private:
   // Private utility/configuration functions are defined here.
-  void ConfigureButtonBindings();
   void ConfigureSmartDashboard();
+  void ConfigureButtonBindings();
+  void ConfigureDriverButtonBindings();
+  void ConfigureOperatorButtonBindings();
+
+  void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId,
+                                          frc2::Command* command);
+
+  void RunCommandWhenOperatorButtonIsPressed(
+      frc::XboxController::Button buttonId, frc2::Command* command);
 };

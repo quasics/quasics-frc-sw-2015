@@ -181,6 +181,10 @@ void RobotContainer::ConfigureSmartDashboard() {
       new DriveADistanceCommand(&drivebase, 36.00, 0.25));
 
   frc::SmartDashboard::PutData(
+      "Move Distance (-36 inches)",
+      new DriveADistanceCommand(&drivebase, 36.00, -0.25));
+
+  frc::SmartDashboard::PutData(
       "Turn 90 Degrees to the Right",
       new PointTurnToAnAngleCommand(&drivebase, true, 90.0));
 

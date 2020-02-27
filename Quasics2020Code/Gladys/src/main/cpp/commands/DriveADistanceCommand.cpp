@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "commands/DriveADistanceCommand.h"
-
+#include <cmath>
 #include "utils/EncoderHelpers.h"
 
 DriveADistanceCommand::DriveADistanceCommand(Drivebase* drivebase,
@@ -18,7 +18,7 @@ DriveADistanceCommand::DriveADistanceCommand(Drivebase* drivebase,
                                              double distance, double leftPower,
                                              double rightPower)
     : drivebase(drivebase),
-      distance(distance),
+      distance(std::abs(distance)),
       leftPower(leftPower),
       rightPower(rightPower) {
   AddRequirements(drivebase);
@@ -41,8 +41,8 @@ void DriveADistanceCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool DriveADistanceCommand::IsFinished() {
-  if (drivebase->GetLeftEncoderInInches() >= distance &&
-      drivebase->GetRightEncoderInInches() >= distance) {
+  if ((std::abs (drivebase->GetLeftEncoderInInches() >= distance)) &&
+     (std::abs (drivebase->GetRightEncoderInInches() >= distance))) {
     return true;
   }
   return false;

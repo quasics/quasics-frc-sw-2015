@@ -19,13 +19,13 @@ AutoModeTurningBackoff::AutoModeTurningBackoff(Exhaust* exhaust,
   // Add your commands here, e.g.
   // AddCommands(FooCommand(), BarCommand());
   AddCommands(
-      DriveADistanceCommand(drivebase, 102, .3),
+      DriveADistanceCommand(drivebase, 98, .3),
       DeliverForTimeCommand(exhaust, 3),
-      DriveADistanceCommand(drivebase, -6, -.3),
-      PointTurnToAnAngleCommand(drivebase, true, 45),
+      DriveADistanceCommand(drivebase, -12, -.3),
+      PointTurnToAnAngleCommand(drivebase, false, 40),
       // following drives backward around two feet and sideways around two feet)
-      DriveADistanceCommand(drivebase, -.3, 34),
-      PointTurnToAnAngleCommand(drivebase, false, 45),
+      DriveADistanceCommand(drivebase, -50, -.3),
+      PointTurnToAnAngleCommand(drivebase, true, 55),
       // Drives the remaining distance to the line
-      DriveADistanceCommand(drivebase, -92, -.3));
+      DriveADistanceCommand(drivebase, -48, -.3));
 }

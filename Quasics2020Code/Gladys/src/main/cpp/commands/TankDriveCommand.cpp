@@ -15,6 +15,10 @@ TankDriveCommand::TankDriveCommand(Drivebase* drivebase,
 }
 
 // Called repeatedly when this Command is scheduled to run
+void TankDriveCommand::Initialize() {
+  drivebase->SetCoastingEnabled(true);
+}
+
 void TankDriveCommand::Execute() {
   drivebase->SetMotorPower(right(), left());
   drivebase->DisplayEncoderValues();

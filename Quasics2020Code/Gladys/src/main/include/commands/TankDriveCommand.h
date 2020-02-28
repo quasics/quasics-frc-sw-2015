@@ -27,6 +27,8 @@ class TankDriveCommand
                    std::function<double()> left);
 
 
+  void Initialize() override;
+
   void Execute() override;
 
   void End(bool interrupted) override;

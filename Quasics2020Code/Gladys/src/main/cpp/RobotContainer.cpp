@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "Constants.h"
+#include "commands/AutoModeTurningBackoff.h"
 #include "commands/ClimberDownCommand.h"
 #include "commands/ClimberUpCommand.h"
 #include "commands/DeliverToLowGoalCommand.h"
@@ -158,7 +159,6 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new AutoModeBallDelivery(&exhaust, &drivebase));
   frc::SmartDashboard::PutData(
       "Turn Four Times", new TurnControlPanel4TimesCommand(&commandPanel));
-  std::cout << "Completed smart dashboard configuration" << std::endl;
 
   frc::SmartDashboard::PutData(
       "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
@@ -174,6 +174,7 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new SwitchCameraDirection(&cameraStand));
 #endif  // ENABLE_CAMERA_TEST_COMMANDS
 
+#define ENABLE_AUTO_DRIVING_TEST_COMMANDS
 #ifdef ENABLE_AUTO_DRIVING_TEST_COMMANDS
   frc::SmartDashboard::PutData(
       "Move Distance (36 inches)",
@@ -198,5 +199,11 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn 45 Degrees to the Left",
       new PointTurnToAnAngleCommand(&drivebase, false, 45.0));
+
+  frc::SmartDashboard::PutData(
+      "Auto with angled retreat",
+      new AutoModeTurningBackoff(&exhaust, &drivebase));
 #endif  // ENABLE_AUTO_DRIVING_TEST_COMMANDS
+
+  std::cout << "Completed smart dashboard configuration" << std::endl;
 }

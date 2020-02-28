@@ -20,6 +20,7 @@ Drivebase::Drivebase()
   SetSubsystem("Drivebase");
   leftFront.SetInverted(true);
   leftRear.SetInverted(true);
+  SetCoastingEnabled(false);
 }
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
@@ -85,6 +86,16 @@ void Drivebase::SetMotorPower(double rightPower, double leftPower) {
     rightFront.Set(-leftPower * powerScaling);
     rightRear.Set(-leftPower * powerScaling);
   }
+}
+
+void Drivebase::SetCoastingEnabled(bool enabled) {
+  rev::CANSparkMax::IdleMode mode =
+      (enabled ? rev::CANSparkMax::IdleMode::kCoast
+               : rev::CANSparkMax::IdleMode::kBrake);
+  leftFront.SetIdleMode(mode);
+  leftRear.SetIdleMode(mode);
+  rightFront.SetIdleMode(mode);
+  rightRear.SetIdleMode(mode);
 }
 
 constexpr double kTicksPerRevolution_NeoMotor = 42;

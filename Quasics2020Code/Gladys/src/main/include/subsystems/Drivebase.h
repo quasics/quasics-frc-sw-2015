@@ -53,6 +53,8 @@ class Drivebase : public frc2::SubsystemBase {
   double GetLeftEncoderInInches();
   double GetRightEncoderInInches();
 
+  void SetCoastingEnabled(bool enabled);
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -68,4 +70,5 @@ class Drivebase : public frc2::SubsystemBase {
 
   double powerScaling = DriveBaseConstants::StandardMaxPower;
   bool frontIsForward = true;
+  bool enabled = false;
 };

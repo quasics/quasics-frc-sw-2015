@@ -69,6 +69,11 @@ class DriveBase : public frc2::SubsystemBase {
    */
   void SetCoastingEnabled(bool enabled);
 
+  /**
+   * Returns true iff the motors are currently configured to coast to a stop.
+   */
+  bool IsCoastingEnabled();
+
   ////////////////////////////////////
   //
   // Encoder support

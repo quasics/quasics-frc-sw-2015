@@ -102,6 +102,10 @@ void DriveBase::SetCoastingEnabled(bool enabled) {
   rightRear.SetIdleMode(mode);
 }
 
+bool DriveBase::IsCoastingEnabled() {
+  return (leftFront.GetIdleMode() == rev::CANSparkMax::IdleMode::kCoast);
+}
+
 rev::CANEncoder* DriveBase::GetEncoder(DriveBase::Motors motor) {
   // Map the enumerated value to a (single) motor encoder, if possible.
   switch (motor) {

@@ -23,6 +23,7 @@ Drivebase::Drivebase()
   leftRear.SetInverted(true);
   SetCoastingEnabled(false);
 }
+
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
   DisplayEncoderValues();
@@ -117,6 +118,7 @@ static constexpr EncoderRevolutionsToUnitsConverter
 double Drivebase::GetLeftEncoderInInches() {
   return EncoderRevolutionsToUnitsConverter(leftFrontEncoder.GetPosition());
 }
+
 double Drivebase::GetRightEncoderInInches() {
   return EncoderRevolutionsToUnitsConverter(rightFrontEncoder.GetPosition());
 }

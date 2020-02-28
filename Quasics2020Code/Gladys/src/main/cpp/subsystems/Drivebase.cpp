@@ -5,8 +5,9 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 #include "subsystems/Drivebase.h"
+
 #include "utils/EncoderHelpers.h"
-#include <iostream>
+#include "utils/ShuffleboardWrappers.h"
 
 Drivebase::Drivebase()
     : leftFront(CANBusIds::SparkMax::Left_Front_No,
@@ -24,44 +25,50 @@ Drivebase::Drivebase()
 }
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
+  DisplayEncoderValues();
 }
 
 void Drivebase::DisplayEncoderValues() {
-  frc::SmartDashboard::PutNumber("Left Front Encoder Position",
-                                 leftFrontEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Left Front Encoder Velocity",
-                                 leftFrontEncoder.GetVelocity());
+  static ShuffleboardWrappers::SimpleDisplay leftFrontPosition(
+      "Left Front Encoder Position", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay leftFrontVelocity(
+      "Left Front Encoder Velocity", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay leftRearPosition(
+      "Left Rear Encoder Position", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay leftRearVelocity(
+      "Left Rear Encoder Velocity", "Encoders");
 
-  frc::SmartDashboard::PutNumber("Left Rear Encoder Position",
-                                 leftRearEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Left Rear Encoder Velocity",
-                                 leftRearEncoder.GetVelocity());
+  static ShuffleboardWrappers::SimpleDisplay rightFrontPosition(
+      "Right Front Encoder Position", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay rightFrontVelocity(
+      "Right Front Encoder Velocity", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay rightRearPosition(
+      "Right Rear Encoder Position", "Encoders");
+  static ShuffleboardWrappers::SimpleDisplay rightRearVelocity(
+      "Right Rear Encoder Velocity", "Encoders");
 
-  frc::SmartDashboard::PutNumber("Right Front Encoder Position",
-                                 rightFrontEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Right Front Encoder Velocity",
-                                 rightFrontEncoder.GetVelocity());
+  leftFrontPosition.SetValue(leftFrontEncoder.GetPosition());
+  leftFrontVelocity.SetValue(leftFrontEncoder.GetVelocity());
+  leftRearPosition.SetValue(leftRearEncoder.GetPosition());
+  leftRearVelocity.SetValue(leftRearEncoder.GetVelocity());
 
-  frc::SmartDashboard::PutNumber("Right Rear Encoder Position",
-                                 rightRearEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Right Rear Encoder Velocity",
-                                 rightRearEncoder.GetVelocity());
-
-  // There are 42 encoder ticks in a revolution. (The output from .GetPosition()
-  // is in ticks)
-  // formula for encoder value to inches: (encoder output in ticks)/(42
-  // ticks)/(10.71 revolutions)*(6Pi inches forward)
+  rightFrontPosition.SetValue(rightFrontEncoder.GetPosition());
+  rightFrontVelocity.SetValue(rightFrontEncoder.GetVelocity());
+  rightRearPosition.SetValue(rightRearEncoder.GetPosition());
+  rightRearVelocity.SetValue(rightRearEncoder.GetVelocity());
 }
 
 double Drivebase::GetLeftFrontEncoderPosition() {
-  // Note: we're negating the values to match live behavior (e.g., so
-  // that we get positive numbers when the motor is moving us forward).
+  // Note: we're negating the values to match live behavior, given the motor's
+  // orientation (e.g., so that we get positive numbers when the motor is moving
+  // us forward).
   return -leftFrontEncoder.GetPosition();
 }
 
 double Drivebase::GetRightFrontEncoderPosition() {
-  // Note: we're negating the values to match live behavior (e.g., so
-  // that we get positive numbers when the motor is moving us forward).
+  // Note: we're negating the values to match live behavior, given the motor's
+  // orientation (e.g., so that we get positive numbers when the motor is moving
+  // us forward).
   return -rightFrontEncoder.GetPosition();
 }
 
@@ -73,8 +80,6 @@ void Drivebase::ResetEncoderPositions() {
 }
 
 void Drivebase::SetMotorPower(double rightPower, double leftPower) {
-  //  std:: cout<< "Left =" << leftPower;
-  //  std:: cout<< "Right =" << rightPower << std::endl;
   if (frontIsForward) {
     leftFront.Set(leftPower * powerScaling);
     leftRear.Set(leftPower * powerScaling);
@@ -102,12 +107,13 @@ constexpr double kTicksPerRevolution_NeoMotor = 42;
 constexpr double kGearRatio_2020 = 10.71;
 constexpr double kWheelDiameter_Inches_2020 = 6;
 
-static constexpr EncoderRevolutionsToUnitsConverter EncoderRevolutionsToUnitsConverter(kGearRatio_2020, kWheelDiameter_Inches_2020);
+static constexpr EncoderRevolutionsToUnitsConverter
+    EncoderRevolutionsToUnitsConverter(kGearRatio_2020,
+                                       kWheelDiameter_Inches_2020);
 
-
-  double Drivebase::GetLeftEncoderInInches(){
-    return EncoderRevolutionsToUnitsConverter(leftFrontEncoder.GetPosition());
-  }
-  double Drivebase::GetRightEncoderInInches(){
-    return EncoderRevolutionsToUnitsConverter(rightFrontEncoder.GetPosition());
-  }
+double Drivebase::GetLeftEncoderInInches() {
+  return EncoderRevolutionsToUnitsConverter(leftFrontEncoder.GetPosition());
+}
+double Drivebase::GetRightEncoderInInches() {
+  return EncoderRevolutionsToUnitsConverter(rightFrontEncoder.GetPosition());
+}

@@ -21,7 +21,6 @@ void TankDriveCommand::Initialize() {
 
 void TankDriveCommand::Execute() {
   drivebase->SetMotorPower(right(), left());
-  drivebase->DisplayEncoderValues();
 }
 
 // Called once the command ends or is interrupted.

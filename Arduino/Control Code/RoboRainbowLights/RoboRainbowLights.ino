@@ -7,8 +7,8 @@
 #define PIN        12 // On Trinket or Gemma, suggest changing this to 1
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS 25 // Popular NeoPixel ring size
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_RGBW + NEO_KHZ800);
+#define NUMPIXELS 14 // Popular NeoPixel ring size
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 void setup() {
   // put your setup code here, to run once:
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)

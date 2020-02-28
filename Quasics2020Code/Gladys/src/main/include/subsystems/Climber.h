@@ -10,15 +10,25 @@
 #include <ctre/Phoenix.h>
 #include <frc2/command/SubsystemBase.h>
 
+/**
+ * Climber subsystem for endgame scoring
+ */ 
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
 
-  void MoveClimberUp(); //move up
-
-  void MoveClimberDown(); //move down
-
-  void StopClimber(); //stop moving (brake)
+/**
+ * Move the climber up
+ */ 
+  void MoveClimberUp();
+/**
+ * Move the climber down
+ */ 
+  void MoveClimberDown();
+/**
+ * Stop the climber
+ */ 
+  void StopClimber();
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be

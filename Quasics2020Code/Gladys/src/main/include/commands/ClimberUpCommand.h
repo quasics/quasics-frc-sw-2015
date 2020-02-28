@@ -14,20 +14,20 @@
 
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+ * Move the climber up
+ */ 
 class ClimberUpCommand
     : public frc2::CommandHelper<frc2::CommandBase, ClimberUpCommand> {
  public:
   ClimberUpCommand(Climber* climber);
-
-  void Execute() override; //tell the climber to go up
-
-  void End(bool interrupted) override; //tell climber to stop moving
+/**
+ * Move the climber up
+ */ 
+  void Execute() override;
+/**
+ * Stop the climber
+ */ 
+  void End(bool interrupted) override;
 
  private:
   Climber* climber;

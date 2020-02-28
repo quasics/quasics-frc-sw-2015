@@ -1,3 +1,12 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2020 Quasics Robotics and Matthew J. Healy                   */
+/* All Rights Reserved.                                                       */
+/*                                                                            */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the BSD license file in the root directory of the   */
+/* project repository.                                                        */
+/*----------------------------------------------------------------------------*/
+
 #pragma once
 
 #include <cmath>
@@ -13,7 +22,6 @@ class WithinToleranceChecker {
       : m_target(targetValue), m_acceptableDelta(acceptableDelta) {
   }
   bool operator()(T value) const {
-    return (std::abs(m_target - value) <= m_acceptableDelta) ||
-           (std::abs(value - m_target) <= m_acceptableDelta);
+    return (std::abs(m_target - value) <= m_acceptableDelta);
   }
 };

@@ -6,7 +6,9 @@
 /*----------------------------------------------------------------------------*/
 
 #include "commands/DriveADistanceCommand.h"
+
 #include <cmath>
+
 #include "utils/EncoderHelpers.h"
 
 DriveADistanceCommand::DriveADistanceCommand(Drivebase* drivebase,

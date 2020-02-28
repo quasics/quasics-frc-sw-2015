@@ -29,6 +29,8 @@ void Drivebase::Periodic() {
 }
 
 void Drivebase::DisplayEncoderValues() {
+  // Note: "static" here means that the objects are only created the
+  // first time this function is run, and then are re-used after that.
   static const std::string kEncoderTabName = this->GetSubsystem();
   static ShuffleboardWrappers::SimpleDisplay leftFrontPosition(
       "Left Front Encoder Position", kEncoderTabName);

@@ -29,23 +29,24 @@ void Drivebase::Periodic() {
 }
 
 void Drivebase::DisplayEncoderValues() {
+  static const std::string kEncoderTabName = this->GetSubsystem();
   static ShuffleboardWrappers::SimpleDisplay leftFrontPosition(
-      "Left Front Encoder Position", "Encoders");
+      "Left Front Encoder Position", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay leftFrontVelocity(
-      "Left Front Encoder Velocity", "Encoders");
+      "Left Front Encoder Velocity", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay leftRearPosition(
-      "Left Rear Encoder Position", "Encoders");
+      "Left Rear Encoder Position", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay leftRearVelocity(
-      "Left Rear Encoder Velocity", "Encoders");
+      "Left Rear Encoder Velocity", kEncoderTabName);
 
   static ShuffleboardWrappers::SimpleDisplay rightFrontPosition(
-      "Right Front Encoder Position", "Encoders");
+      "Right Front Encoder Position", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay rightFrontVelocity(
-      "Right Front Encoder Velocity", "Encoders");
+      "Right Front Encoder Velocity", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay rightRearPosition(
-      "Right Rear Encoder Position", "Encoders");
+      "Right Rear Encoder Position", kEncoderTabName);
   static ShuffleboardWrappers::SimpleDisplay rightRearVelocity(
-      "Right Rear Encoder Velocity", "Encoders");
+      "Right Rear Encoder Velocity", kEncoderTabName);
 
   leftFrontPosition.SetValue(leftFrontEncoder.GetPosition());
   leftFrontVelocity.SetValue(leftFrontEncoder.GetVelocity());

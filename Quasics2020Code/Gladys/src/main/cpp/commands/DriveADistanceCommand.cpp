@@ -41,8 +41,10 @@ void DriveADistanceCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool DriveADistanceCommand::IsFinished() {
-  if ((std::abs (drivebase->GetLeftEncoderInInches() >= distance)) &&
-     (std::abs (drivebase->GetRightEncoderInInches() >= distance))) {
+  const double leftEncoderDistance = std::abs(drivebase->GetLeftEncoderInInches());
+  const double rightEncoderDistance = std::abs(drivebase->GetRightEncoderInInches());
+  
+  if ((leftEncoderDistance >= distance) || (rightEncoderDistance >= distance)) {
     return true;
   }
   return false;

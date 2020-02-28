@@ -15,7 +15,12 @@ TankDriveCommand::TankDriveCommand(DriveBase* driveBase,
 }
 
 void TankDriveCommand::Initialize() {
-  driveBase->SetCoastingEnabled(true);
+  if (!driveBase->IsCoastingEnabled()) {
+    driveBase->SetCoastingEnabled(true);
+    restoreBreaking = true;  // Restore original mode in end().
+  } else {
+    restoreBreaking = false;
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -25,6 +30,8 @@ void TankDriveCommand::Execute() {
 
 // Called once the command ends or is interrupted.
 void TankDriveCommand::End(bool interrupted) {
-  driveBase->SetCoastingEnabled(false);
+  if (restoreBreaking) {
+    driveBase->SetCoastingEnabled(false);
+  }
   driveBase->Stop();
 }

@@ -46,4 +46,5 @@ class TankDriveCommand
   DriveBase* driveBase;
   std::function<double()> m_leftPower;
   std::function<double()> m_rightPower;
+  bool restoreBreaking = false;
 };

@@ -7,6 +7,14 @@
 /* project repository.                                                        */
 /*----------------------------------------------------------------------------*/
 
+/**
+ * @file
+ *
+ * This file provides a collection of helper classes, meant to make it easier to
+ * display information/controls on the "Shuffleboard" interface for the FRC
+ * Driver Station software.
+ */
+
 #pragma once
 
 #include <frc/shuffleboard/Shuffleboard.h>

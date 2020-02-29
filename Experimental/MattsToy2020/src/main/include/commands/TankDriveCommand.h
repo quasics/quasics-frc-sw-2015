@@ -13,7 +13,7 @@
 #include "subsystems/DriveBase.h"
 
 /**
- * An example command.
+ * Sample implementation of support for a basic tank drive command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in

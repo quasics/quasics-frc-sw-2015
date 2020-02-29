@@ -44,7 +44,7 @@ DriveBase::DriveBase()
                  rev::CANSparkMax::MotorType::kBrushless),
       rightRear(CANBusConstants::SparkMaxIds::DriveBaseRightRearId,
                 rev::CANSparkMax::MotorType::kBrushless) {
-  SetSubsystem("DriveBase");
+  SetSubsystem("Drive base");
   ResetEncoderPosition(Motors::All);
   SetCoastingEnabled(false);
 }

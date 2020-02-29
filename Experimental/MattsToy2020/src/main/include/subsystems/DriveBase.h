@@ -173,19 +173,10 @@ class DriveBase : public frc2::SubsystemBase {
 
   ShuffleboardWrappers::Collection encodersList{"Encoders", "Drive base"};
 
-  ShuffleboardWrappers::SimpleDisplay leftFrontEncoderTicksDisplay{
-      "L. front (tx)", encodersList};
-  ShuffleboardWrappers::SimpleDisplay leftRearEncoderTicksDisplay{
-      "L. rear (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftFrontEncoderInchesDisplay{
       "L. front (in)", encodersList};
   ShuffleboardWrappers::SimpleDisplay leftRearEncoderInchesDisplay{
       "L. rear (in)", encodersList};
-
-  ShuffleboardWrappers::SimpleDisplay rightFrontEncoderTicksDisplay{
-      "R. front (tx)", encodersList};
-  ShuffleboardWrappers::SimpleDisplay rightRearEncoderTicksDisplay{
-      "R. rear (tx)", encodersList};
   ShuffleboardWrappers::SimpleDisplay rightFrontEncoderInchesDisplay{
       "R. front (in)", encodersList};
   ShuffleboardWrappers::SimpleDisplay rightRearEncoderInchesDisplay{

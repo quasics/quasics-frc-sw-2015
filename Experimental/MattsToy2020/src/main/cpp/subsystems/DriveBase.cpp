@@ -168,11 +168,6 @@ static constexpr EncoderRevolutionsToUnitsConverter revsToInchesConverter(
     kGearRatio_2020, kWheelDiameter_Inches_2020);
 
 void DriveBase::ReportEncoderDataToShuffleboard() {
-  leftFrontEncoderTicksDisplay.SetValue(leftFrontEncoder.GetPosition());
-  leftRearEncoderTicksDisplay.SetValue(leftRearEncoder.GetPosition());
-  rightFrontEncoderTicksDisplay.SetValue(rightFrontEncoder.GetPosition());
-  rightRearEncoderTicksDisplay.SetValue(rightRearEncoder.GetPosition());
-
   leftFrontEncoderInchesDisplay.SetValue(
       revsToInchesConverter(leftFrontEncoder.GetPosition()));
   leftRearEncoderInchesDisplay.SetValue(

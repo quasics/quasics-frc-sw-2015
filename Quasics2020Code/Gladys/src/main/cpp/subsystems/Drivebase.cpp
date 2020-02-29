@@ -107,7 +107,6 @@ void Drivebase::SetCoastingEnabled(bool enabled) {
   rightRear.SetIdleMode(mode);
 }
 
-constexpr double kTicksPerRevolution_NeoMotor = 42;
 constexpr double kGearRatio_2020 = 10.71;
 constexpr double kWheelDiameter_Inches_2020 = 6;
 

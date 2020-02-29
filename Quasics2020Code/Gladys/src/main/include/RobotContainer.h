@@ -23,6 +23,7 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Lights.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -53,6 +54,7 @@ class RobotContainer {
   Climber climber;
   CommandPanel commandPanel;
   CameraStand cameraStand;
+  Lights lights;
 
   // Controllers
   frc::Joystick driverJoystick{0};

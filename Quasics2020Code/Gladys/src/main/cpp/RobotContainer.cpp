@@ -18,6 +18,7 @@
 #include "commands/ClimberUpCommand.h"
 #include "commands/DeliverToLowGoalCommand.h"
 #include "commands/DriveADistanceCommand.h"
+#include "commands/FieldLightingCommand.h"
 #include "commands/IntakeBallsFromFloorCommand.h"
 #include "commands/LoadFromWindowCommand.h"
 #include "commands/MoveForTimeCommand.h"
@@ -33,6 +34,7 @@
 #include "subsystems/CameraStand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Lights.h"
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -62,6 +64,8 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&exhaust, &drivebase) {
         operatorController.GetRawAxis(OIConstants::XBox::LeftYAxis);
     return DeadBand(stickValue);
   }));
+
+  lights.SetDefaultCommand(FieldLightingCommand(&lights));
 
   // Configure the operator interface
   ConfigureButtonBindings();

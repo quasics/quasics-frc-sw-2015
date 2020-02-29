@@ -12,10 +12,7 @@
 LightingSubsystem::LightingSubsystem()
     : ledController(PwmAssignments::LedStripId) {
   ledController.SetLength(kStripLength);
-
-  // Initial color is "off".
-  SetStripToSingleRGBColor(0, 0, 0);
-
+  SetStripToSingleColor(Color::green);
   ledController.Start();
 }
 

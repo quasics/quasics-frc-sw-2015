@@ -13,6 +13,7 @@
 
 #include "Constants.h"
 #include "commands/ExampleCommand.h"
+#include "commands/FieldSensitiveLightingCommand.h"
 #include "commands/LowerElevatorCommand.h"
 #include "commands/MoveForTimeCommand.h"
 #include "commands/RaiseElevatorCommand.h"
@@ -36,6 +37,9 @@ RobotContainer::RobotContainer() {
             OIConstants::LogitechGamePad::RightYAxis);
         return JoystickDeadbandLimiter(stickValue);
       }));
+
+  lightingSubsystem.SetDefaultCommand(
+      FieldSensitiveLightingCommand(&lightingSubsystem));
 
   // Configure the button bindings
   ConfigureButtonBindings();

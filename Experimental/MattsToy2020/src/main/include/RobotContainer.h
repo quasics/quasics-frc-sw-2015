@@ -15,6 +15,7 @@
 
 #include "Constants.h"
 #include "subsystems/DriveBase.h"
+#include "subsystems/LightingSubsystem.h"
 #include "subsystems/SwissArmySubsystem.h"
 
 /**
@@ -46,6 +47,9 @@ class RobotContainer {
 
   // The "Swiss Army Subsystem"
   SwissArmySubsystem swissArmySubsystem;
+
+  // Lighting subsystem
+  LightingSubsystem lightingSubsystem;
 
   // The driver's controller
   frc::Joystick m_logitechController{OIConstants::kDriverControllerPort};

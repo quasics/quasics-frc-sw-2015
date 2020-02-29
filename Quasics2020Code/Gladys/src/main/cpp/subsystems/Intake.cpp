@@ -32,11 +32,11 @@ void Intake::TurnSuctionOnReverse() {
 }
 
 void Intake::RotateShoulderUp() {
-  Shoulder.Set(1);
+  Shoulder.Set(0.25);
 }
 
 void Intake::RotateShoulderDown() {
-  Shoulder.Set(-1);
+  Shoulder.Set(-0.25);
 }
 
 void Intake::TurnShoulderOff() {

@@ -88,7 +88,8 @@ namespace OIConstants {
 // Note: these IDs must be unique.
 namespace PwmAssignments {
   constexpr int CameraSpinnerId = 0;
-}
+  constexpr int LedStripId = 1;
+}  // namespace PwmAssignments
 
 // IDs for devices on the CAN bus.
 //

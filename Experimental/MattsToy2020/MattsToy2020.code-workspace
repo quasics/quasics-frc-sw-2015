@@ -77,7 +77,11 @@
 			"__errc": "cpp",
 			"__mutex_base": "cpp",
 			"__string": "cpp",
-			"__threading_support": "cpp"
+			"__threading_support": "cpp",
+			"__bit_reference": "cpp",
+			"__locale": "cpp",
+			"ios": "cpp",
+			"locale": "cpp"
 		}
 	}
 }

@@ -82,6 +82,9 @@
 			"__locale": "cpp",
 			"ios": "cpp",
 			"locale": "cpp"
+		},
+		"files.exclude": {
+			"dox": true
 		}
 	}
 }

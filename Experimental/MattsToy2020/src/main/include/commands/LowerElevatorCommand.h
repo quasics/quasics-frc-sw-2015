@@ -13,11 +13,10 @@
 #include "subsystems/SwissArmySubsystem.h"
 
 /**
- * An example command.
+ * A sample command that might interact with one of our subsystems (lowering a
+ * theoretical elevator).
  *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * This is provided primarily as a means of demonstrating button binding.
  */
 class LowerElevatorCommand
     : public frc2::CommandHelper<frc2::CommandBase, LowerElevatorCommand> {

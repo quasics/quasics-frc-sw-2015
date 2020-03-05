@@ -5,12 +5,12 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "subsystems/CommandPanel.h"
+#include "subsystems/ControlPanel.h"
 
 #include "Constants.h"
 
-CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
-  SetSubsystem("CommandPanel");
+ControlPanel::ControlPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
+  SetSubsystem("ControlPanel");
 
   m_colorMatcher.AddColorMatch(CommandPanelConstants::kBlueTarget);
   m_colorMatcher.AddColorMatch(CommandPanelConstants::kGreenTarget);
@@ -19,21 +19,21 @@ CommandPanel::CommandPanel() : motor(CANBusIds::VictorSpx::SpinMotor) {
 }
 
 // This method will be called once per scheduler run
-void CommandPanel::Periodic() {
+void ControlPanel::Periodic() {
 }
 
-void CommandPanel::TurnWheelMotorOn(bool f) {
+void ControlPanel::TurnWheelMotorOn(bool f) {
   if (f) {
     motor.Set(0.5);
   } else {
     motor.Set(-0.5);
   }
 }
-void CommandPanel::TurnWheelMotorOff() {
+void ControlPanel::TurnWheelMotorOff() {
   motor.Set(0);
 }
 
-CommandPanel::Color CommandPanel::getCurrentColor() {
+ControlPanel::Color ControlPanel::getCurrentColor() {
   Color colorID = UNKNOWN;
 
   const frc::Color detectedColor = m_colorSensor.GetColor();
@@ -64,7 +64,7 @@ CommandPanel::Color CommandPanel::getCurrentColor() {
   return colorID;
 }
 
-std::string CommandPanel::getColorName(Color c) {
+std::string ControlPanel::getColorName(Color c) {
   std::string colorName = "";
   switch (c) {
     case BLUE:

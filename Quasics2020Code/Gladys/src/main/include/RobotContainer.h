@@ -19,7 +19,7 @@
 #include "commands/MoveForTimeCommand.h"
 #include "subsystems/CameraStand.h"
 #include "subsystems/Climber.h"
-#include "subsystems/CommandPanel.h"
+#include "subsystems/ControlPanel.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
@@ -52,7 +52,7 @@ class RobotContainer {
   Intake intake;
   Exhaust exhaust;
   Climber climber;
-  CommandPanel commandPanel;
+  ControlPanel commandPanel;
   CameraStand cameraStand;
   Lights lights;
 

@@ -7,7 +7,7 @@
 
 #include "commands/SpinTheWheelCommand.h"
 
-SpinTheWheelCommand::SpinTheWheelCommand(CommandPanel* controlPanel,
+SpinTheWheelCommand::SpinTheWheelCommand(ControlPanel* controlPanel,
                                          bool forward)
     : m_controlPanel(controlPanel), f(forward) {
   AddRequirements(m_controlPanel);

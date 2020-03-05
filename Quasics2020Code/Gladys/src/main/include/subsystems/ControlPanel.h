@@ -20,7 +20,7 @@
 
 /// TODO(RJ): Missing (JavaDoc) comments for this class as a whole (e.g.,
 // describing its overall purpose).
-class CommandPanel : public frc2::SubsystemBase {
+class ControlPanel : public frc2::SubsystemBase {
  public:
   /// TODO(RJ): Missing (JavaDoc) comments for the enum (and discrete values, as
   // appropriate)
@@ -34,9 +34,9 @@ class CommandPanel : public frc2::SubsystemBase {
   };
 
   /**
-   * Initializes CommandPanel class, sets subsystem, and adds color matches
+   * Initializes ControlPanel class, sets subsystem, and adds color matches
    **/
-  CommandPanel();
+  ControlPanel();
 
   /**
    * Currently does nothing, will remove if nothing needs to be done.
@@ -47,13 +47,13 @@ class CommandPanel : public frc2::SubsystemBase {
   // Motor control
 
   /**
-   * Turns the CommandPanel wheel off, does not return anything, and accepts no
+   * Turns the ControlPanel wheel off, does not return anything, and accepts no
    *parameters.
    **/
   void TurnWheelMotorOff();
 
   /**
-   * Turns the CommandPanel wheel on.
+   * Turns the ControlPanel wheel on.
    * @param forward specifies the direction the motor is going
    **/
   void TurnWheelMotorOn(bool);

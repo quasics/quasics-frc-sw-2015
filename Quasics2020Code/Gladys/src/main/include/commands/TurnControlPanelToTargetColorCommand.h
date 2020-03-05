@@ -10,7 +10,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/CommandPanel.h"
+#include "subsystems/ControlPanel.h"
 
 /**
  * A command that turns the control panel to the color specified by the FMS, in
@@ -21,11 +21,11 @@ class TurnControlPanelToTargetColorCommand
                                  TurnControlPanelToTargetColorCommand> {
  public:
   /**
-   * Adds the CommandPanel passed in here as a dependancy
-   * @param controlPanel An instance of the CommandPanel class
-   * @see CommandPanel
+   * Adds the ControlPanel passed in here as a dependancy
+   * @param controlPanel An instance of the ControlPanel class
+   * @see ControlPanel
    **/
-  TurnControlPanelToTargetColorCommand(CommandPanel* controlPanel);
+  TurnControlPanelToTargetColorCommand(ControlPanel* controlPanel);
   /**
    * Gets target color and stops if no data is recieved. Starts the motor if
    *data is recieved and sets the target color to the color recieved from the
@@ -45,6 +45,6 @@ class TurnControlPanelToTargetColorCommand
   bool IsFinished() override;
 
  private:
-  CommandPanel* m_controlPanel;
-  CommandPanel::Color m_aimColor;
+  ControlPanel* m_controlPanel;
+  ControlPanel::Color m_aimColor;
 };

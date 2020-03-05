@@ -8,7 +8,7 @@
 #include "commands/TurnControlPanel4TimesCommand.h"
 
 TurnControlPanel4TimesCommand::TurnControlPanel4TimesCommand(
-    CommandPanel* controlPanel)
+    ControlPanel* controlPanel)
     : m_controlPanel(controlPanel) {
   AddRequirements(m_controlPanel);
 }
@@ -18,13 +18,12 @@ void TurnControlPanel4TimesCommand::Initialize() {
   std::cout << "Initializing 'Turn 4 times'" << std::endl;
   counter = 0;
   initColor = prevColor = m_controlPanel->getCurrentColor();
-  while(initColor == CommandPanel::UNKNOWN){
+  while (initColor == ControlPanel::UNKNOWN) {
     initColor = prevColor = m_controlPanel->getCurrentColor();
   }
 
   m_controlPanel->TurnWheelMotorOn(true);
 }
-
 
 // Called once the command ends or is interrupted.
 void TurnControlPanel4TimesCommand::End(bool interrupted) {

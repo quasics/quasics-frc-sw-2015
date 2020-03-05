@@ -10,7 +10,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/CommandPanel.h"
+#include "subsystems/ControlPanel.h"
 
 /**
  * A command that turns the control panel between 3 and 5 times, in order to
@@ -21,11 +21,11 @@ class TurnControlPanel4TimesCommand
                                  TurnControlPanel4TimesCommand> {
  public:
   /**
-   * Adds the CommandPanel passed in here as a dependancy
-   * @param controlPanel An instance of the CommandPanel class
-   * @see CommandPanel
+   * Adds the ControlPanel passed in here as a dependancy
+   * @param controlPanel An instance of the ControlPanel class
+   * @see ControlPanel
    **/
-  TurnControlPanel4TimesCommand(CommandPanel* controlPanel);
+  TurnControlPanel4TimesCommand(ControlPanel* controlPanel);
   /**
    * Initialises counter, prev & currColor
    **/
@@ -45,13 +45,13 @@ class TurnControlPanel4TimesCommand
 
  private:
   // Command Panel object for methods in the class
-  CommandPanel* m_controlPanel;
+  ControlPanel* m_controlPanel;
   // counter
   int counter;
   // initital color sensed
-  CommandPanel::Color initColor = CommandPanel::UNKNOWN,
+  ControlPanel::Color initColor = ControlPanel::UNKNOWN,
                       // previous color
-      prevColor = CommandPanel::UNKNOWN,
+      prevColor = ControlPanel::UNKNOWN,
                       // current color
-      currColor = CommandPanel::UNKNOWN;
+      currColor = ControlPanel::UNKNOWN;
 };

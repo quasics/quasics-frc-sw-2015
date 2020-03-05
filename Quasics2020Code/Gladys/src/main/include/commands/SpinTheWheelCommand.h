@@ -10,7 +10,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/CommandPanel.h"
+#include "subsystems/ControlPanel.h"
 
 /// TODO(RJ): Document this class (missing class-level JavaDoc-style comments
 // describing its purpose).
@@ -23,7 +23,7 @@ class SpinTheWheelCommand
    * @param controlPanel used by the big red button to stop everything
    * @param inverted inverts the direction
    **/
-  SpinTheWheelCommand(CommandPanel* controlPanel, bool inverted);
+  SpinTheWheelCommand(ControlPanel* controlPanel, bool inverted);
   /**
    * turns the motor on
    **/
@@ -37,8 +37,8 @@ class SpinTheWheelCommand
   bool IsFinished() override;
 
  private:
-  // CommandPanel object
-  CommandPanel* m_controlPanel;
+  // ControlPanel object
+  ControlPanel* m_controlPanel;
   // direction
   bool f;
 };

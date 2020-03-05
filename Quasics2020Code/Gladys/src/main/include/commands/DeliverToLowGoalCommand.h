@@ -13,7 +13,7 @@
 #include "subsystems/Exhaust.h"
 
 // Delievers the balls into low goal uitilizing the intake/low goal motor
-/// TODO(Nurfadil): Document this class (using JavaDoc style comments).
+/// @todo (Nurfadil) Document this class (using JavaDoc style comments).
 /**
  * An example command.
  *

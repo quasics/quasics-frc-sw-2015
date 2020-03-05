@@ -5,6 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+/// @file
+/// @bug(RJ) This code will turn the control panel until the color
+/// sensor on the robot detects the color specified by the FMS.  However, this
+/// isn't what's needed, since the color specified by the FMS is the color that
+/// the *field* sensor needs to detect, and the robot will be looking at a
+/// different point (color) on the wheel.
+///
+/// As we discussed earlier in build season, you need to convert the color
+/// specified by the FMS to the color that we need to detect from the robot's
+/// sensor position (probably about 90 degrees off from the field sensor).
+
 #include "commands/TurnControlPanelToTargetColorCommand.h"
 
 #include <frc/DriverStation.h>
@@ -13,20 +24,9 @@ TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
     ControlPanel* controlPanel)
     : m_controlPanel(controlPanel), m_aimColor(ControlPanel::UNKNOWN) {
   // Use AddRequirements() here to declare subsystem dependencies.
-  /// TODO(RJ): (BUG) Add the control panel as a required subsystem, per the
-  // above comment!
+  /// @bug (RJ) Add the control panel as a required subsystem, per the
+  /// above comment!
 }
-
-//// TODO(RJ): (BUG) This code will turn the control panel until the color
-/// sensor
-/// on the robot detects the color specified by the FMS.  However, this isn't
-/// what's needed, since the color specified by the FMS is the color that the
-/// *field* sensor needs to detect, and the robot will be looking at a different
-/// point (color) on the wheel.
-///
-/// As we discussed earlier in build season, you need to convert the color
-/// specified by the FMS to the color that we need to detect from the robot's
-/// sensor position (probably about 90 degrees off from the field sensor).
 
 // Called when the command is initially scheduled.
 void TurnControlPanelToTargetColorCommand::Initialize() {

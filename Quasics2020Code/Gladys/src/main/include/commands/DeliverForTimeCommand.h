@@ -13,7 +13,7 @@
 
 #include "subsystems/Exhaust.h"
 
-/// TODO(Scott): Document this class (using JavaDoc format).
+/// @todo (Scott) Document this class (using JavaDoc format).
 /**
  * An example command.
  *

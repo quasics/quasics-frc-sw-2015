@@ -18,11 +18,11 @@
 #include "rev/ColorMatch.h"
 #include "rev/ColorSensorV3.h"
 
-/// TODO(RJ): Missing (JavaDoc) comments for this class as a whole (e.g.,
+/// @todo (RJ) Missing (JavaDoc) comments for this class as a whole (e.g.,
 // describing its overall purpose).
 class ControlPanel : public frc2::SubsystemBase {
  public:
-  /// TODO(RJ): Missing (JavaDoc) comments for the enum (and discrete values, as
+  /// @todo (RJ) Missing (JavaDoc) comments for the enum (and discrete values, as
   // appropriate)
   enum Color {
     NO_DATA = -1,

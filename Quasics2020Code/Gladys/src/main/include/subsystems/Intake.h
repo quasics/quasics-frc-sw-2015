@@ -11,7 +11,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include "subsystems/Climber.h"
 
-/// TODO(Nurfadil): Document this class (using JavaDoc format).
+/// @todo (Nurfadil) Document this class (using JavaDoc format).
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();

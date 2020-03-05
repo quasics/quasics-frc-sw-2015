@@ -12,7 +12,7 @@
 
 #include "subsystems/ControlPanel.h"
 
-/// TODO(RJ): Document this class (missing class-level JavaDoc-style comments
+/// @todo (RJ) Document this class (missing class-level JavaDoc-style comments
 // describing its purpose).
 class SpinTheWheelCommand
     : public frc2::CommandHelper<frc2::CommandBase, SpinTheWheelCommand> {

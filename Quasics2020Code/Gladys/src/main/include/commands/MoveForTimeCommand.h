@@ -13,7 +13,7 @@
 
 #include "subsystems/Drivebase.h"
 
-/// TODO(Scott): Consider deleting this class, now that we have distance-based
+/// @todo (Scott) Consider deleting this class, now that we have distance-based
 // movement control.  Either that, or finish documenting its members.
 /**
  * Moves the robot at a certain percent power over a certain time.  (Intended as

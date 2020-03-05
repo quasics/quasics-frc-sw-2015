@@ -13,7 +13,7 @@ ShoulderControlCommand::ShoulderControlCommand(Intake* intake,
   AddRequirements(intake);
 }
 
-/// TODO(Nurfadil): Remove unneeded function (from .cpp and .h).
+/// @todo (Nurfadil) Remove unneeded function (from .cpp and .h).
 // Called when the command is initially scheduled.
 void ShoulderControlCommand::Initialize() {
 }
@@ -36,7 +36,7 @@ void ShoulderControlCommand::End(bool interrupted) {
   intake->TurnShoulderOff();
 }
 
-/// TODO(Nurfadil): Remove unneeded function (from .cpp and .h).
+/// @todo (Nurfadil) Remove unneeded function (from .cpp and .h).
 // Returns true when the command should end.
 bool ShoulderControlCommand::IsFinished() {
   return false;

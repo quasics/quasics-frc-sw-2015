@@ -15,7 +15,7 @@
 
 #include "Constants.h"
 
-/// TODO(Kat): Document this class (using JavaDoc format).
+/// @todo (Kat) Document this class (using JavaDoc format).
 class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();

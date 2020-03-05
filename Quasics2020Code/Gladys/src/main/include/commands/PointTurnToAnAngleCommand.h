@@ -12,7 +12,7 @@
 
 #include "subsystems/Drivebase.h"
 
-/// TODO(Scott): Document this class (using JavaDoc format comments).
+/// @todo (Scott) Document this class (using JavaDoc format comments).
 /**
  * An example command.
  *

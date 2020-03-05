@@ -10,7 +10,7 @@
 #include <ctre/Phoenix.h>
 #include <frc2/command/SubsystemBase.h>
 
-/// TODO(Nurfadil): Document this class (using JavaDoc format).
+/// @todo (Nurfadil) Document this class (using JavaDoc format).
 class Exhaust : public frc2::SubsystemBase {
  public:
   Exhaust();
@@ -37,7 +37,7 @@ class Exhaust : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  /// TODO(Nurfadil): Either rename the motor control data members so that they
+  /// @todo (Nurfadil) Either rename the motor control data members so that they
   // more clearly indicate what they do/where they're located, or add comments
   // providing this information.  (Better still, do both!)
 

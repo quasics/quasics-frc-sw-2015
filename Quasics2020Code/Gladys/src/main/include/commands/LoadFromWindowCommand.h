@@ -13,7 +13,7 @@
 #include "subsystems/Exhaust.h"
 
 // Loads balls into the robot from window using the PushBall function.
-/// TODO(Nurfadil): Document this class (using JavaDoc format comments).
+/// @todo (Nurfadil) Document this class (using JavaDoc format comments).
 /**
  * An example command.
  *

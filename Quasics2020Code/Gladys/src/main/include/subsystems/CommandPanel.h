@@ -18,48 +18,72 @@
 #include "rev/ColorMatch.h"
 #include "rev/ColorSensorV3.h"
 
-// TODO(RJ): Document this class.
+/// TODO(RJ): Missing (JavaDoc) comments for this class as a whole (e.g.,
+// describing its overall purpose).
 class CommandPanel : public frc2::SubsystemBase {
  public:
-  enum Color { NO_DATA = -1, UNKNOWN = 0, BLUE = 1, RED = 2, GREEN = 3, YELLOW = 4 };
+  /// TODO(RJ): Missing (JavaDoc) comments for the enum (and discrete values, as
+  // appropriate)
+  enum Color {
+    NO_DATA = -1,
+    UNKNOWN = 0,
+    BLUE = 1,
+    RED = 2,
+    GREEN = 3,
+    YELLOW = 4
+  };
+
   /**
-  * Initializes CommandPanel class, sets subsystem, and adds color matches
-  **/
+   * Initializes CommandPanel class, sets subsystem, and adds color matches
+   **/
   CommandPanel();
-  //~CommandPanel();
-    /**
-  * Currently does nothing, will remove if nothing needs to be done.
-  **/
-  void Periodic();
-  // Motor control
-    /**
-  * Turns the CommandPanel wheel off, does not return anything, and accepts no parameters.
-  **/
-  void TurnWheelMotorOff();
-    /**
-  * Turns the CommandPanel wheel on.
-  * @param forward specifies the direction the motor is going 
-  **/
-  void TurnWheelMotorOn(bool);
+
   /**
-  * Returns a Color enum, which is used to determine the current color
-  * @return returns a Color enum value that corresponds to the color recieved. 
-  **/
+   * Currently does nothing, will remove if nothing needs to be done.
+   **/
+  void Periodic();
+
+  //////////////////////
+  // Motor control
+
+  /**
+   * Turns the CommandPanel wheel off, does not return anything, and accepts no
+   *parameters.
+   **/
+  void TurnWheelMotorOff();
+
+  /**
+   * Turns the CommandPanel wheel on.
+   * @param forward specifies the direction the motor is going
+   **/
+  void TurnWheelMotorOn(bool);
+
+  /**
+   * Returns a Color enum, which is used to determine the current color
+   * @return returns a Color enum value that corresponds to the color recieved.
+   **/
   Color getCurrentColor();
-   /**
-  * To easily convert a Color enum to a string.
-  * @param color A color enum
-  * @return returns a String that corresponds to the Color inputted. 
-  **/
+
+  /**
+   * To easily convert a Color enum to a string.
+   * @param color A color enum
+   * @return returns a String that corresponds to the Color inputted.
+   **/
   static std::string getColorName(Color c);
 
  private:
-  //the motor that spins the wheel
+  /// Convenient alias for the underlying motor type.
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
+
+  /// The motor that spins the wheel
   WPI_VictorSPX motor;
+
+  //////////////////////
   // Color objects
-  // Color sensor gets the data from the sensor from the i^2c port
+
+  /// Sensor that gets the data from the sensor from the I2C port
   rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
-  // Color matcher matches the data from the color sensor to the correct color.
+
+  /// Translates the data from the color sensor to a matched color.
   rev::ColorMatch m_colorMatcher;
 };

@@ -12,7 +12,7 @@
 
 #include "subsystems/Intake.h"
 
-// TODO(Nurfadil): Document this class using JavaDoc format (see Mr. Healy); the
+/// TODO(Nurfadil): Document this class using JavaDoc format (see Mr. Healy); the
 // following comment is incorrect.
 // Controls the shoulder with joystick using the shoulderdown and shoulderup
 // command.

@@ -11,7 +11,7 @@
 #include <frc2/command/SubsystemBase.h>
 #include "subsystems/Climber.h"
 
-// TODO(Nurfadil): Document this class.
+/// TODO(Nurfadil): Document this class (using JavaDoc format).
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -32,7 +32,8 @@ class Intake : public frc2::SubsystemBase {
   void TurnShoulderOff();
 
  private:
-  // Convenience definition (shortening the name).
+  /// Convenience definition (shortening the name of the type of motor
+  /// controllers).
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 
   // Components (e.g. motor controllers and sensors) should generally be

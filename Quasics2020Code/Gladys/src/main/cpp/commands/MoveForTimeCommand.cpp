@@ -33,7 +33,7 @@ void MoveForTimeCommand::Initialize() {
   drivebase->SetMotorPower(left_power, right_power);
 }
 
-// TODO(Scott): Remove this unneeded function (in both .cpp and .h).
+/// TODO(Scott): Remove this unneeded function (in both .cpp and .h).
 // Called repeatedly when this Command is scheduled to run
 void MoveForTimeCommand::Execute() {
 }

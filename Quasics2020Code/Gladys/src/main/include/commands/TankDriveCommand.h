@@ -12,7 +12,7 @@
 
 #include "subsystems/Drivebase.h"
 
-// TODO(Kat): Document this command.
+/// TODO(Kat): Document this class (using JavaDoc format comments).
 /**
  * An example command.
  *
@@ -26,13 +26,12 @@ class TankDriveCommand
   TankDriveCommand(Drivebase* drivebase, std::function<double()> right,
                    std::function<double()> left);
 
-
   void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
-  
+
  private:
   Drivebase* drivebase;
   std::function<double()> right;

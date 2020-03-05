@@ -60,7 +60,7 @@ class RobotContainer {
   frc::Joystick driverJoystick{0};
   frc::XboxController operatorController{1};
 
-  // TODO(Scott): Replace this with a real command for autonomous mode.  (Or
+  /// TODO(Scott): Replace this with a real command for autonomous mode.  (Or
   // more than one.)
   // MoveForTimeCommand m_trivialAutonmousCommand{drivebase.get(), 2, -.40};
   AutoModeBallDelivery m_autonomousCommand;

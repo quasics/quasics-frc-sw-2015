@@ -18,13 +18,12 @@ void SpinTheWheelCommand::Initialize() {
   m_controlPanel->TurnWheelMotorOn(f);
 }
 
-
 // Called once the command ends or is interrupted.
 void SpinTheWheelCommand::End(bool interrupted) {
   m_controlPanel->TurnWheelMotorOff();
 }
 
-// TODO(RJ): Remove this unneeded method (from .cpp and header).
+/// TODO(RJ): Remove this unneeded method (from .cpp and header).
 // Returns true when the command should end.
 bool SpinTheWheelCommand::IsFinished() {
   return false;

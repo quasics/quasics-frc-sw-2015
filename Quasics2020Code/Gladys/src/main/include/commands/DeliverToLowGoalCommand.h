@@ -11,8 +11,9 @@
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/Exhaust.h"
-//Delievers the balls into low goal uitilizing the intake/low goal motor
-// TODO(Nurfadil): Document this class.
+
+// Delievers the balls into low goal uitilizing the intake/low goal motor
+/// TODO(Nurfadil): Document this class (using JavaDoc style comments).
 /**
  * An example command.
  *

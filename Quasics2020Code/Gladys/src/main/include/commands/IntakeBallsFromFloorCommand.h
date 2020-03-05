@@ -13,7 +13,7 @@
 #include "subsystems/Exhaust.h"
 #include "subsystems/Intake.h"
 
-// TODO(Nurfadil): Document this class.
+/// TODO(Nurfadil): Document this class (using JavaDoc format comments).
 /**
  * An example command.
  *

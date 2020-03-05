@@ -9,15 +9,24 @@
 
 #include <frc/DriverStation.h>
 
-// TODO(RJ): (Bug) Remove this global variable.  (Make it local to the function
-// where it's used.)
-
-
 TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
     CommandPanel* controlPanel)
     : m_controlPanel(controlPanel), m_aimColor(CommandPanel::UNKNOWN) {
-  // Use addRequirements() here to declare subsystem dependencies.
+  // Use AddRequirements() here to declare subsystem dependencies.
+  /// TODO(RJ): (BUG) Add the control panel as a required subsystem, per the
+  // above comment!
 }
+
+//// TODO(RJ): (BUG) This code will turn the control panel until the color
+///sensor
+/// on the robot detects the color specified by the FMS.  However, this isn't
+/// what's needed, since the color specified by the FMS is the color that the
+/// *field* sensor needs to detect, and the robot will be looking at a different
+/// point (color) on the wheel.
+///
+/// As we discussed earlier in build season, you need to convert the color
+/// specified by the FMS to the color that we need to detect from the robot's
+/// sensor position (probably about 90 degrees off from the field sensor).
 
 // Called when the command is initially scheduled.
 void TurnControlPanelToTargetColorCommand::Initialize() {
@@ -50,11 +59,8 @@ void TurnControlPanelToTargetColorCommand::Initialize() {
   } else {
     // Code for no data received yet
     m_aimColor = CommandPanel::NO_DATA;
-
   }
 }
-
-
 
 // Called once the command ends or is interrupted.
 void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
@@ -63,7 +69,8 @@ void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TurnControlPanelToTargetColorCommand::IsFinished() {
-  if (m_aimColor == m_controlPanel->getCurrentColor() || m_aimColor == CommandPanel::NO_DATA) {
+  if (m_aimColor == m_controlPanel->getCurrentColor() ||
+      m_aimColor == CommandPanel::NO_DATA) {
     return true;
   }
   return false;

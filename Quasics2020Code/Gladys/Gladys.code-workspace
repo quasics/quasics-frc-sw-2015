@@ -74,6 +74,9 @@
 			"streambuf": "cpp",
 			"thread": "cpp",
 			"cinttypes": "cpp"
+		},
+		"files.exclude": {
+			"dox": true
 		}
 	}
 }

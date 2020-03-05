@@ -11,31 +11,35 @@
 #include <frc2/command/CommandHelper.h>
 
 /**
- * An example command that uses an example subsystem.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * A trivial sample command (which does nothing except log a fixed message).
  */
 class ExampleCommand
     : public frc2::CommandHelper<frc2::CommandBase, ExampleCommand> {
  public:
   /**
    * Creates a new ExampleCommand.
+   *
+   * @param message the message to be logged when the command is triggered
    */
   explicit ExampleCommand(std::string message) : m_message(message) {
   }
 
+  /// Logs the message associated with this command.
   void Initialize() override;
 
+  /// Always returns true.
   bool IsFinished() override {
     return true;
   }
 
  private:
-  std::string m_message;
+  std::string m_message;  ///< Message associated with this command.
 };
 
+/**
+ * A trivial command that explicitly does nothing (other than print a message to
+ * that effect when it's started).
+ */
 class DoNothingCommand : public ExampleCommand {
  public:
   DoNothingCommand() : ExampleCommand("Do nothing") {

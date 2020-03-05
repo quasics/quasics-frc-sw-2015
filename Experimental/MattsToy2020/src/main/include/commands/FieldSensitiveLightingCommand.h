@@ -13,9 +13,9 @@
 #include "subsystems/LightingSubsystem.h"
 
 /**
- * A sample implementation of a command that can use data from the Field
- * Management System (FMS) to control the lights on the robot, setting them
- * either to our alliance's color, or to green.
+ * A sample implementation of controls for configurable LED strips on the robot
+ * that can use data from the Field Management System (FMS) to set them to the
+ * color of our current alliance (or some preferred default).
  */
 class FieldSensitiveLightingCommand
     : public frc2::CommandHelper<frc2::CommandBase,

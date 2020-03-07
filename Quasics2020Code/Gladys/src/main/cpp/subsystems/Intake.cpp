@@ -9,10 +9,22 @@
 
 #include "Constants.h"
 
+using ctre::phoenix::motorcontrol::Brake;
+using ctre::phoenix::motorcontrol::Coast;
+
 Intake::Intake()
-    : BallIntake(CANBusIds::VictorSpx::BallIntakeMotor),
-      Shoulder(CANBusIds::VictorSpx::ShoulderMotor) {
+    : ballIntake(CANBusIds::VictorSpx::BallIntakeMotor),
+      shoulder(CANBusIds::VictorSpx::ShoulderMotor) {
   SetSubsystem("Intake");
+  SetShoulderToBrakeWhenNeutral();
+}
+
+void Intake::SetShoulderToBrakeWhenNeutral() {
+  shoulder.SetNeutralMode(Brake);
+}
+
+void Intake::SetShoulderToCoastWhenNeutral() {
+  shoulder.SetNeutralMode(Coast);
 }
 
 // This method will be called once per scheduler run
@@ -20,25 +32,25 @@ void Intake::Periodic() {
 }
 
 void Intake::TurnSuctionOn() {
-  BallIntake.Set(.5);
+  ballIntake.Set(.5);
 }
 
 void Intake::TurnSuctionOff() {
-  BallIntake.Set(0);
+  ballIntake.Set(0);
 }
 
 void Intake::TurnSuctionOnReverse() {
-  BallIntake.Set(-.5);
+  ballIntake.Set(-.5);
 }
 
 void Intake::RotateShoulderUp() {
-  Shoulder.Set(0.25);
+  shoulder.Set(0.25);
 }
 
 void Intake::RotateShoulderDown() {
-  Shoulder.Set(-0.25);
+  shoulder.Set(-0.25);
 }
 
 void Intake::TurnShoulderOff() {
-  Shoulder.Set(0);
+  shoulder.Set(0);
 }

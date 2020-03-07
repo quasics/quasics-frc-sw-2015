@@ -31,6 +31,9 @@ class Intake : public frc2::SubsystemBase {
   void RotateShoulderDown();
   void TurnShoulderOff();
 
+  void SetShoulderToBrakeWhenNeutral();
+  void SetShoulderToCoastWhenNeutral();
+
  private:
   /// Convenience definition (shortening the name of the type of motor
   /// controllers).
@@ -38,6 +41,6 @@ class Intake : public frc2::SubsystemBase {
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  WPI_VictorSPX BallIntake;
-  WPI_VictorSPX Shoulder;
+  WPI_VictorSPX ballIntake;
+  WPI_VictorSPX shoulder;
 };

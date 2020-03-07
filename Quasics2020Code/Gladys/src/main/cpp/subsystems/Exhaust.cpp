@@ -14,6 +14,7 @@ Exhaust::Exhaust()
       Push(CANBusIds::VictorSpx::PushUpMotor) {
   SetSubsystem("Exhaust");
   Shoot.SetInverted(true);
+  Push.SetInverted(true);
 }
 
 // This method will be called once per scheduler run

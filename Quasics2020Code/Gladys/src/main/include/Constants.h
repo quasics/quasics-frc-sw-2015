@@ -8,6 +8,7 @@
 #pragma once
 
 #include <frc/util/Color.h>
+#include <subsystems/ControlPanel.h>
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide

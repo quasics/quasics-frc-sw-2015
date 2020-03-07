@@ -23,9 +23,7 @@
 TurnControlPanelToTargetColorCommand::TurnControlPanelToTargetColorCommand(
     ControlPanel* controlPanel)
     : m_controlPanel(controlPanel), m_aimColor(ControlPanel::UNKNOWN) {
-  // Use AddRequirements() here to declare subsystem dependencies.
-  /// @bug (RJ) Add the control panel as a required subsystem, per the
-  /// above comment!
+    AddRequirements(m_controlPanel);
 }
 
 // Called when the command is initially scheduled.
@@ -69,7 +67,7 @@ void TurnControlPanelToTargetColorCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TurnControlPanelToTargetColorCommand::IsFinished() {
-  if (m_aimColor == m_controlPanel->getCurrentColor() ||
+  if (order[((int)((m_aimColor)+1)%4)] == m_controlPanel->getCurrentColor() ||
       m_aimColor == ControlPanel::NO_DATA) {
     return true;
   }

@@ -28,8 +28,8 @@ class ControlPanel : public frc2::SubsystemBase {
     NO_DATA = -1,
     UNKNOWN = 0,
     BLUE = 1,
-    RED = 2,
-    GREEN = 3,
+    RED = 3,
+    GREEN = 2,
     YELLOW = 4
   };
 

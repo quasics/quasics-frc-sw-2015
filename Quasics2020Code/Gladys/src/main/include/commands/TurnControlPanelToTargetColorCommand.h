@@ -47,4 +47,5 @@ class TurnControlPanelToTargetColorCommand
  private:
   ControlPanel* m_controlPanel;
   ControlPanel::Color m_aimColor;
+  static constexpr ControlPanel::Color order[] = {ControlPanel::Color::BLUE, ControlPanel::Color::GREEN, ControlPanel::Color::RED, ControlPanel::Color::YELLOW};
 };

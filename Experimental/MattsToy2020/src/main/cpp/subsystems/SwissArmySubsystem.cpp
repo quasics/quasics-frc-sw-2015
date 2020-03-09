@@ -8,6 +8,9 @@
 #include "subsystems/SwissArmySubsystem.h"
 #include <iostream>
 
+using ctre::phoenix::motorcontrol::Brake;
+using ctre::phoenix::motorcontrol::Coast;
+
 SwissArmySubsystem::SwissArmySubsystem() {
   std::cout << "Built swiss army subsystem" << std::endl;
   this->leftElevatorMotor.SetInverted(false);
@@ -31,7 +34,12 @@ void SwissArmySubsystem::StopMovingShoulder() {
 }
 
 void SwissArmySubsystem::SetElevatorPower(double left, double right) {
-  std::cout << "Setting elevator power: left=" << left << ", right=" << right << std::endl;
+  std::cout << "Setting elevator power: left=" << left << ", right=" << right
+            << std::endl;
   this->leftElevatorMotor.Set(left);
   this->rightElevatorMotor.Set(right);
+}
+
+void SwissArmySubsystem::ShoulderShouldHardBrake(bool tf) {
+  shoulder.SetNeutralMode(tf ? Brake : Coast);
 }

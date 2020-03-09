@@ -12,8 +12,20 @@
 
 #include "Constants.h"
 
+/**
+ * Defines a "swiss army knife" subsystem, as a catch-all place for Matt to
+ * demonstrate different things.
+ *
+ * @note This is *not* the right way to design a subsystem in real life, as
+ * ideally a given subsystem should provide access to precisely one functional
+ * block of the robot.  But this is intended to be nothing more than sample
+ * code, while *also* being sample code that folks will hopefully not just
+ * duplicate into their competition bots.  (And if you're just copying this
+ * subsystem in wholesale, you're *really* doing something wrong....)
+ */
 class SwissArmySubsystem : public frc2::SubsystemBase {
  public:
+  /** Constructor. */
   SwissArmySubsystem();
 
   /**
@@ -36,6 +48,7 @@ class SwissArmySubsystem : public frc2::SubsystemBase {
   void RotateShoulderDown();
   void RotateShoulderUp();
   void StopMovingShoulder();
+  void ShoulderShouldHardBrake(bool tf);
 
  private:
   // Positive values == lifting; negative values == lowering
@@ -45,15 +58,16 @@ class SwissArmySubsystem : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  // Convenience definition (shortening the name).
+  /// Convenience definition (shortening the name).
   typedef ctre::phoenix::motorcontrol::can::WPI_VictorSPX WPI_VictorSPX;
 
-  // Example: shoulder joint on an example subsystem.
+  /// (Example) Shoulder joint on an example subsystem.
   WPI_VictorSPX shoulder{CANBusConstants::VictorSpxIds::ShoulderJointId};
 
-  // Example: elevator motors on an example subsystem.
+  /// (Example) Right-side elevator motors on an example subsystem.
   WPI_VictorSPX rightElevatorMotor{
       CANBusConstants::VictorSpxIds::RightElevatorMotorId};
+  /// (Example) Left-side elevator motors on an example subsystem.
   WPI_VictorSPX leftElevatorMotor{
       CANBusConstants::VictorSpxIds::LeftElevatorMotorId};
 };

@@ -76,8 +76,6 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&exhaust, &drivebase) {
 // Configuring buttons on the driver's controller.
 //
 void RobotContainer::ConfigureDriverButtonBindings() {
-  std::cout << "Beginning button binding configuration (Driver)" << std::endl;
-
   namespace LogitechGamePad = OIConstants::LogitechGamePad;
   using frc2::JoystickButton;
 
@@ -105,8 +103,6 @@ void RobotContainer::RunCommandWhenOperatorButtonIsPressed(
 // Configuring buttons on the operator's controller.
 //
 void RobotContainer::ConfigureOperatorButtonBindings() {
-  std::cout << "Beginning button binding configuration (Operator)" << std::endl;
-
   typedef frc::XboxController::Button Button;  // For convenient/shorter naming
 
   //
@@ -156,7 +152,6 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
-  std::cout << "Beginning smart dashboard configuration" << std::endl;
   frc::SmartDashboard::PutData("Move off the line",
                                new MoveForTimeCommand(&drivebase, 3, .4));
   frc::SmartDashboard::PutData("Auto mode ball delivery",
@@ -178,7 +173,7 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new SwitchCameraDirection(&cameraStand));
 #endif  // ENABLE_CAMERA_TEST_COMMANDS
 
-#define ENABLE_AUTO_DRIVING_TEST_COMMANDS
+// #define ENABLE_AUTO_DRIVING_TEST_COMMANDS
 #ifdef ENABLE_AUTO_DRIVING_TEST_COMMANDS
   frc::SmartDashboard::PutData(
       "Move Distance (36 inches)",

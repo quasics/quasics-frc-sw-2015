@@ -15,7 +15,6 @@ TurnControlPanel4TimesCommand::TurnControlPanel4TimesCommand(
 
 // Called when the command is initially scheduled.
 void TurnControlPanel4TimesCommand::Initialize() {
-  std::cout << "Initializing 'Turn 4 times'" << std::endl;
   counter = 0;
   initColor = prevColor = m_controlPanel->getCurrentColor();
   while (initColor == ControlPanel::UNKNOWN) {
@@ -27,7 +26,6 @@ void TurnControlPanel4TimesCommand::Initialize() {
 
 // Called once the command ends or is interrupted.
 void TurnControlPanel4TimesCommand::End(bool interrupted) {
-  std::cout << "Ending 'Turn 4 times'" << std::endl;
   m_controlPanel->TurnWheelMotorOff();
 }
 
@@ -38,8 +36,10 @@ bool TurnControlPanel4TimesCommand::IsFinished() {
     std::cout << "New detected color is "
               << m_controlPanel->getColorName(currColor) << std::endl;
     if (initColor == currColor) {
-      std::cout << "Bump the count!" << std::endl;
       counter++;
+      std::cout << "Bumped the # of occurrences of target color to "
+                << counter
+                << std::endl;
       if (counter > 7) {
         return true;
       }

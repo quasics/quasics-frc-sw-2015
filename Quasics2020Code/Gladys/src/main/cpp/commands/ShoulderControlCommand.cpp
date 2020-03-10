@@ -21,7 +21,6 @@ void ShoulderControlCommand::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void ShoulderControlCommand::Execute() {
   const double currentValue = upValue();
-  std::cout << "Value in command: " << currentValue << std::endl;
   if (currentValue > 0) {
     intake->RotateShoulderUp();
   } else if (currentValue < 0) {

@@ -31,8 +31,8 @@ namespace OIConstants {
     constexpr int LeftYAxis = 1;
     constexpr int LeftTriggerAxis = 2;
     constexpr int RightTriggerAxis = 3;
-    constexpr int RightXAxis = 4;
-    constexpr int RightYAxis = 5;
+    constexpr int RightXAxis = 2;
+    constexpr int RightYAxis = 3;
 
     // Buttons
     constexpr int AButton = 1;
@@ -60,7 +60,7 @@ namespace OIConstants {
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;
     constexpr int RightXAxis = 2;
-    constexpr int RightYAxis = 3;
+    constexpr int RightYAxis = 5;
 
     constexpr int LeftTrigger = 2;
     constexpr int RightTrigger = 3;

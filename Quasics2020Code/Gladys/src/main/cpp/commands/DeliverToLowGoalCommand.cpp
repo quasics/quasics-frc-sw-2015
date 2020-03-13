@@ -14,8 +14,8 @@ DeliverToLowGoalCommand::DeliverToLowGoalCommand(Exhaust* exhaust)
 
 // Called when the command is initially scheduled.
 void DeliverToLowGoalCommand::Initialize() {
+  exhaust->ShootBallDown();
   exhaust->PushBallDown();
-  exhaust->ShootBallOn();
 }
 
 // Called once the command ends or is interrupted.

@@ -1,4 +1,4 @@
-Copyright 2015-2020 Quasics Robotics Club, Gateway Senior High School, Monroeville, PA
+Copyright 2015-2021 Quasics Robotics Club, Gateway Senior High School, Monroeville, PA
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

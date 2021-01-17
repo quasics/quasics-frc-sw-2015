@@ -1,0 +1,10 @@
+{
+    "game" : "Infinite Recharge at home",
+    "field-image" : "infiniterechargeathome.png",
+    "field-corners": {
+        "top-left" : [52, 52],
+        "bottom-right" : [1103, 576]
+    },
+    "field-size" : [30.0, 15.0],
+    "field-unit" : "foot"
+    }

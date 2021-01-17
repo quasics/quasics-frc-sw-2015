@@ -13,3 +13,31 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+
+namespace JoystickDefinitions {
+    namespace GameSirPro {
+        enum JoystickAxis {
+            LeftVertical = 1,
+            LeftHorizontal = 0,
+            LeftTrigger = 2,    // Range is 0-1
+            RightVertical = 5,
+            RightHorizontal = 4,
+            RightTrigger = 3,    // Range is 0-1
+        };
+        enum Buttons {
+            A = 0,
+            B = 1,
+            X = 2,
+            Y = 3,
+            G = 6,
+            S = 7,
+            LeftShoulder = 4,
+            RightShoulder = 5,
+        };
+    }   // GameSirPro
+}   // namespace JoystickDefinitions
+
+namespace DriveConstants {
+constexpr double kCountsPerRevolution = 1440.0;
+constexpr double kWheelDiameterInch = 2.75;
+}  // namespace DriveConstants

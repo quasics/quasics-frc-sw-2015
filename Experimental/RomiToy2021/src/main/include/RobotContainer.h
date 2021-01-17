@@ -4,10 +4,13 @@
 
 #pragma once
 
+#include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 
 #include "commands/ExampleCommand.h"
+#include "subsystems/Drivetrain.h"
 #include "subsystems/ExampleSubsystem.h"
+#include "subsystems/OnBoardIO.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -16,16 +19,26 @@
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
-class RobotContainer {
- public:
+class RobotContainer
+{
+public:
   RobotContainer();
 
-  frc2::Command* GetAutonomousCommand();
+  frc2::Command *GetAutonomousCommand();
 
- private:
+private:
+  void ConfigureButtonBindings();
+
+private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
 
-  void ConfigureButtonBindings();
+  // Assumes a gamepad plugged into channnel 0
+  frc::Joystick m_controller{0};
+
+  // The robot's subsystems
+  Drivetrain m_drive;
+  OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
+                        OnBoardIO::ChannelMode::INPUT};
 };

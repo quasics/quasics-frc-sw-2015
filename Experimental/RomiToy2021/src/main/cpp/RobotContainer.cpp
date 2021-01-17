@@ -4,8 +4,15 @@
 
 #include "RobotContainer.h"
 
+#include "Constants.h"
+#include "commands/TeleopTankDrive.h"
+
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
+  m_drive.SetDefaultCommand(TeleopTankDrive(
+      &m_drive,
+      [this] { return -m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::LeftVertical); },
+      [this] { return m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::RightVertical); }));
 
   // Configure the button bindings
   ConfigureButtonBindings();

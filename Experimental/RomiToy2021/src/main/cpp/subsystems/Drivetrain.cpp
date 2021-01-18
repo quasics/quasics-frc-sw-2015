@@ -16,7 +16,6 @@ using namespace DriveConstants;
 // to use DIO pins 4/5 and 6/7 for the left and right
 Drivetrain::Drivetrain()
 {
-  m_rightMotor.SetInverted(true);
   m_leftEncoder.SetDistancePerPulse(
       wpi::math::pi * kWheelDiameter.to<double>() / kCountsPerRevolution);
   m_rightEncoder.SetDistancePerPulse(

@@ -15,29 +15,29 @@
  */
 
 namespace JoystickDefinitions {
-    namespace GameSirPro {
-        enum JoystickAxis {
-            LeftVertical = 1,
-            LeftHorizontal = 0,
-            LeftTrigger = 2,    // Range is 0-1
-            RightVertical = 5,
-            RightHorizontal = 4,
-            RightTrigger = 3,    // Range is 0-1
-        };
-        enum Buttons {
-            A = 0,
-            B = 1,
-            X = 2,
-            Y = 3,
-            G = 6,
-            S = 7,
-            LeftShoulder = 4,
-            RightShoulder = 5,
-        };
-    }   // GameSirPro
-}   // namespace JoystickDefinitions
+  namespace GameSirPro {
+    enum JoystickAxis {
+      LeftHorizontal = 0,
+      LeftVertical = 1,
+      LeftTrigger = 2,     // Range is [0,1]
+      RightTrigger = 3,    // Range is [0,1]
+      RightHorizontal = 4,
+      RightVertical = 5,
+    };
+    enum Buttons {
+      A = 1,
+      B = 2,
+      X = 3,
+      Y = 4,
+      LeftShoulder = 5,
+      RightShoulder = 6,
+      G = 7,
+      S = 8,
+    };
+  }  // namespace GameSirPro
+}  // namespace JoystickDefinitions
 
 namespace DriveConstants {
-constexpr double kCountsPerRevolution = 1440.0;
-constexpr double kWheelDiameterInch = 2.75;
+  constexpr double kCountsPerRevolution = 1440.0;
+  constexpr double kWheelDiameterInch = 2.75;
 }  // namespace DriveConstants

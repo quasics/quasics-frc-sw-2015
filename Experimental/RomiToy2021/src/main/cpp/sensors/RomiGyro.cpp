@@ -4,7 +4,18 @@
 
 #include "sensors/RomiGyro.h"
 
-RomiGyro::RomiGyro() : m_simDevice("Gyro:RomiGyro") {
+RomiGyro::RomiGyro()
+    : m_simDevice("Gyro:RomiGyro"),
+      m_simpleGyroX([this] { m_angleXOffset = m_simAngleX.Get(); },
+                    [this] { return GetAngleX(); },
+                    [this] { return GetRateX(); }),
+      m_simpleGyroY([this] { m_angleYOffset = m_simAngleY.Get(); },
+                    [this] { return GetAngleY(); },
+                    [this] { return GetRateY(); }),
+      m_simpleGyroZ([this] { m_angleZOffset = m_simAngleZ.Get(); },
+                    [this] { return GetAngleZ(); },
+                    [this] { return GetRateZ(); })
+{
   if (m_simDevice) {
     m_simDevice.CreateBoolean("init", hal::SimDevice::kOutput, true);
     m_simRateX =

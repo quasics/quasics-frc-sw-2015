@@ -28,9 +28,9 @@ void Drivetrain::Periodic()
   // This method will be called once per scheduler run.
 }
 
-void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate)
+void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate, double squareInputs)
 {
-  m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate);
+  m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate, squareInputs);
 }
 
 void Drivetrain::TankDrive(double leftSpeed, double rightSpeed)

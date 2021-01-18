@@ -36,8 +36,9 @@ public:
    *
    * @param xaxisSpeed the commanded forward movement
    * @param zaxisRotate the commanded rotation
+   * @param squareInputs if set, increases the sensitivity at low speeds
    */
-  void ArcadeDrive(double xaxisSpeed, double zaxisRotate);
+  void ArcadeDrive(double xaxisSpeed, double zaxisRotate, double squareInputs = true);
 
   /**
    * Drives the robot using tank drive (left and right powered independently).

@@ -5,14 +5,23 @@
 #include "RobotContainer.h"
 
 #include "Constants.h"
+#include "commands/TeleopArcadeDrive.h"
 #include "commands/TeleopTankDrive.h"
+
+#undef DRIVE_ARCADE_STYLE
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
+#ifdef DRIVE_ARCADE_STYLE
+  m_drive.SetDefaultCommand(TeleopArcadeDrive(
+      &m_drive, [this] { return -m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::LeftVertical); },
+      [this] { return m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::LeftHorizontal); }));
+#else
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
       [this] { return -m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::LeftVertical); },
-      [this] { return m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::RightVertical); }));
+      [this] { return -m_controller.GetRawAxis(JoystickDefinitions::GameSirPro::RightVertical); }));
+#endif
 
   // Configure the button bindings
   ConfigureButtonBindings();

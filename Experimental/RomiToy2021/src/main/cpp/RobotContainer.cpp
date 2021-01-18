@@ -5,8 +5,13 @@
 #include "RobotContainer.h"
 
 #include "Constants.h"
+#include "commands/DriveForward.h"
 #include "commands/TeleopArcadeDrive.h"
 #include "commands/TeleopTankDrive.h"
+
+#include <frc/XboxController.h>
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/button/JoystickButton.h>
 
 #undef DRIVE_ARCADE_STYLE
 
@@ -29,6 +34,11 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 
 void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
+  DriveForward forward(&m_drive, .5);
+  frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::G))
+      .WhenPressed(frc2::PrintCommand("Button 'G' on controller was pressed"));
+  frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::A))
+      .WhenHeld(forward);
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

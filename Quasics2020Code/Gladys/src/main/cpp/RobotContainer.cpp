@@ -31,6 +31,7 @@
 #include "commands/TurnCameraForward.h"
 #include "commands/TurnControlPanel4TimesCommand.h"
 #include "commands/TurnControlPanelToTargetColorCommand.h"
+#include "commands/PointTurnToAnAngleCommand.h"
 #include "subsystems/CameraStand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
@@ -161,6 +162,8 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "Turn To Color", new TurnControlPanelToTargetColorCommand(&commandPanel));
+  frc::SmartDashboard::PutData("Turn Right 45",
+                               new PointTurnToAnAngleCommand(&drivebase, true, 45));
 
 #ifdef ENABLE_CAMERA_TEST_COMMANDS
   frc::SmartDashboard::PutData("Turn the Camera Forward",

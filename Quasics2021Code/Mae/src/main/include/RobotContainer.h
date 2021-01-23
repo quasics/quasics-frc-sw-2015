@@ -35,6 +35,8 @@ class RobotContainer {
 
   frc2::Command* GetAutonomousCommand();
 
+  void ResetDriveEncoders() { drivebase.ResetEncoderPositions(); }
+
   // The robot's subsystems and commands are defined here...
  private:
   Drivebase drivebase;

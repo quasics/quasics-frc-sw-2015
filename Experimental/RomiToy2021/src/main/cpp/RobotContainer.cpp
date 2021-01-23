@@ -34,7 +34,13 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 
 void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
-  DriveForward forward(&m_drive, .5);
+  DriveForward forward(
+      &m_drive,
+      .5,                    // Power setting
+      [] { return false; },  // Stop condition (move until interrupted)
+      DriveForward::SensorMode::Gyro,  // Sensor mode
+      false                            // Noisy?
+  );
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::G))
       .WhenPressed(frc2::PrintCommand("Button 'G' on controller was pressed"));
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::A))

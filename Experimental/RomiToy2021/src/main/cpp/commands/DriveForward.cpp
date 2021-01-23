@@ -27,7 +27,7 @@ void DriveForward::Execute() {
     const double clampedAngle = double(int(rawAngle) % 360);
     const double adjustedAngle =
         (clampedAngle <= 180) ? clampedAngle : clampedAngle - 360;
-    error = -adjustedAngle;  // our target delta for the angle is zero
+    error = -(adjustedAngle / 180.0);  // our target delta for the angle is zero
     if (m_noisy) {
         std::cout << "rawAngle: " << rawAngle << ", clamped: " << clampedAngle
                   << ", adjusted: " << adjustedAngle;

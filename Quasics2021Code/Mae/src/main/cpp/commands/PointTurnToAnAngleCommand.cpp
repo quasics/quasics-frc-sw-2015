@@ -40,7 +40,7 @@ void PointTurnToAnAngleCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool PointTurnToAnAngleCommand::IsFinished() {
-  if(MathHelpers::inchesToDegreesConverter(std::abs(drivebase->GetLeftEncoderInInches())) >= angle){
+  if(MathHelpers::inchesToDegreesConverter(std::abs(drivebase->GetLeftEncoderInInches())) >= angle - ((90/angle) * 11.25)){
     return true;
   }
   return false;

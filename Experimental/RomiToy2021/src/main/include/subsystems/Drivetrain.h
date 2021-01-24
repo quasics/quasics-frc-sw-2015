@@ -11,14 +11,12 @@
 #include <frc2/command/SubsystemBase.h>
 #include <units/length.h>
 
+// Defining a common interface for Romi and Mae drive base code.
+#include "../../../../Common2021/CommonDriveSubsystem.h"
 #include "sensors/RomiGyro.h"
 
-class Drivetrain : public frc2::SubsystemBase
-{
-public:
-  static constexpr double kCountsPerRevolution = 1440.0;
-  static constexpr units::meter_t kWheelDiameter = 70_mm;
-
+class Drivetrain : public CommonDriveSubsystem {
+ public:
   Drivetrain();
 
   /**
@@ -26,68 +24,53 @@ public:
    */
   void Periodic() override;
 
-  /**
-   * Stops the drive motors.
-   */
-  void Stop() { m_drive.StopMotor(); }
+  //
+  // Methods from CommonDriveSubsystem
+ public:
+  // Documented in base class.
+  void Stop() override {
+    m_drive.StopMotor();
+  }
 
-  /**
-   * Drives the robot using arcade controls.
-   *
-   * @param xaxisSpeed the commanded forward movement
-   * @param zaxisRotate the commanded rotation
-   * @param squareInputs if set, increases the sensitivity at low speeds
-   */
-  void ArcadeDrive(double xaxisSpeed, double zaxisRotate, double squareInputs = true);
+  // Documented in base class.
+  void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
+                   double squareInputs = true) override;
 
-  /**
-   * Drives the robot using tank drive (left and right powered independently).
-   *
-   * @param leftSpeed the commanded speed for the left side
-   * @param rightSpeed the commanded speed for the right side
-   */
-  void TankDrive(double leftSpeed, double rightSpeed);
+  // Documented in base class.
+  void TankDrive(double leftSpeed, double rightSpeed) override;
 
-  /**
-   * Resets the drive encoders to currently read a position of 0.
-   */
-  void ResetEncoders();
+  // Documented in base class.
+  void ResetEncoders() override;
 
-  /**
-   * Gets the left drive encoder count.
-   *
-   * @return the left drive encoder count
-   */
-  int GetLeftEncoderCount();
+  // Documented in base class.
+  int GetLeftEncoderCount() override;
 
-  /**
-   * Gets the right drive encoder count.
-   *
-   * @return the right drive encoder count
-   */
-  int GetRightEncoderCount();
+  // Documented in base class.
+  int GetRightEncoderCount() override;
 
-  /**
-   * Gets the left distance driven.
-   *
-   * @return the left-side distance driven
-   */
-  units::meter_t GetLeftDistance();
+  // Documented in base class.
+  units::meter_t GetLeftDistance() override;
 
-  /**
-   * Gets the right distance driven.
-   *
-   * @return the right-side distance driven
-   */
-  units::meter_t GetRightDistance();
+  // Documented in base class.
+  units::meter_t GetRightDistance() override;
 
-  /**
-   * Returns the average distance traveled by the left and right encoders.
-   *
-   * @return The average distance traveled by the left and right encoders.
-   */
-  units::meter_t GetAverageDistance();
+  // Documented in base class.
+  units::meter_t GetAverageDistance() override;
 
+  // Documented in base class.
+  void ResetGyro() override;
+
+  // Documented in base class.
+  frc::Gyro& GetZAxisGyro() override {
+    return m_gyro.GetGyroZ();
+  }
+
+  static constexpr double kCountsPerRevolution = 1440.0;
+  static constexpr units::meter_t kWheelDiameter = 70_mm;
+
+  //
+  // Additional methods (should not be used in common commands).
+ public:
   /**
    * Returns the acceleration along the X-axis, in Gs.
    */
@@ -117,11 +100,6 @@ public:
    * Returns the current angle of the Romi around the Z-axis, in degrees.
    */
   double GetGyroAngleZ();
-
-  /**
-   * Reset the gyro.
-   */
-  void ResetGyro();
 
 private:
   frc::Spark m_leftMotor{0};

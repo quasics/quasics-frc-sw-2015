@@ -4,8 +4,30 @@
 
 #include "RobotContainer.h"
 
+#include "Constants.h"
+#include "commands/TeleopTankDrive.h"
+
+inline double DeadBand(double stickValue) {
+  if (stickValue > OIConstants::DeadBand_LowValue &&
+      stickValue < OIConstants::DeadBand_HighValue) {
+    return 0;
+  }
+  return (stickValue);
+}
+
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
+  TeleopTankDrive tankDrive(
+      &m_driveBase,
+      [this] {
+        return DeadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::RightYAxis));
+      },
+      [this] {
+        return DeadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::LeftYAxis));
+      });
+  m_driveBase.SetDefaultCommand(tankDrive);
 
   // Configure the button bindings
   ConfigureButtonBindings();

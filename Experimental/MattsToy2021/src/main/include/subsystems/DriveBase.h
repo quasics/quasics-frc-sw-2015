@@ -11,6 +11,8 @@
 
 // #include "../../../../Common2021/CommonDriveSubsystem.h"
 
+// TODO(mjh): Need to switch base class to CommonDriveSubsystem, once we have a
+// gyro in place.
 class DriveBase : public frc2::SubsystemBase {
  public:
   DriveBase();

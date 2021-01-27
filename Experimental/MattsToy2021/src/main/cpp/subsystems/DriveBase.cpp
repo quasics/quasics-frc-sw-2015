@@ -8,7 +8,6 @@
 
 #include <wpi/math>
 
-#include "../../../../Common2021/EncoderHelpers.h"
 #include "Constants.h"
 
 /// Ticks per revolution on the Rev Neo motors.

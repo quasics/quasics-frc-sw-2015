@@ -43,10 +43,10 @@ class Drivetrain : public CommonDriveSubsystem {
   void ResetEncoders() override;
 
   // Documented in base class.
-  int GetLeftEncoderCount() override;
+  double GetLeftEncoderCount() override;
 
   // Documented in base class.
-  int GetRightEncoderCount() override;
+  double GetRightEncoderCount() override;
 
   // Documented in base class.
   units::meter_t GetLeftDistance() override;

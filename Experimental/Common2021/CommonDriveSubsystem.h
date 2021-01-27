@@ -44,18 +44,20 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
   virtual void ResetEncoders() = 0;
 
   /**
-   * Gets the left drive encoder count.
+   * Gets the left drive encoder count.  This may be "ticks" or "rotations"
+   * (or something else), depending on the underlying encoder.
    *
    * @return the left drive encoder count
    */
-  virtual int GetLeftEncoderCount() = 0;
+  virtual double GetLeftEncoderCount() = 0;
 
   /**
-   * Gets the right drive encoder count.
+   * Gets the right drive encoder count.  This may be "ticks" or "rotations"
+   * (or something else), depending on the underlying encoder.
    *
    * @return the right drive encoder count
    */
-  virtual int GetRightEncoderCount() = 0;
+  virtual double GetRightEncoderCount() = 0;
 
   /**
    * Gets the left distance driven.
@@ -77,13 +79,17 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
    * @return The average distance traveled by the left and right encoders.
    */
   virtual units::meter_t GetAverageDistance() {
+    // Baseline implementation.
     return (GetLeftDistance() + GetRightDistance()) / 2;
   }
 
   /**
    * Reset the gyro.
    */
-  virtual void ResetGyro() = 0;
+  virtual void ResetGyro() {
+    // Baseline implementation.
+    GetZAxisGyro().Reset();
+  }
 
   /**
    * Provides access to the gyro responsible for tracking Z-axis rotation.

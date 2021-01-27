@@ -40,11 +40,11 @@ void Drivetrain::ResetEncoders() {
   m_rightEncoder.Reset();
 }
 
-int Drivetrain::GetLeftEncoderCount() {
+double Drivetrain::GetLeftEncoderCount() {
   return m_leftEncoder.Get();
 }
 
-int Drivetrain::GetRightEncoderCount() {
+double Drivetrain::GetRightEncoderCount() {
   return m_rightEncoder.Get();
 }
 

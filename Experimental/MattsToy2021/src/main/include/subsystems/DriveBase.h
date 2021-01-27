@@ -9,31 +9,48 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-// #include "../../../../Common2021/CommonDriveSubsystem.h"
+#include "../../../../Common2021/CommonDriveSubsystem.h"
+#include "../../../../Common2021/DummyGyro.h"
 
-// TODO(mjh): Need to switch base class to CommonDriveSubsystem, once we have a
-// gyro in place.
-class DriveBase : public frc2::SubsystemBase {
+// TODO(mjh): Decide if we want to just use values from 1 encoder per side for
+// position/distance, or take an average, or what.
+class DriveBase : public CommonDriveSubsystem {
  public:
   DriveBase();
 
+  //
+  // Methods defined in frc2::SubsystemBase
+ public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
 
-  void Stop() {
+  //
+  // Methods defined in CommonDriveSubsystem.
+ public:
+  void Stop() override {
     drive.StopMotor();
   }
 
-  void ArcadeDrive(double xaxisSpeed, double zaxisRotate, double squareInputs);
+  void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
+                   double squareInputs) override;
 
-  void TankDrive(double leftSpeed, double rightSpeed);
+  void TankDrive(double leftSpeed, double rightSpeed) override;
 
-  void ResetEncoders();
-  int GetLeftEncoderCount();
-  int GetRightEncoderCount();
+  void ResetEncoders() override;
+  double GetLeftEncoderCount() override;
+  double GetRightEncoderCount() override;
+  units::meter_t GetRightDistance() override;
+  units::meter_t GetLeftDistance() override;
 
+  frc::Gyro& GetZAxisGyro() override {
+    return gyro;
+  }
+
+  //
+  // Methods added in this class.
+ public:
   void SetCoastingEnabled(bool enabled);
 
  private:
@@ -49,9 +66,12 @@ class DriveBase : public frc2::SubsystemBase {
 
   frc::DifferentialDrive drive{leftMotors, rightMotors};
 
-  rev::CANEncoder leftFrontEncoder =
-      leftFront.GetEncoder();  //.GetPosition and .GetVelocity
+  rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
   rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
+
+  // TODO(mjh): Replace this with a real gyro class, once we have hardware wired
+  // into Mae/Nike.
+  DummyGyro gyro;
 };

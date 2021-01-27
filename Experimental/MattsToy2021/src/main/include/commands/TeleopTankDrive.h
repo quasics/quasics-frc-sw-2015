@@ -23,7 +23,7 @@ class TeleopTankDrive
                   std::function<double()> leftSpeedSupplier,
                   std::function<double()> rightSpeedSupplier)
       : m_driveBase(driveBase),
-        m_leftSpeedSupplier(m_leftSpeedSupplier),
+        m_leftSpeedSupplier(leftSpeedSupplier),
         m_rightSpeedSupplier(rightSpeedSupplier) {
     AddRequirements({m_driveBase});
   }

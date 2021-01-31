@@ -93,6 +93,21 @@ while True:
     # "Closing" is dilation, followed by erosion
     # frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_CLOSE, kernel)
     
+    # Find the contours of the possible targets
+    contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if len(contours) > 0:
+        largestIndex = 0
+        largest = contours[0]
+        for index in range(len(contours)):
+            current = contours[index]
+            if cv2.contourArea(current) > cv2.contourArea(largest):
+                largestIndex = index
+                largest = current
+
+        cv2.drawContours(frame, contours, -1, (0,255,0), 1)
+        cv2.drawContours(frame, contours, largestIndex, (0,0,255), 3)
+    
     cv2.imshow(window_capture_name, frame)
     cv2.imshow(window_detection_name, frame_threshold)
     

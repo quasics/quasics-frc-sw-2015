@@ -1,4 +1,12 @@
 import cv2
+import sys
+
+filename = "Power Ball.jpg"
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+
+print("filename=",filename)
+
 def Life2CodingRGB(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE :  # checks mouse moves
         colorsBGR = image[y, x]
@@ -7,7 +15,7 @@ def Life2CodingRGB(event, x, y, flags, param):
         print("RGB Value at ({},{}): RGB={} HSV={}".format(x,y,colorsRGB,colorsHSV))
 
 # Read an image
-image = cv2.imread("Power Ball.jpg")
+image = cv2.imread(filename)
 hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Create a window and set Mousecallback to a function for that window

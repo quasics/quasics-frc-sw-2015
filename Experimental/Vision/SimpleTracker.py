@@ -27,6 +27,6 @@ while(1):
     cv.imshow('mask',mask)
     cv.imshow('res',res)
     k = cv.waitKey(5)
-    if k == 27 or key == ord('q'):
+    if k == 27 or k == ord('q'):
         break
 cv.destroyAllWindows()

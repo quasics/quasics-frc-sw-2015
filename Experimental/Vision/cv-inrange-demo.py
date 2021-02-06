@@ -1,16 +1,22 @@
 from __future__ import print_function
-import cv2
-import numpy as np
 import argparse
+import cv2
 import math
+import numpy as np
+
+# Value ranges for the yellow balls in the lab (rough):
+# H: 11 / 40 S: 118 / 214 V: 94 / 208
+
+# Note: openCV uses a constrained range of 0..179 for H, and 0..255 for S/V
+# So we need to normalize accordingly.
 
 max_value = 255
 max_value_H = 360//2
-low_H = 0 # 0
-low_S = 0 # 0
-low_V = 237 # 0
-high_H = 180 # max_value_H
-high_S = 232 # max_value
+low_H = 11 # 0
+high_H = 16 # max_value_H
+low_S = 118 # 0
+high_S = 255 # max_value
+low_V = 94 # 0
 high_V = 255 # max_value
 window_capture_name = 'Video Capture'
 window_detection_name = 'Object Detection'
@@ -20,42 +26,52 @@ low_V_name = 'Low V'
 high_H_name = 'High H'
 high_S_name = 'High S'
 high_V_name = 'High V'
+
+def reportStats():
+    print("H:", low_H, '/', high_H, "S:", low_S, '/', high_S, "V:", low_V, '/', high_V)
+
 def on_low_H_thresh_trackbar(val):
     global low_H
     global high_H
     low_H = val
     low_H = min(high_H-1, low_H)
     cv2.setTrackbarPos(low_H_name, window_detection_name, low_H)
+    reportStats()
 def on_high_H_thresh_trackbar(val):
     global low_H
     global high_H
     high_H = val
     high_H = max(high_H, low_H+1)
     cv2.setTrackbarPos(high_H_name, window_detection_name, high_H)
+    reportStats()
 def on_low_S_thresh_trackbar(val):
     global low_S
     global high_S
     low_S = val
     low_S = min(high_S-1, low_S)
     cv2.setTrackbarPos(low_S_name, window_detection_name, low_S)
+    reportStats()
 def on_high_S_thresh_trackbar(val):
     global low_S
     global high_S
     high_S = val
     high_S = max(high_S, low_S+1)
     cv2.setTrackbarPos(high_S_name, window_detection_name, high_S)
+    reportStats()
 def on_low_V_thresh_trackbar(val):
     global low_V
     global high_V
     low_V = val
     low_V = min(high_V-1, low_V)
     cv2.setTrackbarPos(low_V_name, window_detection_name, low_V)
+    reportStats()
 def on_high_V_thresh_trackbar(val):
     global low_V
     global high_V
     high_V = val
     high_V = max(high_V, low_V+1)
     cv2.setTrackbarPos(high_V_name, window_detection_name, high_V)
+    reportStats()
 
 # Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
 # linear going from (0,0) to (1,100) to (2,0) and is 0 for all inputs outside the range 0-2
@@ -122,6 +138,7 @@ while True:
     contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     scores = []
+    # print("Num contours:", len(contours))
     if len(contours) > 0:
         # Generate "fitness scores" for each of the possible targets.
         # I should really also be figuring out the "roundness" of it, which

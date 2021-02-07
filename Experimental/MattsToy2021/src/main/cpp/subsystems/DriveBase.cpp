@@ -50,7 +50,7 @@ void DriveBase::SetCoastingEnabled(bool enabled) {
 }
 
 void DriveBase::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
-                            double squareInputs) {
+                            bool squareInputs) {
   drive.ArcadeDrive(xaxisSpeed, zaxisRotate, squareInputs);
 }
 

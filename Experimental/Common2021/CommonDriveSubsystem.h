@@ -28,7 +28,7 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
    * @param squareInputs if set, increases the sensitivity at low speeds
    */
   virtual void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
-                           double squareInputs = true) = 0;
+                           bool squareInputs = true) = 0;
 
   /**
    * Drives the robot using tank drive (left and right powered independently).

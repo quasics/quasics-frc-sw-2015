@@ -27,7 +27,7 @@ void Drivetrain::Periodic() {
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
-                             double squareInputs) {
+                             bool squareInputs) {
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate, squareInputs);
 }
 

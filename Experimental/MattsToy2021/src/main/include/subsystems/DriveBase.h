@@ -34,7 +34,7 @@ class DriveBase : public CommonDriveSubsystem {
   }
 
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
-                   double squareInputs) override;
+                   bool squareInputs) override;
 
   void TankDrive(double leftSpeed, double rightSpeed) override;
 

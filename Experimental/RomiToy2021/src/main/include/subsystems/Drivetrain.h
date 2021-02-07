@@ -34,7 +34,7 @@ class Drivetrain : public CommonDriveSubsystem {
 
   // Documented in base class.
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
-                   double squareInputs = true) override;
+                   bool squareInputs = true) override;
 
   // Documented in base class.
   void TankDrive(double leftSpeed, double rightSpeed) override;

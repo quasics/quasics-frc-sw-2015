@@ -7,6 +7,7 @@
 #include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 
+#include "../../../../Common2021/TurnToTargetCommand.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -41,4 +42,5 @@ private:
   Drivetrain m_drive;
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
+  TurnToTargetCommand m_turnToTargetCommand{&m_drive};
 };

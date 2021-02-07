@@ -15,6 +15,7 @@
 #include "commands/DriveForward.h"
 
 #undef DRIVE_ARCADE_STYLE
+#define TURN_TO_TARGET_AUTO
 
 // Unfortunately, the Logitech controllers can't be used with the Mac OS,
 // which is what Matt has handy.  So here's a convenient hack to use the
@@ -79,6 +80,10 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
+#ifdef TURN_TO_TARGET_AUTO
+  return &m_turnToTargetCommand;
+#else
   // An example command will be run in autonomous
   return &m_autonomousCommand;
+#endif
 }

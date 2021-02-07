@@ -7,7 +7,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/Drivetrain.h"
+#include "CommonDriveSubsystem.h"
 
 /**
  * A sample implementation of an "arcade drive" command, for use in teleop mode.
@@ -15,7 +15,7 @@
 class TeleopArcadeDrive
     : public frc2::CommandHelper<frc2::CommandBase, TeleopArcadeDrive> {
  public:
-  TeleopArcadeDrive(Drivetrain* subsystem,
+  TeleopArcadeDrive(CommonDriveSubsystem* subsystem,
                     std::function<double()> xAxisSpeedSupplier,
                     std::function<double()> zAxisRotateSupplier)
       : m_drive{subsystem},
@@ -36,7 +36,7 @@ class TeleopArcadeDrive
   }
 
  private:
-  Drivetrain* m_drive;
+  CommonDriveSubsystem* m_drive;
   std::function<double()> m_xaxisSpeedSupplier;
   std::function<double()> m_zaxisRotateSupplier;
 };

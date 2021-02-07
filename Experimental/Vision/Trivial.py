@@ -16,6 +16,14 @@ height = 240
 def scaleHueForOpenCV(h):
     return (h / 2)
 
+# Note: converting BGR colors to HSV is pretty straightforward:
+#   >>> green = np.uint8([[[0,255,0 ]]])
+#   >>> hsv_green = cv2.cvtColor(green,cv2.COLOR_BGR2HSV)
+#   >>> print( hsv_green )
+#   [[[ 60 255 255]]]
+# So, coming up with better values than the range below should hopefully
+# be fairly simple.
+
 # Note: openCV uses a constrained range of 0..179 for H, and 0..255 for S/V
 # So we need to normalize accordingly.
 raw_low_H = 5  # out of 360
@@ -67,21 +75,9 @@ def processFrame(inputStream, outputStream):
 
     # Find the contours of the possible targets
     _, contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    # if len(contours) > 0:
-        # print("Found", len(contours), "targets")
-        # largestIndex = 0
-        # largest = contours[0]
-        # for index in range(len(contours)):
-            # current = contours[index]
-            # if cv2.contourArea(current) > cv2.contourArea(largest):
-                # largestIndex = index
-                # largest = current
-        # rect = cv2.minAreaRect(largest)
-        # print("Largest:", rect)
 
-    x_list = []
-    y_list = []
+    all_targets_x_list = []
+    all_targets_y_list = []
     index = 0
     largestIndex = -1
     largest = None
@@ -97,11 +93,13 @@ def processFrame(inputStream, outputStream):
         center, size, angle = rect
         center = [int(dim) for dim in center] # Convert to int so we can draw
         
-        # Add the (x,y) coordinates for the target center to the lists we're publishing
+        # Add the (x,y) coordinates for the target center to the "all targets" data we're publishing
+        # TODO: Consider hanging onto the center identified here for the largest one, rather than the
+        #       bpunding rect
         center_x = (center[0] - img_width / 2) / (img_width / 2)
         center_y = (center[1] - img_height / 2) / (img_height / 2)
-        x_list.append(center_x)
-        y_list.append(center_y)
+        all_targets_x_list.append(center_x)
+        all_targets_y_list.append(center_y)
 
         # Draw contour, bounding rectangle, and circle at center.
         cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 3)
@@ -125,8 +123,7 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumber("img_width", img_width)
     vision_nt.putNumber("img_height", img_height)
     
-    print("Contours:", len(contours), " Published:", len(x_list))
-    # dbgBuffer = "Contours: " + str(len(contours)) + " Published: " + str(len(x_list))
+    print("Contours:", len(contours), " Published:", len(all_targets_x_list))
     if largest is not None:
         x,y,w,h = cv2.boundingRect(largest)
         dbgBuffer = "Bounds: x,y = " + str(x) + "," + str(y) + ", width/height = " + str(w) + "," + str(h)
@@ -139,9 +136,9 @@ def processFrame(inputStream, outputStream):
         print("Failed to publish target_y")
 
     # Publish center data for all of the targets we found.
-    if not vision_nt.putNumberArray('x_list', x_list):
+    if not vision_nt.putNumberArray('x_list', all_targets_x_list):
         print("Failed to publish x_list")
-    if not vision_nt.putNumberArray('y_list', y_list):
+    if not vision_nt.putNumberArray('y_list', all_targets_y_list):
         print("Failed to publish y_list")
 
     processing_time = time.time() - start_time

@@ -16,8 +16,8 @@
 class TurnToTargetCommand
     : public frc2::CommandHelper<frc2::CommandBase, TurnToTargetCommand> {
  public:
-  TurnToTargetCommand(CommonDriveSubsystem* driveBase, double tolerance = 0.01)
-      : m_driveBase(driveBase), m_tolerance(tolerance) {
+  TurnToTargetCommand(CommonDriveSubsystem* driveBase, double maxSpeed, double tolerance = 0.01)
+      : m_driveBase(driveBase), m_maxSpeed(maxSpeed), m_tolerance(tolerance) {
     AddRequirements({m_driveBase});
     auto inst = nt::NetworkTableInstance::GetDefault();
     auto table = inst.GetTable(NetworkTableNames::kVisionTable);
@@ -42,10 +42,10 @@ class TurnToTargetCommand
     // Execute on the above decision
     switch(turnDir) {
         case right:
-            m_driveBase->ArcadeDrive(0, .25);
+            m_driveBase->ArcadeDrive(0, m_maxSpeed);
             break;
         case left:
-            m_driveBase->ArcadeDrive(0, -.25);
+            m_driveBase->ArcadeDrive(0, -m_maxSpeed);
             break;
         case none:
             m_driveBase->Stop();
@@ -83,5 +83,6 @@ class TurnToTargetCommand
  private:
   CommonDriveSubsystem* const m_driveBase;
   const double m_tolerance;
+  const double m_maxSpeed;
   nt::NetworkTableEntry m_targetXEntry;
 };

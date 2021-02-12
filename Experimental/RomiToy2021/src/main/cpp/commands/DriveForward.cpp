@@ -19,8 +19,7 @@ void DriveForward::Initialize() {
   m_lastError = 0;
 }
 
-// Called repeatedly when this Command is scheduled to run
-void DriveForward::Execute() {
+double DriveForward::GetSteeringError() {
   double error;
   if (m_useGyro) {
     const double rawAngle = m_driveTrain->GetGyroAngleZ();
@@ -29,8 +28,8 @@ void DriveForward::Execute() {
         (clampedAngle <= 180) ? clampedAngle : clampedAngle - 360;
     error = -(adjustedAngle / 180.0);  // our target delta for the angle is zero
     if (m_noisy) {
-        std::cout << "rawAngle: " << rawAngle << ", clamped: " << clampedAngle
-                  << ", adjusted: " << adjustedAngle;
+      std::cout << "rawAngle: " << rawAngle << ", clamped: " << clampedAngle
+                << ", adjusted: " << adjustedAngle;
     }
   } else {
     const auto distanceLeft = units::math::abs(m_driveTrain->GetLeftDistance());
@@ -40,11 +39,16 @@ void DriveForward::Execute() {
         -double(distanceLeft - distanceRight);  // our target delta for distance
                                                 // between the two sides is zero
     if (m_noisy) {
-        std::cout << "distanceLeft: " << distanceLeft
-                  << ", distanceRight: " << distanceRight;
+      std::cout << "distanceLeft: " << distanceLeft
+                << ", distanceRight: " << distanceRight;
     }
   }
+  return error;
+}
 
+// Called repeatedly when this Command is scheduled to run
+void DriveForward::Execute() {
+  const double error = GetSteeringError();
   m_integral += (error * kCurveInterval);
   double derivative = ((error - m_lastError) / kCurveInterval);
 

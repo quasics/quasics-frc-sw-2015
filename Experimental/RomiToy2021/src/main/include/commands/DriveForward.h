@@ -13,8 +13,9 @@
 
 /**
  * A command supporting forward motion at a fixed speed (until interrupted) that
- * uses PID control to try to correct for errors.
- * 
+ * uses PID control to try to correct for errors (detected via either a gyro or
+ * the encoders).
+ *
  * This class is based on discussion at
  * https://frc-pdr.readthedocs.io/en/latest/control/driving_straight.html.
  */
@@ -68,26 +69,28 @@ public:
 
  void End(bool interrupted) override;
 
+private:
+ double GetSteeringError();
+
  //
  // Data members
 private:
-  Drivetrain *const m_driveTrain;
-  const double m_power;
-  std::function<bool()> m_stopCondition;
-  const bool m_useGyro;
-  const bool m_noisy;
+ Drivetrain *const m_driveTrain;
+ const double m_power;
+ std::function<bool()> m_stopCondition;
+ const bool m_useGyro;
+ const bool m_noisy;
 
-  double m_integral = 0;   ///< cumulative error sample (should trend to 0)
-  double m_lastError = 0;  ///< used to calculate change in error
-                           ///< between samples
+ double m_integral = 0;   ///< cumulative error sample (should trend to 0)
+ double m_lastError = 0;  ///< used to calculate change in error
+                          ///< between samples
 
-  // These values should really be tuned to the robot, per discussion cited
-  // above.  However, these seem to work well enough for now.
-  const double kP = 1;  ///< proportional gain (should always be >0)
-  const double kI = 1;  ///< integral gain (can be 0, if we're just doing P)
-  const double kD = 0;  ///< derivative gain (can be 0, if we're just doing P/PI)
-  
-  
-  const double kCurveInterval = 0.02;  ///< period over which we're sampling
-                                       ///< error (0.02sec, since it's 50Hz)
+ // These values should really be tuned to the robot, per discussion cited
+ // above.  However, these seem to work well enough for now.
+ const double kP = 1;  ///< proportional gain (should always be >0)
+ const double kI = 1;  ///< integral gain (can be 0, if we're just doing P)
+ const double kD = 0;  ///< derivative gain (can be 0, if we're just doing P/PI)
+
+ const double kCurveInterval = 0.02;  ///< period over which we're sampling
+                                      ///< error (0.02sec, since it's 50Hz)
 };

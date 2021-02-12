@@ -144,7 +144,7 @@ def processFrame(inputStream, outputStream):
     processing_time = time.time() - start_time
     fps = 1 / processing_time
     # cv2.putText(output_img, str(round(fps, 1)), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))
-    cv2.line(output_img, (0, 0), (120, 160), (255, 0, 0), 3)
+    # cv2.line(output_img, (0, 0), (120, 160), (255, 0, 0), 3)
 
     # (optional) send the modified image back to the dashboard
     outputStream.putFrame(output_img)
@@ -181,7 +181,7 @@ def main():
     cvSink = cs.getVideo()
 
     # (optional) Setup a CvSource. This will send images back to the Dashboard
-    outputStream = cs.putVideo("Name", width, height)
+    outputStream = cs.putVideo("Scribbled", width, height)
 
     # Allocating new images is very expensive, always try to preallocate
     input_img = np.zeros(shape=(width, height, 3), dtype=np.uint8)

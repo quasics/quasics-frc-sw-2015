@@ -14,7 +14,8 @@ class Drivebase : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
-
+  void Stop();
+  void setMotorSpeed(double leftSpeed, double rightSpeed);
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

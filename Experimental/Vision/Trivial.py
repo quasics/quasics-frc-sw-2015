@@ -24,16 +24,24 @@ def scaleHueForOpenCV(h):
 # So, coming up with better values than the range below should hopefully
 # be fairly simple.
 
-# Note: openCV uses a constrained range of 0..179 for H, and 0..255 for S/V
-# So we need to normalize accordingly.
-raw_low_H = 5  # out of 360
+inLab = true
 
-low_H = 19 # scaleHueForOpenCV(raw_low_H)
-low_S = 0
-low_V = 0
-high_H = 30
-high_S = 255
-high_V = 255
+if inLab:
+    # Color gamut needed in a nice, bright space at the lab
+    low_H = 22 # scaleHueForOpenCV(raw_low_H)
+    low_S = 80
+    low_V = 80
+    high_H = 30
+    high_S = 255
+    high_V = 255
+else:
+    # Color gamut during Matt's testing at home
+    low_H = 19 # scaleHueForOpenCV(raw_low_H)
+    low_S = 0
+    low_V = 0
+    high_H = 30
+    high_S = 255
+    high_V = 255
 
 
 input_img = None    # Preallocated buffer for frame data

@@ -33,10 +33,15 @@ DriveBase::DriveBase()
   SetSubsystem("Drivebase");
   leftMotors.SetInverted(true);
   SetCoastingEnabled(false);
+
+  // Gyro must be calibrated to initialize for use (generally immediately on
+  // start-up).
+  adiGyro.Calibrate();
 }
 
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
+  std::cout << "Gyro reading: " << adiGyro.GetAngle() << std::endl;
 }
 
 void DriveBase::SetCoastingEnabled(bool enabled) {

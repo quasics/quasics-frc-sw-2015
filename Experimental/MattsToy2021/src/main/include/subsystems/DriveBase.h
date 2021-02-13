@@ -4,13 +4,13 @@
 
 #pragma once
 
+#include <frc/ADXRS450_Gyro.h>
 #include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
 #include "../../../../Common2021/CommonDriveSubsystem.h"
-#include "../../../../Common2021/DummyGyro.h"
 
 // TODO(mjh): Decide if we want to just use values from 1 encoder per side for
 // position/distance, or take an average, or what.
@@ -45,7 +45,7 @@ class DriveBase : public CommonDriveSubsystem {
   units::meter_t GetLeftDistance() override;
 
   frc::Gyro& GetZAxisGyro() override {
-    return gyro;
+    return adiGyro;
   }
 
   //
@@ -71,7 +71,6 @@ class DriveBase : public CommonDriveSubsystem {
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
 
-  // TODO(mjh): Replace this with a real gyro class, once we have hardware wired
-  // into Mae/Nike.
-  DummyGyro gyro;
+  frc::ADXRS450_Gyro adiGyro{
+      frc::SPI::Port::kOnboardCS0};  // Chip Select jumper is set to CS0
 };

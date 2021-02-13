@@ -28,10 +28,10 @@ def scaleHueForOpenCV(h):
 # So we need to normalize accordingly.
 raw_low_H = 5  # out of 360
 
-low_H = 18 # scaleHueForOpenCV(raw_low_H)
+low_H = 19 # scaleHueForOpenCV(raw_low_H)
 low_S = 0
 low_V = 0
-high_H = 33
+high_H = 30
 high_S = 255
 high_V = 255
 
@@ -142,7 +142,7 @@ def processFrame(inputStream, annotatedOutputStream):
     if not vision_nt.putNumberArray('y_list', all_targets_y_list):
         print("Failed to publish y_list")
     
-    print("Contours:", len(contours), " Published:", len(all_targets_x_list))
+    # print("Contours:", len(contours), " Published:", len(all_targets_x_list))
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time

@@ -30,6 +30,8 @@ public:
 private:
   void ConfigureButtonBindings();
 
+  void ConfigureVisionControls();
+
 private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
@@ -43,4 +45,11 @@ private:
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
   TurnToTargetCommand m_turnToTargetCommand{&m_drive, 0.350};
+
+  nt::NetworkTableEntry m_lowH;
+  nt::NetworkTableEntry m_lowS;
+  nt::NetworkTableEntry m_lowV;
+  nt::NetworkTableEntry m_highH;
+  nt::NetworkTableEntry m_highS;
+  nt::NetworkTableEntry m_highV;
 };

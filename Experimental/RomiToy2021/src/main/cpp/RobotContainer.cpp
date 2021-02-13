@@ -8,6 +8,9 @@
 #include <frc/XboxController.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
+#include <frc/shuffleboard/Shuffleboard.h>
+
+#include <filesystem>
 
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
@@ -26,8 +29,51 @@ inline bool usingLogitechController() {
   return (msg != "MattsMac");
 }
 
+void RobotContainer::ConfigureVisionControls() {
+  namespace fs= std::filesystem;
+  // Note: when running under simulator, current path is that of the project (.../Experimental/RomiToy2021)
+
+  auto & tab = frc::Shuffleboard::GetTab("Video");
+  wpi::StringMap<std::shared_ptr<nt::Value>> hueSliderProperties{
+    {"min", nt::Value::MakeDouble(0)},
+    {"max", nt::Value::MakeDouble(179)},
+    {"Block increment", nt::Value::MakeDouble(1)}
+  };
+  wpi::StringMap<std::shared_ptr<nt::Value>> saturationAndValueSliderProperties{
+    {"min", nt::Value::MakeDouble(0)},
+    {"max", nt::Value::MakeDouble(255)},
+    {"Block increment", nt::Value::MakeDouble(1)}
+  };
+  m_lowH = tab.Add("Lo H", 0)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(hueSliderProperties)
+    .GetEntry();
+  m_highH = tab.Add("High H", 179)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(hueSliderProperties)
+    .GetEntry();
+  m_lowS = tab.Add("Lo S", 0)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(saturationAndValueSliderProperties)
+    .GetEntry();
+  m_highS = tab.Add("High S", 255)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(saturationAndValueSliderProperties)
+    .GetEntry();
+  m_lowV = tab.Add("Lo V", 0)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(saturationAndValueSliderProperties)
+    .GetEntry();
+  m_highV = tab.Add("High V", 255)
+    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+    .WithProperties(saturationAndValueSliderProperties)
+    .GetEntry();
+}
+
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
+
+  ConfigureVisionControls();
 
 #ifdef DRIVE_ARCADE_STYLE
   m_drive.SetDefaultCommand(TeleopArcadeDrive(

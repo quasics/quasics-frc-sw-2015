@@ -28,11 +28,11 @@ def scaleHueForOpenCV(h):
 # So we need to normalize accordingly.
 raw_low_H = 5  # out of 360
 
-low_H = 21 # scaleHueForOpenCV(raw_low_H)
-low_S = 160
-low_V = 136
-high_H = 30
-high_S = 250
+low_H = 18 # scaleHueForOpenCV(raw_low_H)
+low_S = 0
+low_V = 0
+high_H = 33
+high_S = 255
 high_V = 255
 
 
@@ -40,7 +40,7 @@ input_img = None    # Preallocated buffer for frame data
 kernel = None       # Preallocated kernel for transforms
 vision_nt = None
 
-def processFrame(inputStream, outputStream):
+def processFrame(inputStream, annotatedOutputStream):
     global low_H
     global high_H
     global low_S
@@ -58,20 +58,24 @@ def processFrame(inputStream, outputStream):
     frame_time, input_img = inputStream.grabFrame(input_img)
     if frame_time == 0:
         # Send the output the error.
-        outputStream.notifyError(inputStream.getError());
+        annotatedOutputStream.notifyError(inputStream.getError());
         # skip the rest of the current iteration
         return
 
-    img_height, img_width, img_channels = input_img.shape
     output_img = np.copy(input_img)
+
+    img_height, img_width, img_channels = input_img.shape
 
     # Generate a bitmask, looking for pixels in the desired color range
     frame_HSV = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
     frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
-    output_img = cv2.bitwise_and(input_img,input_img, mask= frame_threshold)
 
     # Minor quality cleanup: "opening" is erosion (remove noise), followed by dilation (fill gaps)
-    frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_OPEN, kernel, iterations = 2)
+    frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_OPEN, kernel, iterations = 3)
+
+    # Isolate just the parts of the image that pass the thresholding tests, for display in the
+    # debugging video stream on Shuffleboard
+    output_img = cv2.bitwise_and(input_img,input_img, mask= frame_threshold)
 
     # Find the contours of the possible targets
     _, contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -102,9 +106,10 @@ def processFrame(inputStream, outputStream):
         all_targets_y_list.append(center_y)
 
         # Draw contour, bounding rectangle, and circle at center.
-        cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 3)
-        # cv2.drawContours(output_img, np.int0(cv2.boxPoints(rect)), -1, color = (0, 0, 255), thickness = 2)
+        cv2.drawContours(output_img, contours, largestIndex, color = (255, 255, 255), thickness = 1)
+        cv2.circle(output_img, (int(center[0]), int(center[1])), 2, (0,0,255), 1)
         # cv2.circle(output_img, center = center, radius = 3, color = (0, 0, 255), thickness = -1)
+        # cv2.drawContours(output_img, np.int0(cv2.boxPoints(rect)), -1, color = (0, 0, 255), thickness = 2)
         
         index = index + 1
     
@@ -112,22 +117,18 @@ def processFrame(inputStream, outputStream):
     target_x = []
     target_y = []
     if largest is not None:
+        cv2.drawContours(output_img, contours, largestIndex, color = (0, 0, 255), thickness = 3)
         x,y,w,h = cv2.boundingRect(largest)
         dbgBuffer = "Target: x,y = " + str(x) + "," + str(y) + ", width/height = " + str(w) + "," + str(h)
         target_center_x = x + (w / 2)
         target_center_y = y + (h / 2)
         target_x.append((target_center_x - (img_width / 2)) / (img_width / 2))
         target_y.append((target_center_y - (img_height / 2)) / (img_height / 2))
+    vision_nt.putString("dbg", dbgBuffer)
 
     # Publish core debugging info
     vision_nt.putNumber("img_width", img_width)
     vision_nt.putNumber("img_height", img_height)
-    
-    print("Contours:", len(contours), " Published:", len(all_targets_x_list))
-    if largest is not None:
-        x,y,w,h = cv2.boundingRect(largest)
-        dbgBuffer = "Bounds: x,y = " + str(x) + "," + str(y) + ", width/height = " + str(w) + "," + str(h)
-    vision_nt.putString("dbg", dbgBuffer)
 
     # Publish center data for the largest of the targets we found.
     if not vision_nt.putNumberArray('target_x', target_x):
@@ -140,6 +141,8 @@ def processFrame(inputStream, outputStream):
         print("Failed to publish x_list")
     if not vision_nt.putNumberArray('y_list', all_targets_y_list):
         print("Failed to publish y_list")
+    
+    print("Contours:", len(contours), " Published:", len(all_targets_x_list))
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time
@@ -147,7 +150,7 @@ def processFrame(inputStream, outputStream):
     # cv2.line(output_img, (0, 0), (120, 160), (255, 0, 0), 3)
 
     # (optional) send the modified image back to the dashboard
-    outputStream.putFrame(output_img)
+    annotatedOutputStream.putFrame(output_img)
 
 def main():
     global vision_nt
@@ -181,7 +184,7 @@ def main():
     cvSink = cs.getVideo()
 
     # (optional) Setup a CvSource. This will send images back to the Dashboard
-    outputStream = cs.putVideo("Scribbled", width, height)
+    annotatedOutputStream = cs.putVideo("Annotated", width, height)
 
     # Allocating new images is very expensive, always try to preallocate
     input_img = np.zeros(shape=(width, height, 3), dtype=np.uint8)
@@ -191,7 +194,7 @@ def main():
 
     print("Running....")
     while True:
-        processFrame(cvSink, outputStream)
+        processFrame(cvSink, annotatedOutputStream)
         time.sleep(0.1)
 
 main()

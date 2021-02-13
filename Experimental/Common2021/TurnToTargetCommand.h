@@ -16,7 +16,7 @@
 class TurnToTargetCommand
     : public frc2::CommandHelper<frc2::CommandBase, TurnToTargetCommand> {
  public:
-  TurnToTargetCommand(CommonDriveSubsystem* driveBase, double maxSpeed, double tolerance = 0.01)
+  TurnToTargetCommand(CommonDriveSubsystem* driveBase, double maxSpeed, double tolerance = 0.05)
       : m_driveBase(driveBase), m_maxSpeed(maxSpeed), m_tolerance(tolerance) {
     AddRequirements({m_driveBase});
     auto inst = nt::NetworkTableInstance::GetDefault();

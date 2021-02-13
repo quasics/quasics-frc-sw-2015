@@ -11,6 +11,7 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 
   // Configure the button bindings
   ConfigureButtonBindings();
+  ConfigureSmartDashboard();
 }
 
 void RobotContainer::ConfigureButtonBindings() {

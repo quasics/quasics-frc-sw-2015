@@ -7,6 +7,7 @@
 #include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 
+#include "../../../../Common2021/TurnToTargetCommand.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -36,4 +37,5 @@ class RobotContainer {
   frc::Joystick m_driverJoystick{0};
 
   DriveBase m_driveBase;
+  TurnToTargetCommand turnToTarget{&m_driveBase, 0.2};
 };

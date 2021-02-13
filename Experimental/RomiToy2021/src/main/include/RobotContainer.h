@@ -42,5 +42,5 @@ private:
   Drivetrain m_drive;
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
-  TurnToTargetCommand m_turnToTargetCommand{&m_drive, 0.25};
+  TurnToTargetCommand m_turnToTargetCommand{&m_drive, 0.350};
 };

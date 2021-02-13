@@ -13,3 +13,11 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+namespace CANBusIds{
+    namespace SparkMaxIds{
+        int Left_Front_Number = 1;
+        int Left_Rear_Number = 2;
+        int Right_Front_Number = 3;
+        int Right_Rear_Number = 4;
+    }
+}

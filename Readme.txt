@@ -6,4 +6,4 @@ including team imagery, etc.)
 
 
 
-We believe that robots rock! :-)
+We believe that robots rock! XD

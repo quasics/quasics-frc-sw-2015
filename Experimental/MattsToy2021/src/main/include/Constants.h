@@ -75,3 +75,8 @@ namespace OIConstants {
   constexpr double DeadBand_LowValue = -0.055;
   constexpr double DeadBand_HighValue = +0.055;
 }  // namespace OIConstants
+
+namespace NetworkTableNames {
+  constexpr const char* kVisionTable("Vision");
+  constexpr const char* kTargetXEntry("target_x");
+}  // namespace NetworkTableNames

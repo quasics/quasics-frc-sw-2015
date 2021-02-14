@@ -31,9 +31,14 @@ inline bool usingLogitechController() {
 
 void RobotContainer::ConfigureVisionControls() {
   namespace fs= std::filesystem;
+
+  int low_h(26), high_h(37),
+      low_s(80), high_s(255),
+      low_v(80), high_v(255);
+
   // Note: when running under simulator, current path is that of the project (.../Experimental/RomiToy2021)
 
-  auto & tab = frc::Shuffleboard::GetTab("Video");
+  auto & tab = frc::Shuffleboard::GetTab(NetworkTableNames::kVisionSettingsTable);
   wpi::StringMap<std::shared_ptr<nt::Value>> hueSliderProperties{
     {"min", nt::Value::MakeDouble(0)},
     {"max", nt::Value::MakeDouble(179)},
@@ -44,27 +49,27 @@ void RobotContainer::ConfigureVisionControls() {
     {"max", nt::Value::MakeDouble(255)},
     {"Block increment", nt::Value::MakeDouble(1)}
   };
-  m_lowH = tab.Add("Lo H", 0)
+  m_lowH = tab.Add(NetworkTableNames::kLowHSetting, low_h)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(hueSliderProperties)
     .GetEntry();
-  m_highH = tab.Add("High H", 179)
+  m_highH = tab.Add(NetworkTableNames::kHighHSetting, high_h)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(hueSliderProperties)
     .GetEntry();
-  m_lowS = tab.Add("Lo S", 0)
+  m_lowS = tab.Add(NetworkTableNames::kLowSSetting, low_s)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(saturationAndValueSliderProperties)
     .GetEntry();
-  m_highS = tab.Add("High S", 255)
+  m_highS = tab.Add(NetworkTableNames::kHighSSetting, high_s)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(saturationAndValueSliderProperties)
     .GetEntry();
-  m_lowV = tab.Add("Lo V", 0)
+  m_lowV = tab.Add(NetworkTableNames::kLowVSetting, low_v)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(saturationAndValueSliderProperties)
     .GetEntry();
-  m_highV = tab.Add("High V", 255)
+  m_highV = tab.Add(NetworkTableNames::kHighVSetting, high_v)
     .WithWidget(frc::BuiltInWidgets::kNumberSlider)
     .WithProperties(saturationAndValueSliderProperties)
     .GetEntry();

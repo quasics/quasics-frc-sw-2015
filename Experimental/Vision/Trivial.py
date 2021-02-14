@@ -24,7 +24,7 @@ def scaleHueForOpenCV(h):
 # So, coming up with better values than the range below should hopefully
 # be fairly simple.
 
-inLab = true
+inLab = True
 
 if inLab:
     # Color gamut needed in a nice, bright space at the lab
@@ -36,10 +36,10 @@ if inLab:
     high_V = 255
 else:
     # Color gamut during Matt's testing at home
-    low_H = 19 # scaleHueForOpenCV(raw_low_H)
-    low_S = 0
-    low_V = 0
-    high_H = 30
+    low_H = 26
+    low_S = 80
+    low_V = 80
+    high_H = 37
     high_S = 255
     high_V = 255
 
@@ -160,6 +160,28 @@ def processFrame(inputStream, annotatedOutputStream):
     # (optional) send the modified image back to the dashboard
     annotatedOutputStream.putFrame(output_img)
 
+def valueChanged(table, key, value, isNew):
+    global low_H
+    global high_H
+    global low_S
+    global high_S
+    global low_V
+    global high_V
+    print("valueChanged: key: '%s'; value: %s; isNew: %s" % (key, value, isNew))
+    if key == "Low_H":
+        low_H = int(value)
+    if key == "High_H":
+        high_H = int(value)
+    if key == "Low_S":
+        low_S = int(value)
+    if key == "High_S":
+        high_S = int(value)
+    if key == "Low_V":
+        low_V = int(value)
+    if key == "High_V":
+        high_V = int(value)
+    print("Gamut is: H - %s/%s; S - %s/%s; V - %s/%s" % (low_H, high_H, low_S, high_S, low_V, high_V))
+
 def main():
     global vision_nt
     global input_img
@@ -175,7 +197,10 @@ def main():
 
     # Table for vision output information
     vision_nt = ntinst.getTable('Vision')
-    print("Got 'Vision' table")
+
+    # Listen to changes in the table used to configure vision-processing
+    ntinst.getTable('Shuffleboard/VisionSettings').addEntryListener(valueChanged)
+    print("Got network tables")
 
     cs = CameraServer.getInstance()
     cs.enableLogging()

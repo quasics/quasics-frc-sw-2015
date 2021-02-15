@@ -97,6 +97,7 @@
     "utility": "cpp",
     "valarray": "cpp",
     "vector": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "filesystem": "cpp"
   }
 }

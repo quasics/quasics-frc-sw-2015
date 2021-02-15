@@ -19,14 +19,17 @@
 
 #undef DRIVE_ARCADE_STYLE
 #define TURN_TO_TARGET_AUTO
+#define USE_GAMESIR_CONTROLLER
 
 // Unfortunately, the Logitech controllers can't be used with the Mac OS,
-// which is what Matt has handy.  So here's a convenient hack to use the
-// "game specific data" field to figure out what kind of device we should
-// read from.
+// which is what Matt has handy.  So here's a convenient hack to encapsulate the
+// idea of what type of device we're using.
 inline bool usingLogitechController() {
-  std::string msg = frc::DriverStation::GetInstance().GetGameSpecificMessage();
-  return (msg != "MattsMac");
+#ifdef USE_GAMESIR_CONTROLLER
+  return false;
+#else
+  return true;
+#endif
 }
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
@@ -82,8 +85,10 @@ void RobotContainer::ConfigureButtonBindings() {
       DriveForward::SensorMode::Gyro,  // Sensor mode
       false                            // Noisy?
   );
+
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::G))
       .WhenPressed(frc2::PrintCommand("Button 'G' on controller was pressed"));
+
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::A))
       .WhenHeld(forward);
 }

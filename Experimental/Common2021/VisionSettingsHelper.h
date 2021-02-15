@@ -121,8 +121,8 @@ private:
     // Register a "listener" function, that will be called whenever
     // someone makes changes to the settings for the vision processing.
     auto inst = nt::NetworkTableInstance::GetDefault();
-    auto shuffleboardTable = inst.GetTable("Shuffleboard");
-    auto table = shuffleboardTable->GetTable(NetworkTableNames::kVisionSettingsTable);
+    const std::string kTableBaseName("Shuffleboard/");
+    auto table = inst.GetTable(kTableBaseName + NetworkTableNames::kVisionSettingsTable);
     table->AddEntryListener([this] (nt::NetworkTable* table, wpi::StringRef name,
         nt::NetworkTableEntry entry, std::shared_ptr<nt::Value> value, int flags) {
       if(!SaveToFile()) {

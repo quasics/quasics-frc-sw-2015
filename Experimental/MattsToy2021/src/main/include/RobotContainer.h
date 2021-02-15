@@ -8,6 +8,7 @@
 #include <frc2/command/Command.h>
 
 #include "../../../../Common2021/TurnToTargetCommand.h"
+#include "../../../../Common2021/VisionSettingsHelper.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -32,6 +33,11 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
+
+  // TODO(mjh): Figure out where the file will be stored on the Rio
+  // (i.e., what the current working directory is, if we leave it
+  // relative).
+  VisionSettingsHelper m_helper{"visionSettings.dat"};
 
   // Assumes a gamepad plugged into channnel 0
   frc::Joystick m_driverJoystick{0};

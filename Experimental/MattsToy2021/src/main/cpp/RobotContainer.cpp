@@ -4,6 +4,8 @@
 
 #include "RobotContainer.h"
 
+#include <unistd.h>
+
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
 
@@ -16,6 +18,15 @@ inline double DeadBand(double stickValue) {
 }
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+  std::vector<char> buffer(4096);
+  if (getcwd(&buffer[0], buffer.size()) != NULL) {
+    std::cerr << "Current directory is: " << &buffer[0] << std::endl;
+  } else {
+    std::cerr << "Failed to get current directory" << std::endl;
+  }
+
+  m_helper.InstallSliders();
+
   // Initialize all of your commands and subsystems here
   TeleopTankDrive tankDrive(
       &m_driveBase,
@@ -37,7 +48,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
 }
 
-frc2::Command* RobotContainer::GetAutonomousCommand() {
+frc2::Command *RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return &turnToTarget;
 }

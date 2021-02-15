@@ -79,4 +79,12 @@ namespace OIConstants {
 namespace NetworkTableNames {
   constexpr const char* kVisionTable("Vision");
   constexpr const char* kTargetXEntry("target_x");
+
+  constexpr const char* kVisionSettingsTable("VisionSettings");
+  constexpr const char* kLowHSetting("Low_H");
+  constexpr const char* kLowSSetting("Low_S");
+  constexpr const char* kLowVSetting("Low_V");
+  constexpr const char* kHighHSetting("High_H");
+  constexpr const char* kHighSSetting("High_S");
+  constexpr const char* kHighVSetting("High_V");
 }  // namespace NetworkTableNames

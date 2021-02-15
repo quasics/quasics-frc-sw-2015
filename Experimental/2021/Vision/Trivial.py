@@ -73,6 +73,15 @@ kernel = None       # Preallocated kernel for transforms
 vision_nt = None    # Pre-fetched connection to Network Tables
                     # for publishing vision results.
 
+# A trivial scoring function, which just looks at the size of
+# the contour ("bigger" == "better").  If we were looking for
+# something more sophisticated, such as the photoreflective
+# tape surrounding a goal, etc., we'd want to use a more
+# elaborate scoring algorithm.  (See the published examples
+# from the 2017 game, for instance.)
+def computeScore(contour):
+    return cv2.contourArea(contour)
+
 # Processes the next frame of video from the CameraServer.
 def processFrame(inputStream, outputStream):
     global low_H
@@ -137,8 +146,8 @@ def processFrame(inputStream, outputStream):
     all_targets_x_list = []
     all_targets_y_list = []
     index = -1
-    largestIndex = -1
-    largest = None
+    bestIndex = -1
+    best = None
     for contour in contours:
         index = index + 1
 
@@ -147,9 +156,9 @@ def processFrame(inputStream, outputStream):
             continue
         
         # Does the current image beat our best-scoring one so far?
-        if largestIndex == -1 or cv2.contourArea(contour) > cv2.contourArea(largest):
-            largest = contour
-            largestIndex = index
+        if bestIndex == -1 or computeScore(contour) > computeScore(best):
+            best = contour
+            bestIndex = index
 
         ########
         # Everything from here on in this loop is "gravy", used to give the
@@ -174,7 +183,7 @@ def processFrame(inputStream, outputStream):
         all_targets_y_list.append(center_y)
 
         # Draw a white outline of the contour, and put a small red circle at its center.
-        cv2.drawContours(output_img, contours, largestIndex, color = (255, 255, 255), thickness = 1)
+        cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)
         cv2.circle(output_img, (int(center[0]), int(center[1])), 2, (0,0,255), 1)
         
     
@@ -182,9 +191,9 @@ def processFrame(inputStream, outputStream):
     # in the output image.
     target_x = []
     target_y = []
-    if largest is not None:
+    if best is not None:
         # Compute the "center of mass" for the target.
-        x,y,w,h = cv2.boundingRect(largest)
+        x,y,w,h = cv2.boundingRect(best)
         target_center_x = x + (w / 2)
         target_center_y = y + (h / 2)
         target_x.append((target_center_x - (img_width / 2)) / (img_width / 2))
@@ -194,9 +203,9 @@ def processFrame(inputStream, outputStream):
         dbgBuffer = "Target: x,y = " + str(x) + "," + str(y) + ", width/height = " + str(w) + "," + str(h)
 
         # Draw a red outline of the target on the output image.
-        cv2.drawContours(output_img, contours, largestIndex, color = (0, 0, 255), thickness = 3)
+        cv2.drawContours(output_img, contours, bestIndex, color = (0, 0, 255), thickness = 3)
 
-    # Publish center data for the largest of the targets we found.
+    # Publish center data for the best of the targets we found.
     if not vision_nt.putNumberArray('target_x', target_x):
         print("Failed to publish target_x")
     if not vision_nt.putNumberArray('target_y', target_y):

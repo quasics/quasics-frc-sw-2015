@@ -26,6 +26,8 @@ def scaleHueForOpenCV(h):
 
 inLab = True
 
+# Pick some default color ranges, absent overriding data via
+# NetworkTables (handled below, in valueChanged()).
 if inLab:
     # Color gamut needed in a nice, bright space at the lab
     low_H = 22 # scaleHueForOpenCV(raw_low_H)
@@ -42,7 +44,6 @@ else:
     high_H = 37
     high_S = 255
     high_V = 255
-
 
 input_img = None    # Preallocated buffer for frame data
 kernel = None       # Preallocated kernel for transforms

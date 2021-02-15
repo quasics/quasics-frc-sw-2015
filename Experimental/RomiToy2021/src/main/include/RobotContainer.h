@@ -8,6 +8,7 @@
 #include <frc2/command/Command.h>
 
 #include "../../../../Common2021/TurnToTargetCommand.h"
+#include "../../../../Common2021/VisionSettingsHelper.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -29,13 +30,14 @@ public:
 
 private:
   void ConfigureButtonBindings();
-
-  void ConfigureVisionControls();
+  void ConfigureDrivingCommand();
 
 private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
+
+  VisionSettingsHelper m_helper{"visionSettings.dat"};
 
   // Assumes a gamepad plugged into channnel 0
   frc::Joystick m_controller{0};
@@ -45,11 +47,4 @@ private:
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
   TurnToTargetCommand m_turnToTargetCommand{&m_drive, 0.350};
-
-  nt::NetworkTableEntry m_lowH;
-  nt::NetworkTableEntry m_lowS;
-  nt::NetworkTableEntry m_lowV;
-  nt::NetworkTableEntry m_highH;
-  nt::NetworkTableEntry m_highS;
-  nt::NetworkTableEntry m_highV;
 };

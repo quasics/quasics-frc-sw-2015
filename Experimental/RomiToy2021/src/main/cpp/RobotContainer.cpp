@@ -29,57 +29,18 @@ inline bool usingLogitechController() {
   return (msg != "MattsMac");
 }
 
-void RobotContainer::ConfigureVisionControls() {
-  namespace fs= std::filesystem;
+RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+  // Note: when running under simulator, current path is that of the
+  // project (.../Experimental/RomiToy2021).
+  m_helper.InstallSliders();
 
-  int low_h(26), high_h(37),
-      low_s(80), high_s(255),
-      low_v(80), high_v(255);
+  ConfigureDrivingCommand();
 
-  // Note: when running under simulator, current path is that of the project (.../Experimental/RomiToy2021)
-
-  auto & tab = frc::Shuffleboard::GetTab(NetworkTableNames::kVisionSettingsTable);
-  wpi::StringMap<std::shared_ptr<nt::Value>> hueSliderProperties{
-    {"min", nt::Value::MakeDouble(0)},
-    {"max", nt::Value::MakeDouble(179)},
-    {"Block increment", nt::Value::MakeDouble(1)}
-  };
-  wpi::StringMap<std::shared_ptr<nt::Value>> saturationAndValueSliderProperties{
-    {"min", nt::Value::MakeDouble(0)},
-    {"max", nt::Value::MakeDouble(255)},
-    {"Block increment", nt::Value::MakeDouble(1)}
-  };
-  m_lowH = tab.Add(NetworkTableNames::kLowHSetting, low_h)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(hueSliderProperties)
-    .GetEntry();
-  m_highH = tab.Add(NetworkTableNames::kHighHSetting, high_h)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(hueSliderProperties)
-    .GetEntry();
-  m_lowS = tab.Add(NetworkTableNames::kLowSSetting, low_s)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(saturationAndValueSliderProperties)
-    .GetEntry();
-  m_highS = tab.Add(NetworkTableNames::kHighSSetting, high_s)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(saturationAndValueSliderProperties)
-    .GetEntry();
-  m_lowV = tab.Add(NetworkTableNames::kLowVSetting, low_v)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(saturationAndValueSliderProperties)
-    .GetEntry();
-  m_highV = tab.Add(NetworkTableNames::kHighVSetting, high_v)
-    .WithWidget(frc::BuiltInWidgets::kNumberSlider)
-    .WithProperties(saturationAndValueSliderProperties)
-    .GetEntry();
+  // Configure the button bindings
+  ConfigureButtonBindings();
 }
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
-  // Initialize all of your commands and subsystems here
-
-  ConfigureVisionControls();
-
+void RobotContainer::ConfigureDrivingCommand() {
 #ifdef DRIVE_ARCADE_STYLE
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
       &m_drive, [this] {
@@ -110,9 +71,6 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
         return -m_controller.GetRawAxis(rightJoystickAxis);
       }));
 #endif
-
-  // Configure the button bindings
-  ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {

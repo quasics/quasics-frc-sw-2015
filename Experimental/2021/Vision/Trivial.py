@@ -1,3 +1,7 @@
+# Sample program, finding the largest contiguous "blob" of a
+# particular color, and then publishing information about it
+# via NetworkTables, for use in tracking it.
+
 # Import the WPI packages we need (camera server and network tables).
 from cscore import CameraServer
 from networktables import NetworkTablesInstance

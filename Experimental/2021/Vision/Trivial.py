@@ -308,13 +308,16 @@ def main():
     while True:
         processFrame(cvSink, outputStream)
 
-        # Pause slightly between frames.  If needed, this delay can be tweaked,
-        # but we want to be careful how far we send it in one direction or the
-        # other.  (Too long, and the system is really unresponsive; too short,
-        # and we're potentially wasting bandwidth by reprocessing images that
-        # haven't changed.)
-        time.sleep(0.1)     # Note: the delay is expressed in seconds, and this
-                            # yields about 8 FPS from a RasPi 3, in testing,
-                            # using a lightly-loaded network for transmission.
+        # If the following line is enabled, it will inject a brief pause
+        # between frames, which can be tweaked as needed.
+        #
+        # We may want to be careful how far we send it in one direction or the
+        # other.  (Too long, and the processing will be so laggy that it's not
+        # helpful; too short, and we might waste bandwidth by reprocessing images
+        # that haven't changed.)
+        time.sleep(0.05)    # Note: the delay is expressed in seconds, and 0.005
+                            # yields about 14-15 FPS (0.35Mbps) from a RasPi 3
+                            # running the Romi image and in the "disabled" robot
+                            # state, when testing on a lightly-loaded network.
 
 main()

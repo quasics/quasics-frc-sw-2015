@@ -9,9 +9,7 @@
 
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
-#include "commands/ExampleCommand.h"
 #include "subsystems/Drivetrain.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/OnBoardIO.h"
 
 /**
@@ -35,17 +33,14 @@ private:
   void EnableArcadeDrive();
 
  private:
-  // The robot's subsystems and commands are defined here...
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
-
+  // Helper class to manage settings for vision processing.
   VisionSettingsHelper m_helper{
       VisionSettingsHelper::GetSuggestedRomiDirectory() + "visionSettings.dat"};
 
-  // Assumes a gamepad plugged into channnel 0
+  // Assumes a gamepad plugged into channnel 0.
   frc::Joystick m_controller{0};
 
-  // The robot's subsystems
+  // The robot's subsystems and some key commands.
   Drivetrain m_drive;
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};

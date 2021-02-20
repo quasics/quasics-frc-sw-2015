@@ -12,6 +12,7 @@
 
 #include <filesystem>
 
+#include "../../../../Common2021/ButtonHelpers.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
@@ -44,9 +45,13 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::EnableTankDrive() {
+  const double turboMax = 1.0;
+  const double turtleMax = 0.5;
+  const double normalMax = 0.75;
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
       [this] {
+        // Left speed control
         const int leftJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftYAxis
@@ -54,6 +59,7 @@ void RobotContainer::EnableTankDrive() {
         return -m_controller.GetRawAxis(leftJoystickAxis);
       },
       [this] {
+        // Right speed control
         const int rightJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::RightYAxis
@@ -61,19 +67,37 @@ void RobotContainer::EnableTankDrive() {
         return -m_controller.GetRawAxis(rightJoystickAxis);
       },
       [this] {
-        static bool switchDriveEnabled = false;
-        static bool switchDriveButtonPressedLastTime = false;
-        const int switchDriveButton =
+        // Switch drive enabled?
+        static ButtonToggleMonitor monitor(
+            m_controller,
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::StartButton
-                : int(JoystickDefinitions::GameSirPro::S);
-        bool buttonPressed = m_controller.GetRawButton(switchDriveButton);
-        if (buttonPressed && !switchDriveButtonPressedLastTime) {
-          switchDriveEnabled = !switchDriveEnabled;
+                : int(JoystickDefinitions::GameSirPro::S));
+        static bool enabled = false;
+        if (monitor.ShouldToggle()) {
+          enabled = !enabled;
         }
-        switchDriveButtonPressedLastTime = buttonPressed;
-        return switchDriveEnabled;
-      }));
+
+        return enabled;
+      },
+      [this] {
+        // Speed mode signal
+        const bool usingLogitech = usingLogitechController();
+        const int turtleTrigger =
+            usingLogitech
+                ? JoystickDefinitions::LogitechGamePad::LeftTriggerAxis
+                : JoystickDefinitions::GameSirPro::LeftTrigger;
+        const int turboTrigger =
+            usingLogitech
+                ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
+                : JoystickDefinitions::GameSirPro::RightTrigger;
+        if (m_controller.GetRawAxis(turtleTrigger) > 0.25)
+          return TeleopTankDrive::SpeedMode::Turtle;
+        if (m_controller.GetRawAxis(turboTrigger) > 0.25)
+          return TeleopTankDrive::SpeedMode::Turbo;
+        return TeleopTankDrive::SpeedMode::Normal;
+      },
+      normalMax, turtleMax, turboMax));
 }
 
 void RobotContainer::EnableArcadeDrive() {

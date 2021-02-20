@@ -47,8 +47,8 @@ class TeleopTankDrive
         m_switchDriveEnabled(switchDriveEnabled),
         m_speedModeSupplier(speedModeSupplier),
         m_turtleMax(std::clamp(turtleMax, 0.0, 1.0)),  // Bounds to [0..1]
-        m_normalMax(std::clamp(normalMax, 0.0, 1.0)),  // Bounds to [0..1
-        m_turboMax(std::clamp(turboMax, 0.0, 1.0)) {   // Bounds to [0..1
+        m_normalMax(std::clamp(normalMax, 0.0, 1.0)),  // Bounds to [0..1]
+        m_turboMax(std::clamp(turboMax, 0.0, 1.0)) {   // Bounds to [0..1]
     AddRequirements({m_driveBase});
   }
 

@@ -6,9 +6,9 @@
 
 #include <frc/DriverStation.h>
 #include <frc/XboxController.h>
+#include <frc/shuffleboard/Shuffleboard.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
-#include <frc/shuffleboard/Shuffleboard.h>
 
 #include <filesystem>
 
@@ -32,7 +32,7 @@ inline bool usingLogitechController() {
 #endif
 }
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+RobotContainer::RobotContainer() {
   // Note: when running under simulator, current path is that of the
   // project (.../Experimental/RomiToy2021).
   m_helper.InstallSliders();
@@ -78,16 +78,19 @@ void RobotContainer::EnableTankDrive() {
 
 void RobotContainer::EnableArcadeDrive() {
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
-      &m_drive, [this] {
-        const int joystickVerticalAxis = usingLogitechController()
-                                        ? JoystickDefinitions::LogitechGamePad::LeftYAxis
-                                        : int(JoystickDefinitions::GameSirPro::LeftVertical);
+      &m_drive,
+      [this] {
+        const int joystickVerticalAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftYAxis
+                : int(JoystickDefinitions::GameSirPro::LeftVertical);
         return -m_controller.GetRawAxis(joystickVerticalAxis);
       },
       [this] {
-        const int joystickHorizontalalAxis = usingLogitechController()
-                                        ? JoystickDefinitions::LogitechGamePad::LeftXAxis
-                                        : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
+        const int joystickHorizontalalAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftXAxis
+                : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
         return m_controller.GetRawAxis(joystickHorizontalalAxis);
       }));
 }

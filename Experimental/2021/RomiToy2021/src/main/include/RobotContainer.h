@@ -19,14 +19,13 @@
  * scheduler calls).  Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
-class RobotContainer
-{
-public:
+class RobotContainer {
+ public:
   RobotContainer();
 
   frc2::Command *GetAutonomousCommand();
 
-private:
+ private:
   void ConfigureButtonBindings();
   void ConfigureDrivingCommand();
   void EnableTankDrive();

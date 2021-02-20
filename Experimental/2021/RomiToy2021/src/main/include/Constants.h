@@ -19,8 +19,8 @@ namespace JoystickDefinitions {
     enum JoystickAxis {
       LeftHorizontal = 0,
       LeftVertical = 1,
-      LeftTrigger = 2,     // Range is [0,1]
-      RightTrigger = 3,    // Range is [0,1]
+      LeftTrigger = 2,   // Range is [0,1]
+      RightTrigger = 3,  // Range is [0,1]
       RightHorizontal = 4,
       RightVertical = 5,
     };

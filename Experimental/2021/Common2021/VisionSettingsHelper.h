@@ -162,7 +162,7 @@ class VisionSettingsHelper {
   }
 
  private:
-  const std::string m_filename;
+  const std::string m_filename;   ///< Path to file used for load/save operations
   nt::NetworkTableEntry m_lowH;
   nt::NetworkTableEntry m_lowS;
   nt::NetworkTableEntry m_lowV;

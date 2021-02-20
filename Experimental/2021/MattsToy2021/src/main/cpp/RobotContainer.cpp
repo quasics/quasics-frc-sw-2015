@@ -9,6 +9,8 @@
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
 
+constexpr double kMaxNormalSpeed = 0.6;
+
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
       stickValue < OIConstants::DeadBand_HighValue) {
@@ -31,12 +33,12 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   TeleopTankDrive tankDrive(
       &m_driveBase,
       [this] {
-        return DeadBand(m_driverJoystick.GetRawAxis(
-            OIConstants::LogitechGamePad::RightYAxis));
+        return kMaxNormalSpeed * DeadBand(m_driverJoystick.GetRawAxis(
+                                     OIConstants::LogitechGamePad::RightYAxis));
       },
       [this] {
-        return DeadBand(m_driverJoystick.GetRawAxis(
-            OIConstants::LogitechGamePad::LeftYAxis));
+        return kMaxNormalSpeed * DeadBand(m_driverJoystick.GetRawAxis(
+                                     OIConstants::LogitechGamePad::LeftYAxis));
       });
   m_driveBase.SetDefaultCommand(tankDrive);
 

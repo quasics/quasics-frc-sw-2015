@@ -39,7 +39,8 @@ private:
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
 
-  VisionSettingsHelper m_helper{"visionSettings.dat"};
+  VisionSettingsHelper m_helper{
+      VisionSettingsHelper::GetSuggestedRomiDirectory() + "visionSettings.dat"};
 
   // Assumes a gamepad plugged into channnel 0
   frc::Joystick m_controller{0};

@@ -12,7 +12,7 @@ RunShootingMotor::RunShootingMotor(Shooter*shooter)
 
 // Called when the command is initially scheduled.
 void RunShootingMotor::Initialize() {
-  shooter->setShootingMotor(.75);
+  shooter->setShootingMotor(.75); //Yeet the ball
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -20,7 +20,7 @@ void RunShootingMotor::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunShootingMotor::End(bool interrupted) {
-  shooter->stopShootingMotor();
+  shooter->stopShootingMotor(); //Stop yeeting
 }
 
 // Returns true when the command should end.

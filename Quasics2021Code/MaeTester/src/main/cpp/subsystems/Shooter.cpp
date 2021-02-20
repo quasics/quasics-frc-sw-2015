@@ -11,7 +11,7 @@ Shooter::Shooter() : ShootingMotor(CANBusIds::VictorSPXIds::ShootingMotor){}
 void Shooter::Periodic() {}
 
 void Shooter::setShootingMotor(double speed) {
-    ShootingMotor.Set(speed);
+    ShootingMotor.Set(speed); //Yeet the ball
 }
 
 void Shooter::stopShootingMotor() {

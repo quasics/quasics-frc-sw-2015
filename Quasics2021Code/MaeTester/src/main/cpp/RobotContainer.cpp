@@ -20,12 +20,12 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     frc::XboxController::Button buttonId, frc2::Command* command) {
-  frc2::JoystickButton(&operatorController, int(buttonId)).WhileHeld(command);
+  frc2::JoystickButton(&operatorController, int(buttonId)).WhileHeld(command); //see last year's code
 }
 
 void RobotContainer::ConfigureButtonBindings() {
   static RunShootingMotor runshootingmotor(&shooter);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA, &runshootingmotor);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA, &runshootingmotor); //see last year's code
 
 }
 

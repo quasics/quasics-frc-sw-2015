@@ -20,6 +20,9 @@ namespace CANBusIds{
         constexpr int Right_Front_Number = 2;
         constexpr int Right_Rear_Number = 1;
     }
+    namespace VictorSPXIds{
+      constexpr int ShootingMotor = 5;
+    }
 }
 
 namespace OIConstants {

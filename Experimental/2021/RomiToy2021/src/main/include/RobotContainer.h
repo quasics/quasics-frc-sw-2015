@@ -31,8 +31,10 @@ public:
 private:
   void ConfigureButtonBindings();
   void ConfigureDrivingCommand();
+  void EnableTankDrive();
+  void EnableArcadeDrive();
 
-private:
+ private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;

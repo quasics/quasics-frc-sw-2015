@@ -43,8 +43,40 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   ConfigureButtonBindings();
 }
 
-void RobotContainer::ConfigureDrivingCommand() {
-#ifdef DRIVE_ARCADE_STYLE
+void RobotContainer::EnableTankDrive() {
+  m_drive.SetDefaultCommand(TeleopTankDrive(
+      &m_drive,
+      [this] {
+        const int leftJoystickAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftYAxis
+                : int(JoystickDefinitions::GameSirPro::LeftVertical);
+        return -m_controller.GetRawAxis(leftJoystickAxis);
+      },
+      [this] {
+        const int rightJoystickAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::RightYAxis
+                : int(JoystickDefinitions::GameSirPro::RightVertical);
+        return -m_controller.GetRawAxis(rightJoystickAxis);
+      },
+      [this] {
+        static bool switchDriveEnabled = false;
+        static bool switchDriveButtonPressedLastTime = false;
+        const int switchDriveButton =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::StartButton
+                : int(JoystickDefinitions::GameSirPro::S);
+        bool buttonPressed = m_controller.GetRawButton(switchDriveButton);
+        if (buttonPressed && !switchDriveButtonPressedLastTime) {
+          switchDriveEnabled = !switchDriveEnabled;
+        }
+        switchDriveButtonPressedLastTime = buttonPressed;
+        return switchDriveEnabled;
+      }));
+}
+
+void RobotContainer::EnableArcadeDrive() {
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
       &m_drive, [this] {
         const int joystickVerticalAxis = usingLogitechController()
@@ -58,21 +90,13 @@ void RobotContainer::ConfigureDrivingCommand() {
                                         : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
         return m_controller.GetRawAxis(joystickHorizontalalAxis);
       }));
+}
+
+void RobotContainer::ConfigureDrivingCommand() {
+#ifdef DRIVE_ARCADE_STYLE
+  EnableArcadeDrive();
 #else
-  m_drive.SetDefaultCommand(TeleopTankDrive(
-      &m_drive,
-      [this] {
-        const int leftJoystickAxis = usingLogitechController()
-                                        ? JoystickDefinitions::LogitechGamePad::LeftYAxis
-                                        : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -m_controller.GetRawAxis(leftJoystickAxis);
-      },
-      [this] {
-        const int rightJoystickAxis = usingLogitechController()
-                                        ? JoystickDefinitions::LogitechGamePad::RightYAxis
-                                        : int(JoystickDefinitions::GameSirPro::RightVertical);
-        return -m_controller.GetRawAxis(rightJoystickAxis);
-      }));
+  EnableTankDrive();
 #endif
 }
 

@@ -9,6 +9,7 @@
 #include "Constants.h"
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+#include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
@@ -16,6 +17,18 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Configure the button bindings
   ConfigureButtonBindings();
   ConfigureSmartDashboard();
+    drivebase.SetDefaultCommand(TankDrive(
+      &drivebase,
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+        return stickValue;
+      },
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+        return stickValue;
+      }));
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(

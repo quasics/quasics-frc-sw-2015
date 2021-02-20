@@ -21,10 +21,10 @@ Drivebase::Drivebase()
 void Drivebase::Periodic() {}
 
 void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed){
-    leftFront.Set(leftSpeed);
-    leftRear.Set(leftSpeed);
-    rightFront.Set(-rightSpeed);
-    rightRear.Set(-rightSpeed);
+    leftFront.Set(leftSpeed * DrivebaseConstants::powerScaling);
+    leftRear.Set(leftSpeed * DrivebaseConstants::powerScaling);
+    rightFront.Set(-rightSpeed * DrivebaseConstants::powerScaling);
+    rightRear.Set(-rightSpeed * DrivebaseConstants::powerScaling);
 }
 
 void Drivebase::Stop(){

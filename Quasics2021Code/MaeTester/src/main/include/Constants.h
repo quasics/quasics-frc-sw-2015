@@ -76,3 +76,7 @@ namespace OIConstants {
   constexpr double DeadBand_LowValue = -0.055;
   constexpr double DeadBand_HighValue = +0.055;
 }  // namespace OIConstants
+
+namespace DrivebaseConstants{
+  constexpr int powerScaling = .6;
+}

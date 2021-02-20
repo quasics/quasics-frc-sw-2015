@@ -5,7 +5,7 @@
 #pragma once
 
 #include <frc2/command/Command.h>
-
+#include <frc/XboxController.h>
 #include "commands/ExampleCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drivebase.h"
@@ -23,6 +23,7 @@ class RobotContainer {
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
+  frc::XboxController operatorController{1};
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -35,4 +36,5 @@ class RobotContainer {
   void ConfigureButtonBindings();
   void ConfigureDriverButtonBindings();
   void ConfigureOperatorButtonBindings();
+  void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId, frc2::Command* command);
 };

@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 #include "subsystems/Drivebase.h"
 #include "commands/DoASpin.h"
+#include "commands/RunShootingMotor.h"
 #include "Constants.h"
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
@@ -17,8 +18,15 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   ConfigureSmartDashboard();
 }
 
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    frc::XboxController::Button buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&operatorController, int(buttonId)).WhileHeld(command);
+}
+
 void RobotContainer::ConfigureButtonBindings() {
-  
+  static RunShootingMotor runshootingmotor(&shooter);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA, &runshootingmotor);
+
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
@@ -29,4 +37,5 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin",
                                new DoASpin(&drivebase));
+  frc::SmartDashboard::PutData("Run shooter at 75% power", new RunShootingMotor(&shooter));
 }

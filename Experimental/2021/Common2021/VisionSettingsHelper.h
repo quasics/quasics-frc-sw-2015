@@ -17,10 +17,31 @@ public:
   /**
    * Constructor.
    * 
-   * @path filename  the path to the file used to store configuration data
+   * @path filename  the path to the file used to store configuration data.
+   *                 By default, this will be stored in a location relative
+   *                 to the "current working directory" for the robot code
+   *                 when running: for a Romi, this is the folder containing
+   *                 the VS Code project; for a "big bot", this is "/" (which
+   *                 is not generally a good place to store files).
    */
   VisionSettingsHelper(const std::string &filename)
       : m_filename(filename) {}
+
+  /**
+   * Returns the path to the home directory for the account that is used to
+   * run code on the RoboRio.
+   */
+  static std::string GetSuggestedRoboRioDirectory() {
+    return "/home/lvuser/";
+  }
+
+  /**
+   * Returns a path to the current directory when running code for the Romi,
+   * which should be the VS Code project folder.
+   */
+  static std::string GetSuggestedRomiDirectory() {
+    return "./";
+  }
 
   /**
    * Adds sliders for the "hue", "saturation", and "value" settings used

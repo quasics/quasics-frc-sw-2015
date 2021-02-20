@@ -37,7 +37,9 @@ class RobotContainer {
   // TODO(mjh): Figure out where the file will be stored on the Rio
   // (i.e., what the current working directory is, if we leave it
   // relative).
-  VisionSettingsHelper m_helper{"visionSettings.dat"};
+  // On the Rio, the system comes up with a working directory of "/",
+  // which might not be the safest place for storage.
+  VisionSettingsHelper m_helper{"/home/lvuser/visionSettings.dat"};
 
   // Assumes a gamepad plugged into channnel 0
   frc::Joystick m_driverJoystick{0};

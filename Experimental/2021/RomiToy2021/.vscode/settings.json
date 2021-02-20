@@ -99,5 +99,9 @@
     "vector": "cpp",
     "*.inc": "cpp",
     "filesystem": "cpp"
-  }
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnType": true,
+  "C_Cpp.clang_format_fallbackStyle": "Google"
 }

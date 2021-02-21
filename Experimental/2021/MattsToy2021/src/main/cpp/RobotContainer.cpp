@@ -6,10 +6,14 @@
 
 #include <unistd.h>
 
+#include "../../../../Common2021/DeadBandEnforcer.h"
+#include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
 
+constexpr double kMaxTurtleSpeed = 0.4;
 constexpr double kMaxNormalSpeed = 0.6;
+constexpr double kMaxTurboSpeed = 0.75;
 
 inline double DeadBand(double stickValue) {
   if (stickValue > OIConstants::DeadBand_LowValue &&
@@ -30,15 +34,32 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   m_helper.InstallSliders();
 
   // Initialize all of your commands and subsystems here
+  DeadBandEnforcer deadBand(OIConstants::DeadBand_LowValue,
+                            OIConstants::DeadBand_HighValue);
+  DeadBandEnforcer scalingDeadBand(0.25);
+  SpeedScaler scaler(
+      [this, scalingDeadBand] {
+        constexpr int turtleTrigger =
+            OIConstants::LogitechGamePad::LeftTriggerAxis;
+        constexpr int turboTrigger =
+            OIConstants::LogitechGamePad::RightTriggerAxis;
+        if (scalingDeadBand(m_driverJoystick.GetRawAxis(turtleTrigger)) > 0)
+          return SpeedScaler::Mode::Turtle;
+        else if (scalingDeadBand(m_driverJoystick.GetRawAxis(turboTrigger)) > 0)
+          return SpeedScaler::Mode::Turbo;
+        else
+          return SpeedScaler::Mode::Normal;
+      },
+      kMaxNormalSpeed, kMaxTurtleSpeed, kMaxTurboSpeed);
   TeleopTankDrive tankDrive(
       &m_driveBase,
-      [this] {
-        return kMaxNormalSpeed * DeadBand(m_driverJoystick.GetRawAxis(
-                                     OIConstants::LogitechGamePad::RightYAxis));
+      [this, deadBand, scaler] {
+        return scaler(deadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::RightYAxis)));
       },
-      [this] {
-        return kMaxNormalSpeed * DeadBand(m_driverJoystick.GetRawAxis(
-                                     OIConstants::LogitechGamePad::LeftYAxis));
+      [this, deadBand, scaler] {
+        return scaler(deadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::LeftYAxis)));
       });
   m_driveBase.SetDefaultCommand(tankDrive);
 

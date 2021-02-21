@@ -70,8 +70,21 @@ void RobotContainer::EnableTankDrive() {
       },
       normalMax, turtleMax, turboMax);
 
-  // Set up the actual tank drive comment, using the scaler from above
+  // Set up the actual tank drive command, using the scaler from above
   // to help provide limiting factors.
+  //
+  // Notice that I'm negating the speed values for both left and right.
+  // That's because I find it more convenient to tuck a camera in under
+  // what would normally be the "front" of the robot, facing in the
+  // opposite direction, when doing work with vision processing.  (The
+  // cameras I'm using don't anchor well on the other side.)  So I'm
+  // negating the speed values, so that I can make it run in the
+  // direction that "looks ahead" when trying to drive "forward".
+  //
+  // I could just mark the speed controllers as inverted in the
+  // Drivetrain code, but that needs to be done before they're assigned
+  // to a DifferentialDrive, which would complicate the code there: so
+  // it's simpler just to make the small tweak here. :-)
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
       [this, scaler] {

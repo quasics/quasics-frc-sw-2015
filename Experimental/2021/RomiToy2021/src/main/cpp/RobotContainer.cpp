@@ -13,6 +13,7 @@
 #include <filesystem>
 
 #include "../../../../Common2021/ButtonHelpers.h"
+#include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
@@ -45,41 +46,11 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::EnableTankDrive() {
-  const double turboMax = 1.0;
+  // Set up scaling of the speed controls
   const double turtleMax = 0.5;
   const double normalMax = 0.75;
-  m_drive.SetDefaultCommand(TeleopTankDrive(
-      &m_drive,
-      [this] {
-        // Left speed control
-        const int leftJoystickAxis =
-            usingLogitechController()
-                ? JoystickDefinitions::LogitechGamePad::LeftYAxis
-                : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -m_controller.GetRawAxis(leftJoystickAxis);
-      },
-      [this] {
-        // Right speed control
-        const int rightJoystickAxis =
-            usingLogitechController()
-                ? JoystickDefinitions::LogitechGamePad::RightYAxis
-                : int(JoystickDefinitions::GameSirPro::RightVertical);
-        return -m_controller.GetRawAxis(rightJoystickAxis);
-      },
-      [this] {
-        // Switch drive enabled?
-        static ButtonToggleMonitor monitor(
-            m_controller,
-            usingLogitechController()
-                ? JoystickDefinitions::LogitechGamePad::StartButton
-                : int(JoystickDefinitions::GameSirPro::S));
-        static bool enabled = false;
-        if (monitor.ShouldToggle()) {
-          enabled = !enabled;
-        }
-
-        return enabled;
-      },
+  const double turboMax = 1.0;
+  SpeedScaler scaler(
       [this] {
         // Speed mode signal
         const bool usingLogitech = usingLogitechController();
@@ -92,12 +63,47 @@ void RobotContainer::EnableTankDrive() {
                 ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
                 : JoystickDefinitions::GameSirPro::RightTrigger;
         if (m_controller.GetRawAxis(turtleTrigger) > 0.25)
-          return TeleopTankDrive::SpeedMode::Turtle;
+          return SpeedScaler::Mode::Turtle;
         if (m_controller.GetRawAxis(turboTrigger) > 0.25)
-          return TeleopTankDrive::SpeedMode::Turbo;
-        return TeleopTankDrive::SpeedMode::Normal;
+          return SpeedScaler::Mode::Turbo;
+        return SpeedScaler::Mode::Normal;
       },
-      normalMax, turtleMax, turboMax));
+      normalMax, turtleMax, turboMax);
+
+  // Set up the actual tank drive comment, using the scaler from above
+  // to help provide limiting factors.
+  m_drive.SetDefaultCommand(TeleopTankDrive(
+      &m_drive,
+      [this, scaler] {
+        // Left speed control
+        const int leftJoystickAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftYAxis
+                : int(JoystickDefinitions::GameSirPro::LeftVertical);
+        return -scaler(m_controller.GetRawAxis(leftJoystickAxis));
+      },
+      [this, scaler] {
+        // Right speed control
+        const int rightJoystickAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::RightYAxis
+                : int(JoystickDefinitions::GameSirPro::RightVertical);
+        return -scaler(m_controller.GetRawAxis(rightJoystickAxis));
+      },
+      [this] {
+        // Provides "Switch drive enabled?" signal to tank drive.
+        static ButtonToggleMonitor monitor(
+            m_controller,
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::StartButton
+                : int(JoystickDefinitions::GameSirPro::S));
+        static bool enabled = false;
+
+        if (monitor.ShouldToggle()) {
+          enabled = !enabled;
+        }
+        return enabled;
+      }));
 }
 
 void RobotContainer::EnableArcadeDrive() {

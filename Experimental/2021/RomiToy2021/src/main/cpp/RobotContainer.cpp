@@ -13,6 +13,7 @@
 #include <filesystem>
 
 #include "../../../../Common2021/ButtonHelpers.h"
+#include "../../../../Common2021/DeadBandEnforcer.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
@@ -46,12 +47,13 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::EnableTankDrive() {
-  // Set up scaling of the speed controls
-  const double turtleMax = 0.5;
-  const double normalMax = 0.75;
-  const double turboMax = 1.0;
+  // Set up scaling support for the speed controls.
+  constexpr double turtleMax = 0.5;
+  constexpr double normalMax = 0.75;
+  constexpr double turboMax = 1.0;
+  DeadBandEnforcer scalingDeadBand(0.25);  // Require at least 25% to activate
   SpeedScaler scaler(
-      [this] {
+      [this, scalingDeadBand] {
         // Speed mode signal
         const bool usingLogitech = usingLogitechController();
         const int turtleTrigger =
@@ -62,13 +64,17 @@ void RobotContainer::EnableTankDrive() {
             usingLogitech
                 ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
                 : JoystickDefinitions::GameSirPro::RightTrigger;
-        if (m_controller.GetRawAxis(turtleTrigger) > 0.25)
+        if (scalingDeadBand(m_controller.GetRawAxis(turtleTrigger)) > 0)
           return SpeedScaler::Mode::Turtle;
-        if (m_controller.GetRawAxis(turboTrigger) > 0.25)
+        else if (scalingDeadBand(m_controller.GetRawAxis(turboTrigger)) > 0)
           return SpeedScaler::Mode::Turbo;
-        return SpeedScaler::Mode::Normal;
+        else
+          return SpeedScaler::Mode::Normal;
       },
       normalMax, turtleMax, turboMax);
+
+  // "Dead band" evaluation for speed controls.
+  DeadBandEnforcer throttleDeadBand(0.06);
 
   // Set up the actual tank drive command, using the scaler from above
   // to help provide limiting factors.
@@ -87,21 +93,23 @@ void RobotContainer::EnableTankDrive() {
   // it's simpler just to make the small tweak here. :-)
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
-      [this, scaler] {
+      [this, scaler, throttleDeadBand] {
         // Left speed control
         const int leftJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftYAxis
                 : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -scaler(m_controller.GetRawAxis(leftJoystickAxis));
+        return -scaler(
+            throttleDeadBand(m_controller.GetRawAxis(leftJoystickAxis)));
       },
-      [this, scaler] {
+      [this, scaler, throttleDeadBand] {
         // Right speed control
         const int rightJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::RightYAxis
                 : int(JoystickDefinitions::GameSirPro::RightVertical);
-        return -scaler(m_controller.GetRawAxis(rightJoystickAxis));
+        return -scaler(
+            throttleDeadBand(m_controller.GetRawAxis(rightJoystickAxis)));
       },
       [this] {
         // Provides "Switch drive enabled?" signal to tank drive.
@@ -120,21 +128,24 @@ void RobotContainer::EnableTankDrive() {
 }
 
 void RobotContainer::EnableArcadeDrive() {
+  // "Dead band" evaluation for speed controls.
+  DeadBandEnforcer deadBand(0.06);
+
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
       &m_drive,
-      [this] {
+      [this, deadBand] {
         const int joystickVerticalAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftYAxis
                 : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -m_controller.GetRawAxis(joystickVerticalAxis);
+        return -deadBand(m_controller.GetRawAxis(joystickVerticalAxis));
       },
-      [this] {
+      [this, deadBand] {
         const int joystickHorizontalalAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftXAxis
                 : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
-        return m_controller.GetRawAxis(joystickHorizontalalAxis);
+        return deadBand(m_controller.GetRawAxis(joystickHorizontalalAxis));
       }));
 }
 

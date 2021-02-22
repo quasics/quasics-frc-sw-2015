@@ -11,6 +11,10 @@
 #include <rev/CANSparkMax.h>
 
 #include "../../../../Common2021/CommonDriveSubsystem.h"
+#include "Constants.h"
+#include "sensors/MaxboticsUltrasonicSensor.h"
+
+#undef ENABLE_ULTRASONICS
 
 // TODO(mjh): Decide if we want to just use values from 1 encoder per side for
 // position/distance, or take an average, or what.
@@ -53,6 +57,12 @@ class DriveBase : public CommonDriveSubsystem {
  public:
   void SetCoastingEnabled(bool enabled);
 
+#ifdef ENABLE_ULTRASONICS
+  MaxboticsUltrasonicSensor& GetUltrasonicSensor() {
+    return ultrasonic;
+  }
+#endif  // ENABLE_ULTRASONICS
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -73,4 +83,8 @@ class DriveBase : public CommonDriveSubsystem {
 
   frc::ADXRS450_Gyro adiGyro{
       frc::SPI::Port::kOnboardCS0};  // Chip Select jumper is set to CS0
+
+#ifdef ENABLE_ULTRASONICS
+  MaxboticsUltrasonicSensor ultrasonic{AnalogInputs::UltrasonicSensorInput};
+#endif  // ENABLE_ULTRASONICS
 };

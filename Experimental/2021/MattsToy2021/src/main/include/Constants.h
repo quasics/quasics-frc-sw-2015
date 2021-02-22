@@ -24,6 +24,10 @@ namespace CANBusIds {
   }  // namespace SparkMax
 }  // namespace CANBusIds
 
+namespace AnalogInputs {
+  constexpr int UltrasonicSensorInput = 0;
+}  // namespace AnalogInputs
+
 namespace OIConstants {
   namespace LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the

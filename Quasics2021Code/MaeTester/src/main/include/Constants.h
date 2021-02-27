@@ -22,6 +22,7 @@ namespace CANBusIds{
     }
     namespace VictorSPXIds{
       constexpr int ShootingMotor = 5;
+      constexpr int IntakeMotor = 6;
     }
 }
 

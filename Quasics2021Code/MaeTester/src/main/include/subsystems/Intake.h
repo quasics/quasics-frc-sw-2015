@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <ctre/Phoenix.h>
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -15,7 +16,13 @@ class Intake : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+ //Controls what the commmands that intake (or exhaust) the balls.
+  void IntakeBallOn();
+  void IntakeBallReverse();
+  void IntakeBallOff();
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+  ctre::phoenix::motorcontrol::can::WPI_VictorSPX IntakeMotor;
 };

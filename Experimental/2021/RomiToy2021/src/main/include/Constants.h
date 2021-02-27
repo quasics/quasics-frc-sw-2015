@@ -4,6 +4,13 @@
 
 #pragma once
 
+#include <frc/kinematics/DifferentialDriveKinematics.h>
+#include <units/acceleration.h>
+#include <units/length.h>
+#include <units/time.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -81,3 +88,32 @@ namespace NetworkTableNames {
   constexpr const char* kHighSSetting("High_S");
   constexpr const char* kHighVSetting("High_V");
 }  // namespace NetworkTableNames
+
+namespace RobotData {
+  constexpr units::meter_t kTrackwidthMeters{0.142072613};
+
+  namespace DriveConstants {
+    const frc::DifferentialDriveKinematics kDriveKinematics{
+        RobotData::kTrackwidthMeters};
+
+    // The following values are drawn from drive characterization performed
+    // on the Romi "Scott's Toy", and captured in the team wiki here:
+    // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants
+    constexpr auto ksVolts = 1.16_V;                                // "kS"
+    constexpr auto kvVoltSecondsPerMeter = 1.79 * 1_V * 1_s / 1_m;  // "kV"
+    constexpr auto kaVoltSecondsSquaredPerMeter =                   // "kA"
+        0.0312 * 1_V * 1_s * 1_s / 1_m;
+    constexpr double kPDriveVel = 0.636;  // "kP"
+
+  }  // namespace DriveConstants
+
+  namespace PathFollowingLimits {
+    constexpr auto kMaxSpeed = 3_mps;
+    constexpr auto kMaxAcceleration = 3_mps_sq;
+
+    // Reasonable baseline values for a RAMSETE follower in units of meters and
+    // seconds
+    constexpr double kRamseteB = 2;
+    constexpr double kRamseteZeta = 0.7;
+  }  // namespace PathFollowingLimits
+}  // namespace RobotData

@@ -14,16 +14,23 @@ using namespace DriveConstants;
 // PWM channels 0 and 1 respectively
 // The Romi has onboard encoders that are hardcoded
 // to use DIO pins 4/5 and 6/7 for the left and right
-Drivetrain::Drivetrain() {
+Drivetrain::Drivetrain() : m_odometry(units::degree_t(m_gyro.GetAngleZ())) {
+  // Set the encoders up so that when we call "GetRate()", we'll get the
+  // rate of turn in meters/sec.
   m_leftEncoder.SetDistancePerPulse(
       wpi::math::pi * kWheelDiameter.to<double>() / kCountsPerRevolution);
   m_rightEncoder.SetDistancePerPulse(
       wpi::math::pi * kWheelDiameter.to<double>() / kCountsPerRevolution);
+
   ResetEncoders();
 }
 
+// This method will be called once per scheduler run.
 void Drivetrain::Periodic() {
-  // This method will be called once per scheduler run.
+  // Implementation of subsystem periodic method goes here.
+  m_odometry.Update(GetZAxisGyro().GetRotation2d(),
+                    units::meter_t(m_leftEncoder.GetDistance()),
+                    units::meter_t(m_rightEncoder.GetDistance()));
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate,

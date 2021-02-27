@@ -8,7 +8,10 @@
 #include <frc/Encoder.h>
 #include <frc/Spark.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc2/command/SubsystemBase.h>
+#include <units/angle.h>
 #include <units/length.h>
 
 // Defining a common interface for Romi and Mae drive base code.
@@ -100,8 +103,48 @@ class Drivetrain : public CommonDriveSubsystem {
    * Returns the current angle of the Romi around the Z-axis, in degrees.
    */
   double GetGyroAngleZ();
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  frc::Pose2d GetPose() {
+    return m_odometry.GetPose();
+  }
 
-private:
+  /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() {
+    return {units::meters_per_second_t(m_leftEncoder.GetRate()),
+            units::meters_per_second_t(m_rightEncoder.GetRate())};
+  }
+
+  /**
+   * Resets the odometry to the specified pose.
+   *
+   * @param pose The pose to which to set the odometry.
+   */
+  void ResetOdometry(frc::Pose2d pose) {
+    ResetEncoders();
+    m_odometry.ResetPosition(pose, GetZAxisGyro().GetRotation2d());
+  }
+
+  /**
+   * Controls each side of the drive directly with a voltage.
+   *
+   * @param left the commanded left output
+   * @param right the commanded right output
+   */
+  void TankDriveVolts(units::volt_t left, units::volt_t right) {
+    m_leftMotor.SetVoltage(left);
+    m_rightMotor.SetVoltage(-right);
+    m_drive.Feed();
+  }
+
+ private:
   frc::Spark m_leftMotor{0};
   frc::Spark m_rightMotor{1};
 
@@ -112,4 +155,6 @@ private:
 
   RomiGyro m_gyro;
   frc::BuiltInAccelerometer m_accelerometer;
+
+  frc::DifferentialDriveOdometry m_odometry;
 };

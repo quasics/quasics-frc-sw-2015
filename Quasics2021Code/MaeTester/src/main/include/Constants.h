@@ -79,5 +79,5 @@ namespace OIConstants {
 }  // namespace OIConstants
 
 namespace DrivebaseConstants{
-  constexpr int powerScaling = .6;
+  constexpr double powerScaling = .6;
 }

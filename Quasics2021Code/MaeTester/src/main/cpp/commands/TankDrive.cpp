@@ -7,6 +7,7 @@
 TankDrive::TankDrive(Drivebase*drivebase, std::function<double()> right, std::function<double()> left)
 : drivebase(drivebase), right(right), left(left) {
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.

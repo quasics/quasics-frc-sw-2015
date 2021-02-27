@@ -51,4 +51,17 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin",
                                new DoASpin(&drivebase));
   frc::SmartDashboard::PutData("Run shooter at 75% power", new RunShootingMotor(&shooter));
+  frc::SmartDashboard::PutData("Tank Drive",
+                               new TankDrive(
+      &drivebase,
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+        return stickValue;
+      },
+      [this] {
+        double stickValue =
+            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+        return stickValue;
+      }));
 }

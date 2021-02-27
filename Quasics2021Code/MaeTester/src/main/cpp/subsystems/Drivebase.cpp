@@ -5,6 +5,8 @@
 #include "subsystems/Drivebase.h"
 #include "Constants.h"
 
+#include <iostream>
+
 Drivebase::Drivebase()
 : leftFront(CANBusIds::SparkMaxIds::Left_Front_Number,
                 rev::CANSparkMax::MotorType::kBrushless),
@@ -15,16 +17,21 @@ Drivebase::Drivebase()
   rightRear(CANBusIds::SparkMaxIds::Right_Rear_Number,
                 rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("Drivebase");
-};
+  rightFront.SetInverted(false);
+  rightRear.SetInverted(false);
+  leftFront.SetInverted(true);
+  leftRear.SetInverted(true);
+}
 
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {}
 
 void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed){
+    std::cerr << "Setting speeds: left=" << leftSpeed << ", right=" << rightSpeed << std::endl;
     leftFront.Set(leftSpeed * DrivebaseConstants::powerScaling);
     leftRear.Set(leftSpeed * DrivebaseConstants::powerScaling);
-    rightFront.Set(-rightSpeed * DrivebaseConstants::powerScaling);
-    rightRear.Set(-rightSpeed * DrivebaseConstants::powerScaling);
+    rightFront.Set(rightSpeed * DrivebaseConstants::powerScaling);
+    rightRear.Set(rightSpeed * DrivebaseConstants::powerScaling);
 }
 
 void Drivebase::Stop(){

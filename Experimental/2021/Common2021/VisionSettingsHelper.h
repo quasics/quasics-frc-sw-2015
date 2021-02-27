@@ -113,29 +113,32 @@ class VisionSettingsHelper {
             {"Block increment", nt::Value::MakeDouble(1)}};
 
     // Add sliders for each of the color-related settings.
+    //
+    // (We're using "AddPersistent" in order to get the Rio to try to save/reload
+    // values on program start, in addition to the save/reload code in this class.)
     auto &tab =
         frc::Shuffleboard::GetTab(NetworkTableNames::kVisionSettingsTable);
-    m_lowH = tab.Add(NetworkTableNames::kLowHSetting, low_h)
+    m_lowH = tab.AddPersistent(NetworkTableNames::kLowHSetting, low_h)
                  .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                  .WithProperties(hueSliderProperties)
                  .GetEntry();
-    m_highH = tab.Add(NetworkTableNames::kHighHSetting, high_h)
+    m_highH = tab.AddPersistent(NetworkTableNames::kHighHSetting, high_h)
                   .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                   .WithProperties(hueSliderProperties)
                   .GetEntry();
-    m_lowS = tab.Add(NetworkTableNames::kLowSSetting, low_s)
+    m_lowS = tab.AddPersistent(NetworkTableNames::kLowSSetting, low_s)
                  .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                  .WithProperties(saturationAndValueSliderProperties)
                  .GetEntry();
-    m_highS = tab.Add(NetworkTableNames::kHighSSetting, high_s)
+    m_highS = tab.AddPersistent(NetworkTableNames::kHighSSetting, high_s)
                   .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                   .WithProperties(saturationAndValueSliderProperties)
                   .GetEntry();
-    m_lowV = tab.Add(NetworkTableNames::kLowVSetting, low_v)
+    m_lowV = tab.AddPersistent(NetworkTableNames::kLowVSetting, low_v)
                  .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                  .WithProperties(saturationAndValueSliderProperties)
                  .GetEntry();
-    m_highV = tab.Add(NetworkTableNames::kHighVSetting, high_v)
+    m_highV = tab.AddPersistent(NetworkTableNames::kHighVSetting, high_v)
                   .WithWidget(frc::BuiltInWidgets::kNumberSlider)
                   .WithProperties(saturationAndValueSliderProperties)
                   .GetEntry();

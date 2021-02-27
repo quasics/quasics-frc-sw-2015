@@ -30,6 +30,7 @@ class RobotContainer {
   void ConfigureDrivingCommand();
   void EnableTankDrive();
   void EnableArcadeDrive();
+  frc2::SequentialCommandGroup* GenerateRamseteCommand();
 
  private:
   // Helper class to manage settings for vision processing.

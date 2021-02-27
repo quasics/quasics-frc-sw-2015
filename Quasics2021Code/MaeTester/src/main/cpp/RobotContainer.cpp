@@ -22,12 +22,12 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
       [this] {
         double stickValue =
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
-        return stickValue;
+        return deadband(stickValue);
       },
       [this] {
         double stickValue =
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
-        return stickValue;
+        return deadband(stickValue);
       }));
 }
 
@@ -57,11 +57,18 @@ void RobotContainer::ConfigureSmartDashboard() {
       [this] {
         double stickValue =
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
-        return stickValue;
+        return deadband(stickValue);
       },
       [this] {
         double stickValue =
             driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
-        return stickValue;
+        return deadband(stickValue);
       }));
+}
+
+double RobotContainer::deadband(double num){
+  if(num > OIConstants::DeadBand_LowValue && num < OIConstants::DeadBand_HighValue){
+    return 0;
+  }
+  return num;
 }

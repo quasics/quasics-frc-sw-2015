@@ -43,4 +43,5 @@ class RobotContainer {
   void ConfigureDriverButtonBindings();
   void ConfigureOperatorButtonBindings();
   void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId, frc2::Command* command);
+  double deadband(double num);
 };

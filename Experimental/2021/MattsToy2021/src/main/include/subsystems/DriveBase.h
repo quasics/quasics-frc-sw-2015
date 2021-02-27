@@ -14,7 +14,7 @@
 #include "Constants.h"
 #include "sensors/MaxboticsUltrasonicSensor.h"
 
-#undef ENABLE_ULTRASONICS
+#define ENABLE_ULTRASONICS
 
 // TODO(mjh): Decide if we want to just use values from 1 encoder per side for
 // position/distance, or take an average, or what.

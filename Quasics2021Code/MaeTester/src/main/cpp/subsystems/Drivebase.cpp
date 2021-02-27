@@ -17,8 +17,6 @@ Drivebase::Drivebase()
   rightRear(CANBusIds::SparkMaxIds::Right_Rear_Number,
                 rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("Drivebase");
-  rightFront.SetInverted(false);
-  rightRear.SetInverted(false);
   leftFront.SetInverted(true);
   leftRear.SetInverted(true);
 }

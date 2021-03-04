@@ -5,9 +5,9 @@
 
 class SpeedScaler {
  public:
-  enum class Mode { Turtle, Normal, Turbo };
+  enum Mode { Turtle, Normal, Turbo };
   SpeedScaler(
-      std::function<Mode()> speedModeSupplier = [] { return Mode::Normal; },
+      std::function<Mode()> speedModeSupplier = [] { return SpeedScaler::Normal; },
       double normalMax = 0.6, double turtleMax = 0.4, double turboMax = 0.8)
       : m_speedModeSupplier(speedModeSupplier),
         m_turtleMax(std::clamp(turtleMax, 0.0, 1.0)),  // Bounds to [0..1]
@@ -19,13 +19,13 @@ class SpeedScaler {
     double multiplier = m_normalMax;
 
     switch (m_speedModeSupplier()) {
-      case Mode::Normal:
+      case Normal:
         multiplier = m_normalMax;
         break;
-      case Mode::Turtle:
+      case Turtle:
         multiplier = m_turtleMax;
         break;
-      case Mode::Turbo:
+      case Turbo:
         multiplier = m_turboMax;
         break;
     }

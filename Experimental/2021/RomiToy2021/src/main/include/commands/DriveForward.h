@@ -27,7 +27,7 @@ public:
   * Different sensors we can use to detect deviation from straight-line
   * movement.
   */
- enum class SensorMode { Gyro, Encoders };
+ enum SensorMode { Gyro, Encoders };
 
  /**
   * @param driveTrain pointer to the drive train substem
@@ -42,11 +42,11 @@ public:
  DriveForward(
      Drivetrain *driveTrain, double power,
      std::function<bool()> stopCondition = [] { return false; },
-     SensorMode sensorMode = SensorMode::Encoders, bool noisy = false)
+     SensorMode sensorMode = Encoders, bool noisy = false)
      : m_driveTrain(driveTrain),
        m_power(std::max(0.0, std::min(power, 1.0))),
        m_stopCondition(stopCondition),
-       m_useGyro(sensorMode == SensorMode::Gyro),
+       m_useGyro(sensorMode == Gyro),
        m_noisy(noisy) {
    AddRequirements({m_driveTrain});
  }

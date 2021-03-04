@@ -77,11 +77,11 @@ void RobotContainer::EnableTankDrive() {
                 ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
                 : JoystickDefinitions::GameSirPro::RightTrigger;
         if (scalingDeadBand(m_controller.GetRawAxis(turtleTrigger)) > 0)
-          return SpeedScaler::Mode::Turtle;
+          return SpeedScaler::Turtle;
         else if (scalingDeadBand(m_controller.GetRawAxis(turboTrigger)) > 0)
-          return SpeedScaler::Mode::Turbo;
+          return SpeedScaler::Turbo;
         else
-          return SpeedScaler::Mode::Normal;
+          return SpeedScaler::Normal;
       },
       normalMax, turtleMax, turboMax);
 
@@ -175,8 +175,8 @@ void RobotContainer::ConfigureButtonBindings() {
       &m_drive,
       .5,                    // Power setting
       [] { return false; },  // Stop condition (move until interrupted)
-      DriveForward::SensorMode::Gyro,  // Sensor mode
-      false                            // Noisy?
+      DriveForward::Gyro,    // Sensor mode
+      false                  // Noisy?
   );
 
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::G))

@@ -42,6 +42,12 @@ DriveBase::DriveBase()
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
   // std::cout << "Gyro reading: " << adiGyro.GetAngle() << std::endl;
+/*
+  std::cout << "Encoders: left = " << leftFrontEncoder.GetPosition() << '/'
+            << leftRearEncoder.GetPosition()
+            << ", right = " << rightFrontEncoder.GetPosition() << '/'
+            << rightRearEncoder.GetPosition() << std::endl;
+*/
 }
 
 void DriveBase::SetCoastingEnabled(bool enabled) {

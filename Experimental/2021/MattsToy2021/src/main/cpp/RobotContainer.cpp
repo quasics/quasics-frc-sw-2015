@@ -15,14 +15,6 @@ constexpr double kMaxTurtleSpeed = 0.4;
 constexpr double kMaxNormalSpeed = 0.6;
 constexpr double kMaxTurboSpeed = 0.75;
 
-inline double DeadBand(double stickValue) {
-  if (stickValue > OIConstants::DeadBand_LowValue &&
-      stickValue < OIConstants::DeadBand_HighValue) {
-    return 0;
-  }
-  return (stickValue);
-}
-
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   std::vector<char> buffer(4096);
   if (getcwd(&buffer[0], buffer.size()) != NULL) {

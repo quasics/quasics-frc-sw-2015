@@ -21,10 +21,12 @@
  */
 namespace CANBusIds{
     namespace SparkMaxIds{
-        constexpr int Left_Front_Number = 4;
-        constexpr int Left_Rear_Number = 3;
-        constexpr int Right_Front_Number = 2;
-        constexpr int Right_Rear_Number = 1;
+        // The following values reflect the Nike drive base and its idea of
+        // "front".
+        constexpr int Left_Front_Number = 1;
+        constexpr int Left_Rear_Number = 2;
+        constexpr int Right_Front_Number = 3;
+        constexpr int Right_Rear_Number = 4;
     }
     namespace VictorSPXIds{
       constexpr int ShootingMotor = 5;

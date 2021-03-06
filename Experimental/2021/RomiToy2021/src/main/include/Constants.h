@@ -97,7 +97,7 @@ namespace RobotData {
         RobotData::kTrackwidthMeters};
 
     // The following values are drawn from drive characterization performed
-    // on the Romi "Scott's Toy", and captured in the team wiki here:
+    // on the Romi "Matt's Toy", and captured in the team wiki here:
     // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants
     constexpr auto ksVolts = 1.16_V;                                // "kS"
     constexpr auto kvVoltSecondsPerMeter = 1.79 * 1_V * 1_s / 1_m;  // "kV"

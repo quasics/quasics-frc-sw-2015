@@ -99,13 +99,13 @@ namespace RobotData {
     // The following values are drawn from drive characterization performed
     // on the Romi "Matt's Toy", and captured in the team wiki here:
     // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants
-    constexpr auto ksVolts = 1.16_V;                                // "kS"
-    constexpr auto kvVoltSecondsPerMeter = 1.79 * 1_V * 1_s / 1_m;  // "kV"
+    constexpr auto ksVolts = 1.25_V;                                // "kS"
+    constexpr auto kvVoltSecondsPerMeter = 5.7 * 1_V * 1_s / 1_m;   // "kV"
     constexpr auto kaVoltSecondsSquaredPerMeter =                   // "kA"
-        0.0312 * 1_V * 1_s * 1_s / 1_m;
+        0.0176 * 1_V * 1_s * 1_s / 1_m;
 
     constexpr double kPDriveVel =
-        0.636;  // "kP" - proportional coefficient for PID
+        0.00352;  // "kP" - proportional coefficient for PID
     constexpr double kIDriveVel = 0.0;  // "kI" - integral coefficient for PID
     constexpr double kDDriveVel = 0.0;  // "kD" - derivative coefficient for PID
 

@@ -122,7 +122,8 @@ class Drivetrain : public CommonDriveSubsystem {
  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
 
  /**
-  * Resets the odometry to the specified pose.
+  * Resets the odometry (i.e., resets the encoders to 0, and stores the
+  * specified pose as our current one).
   *
   * @param pose The pose to which to set the odometry.
   */

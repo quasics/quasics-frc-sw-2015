@@ -10,7 +10,9 @@
 #include <iostream>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
-#include <frc/SpeedControllerGroup.h>
+#include <frc/SpeedControllerGroup.h> 
+#include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/geometry/Pose2d.h>
 
 
 class Drivebase : public frc2::SubsystemBase {
@@ -29,6 +31,14 @@ class Drivebase : public frc2::SubsystemBase {
   void ResetEncoders();
   double GetLeftEncoderCount();
   double GetRightEncoderCount();
+
+ public:
+  frc::Pose2d GetPose();
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+  void ResetOdemetry(frc::Pose2d pose);
+  void TankDriveVolts(units::volt_t left, units::volt_t right);
+
+
    
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -40,9 +50,15 @@ class Drivebase : public frc2::SubsystemBase {
 
    frc::ADXRS450_Gyro adiGyro{
       frc::SPI::Port::kOnboardCS0};
-        
+
   rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
   rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
+
+  frc::SpeedControllerGroup LeftMotors{leftFront, leftRear};
+  frc::SpeedControllerGroup RightMotors{rightFront, rightRear};
+
+  frc::DifferentialDrive m_drive{LeftMotors, RightMotors};
+  frc::DifferentialDriveOdometry m_odometry;
 };

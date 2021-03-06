@@ -3,6 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
+#include <frc/kinematics/DifferentialDriveKinematics.h>
+#include <units/acceleration.h>
+#include <units/length.h>
+#include <units/time.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -80,4 +86,16 @@ namespace OIConstants {
 
 namespace DrivebaseConstants{
   constexpr double powerScaling = .6;
+  constexpr units::meter_t kTrackWidthMeters{1.3965298};
+  const frc::DifferentialDriveKinematics kDriveKinematics{kTrackWidthMeters};
+  constexpr auto ksVolts = 0.31_V;
+  constexpr auto kvVoltSecondsPerMeter = 2.6 * 1_V * 1_s / 1_m;
+  constexpr auto kaVoltSecondsSquaredPerMeter = 0.232 * 1_V * 1_s * 1_s / 1_m;
+  constexpr double kPDriveVel = 2.15;
+  constexpr double kIDriveVel = 0.0;
+  constexpr double kDDriveVel = 0.0;
+  constexpr auto kMaxSpeed = 0.8_mps;
+  constexpr auto kMaxAcceleration = 0.8_mps_sq;
+  constexpr double kRamseteB = 2;
+  constexpr double kRamseteZeta = 0.7;
 }

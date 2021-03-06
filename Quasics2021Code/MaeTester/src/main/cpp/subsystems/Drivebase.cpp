@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <units/length.h>
+#include <units/time.h>
 
 constexpr double kTicksPerRevolution_NeoMotor = 42;
 
@@ -15,7 +16,8 @@ constexpr double kGearRatio_2021 = 10.71;
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
 Drivebase::Drivebase()
-: leftFront(CANBusIds::SparkMaxIds::Left_Front_Number,
+: m_odometry(units::degree_t(adiGyro.GetAngle())),
+  leftFront(CANBusIds::SparkMaxIds::Left_Front_Number,
                 rev::CANSparkMax::MotorType::kBrushless),
   leftRear(CANBusIds::SparkMaxIds::Left_Rear_Number,
                rev::CANSparkMax::MotorType::kBrushless),
@@ -57,4 +59,23 @@ double Drivebase::GetLeftEncoderCount() {
 
 double Drivebase::GetRightEncoderCount() {
     return rightFrontEncoder.GetPosition();
+}
+
+frc::Pose2d Drivebase::GetPose(){
+    return m_odometry.GetPose();
+}
+
+frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds(){
+    return frc::DifferentialDriveWheelSpeeds{leftRearEncoder.GetVelocity() * 1_m/1_s, rightRearEncoder.GetVelocity()* 1_m/1_s};
+}
+
+void Drivebase::ResetOdemetry(frc::Pose2d pose) {
+    ResetEncoders();
+    m_odometry.ResetPosition(pose, adiGyro.GetRotation2d());
+}
+
+void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
+    LeftMotors.SetVoltage(-left);
+    RightMotors.SetVoltage(right);
+    m_drive.Feed();
 }

@@ -26,6 +26,13 @@ class RobotContainer {
 
   frc2::Command* GetAutonomousCommand();
 
+  frc2::SequentialCommandGroup* GenerateRamseteCommand(bool resetTelemetryAtStart);
+
+  frc2::SequentialCommandGroup* GenerateRamseteCommand(
+    const frc::Pose2d& start,
+    const std::vector<frc::Translation2d>& interiorWaypoints,
+    const frc::Pose2d& end, bool resetTelemetryAtStart);
+
  private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;

@@ -5,6 +5,8 @@
 #include "subsystems/Drivebase.h"
 #include "Constants.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <iostream>
 #include <units/length.h>
 #include <units/time.h>
@@ -26,13 +28,29 @@ Drivebase::Drivebase()
   rightRear(CANBusIds::SparkMaxIds::Right_Rear_Number,
                 rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("Drivebase");
-  leftFront.SetInverted(true);
-  leftRear.SetInverted(true);
+
+  rightFront.SetInverted(false);
+  rightRear.SetInverted(false);
+
+  LeftMotors.reset(new frc::SpeedControllerGroup(leftFront, leftRear));
+  RightMotors.reset(new frc::SpeedControllerGroup(rightFront, rightRear));
+
+  m_drive.reset(new frc::DifferentialDrive(*LeftMotors, *RightMotors));
+
   adiGyro.Calibrate();
 }
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {}
+void Drivebase::Periodic() {
+    auto rotation = GetZAxisGyro().GetRotation2d();
+  auto leftDistance = GetLeftEncoderDistance();
+  auto rightDistance = GetRightEncoderDistance();
+
+  frc::SmartDashboard::PutNumber("Right Side Encoders ",  leftDistance.to<double>());
+  frc::SmartDashboard::PutNumber("Left Side Encoders",  rightDistance.to<double>());
+
+  m_odometry.Update(rotation, leftDistance, rightDistance);
+}
 
 void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed){
     std::cerr << "Setting speeds: left=" << leftSpeed << ", right=" << rightSpeed << std::endl;
@@ -67,6 +85,7 @@ frc::Pose2d Drivebase::GetPose(){
 
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds(){
     return frc::DifferentialDriveWheelSpeeds{leftRearEncoder.GetVelocity() * 1_m/1_s, rightRearEncoder.GetVelocity()* 1_m/1_s};
+    
 }
 
 void Drivebase::ResetOdemetry(frc::Pose2d pose) {
@@ -75,7 +94,17 @@ void Drivebase::ResetOdemetry(frc::Pose2d pose) {
 }
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-    LeftMotors.SetVoltage(-left);
-    RightMotors.SetVoltage(right);
-    m_drive.Feed();
+    LeftMotors->SetVoltage(-left);
+    RightMotors->SetVoltage(right);
+    m_drive->Feed();
+}
+units::meter_t Drivebase::GetRightEncoderDistance(){
+    auto distance = ((rightFrontEncoder.GetPosition()) / kGearRatio_2021) *
+                       (kWheelDiameter * wpi::math::pi);
+  return distance;
+}
+units::meter_t Drivebase::GetLeftEncoderDistance(){
+    auto distance = ((leftFrontEncoder.GetPosition())/ kGearRatio_2021) *
+                        (kWheelDiameter * wpi::math::pi);
+    return distance;
 }

@@ -13,6 +13,8 @@
 #include <frc/SpeedControllerGroup.h> 
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/geometry/Pose2d.h>
+#include <units/length.h>
+
 
 
 class Drivebase : public frc2::SubsystemBase {
@@ -31,6 +33,9 @@ class Drivebase : public frc2::SubsystemBase {
   void ResetEncoders();
   double GetLeftEncoderCount();
   double GetRightEncoderCount();
+  units::meter_t GetRightEncoderDistance();
+  units::meter_t GetLeftEncoderDistance();
+
 
  public:
   frc::Pose2d GetPose();
@@ -56,9 +61,11 @@ class Drivebase : public frc2::SubsystemBase {
   rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
   rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
 
-  frc::SpeedControllerGroup LeftMotors{leftFront, leftRear};
-  frc::SpeedControllerGroup RightMotors{rightFront, rightRear};
+  std::unique_ptr<frc::SpeedControllerGroup> LeftMotors;
+  std::unique_ptr<frc::SpeedControllerGroup> RightMotors;
+  // frc::SpeedControllerGroup LeftMotors{leftFront, leftRear};
+  // frc::SpeedControllerGroup RightMotors{rightFront, rightRear};
 
-  frc::DifferentialDrive m_drive{LeftMotors, RightMotors};
+  std::unique_ptr<frc::DifferentialDrive> m_drive;
   frc::DifferentialDriveOdometry m_odometry;
 };

@@ -6,6 +6,7 @@
 
 #include <wpi/math>
 
+#include "../../../../../Common2021/LoggingHelpers.h"
 #include "Constants.h"
 
 using namespace DriveConstants;
@@ -28,9 +29,15 @@ Drivetrain::Drivetrain() : m_odometry(units::degree_t(m_gyro.GetAngleZ())) {
 // This method will be called once per scheduler run.
 void Drivetrain::Periodic() {
   // Implementation of subsystem periodic method goes here.
-  m_odometry.Update(GetZAxisGyro().GetRotation2d(),
-                    units::meter_t(m_leftEncoder.GetDistance()),
-                    units::meter_t(m_rightEncoder.GetDistance()));
+  auto rotation = GetZAxisGyro().GetRotation2d();
+  auto leftDistance = units::meter_t(m_leftEncoder.GetDistance());
+  auto rightDistance = units::meter_t(m_rightEncoder.GetDistance());
+
+  LOG_EVERY_N_TIMES(10, std::cout << "Odometry: " << rotation.Degrees() << " / "
+                                  << leftDistance << " / " << rightDistance
+                                  << std::endl;)
+
+  m_odometry.Update(rotation, leftDistance, rightDistance);
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
@@ -93,4 +100,40 @@ double Drivetrain::GetGyroAngleZ() {
 
 void Drivetrain::ResetGyro() {
   m_gyro.Reset();
+}
+
+frc::Pose2d Drivetrain::GetPose() {
+  return m_odometry.GetPose();
+}
+
+/**
+ * Returns the current wheel speeds of the robot.
+ *
+ * @return The current wheel speeds.
+ */
+frc::DifferentialDriveWheelSpeeds Drivetrain::GetWheelSpeeds() {
+  return {units::meters_per_second_t(m_leftEncoder.GetRate()),
+          units::meters_per_second_t(m_rightEncoder.GetRate())};
+}
+
+/**
+ * Resets the odometry to the specified pose.
+ *
+ * @param pose The pose to which to set the odometry.
+ */
+void Drivetrain::ResetOdometry(frc::Pose2d pose) {
+  ResetEncoders();
+  m_odometry.ResetPosition(pose, GetZAxisGyro().GetRotation2d());
+}
+
+/**
+ * Controls each side of the drive directly with a voltage.
+ *
+ * @param left the commanded left output
+ * @param right the commanded right output
+ */
+void Drivetrain::TankDriveVolts(units::volt_t left, units::volt_t right) {
+  m_leftMotor.SetVoltage(left);
+  m_rightMotor.SetVoltage(-right);
+  m_drive.Feed();
 }

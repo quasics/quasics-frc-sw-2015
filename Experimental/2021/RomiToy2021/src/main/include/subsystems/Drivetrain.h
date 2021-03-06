@@ -103,58 +103,49 @@ class Drivetrain : public CommonDriveSubsystem {
    * Returns the current angle of the Romi around the Z-axis, in degrees.
    */
   double GetGyroAngleZ();
+
+  // Functions to support trajectory-following.
+ public:
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
    */
-  frc::Pose2d GetPose() {
-    return m_odometry.GetPose();
-  }
+ frc::Pose2d GetPose();
 
-  /**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
-  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() {
-    return {units::meters_per_second_t(m_leftEncoder.GetRate()),
-            units::meters_per_second_t(m_rightEncoder.GetRate())};
-  }
+ /**
+  * Returns the current wheel speeds of the robot.
+  *
+  * @return The current wheel speeds.
+  */
+ frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
 
-  /**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose The pose to which to set the odometry.
-   */
-  void ResetOdometry(frc::Pose2d pose) {
-    ResetEncoders();
-    m_odometry.ResetPosition(pose, GetZAxisGyro().GetRotation2d());
-  }
+ /**
+  * Resets the odometry to the specified pose.
+  *
+  * @param pose The pose to which to set the odometry.
+  */
+ void ResetOdometry(frc::Pose2d pose);
 
-  /**
-   * Controls each side of the drive directly with a voltage.
-   *
-   * @param left the commanded left output
-   * @param right the commanded right output
-   */
-  void TankDriveVolts(units::volt_t left, units::volt_t right) {
-    m_leftMotor.SetVoltage(left);
-    m_rightMotor.SetVoltage(-right);
-    m_drive.Feed();
-  }
+ /**
+  * Controls each side of the drive directly with a voltage.
+  *
+  * @param left the commanded left output
+  * @param right the commanded right output
+  */
+ void TankDriveVolts(units::volt_t left, units::volt_t right);
 
- private:
-  frc::Spark m_leftMotor{0};
-  frc::Spark m_rightMotor{1};
+private:
+ frc::Spark m_leftMotor{0};
+ frc::Spark m_rightMotor{1};
 
-  frc::Encoder m_leftEncoder{4, 5};
-  frc::Encoder m_rightEncoder{6, 7};
+ frc::Encoder m_leftEncoder{4, 5};
+ frc::Encoder m_rightEncoder{6, 7};
 
-  frc::DifferentialDrive m_drive{m_leftMotor, m_rightMotor};
+ frc::DifferentialDrive m_drive{m_leftMotor, m_rightMotor};
 
-  RomiGyro m_gyro;
-  frc::BuiltInAccelerometer m_accelerometer;
+ RomiGyro m_gyro;
+ frc::BuiltInAccelerometer m_accelerometer;
 
-  frc::DifferentialDriveOdometry m_odometry;
+ frc::DifferentialDriveOdometry m_odometry;
 };

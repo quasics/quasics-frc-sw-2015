@@ -13,14 +13,12 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
+#include <frc2/command/CommandHelper.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
-#include <frc2/command/CommandHelper.h>
-
-#include <filesystem>
 
 #include "../../../../Common2021/ButtonHelpers.h"
 #include "../../../../Common2021/DeadBandEnforcer.h"
@@ -55,7 +53,8 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureButtonBindings();
 
-  frc::SmartDashboard::PutData("Follow sample path", GenerateRamseteCommand());
+  frc::SmartDashboard::PutData("Follow sample path",
+                               GenerateRamseteCommand(true));
 }
 
 void RobotContainer::EnableTankDrive() {
@@ -187,7 +186,10 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-#ifdef TURN_TO_TARGET_AUTO
+#if 1
+  static frc2::Command* trajectory = GenerateRamseteCommand(true);
+  return trajectory;
+#elif defined(TURN_TO_TARGET_AUTO)
   return &m_turnToTargetCommand;
 #else
   // An example command will be run in autonomous
@@ -195,9 +197,10 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 #endif
 }
 
-// TODO(mjh): Modify this method so that we can pass in the file name for
-// a set of path data, rather than using a fixed trajectory.
-frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand() {
+frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+    const frc::Pose2d& start,
+    const std::vector<frc::Translation2d>& interiorWaypoints,
+    const frc::Pose2d& end, bool resetTelemetryAtStart) {
   using namespace RobotData::DriveConstants;
   using namespace RobotData::PathFollowingLimits;
 
@@ -216,28 +219,64 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand() {
 
   // An example trajectory to follow.  All units in meters.
   auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
-      // Pass through these two interior waypoints, making an 's' curve path
-      {frc::Translation2d(1_m, 1_m), frc::Translation2d(2_m, -1_m)},
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)),
-      // Pass the config
-      config);
+      start, interiorWaypoints, end, config);
 
   frc2::RamseteCommand ramseteCommand(
-      exampleTrajectory, [this]() { return m_drive.GetPose(); },
-      frc::RamseteController(kRamseteB, kRamseteZeta), feedForward,
-      kDriveKinematics, [this] { return m_drive.GetWheelSpeeds(); },
-      frc2::PIDController(kPDriveVel, 0, 0),
-      frc2::PIDController(kPDriveVel, 0, 0),
+      /* trajectory to follow */
+      exampleTrajectory,
+      /* function that supplies the robot pose */
+      [this]() { return m_drive.GetPose(); },
+      /* RAMSETE controller used to follow the trajectory */
+      frc::RamseteController(kRamseteB, kRamseteZeta),
+      /* calculates the feedforward for the drive */
+      feedForward,
+      /* kinematics for the robot drivetrain */
+      kDriveKinematics,
+      /* function that supplies the left/right side speeds */
+      [this] { return m_drive.GetWheelSpeeds(); },
+      /* left controller */
+      frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
+      /* right controller */
+      frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
+      /* output function */
       [this](auto left, auto right) { m_drive.TankDriveVolts(left, right); },
+      /* required subsystems */
       {&m_drive});
 
-  // Reset odometry to the starting pose of the trajectory.
-  m_drive.ResetOdometry(exampleTrajectory.InitialPose());
-
   return new frc2::SequentialCommandGroup(
+      frc2::PrintCommand("Starting trajectory code"),
+      frc2::InstantCommand([this, resetTelemetryAtStart, exampleTrajectory] {
+        if (resetTelemetryAtStart) {
+          m_drive.ResetOdometry(exampleTrajectory.InitialPose());
+        }
+      }),
       std::move(ramseteCommand),
+      // Shut the drive down.
+      frc2::PrintCommand("Shutting down trajectory code"),
       frc2::InstantCommand([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+    bool resetTelemetryAtStart) {
+  auto start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+#if 0
+  std::vector<frc::Translation2d> interiorWaypoints{
+      // Pass through these two interior waypoints, making an 's' curve path
+      frc::Translation2d(1_m, 1_m),
+      frc::Translation2d(2_m, -1_m),
+  };
+  // End 3 meters straight ahead of where we started, facing forward
+  auto end = frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg));
+#else
+  // Move in a stepwise pattern
+  std::vector<frc::Translation2d> interiorWaypoints{
+      frc::Translation2d(1_m, 0_m),
+      frc::Translation2d(2_m, 0_m),
+  };
+  // End @ (3m,0m) distance from start, facing foreward.
+  auto end = frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg));
+#endif
+
+  return GenerateRamseteCommand(start, interiorWaypoints, end,
+                                resetTelemetryAtStart);
 }

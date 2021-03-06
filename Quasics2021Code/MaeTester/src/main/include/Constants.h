@@ -96,7 +96,7 @@ namespace DrivebaseConstants{
   constexpr double kPDriveVel = 2.15;
   constexpr double kIDriveVel = 0.0;
   constexpr double kDDriveVel = 0.0;
-  constexpr auto kMaxSpeed = 0.8_mps;
+  constexpr auto kMaxSpeed = 0.5_mps;
   constexpr auto kMaxAcceleration = 0.8_mps_sq;
   constexpr double kRamseteB = 2;
   constexpr double kRamseteZeta = 0.7;

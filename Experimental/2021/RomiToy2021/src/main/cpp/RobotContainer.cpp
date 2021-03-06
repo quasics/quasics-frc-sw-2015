@@ -259,14 +259,14 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     bool resetTelemetryAtStart) {
   auto start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-#if 0
+#if 1
   std::vector<frc::Translation2d> interiorWaypoints{
       // Pass through these two interior waypoints, making an 's' curve path
-      frc::Translation2d(1_m, 1_m),
-      frc::Translation2d(2_m, -1_m),
+      frc::Translation2d(0.5_m, 0.5_m),
+      frc::Translation2d(1_m, -0.5_m),
   };
   // End 3 meters straight ahead of where we started, facing forward
-  auto end = frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg));
+  auto end = frc::Pose2d(1.5_m, 0_m, frc::Rotation2d(0_deg));
 #else
   // Move in a stepwise pattern
   std::vector<frc::Translation2d> interiorWaypoints{

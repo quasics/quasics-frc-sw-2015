@@ -29,14 +29,18 @@ Drivebase::Drivebase()
                 rev::CANSparkMax::MotorType::kBrushless) {
   SetSubsystem("Drivebase");
 
-  rightFront.SetInverted(false);
-  rightRear.SetInverted(false);
+  rightFront.SetInverted(true);
+  rightRear.SetInverted(true);
+
+  leftFront.SetInverted(false);
+  leftRear.SetInverted(false);
 
   LeftMotors.reset(new frc::SpeedControllerGroup(leftFront, leftRear));
   RightMotors.reset(new frc::SpeedControllerGroup(rightFront, rightRear));
 
   m_drive.reset(new frc::DifferentialDrive(*LeftMotors, *RightMotors));
 
+  ResetEncoders();
   adiGyro.Calibrate();
 }
 

@@ -34,12 +34,12 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
       &drivebase,
       [this] {
         double stickValue =
-            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
+            -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::RightYAxis);
         return deadband(stickValue);
       },
       [this] {
         double stickValue =
-            driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+            -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
         return deadband(stickValue);
       }));
 }

@@ -52,6 +52,7 @@ void Drivebase::Periodic() {
 
   frc::SmartDashboard::PutNumber("Right Side Encoders ",  leftDistance.to<double>());
   frc::SmartDashboard::PutNumber("Left Side Encoders",  rightDistance.to<double>());
+  frc::SmartDashboard::PutNumber("Rotation", rotation.Degrees().to<double>());
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
 }
@@ -98,8 +99,8 @@ void Drivebase::ResetOdemetry(frc::Pose2d pose) {
 }
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-    LeftMotors->SetVoltage(-left);
-    RightMotors->SetVoltage(right);
+    LeftMotors->SetVoltage(left);
+    RightMotors->SetVoltage(-right);
     m_drive->Feed();
 }
 units::meter_t Drivebase::GetRightEncoderDistance(){

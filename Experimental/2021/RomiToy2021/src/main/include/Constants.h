@@ -103,17 +103,25 @@ namespace RobotData {
     constexpr auto kvVoltSecondsPerMeter = 1.79 * 1_V * 1_s / 1_m;  // "kV"
     constexpr auto kaVoltSecondsSquaredPerMeter =                   // "kA"
         0.0312 * 1_V * 1_s * 1_s / 1_m;
-    constexpr double kPDriveVel = 0.636;  // "kP"
+
+    constexpr double kPDriveVel =
+        0.636;  // "kP" - proportional coefficient for PID
+    constexpr double kIDriveVel = 0.0;  // "kI" - integral coefficient for PID
+    constexpr double kDDriveVel = 0.0;  // "kD" - derivative coefficient for PID
 
   }  // namespace DriveConstants
 
   namespace PathFollowingLimits {
-    constexpr auto kMaxSpeed = 3_mps;
-    constexpr auto kMaxAcceleration = 3_mps_sq;
+    constexpr auto kMaxSpeed = 0.8_mps;
+    constexpr auto kMaxAcceleration = 0.8_mps_sq;
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and
-    // seconds
-    constexpr double kRamseteB = 2;
-    constexpr double kRamseteZeta = 0.7;
+    // seconds.
+    constexpr double kRamseteB =
+        2;  // Tuning parameter (b > 0) for which larger values make
+            // convergence more aggressive like a proportional term.
+    constexpr double kRamseteZeta =
+        0.7;  // Tuning parameter (0 < zeta < 1) for which larger values provide
+              // more damping in response.
   }  // namespace PathFollowingLimits
 }  // namespace RobotData

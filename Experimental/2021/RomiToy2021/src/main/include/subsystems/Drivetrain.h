@@ -104,7 +104,8 @@ class Drivetrain : public CommonDriveSubsystem {
    */
   double GetGyroAngleZ();
 
-  // Functions to support trajectory-following.
+  //
+  // Additional functions to support trajectory-following.
  public:
   /**
    * Returns the currently-estimated pose of the robot.

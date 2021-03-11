@@ -88,10 +88,6 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Go in a line", GenerateRamseteCommand(
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
-  frc::SmartDashboard::PutNumber(
-      "Right Side Encoders ", drivebase.GetRightEncoderDistance().to<double>());
-  frc::SmartDashboard::PutNumber(
-      "Left Side Encoders", drivebase.GetLeftEncoderDistance().to<double>());
 }
 
 double RobotContainer::deadband(double num) {

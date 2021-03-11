@@ -12,6 +12,14 @@
 
 #include "Constants.h"
 
+#define LOG_EVERY_N_TIMES(n, outputCmd)       \
+  {                                           \
+    static int counter = -1;                  \
+    if ((counter = (counter + 1) % n) == 0) { \
+      outputCmd;                              \
+    }                                         \
+  }
+
 constexpr double kTicksPerRevolution_NeoMotor = 42;
 
 constexpr double kGearRatio_2021 = 10.71;
@@ -39,6 +47,23 @@ Drivebase::Drivebase()
   LeftMotors.reset(new frc::SpeedControllerGroup(leftFront, leftRear));
   RightMotors.reset(new frc::SpeedControllerGroup(rightFront, rightRear));
 
+  // Default for the encoders is to report velocity in RPM; we want that to come
+  // back as m/s.
+  units::meter_t wheelCircumference =
+      kWheelDiameter * wpi::math::pi;  // Will auto-convert to meters
+  units::meter_t velocityAdjustmentForGearing =
+      wheelCircumference / kGearRatio_2021;  // Should convert RPM to m/min
+  units::meter_t velocityAdjustment =
+      velocityAdjustmentForGearing / 60;  // Adjust to m/s
+  std::cout << "Wheel circumference: " << wheelCircumference << "\n"
+            << "Velocity adjustment: " << velocityAdjustment << std::endl;
+
+  leftFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.to<double>());
+  leftRearEncoder.SetVelocityConversionFactor(velocityAdjustment.to<double>());
+  rightFrontEncoder.SetVelocityConversionFactor(
+      velocityAdjustment.to<double>());
+  rightRearEncoder.SetVelocityConversionFactor(velocityAdjustment.to<double>());
+
   m_drive.reset(new frc::DifferentialDrive(*LeftMotors, *RightMotors));
 
   ResetEncoders();
@@ -58,15 +83,18 @@ void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Rotation", rotation.Degrees().to<double>());
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
+
+  LOG_EVERY_N_TIMES(100, auto speeds = GetWheelSpeeds();
+                    std::cout << "Speeds: " << speeds.left << " / "
+                              << speeds.right << std::endl;)
 }
 
 void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed) {
-  std::cerr << "Setting speeds: left=" << leftSpeed << ", right=" << rightSpeed
-            << std::endl;
-  leftFront.Set(leftSpeed * DrivebaseConstants::powerScaling);
-  leftRear.Set(leftSpeed * DrivebaseConstants::powerScaling);
-  rightFront.Set(rightSpeed * DrivebaseConstants::powerScaling);
-  rightRear.Set(rightSpeed * DrivebaseConstants::powerScaling);
+  //   LOG_EVERY_N_TIMES(50, std::cerr << "Setting speeds: left=" << leftSpeed
+  //                                   << ", right=" << rightSpeed <<
+  //                                   std::endl;)
+  m_drive->TankDrive(leftSpeed * DrivebaseConstants::powerScaling,
+                     rightSpeed * DrivebaseConstants::powerScaling);
 }
 
 void Drivebase::Stop() {

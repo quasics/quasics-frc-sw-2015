@@ -89,7 +89,7 @@ void Drivebase::Periodic() {
                               << speeds.right << std::endl;)
 }
 
-void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed) {
+void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
   //   LOG_EVERY_N_TIMES(50, std::cerr << "Setting speeds: left=" << leftSpeed
   //                                   << ", right=" << rightSpeed <<
   //                                   std::endl;)
@@ -98,7 +98,7 @@ void Drivebase::setMotorSpeed(double leftSpeed, double rightSpeed) {
 }
 
 void Drivebase::Stop() {
-  setMotorSpeed(0, 0);
+  SetMotorSpeed(0, 0);
 }
 
 void Drivebase::ResetEncoders() {
@@ -126,7 +126,7 @@ frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
       rightRearEncoder.GetVelocity() * 1_m / 1_s};
 }
 
-void Drivebase::ResetOdemetry(frc::Pose2d pose) {
+void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
   m_odometry.ResetPosition(pose, adiGyro.GetRotation2d());
 }

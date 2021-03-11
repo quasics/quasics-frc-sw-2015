@@ -133,7 +133,7 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
   return new frc2::SequentialCommandGroup(
       frc2::InstantCommand([this, resetTelemetryAtStart, exampleTrajectory] {
         if (resetTelemetryAtStart) {
-          drivebase.ResetOdemetry(exampleTrajectory.InitialPose());
+          drivebase.ResetOdometry(exampleTrajectory.InitialPose());
         }
       }),
       std::move(ramseteCommand),

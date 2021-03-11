@@ -26,7 +26,7 @@ class Drivebase : public frc2::SubsystemBase {
    */
   void Periodic() override;
   void Stop();
-  void setMotorSpeed(double leftSpeed, double rightSpeed);
+  void SetMotorSpeed(double leftSpeed, double rightSpeed);
   frc::Gyro& GetZAxisGyro() {
     return adiGyro;
   }
@@ -40,7 +40,7 @@ class Drivebase : public frc2::SubsystemBase {
  public:
   frc::Pose2d GetPose();
   frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
-  void ResetOdemetry(frc::Pose2d pose);
+  void ResetOdometry(frc::Pose2d pose);
   void TankDriveVolts(units::volt_t left, units::volt_t right);
 
 

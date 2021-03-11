@@ -4,18 +4,17 @@
 
 #pragma once
 
+#include <frc/ADXRS450_Gyro.h>
+#include <frc/SpeedControllerGroup.h>
+#include <frc/drive/DifferentialDrive.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <iostream>
-#include <frc/ADXRS450_Gyro.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/SpeedControllerGroup.h> 
-#include <frc/kinematics/DifferentialDriveOdometry.h>
-#include <frc/geometry/Pose2d.h>
 #include <units/length.h>
 
-
+#include <iostream>
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -36,15 +35,12 @@ class Drivebase : public frc2::SubsystemBase {
   units::meter_t GetRightEncoderDistance();
   units::meter_t GetLeftEncoderDistance();
 
-
  public:
   frc::Pose2d GetPose();
   frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
   void ResetOdometry(frc::Pose2d pose);
   void TankDriveVolts(units::volt_t left, units::volt_t right);
 
-
-   
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
@@ -53,8 +49,7 @@ class Drivebase : public frc2::SubsystemBase {
   rev::CANSparkMax rightFront;
   rev::CANSparkMax rightRear;
 
-   frc::ADXRS450_Gyro adiGyro{
-      frc::SPI::Port::kOnboardCS0};
+  frc::ADXRS450_Gyro adiGyro{frc::SPI::Port::kOnboardCS0};
 
   rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
   rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();

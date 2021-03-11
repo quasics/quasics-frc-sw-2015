@@ -4,8 +4,7 @@
 
 #include "commands/DoASpin.h"
 
-DoASpin::DoASpin(Drivebase* drivebase)
- : drivebase(drivebase){
+DoASpin::DoASpin(Drivebase* drivebase) : drivebase(drivebase) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
@@ -16,7 +15,8 @@ void DoASpin::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DoASpin::Execute() {}
+void DoASpin::Execute() {
+}
 
 // Called once the command ends or is interrupted.
 void DoASpin::End(bool interrupted) {

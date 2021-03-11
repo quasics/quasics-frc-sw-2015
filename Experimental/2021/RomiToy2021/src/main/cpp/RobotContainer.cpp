@@ -20,21 +20,28 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 
+#include <algorithm>
+
 #include "../../../../Common2021/ButtonHelpers.h"
 #include "../../../../Common2021/DeadBandEnforcer.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
+#include "../../../../Common2021/TurnToTargetCommand.h"
 #include "Constants.h"
 #include "commands/DriveForward.h"
 
 #undef DRIVE_ARCADE_STYLE
-#define TURN_TO_TARGET_AUTO
 #define USE_GAMESIR_CONTROLLER
 
-// Unfortunately, the Logitech controllers can't be used with the Mac OS,
-// which is what Matt has handy.  So here's a convenient hack to encapsulate the
-// idea of what type of device we're using.
+// Unfortunately, SendableChoosers don't seem to work with the simulator
+// environment, just with a real Driver Station.  And since that won't work with
+// my Mac, I need to go with a fallback option.
+constexpr bool kUseChooserForAutoCmd = false;
+
+// The Logitech controllers can't be used with the Mac OS, which is what Matt
+// has handy.  So here's a convenient hack to encapsulate the idea of what type
+// of device we're using.
 inline bool usingLogitechController() {
 #ifdef USE_GAMESIR_CONTROLLER
   return false;
@@ -53,16 +60,54 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureButtonBindings();
 
-  frc::SmartDashboard::PutData("Follow sample path",
-                               GenerateRamseteCommand(true));
+  // Configure how we'll pick what to do in auto mode.
+  ConfigureAutonomousSelection();
+}
+
+void RobotContainer::ConfigureAutonomousSelection() {
+  // Note: I'd just use a SendableChooser here, but that doesn't work with the
+  // simulator, so I need something else on the Romi.  On the other hand,
+  // setting up the chooser, anyway, gives me an example to use when working
+  // with the real DS.
+
+  // A convenient way to make sure that commands are tied into both mechanisms
+  // for selection, and in the same order.  This helper widget will add them to
+  // both for me, so that I don't need to worry about missing anything, or
+  // moving stuff around in one but not the other, etc.
+  auto adder = [this](const char* name, frc2::Command* cmd) {
+    if (m_autoModeOptions.empty()) {
+      // The first command is assumed to be the default one.
+      m_autonomousChooser.SetDefaultOption(name, cmd);
+    } else {
+      m_autonomousChooser.AddOption(name, cmd);
+    }
+    m_autoModeOptions.push_back(std::shared_ptr<frc2::Command>(cmd));
+  };
+  adder("Linear", GenerateRamseteCommand(true, StraightLineTrajectory));
+  adder("S-curve", GenerateRamseteCommand(true, S_CurveTrajectory));
+  adder("Figure-8", GenerateRamseteCommand(true, FigureEightTrajectory));
+  adder("Turn to Target", new TurnToTargetCommand(&m_drive, 0.350));
+
+  // Put the SendableChooser on the Smart Dashboard for the driver's station.
+  frc::SmartDashboard::PutData("Auto mode", &m_autonomousChooser);
+
+  // Put the numeric input widget into the network tables for use with the
+  // simulator.
+  m_autoModeSelection = frc::Shuffleboard::GetTab("Settings")
+                            .Add("Auto mode index", 0)
+                            .WithWidget(frc::BuiltInWidgets::kTextView)
+                            .GetEntry();
 }
 
 void RobotContainer::EnableTankDrive() {
+  //////////////////////////////////////////////////////////////////
   // Set up scaling support for the speed controls.
   constexpr double turtleMax = 0.5;
   constexpr double normalMax = 0.75;
   constexpr double turboMax = 1.0;
-  DeadBandEnforcer scalingDeadBand(0.25);  // Require at least 25% to activate
+  DeadBandEnforcer scalingDeadBand(
+      0.25);  // Require at least 25% on the triggers to activate speed scaling
+
   SpeedScaler scaler(
       [this, scalingDeadBand] {
         // Speed mode signal
@@ -84,9 +129,7 @@ void RobotContainer::EnableTankDrive() {
       },
       normalMax, turtleMax, turboMax);
 
-  // "Dead band" evaluation for speed controls.
-  DeadBandEnforcer throttleDeadBand(0.06);
-
+  //////////////////////////////////////////////////////////////////
   // Set up the actual tank drive command, using the scaler from above
   // to help provide limiting factors.
   //
@@ -102,6 +145,11 @@ void RobotContainer::EnableTankDrive() {
   // Drivetrain code, but that needs to be done before they're assigned
   // to a DifferentialDrive, which would complicate the code there: so
   // it's simpler just to make the small tweak here. :-)
+
+  // "Dead band" evaluation for throttle control: if a stick hasn't moved at
+  // least this much, it's ignored.
+  DeadBandEnforcer throttleDeadBand(0.06);
+
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
       [this, scaler, throttleDeadBand] {
@@ -186,15 +234,20 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-#if 1
-  static frc2::Command* trajectory = GenerateRamseteCommand(true);
-  return trajectory;
-#elif defined(TURN_TO_TARGET_AUTO)
-  return &m_turnToTargetCommand;
-#else
-  // An example command will be run in autonomous
-  return &m_autonomousCommand;
-#endif
+  if (kUseChooserForAutoCmd) {
+    frc2::Command* selectedInChooser = m_autonomousChooser.GetSelected();
+    return selectedInChooser;
+  } else {
+    if (m_autoModeOptions.empty()) {
+      return nullptr;
+    }
+
+    // Gets the selection from the NetworkTables entry, clamped to the range
+    // that's supported (i.e., [0..N-1]).
+    const int selection = std::clamp<int>(int(m_autoModeSelection.GetDouble(0)),
+                                          0, m_autoModeOptions.size() - 1);
+    return m_autoModeOptions[selection].get();
+  }
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
@@ -203,6 +256,9 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const frc::Pose2d& end, bool resetTelemetryAtStart) {
   using namespace RobotData::DriveConstants;
   using namespace RobotData::PathFollowingLimits;
+
+  const frc::DifferentialDriveKinematics kDriveKinematics{
+      m_drive.GetTrackWidth()};
 
   // Set up config for trajectory
   frc::SimpleMotorFeedforward<units::meter> feedForward(
@@ -257,25 +313,47 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
-    bool resetTelemetryAtStart) {
-  auto start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-#if 1
-  std::vector<frc::Translation2d> interiorWaypoints{
-      // Pass through these two interior waypoints, making an 's' curve path
-      frc::Translation2d(0.5_m, 0.5_m),
-      frc::Translation2d(1_m, -0.5_m),
-  };
-  // End 3 meters straight ahead of where we started, facing forward
-  auto end = frc::Pose2d(1.5_m, 0_m, frc::Rotation2d(0_deg));
-#else
-  // Move in a stepwise pattern
-  std::vector<frc::Translation2d> interiorWaypoints{
-      frc::Translation2d(1_m, 0_m),
-      frc::Translation2d(2_m, 0_m),
-  };
-  // End @ (3m,0m) distance from start, facing foreward.
-  auto end = frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg));
-#endif
+    bool resetTelemetryAtStart, TrajectoryExample example) {
+  frc::Pose2d start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+  frc::Pose2d end;
+  std::vector<frc::Translation2d> interiorWaypoints;
+
+  switch (example) {
+    case S_CurveTrajectory:
+      interiorWaypoints = std::vector<frc::Translation2d>{
+          // Pass through these two interior waypoints, making an 's' curve path
+          frc::Translation2d(0.5_m, 0.5_m),
+          frc::Translation2d(1_m, -0.5_m),
+      };
+      // End 3 meters straight ahead of where we started, facing forward
+      end = frc::Pose2d(1.5_m, 0_m, frc::Rotation2d(0_deg));
+      break;
+
+    case StraightLineTrajectory:
+      interiorWaypoints = std::vector<frc::Translation2d>{
+          frc::Translation2d(1_m, 0_m),
+          frc::Translation2d(2_m, 0_m),
+      };
+      // End @ (3m,0m) distance from start, facing foreward.
+      end = frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg));
+      break;
+
+    case FigureEightTrajectory:
+      interiorWaypoints = std::vector<frc::Translation2d>{
+          // Pass through these interior waypoints, following a figure-8 path
+          frc::Translation2d(0.5_m, 0.5_m),  frc::Translation2d(1_m, -0.5_m),
+          frc::Translation2d(1.5_m, 0_m),    frc::Translation2d(1_m, 0.5_m),
+          frc::Translation2d(0.5_m, -0.5_m),
+      };
+      // End back where we started, facing forward
+      end = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+      break;
+
+    default:
+      std::cerr << "Unsupported example trajectory (" << int(example)
+                << ") specified!" << std::endl;
+      return nullptr;
+  }
 
   return GenerateRamseteCommand(start, interiorWaypoints, end,
                                 resetTelemetryAtStart);

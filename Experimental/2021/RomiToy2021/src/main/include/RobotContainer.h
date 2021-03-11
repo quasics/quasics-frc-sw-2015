@@ -7,9 +7,12 @@
 #include <frc/Joystick.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
+#include <networktables/NetworkTableEntry.h>
 
-#include "../../../../Common2021/TurnToTargetCommand.h"
+#include <vector>
+
 #include "../../../../Common2021/VisionSettingsHelper.h"
 #include "subsystems/Drivetrain.h"
 #include "subsystems/OnBoardIO.h"
@@ -30,8 +33,15 @@ class RobotContainer {
  private:
   void ConfigureButtonBindings();
   void ConfigureDrivingCommand();
+  void ConfigureAutonomousSelection();
   void EnableTankDrive();
   void EnableArcadeDrive();
+
+  enum TrajectoryExample {
+    StraightLineTrajectory,
+    S_CurveTrajectory,
+    FigureEightTrajectory
+  };
 
   /**
    * Generates a sample command to follow a simple trajectory.
@@ -44,7 +54,8 @@ class RobotContainer {
    *     starting point (and first drive back to that).
    */
   frc2::SequentialCommandGroup* GenerateRamseteCommand(
-      bool resetTelemetryAtStart);
+      bool resetTelemetryAtStart,
+      TrajectoryExample example = StraightLineTrajectory);
 
   /**
    * Generates a command to follow the specified trajectory.
@@ -79,5 +90,8 @@ class RobotContainer {
   Drivetrain m_drive;
   OnBoardIO m_onboardIO{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
-  TurnToTargetCommand m_turnToTargetCommand{&m_drive, 0.350};
+
+  std::vector<std::shared_ptr<frc2::Command>> m_autoModeOptions;
+  frc::SendableChooser<frc2::Command*> m_autonomousChooser;
+  nt::NetworkTableEntry m_autoModeSelection;
 };

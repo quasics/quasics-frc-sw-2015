@@ -90,12 +90,7 @@ namespace NetworkTableNames {
 }  // namespace NetworkTableNames
 
 namespace RobotData {
-  constexpr units::meter_t kTrackwidthMeters{0.142072613};
-
   namespace DriveConstants {
-    const frc::DifferentialDriveKinematics kDriveKinematics{
-        RobotData::kTrackwidthMeters};
-
     // The following values are drawn from drive characterization performed
     // on the Romi "Matt's Toy", and captured in the team wiki here:
     // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants

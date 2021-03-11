@@ -68,8 +68,38 @@ class Drivetrain : public CommonDriveSubsystem {
     return m_gyro.GetGyroZ();
   }
 
-  static constexpr double kCountsPerRevolution = 1440.0;
-  static constexpr units::meter_t kWheelDiameter = 70_mm;
+  //
+  // Additional functions to support trajectory-following.
+ public:
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  frc::Pose2d GetPose();
+
+  /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+
+  /**
+   * Resets the odometry (i.e., resets the encoders to 0, and stores the
+   * specified pose as our current one).
+   *
+   * @param pose The pose to which to set the odometry.
+   */
+  void ResetOdometry(frc::Pose2d pose);
+
+  /**
+   * Controls each side of the drive directly with a voltage.
+   *
+   * @param left the commanded left output
+   * @param right the commanded right output
+   */
+  void TankDriveVolts(units::volt_t left, units::volt_t right);
 
   //
   // Additional methods (should not be used in common commands).
@@ -104,50 +134,26 @@ class Drivetrain : public CommonDriveSubsystem {
    */
   double GetGyroAngleZ();
 
-  //
-  // Additional functions to support trajectory-following.
- public:
-  /**
-   * Returns the currently-estimated pose of the robot.
-   *
-   * @return The pose.
-   */
- frc::Pose2d GetPose();
+  units::meter_t GetTrackWidth() {
+    return kTrackwidthMeters;
+  }
 
- /**
-  * Returns the current wheel speeds of the robot.
-  *
-  * @return The current wheel speeds.
-  */
- frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+ private:
+  static constexpr double kCountsPerRevolution = 1440.0;
+  static constexpr units::meter_t kWheelDiameter = 70_mm;
+  static constexpr units::meter_t kTrackwidthMeters{0.142072613};
 
- /**
-  * Resets the odometry (i.e., resets the encoders to 0, and stores the
-  * specified pose as our current one).
-  *
-  * @param pose The pose to which to set the odometry.
-  */
- void ResetOdometry(frc::Pose2d pose);
+ private:
+  frc::Spark m_leftMotor{0};
+  frc::Spark m_rightMotor{1};
 
- /**
-  * Controls each side of the drive directly with a voltage.
-  *
-  * @param left the commanded left output
-  * @param right the commanded right output
-  */
- void TankDriveVolts(units::volt_t left, units::volt_t right);
+  frc::Encoder m_leftEncoder{4, 5};
+  frc::Encoder m_rightEncoder{6, 7};
 
-private:
- frc::Spark m_leftMotor{0};
- frc::Spark m_rightMotor{1};
+  frc::DifferentialDrive m_drive{m_leftMotor, m_rightMotor};
 
- frc::Encoder m_leftEncoder{4, 5};
- frc::Encoder m_rightEncoder{6, 7};
+  RomiGyro m_gyro;
+  frc::BuiltInAccelerometer m_accelerometer;
 
- frc::DifferentialDrive m_drive{m_leftMotor, m_rightMotor};
-
- RomiGyro m_gyro;
- frc::BuiltInAccelerometer m_accelerometer;
-
- frc::DifferentialDriveOdometry m_odometry;
+  frc::DifferentialDriveOdometry m_odometry;
 };

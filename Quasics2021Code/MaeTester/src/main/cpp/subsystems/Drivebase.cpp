@@ -76,17 +76,15 @@ void Drivebase::Periodic() {
   auto leftDistance = GetLeftEncoderDistance();
   auto rightDistance = GetRightEncoderDistance();
 
-  frc::SmartDashboard::PutNumber("Right Side Encoders ",
-                                 leftDistance.to<double>());
-  frc::SmartDashboard::PutNumber("Left Side Encoders",
-                                 rightDistance.to<double>());
+  frc::SmartDashboard::PutNumber("R Encoders ", leftDistance.to<double>());
+  frc::SmartDashboard::PutNumber("L Encoders", rightDistance.to<double>());
   frc::SmartDashboard::PutNumber("Rotation", rotation.Degrees().to<double>());
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
 
-  LOG_EVERY_N_TIMES(100, auto speeds = GetWheelSpeeds();
-                    std::cout << "Speeds: " << speeds.left << " / "
-                              << speeds.right << std::endl;)
+  //   LOG_EVERY_N_TIMES(100, auto speeds = GetWheelSpeeds();
+  //                     std::cout << "Speeds: " << speeds.left << " / "
+  //                               << speeds.right << std::endl;)
 }
 
 void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
@@ -133,7 +131,7 @@ void Drivebase::ResetOdometry(frc::Pose2d pose) {
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
   LeftMotors->SetVoltage(left);
-  RightMotors->SetVoltage(-right);
+  RightMotors->SetVoltage(right);
   m_drive->Feed();
 }
 units::meter_t Drivebase::GetRightEncoderDistance() {

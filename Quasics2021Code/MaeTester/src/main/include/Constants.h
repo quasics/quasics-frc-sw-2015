@@ -31,7 +31,8 @@ namespace CANBusIds{
     namespace VictorSPXIds{
       constexpr int ShootingMotor = 5;
       constexpr int IntakeMotor = 6;
-    }
+      constexpr int ConveyorMotor = 7;
+    }  // namespace VictorSPXIds
 }
 
 namespace OIConstants {

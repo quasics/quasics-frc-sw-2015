@@ -21,8 +21,13 @@ class Intake : public frc2::SubsystemBase {
   void IntakeBallReverse();
   void IntakeBallOff();
 
+  void ConveyBallOn();
+  void ConveyBallReverse();
+  void ConveyBallOff();
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX IntakeMotor;
+  ctre::phoenix::motorcontrol::can::WPI_VictorSPX ConveyorMotor;
 };

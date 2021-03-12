@@ -21,7 +21,7 @@ static const char* const kShuffleboardTabName = "DriveBase";
 // PWM channels 0 and 1 respectively
 // The Romi has onboard encoders that are hardcoded
 // to use DIO pins 4/5 and 6/7 for the left and right
-Drivetrain::Drivetrain() : m_odometry(units::degree_t(m_gyro.GetAngleZ())) {
+Drivetrain::Drivetrain() : m_odometry(units::degree_t(0)) {
   // Set the encoders up so that when we call "GetRate()", we'll get the
   // rate of turn in meters/sec.
   m_leftEncoder.SetDistancePerPulse(
@@ -29,12 +29,35 @@ Drivetrain::Drivetrain() : m_odometry(units::degree_t(m_gyro.GetAngleZ())) {
   m_rightEncoder.SetDistancePerPulse(
       wpi::math::pi * kWheelDiameter.to<double>() / kCountsPerRevolution);
 
-  ResetEncoders();
+  ResetOdometry(frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)));
+
+  ConfigureShuffleboard();
+}
+
+// Note: at start, values *should* all be 0, but they'll be updated as soon as
+// Periodic() is invoked, anyway.
+void Drivetrain::ConfigureShuffleboard() {
+  auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
+  leftDistance = tab.AddPersistent("L Distance", 0).GetEntry();
+  rightDistance = tab.AddPersistent("R Distance", 0).GetEntry();
+  leftSpeed = tab.AddPersistent("L Speed", 0).GetEntry();
+  rightSpeed = tab.AddPersistent("R Speed", 0).GetEntry();
+  rotation = tab.AddPersistent("Rotation", 0).GetEntry();
 }
 
 void Drivetrain::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) {
   auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
   tab.Add(label, data);
+}
+
+void Drivetrain::UpdateShuffleboard() {
+  const auto wheelSpeeds = GetWheelSpeeds();
+
+  leftDistance.SetDouble(GetLeftDistance().to<double>());
+  rightDistance.SetDouble(GetRightDistance().to<double>());
+  leftSpeed.SetDouble(wheelSpeeds.left.to<double>());
+  rightSpeed.SetDouble(wheelSpeeds.right.to<double>());
+  rotation.SetDouble(m_odometry.GetPose().Rotation().Degrees().to<double>());
 }
 
 // This method will be called once per scheduler run.
@@ -44,11 +67,14 @@ void Drivetrain::Periodic() {
   auto leftDistance = units::meter_t(m_leftEncoder.GetDistance());
   auto rightDistance = units::meter_t(m_rightEncoder.GetDistance());
 
-  LOG_EVERY_N_TIMES(10, std::cout << "Odometry: " << rotation.Degrees() << " / "
-                                  << leftDistance << " / " << rightDistance
-                                  << std::endl;)
-
   m_odometry.Update(rotation, leftDistance, rightDistance);
+
+  UpdateShuffleboard();
+
+  // Every so often, report on current odometry.
+  LOG_EVERY_N_SECONDS(10, std::cout << "Odometry: " << rotation.Degrees()
+                                    << " / " << leftDistance << " / "
+                                    << rightDistance << std::endl;)
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate,

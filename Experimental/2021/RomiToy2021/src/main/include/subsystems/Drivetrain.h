@@ -119,6 +119,12 @@ class Drivetrain : public CommonDriveSubsystem {
   double GetGyroAngleZ();
 
  private:
+  /** Sets up reporting of drive base data on the Shuffleboard interface. */
+  void ConfigureShuffleboard();
+
+  /** Updates reporting of drive base data on the Shuffleboard interface. */
+  void UpdateShuffleboard();
+
   static constexpr double kCountsPerRevolution = 1440.0;
   static constexpr units::meter_t kWheelDiameter = 70_mm;
   static constexpr units::meter_t kTrackwidthMeters{0.142072613};
@@ -136,4 +142,8 @@ class Drivetrain : public CommonDriveSubsystem {
   frc::BuiltInAccelerometer m_accelerometer;
 
   frc::DifferentialDriveOdometry m_odometry;
+
+  // Used to display information about the drive base on the shuffleboard.
+  nt::NetworkTableEntry leftDistance, rightDistance, leftSpeed, rightSpeed,
+      rotation;
 };

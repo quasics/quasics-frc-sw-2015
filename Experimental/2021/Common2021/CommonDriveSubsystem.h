@@ -1,13 +1,16 @@
 #pragma once
 
+#include <frc/geometry/Pose2d.h>
 #include <frc/interfaces/Gyro.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc2/command/SubsystemBase.h>
 #include <units/length.h>
+#include <units/voltage.h>
 
 /**
  * Defines an interface for a drive base subsystem that could be implemented
  * for either a Romi device or a "real" FRC bot.
- * 
+ *
  * TODO: Consider other possibilities that the team likes, such as "flip mode",
  * "turbo/turtle mode", etc.
  */
@@ -95,4 +98,43 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
    * Provides access to the gyro responsible for tracking Z-axis rotation.
    */
   virtual frc::Gyro& GetZAxisGyro() = 0;
+
+  //
+  // Additional functions to support trajectory-following.
+ public:
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  virtual frc::Pose2d GetPose() = 0;
+
+  /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  virtual frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() = 0;
+
+  /**
+   * Resets the odometry (i.e., resets the encoders to 0, and stores the
+   * specified pose as our current one).
+   *
+   * @param pose The pose to which to set the odometry.
+   */
+  virtual void ResetOdometry(frc::Pose2d pose) = 0;
+
+  /**
+   * Controls each side of the drive directly with a voltage.
+   * (Positive == forward, negative == reverse.)
+   *
+   * @param left the commanded left output
+   * @param right the commanded right output
+   */
+  virtual void TankDriveVolts(units::volt_t left, units::volt_t right) = 0;
+
+  /**
+   * Returns the track width.
+   */
+  virtual units::meter_t GetTrackWidth() = 0;
 };

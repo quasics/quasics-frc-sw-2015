@@ -76,14 +76,14 @@ class Drivetrain : public CommonDriveSubsystem {
    *
    * @return The pose.
    */
-  frc::Pose2d GetPose();
+  frc::Pose2d GetPose() override;
 
   /**
    * Returns the current wheel speeds of the robot.
    *
    * @return The current wheel speeds.
    */
-  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() override;
 
   /**
    * Resets the odometry (i.e., resets the encoders to 0, and stores the
@@ -91,7 +91,7 @@ class Drivetrain : public CommonDriveSubsystem {
    *
    * @param pose The pose to which to set the odometry.
    */
-  void ResetOdometry(frc::Pose2d pose);
+  void ResetOdometry(frc::Pose2d pose) override;
 
   /**
    * Controls each side of the drive directly with a voltage.
@@ -99,7 +99,11 @@ class Drivetrain : public CommonDriveSubsystem {
    * @param left the commanded left output
    * @param right the commanded right output
    */
-  void TankDriveVolts(units::volt_t left, units::volt_t right);
+  void TankDriveVolts(units::volt_t left, units::volt_t right) override;
+
+  units::meter_t GetTrackWidth() override {
+    return kTrackwidthMeters;
+  }
 
   //
   // Additional methods (should not be used in common commands).
@@ -133,10 +137,6 @@ class Drivetrain : public CommonDriveSubsystem {
    * Returns the current angle of the Romi around the Z-axis, in degrees.
    */
   double GetGyroAngleZ();
-
-  units::meter_t GetTrackWidth() {
-    return kTrackwidthMeters;
-  }
 
  private:
   static constexpr double kCountsPerRevolution = 1440.0;

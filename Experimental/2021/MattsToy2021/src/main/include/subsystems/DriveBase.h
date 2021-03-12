@@ -7,7 +7,9 @@
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc2/command/SubsystemBase.h>
+#include <networktables/NetworkTableEntry.h>
 #include <rev/CANSparkMax.h>
 
 #include "../../../../Common2021/CommonDriveSubsystem.h"
@@ -34,7 +36,7 @@ class DriveBase : public CommonDriveSubsystem {
   // Methods defined in CommonDriveSubsystem.
  public:
   void Stop() override {
-    drive.StopMotor();
+    drive->StopMotor();
   }
 
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
@@ -49,7 +51,20 @@ class DriveBase : public CommonDriveSubsystem {
   units::meter_t GetLeftDistance() override;
 
   frc::Gyro& GetZAxisGyro() override {
-    return adiGyro;
+    return m_adiGyro;
+  }
+
+  // Trajectory-following support.
+  frc::Pose2d GetPose() override;
+
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() override;
+
+  void ResetOdometry(frc::Pose2d pose) override;
+
+  void TankDriveVolts(units::volt_t left, units::volt_t right) override;
+
+  units::meter_t GetTrackWidth() override {
+    return kTrackWidthMeters;
   }
 
   //
@@ -63,28 +78,53 @@ class DriveBase : public CommonDriveSubsystem {
   }
 #endif  // ENABLE_ULTRASONICS
 
+  //
+  // Utility functions used internally by this class.
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  rev::CANSparkMax leftFront;
-  rev::CANSparkMax leftRear;
-  rev::CANSparkMax rightFront;
-  rev::CANSparkMax rightRear;
+  void UpdateOdometry();
+  void ConfigureEncoders();
 
-  frc::SpeedControllerGroup leftMotors{leftFront, leftRear};
-  frc::SpeedControllerGroup rightMotors{rightFront, rightRear};
+  /** Sets up reporting of drive base data on the Shuffleboard interface. */
+  void ConfigureShuffleboard();
 
-  frc::DifferentialDrive drive{leftMotors, rightMotors};
+  /** Updates reporting of drive base data on the Shuffleboard interface. */
+  void UpdateShuffleboard();
 
-  rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
-  rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
-  rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
-  rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
+  //
+  // Data and sub-objects associated with the class.
+ private:
+  static constexpr units::meter_t kTrackWidthMeters{1.3965298};
 
-  frc::ADXRS450_Gyro adiGyro{
+  // Our motors
+  rev::CANSparkMax m_leftFront;
+  rev::CANSparkMax m_leftRear;
+  rev::CANSparkMax m_rightFront;
+  rev::CANSparkMax m_rightRear;
+
+  // Encoders for each of the motors.
+  rev::CANEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
+
+  // Higher-level interfaces to the motors
+  std::unique_ptr<frc::SpeedControllerGroup> leftMotors;
+  std::unique_ptr<frc::SpeedControllerGroup> rightMotors;
+  std::unique_ptr<frc::DifferentialDrive> drive;
+
+  // Our gyro.
+  frc::ADXRS450_Gyro m_adiGyro{
       frc::SPI::Port::kOnboardCS0};  // Chip Select jumper is set to CS0
 
+  // Tracks position/direction for use in trajectory following.
+  frc::DifferentialDriveOdometry m_odometry;
+
+  // Used to display information about the drive base on the shuffleboard.
+  nt::NetworkTableEntry leftDistance, rightDistance, leftSpeed, rightSpeed,
+      rotation;
+
 #ifdef ENABLE_ULTRASONICS
+  // Ultrasonic sensor for ranging.
   MaxboticsUltrasonicSensor ultrasonic{AnalogInputs::UltrasonicSensorInput};
 #endif  // ENABLE_ULTRASONICS
 };

@@ -76,8 +76,8 @@ void Drivebase::Periodic() {
   auto leftDistance = GetLeftEncoderDistance();
   auto rightDistance = GetRightEncoderDistance();
 
-  frc::SmartDashboard::PutNumber("R Encoders ", leftDistance.to<double>());
-  frc::SmartDashboard::PutNumber("L Encoders", rightDistance.to<double>());
+  frc::SmartDashboard::PutNumber("L Encoders ", leftDistance.to<double>());
+  frc::SmartDashboard::PutNumber("R Encoders", rightDistance.to<double>());
   frc::SmartDashboard::PutNumber("Rotation", rotation.Degrees().to<double>());
 
   m_odometry.Update(rotation, leftDistance, rightDistance);

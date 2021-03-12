@@ -73,9 +73,7 @@ void RobotContainer::ConfigureShuffleboard() {
       // Ending pose
       frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
 
-  // TODO(mjh): Move this to a sub-tab on Shuffleboard, vs directly on
-  // SmartDashboard
-  frc::SmartDashboard::PutData("3m forward", sampleTrajectorySequence);
+  m_driveBase.AddToShuffleboard("3m forward", sampleTrajectorySequence);
 }
 
 void RobotContainer::ConfigureButtonBindings() {

@@ -73,6 +73,13 @@ class DriveBase : public CommonDriveSubsystem {
  public:
   void SetCoastingEnabled(bool enabled);
 
+  /**
+   * Adds the specified sendable (generally a subsystem-specific test command)
+   * to the shuffleboard tab used by this subsystem.
+   */
+  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data,
+                         bool isPersistent = false);
+
 #ifdef ENABLE_ULTRASONICS
   MaxboticsUltrasonicSensor& GetUltrasonicSensor() {
     return ultrasonic;

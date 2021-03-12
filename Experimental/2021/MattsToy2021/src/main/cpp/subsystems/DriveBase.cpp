@@ -23,6 +23,8 @@ constexpr double kGearRatio_2021 = 10.71;
 /// https://docs.wpilib.org/en/stable/docs/software/basic-programming/cpp-units.html.)
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
+static const char* const kShuffleboardTabName = "DriveBase";
+
 DriveBase::DriveBase()
     : m_leftFront(CANBusIds::SparkMax::Left_Front_No,
                   rev::CANSparkMax::MotorType::kBrushless),
@@ -61,7 +63,7 @@ DriveBase::DriveBase()
 }
 
 void DriveBase::ConfigureShuffleboard() {
-  auto& tab = frc::Shuffleboard::GetTab("DriveBase");
+  auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
   leftDistance =
       tab.AddPersistent("L Distance", m_leftRearEncoder.GetPosition())
           .GetEntry();
@@ -77,6 +79,16 @@ void DriveBase::ConfigureShuffleboard() {
                         GetZAxisGyro().GetRotation2d().Degrees().to<double>())
           .GetEntry();
   tab.Add("Reset Odometry", m_resetCommand);
+}
+
+void DriveBase::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data,
+                                  bool isPersistent) {
+  auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
+  if (isPersistent) {
+    tab.AddPersistent(label, data);
+  } else {
+    tab.Add(label, data);
+  }
 }
 
 void DriveBase::UpdateShuffleboard() {

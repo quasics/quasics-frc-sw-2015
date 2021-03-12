@@ -63,14 +63,20 @@ DriveBase::DriveBase()
 void DriveBase::ConfigureShuffleboard() {
   auto& tab = frc::Shuffleboard::GetTab("DriveBase");
   leftDistance =
-      tab.Add("L Distance", m_leftRearEncoder.GetPosition()).GetEntry();
-  rightDistance =
-      tab.Add("R Distance", m_rightRearEncoder.GetPosition()).GetEntry();
-  leftSpeed = tab.Add("L Speed", m_leftRearEncoder.GetVelocity()).GetEntry();
-  rightSpeed = tab.Add("R Speed", m_rightRearEncoder.GetVelocity()).GetEntry();
-  rotation =
-      tab.Add("Rotation", GetZAxisGyro().GetRotation2d().Degrees().to<double>())
+      tab.AddPersistent("L Distance", m_leftRearEncoder.GetPosition())
           .GetEntry();
+  rightDistance =
+      tab.AddPersistent("R Distance", m_rightRearEncoder.GetPosition())
+          .GetEntry();
+  leftSpeed =
+      tab.AddPersistent("L Speed", m_leftRearEncoder.GetVelocity()).GetEntry();
+  rightSpeed =
+      tab.AddPersistent("R Speed", m_rightRearEncoder.GetVelocity()).GetEntry();
+  rotation =
+      tab.AddPersistent("Rotation",
+                        GetZAxisGyro().GetRotation2d().Degrees().to<double>())
+          .GetEntry();
+  tab.Add("Reset Odometry", m_resetCommand);
 }
 
 void DriveBase::UpdateShuffleboard() {
@@ -80,7 +86,7 @@ void DriveBase::UpdateShuffleboard() {
   rightDistance.SetDouble(GetRightDistance().to<double>());
   leftSpeed.SetDouble(wheelSpeeds.left.to<double>());
   rightSpeed.SetDouble(wheelSpeeds.right.to<double>());
-  rotation.SetDouble(m_adiGyro.GetRotation2d().Degrees().to<double>());
+  rotation.SetDouble(m_odometry.GetPose().Rotation().Degrees().to<double>());
 }
 
 void DriveBase::ConfigureEncoders() {

@@ -8,6 +8,7 @@
 #include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc2/command/SubsystemBase.h>
 #include <networktables/NetworkTableEntry.h>
 #include <rev/CANSparkMax.h>
@@ -122,6 +123,10 @@ class DriveBase : public CommonDriveSubsystem {
   // Used to display information about the drive base on the shuffleboard.
   nt::NetworkTableEntry leftDistance, rightDistance, leftSpeed, rightSpeed,
       rotation;
+
+  frc2::InstantCommand m_resetCommand{
+      [this] { ResetOdometry(frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg))); },
+      {this}};
 
 #ifdef ENABLE_ULTRASONICS
   // Ultrasonic sensor for ranging.

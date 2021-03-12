@@ -91,51 +91,7 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart) {
-#if 0
   TrajectoryCommandGenerator generator(&m_driveBase);
   return generator.GenerateCommand(start, interiorWaypoints, end,
                                    resetTelemetryAtStart);
-#else
-  using namespace RobotData::DriveConstants;
-  using namespace RobotData::PathFollowingLimits;
-
-  const frc::DifferentialDriveKinematics kDriveKinematics{
-      m_driveBase.GetTrackWidth()};
-
-  frc::SimpleMotorFeedforward<units::meter> feedForward(
-      ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
-  frc::DifferentialDriveVoltageConstraint voltageConstraints(
-      feedForward, kDriveKinematics, 10_V);
-  frc::TrajectoryConfig config(kMaxSpeed, kMaxAcceleration);
-
-  config.SetKinematics(kDriveKinematics);
-
-  config.AddConstraint(voltageConstraints);
-
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      start, interiorWaypoints, end, config);
-
-  frc2::RamseteCommand ramseteCommand(
-      exampleTrajectory, [this]() { return m_driveBase.GetPose(); },
-      frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
-      kDriveKinematics, [this]() { return m_driveBase.GetWheelSpeeds(); },
-      frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-      frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-      [this](auto left, auto right) {
-        m_driveBase.TankDriveVolts(left, right);
-      },
-      {&m_driveBase});
-
-  return new frc2::SequentialCommandGroup(
-      frc2::InstantCommand(
-          [this, resetTelemetryAtStart, exampleTrajectory] {
-            if (resetTelemetryAtStart) {
-              m_driveBase.ResetOdometry(exampleTrajectory.InitialPose());
-            }
-          },
-          {&m_driveBase}),
-      std::move(ramseteCommand),
-      frc2::InstantCommand([this] { m_driveBase.TankDriveVolts(0_V, 0_V); },
-                           {&m_driveBase}));
-#endif
 }

@@ -5,7 +5,6 @@
 #include "subsystems/DriveBase.h"
 
 #include <frc/shuffleboard/Shuffleboard.h>
-#include <frc/smartdashboard/SmartDashboard.h>
 #include <units/length.h>
 
 #include <wpi/math>
@@ -23,6 +22,8 @@ constexpr double kGearRatio_2021 = 10.71;
 /// https://docs.wpilib.org/en/stable/docs/software/basic-programming/cpp-units.html.)
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
+/// The tab used for commands/debugging widgets that are specific to this
+/// subsystem.
 static const char* const kShuffleboardTabName = "DriveBase";
 
 DriveBase::DriveBase()

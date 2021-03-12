@@ -80,7 +80,7 @@ class DriveBase : public CommonDriveSubsystem {
    * @param label the label (key) to display with the Sendable on the tab
    * @param data  the command (or other Sendable) to be put on the tab
    */
-  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data);
+  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) override;
 
 #ifdef ENABLE_ULTRASONICS
   MaxboticsUltrasonicSensor& GetUltrasonicSensor() {

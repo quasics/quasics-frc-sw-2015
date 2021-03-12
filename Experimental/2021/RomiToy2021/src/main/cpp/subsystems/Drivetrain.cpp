@@ -4,12 +4,18 @@
 
 #include "subsystems/Drivetrain.h"
 
+#include <frc/shuffleboard/Shuffleboard.h>
+
 #include <wpi/math>
 
 #include "../../../../../Common2021/LoggingHelpers.h"
 #include "Constants.h"
 
 using namespace DriveConstants;
+
+/// The tab used for commands/debugging widgets that are specific to this
+/// subsystem.
+static const char* const kShuffleboardTabName = "DriveBase";
 
 // The Romi has the left and right motors set to
 // PWM channels 0 and 1 respectively
@@ -24,6 +30,11 @@ Drivetrain::Drivetrain() : m_odometry(units::degree_t(m_gyro.GetAngleZ())) {
       wpi::math::pi * kWheelDiameter.to<double>() / kCountsPerRevolution);
 
   ResetEncoders();
+}
+
+void Drivetrain::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) {
+  auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
+  tab.Add(label, data);
 }
 
 // This method will be called once per scheduler run.

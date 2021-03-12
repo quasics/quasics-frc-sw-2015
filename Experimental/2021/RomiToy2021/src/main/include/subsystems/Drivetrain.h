@@ -68,37 +68,17 @@ class Drivetrain : public CommonDriveSubsystem {
     return m_gyro.GetGyroZ();
   }
 
+  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) override;
+
   //
   // Additional functions to support trajectory-following.
  public:
-  /**
-   * Returns the currently-estimated pose of the robot.
-   *
-   * @return The pose.
-   */
   frc::Pose2d GetPose() override;
 
-  /**
-   * Returns the current wheel speeds of the robot.
-   *
-   * @return The current wheel speeds.
-   */
   frc::DifferentialDriveWheelSpeeds GetWheelSpeeds() override;
 
-  /**
-   * Resets the odometry (i.e., resets the encoders to 0, and stores the
-   * specified pose as our current one).
-   *
-   * @param pose The pose to which to set the odometry.
-   */
   void ResetOdometry(frc::Pose2d pose) override;
 
-  /**
-   * Controls each side of the drive directly with a voltage.
-   *
-   * @param left the commanded left output
-   * @param right the commanded right output
-   */
   void TankDriveVolts(units::volt_t left, units::volt_t right) override;
 
   units::meter_t GetTrackWidth() override {

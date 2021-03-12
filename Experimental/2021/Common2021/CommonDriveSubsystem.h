@@ -99,6 +99,15 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
    */
   virtual frc::Gyro& GetZAxisGyro() = 0;
 
+  /**
+   * Adds the specified sendable (generally a subsystem-specific test command)
+   * to the shuffleboard tab used by this subsystem.
+   *
+   * @param label the label (key) to display with the Sendable on the tab
+   * @param data  the command (or other Sendable) to be put on the tab
+   */
+  virtual void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) = 0;
+
   //
   // Additional functions to support trajectory-following.
  public:

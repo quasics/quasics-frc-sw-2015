@@ -23,10 +23,10 @@
 namespace CANBusIds {
   namespace SparkMax {
     // CAN bus IDs for the 4 motors used for the drive base.
-    constexpr int Left_Front_No = 4;
-    constexpr int Left_Rear_No = 3;
-    constexpr int Right_Front_No = 2;
-    constexpr int Right_Rear_No = 1;
+    constexpr int Left_Front_No = 2;
+    constexpr int Left_Rear_No = 1;
+    constexpr int Right_Front_No = 4;
+    constexpr int Right_Rear_No = 3;
   }  // namespace SparkMax
 }  // namespace CANBusIds
 

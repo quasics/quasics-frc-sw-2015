@@ -26,6 +26,18 @@ class TrajectoryCommandGenerator {
   frc2::SequentialCommandGroup* GenerateCommand(
       const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
+      const frc::Pose2d& end, bool resetTelemetryAtStart) {
+          return GenerateCommand(m_drive, start, interiorWaypoints, end, resetTelemetryAtStart);
+      }
+
+private:
+  // Having a static version helps to prevent accidental captures
+  // of "this" in lambdas: if the generator is a local variable,
+  // that's going to make the code go "boom" when you try to use
+  // the command later....
+  static frc2::SequentialCommandGroup* GenerateCommand(
+      CommonDriveSubsystem* const drive, const frc::Pose2d& start,
+      const std::vector<frc::Translation2d>& interiorWaypoints,
       const frc::Pose2d& end, bool resetTelemetryAtStart);
 
  private:
@@ -33,6 +45,7 @@ class TrajectoryCommandGenerator {
 };
 
 inline frc2::SequentialCommandGroup* TrajectoryCommandGenerator::GenerateCommand(
+    CommonDriveSubsystem* const drive, 
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart) {
@@ -42,58 +55,41 @@ inline frc2::SequentialCommandGroup* TrajectoryCommandGenerator::GenerateCommand
   using namespace RobotData::PathFollowingLimits;
 
   const frc::DifferentialDriveKinematics kDriveKinematics{
-      m_drive->GetTrackWidth()};
+      drive->GetTrackWidth()};
 
-  // Set up config for trajectory
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
   frc::DifferentialDriveVoltageConstraint voltageConstraints(
       feedForward, kDriveKinematics, 10_V);
   frc::TrajectoryConfig config(kMaxSpeed, kMaxAcceleration);
 
-  // Add kinematics to ensure max speed is actually obeyed
   config.SetKinematics(kDriveKinematics);
 
-  // Apply the voltage constraint.  (Don't draw more than is safe!)
   config.AddConstraint(voltageConstraints);
 
-  // Generate the trajectory.
-  auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end, config);
 
-  // Build the core command to follow the trajectory.
   frc2::RamseteCommand ramseteCommand(
-      /* trajectory to follow */
-      trajectory,
-      /* function that supplies the robot pose */
-      [this]() { return m_drive->GetPose(); },
-      /* RAMSETE controller used to follow the trajectory */
-      frc::RamseteController(kRamseteB, kRamseteZeta),
-      /* calculates the feedforward for the drive */
-      feedForward,
-      /* kinematics for the robot drivetrain */
-      kDriveKinematics,
-      /* function that supplies the left/right side speeds */
-      [this] { return m_drive->GetWheelSpeeds(); },
-      /* left controller */
+      exampleTrajectory, [drive]() { return drive->GetPose(); },
+      frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
+      kDriveKinematics, [drive]() { return drive->GetWheelSpeeds(); },
       frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-      /* right controller */
       frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-      /* output function */
-      [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-      /* required subsystems */
-      {m_drive});
+      [drive](auto left, auto right) {
+        drive->TankDriveVolts(left, right);
+      },
+      {drive});
 
-  // Finally, build the full command sequence.
   return new frc2::SequentialCommandGroup(
-      frc2::PrintCommand("Starting trajectory code"),
-      frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
-        if (resetTelemetryAtStart) {
-          m_drive->ResetOdometry(trajectory.InitialPose());
-        }
-      }),
+      frc2::InstantCommand(
+          [drive, resetTelemetryAtStart, exampleTrajectory] {
+            if (resetTelemetryAtStart) {
+              drive->ResetOdometry(exampleTrajectory.InitialPose());
+            }
+          },
+          {drive}),
       std::move(ramseteCommand),
-      // Shut the drive down.
-      frc2::PrintCommand("Shutting down trajectory code"),
-      frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}));
+      frc2::InstantCommand([drive] { drive->TankDriveVolts(0_V, 0_V); },
+                           {drive}));
 }

@@ -273,13 +273,12 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
   // Apply the voltage constraint
   config.AddConstraint(voltageConstraints);
 
-  // An example trajectory to follow.  All units in meters.
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end, config);
 
   frc2::RamseteCommand ramseteCommand(
       /* trajectory to follow */
-      exampleTrajectory,
+      trajectory,
       /* function that supplies the robot pose */
       [this]() { return m_drive.GetPose(); },
       /* RAMSETE controller used to follow the trajectory */
@@ -301,9 +300,9 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 
   return new frc2::SequentialCommandGroup(
       frc2::PrintCommand("Starting trajectory code"),
-      frc2::InstantCommand([this, resetTelemetryAtStart, exampleTrajectory] {
+      frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
         if (resetTelemetryAtStart) {
-          m_drive.ResetOdometry(exampleTrajectory.InitialPose());
+          m_drive.ResetOdometry(trajectory.InitialPose());
         }
       }),
       std::move(ramseteCommand),

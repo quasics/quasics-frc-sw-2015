@@ -48,12 +48,12 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   TeleopTankDrive tankDrive(
       &m_driveBase,
       [this, deadBand, scaler] {
-        return scaler(deadBand(m_driverJoystick.GetRawAxis(
-            OIConstants::LogitechGamePad::RightYAxis)));
+        return -scaler(deadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::LeftYAxis)));
       },
       [this, deadBand, scaler] {
-        return scaler(deadBand(m_driverJoystick.GetRawAxis(
-            OIConstants::LogitechGamePad::LeftYAxis)));
+        return -scaler(deadBand(m_driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::RightYAxis)));
       });
   m_driveBase.SetDefaultCommand(tankDrive);
 

@@ -46,6 +46,8 @@ class RobotContainer {
   /**
    * Generates a sample command to follow a simple trajectory.
    *
+   * @param example
+   *     identifies the sample trajectory path to be generated
    * @param resetTelemetryAtStart
    *     if true, the command will (at its initiation) reset the drive
    *     telemetry, allowing it to start following the trajectory using
@@ -53,9 +55,8 @@ class RobotContainer {
    *     Otherwise, it will use the previously-established origin as a
    *     starting point (and first drive back to that).
    */
-  frc2::SequentialCommandGroup* GenerateRamseteCommand(
-      bool resetTelemetryAtStart,
-      TrajectoryExample example = StraightLineTrajectory);
+  frc2::SequentialCommandGroup* GenerateSampleRamseteCommand(
+      TrajectoryExample example, bool resetTelemetryAtStart);
 
   /**
    * Generates a command to follow the specified trajectory.

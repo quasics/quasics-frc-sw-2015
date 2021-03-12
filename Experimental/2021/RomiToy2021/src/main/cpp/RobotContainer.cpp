@@ -27,6 +27,7 @@
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
+#include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "Constants.h"
 #include "commands/DriveForward.h"
@@ -83,9 +84,9 @@ void RobotContainer::ConfigureAutonomousSelection() {
     }
     m_autoModeOptions.push_back(std::shared_ptr<frc2::Command>(cmd));
   };
-  adder("Linear", GenerateRamseteCommand(true, StraightLineTrajectory));
-  adder("S-curve", GenerateRamseteCommand(true, S_CurveTrajectory));
-  adder("Figure-8", GenerateRamseteCommand(true, FigureEightTrajectory));
+  adder("Linear", GenerateSampleRamseteCommand(StraightLineTrajectory, true));
+  adder("S-curve", GenerateSampleRamseteCommand(S_CurveTrajectory, true));
+  adder("Figure-8", GenerateSampleRamseteCommand(FigureEightTrajectory, true));
   adder("Turn to Target", new TurnToTargetCommand(&m_drive, 0.350));
 
   // Put the SendableChooser on the Smart Dashboard for the driver's station.
@@ -254,6 +255,11 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart) {
+#if 1
+  TrajectoryCommandGenerator generator(&m_drive);
+  return generator.GenerateCommand(start, interiorWaypoints, end,
+                            resetTelemetryAtStart);
+#else
   using namespace RobotData::DriveConstants;
   using namespace RobotData::PathFollowingLimits;
 
@@ -300,19 +306,23 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 
   return new frc2::SequentialCommandGroup(
       frc2::PrintCommand("Starting trajectory code"),
-      frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
-        if (resetTelemetryAtStart) {
-          m_drive.ResetOdometry(trajectory.InitialPose());
-        }
-      }),
+      frc2::InstantCommand(
+          [this, resetTelemetryAtStart, trajectory] {
+                if (resetTelemetryAtStart) {
+                  m_drive.ResetOdometry(trajectory.InitialPose());
+                }
+              },
+          {&m_drive}),
       std::move(ramseteCommand),
       // Shut the drive down.
       frc2::PrintCommand("Shutting down trajectory code"),
-      frc2::InstantCommand([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}));
+      frc2::InstantCommand([this] { m_drive.TankDriveVolts(0_V, 0_V); },
+                           {&m_drive}));
+#endif
 }
 
-frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
-    bool resetTelemetryAtStart, TrajectoryExample example) {
+frc2::SequentialCommandGroup* RobotContainer::GenerateSampleRamseteCommand(
+    TrajectoryExample example, bool resetTelemetryAtStart) {
   frc::Pose2d start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
   frc::Pose2d end;
   std::vector<frc::Translation2d> interiorWaypoints;

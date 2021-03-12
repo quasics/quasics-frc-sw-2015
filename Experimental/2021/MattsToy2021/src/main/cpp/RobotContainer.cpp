@@ -4,11 +4,13 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <unistd.h>
 
 #include "../../../../Common2021/DeadBandEnforcer.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
+#include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "Constants.h"
 
 constexpr double kMaxTurtleSpeed = 0.4;
@@ -57,13 +59,39 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 
   // Configure the button bindings
   ConfigureButtonBindings();
+
+  ConfigureShuffleboard();
+}
+
+void RobotContainer::ConfigureShuffleboard() {
+  auto sampleTrajectorySequence = GenerateRamseteCommand(
+      // Starting pose
+      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+      // Interior waypoints
+      std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m),
+                                      frc::Translation2d(2_m, 0_m)},
+      // Ending pose
+      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
+
+  // TODO(mjh): Move this to a sub-tab on Shuffleboard, vs directly on
+  // SmartDashboard
+  frc::SmartDashboard::PutData("3m forward", sampleTrajectorySequence);
 }
 
 void RobotContainer::ConfigureButtonBindings() {
   // Configure your button bindings here
 }
 
-frc2::Command *RobotContainer::GetAutonomousCommand() {
+frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return &turnToTarget;
+}
+
+frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+    const frc::Pose2d& start,
+    const std::vector<frc::Translation2d>& interiorWaypoints,
+    const frc::Pose2d& end, bool resetTelemetryAtStart) {
+  TrajectoryCommandGenerator generator(&m_driveBase);
+  return generator.GenerateCommand(start, interiorWaypoints, end,
+                                   resetTelemetryAtStart);
 }

@@ -5,7 +5,10 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/geometry/Translation2d.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
@@ -28,6 +31,13 @@ class RobotContainer {
 
  private:
   void ConfigureButtonBindings();
+
+  void ConfigureShuffleboard();
+
+  frc2::SequentialCommandGroup* GenerateRamseteCommand(
+      const frc::Pose2d& start,
+      const std::vector<frc::Translation2d>& interiorWaypoints,
+      const frc::Pose2d& end, bool resetTelemetryAtStart);
 
  private:
   // The robot's subsystems and commands are defined here...

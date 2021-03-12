@@ -4,6 +4,12 @@
 
 #pragma once
 
+#include <units/acceleration.h>
+#include <units/length.h>
+#include <units/time.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -92,3 +98,35 @@ namespace NetworkTableNames {
   constexpr const char* kHighSSetting("High_S");
   constexpr const char* kHighVSetting("High_V");
 }  // namespace NetworkTableNames
+
+namespace RobotData {
+  namespace DriveConstants {
+    // The following values are drawn from drive characterization performed
+    // on the Romi "Matt's Toy", and captured in the team wiki here:
+    // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants
+    constexpr auto ksVolts = 0.31_V;                               // "kS"
+    constexpr auto kvVoltSecondsPerMeter = 2.6 * 1_V * 1_s / 1_m;  // "kV"
+    constexpr auto kaVoltSecondsSquaredPerMeter =                  // "kA"
+        0.232 * 1_V * 1_s * 1_s / 1_m;
+
+    constexpr double kPDriveVel =
+        2.15;  // "kP" - proportional coefficient for PID
+    constexpr double kIDriveVel = 0.0;  // "kI" - integral coefficient for PID
+    constexpr double kDDriveVel = 0.0;  // "kD" - derivative coefficient for PID
+
+  }  // namespace DriveConstants
+
+  namespace PathFollowingLimits {
+    constexpr auto kMaxSpeed = 0.5_mps;
+    constexpr auto kMaxAcceleration = 0.5_mps_sq;
+
+    // Reasonable baseline values for a RAMSETE follower in units of meters and
+    // seconds.
+    constexpr double kRamseteB =
+        2;  // Tuning parameter (b > 0) for which larger values make
+            // convergence more aggressive like a proportional term.
+    constexpr double kRamseteZeta =
+        0.7;  // Tuning parameter (0 < zeta < 1) for which larger values provide
+              // more damping in response.
+  }           // namespace PathFollowingLimits
+}  // namespace RobotData

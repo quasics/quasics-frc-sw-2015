@@ -39,13 +39,16 @@ DriveBase::DriveBase()
   // groups and differential drive: we have to mark motors as inverted (or not)
   // *before* putting them into the groups (and then those into the drive); if
   // we do it afterward, it just fails (silently).
-  m_rightFront.SetInverted(true);
-  m_rightRear.SetInverted(true);
   m_leftFront.SetInverted(false);
   m_leftRear.SetInverted(false);
+  m_rightFront.SetInverted(true);
+  m_rightRear.SetInverted(true);
 
   leftMotors.reset(new frc::SpeedControllerGroup{m_leftFront, m_leftRear});
   rightMotors.reset(new frc::SpeedControllerGroup{m_rightFront, m_rightRear});
+
+  ConfigureEncoders();
+
   drive.reset(new frc::DifferentialDrive{*leftMotors, *rightMotors});
 
   SetCoastingEnabled(false);
@@ -102,6 +105,8 @@ void DriveBase::ConfigureEncoders() {
       velocityAdjustment.to<double>());
   m_rightRearEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
+
+  ResetEncoders();
 }
 
 void DriveBase::UpdateOdometry() {
@@ -137,7 +142,8 @@ void DriveBase::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
 }
 
 void DriveBase::TankDrive(double leftSpeed, double rightSpeed) {
-  drive->TankDrive(leftSpeed, rightSpeed);
+  std::cout << "Left: " << leftSpeed << ", right: " << rightSpeed << std::endl;
+  drive->TankDrive(leftSpeed, -rightSpeed);
 }
 
 void DriveBase::ResetEncoders() {

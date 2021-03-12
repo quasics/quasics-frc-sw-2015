@@ -64,7 +64,7 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 }
 
 void RobotContainer::ConfigureShuffleboard() {
-  auto sampleTrajectorySequence = GenerateRamseteCommand(
+  auto sampleTrajectory_3mForward = GenerateRamseteCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -73,7 +73,38 @@ void RobotContainer::ConfigureShuffleboard() {
       // Ending pose
       frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
 
-  m_driveBase.AddToShuffleboard("3m forward", sampleTrajectorySequence);
+  m_driveBase.AddToShuffleboard("3m forward", sampleTrajectory_3mForward);
+
+  auto sampleTrajectory_sCurve = GenerateRamseteCommand(
+      // Starting pose
+      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+      // Interior waypoints
+      std::vector<frc::Translation2d>{
+          frc::Translation2d(1_m, 0.5_m),
+          frc::Translation2d(2_m, -0.5_m),
+      },
+      // Ending pose
+      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
+
+  m_driveBase.AddToShuffleboard("S-curve", sampleTrajectory_sCurve);
+
+  auto sampleTrajectory_figureEight = GenerateRamseteCommand(
+      // Starting pose
+      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+      // Interior waypoints
+      std::vector<frc::Translation2d>{
+          frc::Translation2d(1_m, 1_m),
+          frc::Translation2d(2_m, -1_m),
+          frc::Translation2d(3_m, 0_m),
+          frc::Translation2d(2_m, 1_m),
+          frc::Translation2d(1_m, -1_m),
+      },
+      // Ending pose
+      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), true);
+
+  m_driveBase.AddToShuffleboard("Figure-8", sampleTrajectory_figureEight);
+
+  m_driveBase.AddToShuffleboard("Turn to target", &turnToTarget);
 }
 
 void RobotContainer::ConfigureButtonBindings() {

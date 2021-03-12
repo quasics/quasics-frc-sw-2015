@@ -81,14 +81,9 @@ void DriveBase::ConfigureShuffleboard() {
   tab.Add("Reset Odometry", m_resetCommand);
 }
 
-void DriveBase::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data,
-                                  bool isPersistent) {
+void DriveBase::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) {
   auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
-  if (isPersistent) {
-    tab.AddPersistent(label, data);
-  } else {
-    tab.Add(label, data);
-  }
+  tab.Add(label, data);
 }
 
 void DriveBase::UpdateShuffleboard() {

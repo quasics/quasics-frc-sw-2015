@@ -76,9 +76,11 @@ class DriveBase : public CommonDriveSubsystem {
   /**
    * Adds the specified sendable (generally a subsystem-specific test command)
    * to the shuffleboard tab used by this subsystem.
+   *
+   * @param label the label (key) to display with the Sendable on the tab
+   * @param data  the command (or other Sendable) to be put on the tab
    */
-  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data,
-                         bool isPersistent = false);
+  void AddToShuffleboard(wpi::StringRef label, frc::Sendable* data);
 
 #ifdef ENABLE_ULTRASONICS
   MaxboticsUltrasonicSensor& GetUltrasonicSensor() {

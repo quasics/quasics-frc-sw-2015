@@ -93,7 +93,7 @@ namespace RobotData {
   namespace DriveConstants {
     // The following values are drawn from drive characterization performed
     // on the Romi "Matt's Toy", and captured in the team wiki here:
-    // https://github.com/quasics/quasics-frc-sw-2015/wiki/Scott's-Toy-Constants
+    // https://github.com/quasics/quasics-frc-sw-2015/wiki/Robot-specific-characterization-constants
     constexpr auto ksVolts = 1.25_V;                                // "kS"
     constexpr auto kvVoltSecondsPerMeter = 5.7 * 1_V * 1_s / 1_m;   // "kV"
     constexpr auto kaVoltSecondsSquaredPerMeter =                   // "kA"

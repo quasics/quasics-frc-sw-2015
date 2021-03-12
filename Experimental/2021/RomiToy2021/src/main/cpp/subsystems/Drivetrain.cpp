@@ -46,8 +46,10 @@ void Drivetrain::ConfigureShuffleboard() {
 }
 
 void Drivetrain::AddToShuffleboard(wpi::StringRef label, frc::Sendable* data) {
-  auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
-  tab.Add(label, data);
+  if (data != nullptr) {
+    auto& tab = frc::Shuffleboard::GetTab(kShuffleboardTabName);
+    tab.Add(label, *data);
+  }
 }
 
 void Drivetrain::UpdateShuffleboard() {

@@ -67,11 +67,11 @@ inline frc2::SequentialCommandGroup* TrajectoryCommandGenerator::GenerateCommand
 
   config.AddConstraint(voltageConstraints);
 
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end, config);
 
   frc2::RamseteCommand ramseteCommand(
-      exampleTrajectory, [drive]() { return drive->GetPose(); },
+      trajectory, [drive]() { return drive->GetPose(); },
       frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
       kDriveKinematics, [drive]() { return drive->GetWheelSpeeds(); },
       frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
@@ -83,9 +83,9 @@ inline frc2::SequentialCommandGroup* TrajectoryCommandGenerator::GenerateCommand
 
   return new frc2::SequentialCommandGroup(
       frc2::InstantCommand(
-          [drive, resetTelemetryAtStart, exampleTrajectory] {
+          [drive, resetTelemetryAtStart, trajectory] {
             if (resetTelemetryAtStart) {
-              drive->ResetOdometry(exampleTrajectory.InitialPose());
+              drive->ResetOdometry(trajectory.InitialPose());
             }
           },
           {drive}),

@@ -64,7 +64,25 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
 }
 
 void RobotContainer::ConfigureShuffleboard() {
-  auto sampleTrajectory_3mForward = GenerateRamseteCommand(
+  // Configure trajectory generation.  (Note that this could be
+  // embedded in the RobotContainer -- or elsewhere -- and reused
+  // as needed, including tweaks to max speed/acceleration.)
+  TrajectoryCommandGenerator generator(
+      // Drive base being controlled
+      &m_driveBase,
+      // Drive profile data
+      {RobotData::DriveConstants::ksVolts,
+       RobotData::DriveConstants::kvVoltSecondsPerMeter,
+       RobotData::DriveConstants::kaVoltSecondsSquaredPerMeter},
+      // PID configuration values
+      {RobotData::DriveConstants::kPDriveVel,
+       RobotData::DriveConstants::kIDriveVel,
+       RobotData::DriveConstants::kDDriveVel},
+      // Speed profile
+      {RobotData::PathFollowingLimits::kMaxSpeed,
+       RobotData::PathFollowingLimits::kMaxAcceleration});
+
+  auto sampleTrajectory_3mForward = generator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -75,7 +93,7 @@ void RobotContainer::ConfigureShuffleboard() {
 
   m_driveBase.AddToShuffleboard("3m forward", sampleTrajectory_3mForward);
 
-  auto sampleTrajectory_sCurve = GenerateRamseteCommand(
+  auto sampleTrajectory_sCurve = generator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -88,7 +106,7 @@ void RobotContainer::ConfigureShuffleboard() {
 
   m_driveBase.AddToShuffleboard("S-curve", sampleTrajectory_sCurve);
 
-  auto sampleTrajectory_figureEight = GenerateRamseteCommand(
+  auto sampleTrajectory_figureEight = generator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -114,13 +132,4 @@ void RobotContainer::ConfigureButtonBindings() {
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return &turnToTarget;
-}
-
-frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
-    const frc::Pose2d& start,
-    const std::vector<frc::Translation2d>& interiorWaypoints,
-    const frc::Pose2d& end, bool resetTelemetryAtStart) {
-  TrajectoryCommandGenerator generator(&m_driveBase);
-  return generator.GenerateCommand(start, interiorWaypoints, end,
-                                   resetTelemetryAtStart);
 }

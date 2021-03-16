@@ -8,6 +8,7 @@
 Intake::Intake()
     : IntakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
       ConveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
+  SetSubsystem("Intake");
 }
 
 // This method will be called once per scheduler run

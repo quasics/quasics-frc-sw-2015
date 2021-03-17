@@ -4,10 +4,12 @@
 
 #include "RobotContainer.h"
 
+#include <frc/Filesystem.h>
 #include <frc/controller/PIDController.h>
 #include <frc/controller/RamseteController.h>
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/trajectory/TrajectoryUtil.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/RamseteCommand.h>
@@ -19,6 +21,8 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
+#include <wpi/Path.h>
+#include <wpi/SmallString.h>
 
 #include "Constants.h"
 #include "commands/DoASpin.h"
@@ -114,7 +118,15 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
   return createRams(exampleTrajectory, resetTelemetryAtStart);
 }
 
-frc::TrajectoryConfig RobotContainer::buildConfig() {
+frc2::SequentialCommandGroup*
+RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
+                                                   bool resetTelemetryAtStart) {
+  frc::Trajectory exampleTrajectory = loadTraj("Unnamed.wpilib.json");
+
+  return createRams(exampleTrajectory, resetTelemetryAtStart);
+}
+
+    frc::TrajectoryConfig RobotContainer::buildConfig() {
   using namespace DrivebaseConstants;
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
@@ -151,4 +163,15 @@ frc2::SequentialCommandGroup* RobotContainer::createRams(
       }),
       std::move(ramseteCommand),
       frc2::InstantCommand([this] { drivebase.TankDriveVolts(0_V, 0_V); }, {}));
+}
+
+frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
+  wpi::SmallString<64> deployDirectory;
+  frc::filesystem::GetDeployDirectory(deployDirectory);
+  wpi::sys::path::append(deployDirectory, "paths");
+  wpi::sys::path::append(deployDirectory, jsonFile);
+
+  frc::Trajectory trajectory =
+      frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
+  return trajectory;
 }

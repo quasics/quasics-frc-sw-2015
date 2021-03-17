@@ -6,9 +6,11 @@
 
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc2/command/Command.h>
-#include <frc/trajectory/Trajectory.h>
+
+#include <iostream>
 
 #include "commands/ExampleCommand.h"
 #include "subsystems/Drivebase.h"
@@ -31,13 +33,18 @@ class RobotContainer {
   frc2::SequentialCommandGroup* GenerateRamseteCommand(bool resetTelemetryAtStart);
 
   frc2::SequentialCommandGroup* GenerateRamseteCommand(
-    const frc::Pose2d& start,
-    const std::vector<frc::Translation2d>& interiorWaypoints,
-    const frc::Pose2d& end, bool resetTelemetryAtStart);
+      const frc::Pose2d& start,
+      const std::vector<frc::Translation2d>& interiorWaypoints,
+      const frc::Pose2d& end, bool resetTelemetryAtStart);
 
+  frc2::SequentialCommandGroup* GenerateRamseteCommandFromPathFile(
+      std::string filename, bool resetTelemetryAtStart);
+
+ private:
   frc::TrajectoryConfig buildConfig();
   frc2::SequentialCommandGroup* createRams(frc::Trajectory exampleTrajectory,
                                            bool resetTelemetryAtStart);
+  frc::Trajectory loadTraj(std::string jsonFile);
 
  private:
   // The robot's subsystems and commands are defined here...

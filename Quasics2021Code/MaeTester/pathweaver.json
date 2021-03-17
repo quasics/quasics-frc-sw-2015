@@ -5,5 +5,5 @@
   "maxAcceleration": 0.8,
   "wheelBase": 0.635,
   "gameName": "Slalom Path",
-  "outputDir": "../SimplePath"
+  "outputDir": ""
 }

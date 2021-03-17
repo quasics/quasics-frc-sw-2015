@@ -4,13 +4,15 @@
 
 #pragma once
 
-#include <frc2/command/Command.h>
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc/trajectory/TrajectoryConfig.h>
+#include <frc2/command/Command.h>
+#include <frc/trajectory/Trajectory.h>
 
 #include "commands/ExampleCommand.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drivebase.h"
+#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Shooter.h"
 
 /**
@@ -32,6 +34,10 @@ class RobotContainer {
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart);
+
+  frc::TrajectoryConfig buildConfig();
+  frc2::SequentialCommandGroup* createRams(frc::Trajectory exampleTrajectory,
+                                           bool resetTelemetryAtStart);
 
  private:
   // The robot's subsystems and commands are defined here...

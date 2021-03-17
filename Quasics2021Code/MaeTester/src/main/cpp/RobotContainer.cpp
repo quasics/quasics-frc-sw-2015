@@ -103,6 +103,19 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart) {
   using namespace DrivebaseConstants;
+  frc::TrajectoryConfig config = buildConfig();
+
+  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+      start, interiorWaypoints, end, config);
+
+  frc::SimpleMotorFeedforward<units::meter> feedForward(
+      ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
+
+  return createRams(exampleTrajectory, resetTelemetryAtStart);
+}
+
+frc::TrajectoryConfig RobotContainer::buildConfig() {
+  using namespace DrivebaseConstants;
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
@@ -113,10 +126,14 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
   config.SetKinematics(kDriveKinematics);
 
   config.AddConstraint(voltageConstraints);
+  return config;
+}
 
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      start, interiorWaypoints, end, config);
-
+frc2::SequentialCommandGroup* RobotContainer::createRams(
+    frc::Trajectory exampleTrajectory, bool resetTelemetryAtStart) {
+  using namespace DrivebaseConstants;
+  frc::SimpleMotorFeedforward<units::meter> feedForward(
+      ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
   frc2::RamseteCommand ramseteCommand(
       exampleTrajectory, [this]() { return drivebase.GetPose(); },
       frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,

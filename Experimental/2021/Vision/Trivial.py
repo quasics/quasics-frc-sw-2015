@@ -147,7 +147,7 @@ def processFrame(inputStream, outputStream):
     all_targets_top_list = []
     all_targets_left_list = []
     all_targets_width_list = []
-    all-targets_height_list = []
+    all_targets_height_list = []
     all_targets_y_list = []
     index = -1
     bestIndex = -1

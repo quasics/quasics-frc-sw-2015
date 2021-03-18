@@ -118,8 +118,8 @@ def processFrame(inputStream, outputStream):
 
     # Generate a bitmask, looking for pixels in the desired color range.  (This basically
     # means a version of the image that is effectively black and white, with all the places
-    # we want to keep data being white, and all of the areas we don't being the "mask" of
-    # black data.)
+    # we want to keep data -- i.e., where we see something in the color range that we care
+    # about -- being white, and all of the areas we don't being the "mask" of black data.)
     frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
 
     # Minor quality cleanup, performing some rounds of "erosion" and "dilation".
@@ -138,16 +138,14 @@ def processFrame(inputStream, outputStream):
     # of the colors that we care about).
     _, contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Go walking through the possible targets and find the best-scoring one.
+    # Go walking through the possible targets and find the (single) best-scoring
+    # one.  (Remember that in this example program, that simply means the biggest
+    # possible target that we can see.)
     #
     # We'll also hang onto some basic information about all of the targets (to be
     # published through NetworkTables as debugging information), as well as drawing
     # some highlights for them in the output image.
     all_targets_x_list = []
-    all_targets_top_list = []
-    all_targets_left_list = []
-    all_targets_width_list = []
-    all_targets_height_list = []
     all_targets_y_list = []
     index = -1
     bestIndex = -1
@@ -155,7 +153,8 @@ def processFrame(inputStream, outputStream):
     for contour in contours:
         index = index + 1
 
-        # Ignore small contours that could be because of noise/bad thresholding
+        # Ignore small contours that could be because of noise/bad thresholding.
+        # (I'm picking "15 pixels" in area as an arbitrary minimum here.)
         if cv2.contourArea(contour) < 15:
             continue
         
@@ -165,35 +164,33 @@ def processFrame(inputStream, outputStream):
             bestIndex = index
 
         ########
-        # Everything from here on in this loop is "gravy", used to give the
-        # drivers (or debuggers) some additional information about what the
+        # Everything from here on in this loop is "gravy" (assuming that
+        # we're just looking for the biggest target), which will be used
+        # to give the drivers (or debuggers) some additional information
         # camera is seeing.  It could be left out in code running on the
-        # robot in production, if we wanted to tweak the performance of the
-        # processing code.
-        #
+        # about what the robot in production, if we wanted to tweak the
+        # performance of the processing code.
 
         # Calculate basic information about the current contour
         rect = cv2.minAreaRect(contour)
         center, size, angle = rect
         center = [int(dim) for dim in center] # Convert to int so we can draw
         
-        # Add the (x,y) coordinates for the target center to the "all targets"
-        # data we're publishing, expressed as a %age of the distance from the
+        # Calculate the (x,y) coordinates for the current (possible) target's
+        # center, expressed as a %age of the distance from the
         # middle of the image to the edges.  (In other words, dead center would
-        # be (0,0), while the top-left corner would be (-1, -1), etc.)
+        # be (0,0), while the top-left corner would be (-1, -1), etc.).
         center_x = (center[0] - img_width / 2) / (img_width / 2)
         center_y = (center[1] - img_height / 2) / (img_height / 2)
         
-        x,y,w,h = cv2.boundingRect(contour)
-        
+        # Add the center point's coordinates to the "all targets" collection of
+        # data we're going to publish below.
         all_targets_x_list.append(center_x)
-        all_targets_top_list.append(y)
-        all_targets_left_list.append(x)
-        all_targets_width_list.append(w)
-        all_targets_height_list.append(h)
         all_targets_y_list.append(center_y)
 
-        # Draw a white outline of the contour, and put a small red circle at its center.
+        # Finally, update our output image (which will be sent out to Smart Dashboard
+        # at the end of frame processing), by drawing a white outline of the contour
+        # on our output image that, and putting a small red circle at its center.
         cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)
         cv2.circle(output_img, (int(center[0]), int(center[1])), 2, (0,0,255), 1)
         
@@ -203,7 +200,10 @@ def processFrame(inputStream, outputStream):
     target_x = []
     target_y = []
     if best is not None:
-        # Compute the "center of mass" for the target.
+        # Compute the "center of mass" for the target, expressed as a %age of the
+        # distance from the middle of the image to the edges.  (In other words,
+        # dead center of our "field of vision" would be (0,0), while the top-left
+        # corner would be (-1, -1), etc.).
         x,y,w,h = cv2.boundingRect(best)
         target_center_x = x + (w / 2)
         target_center_y = y + (h / 2)
@@ -251,6 +251,7 @@ def valueChanged(table, key, value, isNew):
     global high_S
     global low_V
     global high_V
+    
     # print("valueChanged: key: '%s'; value: %s; isNew: %s" % (key, value, isNew))
     if key == "Low_H":
         low_H = int(value)

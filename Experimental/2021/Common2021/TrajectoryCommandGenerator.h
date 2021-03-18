@@ -1,7 +1,9 @@
 #pragma once
 
+#include <frc/Filesystem.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc/trajectory/TrajectoryUtil.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/PrintCommand.h>
@@ -12,6 +14,8 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
+#include <wpi/Path.h>
+#include <wpi/SmallString.h>
 
 #include <vector>
 
@@ -69,19 +73,41 @@ class TrajectoryCommandGenerator {
   };
 
  public:
+  /**
+   * Constructor.
+   * 
+   * @param drive  the drive subsystem to be used for moving the robot
+   * @param profileData  drive profile data, describing its performance
+   * @param pidConfig  PID configuration values, used for error-correction
+   * 
+   * @see #DriveProfileData
+   * @see #PIDConfig
+   */
   TrajectoryCommandGenerator(CommonDriveSubsystem* drive,
                              const DriveProfileData& profileData,
                              const PIDConfig& pidConfig)
       : m_drive(drive), m_profileData(profileData), m_pidConfig(pidConfig) {
   }
 
-  TrajectoryCommandGenerator(CommonDriveSubsystem* drive,
-                             units::voltage::volt_t kS, VoltSecondsPerMeter kV,
-                             VoltSecondsSquaredPerMeter kA, double kP,
-                             double kI, double kD)
-      : m_drive(drive), m_profileData{kS, kV, kA}, m_pidConfig{kP, kI, kD} {
-  }
-
+  /**
+   * Generates a sample command to follow the specified trajectory.
+   *
+   * @param speedProfile
+   *     maximum velocity/acceleration constraints to be observed
+   * @param start
+   *     the starting pose of the robot, relative to drive telemetry data
+   * @param interiorWaypoints
+   *     the points on the field through which the robot should pass while
+   *     passing from "start" to "end"
+   * @param end
+   *     the ending pose of the robot, relative to drive telemetry data
+   * @param resetTelemetryAtStart
+   *     if true, the command will (at its initiation) reset the drive
+   *     telemetry, allowing it to start following the trajectory using
+   *     its current position and orientation as the origin point (0,0).
+   *     Otherwise, it will use the previously-established origin as a
+   *     starting point (and first drive back to that).
+   */
   frc2::SequentialCommandGroup* GenerateCommand(
       const SpeedProfile speedProfile, const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
@@ -89,6 +115,40 @@ class TrajectoryCommandGenerator {
     return GenerateCommandFromDiscreteSegments(
         m_drive, m_profileData, m_pidConfig, speedProfile, start,
         interiorWaypoints, end, resetTelemetryAtStart, m_ramseteConfig);
+  }
+
+  /**
+   * Generates a sample command to follow a trajectory stored in a PathWeaver
+   * JSON file.
+   *
+   * @param jsonFileName
+   *     name of the file holding the JSON data for the trajectory, as exported
+   *     by the PathWeaver tool.  (This is assumed to be stored in the normal
+   *     "deploy" folder for the target system, which will either be
+   *     project-relative when running with the simulator, or in the stock
+   *     location on a Rio, if running on real hardware.)
+   * @param resetTelemetryAtStart
+   *     if true, the command will (at its initiation) reset the drive
+   *     telemetry, allowing it to start following the trajectory using
+   *     its current position and orientation as the origin point (0,0).
+   *     Otherwise, it will use the previously-established origin as a
+   *     starting point (and first drive back to that).
+   */
+  frc2::SequentialCommandGroup* GenerateCommandFromPathWeaverFile(
+      const std::string jsonFileName, bool resetTelemetryAtStart) {
+    wpi::SmallString<256>
+        deployDirectory;  // Not thrilled about the limit to "SmallString",
+                          // given emulation, but it's what's supported.
+    frc::filesystem::GetDeployDirectory(deployDirectory);
+    wpi::sys::path::append(deployDirectory, "paths");
+    wpi::sys::path::append(deployDirectory, jsonFileName);
+
+    frc::Trajectory trajectory =
+        frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
+
+    return GenerateCommandForTrajectory(m_drive, m_profileData, m_pidConfig,
+                                        trajectory, resetTelemetryAtStart,
+                                        m_ramseteConfig);
   }
 
  private:

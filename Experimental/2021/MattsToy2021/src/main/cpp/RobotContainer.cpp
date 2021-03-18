@@ -84,7 +84,7 @@ void RobotContainer::ConfigureAutonomousSelection() {
   // works when you're using the actual DriverStation software and
   // SmartDashboard (or Shuffleboard); this means that this will *only* be
   // able to work when we've got a Windows box handy, and not when I'm working
-  // on my Mac.
+  // solely on my Mac.
   //
   // However, it'll provide a clean example for the team, which is good.  (But
   // that's also one of the reasons that I'm putting in a "do nothing" command

@@ -111,13 +111,13 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
   using namespace DrivebaseConstants;
   frc::TrajectoryConfig config = buildConfig();
 
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end, config);
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 
-  return createRams(exampleTrajectory, resetTelemetryAtStart);
+  return createRams(trajectory, resetTelemetryAtStart);
 }
 
 frc2::SequentialCommandGroup*
@@ -125,7 +125,7 @@ RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
                                                    bool resetTelemetryAtStart) {
   frc::Trajectory exampleTrajectory = loadTraj(filename);
 
-  return createRams(exampleTrajectory, resetTelemetryAtStart);
+  return createRams(trajectory, resetTelemetryAtStart);
 }
 
 frc::TrajectoryConfig RobotContainer::buildConfig() {
@@ -144,13 +144,13 @@ frc::TrajectoryConfig RobotContainer::buildConfig() {
 }
 
 frc2::SequentialCommandGroup* RobotContainer::createRams(
-    frc::Trajectory exampleTrajectory, bool resetTelemetryAtStart) {
+    frc::Trajectory trajectory, bool resetTelemetryAtStart) {
   using namespace DrivebaseConstants;
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
   frc2::RamseteCommand ramseteCommand(
-      exampleTrajectory, [this]() { return drivebase.GetPose(); },
+      trajectory, [this]() { return drivebase.GetPose(); },
       frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
       kDriveKinematics, [this]() { return drivebase.GetWheelSpeeds(); },
       frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
@@ -159,9 +159,9 @@ frc2::SequentialCommandGroup* RobotContainer::createRams(
       {&drivebase});
 
   return new frc2::SequentialCommandGroup(
-      frc2::InstantCommand([this, resetTelemetryAtStart, exampleTrajectory] {
+      frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
         if (resetTelemetryAtStart) {
-          drivebase.ResetOdometry(exampleTrajectory.InitialPose());
+          drivebase.ResetOdometry(trajectory.InitialPose());
         }
       }),
       std::move(ramseteCommand),

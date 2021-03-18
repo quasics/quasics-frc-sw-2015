@@ -42,7 +42,7 @@ class RobotContainer {
 
  private:
   frc::TrajectoryConfig buildConfig();
-  frc2::SequentialCommandGroup* createRams(frc::Trajectory exampleTrajectory,
+  frc2::SequentialCommandGroup* createRams(frc::Trajectory trajectory,
                                            bool resetTelemetryAtStart);
   frc::Trajectory loadTraj(std::string jsonFile);
 

@@ -28,10 +28,7 @@ RobotContainer::RobotContainer()
           // PID configuration values
           {RobotData::DriveConstants::kPDriveVel,
            RobotData::DriveConstants::kIDriveVel,
-           RobotData::DriveConstants::kDDriveVel},
-          // Speed profile
-          {RobotData::PathFollowingLimits::kMaxSpeed,
-           RobotData::PathFollowingLimits::kMaxAcceleration}) {
+           RobotData::DriveConstants::kDDriveVel}) {
   std::vector<char> buffer(4096);
   if (getcwd(&buffer[0], buffer.size()) != NULL) {
     std::cerr << "Current directory is: " << &buffer[0] << std::endl;
@@ -96,6 +93,9 @@ void RobotContainer::ConfigureAutonomousSelection() {
   m_autonomousChooser.AddOption(
       "Move 3m forward",
       m_trajectoryGenerator.GenerateCommand(
+          // Speed profile
+          {RobotData::PathFollowingLimits::kMaxSpeed,
+           RobotData::PathFollowingLimits::kMaxAcceleration},
           // Starting pose
           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
           // Interior waypoints
@@ -109,7 +109,12 @@ void RobotContainer::ConfigureAutonomousSelection() {
 }
 
 void RobotContainer::ConfigureShuffleboard() {
+  TrajectoryCommandGenerator::SpeedProfile speedProfile = {
+      RobotData::PathFollowingLimits::kMaxSpeed,
+      RobotData::PathFollowingLimits::kMaxAcceleration};
   auto sampleTrajectory_3mForward = m_trajectoryGenerator.GenerateCommand(
+      // Speed profile
+      speedProfile,
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -121,6 +126,8 @@ void RobotContainer::ConfigureShuffleboard() {
   m_driveBase.AddToShuffleboard("3m forward", sampleTrajectory_3mForward);
 
   auto sampleTrajectory_sCurve = m_trajectoryGenerator.GenerateCommand(
+      // Speed profile
+      speedProfile,
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -134,6 +141,8 @@ void RobotContainer::ConfigureShuffleboard() {
   m_driveBase.AddToShuffleboard("S-curve", sampleTrajectory_sCurve);
 
   auto sampleTrajectory_figureEight = m_trajectoryGenerator.GenerateCommand(
+      // Speed profile
+      speedProfile,
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints

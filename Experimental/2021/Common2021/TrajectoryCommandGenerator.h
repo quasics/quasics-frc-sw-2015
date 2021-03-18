@@ -71,36 +71,24 @@ class TrajectoryCommandGenerator {
  public:
   TrajectoryCommandGenerator(CommonDriveSubsystem* drive,
                              const DriveProfileData& profileData,
-                             const PIDConfig& pidConfig,
-                             const SpeedProfile& speedProfile)
-      : m_drive(drive),
-        m_profileData(profileData),
-        m_pidConfig(pidConfig),
-        m_speedProfile(speedProfile) {
+                             const PIDConfig& pidConfig)
+      : m_drive(drive), m_profileData(profileData), m_pidConfig(pidConfig) {
   }
 
   TrajectoryCommandGenerator(CommonDriveSubsystem* drive,
                              units::voltage::volt_t kS, VoltSecondsPerMeter kV,
                              VoltSecondsSquaredPerMeter kA, double kP,
-                             double kI, double kD, MetersPerSecond maxVelocity,
-                             MetersPerSecondSquared maxAcceleration)
-      : m_drive(drive),
-        m_profileData{kS, kV, kA},
-        m_pidConfig{kP, kI, kD},
-        m_speedProfile{maxVelocity, maxAcceleration} {
-  }
-
-  void SetSpeedProfile(const SpeedProfile& speedProfile) {
-    m_speedProfile = speedProfile;
+                             double kI, double kD)
+      : m_drive(drive), m_profileData{kS, kV, kA}, m_pidConfig{kP, kI, kD} {
   }
 
   frc2::SequentialCommandGroup* GenerateCommand(
-      const frc::Pose2d& start,
+      const SpeedProfile speedProfile, const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
       const frc::Pose2d& end, bool resetTelemetryAtStart) {
-    return GenerateCommandImpl(m_drive, m_profileData, m_pidConfig,
-                               m_speedProfile, m_ramseteConfig, start,
-                               interiorWaypoints, end, resetTelemetryAtStart);
+    return GenerateCommandFromDiscreteSegments(
+        m_drive, m_profileData, m_pidConfig, speedProfile, start,
+        interiorWaypoints, end, resetTelemetryAtStart, m_ramseteConfig);
   }
 
  private:
@@ -108,18 +96,23 @@ class TrajectoryCommandGenerator {
   // of "this" in lambdas: if the generator is a local variable,
   // that's going to make the code go "boom" when you try to use
   // the command later....
-  static frc2::SequentialCommandGroup* GenerateCommandImpl(
+  static frc2::SequentialCommandGroup* GenerateCommandFromDiscreteSegments(
       CommonDriveSubsystem* const drive, const DriveProfileData profileData,
       const PIDConfig pidConfig, const SpeedProfile speedProfile,
-      const RamseteConfig ramseteConfig, const frc::Pose2d& start,
+      const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
-      const frc::Pose2d& end, bool resetTelemetryAtStart);
+      const frc::Pose2d& end, bool resetTelemetryAtStart,
+      const RamseteConfig ramseteConfig);
+
+  static frc2::SequentialCommandGroup* GenerateCommandForTrajectory(
+      CommonDriveSubsystem* const drive, const DriveProfileData profileData,
+      const PIDConfig pidConfig, frc::Trajectory trajectory,
+      bool resetTelemetryAtStart, const RamseteConfig ramseteConfig);
 
  private:
   CommonDriveSubsystem* m_drive;
   const DriveProfileData m_profileData;
   const PIDConfig m_pidConfig;
-  SpeedProfile m_speedProfile;
 
   // I'm not even going to expose this for overriding for now.  Just treat it
   // as magic numbers, based on the recommendation from FIRST and WPILib.
@@ -127,12 +120,13 @@ class TrajectoryCommandGenerator {
 };
 
 inline frc2::SequentialCommandGroup*
-TrajectoryCommandGenerator::GenerateCommandImpl(
+TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
     CommonDriveSubsystem* const drive, const DriveProfileData profileData,
     const PIDConfig pidConfig, const SpeedProfile speedProfile,
-    const RamseteConfig ramseteConfig, const frc::Pose2d& start,
+    const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
-    const frc::Pose2d& end, bool resetTelemetryAtStart) {
+    const frc::Pose2d& end, bool resetTelemetryAtStart,
+    const RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
       drive->GetTrackWidth()};
 
@@ -149,6 +143,19 @@ TrajectoryCommandGenerator::GenerateCommandImpl(
   auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end, config);
 
+  return GenerateCommandForTrajectory(drive, profileData, pidConfig, trajectory,
+                                      resetTelemetryAtStart, ramseteConfig);
+}
+
+inline frc2::SequentialCommandGroup*
+TrajectoryCommandGenerator::GenerateCommandForTrajectory(
+    CommonDriveSubsystem* const drive, const DriveProfileData profileData,
+    const PIDConfig pidConfig, frc::Trajectory trajectory,
+    bool resetTelemetryAtStart, RamseteConfig ramseteConfig) {
+  const frc::DifferentialDriveKinematics kDriveKinematics{
+      drive->GetTrackWidth()};
+  frc::SimpleMotorFeedforward<units::meter> feedForward(
+      profileData.kS, profileData.kV, profileData.kA);
   frc2::RamseteCommand ramseteCommand(
       trajectory, [drive]() { return drive->GetPose(); },
       frc::RamseteController{ramseteConfig.kRamseteB,

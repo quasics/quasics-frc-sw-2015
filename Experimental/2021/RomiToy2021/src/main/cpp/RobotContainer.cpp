@@ -269,13 +269,14 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
       // PID configuration values
       {RobotData::DriveConstants::kPDriveVel,
        RobotData::DriveConstants::kIDriveVel,
-       RobotData::DriveConstants::kDDriveVel},
-      // Speed profile
-      {RobotData::PathFollowingLimits::kMaxSpeed,
-       RobotData::PathFollowingLimits::kMaxAcceleration});
+       RobotData::DriveConstants::kDDriveVel});
 
-  return generator.GenerateCommand(start, interiorWaypoints, end,
-                            resetTelemetryAtStart);
+  TrajectoryCommandGenerator::SpeedProfile speedProfile{
+      RobotData::PathFollowingLimits::kMaxSpeed,
+      RobotData::PathFollowingLimits::kMaxAcceleration};
+
+  return generator.GenerateCommand(speedProfile, start, interiorWaypoints, end,
+                                   resetTelemetryAtStart);
 #else
   using namespace RobotData::DriveConstants;
   using namespace RobotData::PathFollowingLimits;

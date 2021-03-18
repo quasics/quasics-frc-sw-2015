@@ -144,11 +144,11 @@ def processFrame(inputStream, outputStream):
     # published through NetworkTables as debugging information), as well as drawing
     # some highlights for them in the output image.
     all_targets_x_list = []
+    all_targets_y_list = []
     all_targets_top_list = []
     all_targets_left_list = []
     all_targets_width_list = []
     all_targets_height_list = []
-    all_targets_y_list = []
     index = -1
     bestIndex = -1
     best = None
@@ -187,11 +187,11 @@ def processFrame(inputStream, outputStream):
         x,y,w,h = cv2.boundingRect(contour)
         
         all_targets_x_list.append(center_x)
+        all_targets_y_list.append(center_y)
         all_targets_top_list.append(y)
         all_targets_left_list.append(x)
         all_targets_width_list.append(w)
         all_targets_height_list.append(h)
-        all_targets_y_list.append(center_y)
 
         # Draw a white outline of the contour, and put a small red circle at its center.
         cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)

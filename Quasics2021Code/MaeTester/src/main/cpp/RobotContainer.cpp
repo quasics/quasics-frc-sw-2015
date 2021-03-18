@@ -92,6 +92,8 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Go in a line", GenerateRamseteCommand(
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+  frc::SmartDashboard::PutData("Go in an S", GenerateRamseteCommandFromPathFile(
+                                                 "TestingS.wpilib.json", true));
 }
 
 double RobotContainer::deadband(double num) {
@@ -121,7 +123,7 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 frc2::SequentialCommandGroup*
 RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
                                                    bool resetTelemetryAtStart) {
-  frc::Trajectory exampleTrajectory = loadTraj("Unnamed.wpilib.json");
+  frc::Trajectory exampleTrajectory = loadTraj(filename);
 
   return createRams(exampleTrajectory, resetTelemetryAtStart);
 }

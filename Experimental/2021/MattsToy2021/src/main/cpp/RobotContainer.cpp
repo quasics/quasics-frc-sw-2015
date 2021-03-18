@@ -108,6 +108,12 @@ void RobotContainer::ConfigureAutonomousSelection() {
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousChooser);
 }
 
+frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+    const std::string jsonFileName, bool resetTelemetryAtStart) {
+  return m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+      jsonFileName, resetTelemetryAtStart);
+}
+
 void RobotContainer::ConfigureShuffleboard() {
   TrajectoryCommandGenerator::SpeedProfile speedProfile = {
       RobotData::PathFollowingLimits::kMaxSpeed,

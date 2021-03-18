@@ -44,10 +44,30 @@ class RobotContainer {
   };
 
   /**
-   * Generates a sample command to follow a simple trajectory.
+   * Generates a sample command to follow a trajectory stored in a PathWeaver
+   * JSON file.
+   *
+   * @param jsonFileName
+   *     name of the file holding the JSON data for the trajectory, as exported
+   *     by the PathWeaver tool.  (This is assumed to be stored in the normal
+   *     "deploy" folder for the target system, which will either be
+   *     project-relative when running with the simulator, or in the stock
+   *     location on a Rio, if running on real hardware.)
+   * @param resetTelemetryAtStart
+   *     if true, the command will (at its initiation) reset the drive
+   *     telemetry, allowing it to start following the trajectory using
+   *     its current position and orientation as the origin point (0,0).
+   *     Otherwise, it will use the previously-established origin as a
+   *     starting point (and first drive back to that).
+   */
+  frc2::SequentialCommandGroup* GenerateRamseteCommand(
+      const std::string jsonFileName, bool resetTelemetryAtStart);
+
+  /**
+   * Generates a sample command to follow a trajectory.
    *
    * @param example
-   *     identifies the sample trajectory path to be generated
+   *     identifies the discrete example trajectory path to be generated
    * @param resetTelemetryAtStart
    *     if true, the command will (at its initiation) reset the drive
    *     telemetry, allowing it to start following the trajectory using

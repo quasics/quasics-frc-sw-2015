@@ -36,6 +36,9 @@ class RobotContainer {
 
   void ConfigureAutonomousSelection();
 
+  frc2::SequentialCommandGroup* GenerateRamseteCommand(
+      const std::string jsonFileName, bool resetTelemetryAtStart);
+
  private:
   // The robot's subsystems and commands are defined here...
   frc::SendableChooser<frc2::Command*> m_autonomousChooser;

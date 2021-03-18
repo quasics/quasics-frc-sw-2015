@@ -252,6 +252,27 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+    const std::string jsonFileName, bool resetTelemetryAtStart) {
+  // Configure trajectory generation.  (Note that this could be
+  // embedded in the RobotContainer -- or elsewhere -- and reused
+  // as needed, including tweaks to max speed/acceleration.)
+  TrajectoryCommandGenerator generator(
+      // Drive base being controlled
+      &m_drive,
+      // Drive profile data
+      {RobotData::DriveConstants::ksVolts,
+       RobotData::DriveConstants::kvVoltSecondsPerMeter,
+       RobotData::DriveConstants::kaVoltSecondsSquaredPerMeter},
+      // PID configuration values
+      {RobotData::DriveConstants::kPDriveVel,
+       RobotData::DriveConstants::kIDriveVel,
+       RobotData::DriveConstants::kDDriveVel});
+
+  return generator.GenerateCommandFromPathWeaverFile(jsonFileName,
+                                                     resetTelemetryAtStart);
+}
+
+frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, bool resetTelemetryAtStart) {

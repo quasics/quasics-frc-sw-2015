@@ -126,7 +126,7 @@ RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
   return createRams(exampleTrajectory, resetTelemetryAtStart);
 }
 
-    frc::TrajectoryConfig RobotContainer::buildConfig() {
+frc::TrajectoryConfig RobotContainer::buildConfig() {
   using namespace DrivebaseConstants;
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
@@ -144,6 +144,7 @@ RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
 frc2::SequentialCommandGroup* RobotContainer::createRams(
     frc::Trajectory exampleTrajectory, bool resetTelemetryAtStart) {
   using namespace DrivebaseConstants;
+
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
   frc2::RamseteCommand ramseteCommand(

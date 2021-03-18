@@ -7,14 +7,14 @@
 #include <frc/Joystick.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+#include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
-#include "commands/ExampleCommand.h"
 #include "subsystems/DriveBase.h"
-#include "subsystems/ExampleSubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -34,10 +34,11 @@ class RobotContainer {
 
   void ConfigureShuffleboard();
 
+  void ConfigureAutonomousSelection();
+
  private:
   // The robot's subsystems and commands are defined here...
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
+  frc::SendableChooser<frc2::Command*> m_autonomousChooser;
 
   VisionSettingsHelper m_helper{"/home/lvuser/visionSettings.dat"};
 
@@ -46,4 +47,7 @@ class RobotContainer {
 
   DriveBase m_driveBase;
   TurnToTargetCommand turnToTarget{&m_driveBase, 0.2};
+
+  // Note: this depends on the drive base, so it must be declared afterward.
+  TrajectoryCommandGenerator m_trajectoryGenerator;
 };

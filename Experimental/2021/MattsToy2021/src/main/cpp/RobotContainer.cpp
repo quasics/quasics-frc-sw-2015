@@ -5,19 +5,33 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/PrintCommand.h>
 #include <unistd.h>
 
 #include "../../../../Common2021/DeadBandEnforcer.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
-#include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "Constants.h"
 
 constexpr double kMaxTurtleSpeed = 0.4;
 constexpr double kMaxNormalSpeed = 0.6;
 constexpr double kMaxTurboSpeed = 0.75;
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
+RobotContainer::RobotContainer()
+    : m_trajectoryGenerator(
+          // Drive base being controlled
+          &m_driveBase,
+          // Drive profile data
+          {RobotData::DriveConstants::ksVolts,
+           RobotData::DriveConstants::kvVoltSecondsPerMeter,
+           RobotData::DriveConstants::kaVoltSecondsSquaredPerMeter},
+          // PID configuration values
+          {RobotData::DriveConstants::kPDriveVel,
+           RobotData::DriveConstants::kIDriveVel,
+           RobotData::DriveConstants::kDDriveVel},
+          // Speed profile
+          {RobotData::PathFollowingLimits::kMaxSpeed,
+           RobotData::PathFollowingLimits::kMaxAcceleration}) {
   std::vector<char> buffer(4096);
   if (getcwd(&buffer[0], buffer.size()) != NULL) {
     std::cerr << "Current directory is: " << &buffer[0] << std::endl;
@@ -61,28 +75,41 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   ConfigureButtonBindings();
 
   ConfigureShuffleboard();
+
+  ConfigureAutonomousSelection();
+}
+
+void RobotContainer::ConfigureAutonomousSelection() {
+  // Note: I'm working with a SendableChooser here, which unfortunately only
+  // works when you're using the actual DriverStation software and
+  // SmartDashboard (or Shuffleboard); this means that this will *only* be
+  // able to work when we've got a Windows box handy, and not when I'm working
+  // on my Mac.
+  //
+  // However, it'll provide a clean example for the team, which is good.  (But
+  // that's also one of the reasons that I'm putting in a "do nothing" command
+  // as the default.)
+  m_autonomousChooser.SetDefaultOption(
+      "Do nothing",
+      new frc2::PrintCommand("Explicitly doing nothing for Auto mode...."));
+
+  m_autonomousChooser.AddOption(
+      "Move 3m forward",
+      m_trajectoryGenerator.GenerateCommand(
+          // Starting pose
+          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+          // Interior waypoints
+          std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m),
+                                          frc::Translation2d(2_m, 0_m)},
+          // Ending pose
+          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+
+  // Put the SendableChooser on the Smart Dashboard for the driver's station.
+  frc::SmartDashboard::PutData("Auto mode", &m_autonomousChooser);
 }
 
 void RobotContainer::ConfigureShuffleboard() {
-  // Configure trajectory generation.  (Note that this could be
-  // embedded in the RobotContainer -- or elsewhere -- and reused
-  // as needed, including tweaks to max speed/acceleration.)
-  TrajectoryCommandGenerator generator(
-      // Drive base being controlled
-      &m_driveBase,
-      // Drive profile data
-      {RobotData::DriveConstants::ksVolts,
-       RobotData::DriveConstants::kvVoltSecondsPerMeter,
-       RobotData::DriveConstants::kaVoltSecondsSquaredPerMeter},
-      // PID configuration values
-      {RobotData::DriveConstants::kPDriveVel,
-       RobotData::DriveConstants::kIDriveVel,
-       RobotData::DriveConstants::kDDriveVel},
-      // Speed profile
-      {RobotData::PathFollowingLimits::kMaxSpeed,
-       RobotData::PathFollowingLimits::kMaxAcceleration});
-
-  auto sampleTrajectory_3mForward = generator.GenerateCommand(
+  auto sampleTrajectory_3mForward = m_trajectoryGenerator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -93,7 +120,7 @@ void RobotContainer::ConfigureShuffleboard() {
 
   m_driveBase.AddToShuffleboard("3m forward", sampleTrajectory_3mForward);
 
-  auto sampleTrajectory_sCurve = generator.GenerateCommand(
+  auto sampleTrajectory_sCurve = m_trajectoryGenerator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -106,7 +133,7 @@ void RobotContainer::ConfigureShuffleboard() {
 
   m_driveBase.AddToShuffleboard("S-curve", sampleTrajectory_sCurve);
 
-  auto sampleTrajectory_figureEight = generator.GenerateCommand(
+  auto sampleTrajectory_figureEight = m_trajectoryGenerator.GenerateCommand(
       // Starting pose
       frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
       // Interior waypoints
@@ -130,6 +157,5 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
-  return &turnToTarget;
+  return m_autonomousChooser.GetSelected();
 }

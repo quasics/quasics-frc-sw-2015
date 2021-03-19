@@ -334,5 +334,62 @@ def main():
                             # yields about 14-15 FPS (0.35Mbps) from a RasPi 3
                             # running the Romi image and in the "disabled" robot
                             # state, when testing on a lightly-loaded network.
+    
+    
+    # temporarily placing this here until finding out where it should go specifically
+
+    from imutils import paths 
+    import numpy as np
+    
+    def find_marker(image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (5,5), 0)
+        edged = cv2.Canny(gray, 35, 125)
+        
+    #finding the contours in the edged image
+    cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab.contours(cnts)
+    c = max(cnts, key = cv2.contourArea)
+    
+    #computing the bounding box
+    
+    return cv2.minAreaRect(c)
+    def distance_to_camera(knownWidth, focallength, perWidth)
+    # compute and return the distance 
+        return (knownWidth * focalLength)/ perWidth
+    
+    #initalize the known distance  from camera to object(in this case a ball)
+    # 24.0 is a place holder temporarily\
+    
+    KNOWN_DISTANCE = 24.0
+    
+    #initalize the known object width
+    #11.0 is the place holder
+    
+    KNOWN_WIDTH = 11.0
+    
+    #load the first image that contains an object
+    #(images/2ft.png is a placeholder image, until we have areal image)
+    image = cv2.imread("images/2ft.png")
+    marker = find_marker(image)
+    focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
+    
+    #loop images
+    
+    for imagePath in sorted(paths.list_images("images")):
+        image = cv2.imread(imagePath)
+        marker = find_marker(image)
+        inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
+        
+        #draw a bounding box
+        
+        box = cv2.cv.BoxPoints(marker) if imutils.is_cv2() else cv2.BoxPoints(marker)
+        box = np.int0(box)
+        cv2.drawContours(image, [box], -1, (0, 255, 0), 2)
+	cv2.putText(image, "%.2fft" % (inches / 12),
+		(image.shape[1] - 200, image.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX,
+		2.0, (0, 255, 0), 3)
+	cv2.imshow("image", image)
+	cv2.waitKey(0)
 
 main()

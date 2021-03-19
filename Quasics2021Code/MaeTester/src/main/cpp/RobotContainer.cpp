@@ -27,6 +27,7 @@
 
 #include "Constants.h"
 #include "commands/DoASpin.h"
+#include "commands/DriveAtPowerForMeters.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
@@ -115,6 +116,8 @@ void RobotContainer::ConfigureSmartDashboard() {
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   frc::SmartDashboard::PutData("Go in an S", GenerateRamseteCommandFromPathFile(
                                                  "TestingS.wpilib.json", true));
+  frc::SmartDashboard::PutData("Go four 4 meters at 30%",
+                               new DriveAtPowerForMeters(&drivebase, .3, 4_m));
 }
 
 double RobotContainer::deadband(double num) {

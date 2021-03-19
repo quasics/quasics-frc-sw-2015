@@ -8,7 +8,7 @@ yellow_low_H = 21  # 21-16
 yellow_low_S = 50 # 148-40
 yellow_low_V = 10  # 93-10
 yellow_high_H = 30
-yellow_high_S = 250
+yellow_high_S = 255
 yellow_high_V = 255
 
 # Blue shades from OpenCV tutorial

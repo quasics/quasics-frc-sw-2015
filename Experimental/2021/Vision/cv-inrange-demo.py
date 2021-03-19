@@ -97,10 +97,21 @@ def convexityScore(contour):
         return 0
     
 
+useCamera = True
+
 parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
 parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
+parser.add_argument('--file', help='Still image file to be used.', default="")
 args = parser.parse_args()
-cap = cv2.VideoCapture(args.camera)
+
+if args.file == "":
+    useCamera = True
+    cap = cv2.VideoCapture(args.camera)
+    print("Using data from camera")
+else:
+    useCamera = False
+    still_image = cv2.imread(args.file)
+    print("Using data from file '{}'".format(args.file))
 
 cv2.namedWindow(window_capture_name)
 cv2.namedWindow(window_detection_name)
@@ -115,10 +126,13 @@ cv2.createTrackbar(high_V_name, window_detection_name , high_V, max_value, on_hi
 kernel = np.ones((3, 3), np.uint8)
 
 while True:
-    
-    ret, frame = cap.read()
-    if frame is None:
-        break
+    if useCamera:
+        ret, frame = cap.read()
+        if frame is None:
+            break
+    else:
+        frame = still_image.copy()
+
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
 

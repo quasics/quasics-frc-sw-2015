@@ -12,6 +12,7 @@
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/PrintCommand.h>
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
@@ -48,6 +49,7 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
             -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
         return deadband(stickValue);
       }));
+  ConfigureAutoSelection();
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -63,9 +65,28 @@ void RobotContainer::ConfigureButtonBindings() {
       &runshootingmotor);  // see last year's code
 }
 
+void RobotContainer::ConfigureAutoSelection() {
+  m_autoChooser.AddDefault("do nothing",
+                           new frc2::PrintCommand("I refuse to move."));
+  m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
+                                            "TestingS.wpilib.json", true));
+  m_autoChooser.AddOption(
+      "Barrel Racing",
+      GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
+  m_autoChooser.AddOption(
+      "Bounce", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
+  std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
+                                         frc::Translation2d(2_m, 0_m)};
+  m_autoChooser.AddOption(
+      "Go in a line", GenerateRamseteCommand(
+                          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
+                          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+  frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
+}
+
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return &m_autonomousCommand;
+  return m_autoChooser.GetSelected();
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
@@ -123,7 +144,7 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
 frc2::SequentialCommandGroup*
 RobotContainer::GenerateRamseteCommandFromPathFile(std::string filename,
                                                    bool resetTelemetryAtStart) {
-  frc::Trajectory exampleTrajectory = loadTraj(filename);
+  frc::Trajectory trajectory = loadTraj(filename);
 
   return createRams(trajectory, resetTelemetryAtStart);
 }

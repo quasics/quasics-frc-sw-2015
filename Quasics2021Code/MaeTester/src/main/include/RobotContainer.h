@@ -6,6 +6,7 @@
 
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc2/command/Command.h>
@@ -45,6 +46,7 @@ class RobotContainer {
   frc2::SequentialCommandGroup* createRams(frc::Trajectory trajectory,
                                            bool resetTelemetryAtStart);
   frc::Trajectory loadTraj(std::string jsonFile);
+  void ConfigureAutoSelection();
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -52,6 +54,7 @@ class RobotContainer {
   ExampleCommand m_autonomousCommand;
   Drivebase drivebase;
   Shooter shooter;
+  frc::SendableChooser<frc2::Command*> m_autoChooser;
 
   // Controllers
   frc::Joystick driverJoystick{0};

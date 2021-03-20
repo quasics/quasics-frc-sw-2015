@@ -1,8 +1,13 @@
+import argparse
 import cv2 as cv2
 import numpy as np
 
+useCamera = True
+
+
 # Focal length for the webcam, measured in pixels.
 # (Logitech c270: 1430 (reported); c920: 1252 (calculated)).
+# (169.7 for Lifecam)
 focal_length = 1252.0
 
 # Known width of the target, measured in cm.
@@ -18,6 +23,9 @@ yellow_low_V = 10
 yellow_high_H = 30
 yellow_high_S = 255
 yellow_high_V = 255
+
+# Used for morphological ops during frame processing.
+kernel = np.ones((3, 3), np.uint8)
 
 # Computes the distance to an object with a known width (e.g., 
 # one of the power cells from Infinite Recharge, cargo from
@@ -39,27 +47,14 @@ def distanceToCamera(knownWidth, focalLength, perWidth):
 def computeScore(contour):
     return cv2.contourArea(contour)
 
-#########################################
-# "Main" code starts here
-
-# Source for image captures.
-cap = cv2.VideoCapture(0)
-
-# Used for morphological ops during frame processing.
-kernel = np.ones((3, 3), np.uint8)
-
-while(1):
-    # Take each frame
-    _, frame = cap.read()
+def processFrame(frame, lowColorRange, highColorRange):
+    global kernel
 
     # Convert colors from BGR to HSV, to make it easier to work with.
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # "Threshold" the HSV image to identify the pixels in the targeted color range.
-    mask = cv2.inRange(
-        hsv,    # Image being evaluated
-        np.array([yellow_low_H,yellow_low_S,yellow_low_V]),    # Low end of color range
-        np.array([yellow_high_H,yellow_high_S,yellow_high_V])) # High end of color range
+    mask = cv2.inRange(hsv, lowColorRange, highColorRange)
 
     # Perform a few rounds of "dilation" (removing small holes inside a larger region)
     # and "erosion" (removing noise from the background).
@@ -117,14 +112,61 @@ while(1):
         # Draw a red outline of the target on the output image.
         cv2.drawContours(output_img, contours, bestIndex, color = (0, 0, 255), thickness = 3)
         dist = distanceToCamera(knownWidth = known_width, focalLength = focal_length, perWidth = width)
-        print("Distance: {}, perceived width: {}".format(dist, width))
+        print("Distance: {} cm, perceived width: {} pixels".format(dist, width))
 
     # Display the various versions of stuff.
     cv2.imshow('frame',frame)
     cv2.imshow('mask',mask)
     cv2.imshow('res',output_img)
-    k = cv2.waitKey(5)
-    if k == 27 or k == ord('q'):
-        break
+
+#########################################
+# "Main" code starts here
+
+
+parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
+parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
+parser.add_argument('--file', help='Still image file to be used.', default="")
+args = parser.parse_args()
+
+if args.file == "":
+    useCamera = True
+    cap = cv2.VideoCapture(args.camera)
+    print("Using data from camera")
+else:
+    useCamera = False
+    still_image = cv2.imread(args.file)
+    print("Using data from file '{}'".format(args.file))
+
+if useCamera:
+    # Source for image captures.
+    cap = cv2.VideoCapture(0)
+    while(1):
+        ret, frame = cap.read()
+        if frame is None:
+            break
+
+        # Process it
+        processFrame(
+            frame,
+            np.array([yellow_low_H,yellow_low_S,yellow_low_V]),    # Low end of color range
+            np.array([yellow_high_H,yellow_high_S,yellow_high_V])) # High end of color range
+
+        k = cv2.waitKey(5)
+        if k == 27 or k == ord('q'):
+            break
+
+else:
+    frame = still_image.copy()
+
+    # Process it
+    processFrame(
+        frame,
+        np.array([yellow_low_H,yellow_low_S,yellow_low_V]),    # Low end of color range
+        np.array([yellow_high_H,yellow_high_S,yellow_high_V])) # High end of color range
+
+    while(1):
+        k = cv2.waitKey(5)
+        if k == 27 or k == ord('q'):
+            break
 
 cv2.destroyAllWindows()

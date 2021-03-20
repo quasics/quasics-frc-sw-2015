@@ -33,9 +33,9 @@ focal_length = 169.7
 known_width = 17.78
 
 #calcualation for the distance
-def distance_to_camera(known_width, focal_length, w)
+def distanceToCamera(known_width, focal_length, perceivedWidth):
     # compute and return the distance 
-        return (known_width * focal_length)/ w
+    return (known_width * focal_length)/ perceivedWidth
 
 # Convenience flag, used to pick between default sets of colors:
 # * If True, use a set that worked well in the lab on 13Feb2020.
@@ -204,7 +204,7 @@ def processFrame(inputStream, outputStream):
         all_targets_left_list.append(x)
         all_targets_width_list.append(w)
         all_targets_height_list.append(h)
-        d = distance_to_camera(known_width, focal_length, w)
+        d = distanceToCamera(known_width, focal_length, w)
         all_targets_distance_list.append(d)
 
         # Draw a white outline of the contour, and put a small red circle at its center.

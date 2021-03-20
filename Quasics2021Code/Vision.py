@@ -25,8 +25,17 @@ team = 2656
 # Requested size of the video feed directly deployed from the camera.
 # (This is apparently independent of the video sizing provided by the
 # CameraServer code, which *appears* to be limited to 160x120.)
-width = 320
-height = 240
+width = 160
+height = 120
+
+#Focal Length definition, and the known width definition
+focal_length = 169.7
+known_width = 17.78
+
+#calcualation for the distance
+def distance_to_camera(known_width, focal_length, w)
+    # compute and return the distance 
+        return (known_width * focal_length)/ w
 
 # Convenience flag, used to pick between default sets of colors:
 # * If True, use a set that worked well in the lab on 13Feb2020.
@@ -92,6 +101,8 @@ def processFrame(inputStream, outputStream):
     global high_V
     global vision_nt
     global input_img
+    global focal_length
+    global known_width
 
     dbgBuffer = ""
     start_time = time.time()
@@ -149,6 +160,7 @@ def processFrame(inputStream, outputStream):
     all_targets_left_list = []
     all_targets_width_list = []
     all_targets_height_list = []
+    all_targets_distance_list = []
     index = -1
     bestIndex = -1
     best = None
@@ -192,6 +204,8 @@ def processFrame(inputStream, outputStream):
         all_targets_left_list.append(x)
         all_targets_width_list.append(w)
         all_targets_height_list.append(h)
+        d = distance_to_camera(known_width, focal_length, w)
+        all_targets_distance_list.append(d)
 
         # Draw a white outline of the contour, and put a small red circle at its center.
         cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)
@@ -232,6 +246,7 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumberArray('left_list', all_targets_left_list)
     vision_nt.putNumberArray('width_list', all_targets_width_list)
     vision_nt.putNumberArray('height_list', all_targets_height_list)
+    vision_nt.putNumberArray('distace_list', all_targets_distance_list)
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time
@@ -334,62 +349,4 @@ def main():
                             # yields about 14-15 FPS (0.35Mbps) from a RasPi 3
                             # running the Romi image and in the "disabled" robot
                             # state, when testing on a lightly-loaded network.
-    
-    
-    # temporarily placing this here until finding out where it should go specifically
-
-    from imutils import paths 
-    import numpy as np
-    
-    def find_marker(image):
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (5,5), 0)
-        edged = cv2.Canny(gray, 35, 125)
-        
-    #finding the contours in the edged image
-    cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-    cnts = imutils.grab.contours(cnts)
-    c = max(cnts, key = cv2.contourArea)
-    
-    #computing the bounding box
-    
-    return cv2.minAreaRect(c)
-    def distance_to_camera(knownWidth, focallength, perWidth)
-    # compute and return the distance 
-        return (knownWidth * focalLength)/ perWidth
-    
-    #initalize the known distance  from camera to object(in this case a ball)
-    # 24.0 is a place holder temporarily\
-    
-    KNOWN_DISTANCE = 24.0
-    
-    #initalize the known object width
-    #11.0 is the place holder
-    
-    KNOWN_WIDTH = 11.0
-    
-    #load the first image that contains an object
-    #(images/2ft.png is a placeholder image, until we have areal image)
-    image = cv2.imread("images/2ft.png")
-    marker = find_marker(image)
-    focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
-    
-    #loop images
-    
-    for imagePath in sorted(paths.list_images("images")):
-        image = cv2.imread(imagePath)
-        marker = find_marker(image)
-        inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
-        
-        #draw a bounding box
-        
-        box = cv2.cv.BoxPoints(marker) if imutils.is_cv2() else cv2.BoxPoints(marker)
-        box = np.int0(box)
-        cv2.drawContours(image, [box], -1, (0, 255, 0), 2)
-	cv2.putText(image, "%.2fft" % (inches / 12),
-		(image.shape[1] - 200, image.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX,
-		2.0, (0, 255, 0), 3)
-	cv2.imshow("image", image)
-	cv2.waitKey(0)
-
 main()

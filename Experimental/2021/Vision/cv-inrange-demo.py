@@ -1,3 +1,12 @@
+# A sample application (based on a published sample for the CV2 library) for
+# determining the color range needed in order to isolate a specific target
+# in an image.  The program will default to reading from a connected webcam,
+# but can also be used with a sample (still) image.
+#
+# This was used in 2021 to figure out what color range should be used to
+# "see" the yellow balls used in the FRC game "Infinite Recharge", allowing
+# the vision-processing code on our robots to be tuned appropriately.
+
 from __future__ import print_function
 import argparse
 import cv2
@@ -96,7 +105,9 @@ def convexityScore(contour):
         return 1
     else:
         return 0
-    
+
+#############################################
+# Main execution starts here
 
 useCamera = True
 

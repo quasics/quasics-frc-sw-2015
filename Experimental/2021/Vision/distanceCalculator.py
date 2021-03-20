@@ -1,13 +1,29 @@
+# This is an example of calculating the distance to an object of some known
+# size when it is seen by the camera.  This assumes that you know the
+# focal length of your camera, but that's reasonably easy to calculate,
+# and then the math is suprisingly trivial.
+#
+# This sample program will default to using live data from a webcam, and
+# provide ongoing reporting of the distance to the largest object that it
+# sees that looks like (i.e., is roughly the color of) one of the yellow
+# balls used in the FRC Game "Infinite Recharge".  However, it can also
+# be used with a still image (e.g., for confirming that a calculated
+# focal length for a camera is correct, using an image captured from the
+# camera via the Smart Dashboard/Shuffleboard interface).
+#
+# Distance calculation (and determining focal length) is discussed here:
+# https://www.pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
+
 import argparse
 import cv2 as cv2
 import numpy as np
 
-useCamera = True
-
-
-# Focal length for the webcam, measured in pixels.
-# (Logitech c270: 1430 (reported); c920: 1252 (calculated)).
-# (169.7 for Lifecam)
+# Focal length for the camera, measured in pixels.
+#
+# Some sample values for different cameras:
+# * Logitech c270: 1430 (reported in media)
+# * Logitech c920: 1252 (calculated experimentally)
+# * Microsoft Lifecam: 169.7 (calculated experimentally)
 focal_length = 1252.0
 
 # Known width of the target, measured in cm.
@@ -16,7 +32,8 @@ known_width = 17.78
 
 # The following values define a yellow(ish) color range,
 # matching the power cells from Infinite Recharge (at least
-# when used during my testing, under prevailing light; YMMV).
+# when used during my testing, under prevailing light at the
+# time; YMMV).
 yellow_low_H = 22
 yellow_low_S = 50
 yellow_low_V = 10
@@ -32,7 +49,7 @@ kernel = np.ones((3, 3), np.uint8)
 # Destination: Deep Space, etc.), given a previously-calculated
 # focal length for the camera, and its perceived width (in
 # pixels) in the camera's field of vision.  (Note: known and
-# perceived heights would be fine as an alternative, too.)
+# perceived *heights* should be fine as an alternative, too.)
 #
 # From https://www.pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
 def distanceToCamera(knownWidth, focalLength, perWidth):
@@ -47,6 +64,12 @@ def distanceToCamera(knownWidth, focalLength, perWidth):
 def computeScore(contour):
     return cv2.contourArea(contour)
 
+# Processes a single image (frame), identifying the best-scoring target, and
+# then calculating the distance to it.
+#
+# This also shows windows with the source image, bitmask, and masked image,
+# for aid in debugging the results (e.g., making sure that the best target
+# is actually the right thing, and is captured at its full width).
 def processFrame(frame, lowColorRange, highColorRange):
     global kernel
 
@@ -121,6 +144,8 @@ def processFrame(frame, lowColorRange, highColorRange):
 
 #########################################
 # "Main" code starts here
+
+useCamera = True
 
 parser = argparse.ArgumentParser(description='Sample distance calculator (FRC vision processing demo code).')
 parser.add_argument('--camera', help='Camera device number.', default=0, type=int)

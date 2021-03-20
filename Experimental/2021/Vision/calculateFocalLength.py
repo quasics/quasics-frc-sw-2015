@@ -1,3 +1,6 @@
+# Sample code for calculating the focal length of a camera, based on a known
+# size, distance, and color range (for isolating the target in the image).
+
 # import the necessary packages
 import numpy as np
 import cv2
@@ -50,11 +53,12 @@ def findTarget(image, showImage):
 filename = "c920_176cm.jpg"
 
 #
-# Note: the following data will all need to be tweaked if you use a different file.
+# Note: the following data will all need to be tweaked if you use a different
+# file, target, etc.
 #
 
 # Initialize the known object width: in this case, it is a piece of
-# paper 11 inches wide
+# letter paper, presented in landscape orientation.
 KNOWN_WIDTH = 27.94     # cm (11in)
 
 # Color range for the sheet of paper in the default file.
@@ -83,7 +87,7 @@ image = cv2.imread(filename)
 marker = findTarget(image, False)
 focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 
-# This also implies (for verification) that:
+# Note that this also implies (for verification) that:
 #      perceivedWidth = focalLength * knownWidth / knownDistance
 
 print("Focal length is {} pixels".format(focalLength))

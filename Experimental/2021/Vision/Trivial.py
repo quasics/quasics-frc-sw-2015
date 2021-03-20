@@ -1,6 +1,9 @@
-# Sample program, finding the largest contiguous "blob" of a
-# particular color, and then publishing information about it
-# via NetworkTables, for use in tracking it.
+# A sample program for vision processing in the FRC game "Infinite REcharge",
+# which could run on the FRCVision platform (RasPi hardware).
+#
+# This program will find the largest contiguous "blob" of a particular color,
+# and then publish information about it via NetworkTables, for use in
+# tracking it.
 
 # Import the WPI packages we need (camera server and network tables).
 from cscore import CameraServer

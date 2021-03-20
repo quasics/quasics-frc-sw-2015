@@ -3,6 +3,7 @@ import numpy as np
 import sys
 
 captureBlue = False
+
 windowName = 'Simple Masking'
 filename = "Power Ball.jpg"
 
@@ -39,13 +40,15 @@ else:
 # Bitwise-AND mask and original image
 res = cv2.bitwise_and(image,image, mask= mask)
 
-# Create a window and set Mousecallback to a function for that window
+# Create a window
 cv2.namedWindow(windowName)
+cv2.imshow(windowName, res)
+
 # Do until esc pressed
 while (1):
-    cv2.imshow(windowName, res)
     k = cv2.waitKey(10) 
     if k == ord('q') or k == 27:
         break
-# if esc is pressed, close all windows.
+
+# Close all windows on shutdown.
 cv2.destroyAllWindows()

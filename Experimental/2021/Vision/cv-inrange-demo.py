@@ -20,6 +20,7 @@ low_V = 94 # 0
 high_V = 255 # max_value
 window_capture_name = 'Video Capture'
 window_detection_name = 'Object Detection'
+window_masking_name = 'Masked Image'
 low_H_name = 'Low H'
 low_S_name = 'Low S'
 low_V_name = 'Low V'
@@ -185,8 +186,11 @@ while True:
         center, radius = cv2.minEnclosingCircle(best)
         cv2.circle(frame, (int(center[0]), int(center[1])), 2, (255,255,255), 1)
     
+    masked_img = cv2.bitwise_and(frame, frame, mask=frame_threshold)
+
     cv2.imshow(window_capture_name, frame)
     cv2.imshow(window_detection_name, frame_threshold)
+    cv2.imshow(window_masking_name, masked_img)
     
     key = cv2.waitKey(30)
     if key == ord('q') or key == 27:

@@ -32,7 +32,8 @@ height = 120
 focal_length = 169.7
 known_width = 17.78
 
-#calcualation for the distance
+#calcualation for the distance, perWidth is the difference between this and main Vision. Main vision will have most changes made
+#but visionCopy will be the testing gorund for writing the new code.
 def distance_to_camera(known_width, focal_length, perWidth)
     # compute and return the distance 
         return (known_width * focal_length)/ perWidth

@@ -116,35 +116,44 @@ def processFrame(inputStream, outputStream):
     # with most efficiently.
     frame_HSV = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
 
-    # Generate a bitmask, looking for pixels in the desired color range.  (This basically
-    # means a version of the image that is effectively black and white, with all the places
-    # we want to keep data -- i.e., where we see something in the color range that we care
-    # about -- being white, and all of the areas we don't being the "mask" of black data.)
-    frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
+    # Generate a bitmask, looking for pixels in the desired color range.
+    #
+    # This basically means a version of the image that is effectively 0's
+    # and 1's (black and white), with all the places we want to keep data --
+    # i.e., where we see something in the color range that we care about --
+    # being the 1's, and all of the areas we don't being the "mask" of 0's.
+    frame_threshold = cv2.inRange(
+        frame_HSV,                  # our source (color) image
+        (low_H, low_S, low_V),      # low end of the color range
+        (high_H, high_S, high_V))   # high end of the color range
 
     # Minor quality cleanup, performing some rounds of "erosion" and "dilation".
     #
-    # In OpenCV, an "opening" operation is erosion (which removes noise in the image),
-    # followed by dilation (which fills in gaps).  These can also be done in the opposite
-    # order (called "closing"), and erosion and dilation can also be done by themselves.
-    frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_OPEN, kernel, iterations = 3)
+    # In OpenCV, an "opening" operation is erosion (which removes noise in the
+    # image), followed by dilation (which fills in gaps).  These can also be
+    # done in the opposite order (called "closing"), and erosion and dilation
+    # can also be done by themselves.
+    frame_threshold = cv2.morphologyEx(
+        frame_threshold, cv2.MORPH_OPEN, kernel, iterations = 3)
 
-    # Now that we've cleaned up our extraction to isolate the areas of the image that we
-    # think are the color(s) that we care about, we'll use that to isolate the corresponding
-    # full-color version of the captured image, for later display.
+    # Now that we've cleaned up our extraction to isolate the areas of the
+    # image that we think are the color(s) that we care about, we'll use
+    # that to isolate the corresponding full-color version of the captured
+    # image, for later display.
     output_img = cv2.bitwise_and(input_img,input_img, mask= frame_threshold)
 
-    # Find the contours of the possible targets (i.e., where we've got continguous blocks
-    # of the colors that we care about).
-    _, contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # Find the contours of the possible targets (i.e., where we've got
+    # continguous blocks of the colors that we care about).
+    _, contours, _ = cv2.findContours(
+        frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Go walking through the possible targets and find the (single) best-scoring
-    # one.  (Remember that in this example program, that simply means the biggest
-    # possible target that we can see.)
+    # Go walking through the possible targets and find the (single)
+    # best-scoring one.  (Remember that in this example program, that simply
+    # means the biggest possible target that we can see.)
     #
-    # We'll also hang onto some basic information about all of the targets (to be
-    # published through NetworkTables as debugging information), as well as drawing
-    # some highlights for them in the output image.
+    # We'll also hang onto some basic information about all of the targets
+    # (to be published through NetworkTables as debugging information), as
+    # well as drawing some highlights for them in the output image.
     all_targets_x_list = []
     all_targets_y_list = []
     index = -1
@@ -153,8 +162,9 @@ def processFrame(inputStream, outputStream):
     for contour in contours:
         index = index + 1
 
-        # Ignore small contours that could be because of noise/bad thresholding.
-        # (I'm picking "15 pixels" in area as an arbitrary minimum here.)
+        # Ignore small contours that could be because of noise/bad
+        # thresholding. (I'm picking "15 pixels" in area as an
+        # arbitrary minimum here.)
         if cv2.contourArea(contour) < 15:
             continue
         
@@ -176,10 +186,10 @@ def processFrame(inputStream, outputStream):
         center, size, angle = rect
         center = [int(dim) for dim in center] # Convert to int so we can draw
         
-        # Calculate the (x,y) coordinates for the current (possible) target's
-        # center, expressed as a %age of the distance from the
-        # middle of the image to the edges.  (In other words, dead center would
-        # be (0,0), while the top-left corner would be (-1, -1), etc.).
+        # Calculate the (x,y) coordinates for the current (possible)
+        # target's center, expressed as a %age of the distance from the
+        # middle of the image to the edges.  (In other words, dead center
+        # would be (0,0), while the top-left corner would be (-1, -1), etc.).
         center_x = (center[0] - img_width / 2) / (img_width / 2)
         center_y = (center[1] - img_height / 2) / (img_height / 2)
         
@@ -188,22 +198,30 @@ def processFrame(inputStream, outputStream):
         all_targets_x_list.append(center_x)
         all_targets_y_list.append(center_y)
 
-        # Finally, update our output image (which will be sent out to Smart Dashboard
-        # at the end of frame processing), by drawing a white outline of the contour
-        # on our output image that, and putting a small red circle at its center.
-        cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)
-        cv2.circle(output_img, (int(center[0]), int(center[1])), 2, (0,0,255), 1)
+        # Finally, update our output image (which will be sent out to Smart
+        # Dashboard at the end of frame processing), by drawing a white
+        # outline of the contour on our output image that, and putting a
+        # small red circle at its center.
+        cv2.drawContours(
+            output_img, contours, index,
+            color = (255, 255, 255), thickness = 1)
+        cv2.circle(
+            output_img,
+            (int(center[0]), int(center[1])),   # Center of the circle
+            2,                                  # Radius of the circle
+            (0,0,255), 1)                       # Color and thickness
         
     
-    # Compute data to be published for the best-scoring target, and highlight it
-    # in the output image.
+    # Compute data to be published for the best-scoring target, and highlight
+    # it in the output image.
     target_x = []
     target_y = []
     if best is not None:
-        # Compute the "center of mass" for the target, expressed as a %age of the
-        # distance from the middle of the image to the edges.  (In other words,
-        # dead center of our "field of vision" would be (0,0), while the top-left
-        # corner would be (-1, -1), etc.).
+        # Compute the "center of mass" for the target, expressed as a %age
+        # of the distance from the middle of the image to the edges.
+        # 
+        # In other words, dead center of our "field of vision" would be
+        # (0,0), while the top-left corner would be (-1, -1), etc.
         x,y,w,h = cv2.boundingRect(best)
         target_center_x = x + (w / 2)
         target_center_y = y + (h / 2)
@@ -211,10 +229,12 @@ def processFrame(inputStream, outputStream):
         target_y.append((target_center_y - (img_height / 2)) / (img_height / 2))
 
         # Save some debugging data for the target, to be published below.
-        dbgBuffer = "Target: x,y = " + str(x) + "," + str(y) + ", width/height = " + str(w) + "," + str(h)
+        dbgBuffer = "Target: x,y = {0},{1}, width/height = {2},{3}".format(x, y, w, h)
 
         # Draw a red outline of the target on the output image.
-        cv2.drawContours(output_img, contours, bestIndex, color = (0, 0, 255), thickness = 3)
+        cv2.drawContours(
+            output_img, contours, bestIndex,
+            color = (0, 0, 255), thickness = 3)
 
     # Publish center data for the best of the targets we found.
     if not vision_nt.putNumberArray('target_x', target_x):
@@ -228,10 +248,6 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumber("img_height", img_height)
     vision_nt.putNumberArray('x_list', all_targets_x_list)
     vision_nt.putNumberArray('y_list', all_targets_y_list)
-    vision_nt.putNumberArray('top_list', all_targets_top_list)
-    vision_nt.putNumberArray('left_list', all_targets_left_list)
-    vision_nt.putNumberArray('width_list', all_targets_width_list)
-    vision_nt.putNumberArray('height_list', all_targets_height_list)
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time
@@ -240,10 +256,13 @@ def processFrame(inputStream, outputStream):
     # (optional, but highly useful) send the modified image back to the dashboard.
     outputStream.putFrame(output_img)
 
-# This function will be invoked whenever NetworkTables says that there's a change to
-# the color settings we're monitoring from the driver's station.  (This will allow us
-# to tune the color sensitivity to reflect environmental conditions, etc.; it could
-# also be used to completely change the color that we're looking for.)
+# This function will be invoked whenever NetworkTables says that there's a
+# change to the color settings we're monitoring from the driver's station.
+#
+# This will allow us to tune the color sensitivity to reflect environmental
+# conditions, etc.; it could also be used to completely change the color
+# that we're looking for (e.g., for different items in different parts of
+# the game)).
 def valueChanged(table, key, value, isNew):
     global low_H
     global high_H

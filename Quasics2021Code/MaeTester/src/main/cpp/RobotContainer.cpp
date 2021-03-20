@@ -75,7 +75,7 @@ void RobotContainer::ConfigureAutoSelection() {
       "Barrel Racing",
       GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
   m_autoChooser.AddOption(
-      "Bounce", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
+      "Slalom", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
   std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
                                          frc::Translation2d(2_m, 0_m)};
   m_autoChooser.AddOption(
@@ -116,8 +116,9 @@ void RobotContainer::ConfigureSmartDashboard() {
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   frc::SmartDashboard::PutData("Go in an S", GenerateRamseteCommandFromPathFile(
                                                  "TestingS.wpilib.json", true));
-  frc::SmartDashboard::PutData("Go four 4 meters at 30%",
-                               new DriveAtPowerForMeters(&drivebase, .3, 4_m));
+  frc::SmartDashboard::PutData(
+      "Go 9.144 meters at 50%",
+      new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
 }
 
 double RobotContainer::deadband(double num) {

@@ -122,9 +122,8 @@ def processFrame(frame, lowColorRange, highColorRange):
 #########################################
 # "Main" code starts here
 
-
-parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
-parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
+parser = argparse.ArgumentParser(description='Sample distance calculator (FRC vision processing demo code).')
+parser.add_argument('--camera', help='Camera device number.', default=0, type=int)
 parser.add_argument('--file', help='Still image file to be used.', default="")
 args = parser.parse_args()
 

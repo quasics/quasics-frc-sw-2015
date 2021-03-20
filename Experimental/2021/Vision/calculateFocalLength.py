@@ -83,5 +83,8 @@ image = cv2.imread(filename)
 marker = findTarget(image, False)
 focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 
-print("Focal length is {}".format(focalLength))
+# This also implies (for verification) that:
+#      perceivedWidth = focalLength * knownWidth / knownDistance
+
+print("Focal length is {} pixels".format(focalLength))
 

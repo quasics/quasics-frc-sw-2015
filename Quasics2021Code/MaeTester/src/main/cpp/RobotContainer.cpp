@@ -119,6 +119,24 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Go 9.144 meters at 50%",
       new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
+
+  std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("foo"))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("bar"))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("baz"))));
+
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part2.wpilib.json", false))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part3.wpilib.json", false))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
+
+  frc::SmartDashboard::PutData("Simple command group", new frc2::SequentialCommandGroup(
+    std::move(bouncePathPieces)
+    ));
+
 }
 
 double RobotContainer::deadband(double num) {

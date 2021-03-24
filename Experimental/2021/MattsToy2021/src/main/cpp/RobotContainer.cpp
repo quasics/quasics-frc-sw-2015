@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include "../../../../Common2021/DeadBandEnforcer.h"
+#include "../../../../Common2021/DriveDistance.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "Constants.h"
@@ -91,7 +92,7 @@ void RobotContainer::ConfigureAutonomousSelection() {
       new frc2::PrintCommand("Explicitly doing nothing for Auto mode...."));
 
   m_autonomousChooser.AddOption(
-      "Move 3m forward",
+      "Move 3m forward (traj.)",
       m_trajectoryGenerator.GenerateCommand(
           // Speed profile
           {RobotData::PathFollowingLimits::kMaxSpeed,
@@ -104,7 +105,11 @@ void RobotContainer::ConfigureAutonomousSelection() {
           // Ending pose
           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
 
-  // Put the SendableChooser on the Smart Dashboard for the driver's station.
+  m_autonomousChooser.AddOption("Move 4m forward",
+                                new DriveDistance(&m_driveBase, 4_m, 0.5));
+
+  // Put the SendableChooser on the Smart Dashboard for the driver's
+  // station.
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousChooser);
 }
 

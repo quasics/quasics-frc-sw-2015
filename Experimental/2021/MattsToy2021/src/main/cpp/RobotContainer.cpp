@@ -108,6 +108,22 @@ void RobotContainer::ConfigureAutonomousSelection() {
   m_autonomousChooser.AddOption("Move 4m forward",
                                 new DriveDistance(&m_driveBase, 4_m, 0.5));
 
+  // Example of building a sequential command group from pieces.
+  //
+  // (All of the "std::move" stuff is because the compiler is enforcing the
+  // contract that only 1 thing "knows about" the pointed-to commands, which
+  // lets the SequentialCommandGroup make certain assumptions about them.)
+  {
+    std::vector<std::unique_ptr<frc2::Command>> sequence;
+    sequence.push_back(
+        std::move(std::make_unique<DriveDistance>(&m_driveBase, 2_m, 0.5)));
+    sequence.push_back(
+        std::move(std::make_unique<DriveDistance>(&m_driveBase, -2_m, 0.5)));
+    m_autonomousChooser.AddOption(
+        "2m forward and return",
+        new frc2::SequentialCommandGroup(std::move(sequence)));
+  }
+
   // Put the SendableChooser on the Smart Dashboard for the driver's
   // station.
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousChooser);

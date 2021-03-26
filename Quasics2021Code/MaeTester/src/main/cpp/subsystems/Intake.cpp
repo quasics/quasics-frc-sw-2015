@@ -3,40 +3,37 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Intake.h"
+
+#include <frc/DigitalInput.h>
+
 #include "Constants.h"
 
 Intake::Intake()
     : IntakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
       ConveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
+  ConveyorLimitSwitch.reset(new frc::DigitalInput(0));
   SetSubsystem("Intake");
 }
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
 
-//Intakes the ball at 1/4 speed.
+// Intakes the ball at 1/4 speed. Theoretically, when limit switch is hit, both
+// Intake and Conveyor will stop.
 void Intake::IntakeBallOn() {
+  if (ConveyorLimitSwitch.get()) {
+    ConveyorMotor.Set(0);
+    IntakeMotor.Set(0);
+  } else {
     IntakeMotor.Set(0.25);
+    ConveyorMotor.Set(0.25);
+  }
 
 //Stops the intake of ball.
 }
 void Intake::IntakeBallOff() {
-    IntakeMotor.Set(0);
-
-//Reverses the intake at 1/4 speed.
-}
-void Intake::IntakeBallReverse() {
-    IntakeMotor.Set(-0.25);
-}
-// Runs the conveyor belt of the balls at 1/4 speed.
-void Intake::ConveyBallOn() {
-  ConveyorMotor.Set(0.25);
-}
-// Stops the conveyor belt.
-void Intake::ConveyBallOff() {
+  IntakeMotor.Set(0);
   ConveyorMotor.Set(0);
-  // Runs the conveyor belt of the balls in reverse at 1/4 speed.
-}
-void Intake::ConveyBallReverse() {
-  ConveyorMotor.Set(-0.25);
+
+  // Reverses the intake and conveyor at 1/4 speed.
 }

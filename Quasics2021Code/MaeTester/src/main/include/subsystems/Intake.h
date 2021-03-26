@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/Phoenix.h>
+#include <frc/DigitalInput.h>
+#include <frc2/command/SubsystemBase.h>
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -30,4 +31,5 @@ class Intake : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX IntakeMotor;
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX ConveyorMotor;
+  std::shared_ptr<frc::DigitalInput> ConveyorLimitSwitch;
 };

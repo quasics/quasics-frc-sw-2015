@@ -120,6 +120,10 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Go 9.144 meters at 50%",
       new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
 
+  frc::SmartDashboard::PutData(
+      "Go -9.144 meters at -50%",
+      new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
+
   std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("foo"))));
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("bar"))));

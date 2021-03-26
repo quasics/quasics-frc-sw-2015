@@ -42,8 +42,16 @@ bool DriveAtPowerForMeters::IsFinished() {
             << ", startingMeters = " << startingMeters
             << ", destination = " << destination
             << ", currentReading = " << currentReading << std::endl;
-  if (currentReading.to<double>() >= destination.to<double>()) {
-    return true;
-  }
+  // if desires < 0
+  if (desiredMeters.to<double>() < 0) {
+    if (currentReading.to<double>() <= destination.to<double>()) {
+      return true;
+    }
+    return false;
+  } else {
+    if (currentReading.to<double>() >= destination.to<double>()) {
+      return true;
+    }
   return false;
+  }
 }

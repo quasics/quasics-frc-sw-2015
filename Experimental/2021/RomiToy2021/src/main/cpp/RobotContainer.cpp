@@ -87,7 +87,10 @@ void RobotContainer::ConfigureAutonomousSelection() {
   adder("Linear", GenerateSampleRamseteCommand(StraightLineTrajectory, true));
   adder("S-curve", GenerateSampleRamseteCommand(S_CurveTrajectory, true));
   adder("Figure-8", GenerateSampleRamseteCommand(FigureEightTrajectory, true));
-  adder("Barrel roll", GenerateRamseteCommand("BarrelRoll.wpilib.json", true));
+  adder("Barrel roll (traj)",
+        GenerateRamseteCommand("BarrelRoll.wpilib.json", true));
+  adder("Single loop (traj)",
+        GenerateRamseteCommand("SingleLoop.wpilib.json", true));
   adder("Turn to Target", new TurnToTargetCommand(&m_drive, 0.350));
 
   // Put the SendableChooser on the Smart Dashboard for the driver's station.

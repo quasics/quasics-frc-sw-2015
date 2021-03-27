@@ -1,22 +1,41 @@
-all_targets_left_list = [75, 105, 17]
-all_targets_top_list = [35, 37, 35]
-all_targets_width_list = [14, 8, 7]
-all_targets_height_list = [14, 8, 6]
+# all_targets_left_list = [17, 105, 75]
+all_targets_left_list = [17, 105, 75]
+all_targets_top_list = [35, 35, 37]
+all_targets_width_list = [7, 8, 14]
+all_targets_height_list = [6, 8, 14]
 
-numBalls = len(widths)
+numBalls = len(all_targets_width_list)
+
 
 index = -1 
 bestIndex = -1 
-best = None
-for width in width:
+for width in all_targets_width_list:
     index = index + 1
-    
-    # Ignoring small things that can cause noise in the picture, and only using width in the database
-    if cv2.width_list(width) < 7
-        continue
 
     # Determines if the current width beats the "best" width curretly. 
 
-    if bestIndex = -1 or computeWidth(contour) > computeWidth(best):
-        best = contour 
+    if bestIndex == -1 or all_targets_width_list[index] > all_targets_width_list[bestIndex]: 
         bestIndex = index
+
+print("Best Index is {}".format(bestIndex))
+
+if bestIndex == 0:
+    otherindx1 = 1
+    otherindx2 = 2
+
+elif bestIndex == 1:
+    otherindx1 = 0
+    otherindx2 = 2
+
+elif bestIndex == 2:
+    otherindx1 = 0 
+    otherindx2 = 1
+
+if all_targets_left_list[otherindx1] < all_targets_left_list[bestIndex] and all_targets_left_list[otherindx2] < all_targets_left_list[bestIndex]:
+    print("It is Path 2A")
+
+elif all_targets_left_list[otherindx1] > all_targets_left_list[bestIndex] and all_targets_left_list[otherindx2] > all_targets_left_list[bestIndex]:
+    print("Error")
+
+else:
+   print("It is Path 1A")

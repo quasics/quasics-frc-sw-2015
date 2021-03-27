@@ -35,6 +35,8 @@
 #include "commands/IntakePowerCells.h"
 #include "commands/RunOnlyIntakeMotor.h"
 #include "commands/RunOnlyIntakeMotorReverse.h"
+#include "commands/RunOnlyConveyorMotor.h"
+#include "commands/RunOnlyConveyorMotorReverse.h"
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
@@ -84,15 +86,15 @@ void RobotContainer::ConfigureButtonBindings() {
       frc::XboxController::Button::kBumperRight, //Run intake backwards
       &runonlyintakemotorreverse);     
 
-/* static IntakePowerCells intakepowercells(&intake);
+static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kX, //Run conveyor forwards
-      &intakepowercells);  
+      &runonlyconveyormotor);  
 
- static IntakePowerCells intakepowercells(&intake);
+static RunOnlyConveyorMotorReverse runonlyconveyormotorreverse(&intake);
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kY, //Run conveyor backwards
-      &intakepowercells);  */
+      &runonlyconveyormotorreverse);  
 
 
 }

@@ -103,7 +103,8 @@ void RobotContainer::ConfigureAutonomousSelection() {
           std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m),
                                           frc::Translation2d(2_m, 0_m)},
           // Ending pose
-          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)),
+          TrajectoryCommandGenerator::ResetTelemetryAtStart));
 
   m_autonomousChooser.AddOption("Move 4m forward",
                                 new DriveDistance(&m_driveBase, 4_m, 0.5));
@@ -132,7 +133,9 @@ void RobotContainer::ConfigureAutonomousSelection() {
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const std::string jsonFileName, bool resetTelemetryAtStart) {
   return m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
-      jsonFileName, resetTelemetryAtStart);
+      jsonFileName, resetTelemetryAtStart
+                        ? TrajectoryCommandGenerator::ResetTelemetryAtStart
+                        : TrajectoryCommandGenerator::UseExistingTelemetry);
 }
 
 void RobotContainer::ConfigureShuffleboard() {
@@ -148,7 +151,8 @@ void RobotContainer::ConfigureShuffleboard() {
       std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m),
                                       frc::Translation2d(2_m, 0_m)},
       // Ending pose
-      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
+      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)),
+      TrajectoryCommandGenerator::ResetTelemetryAtStart);
 
   m_driveBase.AddToShuffleboard("3m forward", sampleTrajectory_3mForward);
 
@@ -163,7 +167,8 @@ void RobotContainer::ConfigureShuffleboard() {
           frc::Translation2d(2_m, -0.5_m),
       },
       // Ending pose
-      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true);
+      frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)),
+      TrajectoryCommandGenerator::ResetTelemetryAtStart);
 
   m_driveBase.AddToShuffleboard("S-curve", sampleTrajectory_sCurve);
 
@@ -181,7 +186,8 @@ void RobotContainer::ConfigureShuffleboard() {
           frc::Translation2d(1_m, -1_m),
       },
       // Ending pose
-      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), true);
+      frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+      TrajectoryCommandGenerator::ResetTelemetryAtStart);
 
   m_driveBase.AddToShuffleboard("Figure-8", sampleTrajectory_figureEight);
 

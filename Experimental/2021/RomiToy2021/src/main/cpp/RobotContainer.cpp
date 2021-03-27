@@ -87,6 +87,7 @@ void RobotContainer::ConfigureAutonomousSelection() {
   adder("Linear", GenerateSampleRamseteCommand(StraightLineTrajectory, true));
   adder("S-curve", GenerateSampleRamseteCommand(S_CurveTrajectory, true));
   adder("Figure-8", GenerateSampleRamseteCommand(FigureEightTrajectory, true));
+  adder("Barrel roll", GenerateRamseteCommand("BarrelRoll.wpilib.json", true));
   adder("Turn to Target", new TurnToTargetCommand(&m_drive, 0.350));
 
   // Put the SendableChooser on the Smart Dashboard for the driver's station.
@@ -268,8 +269,10 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
        RobotData::DriveConstants::kIDriveVel,
        RobotData::DriveConstants::kDDriveVel});
 
-  return generator.GenerateCommandFromPathWeaverFile(jsonFileName,
-                                                     resetTelemetryAtStart);
+  return generator.GenerateCommandFromPathWeaverFile(
+      jsonFileName, resetTelemetryAtStart
+                        ? TrajectoryCommandGenerator::ResetTelemetryAtStart
+                        : TrajectoryCommandGenerator::UseExistingTelemetry);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
@@ -295,8 +298,10 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
       RobotData::PathFollowingLimits::kMaxSpeed,
       RobotData::PathFollowingLimits::kMaxAcceleration};
 
-  return generator.GenerateCommand(speedProfile, start, interiorWaypoints, end,
-                                   resetTelemetryAtStart);
+  return generator.GenerateCommand(
+      speedProfile, start, interiorWaypoints, end,
+      resetTelemetryAtStart ? TrajectoryCommandGenerator::ResetTelemetryAtStart
+                            : TrajectoryCommandGenerator::UseExistingTelemetry);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateSampleRamseteCommand(
@@ -342,6 +347,8 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateSampleRamseteCommand(
       return nullptr;
   }
 
-  return GenerateRamseteCommand(start, interiorWaypoints, end,
-                                resetTelemetryAtStart);
+  return GenerateRamseteCommand(
+      start, interiorWaypoints, end,
+      resetTelemetryAtStart ? TrajectoryCommandGenerator::ResetTelemetryAtStart
+                            : TrajectoryCommandGenerator::UseExistingTelemetry);
 }

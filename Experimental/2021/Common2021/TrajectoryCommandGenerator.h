@@ -76,11 +76,11 @@ class TrajectoryCommandGenerator {
  public:
   /**
    * Constructor.
-   * 
+   *
    * @param drive  the drive subsystem to be used for moving the robot
    * @param profileData  drive profile data, describing its performance
    * @param pidConfig  PID configuration values, used for error-correction
-   * 
+   *
    * @see #DriveProfileData
    * @see #PIDConfig
    */
@@ -89,6 +89,11 @@ class TrajectoryCommandGenerator {
                              const PIDConfig& pidConfig)
       : m_drive(drive), m_profileData(profileData), m_pidConfig(pidConfig) {
   }
+
+  enum TelemetryHandling {
+    ResetTelemetryAtStart,
+    UseExistingTelemetry,
+  };
 
   /**
    * Generates a sample command to follow the specified trajectory.
@@ -102,20 +107,20 @@ class TrajectoryCommandGenerator {
    *     passing from "start" to "end"
    * @param end
    *     the ending pose of the robot, relative to drive telemetry data
-   * @param resetTelemetryAtStart
-   *     if true, the command will (at its initiation) reset the drive
-   *     telemetry, allowing it to start following the trajectory using
-   *     its current position and orientation as the origin point (0,0).
+   * @param telemetryHandling
+   *     if ResetTelemetryAtStart, the command will (at its initiation) reset
+   *     the drive telemetry, allowing it to start following the trajectory
+   *     using its current position and orientation as the origin point (0,0).
    *     Otherwise, it will use the previously-established origin as a
    *     starting point (and first drive back to that).
    */
   frc2::SequentialCommandGroup* GenerateCommand(
       const SpeedProfile speedProfile, const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
-      const frc::Pose2d& end, bool resetTelemetryAtStart) {
+      const frc::Pose2d& end, TelemetryHandling telemetryHandling) {
     return GenerateCommandFromDiscreteSegments(
         m_drive, m_profileData, m_pidConfig, speedProfile, start,
-        interiorWaypoints, end, resetTelemetryAtStart, m_ramseteConfig);
+        interiorWaypoints, end, telemetryHandling, m_ramseteConfig);
   }
 
   /**
@@ -128,15 +133,15 @@ class TrajectoryCommandGenerator {
    *     "deploy" folder for the target system, which will either be
    *     project-relative when running with the simulator, or in the stock
    *     location on a Rio, if running on real hardware.)
-   * @param resetTelemetryAtStart
-   *     if true, the command will (at its initiation) reset the drive
-   *     telemetry, allowing it to start following the trajectory using
-   *     its current position and orientation as the origin point (0,0).
+   * @param telemetryHandling
+   *     if ResetTelemetryAtStart, the command will (at its initiation) reset
+   *     the drive telemetry, allowing it to start following the trajectory
+   *     using its current position and orientation as the origin point (0,0).
    *     Otherwise, it will use the previously-established origin as a
    *     starting point (and first drive back to that).
    */
   frc2::SequentialCommandGroup* GenerateCommandFromPathWeaverFile(
-      const std::string jsonFileName, bool resetTelemetryAtStart) {
+      const std::string jsonFileName, TelemetryHandling telemetryHandling) {
     wpi::SmallString<256>
         deployDirectory;  // Not thrilled about the limit to "SmallString",
                           // given emulation, but it's what's supported.
@@ -148,7 +153,7 @@ class TrajectoryCommandGenerator {
         frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
 
     return GenerateCommandForTrajectory(m_drive, m_profileData, m_pidConfig,
-                                        trajectory, resetTelemetryAtStart,
+                                        trajectory, telemetryHandling,
                                         m_ramseteConfig);
   }
 
@@ -162,13 +167,13 @@ class TrajectoryCommandGenerator {
       const PIDConfig pidConfig, const SpeedProfile speedProfile,
       const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
-      const frc::Pose2d& end, bool resetTelemetryAtStart,
+      const frc::Pose2d& end, TelemetryHandling telemetryHandling,
       const RamseteConfig ramseteConfig);
 
   static frc2::SequentialCommandGroup* GenerateCommandForTrajectory(
       CommonDriveSubsystem* const drive, const DriveProfileData profileData,
       const PIDConfig pidConfig, frc::Trajectory trajectory,
-      bool resetTelemetryAtStart, const RamseteConfig ramseteConfig);
+      TelemetryHandling telemetryHandling, const RamseteConfig ramseteConfig);
 
  private:
   CommonDriveSubsystem* m_drive;
@@ -186,7 +191,7 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
     const PIDConfig pidConfig, const SpeedProfile speedProfile,
     const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
-    const frc::Pose2d& end, bool resetTelemetryAtStart,
+    const frc::Pose2d& end, TelemetryHandling telemetryHandling,
     const RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
       drive->GetTrackWidth()};
@@ -205,14 +210,14 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
       start, interiorWaypoints, end, config);
 
   return GenerateCommandForTrajectory(drive, profileData, pidConfig, trajectory,
-                                      resetTelemetryAtStart, ramseteConfig);
+                                      telemetryHandling, ramseteConfig);
 }
 
 inline frc2::SequentialCommandGroup*
 TrajectoryCommandGenerator::GenerateCommandForTrajectory(
     CommonDriveSubsystem* const drive, const DriveProfileData profileData,
     const PIDConfig pidConfig, frc::Trajectory trajectory,
-    bool resetTelemetryAtStart, RamseteConfig ramseteConfig) {
+    TelemetryHandling telemetryHandling, RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
       drive->GetTrackWidth()};
   frc::SimpleMotorFeedforward<units::meter> feedForward(
@@ -230,8 +235,8 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
 
   return new frc2::SequentialCommandGroup(
       frc2::InstantCommand(
-          [drive, resetTelemetryAtStart, trajectory] {
-            if (resetTelemetryAtStart) {
+          [drive, telemetryHandling, trajectory] {
+            if (telemetryHandling == ResetTelemetryAtStart) {
               std::cout << "Resetting robot odometry" << std::endl;
               drive->ResetOdometry(trajectory.InitialPose());
             }

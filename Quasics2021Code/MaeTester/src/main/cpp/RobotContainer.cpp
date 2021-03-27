@@ -28,15 +28,15 @@
 #include "Constants.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/IntakePowerCells.h"
+#include "commands/RunOnlyConveyorMotor.h"
+#include "commands/RunOnlyConveyorMotorReverse.h"
+#include "commands/RunOnlyIntakeMotor.h"
+#include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
-#include "commands/IntakePowerCells.h"
-#include "commands/RunOnlyIntakeMotor.h"
-#include "commands/RunOnlyIntakeMotorReverse.h"
-#include "commands/RunOnlyConveyorMotor.h"
-#include "commands/RunOnlyConveyorMotorReverse.h"
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
@@ -73,30 +73,28 @@ void RobotContainer::ConfigureButtonBindings() {
 
   static IntakePowerCells intakepowercells(&intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kB, //Run conveyor and intake
-      &intakepowercells);  
+      frc::XboxController::Button::kB,  // Run conveyor and intake
+      &intakepowercells);
 
   static RunOnlyIntakeMotor runonlyintakemotor(&intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBumperLeft, //Run intake forwards
-      &runonlyintakemotor);  
+      frc::XboxController::Button::kBumperLeft,  // Run intake forwards
+      &runonlyintakemotor);
 
   static RunOnlyIntakeMotorReverse runonlyintakemotorreverse(&intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBumperRight, //Run intake backwards
-      &runonlyintakemotorreverse);     
+      frc::XboxController::Button::kBumperRight,  // Run intake backwards
+      &runonlyintakemotorreverse);
 
-static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
+  static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kX, //Run conveyor forwards
-      &runonlyconveyormotor);  
+      frc::XboxController::Button::kX,  // Run conveyor forwards
+      &runonlyconveyormotor);
 
-static RunOnlyConveyorMotorReverse runonlyconveyormotorreverse(&intake);
+  static RunOnlyConveyorMotorReverse runonlyconveyormotorreverse(&intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kY, //Run conveyor backwards
-      &runonlyconveyormotorreverse);  
-
-
+      frc::XboxController::Button::kY,  // Run conveyor backwards
+      &runonlyconveyormotorreverse);
 }
 
 void RobotContainer::ConfigureAutoSelection() {
@@ -115,6 +113,8 @@ void RobotContainer::ConfigureAutoSelection() {
       "Go in a line", GenerateRamseteCommand(
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+  m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
+
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
 
@@ -157,23 +157,35 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Go -9.144 meters at -50%",
       new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
 
+  frc::SmartDashboard::PutData("Simple command group",
+                               BuildBouncePathCommand());
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
   std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("foo"))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("bar"))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("baz"))));
+  bouncePathPieces.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("foo"))));
+  bouncePathPieces.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("bar"))));
+  bouncePathPieces.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("baz"))));
 
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part2.wpilib.json", false))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part3.wpilib.json", false))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&drivebase, .3, 1_m))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
+  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //    new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile("Bounce Part2.wpilib.json", false))));
+  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //     new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile("Bounce Part3.wpilib.json", false))));
+  /*bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));*/
+  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
 
-  frc::SmartDashboard::PutData("Simple command group", new frc2::SequentialCommandGroup(
-    std::move(bouncePathPieces)
-    ));
-
+  return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
 }
 
 double RobotContainer::deadband(double num) {

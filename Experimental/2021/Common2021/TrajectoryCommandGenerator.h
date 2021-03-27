@@ -17,6 +17,7 @@
 #include <wpi/Path.h>
 #include <wpi/SmallString.h>
 
+#include <iostream>
 #include <vector>
 
 // In "Common2021"
@@ -231,6 +232,7 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       frc2::InstantCommand(
           [drive, resetTelemetryAtStart, trajectory] {
             if (resetTelemetryAtStart) {
+              std::cout << "Resetting robot odometry" << std::endl;
               drive->ResetOdometry(trajectory.InitialPose());
             }
           },

@@ -37,3 +37,31 @@ void Intake::IntakeBallOff() {
 
   // Reverses the intake and conveyor at 1/4 speed.
 }
+
+
+void Intake::OnlyIntakeOn() {
+  IntakeMotor.Set(.25);
+}
+
+void Intake::OnlyIntakeReverse() {
+  IntakeMotor.Set(-.25);
+}
+
+void Intake::OnlyIntakeOff() {
+  IntakeMotor.Set(0);
+}
+
+void Intake::ConveyBallOn() {
+  ConveyorMotor.Set(.25);
+}
+
+void Intake::ConveyBallReverse() {
+  ConveyorMotor.Set(-.25);
+}
+
+void Intake::ConveyBallOff() {
+  ConveyorMotor.Set(0);
+}
+
+
+

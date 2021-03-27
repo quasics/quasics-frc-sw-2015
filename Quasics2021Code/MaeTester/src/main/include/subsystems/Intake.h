@@ -26,6 +26,10 @@ class Intake : public frc2::SubsystemBase {
   void ConveyBallReverse();
   void ConveyBallOff();
 
+  void OnlyIntakeOn();
+  void OnlyIntakeReverse();
+  void OnlyIntakeOff();
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

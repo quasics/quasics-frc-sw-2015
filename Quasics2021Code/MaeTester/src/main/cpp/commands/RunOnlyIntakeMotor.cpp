@@ -20,8 +20,7 @@ void RunOnlyIntakeMotor::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunOnlyIntakeMotor::End(bool interrupted) {
-  intake->OnlyIntakeOn();
-
+  intake->OnlyIntakeOff();
 }
 
 // Returns true when the command should end.

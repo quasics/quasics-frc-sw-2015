@@ -29,9 +29,9 @@ namespace CANBusIds{
         constexpr int Right_Rear_Number = 4;
     }
     namespace VictorSPXIds{
-      constexpr int ShootingMotor = 5;
-      constexpr int IntakeMotor = 6;
-      constexpr int ConveyorMotor = 7;
+      constexpr int ShootingMotor = 3;
+      constexpr int IntakeMotor = 1;
+      constexpr int ConveyorMotor = 2;
     }  // namespace VictorSPXIds
 }
 

@@ -25,7 +25,7 @@ void Intake::IntakeBallOn() {
     ConveyorMotor.Set(0);
     IntakeMotor.Set(0);
   } else {
-    IntakeMotor.Set(0.25);
+    IntakeMotor.Set(0.75);
     ConveyorMotor.Set(0.25);
   }
 
@@ -40,11 +40,11 @@ void Intake::IntakeBallOff() {
 
 
 void Intake::OnlyIntakeOn() {
-  IntakeMotor.Set(.25);
+  IntakeMotor.Set(.75);
 }
 
 void Intake::OnlyIntakeReverse() {
-  IntakeMotor.Set(-.25);
+  IntakeMotor.Set(-.75);
 }
 
 void Intake::OnlyIntakeOff() {

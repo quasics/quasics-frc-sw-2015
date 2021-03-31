@@ -1,4 +1,4 @@
-def identifyPathForChallenge(left_list, width_list)
+def identifyPathForChallenge(left_list, width_list):
 
     numBalls = len(width_list)
 

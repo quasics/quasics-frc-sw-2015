@@ -35,6 +35,10 @@ namespace CANBusIds{
     }  // namespace VictorSPXIds
 }
 
+namespace DigitalIOMappings {
+  constexpr int IntakeLimitSwitch = 0;
+}  // namespace DigitalIOMappings
+
 namespace OIConstants {
   namespace LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the

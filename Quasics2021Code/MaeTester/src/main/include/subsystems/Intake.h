@@ -33,7 +33,7 @@ class Intake : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX IntakeMotor;
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX ConveyorMotor;
-  std::shared_ptr<frc::DigitalInput> ConveyorLimitSwitch;
+  ctre::phoenix::motorcontrol::can::WPI_VictorSPX intakeMotor;
+  ctre::phoenix::motorcontrol::can::WPI_VictorSPX conveyorMotor;
+  std::shared_ptr<frc::DigitalInput> conveyorLimitSwitch;
 };

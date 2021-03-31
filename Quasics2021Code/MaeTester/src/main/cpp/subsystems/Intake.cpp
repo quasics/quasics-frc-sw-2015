@@ -4,63 +4,69 @@
 
 #include "subsystems/Intake.h"
 
-#include <frc/DigitalInput.h>
-
 #include "Constants.h"
 
+#define LOG_LIMIT_SWITCH_STATE
+
 Intake::Intake()
-    : IntakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
-      ConveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
-  ConveyorLimitSwitch.reset(new frc::DigitalInput(0));
+    : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
+      conveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
+  conveyorLimitSwitch.reset(
+      new frc::DigitalInput(DigitalIOMappings::IntakeLimitSwitch));
   SetSubsystem("Intake");
 }
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void Intake::Periodic() {
+#ifdef LOG_LIMIT_SWITCH_STATE
+  std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
+            << "set" << std::endl;
+#endif
+}
 
 // Intakes the ball at 1/4 speed. Theoretically, when limit switch is hit, both
 // Intake and Conveyor will stop.
 void Intake::IntakeBallOn() {
-  if (ConveyorLimitSwitch.get()) {
-    ConveyorMotor.Set(0);
-    IntakeMotor.Set(0);
+  if (conveyorLimitSwitch.get()) {
+    conveyorMotor.Set(0);
+    intakeMotor.Set(0);
   } else {
-    IntakeMotor.Set(0.75);
-    ConveyorMotor.Set(0.25);
+    intakeMotor.Set(0.75);
+    conveyorMotor.Set(0.25);
   }
 
 //Stops the intake of ball.
 }
 void Intake::IntakeBallOff() {
-  IntakeMotor.Set(0);
-  ConveyorMotor.Set(0);
+  intakeMotor.Set(0);
+  conveyorMotor.Set(0);
 
   // Reverses the intake and conveyor at 1/4 speed.
 }
 
 
 void Intake::OnlyIntakeOn() {
-  IntakeMotor.Set(.75);
+  intakeMotor.Set(.75);
 }
 
 void Intake::OnlyIntakeReverse() {
-  IntakeMotor.Set(-.75);
+  intakeMotor.Set(-.75);
 }
 
 void Intake::OnlyIntakeOff() {
-  IntakeMotor.Set(0);
+  intakeMotor.Set(0);
 }
 
 void Intake::ConveyBallOn() {
-  ConveyorMotor.Set(.25);
+  conveyorMotor.Set(.25);
 }
 
 void Intake::ConveyBallReverse() {
-  ConveyorMotor.Set(-.25);
+  conveyorMotor.Set(-.25);
 }
 
 void Intake::ConveyBallOff() {
-  ConveyorMotor.Set(0);
+  conveyorMotor.Set(0);
 }
 
 

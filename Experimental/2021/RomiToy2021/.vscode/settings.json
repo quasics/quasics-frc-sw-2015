@@ -98,7 +98,8 @@
     "valarray": "cpp",
     "vector": "cpp",
     "*.inc": "cpp",
-    "filesystem": "cpp"
+    "filesystem": "cpp",
+    "*.ipp": "cpp"
   },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "modifications",

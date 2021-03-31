@@ -23,7 +23,7 @@
 #include <algorithm>
 
 #include "../../../../Common2021/ButtonHelpers.h"
-#include "../../../../Common2021/DeadBandEnforcer.h"
+#include "../../../../Common2021/DriveStraightCommand.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
@@ -34,6 +34,10 @@
 
 #undef DRIVE_ARCADE_STYLE
 #define USE_GAMESIR_CONTROLLER
+
+constexpr double kTurtleModeMaxSpeed = 0.5;
+constexpr double kNormalModeMaxSpeed = 0.75;
+constexpr double kTurboModeMaxSpeed = 1.0;
 
 // Unfortunately, SendableChoosers don't seem to work with the simulator
 // environment, just with a real Driver Station.  And since that won't work with
@@ -52,16 +56,41 @@ inline bool usingLogitechController() {
 }
 
 RobotContainer::RobotContainer() {
-  // Note: when running under simulator, current path is that of the
-  // project (.../Experimental/RomiToy2021).
+  //////////////////////////////////////////////////////////////////
+  // Set up scaling support for the speed controls.
+  DeadBandEnforcer scalingDeadBand(
+      0.25);  // Require at least 25% on the triggers to activate speed scaling
+
+  m_speedScaler.reset(new SpeedScaler(
+      [this, scalingDeadBand] {
+        // Speed mode signal
+        const bool usingLogitech = usingLogitechController();
+        const int turtleTrigger =
+            usingLogitech
+                ? JoystickDefinitions::LogitechGamePad::LeftTriggerAxis
+                : JoystickDefinitions::GameSirPro::LeftTrigger;
+        const int turboTrigger =
+            usingLogitech
+                ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
+                : JoystickDefinitions::GameSirPro::RightTrigger;
+        if (scalingDeadBand(m_controller.GetRawAxis(turtleTrigger)) > 0)
+          return SpeedScaler::Turtle;
+        else if (scalingDeadBand(m_controller.GetRawAxis(turboTrigger)) > 0)
+          return SpeedScaler::Turbo;
+        else
+          return SpeedScaler::Normal;
+      },
+      kNormalModeMaxSpeed, kTurtleModeMaxSpeed, kTurboModeMaxSpeed));
+
+  //////////////////////////////////////////////////////////////////
+  // Set up sliders to allow for customizing vision processing on
+  // the RasPi.
   m_helper.InstallSliders();
 
+  //////////////////////////////////////////////////////////////////
+  // Install different commands.
   ConfigureDrivingCommand();
-
-  // Configure the button bindings
   ConfigureButtonBindings();
-
-  // Configure how we'll pick what to do in auto mode.
   ConfigureAutonomousSelection();
 }
 
@@ -105,75 +134,25 @@ void RobotContainer::ConfigureAutonomousSelection() {
 }
 
 void RobotContainer::EnableTankDrive() {
-  //////////////////////////////////////////////////////////////////
-  // Set up scaling support for the speed controls.
-  constexpr double turtleMax = 0.5;
-  constexpr double normalMax = 0.75;
-  constexpr double turboMax = 1.0;
-  DeadBandEnforcer scalingDeadBand(
-      0.25);  // Require at least 25% on the triggers to activate speed scaling
-
-  SpeedScaler scaler(
-      [this, scalingDeadBand] {
-        // Speed mode signal
-        const bool usingLogitech = usingLogitechController();
-        const int turtleTrigger =
-            usingLogitech
-                ? JoystickDefinitions::LogitechGamePad::LeftTriggerAxis
-                : JoystickDefinitions::GameSirPro::LeftTrigger;
-        const int turboTrigger =
-            usingLogitech
-                ? JoystickDefinitions::LogitechGamePad::RightTriggerAxis
-                : JoystickDefinitions::GameSirPro::RightTrigger;
-        if (scalingDeadBand(m_controller.GetRawAxis(turtleTrigger)) > 0)
-          return SpeedScaler::Turtle;
-        else if (scalingDeadBand(m_controller.GetRawAxis(turboTrigger)) > 0)
-          return SpeedScaler::Turbo;
-        else
-          return SpeedScaler::Normal;
-      },
-      normalMax, turtleMax, turboMax);
-
-  //////////////////////////////////////////////////////////////////
-  // Set up the actual tank drive command, using the scaler from above
-  // to help provide limiting factors.
-  //
-  // Notice that I'm negating the speed values for both left and right.
-  // That's because I find it more convenient to tuck a camera in under
-  // what would normally be the "front" of the robot, facing in the
-  // opposite direction, when doing work with vision processing.  (The
-  // cameras I'm using don't anchor well on the other side.)  So I'm
-  // negating the speed values, so that I can make it run in the
-  // direction that "looks ahead" when trying to drive "forward".
-  //
-  // I could just mark the speed controllers as inverted in the
-  // Drivetrain code, but that needs to be done before they're assigned
-  // to a DifferentialDrive, which would complicate the code there: so
-  // it's simpler just to make the small tweak here. :-)
-
-  // "Dead band" evaluation for throttle control: if a stick hasn't moved at
-  // least this much, it's ignored.
-  DeadBandEnforcer throttleDeadBand(0.06);
-
   m_drive.SetDefaultCommand(TeleopTankDrive(
       &m_drive,
-      [this, scaler, throttleDeadBand] {
+      [this] {
         // Left speed control
         const int leftJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftYAxis
                 : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -scaler(
-            throttleDeadBand(m_controller.GetRawAxis(leftJoystickAxis)));
+        return -(*m_speedScaler)(
+            m_throttleDeadBand(m_controller.GetRawAxis(leftJoystickAxis)));
       },
-      [this, scaler, throttleDeadBand] {
+      [this] {
         // Right speed control
         const int rightJoystickAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::RightYAxis
                 : int(JoystickDefinitions::GameSirPro::RightVertical);
-        return -scaler(
-            throttleDeadBand(m_controller.GetRawAxis(rightJoystickAxis)));
+        return -(*m_speedScaler)(
+            m_throttleDeadBand(m_controller.GetRawAxis(rightJoystickAxis)));
       },
       [this] {
         // Provides "Switch drive enabled?" signal to tank drive.
@@ -192,24 +171,23 @@ void RobotContainer::EnableTankDrive() {
 }
 
 void RobotContainer::EnableArcadeDrive() {
-  // "Dead band" evaluation for speed controls.
-  DeadBandEnforcer deadBand(0.06);
-
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
       &m_drive,
-      [this, deadBand] {
+      [this] {
         const int joystickVerticalAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftYAxis
                 : int(JoystickDefinitions::GameSirPro::LeftVertical);
-        return -deadBand(m_controller.GetRawAxis(joystickVerticalAxis));
+        return -m_throttleDeadBand(
+            m_controller.GetRawAxis(joystickVerticalAxis));
       },
-      [this, deadBand] {
+      [this] {
         const int joystickHorizontalalAxis =
             usingLogitechController()
                 ? JoystickDefinitions::LogitechGamePad::LeftXAxis
                 : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
-        return deadBand(m_controller.GetRawAxis(joystickHorizontalalAxis));
+        return m_throttleDeadBand(
+            m_controller.GetRawAxis(joystickHorizontalalAxis));
       }));
 }
 
@@ -221,21 +199,42 @@ void RobotContainer::ConfigureDrivingCommand() {
 #endif
 }
 
+// Configure your button bindings here
 void RobotContainer::ConfigureButtonBindings() {
-  // Configure your button bindings here
-  DriveForward forward(
-      &m_drive,
-      .5,                    // Power setting
-      [] { return false; },  // Stop condition (move until interrupted)
-      DriveForward::Gyro,    // Sensor mode
-      false                  // Noisy?
-  );
-
+  // Sample binding for a button.
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::G))
       .WhenPressed(frc2::PrintCommand("Button 'G' on controller was pressed"));
 
+  // Simple command to drive straight ahead at a fixed speed.
+  DriveStraightCommand forward(
+      &m_drive, [] { return .5; },  // Power setting
+      [] { return false; },         // Stop condition (move until interrupted)
+      DriveStraightCommand::Gyro,   // Sensor mode
+      false                         // Noisy?
+  );
   frc2::JoystickButton(&m_controller, int(JoystickDefinitions::GameSirPro::A))
       .WhenHeld(forward);
+
+  // Set up variable-speed "drive forward" command
+  std::function<double()> variableSpeedController = [this] {
+    const int rightJoystickAxis =
+        usingLogitechController()
+            ? JoystickDefinitions::LogitechGamePad::RightYAxis
+            : int(JoystickDefinitions::GameSirPro::RightVertical);
+    auto result = -(*m_speedScaler)(
+        m_throttleDeadBand(m_controller.GetRawAxis(rightJoystickAxis)));
+    return result;
+  };
+  DriveStraightCommand forwardVariableSpeed(
+      &m_drive,                 // Drive base
+      variableSpeedController,  // Power setting
+      [] { return false; },     // Stop condition (move until interrupted)
+      DriveStraightCommand::Encoders,  // Sensor mode
+      true                             // Noisy?
+  );
+  frc2::JoystickButton(&m_controller,
+                       int(JoystickDefinitions::GameSirPro::LeftShoulder))
+      .WhenHeld(forwardVariableSpeed);
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

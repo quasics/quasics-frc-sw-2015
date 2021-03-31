@@ -11,9 +11,13 @@
 #include <frc2/command/Command.h>
 #include <networktables/NetworkTableEntry.h>
 
+#include <memory>
 #include <vector>
 
+#include "../../../../Common2021/DeadBandEnforcer.h"
+#include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
+
 #include "subsystems/Drivetrain.h"
 #include "subsystems/OnBoardIO.h"
 
@@ -103,6 +107,9 @@ class RobotContainer {
   // Helper component to manage settings for vision processing.
   VisionSettingsHelper m_helper{
       VisionSettingsHelper::GetSuggestedRomiDirectory() + "visionSettings.dat"};
+
+  DeadBandEnforcer m_throttleDeadBand{0.06};
+  std::shared_ptr<SpeedScaler> m_speedScaler;
 
   // Assumes a gamepad is plugged into channnel 0.
   frc::Joystick m_controller{0};

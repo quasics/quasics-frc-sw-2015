@@ -69,5 +69,7 @@ void Intake::ConveyBallOff() {
   conveyorMotor.Set(0);
 }
 
-
+bool Intake::IsBallInChamber() {
+  return conveyorLimitSwitch->Get();
+}
 

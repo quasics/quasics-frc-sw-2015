@@ -37,6 +37,7 @@
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "commands/ShootWithLimitSwitch.h"
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
@@ -75,6 +76,11 @@ void RobotContainer::ConfigureButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kB,  // Run conveyor and intake
       &intakepowercells);
+
+  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kStart,  // Shoot
+      &shootwithlimitswitch);
 
   static RunOnlyIntakeMotor runonlyintakemotor(&intake);
   RunCommandWhenOperatorButtonIsHeld(

@@ -6,7 +6,7 @@
 
 #include "Constants.h"
 
-#define LOG_LIMIT_SWITCH_STATE
+// #define LOG_LIMIT_SWITCH_STATE
 
 Intake::Intake()
     : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
@@ -20,7 +20,7 @@ Intake::Intake()
 void Intake::Periodic() {
 #ifdef LOG_LIMIT_SWITCH_STATE
   std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
-            << "set" << std::endl;
+            << "open" << std::endl;
 #endif
 }
 

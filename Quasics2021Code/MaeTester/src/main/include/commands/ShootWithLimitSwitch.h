@@ -33,4 +33,7 @@ class ShootWithLimitSwitch
  private:
   Shooter* shooter;
   Intake* intake;
+  int Stage = 0;
+  int WaitTime = 3000;
+  int ReferenceTime;
 };

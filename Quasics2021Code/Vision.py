@@ -306,7 +306,7 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumberArray('left_list', all_targets_left_list)
     vision_nt.putNumberArray('width_list', all_targets_width_list)
     vision_nt.putNumberArray('height_list', all_targets_height_list)
-    vision_nt.putNumberArray('distace_list', all_targets_distance_list)
+    vision_nt.putNumberArray('distance_list', all_targets_distance_list)
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time

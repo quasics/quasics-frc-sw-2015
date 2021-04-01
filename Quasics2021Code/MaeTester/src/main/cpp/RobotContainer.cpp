@@ -26,6 +26,7 @@
 #include <wpi/SmallString.h>
 
 #include "Constants.h"
+#include "commands/AutoIntakeCells.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/IntakePowerCells.h"
@@ -34,10 +35,10 @@
 #include "commands/RunOnlyIntakeMotor.h"
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
+#include "commands/ShootWithLimitSwitch.h"
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
-#include "commands/ShootWithLimitSwitch.h"
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here

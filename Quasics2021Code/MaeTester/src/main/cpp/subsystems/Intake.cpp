@@ -28,15 +28,26 @@ void Intake::Periodic() {
 // Intake and Conveyor will stop.
 void Intake::IntakeBallOn() {
   if (conveyorLimitSwitch.get()) {
-    conveyorMotor.Set(0);
-    intakeMotor.Set(0);
+    conveyorMotor.Set(0.75);
+    intakeMotor.Set(0.25);
   } else {
+    intakeMotor.Set(0);
+    conveyorMotor.Set(0);
+  }
+}
+// Automatic Intake: if limit switch is hit, only conveyor will disable.
+// Otherwise, will always run.
+void Intake::intakeCellsAuto() {
+  if (conveyorLimitSwitch.get()) {
     intakeMotor.Set(0.75);
     conveyorMotor.Set(0.25);
+  } else {
+    intakeMotor.Set(0.75);
+    conveyorMotor.Set(0);
   }
-
-//Stops the intake of ball.
 }
+
+// Stops the intake of ball.
 void Intake::IntakeBallOff() {
   intakeMotor.Set(0);
   conveyorMotor.Set(0);

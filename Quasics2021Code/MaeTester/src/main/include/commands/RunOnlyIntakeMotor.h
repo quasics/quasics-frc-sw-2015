@@ -10,6 +10,8 @@
 #include "subsystems/Intake.h"
 
 /**
+ * TODO(scott): Update docs for this class.
+ *
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
@@ -23,12 +25,8 @@ class RunOnlyIntakeMotor
 
   void Initialize() override;
 
-  void Execute() override;
-
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
-  private:
-  Intake*intake;
+ private:
+  Intake* intake;
 };

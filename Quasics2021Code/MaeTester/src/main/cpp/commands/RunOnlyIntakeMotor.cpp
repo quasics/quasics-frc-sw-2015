@@ -12,18 +12,9 @@ RunOnlyIntakeMotor::RunOnlyIntakeMotor(Intake* intake) : intake(intake) {
 // Called when the command is initially scheduled.
 void RunOnlyIntakeMotor::Initialize() {
   intake->OnlyIntakeOn();
-
 }
-
-// Called repeatedly when this Command is scheduled to run
-void RunOnlyIntakeMotor::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunOnlyIntakeMotor::End(bool interrupted) {
   intake->OnlyIntakeOff();
-}
-
-// Returns true when the command should end.
-bool RunOnlyIntakeMotor::IsFinished() {
-  return false;
 }

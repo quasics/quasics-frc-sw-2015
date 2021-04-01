@@ -12,19 +12,9 @@ RunOnlyConveyorMotor::RunOnlyConveyorMotor(Intake* intake) : intake(intake) {
 // Called when the command is initially scheduled.
 void RunOnlyConveyorMotor::Initialize() {
   intake->ConveyBallOn();
-
 }
-
-// Called repeatedly when this Command is scheduled to run
-void RunOnlyConveyorMotor::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunOnlyConveyorMotor::End(bool interrupted) {
   intake->ConveyBallOff();
-
-}
-
-// Returns true when the command should end.
-bool RunOnlyConveyorMotor::IsFinished() {
-  return false;
 }

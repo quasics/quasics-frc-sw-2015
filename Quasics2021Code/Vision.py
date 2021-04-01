@@ -153,7 +153,7 @@ def identifyPathForChallenge(left_list, width_list):
         # Something weird, can't determine A or B
         pathId = -1
         
-        vision_nt.putNumber('path_id', pathId)
+    vision_nt.putNumber('path_id', pathId)
 
 # Processes the next frame of video from the CameraServer.
 def processFrame(inputStream, outputStream):

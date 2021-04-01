@@ -14,16 +14,7 @@ void IntakePowerCells::Initialize() {
   intake->IntakeBallOn();
 }
 
-// Called repeatedly when this Command is scheduled to run
-void IntakePowerCells::Execute() {
-}
-
 // Called once the command ends or is interrupted.
 void IntakePowerCells::End(bool interrupted) {
   intake->IntakeBallOff();
-}
-
-// Returns true when the command should end.
-bool IntakePowerCells::IsFinished() {
-  return false;
 }

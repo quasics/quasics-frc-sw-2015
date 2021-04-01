@@ -10,6 +10,8 @@
 #include "subsystems/Intake.h"
 
 /**
+ * TODO(nurfadil): Update the documentation for this class.
+ *
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
@@ -23,11 +25,7 @@ class IntakePowerCells
 
   void Initialize() override;
 
-  void Execute() override;
-
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   Intake* intake;

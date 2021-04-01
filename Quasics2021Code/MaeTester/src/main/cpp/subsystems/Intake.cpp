@@ -38,11 +38,10 @@ void Intake::IntakeBallOn() {
 // Automatic Intake: if limit switch is hit, only conveyor will disable.
 // Otherwise, will always run.
 void Intake::IntakeCellsAuto() {
+  intakeMotor.Set(0.75);
   if (conveyorLimitSwitch.get()) {
-    intakeMotor.Set(0.75);
     conveyorMotor.Set(0.25);
   } else {
-    intakeMotor.Set(0.75);
     conveyorMotor.Set(0);
   }
 }

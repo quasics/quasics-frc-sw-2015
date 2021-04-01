@@ -13,11 +13,12 @@
 
 #include <iostream>
 
+#include "VisionSettingsHelper.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/ExampleSubsystem.h"
-#include "subsystems/Shooter.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Shooter.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -57,6 +58,9 @@ class RobotContainer {
   Shooter shooter;
   Intake intake;
   frc::SendableChooser<frc2::Command*> m_autoChooser;
+
+  // Used to tune/store the Vision.py code's color range.
+  VisionSettingsHelper m_visionSettingsHelper{"visionSettings.dat"};
 
   // Controllers
   frc::Joystick driverJoystick{0};

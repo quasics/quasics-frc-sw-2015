@@ -43,8 +43,9 @@
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
 
-  // TODO: Install the sliders for vision on the driver's station UI (if it's
-  // running)
+  // Set up sliders to allow for customizing vision processing on
+  // the Raspberry Pi's "Vision" program.
+  m_visionSettingsHelper.InstallSliders();
 
   // Configure the button bindings
   ConfigureButtonBindings();

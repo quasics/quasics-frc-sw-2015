@@ -11,11 +11,13 @@ DoASpin::DoASpin(Drivebase* drivebase) : drivebase(drivebase) {
 
 // Called when the command is initially scheduled.
 void DoASpin::Initialize() {
-  drivebase->SetMotorSpeed(.3, .3);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void DoASpin::Execute() {
+  // TODO(scott): Does this still work as intended, given the changes made
+  // to the drive base?
+  drivebase->SetMotorSpeed(.3, .3);
 }
 
 // Called once the command ends or is interrupted.

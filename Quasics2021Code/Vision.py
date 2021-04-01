@@ -93,7 +93,7 @@ def computeScore(contour):
  
 # Defining the function carried over from Identification Points
 
-def identifyPathForChallenge(left_list, width_list)
+def identifyPathForChallenge(left_list, width_list):
 
     numBalls = len(width_list)
 
@@ -107,8 +107,6 @@ def identifyPathForChallenge(left_list, width_list)
 
         if bestIndex == -1 or width_list[index] > width_list[bestIndex]: 
             bestIndex = index
-
-    print("Best Index is {}".format(bestIndex))
 
     # Figure out which path is set up, based on positions of the balls
     # relative to the largest one.  (And how many we can "see".)

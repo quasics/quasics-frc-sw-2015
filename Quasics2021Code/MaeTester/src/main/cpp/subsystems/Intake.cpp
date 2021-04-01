@@ -27,7 +27,7 @@ void Intake::Periodic() {
 // Intakes the ball at 1/4 speed. Theoretically, when limit switch is hit, both
 // Intake and Conveyor will stop.
 void Intake::IntakeBallOn() {
-  if (conveyorLimitSwitch.get()) {
+  if (!IsBallInChamber()) {
     conveyorMotor.Set(0.75);
     intakeMotor.Set(0.25);
   } else {

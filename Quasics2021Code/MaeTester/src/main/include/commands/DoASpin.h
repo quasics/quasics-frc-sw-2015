@@ -9,6 +9,8 @@
 #include "subsystems/Drivebase.h"
 
 /**
+ * TODO(scott): Update docs for this class.
+ *
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
@@ -20,13 +22,9 @@ class DoASpin
  public:
   DoASpin(Drivebase* drivebase);
 
-  void Initialize() override;
-
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
   private:
   Drivebase*drivebase;

@@ -24,6 +24,9 @@ void ShootWithLimitSwitch::Execute() {
   if(!(intake->IsBallInChamber())) {
     intake->ConveyBallOn();
   }
+  else {
+    intake->ConveyBallOff();
+  }
   //Stage 2
   //wait until current time = reference time + X
   //Stage 3

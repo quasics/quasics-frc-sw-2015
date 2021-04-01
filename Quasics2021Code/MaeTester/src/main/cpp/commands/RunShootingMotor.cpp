@@ -4,26 +4,17 @@
 
 #include "commands/RunShootingMotor.h"
 
-RunShootingMotor::RunShootingMotor(Shooter*shooter)
- : shooter(shooter) {
+RunShootingMotor::RunShootingMotor(Shooter* shooter) : shooter(shooter) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(shooter);
 }
 
 // Called when the command is initially scheduled.
 void RunShootingMotor::Initialize() {
-  shooter->setShootingMotor(.75); //Yeet the ball
+  shooter->setShootingMotor(.75);  // Yeet the ball
 }
-
-// Called repeatedly when this Command is scheduled to run
-void RunShootingMotor::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunShootingMotor::End(bool interrupted) {
-  shooter->stopShootingMotor(); //Stop yeeting
-}
-
-// Returns true when the command should end.
-bool RunShootingMotor::IsFinished() {
-  return false;
+  shooter->stopShootingMotor();  // Stop yeeting
 }

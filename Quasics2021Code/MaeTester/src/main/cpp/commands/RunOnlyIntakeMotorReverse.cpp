@@ -4,7 +4,8 @@
 
 #include "commands/RunOnlyIntakeMotorReverse.h"
 
-RunOnlyIntakeMotorReverse::RunOnlyIntakeMotorReverse(Intake* intake) : intake(intake) {
+RunOnlyIntakeMotorReverse::RunOnlyIntakeMotorReverse(Intake* intake)
+    : intake(intake) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intake);
 }
@@ -12,18 +13,9 @@ RunOnlyIntakeMotorReverse::RunOnlyIntakeMotorReverse(Intake* intake) : intake(in
 // Called when the command is initially scheduled.
 void RunOnlyIntakeMotorReverse::Initialize() {
   intake->OnlyIntakeReverse();
-
 }
-
-// Called repeatedly when this Command is scheduled to run
-void RunOnlyIntakeMotorReverse::Execute() {}
 
 // Called once the command ends or is interrupted.
 void RunOnlyIntakeMotorReverse::End(bool interrupted) {
   intake->OnlyIntakeOff();
-}
-
-// Returns true when the command should end.
-bool RunOnlyIntakeMotorReverse::IsFinished() {
-  return false;
 }

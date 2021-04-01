@@ -10,6 +10,8 @@
 #include "subsystems/Intake.h"
 
 /**
+ * TODO(nurfadil): Update docs for this class.
+ *
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
@@ -19,16 +21,12 @@
 class RunOnlyIntakeMotorReverse
     : public frc2::CommandHelper<frc2::CommandBase, RunOnlyIntakeMotorReverse> {
  public:
-  RunOnlyIntakeMotorReverse(Intake*intake);
+  RunOnlyIntakeMotorReverse(Intake* intake);
 
   void Initialize() override;
 
-  void Execute() override;
-
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
-  private:
-  Intake*intake;
+ private:
+  Intake* intake;
 };

@@ -148,6 +148,14 @@ def identifyPathForChallenge(left_list, width_list):
             pathId = 3
         else:
             pathId = 4
+    elif numBalls == 3:
+        # The camera is too small to pickup the second ball that 
+        # would be visible.
+        if distance_list[bestIndex] <= 7.6:
+            pathId = 3
+        else:
+            pathId = 4
+
 
     else:
         # Something weird, can't determine A or B

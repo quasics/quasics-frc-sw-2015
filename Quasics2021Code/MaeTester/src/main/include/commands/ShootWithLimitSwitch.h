@@ -6,10 +6,13 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Intake.h"
 #include "subsystems/Shooter.h"
 
 /**
+ * TODO(gavin): Update docs for this class.
+ *
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
@@ -19,7 +22,7 @@
 class ShootWithLimitSwitch
     : public frc2::CommandHelper<frc2::CommandBase, ShootWithLimitSwitch> {
  public:
-  ShootWithLimitSwitch(Shooter*shooter, Intake*intake);
+  ShootWithLimitSwitch(Shooter* shooter, Intake* intake);
 
   void Initialize() override;
 
@@ -27,9 +30,7 @@ class ShootWithLimitSwitch
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-  
-  private:
-  Shooter*shooter;
-  Intake*intake;
+ private:
+  Shooter* shooter;
+  Intake* intake;
 };

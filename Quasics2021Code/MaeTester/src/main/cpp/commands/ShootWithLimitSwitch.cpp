@@ -4,46 +4,38 @@
 
 #include "commands/ShootWithLimitSwitch.h"
 
-ShootWithLimitSwitch::ShootWithLimitSwitch(Shooter*shooter, Intake*intake) : shooter(shooter), intake(intake) {
+ShootWithLimitSwitch::ShootWithLimitSwitch(Shooter* shooter, Intake* intake)
+    : shooter(shooter), intake(intake) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(shooter);
-  AddRequirements(intake);
+  AddRequirements({shooter, intake});
 }
 
 // Called when the command is initially scheduled.
 void ShootWithLimitSwitch::Initialize() {
   shooter->setShootingMotor(.75);
-  bool InitialLimitSwitchState = intake->IsBallInChamber();
+  bool initialLimitSwitchState = intake->IsBallInChamber();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ShootWithLimitSwitch::Execute() {
-  //Stage 1
-  //Reference time = get current time
-  //if ball not in chamber, advance conveyor
-  if(!(intake->IsBallInChamber())) {
+  // Stage 1
+  // Reference time = get current time
+  // if ball not in chamber, advance conveyor
+  if (!(intake->IsBallInChamber())) {
     intake->ConveyBallOn();
-  }
-  else {
+  } else {
     intake->ConveyBallOff();
   }
-  //Stage 2
-  //wait until current time = reference time + X
-  //Stage 3
-  //feed ball to shooter
-    //intake->ConveyBallOn();
-  //wait until limit switch is off
-
+  // Stage 2
+  // wait until current time = reference time + X
+  // Stage 3
+  // feed ball to shooter
+  // intake->ConveyBallOn();
+  // wait until limit switch is off
 }
 
 // Called once the command ends or is interrupted.
 void ShootWithLimitSwitch::End(bool interrupted) {
-shooter->stopShootingMotor();
-intake->ConveyBallOff();
-
-}
-
-// Returns true when the command should end.
-bool ShootWithLimitSwitch::IsFinished() {
-  return false;
+  shooter->stopShootingMotor();
+  intake->ConveyBallOff();
 }

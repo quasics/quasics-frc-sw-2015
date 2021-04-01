@@ -95,6 +95,10 @@ def computeScore(contour):
 
 def identifyPathForChallenge(left_list, width_list):
 
+    global vision_nt
+
+    pathId = -1
+
     numBalls = len(width_list)
 
     # Find the largest ball: assumption is that it should be right in front of us
@@ -125,13 +129,13 @@ def identifyPathForChallenge(left_list, width_list):
             otherindx2 = 1
 
         if left_list[otherindx1] < left_list[bestIndex] and left_list[otherindx2] < left_list[bestIndex]:
-            print("It is Path 2A")
+           pathId = 2
 
         elif left_list[otherindx1] > left_list[bestIndex] and left_list[otherindx2] > left_list[bestIndex]:
-            print("Error")
+            pathId = -1
 
         else:
-            print("It is Path 1A")
+            pathId = 1
 
     elif numBalls == 2:
         # Must be path B
@@ -141,13 +145,15 @@ def identifyPathForChallenge(left_list, width_list):
             otherindx = 0
 
         if left_list[otherindx] > left_list[bestIndex]:
-            print("It is Path 1B")
+            pathId = 3
         else:
-            print("It is Path 2B")
+            pathId = 4
 
     else:
         # Something weird, can't determine A or B
-        print("Can't identify primary path information!")
+        pathId = -1
+        
+        vision_nt.putNumber("path_id", pathId)
 
 # Processes the next frame of video from the CameraServer.
 def processFrame(inputStream, outputStream):
@@ -307,6 +313,7 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumberArray('width_list', all_targets_width_list)
     vision_nt.putNumberArray('height_list', all_targets_height_list)
     vision_nt.putNumberArray('distance_list', all_targets_distance_list)
+    vision_nt.putNumber('path_id', pathId)
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time
@@ -374,6 +381,7 @@ def main():
         printf("Failed to publish camera_width")
     if not vision_nt.putNumber("camera_height", height):
         printf("Failed to publish camera_height")
+   
 
     # Get a CvSink. This will capture images from the camera, for use when processing
     # the frames.

@@ -11,12 +11,12 @@ AutoIntakeCells::AutoIntakeCells(Intake* intake) : intake(intake) {
 
 // Called when the command is initially scheduled.
 void AutoIntakeCells::Initialize() {
-  intake->intakeCellsAuto();
+  intake->IntakeCellsAuto();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutoIntakeCells::Execute() {
-  intake->intakeCellsAuto();
+  intake->IntakeCellsAuto();
 }
 
 // Called once the command ends or is interrupted.

@@ -30,7 +30,7 @@ class Intake : public frc2::SubsystemBase {
   void OnlyIntakeReverse();
   void OnlyIntakeOff();
 
-  void intakeCellsAuto();
+  void IntakeCellsAuto();
 
   bool IsBallInChamber();
 

@@ -37,7 +37,7 @@ void Intake::IntakeBallOn() {
 }
 // Automatic Intake: if limit switch is hit, only conveyor will disable.
 // Otherwise, will always run.
-void Intake::intakeCellsAuto() {
+void Intake::IntakeCellsAuto() {
   if (conveyorLimitSwitch.get()) {
     intakeMotor.Set(0.75);
     conveyorMotor.Set(0.25);
@@ -51,10 +51,7 @@ void Intake::intakeCellsAuto() {
 void Intake::IntakeBallOff() {
   intakeMotor.Set(0);
   conveyorMotor.Set(0);
-
-  // Reverses the intake and conveyor at 1/4 speed.
 }
-
 
 void Intake::OnlyIntakeOn() {
   intakeMotor.Set(.75);
@@ -83,4 +80,3 @@ void Intake::ConveyBallOff() {
 bool Intake::IsBallInChamber() {
   return conveyorLimitSwitch->Get();
 }
-

@@ -17,7 +17,7 @@ class Intake : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
- //Controls what the commmands that intake (or exhaust) the balls.
+  // Controls what the commmands that intake (or exhaust) the balls.
   void IntakeBallOn();
   void IntakeBallReverse();
   void IntakeBallOff();

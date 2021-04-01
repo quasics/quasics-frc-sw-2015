@@ -52,6 +52,6 @@ bool DriveAtPowerForMeters::IsFinished() {
     if (currentReading.to<double>() >= destination.to<double>()) {
       return true;
     }
-  return false;
+    return false;
   }
 }

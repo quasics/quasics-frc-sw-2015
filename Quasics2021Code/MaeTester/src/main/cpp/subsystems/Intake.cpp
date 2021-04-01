@@ -77,5 +77,5 @@ void Intake::ConveyBallOff() {
 }
 
 bool Intake::IsBallInChamber() {
-  return conveyorLimitSwitch->Get();
+  return !conveyorLimitSwitch->Get();
 }

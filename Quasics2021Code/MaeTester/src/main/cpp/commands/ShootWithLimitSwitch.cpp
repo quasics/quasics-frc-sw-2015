@@ -12,12 +12,15 @@ ShootWithLimitSwitch::ShootWithLimitSwitch(Shooter* shooter, Intake* intake)
 
 // Called when the command is initially scheduled.
 void ShootWithLimitSwitch::Initialize() {
+  std::cout << "Initializing ShootWithLimitSwitch" << std::endl;
   shooter->setShootingMotor(.75);
   bool initialLimitSwitchState = intake->IsBallInChamber();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ShootWithLimitSwitch::Execute() {
+  std::cout << "Executing ShootWithLimitSwitch" << std::endl;
+
   // Stage 1
   // Reference time = get current time
   // if ball not in chamber, advance conveyor

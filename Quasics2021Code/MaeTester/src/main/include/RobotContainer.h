@@ -10,6 +10,7 @@
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc2/command/Command.h>
+#include <networktables/NetworkTableEntry.h>
 
 #include <iostream>
 
@@ -72,7 +73,18 @@ class RobotContainer {
   void ConfigureDriverButtonBindings();
   void ConfigureOperatorButtonBindings();
   frc2::SequentialCommandGroup* BuildBouncePathCommand();
+  frc2::SequentialCommandGroup* BuildARed();
+  frc2::SequentialCommandGroup* BuildGalacticSearchPath(std::string jsonFile1,
+                                                        std::string jsonFile2,
+                                                        std::string jsonFile3,
+                                                        std::string jsonFile4);
   void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId,
                                           frc2::Command* command);
+  frc2::SequentialCommandGroup* DriveGalacticSearch(bool red, bool pathA);
   double deadband(double num);
+  bool RecognizeError();
+  bool RecognizePathA();
+  bool RecognizeBlueAlliance();
+
+  nt::NetworkTableEntry pathId;
 };

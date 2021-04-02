@@ -118,4 +118,5 @@ namespace NetworkTableNames {
   constexpr const char* kHighHSetting("High_H");
   constexpr const char* kHighSSetting("High_S");
   constexpr const char* kHighVSetting("High_V");
+  constexpr const char* kPathID("path_id");
 }  // namespace NetworkTableNames

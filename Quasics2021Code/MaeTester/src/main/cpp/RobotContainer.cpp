@@ -17,6 +17,8 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 #include <units/acceleration.h>
 #include <units/length.h>
 #include <units/time.h>
@@ -63,6 +65,11 @@ RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
         return deadband(stickValue);
       }));
   ConfigureAutoSelection();
+
+  // obtaining info from the network table
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable(NetworkTableNames::kVisionTable);
+  pathId = table->GetEntry(NetworkTableNames::kPathID);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -125,6 +132,26 @@ void RobotContainer::ConfigureAutoSelection() {
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
+  m_autoChooser.AddOption("Galactic Search Red A",
+                          BuildGalacticSearchPath("GSearchARed Part1.json",
+                                                  "GSearchARed Part2.json",
+                                                  "GSearchARed Part3.json",
+                                                  "GSearchARed Part4.json"));
+  m_autoChooser.AddOption("Galactic Search Blue A",
+                          BuildGalacticSearchPath("GSearchABlue Part1.json",
+                                                  "GSearchABlue Part2.json",
+                                                  "GSearchABlue Part3.json",
+                                                  "GSearchABlue Part4.json"));
+  m_autoChooser.AddOption("Galactic Search Red B",
+                          BuildGalacticSearchPath("GSearchBRed Part1.json",
+                                                  "GSearchBRed Part2.json",
+                                                  "GSearchBRed Part3.json",
+                                                  "GSearchBRed Part4.json"));
+  m_autoChooser.AddOption("Galactic Search Blue B",
+                          BuildGalacticSearchPath("GSearchBBlue Part1.json",
+                                                  "GSearchBBlue Part2.json",
+                                                  "GSearchBBlue Part3.json",
+                                                  "GSearchBBlue Part4.json"));
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
@@ -196,6 +223,28 @@ frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
       GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
 
   return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
+    std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
+    std::string jsonFile4) {
+  std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile(jsonFile1, true))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile(jsonFile2, true))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile(jsonFile3, true))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+      GenerateRamseteCommandFromPathFile(jsonFile4, true))));
+
+  return new frc2::SequentialCommandGroup(std::move(GalacticPieces));
 }
 
 double RobotContainer::deadband(double num) {
@@ -279,4 +328,29 @@ frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
   frc::Trajectory trajectory =
       frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
   return trajectory;
+}
+
+bool RobotContainer::RecognizeError() {
+  double path = pathId.GetDouble(-1);
+  if (path == -1) {
+    return true;
+  }
+  return false;
+}
+
+bool RobotContainer::RecognizeBlueAlliance() {
+  double path = pathId.GetDouble(-1);
+  int correctedPath = path;
+  if (correctedPath % 2 == 0) {
+    return true;
+  }
+  return false;
+}
+
+bool RobotContainer::RecognizePathA() {
+  double path = pathId.GetDouble(-1);
+  if (path < 3) {
+    return true;
+  }
+  return false;
 }

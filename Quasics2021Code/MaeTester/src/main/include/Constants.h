@@ -19,21 +19,21 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
-namespace CANBusIds{
-    namespace SparkMaxIds{
-        // The following values reflect the Nike drive base and its idea of
-        // "front".
-        constexpr int Left_Front_Number = 1;
-        constexpr int Left_Rear_Number = 2;
-        constexpr int Right_Front_Number = 3;
-        constexpr int Right_Rear_Number = 4;
-    }
-    namespace VictorSPXIds{
-      constexpr int ShootingMotor = 3;
-      constexpr int IntakeMotor = 1;
-      constexpr int ConveyorMotor = 2;
-    }  // namespace VictorSPXIds
-}
+namespace CANBusIds {
+  namespace SparkMaxIds {
+    // The following values reflect the Nike drive base and its idea of
+    // "front".
+    constexpr int Left_Front_Number = 1;
+    constexpr int Left_Rear_Number = 2;
+    constexpr int Right_Front_Number = 3;
+    constexpr int Right_Rear_Number = 4;
+  }  // namespace SparkMaxIds
+  namespace VictorSPXIds {
+    constexpr int ShootingMotor = 3;
+    constexpr int IntakeMotor = 1;
+    constexpr int ConveyorMotor = 2;
+  }  // namespace VictorSPXIds
+}  // namespace CANBusIds
 
 namespace DigitalIOMappings {
   constexpr int IntakeLimitSwitch = 0;
@@ -61,10 +61,16 @@ namespace OIConstants {
     constexpr int YButton = 4;
     constexpr int LeftShoulder = 5;
     constexpr int RightShoulder = 6;
-    constexpr int BackButton = 7;
-    constexpr int StartButton = 8;
-    constexpr int LeftStickPress = 9;
-    constexpr int RightStickPress = 10;
+    // The following buttons are below the shoulder, and would be triggers on an
+    // Xbox controller.
+    constexpr int LeftTriggerButton = 7;
+    constexpr int RightTriggerButton = 8;
+
+    // TODO(scott): Check the values for the following.
+    constexpr int BackButton = 9;
+    constexpr int StartButton = 10;
+    constexpr int LeftStickPress = 11;
+    constexpr int RightStickPress = 12;
   }  // namespace LogitechGamePad
 
   namespace XBox {
@@ -91,8 +97,11 @@ namespace OIConstants {
   constexpr double DeadBand_HighValue = +0.055;
 }  // namespace OIConstants
 
-namespace DrivebaseConstants{
-  constexpr double powerScaling = .6;
+namespace DrivebaseConstants {
+  constexpr double kNormalSpeedScaling = .6;
+  constexpr double kTurtleSpeedScaling = .4;
+  constexpr double kTurboSpeedScaling = .8;
+
   constexpr units::meter_t kTrackWidthMeters{1.3965298};
   const frc::DifferentialDriveKinematics kDriveKinematics{kTrackWidthMeters};
   constexpr auto ksVolts = 0.31_V;
@@ -105,7 +114,7 @@ namespace DrivebaseConstants{
   constexpr auto kMaxAcceleration = 0.8_mps_sq;
   constexpr double kRamseteB = 2;
   constexpr double kRamseteZeta = 0.7;
-}
+}  // namespace DrivebaseConstants
 
 namespace NetworkTableNames {
   constexpr const char* kVisionTable("Vision");

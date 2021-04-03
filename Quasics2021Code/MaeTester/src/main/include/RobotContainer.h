@@ -10,6 +10,7 @@
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/ConditionalCommand.h>
 #include <networktables/NetworkTableEntry.h>
 
 #include <iostream>
@@ -85,6 +86,10 @@ class RobotContainer {
   bool RecognizeError();
   bool RecognizePathA();
   bool RecognizeBlueAlliance();
+  frc2::ConditionalCommand* BuildBlueAlliancePath();
+  frc2::ConditionalCommand* BuildRedAlliancePath();
+  frc2::ConditionalCommand* ChooseWhichAlliance();
+  frc2::ConditionalCommand* GalacticSearchAuto();
 
   nt::NetworkTableEntry pathId;
 };

@@ -225,6 +225,7 @@ frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
   return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
 }
 
+// This builds a Galactic Search Path from 4 json files
 frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
     std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
     std::string jsonFile4) {
@@ -330,15 +331,27 @@ frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
   return trajectory;
 }
 
+/*These Functions evaluate, based on the path
+ID, whether an error has taken place, what alliance
+we're on, and what path we're following*/
+
 bool RobotContainer::RecognizeError() {
   double path = pathId.GetDouble(-1);
-  if (path == -1) {
+  if (path < 1) {
     return true;
   }
   return false;
 }
 
 bool RobotContainer::RecognizeBlueAlliance() {
+  double path = pathId.GetDouble(-1);
+  if (path < 3) {
+    return true;
+  }
+  return false;
+}
+
+bool RobotContainer::RecognizePathA() {
   double path = pathId.GetDouble(-1);
   int correctedPath = path;
   if (correctedPath % 2 == 0) {
@@ -347,10 +360,43 @@ bool RobotContainer::RecognizeBlueAlliance() {
   return false;
 }
 
-bool RobotContainer::RecognizePathA() {
-  double path = pathId.GetDouble(-1);
-  if (path < 3) {
-    return true;
-  }
-  return false;
+/*These Conditional Commands evaluate first whether there is
+an error, then which alliance we're on, and then, based on what
+path we're following, builds the correct Galactic Search Path
+for the robot to follow.*/
+
+frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePath() {
+  return new frc2::ConditionalCommand(
+      std::unique_ptr<frc2::Command>(
+          new frc2::PrintCommand("Alliance: B, Path: A")),
+      std::unique_ptr<frc2::Command>(
+          new frc2::PrintCommand("Alliance: B, Path: B")),
+      [this] { return RecognizePathA(); });
+}
+
+frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePath() {
+  return new frc2::ConditionalCommand(
+      std::unique_ptr<frc2::Command>(
+          new frc2::PrintCommand("Alliance: R, Path: A")),
+      std::unique_ptr<frc2::Command>(
+          new frc2::PrintCommand("Alliance: R, Path: B")),
+      [this] { return RecognizePathA(); });
+}
+
+frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
+  frc2::Command* blueCombo = BuildBlueAlliancePath();
+  frc2::Command* redCombo = BuildRedAlliancePath();
+  return new frc2::ConditionalCommand(
+      std::unique_ptr<frc2::Command>(blueCombo),
+      std::unique_ptr<frc2::Command>(redCombo),
+      [this] { return RecognizeBlueAlliance(); });
+}
+
+frc2::ConditionalCommand* RobotContainer::GalacticSearchAuto() {
+  frc2::Command* AllianceCombo = ChooseWhichAlliance();
+  return new frc2::ConditionalCommand(
+      std::unique_ptr<frc2::Command>(
+          new frc2::PrintCommand("An error occured in path recognition")),
+      std::unique_ptr<frc2::Command>(AllianceCombo),
+      [this] { return RecognizeError(); });
 }

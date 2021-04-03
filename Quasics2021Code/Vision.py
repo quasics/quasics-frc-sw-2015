@@ -155,7 +155,7 @@ def identifyPathForChallenge(left_list, width_list, distance_list):
 
         if distance_list[bestIndex] < 8 and distance_list[bestIndex] > 6:
             pathId = 3
-        elif distance_list[bestIndex] < 15 and distance_list[bestIndex] > 13:
+        elif distance_list[bestIndex] < 16 and distance_list[bestIndex] > 14:
             pathId = 4
         else:
             pathId = -1 

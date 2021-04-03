@@ -132,26 +132,26 @@ void RobotContainer::ConfigureAutoSelection() {
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
-  m_autoChooser.AddOption("Galactic Search Red A",
-                          BuildGalacticSearchPath("GSearchARed Part1.json",
-                                                  "GSearchARed Part2.json",
-                                                  "GSearchARed Part3.json",
-                                                  "GSearchARed Part4.json"));
-  m_autoChooser.AddOption("Galactic Search Blue A",
-                          BuildGalacticSearchPath("GSearchABlue Part1.json",
-                                                  "GSearchABlue Part2.json",
-                                                  "GSearchABlue Part3.json",
-                                                  "GSearchABlue Part4.json"));
-  m_autoChooser.AddOption("Galactic Search Red B",
-                          BuildGalacticSearchPath("GSearchBRed Part1.json",
-                                                  "GSearchBRed Part2.json",
-                                                  "GSearchBRed Part3.json",
-                                                  "GSearchBRed Part4.json"));
-  m_autoChooser.AddOption("Galactic Search Blue B",
-                          BuildGalacticSearchPath("GSearchBBlue Part1.json",
-                                                  "GSearchBBlue Part2.json",
-                                                  "GSearchBBlue Part3.json",
-                                                  "GSearchBBlue Part4.json"));
+  m_autoChooser.AddOption(
+      "Galactic Search Red A",
+      BuildGalacticSearchPath(
+          "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+          "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
+  m_autoChooser.AddOption(
+      "Galactic Search Blue A",
+      BuildGalacticSearchPath(
+          "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
+          "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
+  m_autoChooser.AddOption(
+      "Galactic Search Red B",
+      BuildGalacticSearchPath(
+          "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+          "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
+  m_autoChooser.AddOption(
+      "Galactic Search Blue B",
+      BuildGalacticSearchPath(
+          "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
+          "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
   m_autoChooser.AddOption("Galactic Search", GalacticSearchAuto());
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
@@ -344,7 +344,7 @@ bool RobotContainer::RecognizeError() {
   return false;
 }
 
-bool RobotContainer::RecognizeBlueAlliance() {
+bool RobotContainer::RecognizePathA() {
   double path = pathId.GetDouble(-1);
   if (path < 3) {
     return true;
@@ -352,7 +352,7 @@ bool RobotContainer::RecognizeBlueAlliance() {
   return false;
 }
 
-bool RobotContainer::RecognizePathA() {
+bool RobotContainer::RecognizeBlueAlliance() {
   double path = pathId.GetDouble(-1);
   int correctedPath = path;
   if (correctedPath % 2 == 0) {

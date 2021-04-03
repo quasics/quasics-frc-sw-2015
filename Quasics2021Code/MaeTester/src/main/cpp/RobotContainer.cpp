@@ -152,6 +152,7 @@ void RobotContainer::ConfigureAutoSelection() {
                                                   "GSearchBBlue Part2.json",
                                                   "GSearchBBlue Part3.json",
                                                   "GSearchBBlue Part4.json"));
+  m_autoChooser.AddOption("Galactic Search", GalacticSearchAuto());
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }

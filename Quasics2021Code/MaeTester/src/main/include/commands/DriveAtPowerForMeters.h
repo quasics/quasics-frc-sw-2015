@@ -35,6 +35,6 @@ class DriveAtPowerForMeters
   units::length::meter_t startingMeters;
   units::length::meter_t destination;
   Drivebase* drivebase;
-  units::length::meter_t desiredMeters;
-  double power;
+  const double power;
+  const units::length::meter_t desiredMeters;
 };

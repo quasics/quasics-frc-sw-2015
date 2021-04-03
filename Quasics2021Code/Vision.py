@@ -93,7 +93,7 @@ def computeScore(contour):
  
 # Defining the function carried over from Identification Points
 
-def identifyPathForChallenge(left_list, width_list):
+def identifyPathForChallenge(left_list, width_list, distn):
 
     global vision_nt
 
@@ -148,7 +148,9 @@ def identifyPathForChallenge(left_list, width_list):
             pathId = 3
         else:
             pathId = 4
- 
+
+    elif numBalls == 1:
+        if distance_list 
 
     else:
         # Something weird, can't determine A or B

@@ -11,6 +11,7 @@
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/ConditionalCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <networktables/NetworkTableEntry.h>
 
 #include <iostream>
@@ -89,7 +90,8 @@ class RobotContainer {
   frc2::ConditionalCommand* BuildBlueAlliancePath();
   frc2::ConditionalCommand* BuildRedAlliancePath();
   frc2::ConditionalCommand* ChooseWhichAlliance();
-  frc2::ConditionalCommand* GalacticSearchAuto();
+  frc2::ConditionalCommand* GalacticSearchAutoPath();
+  frc2::ParallelCommandGroup* GalacticSearchFullAuto();
 
   nt::NetworkTableEntry pathId;
 };

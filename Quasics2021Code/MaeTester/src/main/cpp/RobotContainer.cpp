@@ -12,6 +12,7 @@
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -41,6 +42,8 @@
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+
+#undef GALACTIC_SEARCH_JUST_PRINTS
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
@@ -152,7 +155,9 @@ void RobotContainer::ConfigureAutoSelection() {
       BuildGalacticSearchPath(
           "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
           "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
-  m_autoChooser.AddOption("Galactic Search", GalacticSearchAuto());
+  m_autoChooser.AddOption("Galactic Search Drive Only",
+                          GalacticSearchAutoPath());
+  m_autoChooser.AddOption("Galactic Search", GalacticSearchFullAuto());
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
@@ -367,21 +372,45 @@ path we're following, builds the correct Galactic Search Path
 for the robot to follow.*/
 
 frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePath() {
+#ifndef GALACTIC_SEARCH_JUST_PRINTS
+  frc2::Command* blueB = BuildGalacticSearchPath(
+      "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
+      "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json");
+  frc2::Command* blueA = BuildGalacticSearchPath(
+      "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
+      "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json");
+  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(blueA),
+                                      std::unique_ptr<frc2::Command>(blueB),
+                                      [this] { return RecognizePathA(); });
+#else
   return new frc2::ConditionalCommand(
       std::unique_ptr<frc2::Command>(
           new frc2::PrintCommand("Alliance: B, Path: A")),
       std::unique_ptr<frc2::Command>(
           new frc2::PrintCommand("Alliance: B, Path: B")),
       [this] { return RecognizePathA(); });
+#endif
 }
 
 frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePath() {
+#ifndef GALACTIC_SEARCH_JUST_PRINTS
+  frc2::Command* redA = BuildGalacticSearchPath(
+      "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+      "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json");
+  frc2::Command* redB = BuildGalacticSearchPath(
+      "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+      "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json");
+  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(redA),
+                                      std::unique_ptr<frc2::Command>(redB),
+                                      [this] { return RecognizePathA(); });
+#else
   return new frc2::ConditionalCommand(
       std::unique_ptr<frc2::Command>(
           new frc2::PrintCommand("Alliance: R, Path: A")),
       std::unique_ptr<frc2::Command>(
           new frc2::PrintCommand("Alliance: R, Path: B")),
       [this] { return RecognizePathA(); });
+#endif
 }
 
 frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
@@ -393,11 +422,20 @@ frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
       [this] { return RecognizeBlueAlliance(); });
 }
 
-frc2::ConditionalCommand* RobotContainer::GalacticSearchAuto() {
+frc2::ConditionalCommand* RobotContainer::GalacticSearchAutoPath() {
   frc2::Command* AllianceCombo = ChooseWhichAlliance();
   return new frc2::ConditionalCommand(
       std::unique_ptr<frc2::Command>(
           new frc2::PrintCommand("An error occured in path recognition")),
       std::unique_ptr<frc2::Command>(AllianceCombo),
       [this] { return RecognizeError(); });
+}
+
+frc2::ParallelCommandGroup* RobotContainer::GalacticSearchFullAuto() {
+  frc2::Command* DrivebaseAuto = GalacticSearchAutoPath();
+  frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(DrivebaseAuto)));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
+  return new frc2::ParallelCommandGroup(std::move(commands));
 }

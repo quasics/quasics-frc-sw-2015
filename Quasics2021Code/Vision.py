@@ -93,7 +93,7 @@ def computeScore(contour):
  
 # Defining the function carried over from Identification Points
 
-def identifyPathForChallenge(left_list, width_list, distn):
+def identifyPathForChallenge(left_list, width_list, distance_list):
 
     global vision_nt
 
@@ -150,7 +150,13 @@ def identifyPathForChallenge(left_list, width_list, distn):
             pathId = 4
 
     elif numBalls == 1:
-        if distance_list 
+        # Something happened in  that the camera is too small to pick up the second ball visible. 
+        # This must be  Path B.
+        
+        if distance_list[bestIndex] >:
+            pathId = 3
+        else:
+            pathId = 4 
 
     else:
         # Something weird, can't determine A or B
@@ -279,7 +285,7 @@ def processFrame(inputStream, outputStream):
         cv2.drawContours(output_img, contours, index, color = (255, 255, 255), thickness = 1)
         cv2.circle(output_img, (int(center[0]), int(center[1])), 2, (0,0,255), 1)
     
-    identifyPathForChallenge(all_targets_left_list, all_targets_width_list)
+    identifyPathForChallenge(all_targets_left_list, all_targets_width_list, all_targets_distance_list)
     
     # Compute data to be published for the best-scoring target, and highlight it
     # in the output image.

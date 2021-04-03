@@ -43,7 +43,7 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 
-#undef GALACTIC_SEARCH_JUST_PRINTS
+#define GALACTIC_SEARCH_JUST_PRINTS
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here

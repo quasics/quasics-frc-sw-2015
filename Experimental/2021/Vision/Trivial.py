@@ -157,6 +157,10 @@ def processFrame(inputStream, outputStream):
     # We'll also hang onto some basic information about all of the targets
     # (to be published through NetworkTables as debugging information), as
     # well as drawing some highlights for them in the output image.
+    all_targets_top_list = []
+    all_targets_left_list = []
+    all_targets_width_list = []
+    all_targets_height_list = []
     all_targets_x_list = []
     all_targets_y_list = []
     index = -1
@@ -183,6 +187,15 @@ def processFrame(inputStream, outputStream):
         # camera is seeing.  It could be left out in code running on the
         # about what the robot in production, if we wanted to tweak the
         # performance of the processing code.
+
+        # Capture information about the bounding rect.  Notice that this
+        # is different from the "minAreaRect", which considers rotation
+        # as well.
+        x,y,w,h = cvs.boundingRect(contour)
+        all_targets_top_list.append(y)
+        all_targets_left_list.append(x)
+        all_targets_width_list.append(width)
+        all_targets_height_list.append(height)
 
         # Calculate basic information about the current contour
         rect = cv2.minAreaRect(contour)
@@ -213,7 +226,6 @@ def processFrame(inputStream, outputStream):
             (int(center[0]), int(center[1])),   # Center of the circle
             2,                                  # Radius of the circle
             (0,0,255), 1)                       # Color and thickness
-        
     
     # Compute data to be published for the best-scoring target, and highlight
     # it in the output image.
@@ -251,6 +263,10 @@ def processFrame(inputStream, outputStream):
     vision_nt.putNumber("img_height", img_height)
     vision_nt.putNumberArray('x_list', all_targets_x_list)
     vision_nt.putNumberArray('y_list', all_targets_y_list)
+    vision_nt.putNumberArray('top_list', all_targets_top_list)
+    vision_nt.putNumberArray('left_list', all_targets_left_list)
+    vision_nt.putNumberArray('width_list', all_targets_width_list)
+    vision_nt.putNumberArray('height_list', all_targets_height_list)
 
     processing_time = time.time() - start_time
     fps = 1 / processing_time

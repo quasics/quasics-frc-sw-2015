@@ -88,8 +88,21 @@ namespace OIConstants {
 
 namespace NetworkTableNames {
   constexpr const char* kVisionTable("Vision");
-  constexpr const char* kTargetXEntry("target_x");
 
+  constexpr const char* kImageWidthEntry("img_width");
+  constexpr const char* kImageHeightEntry("img_height");
+
+  // Data for "best target" (if any)
+  constexpr const char* kTargetXEntry("target_x");
+  constexpr const char* kTargetYEntry("target_y");
+
+  // Data for "all targets" (if any)
+  constexpr const char* kTargetAllTargetsTopEntry("top_list");
+  constexpr const char* kTargetAllTargetsLeftEntry("left_list");
+  constexpr const char* kTargetAllTargetsWidthEntry("width_list");
+  constexpr const char* kTargetAllTargetsHeightEntry("height_list");
+
+  // Controlling color gamut for target recognition.
   constexpr const char* kVisionSettingsTable("VisionSettings");
   constexpr const char* kLowHSetting("Low_H");
   constexpr const char* kLowSSetting("Low_S");

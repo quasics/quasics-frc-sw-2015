@@ -15,6 +15,7 @@
 #include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
+#include "VisionInterface.h"
 #include "subsystems/DriveBase.h"
 
 /**
@@ -42,8 +43,10 @@ class RobotContainer {
 
   // Access to vision processing results on RasPi.
  private:
-  bool HavePossibleTargets();
+  Rectangle GetVisionSizing();
+  bool HavePrimaryTarget();
   unsigned int GetNumPossibleTargets();
+  std::vector<Rectangle> GetPossibleTargetRects();
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -60,5 +63,17 @@ class RobotContainer {
   // Note: this depends on the drive base, so it must be declared afterward.
   TrajectoryCommandGenerator m_trajectoryGenerator;
 
+  // Data for "best target" identified by the RasPi.
+  nt::NetworkTableEntry m_imageWidth;
+  nt::NetworkTableEntry m_imageHeight;
+
+  // Data for "best target" identified by the RasPi.
   nt::NetworkTableEntry m_targetList_x;
+  nt::NetworkTableEntry m_targetList_y;
+
+  // Data for "all targets" identified by the RasPi.
+  nt::NetworkTableEntry m_targetList_top;
+  nt::NetworkTableEntry m_targetList_left;
+  nt::NetworkTableEntry m_targetList_width;
+  nt::NetworkTableEntry m_targetList_height;
 };

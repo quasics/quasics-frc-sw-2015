@@ -34,7 +34,18 @@ RobotContainer::RobotContainer()
   // Set up access to results from vision processor on RasPi
   auto inst = nt::NetworkTableInstance::GetDefault();
   auto table = inst.GetTable(NetworkTableNames::kVisionTable);
+  m_imageWidth = table->GetEntry(NetworkTableNames::kImageWidthEntry);
+  m_imageHeight = table->GetEntry(NetworkTableNames::kImageHeightEntry);
   m_targetList_x = table->GetEntry(NetworkTableNames::kTargetXEntry);
+  m_targetList_y = table->GetEntry(NetworkTableNames::kTargetYEntry);
+  m_targetList_top =
+      table->GetEntry(NetworkTableNames::kTargetAllTargetsTopEntry);
+  m_targetList_left =
+      table->GetEntry(NetworkTableNames::kTargetAllTargetsLeftEntry);
+  m_targetList_width =
+      table->GetEntry(NetworkTableNames::kTargetAllTargetsWidthEntry);
+  m_targetList_height =
+      table->GetEntry(NetworkTableNames::kTargetAllTargetsHeightEntry);
 
   m_helper.InstallSliders();
 
@@ -76,12 +87,35 @@ RobotContainer::RobotContainer()
   ConfigureAutonomousSelection();
 }
 
-bool RobotContainer::HavePossibleTargets() {
+Rectangle RobotContainer::GetVisionSizing() {
+  return Rectangle{0, 0, m_imageWidth.GetDouble(0), m_imageHeight.GetDouble(0)};
+}
+
+bool RobotContainer::HavePrimaryTarget() {
   return !m_targetList_x.GetDoubleArray({}).empty();
 }
 
 unsigned int RobotContainer::GetNumPossibleTargets() {
-  return m_targetList_x.GetDoubleArray({}).size();
+  return m_targetList_top.GetDoubleArray({}).size();
+}
+
+std::vector<Rectangle> RobotContainer::GetPossibleTargetRects() {
+  std::vector<Rectangle> results;
+  auto tops = m_targetList_top.GetDoubleArray({});
+  auto lefts = m_targetList_left.GetDoubleArray({});
+  auto widths = m_targetList_width.GetDoubleArray({});
+  auto heights = m_targetList_height.GetDoubleArray({});
+  if (tops.size() != lefts.size() || widths.size() != heights.size() ||
+      tops.size() != widths.size()) {
+    /* TODO(mhealy): Log the error. */
+    return results;
+  }
+
+  // Add each of the rectangles to the results.
+  for (int i = 0; i < tops.size(); ++i) {
+    results.push_back({tops[i], lefts[i], widths[i], heights[i]});
+  }
+  return results;
 }
 
 void RobotContainer::ConfigureAutonomousSelection() {
@@ -204,7 +238,7 @@ void RobotContainer::ConfigureShuffleboard() {
       "Target Conditional",
       new frc2::ConditionalCommand(frc2::PrintCommand("No targets seen"),
                                    frc2::PrintCommand("Targets spotted"),
-                                   [this] { return HavePossibleTargets(); }));
+                                   [this] { return HavePrimaryTarget(); }));
 }
 
 void RobotContainer::ConfigureButtonBindings() {

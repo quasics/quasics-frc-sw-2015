@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/PrintCommand.h>
 #include <unistd.h>
 
@@ -30,12 +31,10 @@ RobotContainer::RobotContainer()
           {RobotData::DriveConstants::kPDriveVel,
            RobotData::DriveConstants::kIDriveVel,
            RobotData::DriveConstants::kDDriveVel}) {
-  std::vector<char> buffer(4096);
-  if (getcwd(&buffer[0], buffer.size()) != NULL) {
-    std::cerr << "Current directory is: " << &buffer[0] << std::endl;
-  } else {
-    std::cerr << "Failed to get current directory" << std::endl;
-  }
+  // Set up access to results from vision processor on RasPi
+  auto inst = nt::NetworkTableInstance::GetDefault();
+  auto table = inst.GetTable(NetworkTableNames::kVisionTable);
+  m_targetList_x = table->GetEntry(NetworkTableNames::kTargetXEntry);
 
   m_helper.InstallSliders();
 
@@ -75,6 +74,10 @@ RobotContainer::RobotContainer()
   ConfigureShuffleboard();
 
   ConfigureAutonomousSelection();
+}
+
+bool RobotContainer::HavePossibleTargets() {
+  return !m_targetList_x.GetDoubleArray({}).empty();
 }
 
 void RobotContainer::ConfigureAutonomousSelection() {
@@ -192,6 +195,10 @@ void RobotContainer::ConfigureShuffleboard() {
   m_driveBase.AddToShuffleboard("Figure-8", sampleTrajectory_figureEight);
 
   m_driveBase.AddToShuffleboard("Turn to target", &turnToTarget);
+
+  frc2::ConditionalCommand(frc2::PrintCommand("No targets seen"),
+                           frc2::PrintCommand("Targets spotted"),
+                           [this] { return HavePossibleTargets(); });
 }
 
 void RobotContainer::ConfigureButtonBindings() {

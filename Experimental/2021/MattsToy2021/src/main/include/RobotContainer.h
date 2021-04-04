@@ -10,6 +10,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/SequentialCommandGroup.h>
+#include <networktables/NetworkTableEntry.h>
 
 #include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "../../../../Common2021/TurnToTargetCommand.h"
@@ -39,6 +40,8 @@ class RobotContainer {
   frc2::SequentialCommandGroup* GenerateRamseteCommand(
       const std::string jsonFileName, bool resetTelemetryAtStart);
 
+  bool HavePossibleTargets();
+
  private:
   // The robot's subsystems and commands are defined here...
   frc::SendableChooser<frc2::Command*> m_autonomousChooser;
@@ -53,4 +56,6 @@ class RobotContainer {
 
   // Note: this depends on the drive base, so it must be declared afterward.
   TrajectoryCommandGenerator m_trajectoryGenerator;
+
+  nt::NetworkTableEntry m_targetList_x;
 };

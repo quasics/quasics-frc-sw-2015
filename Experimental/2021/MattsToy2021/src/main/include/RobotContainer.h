@@ -41,6 +41,7 @@ class RobotContainer {
       const std::string jsonFileName, bool resetTelemetryAtStart);
 
   bool HavePossibleTargets();
+  unsigned int GetNumPossibleTargets();
 
  private:
   // The robot's subsystems and commands are defined here...

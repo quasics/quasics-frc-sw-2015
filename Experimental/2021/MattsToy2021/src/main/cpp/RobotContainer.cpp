@@ -80,6 +80,10 @@ bool RobotContainer::HavePossibleTargets() {
   return !m_targetList_x.GetDoubleArray({}).empty();
 }
 
+unsigned int RobotContainer::GetNumPossibleTargets() {
+  return m_targetList_x.GetDoubleArray({}).size();
+}
+
 void RobotContainer::ConfigureAutonomousSelection() {
   // Note: I'm working with a SendableChooser here, which unfortunately only
   // works when you're using the actual DriverStation software and
@@ -196,9 +200,11 @@ void RobotContainer::ConfigureShuffleboard() {
 
   m_driveBase.AddToShuffleboard("Turn to target", &turnToTarget);
 
-  frc2::ConditionalCommand(frc2::PrintCommand("No targets seen"),
-                           frc2::PrintCommand("Targets spotted"),
-                           [this] { return HavePossibleTargets(); });
+  frc::SmartDashboard::PutData(
+      "Target Conditional",
+      new frc2::ConditionalCommand(frc2::PrintCommand("No targets seen"),
+                                   frc2::PrintCommand("Targets spotted"),
+                                   [this] { return HavePossibleTargets(); }));
 }
 
 void RobotContainer::ConfigureButtonBindings() {

@@ -40,6 +40,8 @@ class RobotContainer {
   frc2::SequentialCommandGroup* GenerateRamseteCommand(
       const std::string jsonFileName, bool resetTelemetryAtStart);
 
+  // Access to vision processing results on RasPi.
+ private:
   bool HavePossibleTargets();
   unsigned int GetNumPossibleTargets();
 

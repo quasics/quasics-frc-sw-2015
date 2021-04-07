@@ -85,15 +85,13 @@ class RobotContainer {
   bool RecognizeBlueAlliance();
 
   /// Builds a command group for the GS challenge, taking the 4 paths to
-  /// balls and the end zone from the specified files.
-  frc2::SequentialCommandGroup* BuildGalacticSearchPath(std::string jsonFile1,
+  /// balls and the end zone from the specified files.  (Will optionally
+  /// include the intake operation, running in parallel.)
+  frc2::ParallelCommandGroup* BuildGalacticSearchPath(std::string jsonFile1,
                                                         std::string jsonFile2,
                                                         std::string jsonFile3,
-                                                        std::string jsonFile4);
-
-  /// Builds the command to execute for Galactic Search, including intake
-  /// operation.
-  frc2::ParallelCommandGroup* GalacticSearchFullAuto();
+                                                        std::string jsonFile4,
+                                                        bool includeIntakeOperation = true);
 
   /// Builds a conditional command that handles GS Paths A/B for Blue alliance.
   frc2::ConditionalCommand* BuildBlueAlliancePaths();

@@ -187,20 +187,11 @@ void RobotContainer::ConfigureAutoSelection() {
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
 
-  {
-    frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(
-        std::move(std::unique_ptr<frc2::Command>(BuildGalacticSearchPath(
-            "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-            "GSearchARed Part3.wpilib.json",
-            "GSearchARed Part4.wpilib.json"))));
-    commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
-
-    m_autoChooser.AddOption(
-        "Galactic Search Red A",
-        new frc2::ParallelCommandGroup(std::move(commands)));
-  }
+  m_autoChooser.AddOption(
+      "Galactic Search Red A",
+      BuildGalacticSearchPath(
+          "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+          "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
 
   m_autoChooser.AddOption(
       "Galactic Search Blue A",
@@ -208,29 +199,21 @@ void RobotContainer::ConfigureAutoSelection() {
           "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
           "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
 
-  {
-    frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(
-        std::move(std::unique_ptr<frc2::Command>(BuildGalacticSearchPath(
-            "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-            "GSearchBRed Part3.wpilib.json",
-            "GSearchBRed Part4.wpilib.json"))));
-    commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
-
-    m_autoChooser.AddOption(
-        "Galactic Search Red B",
-        new frc2::ParallelCommandGroup(std::move(commands)));
-  }
+  m_autoChooser.AddOption(
+      "Galactic Search Red B",
+      BuildGalacticSearchPath(
+          "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+          "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
 
   m_autoChooser.AddOption(
       "Galactic Search Blue B",
       BuildGalacticSearchPath(
           "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
           "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
+
   m_autoChooser.AddOption("Galactic Search Drive Only",
                           GalacticSearchAutoPath());
-  m_autoChooser.AddOption("Galactic Search", GalacticSearchFullAuto());
+  m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
@@ -294,9 +277,9 @@ frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
 }
 
 // This builds a Galactic Search Path from 4 json files
-frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
+frc2::ParallelCommandGroup* RobotContainer::BuildGalacticSearchPath(
     std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
-    std::string jsonFile4) {
+    std::string jsonFile4, bool includeIntakeOperation) {
   std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile1, true))));
@@ -313,7 +296,21 @@ frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile4, false))));
 
-  return new frc2::SequentialCommandGroup(std::move(GalacticPieces));
+  std::unique_ptr<frc2::Command> galacticPath(
+      new frc2::SequentialCommandGroup(std::move(GalacticPieces)));
+
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(galacticPath));
+
+  if (includeIntakeOperation) {
+    std::unique_ptr<frc2::Command> intakeAuto(new AutoIntakeCells(&intake));
+    commands.push_back(std::move(intakeAuto));
+  } else {
+    std::unique_ptr<frc2::Command> noIntakeAuto(
+        new frc2::PrintCommand("Not running the intake!"));
+    commands.push_back(std::move(noIntakeAuto));
+  }
+  return new frc2::ParallelCommandGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
@@ -483,13 +480,4 @@ frc2::ConditionalCommand* RobotContainer::GalacticSearchAutoPath() {
           new frc2::PrintCommand("An error occured in path recognition")),
       std::unique_ptr<frc2::Command>(AllianceCombo),
       [this] { return RecognizeError(); });
-}
-
-frc2::ParallelCommandGroup* RobotContainer::GalacticSearchFullAuto() {
-  frc2::Command* DrivebaseAuto = GalacticSearchAutoPath();
-  frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(DrivebaseAuto)));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
-  return new frc2::ParallelCommandGroup(std::move(commands));
 }

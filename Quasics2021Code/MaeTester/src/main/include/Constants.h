@@ -102,12 +102,12 @@ namespace DrivebaseConstants {
   constexpr double kTurtleSpeedScaling = .4;
   constexpr double kTurboSpeedScaling = .8;
 
-  constexpr units::meter_t kTrackWidthMeters{1.3965298};
+  constexpr units::meter_t kTrackWidthMeters{/*1.3965298*/ 1.1972123413926241};
   const frc::DifferentialDriveKinematics kDriveKinematics{kTrackWidthMeters};
   constexpr auto ksVolts = 0.31_V;
-  constexpr auto kvVoltSecondsPerMeter = 2.6 * 1_V * 1_s / 1_m;
-  constexpr auto kaVoltSecondsSquaredPerMeter = 0.232 * 1_V * 1_s * 1_s / 1_m;
-  constexpr double kPDriveVel = 2.15;
+  constexpr auto kvVoltSecondsPerMeter = 2.74 * 1_V * 1_s / 1_m;
+  constexpr auto kaVoltSecondsSquaredPerMeter = 0.349 * 1_V * 1_s * 1_s / 1_m;
+  constexpr double kPDriveVel = 2.28;
   constexpr double kIDriveVel = 0.0;
   constexpr double kDDriveVel = 0.0;
   constexpr auto kMaxSpeed = 0.5_mps;

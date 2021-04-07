@@ -186,21 +186,43 @@ void RobotContainer::ConfigureAutoSelection() {
                           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
                           frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
   m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
-  m_autoChooser.AddOption(
-      "Galactic Search Red A",
-      BuildGalacticSearchPath(
-          "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-          "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
+
+  {
+    frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(BuildGalacticSearchPath(
+            "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+            "GSearchARed Part3.wpilib.json",
+            "GSearchARed Part4.wpilib.json"))));
+    commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
+
+    m_autoChooser.AddOption(
+        "Galactic Search Red A",
+        new frc2::ParallelCommandGroup(std::move(commands)));
+  }
+
   m_autoChooser.AddOption(
       "Galactic Search Blue A",
       BuildGalacticSearchPath(
           "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
           "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
-  m_autoChooser.AddOption(
-      "Galactic Search Red B",
-      BuildGalacticSearchPath(
-          "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-          "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
+
+  {
+    frc2::Command* IntakeAuto = new AutoIntakeCells(&intake);
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(BuildGalacticSearchPath(
+            "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+            "GSearchBRed Part3.wpilib.json",
+            "GSearchBRed Part4.wpilib.json"))));
+    commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeAuto)));
+
+    m_autoChooser.AddOption(
+        "Galactic Search Red B",
+        new frc2::ParallelCommandGroup(std::move(commands)));
+  }
+
   m_autoChooser.AddOption(
       "Galactic Search Blue B",
       BuildGalacticSearchPath(
@@ -278,18 +300,18 @@ frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
   std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile1, true))));
+  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+      GenerateRamseteCommandFromPathFile(jsonFile2, false))));
+  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile2, true))));
+      GenerateRamseteCommandFromPathFile(jsonFile3, false))));
+  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile3, true))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile4, true))));
+      GenerateRamseteCommandFromPathFile(jsonFile4, false))));
 
   return new frc2::SequentialCommandGroup(std::move(GalacticPieces));
 }

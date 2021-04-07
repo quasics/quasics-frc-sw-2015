@@ -11,7 +11,7 @@ RunShootingMotor::RunShootingMotor(Shooter* shooter) : shooter(shooter) {
 
 // Called when the command is initially scheduled.
 void RunShootingMotor::Initialize() {
-  shooter->setShootingMotor(.75);  // Yeet the ball
+  shooter->setShootingMotor(1.0);  // Yeet the ball
 }
 
 // Called once the command ends or is interrupted.

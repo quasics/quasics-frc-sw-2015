@@ -91,8 +91,7 @@ void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
   //   LOG_EVERY_N_TIMES(50, std::cerr << "Setting speeds: left=" << leftSpeed
   //                                   << ", right=" << rightSpeed <<
   //                                   std::endl;)
-m_drive->TankDrive(leftSpeed * DrivebaseConstants::powerScaling,
-                   -rightSpeed * DrivebaseConstants::powerScaling);
+  m_drive->TankDrive(leftSpeed, -rightSpeed);
 }
 
 void Drivebase::Stop() {

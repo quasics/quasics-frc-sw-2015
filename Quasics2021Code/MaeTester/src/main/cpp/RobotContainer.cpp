@@ -28,6 +28,8 @@
 #include <wpi/Path.h>
 #include <wpi/SmallString.h>
 
+#include <iostream>
+
 #include "Constants.h"
 #include "commands/AutoIntakeCells.h"
 #include "commands/DoASpin.h"
@@ -39,40 +41,89 @@
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/ShootWithLimitSwitch.h"
-#include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 
 #define GALACTIC_SEARCH_JUST_PRINTS
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
-  // Initialize all of your commands and subsystems here
-
-  // Set up sliders to allow for customizing vision processing on
-  // the Raspberry Pi's "Vision" program.
+RobotContainer::RobotContainer() {
+  //////////////////////////////////////////
+  // Vision processing setup.
+  //
+  // Adds sliders to the dashboard, allowing for customizing vision processing
+  // on the Raspberry Pi's "Vision" program.
   m_visionSettingsHelper.InstallSliders();
-
-  // Configure the button bindings
-  ConfigureButtonBindings();
-  ConfigureSmartDashboard();
-  drivebase.SetDefaultCommand(TankDrive(
-      &drivebase,
-      [this] {
-        double stickValue = -driverJoystick.GetRawAxis(
-            OIConstants::LogitechGamePad::RightYAxis);
-        return deadband(stickValue);
-      },
-      [this] {
-        double stickValue =
-            -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
-        return deadband(stickValue);
-      }));
-  ConfigureAutoSelection();
 
   // obtaining info from the network table
   auto inst = nt::NetworkTableInstance::GetDefault();
   auto table = inst.GetTable(NetworkTableNames::kVisionTable);
   pathId = table->GetEntry(NetworkTableNames::kPathID);
+
+  //////////////////////////////////////////
+  // Configure the button bindings.
+  ConfigureTankDrive();
+  ConfigureButtonBindings();
+  ConfigureSmartDashboard();
+  ConfigureAutoSelection();
+}
+
+double RobotContainer::deadband(double num) {
+  if (num > OIConstants::DeadBand_LowValue &&
+      num < OIConstants::DeadBand_HighValue) {
+    return 0;
+  }
+  return num;
+}
+
+TankDrive* RobotContainer::BuildTankDriveCommand() {
+  std::function<SpeedScaler::Mode()> speedModeSupplier = [this] {
+    // Which mode is signaled by the driver?
+    const int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
+    const int turboTrigger = OIConstants::LogitechGamePad::RightTriggerButton;
+    SpeedScaler::Mode result = SpeedScaler::Normal;
+    if (driverJoystick.GetRawButton(turtleTrigger)) {
+      result = SpeedScaler::Turtle;
+    } else if (driverJoystick.GetRawButton(turboTrigger)) {
+      result = SpeedScaler::Turbo;
+    }
+
+    // If we're changing modes, log it to the console.
+    static SpeedScaler::Mode lastMode = SpeedScaler::Mode(-1);
+    if (result != lastMode) {
+      std::cout << "Driving in " << result << " mode" << std::endl;
+    }
+    lastMode = result;
+
+    return result;
+  };
+
+  SpeedScaler speedScaler{
+      speedModeSupplier,                        // Speed mode
+      DrivebaseConstants::kNormalSpeedScaling,  // Scaling factor for normal
+                                                // mode
+      DrivebaseConstants::kTurtleSpeedScaling,  // Scaling factor for turtle
+                                                // mode
+      DrivebaseConstants::kTurboSpeedScaling    // Scaling factor for turbo
+                                                // mode
+  };
+
+  return new TankDrive(
+      &drivebase,
+      [this, speedScaler] {
+        double stickValue = -driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::RightYAxis);
+        return speedScaler(deadband(stickValue));
+      },
+      [this, speedScaler] {
+        double stickValue =
+            -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+        return speedScaler(deadband(stickValue));
+      });
+}
+
+void RobotContainer::ConfigureTankDrive() {
+  std::unique_ptr<TankDrive> cmd(BuildTankDriveCommand());
+  drivebase.SetDefaultCommand(*cmd);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -119,8 +170,8 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 void RobotContainer::ConfigureAutoSelection() {
-  m_autoChooser.AddDefault("do nothing",
-                           new frc2::PrintCommand("I refuse to move."));
+  m_autoChooser.SetDefaultOption("Do nothing",
+                                 new frc2::PrintCommand("I refuse to move."));
   m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
                                             "TestingS.wpilib.json", true));
   m_autoChooser.AddOption(
@@ -170,19 +221,8 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
   frc::SmartDashboard::PutData("Run shooter at 75% power",
                                new RunShootingMotor(&shooter));
-  frc::SmartDashboard::PutData(
-      "Tank Drive", new TankDrive(
-                        &drivebase,
-                        [this] {
-                          double stickValue = driverJoystick.GetRawAxis(
-                              OIConstants::LogitechGamePad::RightYAxis);
-                          return deadband(stickValue);
-                        },
-                        [this] {
-                          double stickValue = driverJoystick.GetRawAxis(
-                              OIConstants::LogitechGamePad::LeftYAxis);
-                          return deadband(stickValue);
-                        }));
+
+  frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
 
   std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
                                          frc::Translation2d(2_m, 0_m)};
@@ -252,14 +292,6 @@ frc2::SequentialCommandGroup* RobotContainer::BuildGalacticSearchPath(
       GenerateRamseteCommandFromPathFile(jsonFile4, true))));
 
   return new frc2::SequentialCommandGroup(std::move(GalacticPieces));
-}
-
-double RobotContainer::deadband(double num) {
-  if (num > OIConstants::DeadBand_LowValue &&
-      num < OIConstants::DeadBand_HighValue) {
-    return 0;
-  }
-  return num;
 }
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
@@ -371,7 +403,7 @@ an error, then which alliance we're on, and then, based on what
 path we're following, builds the correct Galactic Search Path
 for the robot to follow.*/
 
-frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePath() {
+frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePaths() {
 #ifndef GALACTIC_SEARCH_JUST_PRINTS
   frc2::Command* blueB = BuildGalacticSearchPath(
       "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
@@ -392,7 +424,7 @@ frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePath() {
 #endif
 }
 
-frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePath() {
+frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePaths() {
 #ifndef GALACTIC_SEARCH_JUST_PRINTS
   frc2::Command* redA = BuildGalacticSearchPath(
       "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
@@ -414,8 +446,8 @@ frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePath() {
 }
 
 frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
-  frc2::Command* blueCombo = BuildBlueAlliancePath();
-  frc2::Command* redCombo = BuildRedAlliancePath();
+  frc2::Command* blueCombo = BuildBlueAlliancePaths();
+  frc2::Command* redCombo = BuildRedAlliancePaths();
   return new frc2::ConditionalCommand(
       std::unique_ptr<frc2::Command>(blueCombo),
       std::unique_ptr<frc2::Command>(redCombo),

@@ -112,7 +112,7 @@ std::vector<Rectangle> RobotContainer::GetPossibleTargetRects() {
   }
 
   // Add each of the rectangles to the results.
-  for (int i = 0; i < tops.size(); ++i) {
+  for (unsigned int i = 0; i < tops.size(); ++i) {
     results.push_back({tops[i], lefts[i], widths[i], heights[i]});
   }
   return results;

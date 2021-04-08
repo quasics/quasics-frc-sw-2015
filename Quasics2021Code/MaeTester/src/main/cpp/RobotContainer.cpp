@@ -44,7 +44,7 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 
-#define GALACTIC_SEARCH_JUST_PRINTS
+#undef GALACTIC_SEARCH_JUST_PRINTS
 
 RobotContainer::RobotContainer() {
   //////////////////////////////////////////

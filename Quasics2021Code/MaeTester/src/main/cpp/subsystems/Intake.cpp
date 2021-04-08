@@ -65,7 +65,7 @@ void Intake::OnlyIntakeOff() {
 }
 
 void Intake::ConveyBallOn() {
-  conveyorMotor.Set(.75);
+  conveyorMotor.Set(1.0);
 }
 
 void Intake::ConveyBallReverse() {

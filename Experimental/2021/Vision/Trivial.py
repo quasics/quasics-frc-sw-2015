@@ -1,9 +1,10 @@
-# A sample program for vision processing in the FRC game "Infinite REcharge",
-# which could run on the FRCVision platform (RasPi hardware).
+# A sample program for vision processing in the FRC game "Infinite Recharge",
+# which could run on the WPILibPi/FRCVision platform (RasPi hardware).
 #
 # This program will find the largest contiguous "blob" of a particular color,
 # and then publish information about it via NetworkTables, for use in
-# tracking it.
+# tracking it.  It will also publish information about all of the other
+# candidate "blobs" that are spotted.
 
 # Import the WPI packages we need (camera server and network tables).
 from cscore import CameraServer
@@ -37,13 +38,6 @@ height = 240
 #   different lighting conditions).
 inLab = True
 
-# Note: Hue values would normally be in the range of 0-359.  However,
-# OpenCV limits it to 0-179 (presumably in order to make sure that it
-# fits into a single byte), so here's a convenient function for that,
-# should we need one.
-def scaleHueForOpenCV(h):
-    return (h / 2)
-
 # Note: converting BGR colors to HSV is pretty straightforward:
 #   >>> green = np.uint8([[[0,255,0 ]]])
 #   >>> hsv_green = cv2.cvtColor(green,cv2.COLOR_BGR2HSV)
@@ -76,6 +70,13 @@ kernel = None       # Preallocated kernel for transforms
 vision_nt = None    # Pre-fetched connection to Network Tables
                     # for publishing vision results.
 
+# Note: Hue values would normally be in the range of 0-359.  However,
+# OpenCV limits it to 0-179 (presumably in order to make sure that it
+# fits into a single byte), so here's a convenient function for that,
+# should we need one.
+def scaleHueForOpenCV(h):
+    return (h / 2)
+
 # A trivial scoring function, which just looks at the size of
 # the contour ("bigger" == "better").  If we were looking for
 # something more sophisticated, such as the photoreflective
@@ -84,6 +85,21 @@ vision_nt = None    # Pre-fetched connection to Network Tables
 # from the 2017 game, for instance.)
 def computeScore(contour):
     return cv2.contourArea(contour)
+
+# Used to evaluate a contour, in order to see if we think that
+# it's reasonable to think that it's a valid target.  This is
+# intended to help rule out "false detects" that are too high
+# (e.g., similarly-colored walls), or badly shaped (since the
+# targets we're looking for are spherical, and thus should have
+# a *reasonably* square bounding box), etc.
+def isLikelyTarget(contour, img_height, img_width):
+    # Ignore small contours that could be because of noise/bad
+    # thresholding. (I'm picking "15 pixels" in area as an
+    # arbitrary minimum here.)
+    if cv2.contourArea(contour) < 15:
+        return False
+
+    return True
 
 # Processes the next frame of video from the CameraServer.
 def processFrame(inputStream, outputStream):
@@ -104,7 +120,7 @@ def processFrame(inputStream, outputStream):
     frame_time, input_img = inputStream.grabFrame(input_img)
     if frame_time == 0:
         # Send the output the error.
-        outputStream.notifyError(inputStream.getError());
+        outputStream.notifyError(inputStream.getError())
         # skip the rest of the current iteration
         return
 
@@ -169,10 +185,8 @@ def processFrame(inputStream, outputStream):
     for contour in contours:
         index = index + 1
 
-        # Ignore small contours that could be because of noise/bad
-        # thresholding. (I'm picking "15 pixels" in area as an
-        # arbitrary minimum here.)
-        if cv2.contourArea(contour) < 15:
+        # Skip anything that doesn't look like a likely target.
+        if not isLikelyTarget(contour, img_height, img_width):
             continue
         
         # Does the current image beat our best-scoring one so far?
@@ -180,18 +194,10 @@ def processFrame(inputStream, outputStream):
             best = contour
             bestIndex = index
 
-        ########
-        # Everything from here on in this loop is "gravy" (assuming that
-        # we're just looking for the biggest target), which will be used
-        # to give the drivers (or debuggers) some additional information
-        # camera is seeing.  It could be left out in code running on the
-        # about what the robot in production, if we wanted to tweak the
-        # performance of the processing code.
-
         # Capture information about the bounding rect.  Notice that this
         # is different from the "minAreaRect", which considers rotation
         # as well.
-        x,y,w,h = cvs.boundingRect(contour)
+        x,y,w,h = cv2.boundingRect(contour)
         all_targets_top_list.append(y)
         all_targets_left_list.append(x)
         all_targets_width_list.append(width)
@@ -213,6 +219,14 @@ def processFrame(inputStream, outputStream):
         # data we're going to publish below.
         all_targets_x_list.append(center_x)
         all_targets_y_list.append(center_y)
+
+        ########
+        # Everything from here on in this loop is "gravy" (assuming that
+        # we're just looking for the biggest target), which will be used
+        # to give the drivers (or debuggers) some additional information
+        # camera is seeing.  It could be left out in code running on the
+        # about what the robot in production, if we wanted to tweak the
+        # performance of the processing code.
 
         # Finally, update our output image (which will be sent out to Smart
         # Dashboard at the end of frame processing), by drawing a white
@@ -332,12 +346,18 @@ def main():
     print("Setting up camera")
     cs = CameraServer.getInstance()
     cs.enableLogging()
+
     camera = cs.startAutomaticCapture()
-    camera.setResolution(width, height)
+    if not camera.setResolution(width, height):
+        print("Failed to set resolution={}x{}".format(width, height))
+    # Not supported for MjpegServer
+    # if not camera.setVideoMode(cscore.VideoMode.PixelFormat.kBGR, width, height, 30):
+    #     printf("Failed to configure video mode")
+
     if not vision_nt.putNumber("camera_width", width):
-        printf("Failed to publish camera_width")
+        print("Failed to publish camera_width")
     if not vision_nt.putNumber("camera_height", height):
-        printf("Failed to publish camera_height")
+        print("Failed to publish camera_height")
 
     # Get a CvSink. This will capture images from the camera, for use when processing
     # the frames.

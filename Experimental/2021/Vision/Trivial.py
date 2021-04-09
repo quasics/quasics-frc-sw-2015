@@ -7,7 +7,7 @@
 # candidate "blobs" that are spotted.
 
 # Import the WPI packages we need (camera server and network tables).
-from cscore import CameraServer
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, VideoMode
 from networktables import NetworkTablesInstance
 
 # Import OpenCV and NumPy.
@@ -347,12 +347,22 @@ def main():
     cs = CameraServer.getInstance()
     cs.enableLogging()
 
-    camera = cs.startAutomaticCapture()
-    if not camera.setResolution(width, height):
-        print("Failed to set resolution={}x{}".format(width, height))
-    # Not supported for MjpegServer
-    # if not camera.setVideoMode(cscore.VideoMode.PixelFormat.kBGR, width, height, 30):
+    # # Doesn't work
+    # camera = UsbCamera("Camera 0", "/dev/video0")
+    # if not camera.setVideoMode(VideoMode.PixelFormat.kBGR, width, height, 30):
     #     printf("Failed to configure video mode")
+    # mjpegServer = cs.startAutomaticCapture(camera=camera)
+
+    # # Doesn't work
+    # videoSource = cs.startAutomaticCapture(return_server=False)
+    # if not videoSource.setVideoMode(VideoMode.PixelFormat.kBGR, width, height, 30):
+    #     printf("Failed to configure video mode")
+
+    # Works, in that video data is made available.  (But doesn't set resolution.)
+    mjpegServer = cs.startAutomaticCapture()
+    if not mjpegServer.setResolution(width, height):
+        print("Failed to set resolution={}x{}".format(width, height))
+
 
     if not vision_nt.putNumber("camera_width", width):
         print("Failed to publish camera_width")

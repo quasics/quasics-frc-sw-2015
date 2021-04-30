@@ -214,6 +214,7 @@ void RobotContainer::ConfigureAutoSelection() {
   m_autoChooser.AddOption("Galactic Search Drive Only",
                           GalacticSearchAutoPath());
   m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
+  m_autoChooser.AddOption("Cross the Auto line", new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
 
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }

@@ -99,7 +99,8 @@
     "vector": "cpp",
     "*.inc": "cpp",
     "filesystem": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "__functional_03": "cpp"
   },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "modifications",

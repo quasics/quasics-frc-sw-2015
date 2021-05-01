@@ -6,15 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.RomiDrivetrain;
+import frc.robot.util.PowerFunction;
 
 public class TankDriveCommand extends CommandBase {
   private RomiDrivetrain drivetrain;
   private PowerFunction leftPower;
   private PowerFunction rightPower;
-
-  public interface PowerFunction {
-    double get();
-  }
 
   /** Creates a new TankDriveCommand. */
   public TankDriveCommand(RomiDrivetrain drivetrain, PowerFunction leftPower, PowerFunction rightPower) {

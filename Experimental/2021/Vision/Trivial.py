@@ -22,6 +22,12 @@ import time
 # we should look for one that's running on a robot.
 server = False
 
+# Controls the scoring algorith selection.  If True, we'll simply go
+# with the largest target that seems to be of the correct color; if
+# False, we'll also factor other information about a target into its
+# scoring.
+justUseSizeForScoring = False
+
 # Team number (used in connecting to NetworkTables server running on
 # a robot).
 team = 2656
@@ -77,22 +83,53 @@ vision_nt = None    # Pre-fetched connection to Network Tables
 def scaleHueForOpenCV(h):
     return (h / 2)
 
-# A trivial scoring function, which just looks at the size of
-# the contour ("bigger" == "better").  If we were looking for
-# something more sophisticated, such as the photoreflective
-# tape surrounding a goal, etc., we'd want to use a more
-# elaborate scoring algorithm.  (See the published examples
-# from the 2017 game, for instance.)
-def computeScore(contour):
-    return cv2.contourArea(contour)
+###############################################################################
+#
+# Scoring functions
+#
+# These are used to calculate "scores" for the possible targets, which may be
+# used to determine which target is "best".
+#
+# In this sample program, we're simply looking for something that looks like
+# the closest (yellow) ball/fuel cell.
+# 
+# As a result, one trivial scoring algorithm would be to simply look at the
+# size of the contour for a given target, and assume that "bigger" means
+# "better".  However, it should be noted  that this requires pretty fine
+# tuning of the color matching; any falsely detected targets (e.g., a wall
+# painted yellow) would likely yield a bad result.
+#
+# Another option is to combine a couple of different scores into a composite
+# value, by looking at different aspects of the target in order to see how
+# well it matches up to our expectations.
+#
+# One way to combine them is to simply add them together, but we can still
+# have cases where one bad result (e.g., size of that yellow wall) dominates
+# the rest.  An alternative is to *multiply* them together, so that something
+# that scores really low on one or more dimensions will help to ensure a low
+# composite score (e.g., "absolute failure: score is 0" will drive the
+# final score to 0, too).
+# 
+# We can further reduce the risk here by "normalizing" all of the different
+# values to a single range, typically [0.0-1.0].  (For size, we might do this
+# by taking the apparent area of the target and turning it into a %age of the
+# total image area.)
+#
+# If we were looking for something more sophisticated than "the closest
+# yellow ball", such as the photoreflective tape surrounding a goal, etc.,
+# we'd want to use a more elaborate scoring algorithm.
+#
+# For some examples from the 2017 game, see:
+# https://docs.wpilib.org/en/stable/docs/software/vision-processing/introduction/2017-vision-examples.html)
+#
 
-# Used to evaluate a contour, in order to see if we think that
+# Used to quickly evaluate a contour, in order to see if we think that
 # it's reasonable to think that it's a valid target.  This is
 # intended to help rule out "false detects" that are too high
 # (e.g., similarly-colored walls), or badly shaped (since the
 # targets we're looking for are spherical, and thus should have
 # a *reasonably* square bounding box), etc.
-def isLikelyTarget(contour, img_height, img_width):
+def isLikelyTarget(contour):
     # Ignore small contours that could be because of noise/bad
     # thresholding. (I'm picking "15 pixels" in area as an
     # arbitrary minimum here.)
@@ -100,6 +137,68 @@ def isLikelyTarget(contour, img_height, img_width):
         return False
 
     return True
+
+# A trivial scoring function, which just looks at the size of
+# the contour ("bigger" == "better").
+def computeScoreFromSize(contour, frameWidth, frameHeight):
+    return (float(cv2.contourArea(contour)) / float(frameWidth * frameHeight))
+
+# Since the target is a sphere, the aspect ratio of its bounding rect
+# (if we can see it all, and clearly) should approach 1:1.  So we'll
+# use that to compute a scoring component based on the aspect ratio
+# that will be 1.0 if it's perfectly square, and will "decay" towards
+# 0 as it becomes more asymmetric.
+def computeScoreForAspectRatio(contour):
+    x,y,w,h = cv2.boundingRect(contour)
+    ratio = 0
+    if w < h:
+        ratio = float(w) / float(h)
+    else:
+        ratio = float(h) / float(w)
+    return ratio
+
+# If the target appears to be above a certain starting height in the frame,
+# we'll assume that it's less likely to be a ball on the ground (that's
+# near to us).
+#
+# Note that this assumes the camera is comparatively low on the bot (but
+# above the height of a ball resting on the floor), and looking *forward*.
+# If it was looking up (e.g, from right above the ground), or the ball is
+# right in front of the camera (filling the view) it wouldn't work as well.
+def computeScoreForRelativePosition(contour, frameHeight):
+    x,y,w,h = cv2.boundingRect(contour)
+    # Arbitrary decision: anything above the midline in the frame is less
+    # likely to be a ball resting on the floor.
+    # Assumes top/left corner is (0,0).
+    midLine = frameHeight / 2
+    if y > midLine:
+        # Below the midline, so just give it "full credit".
+        return 1
+
+    # The bounding rect starts above the midline; still allow it through,
+    # but at a reduced score, trending to 0 as it hits the top of the frame.
+    return float(y) / float(midLine)
+
+# The composite scoring algorithm, which looks at some characteristics we
+# associate with "probably a ball on the ground", plus the apparent sizing
+# (to identify something likely to be close).
+def computeScore(contour, frameWidth, frameHeight):
+    # Skip anything that doesn't look like a likely target.
+    if not isLikelyTarget(contour):
+        return -100
+    
+    # Component scores
+    sizeScore = computeScoreFromSize(contour, frameWidth, frameHeight)
+    positionScore = computeScoreForRelativePosition(contour, frameHeight)
+    aspectScore = computeScoreForAspectRatio(contour)
+    print("Scoring: size={}, position={}, aspect={}".format(sizeScore, positionScore, aspectScore))
+
+    # Compute the overall score
+    return sizeScore * positionScore * aspectScore
+
+#
+# End of scoring functions
+###############################################################################
 
 # Processes the next frame of video from the CameraServer.
 def processFrame(inputStream, outputStream):
@@ -181,22 +280,40 @@ def processFrame(inputStream, outputStream):
     all_targets_y_list = []
     index = -1
     bestIndex = -1
+    bestScore = 0
+    currentScore = 0
     best = None
     for contour in contours:
         index = index + 1
-
-        # Skip anything that doesn't look like a likely target.
-        if not isLikelyTarget(contour, img_height, img_width):
-            continue
         
-        # Does the current image beat our best-scoring one so far?
-        if bestIndex == -1 or computeScore(contour) > computeScore(best):
+        # Calculate score for the current target.
+        if justUseSizeForScoring:
+            # Skip anything that doesn't look like a likely target.
+            if not isLikelyTarget(contour):
+                continue
+            
+            # Just grab the size of the target
+            currentScore = cv2.contourArea(contour)
+        else:
+            currentScore = computeScore(contour, img_width, img_height)
+
+        # Does the current target beat our best-scoring one so far?
+        if bestIndex == -1 or currentScore > bestScore:
             best = contour
             bestIndex = index
+            bestScore = currentScore
 
-        # Capture information about the bounding rect.  Notice that this
-        # is different from the "minAreaRect", which considers rotation
-        # as well.
+        ########
+        # Everything from here on in this loop is "gravy" (assuming that
+        # we're just looking for the biggest target), which will be used
+        # to give the drivers (or debuggers) some additional information
+        # camera is seeing.  It could be left out in code running on the
+        # about what the robot in production, if we wanted to tweak the
+        # performance of the processing code.
+
+        # Capture information about the current target's bounding rect.
+        # Notice that this is different from the "minAreaRect", which
+        # considers rotation as well.
         x,y,w,h = cv2.boundingRect(contour)
         all_targets_top_list.append(y)
         all_targets_left_list.append(x)
@@ -219,14 +336,6 @@ def processFrame(inputStream, outputStream):
         # data we're going to publish below.
         all_targets_x_list.append(center_x)
         all_targets_y_list.append(center_y)
-
-        ########
-        # Everything from here on in this loop is "gravy" (assuming that
-        # we're just looking for the biggest target), which will be used
-        # to give the drivers (or debuggers) some additional information
-        # camera is seeing.  It could be left out in code running on the
-        # about what the robot in production, if we wanted to tweak the
-        # performance of the processing code.
 
         # Finally, update our output image (which will be sent out to Smart
         # Dashboard at the end of frame processing), by drawing a white

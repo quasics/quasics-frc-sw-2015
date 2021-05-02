@@ -5,15 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.TankDriveCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.RomiDrivetrain;
 import frc.robot.util.DeadBandGuard;
 import frc.robot.util.PowerFunction;
 import frc.robot.util.SpeedScaler;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.Joystick;
+
+import static frc.robot.Constants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -23,32 +25,16 @@ import edu.wpi.first.wpilibj.Joystick;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+  /** Drive train subsystem. */
   private final RomiDrivetrain m_romiDrivetrain = new RomiDrivetrain();
 
+  /** Joystick used for driving. */
   private final Joystick m_driveJoystick = new Joystick(Constants.DRIVER_JOYSTICK_PORT);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_romiDrivetrain);
-
-  private final SpeedScaler m_speedScaler = new SpeedScaler(new SpeedScaler.ModeFunction() {
-    PowerFunction turtleTrigger = new DeadBandGuard(() -> m_driveJoystick.getRawAxis(Constants.GAMESIR_LEFT_TRIGGER),
-        0.25);
-    PowerFunction turboTrigger = new DeadBandGuard(() -> m_driveJoystick.getRawAxis(Constants.GAMESIR_RIGHT_TRIGGER),
-        0.25);
-
-    @Override
-    public SpeedScaler.Mode get() {
-      if (turtleTrigger.get() > 0) {
-        return SpeedScaler.Mode.TURTLE;
-      } else if (turboTrigger.get() > 0) {
-        return SpeedScaler.Mode.TURBO;
-      } else {
-        return SpeedScaler.Mode.NORMAL;
-      }
-    }
-  }, 0.75 /* normal */, 1.0 /* turbo */, 0.5 /* turtle */);
-
+  /** Tank drive command, used to handle movement during teleop mode. */
   private final Command tankDriveCommand = generateTankDriveCommand();
+
+  private final ExampleCommand m_autoCommand = new ExampleCommand(m_romiDrivetrain);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -60,22 +46,6 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  private TankDriveCommand generateTankDriveCommand() {
-    // Raw inputs from the joysticks
-    PowerFunction rawLeftPower = () -> -1 * m_driveJoystick.getRawAxis(Constants.GAMESIR_LEFT_VERTICAL);
-    PowerFunction rawRightPower = () -> -1 * m_driveJoystick.getRawAxis(Constants.GAMESIR_RIGHT_VERTICAL);
-
-    // Apply deadband protection
-    PowerFunction guardedLeftPower = new DeadBandGuard(rawLeftPower, 0.06);
-    PowerFunction guardedRightPower = new DeadBandGuard(rawRightPower, 0.06);
-
-    // Apply speed scaler
-    PowerFunction scaledLeftPower = m_speedScaler.apply(guardedLeftPower);
-    PowerFunction scaledRightPower = m_speedScaler.apply(guardedRightPower);
-
-    return new TankDriveCommand(m_romiDrivetrain, scaledLeftPower, scaledRightPower);
-  }
-
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -83,6 +53,60 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+  }
+
+  /**
+   * Returns a TankDriveCommand, with all desired "dead band" guards, and support
+   * for speed scaling (turbo/turtle modes).
+   * 
+   * @see #m_driveJoystick
+   */
+  private TankDriveCommand generateTankDriveCommand() {
+    // Raw inputs from the joysticks
+    PowerFunction rawLeftPower = () -> -1 * m_driveJoystick.getRawAxis(GAMESIR_LEFT_VERTICAL);
+    PowerFunction rawRightPower = () -> -1 * m_driveJoystick.getRawAxis(GAMESIR_RIGHT_VERTICAL);
+
+    // Apply deadband protection
+    PowerFunction guardedLeftPower = new DeadBandGuard(rawLeftPower, THROTTLE_DEADBAND_LIMIT);
+    PowerFunction guardedRightPower = new DeadBandGuard(rawRightPower, THROTTLE_DEADBAND_LIMIT);
+
+    // Apply speed scaler
+    SpeedScaler scaler = generateSpeedScaler();
+    PowerFunction scaledLeftPower = scaler.apply(guardedLeftPower);
+    PowerFunction scaledRightPower = scaler.apply(guardedRightPower);
+
+    return new TankDriveCommand(m_romiDrivetrain, scaledLeftPower, scaledRightPower);
+  }
+
+  /**
+   * Returns a SpeedScaler for use with driving the robot.
+   * 
+   * @see #m_driveJoystick
+   * @see #generateTankDriveCommand()
+   */
+  private SpeedScaler generateSpeedScaler() {
+    // Raw input from the triggers on the drive controller.
+    PowerFunction rawTurtleTrigger = () -> m_driveJoystick.getRawAxis(GAMESIR_LEFT_TRIGGER);
+    PowerFunction rawTurboTrigger = () -> m_driveJoystick.getRawAxis(GAMESIR_RIGHT_TRIGGER);
+
+    // Deadband-guarded inputs, so that we're not subject to fluctuations in the
+    // triggers.
+    PowerFunction turtleTrigger = new DeadBandGuard(rawTurtleTrigger, SPEED_SCALING_DEADBAND_LIMIT);
+    PowerFunction turboTrigger = new DeadBandGuard(rawTurboTrigger, SPEED_SCALING_DEADBAND_LIMIT);
+
+    // Speed scaler.
+    return new SpeedScaler(new SpeedScaler.ModeFunction() {
+      @Override
+      public SpeedScaler.Mode get() {
+        if (turtleTrigger.get() > 0) {
+          return SpeedScaler.Mode.TURTLE;
+        } else if (turboTrigger.get() > 0) {
+          return SpeedScaler.Mode.TURBO;
+        } else {
+          return SpeedScaler.Mode.NORMAL;
+        }
+      }
+    }, NORMAL_MODE_SPEED_LIMT, TURBO_MODE_SPEED_LIMT, TURTLE_MODE_SPEED_LIMT);
   }
 
   /**

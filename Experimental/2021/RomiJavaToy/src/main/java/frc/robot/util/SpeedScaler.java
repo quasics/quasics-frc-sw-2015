@@ -21,9 +21,9 @@ public class SpeedScaler {
 
     public SpeedScaler(ModeFunction modeFunction, double normal, double turbo, double turtle) {
         this.modeFunction = modeFunction;
-        this.normal = normal;
-        this.turbo = turbo;
-        this.turtle = turtle;
+        this.turbo = Math.max(Math.max(normal, turtle), turbo);
+        this.turtle = Math.min(Math.min(normal, turtle), turbo);
+        this.normal = middleOfThree(normal, turtle, turbo);
     }
 
     public PowerFunction apply(PowerFunction powerFunction) {
@@ -45,5 +45,25 @@ public class SpeedScaler {
                 return powerFunction.get() * factor;
             }
         };
+    }
+
+    /** Function to find the middle of three numbers. */
+    public static double middleOfThree(double a, double b, double c) {
+        // x is positive if a is greater than b.
+        // x is negative if b is greater than a.
+        double x = a - b;
+
+        double y = b - c; // Similar to x
+        double z = a - c; // Similar to x and y.
+
+        // Checking if b is middle (x and y both are positive)
+        if (x * y > 0)
+            return b;
+
+        // Checking if c is middle (x and z both are positive)
+        else if (x * z > 0)
+            return c;
+        else
+            return a;
     }
 }

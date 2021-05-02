@@ -15,6 +15,13 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final double NORMAL_MODE_SPEED_LIMT = 0.75;
+    public static final double TURBO_MODE_SPEED_LIMT = 1.0;
+    public static final double TURTLE_MODE_SPEED_LIMT = 0.75;
+
+    public static final double THROTTLE_DEADBAND_LIMIT = 0.06;
+    public static final double SPEED_SCALING_DEADBAND_LIMIT = 0.25;
+
     public static final int DRIVER_JOYSTICK_PORT = 0;
 
     public static final int GAMESIR_LEFT_HORIZONTAL = 0;

@@ -5,15 +5,16 @@
 #include "subsystems/Shooter.h"
 #include "Constants.h"
 
-Shooter::Shooter() : ShootingMotor(CANBusIds::VictorSPXIds::ShootingMotor){}
+Shooter::Shooter() : shootingMotor(CANBusIds::VictorSPXIds::ShootingMotor) {
+}
 
 // This method will be called once per scheduler run
 void Shooter::Periodic() {}
 
-void Shooter::setShootingMotor(double speed) {
-  ShootingMotor.Set(-speed);  // Yeet the ball
+void Shooter::SetSpeed(double speed) {
+  shootingMotor.Set(-speed);  // Yeet the ball
 }
 
-void Shooter::stopShootingMotor() {
-    ShootingMotor.Set(0);
+void Shooter::Stop() {
+  shootingMotor.Set(0);
 }

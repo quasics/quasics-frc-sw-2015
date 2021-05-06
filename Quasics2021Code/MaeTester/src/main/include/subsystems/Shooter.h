@@ -21,5 +21,7 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  ctre::phoenix::motorcontrol::can::WPI_VictorSPX shootingMotor;
+  
+  //ctre::phoenix::motorcontrol::can::WPI_VictorSPX shootingMotor;
+  ctre::phoenix::motorcontrol::can::WPI_TalonFX shootingMotor;
 };

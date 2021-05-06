@@ -33,6 +33,10 @@ namespace CANBusIds {
     constexpr int IntakeMotor = 1;
     constexpr int ConveyorMotor = 2;
   }  // namespace VictorSPXIds
+  namespace TalonFXIds {
+    constexpr int ShootingMotor = 1;
+  } // namespace VictorFXIds
+
 }  // namespace CANBusIds
 
 namespace DigitalIOMappings {

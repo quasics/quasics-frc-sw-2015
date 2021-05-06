@@ -120,7 +120,9 @@ class RobotContainer {
   frc::XboxController operatorController{1};
 
   /// Used to tune/store the Vision.py code's color range.
-  VisionSettingsHelper m_visionSettingsHelper{"visionSettings.dat"};
+  VisionSettingsHelper m_visionSettingsHelper{
+      VisionSettingsHelper::GetSuggestedRoboRioDirectory() +
+      "visionSettings.dat"};
 
   /// Used to read the GS path identification provided by the RasPi.
   nt::NetworkTableEntry pathId;

@@ -21,12 +21,15 @@ import numpy as np
 
 max_value = 255
 max_value_H = 360//2
-low_H = 11 # 0
-high_H = 16 # max_value_H
-low_S = 118 # 0
-high_S = 255 # max_value
-low_V = 94 # 0
+
+low_H = 55 # 38 # 0
+high_H = 75 # max_value_H
+low_S = 20 # 0
+high_S = 102 # 86 # max_value
+low_V = 162 # 212 # 0
 high_V = 255 # max_value
+# H: 55 / 75 S: 20 / 102 V: 162 / 255
+
 window_capture_name = 'Video Capture'
 window_detection_name = 'Object Detection'
 window_masking_name = 'Masked Image'
@@ -83,8 +86,7 @@ def on_high_V_thresh_trackbar(val):
     cv2.setTrackbarPos(high_V_name, window_detection_name, high_V)
     reportStats()
 
-# Converts a ratio with ideal value of 1 to a score. The resulting function is piecewise
-# linear going from (0,0) to (1,100) to (2,0) and is 0 for all inputs outside the range 0-2
+# Converts a ratio with ideal value of 1 to a score.
 def ratioToScore(ratio):
 	return (max(0.0, min(100*(1-abs(1-ratio)), 100.0)))
 
@@ -114,6 +116,13 @@ useCamera = True
 parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
 parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
 parser.add_argument('--file', help='Still image file to be used.', default="")
+# Seed the default values for the HSV ranges, based on the numbers set above.
+parser.add_argument('--low_H', help='Initial low value for hue.', default=str(low_H))
+parser.add_argument('--low_S', help='Initial low value for saturation.', default=str(low_S))
+parser.add_argument('--low_V', help='Initial low value for value.', default=str(low_V))
+parser.add_argument('--high_H', help='Initial high value for hue.', default=str(high_H))
+parser.add_argument('--high_S', help='Initial high value for saturation.', default=str(high_S))
+parser.add_argument('--high_V', help='Initial high value for value.', default=str(high_V))
 args = parser.parse_args()
 
 if args.file == "":
@@ -125,8 +134,19 @@ else:
     still_image = cv2.imread(args.file)
     print("Using data from file '{}'".format(args.file))
 
+# Convert the program arguments for HSV values (default or otherwise) into the
+# values to be applied @ program start.
+low_H = int(args.low_H)
+high_H = int(args.high_H)
+low_S = int(args.low_S)
+high_S = int(args.high_S)
+low_V = int(args.low_V)
+high_V = int(args.high_V)
+
+# Set up the windows and controls for editing the color range (and seeing results).
 cv2.namedWindow(window_capture_name)
 cv2.namedWindow(window_detection_name)
+cv2.namedWindow(window_masking_name)
 cv2.createTrackbar(low_H_name, window_detection_name , low_H, max_value_H, on_low_H_thresh_trackbar)
 cv2.createTrackbar(high_H_name, window_detection_name , high_H, max_value_H, on_high_H_thresh_trackbar)
 cv2.createTrackbar(low_S_name, window_detection_name , low_S, max_value, on_low_S_thresh_trackbar)

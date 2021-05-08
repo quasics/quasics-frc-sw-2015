@@ -248,16 +248,26 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   frc::SmartDashboard::PutData("Simple command group",
                                BuildBouncePathCommand());
+  frc::SmartDashboard::PutData(
+      "Min Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.SetPosition(0.1); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Max Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.SetPosition(1.0); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Inc Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.IncrementPosition(); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Dec Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.DecrementPosition(); },
+                               {&shooter}));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
   std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
-  bouncePathPieces.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("foo"))));
-  bouncePathPieces.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("bar"))));
-  bouncePathPieces.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new frc2::PrintCommand("baz"))));
 
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));

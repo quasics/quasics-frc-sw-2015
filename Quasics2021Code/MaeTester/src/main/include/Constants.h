@@ -39,6 +39,10 @@ namespace CANBusIds {
 
 }  // namespace CANBusIds
 
+namespace PwmIds {
+  constexpr int ShooterServo = 1;
+}  // namespace PwmIds
+
 namespace DigitalIOMappings {
   constexpr int IntakeLimitSwitch = 0;
 }  // namespace DigitalIOMappings

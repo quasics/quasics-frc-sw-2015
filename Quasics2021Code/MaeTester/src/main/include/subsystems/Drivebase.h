@@ -27,7 +27,7 @@ class Drivebase : public frc2::SubsystemBase {
   void Stop();
   void SetMotorSpeed(double leftSpeed, double rightSpeed);
   frc::Gyro& GetZAxisGyro() {
-    return adiGyro;
+    return m_adiGyro;
   }
   void ResetEncoders();
   double GetLeftEncoderCount();
@@ -44,22 +44,20 @@ class Drivebase : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  rev::CANSparkMax leftFront;
-  rev::CANSparkMax leftRear;
-  rev::CANSparkMax rightFront;
-  rev::CANSparkMax rightRear;
+  rev::CANSparkMax m_leftFront;
+  rev::CANSparkMax m_leftRear;
+  rev::CANSparkMax m_rightFront;
+  rev::CANSparkMax m_rightRear;
 
-  frc::ADXRS450_Gyro adiGyro{frc::SPI::Port::kOnboardCS0};
+  frc::ADXRS450_Gyro m_adiGyro{frc::SPI::Port::kOnboardCS0};
 
-  rev::CANEncoder leftFrontEncoder = leftFront.GetEncoder();
-  rev::CANEncoder leftRearEncoder = leftRear.GetEncoder();
-  rev::CANEncoder rightFrontEncoder = rightFront.GetEncoder();
-  rev::CANEncoder rightRearEncoder = rightRear.GetEncoder();
+  rev::CANEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 
-  std::unique_ptr<frc::SpeedControllerGroup> LeftMotors;
-  std::unique_ptr<frc::SpeedControllerGroup> RightMotors;
-  // frc::SpeedControllerGroup LeftMotors{leftFront, leftRear};
-  // frc::SpeedControllerGroup RightMotors{rightFront, rightRear};
+  std::unique_ptr<frc::SpeedControllerGroup> m_leftMotors;
+  std::unique_ptr<frc::SpeedControllerGroup> m_rightMotors;
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
   frc::DifferentialDriveOdometry m_odometry;

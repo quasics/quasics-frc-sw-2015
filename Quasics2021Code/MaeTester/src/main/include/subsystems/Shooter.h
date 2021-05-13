@@ -24,21 +24,25 @@ class Shooter : public frc2::SubsystemBase {
   void SetSpeed(double speed);
   void Stop();
 
-  /* Shooter angular control (experimental) */
-  double GetPosition() {
-    return positionServo.Get();
-  }
-  void SetPosition(double pos) {
-    positionServo.Set(pos);
-  }
+  //
+  // Shooter angular control (experimental)
+
+  /** @return servo extension as a percentage of range (0.0 - 1.0) */
+  double GetServoPosition();
+
+  /**
+   * @param pos   percent extension, expressed as [0.0 - 1.0]
+   */
+  void SetServoPosition(double pos);
 
   /** Increases shooting angle by POSITION_DELTA on the linear servo. */
   void IncrementPosition() {
-    SetPosition(GetPosition() + POSITION_DELTA);
+    SetServoPosition(GetServoPosition() + POSITION_DELTA);
   }
+
   /** Decreases shooting angle by POSITION_DELTA on the linear servo. */
   void DecrementPosition() {
-    SetPosition(GetPosition() - POSITION_DELTA);
+    SetServoPosition(GetServoPosition() - POSITION_DELTA);
   }
 
  private:

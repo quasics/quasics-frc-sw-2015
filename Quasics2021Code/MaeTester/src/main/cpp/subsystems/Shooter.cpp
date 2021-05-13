@@ -13,6 +13,9 @@
 Shooter::Shooter()
     : shootingMotor(CANBusIds::TalonFXIds::ShootingMotor),
       positionServo(PwmIds::ShooterServo) {
+  // Settings per AndyMark docs for the L16 Actuator/servo; see:
+  // https://www.andymark.com/products/actuator-l16-r-50mm-stroke-35-1-6v
+  positionServo.SetBounds(2.0, 1.8, 1.5, 1.2, 1.0);
 }
 
 // This method will be called once per scheduler run
@@ -28,4 +31,25 @@ void Shooter::SetSpeed(double speed) {
 
 void Shooter::Stop() {
   shootingMotor.Set(0);
+}
+
+// Also from AndyMark docs (link above):
+//   To drive fully out, the position is set to 0.82.
+//   To drive half way, the position is set to 0.5.
+//   To drive fully in, the position is set to 0.17
+constexpr double SERVO_RETRACTED_POSITION = 0.17;
+constexpr double SERVO_EXTENDED_POSITION = 0.82;
+constexpr double SERVO_POSITION_RANGE =
+    SERVO_EXTENDED_POSITION - SERVO_RETRACTED_POSITION;
+
+double Shooter::GetServoPosition() {
+  auto rawPos = positionServo.GetPosition();
+  auto percentPos = (rawPos - SERVO_RETRACTED_POSITION) / SERVO_POSITION_RANGE;
+  return percentPos;
+}
+
+void Shooter::SetServoPosition(double pos) {
+  const double cappedPercent = std::min(1.0, std::max(pos, 0.0));
+  SetServoPosition(SERVO_RETRACTED_POSITION +
+                   (cappedPercent * SERVO_POSITION_RANGE));
 }

@@ -250,11 +250,11 @@ void RobotContainer::ConfigureSmartDashboard() {
                                BuildBouncePathCommand());
   frc::SmartDashboard::PutData(
       "Min Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.SetPosition(0.1); },
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },
                                {&shooter}));
   frc::SmartDashboard::PutData(
       "Max Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.SetPosition(1.0); },
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(1.0); },
                                {&shooter}));
   frc::SmartDashboard::PutData(
       "Inc Shooter Pos",

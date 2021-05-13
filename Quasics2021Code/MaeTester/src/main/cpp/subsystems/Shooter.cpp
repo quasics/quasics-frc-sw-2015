@@ -34,22 +34,26 @@ void Shooter::Stop() {
 }
 
 // Also from AndyMark docs (link above):
-//   To drive fully out, the position is set to 0.82.
-//   To drive half way, the position is set to 0.5.
-//   To drive fully in, the position is set to 0.17
-constexpr double SERVO_RETRACTED_POSITION = 0.17;
-constexpr double SERVO_EXTENDED_POSITION = 0.82;
+//   For FTC:
+//      To drive fully out, the position is set to 0.82.
+//      To drive half way, the position is set to 0.5.
+//      To drive fully in, the position is set to 0.17
+//   For FRC:
+//      yourActuator.setSpeed(1.0); // to open
+//      yourActuator.setSpeed(-1.0);  // to close
+constexpr double SERVO_RETRACTED_SPEED = -1.0;
+constexpr double SERVO_EXTENDED_SPEED = +1.0;
 constexpr double SERVO_POSITION_RANGE =
-    SERVO_EXTENDED_POSITION - SERVO_RETRACTED_POSITION;
+    SERVO_EXTENDED_SPEED - SERVO_RETRACTED_SPEED;
 
 double Shooter::GetServoPosition() {
-  auto rawPos = positionServo.GetPosition();
-  auto percentPos = (rawPos - SERVO_RETRACTED_POSITION) / SERVO_POSITION_RANGE;
+  auto rawPos = positionServo.GetSpeed();
+  auto percentPos = (rawPos - SERVO_RETRACTED_SPEED) / SERVO_POSITION_RANGE;
   return percentPos;
 }
 
 void Shooter::SetServoPosition(double pos) {
   const double cappedPercent = std::min(1.0, std::max(pos, 0.0));
-  SetServoPosition(SERVO_RETRACTED_POSITION +
+  SetServoPosition(SERVO_RETRACTED_SPEED +
                    (cappedPercent * SERVO_POSITION_RANGE));
 }

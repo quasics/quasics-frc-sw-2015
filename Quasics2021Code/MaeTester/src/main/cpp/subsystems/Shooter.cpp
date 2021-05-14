@@ -54,6 +54,6 @@ double Shooter::GetServoPosition() {
 
 void Shooter::SetServoPosition(double pos) {
   const double cappedPercent = std::min(1.0, std::max(pos, 0.0));
-  SetServoPosition(SERVO_RETRACTED_SPEED +
+  positionServo.SetSpeed(SERVO_RETRACTED_SPEED +
                    (cappedPercent * SERVO_POSITION_RANGE));
 }

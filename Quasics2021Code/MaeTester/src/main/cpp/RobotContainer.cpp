@@ -145,7 +145,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kStart,  // Shoot
+      frc::XboxController::Button::kY,  // Shoot
       &shootwithlimitswitch);
 
   static RunOnlyIntakeMotor runonlyintakemotor(&intake);
@@ -162,11 +162,8 @@ void RobotContainer::ConfigureButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kX,  // Run conveyor forwards
       &runonlyconveyormotor);
-
-  static RunOnlyConveyorMotorReverse runonlyconveyormotorreverse(&intake);
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kY,  // Run conveyor backwards
-      &runonlyconveyormotorreverse);
+  
+  //If we end up using buttons for changing shooter angle with the actuator, use kBack to extend, kStart to retract
 }
 
 void RobotContainer::ConfigureAutoSelection() {

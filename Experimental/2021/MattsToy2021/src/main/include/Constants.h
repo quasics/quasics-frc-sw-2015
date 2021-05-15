@@ -28,7 +28,18 @@ namespace CANBusIds {
     constexpr int Right_Front_No = 4;
     constexpr int Right_Rear_No = 3;
   }  // namespace SparkMax
+  namespace TalonFXIds {
+    constexpr int ShootingMotor = 1;
+  }  // namespace TalonFXIds
+  namespace VictorSPXIds {
+    constexpr int IntakeMotor = 1;
+    constexpr int ConveyorMotor = 2;
+  }  // namespace VictorSPXIds
 }  // namespace CANBusIds
+
+namespace PwmIds {
+  constexpr int ShooterServo = 1;
+}  // namespace PwmIds
 
 namespace AnalogInputs {
   constexpr int UltrasonicSensorInput = 0;

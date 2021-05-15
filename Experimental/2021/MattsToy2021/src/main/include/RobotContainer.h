@@ -16,7 +16,9 @@
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "../../../../Common2021/VisionSettingsHelper.h"
 #include "VisionInterface.h"
+#include "subsystems/BallIntake.h"
 #include "subsystems/DriveBase.h"
+#include "subsystems/Shooter.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -58,6 +60,9 @@ class RobotContainer {
   frc::Joystick m_driverJoystick{0};
 
   DriveBase m_driveBase;
+  Shooter m_shooter;
+  BallIntake m_intake;
+
   TurnToTargetCommand turnToTarget{&m_driveBase, 0.2};
 
   // Note: this depends on the drive base, so it must be declared afterward.

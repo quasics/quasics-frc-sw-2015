@@ -7,7 +7,7 @@
 Shooter::Shooter() {
   // Settings per AndyMark docs for the L16 Actuator/servo; see:
   // https://www.andymark.com/products/actuator-l16-r-50mm-stroke-35-1-6v
-  positionServo.SetBounds(2.0, 1.8, 1.5, 1.2, 1.0);
+  m_positionServo.SetBounds(2.0, 1.8, 1.5, 1.2, 1.0);
 }
 
 // This method will be called once per scheduler run
@@ -15,7 +15,7 @@ void Shooter::Periodic() {
 }
 
 void Shooter::SetSpeed(double speed) {
-  shootingMotor.Set(speed);
+  m_shootingMotor.Set(speed);
 }
 
 // Also from AndyMark docs (link above):
@@ -32,7 +32,7 @@ constexpr double SERVO_POSITION_RANGE =
     SERVO_EXTENDED_SPEED - SERVO_RETRACTED_SPEED;
 
 double Shooter::GetServoPosition() {
-  auto rawPos = positionServo.GetSpeed();
+  auto rawPos = m_positionServo.GetSpeed();
   auto percentPos = (rawPos - SERVO_RETRACTED_SPEED) / SERVO_POSITION_RANGE;
   return percentPos;
 }

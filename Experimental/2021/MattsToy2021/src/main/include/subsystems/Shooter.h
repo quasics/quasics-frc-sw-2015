@@ -50,9 +50,9 @@ class Shooter : public frc2::SubsystemBase {
 
  private:
   /** Actual shooter motor: sending the ball out. */
-  ctre::phoenix::motorcontrol::can::WPI_TalonFX shootingMotor{
+  ctre::phoenix::motorcontrol::can::WPI_TalonFX m_shootingMotor{
       CANBusIds::TalonFXIds::ShootingMotor};
 
   /** Experimental: servo to adjust the shooting angle. */
-  frc::Servo positionServo{PwmIds::ShooterServo};
+  frc::Servo m_positionServo{PwmIds::ShooterServo};
 };

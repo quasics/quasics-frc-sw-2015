@@ -45,6 +45,7 @@ namespace PwmIds {
 
 namespace DigitalIOMappings {
   constexpr int IntakeLimitSwitch = 0;
+  constexpr int ConveyorBeamSensor = 1;
 }  // namespace DigitalIOMappings
 
 namespace OIConstants {

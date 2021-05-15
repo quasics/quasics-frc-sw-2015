@@ -11,8 +11,8 @@
 Intake::Intake()
     : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
       conveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
-  conveyorLimitSwitch.reset(
-      new frc::DigitalInput(DigitalIOMappings::IntakeLimitSwitch));
+  conveyorBeamSensor.reset(
+      new frc::DigitalInput(DigitalIOMappings::ConveyorBeamSensor));
   SetSubsystem("Intake");
 }
 
@@ -20,6 +20,11 @@ Intake::Intake()
 void Intake::Periodic() {
 #ifdef LOG_LIMIT_SWITCH_STATE
   std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
+            << "open" << std::endl;
+#endif
+
+#ifdef LOG_BEAM_SENSOR_STATE
+  std::cout << "Beam sensor is " << (conveyorBeamSensor->Get() ? "" : "not ")
             << "open" << std::endl;
 #endif
 }
@@ -39,7 +44,7 @@ void Intake::IntakeBallOn() {
 // Otherwise, will always run.
 void Intake::IntakeCellsAuto() {
   intakeMotor.Set(0.75);
-  if (conveyorLimitSwitch.get()) {
+  if (conveyorBeamSensor.get()) {
     conveyorMotor.Set(0.25);
   } else {
     conveyorMotor.Set(0);
@@ -77,5 +82,6 @@ void Intake::ConveyBallOff() {
 }
 
 bool Intake::IsBallInChamber() {
-  return !conveyorLimitSwitch->Get();
+  //return !conveyorLimitSwitch->Get();
+  return !conveyorBeamSensor->Get();
 }

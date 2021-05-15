@@ -39,5 +39,7 @@ class Intake : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX intakeMotor;
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX conveyorMotor;
-  std::shared_ptr<frc::DigitalInput> conveyorLimitSwitch;
+  
+  //std::shared_ptr<frc::DigitalInput> conveyorLimitSwitch;
+  std::shared_ptr<frc::DigitalInput> conveyorBeamSensor;
 };

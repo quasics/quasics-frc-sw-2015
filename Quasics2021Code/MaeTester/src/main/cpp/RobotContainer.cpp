@@ -41,6 +41,8 @@
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/ShootWithLimitSwitch.h"
+#include "commands/IncrementLinearActuator.h"
+#include "commands/DecrementLinearActuator.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 
@@ -163,6 +165,16 @@ void RobotContainer::ConfigureButtonBindings() {
       frc::XboxController::Button::kX,  // Run conveyor forwards
       &runonlyconveyormotor);
   
+  static IncrementLinearActuator incrementlinearactuator(&shooter);
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kBack,
+      &incrementlinearactuator);
+
+  static DecrementLinearActuator decrementlinearactuator(&shooter);
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kStart,
+      &decrementlinearactuator);
+
   //If we end up using buttons for changing shooter angle with the actuator, use kBack to extend, kStart to retract
 }
 

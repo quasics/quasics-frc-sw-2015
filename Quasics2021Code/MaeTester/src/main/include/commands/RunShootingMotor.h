@@ -20,7 +20,7 @@
 class RunShootingMotor
     : public frc2::CommandHelper<frc2::CommandBase, RunShootingMotor> {
  public:
-  RunShootingMotor(Shooter* shooter);
+  RunShootingMotor(Shooter* shooter, double power = 1.0);
 
   void Initialize() override;
 
@@ -28,4 +28,5 @@ class RunShootingMotor
 
  private:
   Shooter* shooter;
+  const double power;
 };

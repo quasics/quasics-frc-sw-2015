@@ -234,8 +234,14 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
-  frc::SmartDashboard::PutData("Run shooter at 75% power",
-                               new RunShootingMotor(&shooter));
+  frc::SmartDashboard::PutData("Run shooter at 100% power",
+                               new RunShootingMotor(&shooter, 1.0));
+  frc::SmartDashboard::PutData("Run shooter at 80% power",
+                               new RunShootingMotor(&shooter, 0.8));
+  frc::SmartDashboard::PutData("Run shooter at 60% power",
+                               new RunShootingMotor(&shooter, 0.6));
+  frc::SmartDashboard::PutData("Run shooter at 40% power",
+                               new RunShootingMotor(&shooter, 0.4));
 
   frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
 

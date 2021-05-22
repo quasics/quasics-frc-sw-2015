@@ -4,14 +4,15 @@
 
 #include "commands/RunShootingMotor.h"
 
-RunShootingMotor::RunShootingMotor(Shooter* shooter) : shooter(shooter) {
+RunShootingMotor::RunShootingMotor(Shooter* shooter, double power)
+    : shooter(shooter), power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(shooter);
 }
 
 // Called when the command is initially scheduled.
 void RunShootingMotor::Initialize() {
-  shooter->SetSpeed(1.0);  // Yeet the ball
+  shooter->SetSpeed(power);  // Yeet the ball
 }
 
 // Called once the command ends or is interrupted.

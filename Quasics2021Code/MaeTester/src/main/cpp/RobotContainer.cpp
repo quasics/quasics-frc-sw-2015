@@ -32,8 +32,10 @@
 
 #include "Constants.h"
 #include "commands/AutoIntakeCells.h"
+#include "commands/DecrementLinearActuator.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/IncrementLinearActuator.h"
 #include "commands/IntakePowerCells.h"
 #include "commands/RunOnlyConveyorMotor.h"
 #include "commands/RunOnlyConveyorMotorReverse.h"
@@ -41,8 +43,6 @@
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/ShootWithLimitSwitch.h"
-#include "commands/IncrementLinearActuator.h"
-#include "commands/DecrementLinearActuator.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 
@@ -164,16 +164,14 @@ void RobotContainer::ConfigureButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kX,  // Run conveyor forwards
       &runonlyconveyormotor);
-  
+
   static IncrementLinearActuator incrementlinearactuator(&shooter);
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBack,
-      &incrementlinearactuator);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBack,
+                                     &incrementlinearactuator);
 
   static DecrementLinearActuator decrementlinearactuator(&shooter);
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kStart,
-      &decrementlinearactuator);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kStart,
+                                     &decrementlinearactuator);
 
   //If we end up using buttons for changing shooter angle with the actuator, use kBack to extend, kStart to retract
 }
@@ -236,12 +234,12 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
   frc::SmartDashboard::PutData("Run shooter at 100% power",
                                new RunShootingMotor(&shooter, 1.0));
+  frc::SmartDashboard::PutData("Run shooter at 90% power",
+                               new RunShootingMotor(&shooter, 0.9));
   frc::SmartDashboard::PutData("Run shooter at 80% power",
                                new RunShootingMotor(&shooter, 0.8));
-  frc::SmartDashboard::PutData("Run shooter at 60% power",
-                               new RunShootingMotor(&shooter, 0.6));
-  frc::SmartDashboard::PutData("Run shooter at 40% power",
-                               new RunShootingMotor(&shooter, 0.4));
+  frc::SmartDashboard::PutData("Run shooter at 70% power",
+                               new RunShootingMotor(&shooter, 0.7));
 
   frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
 

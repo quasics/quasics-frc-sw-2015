@@ -234,8 +234,6 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
   frc::SmartDashboard::PutData("Run shooter at 100% power",
                                new RunShootingMotor(&shooter, 1.0));
-  frc::SmartDashboard::PutData("Run shooter at 90% power",
-                               new RunShootingMotor(&shooter, 0.9));
   frc::SmartDashboard::PutData("Run shooter at 95% power",
                                new RunShootingMotor(&shooter, 0.95));
   frc::SmartDashboard::PutData("Run shooter at 90% power",

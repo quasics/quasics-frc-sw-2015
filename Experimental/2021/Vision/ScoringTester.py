@@ -13,19 +13,26 @@ import cv2
 import math
 import numpy as np
 
-# Value ranges for the yellow balls in the lab (rough):
-# H: 11 / 40 S: 118 / 214 V: 94 / 208
-
 # Note: openCV uses a constrained range of 0..179 for H, and 0..255 for S/V
 # So we need to normalize accordingly.
-
 max_value = 255
 max_value_H = 360//2
 
+# Will be used to communicate the size of the image (or frame of video) being
+# evaluated for possible targets between the various functions (so that we
+# don't need to keep sending it around, just in case it's needed).
+#
+# Note that it's *cleaner* to send it around, but we'll trade off some
+# cleanliness here (and for a few other things) for improved simplicity.
 frame_height = 0
 frame_width = 0
 
-# Yellow(ish)
+# If true, we're looking for the exhaust port (using a green LED ring
+# and the retroreflective tape); otherwise, we're looking for the
+# power cells (as in the "IR @ Home" challenges).
+portDetection = True
+
+# Default yellow(ish) colors, for use when detecting power cells.
 yellow_low_H = 21 # scaleHueForOpenCV(raw_low_H)
 yellow_low_S = 148
 yellow_low_V = 93
@@ -33,11 +40,16 @@ yellow_high_H = 30
 yellow_high_S = 250
 yellow_high_V = 255
 
-# Rough shades for green (from photoreflective tape and LED rings)
-# Pass 1: 38/20/212 - 75/86/255 (Good for Reflective-1)
-# Pass 2: 55/20/162 - 75/102/255 (Good for Reflective-2)
-# Pass 3: 42/20/162 - 75/102/255 (reasonably good across Reflective-[123])
-# H: 42 / 75 S: 21 / 102 V: 162 / 255
+# Default shades for green (from photoreflective tape and LED rings), for
+# use when we're detecting the exhaust port.
+# 
+# Pass 1: 38/20/212 - 75/86/255 (Good for large Reflective-1)
+# Pass 2: 55/20/162 - 75/102/255 (Good for large Reflective-2)
+# Pass 3: 42/21/162 - 75/102/255 (reasonably good across large Reflective-[123])
+# 
+# Unfortunately, those #s don't work for the 160x120 sample images, as the
+# particle board can't be distinguished.
+# Pass 1 on small images: 7/34/145 - 72/121/250
 green_low_H = 42
 green_low_S = 21
 green_low_V = 162
@@ -45,8 +57,7 @@ green_high_H = 75
 green_high_S = 102
 green_high_V = 255
 
-portDetection = True
-
+# Names of various windows/widgets in the GUI.
 window_capture_name = 'Video Capture'
 window_detection_name = 'Object Detection'
 window_masking_name = 'Masked Image'
@@ -57,23 +68,9 @@ high_H_name = 'High H'
 high_S_name = 'High S'
 high_V_name = 'High V'
 
-# Default colors will depend on what we're looking for....
-if portDetection:
-    low_H = green_low_H
-    high_H = green_high_H
-    low_S = green_low_S
-    high_S = green_high_S
-    low_V = green_low_V
-    high_V = green_high_V
-else:
-    low_H = yellow_low_H
-    high_H = yellow_high_H
-    low_S = yellow_low_S
-    high_S = yellow_high_S
-    low_V = yellow_low_V
-    high_V = yellow_high_V
-
-
+#-----------------------------------------------------------------------------
+# Functions related to movement of the sliders controlling vision thresholds
+#-----------------------------------------------------------------------------
 def reportStats():
     print("H:", low_H, '/', high_H, "S:", low_S, '/', high_S, "V:", low_V, '/', high_V)
 
@@ -120,6 +117,10 @@ def on_high_V_thresh_trackbar(val):
     cv2.setTrackbarPos(high_V_name, window_detection_name, high_V)
     reportStats()
 
+#-----------------------------------------------------------------------------
+# Functions related to scoring possible targets
+#-----------------------------------------------------------------------------
+
 # Converts a ratio with ideal value of 1 to a score (range: [0.0 - 1.0]).
 def ratioToScore(ratio):
 	return (max(0.0, min((1-abs(1-ratio)), 1.0)))
@@ -154,16 +155,34 @@ def coverageAreaScore(contour, bounds):
     _,_,w,h = bounds
     return ratioToScore(cv2.contourArea(contour)/(float(w)*float(h)) / (math.pi / 4))
 
-# A trivial additional score.
+# A trivial additional score (for use with ball detection)
 def convexityScore(contour):
     if cv2.isContourConvex(contour):
         return 1
     else:
         return 0
 
-#############################################
+#-----------------------------------------------------------------------------
 # Main execution starts here
+#-----------------------------------------------------------------------------
 
+# Default colors will depend on what we're looking for....
+if portDetection:
+    low_H = green_low_H
+    high_H = green_high_H
+    low_S = green_low_S
+    high_S = green_high_S
+    low_V = green_low_V
+    high_V = green_high_V
+else:
+    low_H = yellow_low_H
+    high_H = yellow_high_H
+    low_S = yellow_low_S
+    high_S = yellow_high_S
+    low_V = yellow_low_V
+    high_V = yellow_high_V
+
+# Assume we're using the camera; overridden by command-line flag settings.
 useCamera = True
 
 parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
@@ -220,69 +239,46 @@ while True:
 
     # Get some basic information about the image we've gotten.
     frame_height, frame_width, frame_channels = frame.shape
-    # print("Frame: {}x{}".format(frame_width, frame_height))
 
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     frame_threshold = cv2.inRange(frame_HSV, (low_H, low_S, low_V), (high_H, high_S, high_V))
 
-    # Perform erosion, to remove noise from the background
-    # frame_threshold = cv2.erode(frame_threshold, kernel, iterations = 1)
-    
-    # Perform dilation, to remove small holes inside a larger region
-    # frame_threshold = cv2.dilate(frame_threshold, kernel, iterations = 1)
-
-    # "Opening" is erosion, followed by dilation
+    # Perform "opening": erosion (to remove noise), followed by dilation
+    # (to remove small holes within larger regions).
     frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_OPEN, kernel, iterations = 2)
-
-    # "Closing" is dilation, followed by erosion
-    # frame_threshold = cv2.morphologyEx(frame_threshold, cv2.MORPH_CLOSE, kernel)
     
     # Find the contours of the possible targets
     contours, _ = cv2.findContours(frame_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     scores = []
-    # print("Num contours:", len(contours))
     if len(contours) > 0:
         # Generate "fitness scores" for each of the possible targets.
-        # I should really also be figuring out the "roundness" of it, which
-        # might be approximated by checking how close the centroid is to the
-        # center of the bounding area.
-        # Other possible useful data can be seen at:
+        #
+        # Other examples of scoring can be seen at:
         #   https://docs.opencv.org/master/dd/d49/tutorial_py_contour_features.html
         for contour in contours:
+            targetScore = 0.0
             if cv2.contourArea(contour) >= 60:
                 if portDetection:
-                    targetScore = portBoundingRatioScore(contour) * percentOfFieldScore(contour)
-                    # _, size, _ = cv2.minAreaRect(contour)
-                    # w, h = size
-                    # print("W/H = {}/{}      Score '{}'".format(w, h, targetScore))
-                    scores.append(targetScore)
+                    targetScore = (portBoundingRatioScore(contour)
+                                    * percentOfFieldScore(contour)
+                                )
                 else:
+                    # I should really also be figuring out the "roundness" of it, which
+                    # might be approximated by checking how close the centroid is to the
+                    # center of the bounding area.
                     boundingBox = cv2.boundingRect(contour)
-                    scores.append(sphereBoundingRatioScore(boundingBox)
+                    targetScore = (sphereBoundingRatioScore(boundingBox)
                                     + coverageAreaScore(contour, boundingBox)
                                     + convexityScore(contour)
                                 )
-            else:
-                scores.append(0.0)
+            scores.append(targetScore)
 
-        # The following code assumes that there's only 1 ball, and thus
-        # we're simply looking for the best match.  In a real game, we
-        # could have multiple balls, and might want to factor in "which
-        # one is closest (i.e., biggest)".
         bestIndex = 0
         for index in range(len(contours)):
             if scores[index] > scores[bestIndex]:
                 bestIndex = index
         best = contours[bestIndex]
-
-        # for contour in contours:
-        #     # rect = cv2.minAreaRect(contour)
-        #     # box = cv2.boxPoints(rect) # cv2.boxPoints(rect) for OpenCV 3.x
-        #     # box = np.int0(box)
-        #     # cv2.drawContours(frame,[box],0,(0,255,255),2)
-        #     x,y,w,h = cv2.boundingRect(contour)
-        #     cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),1)
 
         cv2.drawContours(frame, contours, -1, (255,0,255), 1)
         cv2.drawContours(frame, contours, bestIndex, (0,0,255), 3)

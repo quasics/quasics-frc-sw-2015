@@ -86,7 +86,7 @@ def on_high_V_thresh_trackbar(val):
     cv2.setTrackbarPos(high_V_name, window_detection_name, high_V)
     reportStats()
 
-# Converts a ratio with ideal value of 1 to a score.
+# Converts a ratio with ideal value of 1 to a score (range: [0.0 - 100.0]).
 def ratioToScore(ratio):
 	return (max(0.0, min(100*(1-abs(1-ratio)), 100.0)))
 

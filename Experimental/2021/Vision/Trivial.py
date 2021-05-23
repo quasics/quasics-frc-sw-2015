@@ -138,10 +138,14 @@ def isLikelyTarget(contour):
 
     return True
 
+# Converts a ratio with ideal value of 1 to a score.
+def ratioToScore(ratio):
+	return (max(0.0, min(100*(1-abs(1-ratio)), 100.0)))
+
 # A trivial scoring function, which just looks at the size of
 # the contour ("bigger" == "better").
 def computeScoreFromSize(contour, frameWidth, frameHeight):
-    return (float(cv2.contourArea(contour)) / float(frameWidth * frameHeight))
+    return ratioToScore(float(cv2.contourArea(contour)) / float(frameWidth * frameHeight))
 
 # Since the target is a sphere, the aspect ratio of its bounding rect
 # (if we can see it all, and clearly) should approach 1:1.  So we'll
@@ -155,7 +159,7 @@ def computeScoreForAspectRatio(contour):
         ratio = float(w) / float(h)
     else:
         ratio = float(h) / float(w)
-    return ratio
+    return ratioToScore(ratio)
 
 # If the target appears to be above a certain starting height in the frame,
 # we'll assume that it's less likely to be a ball on the ground (that's
@@ -177,7 +181,7 @@ def computeScoreForRelativePosition(contour, frameHeight):
 
     # The bounding rect starts above the midline; still allow it through,
     # but at a reduced score, trending to 0 as it hits the top of the frame.
-    return float(y) / float(midLine)
+    return ratioToScore(float(y) / float(midLine))
 
 # The composite scoring algorithm, which looks at some characteristics we
 # associate with "probably a ball on the ground", plus the apparent sizing
@@ -321,8 +325,8 @@ def processFrame(inputStream, outputStream):
         all_targets_height_list.append(height)
 
         # Calculate basic information about the current contour
-        rect = cv2.minAreaRect(contour)
-        center, size, angle = rect
+        minAreaRect = cv2.minAreaRect(contour)
+        center, size, angle = minAreaRect
         center = [int(dim) for dim in center] # Convert to int so we can draw
         
         # Calculate the (x,y) coordinates for the current (possible)

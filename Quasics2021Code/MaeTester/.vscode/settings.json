@@ -82,5 +82,6 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSaveMode": "modifications",
-  "editor.formatOnType": true
+  "editor.formatOnType": true,
+  "C_Cpp.errorSquiggles": "Disabled"
 }

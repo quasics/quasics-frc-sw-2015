@@ -4,6 +4,10 @@
 
 #pragma once
 #include <frc2/command/SubsystemBase.h>
+#include <ctre/Phoenix.h>
+#include <Constants.h>
+#include <frc/Compressor.h>
+#include <frc/DoubleSolenoid.h>
 
 class Pnematics : public frc2::SubsystemBase {
  public:
@@ -18,13 +22,20 @@ class Pnematics : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs during
    * simulation.
    */
-  void SimulationPeriodic() override;
+
+  void ExtendSolenoid();
+  void RetractSolenoid();
+  void StopSolenoid();
+  void StartCompressor();
+  void StopCompressor();
+  bool IsCompressorEnabled();
+  bool GetPressureSwitchValue();
+  double GetCompressorCurrent();
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-};
-class Pnematics {
- public:
-  Pnematics();
+  frc::Compressor c{0};
+  frc::DoubleSolenoid IntakeSolenoid{1, 2};
+
 };

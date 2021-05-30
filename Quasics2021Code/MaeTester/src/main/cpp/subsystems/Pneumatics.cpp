@@ -3,49 +3,46 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Pneumatics.h"
-#include <iostream>
+
 #include <Constants.h>
 
 Pneumatics::Pneumatics()
-    : c(CANBusIds::PneumaticsIds::Compressor),
-      IntakeSolenoid(CANBusIds::PneumaticsIds::IntakeSolenoidForward,
-                     CANBusIds::PneumaticsIds::IntakeSolenoidBackward) {
+    : m_compressor(CANBusIds::PneumaticsIds::Compressor),
+      m_intakeSolenoid(CANBusIds::PneumaticsIds::IntakeSolenoidForward,
+                       CANBusIds::PneumaticsIds::IntakeSolenoidBackward) {
+  SetName("Pneumatics");
+  SetSubsystem("Pneumatics");
 }
 
 void Pneumatics::Periodic() {
-
+  // Insert any periodic execution code here.
+  m_compressor.SetClosedLoopControl(compressorEnabled);
 }
 
 void Pneumatics::ExtendSolenoid() {
-  IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
 }
 
 void Pneumatics::RetractSolenoid() {
-  IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
+  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
 }
 
 void Pneumatics::StopSolenoid() {
-  IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
+  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
 }
 
-void Pneumatics::StartCompressor(){
-  c.SetClosedLoopControl(true);
- 
+void Pneumatics::SetCompressorEnabled(bool tf) {
+  compressorEnabled = tf;
 }
 
-void Pneumatics::StopCompressor(){
- 
-  c.SetClosedLoopControl(false);
+bool Pneumatics::IsCompressorRunning() {
+  return m_compressor.Enabled();
 }
 
-bool Pneumatics:: IsCompressorEnabled(){
-  return c.Enabled();
+bool Pneumatics::GetPressureSwitchValue() {
+  return m_compressor.GetPressureSwitchValue();
 }
 
-bool Pneumatics:: GetPressureSwitchValue(){
-  return c.GetPressureSwitchValue();
-}
-
-double Pneumatics:: GetCompressorCurrent(){
-  return c.GetCompressorCurrent();
+double Pneumatics::GetCompressorCurrent() {
+  return m_compressor.GetCompressorCurrent();
 }

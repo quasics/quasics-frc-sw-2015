@@ -18,24 +18,35 @@ class Pneumatics : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  /**
-   * Will be called periodically whenever the CommandScheduler runs during
-   * simulation.
-   */
-
+ public:
+  // Solenoid control
   void ExtendSolenoid();
   void RetractSolenoid();
   void StopSolenoid();
-  void StartCompressor();
-  void StopCompressor();
-  bool IsCompressorEnabled();
+
+ public:
+  // Compressor control
+
+  /**
+   * Sets whether the compressor should automatically turn on when pressure is
+   * low.
+   *
+   * Note: will take effect on the next invocation of "Periodic()".
+   */
+  void SetCompressorEnabled(bool tf);
+
+  /** Returns true iff the compressor is currently running (output is active).
+   */
+  bool IsCompressorRunning();
+
+  /** Returns true iff the pressure switch is triggered. */
   bool GetPressureSwitchValue();
+
+  /** Returns how much current the compressor is drawing. */
   double GetCompressorCurrent();
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  frc::Compressor c;
-  frc::DoubleSolenoid IntakeSolenoid;
-
+  frc::Compressor m_compressor;
+  frc::DoubleSolenoid m_intakeSolenoid;
+  bool compressorEnabled = true;
 };

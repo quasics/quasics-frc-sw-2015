@@ -29,7 +29,7 @@ public class RobotContainer {
   private final RomiDrivetrain m_romiDrivetrain = new RomiDrivetrain();
 
   /** Joystick used for driving. */
-  private final Joystick m_driveJoystick = new Joystick(Constants.DRIVER_JOYSTICK_PORT);
+  private final Joystick m_driveJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
 
   /** Tank drive command, used to handle movement during teleop mode. */
   private final Command tankDriveCommand = generateTankDriveCommand();

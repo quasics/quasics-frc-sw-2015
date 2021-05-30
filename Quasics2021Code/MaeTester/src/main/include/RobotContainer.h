@@ -19,7 +19,10 @@
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
+
+#define ENABLE_PNEUMATICS
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -112,6 +115,9 @@ class RobotContainer {
   Drivebase drivebase;
   Shooter shooter;
   Intake intake;
+#ifdef ENABLE_PNEUMATICS
+  Pneumatics pneumatics;
+#endif  // ENABLE_PNEUMATICS
 
   frc::SendableChooser<frc2::Command*> m_autoChooser;
 

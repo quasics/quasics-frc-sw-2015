@@ -77,7 +77,16 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "math": "cpp",
+    "matrixfunctions": "cpp",
+    "cassert": "cpp",
+    "cerrno": "cpp",
+    "cfloat": "cpp",
+    "ciso646": "cpp",
+    "climits": "cpp",
+    "queue": "cpp",
+    "stack": "cpp"
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,

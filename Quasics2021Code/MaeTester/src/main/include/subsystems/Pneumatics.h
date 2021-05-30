@@ -9,9 +9,9 @@
 #include <frc/Compressor.h>
 #include <frc/DoubleSolenoid.h>
 
-class Pnematics : public frc2::SubsystemBase {
+class Pneumatics : public frc2::SubsystemBase {
  public:
-  Pnematics();
+  Pneumatics();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -35,7 +35,7 @@ class Pnematics : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  frc::Compressor c{0};
-  frc::DoubleSolenoid IntakeSolenoid{1, 2};
+  frc::Compressor c;
+  frc::DoubleSolenoid IntakeSolenoid;
 
 };

@@ -2,50 +2,50 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "subsystems/Pnematics.h"
+#include "subsystems/Pneumatics.h"
 #include <iostream>
 #include <Constants.h>
 
-Pnematics::Pnematics()
+Pneumatics::Pneumatics()
     : c(CANBusIds::PneumaticsIds::Compressor),
       IntakeSolenoid(CANBusIds::PneumaticsIds::IntakeSolenoidForward,
                      CANBusIds::PneumaticsIds::IntakeSolenoidBackward) {
 }
 
-void Pnematics::Periodic() {
+void Pneumatics::Periodic() {
 
 }
 
-void Pnematics::ExtendSolenoid() {
+void Pneumatics::ExtendSolenoid() {
   IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
 }
 
-void Pnematics::RetractSolenoid() {
+void Pneumatics::RetractSolenoid() {
   IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
 }
 
-void Pnematics::StopSolenoid() {
+void Pneumatics::StopSolenoid() {
   IntakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
 }
 
-void Pnematics::StartCompressor(){
+void Pneumatics::StartCompressor(){
   c.SetClosedLoopControl(true);
  
 }
 
-void Pnematics::StopCompressor(){
+void Pneumatics::StopCompressor(){
  
   c.SetClosedLoopControl(false);
 }
 
-bool Pnematics:: IsCompressorEnabled(){
+bool Pneumatics:: IsCompressorEnabled(){
   return c.Enabled();
 }
 
-bool Pnematics:: GetPressureSwitchValue(){
+bool Pneumatics:: GetPressureSwitchValue(){
   return c.GetPressureSwitchValue();
 }
 
-double Pnematics:: GetCompressorCurrent(){
+double Pneumatics:: GetCompressorCurrent(){
   return c.GetCompressorCurrent();
 }

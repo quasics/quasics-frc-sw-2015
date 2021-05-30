@@ -18,7 +18,6 @@
 #include "VisionSettingsHelper.h"
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Shooter.h"
 
@@ -113,6 +112,7 @@ class RobotContainer {
   Drivebase drivebase;
   Shooter shooter;
   Intake intake;
+
   frc::SendableChooser<frc2::Command*> m_autoChooser;
 
   // Controllers

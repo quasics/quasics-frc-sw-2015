@@ -7,11 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 
-RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
-  // Initialize all of your commands and subsystems here
-
-  // Configure the button bindings
-  ConfigureButtonBindings();
+RobotContainer::RobotContainer() {
   ConfigurePneumaticDashboardCommands();
 }
 
@@ -40,11 +36,6 @@ void RobotContainer::ConfigurePneumaticDashboardCommands() {
           {&m_pneumaticsBoard}));
 }
 
-void RobotContainer::ConfigureButtonBindings() {
-  // Configure your button bindings here
-}
-
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
-  return &m_autonomousCommand;
+  return nullptr;
 }

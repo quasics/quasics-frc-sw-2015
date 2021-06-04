@@ -24,11 +24,8 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
-  // The robot's subsystems and commands are defined here...
-  PneumaticsBoard m_pneumaticsBoard;
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
-
-  void ConfigureButtonBindings();
   void ConfigurePneumaticDashboardCommands();
+
+ private:
+  PneumaticsBoard m_pneumaticsBoard;
 };

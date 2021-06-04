@@ -246,24 +246,24 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
 
 #ifdef ENABLE_PNEUMATICS
-  auto& pneumaticsTab = frc::Shuffleboard::GetTab("Pneumatics");
-  pneumaticsTab.Add(
+
+  frc::SmartDashboard::PutData(
       "Extend solenoid",
       new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
                                {&pneumatics}));
-  pneumaticsTab.Add(
+  frc::SmartDashboard::PutData(
       "Retract solenoid",
       new frc2::InstantCommand([this]() { pneumatics.RetractSolenoid(); },
                                {&pneumatics}));
-  pneumaticsTab.Add(
+  frc::SmartDashboard::PutData(
       "Stop solenoid",
       new frc2::InstantCommand([this]() { pneumatics.StopSolenoid(); },
                                {&pneumatics}));
-  pneumaticsTab.Add(
+  frc::SmartDashboard::PutData(
       "Enable compressor",
       new frc2::InstantCommand(
           [this]() { pneumatics.SetCompressorEnabled(true); }, {&pneumatics}));
-  pneumaticsTab.Add(
+  frc::SmartDashboard::PutData(
       "Disable compressor",
       new frc2::InstantCommand(
           [this]() { pneumatics.SetCompressorEnabled(false); }, {&pneumatics}));

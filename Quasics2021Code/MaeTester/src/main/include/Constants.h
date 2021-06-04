@@ -36,12 +36,16 @@ namespace CANBusIds {
   namespace TalonFXIds {
     constexpr int ShootingMotor = 1;
   } // namespace VictorFXIds
-  namespace PneumaticsIds{
-    constexpr int Compressor = 0;
-    constexpr int IntakeSolenoidForward = 1;
-    constexpr int IntakeSolenoidBackward = 2;
-  }  // namespace PneumaticsIds
+  namespace Other {
+    constexpr int PCM = 1;
+  }  // namespace Other
 }  // namespace CANBusIds
+
+namespace PneumaticsIds {
+  constexpr int Compressor = 0;
+  constexpr int IntakeSolenoidForward = 1;
+  constexpr int IntakeSolenoidBackward = 2;
+}  // namespace PneumaticsIds
 
 namespace PwmIds {
   constexpr int ShooterServo = 1;

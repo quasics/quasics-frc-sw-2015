@@ -7,9 +7,10 @@
 #include <Constants.h>
 
 Pneumatics::Pneumatics()
-    : m_compressor(CANBusIds::PneumaticsIds::Compressor),
-      m_intakeSolenoid(CANBusIds::PneumaticsIds::IntakeSolenoidForward,
-                       CANBusIds::PneumaticsIds::IntakeSolenoidBackward) {
+    : m_compressor(PneumaticsIds::Compressor),
+      m_intakeSolenoid(CANBusIds::Other::PCM,
+                       PneumaticsIds::IntakeSolenoidForward,
+                       PneumaticsIds::IntakeSolenoidBackward) {
   SetName("Pneumatics");
   SetSubsystem("Pneumatics");
 }
@@ -20,11 +21,15 @@ void Pneumatics::Periodic() {
 }
 
 void Pneumatics::ExtendSolenoid() {
+  std::cerr << "Extending solenoid\n";
   m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+  std::cerr << "   - Finished.\n";
 }
 
 void Pneumatics::RetractSolenoid() {
+  std::cerr << "Retracting solenoid\n";
   m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
+  std::cerr << "   - Finished.\n";
 }
 
 void Pneumatics::StopSolenoid() {

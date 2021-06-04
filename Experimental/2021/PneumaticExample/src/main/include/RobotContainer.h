@@ -6,8 +6,6 @@
 
 #include <frc2/command/Command.h>
 
-#include "commands/ExampleCommand.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/PneumaticsBoard.h"
 
 /**

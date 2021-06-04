@@ -21,15 +21,11 @@ void Pneumatics::Periodic() {
 }
 
 void Pneumatics::ExtendSolenoid() {
-  std::cerr << "Extending solenoid\n";
   m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
-  std::cerr << "   - Finished.\n";
 }
 
 void Pneumatics::RetractSolenoid() {
-  std::cerr << "Retracting solenoid\n";
   m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-  std::cerr << "   - Finished.\n";
 }
 
 void Pneumatics::StopSolenoid() {

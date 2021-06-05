@@ -31,8 +31,18 @@ namespace CANBusIds {
   constexpr int PCM = 1;
 }  // namespace CANBusIds
 
+/**
+ * IDs used for devices associated with pneumatic controls.
+ * 
+ * Note that the IDs used here map to the numbers on the PCM, rather
+ * than to something configured into devices, as on the CAN bus.
+ */
 namespace PneumaticIds {
-  constexpr int Compressor = 0;
+  /** ID used for moving the double solenoid on the demo board out (extended). */
   constexpr int IntakeSolenoidForward = 1;
+  /** ID used for moving the double solenoid on the demo board in (retracted). */
   constexpr int IntakeSolenoidBackward = 2;
+
+  /** "Default solenoid ID' to be passed to the compressor on initialization. */
+  constexpr int DefaultSolenoidModule = IntakeSolenoidForward;
 }  // namespace PneumaticIds

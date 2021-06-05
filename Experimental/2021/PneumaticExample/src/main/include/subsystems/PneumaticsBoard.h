@@ -15,6 +15,11 @@ class PneumaticsBoard : public frc2::SubsystemBase {
   PneumaticsBoard() {
     SetName("PneumaticsBoard");
     SetSubsystem("PneumaticsBoard");
+
+    m_compressor.SetClosedLoopControl(compressorEnabled);
+
+    // Make sure that the solenoid is retracted on start-up.
+    this->RetractSolenoid();
   }
 
   /**
@@ -33,12 +38,19 @@ class PneumaticsBoard : public frc2::SubsystemBase {
   void RetractSolenoid() {
     m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
   }
-  void ToggleSolenoid() {
-    m_intakeSolenoid.Toggle();
-  };
   void StopSolenoid() {
     m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
   }
+
+  /// Toggles the state of the solenoid (extended/retracted).
+  ///
+  /// Note: this function assumes that the solenoid has been previously
+  /// set (explicitly) to the extended/retracted state.  If that hasn't
+  /// happened (or StopSolenoid() was called last), then it will have
+  /// no effect.
+  void ToggleSolenoid() {
+    m_intakeSolenoid.Toggle();
+  };
 
  public:
   // Compressor control
@@ -70,7 +82,7 @@ class PneumaticsBoard : public frc2::SubsystemBase {
   }
 
  private:
-  frc::Compressor m_compressor{PneumaticIds::Compressor};
+  frc::Compressor m_compressor{PneumaticIds::DefaultSolenoidModule};
   frc::DoubleSolenoid m_intakeSolenoid{CANBusIds::PCM,
                                        PneumaticIds::IntakeSolenoidForward,
                                        PneumaticIds::IntakeSolenoidBackward};

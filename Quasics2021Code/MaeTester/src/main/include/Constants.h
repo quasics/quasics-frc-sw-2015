@@ -42,9 +42,12 @@ namespace CANBusIds {
 }  // namespace CANBusIds
 
 namespace PneumaticsIds {
-  constexpr int Compressor = 0;
   constexpr int IntakeSolenoidForward = 1;
   constexpr int IntakeSolenoidBackward = 2;
+
+  // This is passed to the compressor, for use as a default behind the
+  // scenes.
+  constexpr int DefaultSolenoidId = IntakeSolenoidForward;
 }  // namespace PneumaticsIds
 
 namespace PwmIds {

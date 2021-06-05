@@ -7,7 +7,7 @@
 #include <Constants.h>
 
 Pneumatics::Pneumatics()
-    : m_compressor(PneumaticsIds::Compressor),
+    : m_compressor(PneumaticsIds::DefaultSolenoidId),
       m_intakeSolenoid(CANBusIds::Other::PCM,
                        PneumaticsIds::IntakeSolenoidForward,
                        PneumaticsIds::IntakeSolenoidBackward) {

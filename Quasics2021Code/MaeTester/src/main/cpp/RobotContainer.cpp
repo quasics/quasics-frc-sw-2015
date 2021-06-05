@@ -246,7 +246,6 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
 
 #ifdef ENABLE_PNEUMATICS
-
   frc::SmartDashboard::PutData(
       "Extend solenoid",
       new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
@@ -260,13 +259,9 @@ void RobotContainer::ConfigureSmartDashboard() {
       new frc2::InstantCommand([this]() { pneumatics.StopSolenoid(); },
                                {&pneumatics}));
   frc::SmartDashboard::PutData(
-      "Enable compressor",
-      new frc2::InstantCommand(
-          [this]() { pneumatics.SetCompressorEnabled(true); }, {&pneumatics}));
-  frc::SmartDashboard::PutData(
-      "Disable compressor",
-      new frc2::InstantCommand(
-          [this]() { pneumatics.SetCompressorEnabled(false); }, {&pneumatics}));
+      "Toggle solenoid",
+      new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
+                               {&pneumatics}));
 #endif  // ENABLE_PNEUMATICS
 
   std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),

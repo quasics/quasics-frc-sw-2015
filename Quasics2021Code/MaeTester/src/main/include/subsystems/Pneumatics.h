@@ -23,6 +23,7 @@ class Pneumatics : public frc2::SubsystemBase {
   void ExtendSolenoid();
   void RetractSolenoid();
   void StopSolenoid();
+  void ToggleSolenoid();
 
  public:
   // Compressor control

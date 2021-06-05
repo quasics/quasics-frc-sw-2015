@@ -32,6 +32,10 @@ void Pneumatics::StopSolenoid() {
   m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
 }
 
+void Pneumatics::ToggleSolenoid() {
+  m_intakeSolenoid.Toggle();
+}
+
 void Pneumatics::SetCompressorEnabled(bool tf) {
   compressorEnabled = tf;
 }

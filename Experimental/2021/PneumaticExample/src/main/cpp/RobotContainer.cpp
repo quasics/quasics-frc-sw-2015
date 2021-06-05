@@ -21,16 +21,20 @@ void RobotContainer::ConfigurePneumaticDashboardCommands() {
                               [this]() { m_pneumaticsBoard.RetractSolenoid(); },
                               {&m_pneumaticsBoard}));
   frc::SmartDashboard::PutData(
+      "Toggle solenoid", new frc2::InstantCommand(
+                              [this]() { m_pneumaticsBoard.ToggleSolenoid(); },
+                              {&m_pneumaticsBoard}));
+  frc::SmartDashboard::PutData(
       "Stop solenoid",
       new frc2::InstantCommand([this]() { m_pneumaticsBoard.StopSolenoid(); },
                                {&m_pneumaticsBoard}));
   frc::SmartDashboard::PutData(
-      "Enable compressor",
+      "Enable comp.",
       new frc2::InstantCommand(
           [this]() { m_pneumaticsBoard.SetCompressorEnabled(true); },
           {&m_pneumaticsBoard}));
   frc::SmartDashboard::PutData(
-      "Disable compressor",
+      "Disable comp.",
       new frc2::InstantCommand(
           [this]() { m_pneumaticsBoard.SetCompressorEnabled(false); },
           {&m_pneumaticsBoard}));

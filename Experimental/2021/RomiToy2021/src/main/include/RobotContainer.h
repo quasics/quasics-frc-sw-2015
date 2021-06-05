@@ -40,6 +40,7 @@ class RobotContainer {
   void ConfigureAutonomousSelection();
   void EnableTankDrive();
   void EnableArcadeDrive();
+  void EnableCurvatureDrive();
 
   enum TrajectoryExample {
     StraightLineTrajectory,

@@ -40,6 +40,10 @@ class Drivetrain : public CommonDriveSubsystem {
                    bool squareInputs = true) override;
 
   // Documented in base class.
+  virtual void CurvatureDrive(double xaxisSpeed, double zaxisRotate,
+                              bool isQuickTurn) override;
+
+  // Documented in base class.
   void TankDrive(double leftSpeed, double rightSpeed) override;
 
   // Documented in base class.

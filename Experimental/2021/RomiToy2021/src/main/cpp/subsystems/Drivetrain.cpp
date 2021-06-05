@@ -84,6 +84,11 @@ void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate, squareInputs);
 }
 
+void Drivetrain::CurvatureDrive(double xaxisSpeed, double zaxisRotate,
+                                bool isQuickTurn) {
+  m_drive.CurvatureDrive(xaxisSpeed, zaxisRotate, isQuickTurn);
+}
+
 void Drivetrain::TankDrive(double leftSpeed, double rightSpeed) {
   m_drive.TankDrive(leftSpeed, rightSpeed);
 }

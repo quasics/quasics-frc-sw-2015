@@ -43,6 +43,9 @@ class DriveBase : public CommonDriveSubsystem {
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate,
                    bool squareInputs) override;
 
+  void CurvatureDrive(double xaxisSpeed, double zaxisRotate,
+                      bool isQuickTurn);
+
   void TankDrive(double leftSpeed, double rightSpeed) override;
 
   void ResetEncoders() override;

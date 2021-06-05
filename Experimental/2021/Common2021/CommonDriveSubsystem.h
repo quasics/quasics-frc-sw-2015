@@ -34,6 +34,20 @@ class CommonDriveSubsystem : public frc2::SubsystemBase {
                            bool squareInputs = true) = 0;
 
   /**
+   * Drives the robot using "curvature drive" controls (a specialized version
+   * of arcade drive).
+   *
+   * @param xaxisSpeed the robot's speed along the X axis [-1.0..1.0]. Forward
+   *                   is positive.
+   * @param zaxisRotate the robot's rotation rate around the Z axis [-1.0..1.0].
+   *                    Clockwise is positive
+   * @param isQuickTurn if set, overrides constant-curvature turning for
+   *                    turn-in-place maneuvers
+   */
+  virtual void CurvatureDrive(double xaxisSpeed, double zaxisRotate,
+                              bool isQuickTurn) = 0;
+
+  /**
    * Drives the robot using tank drive (left and right powered independently).
    *
    * @param leftSpeed the commanded speed for the left side

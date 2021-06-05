@@ -26,12 +26,14 @@
 #include "../../../../Common2021/DriveStraightCommand.h"
 #include "../../../../Common2021/SpeedScaler.h"
 #include "../../../../Common2021/TeleopArcadeDrive.h"
+#include "../../../../Common2021/TeleopCurvatureDrive.h"
 #include "../../../../Common2021/TeleopTankDrive.h"
 #include "../../../../Common2021/TrajectoryCommandGenerator.h"
 #include "../../../../Common2021/TurnToTargetCommand.h"
 #include "Constants.h"
 
 #undef DRIVE_ARCADE_STYLE
+#undef DRIVE_CURVATURE_STYLE
 #define USE_GAMESIR_CONTROLLER
 
 constexpr double kTurtleModeMaxSpeed = 0.5;
@@ -169,6 +171,32 @@ void RobotContainer::EnableTankDrive() {
       }));
 }
 
+void RobotContainer::EnableCurvatureDrive() {
+  m_drive.SetDefaultCommand(TeleopCurvatureDrive(
+      &m_drive,
+      [this] {
+        const int joystickVerticalAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftYAxis
+                : int(JoystickDefinitions::GameSirPro::LeftVertical);
+        return -m_throttleDeadBand(
+            m_controller.GetRawAxis(joystickVerticalAxis));
+      },
+      [this] {
+        const int joystickHorizontalalAxis =
+            usingLogitechController()
+                ? JoystickDefinitions::LogitechGamePad::LeftXAxis
+                : int(JoystickDefinitions::GameSirPro::LeftHorizontal);
+        return m_throttleDeadBand(
+            m_controller.GetRawAxis(joystickHorizontalalAxis));
+      },
+      [this] {
+        return m_controller.GetRawButton(
+          usingLogitechController() ?
+        JoystickDefinitions::LogitechGamePad::StartButton : JoystickDefinitions::GameSirPro::LeftShoulder);
+      }));
+}
+
 void RobotContainer::EnableArcadeDrive() {
   m_drive.SetDefaultCommand(TeleopArcadeDrive(
       &m_drive,
@@ -193,6 +221,8 @@ void RobotContainer::EnableArcadeDrive() {
 void RobotContainer::ConfigureDrivingCommand() {
 #ifdef DRIVE_ARCADE_STYLE
   EnableArcadeDrive();
+#elif defined(DRIVE_CURVATURE_STYLE)
+  EnableCurvatureDrive();
 #else
   EnableTankDrive();
 #endif

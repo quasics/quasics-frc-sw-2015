@@ -6,6 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <units/length.h>
+
+#include "subsystems/Drivetrain.h"
 
 /**
  * An example command.
@@ -17,7 +20,7 @@
 class DriveCircle
     : public frc2::CommandHelper<frc2::CommandBase, DriveCircle> {
  public:
-  DriveCircle();
+  DriveCircle(Drivetrain* drivetrain, units::meter_t distance, double speedAsPercent);
 
   void Initialize() override;
 
@@ -26,4 +29,11 @@ class DriveCircle
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+  private:
+
+    Drivetrain* m_drivetrain;
+    units::meter_t m_distance;
+    double m_speedAsPercent;
+
 };

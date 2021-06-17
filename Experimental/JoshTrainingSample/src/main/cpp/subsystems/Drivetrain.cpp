@@ -30,6 +30,10 @@ void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate) {
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate);
 }
 
+void Drivetrain::TankDrive(double leftWheelSpeed, double rightWheelSpeed) {
+  m_drive.TankDrive(leftWheelSpeed, rightWheelSpeed);
+}
+
 void Drivetrain::ResetEncoders() {
   m_leftEncoder.Reset();
   m_rightEncoder.Reset();

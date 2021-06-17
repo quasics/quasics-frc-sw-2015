@@ -9,6 +9,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/button/Button.h>
 
+#include "commands/DriveCircle.h"
 #include "Constants.h"
 #include "commands/AutonomousDistance.h"
 #include "commands/AutonomousTime.h"
@@ -58,7 +59,6 @@ class RobotContainer {
   AutonomousDistance m_autoDistance{&m_drive};
   AutonomousTime m_autoTime{&m_drive};
   DriveForward m_forward1Meter{&m_drive, 1_m, 0.5};
-
-
+  DriveCircle m_driveCircle{&m_drive, 1_m, 1};
   void ConfigureButtonBindings();
 };

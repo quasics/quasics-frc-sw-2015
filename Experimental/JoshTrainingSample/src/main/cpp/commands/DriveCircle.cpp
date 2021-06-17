@@ -28,7 +28,7 @@ void DriveCircle::End(bool interrupted) {
 // Returns true when the command should end.
 bool DriveCircle::IsFinished() {
   if(m_drivetrain->GetGyroAngleZ() >= 360) {
-    return true
+    return true;
   }
   return false;
 }

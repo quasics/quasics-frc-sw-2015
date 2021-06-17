@@ -26,10 +26,10 @@ void RobotContainer::ConfigureButtonBindings() {
       .WhenReleased(frc2::PrintCommand("Button A Released"));
 
   // Setup SmartDashboard options.
-  m_chooser.SetDefaultOption("Auto Routine Distance", &m_autoDistance);
+  m_chooser.SetDefaultOption("Drive a cicle" , &m_driveCircle);
+  m_chooser.AddOption("Auto Routine Distance", &m_autoDistance);
   m_chooser.AddOption("Auto Routine Time", &m_autoTime);
   m_chooser.AddOption("Forward 1m, 50% speed", &m_forward1Meter);
-  m_chooser.AddOption("Drive a cicle" , &m_driveCircle);
   frc::SmartDashboard::PutData("Auto Selector", &m_chooser);
 }
 

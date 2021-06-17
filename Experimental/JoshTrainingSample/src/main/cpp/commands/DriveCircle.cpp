@@ -18,7 +18,9 @@ void DriveCircle::Initialize() {
 }
 /* (((speedAsPercent - 0.1397) * 3.1415) / (speedAsPercent * 3.1415)) */
 // Called repeatedly when this Command is scheduled to run
-void DriveCircle::Execute() {}
+void DriveCircle::Execute() {
+  m_drivetrain->TankDrive(m_speedAsPercent, (m_speedAsPercent * 0.75));
+}
 
 // Called once the command ends or is interrupted.
 void DriveCircle::End(bool interrupted) {

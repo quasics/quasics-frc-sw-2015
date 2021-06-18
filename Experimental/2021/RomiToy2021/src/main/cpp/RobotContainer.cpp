@@ -34,7 +34,7 @@
 
 #undef DRIVE_ARCADE_STYLE
 #undef DRIVE_CURVATURE_STYLE
-#define USE_GAMESIR_CONTROLLER
+// #define USE_GAMESIR_CONTROLLER
 
 constexpr double kTurtleModeMaxSpeed = 0.5;
 constexpr double kNormalModeMaxSpeed = 0.75;

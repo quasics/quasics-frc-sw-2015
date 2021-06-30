@@ -35,8 +35,10 @@
 #include "commands/DecrementLinearActuator.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/ExtendIntake.h"
 #include "commands/IncrementLinearActuator.h"
 #include "commands/IntakePowerCells.h"
+#include "commands/RetractIntake.h"
 #include "commands/RunOnlyConveyorMotor.h"
 #include "commands/RunOnlyConveyorMotorReverse.h"
 #include "commands/RunOnlyIntakeMotor.h"
@@ -262,6 +264,11 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Toggle solenoid",
       new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
                                {&pneumatics}));
+  frc::SmartDashboard::PutData("Extend Intake",
+                               new ExtendIntake(&pneumatics));
+  frc::SmartDashboard::PutData("Retract Intake", 
+                               new RetractIntake(&pneumatics));
+
 #endif  // ENABLE_PNEUMATICS
 
   std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),

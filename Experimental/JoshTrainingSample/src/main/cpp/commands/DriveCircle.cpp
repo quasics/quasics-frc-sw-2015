@@ -14,12 +14,12 @@ DriveCircle::DriveCircle(Drivetrain* drivetrain, units::meter_t distance, double
 void DriveCircle::Initialize() {
   m_drivetrain->ResetGyro();
   m_drivetrain->ResetEncoders();
-  m_drivetrain->TankDrive(m_speedAsPercent, (((m_speedAsPercent - 0.1397) * 3.1415) / (m_speedAsPercent * 3.1415)));
+  m_drivetrain->TankDrive(m_speedAsPercent, (m_speedAsPercent * 0.75));
 }
 /* (((speedAsPercent - 0.1397) * 3.1415) / (speedAsPercent * 3.1415)) */
 // Called repeatedly when this Command is scheduled to run
 void DriveCircle::Execute() {
-  m_drivetrain->TankDrive(m_speedAsPercent, (((m_speedAsPercent - 0.1397) * 3.1415) / (m_speedAsPercent * 3.1415)));
+  m_drivetrain->TankDrive(m_speedAsPercent, (m_speedAsPercent * 0.75));
 }
 
 // Called once the command ends or is interrupted.

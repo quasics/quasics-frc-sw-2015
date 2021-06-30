@@ -27,6 +27,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Setup SmartDashboard options.
   m_chooser.SetDefaultOption("Drive a cicle" , &m_driveCircle);
+  m_chooser.AddOption("Drive a small circle" , &m_driveSmallCircle);
   m_chooser.AddOption("Auto Routine Distance", &m_autoDistance);
   m_chooser.AddOption("Auto Routine Time", &m_autoTime);
   m_chooser.AddOption("Forward 1m, 50% speed", &m_forward1Meter);
@@ -35,4 +36,17 @@ void RobotContainer::ConfigureButtonBindings() {
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_chooser.GetSelected();
+}
+
+// Sample usage:
+//    frc2::Command* group = BuildSequentialCommandGroup(new CommandOne(.....), new CommandTwo(.....));
+frc2::SequentialCommandGroup* RobotContainer::BuildSequentialCommandGroup(
+  frc2::Command* commandOne, frc2::Command* commandTwo
+) {
+  std::vector<std::unique_ptr<frc2::Command>> commandPieces;
+
+  commandPieces.push_back(std::move(std::unique_ptr<frc2::Command>(commandOne)));
+  commandPieces.push_back(std::move(std::unique_ptr<frc2::Command>(commandTwo)));
+
+  return new frc2::SequentialCommandGroup(std::move(commandPieces));
 }

@@ -44,6 +44,12 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
+  // Sample usage:
+  //    frc2::Command* group = BuildSequentialCommandGroup(new CommandOne(.....), new CommandTwo(.....));
+  //
+  // Note: the command group will assume full ownership of the two
+  // commands.  Once you pass them in, you shouldn't do *anything*
+  // with them except through the resulting command group.
   frc2::SequentialCommandGroup* BuildSequentialCommandGroup(
       frc2::Command* commandOne, frc2::Command* commandTwo
     );

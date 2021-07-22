@@ -21,6 +21,7 @@
 #include "subsystems/Intake.h"
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
+#include "subsystems/Lights.h"
 
 #define ENABLE_PNEUMATICS
 
@@ -115,6 +116,7 @@ class RobotContainer {
   Drivebase drivebase;
   Shooter shooter;
   Intake intake;
+  Lights lights;
 #ifdef ENABLE_PNEUMATICS
   Pneumatics pneumatics;
 #endif  // ENABLE_PNEUMATICS

@@ -32,6 +32,7 @@
 
 #include "Constants.h"
 #include "commands/AutoIntakeCells.h"
+#include "commands/ColorLights.h"
 #include "commands/DecrementLinearActuator.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
@@ -47,6 +48,7 @@
 #include "commands/ShootWithLimitSwitch.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Lights.h"
 
 #undef GALACTIC_SEARCH_JUST_PRINTS
 
@@ -233,6 +235,14 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
+  frc::SmartDashboard::PutData("Red Light",
+                               new ColorLights(&lights, 255, 0, 0));
+  frc::SmartDashboard::PutData("Green Light",
+                               new ColorLights(&lights, 0, 255, 0));
+  frc::SmartDashboard::PutData("Blue Light",
+                               new ColorLights(&lights, 0, 0, 255));
+  frc::SmartDashboard::PutData("Lights Out",
+                               new ColorLights(&lights, 0, 0, 0));
   frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
   frc::SmartDashboard::PutData("Run shooter at 100% power",
                                new RunShootingMotor(&shooter, 1.0));

@@ -16,12 +16,13 @@
 
 #include "SpeedScaler.h"  // TODO(scott): Replace this example.
 #include "VisionSettingsHelper.h"
+#include "commands/ColorLights.h"
 #include "commands/TankDrive.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Lights.h"
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
-#include "subsystems/Lights.h"
 
 #define ENABLE_PNEUMATICS
 
@@ -40,7 +41,9 @@ class RobotContainer {
 
  private:
   TankDrive* BuildTankDriveCommand();
+  ColorLights* BuildColorLightsCommand();
   void ConfigureTankDrive();
+  void ConfigureLights();
   void ConfigureAutoSelection();
   void ConfigureSmartDashboard();
   void ConfigureButtonBindings();

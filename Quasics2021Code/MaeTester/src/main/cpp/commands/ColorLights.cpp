@@ -12,16 +12,6 @@ ColorLights::ColorLights(Lights* lights, int red, int green, int blue)
 
 // Called when the command is initially scheduled.
 void ColorLights::Initialize() {
+  std::cout << "Initializing color strip data." << std::endl;
   lights->SetStripColor(red, green, blue);
-}
-
-// Called repeatedly when this Command is scheduled to run
-void ColorLights::Execute() {}
-
-// Called once the command ends or is interrupted.
-void ColorLights::End(bool interrupted) {}
-
-// Returns true when the command should end.
-bool ColorLights::IsFinished() {
-  return false;
 }

@@ -65,9 +65,12 @@ RobotContainer::RobotContainer() {
   auto table = inst.GetTable(NetworkTableNames::kVisionTable);
   pathId = table->GetEntry(NetworkTableNames::kPathID);
 
+  // Configure the key subsystems.
+  ConfigureTankDrive();
+  ConfigureLights();
+
   //////////////////////////////////////////
   // Configure the button bindings.
-  ConfigureTankDrive();
   ConfigureButtonBindings();
   ConfigureSmartDashboard();
   ConfigureAutoSelection();
@@ -127,9 +130,18 @@ TankDrive* RobotContainer::BuildTankDriveCommand() {
       });
 }
 
+ColorLights* RobotContainer::BuildColorLightsCommand() {
+  return new ColorLights(&lights, 0, 255, 0);
+}
+
 void RobotContainer::ConfigureTankDrive() {
   std::unique_ptr<TankDrive> cmd(BuildTankDriveCommand());
   drivebase.SetDefaultCommand(*cmd);
+}
+
+void RobotContainer::ConfigureLights() {
+  std::unique_ptr<ColorLights> cmd(BuildColorLightsCommand());
+  lights.SetDefaultCommand(*cmd);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(

@@ -4,12 +4,22 @@
 
 #include "subsystems/Lights.h"
 
-Lights::Lights() = default;
+Lights::Lights() {
+  SetSubsystem("Lights");
+
+  // We need to tell the addressable LED thing how many lights it is
+  // theoretically equipped with.  (If we go over, no biggie.  But it
+  // needs to get a valid length for comparison to the size of the
+  // buffer when "SetData()" is called later: if the buffer is too big,
+  // that will fail.)
+  m_led.SetLength(kLength);
+}
 
 // This method will be called once per scheduler run
 void Lights::Periodic() {}
 
 void Lights::SetStripColor(int red, int green, int blue){
+  std::cout << "Setting strip color" << std::endl;
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i].SetRGB(red, green, blue);
   }

@@ -3,11 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-#include <frc2/command/SubsystemBase.h>
-#include <ctre/Phoenix.h>
-#include <Constants.h>
 #include <frc/Compressor.h>
 #include <frc/DoubleSolenoid.h>
+#include <frc2/command/SubsystemBase.h>
 
 class Pneumatics : public frc2::SubsystemBase {
  public:

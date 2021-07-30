@@ -16,7 +16,9 @@ void SlowShotSpeed::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void SlowShotSpeed::Execute() {}
+void SlowShotSpeed::Execute() {
+  shooter->setSpeed(power); //makes yeet wheel keep spinning
+}
 
 // Called once the command ends or is interrupted.
 void SlowShotSpeed::End(bool interrupted) {

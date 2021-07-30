@@ -15,7 +15,9 @@ void FastShotSpeed::Initialize() {
   Shooter->setSpeed(power);
 }
 // Called repeatedly when this Command is scheduled to run
-void FastShotSpeed::Execute() {}
+void FastShotSpeed::Execute() {
+  shooter->setSpeed(power); //makes yeet wheel keep spinning
+}
 
 // Called once the command ends or is interrupted.
 void FastShotSpeed::End(bool interrupted) {

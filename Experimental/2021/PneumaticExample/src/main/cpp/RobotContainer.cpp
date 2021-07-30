@@ -4,6 +4,8 @@
 
 #include "RobotContainer.h"
 
+#include <iostream>
+
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 
@@ -12,6 +14,7 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigurePneumaticDashboardCommands() {
+  std::cout << "Setting up compressor commands" << std::endl;
   frc::SmartDashboard::PutData(
       "Extend solenoid",
       new frc2::InstantCommand([this]() { m_pneumaticsBoard.ExtendSolenoid(); },

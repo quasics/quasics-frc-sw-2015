@@ -8,6 +8,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/button/Button.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 #include "Constants.h"
 #include "commands/AutonomousDistance.h"
@@ -40,6 +41,9 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
+  frc2::SequentialCommandGroup* BuildSquareCommand();
+
+
   // Assumes a gamepad plugged into channnel 0
   frc::Joystick m_controller{0};
   frc::SendableChooser<frc2::Command*> m_chooser;
@@ -56,6 +60,7 @@ class RobotContainer {
   // Autonomous commands.
   AutonomousDistance m_autoDistance{&m_drive};
   AutonomousTime m_autoTime{&m_drive};
-
+ 
   void ConfigureButtonBindings();
 };
+

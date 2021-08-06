@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.Relay;
 
 public class ExampleSubsystem extends SubsystemBase {
@@ -12,17 +13,27 @@ public class ExampleSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {
-    relay = new Relay(2);
-
-    // Technically not needed....
-    relay.setDirection(Relay.Direction.kForward);
+    relay = new Relay(Constants.RELAY_SLOT);
+    relayOff();
   }
 
-  public void enableRelay() {
+  public void relayOn() {
+    System.out.println("Relay on");
     relay.set(Relay.Value.kOn);
   }
 
-  public void disableRelay() {
+  public void relayForward() {
+    System.out.println("Relay forward");
+    relay.set(Relay.Value.kForward);
+  }
+
+  public void relayReverse() {
+    System.out.println("Relay reverse");
+    relay.set(Relay.Value.kReverse);
+  }
+
+  public void relayOff() {
+    System.out.println("Relay off");
     relay.set(Relay.Value.kOff);
   }
 

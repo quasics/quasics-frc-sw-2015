@@ -29,8 +29,10 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putData("Enable relay", new InstantCommand(m_exampleSubsystem::enableRelay, m_exampleSubsystem));
-    SmartDashboard.putData("Disable relay", new InstantCommand(m_exampleSubsystem::disableRelay, m_exampleSubsystem));
+    SmartDashboard.putData("Relay on", new InstantCommand(m_exampleSubsystem::relayOn, m_exampleSubsystem));
+    SmartDashboard.putData("Relay forward", new InstantCommand(m_exampleSubsystem::relayForward, m_exampleSubsystem));
+    SmartDashboard.putData("Relay reverse", new InstantCommand(m_exampleSubsystem::relayReverse, m_exampleSubsystem));
+    SmartDashboard.putData("Relay off", new InstantCommand(m_exampleSubsystem::relayOff, m_exampleSubsystem));
   }
 
   /**

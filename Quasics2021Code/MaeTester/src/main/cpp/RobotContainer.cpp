@@ -201,8 +201,8 @@ void RobotContainer::ConfigureButtonBindings() {
   static SetShotSpeed SetShotSpeed(&shooter, &fastShotSpeed);
 #endif  // BROKEN_BY_JOSH
 
-#define FOR_DEMO
-#ifdef FOR_DEMO
+#define ENABLE_BINDINGS_FOR_DEMO
+#ifdef ENABLE_BINDINGS_FOR_DEMO
   // Bindings defined by Matt Healy and Meg Gilmore on 12Aug2021,
   // for use at the demo on 14Aug2021.
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -216,11 +216,16 @@ void RobotContainer::ConfigureButtonBindings() {
                                      shooterToMinimumCommandPtr.get());
 
 #ifdef ENABLE_PNEUMATICS
-  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::LeftShoulder,
-                                   openIntakeCommandPtr.get());
-  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::RightShoulder,
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::BackButton,
                                    closeIntakeCommandPtr.get());
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::StartButton,
+                                   openIntakeCommandPtr.get());
 #endif  // ENABLE_PNEUMATICS
+
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::LeftShoulder,
+                                   &intakeForwardCommand);
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::RightShoulder,
+                                   &intakeReverseCommand);
 
 #else
   RunCommandWhenOperatorButtonIsHeld(
@@ -269,7 +274,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // use kBack to extend, kStart to retract That makes no sense? Back and extend
   // are basically antonyms. so are start and retract.
 
-#endif  // FOR_DEMO
+#endif  // ENABLE_BINDINGS_FOR_DEMO
 }
 
 void RobotContainer::ConfigureAutoSelection() {

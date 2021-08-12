@@ -24,7 +24,7 @@
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
 
-#define ENABLE_PNEUMATICS
+// #define ENABLE_PNEUMATICS
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -54,6 +54,9 @@ class RobotContainer {
 
   void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId,
                                           frc2::Command* command);
+
+  void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                        frc2::Command* command);
 
   //////////////////////////////////////////////////////////////////
   // Utility functions for generating trajectory-based commands.

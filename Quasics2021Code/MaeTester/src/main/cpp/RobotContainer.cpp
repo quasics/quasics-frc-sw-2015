@@ -36,10 +36,8 @@
 #include "commands/DecrementLinearActuator.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
-#include "commands/ExtendIntake.h"
 #include "commands/IncrementLinearActuator.h"
 #include "commands/IntakePowerCells.h"
-#include "commands/RetractIntake.h"
 #include "commands/RunOnlyConveyorMotor.h"
 #include "commands/RunOnlyConveyorMotorReverse.h"
 #include "commands/RunOnlyIntakeMotor.h"
@@ -154,36 +152,97 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
       .WhileHeld(command);  // see last year's code
 }
 
+void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                                      frc2::Command* command) {
+  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command);
+}
+
 void RobotContainer::ConfigureButtonBindings() {
-  static RunShootingMotor runshootingmotor(&shooter);
-  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
+  // Run the shooter (high/low speed).
+  static RunShootingMotor runShooterFullSpeed(&shooter, 1.0);
+  static RunShootingMotor runShooterLowSpeed(&shooter, 0.8);
+
+  // Run the intake (forward/back)
+  static RunOnlyIntakeMotor intakeForwardCommand(&intake);
+  static RunOnlyIntakeMotorReverse intakeReverseCommand(&intake);
+
+  // Run the conveyor (forward/back).
+  static RunOnlyConveyorMotor conveyorForwardCommand(&intake);
+  static RunOnlyConveyorMotorReverse conveyorBackwardCommand(&intake);
+
+  // Gross adjustments to the shooting angle.
+  static std::unique_ptr<frc2::Command> shooterToMinimumCommandPtr{
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },
+                               {&shooter})};
+  static std::unique_ptr<frc2::Command> shooterToMaximumCommandPtr{
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(1.0); },
+                               {&shooter})};
+
+  // Fine adjustments to the shooting angle
+  static IncrementLinearActuator incrementShootingAngle(&shooter);
+  static DecrementLinearActuator decrementShootingAngle(&shooter);
+
+#ifdef ENABLE_PNEUMATICS
+  // Moving the intake in/out (via pneumatics).
+  static std::unique_ptr<frc2::Command> openIntakeCommandPtr{
+      new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
+                               {&pneumatics})};
+  static std::unique_ptr<frc2::Command> closeIntakeCommandPtr{
+      new frc2::InstantCommand([this]() { pneumatics.RetractSolenoid(); },
+                               {&pneumatics})};
+#endif  // ENABLE_PNEUMATICS
+
+  // Other commands.
   static IntakePowerCells intakepowercells(&intake);
-  static RunOnlyIntakeMotor runonlyintakemotor(&intake);
-  static RunOnlyIntakeMotorReverse runonlyintakemotorreverse(&intake);
-  static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
-  static RunOnlyConveyorMotorReverse RunOnlyConveyorMotorReverse(&intake);
-  static IncrementLinearActuator incrementlinearactuator(&shooter);
-  static DecrementLinearActuator decrementlinearactuator(&shooter);
+  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
 
 #ifdef BROKEN_BY_JOSH
   // Note: Shot speed value is needed.
   static SetShotSpeed SetShotSpeed(&shooter, &fastShotSpeed);
 #endif  // BROKEN_BY_JOSH
 
+#define FOR_DEMO
+#ifdef FOR_DEMO
+  // Bindings defined by Matt Healy and Meg Gilmore on 12Aug2021,
+  // for use at the demo on 14Aug2021.
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &conveyorBackwardCommand);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     &conveyorForwardCommand);
+
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBumperLeft,
+                                     shooterToMaximumCommandPtr.get());
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBumperRight,
+                                     shooterToMinimumCommandPtr.get());
+
+#ifdef ENABLE_PNEUMATICS
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::LeftShoulder,
+                                   openIntakeCommandPtr.get());
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::RightShoulder,
+                                   closeIntakeCommandPtr.get());
+#endif  // ENABLE_PNEUMATICS
+
+#else
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kA,
-      &runshootingmotor);  // see last year's code
+      &runShooterFullSpeed);  // see last year's code
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,  // Shoot
                                      &shootwithlimitswitch);
 
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kB,  // Run conveyor forwards
-      &runonlyconveyormotor);
+      &conveyorForwardCommand);
 
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kX,  // Run coveyor Backwards
-      &RunOnlyConveyorMotorReverse);
+      frc::XboxController::Button::kX,  // Run conveyor Backwards
+      &conveyorBackwardCommand);
+
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kStart,
+                                     &incrementShootingAngle);
+
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBack,
+                                     &decrementShootingAngle);
 
 #ifdef BROKEN_BY_JOSH
   RunCommandWhenOperatorButtonIsHeld(
@@ -192,12 +251,6 @@ void RobotContainer::ConfigureButtonBindings() {
   );
 #endif  // BROKEN_BY_JOSH
 
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kStart,
-                                     &incrementlinearactuator);
-
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBack,
-                                     &decrementlinearactuator);
-
   /*
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kB,  // Run conveyor and intake
@@ -205,16 +258,18 @@ void RobotContainer::ConfigureButtonBindings() {
 
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kBumperLeft,  // Run intake forwards
-      &runonlyintakemotor);
+      &intakeForwardCommand);
 
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kBumperRight,  // Run intake backwards
-      &runonlyintakemotorreverse);
+      &intakeReverseCommand);
   */
 
   // If we end up using buttons for changing shooter angle with the actuator,
   // use kBack to extend, kStart to retract That makes no sense? Back and extend
   // are basically antonyms. so are start and retract.
+
+#endif  // FOR_DEMO
 }
 
 void RobotContainer::ConfigureAutoSelection() {
@@ -296,26 +351,17 @@ void RobotContainer::ConfigureSmartDashboard() {
 
 #ifdef ENABLE_PNEUMATICS
   frc::SmartDashboard::PutData(
-      "Extend solenoid",
+      "Extend Intake",
       new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
                                {&pneumatics}));
   frc::SmartDashboard::PutData(
-      "Retract solenoid",
+      "Retract Intake",
       new frc2::InstantCommand([this]() { pneumatics.RetractSolenoid(); },
                                {&pneumatics}));
   frc::SmartDashboard::PutData(
-      "Stop solenoid",
-      new frc2::InstantCommand([this]() { pneumatics.StopSolenoid(); },
-                               {&pneumatics}));
-  frc::SmartDashboard::PutData(
-      "Toggle solenoid",
+      "Toggle Intake",
       new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
                                {&pneumatics}));
-  frc::SmartDashboard::PutData("Extend Intake",
-                               new ExtendIntake(&pneumatics));
-  frc::SmartDashboard::PutData("Retract Intake", 
-                               new RetractIntake(&pneumatics));
-
 #endif  // ENABLE_PNEUMATICS
 
   std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),

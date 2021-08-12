@@ -28,3 +28,4 @@ void FastShotSpeed::End(bool interrupted) {
 bool FastShotSpeed::IsFinished() {
   return false;
 }
+*/

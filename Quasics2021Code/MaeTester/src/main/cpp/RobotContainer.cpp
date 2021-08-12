@@ -49,7 +49,10 @@
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
+
+#ifdef BROKEN_BY_JOSH
 #include "subsystems/SetShotSpeed.h"
+#endif  // BROKEN_BY_JOSH
 
 #undef GALACTIC_SEARCH_JUST_PRINTS
 
@@ -153,53 +156,61 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 
 void RobotContainer::ConfigureButtonBindings() {
   static RunShootingMotor runshootingmotor(&shooter);
+  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
+  static IntakePowerCells intakepowercells(&intake);
+  static RunOnlyIntakeMotor runonlyintakemotor(&intake);
+  static RunOnlyIntakeMotorReverse runonlyintakemotorreverse(&intake);
+  static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
+  static RunOnlyConveyorMotorReverse RunOnlyConveyorMotorReverse(&intake);
+  static IncrementLinearActuator incrementlinearactuator(&shooter);
+  static DecrementLinearActuator decrementlinearactuator(&shooter);
+
+#ifdef BROKEN_BY_JOSH
+  // Note: Shot speed value is needed.
+  static SetShotSpeed SetShotSpeed(&shooter, &fastShotSpeed);
+#endif  // BROKEN_BY_JOSH
+
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kA,
       &runshootingmotor);  // see last year's code
 
-    /*  static IntakePowerCells intakepowercells(&intake);
-      RunCommandWhenOperatorButtonIsHeld(
-          frc::XboxController::Button::kB,  // Run conveyor and intake
-          &intakepowercells);*/
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,  // Shoot
+                                     &shootwithlimitswitch);
 
-  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kY,  // Shoot
-      &shootwithlimitswitch);
-
-    /*  static RunOnlyIntakeMotor runonlyintakemotor(&intake);
-      RunCommandWhenOperatorButtonIsHeld(
-          frc::XboxController::Button::kBumperLeft,  // Run intake forwards
-          &runonlyintakemotor);*/
-
-        /*  static RunOnlyIntakeMotorReverse runonlyintakemotorreverse(&intake);
-          RunCommandWhenOperatorButtonIsHeld(
-              frc::XboxController::Button::kBumperRight,  // Run intake backwards
-              &runonlyintakemotorreverse);*/
-
-  static RunOnlyConveyorMotor runonlyconveyormotor(&intake);
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kB,  // Run conveyor forwards
       &runonlyconveyormotor);
 
-  static RunOnlyConveyorMotorReverse RunOnlyConveyorMotorReverse(&intake);
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kX,  // Run coveyor Backwards
       &RunOnlyConveyorMotorReverse);
 
-  static SetShotSpeed SetShotSpeed(&shooter,
-                                   &fastShotSpeed);  // Shot speed value needed
+#ifdef BROKEN_BY_JOSH
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kBumperRight,  // Fast Shot Speed
       &setshotspeed);
-  )
-  static IncrementLinearActuator incrementlinearactuator(&shooter);
+  );
+#endif  // BROKEN_BY_JOSH
+
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kStart,
                                      &incrementlinearactuator);
 
-  static DecrementLinearActuator decrementlinearactuator(&shooter);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBack,
                                      &decrementlinearactuator);
+
+  /*
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kB,  // Run conveyor and intake
+      &intakepowercells);
+
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kBumperLeft,  // Run intake forwards
+      &runonlyintakemotor);
+
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Button::kBumperRight,  // Run intake backwards
+      &runonlyintakemotorreverse);
+  */
 
   // If we end up using buttons for changing shooter angle with the actuator,
   // use kBack to extend, kStart to retract That makes no sense? Back and extend

@@ -4,7 +4,7 @@
 
 #include "commands/SlowShotSpeed.h"
 /*
-SlowShotSpeed::SlowShotSpeed(Shooter* shooter, double power) 
+SlowShotSpeed::SlowShotSpeed(Shooter* shooter, double power)
     : shooter(shooter), power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   addRequirements(shooter);
@@ -29,3 +29,4 @@ void SlowShotSpeed::End(bool interrupted) {
 bool SlowShotSpeed::IsFinished() {
   return false;
 }
+*/

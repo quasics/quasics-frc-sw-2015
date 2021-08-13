@@ -18,13 +18,14 @@
 #include "VisionSettingsHelper.h"
 #include "commands/ColorLights.h"
 #include "commands/TankDrive.h"
+#include "commands/TriggerDrivenShootingCommand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
 
-// #define ENABLE_PNEUMATICS
+#define ENABLE_PNEUMATICS
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -41,6 +42,7 @@ class RobotContainer {
 
  private:
   TankDrive* BuildTankDriveCommand();
+  TriggerDrivenShootingCommand* BuildShootingCommand();
   ColorLights* BuildColorLightsCommand();
   void ConfigureTankDrive();
   void ConfigureLights();

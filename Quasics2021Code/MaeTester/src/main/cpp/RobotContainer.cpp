@@ -71,6 +71,10 @@ RobotContainer::RobotContainer() {
   ConfigureTankDrive();
   ConfigureLights();
 
+  std::unique_ptr<TriggerDrivenShootingCommand> shooterCmd(
+      BuildShootingCommand());
+  shooter.SetDefaultCommand(*shooterCmd);
+
   //////////////////////////////////////////
   // Configure the button bindings.
   ConfigureButtonBindings();
@@ -84,6 +88,24 @@ double RobotContainer::deadband(double num) {
     return 0;
   }
   return num;
+}
+
+TriggerDrivenShootingCommand* RobotContainer::BuildShootingCommand() {
+  std::function<bool()> runHighSpeedSupplier = [this] {
+    if (operatorController.GetTriggerAxis(frc::GenericHID::kLeftHand) >= 0.5) {
+      return true;
+    }
+    return false;
+  };
+  std::function<bool()> runLowSpeedSupplier = [this] {
+    if (operatorController.GetTriggerAxis(frc::GenericHID::kRightHand) >= 0.5) {
+      return true;
+    }
+    return false;
+  };
+
+  return new TriggerDrivenShootingCommand(
+      &shooter, 1.0, 0.8, runHighSpeedSupplier, runLowSpeedSupplier);
 }
 
 TankDrive* RobotContainer::BuildTankDriveCommand() {

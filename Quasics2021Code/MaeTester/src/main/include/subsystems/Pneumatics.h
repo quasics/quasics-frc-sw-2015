@@ -7,6 +7,10 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include "Constants.h"
+
+// #define USE_TWO_SOLENOIDS_FOR_INTAKE
+
 class Pneumatics : public frc2::SubsystemBase {
  public:
   Pneumatics();
@@ -44,8 +48,18 @@ class Pneumatics : public frc2::SubsystemBase {
   /** Returns how much current the compressor is drawing. */
   double GetCompressorCurrent();
 
- private:
-  frc::Compressor m_compressor;
-  frc::DoubleSolenoid m_intakeSolenoid;
-  bool compressorEnabled = true;
+  private:
+   void SetIntakeSolenoidState(frc::DoubleSolenoid::Value value);
+
+  private:
+   frc::Compressor m_compressor{PneumaticsIds::DefaultSolenoidId};
+   frc::DoubleSolenoid m_intakeSolenoid{CANBusIds::Other::PCM,
+                                        PneumaticsIds::IntakeSolenoidForward,
+                                        PneumaticsIds::IntakeSolenoidBackward};
+#ifdef USE_TWO_SOLENOIDS_FOR_INTAKE
+   frc::DoubleSolenoid m_intakeSolenoid2{
+       CANBusIds::Other::PCM, PneumaticsIds::IntakeSolenoid2Forward,
+       PneumaticsIds::IntakeSolenoid2Backward};
+#endif  // USE_TWO_SOLENOIDS_FOR_INTAKE
+   bool compressorEnabled = true;
 };

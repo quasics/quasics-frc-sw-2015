@@ -6,34 +6,42 @@
 
 #include "Constants.h"
 
-Pneumatics::Pneumatics()
-    : m_compressor(PneumaticsIds::DefaultSolenoidId),
-      m_intakeSolenoid(CANBusIds::Other::PCM,
-                       PneumaticsIds::IntakeSolenoidForward,
-                       PneumaticsIds::IntakeSolenoidBackward) {
+Pneumatics::Pneumatics() {
   SetName("Pneumatics");
   SetSubsystem("Pneumatics");
+  std::cout << "---------------------------------\n"
+            << "Configuring PCM with CAN ID " << CANBusIds::Other::PCM << "\n"
+            << "---------------------------------\n";
 }
 
 void Pneumatics::Periodic() {
-  // Insert any periodic execution code here.
   m_compressor.SetClosedLoopControl(compressorEnabled);
 }
 
 void Pneumatics::ExtendSolenoid() {
-  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+  SetIntakeSolenoidState(frc::DoubleSolenoid::Value::kForward);
 }
 
 void Pneumatics::RetractSolenoid() {
-  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
+  SetIntakeSolenoidState(frc::DoubleSolenoid::Value::kReverse);
 }
 
 void Pneumatics::StopSolenoid() {
-  m_intakeSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
+  SetIntakeSolenoidState(frc::DoubleSolenoid::Value::kOff);
 }
 
 void Pneumatics::ToggleSolenoid() {
   m_intakeSolenoid.Toggle();
+#ifdef USE_TWO_SOLENOIDS_FOR_INTAKE
+  m_intakeSolenoid2.Toggle();
+#endif  // USE_TWO_SOLENOIDS_FOR_INTAKE
+}
+
+void Pneumatics::SetIntakeSolenoidState(frc::DoubleSolenoid::Value value) {
+  m_intakeSolenoid.Set(value);
+#ifdef USE_TWO_SOLENOIDS_FOR_INTAKE
+  m_intakeSolenoid2.Set(value);
+#endif  // USE_TWO_SOLENOIDS_FOR_INTAKE
 }
 
 void Pneumatics::SetCompressorEnabled(bool tf) {

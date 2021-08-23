@@ -37,13 +37,22 @@ namespace CANBusIds {
     constexpr int ShootingMotor = 1;
   } // namespace VictorFXIds
   namespace Other {
-    constexpr int PCM = 1;
+    // Note: the default CAN bus ID for a PCM is 0, but we've got at least one
+    // PCM (currently on the "demo board") that's using an ID of 1.  This has
+    // bitten us on the butt a couple of times, since not using the correct ID
+    // for the PCM will mean that (a) the compressor won't turn on, and (b) the
+    // code will generate run-time errors that it can't "see" the solenoids
+    // (when the actual problem is that it can't find the PCM).
+    constexpr int PCM = 0;
   }  // namespace Other
 }  // namespace CANBusIds
 
 namespace PneumaticsIds {
   constexpr int IntakeSolenoidForward = 1;
   constexpr int IntakeSolenoidBackward = 2;
+
+  constexpr int IntakeSolenoid2Forward = 3;
+  constexpr int IntakeSolenoid2Backward = 4;
 
   // This is passed to the compressor, for use as a default behind the
   // scenes.

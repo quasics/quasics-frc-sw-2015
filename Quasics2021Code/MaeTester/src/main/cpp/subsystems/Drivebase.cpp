@@ -27,7 +27,7 @@ constexpr double kGearRatio_2021 = 10.71;
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
 Drivebase::Drivebase()
-    : m_odometry(units::degree_t(m_adiGyro.GetAngle())),
+    : 
       m_leftFront(CANBusIds::SparkMaxIds::Left_Front_Number,
                         rev::CANSparkMax::MotorType::kBrushless),
       m_leftRear(CANBusIds::SparkMaxIds::Left_Rear_Number,
@@ -35,7 +35,8 @@ Drivebase::Drivebase()
       m_rightFront(CANBusIds::SparkMaxIds::Right_Front_Number,
                          rev::CANSparkMax::MotorType::kBrushless),
       m_rightRear(CANBusIds::SparkMaxIds::Right_Rear_Number,
-                        rev::CANSparkMax::MotorType::kBrushless) {
+                        rev::CANSparkMax::MotorType::kBrushless),
+	  m_odometry(units::degree_t(m_adiGyro.GetAngle())) {
   SetSubsystem("Drivebase");
 
   m_rightFront.SetInverted(true);

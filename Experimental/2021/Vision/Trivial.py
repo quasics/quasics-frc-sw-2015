@@ -34,7 +34,7 @@ team = 2656
 
 # Requested size of the video feed directly deployed from the camera.
 # (This is apparently independent of the video sizing provided by the
-# CameraServer code, which *appears* to be limited to 160x120.)
+# CameraServer code.)
 width = 320
 height = 240
 

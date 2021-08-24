@@ -27,6 +27,13 @@ class Pneumatics : public frc2::SubsystemBase {
   void StopSolenoid();
   void ToggleSolenoid();
 
+ private:
+  /**
+   * Utility method, used to (mostly) encapsulate knowledge of how many
+   * solenoids are being used for the intake.
+   */
+  void SetIntakeSolenoidState(frc::DoubleSolenoid::Value value);
+
  public:
   // Compressor control
 
@@ -49,10 +56,11 @@ class Pneumatics : public frc2::SubsystemBase {
   double GetCompressorCurrent();
 
   private:
-   void SetIntakeSolenoidState(frc::DoubleSolenoid::Value value);
-
-  private:
+   // Compressor control
    frc::Compressor m_compressor{PneumaticsIds::DefaultSolenoidId};
+   bool compressorEnabled = true;
+
+   // Solenoid(s)
    frc::DoubleSolenoid m_intakeSolenoid{CANBusIds::Other::PCM,
                                         PneumaticsIds::IntakeSolenoidForward,
                                         PneumaticsIds::IntakeSolenoidBackward};
@@ -61,5 +69,4 @@ class Pneumatics : public frc2::SubsystemBase {
        CANBusIds::Other::PCM, PneumaticsIds::IntakeSolenoid2Forward,
        PneumaticsIds::IntakeSolenoid2Backward};
 #endif  // USE_TWO_SOLENOIDS_FOR_INTAKE
-   bool compressorEnabled = true;
 };

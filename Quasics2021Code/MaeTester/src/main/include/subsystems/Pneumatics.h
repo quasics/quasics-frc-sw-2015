@@ -9,7 +9,7 @@
 
 #include "Constants.h"
 
-// #define USE_TWO_SOLENOIDS_FOR_INTAKE
+#define USE_TWO_SOLENOIDS_FOR_INTAKE
 
 class Pneumatics : public frc2::SubsystemBase {
  public:

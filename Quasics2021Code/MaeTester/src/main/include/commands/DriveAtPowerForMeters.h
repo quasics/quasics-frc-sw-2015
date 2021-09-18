@@ -20,6 +20,15 @@
 class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
  public:
+  /**
+   * Drives forard for a certin amount of meters at a certain amount of power
+   *
+   * @param drivebase pointer to the drive base
+   * @param power the % power (for speed control, e.g., 0.5 for 50% speed).
+   *              This will be treated as an absolute value, so sign is ignored.
+   * @param desiredMeters the Distance to drive (e.g., 3_m to drive 3 meters
+   *                      forward, -2_ft to drive 2 feet backward)
+   */
   DriveAtPowerForMeters(Drivebase* drivebase, double power,
                         units::length::meter_t desiredMeters);
 

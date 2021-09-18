@@ -302,50 +302,56 @@ void RobotContainer::ConfigureButtonBindings() {
 void RobotContainer::ConfigureAutoSelection() {
   m_autoChooser.SetDefaultOption("Do nothing",
                                  new frc2::PrintCommand("I refuse to move."));
-  m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
-                                            "TestingS.wpilib.json", true));
-  m_autoChooser.AddOption(
-      "Barrel Racing",
-      GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
-  m_autoChooser.AddOption(
-      "Slalom", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
-  std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
-                                         frc::Translation2d(2_m, 0_m)};
-  m_autoChooser.AddOption(
-      "Go in a line", GenerateRamseteCommand(
-                          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
-                          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
-  m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
+  m_autoChooser.AddOption("Move forward 3 ft",
+                          new DriveAtPowerForMeters(&drivebase, .5, 1_m));
+  m_autoChooser.AddOption("Move backwards 3 ft",
+                          new DriveAtPowerForMeters(&drivebase, .5, -1_m));
 
-  m_autoChooser.AddOption(
-      "Galactic Search Red A",
-      BuildGalacticSearchPath(
-          "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-          "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
+  if (false) {
+    m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
+                                              "TestingS.wpilib.json", true));
+    m_autoChooser.AddOption(
+        "Barrel Racing",
+        GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
+    m_autoChooser.AddOption(
+        "Slalom", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
+    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
+                                          frc::Translation2d(2_m, 0_m)};
+    m_autoChooser.AddOption(
+        "Go in a line", GenerateRamseteCommand(
+                            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
+                            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+    m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
 
-  m_autoChooser.AddOption(
-      "Galactic Search Blue A",
-      BuildGalacticSearchPath(
-          "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
-          "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
+    m_autoChooser.AddOption(
+        "Galactic Search Red A",
+        BuildGalacticSearchPath(
+            "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+            "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
 
-  m_autoChooser.AddOption(
-      "Galactic Search Red B",
-      BuildGalacticSearchPath(
-          "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-          "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
+    m_autoChooser.AddOption(
+        "Galactic Search Blue A",
+        BuildGalacticSearchPath(
+            "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
+            "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
 
-  m_autoChooser.AddOption(
-      "Galactic Search Blue B",
-      BuildGalacticSearchPath(
-          "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
-          "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
+    m_autoChooser.AddOption(
+        "Galactic Search Red B",
+        BuildGalacticSearchPath(
+            "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+            "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
 
-  m_autoChooser.AddOption("Galactic Search Drive Only",
-                          GalacticSearchAutoPath());
-  m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
-  m_autoChooser.AddOption("Cross the Auto line", new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
+    m_autoChooser.AddOption(
+        "Galactic Search Blue B",
+        BuildGalacticSearchPath(
+            "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
+            "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
 
+    m_autoChooser.AddOption("Galactic Search Drive Only",
+                            GalacticSearchAutoPath());
+    m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
+    m_autoChooser.AddOption("Cross the Auto line", new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
+  }
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
 

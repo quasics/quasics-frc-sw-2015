@@ -4,9 +4,15 @@
 
 #include "commands/DriveAtPowerForMeters.h"
 
+#include <cmath>
+
 DriveAtPowerForMeters::DriveAtPowerForMeters(
     Drivebase* drivebase, double power, units::length::meter_t desiredMeters)
-    : drivebase(drivebase), power(power), desiredMeters(desiredMeters) {
+    : drivebase(drivebase),
+      power(
+          (desiredMeters.to<double>() / std::abs(desiredMeters.to<double>())) *
+          std::abs(power)),
+      desiredMeters(desiredMeters) {
   AddRequirements(drivebase);
 }
 

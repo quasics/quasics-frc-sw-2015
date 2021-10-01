@@ -360,15 +360,23 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
-  frc::SmartDashboard::PutData("Red Light",
-                               new ColorLights(&lights, 255, 0, 0));
-  frc::SmartDashboard::PutData("Green Light",
-                               new ColorLights(&lights, 0, 255, 0));
-  frc::SmartDashboard::PutData("Blue Light",
-                               new ColorLights(&lights, 0, 0, 255));
-  frc::SmartDashboard::PutData("Lights Out",
-                               new ColorLights(&lights, 0, 0, 0));
-  frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
+  if (false) {
+    // Lighting controls (under construction)
+    frc::SmartDashboard::PutData("Red Light",
+                                 new ColorLights(&lights, 255, 0, 0));
+    frc::SmartDashboard::PutData("Green Light",
+                                 new ColorLights(&lights, 0, 255, 0));
+    frc::SmartDashboard::PutData("Blue Light",
+                                 new ColorLights(&lights, 0, 0, 255));
+    frc::SmartDashboard::PutData("Lights Out",
+                                 new ColorLights(&lights, 0, 0, 0));
+  }
+  if (false) {
+    // Sample command from s/w team training
+    frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
+  }
+
+  // Various shooter speed controls
   frc::SmartDashboard::PutData("Run shooter at 100% power",
                                new RunShootingMotor(&shooter, 1.0));
   frc::SmartDashboard::PutData("Run shooter at 95% power",
@@ -377,10 +385,14 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new RunShootingMotor(&shooter, 0.9));
   frc::SmartDashboard::PutData("Run shooter at 80% power",
                                new RunShootingMotor(&shooter, 0.8));
+  frc::SmartDashboard::PutData("Run shooter at 75% power",
+                               new RunShootingMotor(&shooter, 0.75));
   frc::SmartDashboard::PutData("Run shooter at 70% power",
                                new RunShootingMotor(&shooter, 0.7));
 
-  frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
+  if (false) {
+    frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
+  }
 
 #ifdef ENABLE_PNEUMATICS
   frc::SmartDashboard::PutData(
@@ -397,24 +409,34 @@ void RobotContainer::ConfigureSmartDashboard() {
                                {&pneumatics}));
 #endif  // ENABLE_PNEUMATICS
 
-  std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
-                                         frc::Translation2d(2_m, 0_m)};
-  frc::SmartDashboard::PutData(
-      "Go in a line", GenerateRamseteCommand(
-                          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
-                          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
-  frc::SmartDashboard::PutData("Go in an S", GenerateRamseteCommandFromPathFile(
-                                                 "TestingS.wpilib.json", true));
-  frc::SmartDashboard::PutData(
-      "Go 9.144 meters at 50%",
-      new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
+  if (false) {
+    // Sample trajectory commands
+    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
+                                           frc::Translation2d(2_m, 0_m)};
+    frc::SmartDashboard::PutData(
+        "Go in a line",
+        GenerateRamseteCommand(
+            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
+            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+    frc::SmartDashboard::PutData(
+        "Go in an S",
+        GenerateRamseteCommandFromPathFile("TestingS.wpilib.json", true));
+  }
 
-  frc::SmartDashboard::PutData(
-      "Go -9.144 meters at -50%",
-      new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
+  if (false) {
+    // Sample movement commands
+    frc::SmartDashboard::PutData(
+        "Go 9.144 meters at 50%",
+        new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
 
-  frc::SmartDashboard::PutData("Simple command group",
-                               BuildBouncePathCommand());
+    frc::SmartDashboard::PutData(
+        "Go -9.144 meters at -50%",
+        new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
+
+    frc::SmartDashboard::PutData("Simple command group",
+                                 BuildBouncePathCommand());
+  }
+  
   frc::SmartDashboard::PutData(
       "Min Shooter Pos",
       new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },

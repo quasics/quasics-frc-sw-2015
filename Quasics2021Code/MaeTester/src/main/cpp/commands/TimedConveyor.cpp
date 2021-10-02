@@ -12,6 +12,7 @@ TimedConveyor::TimedConveyor(Intake* intake, double time, bool forward)
 // Called when the command is initially scheduled.
 void TimedConveyor::Initialize() {
   intake->ConveyBallOn();
+
   // [Re]start the timer
   stopWatch.Reset();
   stopWatch.Start();

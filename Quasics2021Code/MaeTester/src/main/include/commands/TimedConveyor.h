@@ -3,9 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc2/command/WaitCommand.h>  // maybe
+#include <frc2/Timer.h>
+
+#include "subsystems/Intake.h"
 
 /**
  * An example command.
@@ -14,10 +17,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class autonomousConveyor
-    : public frc2::CommandHelper<frc2::CommandBase, autonomousConveyor> {
+class TimedConveyor
+    : public frc2::CommandHelper<frc2::CommandBase, TimedConveyor> {
  public:
-  autonomousConveyor();
+  TimedConveyor(Intake* intake, double time, bool forward);
 
   void Initialize() override;
 
@@ -26,4 +29,10 @@ class autonomousConveyor
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  Intake* intake;
+  const units::second_t time;
+  const bool forward;
+  frc2::Timer stopWatch;
 };

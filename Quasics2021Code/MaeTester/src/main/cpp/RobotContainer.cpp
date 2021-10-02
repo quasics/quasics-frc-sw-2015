@@ -379,10 +379,10 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Conveyor backward, 2sec",
                                new TimedConveyor(&intake, 2, false));
 
-  frc::SmartDashboard::PutData("Shoot for time and speed, 2sec, .50",
-                               new ShootForTime(&shooter, 2, 0.50));
-  frc::SmartDashboard::PutData("Shoot for time and speed, 2sec, 1.00",
-                               new ShootForTime(&shooter, 2, 1.00));
+  frc::SmartDashboard::PutData("Timed shooting, 3sec, +100%",
+                               new ShootForTime(&shooter, 3, 1.00));
+  frc::SmartDashboard::PutData("Timed shooting, 1sec, -40%",
+                               new ShootForTime(&shooter, 1, -0.40));
   frc::SmartDashboard::PutData("Delay for time 1sec", new DelayForTime(1));
 
   frc::SmartDashboard::PutData("Delay for time 2sec", new DelayForTime(2));

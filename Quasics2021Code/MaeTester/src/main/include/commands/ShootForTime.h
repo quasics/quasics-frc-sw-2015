@@ -4,8 +4,10 @@
 
 #pragma once
 
+#include <frc2/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <subsystems/Shooter.h>
 
 /**
  * An example command.
@@ -14,10 +16,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class autonomousShooter
-    : public frc2::CommandHelper<frc2::CommandBase, autonomousShooter> {
+class ShootForTime
+    : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
  public:
-  autonomousShooter();
+  ShootForTime(Shooter* shooter, double time, double speed);
 
   void Initialize() override;
 
@@ -26,4 +28,10 @@ class autonomousShooter
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  Shooter* shooter;
+  const units::second_t time;
+  const double speed;
+  frc2::Timer stopWatch;
 };

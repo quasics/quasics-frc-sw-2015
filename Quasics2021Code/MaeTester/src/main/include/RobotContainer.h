@@ -97,6 +97,12 @@ class RobotContainer {
 
   frc2::SequentialCommandGroup* BuildTestGroupForDelay(double sec);
 
+  frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
+      double secondsToRunConveyor, double secondsToWait);
+
+  frc2::ParallelRaceGroup* BuildConveyorAndShootingSequence(
+      double timeForRunShooter);
+
   /// Builds a command group for the GS challenge, taking the 4 paths to
   /// balls and the end zone from the specified files.  (Will optionally
   /// include the intake operation, running in parallel.)

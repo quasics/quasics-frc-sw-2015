@@ -34,6 +34,7 @@
 #include "commands/AutoIntakeCells.h"
 #include "commands/ColorLights.h"
 #include "commands/DecrementLinearActuator.h"
+#include "commands/DelayForTime.h"
 #include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/IncrementLinearActuator.h"
@@ -43,7 +44,9 @@
 #include "commands/RunOnlyIntakeMotor.h"
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
+#include "commands/ShootForTime.h"
 #include "commands/ShootWithLimitSwitch.h"
+#include "commands/TimedConveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
@@ -371,6 +374,18 @@ void RobotContainer::ConfigureSmartDashboard() {
     frc::SmartDashboard::PutData("Lights Out",
                                  new ColorLights(&lights, 0, 0, 0));
   }
+  frc::SmartDashboard::PutData("Conveyor forward, 2 sec",
+                               new TimedConveyor(&intake, 2, true));
+  frc::SmartDashboard::PutData("Conveyor backward, 2sec",
+                               new TimedConveyor(&intake, 2, false));
+
+  frc::SmartDashboard::PutData("Shoot for time and speed, 2sec, .50",
+                               new ShootForTime(&shooter, 2, 0.50));
+  frc::SmartDashboard::PutData("Shoot for time and speed, 2sec, 1.00",
+                               new ShootForTime(&shooter, 2, 1.00));
+  frc::SmartDashboard::PutData("Delay for time 1sec", new DelayForTime(1));
+
+  frc::SmartDashboard::PutData("Delay for time 2sec", new DelayForTime(2));
   if (false) {
     // Sample command from s/w team training
     frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));

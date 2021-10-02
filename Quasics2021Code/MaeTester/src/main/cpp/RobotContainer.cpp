@@ -374,6 +374,7 @@ void RobotContainer::ConfigureSmartDashboard() {
     frc::SmartDashboard::PutData("Lights Out",
                                  new ColorLights(&lights, 0, 0, 0));
   }
+
   frc::SmartDashboard::PutData("Conveyor forward, 2 sec",
                                new TimedConveyor(&intake, 2, true));
   frc::SmartDashboard::PutData("Conveyor backward, 2sec",
@@ -383,7 +384,8 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new ShootForTime(&shooter, 3, 1.00));
   frc::SmartDashboard::PutData("Timed shooting, 1sec, -40%",
                                new ShootForTime(&shooter, 1, -0.40));
-  frc::SmartDashboard::PutData("Delay for time 1sec", new DelayForTime(1));
+  frc::SmartDashboard::PutData("Delay for time 1sec",
+                               BuildTestGroupForDelay(1));
 
   frc::SmartDashboard::PutData("Delay for time 2sec", new DelayForTime(2));
   if (false) {
@@ -468,6 +470,22 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Dec Shooter Pos",
       new frc2::InstantCommand([this]() { shooter.DecrementPosition(); },
                                {&shooter}));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BuildTestGroupForDelay(
+    double sec) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  // Build the set of commands to run
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new frc2::PrintCommand("Starting delay"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new DelayForTime(sec))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(new frc2::PrintCommand("Delay Ended"))));
+
+  // Generate the wrapping command group
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {

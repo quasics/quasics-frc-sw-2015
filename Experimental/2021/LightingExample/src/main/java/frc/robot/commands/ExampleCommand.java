@@ -31,6 +31,9 @@ public class ExampleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    // TODO: Evaluate if we can instead return true. (I think
+    // that should be possible, since once the color is set, I
+    // would *hope* that it stays set.)
+    return false;
   }
 }

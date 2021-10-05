@@ -79,6 +79,11 @@ def processFrame(frame, lowColorRange, highColorRange):
     # "Threshold" the HSV image to identify the pixels in the targeted color range.
     mask = cv2.inRange(hsv, lowColorRange, highColorRange)
 
+    # TODO: Consider using some mild Gaussian blurring to smooth out the image.
+    # (For some information on this, check out resources like
+    # https://www.tutorialkart.com/opencv/python/opencv-python-gaussian-image-smoothing/)
+    # mask = cv2.GaussianBlur(mask, (5,5), cv2.BORDER_DEFAULT)
+
     # Perform a few rounds of "dilation" (removing small holes inside a larger region)
     # and "erosion" (removing noise from the background).
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations = 3)
@@ -86,7 +91,7 @@ def processFrame(frame, lowColorRange, highColorRange):
     # Now that we've cleaned up our extraction to isolate the areas of the image that we
     # think are the color(s) that we care about, we'll use that to isolate the corresponding
     # full-color version of the captured image, for later display.
-    output_img = cv2.bitwise_and(frame, frame, mask=mask)
+    output_img = cv2.bitwise_and(frame, frame, mask = mask)
 
     # Find the contours of the possible targets (i.e., where we've got continguous blocks
     # of the colors that we care about).
@@ -147,9 +152,9 @@ def processFrame(frame, lowColorRange, highColorRange):
 
 useCamera = True
 
-parser = argparse.ArgumentParser(description='Sample distance calculator (FRC vision processing demo code).')
-parser.add_argument('--camera', help='Camera device number.', default=0, type=int)
-parser.add_argument('--file', help='Still image file to be used.', default="")
+parser = argparse.ArgumentParser(description = 'Sample distance calculator (FRC vision processing demo code).')
+parser.add_argument('--camera', help = 'Camera device number.', default = 0, type = int)
+parser.add_argument('--file', help = 'Still image file to be used.', default = "")
 args = parser.parse_args()
 
 if args.file == "":

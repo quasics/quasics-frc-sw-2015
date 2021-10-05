@@ -249,6 +249,11 @@ def processFrame(inputStream, outputStream):
         (low_H, low_S, low_V),      # low end of the color range
         (high_H, high_S, high_V))   # high end of the color range
 
+    # TODO: Consider using some mild Gaussian blurring to smooth out the image.
+    # (For some information on this, check out resources like
+    # https://www.tutorialkart.com/opencv/python/opencv-python-gaussian-image-smoothing/)
+    # frame_threshold = cv2.GaussianBlur(frame_threshold, (5,5), cv2.BORDER_DEFAULT)
+
     # Minor quality cleanup, performing some rounds of "erosion" and "dilation".
     #
     # In OpenCV, an "opening" operation is erosion (which removes noise in the
@@ -262,7 +267,7 @@ def processFrame(inputStream, outputStream):
     # image that we think are the color(s) that we care about, we'll use
     # that to isolate the corresponding full-color version of the captured
     # image, for later display.
-    output_img = cv2.bitwise_and(input_img,input_img, mask= frame_threshold)
+    output_img = cv2.bitwise_and(input_img,input_img, mask = frame_threshold)
 
     # Find the contours of the possible targets (i.e., where we've got
     # continguous blocks of the colors that we care about).
@@ -493,7 +498,7 @@ def main():
     # Allocating new images is very expensive: always try to preallocate the space
     # that will be used for them, rather than doing this every time you process a
     # frame from the camera.
-    input_img = np.zeros(shape=(width, height, 3), dtype=np.uint8)
+    input_img = np.zeros(shape = (width, height, 3), dtype = np.uint8)
 
     # Used for morphological ops during frame processing.  (This is pretty small,
     # and thus could conceivably be done for every frame, but it's always going to

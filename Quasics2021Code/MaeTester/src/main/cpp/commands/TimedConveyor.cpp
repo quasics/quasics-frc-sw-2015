@@ -11,7 +11,11 @@ TimedConveyor::TimedConveyor(Intake* intake, double time, bool forward)
 
 // Called when the command is initially scheduled.
 void TimedConveyor::Initialize() {
-  intake->ConveyBallOn();
+  if (forward) {
+    intake->ConveyBallOn();
+  }  else  {
+    intake->ConveyBallReverse();
+  }
 
   // [Re]start the timer
   stopWatch.Reset();
@@ -21,7 +25,11 @@ void TimedConveyor::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void TimedConveyor::Execute() {
   // Be paranoid, just in case the CAN bus wants to keep being told...
-  intake->ConveyBallOn();
+  if (forward) {
+    intake->ConveyBallOn();
+  } else {
+    intake->ConveyBallReverse();
+  }
 }
 
 // Called once the command ends or is interrupted.

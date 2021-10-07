@@ -508,189 +508,199 @@ frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-// frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
+//frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
+//    double secondsToRunConveyor, double secondsToWait,
 //    double timeForRunShooter) {
 //  std::vector<std::unique_ptr<frc2::Command>> commands;
 
-// commands.push_back(std::move(
-//    std::unique_ptr<frc2::Command>(new BuildConveyorSeqeunceForAuto())));
-// commands.push_back(std::move(
-//    std::unique_ptr<frc2::Command>(new ShootForTime(timeForRunShooter))));
+  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //    BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
+  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+  //   new ShootForTime(timeForRunShooter, 1.0))));
 
-//  return new frc2::ParallelRaceGroup(std::move(commands));
+  //return new frc2::ParallelRaceGroup(std::move(commands));
+//}
+//frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
+//    double secondsToRunConveyor, double secondsToWait, double timeForRunShooter,
+//    double power, double amountToMove) {
+//    std::vector<std::unique_ptr<frc2::Command>> commands;
+//  return new frc2::SequentialCommandGroup(std::move(commands));
 //}
 
-frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
-  std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
+  frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
+    std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
 
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
-  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile("Bounce Part2.wpilib.json", false))));
-  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //     new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile("Bounce Part3.wpilib.json", false))));
-  /*bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));*/
-  bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
+    bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
+    // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+    //    new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+    bouncePathPieces.push_back(std::move(
+        std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile(
+            "Bounce Part2.wpilib.json", false))));
+    // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+    //     new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+    bouncePathPieces.push_back(std::move(
+        std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile(
+            "Bounce Part3.wpilib.json", false))));
+    /*bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(&drivebase, .6, 1_m))));*/
+    bouncePathPieces.push_back(std::move(
+        std::unique_ptr<frc2::Command>(GenerateRamseteCommandFromPathFile(
+            "Bounce Part4.wpilib.json", false))));
 
-  return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
+    return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
+  }
+
+  // This builds a Galactic Search Path from 4 json files
+  frc2::ParallelCommandGroup* RobotContainer::BuildGalacticSearchPath(
+      std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
+      std::string jsonFile4, bool includeIntakeOperation) {
+    std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
+    GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        GenerateRamseteCommandFromPathFile(jsonFile1, true))));
+    // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+    //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+    GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        GenerateRamseteCommandFromPathFile(jsonFile2, false))));
+    // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+    //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+    GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        GenerateRamseteCommandFromPathFile(jsonFile3, false))));
+    // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+    //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
+    GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
+        GenerateRamseteCommandFromPathFile(jsonFile4, false))));
+
+    std::unique_ptr<frc2::Command> galacticPath(
+        new frc2::SequentialCommandGroup(std::move(GalacticPieces)));
+
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::move(galacticPath));
+
+    if (includeIntakeOperation) {
+      std::unique_ptr<frc2::Command> intakeAuto(new AutoIntakeCells(&intake));
+      commands.push_back(std::move(intakeAuto));
+    } else {
+      std::unique_ptr<frc2::Command> noIntakeAuto(
+          new frc2::PrintCommand("Not running the intake!"));
+      commands.push_back(std::move(noIntakeAuto));
     }
+    return new frc2::ParallelCommandGroup(std::move(commands));
+  }
 
-    // This builds a Galactic Search Path from 4 json files
-    frc2::ParallelCommandGroup* RobotContainer::BuildGalacticSearchPath(
-        std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
-        std::string jsonFile4, bool includeIntakeOperation) {
-      std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
-      GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-          GenerateRamseteCommandFromPathFile(jsonFile1, true))));
-      // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-      GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-          GenerateRamseteCommandFromPathFile(jsonFile2, false))));
-      // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-      GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-          GenerateRamseteCommandFromPathFile(jsonFile3, false))));
-      // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
-      GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-          GenerateRamseteCommandFromPathFile(jsonFile4, false))));
+  frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
+      const frc::Pose2d& start,
+      const std::vector<frc::Translation2d>& interiorWaypoints,
+      const frc::Pose2d& end, bool resetTelemetryAtStart) {
+    using namespace DrivebaseConstants;
+    frc::TrajectoryConfig config = buildConfig();
 
-      std::unique_ptr<frc2::Command> galacticPath(
-          new frc2::SequentialCommandGroup(std::move(GalacticPieces)));
+    auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        start, interiorWaypoints, end, config);
 
-      std::vector<std::unique_ptr<frc2::Command>> commands;
-      commands.push_back(std::move(galacticPath));
+    frc::SimpleMotorFeedforward<units::meter> feedForward(
+        ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 
-      if (includeIntakeOperation) {
-        std::unique_ptr<frc2::Command> intakeAuto(new AutoIntakeCells(&intake));
-        commands.push_back(std::move(intakeAuto));
-      } else {
-        std::unique_ptr<frc2::Command> noIntakeAuto(
-            new frc2::PrintCommand("Not running the intake!"));
-        commands.push_back(std::move(noIntakeAuto));
-      }
-      return new frc2::ParallelCommandGroup(std::move(commands));
+    return createRams(trajectory, resetTelemetryAtStart);
+  }
+
+  frc2::SequentialCommandGroup*
+  RobotContainer::GenerateRamseteCommandFromPathFile(
+      std::string filename, bool resetTelemetryAtStart) {
+    frc::Trajectory trajectory = loadTraj(filename);
+
+    return createRams(trajectory, resetTelemetryAtStart);
+  }
+
+  frc::TrajectoryConfig RobotContainer::buildConfig() {
+    using namespace DrivebaseConstants;
+
+    frc::SimpleMotorFeedforward<units::meter> feedForward(
+        ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
+    frc::DifferentialDriveVoltageConstraint voltageConstraints(
+        feedForward, kDriveKinematics, 10_V);
+    frc::TrajectoryConfig config(kMaxSpeed, kMaxAcceleration);
+
+    config.SetKinematics(kDriveKinematics);
+
+    config.AddConstraint(voltageConstraints);
+    return config;
+  }
+
+  frc2::SequentialCommandGroup* RobotContainer::createRams(
+      frc::Trajectory trajectory, bool resetTelemetryAtStart) {
+    using namespace DrivebaseConstants;
+
+    frc::SimpleMotorFeedforward<units::meter> feedForward(
+        ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
+    frc2::RamseteCommand ramseteCommand(
+        trajectory, [this]() { return drivebase.GetPose(); },
+        frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
+        kDriveKinematics, [this]() { return drivebase.GetWheelSpeeds(); },
+        frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
+        frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
+        [this](auto left, auto right) {
+          drivebase.TankDriveVolts(left, right);
+        },
+        {&drivebase});
+
+    return new frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
+          if (resetTelemetryAtStart) {
+            drivebase.ResetOdometry(trajectory.InitialPose());
+          }
+        }),
+        std::move(ramseteCommand),
+        frc2::InstantCommand([this] { drivebase.TankDriveVolts(0_V, 0_V); },
+                             {}));
+  }
+
+  frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
+    wpi::SmallString<64> deployDirectory;
+    frc::filesystem::GetDeployDirectory(deployDirectory);
+    wpi::sys::path::append(deployDirectory, "paths");
+    wpi::sys::path::append(deployDirectory, jsonFile);
+
+    frc::Trajectory trajectory =
+        frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
+    return trajectory;
+  }
+
+  /*These Functions evaluate, based on the path
+  ID, whether an error has taken place, what alliance
+  we're on, and what path we're following*/
+
+  bool RobotContainer::RecognizeError() {
+    double path = pathId.GetDouble(-1);
+    if (path < 1) {
+      return true;
     }
+    return false;
+  }
 
-    frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
-        const frc::Pose2d& start,
-        const std::vector<frc::Translation2d>& interiorWaypoints,
-        const frc::Pose2d& end, bool resetTelemetryAtStart) {
-      using namespace DrivebaseConstants;
-      frc::TrajectoryConfig config = buildConfig();
-
-      auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-          start, interiorWaypoints, end, config);
-
-      frc::SimpleMotorFeedforward<units::meter> feedForward(
-          ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
-
-      return createRams(trajectory, resetTelemetryAtStart);
+  bool RobotContainer::RecognizePathA() {
+    double path = pathId.GetDouble(-1);
+    if (path < 3) {
+      return true;
     }
+    return false;
+  }
 
-    frc2::SequentialCommandGroup*
-    RobotContainer::GenerateRamseteCommandFromPathFile(
-        std::string filename, bool resetTelemetryAtStart) {
-      frc::Trajectory trajectory = loadTraj(filename);
-
-      return createRams(trajectory, resetTelemetryAtStart);
+  bool RobotContainer::RecognizeBlueAlliance() {
+    double path = pathId.GetDouble(-1);
+    int correctedPath = path;
+    if (correctedPath % 2 == 0) {
+      return true;
     }
+    return false;
+  }
 
-    frc::TrajectoryConfig RobotContainer::buildConfig() {
-      using namespace DrivebaseConstants;
+  /*These Conditional Commands evaluate first whether there is
+  an error, then which alliance we're on, and then, based on what
+  path we're following, builds the correct Galactic Search Path
+  for the robot to follow.*/
 
-      frc::SimpleMotorFeedforward<units::meter> feedForward(
-          ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
-      frc::DifferentialDriveVoltageConstraint voltageConstraints(
-          feedForward, kDriveKinematics, 10_V);
-      frc::TrajectoryConfig config(kMaxSpeed, kMaxAcceleration);
-
-      config.SetKinematics(kDriveKinematics);
-
-      config.AddConstraint(voltageConstraints);
-      return config;
-    }
-
-    frc2::SequentialCommandGroup* RobotContainer::createRams(
-        frc::Trajectory trajectory, bool resetTelemetryAtStart) {
-      using namespace DrivebaseConstants;
-
-      frc::SimpleMotorFeedforward<units::meter> feedForward(
-          ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
-      frc2::RamseteCommand ramseteCommand(
-          trajectory, [this]() { return drivebase.GetPose(); },
-          frc::RamseteController{kRamseteB, kRamseteZeta}, feedForward,
-          kDriveKinematics, [this]() { return drivebase.GetWheelSpeeds(); },
-          frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-          frc2::PIDController(kPDriveVel, kIDriveVel, kDDriveVel),
-          [this](auto left, auto right) {
-            drivebase.TankDriveVolts(left, right);
-          },
-          {&drivebase});
-
-      return new frc2::SequentialCommandGroup(
-          frc2::InstantCommand([this, resetTelemetryAtStart, trajectory] {
-            if (resetTelemetryAtStart) {
-              drivebase.ResetOdometry(trajectory.InitialPose());
-            }
-          }),
-          std::move(ramseteCommand),
-          frc2::InstantCommand([this] { drivebase.TankDriveVolts(0_V, 0_V); },
-                               {}));
-    }
-
-    frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
-      wpi::SmallString<64> deployDirectory;
-      frc::filesystem::GetDeployDirectory(deployDirectory);
-      wpi::sys::path::append(deployDirectory, "paths");
-      wpi::sys::path::append(deployDirectory, jsonFile);
-
-      frc::Trajectory trajectory =
-          frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
-      return trajectory;
-    }
-
-    /*These Functions evaluate, based on the path
-    ID, whether an error has taken place, what alliance
-    we're on, and what path we're following*/
-
-    bool RobotContainer::RecognizeError() {
-      double path = pathId.GetDouble(-1);
-      if (path < 1) {
-        return true;
-      }
-      return false;
-    }
-
-    bool RobotContainer::RecognizePathA() {
-      double path = pathId.GetDouble(-1);
-      if (path < 3) {
-        return true;
-      }
-      return false;
-    }
-
-    bool RobotContainer::RecognizeBlueAlliance() {
-      double path = pathId.GetDouble(-1);
-      int correctedPath = path;
-      if (correctedPath % 2 == 0) {
-        return true;
-      }
-      return false;
-    }
-
-    /*These Conditional Commands evaluate first whether there is
-    an error, then which alliance we're on, and then, based on what
-    path we're following, builds the correct Galactic Search Path
-    for the robot to follow.*/
-
-    frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePaths() {
+  frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePaths() {
 #ifndef GALACTIC_SEARCH_JUST_PRINTS
   frc2::Command* blueB = BuildGalacticSearchPath(
       "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",

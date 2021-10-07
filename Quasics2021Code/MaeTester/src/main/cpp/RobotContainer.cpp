@@ -519,7 +519,7 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new ShootForTime(&shooter, timeForRunShooter, 1.0))));
+      new ShootForTime(&shooter, timeForRunShooter, 0.40))));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }

@@ -13,6 +13,7 @@
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
@@ -375,19 +376,16 @@ void RobotContainer::ConfigureSmartDashboard() {
                                  new ColorLights(&lights, 0, 0, 0));
   }
 
-  frc::SmartDashboard::PutData("Conveyor forward, 2 sec",
-                               new TimedConveyor(&intake, 2, true));
   frc::SmartDashboard::PutData("Conveyor backward, 2sec",
                                new TimedConveyor(&intake, 2, false));
+  frc::SmartDashboard::PutData("Conveyor 4 sec on, 1 wait", BuildConveyorSeqeunceForAuto(4, 1));
 
-  frc::SmartDashboard::PutData("Timed shooting, 3sec, +100%",
-                               new ShootForTime(&shooter, 3, 1.00));
-  frc::SmartDashboard::PutData("Timed shooting, 1sec, -40%",
-                               new ShootForTime(&shooter, 1, -0.40));
-  frc::SmartDashboard::PutData("Delay for time 1sec",
-                               BuildTestGroupForDelay(1));
+  frc::SmartDashboard::PutData("Conveyor 3 sec on, 2 wait", BuildConveyorSeqeunceForAuto(3, 2));
+  
+  frc::SmartDashboard::PutData("Conveyor 4sec, 1 wait, shooter 13sec", BuildConveyorAndShootingSequence(4, 1, 13));
 
-  frc::SmartDashboard::PutData("Delay for time 2sec", new DelayForTime(2));
+  frc::SmartDashboard::PutData("Conveyor 3sec, 2 wait, shooter 13sec", BuildConveyorAndShootingSequence(3, 2, 13));
+
   if (false) {
     // Sample command from s/w team training
     frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
@@ -494,38 +492,50 @@ frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
 
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    new TimedConveyor(secondsToRunConveyor, true))));
+
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new TimedConveyor(&intake, secondsToRunConveyor, true))));
+
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    new TimedConveyor(secondsToRunConveyor, true))));
+
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new TimedConveyor(&intake, secondsToRunConveyor, true))));
+
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    new TimedConveyor(secondsToRunConveyor, true))));
+
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new TimedConveyor(&intake, secondsToRunConveyor, true))));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-//frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
-//    double secondsToRunConveyor, double secondsToWait,
-//    double timeForRunShooter) {
-//  std::vector<std::unique_ptr<frc2::Command>> commands;
+frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
+    double secondsToRunConveyor, double secondsToWait,
+    double timeForRunShooter) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
 
-  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
-  // commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //   new ShootForTime(timeForRunShooter, 1.0))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new ShootForTime(&shooter, timeForRunShooter, 1.0))));
 
-  //return new frc2::ParallelRaceGroup(std::move(commands));
-//}
-//frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
-//    double secondsToRunConveyor, double secondsToWait, double timeForRunShooter,
-//    double power, double amountToMove) {
-//    std::vector<std::unique_ptr<frc2::Command>> commands;
-//  return new frc2::SequentialCommandGroup(std::move(commands));
-//}
+  return new frc2::ParallelRaceGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
+    double secondsToRunConveyor, double secondsToWait, double timeForRunShooter,
+    double power, double amountToMove) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
+          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+          &drivebase, power, units::length::meter_t(amountToMove)))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
 
   frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
     std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;

@@ -375,21 +375,35 @@ void RobotContainer::ConfigureSmartDashboard() {
     frc::SmartDashboard::PutData("Lights Out",
                                  new ColorLights(&lights, 0, 0, 0));
   }
+  // Adjustment for Robot specifications(BuildShootAndMoveSequence)
+  // first input, time for conveyor running
+  // second input, time for conveyor to stop running aka wait
+  // 3rd input, amount of time the shooting motor runs
+  // 4th input, power of drive motors
+  // 5th input, amount of distance moved
+  // To adjust power of shooting motor, scroll to line 530(at the time,
+  // somehwere around the range) In the ShootForTime object created, the 3rd
+  // input will be from 0.0 to 1.00 This is precentage from 0 to 100% adjust
+  // accordingly
 
-  frc::SmartDashboard::PutData("Conveyor backward, 2sec",
-                               new TimedConveyor(&intake, 2, false));
-  frc::SmartDashboard::PutData("Conveyor 4 sec on, 1 wait", BuildConveyorSeqeunceForAuto(4, 1));
+  frc::SmartDashboard::PutData("1,1,13,0.5,1",
+                               BuildShootAndMoveSequence(1, 1, 13, 0.5, 1));
 
-  frc::SmartDashboard::PutData("Conveyor 3 sec on, 2 wait", BuildConveyorSeqeunceForAuto(3, 2));
-  
-  frc::SmartDashboard::PutData("Conveyor 4sec, 1 wait, shooter 13sec", BuildConveyorAndShootingSequence(4, 1, 13));
+  frc::SmartDashboard::PutData("3,2,13,0.5,3",
+                               BuildShootAndMoveSequence(3, 2, 13, 0.5, 3));
 
-  frc::SmartDashboard::PutData("Conveyor 3sec, 2 wait, shooter 13sec", BuildConveyorAndShootingSequence(3, 2, 13));
+  frc::SmartDashboard::PutData("4,1,13,0.5,2",
+                               BuildShootAndMoveSequence(4, 1, 13, 0.5, 2));
+
+  frc::SmartDashboard::PutData("3,2,13,0.5,2",
+                               BuildShootAndMoveSequence(3, 2, 13, 0.5, 2));
 
   if (false) {
     // Sample command from s/w team training
     frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
   }
+
+  // frc::SmartDashboard::PutData("Intake .25 sec", new);
 
   // Various shooter speed controls
   frc::SmartDashboard::PutData("Run shooter at 100% power",
@@ -519,7 +533,7 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new ShootForTime(&shooter, timeForRunShooter, 0.40))));
+      new ShootForTime(&shooter, timeForRunShooter, 0.80))));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }

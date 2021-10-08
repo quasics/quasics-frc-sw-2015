@@ -8,9 +8,21 @@
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 
+///////////////////////////////////////////////////////////////////////////////
+// Conditional compilation flags start here.
+
+// DEFINE this if we're using a limit switch for ball detection in the chamber.
 #undef INTAKE_USES_LIMIT_SWITCH
+// DEFINE this if we're using a beam sensor for ball detection in the chamber.
 #define INTAKE_USES_BEAM_SENSOR
 
+// Conditional compilation flags end here.
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Intake subsystem, comprising the actual "floor pickup" control, and the
+ * conveyor system used to move balls from the hopper to the shooter.
+ */
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -37,8 +49,6 @@ class Intake : public frc2::SubsystemBase {
   bool IsBallInChamber();
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX intakeMotor;
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX conveyorMotor;
 

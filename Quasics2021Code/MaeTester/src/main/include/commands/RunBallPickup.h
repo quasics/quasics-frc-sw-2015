@@ -16,6 +16,15 @@
 class RunBallPickup
     : public frc2::CommandHelper<frc2::CommandBase, RunBallPickup> {
  public:
+  /**
+   * Constructor.
+   *
+   * @param intake   pointer to the ball intake mechanism
+   * @param power    % power (speed) to run at; runs from -1.0 to +1.0
+   * @param duration length of time to run the mechanism
+   *
+   * @see Intake#SetBallPickupSpeed
+   */
   RunBallPickup(Intake* intake, double power, units::second_t duration);
 
   void Initialize() override;

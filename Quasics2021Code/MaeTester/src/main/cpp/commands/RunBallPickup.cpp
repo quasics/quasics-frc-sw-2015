@@ -10,19 +10,16 @@ RunBallPickup::RunBallPickup(Intake* intake, double power,
   AddRequirements({intake});
 }
 
-// Called when the command is initially scheduled.
 void RunBallPickup::Initialize() {
   m_intake->SetBallPickupSpeed(m_power);
   m_timer.Reset();
   m_timer.Start();
 }
 
-// Called once the command ends or is interrupted.
 void RunBallPickup::End(bool interrupted) {
   m_intake->SetBallPickupSpeed(0);
 }
 
-// Returns true when the command should end.
 bool RunBallPickup::IsFinished() {
   return m_timer.HasElapsed(m_duration);
 }

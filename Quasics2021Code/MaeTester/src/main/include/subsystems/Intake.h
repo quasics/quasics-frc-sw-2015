@@ -48,6 +48,24 @@ class Intake : public frc2::SubsystemBase {
 
   bool IsBallInChamber();
 
+ public:
+  /**
+   * Sets the speed for the ball pick-up mechanism.
+   * @param percent
+   *           a value from 1.0 (full forward) to -1.0 (full reverse); 0 ==
+   *           stop.
+   */
+  void SetBallPickupSpeed(double percent);
+  /**
+   * Sets the speed for the conveyor used to transfer balls from the
+   * "hopper" to the shooter.
+   *
+   * @param percent
+   *           a value from 1.0 (full forward) to -1.0 (full reverse); 0 ==
+   *           stop.
+   */
+  void SetConveyorSpeed(double percent);
+
  private:
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX intakeMotor;
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX conveyorMotor;

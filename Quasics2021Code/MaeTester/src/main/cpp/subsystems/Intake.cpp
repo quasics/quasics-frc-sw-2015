@@ -105,3 +105,15 @@ bool Intake::IsBallInChamber() {
   return false;
 #endif
 }
+
+void Intake::SetBallPickupSpeed(double percent) {
+  // Cap the value of percent to -1.0 to +1.0.
+  double useSpeed = std::max(-1.0, std::min(1.0, percent));
+  intakeMotor.Set(useSpeed);
+}
+
+void Intake::SetConveyorSpeed(double percent) {
+  // Cap the value of percent to -1.0 to +1.0.
+  double useSpeed = std::max(-1.0, std::min(1.0, percent));
+  conveyorMotor.Set(useSpeed);
+}

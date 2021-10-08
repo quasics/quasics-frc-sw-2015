@@ -5,14 +5,25 @@
 #include "subsystems/Intake.h"
 
 #include "Constants.h"
+#include "LoggingUtils.h"
 
 // #define LOG_LIMIT_SWITCH_STATE
+
+constexpr double MOTOR_OFF_POWER = 0;
+constexpr double MOTOR_SLOW_POWER = 0.25;
+constexpr double MOTOR_FAST_POWER = 0.75;
+constexpr double MOTOR_FULL_POWER = 1.0;
 
 Intake::Intake()
     : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
       conveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {
+#if defined(INTAKE_USES_LIMIT_SWITCH)
+  conveyorLimitSwitch.reset(
+      new frc::DigitalInput(DigitalIOMappings::IntakeLimitSwitch));
+#elif defined(INTAKE_USES_BEAM_SENSOR)
   conveyorBeamSensor.reset(
       new frc::DigitalInput(DigitalIOMappings::ConveyorBeamSensor));
+#endif
   SetSubsystem("Intake");
 }
 
@@ -33,57 +44,64 @@ void Intake::Periodic() {
 // Intake and Conveyor will stop.
 void Intake::IntakeBallOn() {
   if (!IsBallInChamber()) {
-    conveyorMotor.Set(0.75);
-    intakeMotor.Set(0.25);
+    conveyorMotor.Set(MOTOR_FAST_POWER);
+    intakeMotor.Set(MOTOR_SLOW_POWER);
   } else {
-    intakeMotor.Set(0);
-    conveyorMotor.Set(0);
+    intakeMotor.Set(MOTOR_OFF_POWER);
+    conveyorMotor.Set(MOTOR_OFF_POWER);
   }
 }
 // Automatic Intake: if limit switch is hit, only conveyor will disable.
 // Otherwise, will always run.
-// TODO: Fix this: it won't work like that!!!!!
+// TODO: Fix this: it shouldn't be written like this!!!!!
 // TODO(matt): Explain to people why.
 void Intake::IntakeCellsAuto() {
-  intakeMotor.Set(0.75);
-  if (conveyorBeamSensor.get()) {
-    conveyorMotor.Set(0.25);
+  intakeMotor.Set(MOTOR_FAST_POWER);
+  if (IsBallInChamber()) {
+    conveyorMotor.Set(MOTOR_SLOW_POWER);
   } else {
-    conveyorMotor.Set(0);
+    conveyorMotor.Set(MOTOR_OFF_POWER);
   }
 }
 
 // Stops the intake of ball.
 void Intake::IntakeBallOff() {
-  intakeMotor.Set(0);
-  conveyorMotor.Set(0);
-}
-
-void Intake::OnlyIntakeOn() {
-  intakeMotor.Set(.75);
-}
-
-void Intake::OnlyIntakeReverse() {
-  intakeMotor.Set(-.75);
-}
-
-void Intake::OnlyIntakeOff() {
-  intakeMotor.Set(0);
+  intakeMotor.Set(MOTOR_OFF_POWER);
+  conveyorMotor.Set(MOTOR_OFF_POWER);
 }
 
 void Intake::ConveyBallOn() {
-  conveyorMotor.Set(1.0);
+  conveyorMotor.Set(MOTOR_FULL_POWER);
 }
 
 void Intake::ConveyBallReverse() {
-  conveyorMotor.Set(-.25);
+  conveyorMotor.Set(-MOTOR_SLOW_POWER);
 }
 
 void Intake::ConveyBallOff() {
-  conveyorMotor.Set(0);
+  conveyorMotor.Set(MOTOR_OFF_POWER);
+}
+
+void Intake::OnlyIntakeOn() {
+  intakeMotor.Set(MOTOR_FAST_POWER);
+}
+
+void Intake::OnlyIntakeReverse() {
+  intakeMotor.Set(-MOTOR_FAST_POWER);
+}
+
+void Intake::OnlyIntakeOff() {
+  intakeMotor.Set(MOTOR_OFF_POWER);
 }
 
 bool Intake::IsBallInChamber() {
-  //return !conveyorLimitSwitch->Get();
+#if defined(INTAKE_USES_LIMIT_SWITCH)
+  return !conveyorLimitSwitch->Get();
+#elif defined INTAKE_USES_BEAM_SENSOR
   return !conveyorBeamSensor->Get();
+#else
+  LOG_EVERY_N_TIMES(50,
+                    "Checking for ball in chamber, but no sensor is enabled!");
+  return false;
+#endif
 }

@@ -8,6 +8,9 @@
 #include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 
+#undef INTAKE_USES_LIMIT_SWITCH
+#define INTAKE_USES_BEAM_SENSOR
+
 class Intake : public frc2::SubsystemBase {
  public:
   Intake();
@@ -29,7 +32,6 @@ class Intake : public frc2::SubsystemBase {
   void OnlyIntakeOn();
   void OnlyIntakeReverse();
   void OnlyIntakeOff();
-
   void IntakeCellsAuto();
 
   bool IsBallInChamber();
@@ -39,7 +41,10 @@ class Intake : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX intakeMotor;
   ctre::phoenix::motorcontrol::can::WPI_VictorSPX conveyorMotor;
-  
-  //std::shared_ptr<frc::DigitalInput> conveyorLimitSwitch;
+
+#if defined(INTAKE_USES_LIMIT_SWITCH)
+  std::shared_ptr<frc::DigitalInput> conveyorLimitSwitch;
+#elif defined(INTAKE_USES_BEAM_SENSOR)
   std::shared_ptr<frc::DigitalInput> conveyorBeamSensor;
+#endif
 };

@@ -27,12 +27,13 @@ class RunBallPickup
    */
   RunBallPickup(Intake* intake, double power, units::second_t duration);
 
+  // Standard functions for Command objects
+ public:
   void Initialize() override;
-
   void End(bool interrupted) override;
-
   bool IsFinished() override;
 
+  // Data members
  private:
   Intake* m_intake;
   double m_power;

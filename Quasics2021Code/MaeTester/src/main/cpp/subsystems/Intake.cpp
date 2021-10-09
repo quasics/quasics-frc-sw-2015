@@ -33,18 +33,24 @@ Intake::Intake()
 // This method will be called once per scheduler run
 void Intake::Periodic() {
 #if defined(LOG_BALL_SENSOR_STATE)
-#if defined(INTAKE_USES_LIMIT_SWITCH)
-  std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
-            << "open" << std::endl;
-#elif defined(INTAKE_USES_BEAM_SENSOR)
   static double oldValue = -1;
-  double sensorValue = conveyorBeamSensor->Get();
+  double sensorValue = -1;
+
+#if defined(INTAKE_USES_LIMIT_SWITCH)
+  static const std::string sensorName("Limit switch");
+  sensorValue = conveyorLimitSwitch->Get();
+#elif defined(INTAKE_USES_BEAM_SENSOR)
+  static const std::string sensorName("Beam sensor");
+  sensorValue = conveyorBeamSensor->Get();
+#endif
+
   if (sensorValue != oldValue) {
-    std::cout << "Beam sensor is " << (sensorValue ? "" : "not ") << "open ("
+    // Report status only when it actually changes (to keep us from flooding the
+    // console with output).
+    std::cout << sensorName << " is " << (sensorValue ? "" : "not ") << "open ("
               << sensorValue << ")" << std::endl;
     oldValue = sensorValue;
   }
-#endif
 #endif
 }
 

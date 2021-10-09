@@ -100,6 +100,9 @@ namespace OIConstants {
     constexpr int StartButton = 10;
     constexpr int LeftStickPress = 11;
     constexpr int RightStickPress = 12;
+
+    constexpr int InvalidButton = 99;
+    constexpr int InvalidAxis = 98;
   }  // namespace LogitechGamePad
 
   namespace XBox {

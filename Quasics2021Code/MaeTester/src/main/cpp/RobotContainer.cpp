@@ -53,11 +53,14 @@
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
 
-#ifdef BROKEN_BY_JOSH
-#include "subsystems/SetShotSpeed.h"
-#endif  // BROKEN_BY_JOSH
+///////////////////////////////////////////////////////////////////////////////
+// Conditional compilation flags start here.
 
-#undef GALACTIC_SEARCH_JUST_PRINTS
+// DEFINE this to disable "turbo" mode (e.g., with untrusted drivers :-).
+#define DISABLE_TURBO_MODE
+
+// Conditional compilation flags end here.
+///////////////////////////////////////////////////////////////////////////////
 
 RobotContainer::RobotContainer() {
   //////////////////////////////////////////
@@ -114,10 +117,16 @@ TriggerDrivenShootingCommand* RobotContainer::BuildShootingCommand() {
 }
 
 TankDrive* RobotContainer::BuildTankDriveCommand() {
-  std::function<SpeedScaler::Mode()> speedModeSupplier = [this] {
-    // Which mode is signaled by the driver?
-    const int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
-    const int turboTrigger = OIConstants::LogitechGamePad::RightTriggerButton;
+#if defined(DISABLE_TURBO_MODE)
+  constexpr int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
+  constexpr int turboTrigger = OIConstants::LogitechGamePad::InvalidButton;
+#else
+  constexpr int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
+  constexpr int turboTrigger = OIConstants::LogitechGamePad::RightTriggerButton;
+#endif  // DISABLE_TURBO_MODE
+
+  std::function<SpeedScaler::Mode()> speedModeSupplier = [this, turtleTrigger,
+                                                          turboTrigger] {
     SpeedScaler::Mode result = SpeedScaler::Normal;
     if (driverJoystick.GetRawButton(turtleTrigger)) {
       result = SpeedScaler::Turtle;
@@ -413,7 +422,7 @@ void RobotContainer::ConfigureSmartDashboard() {
   // Test command
   frc::SmartDashboard::PutData(
       "Load next ball", new RunConveyorUntilBallLoads(
-                            intake,                    // subsystem it uses
+                            &intake,                   // subsystem it uses
                             Intake::MOTOR_FULL_POWER,  // conveyor power
                             Intake::MOTOR_OFF_POWER,   // Ball pick-up power
                             units::second_t(3)         // Timeout
@@ -746,46 +755,28 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
   for the robot to follow.*/
 
   frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePaths() {
-#ifndef GALACTIC_SEARCH_JUST_PRINTS
-  frc2::Command* blueB = BuildGalacticSearchPath(
-      "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
-      "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json");
-  frc2::Command* blueA = BuildGalacticSearchPath(
-      "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
-      "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json");
-  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(blueA),
-                                      std::unique_ptr<frc2::Command>(blueB),
-                                      [this] { return RecognizePathA(); });
-#else
-  return new frc2::ConditionalCommand(
-      std::unique_ptr<frc2::Command>(
-          new frc2::PrintCommand("Alliance: B, Path: A")),
-      std::unique_ptr<frc2::Command>(
-          new frc2::PrintCommand("Alliance: B, Path: B")),
-      [this] { return RecognizePathA(); });
-#endif
-}
+    frc2::Command* blueB = BuildGalacticSearchPath(
+        "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
+        "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json");
+    frc2::Command* blueA = BuildGalacticSearchPath(
+        "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
+        "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json");
+    return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(blueA),
+                                        std::unique_ptr<frc2::Command>(blueB),
+                                        [this] { return RecognizePathA(); });
+  }
 
-frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePaths() {
-#ifndef GALACTIC_SEARCH_JUST_PRINTS
-  frc2::Command* redA = BuildGalacticSearchPath(
-      "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-      "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json");
-  frc2::Command* redB = BuildGalacticSearchPath(
-      "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-      "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json");
-  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(redA),
-                                      std::unique_ptr<frc2::Command>(redB),
-                                      [this] { return RecognizePathA(); });
-#else
-  return new frc2::ConditionalCommand(
-      std::unique_ptr<frc2::Command>(
-          new frc2::PrintCommand("Alliance: R, Path: A")),
-      std::unique_ptr<frc2::Command>(
-          new frc2::PrintCommand("Alliance: R, Path: B")),
-      [this] { return RecognizePathA(); });
-#endif
-}
+  frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePaths() {
+    frc2::Command* redA = BuildGalacticSearchPath(
+        "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
+        "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json");
+    frc2::Command* redB = BuildGalacticSearchPath(
+        "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
+        "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json");
+    return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(redA),
+                                        std::unique_ptr<frc2::Command>(redB),
+                                        [this] { return RecognizePathA(); });
+  }
 
 frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
   frc2::Command* blueCombo = BuildBlueAlliancePaths();

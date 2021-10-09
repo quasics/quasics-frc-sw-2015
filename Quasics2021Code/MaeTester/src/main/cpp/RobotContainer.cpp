@@ -118,7 +118,8 @@ TriggerDrivenShootingCommand* RobotContainer::BuildShootingCommand() {
 
 TankDrive* RobotContainer::BuildTankDriveCommand() {
 #if defined(DISABLE_TURBO_MODE)
-  constexpr int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
+  constexpr int turtleTrigger =
+      OIConstants::LogitechGamePad::RightTriggerButton;
   constexpr int turboTrigger = OIConstants::LogitechGamePad::InvalidButton;
 #else
   constexpr int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
@@ -128,9 +129,11 @@ TankDrive* RobotContainer::BuildTankDriveCommand() {
   std::function<SpeedScaler::Mode()> speedModeSupplier = [this, turtleTrigger,
                                                           turboTrigger] {
     SpeedScaler::Mode result = SpeedScaler::Normal;
-    if (driverJoystick.GetRawButton(turtleTrigger)) {
+    if (turtleTrigger != OIConstants::LogitechGamePad::InvalidButton &&
+        driverJoystick.GetRawButton(turtleTrigger)) {
       result = SpeedScaler::Turtle;
-    } else if (driverJoystick.GetRawButton(turboTrigger)) {
+    } else if (turboTrigger != OIConstants::LogitechGamePad::InvalidButton &&
+               driverJoystick.GetRawButton(turboTrigger)) {
       result = SpeedScaler::Turbo;
     }
 

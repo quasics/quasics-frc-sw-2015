@@ -9,11 +9,6 @@
 
 // #define LOG_LIMIT_SWITCH_STATE
 
-constexpr double MOTOR_OFF_POWER = 0;
-constexpr double MOTOR_SLOW_POWER = 0.25;
-constexpr double MOTOR_FAST_POWER = 0.75;
-constexpr double MOTOR_FULL_POWER = 1.0;
-
 Intake::Intake()
     : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
       conveyorMotor(CANBusIds::VictorSPXIds::ConveyorMotor) {

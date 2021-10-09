@@ -40,6 +40,7 @@
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/IncrementLinearActuator.h"
 #include "commands/IntakePowerCells.h"
+#include "commands/RunConveyorUntilBallLoads.h"
 #include "commands/RunOnlyConveyorMotor.h"
 #include "commands/RunOnlyConveyorMotorReverse.h"
 #include "commands/RunOnlyIntakeMotor.h"
@@ -312,19 +313,14 @@ void RobotContainer::ConfigureAutoSelection() {
                           new DriveAtPowerForMeters(&drivebase, .5, -1_m));
 
   if (false) {
+    // Commands used to during the "At Home" game in 2021.
     m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
                                               "TestingS.wpilib.json", true));
     m_autoChooser.AddOption(
         "Barrel Racing",
         GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
-    m_autoChooser.AddOption(
-        "Slalom", GenerateRamseteCommandFromPathFile("Slalom.wpilib.json", true));
-    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
-                                          frc::Translation2d(2_m, 0_m)};
-    m_autoChooser.AddOption(
-        "Go in a line", GenerateRamseteCommand(
-                            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
-                            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+    m_autoChooser.AddOption("Slalom", GenerateRamseteCommandFromPathFile(
+                                          "Slalom.wpilib.json", true));
     m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
 
     m_autoChooser.AddOption(
@@ -335,9 +331,10 @@ void RobotContainer::ConfigureAutoSelection() {
 
     m_autoChooser.AddOption(
         "Galactic Search Blue A",
-        BuildGalacticSearchPath(
-            "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
-            "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json"));
+        BuildGalacticSearchPath("GSearchABlue Part1.wpilib.json",
+                                "GSearchABlue Part2.wpilib.json",
+                                "GSearchABlue Part3.wpilib.json",
+                                "GSearchABlue Part4.wpilib.json"));
 
     m_autoChooser.AddOption(
         "Galactic Search Red B",
@@ -347,14 +344,26 @@ void RobotContainer::ConfigureAutoSelection() {
 
     m_autoChooser.AddOption(
         "Galactic Search Blue B",
-        BuildGalacticSearchPath(
-            "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
-            "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json"));
+        BuildGalacticSearchPath("GSearchBBlue Part1.wpilib.json",
+                                "GSearchBBlue Part2.wpilib.json",
+                                "GSearchBBlue Part3.wpilib.json",
+                                "GSearchBBlue Part4.wpilib.json"));
 
     m_autoChooser.AddOption("Galactic Search Drive Only",
                             GalacticSearchAutoPath());
     m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
-    m_autoChooser.AddOption("Cross the Auto line", new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
+  }
+  if (false) {
+    // Commands used to test trajectory stuff, etc.
+    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
+                                           frc::Translation2d(2_m, 0_m)};
+    m_autoChooser.AddOption(
+        "Go in a line",
+        GenerateRamseteCommand(
+            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
+            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+    m_autoChooser.AddOption("Cross the Auto line",
+                            new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
   }
   frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
 }
@@ -375,37 +384,44 @@ void RobotContainer::ConfigureSmartDashboard() {
     frc::SmartDashboard::PutData("Lights Out",
                                  new ColorLights(&lights, 0, 0, 0));
   }
-  // Adjustment for Robot specifications(BuildShootAndMoveSequence)
-  // first input, time for conveyor running
-  // second input, time for conveyor to stop running aka wait
-  // 3rd input, amount of time the shooting motor runs
-  // 4th input, power of drive motors
-  // 5th input, amount of distance moved
-  // To adjust power of shooting motor, scroll to line 530(at the time,
-  // somehwere around the range) In the ShootForTime object created, the 3rd
-  // input will be from 0.0 to 1.00 This is precentage from 0 to 100% adjust
-  // accordingly
+  // Adjustment for Robot specifications(BuildShootAndMoveSequence).
+  //
+  // To adjust power of shooting motor, change the value for
+  // "kShooterSpeedPercent" in the "BuildConveyorAndShootingSequence()"
+  // function.
+  const double kDistanceToDriveMeters = 1.5;
+  const double kDrivingSpeedPercent = 0.5;
+  const double kShootingTimeSeconds = 13;
+  frc::SmartDashboard::PutData(
+      "Shoot 1/Wait 1",
+      BuildShootAndMoveSequence(1 /*conveyor on (s)*/, 1 /*wait (s)*/,
+                                kShootingTimeSeconds, kDrivingSpeedPercent,
+                                kDistanceToDriveMeters));
 
-  frc::SmartDashboard::PutData("1,1,13,0.5,1",
-                               BuildShootAndMoveSequence(1, 1, 13, 0.5, 1));
+  frc::SmartDashboard::PutData(
+      "Shoot 4/Wait 1",
+      BuildShootAndMoveSequence(4 /*conveyor on (s)*/, 1 /*wait (s)*/,
+                                kShootingTimeSeconds, kDrivingSpeedPercent,
+                                kDistanceToDriveMeters));
 
-  frc::SmartDashboard::PutData("3,2,13,0.5,3",
-                               BuildShootAndMoveSequence(3, 2, 13, 0.5, 3));
+  frc::SmartDashboard::PutData(
+      "Shoot 3/Wait 2",
+      BuildShootAndMoveSequence(3 /*conveyor on (s)*/, 2 /*wait (s)*/,
+                                kShootingTimeSeconds, kDrivingSpeedPercent,
+                                kDistanceToDriveMeters));
 
-  frc::SmartDashboard::PutData("4,1,13,0.5,2",
-                               BuildShootAndMoveSequence(4, 1, 13, 0.5, 2));
-
-  frc::SmartDashboard::PutData("3,2,13,0.5,2",
-                               BuildShootAndMoveSequence(3, 2, 13, 0.5, 2));
-
-  if (false) {
-    // Sample command from s/w team training
-    frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
-  }
-
-  // frc::SmartDashboard::PutData("Intake .25 sec", new);
+  // Test command
+  frc::SmartDashboard::PutData(
+      "Load next ball", new RunConveyorUntilBallLoads(
+                            intake,                    // subsystem it uses
+                            Intake::MOTOR_FULL_POWER,  // conveyor power
+                            Intake::MOTOR_OFF_POWER,   // Ball pick-up power
+                            units::second_t(3)         // Timeout
+                            ));
 
   // Various shooter speed controls
+  // TODO: Change this to be a single button for a command that reads a value
+  // for speed from a chooser (or a text control) on the dashboard.
   frc::SmartDashboard::PutData("Run shooter at 100% power",
                                new RunShootingMotor(&shooter, 1.0));
   frc::SmartDashboard::PutData("Run shooter at 95% power",
@@ -419,6 +435,10 @@ void RobotContainer::ConfigureSmartDashboard() {
   frc::SmartDashboard::PutData("Run shooter at 70% power",
                                new RunShootingMotor(&shooter, 0.7));
 
+  if (false) {
+    // Sample command from s/w team training
+    frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
+  }
   if (false) {
     frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
   }
@@ -530,10 +550,11 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
     double timeForRunShooter) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
+  const double kShooterSpeedPercent = 0.8;
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new ShootForTime(&shooter, timeForRunShooter, 0.80))));
+      new ShootForTime(&shooter, timeForRunShooter, kShooterSpeedPercent))));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }

@@ -25,6 +25,7 @@ void RunConveyorUntilBallLoads::Initialize() {
     m_state = eNoBallSensed;
     std::cout << "Setting state to 'no ball sensed'" << std::endl;
   }
+  m_intake->SetConveyorSpeed(Intake::MOTOR_SLOW_POWER);
 
   m_timer.Reset();
   m_timer.Start();

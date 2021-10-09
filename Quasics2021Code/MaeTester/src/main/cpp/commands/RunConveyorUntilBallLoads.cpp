@@ -17,10 +17,13 @@ RunConveyorUntilBallLoads::RunConveyorUntilBallLoads(Intake* intake,
 
 // Called when the command is initially scheduled.
 void RunConveyorUntilBallLoads::Initialize() {
+  std::cout << "Timeout on ball movement = " << m_timeout << std::endl;
   if (m_intake->IsBallInChamber()) {
     m_state = eStartingBallSensed;
+    std::cout << "Setting state to 'starting ball sensed'" << std::endl;
   } else {
     m_state = eNoBallSensed;
+    std::cout << "Setting state to 'no ball sensed'" << std::endl;
   }
 
   m_timer.Reset();
@@ -33,11 +36,13 @@ void RunConveyorUntilBallLoads::Execute() {
     // OK, have we kicked the current ball up towards the shooter?
     if (!m_intake->IsBallInChamber()) {
       m_state = eNoBallSensed;
+      std::cout << "Setting state to 'no ball sensed'" << std::endl;
     }
   } else if (m_state == eNoBallSensed) {
     // OK, has a ball been loaded into the chamber?
-    if (!m_intake->IsBallInChamber()) {
+    if (m_intake->IsBallInChamber()) {
       m_state = eNewBallSensed;
+      std::cout << "Setting state to 'new ball sensed'" << std::endl;
     }
     // Note that we're assuming that the sensor is mounted in a position where
     // it won't miss the transitions if the balls are loading immediately after
@@ -61,6 +66,7 @@ void RunConveyorUntilBallLoads::Execute() {
     // extra cycle (i.e., 0.02 sec) is enough to give us the cover we need, but
     // it seems doubtful that this will be the case.
     m_state = eFinished;
+    std::cout << "Setting state to 'finished'" << std::endl;
   }
 }
 

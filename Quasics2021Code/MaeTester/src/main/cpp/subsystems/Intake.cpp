@@ -7,7 +7,15 @@
 #include "Constants.h"
 #include "LoggingUtils.h"
 
-// #define LOG_LIMIT_SWITCH_STATE
+///////////////////////////////////////////////////////////////////////////////
+// Conditional compilation flags start here.
+
+// DEFINE this if we want to log the state reported by the ball sensor (limit
+// switch or beam break sensor).
+#undef LOG_BALL_SENSOR_STATE
+
+// Conditional compilation flags end here.
+///////////////////////////////////////////////////////////////////////////////
 
 Intake::Intake()
     : intakeMotor(CANBusIds::VictorSPXIds::IntakeMotor),
@@ -24,14 +32,14 @@ Intake::Intake()
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {
-#ifdef LOG_LIMIT_SWITCH_STATE
+#if defined(LOG_BALL_SENSOR_STATE)
+#if defined(INTAKE_USES_LIMIT_SWITCH)
   std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
             << "open" << std::endl;
-#endif
-
-#ifdef LOG_BEAM_SENSOR_STATE
+#elif defined(INTAKE_USES_BEAM_SENSOR)
   std::cout << "Beam sensor is " << (conveyorBeamSensor->Get() ? "" : "not ")
             << "open" << std::endl;
+#endif
 #endif
 }
 

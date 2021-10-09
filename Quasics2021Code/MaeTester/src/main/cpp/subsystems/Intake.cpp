@@ -37,8 +37,13 @@ void Intake::Periodic() {
   std::cout << "Limit switch is " << (conveyorLimitSwitch->Get() ? "" : "not ")
             << "open" << std::endl;
 #elif defined(INTAKE_USES_BEAM_SENSOR)
-  std::cout << "Beam sensor is " << (conveyorBeamSensor->Get() ? "" : "not ")
-            << "open" << std::endl;
+  static double oldValue = -1;
+  double sensorValue = conveyorBeamSensor->Get();
+  if (sensorValue != oldValue) {
+    std::cout << "Beam sensor is " << (sensorValue ? "" : "not ") << "open ("
+              << sensorValue << ")" << std::endl;
+    oldValue = sensorValue;
+  }
 #endif
 #endif
 }

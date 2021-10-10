@@ -1,5 +1,7 @@
 /* 
   IR Breakbeam sensor demo!
+
+  Taken from: https://learn.adafruit.com/ir-breakbeam-sensors?view=all
 */
 
 #define LEDPIN 13

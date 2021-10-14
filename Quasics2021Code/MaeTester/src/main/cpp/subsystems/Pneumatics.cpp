@@ -12,6 +12,7 @@ Pneumatics::Pneumatics() {
   std::cout << "---------------------------------\n"
             << "Configuring PCM with CAN ID " << CANBusIds::Other::PCM << "\n"
             << "---------------------------------\n";
+  RetractSolenoid();
 }
 
 void Pneumatics::Periodic() {

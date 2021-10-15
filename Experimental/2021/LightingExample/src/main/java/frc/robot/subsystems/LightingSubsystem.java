@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightingSubsystem extends SubsystemBase {
@@ -34,11 +35,30 @@ public class LightingSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void SetStripColor(int red, int green, int blue) {
+  /** Helper interface to use in populating the data for each LED on the strip. */
+  public interface ColorFunctor {
+    /**
+     * Returns the color to be used for the LED at a given position on the strip.
+     */
+    public Color getColorForLed(int position);
+  }
+
+  public void SetStripColor(ColorFunctor function) {
     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, red, green, blue);
-   }
-   
-   m_led.setData(m_ledBuffer);
+      m_ledBuffer.setLED(i, function.getColorForLed(i));
+    }
+
+    m_led.setData(m_ledBuffer);
+  }
+
+  public void SetStripColor(int red, int green, int blue) {
+    // Defines a "lambda" function that will be used to fulfill the
+    // requirements of the ColorFunctor type. (It will return the
+    // same color for each position in the strip.)
+    final Color fixedColor = new Color(red, green, blue);
+    ColorFunctor function = (var position) -> fixedColor;
+
+    // Uses the lambda to set the color for the full strip.
+    SetStripColor(function);
   }
 }

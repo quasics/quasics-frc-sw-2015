@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SimpleLightingCommand;
 import frc.robot.subsystems.LightingSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -20,12 +20,18 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final LightingSubsystem m_exampleSubsystem = new LightingSubsystem(Constants.LED_PWM_PORT, Constants.LED_STRIP_LENGTH);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  // Sample command to change the color during auto mode.
+  private final SimpleLightingCommand m_autoCommand = new SimpleLightingCommand(m_exampleSubsystem,
+      SimpleLightingCommand.Mode.Blue);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    // Lights will default to green, unless set otherwise.
+    m_exampleSubsystem
+        .setDefaultCommand(new SimpleLightingCommand(m_exampleSubsystem, SimpleLightingCommand.Mode.Green));
   }
 
   /**

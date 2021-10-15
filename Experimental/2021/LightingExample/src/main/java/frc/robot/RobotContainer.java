@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.RainbowLightingCommand;
 import frc.robot.commands.SimpleLightingCommand;
 import frc.robot.subsystems.LightingSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,8 +22,7 @@ public class RobotContainer {
   private final LightingSubsystem m_exampleSubsystem = new LightingSubsystem(Constants.LED_PWM_PORT, Constants.LED_STRIP_LENGTH);
 
   // Sample command to change the color during auto mode.
-  private final SimpleLightingCommand m_autoCommand = new SimpleLightingCommand(m_exampleSubsystem,
-      SimpleLightingCommand.Mode.Blue);
+  private final Command m_autoCommand = new RainbowLightingCommand(m_exampleSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,12 +43,9 @@ public class RobotContainer {
   private void configureButtonBindings() {}
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
+   * Returns the command to be executed in autonomous mode.
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
     return m_autoCommand;
   }
 }

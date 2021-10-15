@@ -95,17 +95,6 @@ class RobotContainer {
   /// Returns true iff the RasPi says the GS variant is for the Blue alliance.
   bool RecognizeBlueAlliance();
 
-  frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
-      units::second_t secondsToRunConveyor, units::second_t secondsToWait);
-
-  frc2::ParallelRaceGroup* BuildConveyorAndShootingSequence(
-      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-      units::second_t timeForRunShooter);
-
-  frc2::SequentialCommandGroup* BuildShootAndMoveSequence(
-      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-      units::second_t timeForRunShooter, double power, double amountToMove);
-
   /// Builds a command group for the GS challenge, taking the 4 paths to
   /// balls and the end zone from the specified files.  (Will optionally
   /// include the intake operation, running in parallel.)
@@ -126,6 +115,20 @@ class RobotContainer {
   /// Builds a conditional command that picks GS handling for any alternative
   /// signalled by the RasPi.
   frc2::ConditionalCommand* GalacticSearchAutoPath();
+
+  //////////////////////////////////////////////////////////////////
+  // Functions for simple "shoot and move" auto mode in Infinite Recharge.
+ private:
+  frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait);
+
+  frc2::ParallelRaceGroup* BuildConveyorAndShootingSequence(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter);
+
+  frc2::SequentialCommandGroup* BuildShootAndMoveSequence(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter, double power, double amountToMove);
 
   //////////////////////////////////////////////////////////////////
   // Data/member objects: subsystems, helpers, etc.

@@ -4,7 +4,7 @@
 
 #include "commands/ShootForTime.h"
 
-ShootForTime::ShootForTime(Shooter* shooter, double time, double speed)
+ShootForTime::ShootForTime(Shooter* shooter, units::second_t time, double speed)
     : shooter(shooter), time(time), speed(speed) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(shooter);

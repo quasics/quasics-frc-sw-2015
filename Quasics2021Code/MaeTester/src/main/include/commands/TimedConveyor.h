@@ -20,7 +20,7 @@
 class TimedConveyor
     : public frc2::CommandHelper<frc2::CommandBase, TimedConveyor> {
  public:
-  TimedConveyor(Intake* intake, double time, bool forward);
+  TimedConveyor(Intake* intake, units::second_t time, bool forward);
 
   void Initialize() override;
 

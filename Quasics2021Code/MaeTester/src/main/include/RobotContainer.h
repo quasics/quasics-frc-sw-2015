@@ -96,14 +96,16 @@ class RobotContainer {
   bool RecognizeBlueAlliance();
 
   frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
-      double secondsToRunConveyor, double secondsToWait);
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait);
 
   frc2::ParallelRaceGroup* BuildConveyorAndShootingSequence(
-      double secondsToRunConveyor, double secondsToWait,
-      double timeForRunShooter);
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter);
+
   frc2::SequentialCommandGroup* BuildShootAndMoveSequence(
-      double secondsToRunConveyor, double secondsToWait,
-      double timeForRunShooter, double power, double amountToMove);
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter, double power, double amountToMove);
+
   /// Builds a command group for the GS challenge, taking the 4 paths to
   /// balls and the end zone from the specified files.  (Will optionally
   /// include the intake operation, running in parallel.)

@@ -4,7 +4,7 @@
 
 #include "commands/TimedConveyor.h"
 
-TimedConveyor::TimedConveyor(Intake* intake, double time, bool forward)
+TimedConveyor::TimedConveyor(Intake* intake, units::second_t time, bool forward)
     : intake(intake), time(time), forward(forward) {
   AddRequirements(intake);
 }

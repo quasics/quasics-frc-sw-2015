@@ -406,21 +406,21 @@ void RobotContainer::ConfigureSmartDashboard() {
   const double kShootingTimeSeconds = 13;
   frc::SmartDashboard::PutData(
       "Shoot 1/Wait 1",
-      BuildShootAndMoveSequence(1 /*conveyor on (s)*/, 1 /*wait (s)*/,
-                                kShootingTimeSeconds, kDrivingSpeedPercent,
-                                kDistanceToDriveMeters));
+      BuildShootAndMoveSequence(1_s /*conveyor on (s)*/, 1_s /*wait (s)*/,
+                                units::second_t(kShootingTimeSeconds),
+                                kDrivingSpeedPercent, kDistanceToDriveMeters));
 
   frc::SmartDashboard::PutData(
       "Shoot 4/Wait 1",
-      BuildShootAndMoveSequence(4 /*conveyor on (s)*/, 1 /*wait (s)*/,
-                                kShootingTimeSeconds, kDrivingSpeedPercent,
-                                kDistanceToDriveMeters));
+      BuildShootAndMoveSequence(4_s /*conveyor on (s)*/, 1_s /*wait (s)*/,
+                                units::second_t(kShootingTimeSeconds),
+                                kDrivingSpeedPercent, kDistanceToDriveMeters));
 
   frc::SmartDashboard::PutData(
       "Shoot 3/Wait 2",
-      BuildShootAndMoveSequence(3 /*conveyor on (s)*/, 2 /*wait (s)*/,
-                                kShootingTimeSeconds, kDrivingSpeedPercent,
-                                kDistanceToDriveMeters));
+      BuildShootAndMoveSequence(3_s /*conveyor on (s)*/, 2_s /*wait (s)*/,
+                                units::second_t(kShootingTimeSeconds),
+                                kDrivingSpeedPercent, kDistanceToDriveMeters));
 
   // Test command
   frc::SmartDashboard::PutData(
@@ -517,23 +517,23 @@ void RobotContainer::ConfigureSmartDashboard() {
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
-    double secondsToRunConveyor, double secondsToWait) {
+    units::second_t secondsToRunConveyor, units::second_t secondsToWait) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DelayForTime(units::second_t(secondsToWait)))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));
 
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DelayForTime(units::second_t(secondsToWait)))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));
 
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DelayForTime(units::second_t(secondsToWait)))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));
@@ -542,8 +542,8 @@ frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
 }
 
 frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
-    double secondsToRunConveyor, double secondsToWait,
-    double timeForRunShooter) {
+    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+    units::second_t timeForRunShooter) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   const double kShooterSpeedPercent = 0.8;
@@ -556,8 +556,8 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
-    double secondsToRunConveyor, double secondsToWait, double timeForRunShooter,
-    double power, double amountToMove) {
+    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+    units::second_t timeForRunShooter, double power, double amountToMove) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(

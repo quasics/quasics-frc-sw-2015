@@ -4,8 +4,8 @@
 
 #include "commands/DelayForTime.h"
 
-DelayForTime::DelayForTime(double time) : time(time) {
-  // Use addRequirements() here to declare subsystem dependencies.
+DelayForTime::DelayForTime(units::second_t time) : time(time) {
+  // There are no subsystem dependencies for this command.
 }
 
 // Called when the command is initially scheduled.

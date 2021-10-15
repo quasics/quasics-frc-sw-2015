@@ -95,8 +95,6 @@ class RobotContainer {
   /// Returns true iff the RasPi says the GS variant is for the Blue alliance.
   bool RecognizeBlueAlliance();
 
-  frc2::SequentialCommandGroup* BuildTestGroupForDelay(double sec);
-
   frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
       double secondsToRunConveyor, double secondsToWait);
 

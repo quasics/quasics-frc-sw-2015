@@ -516,40 +516,24 @@ void RobotContainer::ConfigureSmartDashboard() {
                                {&shooter}));
 }
 
-frc2::SequentialCommandGroup* RobotContainer::BuildTestGroupForDelay(
-    double sec) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-
-  // Build the set of commands to run
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new frc2::PrintCommand("Starting delay"))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new DelayForTime(sec))));
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new frc2::PrintCommand("Delay Ended"))));
-
-  // Generate the wrapping command group
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
-
 frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
     double secondsToRunConveyor, double secondsToWait) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DelayForTime(units::second_t(secondsToWait)))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));
 
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DelayForTime(units::second_t(secondsToWait)))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));
 
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new DelayForTime(units::second_t(secondsToWait)))));
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new TimedConveyor(&intake, secondsToRunConveyor, true))));

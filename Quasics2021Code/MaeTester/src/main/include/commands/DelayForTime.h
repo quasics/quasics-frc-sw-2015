@@ -18,7 +18,7 @@
 class DelayForTime
     : public frc2::CommandHelper<frc2::CommandBase, DelayForTime> {
  public:
-  DelayForTime(double time);
+  DelayForTime(units::second_t time);
 
   void Initialize() override;
 

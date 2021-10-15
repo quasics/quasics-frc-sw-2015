@@ -16,14 +16,24 @@ class Lights : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
+
+  /**
+   * Sets the strip to a single, solid color, specified as an RGB value.
+   * (Each component must be in the range [0..255].)
+   */
   void SetStripColor(int red, int green, int blue);
+
+  /**
+   * Sets the colors for each pixel on the strip, using the specified helper
+   * function to get the color at each position.
+   */
   void SetStripColor(
       std::function<frc::AddressableLED::LEDData(int position)> colorFcn);
+
+  /** Turns all of the pixels on the strip off. */
   void TurnStripOff();
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
   static constexpr int kLength = 60;
   frc::AddressableLED m_led{9};
   std::array<frc::AddressableLED::LEDData, kLength> m_ledBuffer;

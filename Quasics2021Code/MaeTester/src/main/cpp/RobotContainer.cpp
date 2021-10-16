@@ -317,12 +317,21 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 void RobotContainer::ConfigureAutoSelection() {
+  const double kDistanceToDriveMeters = 1.5;
+  const double kDrivingSpeedPercent = 0.5;
+  const double kShootingTimeSeconds = 13;
+
   m_autoChooser.SetDefaultOption("Do nothing",
                                  new frc2::PrintCommand("I refuse to move."));
   m_autoChooser.AddOption("Move forward 3 ft",
                           new DriveAtPowerForMeters(&drivebase, .5, 1_m));
   m_autoChooser.AddOption("Move backwards 3 ft",
                           new DriveAtPowerForMeters(&drivebase, .5, -1_m));
+  m_autoChooser.AddOption(
+      "Shoot 3/Wait 2",
+      BuildShootAndMoveSequence(3_s /*conveyor on (s)*/, 2_s /*wait (s)*/,
+                                units::second_t(kShootingTimeSeconds),
+                                kDrivingSpeedPercent, kDistanceToDriveMeters));
 
   if (false) {
     // Commands used to during the "At Home" game in 2021.
@@ -404,6 +413,7 @@ void RobotContainer::ConfigureSmartDashboard() {
   const double kDistanceToDriveMeters = 1.5;
   const double kDrivingSpeedPercent = 0.5;
   const double kShootingTimeSeconds = 13;
+
   frc::SmartDashboard::PutData(
       "Shoot 1/Wait 1",
       BuildShootAndMoveSequence(1_s /*conveyor on (s)*/, 1_s /*wait (s)*/,

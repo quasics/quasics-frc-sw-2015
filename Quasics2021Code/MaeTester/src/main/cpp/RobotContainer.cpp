@@ -49,6 +49,7 @@
 #include "commands/ShootForTime.h"
 #include "commands/ShootWithLimitSwitch.h"
 #include "commands/TimedConveyor.h"
+#include "commands/TimedIntake.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
@@ -579,6 +580,26 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 }*/
+
+/*
+frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
+    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+    units::second_t timeForRunShooter, double power, double amountToMove) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new frc2::InstantCommand(
+          [this]() { pneumatics.ExtendSolenoid(); }, {&pneumatics}))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      new TimedIntake(&intake, units::second_t(1), true))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+          &drivebase, power, units::length::meter_t(amountToMove)))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
+          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+*/
 
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
     units::second_t secondsToRunConveyor, units::second_t secondsToWait,

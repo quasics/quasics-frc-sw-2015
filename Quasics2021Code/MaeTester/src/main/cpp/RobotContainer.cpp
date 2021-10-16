@@ -317,9 +317,9 @@ void RobotContainer::ConfigureButtonBindings() {
 }
 
 void RobotContainer::ConfigureAutoSelection() {
-  const double kDistanceToDriveMeters = 1.5;
+  const double kDistanceToDriveMeters = 0.25;
   const double kDrivingSpeedPercent = 0.5;
-  const double kShootingTimeSeconds = 13;
+  const double kShootingTimeSeconds = 7;
 
   m_autoChooser.SetDefaultOption("Do nothing",
                                  new frc2::PrintCommand("I refuse to move."));
@@ -410,7 +410,7 @@ void RobotContainer::ConfigureSmartDashboard() {
   // To adjust power of shooting motor, change the value for
   // "kShooterSpeedPercent" in the "BuildConveyorAndShootingSequence()"
   // function.
-  const double kDistanceToDriveMeters = 1.5;
+  const double kDistanceToDriveMeters = 0.25;
   const double kDrivingSpeedPercent = 0.5;
   const double kShootingTimeSeconds = 13;
 
@@ -565,16 +565,34 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
+/*if (false) {
+  frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter, double power, double amountToMove) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::move(
+        std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
+            secondsToRunConveyor, secondsToWait, timeForRunShooter))));
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+            &drivebase, power, units::length::meter_t(amountToMove)))));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+}*/
+
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
     units::second_t secondsToRunConveyor, units::second_t secondsToWait,
     units::second_t timeForRunShooter, double power, double amountToMove) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
-          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
+      std::move(std::unique_ptr<frc2::Command>(new frc2::InstantCommand(
+          [this]() { pneumatics.ExtendSolenoid(); }, {&pneumatics}))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
           &drivebase, power, units::length::meter_t(amountToMove)))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
+          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

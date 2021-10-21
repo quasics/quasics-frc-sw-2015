@@ -31,7 +31,7 @@ void Lights::SetStripColor(int red, int green, int blue){
 
 void Lights::SetStripColor(
     std::function<frc::AddressableLED::LEDData(int position)> colorFcn) {
-  std::cout << "Setting strip color" << std::endl;
+  std::cout << "Setting strip colors" << std::endl;
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i] = colorFcn(i);
   }

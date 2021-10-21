@@ -22,7 +22,7 @@ class Shooter : public frc2::SubsystemBase {
 
   //
   // Shooting control
-
+ public:
   /// Sets speed for the shooting motor (-1.0 to +1.0).
   void SetSpeed(double speed);
 
@@ -30,8 +30,8 @@ class Shooter : public frc2::SubsystemBase {
   void Stop();
 
   //
-  // Shooter angular control (experimental)
-
+  // Shooter angular control
+ public:
   /** @return servo extension as a percentage of range (0.0 - 1.0) */
   double GetServoPosition();
 

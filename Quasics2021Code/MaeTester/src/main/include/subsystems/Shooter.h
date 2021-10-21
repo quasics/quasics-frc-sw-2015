@@ -20,8 +20,13 @@ class Shooter : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  /* Shooting control */
+  //
+  // Shooting control
+
+  /// Sets speed for the shooting motor (-1.0 to +1.0).
   void SetSpeed(double speed);
+
+  /// Stops the shooting motor.
   void Stop();
 
   //

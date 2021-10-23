@@ -45,7 +45,6 @@
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/ShootForTime.h"
-#include "commands/ShootWithLimitSwitch.h"
 #include "commands/TimedConveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
@@ -229,7 +228,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
 
   // Other commands.
   static IntakePowerCells intakepowercells(&intake);
-  static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
 
 #define ENABLE_BINDINGS_FOR_DEMO
 #ifdef ENABLE_BINDINGS_FOR_DEMO
@@ -261,9 +259,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kA,
       &runShooterFullSpeed);  // see last year's code
-
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,  // Shoot
-                                     &shootwithlimitswitch);
 
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kB,  // Run conveyor forwards

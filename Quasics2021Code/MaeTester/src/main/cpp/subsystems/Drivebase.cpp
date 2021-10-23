@@ -27,6 +27,13 @@ static constexpr double kGearRatio_2021 = 10.71;
 
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
+/// Encapsulates all of the stuff used to communicate with the
+/// Spark Max motors over CAN, so that it will be easier to port the project
+/// over to the Beta 1 release.
+///
+/// RevRobotics doesn't have updated libraries for 2022 ready yet, which
+/// means that this stuff will all need to be disabled, and it's easier when all
+/// of the references are in a single file.
 struct Drivebase::RevRoboticsStuff {
   rev::CANSparkMax m_leftFront{CANBusIds::SparkMaxIds::Left_Front_Number,
                                rev::CANSparkMax::MotorType::kBrushless};
@@ -41,6 +48,29 @@ struct Drivebase::RevRoboticsStuff {
   rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
   rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
   rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
+
+  void ResetEncoders() {
+    m_leftFrontEncoder.SetPosition(0.0);
+    m_leftRearEncoder.SetPosition(0.0);
+    m_rightRearEncoder.SetPosition(0.0);
+    m_rightFrontEncoder.SetPosition(0.0);
+  }
+
+  double GetLeftEncoderCount() {
+    return m_leftFrontEncoder.GetPosition();
+  }
+
+  double GetRightEncoderCount() {
+    return m_rightFrontEncoder.GetPosition();
+  }
+
+  double GetLeftVelocity() {
+    return m_leftFrontEncoder.GetVelocity();
+  }
+
+  double GetRightVelocity() {
+    return m_rightFrontEncoder.GetVelocity();
+  }
 };
 
 Drivebase::Drivebase()
@@ -90,24 +120,21 @@ Drivebase::~Drivebase() {
 }
 
 void Drivebase::ResetEncoders() {
-  m_revStuff->m_leftFrontEncoder.SetPosition(0.0);
-  m_revStuff->m_leftRearEncoder.SetPosition(0.0);
-  m_revStuff->m_rightFrontEncoder.SetPosition(0.0);
-  m_revStuff->m_rightRearEncoder.SetPosition(0.0);
+  m_revStuff->ResetEncoders();
 }
 
 double Drivebase::GetLeftEncoderCount() {
-  return m_revStuff->m_leftFrontEncoder.GetPosition();
+  return m_revStuff->GetLeftEncoderCount();
 }
 
 double Drivebase::GetRightEncoderCount() {
-  return m_revStuff->m_rightFrontEncoder.GetPosition();
+  return m_revStuff->GetRightEncoderCount();
 }
 
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
   return frc::DifferentialDriveWheelSpeeds{
-      m_revStuff->m_leftRearEncoder.GetVelocity() * 1_m / 1_s,
-      m_revStuff->m_rightRearEncoder.GetVelocity() * 1_m / 1_s};
+      m_revStuff->GetLeftVelocity() * 1_m / 1_s,
+      m_revStuff->GetRightVelocity() * 1_m / 1_s};
 }
 
 // This method will be called once per scheduler run

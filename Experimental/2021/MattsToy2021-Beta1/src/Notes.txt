@@ -1,0 +1,6 @@
+* wpi::StringRef type has been removed (documented; replaced with std::string_view)
+* Sendable type has been moved from "frc" namespace to "wpi" namespace
+* units::meter_t was previously printable via ostreams (e.g., "cout << someValue"), but now generates errors (workaround: add call to ".to<double>()")
+* Change in signature to frc::filesystem::GetDeployDirectory() (from taking a wpi::SmallVectorImpl< char > output param to returning a std::string)
+* AddRequirements now *requires* an initialization list, rather than being able to take a single pointer to subsystem.
+* Apparent removal of wpi::sys::path class (which provided an "append()" method to build filesystem paths)

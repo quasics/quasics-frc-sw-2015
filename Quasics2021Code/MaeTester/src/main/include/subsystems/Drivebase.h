@@ -11,7 +11,6 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
-#include <rev/CANSparkMax.h>
 #include <units/length.h>
 
 #include <iostream>

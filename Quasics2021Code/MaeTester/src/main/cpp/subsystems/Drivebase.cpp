@@ -5,6 +5,7 @@
 #include "subsystems/Drivebase.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <rev/CANSparkMax.h>
 #include <units/length.h>
 #include <units/time.h>
 
@@ -20,9 +21,9 @@
     }                                         \
   }
 
-constexpr double kTicksPerRevolution_NeoMotor = 42;
+static constexpr double kTicksPerRevolution_NeoMotor = 42;
 
-constexpr double kGearRatio_2021 = 10.71;
+static constexpr double kGearRatio_2021 = 10.71;
 
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 

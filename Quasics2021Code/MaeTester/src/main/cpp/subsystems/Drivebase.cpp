@@ -26,27 +26,37 @@ constexpr double kGearRatio_2021 = 10.71;
 
 static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 
+struct Drivebase::RevRoboticsStuff {
+  rev::CANSparkMax m_leftFront{CANBusIds::SparkMaxIds::Left_Front_Number,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftRear{CANBusIds::SparkMaxIds::Left_Rear_Number,
+                              rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFront{CANBusIds::SparkMaxIds::Right_Front_Number,
+                                rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightRear{CANBusIds::SparkMaxIds::Right_Rear_Number,
+                               rev::CANSparkMax::MotorType::kBrushless};
+
+  rev::CANEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
+};
+
 Drivebase::Drivebase()
-    : 
-      m_leftFront(CANBusIds::SparkMaxIds::Left_Front_Number,
-                        rev::CANSparkMax::MotorType::kBrushless),
-      m_leftRear(CANBusIds::SparkMaxIds::Left_Rear_Number,
-                       rev::CANSparkMax::MotorType::kBrushless),
-      m_rightFront(CANBusIds::SparkMaxIds::Right_Front_Number,
-                         rev::CANSparkMax::MotorType::kBrushless),
-      m_rightRear(CANBusIds::SparkMaxIds::Right_Rear_Number,
-                        rev::CANSparkMax::MotorType::kBrushless),
-	  m_odometry(units::degree_t(m_adiGyro.GetAngle())) {
+    : m_odometry(units::degree_t(m_adiGyro.GetAngle())),
+      m_revStuff(new RevRoboticsStuff) {
   SetSubsystem("Drivebase");
 
-  m_rightFront.SetInverted(true);
-  m_rightRear.SetInverted(true);
+  m_revStuff->m_rightFront.SetInverted(true);
+  m_revStuff->m_rightRear.SetInverted(true);
 
-  m_leftFront.SetInverted(false);
-  m_leftRear.SetInverted(false);
+  m_revStuff->m_leftFront.SetInverted(false);
+  m_revStuff->m_leftRear.SetInverted(false);
 
-  m_leftMotors.reset(new frc::SpeedControllerGroup(m_leftFront, m_leftRear));
-  m_rightMotors.reset(new frc::SpeedControllerGroup(m_rightFront, m_rightRear));
+  m_leftMotors.reset(new frc::SpeedControllerGroup(m_revStuff->m_leftFront,
+                                                   m_revStuff->m_leftRear));
+  m_rightMotors.reset(new frc::SpeedControllerGroup(m_revStuff->m_rightFront,
+                                                    m_revStuff->m_rightRear));
 
   // Default for the encoders is to report velocity in RPM; we want that to come
   // back as m/s.
@@ -59,19 +69,44 @@ Drivebase::Drivebase()
   std::cout << "Wheel circumference: " << wheelCircumference << "\n"
             << "Velocity adjustment: " << velocityAdjustment << std::endl;
 
-  m_leftFrontEncoder.SetVelocityConversionFactor(
+  m_revStuff->m_leftFrontEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
-  m_leftRearEncoder.SetVelocityConversionFactor(
+  m_revStuff->m_leftRearEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
-  m_rightFrontEncoder.SetVelocityConversionFactor(
+  m_revStuff->m_rightFrontEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
-  m_rightRearEncoder.SetVelocityConversionFactor(
+  m_revStuff->m_rightRearEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
 
   m_drive.reset(new frc::DifferentialDrive(*m_leftMotors, *m_rightMotors));
 
   ResetEncoders();
   m_adiGyro.Calibrate();
+}
+
+Drivebase::~Drivebase() {
+  delete m_revStuff;
+}
+
+void Drivebase::ResetEncoders() {
+  m_revStuff->m_leftFrontEncoder.SetPosition(0.0);
+  m_revStuff->m_leftRearEncoder.SetPosition(0.0);
+  m_revStuff->m_rightFrontEncoder.SetPosition(0.0);
+  m_revStuff->m_rightRearEncoder.SetPosition(0.0);
+}
+
+double Drivebase::GetLeftEncoderCount() {
+  return m_revStuff->m_leftFrontEncoder.GetPosition();
+}
+
+double Drivebase::GetRightEncoderCount() {
+  return m_revStuff->m_rightFrontEncoder.GetPosition();
+}
+
+frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
+  return frc::DifferentialDriveWheelSpeeds{
+      m_revStuff->m_leftRearEncoder.GetVelocity() * 1_m / 1_s,
+      m_revStuff->m_rightRearEncoder.GetVelocity() * 1_m / 1_s};
 }
 
 // This method will be called once per scheduler run
@@ -102,29 +137,8 @@ void Drivebase::Stop() {
   SetMotorSpeed(0, 0);
 }
 
-void Drivebase::ResetEncoders() {
-  m_leftFrontEncoder.SetPosition(0.0);
-  m_leftRearEncoder.SetPosition(0.0);
-  m_rightFrontEncoder.SetPosition(0.0);
-  m_rightRearEncoder.SetPosition(0.0);
-}
-
-double Drivebase::GetLeftEncoderCount() {
-  return m_leftFrontEncoder.GetPosition();
-}
-
-double Drivebase::GetRightEncoderCount() {
-  return m_rightFrontEncoder.GetPosition();
-}
-
 frc::Pose2d Drivebase::GetPose() {
   return m_odometry.GetPose();
-}
-
-frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
-  return frc::DifferentialDriveWheelSpeeds{
-      m_leftRearEncoder.GetVelocity() * 1_m / 1_s,
-      m_rightRearEncoder.GetVelocity() * 1_m / 1_s};
 }
 
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
@@ -137,13 +151,15 @@ void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
   m_rightMotors->SetVoltage(right);
   m_drive->Feed();
 }
+
 units::meter_t Drivebase::GetRightEncoderDistance() {
-  auto distance = ((m_rightFrontEncoder.GetPosition()) / kGearRatio_2021) *
+  auto distance = (GetRightEncoderCount() / kGearRatio_2021) *
                   (kWheelDiameter * wpi::math::pi);
   return distance;
 }
+
 units::meter_t Drivebase::GetLeftEncoderDistance() {
-  auto distance = ((m_leftFrontEncoder.GetPosition()) / kGearRatio_2021) *
+  auto distance = (GetLeftEncoderCount() / kGearRatio_2021) *
                   (kWheelDiameter * wpi::math::pi);
   return distance;
 }

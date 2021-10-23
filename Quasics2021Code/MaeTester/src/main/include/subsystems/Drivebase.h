@@ -19,6 +19,7 @@
 class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();
+  ~Drivebase();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -42,19 +43,11 @@ class Drivebase : public frc2::SubsystemBase {
   void TankDriveVolts(units::volt_t left, units::volt_t right);
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-  rev::CANSparkMax m_leftFront;
-  rev::CANSparkMax m_leftRear;
-  rev::CANSparkMax m_rightFront;
-  rev::CANSparkMax m_rightRear;
+  class RevRoboticsStuff;
+  RevRoboticsStuff* const m_revStuff;
 
+  /// Gyro installed on the drive base
   frc::ADXRS450_Gyro m_adiGyro{frc::SPI::Port::kOnboardCS0};
-
-  rev::CANEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
-  rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
-  rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
-  rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 
   std::unique_ptr<frc::SpeedControllerGroup> m_leftMotors;
   std::unique_ptr<frc::SpeedControllerGroup> m_rightMotors;

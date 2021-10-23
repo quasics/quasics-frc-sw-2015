@@ -43,8 +43,8 @@ struct Drivebase::RevRoboticsStuff {
 };
 
 Drivebase::Drivebase()
-    : m_odometry(units::degree_t(m_adiGyro.GetAngle())),
-      m_revStuff(new RevRoboticsStuff) {
+    : m_revStuff(new RevRoboticsStuff),
+      m_odometry(units::degree_t(m_adiGyro.GetAngle())) {
   SetSubsystem("Drivebase");
 
   m_revStuff->m_rightFront.SetInverted(true);

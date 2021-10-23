@@ -25,7 +25,15 @@
 #include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
 
+///////////////////////////////////////////////////////////////////////////////
+// Conditional compilation flags start here.
+
+// DEFINE this symbol to enable the pneumatics subsystem.  (This is not
+// installed on Nike.)
 #define ENABLE_PNEUMATICS
+
+// Conditional compilation flags end here.
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -38,25 +46,56 @@ class RobotContainer {
  public:
   RobotContainer();
 
+  /// Used by the Robot class to get the command to be run in autonomous mode.
   frc2::Command* GetAutonomousCommand();
 
  private:
-  TankDrive* BuildTankDriveCommand();
-  TriggerDrivenShootingCommand* BuildShootingCommand();
-  ColorLights* BuildColorLightsCommand();
-  void ConfigureTankDrive();
-  void ConfigureLights();
+  /// Builds the (fairly complex) tank drive command, but doesn't install it
+  /// on the subsystem.
+  std::unique_ptr<TankDrive> BuildTankDriveCommand();
+
+  /// Builds the (somewhat complex) shooting command, but doesn't install it
+  /// on the subsystem.
+  std::unique_ptr<TriggerDrivenShootingCommand> BuildShootingCommand();
+
+  /// Configures the default commands for various subsystems.
+  void InstallDefaultCommands();
+
+  /// Configures the options shown in the selector for autonomous mode
+  /// operations, and puts the selector widget on the smart dashboard.
   void ConfigureAutoSelection();
+
+  // The following functions each add buttons for particular sets of
+  // functionality to the smart dashboard.  They may be called from the
+  // ConfigureSmartDashboard() function.
+  void AddLightingButtonsToSmartDashboard();
+  void AddShooterAngleControlsToSmartDashboard();
+  void AddShooterSpeedControlsToSmartDashboard();
+  void AddShootAndMoveTestsToSmartDashboard();
+  void AddPneumaticsControlsToSmartDashboard();
+  void AddExampleTrajectoryCommandsToSmartDashboard();
+  void AddSampleMovementCommandsToSmartDashboard();
+
+  /// Adds various buttons shown on the smart dashboard.
   void ConfigureSmartDashboard();
-  void ConfigureButtonBindings();
+
+  // Binds the buttons on the driver and operator controllers to specific
+  // commands.
+  void ConfigureControllerButtonBindings();
   void ConfigureDriverButtonBindings();
   void ConfigureOperatorButtonBindings();
 
+  /// Utility function to provide "deadband" regions to Joysticks (i.e., if it's
+  /// within a defined range from 0, then treat it *as* 0).
   static double deadband(double num);
 
+  /// Utility function to help bind a command to a specific button on the
+  /// operator's controller.
   void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId,
                                           frc2::Command* command);
 
+  /// Utility function to help bind a command to a specific button on the
+  /// driver's controller.
   void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                         frc2::Command* command);
 
@@ -88,11 +127,16 @@ class RobotContainer {
   //////////////////////////////////////////////////////////////////
   // Functions for Galactic Search challenge.
  private:
-  /// Returns true iff the RasPi can't identify the GS variant.
+  /// Returns true iff the RasPi can't identify the current Galactic Search
+  /// variant based on the video from the camera.
   bool RecognizeError();
-  /// Returns true iff the RasPi says the GS variant is for Path A options.
+
+  /// Returns true iff the RasPi says the Galactic Search variant is for Path A
+  /// options.
   bool RecognizePathA();
-  /// Returns true iff the RasPi says the GS variant is for the Blue alliance.
+
+  /// Returns true iff the RasPi says the Galactic Search variant is for the
+  /// Blue alliance.
   bool RecognizeBlueAlliance();
 
   /// Builds a command group for the GS challenge, taking the 4 paths to
@@ -131,22 +175,36 @@ class RobotContainer {
       units::second_t timeForRunShooter, double power, double amountToMove);
 
   //////////////////////////////////////////////////////////////////
-  // Data/member objects: subsystems, helpers, etc.
+  // Subsystems
  private:
   Drivebase drivebase;
   Shooter shooter;
   Intake intake;
   Lights lights;
+
 #ifdef ENABLE_PNEUMATICS
   Pneumatics pneumatics;
 #endif  // ENABLE_PNEUMATICS
 
-  frc::SendableChooser<frc2::Command*> m_autoChooser;
-
+  //////////////////////////////////////////////////////////////////
   // Controllers
+ private:
   frc::Joystick driverJoystick{0};
   frc::XboxController operatorController{1};
 
+  //////////////////////////////////////////////////////////////////
+  // Commands and related "stuff"
+ private:
+  /// Default command for lights: solid green (for Quasics!).
+  ColorLights m_defaultLightingCommand{&lights, 0, 255, 0};
+
+  /// Widget shown on the smart dashboard, allowing drive team to select
+  /// a command for execution during autonomous mode.
+  frc::SendableChooser<frc2::Command*> m_autoChooser;
+
+  //////////////////////////////////////////////////////////////////
+  // Stuff for 2021 approach to vision processing.
+ private:
   /// Used to tune/store the Vision.py code's color range.
   VisionSettingsHelper m_visionSettingsHelper{
       VisionSettingsHelper::GetSuggestedRoboRioDirectory() +

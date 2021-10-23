@@ -33,10 +33,8 @@
 
 #include "Constants.h"
 #include "commands/AutoIntakeCells.h"
-#include "commands/ColorLights.h"
 #include "commands/DecrementLinearActuator.h"
 #include "commands/DelayForTime.h"
-#include "commands/DoASpin.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/IncrementLinearActuator.h"
 #include "commands/IntakePowerCells.h"
@@ -49,7 +47,6 @@
 #include "commands/ShootForTime.h"
 #include "commands/ShootWithLimitSwitch.h"
 #include "commands/TimedConveyor.h"
-//#include "commands/TimedIntake.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
@@ -76,17 +73,12 @@ RobotContainer::RobotContainer() {
   auto table = inst.GetTable(NetworkTableNames::kVisionTable);
   pathId = table->GetEntry(NetworkTableNames::kPathID);
 
-  // Configure the key subsystems.
-  ConfigureTankDrive();
-  ConfigureLights();
-
-  std::unique_ptr<TriggerDrivenShootingCommand> shooterCmd(
-      BuildShootingCommand());
-  shooter.SetDefaultCommand(*shooterCmd);
+  // Configure default commands for the key subsystems.
+  InstallDefaultCommands();
 
   //////////////////////////////////////////
   // Configure the button bindings.
-  ConfigureButtonBindings();
+  ConfigureControllerButtonBindings();
   ConfigureSmartDashboard();
   ConfigureAutoSelection();
 }
@@ -99,13 +91,19 @@ double RobotContainer::deadband(double num) {
   return num;
 }
 
-TriggerDrivenShootingCommand* RobotContainer::BuildShootingCommand() {
+std::unique_ptr<TriggerDrivenShootingCommand>
+RobotContainer::BuildShootingCommand() {
+  // Dead band control for the left trigger, letting us use it as though it
+  // was a button (on/off).
   std::function<bool()> runHighSpeedSupplier = [this] {
     if (operatorController.GetTriggerAxis(frc::GenericHID::kLeftHand) >= 0.5) {
       return true;
     }
     return false;
   };
+
+  // Dead band control for the left trigger, letting us use it as though it
+  // was a button (on/off).
   std::function<bool()> runLowSpeedSupplier = [this] {
     if (operatorController.GetTriggerAxis(frc::GenericHID::kRightHand) >= 0.5) {
       return true;
@@ -113,11 +111,11 @@ TriggerDrivenShootingCommand* RobotContainer::BuildShootingCommand() {
     return false;
   };
 
-  return new TriggerDrivenShootingCommand(
+  return std::make_unique<TriggerDrivenShootingCommand>(
       &shooter, 1.0, 0.8, runHighSpeedSupplier, runLowSpeedSupplier);
 }
 
-TankDrive* RobotContainer::BuildTankDriveCommand() {
+std::unique_ptr<TankDrive> RobotContainer::BuildTankDriveCommand() {
 #if defined(DISABLE_TURBO_MODE)
   constexpr int turtleTrigger =
       OIConstants::LogitechGamePad::RightTriggerButton;
@@ -158,7 +156,7 @@ TankDrive* RobotContainer::BuildTankDriveCommand() {
                                                 // mode
   };
 
-  return new TankDrive(
+  return std::make_unique<TankDrive>(
       &drivebase,
       [this, speedScaler] {
         double stickValue = -driverJoystick.GetRawAxis(
@@ -172,18 +170,15 @@ TankDrive* RobotContainer::BuildTankDriveCommand() {
       });
 }
 
-ColorLights* RobotContainer::BuildColorLightsCommand() {
-  return new ColorLights(&lights, 0, 255, 0);
-}
+void RobotContainer::InstallDefaultCommands() {
+  auto tankDriveCmd = BuildTankDriveCommand();
+  drivebase.SetDefaultCommand(*tankDriveCmd);
 
-void RobotContainer::ConfigureTankDrive() {
-  std::unique_ptr<TankDrive> cmd(BuildTankDriveCommand());
-  drivebase.SetDefaultCommand(*cmd);
-}
+  lights.SetDefaultCommand(m_defaultLightingCommand);
 
-void RobotContainer::ConfigureLights() {
-  std::unique_ptr<ColorLights> cmd(BuildColorLightsCommand());
-  lights.SetDefaultCommand(*cmd);
+  std::unique_ptr<TriggerDrivenShootingCommand> shooterCmd(
+      BuildShootingCommand());
+  shooter.SetDefaultCommand(*shooterCmd);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -197,7 +192,7 @@ void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
   frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command);
 }
 
-void RobotContainer::ConfigureButtonBindings() {
+void RobotContainer::ConfigureControllerButtonBindings() {
   // Run the shooter (high/low speed).
   static RunShootingMotor runShooterFullSpeed(&shooter, 1.0);
   static RunShootingMotor runShooterLowSpeed(&shooter, 0.8);
@@ -235,11 +230,6 @@ void RobotContainer::ConfigureButtonBindings() {
   // Other commands.
   static IntakePowerCells intakepowercells(&intake);
   static ShootWithLimitSwitch shootwithlimitswitch(&shooter, &intake);
-
-#ifdef BROKEN_BY_JOSH
-  // Note: Shot speed value is needed.
-  static SetShotSpeed SetShotSpeed(&shooter, &fastShotSpeed);
-#endif  // BROKEN_BY_JOSH
 
 #define ENABLE_BINDINGS_FOR_DEMO
 #ifdef ENABLE_BINDINGS_FOR_DEMO
@@ -288,32 +278,6 @@ void RobotContainer::ConfigureButtonBindings() {
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBack,
                                      &decrementShootingAngle);
-
-#ifdef BROKEN_BY_JOSH
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBumperRight,  // Fast Shot Speed
-      &setshotspeed);
-  );
-#endif  // BROKEN_BY_JOSH
-
-  /*
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kB,  // Run conveyor and intake
-      &intakepowercells);
-
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBumperLeft,  // Run intake forwards
-      &intakeForwardCommand);
-
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kBumperRight,  // Run intake backwards
-      &intakeReverseCommand);
-  */
-
-  // If we end up using buttons for changing shooter angle with the actuator,
-  // use kBack to extend, kStart to retract That makes no sense? Back and extend
-  // are basically antonyms. so are start and retract.
-
 #endif  // ENABLE_BINDINGS_FOR_DEMO
 }
 
@@ -394,18 +358,37 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_autoChooser.GetSelected();
 }
 
-void RobotContainer::ConfigureSmartDashboard() {
-  if (false) {
-    // Lighting controls (under construction)
-    frc::SmartDashboard::PutData("Red Light",
-                                 new ColorLights(&lights, 255, 0, 0));
-    frc::SmartDashboard::PutData("Green Light",
-                                 new ColorLights(&lights, 0, 255, 0));
-    frc::SmartDashboard::PutData("Blue Light",
-                                 new ColorLights(&lights, 0, 0, 255));
-    frc::SmartDashboard::PutData("Lights Out",
-                                 new ColorLights(&lights, 0, 0, 0));
-  }
+void RobotContainer::AddLightingButtonsToSmartDashboard() {
+  // Lighting controls (under construction)
+  frc::SmartDashboard::PutData("Red Light",
+                               new ColorLights(&lights, 255, 0, 0));
+  frc::SmartDashboard::PutData("Green Light",
+                               new ColorLights(&lights, 0, 255, 0));
+  frc::SmartDashboard::PutData("Blue Light",
+                               new ColorLights(&lights, 0, 0, 255));
+  frc::SmartDashboard::PutData("Lights Out", new ColorLights(&lights, 0, 0, 0));
+}
+
+void RobotContainer::AddShooterAngleControlsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Min Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Max Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.SetServoPosition(1.0); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Inc Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.IncrementPosition(); },
+                               {&shooter}));
+  frc::SmartDashboard::PutData(
+      "Dec Shooter Pos",
+      new frc2::InstantCommand([this]() { shooter.DecrementPosition(); },
+                               {&shooter}));
+}
+
+void RobotContainer::AddShootAndMoveTestsToSmartDashboard() {
   // Adjustment for Robot specifications(BuildShootAndMoveSequence).
   //
   // To adjust power of shooting motor, change the value for
@@ -432,16 +415,9 @@ void RobotContainer::ConfigureSmartDashboard() {
       BuildShootAndMoveSequence(3_s /*conveyor on (s)*/, 2_s /*wait (s)*/,
                                 units::second_t(kShootingTimeSeconds),
                                 kDrivingSpeedPercent, kDistanceToDriveMeters));
+}
 
-  // Test command
-  frc::SmartDashboard::PutData(
-      "Load next ball", new RunConveyorUntilBallLoads(
-                            &intake,                   // subsystem it uses
-                            Intake::MOTOR_FULL_POWER,  // conveyor power
-                            Intake::MOTOR_OFF_POWER,   // Ball pick-up power
-                            units::second_t(3)         // Timeout
-                            ));
-
+void RobotContainer::AddShooterSpeedControlsToSmartDashboard() {
   // Various shooter speed controls
   // TODO: Change this to be a single button for a command that reads a value
   // for speed from a chooser (or a text control) on the dashboard.
@@ -457,16 +433,36 @@ void RobotContainer::ConfigureSmartDashboard() {
                                new RunShootingMotor(&shooter, 0.75));
   frc::SmartDashboard::PutData("Run shooter at 70% power",
                                new RunShootingMotor(&shooter, 0.7));
+}
 
-  if (false) {
-    // Sample command from s/w team training
-    frc::SmartDashboard::PutData("Do those spinnin", new DoASpin(&drivebase));
-  }
-  if (false) {
-    frc::SmartDashboard::PutData("Shared tank drive", BuildTankDriveCommand());
-  }
+void RobotContainer::AddSampleMovementCommandsToSmartDashboard() {
+  // Sample movement commands
+  frc::SmartDashboard::PutData(
+      "Go 9.144 meters at 50%",
+      new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
 
-#ifdef ENABLE_PNEUMATICS
+  frc::SmartDashboard::PutData(
+      "Go -9.144 meters at -50%",
+      new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
+
+  frc::SmartDashboard::PutData("Simple command group",
+                               BuildBouncePathCommand());
+}
+
+void RobotContainer::AddExampleTrajectoryCommandsToSmartDashboard() {
+  // Sample trajectory commands
+  std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
+                                         frc::Translation2d(2_m, 0_m)};
+  frc::SmartDashboard::PutData(
+      "Go in a line", GenerateRamseteCommand(
+                          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
+                          frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
+
+  frc::SmartDashboard::PutData("Go in an S", GenerateRamseteCommandFromPathFile(
+                                                 "TestingS.wpilib.json", true));
+}
+
+void RobotContainer::AddPneumaticsControlsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Extend Intake",
       new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
@@ -479,52 +475,34 @@ void RobotContainer::ConfigureSmartDashboard() {
       "Toggle Intake",
       new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
                                {&pneumatics}));
-#endif  // ENABLE_PNEUMATICS
+}
+
+void RobotContainer::ConfigureSmartDashboard() {
+  if (true) {
+    AddLightingButtonsToSmartDashboard();
+  }
+
+  AddPneumaticsControlsToSmartDashboard();
+  AddShooterAngleControlsToSmartDashboard();
+  AddShooterSpeedControlsToSmartDashboard();
+  AddShootAndMoveTestsToSmartDashboard();
+
+  // Test command
+  frc::SmartDashboard::PutData(
+      "Load next ball", new RunConveyorUntilBallLoads(
+                            &intake,                   // subsystem it uses
+                            Intake::MOTOR_FULL_POWER,  // conveyor power
+                            Intake::MOTOR_OFF_POWER,   // Ball pick-up power
+                            units::second_t(3)         // Timeout
+                            ));
 
   if (false) {
-    // Sample trajectory commands
-    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
-                                           frc::Translation2d(2_m, 0_m)};
-    frc::SmartDashboard::PutData(
-        "Go in a line",
-        GenerateRamseteCommand(
-            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
-            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
-    frc::SmartDashboard::PutData(
-        "Go in an S",
-        GenerateRamseteCommandFromPathFile("TestingS.wpilib.json", true));
+    AddExampleTrajectoryCommandsToSmartDashboard();
   }
 
   if (false) {
-    // Sample movement commands
-    frc::SmartDashboard::PutData(
-        "Go 9.144 meters at 50%",
-        new DriveAtPowerForMeters(&drivebase, .5, 9.144_m));
-
-    frc::SmartDashboard::PutData(
-        "Go -9.144 meters at -50%",
-        new DriveAtPowerForMeters(&drivebase, -.5, -1_m));
-
-    frc::SmartDashboard::PutData("Simple command group",
-                                 BuildBouncePathCommand());
+    AddSampleMovementCommandsToSmartDashboard();
   }
-
-  frc::SmartDashboard::PutData(
-      "Min Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },
-                               {&shooter}));
-  frc::SmartDashboard::PutData(
-      "Max Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.SetServoPosition(1.0); },
-                               {&shooter}));
-  frc::SmartDashboard::PutData(
-      "Inc Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.IncrementPosition(); },
-                               {&shooter}));
-  frc::SmartDashboard::PutData(
-      "Dec Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.DecrementPosition(); },
-                               {&shooter}));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
@@ -566,41 +544,6 @@ frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
-/*if (false) {
-  frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
-      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-      units::second_t timeForRunShooter, double power, double amountToMove) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::move(
-        std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
-            secondsToRunConveyor, secondsToWait, timeForRunShooter))));
-    commands.push_back(
-        std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-            &drivebase, power, units::length::meter_t(amountToMove)))));
-    return new frc2::SequentialCommandGroup(std::move(commands));
-  }
-}*/
-
-/*
-frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
-    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-    units::second_t timeForRunShooter, double power, double amountToMove) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new frc2::InstantCommand(
-          [this]() { pneumatics.ExtendSolenoid(); }, {&pneumatics}))));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new TimedIntake(&intake, units::second_t(1), true))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-          &drivebase, power, units::length::meter_t(amountToMove)))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
-          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
-*/
-
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
     units::second_t secondsToRunConveyor, units::second_t secondsToWait,
     units::second_t timeForRunShooter, double power, double amountToMove) {
@@ -622,16 +565,10 @@ frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
 
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile("Bounce Part1.wpilib.json", true))));
-  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //    new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile("Bounce Part2.wpilib.json", false))));
-  // bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //     new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile("Bounce Part3.wpilib.json", false))));
-  /*bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&drivebase, .6, 1_m))));*/
   bouncePathPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile("Bounce Part4.wpilib.json", false))));
 
@@ -645,16 +582,10 @@ frc2::ParallelCommandGroup* RobotContainer::BuildGalacticSearchPath(
   std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile1, true))));
-  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile2, false))));
-  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile3, false))));
-  // GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-  //  new DriveAtPowerForMeters(&drivebase, .6, 1_m))));
   GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
       GenerateRamseteCommandFromPathFile(jsonFile4, false))));
 

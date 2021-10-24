@@ -56,24 +56,14 @@ void Intake::Periodic() {
 
 // Intakes the ball at 1/4 speed. Theoretically, when limit switch is hit, both
 // Intake and Conveyor will stop.
+// TODO: Fix this: it shouldn't be written like this!!!!!
+// TODO(matt): Explain to people why.
 void Intake::IntakeBallOn() {
   if (!IsBallInChamber()) {
     conveyorMotor.Set(MOTOR_FAST_POWER);
     intakeMotor.Set(MOTOR_SLOW_POWER);
   } else {
     intakeMotor.Set(MOTOR_OFF_POWER);
-    conveyorMotor.Set(MOTOR_OFF_POWER);
-  }
-}
-// Automatic Intake: if limit switch is hit, only conveyor will disable.
-// Otherwise, will always run.
-// TODO: Fix this: it shouldn't be written like this!!!!!
-// TODO(matt): Explain to people why.
-void Intake::IntakeCellsAuto() {
-  intakeMotor.Set(MOTOR_FAST_POWER);
-  if (IsBallInChamber()) {
-    conveyorMotor.Set(MOTOR_SLOW_POWER);
-  } else {
     conveyorMotor.Set(MOTOR_OFF_POWER);
   }
 }
@@ -86,6 +76,10 @@ void Intake::IntakeBallOff() {
 
 void Intake::ConveyBallOn() {
   conveyorMotor.Set(MOTOR_FULL_POWER);
+}
+
+void Intake::ConveyBallOnSlow() {
+  conveyorMotor.Set(MOTOR_SLOW_POWER);
 }
 
 void Intake::ConveyBallReverse() {

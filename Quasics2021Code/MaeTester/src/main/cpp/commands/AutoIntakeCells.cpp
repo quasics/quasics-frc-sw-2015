@@ -5,18 +5,27 @@
 #include "commands/AutoIntakeCells.h"
 
 AutoIntakeCells::AutoIntakeCells(Intake* intake) : intake(intake) {
-  // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(intake);
+  AddRequirements({intake});
 }
 
 // Called when the command is initially scheduled.
 void AutoIntakeCells::Initialize() {
-  intake->IntakeCellsAuto();
+  intake->OnlyIntakeOn();
+  if (!intake->IsBallInChamber()) {
+    intake->ConveyBallOnSlow();
+  } else {
+    intake->ConveyBallOff();
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void AutoIntakeCells::Execute() {
-  intake->IntakeCellsAuto();
+  intake->OnlyIntakeOn();
+  if (!intake->IsBallInChamber()) {
+    intake->ConveyBallOnSlow();
+  } else {
+    intake->ConveyBallOff();
+  }
 }
 
 // Called once the command ends or is interrupted.

@@ -38,13 +38,13 @@ class Intake : public frc2::SubsystemBase {
   void IntakeBallOff();
 
   void ConveyBallOn();
+  void ConveyBallOnSlow();
   void ConveyBallReverse();
   void ConveyBallOff();
 
   void OnlyIntakeOn();
   void OnlyIntakeReverse();
   void OnlyIntakeOff();
-  void IntakeCellsAuto();
 
   bool IsBallInChamber();
 

@@ -13,7 +13,9 @@
 
 #include "Constants.h"
 
-#define LOG_EVERY_N_TIMES(n, outputCmd)       \
+#define USE_SPARKS_VIA_CAN
+
+#define EXECUTE_EVERY_N_TIMES(n, outputCmd)   \
   {                                           \
     static int counter = -1;                  \
     if ((counter = (counter + 1) % n) == 0) { \
@@ -35,6 +37,7 @@ static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 /// means that this stuff will all need to be disabled, and it's easier when all
 /// of the references are in a single file.
 struct Drivebase::RevRoboticsStuff {
+#ifdef USE_SPARKS_VIA_CAN
   rev::CANSparkMax m_leftFront{CANBusIds::SparkMaxIds::Left_Front_Number,
                                rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_leftRear{CANBusIds::SparkMaxIds::Left_Rear_Number,
@@ -48,28 +51,47 @@ struct Drivebase::RevRoboticsStuff {
   rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
   rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
   rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
+#endif  // USE_SPARKS_VIA_CAN
 
   void ResetEncoders() {
+#ifdef USE_SPARKS_VIA_CAN
     m_leftFrontEncoder.SetPosition(0.0);
     m_leftRearEncoder.SetPosition(0.0);
     m_rightRearEncoder.SetPosition(0.0);
     m_rightFrontEncoder.SetPosition(0.0);
+#endif  // USE_SPARKS_VIA_CAN
   }
 
   double GetLeftEncoderCount() {
+#ifdef USE_SPARKS_VIA_CAN
     return m_leftFrontEncoder.GetPosition();
+#else
+    return 0;
+#endif  // USE_SPARKS_VIA_CAN
   }
 
   double GetRightEncoderCount() {
+#ifdef USE_SPARKS_VIA_CAN
     return m_rightFrontEncoder.GetPosition();
+#else
+    return 0;
+#endif  // USE_SPARKS_VIA_CAN
   }
 
   double GetLeftVelocity() {
+#ifdef USE_SPARKS_VIA_CAN
     return m_leftFrontEncoder.GetVelocity();
+#else
+    return 0;
+#endif  // USE_SPARKS_VIA_CAN
   }
 
   double GetRightVelocity() {
+#ifdef USE_SPARKS_VIA_CAN
     return m_rightFrontEncoder.GetVelocity();
+#else
+    return 0;
+#endif  // USE_SPARKS_VIA_CAN
   }
 };
 
@@ -78,6 +100,7 @@ Drivebase::Drivebase()
       m_odometry(units::degree_t(m_adiGyro.GetAngle())) {
   SetSubsystem("Drivebase");
 
+#ifdef USE_SPARKS_VIA_CAN
   m_revStuff->m_rightFront.SetInverted(true);
   m_revStuff->m_rightRear.SetInverted(true);
 
@@ -88,6 +111,7 @@ Drivebase::Drivebase()
                                                    m_revStuff->m_leftRear));
   m_rightMotors.reset(new frc::SpeedControllerGroup(m_revStuff->m_rightFront,
                                                     m_revStuff->m_rightRear));
+#endif  // USE_SPARKS_VIA_CAN
 
   // Default for the encoders is to report velocity in RPM; we want that to come
   // back as m/s.
@@ -100,6 +124,7 @@ Drivebase::Drivebase()
   std::cout << "Wheel circumference: " << wheelCircumference << "\n"
             << "Velocity adjustment: " << velocityAdjustment << std::endl;
 
+#ifdef USE_SPARKS_VIA_CAN
   m_revStuff->m_leftFrontEncoder.SetVelocityConversionFactor(
       velocityAdjustment.to<double>());
   m_revStuff->m_leftRearEncoder.SetVelocityConversionFactor(
@@ -110,6 +135,7 @@ Drivebase::Drivebase()
       velocityAdjustment.to<double>());
 
   m_drive.reset(new frc::DifferentialDrive(*m_leftMotors, *m_rightMotors));
+#endif  // USE_SPARKS_VIA_CAN
 
   ResetEncoders();
   m_adiGyro.Calibrate();
@@ -149,16 +175,19 @@ void Drivebase::Periodic() {
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
 
-  //   LOG_EVERY_N_TIMES(100, auto speeds = GetWheelSpeeds();
-  //                     std::cout << "Speeds: " << speeds.left << " / "
-  //                               << speeds.right << std::endl;)
+  //   EXECUTE_EVERY_N_TIMES(100, auto speeds = GetWheelSpeeds();
+  //                         std::cout << "Speeds: " << speeds.left << " / "
+  //                                   << speeds.right << std::endl;)
 }
 
 void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
-  //   LOG_EVERY_N_TIMES(50, std::cerr << "Setting speeds: left=" << leftSpeed
+  //   EXECUTE_EVERY_N_TIMES(50,
+  //                         std::cerr << "Setting speeds: left=" << leftSpeed
   //                                   << ", right=" << rightSpeed <<
   //                                   std::endl;)
-  m_drive->TankDrive(leftSpeed, -rightSpeed);
+  if (m_drive) {
+    m_drive->TankDrive(leftSpeed, -rightSpeed);
+  }
 }
 
 void Drivebase::Stop() {
@@ -175,9 +204,15 @@ void Drivebase::ResetOdometry(frc::Pose2d pose) {
 }
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-  m_leftMotors->SetVoltage(left);
-  m_rightMotors->SetVoltage(right);
-  m_drive->Feed();
+  if (m_leftMotors) {
+    m_leftMotors->SetVoltage(left);
+  }
+  if (m_leftMotors) {
+    m_rightMotors->SetVoltage(right);
+  }
+  if (m_drive) {
+    m_drive->Feed();
+  }
 }
 
 units::meter_t Drivebase::GetRightEncoderDistance() {

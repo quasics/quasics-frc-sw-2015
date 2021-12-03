@@ -4,9 +4,12 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
-#include <array>
 #include <frc/AddressableLED.h>
+#include <frc2/command/SubsystemBase.h>
+
+#include <array>
+
+#include "Constants.h"
 
 class Lights : public frc2::SubsystemBase {
  public:
@@ -35,6 +38,6 @@ class Lights : public frc2::SubsystemBase {
 
  private:
   static constexpr int kLength = 60;
-  frc::AddressableLED m_led{9};
+  frc::AddressableLED m_led{PwmIds::LedControl};
   std::array<frc::AddressableLED::LEDData, kLength> m_ledBuffer;
 };

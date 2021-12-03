@@ -12,16 +12,24 @@ Lights::Lights() {
   // needs to get a valid length for comparison to the size of the
   // buffer when "SetData()" is called later: if the buffer is too big,
   // that will fail.)
+  //
+  // It's also worth noting that setting the length is an "expensive" operation
+  // that should only be done once (on start-up), and then we just update the
+  // underlying data [buffer] as needed.
   m_led.SetLength(kLength);
 
-  // Start with all of the lights off.
+  // Set up for the lights all being off when we start.
   TurnStripOff();
+
+  // OK: actually start the active control of the lights.
+  m_led.Start();
 }
 
 // This method will be called once per scheduler run
-void Lights::Periodic() {}
+void Lights::Periodic() {
+}
 
-void Lights::SetStripColor(int red, int green, int blue){
+void Lights::SetStripColor(int red, int green, int blue) {
   std::cout << "Setting strip to solid color" << std::endl;
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i].SetRGB(red, green, blue);

@@ -61,6 +61,7 @@ namespace PneumaticsIds {
 
 namespace PwmIds {
   constexpr int ShooterServo = 1;
+  constexpr int LedControl = 7;
 }  // namespace PwmIds
 
 namespace DigitalIOMappings {

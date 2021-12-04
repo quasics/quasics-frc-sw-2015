@@ -48,7 +48,7 @@ constexpr bool kUseChooserForAutoCmd = false;
 // The Logitech controllers can't be used with the Mac OS, which is what Matt
 // has handy.  So here's a convenient hack to encapsulate the idea of what type
 // of device we're using.
-inline bool usingLogitechController() {
+inline constexpr bool usingLogitechController() {
 #ifdef USE_GAMESIR_CONTROLLER
   return false;
 #else

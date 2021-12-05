@@ -54,8 +54,8 @@ namespace JoystickDefinitions {
     constexpr int LeftYAxis = 1;
     constexpr int LeftTriggerAxis = 2;
     constexpr int RightTriggerAxis = 3;
-    constexpr int RightXAxis = 2;
-    constexpr int RightYAxis = 3;
+    constexpr int RightXAxis = 4;
+    constexpr int RightYAxis = 5;
 
     // Buttons
     constexpr int AButton = 1;

@@ -11,6 +11,8 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.utils.DeadBandEnforcer;
+import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -41,9 +43,10 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure tank drive command.
+    DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
     TankDrive tankDrive = new TankDrive(driveBase,
-        () -> driverStick.getRawAxis(Constants.OperatorInterface.LogitechGamePad.LEFT_Y_AXIS),
-        () -> driverStick.getRawAxis(Constants.OperatorInterface.LogitechGamePad.RIGHT_Y_AXIS));
+        () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)),
+        () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
     driveBase.setDefaultCommand(tankDrive);
   }
 

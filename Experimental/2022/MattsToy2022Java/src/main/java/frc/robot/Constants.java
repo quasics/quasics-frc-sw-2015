@@ -19,6 +19,10 @@ package frc.robot;
 public final class Constants {
     public static final double WHEEL_DIAMETER_INCHES = 6.0;
 
+    public static final class Deadbands {
+        public static final double DRIVING = 0.055;
+    }
+
     /// Gear ratio used for the 2020/2021 robots.
     public static final double DRIVE_BASE_GEAR_RATIO_2021 = 10.71;
     public static final double DRIVE_BASE_GEAR_RATIO_2022 = 8.45;

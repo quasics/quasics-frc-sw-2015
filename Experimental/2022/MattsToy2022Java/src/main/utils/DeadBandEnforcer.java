@@ -5,18 +5,32 @@
 package frc.robot.utils;
 
 /**
- * Provides support for "deadband" handling.
+ * Provides support for "deadband" handling".
  * 
  * @see https://en.wikipedia.org/wiki/Deadband
  */
 public class DeadBandEnforcer {
+    /** The lower bound on the dead band. */
     private final double lowBar;
+
+    /** The upper bound on the dead band. */
     private final double highBar;
 
+    /**
+     * Sets up a dead band configured from "-threshold" to "+threshold".
+     * 
+     * @param threshold defines upper/lower bound on the dead band around 0
+     */
     public DeadBandEnforcer(double threshold) {
         this(-Math.abs(threshold), Math.abs(threshold));
     }
 
+    /**
+     * Sets up a dead band configured from "-lowBar" to "+highBar".
+     * 
+     * @param lowBar  defines lower bound on the dead band
+     * @param highBar defines upper bound on the dead band
+     */
     public DeadBandEnforcer(double lowBar, double highBar) {
         this.lowBar = Math.min(lowBar, highBar);
         this.highBar = Math.max(lowBar, highBar);

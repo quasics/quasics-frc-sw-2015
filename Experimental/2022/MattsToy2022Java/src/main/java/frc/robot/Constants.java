@@ -17,6 +17,11 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final double WHEEL_DIAMETER_INCHES = 6.0;
+
+    /// Gear ratio used for the 2020/2021 robots.
+    public static final double DRIVE_BASE_GEAR_RATIO = 10.71;
+
     public static final class MotorIds {
         public static final int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
         public static final int RIGHT_FRONT_DRIVE_MOTOR_ID = 2;

@@ -17,10 +17,10 @@ public class DriveBase extends SubsystemBase {
   final private RelativeEncoder leftEncoder;
   final private RelativeEncoder rightEncoder;
 
+  final private DifferentialDrive drive;
+
   private double leftPower = 0;
   private double rightPower = 0;
-
-  DifferentialDrive drive;
 
   /** Creates a new DriveBase. */
   public DriveBase() {

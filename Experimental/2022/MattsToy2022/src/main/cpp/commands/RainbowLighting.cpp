@@ -4,25 +4,36 @@
 
 #include "commands/RainbowLighting.h"
 
+#include <iostream>
+
 RainbowLighting::RainbowLighting(Lighting* lighting,
                                  units::second_t secondsBeforeAdvancing,
                                  int extraGapBetweenColors)
-    : m_lighting(lighting), m_secondsBeforeAdvancing(secondsBeforeAdvancing) {
+    : m_lighting(lighting),
+      m_secondsBeforeAdvancing(secondsBeforeAdvancing),
+      m_extraGapBetweenColors(std::max(0, extraGapBetweenColors)) {
   AddRequirements(m_lighting);
+}
 
-  extraGapBetweenColors = std::max(0, extraGapBetweenColors);
+void RainbowLighting::UpdateStrip() {
+  const int usePositionOffset = m_offset + m_extraGapBetweenColors;
 
-  m_colorFunction = [this, extraGapBetweenColors](int pos) {
-    int effectivePosition =
-        (pos + this->m_offset + extraGapBetweenColors) % MAX_HUE;
+  Lighting::ColorFunction colorFunction = [=](int pos) {
+    int effectivePosition = (pos + usePositionOffset) % MAX_HUE;
+
     // h - the h value [0-180] - ranges from red @ 0 to green @ 60, to blue
-    // @ 120, and back to red s - the s value [0-255] - "depth of color"
-    // (lower values shift toward white) (colorfulness, relative to its own
-    // brightness) v - the v value [0-255] - brightness
+    // @ 120, and back to red
+    //
+    // s - the s value [0-255] - "depth of color" (lower values shift toward
+    // white) (colorfulness, relative to its own brightness)
+    //
+    // v - the v value [0-255] - brightness
     frc::AddressableLED::LEDData result;
     result.SetHSV(effectivePosition, 255, 255);
     return result;
   };
+
+  m_lighting->SetStripColors(colorFunction);
 }
 
 // Called when the command is initially scheduled.
@@ -32,8 +43,7 @@ void RainbowLighting::Initialize() {
   m_timer.Reset();
   m_timer.Start();
 
-  // Update the colors of the LEDs on the strip.
-  m_lighting->SetStripColors(m_colorFunction);
+  UpdateStrip();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -42,10 +52,10 @@ void RainbowLighting::Execute() {
   // the colors along the strip.
   if (m_secondsBeforeAdvancing.value() <= 0 ||
       m_timer.HasElapsed(m_secondsBeforeAdvancing)) {
+    std::cerr << "Advancing rainbow" << std::endl;
     m_timer.Reset();
     ++m_offset;
   }
 
-  // Update the colors of the LEDs on the strip.
-  m_lighting->SetStripColors(m_colorFunction);
+  UpdateStrip();
 }

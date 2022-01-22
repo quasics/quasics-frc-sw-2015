@@ -26,6 +26,9 @@ class RainbowLighting
   void Execute() override;
 
  private:
+  void UpdateStrip();
+
+ private:
   /** Subsystem with which we're interacting. */
   Lighting* m_lighting;
 
@@ -40,9 +43,9 @@ class RainbowLighting
    */
   int m_offset = 0;
 
-  Lighting::ColorFunction m_colorFunction;
-
   const units::second_t m_secondsBeforeAdvancing;
+
+  int m_extraGapBetweenColors;
 
   /** Used to control delay in advancing colors. */
   frc::Timer m_timer;

@@ -55,30 +55,34 @@ public class DriveBase extends SubsystemBase {
     leftEncoder = leftRear.getEncoder();
     rightEncoder = rightRear.getEncoder();
 
-    ////////////////////////////////////////
-    // Configure the encoders.
-    final double METERS_PER_INCH = 0.0254;
-    final double wheelCircumferenceMeters = (Constants.WHEEL_DIAMETER_INCHES * METERS_PER_INCH) * Math.PI;
-
-    // Convert (rotational) RPM to (linear) meters/min
-    final double velocityAdjustmentForGearing = wheelCircumferenceMeters / Constants.DRIVE_BASE_GEAR_RATIO;
-
-    // Adjust to meters/sec for convenience
-    final double velocityAdjustment = velocityAdjustmentForGearing / 60;
-
-    System.out.println("Wheel circumference: " + wheelCircumferenceMeters);
-    System.out.println("Velocity adj. (gearing): " + velocityAdjustmentForGearing);
-    System.out.println("Velocity adj. (final): " + velocityAdjustment);
-
     /////////////////////////////////
     // Set up the differential drive.
     MotorControllerGroup leftMotors = new MotorControllerGroup(leftFront, leftRear);
     MotorControllerGroup rightMotors = new MotorControllerGroup(rightFront, rightRear);
 
+    drive = new DifferentialDrive(leftMotors, rightMotors);
+
+    ////////////////////////////////////////
+    // Configure the encoders.
+    final double METERS_PER_INCH = 0.0254;
+    final double wheelCircumferenceMeters = (Constants.WHEEL_DIAMETER_INCHES * METERS_PER_INCH) * Math.PI;
+    System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
+
+    // Conversion factor from units in rotations (or RPM) to meters (or m/s).
+    final double adjustmentForGearing = wheelCircumferenceMeters / Constants.DRIVE_BASE_GEAR_RATIO;
+    System.out.println("Adjustment for gearing (m/rotation): " + adjustmentForGearing);
+
+    // Further conversion factor from m/min to m/s (used for velocity).
+    final double velocityAdjustment = adjustmentForGearing / 60;
+    System.out.println("Velocity adj.: " + velocityAdjustment);
+
+    leftEncoder.setPositionConversionFactor(adjustmentForGearing);
+    rightEncoder.setPositionConversionFactor(adjustmentForGearing);
+
     leftEncoder.setVelocityConversionFactor(velocityAdjustment);
     rightEncoder.setVelocityConversionFactor(velocityAdjustment);
 
-    drive = new DifferentialDrive(leftMotors, rightMotors);
+    resetEncoders();
   }
 
   /**

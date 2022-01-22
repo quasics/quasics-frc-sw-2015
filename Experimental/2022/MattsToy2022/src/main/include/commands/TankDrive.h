@@ -10,11 +10,10 @@
 #include "subsystems/DriveBase.h"
 
 /**
- * An example command.
+ * A sample implementation of a "tank drive" command, for use in teleop mode.
  *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * TODO: Implement "switch drive".
+ * TODO: Implement "turbo" and "turtle" mode.
  */
 class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
  public:
@@ -26,8 +25,6 @@ class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   DriveBase& m_driveBase;

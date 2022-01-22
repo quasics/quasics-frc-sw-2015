@@ -27,8 +27,3 @@ void TankDrive::Execute() {
 void TankDrive::End(bool interrupted) {
   m_driveBase.Stop();
 }
-
-// Returns true when the command should end.
-bool TankDrive::IsFinished() {
-  return false;
-}

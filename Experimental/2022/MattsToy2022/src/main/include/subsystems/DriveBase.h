@@ -36,6 +36,7 @@ class DriveBase : public frc2::SubsystemBase {
   void ConfigureEncoders();
 
  private:
+  // Motors in the drive base.
   rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID,
@@ -51,8 +52,10 @@ class DriveBase : public frc2::SubsystemBase {
   rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 
+  // Motor controller groups (for use with differential drive).
   std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
+  // Differential drive (used for actual motor control).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 };

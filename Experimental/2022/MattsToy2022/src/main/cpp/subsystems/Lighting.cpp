@@ -10,6 +10,10 @@ const frc::AddressableLED::LEDData WHITE{255, 255, 255};
 Lighting::Lighting() {
   SetName("Lighting");
 
+  // Note: Length is expensive to set, so only set it once, then just update
+  // the buffer and send it in as new data for the strip.
+  m_ledStrip.SetLength(m_ledBuffer.size());
+
   // Start with lights alternating between black (off) and white.
   SetStripColors(
       // A simple "lambda" function, which will set any odd-numbered
@@ -22,10 +26,7 @@ Lighting::Lighting() {
         }
       });
 
-  // Note: Length is expensive to set, so only set it once, then just update
-  // the buffer and send it in as new data for the strip.
-  m_ledStrip.SetLength(m_ledBuffer.size());
-  m_ledStrip.SetData(m_ledBuffer);
+  // Starts the lights running....
   m_ledStrip.Start();
 }
 

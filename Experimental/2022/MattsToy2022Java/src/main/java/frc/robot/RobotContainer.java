@@ -41,7 +41,7 @@ public class RobotContainer {
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
 
     // Configure the button bindings.
-    configureButtonBindings();
+    configureButtonBindings(driverStick);
 
     // Configure tank drive command.
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
@@ -52,14 +52,16 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your button->command mappings.
+   * 
+   * Note that buttons can be created by instantiating a {@link GenericHID} or one
+   * of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or
+   * {@link XboxController}), and then passing it to a
+   * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * 
+   * @param driverStick the driver's joystick.
    */
-  private void configureButtonBindings() {
+  private void configureButtonBindings(Joystick driverStick) {
   }
 
   /**

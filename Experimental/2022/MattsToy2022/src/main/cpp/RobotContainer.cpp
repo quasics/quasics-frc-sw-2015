@@ -4,6 +4,7 @@
 
 #include "RobotContainer.h"
 
+#include "commands/RainbowLighting.h"
 #include "commands/TankDrive.h"
 #include "utils/DeadBandEnforcer.h"
 
@@ -19,6 +20,9 @@ RobotContainer::RobotContainer() {
                             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS));
                       }};
   m_driveBase.SetDefaultCommand(tankDrive);
+
+  RainbowLighting rainbowLighting(&m_lighting, 0.1_s);
+  m_lighting.SetDefaultCommand(rainbowLighting);
 
   // Configure the button bindings
   ConfigureButtonBindings();

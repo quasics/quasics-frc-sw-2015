@@ -7,9 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
@@ -26,11 +24,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
   private final DriveBase driveBase = new DriveBase();
 
   /**

@@ -36,23 +36,23 @@ class DriveBase : public frc2::SubsystemBase {
   void ConfigureEncoders();
 
  private:
-  rev::CANSparkMax leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID,
-                             rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID,
+  rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID,
+                                rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftRear{MotorIds::LEFT_REAR_DRIVE_MOTOR_ID,
                               rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax leftRear{MotorIds::LEFT_REAR_DRIVE_MOTOR_ID,
-                            rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax rightRear{MotorIds::RIGHT_REAR_DRIVE_MOTOR_ID,
-                             rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightRear{MotorIds::RIGHT_REAR_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
 
   // Encoders for each of the motors.
-  rev::SparkMaxRelativeEncoder leftFrontEncoder = leftFront.GetEncoder();
-  rev::SparkMaxRelativeEncoder rightFrontEncoder = rightFront.GetEncoder();
-  rev::SparkMaxRelativeEncoder leftRearEncoder = leftRear.GetEncoder();
-  rev::SparkMaxRelativeEncoder rightRearEncoder = rightRear.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 
-  std::unique_ptr<frc::MotorControllerGroup> leftSide;
-  std::unique_ptr<frc::MotorControllerGroup> rightSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
-  std::unique_ptr<frc::DifferentialDrive> drive;
+  std::unique_ptr<frc::DifferentialDrive> m_drive;
 };

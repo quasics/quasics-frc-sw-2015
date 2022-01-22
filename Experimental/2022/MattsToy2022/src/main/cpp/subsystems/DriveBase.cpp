@@ -10,16 +10,16 @@
 DriveBase::DriveBase() {
   // Configure the motors.  (Must be done before adding them to motor
   // controller groups.)
-  leftFront.SetInverted(false);
-  leftRear.SetInverted(false);
-  rightFront.SetInverted(true);
-  rightRear.SetInverted(true);
+  m_leftFront.SetInverted(false);
+  m_leftRear.SetInverted(false);
+  m_rightFront.SetInverted(true);
+  m_rightRear.SetInverted(true);
 
   // Build the motor controller groups and differential drive.
-  leftSide.reset(new frc::MotorControllerGroup(leftFront, leftRear));
-  rightSide.reset(new frc::MotorControllerGroup(rightFront, rightRear));
+  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftRear));
+  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightRear));
 
-  drive.reset(new frc::DifferentialDrive(*leftSide, *rightSide));
+  m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
   // Set up the encoders so that they report units that we care about.
   ConfigureEncoders();
@@ -46,58 +46,58 @@ void DriveBase::ConfigureEncoders() {
   std::cout << "Adjustment for gearing (m/rotation): "
             << adjustmentForGearing.value() << std::endl;
 
-  leftFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  leftRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  rightFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  rightRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  m_leftFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  m_leftRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  m_rightFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  m_rightRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
 
   // Further conversion factor from m/min to m/s (used for velocity).
   const units::meter_t velocityAdjustment = adjustmentForGearing / 60;
   std::cout << "Velocity adj.: " << velocityAdjustment.value() << std::endl;
 
-  leftFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
-  leftRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
-  rightFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
-  rightRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
+  m_leftFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
+  m_leftRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
+  m_rightFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
+  m_rightRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
 
   ResetEncoders();
 }
 
 void DriveBase::ResetEncoders() {
-  leftFrontEncoder.SetPosition(0);
-  rightFrontEncoder.SetPosition(0);
-  leftRearEncoder.SetPosition(0);
-  rightRearEncoder.SetPosition(0);
+  m_leftFrontEncoder.SetPosition(0);
+  m_rightFrontEncoder.SetPosition(0);
+  m_leftRearEncoder.SetPosition(0);
+  m_rightRearEncoder.SetPosition(0);
 }
 
 void DriveBase::SetCoastingEnabled(bool tf) {
   const rev::CANSparkMax::IdleMode mode =
       tf ? rev::CANSparkMax::IdleMode::kCoast
          : rev::CANSparkMax::IdleMode::kBrake;
-  leftFront.SetIdleMode(mode);
-  rightFront.SetIdleMode(mode);
-  leftRear.SetIdleMode(mode);
-  rightRear.SetIdleMode(mode);
+  m_leftFront.SetIdleMode(mode);
+  m_rightFront.SetIdleMode(mode);
+  m_leftRear.SetIdleMode(mode);
+  m_rightRear.SetIdleMode(mode);
 }
 
 void DriveBase::TankDrive(double leftSpeed, double rightSpeed) {
-  drive->TankDrive(leftSpeed, rightSpeed);
+  m_drive->TankDrive(leftSpeed, rightSpeed);
 }
 
 units::meters_per_second_t DriveBase::GetLeftSpeed() {
-  return units::meters_per_second_t(leftRearEncoder.GetVelocity());
+  return units::meters_per_second_t(m_leftRearEncoder.GetVelocity());
 }
 
 units::meters_per_second_t DriveBase::GetRightSpeed() {
-  return units::meters_per_second_t(rightRearEncoder.GetVelocity());
+  return units::meters_per_second_t(m_rightRearEncoder.GetVelocity());
 }
 
 units::meter_t DriveBase::GetLeftDistance() {
-  return units::meter_t(leftRearEncoder.GetPosition());
+  return units::meter_t(m_leftRearEncoder.GetPosition());
 }
 
 units::meter_t DriveBase::GetRightDistance() {
-  return units::meter_t(rightRearEncoder.GetPosition());
+  return units::meter_t(m_rightRearEncoder.GetPosition());
 }
 
 // This method will be called once per scheduler run

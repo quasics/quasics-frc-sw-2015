@@ -14,6 +14,7 @@ import frc.robot.subsystems.DriveBase;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -68,6 +69,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new PrintCommand("Do something autonomous.... :-");
   }
 }

@@ -7,8 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.Lighting;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  */
 public class RobotContainer {
   private final DriveBase driveBase = new DriveBase();
+  private final Lighting lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -42,6 +45,9 @@ public class RobotContainer {
         () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)),
         () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
     driveBase.setDefaultCommand(tankDrive);
+
+    // Configure default lighting command.
+    lighting.setDefaultCommand(new RainbowLighting(lighting));
   }
 
   /**

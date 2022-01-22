@@ -9,7 +9,7 @@
 
 RobotContainer::RobotContainer() {
   DeadBandEnforcer driverDeadBand{Deadbands::DRIVING};
-  TankDrive tankDrive{m_driveBase,
+  TankDrive tankDrive{&m_driveBase,
                       [this, driverDeadBand] {
                         return driverDeadBand(m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS));

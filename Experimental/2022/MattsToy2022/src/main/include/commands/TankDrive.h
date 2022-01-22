@@ -17,7 +17,7 @@
  */
 class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
  public:
-  TankDrive(DriveBase& driveBase, std::function<double()> leftPowerSupplier,
+  TankDrive(DriveBase* driveBase, std::function<double()> leftPowerSupplier,
             std::function<double()> rightPowerSupplier);
 
   void Initialize() override;
@@ -27,7 +27,7 @@ class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
   void End(bool interrupted) override;
 
  private:
-  DriveBase& m_driveBase;
+  DriveBase* m_driveBase;
   std::function<double()> m_leftPowerSupplier;
   std::function<double()> m_rightPowerSupplier;
 };

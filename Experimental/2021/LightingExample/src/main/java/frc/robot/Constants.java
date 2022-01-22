@@ -13,6 +13,16 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /** PWM port to which the LED strip is attached. */
     public static final int LED_PWM_PORT = 7;
-    public static final int LED_STRIP_LENGTH = 14;
+
+    /** Number of LED pixels per meter on the strip. (Typically either 30 or 60.) */
+    public static final int LED_STRIP_PIXEL_DENSITY_PER_METER = 60;
+
+    /** Length of the LED strip. */
+    public static final double LED_STRIP_LENGTH_METERS = 0.762; // 30in == 0.762m
+
+    /** Number of LEDs in the (logical) LED strip. */
+    public static final int LED_STRIP_LENGTH_PIXELS = (int) (LED_STRIP_PIXEL_DENSITY_PER_METER
+            * LED_STRIP_LENGTH_METERS);
 }

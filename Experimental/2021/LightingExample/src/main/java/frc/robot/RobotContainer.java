@@ -19,7 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final LightingSubsystem m_exampleSubsystem = new LightingSubsystem(Constants.LED_PWM_PORT, Constants.LED_STRIP_LENGTH);
+  private final LightingSubsystem m_exampleSubsystem = new LightingSubsystem(Constants.LED_PWM_PORT,
+      Constants.LED_STRIP_LENGTH_PIXELS);
 
   // Sample command to change the color during auto mode.
   private final Command m_autoCommand = new RainbowLightingCommand(m_exampleSubsystem);

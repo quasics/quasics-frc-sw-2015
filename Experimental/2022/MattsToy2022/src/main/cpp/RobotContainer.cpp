@@ -4,8 +4,21 @@
 
 #include "RobotContainer.h"
 
+#include "commands/TankDrive.h"
+#include "utils/DeadBandEnforcer.h"
+
 RobotContainer::RobotContainer() {
-  // Initialize all of your commands and subsystems here
+  DeadBandEnforcer driverDeadBand{Deadbands::DRIVING};
+  TankDrive tankDrive{m_driveBase,
+                      [this, driverDeadBand] {
+                        return driverDeadBand(m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS));
+                      },
+                      [this, driverDeadBand] {
+                        return driverDeadBand(m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS));
+                      }};
+  m_driveBase.SetDefaultCommand(tankDrive);
 
   // Configure the button bindings
   ConfigureButtonBindings();

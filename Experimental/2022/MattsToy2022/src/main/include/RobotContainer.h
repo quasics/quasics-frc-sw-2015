@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/PrintCommand.h>
 
@@ -26,6 +27,7 @@ class RobotContainer {
   void ConfigureButtonBindings();
 
  private:
+  frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   DriveBase m_driveBase;
 
   frc2::PrintCommand m_autonomousCommand{"Do something autonomous...."};

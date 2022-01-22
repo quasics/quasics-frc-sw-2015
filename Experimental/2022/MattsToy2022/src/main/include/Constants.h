@@ -30,8 +30,8 @@ constexpr double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_2022;
 
 namespace MotorIds {
   constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-  constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 2;
-  constexpr int LEFT_REAR_DRIVE_MOTOR_ID = 3;
+  constexpr int LEFT_REAR_DRIVE_MOTOR_ID = 2;
+  constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
   constexpr int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
 }  // namespace MotorIds
 
@@ -39,6 +39,10 @@ namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
 
   namespace LogitechGamePad {
+    // Note: these values were derived from one of the Logitech-branded
+    // controllers on 22Jan2022. But it looks like there may be differences
+    // between apparently identical devices.... :-(
+
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
     //
@@ -50,21 +54,19 @@ namespace OperatorInterface {
     constexpr int RIGHT_X_AXIS = 2;
     constexpr int RIGHT_Y_AXIS = 3;
 
-    // TODO: These are *clearly* wrong, and need to be fixed.
-    constexpr int LEFT_TRIGGER_AXIS = 2;
-    constexpr int RIGHT_TRIGGER_AXIS = 3;
-
     // Buttons
-    constexpr int A_BUTTON = 1;
-    constexpr int B_BUTTON = 2;
-    constexpr int X_BUTTON = 3;
-    constexpr int Y_BUTTON = 4;
+    constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers
+    constexpr int B_BUTTON = 3;  // Labeled "3" on some controllers
+    constexpr int X_BUTTON = 1;  // Labeled "1" on some controllers
+    constexpr int Y_BUTTON = 4;  // Labeled "4" on some controllers
     constexpr int LEFT_SHOULDER = 5;
     constexpr int RIGHT_SHOULDER = 6;
-    constexpr int BACK_BUTTON = 7;
-    constexpr int START_BUTTON = 8;
-    constexpr int LEFT_STICK_PRESS = 9;
-    constexpr int RIGHT_STICK_PRESS = 10;
+    constexpr int LEFT_TRIGGER = 7;
+    constexpr int RIGHT_TRIGGER = 8;
+    constexpr int BACK_BUTTON = 9;
+    constexpr int START_BUTTON = 10;
+    constexpr int LEFT_STICK_PRESS = 11;
+    constexpr int RIGHT_STICK_PRESS = 12;
   }  // namespace LogitechGamePad
 }  // namespace OperatorInterface
 

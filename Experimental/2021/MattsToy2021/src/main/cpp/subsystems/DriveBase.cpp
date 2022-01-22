@@ -158,10 +158,9 @@ void DriveBase::ArcadeDrive(double xaxisSpeed, double zaxisRotate,
 }
 
 void DriveBase::CurvatureDrive(double xaxisSpeed, double zaxisRotate,
-                                bool isQuickTurn) {
+                               bool isQuickTurn) {
   drive->CurvatureDrive(xaxisSpeed, zaxisRotate, isQuickTurn);
 }
-
 
 void DriveBase::TankDrive(double leftSpeed, double rightSpeed) {
   std::cout << "Left: " << leftSpeed << ", right: " << rightSpeed << std::endl;

@@ -26,6 +26,7 @@ public class DriveBase extends SubsystemBase {
   public DriveBase() {
     this.setName("DriveBase");
 
+    // Create the individual motors.
     final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.LEFT_REAR_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
     final CANSparkMax rightRear = new CANSparkMax(Constants.MotorIds.RIGHT_REAR_DRIVE_MOTOR_ID,
@@ -35,11 +36,13 @@ public class DriveBase extends SubsystemBase {
     final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
 
+    // Configure which ones are inverted/not.
     leftRear.setInverted(false);
     leftFront.setInverted(false);
     rightRear.setInverted(true);
     rightFront.setInverted(true);
 
+    // Hang onto encoders for future reference.
     leftEncoder = leftRear.getEncoder();
     rightEncoder = rightRear.getEncoder();
 

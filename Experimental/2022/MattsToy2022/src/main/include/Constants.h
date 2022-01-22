@@ -68,10 +68,10 @@ namespace OperatorInterface {
   }  // namespace LogitechGamePad
 }  // namespace OperatorInterface
 
-namespace Lighting {
+namespace LightingValues {
   constexpr int PWM_PORT = 7;
   constexpr int NUM_LIGHTS = 60;
-}  // namespace Lighting
+}  // namespace LightingValues
 
 namespace Deadbands {
   constexpr double DRIVING = 0.055;

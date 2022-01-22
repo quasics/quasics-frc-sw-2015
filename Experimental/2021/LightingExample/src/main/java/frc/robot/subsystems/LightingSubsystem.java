@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightingSubsystem extends SubsystemBase {
+  public static final Color WHITE = new Color(255, 255, 255);
+  public static final Color BLACK = new Color(0, 0, 0);
+
   AddressableLED m_led;
   AddressableLEDBuffer m_ledBuffer;
 
@@ -20,8 +23,16 @@ public class LightingSubsystem extends SubsystemBase {
     m_ledBuffer = new AddressableLEDBuffer(numLights);
     m_led.setLength(m_ledBuffer.getLength());
 
-    // Set the data
-    m_led.setData(m_ledBuffer);
+    // On start-up, turn every other pixel on (white).
+    ColorFunctor function = (pos) -> {
+      if (pos % 2 == 0)
+        return WHITE;
+      else
+        return BLACK;
+    };
+    SetStripColor(function);
+
+    // Start the LEDs up.
     m_led.start();
   }
 

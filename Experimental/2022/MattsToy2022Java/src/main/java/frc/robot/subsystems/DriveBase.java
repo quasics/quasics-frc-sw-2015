@@ -46,10 +46,10 @@ public class DriveBase extends SubsystemBase {
     };
 
     // Configure which ones are inverted/not.
-    leftRear.setInverted(false);
-    leftFront.setInverted(false);
-    rightRear.setInverted(true);
-    rightFront.setInverted(true);
+    leftRear.setInverted(true);
+    leftFront.setInverted(true);
+    rightRear.setInverted(false);
+    rightFront.setInverted(false);
 
     // Hang onto encoders for future reference.
     leftEncoder = leftRear.getEncoder();

@@ -51,8 +51,8 @@ public final class Constants {
             public static final int RIGHT_Y_AXIS = 3;
 
             // Buttons
-            public static final int A_BUTTON = 3; // Labeled "1" on some controllers
-            public static final int B_BUTTON = 2; // Labeled "2" on some controllers
+            public static final int A_BUTTON = 2; // Labeled "1" on some controllers
+            public static final int B_BUTTON = 3; // Labeled "2" on some controllers
             public static final int X_BUTTON = 1; // Labeled "3" on some controllers
             public static final int Y_BUTTON = 4; // Labeled "4" on some controllers
             public static final int LEFT_SHOULDER = 5;

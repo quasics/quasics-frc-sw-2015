@@ -30,6 +30,9 @@ class DriveBase : public frc2::SubsystemBase {
   units::meters_per_second_t GetRightSpeed();
 
  private:
+  void ConfigureEncoders();
+
+ private:
   rev::CANSparkMax leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID,
                              rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID,

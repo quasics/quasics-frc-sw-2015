@@ -9,53 +9,56 @@
 
 DriveBase::DriveBase() {
   // Configure the motors.  (Must be done before adding them to motor
-  // controller)
+  // controller groups.)
   leftFront.SetInverted(false);
   leftRear.SetInverted(false);
   rightFront.SetInverted(true);
   rightRear.SetInverted(true);
 
+  // Build the motor controller groups and differential drive.
   leftSide.reset(new frc::MotorControllerGroup(leftFront, leftRear));
   rightSide.reset(new frc::MotorControllerGroup(rightFront, rightRear));
 
   drive.reset(new frc::DifferentialDrive(*leftSide, *rightSide));
 
-  ////////////////////////////////////////
-  // Configure the encoders.
-  //
+  // Set up the encoders so that they report units that we care about.
+  ConfigureEncoders();
+}
+
+/**
+ * Configures the encoders so that they will report back speeds and positions in
+ * units that we generally care about (e.g., m/s and meters, rather than RPM and
+ * fractions of a rotation).
+ */
+void DriveBase::ConfigureEncoders() {
   // TODO: Check the math on all of this (at least empirically).
 
-  // Default for the encoders is to report velocity in RPM, and distance as
-  // fractions of a revolution; we want that to come back as m/s and meters,
-  // respectively.
-
-  // Compute the distance (in meters) for one revolution, first.
+  // Compute the distance (in meters) for one rotation of the wheel, first.
   const units::meter_t wheelCircumference =
       WHEEL_DIAMETER_INCHES *  // Will auto-convert to meters! :-)
       wpi::numbers::pi;
-
-  // Conversion factor from rotations (or RPM) to meters (or m/s).
-  const units::meter_t adjustmentForGearing =
-      wheelCircumference / DRIVE_BASE_GEAR_RATIO;
-
-  // Conversion factor from m/min to m/s
-  const units::meter_t velocityAdjustment = adjustmentForGearing / 60;
-
   std::cout << "Wheel circumference (m): " << wheelCircumference.value()
             << std::endl;
-  std::cout << "Adjustment for gearing: " << adjustmentForGearing.value()
-            << std::endl;
+
+  // Conversion factor from units in rotations (or RPM) to meters (or m/s).
+  const units::meter_t adjustmentForGearing =
+      wheelCircumference / DRIVE_BASE_GEAR_RATIO;
+  std::cout << "Adjustment for gearing (m/rotation): "
+            << adjustmentForGearing.value() << std::endl;
+
+  leftFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  leftRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  rightFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+  rightRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
+
+  // Further conversion factor from m/min to m/s (used for velocity).
+  const units::meter_t velocityAdjustment = adjustmentForGearing / 60;
   std::cout << "Velocity adj.: " << velocityAdjustment.value() << std::endl;
 
   leftFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
   leftRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
   rightFrontEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
   rightRearEncoder.SetVelocityConversionFactor(velocityAdjustment.value());
-
-  leftFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  leftRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  rightFrontEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
-  rightRearEncoder.SetPositionConversionFactor(adjustmentForGearing.value());
 
   ResetEncoders();
 }

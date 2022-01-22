@@ -4,8 +4,11 @@
 
 #include "subsystems/Lighting.h"
 
-const frc::AddressableLED::LEDData BLACK{0, 0, 0};
-const frc::AddressableLED::LEDData WHITE{255, 255, 255};
+const frc::AddressableLED::LEDData Lighting::BLACK{0, 0, 0};
+const frc::AddressableLED::LEDData Lighting::RED{255, 0, 0};
+const frc::AddressableLED::LEDData Lighting::GREEN{0, 255, 0};
+const frc::AddressableLED::LEDData Lighting::BLUE{0, 0, 255};
+const frc::AddressableLED::LEDData Lighting::WHITE{255, 255, 255};
 
 Lighting::Lighting() {
   SetName("Lighting");

@@ -13,6 +13,15 @@
 
 class Lighting : public frc2::SubsystemBase {
  public:
+  static const frc::AddressableLED::LEDData BLACK;
+  static const frc::AddressableLED::LEDData WHITE;
+  static const frc::AddressableLED::LEDData RED;
+  static const frc::AddressableLED::LEDData GREEN;
+  static const frc::AddressableLED::LEDData BLUE;
+
+  typedef std::function<frc::AddressableLED::LEDData(int pos)> ColorFunction;
+
+ public:
   Lighting();
 
   /**
@@ -22,8 +31,7 @@ class Lighting : public frc2::SubsystemBase {
 
   void SetStripColor(int red, int green, int blue);
   void SetStripColor(frc::AddressableLED::LEDData color);
-  void SetStripColors(
-      std::function<frc::AddressableLED::LEDData(int pos)> colorFunction);
+  void SetStripColors(ColorFunction colorFunction);
 
  private:
   frc::AddressableLED m_ledStrip{LightingValues::PWM_PORT};

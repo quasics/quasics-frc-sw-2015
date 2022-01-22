@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.utils.BooleanSetter;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -18,6 +19,7 @@ public class DriveBase extends SubsystemBase {
   final private RelativeEncoder rightEncoder;
 
   final private DifferentialDrive drive;
+  final private BooleanSetter coastingEnabled;
 
   private double leftPower = 0;
   private double rightPower = 0;
@@ -35,6 +37,13 @@ public class DriveBase extends SubsystemBase {
         MotorType.kBrushless);
     final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
+
+    coastingEnabled = (tf) -> {
+      leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      leftFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      rightFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+    };
 
     // Configure which ones are inverted/not.
     leftRear.setInverted(false);
@@ -115,6 +124,15 @@ public class DriveBase extends SubsystemBase {
   public void resetEncoders() {
     rightEncoder.setPosition(0);
     leftEncoder.setPosition(0);
+  }
+
+  /**
+   * Enables/disabled "coast" mode on the motors (when stopped).
+   * 
+   * @param tf if true, enable "coast" mode; otherwise, enable "brake" mode
+   */
+  public void setCoastingEnabled(boolean tf) {
+    coastingEnabled.set(tf);
   }
 
   // This method will be called once per scheduler run

@@ -10,10 +10,10 @@
 DriveBase::DriveBase() {
   // Configure the motors.  (Must be done before adding them to motor
   // controller groups.)
-  m_leftFront.SetInverted(false);
-  m_leftRear.SetInverted(false);
-  m_rightFront.SetInverted(true);
-  m_rightRear.SetInverted(true);
+  m_leftFront.SetInverted(true);
+  m_leftRear.SetInverted(true);
+  m_rightFront.SetInverted(false);
+  m_rightRear.SetInverted(false);
 
   // Build the motor controller groups and differential drive.
   m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftRear));

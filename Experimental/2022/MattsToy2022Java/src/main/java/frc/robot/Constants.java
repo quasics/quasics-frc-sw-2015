@@ -26,8 +26,8 @@ public final class Constants {
 
     public static final class MotorIds {
         public static final int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-        public static final int RIGHT_FRONT_DRIVE_MOTOR_ID = 2;
-        public static final int LEFT_REAR_DRIVE_MOTOR_ID = 3;
+        public static final int LEFT_REAR_DRIVE_MOTOR_ID = 2;
+        public static final int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
         public static final int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
     }
 

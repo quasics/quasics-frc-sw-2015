@@ -35,6 +35,10 @@ public final class Constants {
         public static final int DRIVER_JOYSTICK = 0;
 
         public static final class LogitechGamePad {
+            // Note: these values were derived from one of the Logitech-branded controllers
+            // on 22Jan2022. But it looks like there may be differences between apparently
+            // identical devices.... :-(
+
             // Axes - Used with the "getRawAxis()" function to access the data for the
             // individual sticks on the controller (e.g., for "tank drive" coding).
             //
@@ -46,21 +50,19 @@ public final class Constants {
             public static final int RIGHT_X_AXIS = 2;
             public static final int RIGHT_Y_AXIS = 3;
 
-            // TODO: These are *clearly* wrong, and need to be fixed.
-            public static final int LEFT_TRIGGER_AXIS = 2;
-            public static final int RIGHT_TRIGGER_AXIS = 3;
-
             // Buttons
-            public static final int A_BUTTON = 1;
-            public static final int B_BUTTON = 2;
-            public static final int X_BUTTON = 3;
-            public static final int Y_BUTTON = 4;
+            public static final int A_BUTTON = 3; // Labeled "1" on some controllers
+            public static final int B_BUTTON = 2; // Labeled "2" on some controllers
+            public static final int X_BUTTON = 1; // Labeled "3" on some controllers
+            public static final int Y_BUTTON = 4; // Labeled "4" on some controllers
             public static final int LEFT_SHOULDER = 5;
             public static final int RIGHT_SHOULDER = 6;
-            public static final int BACK_BUTTON = 7;
-            public static final int START_BUTTON = 8;
-            public static final int LEFT_STICK_PRESS = 9;
-            public static final int RIGHT_STICK_PRESS = 10;
+            public static final int LEFT_TRIGGER = 7;
+            public static final int RIGHT_TRIGGER = 8;
+            public static final int BACK_BUTTON = 9;
+            public static final int START_BUTTON = 10;
+            public static final int LEFT_STICK_PRESS = 11;
+            public static final int RIGHT_STICK_PRESS = 12;
         }
     }
 

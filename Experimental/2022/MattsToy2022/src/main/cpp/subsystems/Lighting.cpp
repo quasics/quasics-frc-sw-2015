@@ -31,12 +31,25 @@ Lighting::Lighting() {
 
 /**
  * Sets the entire strip to the specified color.
+ *
+ * @param red   the red component for the color (0-255)
+ * @param green the green component for the color (0-255)
+ * @param blue  the blue component for the color (0-255)
+ */
+void Lighting::SetStripColor(int red, int green, int blue) {
+  // Just pass the color along to the other version of this function.
+  SetStripColor(frc::AddressableLED::LEDData(red, green, blue));
+}
+
+/**
+ * Sets the entire strip to the specified color.
  */
 void Lighting::SetStripColor(frc::AddressableLED::LEDData color) {
   SetStripColors(
-      // We'll use the other function to do the hard work, but we need to pass
-      // it a function to call for each pixel, so we'll provide a "lambda"
-      // function (something written in-line) to return our fixed color.
+      // We'll use the SetStripColors function to do the hard work, but we need
+      // to pass it a function to call for each pixel, so we'll provide a
+      // "lambda" function (something written in-line) to return our fixed
+      // color.
       //
       // The "[&]" tells the compiler that any variables from this method that
       // are used in the lambda are automatically "captured by value" (i.e.,

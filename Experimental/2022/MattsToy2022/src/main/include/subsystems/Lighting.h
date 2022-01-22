@@ -20,6 +20,7 @@ class Lighting : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  void SetStripColor(int red, int green, int blue);
   void SetStripColor(frc::AddressableLED::LEDData color);
   void SetStripColors(
       std::function<frc::AddressableLED::LEDData(int pos)> colorFunction);

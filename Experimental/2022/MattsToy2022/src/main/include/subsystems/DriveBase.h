@@ -22,6 +22,9 @@ class DriveBase : public frc2::SubsystemBase {
 
   void SetCoastingEnabled(bool tf);
   void TankDrive(double leftSpeed, double rightSpeed);
+  void Stop() {
+    TankDrive(0, 0);
+  }
 
   void ResetEncoders();
   units::meter_t GetRightDistance();

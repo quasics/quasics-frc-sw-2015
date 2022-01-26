@@ -5,27 +5,33 @@
 #include "subsystems/Drivebase.h"
 #include <rev/CANSparkMax.h>
 
-Drivebase::Drivebase() = default;
+Drivebase::Drivebase(){
+
+}
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {}
+void Drivebase::Periodic() {
+
+}
 //Todo - Write code for the following 4 commands
-void DriveBase::Stop(){
+void Drivebase::Stop(){
     
-};
+}
 
-void SetMotorPower(double LeftPower,double RightPower){
+void Drivebase::SetMotorPower(double LeftPower,double RightPower){
 
-};
+}
 
-double GetLeftEncoders(){
+double Drivebase::GetLeftEncoders(){
 
-};
+    return 0;
+}
 
-double GetRightEncoders(){
+double Drivebase::GetRightEncoders(){
 
-};
+    return 0;
+}
 
-void ResetEncoders(){
+void Drivebase::ResetEncoders(){
 
-};
+}

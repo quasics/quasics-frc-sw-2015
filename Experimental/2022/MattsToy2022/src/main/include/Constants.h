@@ -29,10 +29,14 @@ constexpr double DRIVE_BASE_GEAR_RATIO_2022 = 8.45;
 constexpr double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_2022;
 
 namespace MotorIds {
-  constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-  constexpr int LEFT_REAR_DRIVE_MOTOR_ID = 2;
-  constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
-  constexpr int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
+  namespace SparkMax {
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
+    constexpr int LEFT_REAR_DRIVE_MOTOR_ID = 2;
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
+    constexpr int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
+
+    constexpr int SHOOTER_MOTOR_ID = 5;
+  }  // namespace SparkMax
 }  // namespace MotorIds
 
 namespace OperatorInterface {

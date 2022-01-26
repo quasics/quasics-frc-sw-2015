@@ -37,13 +37,13 @@ class DriveBase : public frc2::SubsystemBase {
 
  private:
   // Motors in the drive base.
-  rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID,
+  rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID,
+  rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
                                 rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftRear{MotorIds::LEFT_REAR_DRIVE_MOTOR_ID,
+  rev::CANSparkMax m_leftRear{MotorIds::SparkMax::LEFT_REAR_DRIVE_MOTOR_ID,
                               rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightRear{MotorIds::RIGHT_REAR_DRIVE_MOTOR_ID,
+  rev::CANSparkMax m_rightRear{MotorIds::SparkMax::RIGHT_REAR_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
 
   // Encoders for each of the motors.

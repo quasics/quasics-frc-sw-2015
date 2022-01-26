@@ -115,7 +115,7 @@ public class DriveBase extends SubsystemBase {
    * Stops the drive base.
    */
   public void stop() {
-    setPower(0, 0);
+    tankDrive(0, 0);
   }
 
   /**
@@ -124,9 +124,10 @@ public class DriveBase extends SubsystemBase {
    * @param leftPercent  % power to apply to left side (-1.0 to +1.0)
    * @param rightPercent % power to apply to right side (-1.0 to +1.0)
    */
-  public void setPower(double leftPercent, double rightPercent) {
-    // Set the power
-    drive.tankDrive(leftPercent, rightPercent);
+  public void tankDrive(double leftPercent, double rightPercent) {
+    var boundedLeft = Math.max(-1.0, Math.min(1.0, leftPercent));
+    var boundedRight = Math.max(-1.0, Math.min(1.0, rightPercent));
+    drive.tankDrive(boundedLeft, boundedRight);
   }
 
   /**

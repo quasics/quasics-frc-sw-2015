@@ -13,3 +13,10 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+
+namespace MotorIds {
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
+    constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
+    constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+}

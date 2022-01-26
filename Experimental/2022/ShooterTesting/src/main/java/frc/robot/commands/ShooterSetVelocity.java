@@ -4,29 +4,36 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Shooter;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Shooter;
 
-/** An example command that uses an example subsystem. */
-public class ShooterMaxPowerForward extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+public class ShooterSetVelocity extends CommandBase {
   private final Shooter shooter;
+  private final double speedRpm;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * Creates a new ShooterSetVelocity.
+   * 
+   * Note that this class assumes that the velocity specified here, and that
+   * returned by the shooter, is expressed in RPM.
+   * 
+   * @see frc.robot.subsystems.Shooter#getSpeed()
    */
-  public ShooterMaxPowerForward(Shooter subsystem) {
-    shooter = subsystem;
+  public ShooterSetVelocity(Shooter shooter, double rpm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(shooter);
+
+    this.shooter = shooter;
+    this.speedRpm = rpm;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setSpeed(Shooter.MAX_RPM);
+    shooter.setSpeed(speedRpm);
   }
 
   // Called once the command ends or is interrupted.

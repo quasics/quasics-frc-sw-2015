@@ -131,6 +131,33 @@ public class DriveBase extends SubsystemBase {
   }
 
   /**
+   * Arcade drive support. The calculated values will be squared to decrease
+   * sensitivity at low speeds.
+   * 
+   * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
+   *                     is positive.
+   * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
+   *                     Clockwise is positive.
+   * @param squareInputs If set, decreases the input sensitivity at low speeds.
+   */
+  public void arcadeDrive​(double xSpeed, double zRotation) {
+    this.arcadeDrive​(xSpeed, zRotation, true);
+  }
+
+  /**
+   * Arcade drive support.
+   * 
+   * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
+   *                     is positive.
+   * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
+   *                     Clockwise is positive.
+   * @param squareInputs If set, decreases the input sensitivity at low speeds.
+   */
+  public void arcadeDrive​(double xSpeed, double zRotation, boolean squareInputs) {
+    drive.arcadeDrive(xSpeed, zRotation, squareInputs);
+  }
+
+  /**
    * @return the current reading for the left encoder (in meters)
    */
   public double getLeftEncoderPosition() {

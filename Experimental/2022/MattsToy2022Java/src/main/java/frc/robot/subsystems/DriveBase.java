@@ -29,13 +29,13 @@ public class DriveBase extends SubsystemBase {
     this.setName("DriveBase");
 
     // Create the individual motors.
-    final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.LEFT_REAR_DRIVE_MOTOR_ID,
+    final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
-    final CANSparkMax rightRear = new CANSparkMax(Constants.MotorIds.RIGHT_REAR_DRIVE_MOTOR_ID,
+    final CANSparkMax rightRear = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_REAR_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
-    final CANSparkMax leftFront = new CANSparkMax(Constants.MotorIds.LEFT_FRONT_DRIVE_MOTOR_ID,
+    final CANSparkMax leftFront = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
-    final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.RIGHT_FRONT_DRIVE_MOTOR_ID,
+    final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
 
     coastingEnabled = (tf) -> {

@@ -97,7 +97,7 @@ public class DriveBase extends SubsystemBase {
    */
   public void setPower(double leftPercent, double rightPercent) {
     // Set the power
-    drive.tankDrive(leftPower, rightPower);
+    drive.tankDrive(leftPercent, rightPercent);
   }
 
   /**

@@ -21,9 +21,6 @@ public class DriveBase extends SubsystemBase {
   final private DifferentialDrive drive;
   final private BooleanSetter coastingEnabled;
 
-  private double leftPower = 0;
-  private double rightPower = 0;
-
   /** Creates a new DriveBase. */
   public DriveBase() {
     this.setName("DriveBase");
@@ -99,11 +96,6 @@ public class DriveBase extends SubsystemBase {
    * @param rightPercent % power to apply to right side (-1.0 to +1.0)
    */
   public void setPower(double leftPercent, double rightPercent) {
-    // Remember these for "periodic", to prevent the DifferentialDrive from
-    // being "starved" if a command doesn't update often enough.
-    leftPower = leftPercent;
-    rightPower = rightPercent;
-
     // Set the power
     drive.tankDrive(leftPower, rightPower);
   }
@@ -142,8 +134,5 @@ public class DriveBase extends SubsystemBase {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    // Update the DifferentialDrive (so that it doesn't get cranky about infrequent
-    // updates).
-    drive.tankDrive(leftPower, rightPower);
   }
 }

@@ -7,23 +7,31 @@
 #include <frc/drive/DifferentialDrive.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
-#include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
-#include <iostream>
-#include <wpi/numbers>
+#include "units/length.h"
+
 
 #include "Constants.h"
+
 class Drivebase : public frc2::SubsystemBase {
  public:
+
   Drivebase();
+
   void Periodic() override;
+
   void Stop(){
     SetMotorPower(0, 0);
   }
+
   void SetMotorPower(double leftPower, double rightPower);
-  double GetLeftEncoders();
-  double GetRightEncoders();
+
+  units::meter_t  GetLeftEncoders();
+
+  units::meter_t GetRightEncoders();
+
   void ResetEncoders();
+
  private:
 
   rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};

@@ -1,9 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-#include <iostream>
+
 #include "subsystems/Drivebase.h"
 #include <rev/CANSparkMax.h>
+#include <iostream>
 #include <wpi/numbers>
 
 Drivebase::Drivebase(){
@@ -23,14 +24,14 @@ void Drivebase::SetMotorPower(double leftPower, double rightPower){
     m_drive->TankDrive(leftPower, rightPower);
 }
 
-double Drivebase::GetLeftEncoders(){
+units::meter_t  Drivebase::GetLeftEncoders(){
 
-    return 0;
+    return units::meter_t (m_leftFrontEncoder.GetPosition());
 }
 
-double Drivebase::GetRightEncoders(){
+units::meter_t  Drivebase::GetRightEncoders(){
 
-    return 0;
+    return units::meter_t (m_rightFrontEncoder.GetPosition());
 }
 
 void Drivebase::ResetEncoders(){

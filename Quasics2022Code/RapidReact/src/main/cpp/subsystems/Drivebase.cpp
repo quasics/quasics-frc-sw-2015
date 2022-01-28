@@ -25,12 +25,12 @@ void Drivebase::SetMotorPower(double leftPower, double rightPower){
 }
 
 units::meter_t  Drivebase::GetLeftEncoders(){
-
+    //TODO: the returned value is in revolution need to fix to meters
     return units::meter_t (m_leftFrontEncoder.GetPosition());
 }
 
 units::meter_t  Drivebase::GetRightEncoders(){
-
+    //TODO: the returned value is in revolution need to fix to meters
     return units::meter_t (m_rightFrontEncoder.GetPosition());
 }
 

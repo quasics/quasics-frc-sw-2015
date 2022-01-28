@@ -4,19 +4,19 @@
 
 #include "commands/MoveRobotTestCommand.h"
 
-MoveRobotTestCommand::MoveRobotTestCommand(Drivebase* drivebase, double motorPower) : m_drivebase(drivebase), motorPower(0.2) {
+MoveRobotTestCommand::MoveRobotTestCommand(Drivebase* drivebase, double motorPower) : m_drivebase(drivebase), m_motorPower(motorPower) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.
 void MoveRobotTestCommand::Initialize() {
-  m_drivebase->SetMotorPower(motorPower, motorPower);
+  m_drivebase->SetMotorPower(m_motorPower, m_motorPower);
 }
   
 // Called repeatedly when this Command is scheduled to run
 void MoveRobotTestCommand::Execute() {
-  m_drivebase->SetMotorPower(motorPower, motorPower);
+  m_drivebase->SetMotorPower(m_motorPower, m_motorPower);
 }
 
 // Called once the command ends or is interrupted.

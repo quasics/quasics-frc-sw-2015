@@ -30,4 +30,5 @@ class RobotContainer {
   ExampleCommand m_autonomousCommand;
 
   void ConfigureButtonBindings();
+  void AddTestButtonToSmartDasboard();
 };

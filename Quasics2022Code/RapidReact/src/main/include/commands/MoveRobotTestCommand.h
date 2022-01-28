@@ -30,5 +30,5 @@ class MoveRobotTestCommand
   
   private:
   Drivebase* m_drivebase;
-  const double motorPower;
+  const double m_motorPower;
 };

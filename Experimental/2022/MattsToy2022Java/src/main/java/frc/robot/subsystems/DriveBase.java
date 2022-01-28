@@ -140,8 +140,8 @@ public class DriveBase extends SubsystemBase {
    *                     Clockwise is positive.
    * @param squareInputs If set, decreases the input sensitivity at low speeds.
    */
-  public void arcadeDrive​(double xSpeed, double zRotation) {
-    this.arcadeDrive​(xSpeed, zRotation, true);
+  public void arcadeDrive(double xSpeed, double zRotation) {
+    this.arcadeDrive(xSpeed, zRotation, true);
   }
 
   /**
@@ -153,7 +153,7 @@ public class DriveBase extends SubsystemBase {
    *                     Clockwise is positive.
    * @param squareInputs If set, decreases the input sensitivity at low speeds.
    */
-  public void arcadeDrive​(double xSpeed, double zRotation, boolean squareInputs) {
+  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
     drive.arcadeDrive(xSpeed, zRotation, squareInputs);
   }
 

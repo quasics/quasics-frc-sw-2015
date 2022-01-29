@@ -20,3 +20,15 @@ namespace MotorIds {
     constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
 }
+
+namespace OperatorInterface {
+    constexpr int DRIVER_JOYSTICK = 0;
+
+    namespace LogitechGamePad{
+
+        constexpr int LEFT_Y_AXIS = 1;
+        constexpr int RIGHT_Y_AXIS = 3;
+
+
+    }
+}

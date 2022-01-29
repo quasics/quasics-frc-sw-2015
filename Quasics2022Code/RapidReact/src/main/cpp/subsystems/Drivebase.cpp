@@ -8,6 +8,11 @@
 #include <wpi/numbers>
 
 Drivebase::Drivebase(){
+ m_rightFront.SetInverted(true);
+ m_rightBack.SetInverted(true);
+
+
+
  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
 

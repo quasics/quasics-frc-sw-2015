@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 
 #include "commands/ExampleCommand.h"
@@ -25,6 +26,8 @@ class RobotContainer {
 
  private:
   // The robot's subsystems and commands are defined here...
+  frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
+
   Drivebase m_Drivebase;
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;

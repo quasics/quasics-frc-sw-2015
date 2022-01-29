@@ -40,6 +40,8 @@ public class RobotContainer {
     SmartDashboard.putData("80% speed", new ShooterSetVelocity(shooter, Shooter.MAX_RPM * 0.80));
     SmartDashboard.putData("70% speed", new ShooterSetVelocity(shooter, Shooter.MAX_RPM * 0.70));
     SmartDashboard.putData("60% speed", new ShooterSetVelocity(shooter, Shooter.MAX_RPM * 0.60));
+    SmartDashboard.putData("50% speed", new ShooterSetVelocity(shooter, Shooter.MAX_RPM * 0.50));
+    SmartDashboard.putData("40% speed", new ShooterSetVelocity(shooter, Shooter.MAX_RPM * 0.40));
   }
 
   /**

@@ -19,7 +19,7 @@
 class RunConveyorUntilBallLoads
     : public frc2::CommandHelper<frc2::CommandBase, RunConveyorUntilBallLoads> {
  public:
-  RunConveyorUntilBallLoads(Intake* intake, double conveyorPower,
+  RunConveyorUntilBallLoads(Intake *intake, double conveyorPower,
                             double pickupPower,
                             units::second_t timeout = units::second_t(3));
 
@@ -41,10 +41,10 @@ class RunConveyorUntilBallLoads
 
   // Data members
  private:
-  Intake* m_intake;
+  Intake *m_intake;
   double m_conveyorPower;
   double m_pickupPower;
   units::second_t m_timeout;
-  frc2::Timer m_timer;
+  frc::Timer m_timer;
   State m_state = eNoBallSensed;
 };

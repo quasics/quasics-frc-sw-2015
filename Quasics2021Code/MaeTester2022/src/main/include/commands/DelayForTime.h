@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <frc2/Timer.h>
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -26,5 +26,5 @@ class DelayForTime
 
  private:
   const units::second_t time;
-  frc2::Timer stopWatch;
+  frc::Timer stopWatch;
 };

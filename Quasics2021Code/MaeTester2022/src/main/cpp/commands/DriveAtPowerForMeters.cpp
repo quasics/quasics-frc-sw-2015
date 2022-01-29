@@ -5,9 +5,10 @@
 #include "commands/DriveAtPowerForMeters.h"
 
 #include <cmath>
+#include <iostream>
 
 DriveAtPowerForMeters::DriveAtPowerForMeters(
-    Drivebase* drivebase, double power, units::length::meter_t desiredMeters)
+    Drivebase *drivebase, double power, units::length::meter_t desiredMeters)
     : drivebase(drivebase),
       power(
           (desiredMeters.to<double>() / std::abs(desiredMeters.to<double>())) *
@@ -23,9 +24,9 @@ void DriveAtPowerForMeters::Initialize() {
                    2;
   destination = startingMeters + desiredMeters;
   drivebase->SetMotorSpeed(power, power);
-  std::cout << "desiredMeters = " << desiredMeters
-            << ", startingMeters = " << startingMeters
-            << ", destination = " << destination << std::endl;
+  std::cout << "desiredMeters = " << desiredMeters.value()
+            << ", startingMeters = " << startingMeters.value()
+            << ", destination = " << destination.value() << std::endl;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -44,10 +45,10 @@ bool DriveAtPowerForMeters::IsFinished() {
   auto currentReading = (drivebase->GetLeftEncoderDistance() +
                          drivebase->GetRightEncoderDistance()) /
                         2;
-  std::cout << "desiredMeters = " << desiredMeters
-            << ", startingMeters = " << startingMeters
-            << ", destination = " << destination
-            << ", currentReading = " << currentReading << std::endl;
+  std::cout << "desiredMeters = " << desiredMeters.value()
+            << ", startingMeters = " << startingMeters.value()
+            << ", destination = " << destination.value()
+            << ", currentReading = " << currentReading.value() << std::endl;
   // if desires < 0
   if (desiredMeters.to<double>() < 0) {
     if (currentReading.to<double>() <= destination.to<double>()) {

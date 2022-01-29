@@ -91,8 +91,7 @@ class RobotContainer {
 
   /// Utility function to help bind a command to a specific button on the
   /// operator's controller.
-  void RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button buttonId,
-                                          frc2::Command* command);
+  void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command* command);
 
   /// Utility function to help bind a command to a specific button on the
   /// driver's controller.

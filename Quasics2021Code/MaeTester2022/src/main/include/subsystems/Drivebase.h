@@ -5,10 +5,10 @@
 #pragma once
 
 #include <frc/ADXRS450_Gyro.h>
-#include <frc/SpeedControllerGroup.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>
 #include <units/length.h>
@@ -48,8 +48,8 @@ class Drivebase : public frc2::SubsystemBase {
   /// Gyro installed on the drive base
   frc::ADXRS450_Gyro m_adiGyro{frc::SPI::Port::kOnboardCS0};
 
-  std::unique_ptr<frc::SpeedControllerGroup> m_leftMotors;
-  std::unique_ptr<frc::SpeedControllerGroup> m_rightMotors;
+  std::unique_ptr<frc::MotorControllerGroup> m_leftMotors;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightMotors;
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
   frc::DifferentialDriveOdometry m_odometry;

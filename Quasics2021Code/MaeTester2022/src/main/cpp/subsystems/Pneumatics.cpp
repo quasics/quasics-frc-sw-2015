@@ -4,19 +4,20 @@
 
 #include "subsystems/Pneumatics.h"
 
+#include <iostream>
+
 #include "Constants.h"
 
 Pneumatics::Pneumatics() {
   SetName("Pneumatics");
   SetSubsystem("Pneumatics");
   std::cout << "---------------------------------\n"
-            << "Configuring PCM with CAN ID " << CANBusIds::Other::PCM << "\n"
+            << "Configuring PCM\n"
             << "---------------------------------\n";
   RetractSolenoid();
 }
 
 void Pneumatics::Periodic() {
-  m_compressor.SetClosedLoopControl(compressorEnabled);
 }
 
 void Pneumatics::ExtendSolenoid() {
@@ -46,7 +47,11 @@ void Pneumatics::SetIntakeSolenoidState(frc::DoubleSolenoid::Value value) {
 }
 
 void Pneumatics::SetCompressorEnabled(bool tf) {
-  compressorEnabled = tf;
+  if (tf) {
+    m_compressor.EnableDigital();
+  } else {
+    m_compressor.Disable();
+  }
 }
 
 bool Pneumatics::IsCompressorRunning() {
@@ -57,6 +62,6 @@ bool Pneumatics::GetPressureSwitchValue() {
   return m_compressor.GetPressureSwitchValue();
 }
 
-double Pneumatics::GetCompressorCurrent() {
-  return m_compressor.GetCompressorCurrent();
+units::current::ampere_t Pneumatics::GetCompressorCurrent() {
+  return m_compressor.GetCurrent();
 }

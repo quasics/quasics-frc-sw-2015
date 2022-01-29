@@ -4,6 +4,8 @@
 
 #include "subsystems/Lights.h"
 
+#include <iostream>
+
 Lights::Lights() {
   SetSubsystem("Lights");
 
@@ -30,13 +32,12 @@ void Lights::Periodic() {
 }
 
 void Lights::SetStripColor(int red, int green, int blue) {
-  std::cout << "Setting strip to solid color (" << red << "," << green << "," << blue << ")" << std::endl;
+  std::cout << "Setting strip to solid color (" << red << "," << green << ","
+            << blue << ")" << std::endl;
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i].SetRGB(red, green, blue);
   }
   m_led.SetData(m_ledBuffer);
-  std::cout << "After setting data, error report is: "
-            << m_led.GetError().GetMessage() << std::endl;
 }
 
 void Lights::SetStripColor(

@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
+#include <frc/controller/RamseteController.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <units/acceleration.h>
 #include <units/length.h>
@@ -35,7 +36,7 @@ namespace CANBusIds {
   }  // namespace VictorSPXIds
   namespace TalonFXIds {
     constexpr int ShootingMotor = 1;
-  } // namespace VictorFXIds
+  }  // namespace TalonFXIds
   namespace Other {
     // Note: the default CAN bus ID for a PCM is 0, but we've got at least one
     // PCM (currently on the "demo board") that's using an ID of 1.  This has
@@ -145,8 +146,9 @@ namespace DrivebaseConstants {
   constexpr double kDDriveVel = 0.0;
   constexpr auto kMaxSpeed = 0.5_mps;
   constexpr auto kMaxAcceleration = 0.8_mps_sq;
-  constexpr double kRamseteB = 2;
-  constexpr double kRamseteZeta = 0.7;
+
+  constexpr units::unit_t<frc::RamseteController::b_unit> kRamseteB{2};
+  constexpr units::unit_t<frc::RamseteController::zeta_unit> kRamseteZeta{0.7};
 }  // namespace DrivebaseConstants
 
 namespace NetworkTableNames {

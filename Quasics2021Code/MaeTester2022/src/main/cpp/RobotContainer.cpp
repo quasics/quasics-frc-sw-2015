@@ -26,8 +26,6 @@
 #include <units/time.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
-#include <wpi/Path.h>
-#include <wpi/SmallString.h>
 
 #include <iostream>
 
@@ -95,7 +93,7 @@ RobotContainer::BuildShootingCommand() {
   // Dead band control for the left trigger, letting us use it as though it
   // was a button (on/off).
   std::function<bool()> runHighSpeedSupplier = [this] {
-    if (operatorController.GetTriggerAxis(frc::GenericHID::kLeftHand) >= 0.5) {
+    if (operatorController.GetLeftTriggerAxis() >= 0.5) {
       return true;
     }
     return false;
@@ -104,7 +102,7 @@ RobotContainer::BuildShootingCommand() {
   // Dead band control for the left trigger, letting us use it as though it
   // was a button (on/off).
   std::function<bool()> runLowSpeedSupplier = [this] {
-    if (operatorController.GetTriggerAxis(frc::GenericHID::kRightHand) >= 0.5) {
+    if (operatorController.GetRightTriggerAxis() >= 0.5) {
       return true;
     }
     return false;
@@ -181,8 +179,8 @@ void RobotContainer::InstallDefaultCommands() {
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
-    frc::XboxController::Button buttonId, frc2::Command* command) {
-  frc2::JoystickButton(&operatorController, int(buttonId))
+    int buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&operatorController, buttonId)
       .WhileHeld(command);  // see last year's code
 }
 
@@ -238,9 +236,9 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      &conveyorForwardCommand);
 
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBumperLeft,
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      shooterToMaximumCommandPtr.get());
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kBumperRight,
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      shooterToMinimumCommandPtr.get());
 
 #ifdef ENABLE_PNEUMATICS
@@ -666,13 +664,11 @@ frc2::SequentialCommandGroup* RobotContainer::createRams(
 }
 
 frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
-  wpi::SmallString<64> deployDirectory;
-  frc::filesystem::GetDeployDirectory(deployDirectory);
-  wpi::sys::path::append(deployDirectory, "paths");
-  wpi::sys::path::append(deployDirectory, jsonFile);
+  std::string jsonFilePath =
+      frc::filesystem::GetDeployDirectory() + "/paths/" + jsonFile;
 
   frc::Trajectory trajectory =
-      frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
+      frc::TrajectoryUtil::FromPathweaverJson(jsonFilePath);
   return trajectory;
 }
 

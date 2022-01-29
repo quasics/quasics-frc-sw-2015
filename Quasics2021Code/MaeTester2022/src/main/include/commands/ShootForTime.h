@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <frc2/Timer.h>
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <subsystems/Shooter.h>
@@ -19,7 +19,7 @@
 class ShootForTime
     : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
  public:
-  ShootForTime(Shooter* shooter, units::second_t time, double speed);
+  ShootForTime(Shooter *shooter, units::second_t time, double speed);
 
   void Initialize() override;
 
@@ -30,8 +30,8 @@ class ShootForTime
   bool IsFinished() override;
 
  private:
-  Shooter* shooter;
+  Shooter *shooter;
   const units::second_t time;
   const double speed;
-  frc2::Timer stopWatch;
+  frc::Timer stopWatch;
 };

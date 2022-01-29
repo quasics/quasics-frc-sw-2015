@@ -23,19 +23,24 @@ class VisionSettingsHelper {
    *                 the VS Code project; for a "big bot", this is "/" (which
    *                 is not generally a good place to store files).
    */
-  VisionSettingsHelper(const std::string &filename) : m_filename(filename) {}
+  VisionSettingsHelper(const std::string &filename) : m_filename(filename) {
+  }
 
   /**
    * Returns the path to the home directory for the account that is used to
    * run code on the RoboRio.
    */
-  static std::string GetSuggestedRoboRioDirectory() { return "/home/lvuser/"; }
+  static std::string GetSuggestedRoboRioDirectory() {
+    return "/home/lvuser/";
+  }
 
   /**
    * Returns a path to the current directory when running code for the Romi,
    * which should be the VS Code project folder.
    */
-  static std::string GetSuggestedRomiDirectory() { return "./"; }
+  static std::string GetSuggestedRomiDirectory() {
+    return "./";
+  }
 
   /**
    * Adds sliders for the "hue", "saturation", and "value" settings used
@@ -114,8 +119,9 @@ class VisionSettingsHelper {
 
     // Add sliders for each of the color-related settings.
     //
-    // (We're using "AddPersistent" in order to get the Rio to try to save/reload
-    // values on program start, in addition to the save/reload code in this class.)
+    // (We're using "AddPersistent" in order to get the Rio to try to
+    // save/reload values on program start, in addition to the save/reload code
+    // in this class.)
     auto &tab =
         frc::Shuffleboard::GetTab(NetworkTableNames::kVisionSettingsTable);
     m_lowH = tab.AddPersistent(NetworkTableNames::kLowHSetting, low_h)
@@ -150,7 +156,7 @@ class VisionSettingsHelper {
     auto table =
         inst.GetTable(kTableBaseName + NetworkTableNames::kVisionSettingsTable);
     table->AddEntryListener(
-        [this](nt::NetworkTable *table, wpi::StringRef name,
+        [this](nt::NetworkTable *table, std::string_view name,
                nt::NetworkTableEntry entry, std::shared_ptr<nt::Value> value,
                int flags) {
           if (!SaveToFile()) {
@@ -165,7 +171,7 @@ class VisionSettingsHelper {
   }
 
  private:
-  const std::string m_filename;   ///< Path to file used for load/save operations
+  const std::string m_filename;  ///< Path to file used for load/save operations
   nt::NetworkTableEntry m_lowH;
   nt::NetworkTableEntry m_lowS;
   nt::NetworkTableEntry m_lowV;

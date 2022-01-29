@@ -4,8 +4,10 @@
 
 #include "commands/ColorLights.h"
 
+#include <iostream>
+
 ColorLights::ColorLights(Lights* lights, int red, int green, int blue)
-: lights(lights), red(red), green(green), blue(blue) {
+    : lights(lights), red(red), green(green), blue(blue) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(lights);
 }

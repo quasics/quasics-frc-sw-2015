@@ -53,20 +53,19 @@ class Pneumatics : public frc2::SubsystemBase {
   bool GetPressureSwitchValue();
 
   /** Returns how much current the compressor is drawing. */
-  double GetCompressorCurrent();
+  units::current::ampere_t GetCompressorCurrent();
 
-  private:
-   // Compressor control
-   frc::Compressor m_compressor{PneumaticsIds::DefaultSolenoidId};
-   bool compressorEnabled = true;
+ private:
+  // Compressor control
+  frc::Compressor m_compressor{frc::PneumaticsModuleType::CTREPCM};
 
-   // Solenoid(s)
-   frc::DoubleSolenoid m_intakeSolenoid{CANBusIds::Other::PCM,
-                                        PneumaticsIds::IntakeSolenoidForward,
-                                        PneumaticsIds::IntakeSolenoidBackward};
+  // Solenoid(s)
+  frc::DoubleSolenoid m_intakeSolenoid{frc::PneumaticsModuleType::CTREPCM,
+                                       PneumaticsIds::IntakeSolenoidForward,
+                                       PneumaticsIds::IntakeSolenoidBackward};
 #ifdef USE_TWO_SOLENOIDS_FOR_INTAKE
-   frc::DoubleSolenoid m_intakeSolenoid2{
-       CANBusIds::Other::PCM, PneumaticsIds::IntakeSolenoid2Forward,
-       PneumaticsIds::IntakeSolenoid2Backward};
+  frc::DoubleSolenoid m_intakeSolenoid2{frc::PneumaticsModuleType::CTREPCM,
+                                        PneumaticsIds::IntakeSolenoid2Forward,
+                                        PneumaticsIds::IntakeSolenoid2Backward};
 #endif  // USE_TWO_SOLENOIDS_FOR_INTAKE
 };

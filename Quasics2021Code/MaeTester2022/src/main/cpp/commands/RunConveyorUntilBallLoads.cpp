@@ -4,6 +4,8 @@
 
 #include "commands/RunConveyorUntilBallLoads.h"
 
+#include <iostream>
+
 RunConveyorUntilBallLoads::RunConveyorUntilBallLoads(Intake* intake,
                                                      double conveyorPower,
                                                      double pickupPower,
@@ -17,7 +19,7 @@ RunConveyorUntilBallLoads::RunConveyorUntilBallLoads(Intake* intake,
 
 // Called when the command is initially scheduled.
 void RunConveyorUntilBallLoads::Initialize() {
-  std::cout << "Timeout on ball movement = " << m_timeout << std::endl;
+  std::cout << "Timeout on ball movement = " << m_timeout.value() << std::endl;
   if (m_intake->IsBallInChamber()) {
     m_state = eStartingBallSensed;
     std::cout << "Setting state to 'starting ball sensed'" << std::endl;

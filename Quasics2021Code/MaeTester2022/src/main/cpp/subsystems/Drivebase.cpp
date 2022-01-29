@@ -10,6 +10,7 @@
 #include <units/time.h>
 
 #include <iostream>
+#include <wpi/numbers>
 
 #include "Constants.h"
 
@@ -47,10 +48,10 @@ struct Drivebase::RevRoboticsStuff {
   rev::CANSparkMax m_rightRear{CANBusIds::SparkMaxIds::Right_Rear_Number,
                                rev::CANSparkMax::MotorType::kBrushless};
 
-  rev::CANEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
-  rev::CANEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
-  rev::CANEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
-  rev::CANEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 #endif  // USE_SPARKS_VIA_CAN
 
   void ResetEncoders() {
@@ -107,9 +108,9 @@ Drivebase::Drivebase()
   m_revStuff->m_leftFront.SetInverted(false);
   m_revStuff->m_leftRear.SetInverted(false);
 
-  m_leftMotors.reset(new frc::SpeedControllerGroup(m_revStuff->m_leftFront,
+  m_leftMotors.reset(new frc::MotorControllerGroup(m_revStuff->m_leftFront,
                                                    m_revStuff->m_leftRear));
-  m_rightMotors.reset(new frc::SpeedControllerGroup(m_revStuff->m_rightFront,
+  m_rightMotors.reset(new frc::MotorControllerGroup(m_revStuff->m_rightFront,
                                                     m_revStuff->m_rightRear));
 #endif  // USE_SPARKS_VIA_CAN
 
@@ -121,8 +122,10 @@ Drivebase::Drivebase()
       wheelCircumference / kGearRatio_2021;  // Should convert RPM to m/min
   units::meter_t velocityAdjustment =
       velocityAdjustmentForGearing / 60;  // Adjust to m/s
-  std::cout << "Wheel circumference: " << wheelCircumference << "\n"
-            << "Velocity adjustment: " << velocityAdjustment << std::endl;
+  std::cout << "Wheel circumference: " << wheelCircumference.value()
+            << " meters\n"
+            << "Velocity adjustment: " << velocityAdjustment.value() << " m/s"
+            << std::endl;
 
 #ifdef USE_SPARKS_VIA_CAN
   m_revStuff->m_leftFrontEncoder.SetVelocityConversionFactor(

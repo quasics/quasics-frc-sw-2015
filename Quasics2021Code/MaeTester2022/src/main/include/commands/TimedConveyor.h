@@ -3,10 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/WaitCommand.h>  // maybe
-#include <frc2/Timer.h>
 
 #include "subsystems/Intake.h"
 
@@ -20,7 +20,7 @@
 class TimedConveyor
     : public frc2::CommandHelper<frc2::CommandBase, TimedConveyor> {
  public:
-  TimedConveyor(Intake* intake, units::second_t time, bool forward);
+  TimedConveyor(Intake *intake, units::second_t time, bool forward);
 
   void Initialize() override;
 
@@ -31,8 +31,8 @@ class TimedConveyor
   bool IsFinished() override;
 
  private:
-  Intake* intake;
+  Intake *intake;
   const units::second_t time;
   const bool forward;
-  frc2::Timer stopWatch;
+  frc::Timer stopWatch;
 };

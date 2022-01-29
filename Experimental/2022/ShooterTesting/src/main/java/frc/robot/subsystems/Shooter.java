@@ -47,7 +47,7 @@ public class Shooter extends SubsystemBase {
    */
   private double kIz = 0;
   /** Feed-forward constant. */
-  private double kFF = 0.000015;
+  private double kFF = 0.0002;
 
   public static final double MAX_RPM = 5700;
 

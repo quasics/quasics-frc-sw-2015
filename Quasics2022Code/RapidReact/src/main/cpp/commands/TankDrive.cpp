@@ -26,7 +26,7 @@ void TankDrive::End(bool interrupted) {
 }
 
 void TankDrive::UpdateSpeeds() {
-  double leftPower = m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-  double rightPower = m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+  double leftPower = -0.65*(m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS));
+  double rightPower = -0.65*(m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS));
   m_drivebase->SetMotorPower(leftPower, rightPower);
 }

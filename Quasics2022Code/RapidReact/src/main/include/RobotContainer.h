@@ -28,7 +28,7 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here...
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
 
-  Drivebase m_Drivebase;
+  Drivebase m_drivebase;
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
 

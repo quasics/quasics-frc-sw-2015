@@ -31,4 +31,6 @@ class MoveRobotTestCommand
   private:
   Drivebase* m_drivebase;
   const double m_motorPower;
+  units::meter_t m_leftStartingPosition;
+  units::meter_t m_rightStartingPosition;
 };

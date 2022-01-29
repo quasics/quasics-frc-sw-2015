@@ -3,21 +3,30 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/TankDrive.h"
+#include "Constants.h"
 
-TankDrive::TankDrive() {
+TankDrive::TankDrive(Drivebase* drivebase, frc::Joystick* driverStick) : m_drivebase(drivebase), m_driverStick(driverStick){
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.
-void TankDrive::Initialize() {}
+void TankDrive::Initialize() {
+  UpdateSpeeds();
+}
 
 // Called repeatedly when this Command is scheduled to run
-void TankDrive::Execute() {}
+void TankDrive::Execute() {
+  UpdateSpeeds();
+}
 
 // Called once the command ends or is interrupted.
-void TankDrive::End(bool interrupted) {}
+void TankDrive::End(bool interrupted) {
+  m_drivebase->Stop();
+}
 
-// Returns true when the command should end.
-bool TankDrive::IsFinished() {
-  return false;
+void TankDrive::UpdateSpeeds() {
+  double leftPower = m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+  double rightPower = m_driverStick->GetRawAxis(OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+  m_drivebase->SetMotorPower(leftPower, rightPower);
 }

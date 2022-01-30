@@ -44,15 +44,11 @@ namespace OperatorInterface {
 
   namespace LogitechGamePad {
     // Note: these values were derived from one of the Logitech-branded
-    // controllers on 22Jan2022. But it looks like there may be differences
+    // controllers on 22Jan2022. But it looks like there *may* be differences
     // between apparently identical devices.... :-(
 
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
-    //
-    // Note that the left and right triggers aren't treated as buttons: they
-    // report to the driver's station software as if they're joysticks (with a
-    // range of [0.0, 1.0], unlike regular joysticks).
     constexpr int LEFT_X_AXIS = 0;
     constexpr int LEFT_Y_AXIS = 1;
     constexpr int RIGHT_X_AXIS = 2;

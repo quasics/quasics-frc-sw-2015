@@ -74,14 +74,8 @@ namespace OIConstants {
   namespace LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
-    //
-    // Note that the left and right triggers aren't treated as buttons: they
-    // report to the driver's station software as if they're joysticks (with a
-    // range of [0.0, 1.0], unlike regular joysticks).
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;
-    constexpr int LeftTriggerAxis = 2;
-    constexpr int RightTriggerAxis = 3;
     constexpr int RightXAxis = 2;
     constexpr int RightYAxis = 3;
 
@@ -92,6 +86,7 @@ namespace OIConstants {
     constexpr int YButton = 4;
     constexpr int LeftShoulder = 5;
     constexpr int RightShoulder = 6;
+
     // The following buttons are below the shoulder, and would be triggers on an
     // Xbox controller.
     constexpr int LeftTriggerButton = 7;
@@ -119,11 +114,14 @@ namespace OIConstants {
 
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;
-    constexpr int RightXAxis = 2;
+    constexpr int RightXAxis = 4;
     constexpr int RightYAxis = 5;
 
-    constexpr int LeftTrigger = 2;
-    constexpr int RightTrigger = 3;
+    // Note that the left and right triggers on XBox controllers aren't treated
+    // as buttons: they report to the driver's station software as if they're
+    // joysticks (with a range of [0.0, 1.0], unlike regular joysticks).
+    constexpr int LeftTriggerAxis = 2;
+    constexpr int RightTriggerAxis = 3;
   }  // namespace XBox
 
   // "Dead band" values for the drive joysticks

@@ -8,8 +8,8 @@
 #include <frc2/command/Command.h>
 
 #include "commands/ExampleCommand.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drivebase.h"
+#include "subsystems/ExampleSubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -32,6 +32,6 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
 
-  void ConfigureButtonBindings();
+  void ConfigureJoystickButtonBindings();
   void AddTestButtonToSmartDasboard();
 };

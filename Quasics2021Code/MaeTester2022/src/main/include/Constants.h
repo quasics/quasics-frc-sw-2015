@@ -102,28 +102,6 @@ namespace OIConstants {
     constexpr int InvalidAxis = 98;
   }  // namespace LogitechGamePad
 
-  namespace XBox {
-    constexpr int ButtonA = 1;
-    constexpr int ButtonB = 2;
-    constexpr int ButtonX = 3;
-    constexpr int ButtonY = 4;
-    constexpr int LeftButton = 5;
-    constexpr int RightButton = 6;
-    constexpr int BackButton = 7;
-    constexpr int StartButton = 8;
-
-    constexpr int LeftXAxis = 0;
-    constexpr int LeftYAxis = 1;
-    constexpr int RightXAxis = 4;
-    constexpr int RightYAxis = 5;
-
-    // Note that the left and right triggers on XBox controllers aren't treated
-    // as buttons: they report to the driver's station software as if they're
-    // joysticks (with a range of [0.0, 1.0], unlike regular joysticks).
-    constexpr int LeftTriggerAxis = 2;
-    constexpr int RightTriggerAxis = 3;
-  }  // namespace XBox
-
   // "Dead band" values for the drive joysticks
   constexpr double DeadBand_LowValue = -0.055;
   constexpr double DeadBand_HighValue = +0.055;

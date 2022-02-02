@@ -50,6 +50,14 @@ public class Climber extends SubsystemBase {
      */
   }
 
+  public void resetPosition() {
+
+  }
+
+  public int getPosition() {
+    return 0;
+  }
+
   public void extendArms() {
     // TODO: Implement this method.
   }

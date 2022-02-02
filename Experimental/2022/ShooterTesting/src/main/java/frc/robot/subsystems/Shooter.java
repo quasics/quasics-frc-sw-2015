@@ -52,6 +52,8 @@ public class Shooter extends SubsystemBase {
   public static final double MAX_RPM = 5700;
 
   public Shooter() {
+    motor.setInverted(true);
+
     // set PID coefficients
     pidController.setP(kP);
     pidController.setI(kI);

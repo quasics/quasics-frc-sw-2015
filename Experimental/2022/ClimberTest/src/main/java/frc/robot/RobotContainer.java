@@ -6,6 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ExtendClimberArms;
+import frc.robot.commands.RetractClimberArms;
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -27,6 +30,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    SmartDashboard.putData("Extend arms", new ExtendClimberArms(m_climber));
+    SmartDashboard.putData("Extend arms", new RetractClimberArms(m_climber));
   }
 
   /**
@@ -46,6 +52,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PrintCommand("Do something autonomously...."));
+    return new PrintCommand("Do something autonomously....");
   }
 }

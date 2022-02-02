@@ -20,6 +20,24 @@ Drivebase::Drivebase(){
 }
 
 // This method will be called once per scheduler run
+
+void Drivebase::ConfigureEncoders(){
+    const units::meter_t wheelCircumference = WHEEL_DIAMETER * wpi::numbers::pi;
+    const units::meter_t gearingConversion = wheelCircumference / DRIVEBASE_GEAR_RATIO;
+    const units::meter_t velocityCorrection = gearingConversion / 60;
+
+    m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+    m_leftBackEncoder.SetPositionConversionFactor(gearingConversion.value());
+    m_rightFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+    m_rightBackEncoder.SetPositionConversionFactor(gearingConversion.value());
+    
+    m_leftFrontEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+    m_leftBackEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+    m_rightFrontEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+    m_rightBackEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+
+    ResetEncoders();
+}
 void Drivebase::Periodic() {
 
 }
@@ -29,14 +47,22 @@ void Drivebase::SetMotorPower(double leftPower, double rightPower){
     m_drive->TankDrive(leftPower, rightPower);
 }
 
-units::meter_t  Drivebase::GetLeftEncoders(){
+units::meter_t  Drivebase::GetLeftDistance(){
     //TODO: the returned value is in revolution need to fix to meters
     return units::meter_t (m_leftFrontEncoder.GetPosition());
 }
 
-units::meter_t  Drivebase::GetRightEncoders(){
+units::meter_t  Drivebase::GetRightDistance(){
     //TODO: the returned value is in revolution need to fix to meters
     return units::meter_t (m_rightFrontEncoder.GetPosition());
+}
+
+units::meters_per_second_t Drivebase::GetLeftVelocity(){
+    return units::meters_per_second_t(m_leftFrontEncoder.GetVelocity());
+}
+
+units::meters_per_second_t Drivebase::GetRightVelocity(){
+    return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
 }
 
 void Drivebase::ResetEncoders(){

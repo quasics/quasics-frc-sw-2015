@@ -11,8 +11,8 @@ MoveRobotTestCommand::MoveRobotTestCommand(Drivebase* drivebase, double motorPow
 
 // Called when the command is initially scheduled.
 void MoveRobotTestCommand::Initialize() {
-  m_leftStartingPosition = m_drivebase -> GetLeftEncoders();
-  m_rightStartingPosition = m_drivebase-> GetRightEncoders();
+  m_leftStartingPosition = m_drivebase -> GetLeftDistance();
+  m_rightStartingPosition = m_drivebase-> GetRightDistance();
   m_drivebase->SetMotorPower(m_motorPower, m_motorPower);
 }
   
@@ -28,8 +28,8 @@ void MoveRobotTestCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool MoveRobotTestCommand::IsFinished() {
-  units::meter_t rotationLeft = m_drivebase->GetLeftEncoders();
-  units::meter_t rotationRight = m_drivebase->GetRightEncoders();
+  units::meter_t rotationLeft = m_drivebase->GetLeftDistance();
+  units::meter_t rotationRight = m_drivebase->GetRightDistance();
   if (rotationLeft >= (m_leftStartingPosition + units::meter_t(10.71)) or (rotationRight >= (m_rightStartingPosition + units::meter_t(10.71)))){
     return true;
   }

@@ -9,6 +9,7 @@
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <rev/CANSparkMax.h>
 #include "units/length.h"
+#include "units/velocity.h"
 
 
 #include "Constants.h"
@@ -18,6 +19,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   Drivebase();
 
+  void ConfigureEncoders();
+
   void Periodic() override;
 
   void Stop(){
@@ -26,9 +29,13 @@ class Drivebase : public frc2::SubsystemBase {
 
   void SetMotorPower(double leftPower, double rightPower);
 
-  units::meter_t  GetLeftEncoders();
+  units::meter_t GetLeftDistance();
 
-  units::meter_t GetRightEncoders();
+  units::meter_t GetRightDistance();
+
+  units::meters_per_second_t GetLeftVelocity();
+  
+  units::meters_per_second_t GetRightVelocity();
 
   void ResetEncoders();
 

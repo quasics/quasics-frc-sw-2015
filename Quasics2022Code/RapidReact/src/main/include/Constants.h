@@ -13,6 +13,9 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
+
+constexpr double DRIVEBASE_GEAR_RATIO = 8.45;
 
 namespace MotorIds {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

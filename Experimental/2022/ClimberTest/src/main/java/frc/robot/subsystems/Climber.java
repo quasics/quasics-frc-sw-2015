@@ -15,11 +15,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * robot (when hanging) by a cable that is driven by a winch (controlled by this
  * subsystem).
  * 
+ * I'm also assuming that there will be some sort of an encoder (or some other
+ * way of identifying when the arms are fully let out/retracted), so that the
+ * commands using the subsystem can know when to stop spinning the winch.
+ * 
  * @see https://www.thethriftybot.com/bearings/Round-2-Pre-Order-Thrifty-Telescoping-Tube-Kit-p416413760
  */
 public class Climber extends SubsystemBase {
+  // TODO: Make this a non-arbitrary value. :-)
+  public static final double MAX_EXTENSION_INCHES = 100.0;
+
   /** Creates a new Climber. */
   public Climber() {
+
+    resetPosition();
+  }
+
+  public void stop() {
+    // TODO: Implement this method.
   }
 
   public void holdPosition() {
@@ -50,11 +63,12 @@ public class Climber extends SubsystemBase {
      */
   }
 
-  public void resetPosition() {
-
+  private void resetPosition() {
+    // TODO: Implement this method.
   }
 
-  public int getPosition() {
+  public double getPosition() {
+    // TODO: Implement this method.
     return 0;
   }
 

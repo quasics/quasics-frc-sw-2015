@@ -17,7 +17,7 @@ class Shooter : public frc2::SubsystemBase {
 
   void Stop() {
     SetFlywheelSpeed(0);
-};
+  };
 
   void SetFlywheelSpeed(double flywheelSpeed);
 

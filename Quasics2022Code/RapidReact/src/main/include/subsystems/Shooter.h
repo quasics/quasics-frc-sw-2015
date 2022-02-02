@@ -5,6 +5,9 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
+
+#include "Constants.h"
 
 class Shooter : public frc2::SubsystemBase {
  public:
@@ -22,6 +25,6 @@ class Shooter : public frc2::SubsystemBase {
   void SetFlywheelSpeed(double flywheelSpeed);
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+
+  rev::CANSparkMax m_flyWheel{MotorIds::SHOOTER_FLYWHEEL_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
 };

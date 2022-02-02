@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <units/length.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -22,6 +24,7 @@ namespace MotorIds {
     constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
     constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+    constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
 }
 
 namespace OperatorInterface {

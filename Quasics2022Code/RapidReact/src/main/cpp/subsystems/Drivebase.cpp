@@ -17,6 +17,8 @@ Drivebase::Drivebase(){
  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
 
  m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
+
+ ConfigureEncoders();
 }
 
 // This method will be called once per scheduler run

@@ -6,10 +6,9 @@
 
 #include <frc/Joystick.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/PrintCommand.h>
 
-#include "commands/ExampleCommand.h"
 #include "subsystems/Drivebase.h"
-#include "subsystems/ExampleSubsystem.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -29,8 +28,8 @@ class RobotContainer {
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
 
   Drivebase m_drivebase;
-  ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
+  frc2::PrintCommand m_autonomousCommand{
+      "We need to do something autonomously...."};
 
   void ConfigureJoystickButtonBindings();
   void AddTestButtonToSmartDasboard();

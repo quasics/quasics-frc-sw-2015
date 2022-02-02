@@ -28,9 +28,9 @@ void MoveRobotTestCommand::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool MoveRobotTestCommand::IsFinished() {
-  units::meter_t rotationLeft = m_drivebase->GetLeftDistance();
-  units::meter_t rotationRight = m_drivebase->GetRightDistance();
-  if (rotationLeft >= (m_leftStartingPosition + units::meter_t(10.71)) or (rotationRight >= (m_rightStartingPosition + units::meter_t(10.71)))){
+  units::meter_t distanceleft = m_drivebase->GetLeftDistance();
+  units::meter_t distanceright = m_drivebase->GetRightDistance();
+  if (distanceleft >= (m_leftStartingPosition + units::meter_t(1)) or (distanceright >= (m_rightStartingPosition + units::meter_t(1)))){
     return true;
   }
   return false;

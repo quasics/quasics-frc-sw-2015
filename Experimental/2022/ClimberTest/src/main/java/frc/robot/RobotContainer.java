@@ -11,6 +11,7 @@ import frc.robot.commands.ExtendClimberArms;
 import frc.robot.commands.RetractClimberArms;
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 /**
@@ -32,7 +33,16 @@ public class RobotContainer {
     configureButtonBindings();
 
     SmartDashboard.putData("Extend arms", new ExtendClimberArms(m_climber));
-    SmartDashboard.putData("Extend arms", new RetractClimberArms(m_climber));
+    SmartDashboard.putData("Retract arms", new RetractClimberArms(m_climber));
+    SmartDashboard.putData("Hold position", new InstantCommand(() -> {
+      m_climber.holdPosition();
+    }, m_climber));
+    SmartDashboard.putData("Set braking", new InstantCommand(() -> {
+      m_climber.enableBrakingMode(true);
+    }, m_climber));
+    SmartDashboard.putData("Set coasting", new InstantCommand(() -> {
+      m_climber.enableBrakingMode(false);
+    }, m_climber));
   }
 
   /**

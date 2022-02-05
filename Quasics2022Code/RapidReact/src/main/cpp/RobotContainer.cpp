@@ -9,6 +9,7 @@
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/TankDrive.h"
+#include "commands/DriveAtPowerForMeters.h"
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -18,6 +19,7 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureJoystickButtonBindings();
   AddTestButtonToSmartDasboard();
+  AddAutonomousCommandsToSmartDashboard();
 }
 
 void RobotContainer::ConfigureJoystickButtonBindings() {
@@ -28,6 +30,10 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Run Shooter FlyWheel", new RunShooterAtSpeed(&m_shooter, 0.5));
+}
+
+void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
+  m_autonoumousOptions.AddOption("Move Forward 1m at 50 percent power", new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

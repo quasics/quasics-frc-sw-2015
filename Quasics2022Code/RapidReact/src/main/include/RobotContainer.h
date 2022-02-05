@@ -7,6 +7,7 @@
 #include <frc/Joystick.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/PrintCommand.h>
+#include <frc/smartdashboard/SendableChooser.h>
 
 #include "subsystems/Drivebase.h"
 #include "subsystems/Shooter.h"
@@ -34,6 +35,8 @@ class RobotContainer {
   frc2::PrintCommand m_autonomousCommand{
       "We need to do something autonomously...."};
 
+  frc::SendableChooser<frc2::Command*> m_autonoumousOptions;
   void ConfigureJoystickButtonBindings();
   void AddTestButtonToSmartDasboard();
+  void AddAutonomousCommandsToSmartDashboard();
 };

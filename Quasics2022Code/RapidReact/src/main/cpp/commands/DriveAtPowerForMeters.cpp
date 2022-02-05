@@ -28,5 +28,10 @@ void DriveAtPowerForMeters::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {
+  units::meter_t positionLeft = m_drivebase -> GetLeftDistance();
+  units::meter_t positionRight = m_drivebase -> GetRightDistance();
+  if ((positionLeft >= (m_leftStartingPosition + units::meter_t(m_distance))) or (positionRight >= (m_rightStartingPosition + units::meter_t(m_distance)))){
+    return true;
+  }
   return false;
 }

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.Lighting;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 /**
@@ -26,13 +28,29 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DriveBase driveBase = new DriveBase();
+
+  private static final String SETTINGS_FILE_NAME = "Sally";
+
+  private final DriveBase driveBase;
   private final Lighting lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
+    if (settings == null) {
+      System.err.println(
+          "------------------------------------------------------------\n"
+              + "Couldn't load robot settings: falling back on defaults!\n"
+              + "\n"
+              + "Please write current settings out to file via dashboard."
+              + "------------------------------------------------------------\n");
+      settings = getSettingsForSally();
+    }
+
+    driveBase = new DriveBase(settings);
+
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
 
@@ -48,6 +66,30 @@ public class RobotContainer {
 
     // Configure default lighting command.
     lighting.setDefaultCommand(new RainbowLighting(lighting));
+
+    //
+    // Write out settings files (for use on next boot)
+    SmartDashboard.putData("Setup for Sally", new InstantCommand(() -> {
+      getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
+    }));
+    SmartDashboard.putData("Setup for Mae", new InstantCommand(() -> {
+      getSettingsForMae().writeToFile(SETTINGS_FILE_NAME);
+    }));
+    SmartDashboard.putData("Setup for Nike", new InstantCommand(() -> {
+      getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
+    }));
+  }
+
+  private static RobotSettings getSettingsForSally() {
+    return new RobotSettings("Sally", Constants.TRACK_WIDTH_INCHES_SALLY);
+  }
+
+  private static RobotSettings getSettingsForMae() {
+    return new RobotSettings("Mae", Constants.TRACK_WIDTH_INCHES_MAE);
+  }
+
+  private static RobotSettings getSettingsForNike() {
+    return new RobotSettings("Nike", Constants.TRACK_WIDTH_INCHES_NIKE);
   }
 
   /**

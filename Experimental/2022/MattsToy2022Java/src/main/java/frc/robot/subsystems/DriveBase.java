@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotSettings;
 import frc.robot.utils.BooleanSetter;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -12,7 +14,7 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -34,9 +36,13 @@ public class DriveBase extends SubsystemBase {
 
   final private DifferentialDriveOdometry odometry;
 
+  final private double m_tankWidth;
+
   /** Creates a new DriveBase. */
-  public DriveBase() {
+  public DriveBase(RobotSettings robotSettings) {
     this.setName("DriveBase");
+
+    m_tankWidth = robotSettings.trackWidthMeters;
 
     // Create the individual motors.
     final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID,
@@ -215,11 +221,11 @@ public class DriveBase extends SubsystemBase {
   //////////////////////////////////////////////////////////////////
   // Trajectory-following support.
 
-  Pose2d GetPose() {
+  public Pose2d GetPose() {
     return odometry.getPoseMeters();
   }
 
-  DifferentialDriveWheelSpeeds getWheelSpeeds() {
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
   }
 
@@ -233,20 +239,18 @@ public class DriveBase extends SubsystemBase {
     odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
   }
 
-  void ResetOdometry(Pose2d pose) {
+  public void ResetOdometry(Pose2d pose) {
     resetEncoders();
     odometry.resetPosition(pose, getGyroAngle());
   }
 
-  void TankDriveVolts(double leftVolts, double rightVolts) {
+  public void TankDriveVolts(double leftVolts, double rightVolts) {
     leftMotors.setVoltage(leftVolts);
     rightMotors.setVoltage(rightVolts);
     drive.feed();
   }
 
-  // TODO: Define these methods, once we have good data to work with.
-
-  // double GetTrackWidth() override {
-  // return kTrackWidthMeters;
-  // }
+  public double GetTrackWidth() {
+    return m_tankWidth;
+  }
 }

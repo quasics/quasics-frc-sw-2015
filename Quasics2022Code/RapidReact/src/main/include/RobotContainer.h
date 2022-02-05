@@ -9,6 +9,7 @@
 #include <frc2/command/PrintCommand.h>
 
 #include "subsystems/Drivebase.h"
+#include "subsystems/Shooter.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -27,7 +28,9 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here...
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
 
+  Shooter m_shooter;
   Drivebase m_drivebase;
+  
   frc2::PrintCommand m_autonomousCommand{
       "We need to do something autonomously...."};
 

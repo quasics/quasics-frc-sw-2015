@@ -36,6 +36,7 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
 void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
   m_autonoumousOptions.AddOption("Move Forward 1m at 50 percent power", new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
   m_autonoumousOptions.AddOption("Shoot at 20 percent power for 3 seconds", new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
+  m_autonoumousOptions.AddOption("Shoot 0.2 for 2, move 0.2 for 1", ShootAndMoveCommand(0.2, units::second_t(2), 0.2, 1));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove){

@@ -30,7 +30,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
-  frc::SmartDashboard::PutData("Run Shooter FlyWheel", new RunShooterAtSpeed(&m_shooter, 0.5));
+  frc::SmartDashboard::PutData("Run Shooter FlyWheel", new RunShooterAtSpeed(&m_shooter, -0.65));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard(){

@@ -17,6 +17,14 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    // TODO(mjh): Confirm this value for Sally....
+    public static final double TRACK_WIDTH_INCHES_SALLY = 22.0;
+    public static final double TRACK_WIDTH_INCHES_MAE = 47.134344149315914763; // 2021 robot's width, from in-code
+                                                                               // constants (which are in meters)
+
+    // TODO(mjh): Confirm this for Nike
+    public static final double TRACK_WIDTH_INCHES_NIKE = TRACK_WIDTH_INCHES_MAE;
+
     public static final double WHEEL_DIAMETER_INCHES = 6.0;
 
     /// Gear ratio used for the 2020/2021 robots.

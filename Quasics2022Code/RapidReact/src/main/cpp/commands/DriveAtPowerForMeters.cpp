@@ -17,10 +17,14 @@ void DriveAtPowerForMeters::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DriveAtPowerForMeters::Execute() {}
+void DriveAtPowerForMeters::Execute() {
+  m_drivebase -> SetMotorPower(m_motorPower, m_motorPower);
+}
 
 // Called once the command ends or is interrupted.
-void DriveAtPowerForMeters::End(bool interrupted) {}
+void DriveAtPowerForMeters::End(bool interrupted) {
+  m_drivebase -> Stop();
+}
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {

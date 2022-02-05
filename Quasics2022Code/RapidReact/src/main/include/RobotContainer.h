@@ -8,6 +8,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 #include "subsystems/Drivebase.h"
 #include "subsystems/Shooter.h"
@@ -36,6 +37,8 @@ class RobotContainer {
       "We need to do something autonomously...."};
 
   frc::SendableChooser<frc2::Command*> m_autonoumousOptions;
+  frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove);
+
   void ConfigureJoystickButtonBindings();
   void AddTestButtonToSmartDasboard();
   void AddAutonomousCommandsToSmartDashboard();

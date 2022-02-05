@@ -38,6 +38,13 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
   m_autonoumousOptions.AddOption("Shoot at 20 percent power for 3 seconds", new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
 }
 
+frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove){
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(new ShootForTime(&m_shooter, powerShoot, timeShoot))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(&m_drivebase, powerMove, distanceMove))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return &m_autonomousCommand;

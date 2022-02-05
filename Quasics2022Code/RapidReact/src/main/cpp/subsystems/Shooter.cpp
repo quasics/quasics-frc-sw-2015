@@ -4,11 +4,14 @@
 
 #include "subsystems/Shooter.h"
 
-Shooter::Shooter() = default;
+Shooter::Shooter() {
+
+}
 
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
 }
 
-void Shooter::SetFlywheelSpeed(double flywheelSpeed) {
+void Shooter::SetFlywheelSpeed(double flyWheelSpeed) {
+    m_flyWheel.Set(flyWheelSpeed);
 }

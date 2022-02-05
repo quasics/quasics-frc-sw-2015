@@ -6,6 +6,11 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc/Timer.h>
+
+#include "subsystems/Shooter.h"
+
+
 
 /**
  * An example command.
@@ -17,7 +22,7 @@
 class ShootForTime
     : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
  public:
-  ShootForTime();
+  ShootForTime(Shooter* shooter, double power, units::second_t time);
 
   void Initialize() override;
 
@@ -26,4 +31,11 @@ class ShootForTime
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+  private:
+
+  Shooter* m_shooter;
+  const double power;
+  const units::second_t time;
+  frc::Timer m_stopWatch;
 };

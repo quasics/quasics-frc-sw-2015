@@ -4,20 +4,32 @@
 
 #include "commands/ShootForTime.h"
 
-ShootForTime::ShootForTime() {
+ShootForTime::ShootForTime(Shooter* shooter, double power, units::second_t time) : m_shooter(shooter), power(power), time(time){
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(m_shooter);
 }
 
 // Called when the command is initially scheduled.
-void ShootForTime::Initialize() {}
+void ShootForTime::Initialize() {
+  m_stopWatch.Reset();
+  m_stopWatch.Start();
+  m_shooter ->SetFlywheelSpeed(power);
+}
 
 // Called repeatedly when this Command is scheduled to run
-void ShootForTime::Execute() {}
+void ShootForTime::Execute() {
+  m_shooter ->SetFlywheelSpeed(power);
+}
 
 // Called once the command ends or is interrupted.
-void ShootForTime::End(bool interrupted) {}
+void ShootForTime::End(bool interrupted) {
+  m_shooter -> Stop();
+}
 
 // Returns true when the command should end.
 bool ShootForTime::IsFinished() {
+  if(m_stopWatch.HasElapsed(time)){
+    return true;
+  }
   return false;
 }

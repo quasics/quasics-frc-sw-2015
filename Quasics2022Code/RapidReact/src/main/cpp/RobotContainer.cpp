@@ -10,6 +10,7 @@
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/TankDrive.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/ShootForTime.h"
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -34,6 +35,7 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
   m_autonoumousOptions.AddOption("Move Forward 1m at 50 percent power", new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
+  m_autonoumousOptions.AddOption("Shoot at 20 percent power for 3 seconds", new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

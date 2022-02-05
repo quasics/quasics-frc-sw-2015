@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "commands/MoveRobotTestCommand.h"
+#include "commands/RunShooterAtSpeed.h"
 #include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
@@ -26,6 +27,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
+  frc::SmartDashboard::PutData("Run Shooter FlyWheel", new RunShooterAtSpeed(&m_shooter, 0.5));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

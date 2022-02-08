@@ -27,6 +27,8 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
   // Configure your button bindings here
 }
 
+//Important for the shooter: as of right now, any values for speed of the flywheel should be negative for the shooter to work properly.
+// Also, -0.65 seems to be the power for the high goal.
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
@@ -35,8 +37,8 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
   m_autonoumousOptions.AddOption("Move Forward 1m at 50 percent power", new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
-  m_autonoumousOptions.AddOption("Shoot at 20 percent power for 3 seconds", new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
-  m_autonoumousOptions.AddOption("Shoot 0.2 for 2, move 0.2 for 1", ShootAndMoveCommand(0.2, units::second_t(2), 0.2, 1));
+  m_autonoumousOptions.AddOption("Shoot at 20 percent power for 3 seconds", new ShootForTime(&m_shooter, -0.2, units::second_t(3)));
+  m_autonoumousOptions.AddOption("Shoot 0.2 for 2, move 0.2 for 1", ShootAndMoveCommand(-0.2, units::second_t(2), 0.2, 1));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove){

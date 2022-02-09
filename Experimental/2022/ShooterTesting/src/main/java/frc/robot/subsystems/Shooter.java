@@ -20,6 +20,15 @@ import frc.robot.Constants;
  * href=
  * "https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Velocity%20Closed%20Loop%20Control/src/main/java/frc/robot/Robot.java">example
  * from Rev Robotics</a>.
+ * 
+ * For a discussion of how PID works, and how the different tuning values
+ * (including feed-forward) can affect it, one good reference can be found <a
+ * href=
+ * "https://frc-pdr.readthedocs.io/en/latest/control/pid_control.html">here</a>.
+ * 
+ * For a discussion of how to find good tuning values, there's a nice discussion
+ * <a href=
+ * "https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops">here</a>.
  */
 public class Shooter extends SubsystemBase {
 

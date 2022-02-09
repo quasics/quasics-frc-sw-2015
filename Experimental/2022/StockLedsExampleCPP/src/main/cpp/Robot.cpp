@@ -44,10 +44,17 @@ public:
     // Length is expensive to set, so only set it once, then just update data
     m_led.SetLength(kLength);
     m_led.SetData(m_ledBuffer);
+    
     for (size_t i = 0; i < m_ledBuffer.size(); ++i)
     {
       m_ledBuffer[i].SetRGB(0, 0, 0);
     }
+    
+    for (size_t i = 0; i < m_ledBuffer.size(); i += 2)
+    {
+      m_ledBuffer[i].SetRGB(0, 255, 0);
+    }
+ 
     m_ledBuffer[0].SetRGB(255, 255, 255);
     m_led.SetData(m_ledBuffer);
     m_led.Start();

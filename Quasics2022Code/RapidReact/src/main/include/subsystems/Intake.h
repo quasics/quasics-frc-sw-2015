@@ -16,11 +16,13 @@ class Intake : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  void Stop();
+  void Stop() {
+      SetIntakeSpeed(0);
+  }
 
-  void SetIntakeSpeed();
+  void SetIntakeSpeed(double intakeSpeed);
 
  private:
 
-    ctre::phoenix::motorcontrol::can::VictorSPX motor {0};
+    ctre::phoenix::motorcontrol::can::VictorSPX motor {6};
 };

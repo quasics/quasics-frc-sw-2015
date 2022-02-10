@@ -12,6 +12,7 @@
 
 #include "subsystems/Drivebase.h"
 #include "subsystems/Shooter.h"
+#include "subsystems/Intake.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -32,6 +33,7 @@ class RobotContainer {
 
   Shooter m_shooter;
   Drivebase m_drivebase;
+  Intake m_intake;
   
   frc2::PrintCommand m_autonomousCommand{
       "We need to do something autonomously...."};

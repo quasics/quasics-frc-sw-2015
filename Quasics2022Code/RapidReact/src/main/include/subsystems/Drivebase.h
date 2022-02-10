@@ -15,7 +15,7 @@
 #include "Constants.h"
 
 class Drivebase : public frc2::SubsystemBase {
- public:
+public:
 
   Drivebase();
 
@@ -23,7 +23,7 @@ class Drivebase : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  void Stop(){
+  void Stop() {
     SetMotorPower(0, 0);
   }
 
@@ -34,12 +34,12 @@ class Drivebase : public frc2::SubsystemBase {
   units::meter_t GetRightDistance();
 
   units::meters_per_second_t GetLeftVelocity();
-  
+
   units::meters_per_second_t GetRightVelocity();
 
   void ResetEncoders();
 
- private:
+private:
 
   rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
@@ -59,9 +59,9 @@ class Drivebase : public frc2::SubsystemBase {
 };
 
 
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+/**
+ * Will be called periodically whenever the CommandScheduler runs.
+ */
+// Components (e.g. motor controllers and sensors) should generally be
+// declared private and exposed only through public methods.
 

@@ -20,8 +20,8 @@
  * Command will *not* work!
  */
 class ShootForTime
-    : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
- public:
+  : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
+public:
   ShootForTime(Shooter* shooter, double power, units::second_t time);
 
   void Initialize() override;
@@ -32,7 +32,7 @@ class ShootForTime
 
   bool IsFinished() override;
 
-  private:
+private:
 
   Shooter* m_shooter;
   const double power;

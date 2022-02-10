@@ -17,8 +17,8 @@
  * Command will *not* work!
  */
 class DriveAtPowerForMeters
-    : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
- public:
+  : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
+public:
   DriveAtPowerForMeters(Drivebase* drivebase, double motorPower, double distance);
 
   void Initialize() override;
@@ -29,7 +29,7 @@ class DriveAtPowerForMeters
 
   bool IsFinished() override;
 
-  private:
+private:
   Drivebase* m_drivebase;
   const double m_motorPower;
   const double m_distance;

@@ -16,8 +16,8 @@
  * Command will *not* work!
  */
 class MoveRobotTestCommand
-    : public frc2::CommandHelper<frc2::CommandBase, MoveRobotTestCommand> {
- public:
+  : public frc2::CommandHelper<frc2::CommandBase, MoveRobotTestCommand> {
+public:
   MoveRobotTestCommand(Drivebase* drivebase, double motorPower);
 
   void Initialize() override;
@@ -27,8 +27,8 @@ class MoveRobotTestCommand
   void End(bool interrupted) override;
 
   bool IsFinished() override;
-  
-  private:
+
+private:
   Drivebase* m_drivebase;
   const double m_motorPower;
   units::meter_t m_leftStartingPosition;

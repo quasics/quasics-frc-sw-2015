@@ -8,7 +8,7 @@
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 
 class Intake : public frc2::SubsystemBase {
- public:
+public:
   Intake();
 
   /**
@@ -17,12 +17,12 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
 
   void Stop() {
-      SetIntakeSpeed(0);
+    SetIntakeSpeed(0);
   }
 
   void SetIntakeSpeed(double intakeSpeed);
 
- private:
+private:
 
-    ctre::phoenix::motorcontrol::can::VictorSPX motor {6};
+  ctre::phoenix::motorcontrol::can::VictorSPX motor {6};
 };

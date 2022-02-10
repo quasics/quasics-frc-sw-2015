@@ -16,8 +16,8 @@
  * Command will *not* work!
  */
 class RunShooterAtSpeed
-    : public frc2::CommandHelper<frc2::CommandBase, RunShooterAtSpeed> {
- public:
+  : public frc2::CommandHelper<frc2::CommandBase, RunShooterAtSpeed> {
+public:
   RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed);
 
   void Initialize() override;

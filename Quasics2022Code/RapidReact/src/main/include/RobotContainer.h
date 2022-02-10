@@ -22,21 +22,21 @@
  * commands, and button mappings) should be declared here.
  */
 class RobotContainer {
- public:
+public:
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
 
- private:
+private:
   // The robot's subsystems and commands are defined here...
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
 
   Shooter m_shooter;
   Drivebase m_drivebase;
   Intake m_intake;
-  
+
   frc2::PrintCommand m_autonomousCommand{
-      "We need to do something autonomously...."};
+    "We need to do something autonomously...."};
 
   frc::SendableChooser<frc2::Command*> m_autonoumousOptions;
   frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove);

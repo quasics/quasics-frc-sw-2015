@@ -13,7 +13,7 @@
  * Command providing support for "tank drive" operations during teleop mode.
  */
 class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
- public:
+public:
   /**
    * Constructor.
    *
@@ -23,7 +23,7 @@ class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
   TankDrive(Drivebase *drivebase, frc::Joystick *driverStick);
 
   // Methods defined for Commands, which we're overriding.
- public:
+public:
   void Initialize() override;
 
   void Execute() override;
@@ -31,7 +31,7 @@ class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
   void End(bool interrupted) override;
 
   // Private utility functions
- private:
+private:
   /**
    * Updates the current left/right motor speeds on the drive base, in response
    * to the joystick positions.
@@ -39,7 +39,7 @@ class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
   void UpdateSpeeds();
 
   // Data members
- private:
+private:
   /** Drive base we're working with. */
   Drivebase *m_drivebase;
 

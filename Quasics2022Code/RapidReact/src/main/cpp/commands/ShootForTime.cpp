@@ -4,7 +4,7 @@
 
 #include "commands/ShootForTime.h"
 
-ShootForTime::ShootForTime(Shooter* shooter, double power, units::second_t time) : m_shooter(shooter), power(power), time(time){
+ShootForTime::ShootForTime(Shooter* shooter, double power, units::second_t time) : m_shooter(shooter), power(power), time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_shooter);
 }
@@ -28,7 +28,7 @@ void ShootForTime::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool ShootForTime::IsFinished() {
-  if(m_stopWatch.HasElapsed(time)){
+  if(m_stopWatch.HasElapsed(time)) {
     return true;
   }
   return false;

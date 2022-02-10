@@ -15,7 +15,7 @@ void MoveRobotTestCommand::Initialize() {
   m_rightStartingPosition = m_drivebase-> GetRightDistance();
   m_drivebase->SetMotorPower(m_motorPower, m_motorPower);
 }
-  
+
 // Called repeatedly when this Command is scheduled to run
 void MoveRobotTestCommand::Execute() {
   m_drivebase->SetMotorPower(m_motorPower, m_motorPower);
@@ -30,9 +30,9 @@ void MoveRobotTestCommand::End(bool interrupted) {
 bool MoveRobotTestCommand::IsFinished() {
   units::meter_t distanceleft = m_drivebase->GetLeftDistance();
   units::meter_t distanceright = m_drivebase->GetRightDistance();
-  if (distanceleft >= (m_leftStartingPosition + units::meter_t(1)) or (distanceright >= (m_rightStartingPosition + units::meter_t(1)))){
+  if (distanceleft >= (m_leftStartingPosition + units::meter_t(1)) or (distanceright >= (m_rightStartingPosition + units::meter_t(1)))) {
     return true;
   }
   return false;
-  }
+}
 

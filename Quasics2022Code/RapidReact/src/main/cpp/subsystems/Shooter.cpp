@@ -13,5 +13,5 @@ void Shooter::Periodic() {
 }
 
 void Shooter::SetFlywheelSpeed(double flyWheelSpeed) {
-    m_flyWheel.Set(flyWheelSpeed);
+  m_flyWheel.Set(flyWheelSpeed);
 }

@@ -330,18 +330,18 @@ public class DriveBase extends SubsystemBase {
     m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
   }
 
-  public void ResetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) {
     resetEncoders();
     m_odometry.resetPosition(pose, getGyroAngle());
   }
 
-  public void TankDriveVolts(double leftVolts, double rightVolts) {
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(rightVolts);
     m_drive.feed();
   }
 
-  public double GetTrackWidth() {
+  public double getTrackWidth() {
     return m_tankWidth;
   }
 }

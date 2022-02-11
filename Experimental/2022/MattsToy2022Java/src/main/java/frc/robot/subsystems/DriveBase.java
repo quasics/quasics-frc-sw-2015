@@ -70,34 +70,34 @@ public class DriveBase extends SubsystemBase {
   }
 
   /** Encoder used to determine distance left wheels have travelled. */
-  final private RelativeEncoder leftEncoder;
+  final private RelativeEncoder m_leftEncoder;
   /** Encoder used to determine distance right wheels have travelled. */
-  final private RelativeEncoder rightEncoder;
+  final private RelativeEncoder m_rightEncoder;
 
   /** Motor group for the left side. */
-  final private MotorControllerGroup leftMotors;
+  final private MotorControllerGroup m_leftMotors;
   /** Motor group for the right side. */
-  final private MotorControllerGroup rightMotors;
+  final private MotorControllerGroup m_rightMotors;
 
   /** Differential drive normally used to actually run the motors. */
-  final private DifferentialDrive drive;
+  final private DifferentialDrive m_drive;
 
   /**
    * Utility functor, used to conveniently update "idle mode" setting for all of
    * the motors.
    */
-  final private BooleanSetter coastingEnabled;
+  final private BooleanSetter m_coastingEnabled;
 
   /**
    * Tracks odometry for the robot. (Updated in periodic().)
    */
-  final private DifferentialDriveOdometry odometry;
+  final private DifferentialDriveOdometry m_odometry;
 
   /** Configured tank width for the robot. */
   final private double m_tankWidth;
 
   /** Gyro used to determine current robot angle. */
-  final private Gyro gyro;
+  final private Gyro m_gyro;
 
   /**
    * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
@@ -105,11 +105,11 @@ public class DriveBase extends SubsystemBase {
    *
    * @see #USE_PIGEON_IMU
    */
-  final private PigeonStatusChecker pigeonChecker;
+  final private PigeonStatusChecker m_pigeonChecker;
 
   /** Creates a new DriveBase. */
   public DriveBase(RobotSettings robotSettings) {
-    this.setName("DriveBase");
+    super.setName("DriveBase");
 
     m_tankWidth = robotSettings.trackWidthMeters;
 
@@ -126,35 +126,35 @@ public class DriveBase extends SubsystemBase {
     final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
 
-    // Make sure that we can set coast/brake mode for the motors later.
-    coastingEnabled = (tf) -> {
-      leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      leftFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      rightFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-    };
-
     // Configure which motors are inverted/not.
     leftRear.setInverted(robotSettings.leftMotorsInverted);
     leftFront.setInverted(robotSettings.leftMotorsInverted);
     rightRear.setInverted(robotSettings.rightMotorsInverted);
     rightFront.setInverted(robotSettings.rightMotorsInverted);
 
+    // Make sure that we can set coast/brake mode for the motors later.
+    m_coastingEnabled = (tf) -> {
+      leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      leftFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      rightFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+    };
+
     // Hang onto encoders for future reference.
-    leftEncoder = leftRear.getEncoder();
-    rightEncoder = rightRear.getEncoder();
+    m_leftEncoder = leftRear.getEncoder();
+    m_rightEncoder = rightRear.getEncoder();
 
     /////////////////////////////////
     // Set up the differential drive.
-    leftMotors = new MotorControllerGroup(leftFront, leftRear);
-    rightMotors = new MotorControllerGroup(rightFront, rightRear);
+    m_leftMotors = new MotorControllerGroup(leftFront, leftRear);
+    m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
 
-    drive = new DifferentialDrive(leftMotors, rightMotors);
+    m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
     ////////////////////////////////////////
     // Configure the encoders.
     final double wheelCircumferenceMeters = edu.wpi.first.math.util.Units
-                                            .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
+        .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
@@ -165,11 +165,11 @@ public class DriveBase extends SubsystemBase {
     final double velocityAdjustment = adjustmentForGearing / 60;
     System.out.println("Velocity adj.: " + velocityAdjustment);
 
-    leftEncoder.setPositionConversionFactor(adjustmentForGearing);
-    rightEncoder.setPositionConversionFactor(adjustmentForGearing);
+    m_leftEncoder.setPositionConversionFactor(adjustmentForGearing);
+    m_rightEncoder.setPositionConversionFactor(adjustmentForGearing);
 
-    leftEncoder.setVelocityConversionFactor(velocityAdjustment);
-    rightEncoder.setVelocityConversionFactor(velocityAdjustment);
+    m_leftEncoder.setVelocityConversionFactor(velocityAdjustment);
+    m_rightEncoder.setVelocityConversionFactor(velocityAdjustment);
 
     resetEncoders();
 
@@ -178,19 +178,18 @@ public class DriveBase extends SubsystemBase {
 
     if (USE_PIGEON_IMU) {
       com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(Constants.PIGEON2_CAN_ID);
-      gyro = pigeon;
-      pigeonChecker = new PigeonStatusChecker(pigeon);
-    }
-    else {
+      m_gyro = pigeon;
+      m_pigeonChecker = new PigeonStatusChecker(pigeon);
+    } else {
       // Assumes "Chip Select" jumper is set to CS0
-      gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
-      pigeonChecker = null;
+      m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+      m_pigeonChecker = null;
     }
 
     // Gyro must be calibrated to initialize for use (generally immediately on
     // start-up).
-    gyro.calibrate();
-    gyro.reset();
+    m_gyro.calibrate();
+    m_gyro.reset();
 
     ////////////////////////////////////////
     // Odometry setup.
@@ -199,7 +198,7 @@ public class DriveBase extends SubsystemBase {
     // 1) This *must* be done after the encoders have been reset to 0.
     // 2) We're building a "robot-oriented" view of the field (as in, our starting
     // position will be treated as the origin), rather than a "field-oriented" view.
-    odometry = new DifferentialDriveOdometry(new Rotation2d(0), new Pose2d());
+    m_odometry = new DifferentialDriveOdometry(new Rotation2d(0), new Pose2d());
   }
 
   /**
@@ -218,7 +217,7 @@ public class DriveBase extends SubsystemBase {
   public void tankDrive(double leftPercent, double rightPercent) {
     var boundedLeft = Math.max(-1.0, Math.min(1.0, leftPercent));
     var boundedRight = Math.max(-1.0, Math.min(1.0, rightPercent));
-    drive.tankDrive(boundedLeft, boundedRight);
+    m_drive.tankDrive(boundedLeft, boundedRight);
   }
 
   /**
@@ -245,43 +244,43 @@ public class DriveBase extends SubsystemBase {
    * @param squareInputs If set, decreases the input sensitivity at low speeds.
    */
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-    drive.arcadeDrive(xSpeed, zRotation, squareInputs);
+    m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
   }
 
   /**
    * @return the current reading for the left encoder (in meters)
    */
   public double getLeftEncoderPosition() {
-    return leftEncoder.getPosition();
+    return m_leftEncoder.getPosition();
   }
 
   /**
    * @return the current reading for the right encoder (in meters)
    */
   public double getRightEncoderPosition() {
-    return rightEncoder.getPosition();
+    return m_rightEncoder.getPosition();
   }
 
   /**
    * @return the current speed for the left wheels (in meters/sec)
    */
   public double getLeftSpeed() {
-    return leftEncoder.getVelocity();
+    return m_leftEncoder.getVelocity();
   }
 
   /**
    * @return the current speed for the right wheels (in meters/sec)
    */
   public double getRightSpeed() {
-    return rightEncoder.getVelocity();
+    return m_rightEncoder.getVelocity();
   }
 
   /**
    * Resets both the left and right encoders to 0.
    */
   public void resetEncoders() {
-    rightEncoder.setPosition(0);
-    leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+    m_leftEncoder.setPosition(0);
   }
 
   /**
@@ -290,29 +289,29 @@ public class DriveBase extends SubsystemBase {
    * @param tf if true, enable "coast" mode; otherwise, enable "brake" mode
    */
   public void setCoastingEnabled(boolean tf) {
-    coastingEnabled.set(tf);
+    m_coastingEnabled.set(tf);
   }
 
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
     // Update current info on faults.
-    if (pigeonChecker != null) {
-      pigeonChecker.run();
+    if (m_pigeonChecker != null) {
+      m_pigeonChecker.run();
     }
 
     updateOdometry();
   }
 
   Rotation2d getGyroAngle() {
-    return gyro.getRotation2d();
+    return m_gyro.getRotation2d();
   }
 
   //////////////////////////////////////////////////////////////////
   // Trajectory-following support.
 
   public Pose2d GetPose() {
-    return odometry.getPoseMeters();
+    return m_odometry.getPoseMeters();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -323,21 +322,21 @@ public class DriveBase extends SubsystemBase {
     // Get my gyro angle. We are negating the value because gyros return positive
     // values as the robot turns clockwise. This is not standard convention that is
     // used by the WPILib classes.
-    var gyroAngle = Rotation2d.fromDegrees(-gyro.getAngle());
+    var gyroAngle = Rotation2d.fromDegrees(-m_gyro.getAngle());
 
     // Update the pose
-    odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
+    m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
   }
 
   public void ResetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, getGyroAngle());
+    m_odometry.resetPosition(pose, getGyroAngle());
   }
 
   public void TankDriveVolts(double leftVolts, double rightVolts) {
-    leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(rightVolts);
-    drive.feed();
+    m_leftMotors.setVoltage(leftVolts);
+    m_rightMotors.setVoltage(rightVolts);
+    m_drive.feed();
   }
 
   public double GetTrackWidth() {

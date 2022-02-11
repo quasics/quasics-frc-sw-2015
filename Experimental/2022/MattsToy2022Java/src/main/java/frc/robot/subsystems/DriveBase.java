@@ -148,13 +148,14 @@ public class DriveBase extends SubsystemBase {
 
     /////////////////////////////////
     // Set up the differential drive.
+
     m_leftMotors = new MotorControllerGroup(leftFront, leftRear);
     m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
-
     m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
     ////////////////////////////////////////
     // Configure the encoders.
+
     final double wheelCircumferenceMeters = edu.wpi.first.math.util.Units
         .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
@@ -176,7 +177,7 @@ public class DriveBase extends SubsystemBase {
     resetEncoders();
 
     ////////////////////////////////////////
-    // Configure the gyro
+    // Allocate/configure the gyro.
 
     if (USE_PIGEON_IMU) {
       com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(Constants.PIGEON2_CAN_ID);
@@ -226,11 +227,10 @@ public class DriveBase extends SubsystemBase {
    * Arcade drive support. The calculated values will be squared to decrease
    * sensitivity at low speeds.
    *
-   * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
-   *                     is positive.
-   * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
-   *                     Clockwise is positive.
-   * @param squareInputs If set, decreases the input sensitivity at low speeds.
+   * @param xSpeed    The robot's speed along the X axis [-1.0..1.0]. Forward
+   *                  is positive.
+   * @param zRotation The robot's rotation rate around the Z axis [-1.0..1.0].
+   *                  Clockwise is positive.
    */
   public void arcadeDrive(double xSpeed, double zRotation) {
     this.arcadeDrive(xSpeed, zRotation, true);

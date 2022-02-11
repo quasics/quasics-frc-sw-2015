@@ -81,15 +81,30 @@ public class RobotContainer {
   }
 
   private static RobotSettings getSettingsForSally() {
-    return new RobotSettings("Sally", Constants.TRACK_WIDTH_INCHES_SALLY);
+    return new RobotSettings(
+        "Sally", // robotName
+        Constants.TRACK_WIDTH_INCHES_SALLY,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   private static RobotSettings getSettingsForMae() {
-    return new RobotSettings("Mae", Constants.TRACK_WIDTH_INCHES_MAE);
+    return new RobotSettings(
+        "Mae", // robotName
+        Constants.TRACK_WIDTH_INCHES_MAE,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   private static RobotSettings getSettingsForNike() {
-    return new RobotSettings("Nike", Constants.TRACK_WIDTH_INCHES_NIKE);
+    return new RobotSettings(
+        "Nike", // robotName
+        Constants.TRACK_WIDTH_INCHES_NIKE,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   /**

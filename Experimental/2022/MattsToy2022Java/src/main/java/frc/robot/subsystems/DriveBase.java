@@ -125,7 +125,7 @@ public class DriveBase extends SubsystemBase {
     final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
 
-    // Make sure that we can set coast/brake mode later.
+    // Make sure that we can set coast/brake mode for the motors later.
     coastingEnabled = (tf) -> {
       leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
       rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
@@ -134,10 +134,10 @@ public class DriveBase extends SubsystemBase {
     };
 
     // Configure which motors are inverted/not.
-    leftRear.setInverted(true);
-    leftFront.setInverted(true);
-    rightRear.setInverted(false);
-    rightFront.setInverted(false);
+    leftRear.setInverted(robotSettings.leftMotorsInverted);
+    leftFront.setInverted(robotSettings.leftMotorsInverted);
+    rightRear.setInverted(robotSettings.rightMotorsInverted);
+    rightFront.setInverted(robotSettings.rightMotorsInverted);
 
     // Hang onto encoders for future reference.
     leftEncoder = leftRear.getEncoder();

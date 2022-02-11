@@ -13,14 +13,20 @@ import edu.wpi.first.wpilibj.Filesystem;
  * TODO(mjh): Consider using reflection to make this easier.
  */
 public class RobotSettings {
-    static final String TRACK_WIDTH_PROPERTY = "trackWidthMeters";
     static final String ROBOT_NAME_PROPERTY = "robotName";
-    public final double trackWidthMeters;
+    static final String TRACK_WIDTH_PROPERTY = "trackWidthMeters";
+    static final String LEFT_MOTORS_INVERTED_PROPERTY = "leftMotorsInverted";
+    static final String RIGHT_MOTORS_INVERTED_PROPERTY = "rightMotorsInverted";
     public final String robotName;
+    public final double trackWidthMeters;
+    public final boolean leftMotorsInverted;
+    public final boolean rightMotorsInverted;
 
-    RobotSettings(String robotName, double trackWidthMeters) {
+    RobotSettings(String robotName, double trackWidthMeters, boolean leftMotorsInverted, boolean rightMotorsInverted) {
         this.robotName = robotName;
         this.trackWidthMeters = trackWidthMeters;
+        this.leftMotorsInverted = leftMotorsInverted;
+        this.rightMotorsInverted = rightMotorsInverted;
     }
 
     // Convenience method: will write to a file in the robot's "deploy" directory.
@@ -57,7 +63,16 @@ public class RobotSettings {
             if (name == null || name.length() == 0) {
                 throw new IOException("Error fetching robot name");
             }
-            return new RobotSettings(name, trackWidth);
+            Boolean leftInverted = getBooleanFromProperty(props, LEFT_MOTORS_INVERTED_PROPERTY);
+            if (leftInverted == null) {
+                throw new IOException("Error fetching left-side inversion");
+            }
+            Boolean rightInverted = getBooleanFromProperty(props, RIGHT_MOTORS_INVERTED_PROPERTY);
+            if (rightInverted == null) {
+                throw new IOException("Error fetching right-side inversion");
+            }
+
+            return new RobotSettings(name, trackWidth, leftInverted, rightInverted);
         } catch (IOException ioe) {
             System.err.format("Error loading settings from file: %s%n", ioe);
             return null;
@@ -70,6 +85,8 @@ public class RobotSettings {
             Properties props = new Properties();
             props.setProperty(ROBOT_NAME_PROPERTY, robotName);
             props.setProperty(TRACK_WIDTH_PROPERTY, Double.toString(trackWidthMeters));
+            props.setProperty(LEFT_MOTORS_INVERTED_PROPERTY, Boolean.toString(leftMotorsInverted));
+            props.setProperty(RIGHT_MOTORS_INVERTED_PROPERTY, Boolean.toString(rightMotorsInverted));
             props.store(writer, null);
         } catch (IOException x) {
             System.err.format("Error writing settings to file: %s%n", x);
@@ -81,5 +98,10 @@ public class RobotSettings {
     private static Double getDoubleFromProperty(Properties props, String key) {
         String s = props.getProperty(key);
         return (s != null) ? Double.valueOf(s) : null;
+    }
+
+    private static Boolean getBooleanFromProperty(Properties props, String key) {
+        String s = props.getProperty(key);
+        return (s != null) ? Boolean.valueOf(s) : null;
     }
 }

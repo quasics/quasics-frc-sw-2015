@@ -8,5 +8,5 @@ package frc.robot.utils;
  * Simple interface for grouping stuff that is controlled by a simple Boolean.
  */
 public interface BooleanSetter {
-    void set(boolean tf);
+  void set(boolean tf);
 }

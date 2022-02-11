@@ -9,21 +9,21 @@ package frc.robot.utils;
  * cap maximums at x%, and keep drivers from doing something crazy :-).
  */
 public class SpeedScaler implements SpeedModifier {
-    final double scalingFactor;
+  final double scalingFactor;
 
-    /**
-     * Constructor.
-     * 
-     * @param scalingFactor the linear scaling factor to be applied to inputs to
-     *                      getSpeed().
-     */
-    public SpeedScaler(double scalingFactor) {
-        this.scalingFactor = scalingFactor;
-    }
+  /**
+   * Constructor.
+   *
+   * @param scalingFactor the linear scaling factor to be applied to inputs to
+   *                      getSpeed().
+   */
+  public SpeedScaler(double scalingFactor) {
+    this.scalingFactor = scalingFactor;
+  }
 
-    @Override
-    public double adjustSpeed(double inputPercentage) {
-        return inputPercentage * scalingFactor;
-    }
+  @Override
+  public double adjustSpeed(double inputPercentage) {
+    return inputPercentage * scalingFactor;
+  }
 
 }

@@ -9,60 +9,60 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses the lighting subsystem. */
 public class SimpleLighting extends CommandBase {
-    private final Lighting m_subsystem;
-    private final Mode mode;
+  private final Lighting m_subsystem;
+  private final Mode mode;
 
-    public enum Mode {
-        Green(0, 255, 0),
-        Red(255, 0, 0),
-        Blue(0, 0, 255),
-        White(255, 255, 255),
-        Black(0, 0, 0);
+  public enum Mode {
+    Green(0, 255, 0),
+    Red(255, 0, 0),
+    Blue(0, 0, 255),
+    White(255, 255, 255),
+    Black(0, 0, 0);
 
-        final private int r, g, b;
+    final private int r, g, b;
 
-        Mode(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        public int getR() {
-            return r;
-        }
-
-        public int getG() {
-            return g;
-        }
-
-        public int getB() {
-            return b;
-        }
+    Mode(int r, int g, int b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
     }
 
-    /**
-     * Creates a new SimpleLighting.
-     *
-     * @param subsystem The subsystem used by this command.
-     */
-    public SimpleLighting(Lighting subsystem) {
-        this(subsystem, Mode.Green);
+    public int getR() {
+      return r;
     }
 
-    /**
-     * Creates a new SimpleLighting.
-     *
-     * @param subsystem The subsystem used by this command.
-     */
-    public SimpleLighting(Lighting subsystem, Mode mode) {
-        m_subsystem = subsystem;
-        this.mode = mode;
-        addRequirements(subsystem);
+    public int getG() {
+      return g;
     }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        m_subsystem.SetStripColor(mode.getR(), mode.getG(), mode.getB());
+    public int getB() {
+      return b;
     }
+  }
+
+  /**
+   * Creates a new SimpleLighting.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public SimpleLighting(Lighting subsystem) {
+    this(subsystem, Mode.Green);
+  }
+
+  /**
+   * Creates a new SimpleLighting.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public SimpleLighting(Lighting subsystem, Mode mode) {
+    m_subsystem = subsystem;
+    this.mode = mode;
+    addRequirements(subsystem);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    m_subsystem.SetStripColor(mode.getR(), mode.getG(), mode.getB());
+  }
 }

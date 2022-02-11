@@ -42,11 +42,11 @@ public class RobotContainer {
     RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
     if (settings == null) {
       System.err.println(
-          "------------------------------------------------------------\n"
-              + "Couldn't load robot settings: falling back on defaults!\n"
-              + "\n"
-              + "Please write current settings out to file via dashboard."
-              + "------------------------------------------------------------\n");
+        "------------------------------------------------------------\n"
+        + "Couldn't load robot settings: falling back on defaults!\n"
+        + "\n"
+        + "Please write current settings out to file via dashboard."
+        + "------------------------------------------------------------\n");
       settings = getSettingsForSally();
     }
 
@@ -63,12 +63,12 @@ public class RobotContainer {
     SpeedScaler speedScaler = new SpeedScaler(0.70); // Limits speed to 70% of max
 
     TankDrive tankDrive = new TankDrive(driveBase,
-        () -> speedScaler.adjustSpeed(
-            drivingDeadband.adjustSpeed(
-                driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
-        () -> speedScaler.adjustSpeed(
-            drivingDeadband.adjustSpeed(
-                driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
+                                        () -> speedScaler.adjustSpeed(
+                                          drivingDeadband.adjustSpeed(
+                                            driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
+                                        () -> speedScaler.adjustSpeed(
+                                          drivingDeadband.adjustSpeed(
+                                            driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
     driveBase.setDefaultCommand(tankDrive);
 
     // Configure default lighting command.
@@ -89,39 +89,39 @@ public class RobotContainer {
 
   private static RobotSettings getSettingsForSally() {
     return new RobotSettings(
-        "Sally", // robotName
-        Constants.TRACK_WIDTH_INCHES_SALLY,
-        true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
-    );
+             "Sally", // robotName
+             Constants.TRACK_WIDTH_INCHES_SALLY,
+             true, // leftMotorsInverted
+             false // RIGHT_MOTORS_INVERTED_PROPERTY
+           );
   }
 
   private static RobotSettings getSettingsForMae() {
     return new RobotSettings(
-        "Mae", // robotName
-        Constants.TRACK_WIDTH_INCHES_MAE,
-        true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
-    );
+             "Mae", // robotName
+             Constants.TRACK_WIDTH_INCHES_MAE,
+             true, // leftMotorsInverted
+             false // RIGHT_MOTORS_INVERTED_PROPERTY
+           );
   }
 
   private static RobotSettings getSettingsForNike() {
     return new RobotSettings(
-        "Nike", // robotName
-        Constants.TRACK_WIDTH_INCHES_NIKE,
-        true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
-    );
+             "Nike", // robotName
+             Constants.TRACK_WIDTH_INCHES_NIKE,
+             true, // leftMotorsInverted
+             false // RIGHT_MOTORS_INVERTED_PROPERTY
+           );
   }
 
   /**
    * Use this method to define your button->command mappings.
-   * 
+   *
    * Note that buttons can be created by instantiating a {@link GenericHID} or one
    * of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or
    * {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   * 
+   *
    * @param driverStick the driver's joystick.
    */
   private void configureButtonBindings(Joystick driverStick) {

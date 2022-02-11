@@ -41,8 +41,9 @@ public class DriveBase extends SubsystemBase {
     }
 
     private String getFaultMessage() {
-      if (!m_faults.hasAnyFault())
+      if (!m_faults.hasAnyFault()) {
         return "No faults";
+      }
       String retval = "";
       retval += m_faults.APIError ? "APIError, " : "";
       retval += m_faults.AccelFault ? "AccelFault, " : "";
@@ -101,7 +102,7 @@ public class DriveBase extends SubsystemBase {
   /**
    * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
    * we're using one).
-   * 
+   *
    * @see #USE_PIGEON_IMU
    */
   final private PigeonStatusChecker pigeonChecker;
@@ -153,7 +154,7 @@ public class DriveBase extends SubsystemBase {
     ////////////////////////////////////////
     // Configure the encoders.
     final double wheelCircumferenceMeters = edu.wpi.first.math.util.Units
-        .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
+                                            .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
@@ -179,7 +180,8 @@ public class DriveBase extends SubsystemBase {
       com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(Constants.PIGEON2_CAN_ID);
       gyro = pigeon;
       pigeonChecker = new PigeonStatusChecker(pigeon);
-    } else {
+    }
+    else {
       // Assumes "Chip Select" jumper is set to CS0
       gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
       pigeonChecker = null;
@@ -209,7 +211,7 @@ public class DriveBase extends SubsystemBase {
 
   /**
    * Sets the power for the left and right side of the drive base.
-   * 
+   *
    * @param leftPercent  % power to apply to left side (-1.0 to +1.0)
    * @param rightPercent % power to apply to right side (-1.0 to +1.0)
    */
@@ -222,7 +224,7 @@ public class DriveBase extends SubsystemBase {
   /**
    * Arcade drive support. The calculated values will be squared to decrease
    * sensitivity at low speeds.
-   * 
+   *
    * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
    *                     is positive.
    * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
@@ -235,7 +237,7 @@ public class DriveBase extends SubsystemBase {
 
   /**
    * Arcade drive support.
-   * 
+   *
    * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
    *                     is positive.
    * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
@@ -284,7 +286,7 @@ public class DriveBase extends SubsystemBase {
 
   /**
    * Enables/disabled "coast" mode on the motors (when stopped).
-   * 
+   *
    * @param tf if true, enable "coast" mode; otherwise, enable "brake" mode
    */
   public void setCoastingEnabled(boolean tf) {

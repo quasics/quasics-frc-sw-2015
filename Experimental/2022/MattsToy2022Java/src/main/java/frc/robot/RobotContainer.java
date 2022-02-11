@@ -40,6 +40,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    // Load robot-specific settings from file (or defaults).
     RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
     if (settings == null) {
       System.err.println(
@@ -51,15 +52,13 @@ public class RobotContainer {
       settings = getSettingsForSally();
     }
 
+    // Finish allocating the subsystems that rely on settings data.
     driveBase = new DriveBase(settings);
 
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
 
-    // Configure the button bindings.
-    configureButtonBindings(driverStick);
-
-    // Configure tank drive command.
+    // Configure tank drive command (default for drive base).
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
     SpeedScaler normalSpeedScaler = new SpeedScaler(0.65); // Limits speed to 65% of max (normal)
     SpeedScaler turtleSpeedScaler = new SpeedScaler(0.50); // Limits speed to 50% of max (turtle)
@@ -87,17 +86,10 @@ public class RobotContainer {
     // Configure default lighting command.
     lighting.setDefaultCommand(new RainbowLighting(lighting));
 
-    //
-    // Buttons to allow updating settings files (for use on next boot)
-    SmartDashboard.putData("Sally on restart", new InstantCommand(() -> {
-      getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
-    }));
-    SmartDashboard.putData("Mae on restart", new InstantCommand(() -> {
-      getSettingsForMae().writeToFile(SETTINGS_FILE_NAME);
-    }));
-    SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
-      getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
-    }));
+    //////////////////////////////////////////////////////////////
+    // Finish setting up commands on the stick(s) and dashboard.
+    configureButtonBindings(driverStick);
+    configureSmartDashboard();
   }
 
   private static RobotSettings getSettingsForSally() {
@@ -138,6 +130,19 @@ public class RobotContainer {
    * @param driverStick the driver's joystick.
    */
   private void configureButtonBindings(Joystick driverStick) {
+  }
+
+  private void configureSmartDashboard() {
+    // Buttons to allow updating settings files (for use on next boot)
+    SmartDashboard.putData("Sally on restart", new InstantCommand(() -> {
+      getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
+    }));
+    SmartDashboard.putData("Mae on restart", new InstantCommand(() -> {
+      getSettingsForMae().writeToFile(SETTINGS_FILE_NAME);
+    }));
+    SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
+      getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
+    }));
   }
 
   /**

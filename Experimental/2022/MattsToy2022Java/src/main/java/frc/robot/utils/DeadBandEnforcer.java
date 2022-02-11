@@ -45,7 +45,7 @@ public class DeadBandEnforcer implements SpeedModifier {
      *         the input value otherwise
      */
     @Override
-    public double getSpeed(double value) {
+    public double adjustSpeed(double value) {
         if (value > lowBar && value < highBar) {
             return 0;
         }

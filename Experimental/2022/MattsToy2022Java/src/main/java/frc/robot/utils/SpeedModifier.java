@@ -9,5 +9,5 @@ package frc.robot.utils;
  * the driver joysticks.
  */
 public interface SpeedModifier {
-    double getSpeed(double inputPercentage);
+    double adjustSpeed(double inputPercentage);
 }

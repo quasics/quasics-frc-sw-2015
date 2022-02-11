@@ -13,6 +13,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.utils.DeadBandEnforcer;
+import frc.robot.utils.SpeedScaler;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -59,9 +60,15 @@ public class RobotContainer {
 
     // Configure tank drive command.
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
+    SpeedScaler speedScaler = new SpeedScaler(0.65);
+
     TankDrive tankDrive = new TankDrive(driveBase,
-        () -> drivingDeadband.getSpeed(driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)),
-        () -> drivingDeadband.getSpeed(driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
+        () -> speedScaler.adjustSpeed(
+            drivingDeadband.adjustSpeed(
+                driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
+        () -> speedScaler.adjustSpeed(
+            drivingDeadband.adjustSpeed(
+                driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
     driveBase.setDefaultCommand(tankDrive);
 
     // Configure default lighting command.

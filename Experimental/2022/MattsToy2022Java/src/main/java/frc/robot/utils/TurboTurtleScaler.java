@@ -22,6 +22,15 @@ public class TurboTurtleScaler implements SpeedModifier {
   private final ModeSignaller turtleMode;
   private final ModeSignaller turboMode;
 
+  /**
+   * Constructor.
+   * 
+   * @param normal     speed modifier to be used in "normal" mode
+   * @param turtle     speed modifier to be used in "turtle" mode
+   * @param turbo      speed modifier to be used in "turbo" mode
+   * @param turtleMode signals if "turtle" mode is enabled
+   * @param turboMode  signals if "turbo" mode is enabled
+   */
   public TurboTurtleScaler(
       SpeedModifier normal,
       SpeedModifier turtle,

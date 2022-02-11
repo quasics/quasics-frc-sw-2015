@@ -69,13 +69,13 @@ public class RobotContainer {
 
     //
     // Buttons to allow updating settings files (for use on next boot)
-    SmartDashboard.putData("Setup for Sally", new InstantCommand(() -> {
+    SmartDashboard.putData("Sally on restart", new InstantCommand(() -> {
       getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
     }));
-    SmartDashboard.putData("Setup for Mae", new InstantCommand(() -> {
+    SmartDashboard.putData("Mae on restart", new InstantCommand(() -> {
       getSettingsForMae().writeToFile(SETTINGS_FILE_NAME);
     }));
-    SmartDashboard.putData("Setup for Nike", new InstantCommand(() -> {
+    SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
       getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
     }));
   }

@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  */
 public class RobotContainer {
 
-  private static final String SETTINGS_FILE_NAME = "Sally";
+  private static final String SETTINGS_FILE_NAME = "robotSettings.props";
 
   private final DriveBase driveBase;
   private final Lighting lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
@@ -51,6 +51,7 @@ public class RobotContainer {
               + "------------------------------------------------------------\n");
       settings = getSettingsForSally();
     }
+    System.out.println("*** Running with robot configuration --> " + settings.robotName);
 
     // Finish allocating the subsystems that rely on settings data.
     driveBase = new DriveBase(settings);

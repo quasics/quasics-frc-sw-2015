@@ -5,8 +5,9 @@
 package frc.robot.utils;
 
 /**
- * Utility class to provide a simple linear scaling of the drive speed (so as to
- * cap maximums at x%, and keep drivers from doing something crazy :-).
+ * Utility class to provide a simple (fixed) linear scaling of the drive speed
+ * (e.g., so as to cap maximums at x%, and keep drivers from doing something
+ * crazy :-).
  */
 public class SpeedScaler implements SpeedModifier {
   final double scalingFactor;
@@ -25,5 +26,4 @@ public class SpeedScaler implements SpeedModifier {
   public double adjustSpeed(double inputPercentage) {
     return inputPercentage * scalingFactor;
   }
-
 }

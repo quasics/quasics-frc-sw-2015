@@ -22,6 +22,9 @@ public class Navigation extends SubsystemBase {
   public Navigation() {
     // Should be a no-op.
     m_pigeon.calibrate();
+
+    System.err.println(">>> Resetting....");
+    m_pigeon.reset();
   }
 
   public Gyro getGyro() {

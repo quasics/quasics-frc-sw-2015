@@ -28,7 +28,10 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    SmartDashboard.putData("Reset", new InstantCommand(()->{m_exampleSubsystem.getGyro().reset();}, m_exampleSubsystem));
+    SmartDashboard.putData("Reset", new InstantCommand(() -> {
+      System.err.println("Resetting gyro....");
+      m_exampleSubsystem.getGyro().reset();
+    }, m_exampleSubsystem));
   }
 
   /**

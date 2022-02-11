@@ -36,7 +36,7 @@ public class RobotSettings {
       double trackWidthMeters,
       boolean leftMotorsInverted,
       boolean rightMotorsInverted) {
-    this.robotName = robotName;
+    this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.leftMotorsInverted = leftMotorsInverted;
     this.rightMotorsInverted = rightMotorsInverted;
@@ -116,5 +116,38 @@ public class RobotSettings {
   private static Boolean getBooleanFromProperty(Properties props, String key) {
     String s = props.getProperty(key);
     return (s != null) ? Boolean.valueOf(s) : null;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder b = new StringBuilder();
+    b.append("{");
+    b.append("\n  robotName = " + robotName);
+    b.append("\n  trackWidthMeters = " + trackWidthMeters);
+    b.append("\n  leftMotorsInverted = " + leftMotorsInverted);
+    b.append("\n  rightMotorsInverted = " + rightMotorsInverted);
+    b.append("\n}");
+    return b.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    return robotName.hashCode(); // *Reasonable* uniqueness is all that's required.
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (!(o instanceof RobotSettings)) {
+      return false;
+    }
+
+    RobotSettings other = (RobotSettings) o;
+    return robotName.equals(other.robotName)
+        && (trackWidthMeters == other.trackWidthMeters)
+        && (leftMotorsInverted == other.leftMotorsInverted)
+        && (rightMotorsInverted == other.rightMotorsInverted);
   }
 }

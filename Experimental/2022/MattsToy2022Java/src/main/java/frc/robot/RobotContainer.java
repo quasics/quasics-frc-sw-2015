@@ -31,20 +31,20 @@ public class RobotContainer {
 
   private static final String SETTINGS_FILE_NAME = "robotSettings.props";
 
-  private final RobotSettings robotSettings = loadSettingsOrDefaults();
+  private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
 
-  private final DriveBase driveBase;
-  private final Lighting lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
+  private final DriveBase m_driveBase;
+  private final Lighting m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Log the settings which we'll be using during operations.
-    System.out.println("*** Running with robot configuration:\n" + robotSettings);
+    System.out.println("*** Running with robot configuration:\n" + m_robotSettings);
 
     // Finish allocating the subsystems that rely on settings data.
-    driveBase = new DriveBase(robotSettings);
+    m_driveBase = new DriveBase(m_robotSettings);
 
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
@@ -65,7 +65,7 @@ public class RobotContainer {
           return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
         });
 
-    TankDrive tankDrive = new TankDrive(driveBase,
+    TankDrive tankDrive = new TankDrive(m_driveBase,
         // Left side control
         () -> drivingDeadband.adjustSpeed(
             modeScaler.adjustSpeed(
@@ -74,10 +74,10 @@ public class RobotContainer {
         () -> drivingDeadband.adjustSpeed(
             modeScaler.adjustSpeed(
                 driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
-    driveBase.setDefaultCommand(tankDrive);
+    m_driveBase.setDefaultCommand(tankDrive);
 
     // Configure default lighting command.
-    lighting.setDefaultCommand(new RainbowLighting(lighting));
+    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
 
     //////////////////////////////////////////////////////////////
     // Finish setting up commands on the stick(s) and dashboard.

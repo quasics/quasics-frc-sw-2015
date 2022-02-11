@@ -5,14 +5,14 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/PrintCommand.h>
-#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
 #include "subsystems/Drivebase.h"
-#include "subsystems/Shooter.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Shooter.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -22,26 +22,33 @@
  * commands, and button mappings) should be declared here.
  */
 class RobotContainer {
-public:
+  // Public methods, used by the Robot class.
+ public:
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
 
-private:
-  // The robot's subsystems and commands are defined here...
+  // "Helper" functions, used internall.
+ private:
+  frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot,
+                                                    units::second_t timeShoot,
+                                                    double powerMove,
+                                                    double distanceMove);
+
+  void ConfigureJoystickButtonBindings();
+  void AddTestButtonToSmartDasboard();
+  void AddAutonomousCommandsToSmartDashboard();
+
+  // The robot's subsystems and commands are defined here.
+ private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
 
   Shooter m_shooter;
   Drivebase m_drivebase;
   Intake m_intake;
 
+  frc::SendableChooser<frc2::Command*> m_autonomousOptions;
+
   frc2::PrintCommand m_autonomousCommand{
-    "We need to do something autonomously...."};
-
-  frc::SendableChooser<frc2::Command*> m_autonoumousOptions;
-  frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot, units::second_t timeShoot, double powerMove, double distanceMove);
-
-  void ConfigureJoystickButtonBindings();
-  void AddTestButtonToSmartDasboard();
-  void AddAutonomousCommandsToSmartDashboard();
+      "We need to do something autonomously...."};
 };

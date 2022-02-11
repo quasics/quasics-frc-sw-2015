@@ -14,6 +14,7 @@ import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.utils.SpeedScaler;
+import frc.robot.utils.TurboTurtleScaler;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -42,11 +43,11 @@ public class RobotContainer {
     RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
     if (settings == null) {
       System.err.println(
-        "------------------------------------------------------------\n"
-        + "Couldn't load robot settings: falling back on defaults!\n"
-        + "\n"
-        + "Please write current settings out to file via dashboard."
-        + "------------------------------------------------------------\n");
+          "------------------------------------------------------------\n"
+              + "Couldn't load robot settings: falling back on defaults!\n"
+              + "\n"
+              + "Please write current settings out to file via dashboard."
+              + "------------------------------------------------------------\n");
       settings = getSettingsForSally();
     }
 
@@ -60,15 +61,27 @@ public class RobotContainer {
 
     // Configure tank drive command.
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
-    SpeedScaler speedScaler = new SpeedScaler(0.70); // Limits speed to 70% of max
+    SpeedScaler normalSpeedScaler = new SpeedScaler(0.65); // Limits speed to 65% of max (normal)
+    SpeedScaler turtleSpeedScaler = new SpeedScaler(0.50); // Limits speed to 50% of max (turtle)
+    SpeedScaler turboSpeedScaler = new SpeedScaler(0.80); // Limits speed to 80% of max (turbo)
+    TurboTurtleScaler modeScaler = new TurboTurtleScaler(
+        normalSpeedScaler,
+        turtleSpeedScaler,
+        turboSpeedScaler,
+        () -> { // Turtle mode signal
+          return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.LEFT_TRIGGER);
+        },
+        () -> { // Turbo mode signal
+          return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
+        });
 
     TankDrive tankDrive = new TankDrive(driveBase,
-                                        () -> speedScaler.adjustSpeed(
-                                          drivingDeadband.adjustSpeed(
-                                            driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
-                                        () -> speedScaler.adjustSpeed(
-                                          drivingDeadband.adjustSpeed(
-                                            driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
+        () -> drivingDeadband.adjustSpeed(
+            modeScaler.adjustSpeed(
+                driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
+        () -> drivingDeadband.adjustSpeed(
+            modeScaler.adjustSpeed(
+                driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
     driveBase.setDefaultCommand(tankDrive);
 
     // Configure default lighting command.
@@ -89,29 +102,29 @@ public class RobotContainer {
 
   private static RobotSettings getSettingsForSally() {
     return new RobotSettings(
-             "Sally", // robotName
-             Constants.TRACK_WIDTH_INCHES_SALLY,
-             true, // leftMotorsInverted
-             false // RIGHT_MOTORS_INVERTED_PROPERTY
-           );
+        "Sally", // robotName
+        Constants.TRACK_WIDTH_INCHES_SALLY,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   private static RobotSettings getSettingsForMae() {
     return new RobotSettings(
-             "Mae", // robotName
-             Constants.TRACK_WIDTH_INCHES_MAE,
-             true, // leftMotorsInverted
-             false // RIGHT_MOTORS_INVERTED_PROPERTY
-           );
+        "Mae", // robotName
+        Constants.TRACK_WIDTH_INCHES_MAE,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   private static RobotSettings getSettingsForNike() {
     return new RobotSettings(
-             "Nike", // robotName
-             Constants.TRACK_WIDTH_INCHES_NIKE,
-             true, // leftMotorsInverted
-             false // RIGHT_MOTORS_INVERTED_PROPERTY
-           );
+        "Nike", // robotName
+        Constants.TRACK_WIDTH_INCHES_NIKE,
+        true, // leftMotorsInverted
+        false // RIGHT_MOTORS_INVERTED_PROPERTY
+    );
   }
 
   /**

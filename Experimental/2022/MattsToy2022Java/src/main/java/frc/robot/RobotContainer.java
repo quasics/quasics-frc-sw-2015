@@ -75,9 +75,11 @@ public class RobotContainer {
         });
 
     TankDrive tankDrive = new TankDrive(driveBase,
+        // Left side control
         () -> drivingDeadband.adjustSpeed(
             modeScaler.adjustSpeed(
                 driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
+        // Right side control
         () -> drivingDeadband.adjustSpeed(
             modeScaler.adjustSpeed(
                 driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));

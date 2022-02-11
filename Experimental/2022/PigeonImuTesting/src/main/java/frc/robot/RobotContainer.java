@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.subsystems.Navigation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,6 +28,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+    SmartDashboard.putData("Reset", new InstantCommand(()->{m_exampleSubsystem.getGyro().reset();}, m_exampleSubsystem));
   }
 
   /**

@@ -68,7 +68,7 @@ public class RobotContainer {
     lighting.setDefaultCommand(new RainbowLighting(lighting));
 
     //
-    // Write out settings files (for use on next boot)
+    // Buttons to allow updating settings files (for use on next boot)
     SmartDashboard.putData("Setup for Sally", new InstantCommand(() -> {
       getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
     }));

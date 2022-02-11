@@ -47,6 +47,12 @@ public final class Constants {
     }
   }
 
+  public static final class SpeedLimits {
+    public static final double MAX_SPEED_TURTLE = 0.50;
+    public static final double MAX_SPEED_NORMAL = 0.65;
+    public static final double MAX_SPEED_TURBO = 0.80;
+  }
+
   public static final class OperatorInterface {
     public static final int DRIVER_JOYSTICK = 0;
 

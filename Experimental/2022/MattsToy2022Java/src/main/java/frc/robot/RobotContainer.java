@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.RainbowLighting;
+import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Lighting;
@@ -159,6 +160,11 @@ public class RobotContainer {
     SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
       getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
     }));
+
+    // Lighting commands
+    SmartDashboard.putData("Red", new SimpleLighting(m_lighting, SimpleLighting.Mode.Red));
+    SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, SimpleLighting.Mode.Blue));
+    SmartDashboard.putData("Green", new SimpleLighting(m_lighting, SimpleLighting.Mode.Green));
   }
 
   /**

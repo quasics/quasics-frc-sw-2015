@@ -17,12 +17,25 @@ public class RobotSettings {
   static final String TRACK_WIDTH_PROPERTY = "trackWidthMeters";
   static final String LEFT_MOTORS_INVERTED_PROPERTY = "leftMotorsInverted";
   static final String RIGHT_MOTORS_INVERTED_PROPERTY = "rightMotorsInverted";
+
   public final String robotName;
   public final double trackWidthMeters;
   public final boolean leftMotorsInverted;
   public final boolean rightMotorsInverted;
 
-  RobotSettings(String robotName, double trackWidthMeters, boolean leftMotorsInverted, boolean rightMotorsInverted) {
+  /**
+   * Creates a RobotSettings object.
+   * 
+   * @param robotName           name of the robot (for debugging/logging)
+   * @param trackWidthMeters    track width (m) of the robot
+   * @param leftMotorsInverted  iff true, motors on the left side are inverted
+   * @param rightMotorsInverted iff true, motors on the right side are inverted
+   */
+  public RobotSettings(
+      String robotName,
+      double trackWidthMeters,
+      boolean leftMotorsInverted,
+      boolean rightMotorsInverted) {
     this.robotName = robotName;
     this.trackWidthMeters = trackWidthMeters;
     this.leftMotorsInverted = leftMotorsInverted;
@@ -34,8 +47,7 @@ public class RobotSettings {
     File f = new File(Filesystem.getDeployDirectory(), fileName);
     try {
       return writeToFile(Files.newBufferedWriter(f.toPath(), Charset.forName("US-ASCII")));
-    }
-    catch (java.io.IOException ioe) {
+    } catch (java.io.IOException ioe) {
       System.err.format("Error creating writer to save settings to file '%s': %s%n", f.toString(), ioe);
       return false;
     }
@@ -46,8 +58,7 @@ public class RobotSettings {
     File f = new File(Filesystem.getDeployDirectory(), fileName);
     try {
       return load(new java.io.FileInputStream(f));
-    }
-    catch (java.io.FileNotFoundException fnf) {
+    } catch (java.io.FileNotFoundException fnf) {
       System.err.format("Can't find file: %s%n", f.toString());
       return null;
     }
@@ -75,8 +86,7 @@ public class RobotSettings {
       }
 
       return new RobotSettings(name, trackWidth, leftInverted, rightInverted);
-    }
-    catch (IOException ioe) {
+    } catch (IOException ioe) {
       System.err.format("Error loading settings from file: %s%n", ioe);
       return null;
     }
@@ -91,8 +101,7 @@ public class RobotSettings {
       props.setProperty(LEFT_MOTORS_INVERTED_PROPERTY, Boolean.toString(leftMotorsInverted));
       props.setProperty(RIGHT_MOTORS_INVERTED_PROPERTY, Boolean.toString(rightMotorsInverted));
       props.store(writer, null);
-    }
-    catch (IOException x) {
+    } catch (IOException x) {
       System.err.format("Error writing settings to file: %s%n", x);
     }
 

@@ -134,10 +134,12 @@ public class DriveBase extends SubsystemBase {
 
     // Make sure that we can set coast/brake mode for the motors later.
     m_coastingEnabled = (tf) -> {
-      leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      leftFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
-      rightFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
+      final var applyMode = tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake;
+
+      leftRear.setIdleMode(applyMode);
+      rightRear.setIdleMode(applyMode);
+      leftFront.setIdleMode(applyMode);
+      rightFront.setIdleMode(applyMode);
     };
 
     // Hang onto encoders for future reference.

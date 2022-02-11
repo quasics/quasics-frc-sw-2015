@@ -9,7 +9,7 @@ package frc.robot.utils;
  * 
  * @see https://en.wikipedia.org/wiki/Deadband
  */
-public class DeadBandEnforcer {
+public class DeadBandEnforcer implements SpeedModifier {
     /** The lower bound on the dead band. */
     private final double lowBar;
 
@@ -44,7 +44,8 @@ public class DeadBandEnforcer {
      * @return 0 if the value is between the low/high bar for the deadband, or else
      *         the input value otherwise
      */
-    public double restrict(double value) {
+    @Override
+    public double getSpeed(double value) {
         if (value > lowBar && value < highBar) {
             return 0;
         }

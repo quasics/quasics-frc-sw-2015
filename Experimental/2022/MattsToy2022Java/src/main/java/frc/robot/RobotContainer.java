@@ -60,8 +60,8 @@ public class RobotContainer {
     // Configure tank drive command.
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
     TankDrive tankDrive = new TankDrive(driveBase,
-        () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)),
-        () -> drivingDeadband.restrict(driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
+        () -> drivingDeadband.getSpeed(driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)),
+        () -> drivingDeadband.getSpeed(driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
     driveBase.setDefaultCommand(tankDrive);
 
     // Configure default lighting command.

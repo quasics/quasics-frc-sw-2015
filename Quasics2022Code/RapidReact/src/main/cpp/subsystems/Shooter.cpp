@@ -5,7 +5,6 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() {
-
 }
 
 // This method will be called once per scheduler run

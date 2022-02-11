@@ -34,7 +34,7 @@ public class RobotContainer {
   private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
 
   private final DriveBase m_driveBase;
-  private final Lighting m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
+  private final Lighting m_lighting;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -43,11 +43,13 @@ public class RobotContainer {
     // Log the settings which we'll be using during operations.
     System.out.println("*** Running with robot configuration:\n" + m_robotSettings);
 
-    // Finish allocating the subsystems that rely on settings data.
-    m_driveBase = new DriveBase(m_robotSettings);
-
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
+
+    //////////////////////////////////////////////////////////////
+    // Set up the drive base.
+
+    m_driveBase = new DriveBase(m_robotSettings);
 
     // Configure tank drive command (default for drive base).
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
@@ -76,7 +78,10 @@ public class RobotContainer {
                 driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
     m_driveBase.setDefaultCommand(tankDrive);
 
-    // Configure default lighting command.
+    //////////////////////////////////////////////////////////////
+    // Set up the lighting subsystem.
+
+    m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
 
     //////////////////////////////////////////////////////////////

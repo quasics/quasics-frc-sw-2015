@@ -31,6 +31,8 @@ public class RobotContainer {
 
   private static final String SETTINGS_FILE_NAME = "robotSettings.props";
 
+  private final RobotSettings robotSettings = loadSettingsOrDefaults();
+
   private final DriveBase driveBase;
   private final Lighting lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
 
@@ -38,30 +40,20 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Load robot-specific settings from file (or defaults).
-    RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
-    if (settings == null) {
-      System.err.println(
-          "------------------------------------------------------------\n"
-              + "Couldn't load robot settings: falling back on defaults!\n"
-              + "\n"
-              + "Please write current settings out to file via dashboard."
-              + "------------------------------------------------------------\n");
-      settings = getSettingsForSally();
-    }
-    System.out.println("*** Running with robot configuration --> " + settings.robotName);
+    // Log the settings which we'll be using during operations.
+    System.out.println("*** Running with robot configuration --> " + robotSettings.robotName);
 
     // Finish allocating the subsystems that rely on settings data.
-    driveBase = new DriveBase(settings);
+    driveBase = new DriveBase(robotSettings);
 
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
 
     // Configure tank drive command (default for drive base).
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
-    SpeedScaler normalSpeedScaler = new SpeedScaler(0.65); // Limits speed to 65% of max (normal)
-    SpeedScaler turtleSpeedScaler = new SpeedScaler(0.50); // Limits speed to 50% of max (turtle)
-    SpeedScaler turboSpeedScaler = new SpeedScaler(0.80); // Limits speed to 80% of max (turbo)
+    SpeedScaler normalSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_NORMAL);
+    SpeedScaler turtleSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURTLE);
+    SpeedScaler turboSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURBO);
     TurboTurtleScaler modeScaler = new TurboTurtleScaler(
         normalSpeedScaler,
         turtleSpeedScaler,
@@ -91,6 +83,24 @@ public class RobotContainer {
     // Finish setting up commands on the stick(s) and dashboard.
     configureButtonBindings(driverStick);
     configureSmartDashboard();
+  }
+
+  /**
+   * Returns robot-specific settings from the "save file" (or else the defaults,
+   * on errors).
+   */
+  private static RobotSettings loadSettingsOrDefaults() {
+    RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
+    if (settings == null) {
+      System.err.println(
+          "------------------------------------------------------------\n"
+              + "Couldn't load robot settings: falling back on defaults!\n"
+              + "\n"
+              + "Please write current settings out to file via dashboard.\n"
+              + "------------------------------------------------------------\n");
+      settings = getSettingsForSally();
+    }
+    return settings;
   }
 
   private static RobotSettings getSettingsForSally() {

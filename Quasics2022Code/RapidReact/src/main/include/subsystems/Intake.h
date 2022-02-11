@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include <frc2/command/SubsystemBase.h>
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
+#include <frc2/command/SubsystemBase.h>
 
 class Intake : public frc2::SubsystemBase {
-public:
+ public:
   Intake();
 
   /**
@@ -22,7 +22,6 @@ public:
 
   void SetIntakeSpeed(double intakeSpeed);
 
-private:
-
-  ctre::phoenix::motorcontrol::can::VictorSPX motor {6};
+ private:
+  ctre::phoenix::motorcontrol::can::VictorSPX m_floorPickupMotor{6};
 };

@@ -32,6 +32,8 @@ public final class Constants {
     public static final double DRIVE_BASE_GEAR_RATIO_2022 = 8.45;
     public static final double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_2022;
 
+    public static final int PIGEON2_CAN_ID = 1;
+
     public static final class MotorIds {
         public static final class SparkMax {
             public static final int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

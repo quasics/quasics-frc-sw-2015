@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotSettings;
 import frc.robot.utils.BooleanSetter;
 import com.revrobotics.CANSparkMax;
@@ -17,10 +16,50 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
+  static final private boolean USE_PIGEON_IMU = false;
+
+  static class PigeonStatusChecker implements Runnable {
+    int lastMask = 0;
+    com.ctre.phoenix.sensors.Pigeon2_Faults m_faults = new com.ctre.phoenix.sensors.Pigeon2_Faults();
+
+    com.ctre.phoenix.sensors.WPI_Pigeon2 m_pigeon;
+
+    PigeonStatusChecker(com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon) {
+      m_pigeon = pigeon;
+    }
+
+    String getFaultMessage() {
+      if (!m_faults.hasAnyFault())
+        return "No faults";
+      String retval = "";
+      retval += m_faults.APIError ? "APIError, " : "";
+      retval += m_faults.AccelFault ? "AccelFault, " : "";
+      retval += m_faults.BootIntoMotion ? "BootIntoMotion, " : "";
+      retval += m_faults.GyroFault ? "GyroFault, " : "";
+      retval += m_faults.HardwareFault ? "HardwareFault, " : "";
+      retval += m_faults.MagnetometerFault ? "MagnetometerFault, " : "";
+      retval += m_faults.ResetDuringEn ? "ResetDuringEn, " : "";
+      retval += m_faults.SaturatedAccel ? "SaturatedAccel, " : "";
+      retval += m_faults.SaturatedMag ? "SaturatedMag, " : "";
+      retval += m_faults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
+      return retval;
+    }
+
+    @Override
+    public void run() {
+      m_pigeon.getFaults(m_faults);
+      int mask = m_faults.toBitfield();
+      if (mask != lastMask) {
+        System.err.println("Pigeon reports: " + getFaultMessage());
+        lastMask = mask;
+      }
+    }
+  }
 
   final private RelativeEncoder leftEncoder;
   final private RelativeEncoder rightEncoder;
@@ -31,12 +70,18 @@ public class DriveBase extends SubsystemBase {
   final private DifferentialDrive drive;
   final private BooleanSetter coastingEnabled;
 
-  // Assumes "Chip Select" jumper is set to CS0
-  final private ADXRS450_Gyro gyro = new ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
-
   final private DifferentialDriveOdometry odometry;
 
   final private double m_tankWidth;
+
+  final private Gyro gyro;
+
+  /**
+   * Only used if we're interacting with a Pigeon 2 IMU.
+   * 
+   * @see #USE_PIGEON_IMU
+   */
+  final private PigeonStatusChecker pigeonChecker;
 
   /** Creates a new DriveBase. */
   public DriveBase(RobotSettings robotSettings) {
@@ -103,9 +148,20 @@ public class DriveBase extends SubsystemBase {
     ////////////////////////////////////////
     // Configure the gyro
 
+    if (USE_PIGEON_IMU) {
+      com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(Constants.PIGEON2_CAN_ID);
+      gyro = pigeon;
+      pigeonChecker = new PigeonStatusChecker(pigeon);
+    } else {
+      // Assumes "Chip Select" jumper is set to CS0
+      gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+      pigeonChecker = null;
+    }
+
     // Gyro must be calibrated to initialize for use (generally immediately on
     // start-up).
     gyro.calibrate();
+    gyro.reset();
 
     ////////////////////////////////////////
     // Odometry setup.
@@ -211,6 +267,11 @@ public class DriveBase extends SubsystemBase {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
+    // Update current info on faults.
+    if (pigeonChecker != null) {
+      pigeonChecker.run();
+    }
+
     updateOdometry();
   }
 

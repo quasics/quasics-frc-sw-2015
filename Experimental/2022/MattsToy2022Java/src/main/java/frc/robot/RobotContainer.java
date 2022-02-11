@@ -60,7 +60,7 @@ public class RobotContainer {
 
     // Configure tank drive command.
     DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
-    SpeedScaler speedScaler = new SpeedScaler(0.65);
+    SpeedScaler speedScaler = new SpeedScaler(0.70); // Limits speed to 70% of max
 
     TankDrive tankDrive = new TankDrive(driveBase,
         () -> speedScaler.adjustSpeed(

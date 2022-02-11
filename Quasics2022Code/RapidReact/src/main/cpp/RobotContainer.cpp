@@ -29,7 +29,12 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 
 // Important for the shooter: as of right now, any values for speed of the
 // flywheel should be negative for the shooter to work properly.
-//  Also, -0.65 seems to be the power for the high goal.
+//
+// BUG(Josh): The above suggests that the motor for the shooter flywheel should
+// be configured as "inverted", rather than having to remember to swap signs on
+// the speeds.
+//
+// Also, -0.65 seems to be the power for the high goal.
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
@@ -51,12 +56,17 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
     double powerShoot, units::second_t timeShoot, double powerMove,
-    double distanceMove) {
+    double distanceToMove) {
+  // Holds the sequence of the commands to be executed as a group.
   std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  // Add each of the individual commands to the sequence.
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       new ShootForTime(&m_shooter, powerShoot, timeShoot))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&m_drivebase, powerMove, distanceMove))));
+      new DriveAtPowerForMeters(&m_drivebase, powerMove, distanceToMove))));
+
+  // Builds the command group object.
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

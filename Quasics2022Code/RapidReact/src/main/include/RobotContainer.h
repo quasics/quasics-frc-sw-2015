@@ -33,7 +33,7 @@ class RobotContainer {
   frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot,
                                                     units::second_t timeShoot,
                                                     double powerMove,
-                                                    double distanceMove);
+                                                    double distanceToMove);
 
   void ConfigureJoystickButtonBindings();
   void AddTestButtonToSmartDasboard();

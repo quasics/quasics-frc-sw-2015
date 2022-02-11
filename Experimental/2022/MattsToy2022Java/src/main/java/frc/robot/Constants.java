@@ -19,6 +19,8 @@ package frc.robot;
 public final class Constants {
     // TODO(mjh): Confirm this value for Sally....
     public static final double TRACK_WIDTH_INCHES_SALLY = 22.0;
+
+    // TODO(mjh): Confirm this value for Mae....
     public static final double TRACK_WIDTH_INCHES_MAE = 47.134344149315914763; // 2021 robot's width, from in-code
                                                                                // constants (which are in meters)
 

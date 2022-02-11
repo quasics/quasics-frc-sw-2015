@@ -14,26 +14,33 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
+  /**
+   * Controls whether a Pigeon 2 IMU (from CTRE) will be used for the gyro, or if
+   * we will just use a standard Analog Devices gyro.
+   */
   static final private boolean USE_PIGEON_IMU = false;
 
+  /**
+   * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
+   * used).
+   */
   static class PigeonStatusChecker implements Runnable {
-    int lastMask = 0;
-    com.ctre.phoenix.sensors.Pigeon2_Faults m_faults = new com.ctre.phoenix.sensors.Pigeon2_Faults();
+    private int lastMask = 0;
+    private com.ctre.phoenix.sensors.Pigeon2_Faults m_faults = new com.ctre.phoenix.sensors.Pigeon2_Faults();
 
-    com.ctre.phoenix.sensors.WPI_Pigeon2 m_pigeon;
+    private com.ctre.phoenix.sensors.WPI_Pigeon2 m_pigeon;
 
     PigeonStatusChecker(com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon) {
       m_pigeon = pigeon;
     }
 
-    String getFaultMessage() {
+    private String getFaultMessage() {
       if (!m_faults.hasAnyFault())
         return "No faults";
       String retval = "";
@@ -61,23 +68,39 @@ public class DriveBase extends SubsystemBase {
     }
   }
 
+  /** Encoder used to determine distance left wheels have travelled. */
   final private RelativeEncoder leftEncoder;
+  /** Encoder used to determine distance right wheels have travelled. */
   final private RelativeEncoder rightEncoder;
 
+  /** Motor group for the left side. */
   final private MotorControllerGroup leftMotors;
+  /** Motor group for the right side. */
   final private MotorControllerGroup rightMotors;
 
+  /** Differential drive normally used to actually run the motors. */
   final private DifferentialDrive drive;
+
+  /**
+   * Utility functor, used to conveniently update "idle mode" setting for all of
+   * the motors.
+   */
   final private BooleanSetter coastingEnabled;
 
+  /**
+   * Tracks odometry for the robot. (Updated in periodic().)
+   */
   final private DifferentialDriveOdometry odometry;
 
+  /** Configured tank width for the robot. */
   final private double m_tankWidth;
 
+  /** Gyro used to determine current robot angle. */
   final private Gyro gyro;
 
   /**
-   * Only used if we're interacting with a Pigeon 2 IMU.
+   * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
+   * we're using one).
    * 
    * @see #USE_PIGEON_IMU
    */
@@ -89,6 +112,9 @@ public class DriveBase extends SubsystemBase {
 
     m_tankWidth = robotSettings.trackWidthMeters;
 
+    /////////////////////////////////
+    // Set up the motors/groups.
+
     // Create the individual motors.
     final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
@@ -99,6 +125,7 @@ public class DriveBase extends SubsystemBase {
     final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID,
         MotorType.kBrushless);
 
+    // Make sure that we can set coast/brake mode later.
     coastingEnabled = (tf) -> {
       leftRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
       rightRear.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
@@ -106,7 +133,7 @@ public class DriveBase extends SubsystemBase {
       rightFront.setIdleMode(tf ? CANSparkMax.IdleMode.kCoast : CANSparkMax.IdleMode.kBrake);
     };
 
-    // Configure which ones are inverted/not.
+    // Configure which motors are inverted/not.
     leftRear.setInverted(true);
     leftFront.setInverted(true);
     rightRear.setInverted(false);

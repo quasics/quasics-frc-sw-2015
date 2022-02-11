@@ -41,7 +41,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Log the settings which we'll be using during operations.
-    System.out.println("*** Running with robot configuration --> " + robotSettings.robotName);
+    System.out.println("*** Running with robot configuration:\n" + robotSettings);
 
     // Finish allocating the subsystems that rely on settings data.
     driveBase = new DriveBase(robotSettings);

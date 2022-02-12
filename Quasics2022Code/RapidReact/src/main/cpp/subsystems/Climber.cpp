@@ -4,7 +4,23 @@
 
 #include "subsystems/Climber.h"
 
-Climber::Climber() = default;
+Climber::Climber() {
+}
 
+void Climber::StartExtracting() {
+}
+
+void Climber::StartRetracting() {
+}
+
+void Climber::Stop() {
+}
+
+void Climber::EnableBrakeing(bool) {
+}
+
+Climber::Movement Climber::GetCurrentStatus() {
+}
 // This method will be called once per scheduler run
-void Climber::Periodic() {}
+void Climber::Periodic() {
+}

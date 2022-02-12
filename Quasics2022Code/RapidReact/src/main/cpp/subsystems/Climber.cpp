@@ -24,7 +24,14 @@ void Climber::Stop() {
   currentStatus = Movement::eStopped;
 }
 
-void Climber::EnableBrakeing(bool) {
+void Climber::EnableBrakeing(bool value) {
+  if (value == true) {
+    m_ClimberLeft.SetIdleMode(rev::CANSparkMax::IdleMode(1));
+    m_ClimberRight.SetIdleMode(rev::CANSparkMax::IdleMode(1));
+  } else {
+    m_ClimberLeft.SetIdleMode(rev::CANSparkMax::IdleMode(0));
+    m_ClimberRight.SetIdleMode(rev::CANSparkMax::IdleMode(0));
+  }
 }
 
 Climber::Movement Climber::GetCurrentStatus() {

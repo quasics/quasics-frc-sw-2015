@@ -22,7 +22,7 @@ class Climber : public frc2::SubsystemBase {
 
   void Stop();
 
-  void EnableBrakeing(bool);
+  void EnableBrakeing(bool value);
 
   Climber::Movement GetCurrentStatus();
 

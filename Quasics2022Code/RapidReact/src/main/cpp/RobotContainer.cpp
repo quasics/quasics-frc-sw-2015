@@ -42,10 +42,14 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Run Shooter FlyWheel",
                                new RunShooterAtSpeed(&m_shooter, 0.65));
-  frc::SmartDashboard::PutData("Run Intake at 20 percent power",
+  frc::SmartDashboard::PutData("Run Intake at 20 percent power forward",
                                new RunIntakeAtSpeed(&m_intake, 0.2));
-  frc::SmartDashboard::PutData("Run Conveyor at 20 percent speed",
+  frc::SmartDashboard::PutData("Run Intake at 30 percent power backward",
+                               new RunIntakeAtSpeed(&m_intake, -0.3));
+  frc::SmartDashboard::PutData("Run Conveyor at 20 percent speed forward",
                                new RunConveyorAtSpeed(&m_conveyor, 0.2));
+  frc::SmartDashboard::PutData("Run Conveyor at 30 percent speed backward",
+                               new RunConveyorAtSpeed(&m_conveyor, -0.3));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

@@ -23,5 +23,8 @@ class Intake : public frc2::SubsystemBase {
   void SetIntakeSpeed(double intakeSpeed);
 
  private:
+  // Bug(Josh): The "6" here needs to be replaced by the
+  // "MotorIds.INTAKE_MOTOR_ID" constant.  (Define all of our IDs in one place,
+  // so that have a single place to update mappings.)
   ctre::phoenix::motorcontrol::can::VictorSPX m_floorPickupMotor{6};
 };

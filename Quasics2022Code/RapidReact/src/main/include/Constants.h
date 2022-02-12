@@ -26,7 +26,7 @@ namespace MotorIds {
   constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
   constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
   constexpr int INTAKE_MOTOR_ID = 6;
-}
+}  // namespace MotorIds
 
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
@@ -36,6 +36,5 @@ namespace OperatorInterface {
     constexpr int LEFT_Y_AXIS = 1;
     constexpr int RIGHT_Y_AXIS = 3;
 
-
-  }
-}
+  }  // namespace LogitechGamePad
+}  // namespace OperatorInterface

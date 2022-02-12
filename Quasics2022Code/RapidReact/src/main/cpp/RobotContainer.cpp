@@ -43,6 +43,8 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
+  m_autonomousOptions.SetDefaultOption("Defualt Nothing",
+                                       new frc2::PrintCommand("I do nothing"));
   m_autonomousOptions.AddOption(
       "Move Forward 1m at 50 percent power",
       new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
@@ -52,6 +54,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption(
       "Shoot 0.2 for 2, move 0.2 for 1",
       ShootAndMoveCommand(-0.2, units::second_t(2), 0.2, 1));
+  frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
@@ -72,5 +75,5 @@ frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return &m_autonomousCommand;
+  return m_autonomousOptions.GetSelected();
 }

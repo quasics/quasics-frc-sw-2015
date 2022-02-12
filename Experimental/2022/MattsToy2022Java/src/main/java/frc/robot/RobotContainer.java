@@ -162,9 +162,9 @@ public class RobotContainer {
     }));
 
     // Lighting commands
-    SmartDashboard.putData("Red", new SimpleLighting(m_lighting, SimpleLighting.Mode.Red));
-    SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, SimpleLighting.Mode.Blue));
-    SmartDashboard.putData("Green", new SimpleLighting(m_lighting, SimpleLighting.Mode.Green));
+    SmartDashboard.putData("Red", new SimpleLighting(m_lighting, Lighting.Color.Red));
+    SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, Lighting.Color.Blue));
+    SmartDashboard.putData("Green", new SimpleLighting(m_lighting, Lighting.Color.Green));
   }
 
   /**

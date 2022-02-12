@@ -10,10 +10,37 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lighting extends SubsystemBase {
-  AddressableLED m_led;
-  AddressableLEDBuffer m_ledBuffer;
+  public enum Color {
+    Green(0, 255, 0),
+    Red(255, 0, 0),
+    Blue(0, 0, 255),
+    White(255, 255, 255),
+    Black(0, 0, 0);
 
-  /** Creates a new ExampleSubsystem. */
+    final private int r, g, b;
+
+    Color(int r, int g, int b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
+    }
+
+    public int getR() {
+      return r;
+    }
+
+    public int getG() {
+      return g;
+    }
+
+    public int getB() {
+      return b;
+    }
+  }
+
+  final private AddressableLED m_led;
+  final private AddressableLEDBuffer m_ledBuffer;
+
   public Lighting(int pwmPort, int numLights) {
     m_led = new AddressableLED(pwmPort);
 
@@ -21,7 +48,7 @@ public class Lighting extends SubsystemBase {
     m_led.setLength(m_ledBuffer.getLength());
 
     // On start-up, turn every other pixel on (white).
-    final Color fixedColor = new Color(255, 255, 255);
+    final var fixedColor = new edu.wpi.first.wpilibj.util.Color(255, 255, 255);
     for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
       m_ledBuffer.setLED(i, fixedColor);
     }
@@ -46,7 +73,7 @@ public class Lighting extends SubsystemBase {
     /**
      * Returns the color to be used for the LED at a given position on the strip.
      */
-    public Color getColorForLed(int position);
+    public edu.wpi.first.wpilibj.util.Color getColorForLed(int position);
   }
 
   public void SetStripColor(ColorFunctor function) {
@@ -57,11 +84,15 @@ public class Lighting extends SubsystemBase {
     m_led.setData(m_ledBuffer);
   }
 
+  public void SetStripColor(Color color) {
+    SetStripColor(color.getR(), color.getG(), color.getB());
+  }
+
   public void SetStripColor(int red, int green, int blue) {
     // Defines a "lambda" function that will be used to fulfill the
     // requirements of the ColorFunctor type. (It will return the
     // same color for each position in the strip.)
-    final Color fixedColor = new Color(red, green, blue);
+    final var fixedColor = new edu.wpi.first.wpilibj.util.Color(red, green, blue);
     ColorFunctor function = (var position) -> fixedColor;
 
     // Uses the lambda to set the color for the full strip.

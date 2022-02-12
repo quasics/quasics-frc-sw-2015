@@ -10,35 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses the lighting subsystem. */
 public class SimpleLighting extends CommandBase {
   private final Lighting m_subsystem;
-  private final Mode mode;
-
-  public enum Mode {
-    Green(0, 255, 0),
-    Red(255, 0, 0),
-    Blue(0, 0, 255),
-    White(255, 255, 255),
-    Black(0, 0, 0);
-
-    final private int r, g, b;
-
-    Mode(int r, int g, int b) {
-      this.r = r;
-      this.g = g;
-      this.b = b;
-    }
-
-    public int getR() {
-      return r;
-    }
-
-    public int getG() {
-      return g;
-    }
-
-    public int getB() {
-      return b;
-    }
-  }
+  private final Lighting.Color color;
 
   /**
    * Creates a new SimpleLighting.
@@ -46,7 +18,7 @@ public class SimpleLighting extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public SimpleLighting(Lighting subsystem) {
-    this(subsystem, Mode.Green);
+    this(subsystem, Lighting.Color.Green);
   }
 
   /**
@@ -54,15 +26,17 @@ public class SimpleLighting extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimpleLighting(Lighting subsystem, Mode mode) {
+  public SimpleLighting(Lighting subsystem, Lighting.Color color) {
+    setName("Lighting");
+
     m_subsystem = subsystem;
-    this.mode = mode;
+    this.color = color;
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_subsystem.SetStripColor(mode.getR(), mode.getG(), mode.getB());
+  public void execute() {
+    // Do it every time, just in case the lights aren't plugged in @ start.
+    m_subsystem.SetStripColor(color);
   }
 }

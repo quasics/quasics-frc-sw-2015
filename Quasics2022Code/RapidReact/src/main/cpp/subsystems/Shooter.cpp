@@ -5,6 +5,7 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() {
+  m_flyWheel.SetInverted(true);
 }
 
 // This method will be called once per scheduler run

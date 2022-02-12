@@ -8,6 +8,7 @@
 
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/MoveRobotTestCommand.h"
+#include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/ShootForTime.h"
@@ -43,6 +44,8 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
                                new RunShooterAtSpeed(&m_shooter, 0.65));
   frc::SmartDashboard::PutData("Run Intake at 20 percent power",
                                new RunIntakeAtSpeed(&m_intake, 0.2));
+  frc::SmartDashboard::PutData("Run Conveyor at 20 percent speed",
+                               new RunConveyorAtSpeed(&m_conveyor, 0.2));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

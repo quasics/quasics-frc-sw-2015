@@ -10,6 +10,7 @@
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+#include "subsystems/Conveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Shooter.h"
@@ -46,6 +47,7 @@ class RobotContainer {
   Shooter m_shooter;
   Drivebase m_drivebase;
   Intake m_intake;
+  Conveyor m_conveyor;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 

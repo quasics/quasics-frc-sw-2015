@@ -8,6 +8,7 @@
 
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/MoveRobotTestCommand.h"
+#include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/ShootForTime.h"
 #include "commands/TankDrive.h"
@@ -32,14 +33,16 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 //
 // BUG(Josh): The above suggests that the motor for the shooter flywheel should
 // be configured as "inverted", rather than having to remember to swap signs on
-// the speeds.
+// the speeds.(Matthew fixed bug)
 //
-// Also, -0.65 seems to be the power for the high goal.
+// Also, -0.65 seems to be the power for the high goal.(Matthew fixed bug)
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Run Shooter FlyWheel",
-                               new RunShooterAtSpeed(&m_shooter, -0.65));
+                               new RunShooterAtSpeed(&m_shooter, 0.65));
+  frc::SmartDashboard::PutData("Run Intake at 20 percent power",
+                               new RunIntakeAtSpeed(&m_intake, 0.2));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

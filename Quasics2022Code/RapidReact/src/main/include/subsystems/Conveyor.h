@@ -30,5 +30,5 @@ class Conveyor : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   ctre::phoenix::motorcontrol::can::VictorSPX m_Conveyor{
-      MotorIds::CONVEYOR_MOTOR_ID};
+      MotorIds::VictorSPX::CONVEYOR_MOTOR_ID};
 };

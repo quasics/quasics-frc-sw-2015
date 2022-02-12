@@ -10,7 +10,7 @@
 #include "Constants.h"
 
 class Shooter : public frc2::SubsystemBase {
-public:
+ public:
   Shooter();
 
   /**
@@ -24,8 +24,7 @@ public:
 
   void SetFlywheelSpeed(double flyWheelSpeed);
 
-private:
-
-  rev::CANSparkMax m_flyWheel{MotorIds::SHOOTER_FLYWHEEL_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
-
+ private:
+  rev::CANSparkMax m_flyWheel{MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_ID,
+                              rev::CANSparkMax::MotorType::kBrushless};
 };

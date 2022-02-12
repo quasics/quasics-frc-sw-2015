@@ -5,18 +5,16 @@
 #pragma once
 
 #include <frc/drive/DifferentialDrive.h>
-#include <frc2/command/SubsystemBase.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
+#include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+
+#include "Constants.h"
 #include "units/length.h"
 #include "units/velocity.h"
 
-
-#include "Constants.h"
-
 class Drivebase : public frc2::SubsystemBase {
-public:
-
+ public:
   Drivebase();
 
   void ConfigureEncoders();
@@ -39,14 +37,17 @@ public:
 
   void ResetEncoders();
 
-private:
+ private:
+  rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
+                                rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
+                              rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
 
-  rev::CANSparkMax m_leftFront{MotorIds::LEFT_FRONT_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFront{MotorIds::RIGHT_FRONT_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_leftBack{MotorIds::LEFT_BACK_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightBack{MotorIds::RIGHT_BACK_DRIVE_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless};
-
-  //encoders for each of the motors.
+  // encoders for each of the motors.
   rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
@@ -58,10 +59,8 @@ private:
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 };
 
-
 /**
  * Will be called periodically whenever the CommandScheduler runs.
  */
 // Components (e.g. motor controllers and sensors) should generally be
 // declared private and exposed only through public methods.
-

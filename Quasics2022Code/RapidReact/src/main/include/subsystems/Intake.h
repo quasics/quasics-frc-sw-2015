@@ -26,5 +26,5 @@ class Intake : public frc2::SubsystemBase {
 
  private:
   ctre::phoenix::motorcontrol::can::VictorSPX m_floorPickupMotor{
-      MotorIds::INTAKE_MOTOR_ID};
+      MotorIds::VictorSPX::INTAKE_MOTOR_ID};
 };

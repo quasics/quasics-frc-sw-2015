@@ -20,13 +20,17 @@ constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO = 8.45;
 
 namespace MotorIds {
-  constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-  constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
-  constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
-  constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
-  constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
-  constexpr int INTAKE_MOTOR_ID = 6;
-  constexpr int CONVEYOR_MOTOR_ID = 7;
+  namespace SparkMax {
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
+    constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
+    constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+    constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
+  }  // namespace SparkMax
+  namespace VictorSPX {
+    constexpr int INTAKE_MOTOR_ID = 1;
+    constexpr int CONVEYOR_MOTOR_ID = 2;
+  }  // namespace VictorSPX
 }  // namespace MotorIds
 
 namespace OperatorInterface {

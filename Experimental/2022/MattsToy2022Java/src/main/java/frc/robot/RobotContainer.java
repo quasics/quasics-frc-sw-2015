@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.BreathingLights;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
@@ -165,6 +166,7 @@ public class RobotContainer {
     SmartDashboard.putData("Red", new SimpleLighting(m_lighting, Lighting.Color.Red));
     SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, Lighting.Color.Blue));
     SmartDashboard.putData("Green", new SimpleLighting(m_lighting, Lighting.Color.Green));
+    SmartDashboard.putData("Breathe", new BreathingLights(m_lighting, Lighting.Color.Green));
   }
 
   /**

@@ -4,13 +4,17 @@
 
 #pragma once
 
+#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
+
+#include "Constants.h"
 
 class Climber : public frc2::SubsystemBase {
  public:
   Climber();
 
-  enum class Movement { eUp, eDown, eStop };
+  enum class Movement { eUp, eDown, eStopped };
 
   void StartExtracting();
 
@@ -32,4 +36,10 @@ class Climber : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   Movement currentStatus;
+  rev::CANSparkMax m_ClimberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
+                                 rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_ClimberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
+                                  rev::CANSparkMax::MotorType::kBrushless};
+
+  std::unique_ptr<frc::MotorControllerGroup> m_Climbers;
 };

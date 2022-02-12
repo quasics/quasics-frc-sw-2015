@@ -26,6 +26,8 @@ namespace MotorIds {
     constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
+    constexpr int LEFT_CLIMBER_MOTOR_ID = 6;
+    constexpr int RIGHT_CLIMBER_MOTOR_ID = 7;
   }  // namespace SparkMax
   namespace VictorSPX {
     constexpr int INTAKE_MOTOR_ID = 1;

@@ -19,7 +19,7 @@
 class RunConveyorAtSpeed
     : public frc2::CommandHelper<frc2::CommandBase, RunConveyorAtSpeed> {
  public:
-  RunConveyorAtSpeed();
+  RunConveyorAtSpeed(Conveyor* conveyor, double speed);
 
   void Initialize() override;
 
@@ -31,4 +31,5 @@ class RunConveyorAtSpeed
 
  private:
   Conveyor* m_Conveyor;
+  const double m_ConveyorSpeed;
 };

@@ -12,14 +12,17 @@ RunIntakeAtSpeed::RunIntakeAtSpeed(Intake* intake, double speed)
 
 // Called when the command is initially scheduled.
 void RunIntakeAtSpeed::Initialize() {
+  m_Intake->SetIntakeSpeed(m_IntakeSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RunIntakeAtSpeed::Execute() {
+  m_Intake->SetIntakeSpeed(m_IntakeSpeed);
 }
 
 // Called once the command ends or is interrupted.
 void RunIntakeAtSpeed::End(bool interrupted) {
+  m_Intake->Stop();
 }
 
 // Returns true when the command should end.

@@ -4,7 +4,15 @@
 
 #include "subsystems/Conveyor.h"
 
-Conveyor::Conveyor() = default;
+Conveyor::Conveyor() {
+}
+
+void Conveyor::SetConveyorSpeed(double conveyorSpeed) {
+  m_Conveyor.Set(
+      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
+      conveyorSpeed);
+}
 
 // This method will be called once per scheduler run
-void Conveyor::Periodic() {}
+void Conveyor::Periodic() {
+}

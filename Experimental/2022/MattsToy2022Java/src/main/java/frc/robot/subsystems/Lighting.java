@@ -19,16 +19,27 @@ public class Lighting extends SubsystemBase {
 
     final private int r, g, b;
 
+    // Constructor
     StockColor(int r, int g, int b) {
       this.r = r;
       this.g = g;
       this.b = b;
     }
 
+    /**
+     * Converts the stock color to the representation used by WPILib.
+     */
     public Color toWpiColor() {
       return toWpiColor(1.0);
     }
 
+    /**
+     * Converts the stock color to the representation used by WPILib, scaled to the
+     * specified intensity (brightness).
+     * 
+     * @param intensityPercent intensity to which the color should be scaled
+     *                         (0.0-1.0)
+     */
     public Color toWpiColor(double intensityPercent) {
       return new Color(
           intensityPercent * r / 255.0,
@@ -36,22 +47,33 @@ public class Lighting extends SubsystemBase {
           intensityPercent * b / 255.0);
     }
 
+    /** Returns the red component of the color (0..255). */
     public int getR() {
       return r;
     }
 
+    /** Returns the green component of the color (0..255). */
     public int getG() {
       return g;
     }
 
+    /** Returns the blue component of the color (0..255). */
     public int getB() {
       return b;
     }
   }
 
+  /** The raw interface to the addressable LED strip connected to the Rio. */
   final private AddressableLED m_led;
+  /** The buffer used to set the values for each pixel/LED on the strip. */
   final private AddressableLEDBuffer m_ledBuffer;
 
+  /**
+   * Constructor.
+   * 
+   * @param pwmPort   PWM port to which the LED strip is connected
+   * @param numLights number of (logical) lights on the LED strip
+   */
   public Lighting(int pwmPort, int numLights) {
     m_led = new AddressableLED(pwmPort);
 
@@ -59,13 +81,23 @@ public class Lighting extends SubsystemBase {
     m_led.setLength(m_ledBuffer.getLength());
 
     // On start-up, turn every other pixel on (white).
-    final var fixedColor = new edu.wpi.first.wpilibj.util.Color(255, 255, 255);
-    for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
-      m_ledBuffer.setLED(i, fixedColor);
+    if (true) {
+      var white = StockColor.White.toWpiColor();
+      var black = StockColor.Black.toWpiColor();
+      ColorFunctor function = (int position) -> {
+        return (position % 2 == 0) ? white : black;
+      };
+      SetStripColor(function);
+    } else {
+      // TODO(mjh): Remove this clause, once the other path has been tested.
+      final var fixedColor = new edu.wpi.first.wpilibj.util.Color(255, 255, 255);
+      for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
+        m_ledBuffer.setLED(i, fixedColor);
+      }
+      m_led.setData(m_ledBuffer);
     }
 
-    // Set the data
-    m_led.setData(m_ledBuffer);
+    // Start up the LED handling.
     m_led.start();
   }
 

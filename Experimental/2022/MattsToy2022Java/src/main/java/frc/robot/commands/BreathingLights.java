@@ -4,10 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lighting;
 
+/**
+ * Defines a Command class that can scale the lighting up and down (from black
+ * to full intensity to black, over and over).
+ */
 public class BreathingLights extends CommandBase {
   /** Reference to the Lighting subsystem. */
   final private Lighting m_lighting;

@@ -32,8 +32,7 @@ import frc.robot.Constants;
  */
 public class Climber extends SubsystemBase {
 
-  private static final double EXTENDING_SPEED_PERCENT = 0.25;
-  private static final double RETRACTING_SPEED_PERCENT = -0.25;
+  private static final double MOTOR_SPEED_PERCENT = 0.25;
 
   private interface Locker {
     void setLocked(boolean tf);
@@ -141,7 +140,7 @@ public class Climber extends SubsystemBase {
     }
 
     m_currentMode = Motion.Extending;
-    m_motors.set(EXTENDING_SPEED_PERCENT);
+    m_motors.set(MOTOR_SPEED_PERCENT);
   }
 
   /** Begins retracting the arms, iff they aren't already fully retracted. */
@@ -152,7 +151,7 @@ public class Climber extends SubsystemBase {
     }
 
     m_currentMode = Motion.Retracting;
-    m_motors.set(RETRACTING_SPEED_PERCENT);
+    m_motors.set(-MOTOR_SPEED_PERCENT);
   }
 
   /**

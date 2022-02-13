@@ -11,10 +11,10 @@ import frc.robot.subsystems.Lighting;
 public class BreathingLights extends CommandBase {
   final private Lighting m_lighting;
   final private Lighting.StockColor m_color;
-  final private double step;
+  final private double m_step;
 
-  private double currentIntensity = 0;
-  private boolean rising = true;
+  private double m_currentIntensity = 0;
+  private boolean m_rising = true;
 
   /** Creates a new BreathingLights. */
   public BreathingLights(Lighting lighting, Lighting.StockColor color) {
@@ -29,7 +29,7 @@ public class BreathingLights extends CommandBase {
   public BreathingLights(Lighting lighting, Lighting.StockColor color, double step) {
     this.m_lighting = lighting;
     this.m_color = color;
-    this.step = step;
+    this.m_step = step;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_lighting);
@@ -39,8 +39,8 @@ public class BreathingLights extends CommandBase {
   @Override
   public void initialize() {
     // Start out with lights fully off.
-    this.currentIntensity = 0;
-    this.rising = true;
+    this.m_currentIntensity = 0;
+    this.m_rising = true;
     m_lighting.SetStripColor(Lighting.StockColor.Black);
   }
 
@@ -52,26 +52,26 @@ public class BreathingLights extends CommandBase {
     // }
 
     // Calculate new intensity (and update direction for next pass, if needed.)
-    if (this.rising) {
-      this.currentIntensity += this.step;
-      if (this.currentIntensity >= 1.0) {
+    if (this.m_rising) {
+      this.m_currentIntensity += this.m_step;
+      if (this.m_currentIntensity >= 1.0) {
         // Start falling on next round
-        this.rising = false;
-        this.currentIntensity = 1.0;
+        this.m_rising = false;
+        this.m_currentIntensity = 1.0;
       }
     } else {
-      this.currentIntensity -= this.step;
-      if (this.currentIntensity <= 0) {
+      this.m_currentIntensity -= this.m_step;
+      if (this.m_currentIntensity <= 0) {
         // Start rising on next round
-        this.rising = true;
-        this.currentIntensity = 0;
+        this.m_rising = true;
+        this.m_currentIntensity = 0;
       }
     }
 
     // Update lights, based on current intensity.
-    final int r = (int) (currentIntensity * m_color.getR());
-    final int g = (int) (currentIntensity * m_color.getG());
-    final int b = (int) (currentIntensity * m_color.getB());
+    final int r = (int) (m_currentIntensity * m_color.getR());
+    final int g = (int) (m_currentIntensity * m_color.getG());
+    final int b = (int) (m_currentIntensity * m_color.getB());
     m_lighting.SetStripColor(r, g, b);
   }
 

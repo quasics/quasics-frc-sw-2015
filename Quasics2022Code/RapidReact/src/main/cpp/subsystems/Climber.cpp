@@ -5,37 +5,42 @@
 #include "subsystems/Climber.h"
 
 Climber::Climber() {
-  m_Climbers.reset(
-      new frc::MotorControllerGroup(m_ClimberLeft, m_ClimberRight));
+  m_climbers.reset(
+      new frc::MotorControllerGroup(m_climberLeft, m_climberRight));
 }
 
-void Climber::StartExtracting() {
-  m_Climbers->Set(0.25);
-  currentStatus = Movement::eUp;
+void Climber::StartExtending() {
+  // TODO(Matthew): Switch to a named constant for the extension speed.
+  m_climbers->Set(0.25);
+  m_currentStatus = Movement::eUp;
 }
 
 void Climber::StartRetracting() {
-  m_Climbers->Set(-0.25);
-  currentStatus = Movement::eDown;
+  // TODO(Matthew): Switch to a named constant for the retraction speed.
+  m_climbers->Set(-0.25);
+  m_currentStatus = Movement::eDown;
 }
 
 void Climber::Stop() {
-  m_Climbers->Set(0);
-  currentStatus = Movement::eStopped;
+  m_climbers->StopMotor();
+  m_currentStatus = Movement::eStopped;
 }
 
-void Climber::EnableBrakeing(bool value) {
-  if (value == true) {
-    m_ClimberLeft.SetIdleMode(rev::CANSparkMax::IdleMode(1));
-    m_ClimberRight.SetIdleMode(rev::CANSparkMax::IdleMode(1));
+void Climber::EnableBraking(bool value) {
+  rev::CANSparkMax::IdleMode mode;
+  if (value) {
+    mode = rev::CANSparkMax::IdleMode::kBrake;
   } else {
-    m_ClimberLeft.SetIdleMode(rev::CANSparkMax::IdleMode(0));
-    m_ClimberRight.SetIdleMode(rev::CANSparkMax::IdleMode(0));
+    mode = rev::CANSparkMax::IdleMode::kCoast;
   }
+
+  // Apply the mode to the climber motors.
+  m_climberLeft.SetIdleMode(mode);
+  m_climberRight.SetIdleMode(mode);
 }
 
 Climber::Movement Climber::GetCurrentStatus() {
-  return currentStatus;
+  return m_currentStatus;
 }
 // This method will be called once per scheduler run
 void Climber::Periodic() {

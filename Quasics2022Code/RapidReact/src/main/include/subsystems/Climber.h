@@ -14,17 +14,23 @@ class Climber : public frc2::SubsystemBase {
  public:
   Climber();
 
-  enum class Movement { eUp, eDown, eStopped };
+  /** Indicates the current operation the climber is performing. */
+  enum class Movement {
+    eUp,      ///< Climber is currently extending
+    eDown,    ///< Climber is currently retracting
+    eStopped  ///< Climber is currently stopped
+  };
 
-  void StartExtracting();
+  void StartExtending();
 
   void StartRetracting();
 
   void Stop();
 
-  void EnableBrakeing(bool value);
+  void EnableBraking(bool value);
 
-  Climber::Movement GetCurrentStatus();
+  /** Returns the climber's current status (operation). */
+  Movement GetCurrentStatus();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -35,11 +41,11 @@ class Climber : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  Movement currentStatus;
-  rev::CANSparkMax m_ClimberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
+  Movement m_currentStatus;
+  rev::CANSparkMax m_climberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
                                  rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_ClimberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
+  rev::CANSparkMax m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
                                   rev::CANSparkMax::MotorType::kBrushless};
 
-  std::unique_ptr<frc::MotorControllerGroup> m_Climbers;
+  std::unique_ptr<frc::MotorControllerGroup> m_climbers;
 };

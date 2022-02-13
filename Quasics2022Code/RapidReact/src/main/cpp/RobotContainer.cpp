@@ -52,11 +52,12 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
       "Move Forward 1m at 50 percent power",
       new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
   m_autonomousOptions.AddOption(
-      "Shoot at 20 percent power for 3 seconds",
-      new ShootForTime(&m_shooter, -0.2, units::second_t(3)));
+      "Shoot @ 20% for 3 seconds",
+      new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
   m_autonomousOptions.AddOption(
-      "Shoot 0.2 for 2, move 0.2 for 1",
-      ShootAndMoveCommand(-0.2, units::second_t(2), 0.2, 1));
+      "Shoot @ 20% for 2sec, move @ 20% for 1",
+      ShootAndMoveCommand(0.2, units::second_t(2), 0.2, 1));
+
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 

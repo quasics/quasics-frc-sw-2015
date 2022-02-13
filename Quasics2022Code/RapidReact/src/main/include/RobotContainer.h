@@ -29,7 +29,7 @@ class RobotContainer {
 
   frc2::Command* GetAutonomousCommand();
 
-  // "Helper" functions, used internall.
+  // "Helper" functions, used internally.
  private:
   frc2::SequentialCommandGroup* ShootAndMoveCommand(
       double powerShoot, units::second_t timeShoot, double powerMove,

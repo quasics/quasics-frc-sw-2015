@@ -21,7 +21,7 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureJoystickButtonBindings();
-  AddTestButtonToSmartDashboard();
+  AddTestButtonsToSmartDashboard();
   AddAutonomousCommandsToSmartDashboard();
 }
 
@@ -30,7 +30,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 }
 
 // Note: 0.65 seems to be reasonable power for the high goal.
-void RobotContainer::AddTestButtonToSmartDashboard() {
+void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Shoot @ 65%",
@@ -48,12 +48,15 @@ void RobotContainer::AddTestButtonToSmartDashboard() {
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.SetDefaultOption(
       "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
+
   m_autonomousOptions.AddOption(
       "Move Forward 1m at 50% power",
       new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
+
   m_autonomousOptions.AddOption(
       "Shoot @ 20% for 3 seconds",
       new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
+
   m_autonomousOptions.AddOption(
       "Shoot @ 20% for 2sec, move @ 20% for 1",
       ShootAndMoveCommand(0.2, units::second_t(2), 0.2, 1));

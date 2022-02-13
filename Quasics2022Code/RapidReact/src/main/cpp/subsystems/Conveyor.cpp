@@ -8,10 +8,10 @@ Conveyor::Conveyor() {
   SetName("Conveyor");
 }
 
-void Conveyor::SetConveyorSpeed(double conveyorSpeed) {
+void Conveyor::SetConveyorSpeed(double percentSpeed) {
   m_conveyorMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      conveyorSpeed);
+      percentSpeed);
 }
 
 // This method will be called once per scheduler run

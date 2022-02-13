@@ -9,12 +9,25 @@
 
 #include "Constants.h"
 
+/**
+ * Conveyor subsystem, used to move the balls from the floor intake to where
+ * they can be handled by the shooter.
+ *
+ * @see Intake
+ * @see Shooter
+ */
 class Conveyor : public frc2::SubsystemBase {
  public:
   Conveyor();
 
-  void SetConveyorSpeed(double conveyorSpeed);
+  /**
+   * Sets the speed of the conveyor to the specified percentage (-1.0 to +1.0).
+   */
+  void SetConveyorSpeed(double percentSpeed);
 
+  /**
+   * Convenience method to stop the conveyor.
+   */
   void Stop() {
     SetConveyorSpeed(0);
   }

@@ -10,10 +10,10 @@ Shooter::Shooter() {
   m_flyWheel.SetInverted(true);
 }
 
-// This method will be called once per scheduler run
-void Shooter::Periodic() {
+void Shooter::SetFlywheelSpeed(double percentSpeed) {
+  m_flyWheel.Set(percentSpeed);
 }
 
-void Shooter::SetFlywheelSpeed(double flyWheelSpeed) {
-  m_flyWheel.Set(flyWheelSpeed);
+// This method will be called once per scheduler run
+void Shooter::Periodic() {
 }

@@ -9,21 +9,32 @@
 
 #include "Constants.h"
 
+/**
+ * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
+ */
 class Shooter : public frc2::SubsystemBase {
  public:
   Shooter();
 
   /**
-   * Will be called periodically whenever the CommandScheduler runs.
+   * Sets the speed of the shooter's flywheel to the specified percentage (-1.0
+   * to +1.0).
    */
-  void Periodic() override;
+  void SetFlywheelSpeed(double percentSpeed);
 
+  /** Convenience method to stop the shooter. */
   void Stop() {
     SetFlywheelSpeed(0);
   };
 
-  void SetFlywheelSpeed(double flyWheelSpeed);
+  // Standard functions for subsystems.
+ public:
+  /**
+   * Will be called periodically whenever the CommandScheduler runs.
+   */
+  void Periodic() override;
 
+  // Data members.
  private:
   rev::CANSparkMax m_flyWheel{MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_ID,
                               rev::CANSparkMax::MotorType::kBrushless};

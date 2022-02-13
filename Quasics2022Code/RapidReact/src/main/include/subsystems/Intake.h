@@ -39,6 +39,7 @@ class Intake : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  // Data members.
  private:
   ctre::phoenix::motorcontrol::can::VictorSPX m_floorPickupMotor{
       MotorIds::VictorSPX::INTAKE_MOTOR_ID};

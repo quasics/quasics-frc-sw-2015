@@ -34,14 +34,17 @@ public class Climber extends SubsystemBase {
 
   private static final double MOTOR_SPEED_PERCENT = 0.25;
 
+  /** Helper to allow locking motors, without keeping them as class members. */
   private interface Locker {
     void setLocked(boolean tf);
   }
 
+  /** Helper to allow fetching encoder count from a motor. */
   private interface MotorPositionFetcher {
     double getPosition();
   }
 
+  /** Possible motions of the climber arms. */
   public enum Motion {
     None, Extending, Retracting
   }
@@ -49,6 +52,7 @@ public class Climber extends SubsystemBase {
   private final DigitalInput m_upperLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_UPPER_LIMIT_SWITCH_ID);
   private final DigitalInput m_lowerLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_LOWER_LIMIT_SWITCH_ID);
 
+  /** Current motion of the climber arms. */
   private Motion m_currentMode = Motion.None;
 
   private final MotorControllerGroup m_motors;
@@ -63,12 +67,15 @@ public class Climber extends SubsystemBase {
    */
   public Climber() {
 
+    /////////////////////////////////////////////////////////////////
+    // Set up motors.
     var leftMotor = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_CLIMBER_MOTOR_ID,
         MotorType.kBrushless);
     var rightMotor = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_CLIMBER_MOTOR_ID,
         MotorType.kBrushless);
     m_motors = new MotorControllerGroup(leftMotor, rightMotor);
 
+    /////////////////////////////////////////////////////////////////
     // Set up locking support.
     m_motorLocker = (boolean tf) -> {
       IdleMode mode = tf ? IdleMode.kBrake : IdleMode.kCoast;
@@ -77,6 +84,7 @@ public class Climber extends SubsystemBase {
     };
     m_motorLocker.setLocked(true);
 
+    /////////////////////////////////////////////////////////////////
     // Set up support for reporting positions (for debugging).
     var leftEncoder = leftMotor.getEncoder();
     m_leftPositionFetcher = () -> {
@@ -89,18 +97,18 @@ public class Climber extends SubsystemBase {
     };
   }
 
+  public void enableBrakingMode(boolean tf) {
+    m_motorLocker.setLocked(tf);
+  }
+
   public boolean isFullyRetracted() {
-    // Limit switches report true iff the switch is *open*.
+    // According to docs, limit switches report true iff the switch is *open*.
     return !m_lowerLimitSwitch.get();
   }
 
   public boolean isFullyExtended() {
-    // Limit switches report true iff the switch is *open*.
+    // According to docs, limit switches report true iff the switch is *open*.
     return !m_upperLimitSwitch.get();
-  }
-
-  public void enableBrakingMode(boolean tf) {
-    m_motorLocker.setLocked(tf);
   }
 
   public void holdPosition() {
@@ -135,6 +143,7 @@ public class Climber extends SubsystemBase {
   /** Begins extending the arms, iff they aren't already fully extended. */
   public void extendArms() {
     if (isFullyExtended()) {
+      // What if we were just now retracting?
       stop();
       return;
     }
@@ -146,6 +155,7 @@ public class Climber extends SubsystemBase {
   /** Begins retracting the arms, iff they aren't already fully retracted. */
   public void retractArms() {
     if (isFullyRetracted()) {
+      // What if we were just now extending?
       stop();
       return;
     }

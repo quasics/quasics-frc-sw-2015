@@ -6,24 +6,30 @@
 
 Climber::Climber() {
   SetName("Climber");
-  m_climbers.reset(
-      new frc::MotorControllerGroup(m_climberLeft, m_climberRight));
 }
 
 void Climber::StartExtending() {
   // TODO(Matthew): Switch to a named constant for the extension speed.
-  m_climbers->Set(0.25);
+  //
+  // TODO(Matthew): Consider how you should handle things if the arms are
+  // already fully extended.
+
+  m_climbers.Set(0.25);
   m_currentStatus = Movement::eUp;
 }
 
 void Climber::StartRetracting() {
   // TODO(Matthew): Switch to a named constant for the retraction speed.
-  m_climbers->Set(-0.25);
+  //
+  // TODO(Matthew): Consider how you should handle things if the arms are
+  // already fully retracted.
+
+  m_climbers.Set(-0.25);
   m_currentStatus = Movement::eDown;
 }
 
 void Climber::Stop() {
-  m_climbers->StopMotor();
+  m_climbers.StopMotor();
   m_currentStatus = Movement::eStopped;
 }
 
@@ -43,6 +49,17 @@ void Climber::EnableBraking(bool value) {
 Climber::Movement Climber::GetCurrentStatus() {
   return m_currentStatus;
 }
+
 // This method will be called once per scheduler run
 void Climber::Periodic() {
+}
+
+bool Climber::IsFullyExtended() {
+  // TODO(Matthew): Implement this method.
+  return false;
+}
+
+bool Climber::IsFullyRetracted() {
+  // TODO(Matthew): Implement this method.
+  return false;
 }

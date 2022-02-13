@@ -193,12 +193,14 @@ public class Climber extends SubsystemBase {
           stop();
         }
         break;
+
       case Retracting:
         if (isFullyRetracted()) {
           System.err.println(">>> Climber is fully retracted: stopping operation.");
           stop();
         }
         break;
+
       case None:
         // Nothing to do....
         break;

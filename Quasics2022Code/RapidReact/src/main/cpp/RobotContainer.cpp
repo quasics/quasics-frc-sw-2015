@@ -46,8 +46,8 @@ void RobotContainer::AddTestButtonToSmartDasboard() {
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
-  m_autonomousOptions.SetDefaultOption("Defualt Nothing",
-                                       new frc2::PrintCommand("I do nothing"));
+  m_autonomousOptions.SetDefaultOption(
+      "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
   m_autonomousOptions.AddOption(
       "Move Forward 1m at 50 percent power",
       new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));

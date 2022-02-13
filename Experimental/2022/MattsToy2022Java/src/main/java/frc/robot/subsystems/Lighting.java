@@ -89,13 +89,22 @@ public class Lighting extends SubsystemBase {
   }
 
   public void SetStripColor(int red, int green, int blue) {
-    // Defines a "lambda" function that will be used to fulfill the
-    // requirements of the ColorFunctor type. (It will return the
-    // same color for each position in the strip.)
-    final var fixedColor = new edu.wpi.first.wpilibj.util.Color(red, green, blue);
-    ColorFunctor function = (var position) -> fixedColor;
+    System.out.println("Setting lights: " + red + "/" + green + "/" + blue);
+    final var fixedColor = new edu.wpi.first.wpilibj.util.Color(red / 255.0, green / 255.0, blue / 255.0);
+    for (var i = 0; i < m_ledBuffer.getLength(); ++i) {
+      m_ledBuffer.setLED(i, fixedColor);
+    }
 
-    // Uses the lambda to set the color for the full strip.
-    SetStripColor(function);
+    // Set the data
+    m_led.setData(m_ledBuffer);
+
+    // // Defines a "lambda" function that will be used to fulfill the
+    // // requirements of the ColorFunctor type. (It will return the
+    // // same color for each position in the strip.)
+    // final var fixedColor2 = new edu.wpi.first.wpilibj.util.Color(red, green,
+    // blue);
+    // ColorFunctor function = (var position) -> fixedColor2;
+    // // Uses the lambda to set the color for the full strip.
+    // SetStripColor(function);
   }
 }

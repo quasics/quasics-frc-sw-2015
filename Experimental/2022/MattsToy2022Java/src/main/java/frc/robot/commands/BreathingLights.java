@@ -4,13 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lighting;
 
 public class BreathingLights extends CommandBase {
   final private Lighting m_lighting;
   final private Lighting.Color m_color;
-  private final double step = 0.04;
+  Timer timer = new Timer();
+  private final double step = 0.01;
   private double currentIntensity = 0;
   private boolean rising = true;
 
@@ -29,12 +31,18 @@ public class BreathingLights extends CommandBase {
     // Start out with lights fully off.
     this.currentIntensity = 0;
     this.rising = true;
+    timer.reset();
+    timer.start();
     m_lighting.SetStripColor(Lighting.Color.Black);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // if (!timer.hasElapsed(0.1)) {
+    // return;
+    // }
+
     // Calculate new intensity (and update direction for next pass, if needed.)
     if (this.rising) {
       this.currentIntensity += this.step;
@@ -57,6 +65,8 @@ public class BreathingLights extends CommandBase {
     final int g = (int) (currentIntensity * m_color.getG());
     final int b = (int) (currentIntensity * m_color.getB());
     m_lighting.SetStripColor(r, g, b);
+
+    timer.reset();
   }
 
   // Called once the command ends or is interrupted.

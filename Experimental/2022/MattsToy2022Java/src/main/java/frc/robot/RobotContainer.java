@@ -150,16 +150,24 @@ public class RobotContainer {
   private void configureButtonBindings(Joystick driverStick) {
   }
 
+  private static void writeSettingsToFile(RobotSettings settings) {
+    if (settings.writeToFile(SETTINGS_FILE_NAME)) {
+      System.out.println("Saved settings for " + settings.robotName);
+    } else {
+      System.err.println("**** Failed to save settings for " + settings.robotName);
+    }
+  }
+
   private void configureSmartDashboard() {
     // Buttons to allow updating settings files (for use on next boot)
     SmartDashboard.putData("Sally on restart", new InstantCommand(() -> {
-      getSettingsForSally().writeToFile(SETTINGS_FILE_NAME);
+      writeSettingsToFile(getSettingsForSally());
     }));
     SmartDashboard.putData("Mae on restart", new InstantCommand(() -> {
-      getSettingsForMae().writeToFile(SETTINGS_FILE_NAME);
+      writeSettingsToFile(getSettingsForMae());
     }));
     SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
-      getSettingsForNike().writeToFile(SETTINGS_FILE_NAME);
+      writeSettingsToFile(getSettingsForNike());
     }));
 
     // Lighting commands

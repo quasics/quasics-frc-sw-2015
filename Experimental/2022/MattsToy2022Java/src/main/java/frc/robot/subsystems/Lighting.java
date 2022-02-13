@@ -25,6 +25,10 @@ public class Lighting extends SubsystemBase {
       this.b = b;
     }
 
+    public Color toColor() {
+      return new Color(r / 255.0, g / 255.0, b / 255.0);
+    }
+
     public int getR() {
       return r;
     }
@@ -73,7 +77,7 @@ public class Lighting extends SubsystemBase {
     /**
      * Returns the color to be used for the LED at a given position on the strip.
      */
-    public edu.wpi.first.wpilibj.util.Color getColorForLed(int position);
+    public Color getColorForLed(int position);
   }
 
   public void SetStripColor(ColorFunctor function) {
@@ -85,7 +89,14 @@ public class Lighting extends SubsystemBase {
   }
 
   public void SetStripColor(StockColor color) {
-    SetStripColor(color.getR(), color.getG(), color.getB());
+    // Defines a "lambda" function that will be used to fulfill the
+    // requirements of the ColorFunctor type. (It will return the
+    // same color for each position in the strip.)
+    var useColor = color.toColor();
+    ColorFunctor function = (var position) -> useColor;
+
+    // Uses the lambda to set the color for the full strip.
+    SetStripColor((var position) -> useColor);
   }
 
   public void SetStripColor(int red, int green, int blue) {

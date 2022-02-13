@@ -79,6 +79,5 @@ frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
   return m_autonomousOptions.GetSelected();
 }

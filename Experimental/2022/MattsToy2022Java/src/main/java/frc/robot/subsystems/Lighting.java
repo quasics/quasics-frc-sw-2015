@@ -25,8 +25,15 @@ public class Lighting extends SubsystemBase {
       this.b = b;
     }
 
-    public Color toColor() {
-      return new Color(r / 255.0, g / 255.0, b / 255.0);
+    public Color toWpiColor() {
+      return toWpiColor(1.0);
+    }
+
+    public Color toWpiColor(double intensityPercent) {
+      return new Color(
+          intensityPercent * r / 255.0,
+          intensityPercent * g / 255.0,
+          intensityPercent * b / 255.0);
     }
 
     public int getR() {
@@ -92,7 +99,7 @@ public class Lighting extends SubsystemBase {
     // Defines a "lambda" function that will be used to fulfill the
     // requirements of the ColorFunctor type. (It will return the
     // same color for each position in the strip.)
-    var useColor = color.toColor();
+    var useColor = color.toWpiColor();
     ColorFunctor function = (var position) -> useColor;
 
     // Uses the lambda to set the color for the full strip.

@@ -5,6 +5,7 @@
 #include "subsystems/Conveyor.h"
 
 Conveyor::Conveyor() {
+  SetName("Conveyor");
 }
 
 void Conveyor::SetConveyorSpeed(double conveyorSpeed) {

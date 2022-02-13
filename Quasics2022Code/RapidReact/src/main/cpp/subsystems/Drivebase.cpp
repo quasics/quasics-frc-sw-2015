@@ -10,6 +10,8 @@
 #include <wpi/numbers>
 
 Drivebase::Drivebase() {
+  SetName("Drivebase");
+
   m_rightFront.SetInverted(true);
   m_rightBack.SetInverted(true);
 

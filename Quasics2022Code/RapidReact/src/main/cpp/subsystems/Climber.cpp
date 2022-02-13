@@ -5,6 +5,7 @@
 #include "subsystems/Climber.h"
 
 Climber::Climber() {
+  SetName("Climber");
   m_climbers.reset(
       new frc::MotorControllerGroup(m_climberLeft, m_climberRight));
 }

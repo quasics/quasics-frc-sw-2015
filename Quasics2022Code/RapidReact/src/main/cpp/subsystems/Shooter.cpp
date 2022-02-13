@@ -5,6 +5,8 @@
 #include "subsystems/Shooter.h"
 
 Shooter::Shooter() {
+  SetName("Shooter");
+
   m_flyWheel.SetInverted(true);
 }
 

@@ -5,6 +5,7 @@
 #include "subsystems/Intake.h"
 
 Intake::Intake() {
+  SetName("Intake");
 }
 
 // This method will be called once per scheduler run

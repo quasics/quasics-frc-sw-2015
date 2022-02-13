@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/PrintCommand.h>
 
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/MoveRobotTestCommand.h"
@@ -69,10 +70,15 @@ frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   // Add each of the individual commands to the sequence.
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new ShootForTime(&m_shooter, powerShoot, timeShoot))));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(&m_drivebase, powerMove, distanceToMove))));
+  commands.push_back(std::make_unique<frc2::PrintCommand>(
+      "Starting 'shoot and move' sequence"));
+  commands.push_back(
+      std::make_unique<ShootForTime>(&m_shooter, powerShoot, timeShoot));
+  commands.push_back(std::make_unique<frc2::PrintCommand>("Moving away"));
+  commands.push_back(std::make_unique<DriveAtPowerForMeters>(
+      &m_drivebase, powerMove, distanceToMove));
+  commands.push_back(
+      std::make_unique<frc2::PrintCommand>("Sequence completed"));
 
   // Builds the command group object.
   return new frc2::SequentialCommandGroup(std::move(commands));

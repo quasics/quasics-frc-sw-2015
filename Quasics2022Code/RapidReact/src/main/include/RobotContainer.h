@@ -7,7 +7,6 @@
 #include <frc/Joystick.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
-#include <frc2/command/PrintCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
 #include "subsystems/Conveyor.h"
@@ -49,7 +48,4 @@ class RobotContainer {
   Conveyor m_conveyor;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
-
-  frc2::PrintCommand m_autonomousCommand{
-      "We need to do something autonomously...."};
 };

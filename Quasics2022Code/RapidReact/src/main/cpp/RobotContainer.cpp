@@ -49,7 +49,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.SetDefaultOption(
       "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
   m_autonomousOptions.AddOption(
-      "Move Forward 1m at 50 percent power",
+      "Move Forward 1m at 50% power",
       new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
   m_autonomousOptions.AddOption(
       "Shoot @ 20% for 3 seconds",

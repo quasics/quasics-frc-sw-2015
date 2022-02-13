@@ -92,5 +92,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   // Standard WPILib differential drive, used to control left/right motors as a
   // set (e.g., under tank or arcade drive).
+  //
+  // Since we're creating the controller groups "late" in the construction
+  // (using "new"), we need to do the same thing for this (which uses them).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 };

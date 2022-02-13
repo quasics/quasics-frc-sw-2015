@@ -29,14 +29,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
   // Configure your button bindings here
 }
 
-// Important for the shooter: as of right now, any values for speed of the
-// flywheel should be negative for the shooter to work properly.
-//
-// BUG(Josh): The above suggests that the motor for the shooter flywheel should
-// be configured as "inverted", rather than having to remember to swap signs on
-// the speeds.(Matthew fixed bug)
-//
-// Also, -0.65 seems to be the power for the high goal.(Matthew fixed bug)
+// Note: 0.65 seems to be reasonable power for the high goal.
 void RobotContainer::AddTestButtonToSmartDasboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));

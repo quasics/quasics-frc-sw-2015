@@ -31,8 +31,6 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
  */
 public class RobotContainer {
 
-  private static final String SETTINGS_FILE_NAME = "robotSettings.props";
-
   private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
 
   private final DriveBase m_driveBase;
@@ -92,28 +90,60 @@ public class RobotContainer {
     configureSmartDashboard();
   }
 
+  private static final boolean LOAD_SETTINGS_FROM_DEPLOYED_FILES = true;
+  private static final String DEFAULT_ROBOT_PROPERTY_NAME = "sally";
+
+  // Only used iff LOAD_FROM_DEPLOYED_FILES == false.
+  private static final String SETTINGS_FILE_NAME = "robotSettings.props";
+
   /**
    * Returns robot-specific settings from the "save file" (or else the defaults,
    * on errors).
    */
   private static RobotSettings loadSettingsOrDefaults() {
-    RobotSettings settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
-    if (settings == null) {
+    RobotSettings settings = null;
+    if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
+      // Add "robot properties" control field to dashboard (and make it persistent).
+      SmartDashboard.setDefaultString("Properties", DEFAULT_ROBOT_PROPERTY_NAME);
+      SmartDashboard.setPersistent("Properties");
+
+      // Get the robot properties from the deployed file for the named robot.
+      final String robotFileName = SmartDashboard.getString("Properties", DEFAULT_ROBOT_PROPERTY_NAME) + ".props";
+      settings = RobotSettings.loadFromDeployedFile(robotFileName);
+      if (settings != null) {
+        return settings;
+      }
+
+      System.err.println(
+          "---------------------------------------------------------------------------\n"
+              + "Couldn't load robot settings from deployed " + robotFileName + ": falling back on defaults!\n"
+              + "\n"
+              + "Please update robot properties selection on the dashboard (e.g., 'sally').\n"
+              + "---------------------------------------------------------------------------\n");
+    } else {
+      settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
+      if (settings != null) {
+        return settings;
+      }
+
       System.err.println(
           "------------------------------------------------------------\n"
               + "Couldn't load robot settings: falling back on defaults!\n"
               + "\n"
               + "Please write current settings out to file via dashboard.\n"
               + "------------------------------------------------------------\n");
-      settings = getSettingsForSally();
     }
-    return settings;
+
+    // Return the default property set.
+    return getDefaultSettings();
   }
+
+  private static final double INCHES_PER_METER = 39.3701;
 
   private static RobotSettings getSettingsForSally() {
     return new RobotSettings(
         "Sally", // robotName
-        Constants.TRACK_WIDTH_INCHES_SALLY,
+        Constants.TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
         true, // leftMotorsInverted
         false // RIGHT_MOTORS_INVERTED_PROPERTY
     );
@@ -122,7 +152,7 @@ public class RobotContainer {
   private static RobotSettings getSettingsForMae() {
     return new RobotSettings(
         "Mae", // robotName
-        Constants.TRACK_WIDTH_INCHES_MAE,
+        Constants.TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
         true, // leftMotorsInverted
         false // RIGHT_MOTORS_INVERTED_PROPERTY
     );
@@ -131,10 +161,14 @@ public class RobotContainer {
   private static RobotSettings getSettingsForNike() {
     return new RobotSettings(
         "Nike", // robotName
-        Constants.TRACK_WIDTH_INCHES_NIKE,
+        Constants.TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
         true, // leftMotorsInverted
         false // RIGHT_MOTORS_INVERTED_PROPERTY
     );
+  }
+
+  private static RobotSettings getDefaultSettings() {
+    return getSettingsForSally();
   }
 
   /**
@@ -159,14 +193,17 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-    // Buttons to allow updating settings files (for use on next boot)
-    SmartDashboard.putData("Sally on restart", new InstantCommand(() -> {
-      writeSettingsToFile(getSettingsForSally());
+    // Buttons to allow writing settings files (for use on next boot).
+    //
+    // TODO(mjh): If this works, switch back to using buttons to swap stored
+    // settings, and refresh on reload.
+    SmartDashboard.putData("Store Sally", new InstantCommand(() -> {
+      writeSettingsToFile(getDefaultSettings());
     }));
-    SmartDashboard.putData("Mae on restart", new InstantCommand(() -> {
+    SmartDashboard.putData("Store Mae", new InstantCommand(() -> {
       writeSettingsToFile(getSettingsForMae());
     }));
-    SmartDashboard.putData("Nike on restart", new InstantCommand(() -> {
+    SmartDashboard.putData("Store Nike", new InstantCommand(() -> {
       writeSettingsToFile(getSettingsForNike());
     }));
 
@@ -184,6 +221,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new PrintCommand("Do something autonomous.... :-");
+    return new PrintCommand("Do something autonomously.... :-");
   }
 }

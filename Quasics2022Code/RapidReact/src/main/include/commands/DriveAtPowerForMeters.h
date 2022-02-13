@@ -6,8 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Drivebase.h"
+#include <units/length.h>
 
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -17,9 +18,10 @@
  * Command will *not* work!
  */
 class DriveAtPowerForMeters
-  : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
-public:
-  DriveAtPowerForMeters(Drivebase* drivebase, double motorPower, double distance);
+    : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
+ public:
+  DriveAtPowerForMeters(Drivebase* drivebase, double motorPower,
+                        units::meter_t distance);
 
   void Initialize() override;
 
@@ -29,10 +31,10 @@ public:
 
   bool IsFinished() override;
 
-private:
+ private:
   Drivebase* m_drivebase;
   const double m_motorPower;
-  const double m_distance;
+  const units::meter_t m_distance;
   units::meter_t m_leftStartingPosition;
   units::meter_t m_rightStartingPosition;
 };

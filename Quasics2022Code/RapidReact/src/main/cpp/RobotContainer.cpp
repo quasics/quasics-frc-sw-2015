@@ -51,22 +51,20 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
   m_autonomousOptions.AddOption(
       "Move Forward 1m at 50% power",
-      new DriveAtPowerForMeters(&m_drivebase, 0.5, 1));
+      new DriveAtPowerForMeters(&m_drivebase, 0.5, 1_m));
 
-  m_autonomousOptions.AddOption(
-      "Shoot @ 20% for 3 seconds",
-      new ShootForTime(&m_shooter, 0.2, units::second_t(3)));
+  m_autonomousOptions.AddOption("Shoot @ 20% for 3 seconds",
+                                new ShootForTime(&m_shooter, 0.2, 3_s));
 
-  m_autonomousOptions.AddOption(
-      "Shoot @ 20% for 2sec, move @ 20% for 1",
-      ShootAndMoveCommand(0.2, units::second_t(2), 0.2, 1));
+  m_autonomousOptions.AddOption("Shoot @ 20% for 2sec, move @ 20% for 1",
+                                ShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
 
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::ShootAndMoveCommand(
     double powerShoot, units::second_t timeShoot, double powerMove,
-    double distanceToMove) {
+    units::meter_t distanceToMove) {
   // Holds the sequence of the commands to be executed as a group.
   std::vector<std::unique_ptr<frc2::Command>> commands;
 

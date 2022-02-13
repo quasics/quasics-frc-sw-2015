@@ -31,13 +31,12 @@ class RobotContainer {
 
   // "Helper" functions, used internall.
  private:
-  frc2::SequentialCommandGroup* ShootAndMoveCommand(double powerShoot,
-                                                    units::second_t timeShoot,
-                                                    double powerMove,
-                                                    double distanceToMove);
+  frc2::SequentialCommandGroup* ShootAndMoveCommand(
+      double powerShoot, units::second_t timeShoot, double powerMove,
+      units::meter_t distanceToMove);
 
   void ConfigureJoystickButtonBindings();
-  void AddTestButtonToSmartDashboard();
+  void AddTestButtonsToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
 
   // The robot's subsystems and commands are defined here.

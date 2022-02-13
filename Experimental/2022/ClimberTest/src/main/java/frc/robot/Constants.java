@@ -15,6 +15,11 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final class DIO {
+        public static final int CLIMBER_UPPER_LIMIT_SWITCH_ID = 1;
+        public static final int CLIMBER_LOWER_LIMIT_SWITCH_ID = 1;
+    }
+
     public static final class MotorIds {
         public static final class SparkMax {
             public static final int LEFT_CLIMBER_MOTOR_ID = 6;

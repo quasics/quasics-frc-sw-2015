@@ -9,7 +9,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -30,51 +32,76 @@ import frc.robot.Constants;
  */
 public class Climber extends SubsystemBase {
 
-  private enum Motion {
-    kNone, kExtending, kRetracting
+  private static final double EXTENDING_SPEED_PERCENT = 0.25;
+  private static final double RETRACTING_SPEED_PERCENT = -0.25;
+
+  private interface Locker {
+    void setLocked(boolean tf);
   }
 
-  // TODO: Make this a non-arbitrary value. :-)
-  public static final double MAX_EXTENSION_INCHES = 100.0;
+  private interface MotorPositionFetcher {
+    double getPosition();
+  }
 
-  private static final double EXTENDING_SPEED_PERCENT = 0.25;
-  private static final double RETRACTING_SPEED_PERCENT = 0.25;
+  public enum Motion {
+    None, Extending, Retracting
+  }
 
-  private final CANSparkMax m_leftMotor = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_CLIMBER_MOTOR_ID,
-      MotorType.kBrushless);
-  private final CANSparkMax m_rightMotor = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_CLIMBER_MOTOR_ID,
-      MotorType.kBrushless);
+  private final DigitalInput m_upperLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_UPPER_LIMIT_SWITCH_ID);
+  private final DigitalInput m_lowerLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_LOWER_LIMIT_SWITCH_ID);
 
-  private final RelativeEncoder m_leftEncoder;
-  private final RelativeEncoder m_rightEncoder;
+  private Motion m_currentMode = Motion.None;
 
   private final MotorControllerGroup m_motors;
+  private final Locker m_motorLocker;
+  private final MotorPositionFetcher m_leftPositionFetcher;
+  private final MotorPositionFetcher m_rightPositionFetcher;
 
-  private Motion m_currentMode = Motion.kNone;
-
-  /** Creates a new Climber. */
+  /**
+   * Creates a new Climber.
+   * 
+   * Note: motors are configured in 'locked' mode by default.
+   */
   public Climber() {
-    // TODO: Figure out which of the motors actually *is* inverted (if any).
-    m_leftMotor.setInverted(true);
-    m_rightMotor.setInverted(false);
 
-    m_leftEncoder = m_leftMotor.getEncoder();
-    m_rightEncoder = m_rightMotor.getEncoder();
+    var leftMotor = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_CLIMBER_MOTOR_ID,
+        MotorType.kBrushless);
+    var rightMotor = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_CLIMBER_MOTOR_ID,
+        MotorType.kBrushless);
+    m_motors = new MotorControllerGroup(leftMotor, rightMotor);
 
-    // TODO: Add code to convert encoder positions from revolutions to inches.
-    // (Though this may not be possible, since the cable will wrap around itself
-    // somewhat unpredicably: we may need to consider averaging, or else using some
-    // other type of sensor, such as Hall effect, to detect arm positions.)
+    // Set up locking support.
+    m_motorLocker = (boolean tf) -> {
+      IdleMode mode = tf ? IdleMode.kBrake : IdleMode.kCoast;
+      leftMotor.setIdleMode(mode);
+      rightMotor.setIdleMode(mode);
+    };
+    m_motorLocker.setLocked(true);
 
-    m_motors = new MotorControllerGroup(m_leftMotor, m_rightMotor);
+    // Set up support for reporting positions (for debugging).
+    var leftEncoder = leftMotor.getEncoder();
+    m_leftPositionFetcher = () -> {
+      return leftEncoder.getPosition();
+    };
 
-    resetPosition();
+    var rightEncoder = rightMotor.getEncoder();
+    m_rightPositionFetcher = () -> {
+      return rightEncoder.getPosition();
+    };
+  }
+
+  public boolean isFullyRetracted() {
+    // Limit switches report true iff the switch is *open*.
+    return !m_lowerLimitSwitch.get();
+  }
+
+  public boolean isFullyExtended() {
+    // Limit switches report true iff the switch is *open*.
+    return !m_upperLimitSwitch.get();
   }
 
   public void enableBrakingMode(boolean tf) {
-    IdleMode mode = tf ? IdleMode.kBrake : IdleMode.kCoast;
-    m_rightMotor.setIdleMode(mode);
-    m_rightMotor.setIdleMode(mode);
+    m_motorLocker.setLocked(tf);
   }
 
   public void holdPosition() {
@@ -106,30 +133,26 @@ public class Climber extends SubsystemBase {
      */
   }
 
-  private void resetPosition() {
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
-  }
-
-  public double getPosition() {
-    return m_leftEncoder.getPosition();
-  }
-
+  /** Begins extending the arms, iff they aren't already fully extended. */
   public void extendArms() {
-    if (armsInBounds()) {
-      m_motors.set(EXTENDING_SPEED_PERCENT);
-      m_currentMode = Motion.kExtending;
+    if (isFullyExtended()) {
+      stop();
+      return;
     }
+
+    m_currentMode = Motion.Extending;
+    m_motors.set(EXTENDING_SPEED_PERCENT);
   }
 
-  /**
-   * 
-   */
+  /** Begins retracting the arms, iff they aren't already fully retracted. */
   public void retractArms() {
-    if (armsInBounds()) {
-      m_motors.set(RETRACTING_SPEED_PERCENT);
-      m_currentMode = Motion.kRetracting;
+    if (isFullyRetracted()) {
+      stop();
+      return;
     }
+
+    m_currentMode = Motion.Retracting;
+    m_motors.set(RETRACTING_SPEED_PERCENT);
   }
 
   /**
@@ -143,29 +166,49 @@ public class Climber extends SubsystemBase {
    */
   public void stop() {
     m_motors.stopMotor();
-    m_currentMode = Motion.kNone;
+    m_currentMode = Motion.None;
   }
 
   /**
    * @return true iff the motors are stopped (either via client request, or
-   *         because we've hit a soft limit)
+   *         because we've hit some limit of concern)
    */
   public boolean isStopped() {
-    return (m_currentMode == Motion.kNone);
+    return (m_currentMode == Motion.None);
   }
 
-  private boolean armsInBounds() {
-    // TODO: Add code to support "soft stops" on the motors.
-    // These decisions will be based on m_currentMode and either data from position,
-    // or via alternate signals (e.g., limit switches, Hall effect sensors, etc.).
-    return true;
-  }
-
+  /**
+   * Checks to see if we've reached a limit on the current direction in which the
+   * climber arms are moving. (If so, we will stop them, and update the current
+   * mode to reflect this.)
+   * 
+   * Note: this method will be called once per scheduler run.
+   */
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    if (!armsInBounds()) {
-      stop();
+    switch (m_currentMode) {
+      case Extending:
+        if (isFullyExtended()) {
+          System.err.println(">>> Climber is fully extended: stopping operation.");
+          stop();
+        }
+        break;
+      case Retracting:
+        if (isFullyRetracted()) {
+          System.err.println(">>> Climber is fully retracted: stopping operation.");
+          stop();
+        }
+        break;
+      case None:
+        // Nothing to do....
+        break;
     }
+
+    // Status reporting (to use in debugging tests/hardware).
+    SmartDashboard.putString("Mode", m_currentMode.toString());
+    SmartDashboard.putString("Upper limit", m_upperLimitSwitch.get() ? "open" : "closed");
+    SmartDashboard.putString("Lower limit", m_lowerLimitSwitch.get() ? "open" : "closed");
+    SmartDashboard.putString("Left pos", Double.toString(m_leftPositionFetcher.getPosition()));
+    SmartDashboard.putString("Right pos", Double.toString(m_rightPositionFetcher.getPosition()));
   }
 }

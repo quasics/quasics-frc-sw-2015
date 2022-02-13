@@ -42,9 +42,19 @@ public class RobotSettings {
     this.rightMotorsInverted = rightMotorsInverted;
   }
 
-  // Convenience method: will write to a file in the robot's "deploy" directory.
+  /**
+   * Converts a simple filename to a File object, in a well-defined directory.
+   * 
+   * Note: the "deploy" directory doesn't appear to be writeable by the robot
+   * programs.
+   */
+  private static File getPropsFile(String fileName) {
+    return new File(Filesystem.getOperatingDirectory(), fileName);
+  }
+
+  // Convenience method: will write to a file in a consistent directory.
   public boolean writeToFile(String fileName) {
-    File f = new File(Filesystem.getDeployDirectory(), fileName);
+    File f = getPropsFile(fileName);
     try {
       return writeToFile(Files.newBufferedWriter(f.toPath(), Charset.forName("US-ASCII")));
     } catch (java.io.IOException ioe) {
@@ -53,9 +63,9 @@ public class RobotSettings {
     }
   }
 
-  // Convenience method: will load from a file in the robot's "deploy" directory.
+  // Convenience method: will load from a file in a consistent directory.
   public static RobotSettings loadFromFile(String fileName) {
-    File f = new File(Filesystem.getDeployDirectory(), fileName);
+    File f = getPropsFile(fileName);
     try {
       return load(new java.io.FileInputStream(f));
     } catch (java.io.FileNotFoundException fnf) {

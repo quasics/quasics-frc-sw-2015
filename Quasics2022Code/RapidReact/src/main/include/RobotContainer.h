@@ -30,7 +30,7 @@ class RobotContainer {
 
   // "Helper" functions, used internally.
  private:
-  frc2::SequentialCommandGroup* ShootAndMoveCommand(
+  frc2::SequentialCommandGroup* BuildShootAndMoveCommand(
       double powerShoot, units::second_t timeShoot, double powerMove,
       units::meter_t distanceToMove);
 

@@ -9,7 +9,7 @@ Conveyor::Conveyor() {
 }
 
 void Conveyor::SetConveyorSpeed(double conveyorSpeed) {
-  m_Conveyor.Set(
+  m_conveyorMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
       conveyorSpeed);
 }

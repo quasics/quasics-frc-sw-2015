@@ -13,22 +13,18 @@ class Conveyor : public frc2::SubsystemBase {
  public:
   Conveyor();
 
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-
   void SetConveyorSpeed(double conveyorSpeed);
 
   void Stop() {
     SetConveyorSpeed(0);
   }
 
+  /**
+   * Will be called periodically whenever the CommandScheduler runs.
+   */
   void Periodic() override;
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-
-  ctre::phoenix::motorcontrol::can::VictorSPX m_Conveyor{
+  ctre::phoenix::motorcontrol::can::VictorSPX m_conveyorMotor{
       MotorIds::VictorSPX::CONVEYOR_MOTOR_ID};
 };

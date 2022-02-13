@@ -21,7 +21,7 @@ class Intake : public frc2::SubsystemBase {
   Intake();
 
   /**
-   * Sets the speed of the conveyor to the specified percentage (-1.0 to +1.0).
+   * Sets the speed of the intake to the specified percentage (-1.0 to +1.0).
    */
   void SetIntakeSpeed(double percentSpeed);
 

@@ -4,13 +4,11 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc/Timer.h>
 
 #include "subsystems/Shooter.h"
-
-
 
 /**
  * An example command.
@@ -20,8 +18,8 @@
  * Command will *not* work!
  */
 class ShootForTime
-  : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
-public:
+    : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
+ public:
   ShootForTime(Shooter* shooter, double power, units::second_t time);
 
   void Initialize() override;
@@ -32,10 +30,9 @@ public:
 
   bool IsFinished() override;
 
-private:
-
+ private:
   Shooter* m_shooter;
-  const double power;
-  const units::second_t time;
+  const double m_power;
+  const units::second_t m_time;
   frc::Timer m_stopWatch;
 };

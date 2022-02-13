@@ -4,8 +4,8 @@
 
 #include "commands/RunShooterAtSpeed.h"
 
-RunShooterAtSpeed::RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed) : m_shooter(shooter), m_flyWheelSpeed(flyWheelSpeed) {
-  // Use addRequirements() here to declare subsystem dependencies.
+RunShooterAtSpeed::RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed)
+    : m_shooter(shooter), m_flyWheelSpeed(flyWheelSpeed) {
   AddRequirements(shooter);
 }
 

@@ -78,7 +78,8 @@
     "streambuf": "cpp",
     "thread": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "matrixfunctions": "cpp"
   },
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,

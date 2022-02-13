@@ -8,7 +8,6 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
                                              double motorPower,
                                              units::meter_t distance)
     : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 

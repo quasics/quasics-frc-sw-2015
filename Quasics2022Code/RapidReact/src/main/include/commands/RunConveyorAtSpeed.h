@@ -30,6 +30,6 @@ class RunConveyorAtSpeed
   bool IsFinished() override;
 
  private:
-  Conveyor* m_Conveyor;
-  const double m_ConveyorSpeed;
+  Conveyor* m_conveyor;
+  const double m_conveyorSpeed;
 };

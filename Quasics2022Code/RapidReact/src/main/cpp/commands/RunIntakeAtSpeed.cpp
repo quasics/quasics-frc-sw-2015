@@ -5,24 +5,23 @@
 #include "commands/RunIntakeAtSpeed.h"
 
 RunIntakeAtSpeed::RunIntakeAtSpeed(Intake* intake, double speed)
-    : m_Intake(intake), m_IntakeSpeed(speed) {
-  // Use addRequirements() here to declare subsystem dependencies.
+    : m_intake(intake), m_intakeSpeed(speed) {
   AddRequirements(intake);
 }
 
 // Called when the command is initially scheduled.
 void RunIntakeAtSpeed::Initialize() {
-  m_Intake->SetIntakeSpeed(m_IntakeSpeed);
+  m_intake->SetIntakeSpeed(m_intakeSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RunIntakeAtSpeed::Execute() {
-  m_Intake->SetIntakeSpeed(m_IntakeSpeed);
+  m_intake->SetIntakeSpeed(m_intakeSpeed);
 }
 
 // Called once the command ends or is interrupted.
 void RunIntakeAtSpeed::End(bool interrupted) {
-  m_Intake->Stop();
+  m_intake->Stop();
 }
 
 // Returns true when the command should end.

@@ -30,6 +30,6 @@ class RunIntakeAtSpeed
   bool IsFinished() override;
 
  private:
-  Intake* m_Intake;
-  const double m_IntakeSpeed;
+  Intake* m_intake;
+  const double m_intakeSpeed;
 };

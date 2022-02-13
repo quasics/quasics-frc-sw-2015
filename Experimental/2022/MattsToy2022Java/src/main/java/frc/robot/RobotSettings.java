@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Filesystem;
 
 /**
  * TODO(mjh): Consider using reflection to make this easier.
+ * TODO(mjh): Consider switching to a USB drive, if needed. These are apparently
+ * mounted at "/U" on roboRIO.
  */
 public class RobotSettings {
   static final String ROBOT_NAME_PROPERTY = "robotName";

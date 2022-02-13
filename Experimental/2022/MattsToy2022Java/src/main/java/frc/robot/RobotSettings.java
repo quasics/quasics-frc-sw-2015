@@ -76,6 +76,17 @@ public class RobotSettings {
     }
   }
 
+  // Convenience method: will load from a file in the "deploy" directory.
+  public static RobotSettings loadFromDeployedFile(String fileName) {
+    File f = new File(Filesystem.getDeployDirectory(), fileName);
+    try {
+      return load(new java.io.FileInputStream(f));
+    } catch (java.io.FileNotFoundException fnf) {
+      System.err.format("Can't find file: %s%n", f.toString());
+      return null;
+    }
+  }
+
   public static RobotSettings load(java.io.InputStream in) {
     try (in) {
       Properties props = new Properties();

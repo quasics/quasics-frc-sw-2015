@@ -11,15 +11,25 @@ import frc.robot.subsystems.Lighting;
 public class BreathingLights extends CommandBase {
   final private Lighting m_lighting;
   final private Lighting.StockColor m_color;
-  Timer timer = new Timer();
-  private final double step = 0.01;
+  final private double step;
+
   private double currentIntensity = 0;
   private boolean rising = true;
 
   /** Creates a new BreathingLights. */
   public BreathingLights(Lighting lighting, Lighting.StockColor color) {
+    this(lighting, color, 0.01);
+  }
+
+  /**
+   * 
+   * @param lighting
+   * @param color
+   */
+  public BreathingLights(Lighting lighting, Lighting.StockColor color, double step) {
     this.m_lighting = lighting;
     this.m_color = color;
+    this.step = step;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_lighting);
@@ -31,8 +41,6 @@ public class BreathingLights extends CommandBase {
     // Start out with lights fully off.
     this.currentIntensity = 0;
     this.rising = true;
-    timer.reset();
-    timer.start();
     m_lighting.SetStripColor(Lighting.StockColor.Black);
   }
 
@@ -65,8 +73,6 @@ public class BreathingLights extends CommandBase {
     final int g = (int) (currentIntensity * m_color.getG());
     final int b = (int) (currentIntensity * m_color.getB());
     m_lighting.SetStripColor(r, g, b);
-
-    timer.reset();
   }
 
   // Called once the command ends or is interrupted.

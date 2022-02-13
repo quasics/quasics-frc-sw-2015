@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses the lighting subsystem. */
 public class SimpleLighting extends CommandBase {
   private final Lighting m_subsystem;
-  private final Lighting.Color color;
+  private final Lighting.StockColor color;
 
   /**
    * Creates a new SimpleLighting.
@@ -18,7 +18,7 @@ public class SimpleLighting extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public SimpleLighting(Lighting subsystem) {
-    this(subsystem, Lighting.Color.Green);
+    this(subsystem, Lighting.StockColor.Green);
   }
 
   /**
@@ -26,7 +26,7 @@ public class SimpleLighting extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimpleLighting(Lighting subsystem, Lighting.Color color) {
+  public SimpleLighting(Lighting subsystem, Lighting.StockColor color) {
     setName("Lighting");
 
     m_subsystem = subsystem;

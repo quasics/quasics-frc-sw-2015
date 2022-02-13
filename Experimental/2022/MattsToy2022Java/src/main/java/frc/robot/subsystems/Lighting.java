@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lighting extends SubsystemBase {
-  public enum Color {
+  public enum StockColor {
     Green(0, 255, 0),
     Red(255, 0, 0),
     Blue(0, 0, 255),
@@ -19,7 +19,7 @@ public class Lighting extends SubsystemBase {
 
     final private int r, g, b;
 
-    Color(int r, int g, int b) {
+    StockColor(int r, int g, int b) {
       this.r = r;
       this.g = g;
       this.b = b;
@@ -84,7 +84,7 @@ public class Lighting extends SubsystemBase {
     m_led.setData(m_ledBuffer);
   }
 
-  public void SetStripColor(Color color) {
+  public void SetStripColor(StockColor color) {
     SetStripColor(color.getR(), color.getG(), color.getB());
   }
 

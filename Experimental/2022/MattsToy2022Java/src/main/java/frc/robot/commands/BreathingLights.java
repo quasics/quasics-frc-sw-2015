@@ -10,14 +10,14 @@ import frc.robot.subsystems.Lighting;
 
 public class BreathingLights extends CommandBase {
   final private Lighting m_lighting;
-  final private Lighting.Color m_color;
+  final private Lighting.StockColor m_color;
   Timer timer = new Timer();
   private final double step = 0.01;
   private double currentIntensity = 0;
   private boolean rising = true;
 
   /** Creates a new BreathingLights. */
-  public BreathingLights(Lighting lighting, Lighting.Color color) {
+  public BreathingLights(Lighting lighting, Lighting.StockColor color) {
     this.m_lighting = lighting;
     this.m_color = color;
 
@@ -33,7 +33,7 @@ public class BreathingLights extends CommandBase {
     this.rising = true;
     timer.reset();
     timer.start();
-    m_lighting.SetStripColor(Lighting.Color.Black);
+    m_lighting.SetStripColor(Lighting.StockColor.Black);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -72,6 +72,6 @@ public class BreathingLights extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_lighting.SetStripColor(Lighting.Color.Black);
+    m_lighting.SetStripColor(Lighting.StockColor.Black);
   }
 }

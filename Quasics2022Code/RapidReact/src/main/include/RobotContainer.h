@@ -37,7 +37,7 @@ class RobotContainer {
                                                     double distanceToMove);
 
   void ConfigureJoystickButtonBindings();
-  void AddTestButtonToSmartDasboard();
+  void AddTestButtonToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
 
   // The robot's subsystems and commands are defined here.

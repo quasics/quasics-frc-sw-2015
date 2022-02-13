@@ -21,7 +21,7 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureJoystickButtonBindings();
-  AddTestButtonToSmartDasboard();
+  AddTestButtonToSmartDashboard();
   AddAutonomousCommandsToSmartDashboard();
 }
 
@@ -30,7 +30,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 }
 
 // Note: 0.65 seems to be reasonable power for the high goal.
-void RobotContainer::AddTestButtonToSmartDasboard() {
+void RobotContainer::AddTestButtonToSmartDashboard() {
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Run Shooter FlyWheel",

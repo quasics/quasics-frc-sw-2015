@@ -18,6 +18,7 @@
  */
 class Conveyor : public frc2::SubsystemBase {
  public:
+  /** Constructor. */
   Conveyor();
 
   /**
@@ -32,11 +33,14 @@ class Conveyor : public frc2::SubsystemBase {
     SetConveyorSpeed(0);
   }
 
+  // Standard functions for subsystems.
+ public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
 
+  // Data members.
  private:
   ctre::phoenix::motorcontrol::can::VictorSPX m_conveyorMotor{
       MotorIds::VictorSPX::CONVEYOR_MOTOR_ID};

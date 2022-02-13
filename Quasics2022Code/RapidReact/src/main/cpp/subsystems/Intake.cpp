@@ -12,10 +12,8 @@ Intake::Intake() {
 void Intake::Periodic() {
 }
 
-void Intake::SetIntakeSpeed(double intakeSpeed) {
-  /// BUG(Josh): Why are you passing in a speed, but then always using
-  /// 0.5?(Matthew fixed)
+void Intake::SetIntakeSpeed(double percentSpeed) {
   m_floorPickupMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      intakeSpeed);
+      percentSpeed);
 }

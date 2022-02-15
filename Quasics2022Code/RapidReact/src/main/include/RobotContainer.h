@@ -9,6 +9,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+#include "subsystems/Climber.h"
 #include "subsystems/Conveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
@@ -46,6 +47,7 @@ class RobotContainer {
   Drivebase m_drivebase;
   Intake m_intake;
   Conveyor m_conveyor;
+  Climber m_climber;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 };

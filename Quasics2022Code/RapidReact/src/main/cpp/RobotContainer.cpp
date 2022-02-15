@@ -8,6 +8,7 @@
 #include <frc2/command/PrintCommand.h>
 
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/ExtendClimber.h"
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunIntakeAtSpeed.h"
@@ -44,6 +45,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RunConveyorAtSpeed(&m_conveyor, 0.2));
   frc::SmartDashboard::PutData("Conveyor: 30% backward",
                                new RunConveyorAtSpeed(&m_conveyor, -0.3));
+  frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

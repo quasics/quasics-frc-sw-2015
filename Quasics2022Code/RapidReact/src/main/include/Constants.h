@@ -23,8 +23,6 @@ constexpr double EXTENSION_SPEED = 0.25;
 
 constexpr double RETRACTION_SPEED = -0.25;
 
-constexpr double MAX_EXTENSION_HEIGHT = 0;
-
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
@@ -40,6 +38,11 @@ namespace MotorIds {
     constexpr int CONVEYOR_MOTOR_ID = 2;
   }  // namespace VictorSPX
 }  // namespace MotorIds
+
+namespace DigitalInput {
+  constexpr int TOP_LIMIT_SWITCH_ID = 1;
+  constexpr int BOTTON_LIMIT_SWITCH_ID = 2;
+}  // namespace DigitalInput
 
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;

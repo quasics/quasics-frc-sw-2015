@@ -12,7 +12,7 @@ void Climber::StartExtending() {
   // TODO(Matthew): Switch to a named constant for the extension speed. (done)
   //
   // TODO(Matthew): Consider how you should handle things if the arms are
-  // already fully extended.
+  // already fully extended.(done)
 
   m_climbers.Set(EXTENSION_SPEED);
   m_currentStatus = Movement::eUp;
@@ -22,7 +22,7 @@ void Climber::StartRetracting() {
   // TODO(Matthew): Switch to a named constant for the retraction speed. (done)
   //
   // TODO(Matthew): Consider how you should handle things if the arms are
-  // already fully retracted.
+  // already fully retracted.(done)
 
   m_climbers.Set(RETRACTION_SPEED);
   m_currentStatus = Movement::eDown;
@@ -52,14 +52,23 @@ Climber::Movement Climber::GetCurrentStatus() {
 
 // This method will be called once per scheduler run
 void Climber::Periodic() {
+  if (GetCurrentStatus() == Movement::eUp) {
+    if (IsFullyExtended()) {
+      Stop();
+    }
+  } else {
+    if (IsFullyRetracted()) {
+      Stop();
+    }
+  }
 }
 
 bool Climber::IsFullyExtended() {
-    // TODO(Matthew): Implement this method.
-  return false;
+  // TODO(Matthew): Implement this method. (done)
+  return topLimitSwitch.Get();
 }
 
 bool Climber::IsFullyRetracted() {
-  // TODO(Matthew): Implement this method.
-  return false;
+  // TODO(Matthew): Implement this method. (done)
+  return bottomLimitSwitch.Get();
 }

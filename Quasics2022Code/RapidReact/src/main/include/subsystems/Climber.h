@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/DigitalInput.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
@@ -79,6 +80,10 @@ class Climber : public frc2::SubsystemBase {
   rev::CANSparkMax m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
                                   rev::CANSparkMax::MotorType::kBrushless};
   frc::MotorControllerGroup m_climbers{m_climberLeft, m_climberRight};
+
+  frc::DigitalInput topLimitSwitch{DigitalInput::TOP_LIMIT_SWITCH_ID};
+
+  frc::DigitalInput bottomLimitSwitch{DigitalInput::BOTTON_LIMIT_SWITCH_ID};
 
   Movement m_currentStatus{Movement::eStopped};
 };

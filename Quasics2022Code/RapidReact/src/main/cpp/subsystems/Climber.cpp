@@ -9,22 +9,22 @@ Climber::Climber() {
 }
 
 void Climber::StartExtending() {
-  // TODO(Matthew): Switch to a named constant for the extension speed.
+  // TODO(Matthew): Switch to a named constant for the extension speed. (done)
   //
   // TODO(Matthew): Consider how you should handle things if the arms are
   // already fully extended.
 
-  m_climbers.Set(0.25);
+  m_climbers.Set(EXTENSION_SPEED);
   m_currentStatus = Movement::eUp;
 }
 
 void Climber::StartRetracting() {
-  // TODO(Matthew): Switch to a named constant for the retraction speed.
+  // TODO(Matthew): Switch to a named constant for the retraction speed. (done)
   //
   // TODO(Matthew): Consider how you should handle things if the arms are
   // already fully retracted.
 
-  m_climbers.Set(-0.25);
+  m_climbers.Set(RETRACTION_SPEED);
   m_currentStatus = Movement::eDown;
 }
 
@@ -55,7 +55,7 @@ void Climber::Periodic() {
 }
 
 bool Climber::IsFullyExtended() {
-  // TODO(Matthew): Implement this method.
+    // TODO(Matthew): Implement this method.
   return false;
 }
 

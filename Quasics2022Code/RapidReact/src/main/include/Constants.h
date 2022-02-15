@@ -19,6 +19,12 @@ constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 
 constexpr double DRIVEBASE_GEAR_RATIO = 8.45;
 
+constexpr double EXTENSION_SPEED = 0.25;
+
+constexpr double RETRACTION_SPEED = -0.25;
+
+constexpr double MAX_EXTENSION_HEIGHT = 0;
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

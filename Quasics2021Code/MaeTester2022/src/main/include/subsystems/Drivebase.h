@@ -8,6 +8,7 @@
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/SubsystemBase.h>

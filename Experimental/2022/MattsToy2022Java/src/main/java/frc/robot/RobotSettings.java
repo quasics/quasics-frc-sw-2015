@@ -57,6 +57,10 @@ public class RobotSettings {
     return new File(Filesystem.getOperatingDirectory(), fileName);
   }
 
+  /**
+   * @return a list of the property files (assumed to be RobotSettings storage) in
+   *         the "deploy" directory
+   */
   public static List<File> getDeployedPropertyFiles() {
     FilenameFilter filter = (File f, String name) -> {
       return name.endsWith(".props");

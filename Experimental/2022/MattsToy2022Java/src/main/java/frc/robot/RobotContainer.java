@@ -90,10 +90,48 @@ public class RobotContainer {
     configureSmartDashboard();
   }
 
+  /**
+   * Controls whether robot settings/configuration data will be loaded from
+   * (read-only) files in the "deploy" directory on the robot (iff == true), or
+   * if they will be written to/loaded from a single file in the operating
+   * directory (iff == false).
+   * 
+   * In either case, changes to the configured robot settings will only be applied
+   * when the robot code is restarted.
+   * 
+   * However, the "deployed files" option has the advantage of allowing the robot
+   * configuration to be changed solely by updating the choice in the UI and
+   * restarting the robot code; the "store the config to be used" option requires
+   * that the robot be *enabled* first, in order to allow the command to be
+   * executed (which could be more of an issue at an event).
+   * 
+   * TODO(mjh): Consider updating the code to allow dynamic reloads, though this
+   * would potentially imply regenerating one or more of the subsystems (thus they
+   * couldn't be "final"), as well as a potential loss of some state if it happens
+   * after some period of operations (e.g., odometry data).
+   */
   private static final boolean LOAD_SETTINGS_FROM_DEPLOYED_FILES = false;
+
+  /**
+   * Default robot selection for loading robot settings/configuration data from
+   * deployed property files.
+   * 
+   * Only used iff LOAD_FROM_DEPLOYED_FILES == true.
+   * 
+   * @see #loadSettingsOrDefaults()
+   * @see frc.robot.RobotSettings#loadFromDeployedFile(String)
+   */
   private static final String DEFAULT_ROBOT_PROPERTY_NAME = "sally";
 
-  // Only used iff LOAD_FROM_DEPLOYED_FILES == false.
+  /**
+   * The file to be used to store the robot settings to be made active on the next
+   * restart of the robot code.
+   * 
+   * Only used iff LOAD_FROM_DEPLOYED_FILES == false.
+   * 
+   * @see #loadSettingsOrDefaults()
+   * @see frc.robot.RobotSettings#writeToFile(String)
+   */
   private static final String SETTINGS_FILE_NAME = "robotSettings.props";
 
   /**
@@ -102,13 +140,16 @@ public class RobotContainer {
    */
   private static RobotSettings loadSettingsOrDefaults() {
     RobotSettings settings = null;
+    final String LOADING_ROBOT_PROPERTY_NAME = "Properties";
     if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
       // Add "robot properties" control field to dashboard (and make it persistent).
-      SmartDashboard.setDefaultString("Properties", DEFAULT_ROBOT_PROPERTY_NAME);
-      SmartDashboard.setPersistent("Properties");
+      SmartDashboard.setDefaultString(LOADING_ROBOT_PROPERTY_NAME, DEFAULT_ROBOT_PROPERTY_NAME);
+      SmartDashboard.setPersistent(LOADING_ROBOT_PROPERTY_NAME);
 
       // Get the robot properties from the deployed file for the named robot.
-      final String robotFileName = SmartDashboard.getString("Properties", DEFAULT_ROBOT_PROPERTY_NAME) + ".props";
+      final String specifiedRobotName = SmartDashboard
+          .getString(LOADING_ROBOT_PROPERTY_NAME, DEFAULT_ROBOT_PROPERTY_NAME).trim();
+      final String robotFileName = specifiedRobotName + ".props";
       settings = RobotSettings.loadFromDeployedFile(robotFileName);
       if (settings != null) {
         return settings;
@@ -120,8 +161,14 @@ public class RobotContainer {
               + "\n"
               + "Please update robot properties selection on the dashboard (e.g., 'sally').\n"
               + "---------------------------------------------------------------------------\n");
-      SmartDashboard.putString("Properties", DEFAULT_ROBOT_PROPERTY_NAME);
+      SmartDashboard.putString(LOADING_ROBOT_PROPERTY_NAME, DEFAULT_ROBOT_PROPERTY_NAME);
     } else {
+      // Remove the "load from deployed props" option from the dashboard, since it's
+      // unused in the configured mode.
+      SmartDashboard.clearPersistent(LOADING_ROBOT_PROPERTY_NAME);
+      SmartDashboard.delete(LOADING_ROBOT_PROPERTY_NAME);
+
+      // Try loading previously-saved robot settings from the file.
       settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
       if (settings != null) {
         return settings;
@@ -198,15 +245,17 @@ public class RobotContainer {
     //
     // TODO(mjh): If this works, switch back to using buttons to swap stored
     // settings, and refresh on reload.
-    SmartDashboard.putData("Store Sally", new InstantCommand(() -> {
-      writeSettingsToFile(getDefaultSettings());
-    }));
-    SmartDashboard.putData("Store Mae", new InstantCommand(() -> {
-      writeSettingsToFile(getSettingsForMae());
-    }));
-    SmartDashboard.putData("Store Nike", new InstantCommand(() -> {
-      writeSettingsToFile(getSettingsForNike());
-    }));
+    if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
+      SmartDashboard.putData("Store Sally", new InstantCommand(() -> {
+        writeSettingsToFile(getDefaultSettings());
+      }));
+      SmartDashboard.putData("Store Mae", new InstantCommand(() -> {
+        writeSettingsToFile(getSettingsForMae());
+      }));
+      SmartDashboard.putData("Store Nike", new InstantCommand(() -> {
+        writeSettingsToFile(getSettingsForNike());
+      }));
+    }
 
     // Lighting commands
     SmartDashboard.putData("Red", new SimpleLighting(m_lighting, Lighting.StockColor.Red));

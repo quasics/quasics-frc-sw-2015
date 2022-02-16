@@ -124,6 +124,7 @@ public class RobotSettings {
       props.setProperty(LEFT_MOTORS_INVERTED_PROPERTY, Boolean.toString(leftMotorsInverted));
       props.setProperty(RIGHT_MOTORS_INVERTED_PROPERTY, Boolean.toString(rightMotorsInverted));
       props.store(writer, null);
+      result = true;
     } catch (IOException x) {
       System.err.format("Error writing settings to file: %s%n", x);
     }

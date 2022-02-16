@@ -1,7 +1,10 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -52,6 +55,13 @@ public class RobotSettings {
    */
   private static File getPropsFile(String fileName) {
     return new File(Filesystem.getOperatingDirectory(), fileName);
+  }
+
+  public static List<File> getDeployedPropertyFiles() {
+    FilenameFilter filter = (File f, String name) -> {
+      return name.endsWith(".prop");
+    };
+    return Arrays.asList(Filesystem.getOperatingDirectory().listFiles(filter));
   }
 
   // Convenience method: will write to a file in a consistent directory.

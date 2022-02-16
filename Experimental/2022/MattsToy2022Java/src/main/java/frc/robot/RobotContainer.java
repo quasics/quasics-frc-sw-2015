@@ -242,12 +242,9 @@ public class RobotContainer {
 
   private void configureSmartDashboard() {
     // Buttons to allow writing settings files (for use on next boot).
-    //
-    // TODO(mjh): If this works, switch back to using buttons to swap stored
-    // settings, and refresh on reload.
     if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
       SmartDashboard.putData("Store Sally", new InstantCommand(() -> {
-        writeSettingsToFile(getDefaultSettings());
+        writeSettingsToFile(getSettingsForSally());
       }));
       SmartDashboard.putData("Store Mae", new InstantCommand(() -> {
         writeSettingsToFile(getSettingsForMae());
@@ -255,6 +252,10 @@ public class RobotContainer {
       SmartDashboard.putData("Store Nike", new InstantCommand(() -> {
         writeSettingsToFile(getSettingsForNike());
       }));
+    } else {
+      SmartDashboard.delete("Store Sally");
+      SmartDashboard.delete("Store Mae");
+      SmartDashboard.delete("Store Nike");
     }
 
     // Lighting commands

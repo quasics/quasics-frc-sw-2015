@@ -90,7 +90,7 @@ public class RobotContainer {
     configureSmartDashboard();
   }
 
-  private static final boolean LOAD_SETTINGS_FROM_DEPLOYED_FILES = true;
+  private static final boolean LOAD_SETTINGS_FROM_DEPLOYED_FILES = false;
   private static final String DEFAULT_ROBOT_PROPERTY_NAME = "sally";
 
   // Only used iff LOAD_FROM_DEPLOYED_FILES == false.
@@ -120,6 +120,7 @@ public class RobotContainer {
               + "\n"
               + "Please update robot properties selection on the dashboard (e.g., 'sally').\n"
               + "---------------------------------------------------------------------------\n");
+      SmartDashboard.putString("Properties", DEFAULT_ROBOT_PROPERTY_NAME);
     } else {
       settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
       if (settings != null) {

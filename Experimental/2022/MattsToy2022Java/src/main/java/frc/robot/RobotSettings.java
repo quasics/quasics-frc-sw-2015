@@ -59,7 +59,7 @@ public class RobotSettings {
 
   public static List<File> getDeployedPropertyFiles() {
     FilenameFilter filter = (File f, String name) -> {
-      return name.endsWith(".prop");
+      return name.endsWith(".props");
     };
     return Arrays.asList(Filesystem.getOperatingDirectory().listFiles(filter));
   }

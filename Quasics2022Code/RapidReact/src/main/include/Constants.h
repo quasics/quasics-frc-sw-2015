@@ -44,6 +44,10 @@ namespace DigitalInput {
   constexpr int BOTTON_LIMIT_SWITCH_ID = 2;
 }  // namespace DigitalInput
 
+namespace LightingValues {
+  constexpr int PWM_PORT = 0;
+  constexpr int NUM_LIGHTS = 60;
+}  // namespace LightingValues
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
 

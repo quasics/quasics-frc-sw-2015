@@ -14,6 +14,7 @@
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
+#include "commands/SetLightsToColor.h"
 #include "commands/ShootForTime.h"
 #include "commands/TankDrive.h"
 
@@ -49,6 +50,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
+  frc::SmartDashboard::PutData(
+      "Set All ligths to Red",
+      new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

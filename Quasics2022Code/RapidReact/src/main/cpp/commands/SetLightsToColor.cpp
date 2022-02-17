@@ -4,12 +4,13 @@
 
 #include "commands/SetLightsToColor.h"
 
-SetLightsToColor::SetLightsToColor(Lighting* lighting) : m_lighting(lighting) {
+SetLightsToColor::SetLightsToColor(Lighting* lighting, Lighting::StockColor c)
+    : m_lighting(lighting), color(c) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_lighting);
 }
 
 // Called when the command is initially scheduled.
 void SetLightsToColor::Initialize() {
-  m_lighting->SetAllToColor(255, 0, 0);
+  m_lighting->SetAllToColor(color);
 }

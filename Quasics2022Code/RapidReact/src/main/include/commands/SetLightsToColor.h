@@ -19,10 +19,11 @@
 class SetLightsToColor
     : public frc2::CommandHelper<frc2::CommandBase, SetLightsToColor> {
  public:
-  SetLightsToColor(Lighting* lighting);
+  SetLightsToColor(Lighting* lighting, Lighting::StockColor c);
 
   void Initialize() override;
 
  private:
   Lighting* m_lighting;
+  const Lighting::StockColor color;
 };

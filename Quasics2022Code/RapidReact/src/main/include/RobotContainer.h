@@ -13,6 +13,7 @@
 #include "subsystems/Conveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/Lighting.h"
 #include "subsystems/Shooter.h"
 
 /**
@@ -48,6 +49,7 @@ class RobotContainer {
   Intake m_intake;
   Conveyor m_conveyor;
   Climber m_climber;
+  Lighting m_lighting;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 };

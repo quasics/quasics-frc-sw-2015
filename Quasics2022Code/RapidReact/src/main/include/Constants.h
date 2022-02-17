@@ -45,7 +45,7 @@ namespace DigitalInput {
 }  // namespace DigitalInput
 
 namespace LightingValues {
-  constexpr int PWM_PORT = 0;
+  constexpr int PWM_PORT = 7;
   constexpr int NUM_LIGHTS = 60;
 }  // namespace LightingValues
 namespace OperatorInterface {

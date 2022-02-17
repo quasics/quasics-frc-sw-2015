@@ -6,6 +6,8 @@
 
 Lighting::Lighting() {
   m_ledStrip.SetLength(m_ledBuffer.size());
+  SetAllToColor(StockColor::Green);
+  m_ledStrip.Start();
 }
 
 void Lighting::SetAllToColor(StockColor c) {

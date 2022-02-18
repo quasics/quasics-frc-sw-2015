@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PrintCommand.h>
 
+#include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/ExtendClimber.h"
@@ -56,6 +57,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));
   frc::SmartDashboard::PutData(
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));
+  frc::SmartDashboard::PutData("Alliance Breathing Lights",
+                               new BreathingAllianceLights());
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

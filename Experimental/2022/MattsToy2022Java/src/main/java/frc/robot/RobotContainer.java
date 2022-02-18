@@ -74,22 +74,22 @@ public class RobotContainer {
           return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
         });
 
-    DrivePowerSupplier leftScaledSupplier = () -> drivingDeadband.adjustSpeed(
+    DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
         modeScaler.adjustSpeed(
             driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)));
-    DrivePowerSupplier rightScaledSupplier = () -> drivingDeadband.adjustSpeed(
+    DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
         modeScaler.adjustSpeed(
             driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
 
     // Need to hang onto this to allow reference from configureButtonBindings()
     // (though I could make it local if I just bound it here...).
-    m_switchDriveHandler = new SwitchDriveHandler(leftScaledSupplier, rightScaledSupplier);
+    m_switchDriveHandler = new SwitchDriveHandler(leftStick, rightStick);
 
     TankDrive tankDrive = new TankDrive(m_driveBase,
         // Left side control
-        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getLeftSupplier() : leftScaledSupplier,
+        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getLeftSupplier() : leftStick,
         // Right side control
-        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getRightSupplier() : rightScaledSupplier);
+        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getRightSupplier() : rightStick);
     m_driveBase.setDefaultCommand(tankDrive);
 
     //////////////////////////////////////////////////////////////

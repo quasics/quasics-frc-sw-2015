@@ -7,6 +7,8 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/Lighting.h"
+
 /**
  * An example command.
  *
@@ -17,7 +19,7 @@
 class BreathingLights
     : public frc2::CommandHelper<frc2::CommandBase, BreathingLights> {
  public:
-  BreathingLights();
+  BreathingLights(Lighting* lights, int r, int g, int b, double intensity);
 
   void Initialize() override;
 
@@ -26,4 +28,14 @@ class BreathingLights
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  Lighting* m_lighting;
+  const int red;
+  const int green;
+  const int blue;
+  const double intensityPercent;
+  bool breathingIn = true;
+  double currentIntensityPercent = 0;
+  double increment = 0.01;
 };

@@ -5,13 +5,10 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.DriveBase;
+import frc.robot.utils.DrivePowerSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TankDrive extends CommandBase {
-
-  public interface DrivePowerSupplier {
-    public double get();
-  }
 
   final DriveBase driveBase;
   final DrivePowerSupplier leftPowerSupplier;

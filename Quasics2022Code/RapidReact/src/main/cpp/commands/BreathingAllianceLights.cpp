@@ -4,25 +4,49 @@
 
 #include "commands/BreathingAllianceLights.h"
 
-BreathingAllianceLights::BreathingAllianceLights() {
+BreathingAllianceLights::BreathingAllianceLights(Lighting* lights,
+                                                 double intensity)
+    : m_lighting(lights), intensityPercent(intensity) {
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(m_lighting);
 }
 
 // Called when the command is initially scheduled.
 void BreathingAllianceLights::Initialize() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed) {
-    BreathingLights(m_lighting, 255, 0, 0, 1.00);
+    isRed = true;
   } else {
-    BreathingLights(m_lighting, 0, 0, 255, 1.00);
+    isRed = false;
+  }
+  if (isRed) {
+    m_lighting->SetAllToColor(red * currentIntensityPercent, 0, 0);
+  } else {
+    m_lighting->SetAllToColor(0, 0, blue * currentIntensityPercent);
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void BreathingAllianceLights::Execute() {
+  if (currentIntensityPercent >= intensityPercent) {
+    breathingIn = false;
+    increment = -0.01;
+  }
+  if (currentIntensityPercent <= 0) {
+    breathingIn = true;
+    increment = 0.01;
+  }
+
+  if (isRed) {
+    m_lighting->SetAllToColor(red * currentIntensityPercent, 0, 0);
+  } else {
+    m_lighting->SetAllToColor(0, 0, blue * currentIntensityPercent);
+  }
+  currentIntensityPercent += increment;
 }
 
 // Called once the command ends or is interrupted.
 void BreathingAllianceLights::End(bool interrupted) {
+  m_lighting->SetAllToColor(0, 0, 0);
 }
 
 // Returns true when the command should end.

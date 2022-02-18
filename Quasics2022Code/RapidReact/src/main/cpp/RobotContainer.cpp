@@ -58,7 +58,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));
   frc::SmartDashboard::PutData("Alliance Breathing Lights",
-                               new BreathingAllianceLights());
+                               new BreathingAllianceLights(&m_lighting, 0.75));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

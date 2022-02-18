@@ -15,12 +15,15 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.utils.DeadBandEnforcer;
+import frc.robot.utils.DrivePowerSupplier;
 import frc.robot.utils.SpeedScaler;
+import frc.robot.utils.SwitchDriveHandler;
 import frc.robot.utils.TurboTurtleScaler;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,6 +38,10 @@ public class RobotContainer {
 
   private final DriveBase m_driveBase;
   private final Lighting m_lighting;
+
+  private static final boolean ENABLE_SWITCH_DRIVE = false;
+
+  private final SwitchDriveHandler m_switchDriveHandler;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -67,15 +74,22 @@ public class RobotContainer {
           return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
         });
 
+    DrivePowerSupplier leftScaledSupplier = () -> drivingDeadband.adjustSpeed(
+        modeScaler.adjustSpeed(
+            driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)));
+    DrivePowerSupplier rightScaledSupplier = () -> drivingDeadband.adjustSpeed(
+        modeScaler.adjustSpeed(
+            driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
+
+    // Need to hang onto this to allow reference from configureButtonBindings()
+    // (though I could make it local if I just bound it here...).
+    m_switchDriveHandler = new SwitchDriveHandler(leftScaledSupplier, rightScaledSupplier);
+
     TankDrive tankDrive = new TankDrive(m_driveBase,
         // Left side control
-        () -> drivingDeadband.adjustSpeed(
-            modeScaler.adjustSpeed(
-                driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS))),
+        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getLeftSupplier() : leftScaledSupplier,
         // Right side control
-        () -> drivingDeadband.adjustSpeed(
-            modeScaler.adjustSpeed(
-                driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS))));
+        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getRightSupplier() : rightScaledSupplier);
     m_driveBase.setDefaultCommand(tankDrive);
 
     //////////////////////////////////////////////////////////////
@@ -230,6 +244,10 @@ public class RobotContainer {
    * @param driverStick the driver's joystick.
    */
   private void configureButtonBindings(Joystick driverStick) {
+    JoystickButton b = new JoystickButton(driverStick, Constants.OperatorInterface.LogitechGamePad.START_BUTTON);
+    b.whenPressed(new InstantCommand(() -> {
+      m_switchDriveHandler.switchDirections();
+    }));
   }
 
   private static void writeSettingsToFile(RobotSettings settings) {

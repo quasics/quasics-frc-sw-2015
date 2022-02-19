@@ -2,7 +2,7 @@ package frc.robot;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -22,38 +22,54 @@ import edu.wpi.first.wpilibj.Filesystem;
  * would be to switch to a USB drive (which might make "default values" easier
  * to deploy to a given robot). These are apparently mounted at "/U" by the
  * roboRIO firmware image.
- * 
- * TODO(mjh): Consider using reflection to make this easier.
  */
 public class RobotSettings {
-  static final String ROBOT_NAME_PROPERTY = "robotName";
-  static final String TRACK_WIDTH_PROPERTY = "trackWidthMeters";
-  static final String LEFT_MOTORS_INVERTED_PROPERTY = "leftMotorsInverted";
-  static final String RIGHT_MOTORS_INVERTED_PROPERTY = "rightMotorsInverted";
-  static final String INSTALLED_GYRO_TYPE_PROPERTY = "installedGyroType";
-  static final String PIGEON_CAN_ID_PROPERTY = "pigeonCanId";
-
+  /** Different types of FRC gyros understood as part of robot settings data. */
   public enum GyroType {
     None,
     ADXRS450,
     Pigeon2
   }
 
+  /** Name of the robot (for debugging). */
   public final String robotName;
+  /** Track width of the robot (e.g., for path following support). */
   public final double trackWidthMeters;
+  /**
+   * Iff true, the motors on the left side of the drive base are installed in an
+   * inverted configuration.
+   */
   public final boolean leftMotorsInverted;
+  /**
+   * Iff true, the motors on the right side of the drive base are installed in an
+   * inverted configuration.
+   */
   public final boolean rightMotorsInverted;
 
+  /** The type of gyro installed on this robot (if any). */
   public final GyroType installedGyroType;
+
+  /** The CAN ID for the installed gyro, if it is a Pigeon2. */
   public final int pigeonCanId;
 
   /**
    * Creates a RobotSettings object.
    * 
+   * Note: this constructor is expected to be used only for building settings in
+   * the RobotContainer class either for immediate use in writing them to an
+   * active file, or as a default set to use when we can't load stuff *from* a
+   * file. The preferred way to get RobotSettings is to load them from a file
+   * (either a "deployed" one, or from a previous save point).
+   * 
    * @param robotName           name of the robot (for debugging/logging)
    * @param trackWidthMeters    track width (m) of the robot
    * @param leftMotorsInverted  iff true, motors on the left side are inverted
    * @param rightMotorsInverted iff true, motors on the right side are inverted
+   * @param installedGyroType   the type of gyro on the robot
+   * @param pigeonCanId         the CAN ID for the gyro, if it's a Pigeon2 (or any
+   *                            value, if it's not)
+   * 
+   * @see #load(java.io.InputStream)
    */
   public RobotSettings(
       String robotName,
@@ -68,6 +84,57 @@ public class RobotSettings {
     this.rightMotorsInverted = rightMotorsInverted;
     this.installedGyroType = installedGyroType;
     this.pigeonCanId = pigeonCanId;
+  }
+
+  /**
+   * Creates a RobotSettings object.
+   * 
+   * @param props a Properties object from which the robot settings should be
+   *              retrieved
+   * 
+   * @throws IllegalArgumentException
+   */
+  public RobotSettings(Properties props) throws IllegalArgumentException {
+    Double d = getDoubleFromProperty(props, "trackWidthMeters");
+    if (d == null) {
+      throw new IllegalArgumentException("Error fetching track width");
+    }
+    this.trackWidthMeters = d;
+
+    String s = props.getProperty("robotName");
+    if (s == null || s.length() == 0) {
+      throw new IllegalArgumentException("Error fetching robot name");
+    }
+    this.robotName = s;
+
+    Boolean b = getBooleanFromProperty(props, "leftMotorsInverted");
+    if (b == null) {
+      throw new IllegalArgumentException("Error fetching left-side inversion");
+    }
+    this.leftMotorsInverted = b;
+
+    b = getBooleanFromProperty(props, "rightMotorsInverted");
+    if (b == null) {
+      throw new IllegalArgumentException("Error fetching right-side inversion");
+    }
+    this.rightMotorsInverted = b;
+
+    GyroType g = getGyroTypeFromProperty(props, "installedGyroType");
+    if (g == null) {
+      throw new IllegalArgumentException("Error fetching installed gyro type");
+    }
+    this.installedGyroType = g;
+
+    // The "pigeonCanId" field is only valid if we're working *with* a Pigeon2.
+    if (this.installedGyroType == GyroType.Pigeon2) {
+      Integer canId = getIntegerFromProperty(props, "pigeonCanId");
+      if (canId == null) {
+        throw new IllegalArgumentException("Error fetching CAN ID for installed Pigeon2");
+      }
+      this.pigeonCanId = canId;
+    } else {
+      this.pigeonCanId = 0;
+    }
   }
 
   /**
@@ -91,7 +158,12 @@ public class RobotSettings {
     return Arrays.asList(Filesystem.getOperatingDirectory().listFiles(filter));
   }
 
-  // Convenience method: will write to a file in a consistent directory.
+  /**
+   * Convenience method: will write to a file in a consistent directory.
+   * 
+   * @see #getPropsFile(String)
+   * @see #writeToFile(BufferedWriter)
+   */
   public boolean writeToFile(String fileName) {
     File f = getPropsFile(fileName);
     try {
@@ -102,7 +174,35 @@ public class RobotSettings {
     }
   }
 
-  // Convenience method: will load from a file in a consistent directory.
+  /**
+   * Writes the data for the object to the specified writer, using the standard
+   * "Properties" format.
+   * 
+   * @param writer the sink to which the data should be stored
+   * @return true on success, false on any failure
+   * 
+   * @see #buildProperties()
+   * @see java.util.Properties#store(java.io.Writer, String)
+   */
+  public boolean writeToFile(BufferedWriter writer) {
+    boolean result = false;
+    try (writer) {
+      Properties props = buildProperties();
+      props.store(writer, "Data for robot '" + robotName);
+      result = true;
+    } catch (Exception x) {
+      System.err.format("Error saving settings: %s%n", x);
+    }
+
+    return result;
+  }
+
+  /**
+   * Convenience method: will load from a file in a well-defined directory.
+   * 
+   * @see #getPropsFile(String)
+   * @see #load(java.io.InputStream)
+   */
   public static RobotSettings loadFromFile(String fileName) {
     File f = getPropsFile(fileName);
     try {
@@ -113,7 +213,11 @@ public class RobotSettings {
     }
   }
 
-  // Convenience method: will load from a file in the "deploy" directory.
+  /**
+   * Convenience method: will load from a file in the "deploy" directory.
+   * 
+   * @see #load(java.io.InputStream)
+   */
   public static RobotSettings loadFromDeployedFile(String fileName) {
     File f = new File(Filesystem.getDeployDirectory(), fileName);
     try {
@@ -124,66 +228,48 @@ public class RobotSettings {
     }
   }
 
+  /**
+   * Returns a RobotSettings object using properties read from the specified input
+   * stream.
+   * 
+   * @param in the InputStream from which the data is to be loaded
+   * @return a RobotSettings object on success, null on failure
+   * 
+   * @seee {@link #RobotSettings(Properties)}
+   */
   public static RobotSettings load(java.io.InputStream in) {
+    Properties props = new Properties();
     try (in) {
-      Properties props = new Properties();
       props.load(in);
-      Double trackWidth = getDoubleFromProperty(props, TRACK_WIDTH_PROPERTY);
-      if (trackWidth == null) {
-        throw new IOException("Error fetching track width");
-      }
-      String name = props.getProperty(ROBOT_NAME_PROPERTY);
-      if (name == null || name.length() == 0) {
-        throw new IOException("Error fetching robot name");
-      }
-      Boolean leftInverted = getBooleanFromProperty(props, LEFT_MOTORS_INVERTED_PROPERTY);
-      if (leftInverted == null) {
-        throw new IOException("Error fetching left-side inversion");
-      }
-      Boolean rightInverted = getBooleanFromProperty(props, RIGHT_MOTORS_INVERTED_PROPERTY);
-      if (rightInverted == null) {
-        throw new IOException("Error fetching right-side inversion");
-      }
-      GyroType gyroType = getGyroTypeFromProperty(props, INSTALLED_GYRO_TYPE_PROPERTY);
-      if (gyroType == null) {
-        throw new IOException("Error fetching installed gyro type");
-      }
-      int pigeonCanId = 0;
-      if (gyroType == GyroType.Pigeon2) {
-        Integer canId = getIntegerFromProperty(props, PIGEON_CAN_ID_PROPERTY);
-        if (canId == null) {
-          throw new IOException("Error fetching CAN ID for installed Pigeon2");
-        }
-      }
-
-      return new RobotSettings(name, trackWidth, leftInverted, rightInverted, gyroType, pigeonCanId);
-    } catch (IOException ioe) {
-      System.err.format("Error loading settings from file: %s%n", ioe);
+      return new RobotSettings(props);
+    } catch (Exception e) {
+      System.err.format("---------------------------------------%n"
+          + "Error loading settings: %s%n"
+          + "Data loaded (leading to failure) was: %s%n"
+          + "---------------------------------------%n", e, props);
       return null;
     }
   }
 
-  public boolean writeToFile(BufferedWriter writer) {
-    boolean result = false;
-    try (writer) {
-      Properties props = new Properties();
-      props.setProperty(ROBOT_NAME_PROPERTY, robotName);
-      props.setProperty(TRACK_WIDTH_PROPERTY, Double.toString(trackWidthMeters));
-      props.setProperty(LEFT_MOTORS_INVERTED_PROPERTY, Boolean.toString(leftMotorsInverted));
-      props.setProperty(RIGHT_MOTORS_INVERTED_PROPERTY, Boolean.toString(rightMotorsInverted));
-      props.setProperty(INSTALLED_GYRO_TYPE_PROPERTY, installedGyroType.toString());
-      if (installedGyroType == GyroType.Pigeon2) {
-        // This property only makes sense when we have a Pigeon gyro.
-        props.setProperty(PIGEON_CAN_ID_PROPERTY, Integer.toString(pigeonCanId));
-      }
-
-      props.store(writer, null);
-      result = true;
-    } catch (IOException x) {
-      System.err.format("Error writing settings to file: %s%n", x);
+  /**
+   * Builds a Properties object containing all of the data represented by this
+   * object, with the keys being the names of each data field, and the values
+   * being a string version of the coresponding field value.
+   * 
+   * @return a Properties object holding key/value pairs for all of this object's
+   *         data
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   */
+  private Properties buildProperties() throws IllegalArgumentException, IllegalAccessException {
+    Properties props = new Properties();
+    Class<?> myClass = getClass();
+    Field[] fields = myClass.getFields();
+    for (var field : fields) {
+      props.setProperty(field.getName(), field.get(this).toString());
     }
 
-    return result;
+    return props;
   }
 
   private static Double getDoubleFromProperty(Properties props, String key) {
@@ -206,23 +292,24 @@ public class RobotSettings {
     return (s != null) ? GyroType.valueOf(s) : null;
   }
 
+  ////////////////////////////////////////
+  // Methods from "Object"
+
   @Override
   public String toString() {
-    StringBuilder b = new StringBuilder();
-    b.append("{");
-    b.append("\n  robotName = " + robotName);
-    b.append("\n  trackWidthMeters = " + trackWidthMeters);
-    b.append("\n  leftMotorsInverted = " + leftMotorsInverted);
-    b.append("\n  rightMotorsInverted = " + rightMotorsInverted);
-    b.append("\n  installedGyroType = " + installedGyroType);
-    b.append("\n  pigeonCanId = " + pigeonCanId);
-    b.append("\n}");
-    return b.toString();
+    try {
+      return buildProperties().toString();
+    } catch (Exception e) {
+      return "<Error: Failed to extract data for robot settings>";
+    }
   }
 
   @Override
   public int hashCode() {
-    return robotName.hashCode(); // *Reasonable* uniqueness is all that's required.
+    if (robotName != null) {
+      return robotName.hashCode(); // *Reasonable* uniqueness is all that's required.
+    }
+    return 0;
   }
 
   @Override
@@ -235,9 +322,10 @@ public class RobotSettings {
     }
 
     RobotSettings other = (RobotSettings) o;
-    return robotName.equals(other.robotName)
-        && (trackWidthMeters == other.trackWidthMeters)
-        && (leftMotorsInverted == other.leftMotorsInverted)
-        && (rightMotorsInverted == other.rightMotorsInverted);
+    try {
+      return this.buildProperties().equals(other.buildProperties());
+    } catch (IllegalArgumentException | IllegalAccessException e) {
+      return false;
+    }
   }
 }

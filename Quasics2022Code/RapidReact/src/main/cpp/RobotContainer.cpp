@@ -25,8 +25,10 @@ RobotContainer::RobotContainer() {
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
-        bool isTurbo = m_leftShoulder.GetTriggerPressed();
-        bool isTurtle = m_rightShoulder.GetTriggerPressed();
+        bool isTurbo = m_driverStick.GetRawButton(
+            OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+        bool isTurtle = m_driverStick.GetRawButton(
+            OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
         if (isTurbo) {
           return 0.80 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -39,8 +41,10 @@ RobotContainer::RobotContainer() {
         }
       },
       [this] {
-        bool isTurbo = m_leftShoulder.GetTriggerPressed();
-        bool isTurtle = m_rightShoulder.GetTriggerPressed();
+        bool isTurbo = m_driverStick.GetRawButton(
+            OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+        bool isTurtle = m_driverStick.GetRawButton(
+            OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
         if (isTurbo) {
           return 0.80 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);

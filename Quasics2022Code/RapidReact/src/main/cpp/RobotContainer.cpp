@@ -6,6 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PrintCommand.h>
+#include <frc2/command/button/JoystickButton.h>
 
 #include "Constants.h"
 #include "commands/BreathingAllianceLights.h"
@@ -22,38 +23,84 @@
 #include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
+  frc2::InstantCommand switchControls([this] { isSwitched = !(isSwitched); });
+
+  frc2::JoystickButton(&m_driverStick,
+                       OperatorInterface::LogitechGamePad::YButton)
+      .WhenPressed(&switchControls);
+
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
-        bool isTurbo = m_driverStick.GetRawButton(
-            OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-        bool isTurtle = m_driverStick.GetRawButton(
-            OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-        if (isTurbo) {
-          return 0.80 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-        } else if (isTurtle) {
-          return 0.40 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        if (!isSwitched) {
+          bool isTurbo = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+          bool isTurtle = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+          if (isTurbo) {
+            return 0.80 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          } else if (isTurtle) {
+            return 0.40 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          } else {
+            return 0.60 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          }
         } else {
-          return 0.60 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          bool isTurbo = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+          bool isTurtle = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+          if (isTurbo) {
+            return -1 * 0.80 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          } else if (isTurtle) {
+            return -1 * 0.40 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          } else {
+            return -1 * 0.60 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          }
         }
       },
       [this] {
-        bool isTurbo = m_driverStick.GetRawButton(
-            OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-        bool isTurtle = m_driverStick.GetRawButton(
-            OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-        if (isTurbo) {
-          return 0.80 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-        } else if (isTurtle) {
-          return 0.40 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        if (!isSwitched) {
+          bool isTurbo = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+          bool isTurtle = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+          if (isTurbo) {
+            return 0.80 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          } else if (isTurtle) {
+            return 0.40 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          } else {
+            return 0.60 * m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          }
         } else {
-          return 0.60 * m_driverStick.GetRawAxis(
-                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          bool isTurbo = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+          bool isTurtle = m_driverStick.GetRawButton(
+              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+          if (isTurbo) {
+            return -1 * 0.80 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          } else if (isTurtle) {
+            return -1 * 0.40 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          } else {
+            return -1 * 0.60 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          }
         }
       }};
 

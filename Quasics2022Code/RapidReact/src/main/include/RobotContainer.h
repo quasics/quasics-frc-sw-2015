@@ -7,6 +7,7 @@
 #include <frc/Joystick.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
 #include "subsystems/Climber.h"
@@ -52,4 +53,8 @@ class RobotContainer {
   Lighting m_lighting;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
+
+  // variables
+
+  bool isSwitched = false;
 };

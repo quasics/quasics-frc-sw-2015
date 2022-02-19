@@ -56,6 +56,7 @@ namespace OperatorInterface {
     constexpr int LEFT_Y_AXIS = 1;
     constexpr int RIGHT_Y_AXIS = 3;
 
+    constexpr int YButton = 4;        // for switch drive
     constexpr int LEFTSHOULDER = 5;   // Turbo Mode
     constexpr int RIGHTSHOULDER = 6;  // Turtle Mode
 

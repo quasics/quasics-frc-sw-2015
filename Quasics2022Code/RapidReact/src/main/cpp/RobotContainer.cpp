@@ -21,8 +21,17 @@
 #include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
+  TankDrive tankDrive{&m_drivebase,
+                      [this] {
+                        return m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+                      },
+                      [this] {
+                        return m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+                      }};
+
   // Initialize all of your commands and subsystems here
-  TankDrive tankDrive(&m_drivebase, &m_driverStick);
   m_drivebase.SetDefaultCommand(tankDrive);
 
   // Configure the button bindings

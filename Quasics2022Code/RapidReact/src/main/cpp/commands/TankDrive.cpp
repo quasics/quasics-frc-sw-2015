@@ -6,8 +6,12 @@
 
 #include "Constants.h"
 
-TankDrive::TankDrive(Drivebase* drivebase, frc::Joystick* driverStick)
-    : m_drivebase(drivebase), m_driverStick(driverStick) {
+TankDrive::TankDrive(Drivebase* drivebase,
+                     std::function<double()> leftSpeedFunction,
+                     std::function<double()> rightSpeedFunction)
+    : m_drivebase(drivebase),
+      m_leftSpeedFunction(leftSpeedFunction),
+      m_rightSpeedFunction(rightSpeedFunction) {
   AddRequirements(drivebase);
 }
 
@@ -27,11 +31,5 @@ void TankDrive::End(bool interrupted) {
 }
 
 void TankDrive::UpdateSpeeds() {
-  double leftPower =
-      -0.65 * (m_driverStick->GetRawAxis(
-                  OperatorInterface::LogitechGamePad::LEFT_Y_AXIS));
-  double rightPower =
-      -0.65 * (m_driverStick->GetRawAxis(
-                  OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS));
-  m_drivebase->SetMotorPower(leftPower, rightPower);
+  m_drivebase->SetMotorPower(m_leftSpeedFunction(), m_rightSpeedFunction());
 }

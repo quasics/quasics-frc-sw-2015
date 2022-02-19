@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <frc/Joystick.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include <subsystems/Drivebase.h>
@@ -13,17 +12,18 @@
  * Command providing support for "tank drive" operations during teleop mode.
  */
 class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
-public:
+ public:
   /**
    * Constructor.
    *
    * @param drivebase   pointer to the Drivebase subsystem being used
    * @param driverStick pointer to the Logitech controller used by the driver
    */
-  TankDrive(Drivebase *drivebase, frc::Joystick *driverStick);
+  TankDrive(Drivebase* drivebase, std::function<double()> leftSpeedFunction,
+            std::function<double()> rightSpeedFunction);
 
   // Methods defined for Commands, which we're overriding.
-public:
+ public:
   void Initialize() override;
 
   void Execute() override;
@@ -31,7 +31,7 @@ public:
   void End(bool interrupted) override;
 
   // Private utility functions
-private:
+ private:
   /**
    * Updates the current left/right motor speeds on the drive base, in response
    * to the joystick positions.
@@ -39,10 +39,11 @@ private:
   void UpdateSpeeds();
 
   // Data members
-private:
+ private:
   /** Drive base we're working with. */
-  Drivebase *m_drivebase;
+  Drivebase* m_drivebase;
+  std::function<double()> m_leftSpeedFunction;
+  std::function<double()> m_rightSpeedFunction;
 
   /** Logitech controller providing feedback for speeds. */
-  frc::Joystick *m_driverStick;
 };

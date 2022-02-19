@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/PrintCommand.h>
 
+#include "Constants.h"
 #include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
 #include "commands/DriveAtPowerForMeters.h"
@@ -21,15 +22,36 @@
 #include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
-  TankDrive tankDrive{&m_drivebase,
-                      [this] {
-                        return m_driverStick.GetRawAxis(
+  TankDrive tankDrive{
+      &m_drivebase,
+      [this] {
+        bool isTurbo = m_leftShoulder.GetTriggerPressed();
+        bool isTurtle = m_rightShoulder.GetTriggerPressed();
+        if (isTurbo) {
+          return 0.80 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-                      },
-                      [this] {
-                        return m_driverStick.GetRawAxis(
+        } else if (isTurtle) {
+          return 0.40 * m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        } else {
+          return m_driverStick.GetRawAxis(
+              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        }
+      },
+      [this] {
+        bool isTurbo = m_leftShoulder.GetTriggerPressed();
+        bool isTurtle = m_rightShoulder.GetTriggerPressed();
+        if (isTurbo) {
+          return 0.80 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-                      }};
+        } else if (isTurtle) {
+          return 0.40 * m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        } else {
+          return m_driverStick.GetRawAxis(
+              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        }
+      }};
 
   // Initialize all of your commands and subsystems here
   m_drivebase.SetDefaultCommand(tankDrive);

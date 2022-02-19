@@ -43,6 +43,10 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here.
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
+  frc::Joystick m_leftShoulder{
+      OperatorInterface::LogitechGamePad::LEFTSHOULDER};
+  frc::Joystick m_rightShoulder{
+      OperatorInterface::LogitechGamePad::RIGHTSHOULDER};
 
   Shooter m_shooter;
   Drivebase m_drivebase;

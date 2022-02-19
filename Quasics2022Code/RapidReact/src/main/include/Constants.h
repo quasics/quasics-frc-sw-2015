@@ -56,5 +56,8 @@ namespace OperatorInterface {
     constexpr int LEFT_Y_AXIS = 1;
     constexpr int RIGHT_Y_AXIS = 3;
 
+    constexpr int LEFTSHOULDER = 5;   // Turbo Mode
+    constexpr int RIGHTSHOULDER = 6;  // Turtle Mode
+
   }  // namespace LogitechGamePad
 }  // namespace OperatorInterface

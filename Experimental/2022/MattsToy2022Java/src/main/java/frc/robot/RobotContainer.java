@@ -45,7 +45,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Log the settings which we'll be using during operations.
-    System.out.println("*** Running with robot configuration:\n" + m_robotSettings);
+    System.out.println(
+        "-----------------------------------------\n"
+            + "*** Running with robot configuration:\n"
+            + m_robotSettings + "\n"
+            + "-----------------------------------------\n");
 
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);

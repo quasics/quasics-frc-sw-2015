@@ -35,13 +35,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 
   private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
+  private final SwitchDriveHandler m_switchDriveHandler;
 
   private final DriveBase m_driveBase;
   private final Lighting m_lighting;
-
-  private static final boolean ENABLE_SWITCH_DRIVE = false;
-
-  private final SwitchDriveHandler m_switchDriveHandler;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -87,9 +84,9 @@ public class RobotContainer {
 
     TankDrive tankDrive = new TankDrive(m_driveBase,
         // Left side control
-        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getLeftSupplier() : leftStick,
+        m_switchDriveHandler.getLeftSupplier(),
         // Right side control
-        ENABLE_SWITCH_DRIVE ? m_switchDriveHandler.getRightSupplier() : rightStick);
+        m_switchDriveHandler.getRightSupplier());
     m_driveBase.setDefaultCommand(tankDrive);
 
     //////////////////////////////////////////////////////////////

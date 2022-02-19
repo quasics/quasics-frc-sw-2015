@@ -6,7 +6,6 @@
 
 SetLightsToColor::SetLightsToColor(Lighting* lighting, Lighting::StockColor c)
     : m_lighting(lighting), color(c) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_lighting);
 }
 

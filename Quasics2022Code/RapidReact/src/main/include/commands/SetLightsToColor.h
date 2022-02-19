@@ -10,19 +10,24 @@
 #include "subsystems/Lighting.h"
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * Command to set the robot's lights to a given color (when activated).
  */
 class SetLightsToColor
     : public frc2::CommandHelper<frc2::CommandBase, SetLightsToColor> {
  public:
+  /**
+   * Constructor.
+   *
+   * @param lighting  pointer to Lighting subsystem
+   * @param c         color to which the lights should be set
+   */
   SetLightsToColor(Lighting* lighting, Lighting::StockColor c);
 
+  // Standard "Command" functions.
+ public:
   void Initialize() override;
 
+  // Data members.
  private:
   Lighting* m_lighting;
   const Lighting::StockColor color;

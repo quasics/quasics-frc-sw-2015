@@ -20,6 +20,9 @@ Drivebase::Drivebase() {
 
   m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
+  m_gyro.Calibrate();
+  m_gyro.Reset();
+
   ConfigureEncoders();
 }
 
@@ -61,6 +64,7 @@ void Drivebase::ResetEncoders() {
 }
 
 void Drivebase::Periodic() {
+  std::cout << m_gyro.GetAngle();
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

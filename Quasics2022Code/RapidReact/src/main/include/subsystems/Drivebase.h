@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
@@ -96,4 +97,7 @@ class Drivebase : public frc2::SubsystemBase {
   // Since we're creating the controller groups "late" in the construction
   // (using "new"), we need to do the same thing for this (which uses them).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
+
+  // Defines the Gyro in CS0
+  frc::ADXRS450_Gyro m_gyro;
 };

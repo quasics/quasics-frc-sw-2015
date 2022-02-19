@@ -23,11 +23,9 @@
 #include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
-  frc2::InstantCommand switchControls([this] { isSwitched = !(isSwitched); });
-
   frc2::JoystickButton(&m_driverStick,
                        OperatorInterface::LogitechGamePad::YButton)
-      .WhenPressed(&switchControls);
+      .WhenPressed([this] { isSwitched = !(isSwitched); });
 
   TankDrive tankDrive{
       &m_drivebase,
@@ -74,14 +72,17 @@ RobotContainer::RobotContainer() {
           bool isTurtle = m_driverStick.GetRawButton(
               OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
           if (isTurbo) {
-            return 0.80 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+            return -1 * 0.80 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
           } else if (isTurtle) {
-            return 0.40 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+            return -1 * 0.40 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
           } else {
-            return 0.60 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+            return -1 * 0.60 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
           }
         } else {
           bool isTurbo = m_driverStick.GetRawButton(
@@ -89,15 +90,15 @@ RobotContainer::RobotContainer() {
           bool isTurtle = m_driverStick.GetRawButton(
               OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
           if (isTurbo) {
-            return -1 * 0.80 *
+            return 1 * 0.80 *
                    m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           } else if (isTurtle) {
-            return -1 * 0.40 *
+            return 1 * 0.40 *
                    m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           } else {
-            return -1 * 0.60 *
+            return 1 * 0.60 *
                    m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           }

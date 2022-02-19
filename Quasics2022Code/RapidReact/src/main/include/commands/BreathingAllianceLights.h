@@ -37,12 +37,17 @@ class BreathingAllianceLights
   int red = 255;
   int blue = 255;
 
-  const double maxIntensityPercent;
-  bool breathingIn = true;
-  double currentIntensityPercent = 0;
-  double increment = 0.01;
+  const double m_maxIntensityPercent;
+  double m_currentIntensityPercent = 0;
+
+  // Bug(Matthew): Why do you need both of these?  If the increment is
+  // positive (or negative),then you know your breathing in (or out).
+  // Alternatively, if you know you're breathing in (or out) then you
+  // know that you're incrementing (or decrementing) the current intensity.
+  bool m_breathingIn = true;
+  double m_increment = 0.01;
 
   // BUG(Matthew): Why not just store the frc::DriverStation::Alliance value,
   // rather than a "boiled down" case?
-  bool isRed = true;
+  bool m_isRed = true;
 };

@@ -6,16 +6,16 @@
 
 BreathingAllianceLights::BreathingAllianceLights(Lighting* lights,
                                                  double maxIntensity)
-    : m_lighting(lights), maxIntensityPercent(maxIntensity) {
+    : m_lighting(lights), m_maxIntensityPercent(maxIntensity) {
   AddRequirements(m_lighting);
 }
 
 // Called when the command is initially scheduled.
 void BreathingAllianceLights::Initialize() {
   if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed) {
-    isRed = true;
+    m_isRed = true;
   } else {
-    isRed = false;
+    m_isRed = false;
   }
   // BUG(Matthew): There actually *is* a 3rd case in the alliance values.
   // It might make sense to explicitly handle that, rather than just always
@@ -23,35 +23,35 @@ void BreathingAllianceLights::Initialize() {
   // any indication that something is funky.
 
   // Reset the intensity before starting.
-  currentIntensityPercent = 0;
+  m_currentIntensityPercent = 0;
 
   // OK, set the lights to initial intensity/color.
-  if (isRed) {
-    m_lighting->SetAllToColor(red * currentIntensityPercent, 0, 0);
+  if (m_isRed) {
+    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0, 0);
   } else {
-    m_lighting->SetAllToColor(0, 0, blue * currentIntensityPercent);
+    m_lighting->SetAllToColor(0, 0, blue * m_currentIntensityPercent);
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void BreathingAllianceLights::Execute() {
-  if (currentIntensityPercent >= maxIntensityPercent) {
-    breathingIn = false;
-    increment = -0.01;
-    currentIntensityPercent = maxIntensityPercent;
+  if (m_currentIntensityPercent >= m_maxIntensityPercent) {
+    m_breathingIn = false;
+    m_increment = -0.01;
+    m_currentIntensityPercent = m_maxIntensityPercent;
   }
-  if (currentIntensityPercent <= 0) {
-    breathingIn = true;
-    increment = 0.01;
-    currentIntensityPercent = 0;
+  if (m_currentIntensityPercent <= 0) {
+    m_breathingIn = true;
+    m_increment = 0.01;
+    m_currentIntensityPercent = 0;
   }
 
-  if (isRed) {
-    m_lighting->SetAllToColor(red * currentIntensityPercent, 0, 0);
+  if (m_isRed) {
+    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0, 0);
   } else {
-    m_lighting->SetAllToColor(0, 0, blue * currentIntensityPercent);
+    m_lighting->SetAllToColor(0, 0, blue * m_currentIntensityPercent);
   }
-  currentIntensityPercent += increment;
+  m_currentIntensityPercent += m_increment;
 }
 
 // Called once the command ends or is interrupted.

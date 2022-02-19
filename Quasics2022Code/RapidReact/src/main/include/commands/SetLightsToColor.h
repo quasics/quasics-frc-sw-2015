@@ -30,5 +30,5 @@ class SetLightsToColor
   // Data members.
  private:
   Lighting* m_lighting;
-  const Lighting::StockColor color;
+  const Lighting::StockColor m_color;
 };

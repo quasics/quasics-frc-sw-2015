@@ -11,23 +11,24 @@
 #include "subsystems/Lighting.h"
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * Command to make the robot's lights "breath" (cycle between dark and light)
+ * with a given color and maximum intensity (brightness).
  */
 class BreathingAllianceLights
     : public frc2::CommandHelper<frc2::CommandBase, BreathingAllianceLights> {
  public:
+  // Constructor.
   BreathingAllianceLights(Lighting* lights, double intensity);
 
+  // Standard command functions.
+ public:
   void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
 
+  // Data members.
  private:
   Lighting* m_lighting;
   // BUG(Matthew): Why have 2 variables here, especially when they're just

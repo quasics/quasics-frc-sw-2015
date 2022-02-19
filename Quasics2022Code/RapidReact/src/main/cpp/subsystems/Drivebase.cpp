@@ -64,7 +64,6 @@ void Drivebase::ResetEncoders() {
 }
 
 void Drivebase::Periodic() {
-  std::cerr << m_gyro.GetAngle() << std::endl;
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

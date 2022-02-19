@@ -36,8 +36,8 @@ RobotContainer::RobotContainer() {
           return 0.40 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         } else {
-          return m_driverStick.GetRawAxis(
-              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          return 0.60 * m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         }
       },
       [this] {
@@ -52,8 +52,8 @@ RobotContainer::RobotContainer() {
           return 0.40 * m_driverStick.GetRawAxis(
                             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         } else {
-          return m_driverStick.GetRawAxis(
-              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          return 0.60 * m_driverStick.GetRawAxis(
+                            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }
       }};
 

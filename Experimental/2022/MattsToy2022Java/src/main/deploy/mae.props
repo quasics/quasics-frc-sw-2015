@@ -1,6 +1,7 @@
 robotName=Mae
 leftMotorsInverted=true
 rightMotorsInverted=false
+installedGyroType=ADXRS450
 
 # From 2021 code
 trackWidthMeters=1.1972123413926241

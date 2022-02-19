@@ -13,20 +13,39 @@ import java.io.BufferedWriter;
 import edu.wpi.first.wpilibj.Filesystem;
 
 /**
+ * Used to hold various characteristics that vary between the robots that we
+ * have on hand (e.g., drive base width, motor inversions), allowing the code to
+ * adapt to the hardware on which it is deployed.
+ * 
+ * Note: We are currently using either the "operating" or "deploy" directories
+ * when reading/writing files holding settings data. If we want, another option
+ * would be to switch to a USB drive (which might make "default values" easier
+ * to deploy to a given robot). These are apparently mounted at "/U" by the
+ * roboRIO firmware image.
+ * 
  * TODO(mjh): Consider using reflection to make this easier.
- * TODO(mjh): Consider switching to a USB drive, if needed. These are apparently
- * mounted at "/U" on roboRIO.
  */
 public class RobotSettings {
   static final String ROBOT_NAME_PROPERTY = "robotName";
   static final String TRACK_WIDTH_PROPERTY = "trackWidthMeters";
   static final String LEFT_MOTORS_INVERTED_PROPERTY = "leftMotorsInverted";
   static final String RIGHT_MOTORS_INVERTED_PROPERTY = "rightMotorsInverted";
+  static final String INSTALLED_GYRO_TYPE_PROPERTY = "installedGyroType";
+  static final String PIGEON_CAN_ID_PROPERTY = "pigeonCanId";
+
+  public enum GyroType {
+    None,
+    ADXRS450,
+    Pigeon2
+  }
 
   public final String robotName;
   public final double trackWidthMeters;
   public final boolean leftMotorsInverted;
   public final boolean rightMotorsInverted;
+
+  public final GyroType installedGyroType;
+  public final int pigeonCanId;
 
   /**
    * Creates a RobotSettings object.
@@ -40,11 +59,15 @@ public class RobotSettings {
       String robotName,
       double trackWidthMeters,
       boolean leftMotorsInverted,
-      boolean rightMotorsInverted) {
+      boolean rightMotorsInverted,
+      GyroType installedGyroType,
+      int pigeonCanId) {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.leftMotorsInverted = leftMotorsInverted;
     this.rightMotorsInverted = rightMotorsInverted;
+    this.installedGyroType = installedGyroType;
+    this.pigeonCanId = pigeonCanId;
   }
 
   /**
@@ -121,8 +144,19 @@ public class RobotSettings {
       if (rightInverted == null) {
         throw new IOException("Error fetching right-side inversion");
       }
+      GyroType gyroType = getGyroTypeFromProperty(props, INSTALLED_GYRO_TYPE_PROPERTY);
+      if (gyroType == null) {
+        throw new IOException("Error fetching installed gyro type");
+      }
+      int pigeonCanId = 0;
+      if (gyroType == GyroType.Pigeon2) {
+        Integer canId = getIntegerFromProperty(props, PIGEON_CAN_ID_PROPERTY);
+        if (canId == null) {
+          throw new IOException("Error fetching CAN ID for installed Pigeon2");
+        }
+      }
 
-      return new RobotSettings(name, trackWidth, leftInverted, rightInverted);
+      return new RobotSettings(name, trackWidth, leftInverted, rightInverted, gyroType, pigeonCanId);
     } catch (IOException ioe) {
       System.err.format("Error loading settings from file: %s%n", ioe);
       return null;
@@ -137,6 +171,12 @@ public class RobotSettings {
       props.setProperty(TRACK_WIDTH_PROPERTY, Double.toString(trackWidthMeters));
       props.setProperty(LEFT_MOTORS_INVERTED_PROPERTY, Boolean.toString(leftMotorsInverted));
       props.setProperty(RIGHT_MOTORS_INVERTED_PROPERTY, Boolean.toString(rightMotorsInverted));
+      props.setProperty(INSTALLED_GYRO_TYPE_PROPERTY, installedGyroType.toString());
+      if (installedGyroType == GyroType.Pigeon2) {
+        // This property only makes sense when we have a Pigeon gyro.
+        props.setProperty(PIGEON_CAN_ID_PROPERTY, Integer.toString(pigeonCanId));
+      }
+
       props.store(writer, null);
       result = true;
     } catch (IOException x) {
@@ -151,9 +191,19 @@ public class RobotSettings {
     return (s != null) ? Double.valueOf(s) : null;
   }
 
+  private static Integer getIntegerFromProperty(Properties props, String key) {
+    String s = props.getProperty(key);
+    return (s != null) ? Integer.valueOf(s) : null;
+  }
+
   private static Boolean getBooleanFromProperty(Properties props, String key) {
     String s = props.getProperty(key);
     return (s != null) ? Boolean.valueOf(s) : null;
+  }
+
+  private static GyroType getGyroTypeFromProperty(Properties props, String key) {
+    String s = props.getProperty(key);
+    return (s != null) ? GyroType.valueOf(s) : null;
   }
 
   @Override
@@ -164,6 +214,8 @@ public class RobotSettings {
     b.append("\n  trackWidthMeters = " + trackWidthMeters);
     b.append("\n  leftMotorsInverted = " + leftMotorsInverted);
     b.append("\n  rightMotorsInverted = " + rightMotorsInverted);
+    b.append("\n  installedGyroType = " + installedGyroType);
+    b.append("\n  pigeonCanId = " + pigeonCanId);
     b.append("\n}");
     return b.toString();
   }

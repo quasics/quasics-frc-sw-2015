@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.RobotSettings;
 import frc.robot.utils.BooleanSetter;
+import frc.robot.utils.DummyGyro;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -20,12 +22,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
-  /**
-   * Controls whether a Pigeon 2 IMU (from CTRE) will be used for the gyro, or if
-   * we will just use a standard Analog Devices gyro.
-   */
-  static final private boolean USE_PIGEON_IMU = false;
-
   /**
    * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
    * used).
@@ -178,15 +174,23 @@ public class DriveBase extends SubsystemBase {
 
     ////////////////////////////////////////
     // Allocate/configure the gyro.
-
-    if (USE_PIGEON_IMU) {
-      com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(Constants.PIGEON2_CAN_ID);
-      m_gyro = pigeon;
-      m_pigeonChecker = new PigeonStatusChecker(pigeon);
-    } else {
-      // Assumes "Chip Select" jumper is set to CS0
-      m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
-      m_pigeonChecker = null;
+    switch (robotSettings.installedGyroType) {
+      case Pigeon2:
+        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(
+            robotSettings.pigeonCanId);
+        m_gyro = pigeon;
+        m_pigeonChecker = new PigeonStatusChecker(pigeon);
+        break;
+      case ADXRS450:
+        // Assumes "Chip Select" jumper is set to CS0
+        m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        m_pigeonChecker = null;
+        break;
+      case None:
+      default:
+        m_gyro = new DummyGyro();
+        m_pigeonChecker = null;
+        break;
     }
 
     // Gyro must be calibrated to initialize for use (generally immediately on

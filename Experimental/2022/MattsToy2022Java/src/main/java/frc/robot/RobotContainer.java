@@ -204,7 +204,9 @@ public class RobotContainer {
         "Sally", // robotName
         Constants.TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
         true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        RobotSettings.GyroType.ADXRS450,
+        0 // pigeonCanID
     );
   }
 
@@ -213,7 +215,9 @@ public class RobotContainer {
         "Mae", // robotName
         Constants.TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
         true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        RobotSettings.GyroType.ADXRS450,
+        0 // pigeonCanID
     );
   }
 
@@ -222,7 +226,9 @@ public class RobotContainer {
         "Nike", // robotName
         Constants.TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
         true, // leftMotorsInverted
-        false // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        RobotSettings.GyroType.Pigeon2,
+        1 // pigeonCanID
     );
   }
 
@@ -258,6 +264,10 @@ public class RobotContainer {
   private void configureSmartDashboard() {
     // Buttons to allow writing settings files (for use on next boot).
     if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
+      SmartDashboard.delete("Store Sally");
+      SmartDashboard.delete("Store Mae");
+      SmartDashboard.delete("Store Nike");
+    } else {
       SmartDashboard.putData("Store Sally", new InstantCommand(() -> {
         writeSettingsToFile(getSettingsForSally());
       }));
@@ -267,10 +277,6 @@ public class RobotContainer {
       SmartDashboard.putData("Store Nike", new InstantCommand(() -> {
         writeSettingsToFile(getSettingsForNike());
       }));
-    } else {
-      SmartDashboard.delete("Store Sally");
-      SmartDashboard.delete("Store Mae");
-      SmartDashboard.delete("Store Nike");
     }
 
     // Lighting commands

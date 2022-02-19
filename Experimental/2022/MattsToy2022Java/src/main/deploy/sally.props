@@ -2,3 +2,4 @@ robotName=Sally
 trackWidthMeters=0.5588
 leftMotorsInverted=true
 rightMotorsInverted=false
+installedGyroType=ADXRS450

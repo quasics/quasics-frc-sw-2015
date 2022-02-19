@@ -28,15 +28,21 @@ class BreathingAllianceLights
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
  private:
   Lighting* m_lighting;
+  // BUG(Matthew): Why have 2 variables here, especially when they're just
+  // placeholders for the same constant (255/full intensity) in each case?
+  // Why not just have one constant, and "pop it into" the right point of
+  // the triplet, based on the alliance info?
   int red = 255;
   int blue = 255;
-  const double intensityPercent;
+
+  const double maxIntensityPercent;
   bool breathingIn = true;
   double currentIntensityPercent = 0;
   double increment = 0.01;
+
+  // BUG(Matthew): Why not just store the frc::DriverStation::Alliance value,
+  // rather than a "boiled down" case?
   bool isRed = true;
 };

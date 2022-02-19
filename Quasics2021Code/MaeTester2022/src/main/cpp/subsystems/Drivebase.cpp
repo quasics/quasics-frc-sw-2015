@@ -189,7 +189,7 @@ void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
   //                                   << ", right=" << rightSpeed <<
   //                                   std::endl;)
   if (m_drive) {
-    m_drive->TankDrive(leftSpeed, -rightSpeed);
+    m_drive->TankDrive(leftSpeed, rightSpeed);
   }
 }
 

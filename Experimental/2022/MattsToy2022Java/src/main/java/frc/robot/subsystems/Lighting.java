@@ -81,21 +81,11 @@ public class Lighting extends SubsystemBase {
     m_led.setLength(m_ledBuffer.getLength());
 
     // On start-up, turn every other pixel on (white).
-    if (true) {
-      var white = StockColor.White.toWpiColor();
-      var black = StockColor.Black.toWpiColor();
-      ColorFunctor function = (int position) -> {
-        return (position % 2 == 0) ? white : black;
-      };
-      SetStripColor(function);
-    } else {
-      // TODO(mjh): Remove this clause, once the other path has been tested.
-      final var fixedColor = new edu.wpi.first.wpilibj.util.Color(255, 255, 255);
-      for (var i = 0; i < m_ledBuffer.getLength(); i += 2) {
-        m_ledBuffer.setLED(i, fixedColor);
-      }
-      m_led.setData(m_ledBuffer);
-    }
+    final var white = StockColor.White.toWpiColor();
+    final var black = StockColor.Black.toWpiColor();
+    SetStripColor((int position) -> {
+      return (position % 2 == 0) ? white : black;
+    });
 
     // Start up the LED handling.
     m_led.start();

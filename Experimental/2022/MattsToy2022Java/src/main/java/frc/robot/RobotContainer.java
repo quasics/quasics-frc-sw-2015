@@ -30,6 +30,7 @@ import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -73,7 +74,7 @@ public class RobotContainer {
     // Allocate the joystick for the driver.
     Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
 
-    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     // Set up the drive base.
 
     if (!CONFIGURE_FOR_ROMI) {
@@ -124,7 +125,17 @@ public class RobotContainer {
       m_switchDriveHandler = null;
     }
 
-    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+    // Example of how to use Romi on-board I/O features (if enabled).
+
+    if (m_onboardIO != null) {
+      Button onboardButtonA = new Button(m_onboardIO::getButtonAPressed);
+      onboardButtonA
+          .whenActive(new PrintCommand("Button A Pressed"))
+          .whenInactive(new PrintCommand("Button A Released"));
+    }
+
+    //////////////////////////////////////////////////////////////////
     // Set up the lighting subsystem.
 
     if (!CONFIGURE_FOR_ROMI) {
@@ -134,7 +145,7 @@ public class RobotContainer {
       m_lighting = null;
     }
 
-    //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
     // Finish setting up commands on the stick(s) and dashboard.
     configureButtonBindings(driverStick);
     configureSmartDashboard();

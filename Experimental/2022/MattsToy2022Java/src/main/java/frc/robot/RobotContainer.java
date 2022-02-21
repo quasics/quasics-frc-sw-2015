@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -12,8 +15,12 @@ import frc.robot.commands.BreathingLights;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
+import frc.robot.subsystems.AbstractDriveBase;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.OnBoardIO;
+import frc.robot.subsystems.OnBoardIO.ChannelMode;
+import frc.robot.subsystems.RomiDriveBase;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.utils.DrivePowerSupplier;
 import frc.robot.utils.SpeedScaler;
@@ -34,18 +41,28 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 
-  private final static boolean CONFIGURE_FOR_ROMI = false;
+  /**
+   * If true, software will automatically configure the robot for use on a Romi.
+   * 
+   * Note: this is based on the detection of a file named ".simulatingRomi" in the
+   * operating directory.
+   */
+  private final static boolean CONFIGURE_FOR_ROMI = new File(Filesystem.getOperatingDirectory(), ".simulatingRomi")
+      .exists();
 
   private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
   private final SwitchDriveHandler m_switchDriveHandler;
 
-  private final DriveBase m_driveBase;
+  private final AbstractDriveBase m_driveBase;
   private final Lighting m_lighting;
+  private final OnBoardIO m_onboardIO;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    System.out.println("Operating directory: " + Filesystem.getOperatingDirectory());
+
     // Log the settings which we'll be using during operations.
     System.out.println(
         "-----------------------------------------\n"
@@ -61,8 +78,10 @@ public class RobotContainer {
 
     if (!CONFIGURE_FOR_ROMI) {
       m_driveBase = new DriveBase(m_robotSettings);
+      m_onboardIO = null;
     } else {
-      m_driveBase = null;
+      m_driveBase = new RomiDriveBase(m_robotSettings);
+      m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
     }
 
     if (m_driveBase != null) {
@@ -81,13 +100,14 @@ public class RobotContainer {
           () -> { // Turbo mode signal
             return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
           });
-
+      final int leftStickIndex = (CONFIGURE_FOR_ROMI) ? 1 : LogitechGamePad.LEFT_Y_AXIS;
+      final int rightStickIndex = (CONFIGURE_FOR_ROMI) ? 5 : LogitechGamePad.RIGHT_Y_AXIS;
       DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
           modeScaler.adjustSpeed(
-              driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)));
+              driverStick.getRawAxis(leftStickIndex)));
       DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
           modeScaler.adjustSpeed(
-              driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
+              driverStick.getRawAxis(rightStickIndex)));
 
       // Need to hang onto this to allow reference from configureButtonBindings()
       // (though I could make it local if I just bound it here...).
@@ -110,6 +130,8 @@ public class RobotContainer {
     if (!CONFIGURE_FOR_ROMI) {
       m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
       m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    } else {
+      m_lighting = null;
     }
 
     //////////////////////////////////////////////////////////////
@@ -297,10 +319,12 @@ public class RobotContainer {
     }
 
     // Lighting commands
-    SmartDashboard.putData("Red", new SimpleLighting(m_lighting, Lighting.StockColor.Red));
-    SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, Lighting.StockColor.Blue));
-    SmartDashboard.putData("Green", new SimpleLighting(m_lighting, Lighting.StockColor.Green));
-    SmartDashboard.putData("Breathe", new BreathingLights(m_lighting, Lighting.StockColor.Green));
+    if (m_lighting != null) {
+      SmartDashboard.putData("Red", new SimpleLighting(m_lighting, Lighting.StockColor.Red));
+      SmartDashboard.putData("Blue", new SimpleLighting(m_lighting, Lighting.StockColor.Blue));
+      SmartDashboard.putData("Green", new SimpleLighting(m_lighting, Lighting.StockColor.Green));
+      SmartDashboard.putData("Breathe", new BreathingLights(m_lighting, Lighting.StockColor.Green));
+    }
   }
 
   /**

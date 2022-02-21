@@ -4,35 +4,27 @@
 
 package frc.robot.utils;
 
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-
-/** Add your docs here. */
-public class DummyGyro implements Gyro {
+/**
+ * A completely fake gyro, which always reports "no movement".
+ */
+public class DummyGyro extends SimulatedGyro {
   public DummyGyro() {
+    super(
+        /* close */ () -> {
+        },
+        /* calibrate */ () -> {
+        },
+        /* reset */ () -> {
+        },
+        /* getAngle */ () -> {
+          return 0;
+        },
+        /* getRate */ () -> {
+          return 0;
+        });
+
     System.err.println("********\n" +
         "* Creating dummy gyro: all headings from this will be 0!!!!" +
         "********\n");
-  }
-
-  @Override
-  public void close() throws Exception {
-  }
-
-  @Override
-  public void calibrate() {
-  }
-
-  @Override
-  public void reset() {
-  }
-
-  @Override
-  public double getAngle() {
-    return 0;
-  }
-
-  @Override
-  public double getRate() {
-    return 0;
   }
 }

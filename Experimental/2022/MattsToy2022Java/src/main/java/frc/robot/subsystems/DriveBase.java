@@ -13,9 +13,33 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class DriveBase extends AbstractDriveBase {
+  class TrivialEncoderImpl implements TrivialEncoder {
+    final RelativeEncoder encoder;
+
+    TrivialEncoderImpl(RelativeEncoder encoder) {
+      this.encoder = encoder;
+    }
+
+    @Override
+    public double getPosition() {
+      return encoder.getPosition();
+    }
+
+    @Override
+    public double getVelocity() {
+      return encoder.getVelocity();
+    }
+
+    @Override
+    public void reset() {
+      encoder.setPosition(0);
+    }
+  }
+
   /**
    * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
    * used).
@@ -60,9 +84,9 @@ public class DriveBase extends AbstractDriveBase {
   }
 
   /** Encoder used to determine distance left wheels have travelled. */
-  final private RelativeEncoder m_leftEncoder;
+  final private TrivialEncoder m_leftEncoder;
   /** Encoder used to determine distance right wheels have travelled. */
-  final private RelativeEncoder m_rightEncoder;
+  final private TrivialEncoder m_rightEncoder;
 
   /** Motor group for the left side. */
   final private MotorControllerGroup m_leftMotors;
@@ -71,6 +95,8 @@ public class DriveBase extends AbstractDriveBase {
 
   /** Differential drive normally used to actually run the motors. */
   final private DifferentialDrive m_drive;
+
+  final private Gyro m_gyro;
 
   /**
    * Utility functor, used to conveniently update "idle mode" setting for all of
@@ -88,17 +114,7 @@ public class DriveBase extends AbstractDriveBase {
 
   /** Creates a new DriveBase. */
   public DriveBase(RobotSettings robotSettings) {
-    super(robotSettings, () -> {
-      switch (robotSettings.installedGyroType) {
-        case Pigeon2:
-          return new com.ctre.phoenix.sensors.WPI_Pigeon2(robotSettings.pigeonCanId);
-        case ADXRS450:
-          return new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
-        case None:
-        default:
-          return new DummyGyro();
-      }
-    });
+    super(robotSettings);
 
     super.setName("DriveBase");
 
@@ -131,12 +147,10 @@ public class DriveBase extends AbstractDriveBase {
       rightFront.setIdleMode(applyMode);
     };
 
-    // Hang onto encoders for future reference.
-    m_leftEncoder = leftRear.getEncoder();
-    m_rightEncoder = rightRear.getEncoder();
-
     /////////////////////////////////
     // Set up the differential drive.
+    RelativeEncoder nativeLeftEncoder = leftRear.getEncoder();
+    RelativeEncoder nativeRightEncoder = rightRear.getEncoder();
 
     m_leftMotors = new MotorControllerGroup(leftFront, leftRear);
     m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
@@ -157,20 +171,37 @@ public class DriveBase extends AbstractDriveBase {
     final double velocityAdjustment = adjustmentForGearing / 60;
     System.out.println("Velocity adj.: " + velocityAdjustment);
 
-    m_leftEncoder.setPositionConversionFactor(adjustmentForGearing);
-    m_rightEncoder.setPositionConversionFactor(adjustmentForGearing);
+    nativeLeftEncoder.setPositionConversionFactor(adjustmentForGearing);
+    nativeRightEncoder.setPositionConversionFactor(adjustmentForGearing);
 
-    m_leftEncoder.setVelocityConversionFactor(velocityAdjustment);
-    m_rightEncoder.setVelocityConversionFactor(velocityAdjustment);
+    nativeLeftEncoder.setVelocityConversionFactor(velocityAdjustment);
+    nativeRightEncoder.setVelocityConversionFactor(velocityAdjustment);
 
-    resetEncoders();
+    nativeLeftEncoder.setPosition(0);
+    nativeRightEncoder.setPosition(0);
+
+    // Hang onto encoders for future reference by superclass.
+    m_leftEncoder = new TrivialEncoderImpl(nativeLeftEncoder);
+    m_rightEncoder = new TrivialEncoderImpl(nativeRightEncoder);
 
     ////////////////////////////////////////
     // Configure the gyro.
-    if (robotSettings.installedGyroType == RobotSettings.GyroType.Pigeon2) {
-      m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
-    } else {
-      m_pigeonChecker = null;
+    switch (robotSettings.installedGyroType) {
+      case Pigeon2:
+        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(
+            robotSettings.pigeonCanId);
+        m_gyro = pigeon;
+        m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
+        break;
+      case ADXRS450:
+        m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        m_pigeonChecker = null;
+        break;
+      case None:
+      default:
+        m_gyro = new DummyGyro();
+        m_pigeonChecker = null;
+        break;
     }
   }
 
@@ -185,19 +216,13 @@ public class DriveBase extends AbstractDriveBase {
   }
 
   @Override
-  protected RelativeEncoder getLeftEncoder() {
+  protected TrivialEncoder getLeftEncoder() {
     return m_leftEncoder;
   }
 
   @Override
-  protected RelativeEncoder getRightEncoder() {
+  protected TrivialEncoder getRightEncoder() {
     return m_rightEncoder;
-  }
-
-  @Override
-  public void resetEncoders() {
-    m_rightEncoder.setPosition(0);
-    m_leftEncoder.setPosition(0);
   }
 
   /**
@@ -218,6 +243,11 @@ public class DriveBase extends AbstractDriveBase {
     if (m_pigeonChecker != null) {
       m_pigeonChecker.run();
     }
+  }
+
+  @Override
+  public Gyro getZAxisGyro() {
+    return m_gyro;
   }
 
   //////////////////////////////////////////////////////////////////

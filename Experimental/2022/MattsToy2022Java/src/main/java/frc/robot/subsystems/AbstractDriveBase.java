@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -15,6 +13,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotSettings;
 
 public abstract class AbstractDriveBase extends SubsystemBase {
+  interface TrivialEncoder {
+    double getPosition();
+
+    double getVelocity();
+
+    void reset();
+  }
 
   /** Configured tank width for the robot. */
   final private double m_tankWidth;
@@ -24,22 +29,11 @@ public abstract class AbstractDriveBase extends SubsystemBase {
    */
   final private DifferentialDriveOdometry m_odometry;
 
-  /** Gyro used to determine current robot angle. */
-  final protected Gyro m_gyro;
-
-  protected interface GyroGenerator {
-    Gyro allocate();
-  }
-
   /** Creates a new AbstractDriveBase. */
-  protected AbstractDriveBase(RobotSettings robotSettings, GyroGenerator gyroGenerator) {
+  protected AbstractDriveBase(RobotSettings robotSettings) {
     setName("DriveBase");
 
     m_tankWidth = robotSettings.trackWidthMeters;
-
-    m_gyro = gyroGenerator.allocate();
-    m_gyro.calibrate();
-    m_gyro.reset();
 
     ////////////////////////////////////////
     // Odometry setup.
@@ -116,9 +110,9 @@ public abstract class AbstractDriveBase extends SubsystemBase {
    */
   protected abstract void doArcadeDrive(double xSpeed, double zRotation, boolean squareInputs);
 
-  protected abstract RelativeEncoder getLeftEncoder();
+  protected abstract TrivialEncoder getLeftEncoder();
 
-  protected abstract RelativeEncoder getRightEncoder();
+  protected abstract TrivialEncoder getRightEncoder();
 
   /**
    * @return the current reading for the left encoder (in meters)
@@ -151,7 +145,10 @@ public abstract class AbstractDriveBase extends SubsystemBase {
   /**
    * Resets both the left and right encoders to 0.
    */
-  public abstract void resetEncoders();
+  public void resetEncoders() {
+    getRightEncoder().reset();
+    getLeftEncoder().reset();
+  }
 
   // This method will be called once per scheduler run
   @Override
@@ -159,8 +156,10 @@ public abstract class AbstractDriveBase extends SubsystemBase {
     updateOdometry();
   }
 
+  public abstract Gyro getZAxisGyro();
+
   Rotation2d getGyroAngle() {
-    return m_gyro.getRotation2d();
+    return getZAxisGyro().getRotation2d();
   }
 
   //////////////////////////////////////////////////////////////////
@@ -178,7 +177,7 @@ public abstract class AbstractDriveBase extends SubsystemBase {
     // Get my gyro angle. We are negating the value because gyros return positive
     // values as the robot turns clockwise. This is not standard convention that is
     // used by the WPILib classes.
-    var gyroAngle = Rotation2d.fromDegrees(-m_gyro.getAngle());
+    var gyroAngle = Rotation2d.fromDegrees(-getZAxisGyro().getAngle());
 
     // Update the pose
     m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());

@@ -4,18 +4,19 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.AbstractDriveBase;
 import frc.robot.utils.DrivePowerSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TankDrive extends CommandBase {
 
-  final DriveBase driveBase;
+  final AbstractDriveBase driveBase;
   final DrivePowerSupplier leftPowerSupplier;
   final DrivePowerSupplier rightPowerSupplier;
 
   /** Creates a new TankDrive. */
-  public TankDrive(DriveBase driveBase, DrivePowerSupplier leftPowerSupplier, DrivePowerSupplier rightPowerSupplier) {
+  public TankDrive(
+      AbstractDriveBase driveBase, DrivePowerSupplier leftPowerSupplier, DrivePowerSupplier rightPowerSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveBase);
 

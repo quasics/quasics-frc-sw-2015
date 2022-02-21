@@ -12,16 +12,10 @@ import frc.robot.utils.DummyGyro;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DriveBase extends SubsystemBase {
+public class DriveBase extends AbstractDriveBase {
   /**
    * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
    * used).
@@ -85,17 +79,6 @@ public class DriveBase extends SubsystemBase {
   final private BooleanSetter m_coastingEnabled;
 
   /**
-   * Tracks odometry for the robot. (Updated in periodic().)
-   */
-  final private DifferentialDriveOdometry m_odometry;
-
-  /** Configured tank width for the robot. */
-  final private double m_tankWidth;
-
-  /** Gyro used to determine current robot angle. */
-  final private Gyro m_gyro;
-
-  /**
    * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
    * we're using one).
    *
@@ -105,9 +88,19 @@ public class DriveBase extends SubsystemBase {
 
   /** Creates a new DriveBase. */
   public DriveBase(RobotSettings robotSettings) {
-    super.setName("DriveBase");
+    super(robotSettings, () -> {
+      switch (robotSettings.installedGyroType) {
+        case Pigeon2:
+          return new com.ctre.phoenix.sensors.WPI_Pigeon2(robotSettings.pigeonCanId);
+        case ADXRS450:
+          return new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        case None:
+        default:
+          return new DummyGyro();
+      }
+    });
 
-    m_tankWidth = robotSettings.trackWidthMeters;
+    super.setName("DriveBase");
 
     /////////////////////////////////
     // Set up the motors/groups.
@@ -173,117 +166,35 @@ public class DriveBase extends SubsystemBase {
     resetEncoders();
 
     ////////////////////////////////////////
-    // Allocate/configure the gyro.
-    switch (robotSettings.installedGyroType) {
-      case Pigeon2:
-        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(
-            robotSettings.pigeonCanId);
-        m_gyro = pigeon;
-        m_pigeonChecker = new PigeonStatusChecker(pigeon);
-        break;
-      case ADXRS450:
-        // Assumes "Chip Select" jumper is set to CS0
-        m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
-        m_pigeonChecker = null;
-        break;
-      case None:
-      default:
-        m_gyro = new DummyGyro();
-        m_pigeonChecker = null;
-        break;
+    // Configure the gyro.
+    if (robotSettings.installedGyroType == RobotSettings.GyroType.Pigeon2) {
+      m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
+    } else {
+      m_pigeonChecker = null;
     }
-
-    // Gyro must be calibrated to initialize for use (generally immediately on
-    // start-up).
-    m_gyro.calibrate();
-    m_gyro.reset();
-
-    ////////////////////////////////////////
-    // Odometry setup.
-
-    // Notes:
-    // 1) This *must* be done after the encoders have been reset to 0.
-    // 2) We're building a "robot-oriented" view of the field (as in, our starting
-    // position will be treated as the origin), rather than a "field-oriented" view.
-    m_odometry = new DifferentialDriveOdometry(new Rotation2d(0), new Pose2d());
   }
 
-  /**
-   * Stops the drive base.
-   */
-  public void stop() {
-    tankDrive(0, 0);
+  @Override
+  protected void doTankDrive(double leftPercent, double rightPercent) {
+    m_drive.tankDrive(leftPercent, rightPercent);
   }
 
-  /**
-   * Sets the power for the left and right side of the drive base.
-   *
-   * @param leftPercent  % power to apply to left side (-1.0 to +1.0)
-   * @param rightPercent % power to apply to right side (-1.0 to +1.0)
-   */
-  public void tankDrive(double leftPercent, double rightPercent) {
-    var boundedLeft = Math.max(-1.0, Math.min(1.0, leftPercent));
-    var boundedRight = Math.max(-1.0, Math.min(1.0, rightPercent));
-    m_drive.tankDrive(boundedLeft, boundedRight);
-  }
-
-  /**
-   * Arcade drive support. The calculated values will be squared to decrease
-   * sensitivity at low speeds.
-   *
-   * @param xSpeed    The robot's speed along the X axis [-1.0..1.0]. Forward
-   *                  is positive.
-   * @param zRotation The robot's rotation rate around the Z axis [-1.0..1.0].
-   *                  Clockwise is positive.
-   */
-  public void arcadeDrive(double xSpeed, double zRotation) {
-    this.arcadeDrive(xSpeed, zRotation, true);
-  }
-
-  /**
-   * Arcade drive support.
-   *
-   * @param xSpeed       The robot's speed along the X axis [-1.0..1.0]. Forward
-   *                     is positive.
-   * @param zRotation    The robot's rotation rate around the Z axis [-1.0..1.0].
-   *                     Clockwise is positive.
-   * @param squareInputs If set, decreases the input sensitivity at low speeds.
-   */
-  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+  @Override
+  protected void doArcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
     m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
   }
 
-  /**
-   * @return the current reading for the left encoder (in meters)
-   */
-  public double getLeftEncoderPosition() {
-    return m_leftEncoder.getPosition();
+  @Override
+  protected RelativeEncoder getLeftEncoder() {
+    return m_leftEncoder;
   }
 
-  /**
-   * @return the current reading for the right encoder (in meters)
-   */
-  public double getRightEncoderPosition() {
-    return m_rightEncoder.getPosition();
+  @Override
+  protected RelativeEncoder getRightEncoder() {
+    return m_rightEncoder;
   }
 
-  /**
-   * @return the current speed for the left wheels (in meters/sec)
-   */
-  public double getLeftSpeed() {
-    return m_leftEncoder.getVelocity();
-  }
-
-  /**
-   * @return the current speed for the right wheels (in meters/sec)
-   */
-  public double getRightSpeed() {
-    return m_rightEncoder.getVelocity();
-  }
-
-  /**
-   * Resets both the left and right encoders to 0.
-   */
+  @Override
   public void resetEncoders() {
     m_rightEncoder.setPosition(0);
     m_leftEncoder.setPosition(0);
@@ -301,51 +212,20 @@ public class DriveBase extends SubsystemBase {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
+    super.periodic();
+
     // Update current info on faults.
     if (m_pigeonChecker != null) {
       m_pigeonChecker.run();
     }
-
-    updateOdometry();
-  }
-
-  Rotation2d getGyroAngle() {
-    return m_gyro.getRotation2d();
   }
 
   //////////////////////////////////////////////////////////////////
   // Trajectory-following support.
 
-  public Pose2d GetPose() {
-    return m_odometry.getPoseMeters();
-  }
-
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
-  }
-
-  private void updateOdometry() {
-    // Get my gyro angle. We are negating the value because gyros return positive
-    // values as the robot turns clockwise. This is not standard convention that is
-    // used by the WPILib classes.
-    var gyroAngle = Rotation2d.fromDegrees(-m_gyro.getAngle());
-
-    // Update the pose
-    m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
-  }
-
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    m_odometry.resetPosition(pose, getGyroAngle());
-  }
-
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(rightVolts);
     m_drive.feed();
-  }
-
-  public double getTrackWidth() {
-    return m_tankWidth;
   }
 }

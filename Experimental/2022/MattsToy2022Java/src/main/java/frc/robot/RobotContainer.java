@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 
+  private final static boolean CONFIGURE_FOR_ROMI = false;
+
   private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
   private final SwitchDriveHandler m_switchDriveHandler;
 
@@ -57,47 +59,58 @@ public class RobotContainer {
     //////////////////////////////////////////////////////////////
     // Set up the drive base.
 
-    m_driveBase = new DriveBase(m_robotSettings);
+    if (!CONFIGURE_FOR_ROMI) {
+      m_driveBase = new DriveBase(m_robotSettings);
+    } else {
+      m_driveBase = null;
+    }
 
-    // Configure tank drive command (default for drive base).
-    DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
-    SpeedScaler normalSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_NORMAL);
-    SpeedScaler turtleSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURTLE);
-    SpeedScaler turboSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURBO);
-    TurboTurtleScaler modeScaler = new TurboTurtleScaler(
-        normalSpeedScaler,
-        turtleSpeedScaler,
-        turboSpeedScaler,
-        () -> { // Turtle mode signal
-          return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.LEFT_TRIGGER);
-        },
-        () -> { // Turbo mode signal
-          return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
-        });
+    if (m_driveBase != null) {
+      // Configure tank drive command (default for drive base).
+      DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
+      SpeedScaler normalSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_NORMAL);
+      SpeedScaler turtleSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURTLE);
+      SpeedScaler turboSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURBO);
+      TurboTurtleScaler modeScaler = new TurboTurtleScaler(
+          normalSpeedScaler,
+          turtleSpeedScaler,
+          turboSpeedScaler,
+          () -> { // Turtle mode signal
+            return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.LEFT_TRIGGER);
+          },
+          () -> { // Turbo mode signal
+            return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
+          });
 
-    DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
-        modeScaler.adjustSpeed(
-            driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)));
-    DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
-        modeScaler.adjustSpeed(
-            driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
+      DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
+          modeScaler.adjustSpeed(
+              driverStick.getRawAxis(LogitechGamePad.LEFT_Y_AXIS)));
+      DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
+          modeScaler.adjustSpeed(
+              driverStick.getRawAxis(LogitechGamePad.RIGHT_Y_AXIS)));
 
-    // Need to hang onto this to allow reference from configureButtonBindings()
-    // (though I could make it local if I just bound it here...).
-    m_switchDriveHandler = new SwitchDriveHandler(leftStick, rightStick);
+      // Need to hang onto this to allow reference from configureButtonBindings()
+      // (though I could make it local if I just bound it here...).
+      m_switchDriveHandler = new SwitchDriveHandler(leftStick, rightStick);
 
-    TankDrive tankDrive = new TankDrive(m_driveBase,
-        // Left side control
-        m_switchDriveHandler.getLeftSupplier(),
-        // Right side control
-        m_switchDriveHandler.getRightSupplier());
-    m_driveBase.setDefaultCommand(tankDrive);
+      TankDrive tankDrive = new TankDrive(
+          m_driveBase,
+          // Left side control
+          m_switchDriveHandler.getLeftSupplier(),
+          // Right side control
+          m_switchDriveHandler.getRightSupplier());
+      m_driveBase.setDefaultCommand(tankDrive);
+    } else {
+      m_switchDriveHandler = null;
+    }
 
     //////////////////////////////////////////////////////////////
     // Set up the lighting subsystem.
 
-    m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    if (!CONFIGURE_FOR_ROMI) {
+      m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
+      m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    }
 
     //////////////////////////////////////////////////////////////
     // Finish setting up commands on the stick(s) and dashboard.

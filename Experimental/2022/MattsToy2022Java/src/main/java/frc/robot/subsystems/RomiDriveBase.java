@@ -9,6 +9,7 @@ import frc.robot.sensors.RomiGyro;
 import frc.robot.utils.SimulatedGyro;
 
 public class RomiDriveBase extends AbstractDriveBase {
+  /** Implementation of TrivialEncoder for use with the Romis. */
   class TrivialEncoderImpl implements TrivialEncoder {
     final Encoder encoder;
 
@@ -32,28 +33,36 @@ public class RomiDriveBase extends AbstractDriveBase {
     }
   }
 
+  /** Encoder ticks per revolution of the wheels on a Romi. */
   private static final double kCountsPerRevolution = 1440.0;
+
+  /** Diameter of the wheels on the Romi. */
   private static final double kWheelDiameterInch = 2.75591; // 70 mm
 
-  // The Romi has the left and right motors set to
-  // PWM channels 0 and 1 respectively
+  /** Left motor on the Romi unit (tied to PWM 0). */
   private final Spark m_leftMotor = new Spark(0);
+  /** Right motor on the Romi unit (tied to PWM 1). */
   private final Spark m_rightMotor = new Spark(1);
 
-  // The Romi has onboard encoders that are hardcoded
-  // to use DIO pins 4/5 and 6/7 for the left and right
+  /** Encoder on the left side of the Romi (tied to DIO pins 4/5). */
   private final Encoder m_leftEncoder = new Encoder(4, 5);
+  /** Encoder on the right side of the Romi (tied to DIO pins 6/7). */
   private final Encoder m_rightEncoder = new Encoder(6, 7);
 
   private final TrivialEncoder m_leftEncoderWrapper = new TrivialEncoderImpl(m_leftEncoder);
   private final TrivialEncoder m_rightEncoderWrapper = new TrivialEncoderImpl(m_rightEncoder);
 
-  // Set up the differential drive controller
+  /** The differential drive controller for the robot. */
   private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
 
-  // Set up the RomiGyro
+  /** Wrapper for the Gyro hardware on the Romi. */
   private final RomiGyro m_gyro = new RomiGyro();
 
+  /**
+   * Constructor.
+   * 
+   * @param settings settings to be used in configuring the Romi's drive base.
+   */
   public RomiDriveBase(RobotSettings settings) {
     super(settings);
 
@@ -98,6 +107,7 @@ public class RomiDriveBase extends AbstractDriveBase {
     m_diffDrive.feed();
   }
 
+  /** Wrapper to provide access to the Romi's Z-axis gyro *as* a Gyro object. */
   private SimulatedGyro simpleGyro = new SimulatedGyro(
       /* close */ () -> {
       },
@@ -117,5 +127,4 @@ public class RomiDriveBase extends AbstractDriveBase {
   public Gyro getZAxisGyro() {
     return simpleGyro;
   }
-
 }

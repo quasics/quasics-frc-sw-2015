@@ -56,10 +56,13 @@ public class RomiDriveBase extends AbstractDriveBase {
 
   public RomiDriveBase(RobotSettings settings) {
     super(settings);
-    // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
-    m_rightMotor.setInverted(true);
+
+    if (settings.leftMotorsInverted) {
+      m_leftMotor.setInverted(true);
+    }
+    if (settings.rightMotorsInverted) {
+      m_rightMotor.setInverted(true);
+    }
 
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);

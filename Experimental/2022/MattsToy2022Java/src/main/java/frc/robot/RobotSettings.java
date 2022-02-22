@@ -34,13 +34,16 @@ public class RobotSettings {
 
   /** Name of the robot (for debugging). */
   public final String robotName;
+
   /** Track width of the robot (e.g., for path following support). */
   public final double trackWidthMeters;
+
   /**
    * Iff true, the motors on the left side of the drive base are installed in an
    * inverted configuration.
    */
   public final boolean leftMotorsInverted;
+
   /**
    * Iff true, the motors on the right side of the drive base are installed in an
    * inverted configuration.

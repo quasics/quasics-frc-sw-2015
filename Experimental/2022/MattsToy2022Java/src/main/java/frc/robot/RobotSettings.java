@@ -28,7 +28,8 @@ public class RobotSettings {
   public enum GyroType {
     None,
     ADXRS450,
-    Pigeon2
+    Pigeon2,
+    Romi
   }
 
   /** Name of the robot (for debugging). */

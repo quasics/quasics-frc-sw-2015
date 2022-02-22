@@ -12,12 +12,25 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotSettings;
 
+/**
+ * An abstract base class for drive base subsystems to be used with either the
+ * Romi units or "full-sized" FRC robots.
+ */
 public abstract class AbstractDriveBase extends SubsystemBase {
+  /**
+   * Wrapper for the core functionality that this class needs from the encoders.
+   * 
+   * This is required, as the RelativeEncoder class provided by the Spark Max
+   * controllers isn't *actually* a version of the WPILib Encoder type.
+   */
   interface TrivialEncoder {
+    /** Returns the distance recorded by the encoder (in meters). */
     double getPosition();
 
+    /** Returns the current speed reported by the encoder (in meters/sec). */
     double getVelocity();
 
+    /** Resets the encoder's distance. */
     void reset();
   }
 
@@ -29,7 +42,13 @@ public abstract class AbstractDriveBase extends SubsystemBase {
    */
   final private DifferentialDriveOdometry m_odometry;
 
-  /** Creates a new AbstractDriveBase. */
+  /**
+   * Creates a new AbstractDriveBase.
+   * 
+   * @param robotSettings the settings to be used in configuring the drive base
+   *                      (used to differentiate between the various FRC bots, as
+   *                      well as with the ROMi units)
+   */
   protected AbstractDriveBase(RobotSettings robotSettings) {
     setName("DriveBase");
 
@@ -110,8 +129,10 @@ public abstract class AbstractDriveBase extends SubsystemBase {
    */
   protected abstract void doArcadeDrive(double xSpeed, double zRotation, boolean squareInputs);
 
+  /** Returns an encoder wrapper for the wheels on the robot's left side. */
   protected abstract TrivialEncoder getLeftEncoder();
 
+  /** Returns an encoder wrapper for the wheels on the robot's right side. */
   protected abstract TrivialEncoder getRightEncoder();
 
   /**
@@ -156,8 +177,10 @@ public abstract class AbstractDriveBase extends SubsystemBase {
     updateOdometry();
   }
 
+  /** Returns a Gyro to be used in looking at the robot's heading. */
   public abstract Gyro getZAxisGyro();
 
+  /** Returns the robot's current heading as reported by the gyro. */
   Rotation2d getGyroAngle() {
     return getZAxisGyro().getRotation2d();
   }
@@ -165,14 +188,29 @@ public abstract class AbstractDriveBase extends SubsystemBase {
   //////////////////////////////////////////////////////////////////
   // Trajectory-following support.
 
+  /**
+   * Returns the position of the robot on the field.
+   * 
+   * Note that this class reports position using a robot-based perspective (i.e.,
+   * relative to the robot's starting position/direction), rather than a
+   * field-oriented perspective.
+   */
   public Pose2d GetPose() {
     return m_odometry.getPoseMeters();
   }
 
+  /**
+   * @return the current wheel speeds for the robot.
+   */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(getLeftSpeed(), getRightSpeed());
   }
 
+  /**
+   * Updates the current odometry data for the robot.
+   * 
+   * @see #periodic()
+   */
   private void updateOdometry() {
     // Get my gyro angle. We are negating the value because gyros return positive
     // values as the robot turns clockwise. This is not standard convention that is
@@ -183,14 +221,21 @@ public abstract class AbstractDriveBase extends SubsystemBase {
     m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
   }
 
+  /** Resets the robot's odometry data. */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     m_odometry.resetPosition(pose, getGyroAngle());
   }
 
+  /** Returns the width between the robot's tracks. */
   public double getTrackWidth() {
     return m_tankWidth;
   }
 
+  /**
+   * Sets the robot's wheel speeds using the specified left/right voltage.
+   * 
+   * This is intended for use during path following/PID-controleld operations.
+   */
   public abstract void tankDriveVolts(double leftVolts, double rightVolts);
 }

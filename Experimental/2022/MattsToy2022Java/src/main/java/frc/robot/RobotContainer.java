@@ -26,6 +26,7 @@ import frc.robot.utils.DrivePowerSupplier;
 import frc.robot.utils.SpeedScaler;
 import frc.robot.utils.SwitchDriveHandler;
 import frc.robot.utils.TurboTurtleScaler;
+import frc.robot.Constants.OperatorInterface.GameSirPro;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -50,106 +51,6 @@ public class RobotContainer {
    */
   private final static boolean CONFIGURE_FOR_ROMI = new File(Filesystem.getOperatingDirectory(), ".simulatingRomi")
       .exists();
-
-  private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
-  private final SwitchDriveHandler m_switchDriveHandler;
-
-  private final AbstractDriveBase m_driveBase;
-  private final Lighting m_lighting;
-  private final OnBoardIO m_onboardIO;
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    System.out.println("Operating directory: " + Filesystem.getOperatingDirectory());
-
-    // Log the settings which we'll be using during operations.
-    System.out.println(
-        "-----------------------------------------\n"
-            + "*** Running with robot configuration:\n"
-            + m_robotSettings + "\n"
-            + "-----------------------------------------\n");
-
-    // Allocate the joystick for the driver.
-    Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
-
-    //////////////////////////////////////////////////////////////////
-    // Set up the drive base.
-
-    if (!CONFIGURE_FOR_ROMI) {
-      m_driveBase = new DriveBase(m_robotSettings);
-      m_onboardIO = null;
-    } else {
-      m_driveBase = new RomiDriveBase(m_robotSettings);
-      m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
-    }
-
-    if (m_driveBase != null) {
-      // Configure tank drive command (default for drive base).
-      DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
-      SpeedScaler normalSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_NORMAL);
-      SpeedScaler turtleSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURTLE);
-      SpeedScaler turboSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURBO);
-      TurboTurtleScaler modeScaler = new TurboTurtleScaler(
-          normalSpeedScaler,
-          turtleSpeedScaler,
-          turboSpeedScaler,
-          () -> { // Turtle mode signal
-            return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.LEFT_TRIGGER);
-          },
-          () -> { // Turbo mode signal
-            return driverStick.getRawButton(Constants.OperatorInterface.LogitechGamePad.RIGHT_TRIGGER);
-          });
-      final int leftStickIndex = (CONFIGURE_FOR_ROMI) ? 1 : LogitechGamePad.LEFT_Y_AXIS;
-      final int rightStickIndex = (CONFIGURE_FOR_ROMI) ? 5 : LogitechGamePad.RIGHT_Y_AXIS;
-      DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
-          modeScaler.adjustSpeed(
-              driverStick.getRawAxis(leftStickIndex)));
-      DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
-          modeScaler.adjustSpeed(
-              driverStick.getRawAxis(rightStickIndex)));
-
-      // Need to hang onto this to allow reference from configureButtonBindings()
-      // (though I could make it local if I just bound it here...).
-      m_switchDriveHandler = new SwitchDriveHandler(leftStick, rightStick);
-
-      TankDrive tankDrive = new TankDrive(
-          m_driveBase,
-          // Left side control
-          m_switchDriveHandler.getLeftSupplier(),
-          // Right side control
-          m_switchDriveHandler.getRightSupplier());
-      m_driveBase.setDefaultCommand(tankDrive);
-    } else {
-      m_switchDriveHandler = null;
-    }
-
-    //////////////////////////////////////////////////////////////////
-    // Example of how to use Romi on-board I/O features (if enabled).
-
-    if (m_onboardIO != null) {
-      Button onboardButtonA = new Button(m_onboardIO::getButtonAPressed);
-      onboardButtonA
-          .whenActive(new PrintCommand("Button A Pressed"))
-          .whenInactive(new PrintCommand("Button A Released"));
-    }
-
-    //////////////////////////////////////////////////////////////////
-    // Set up the lighting subsystem.
-
-    if (!CONFIGURE_FOR_ROMI) {
-      m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
-      m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
-    } else {
-      m_lighting = null;
-    }
-
-    //////////////////////////////////////////////////////////////////
-    // Finish setting up commands on the stick(s) and dashboard.
-    configureButtonBindings(driverStick);
-    configureSmartDashboard();
-  }
 
   /**
    * Controls whether robot settings/configuration data will be loaded from
@@ -195,11 +96,129 @@ public class RobotContainer {
    */
   private static final String SETTINGS_FILE_NAME = "robotSettings.props";
 
+  /** Settings to use in configuring the robot. */
+  private final RobotSettings m_robotSettings = loadSettingsOrDefaults();
+
+  /** Drive base subsystem. */
+  private final AbstractDriveBase m_driveBase;
+  /** Lighting subsystem (unused on Romi). */
+  private final Lighting m_lighting;
+  /** OnBoardIO subsystem (only used on Romi). */
+  private final OnBoardIO m_onboardIO;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
+  public RobotContainer() {
+    System.out.println("Operating directory: " + Filesystem.getOperatingDirectory());
+
+    // Log the settings which we'll be using during operations.
+    System.out.println(
+        "-----------------------------------------\n"
+            + "*** Running with robot configuration:\n"
+            + m_robotSettings + "\n"
+            + "-----------------------------------------\n");
+
+    // Allocate the joystick for the driver.
+    Joystick driverStick = new Joystick(Constants.OperatorInterface.DRIVER_JOYSTICK);
+
+    //////////////////////////////////////////////////////////////////
+    // Set up the drive base.
+
+    if (!CONFIGURE_FOR_ROMI) {
+      m_driveBase = new DriveBase(m_robotSettings);
+      m_onboardIO = null;
+    } else {
+      m_driveBase = new RomiDriveBase(m_robotSettings);
+      m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
+    }
+
+    SwitchDriveHandler switchDriveHandler = null;
+
+    if (m_driveBase != null) {
+      final int turtleModeButtonIndex = CONFIGURE_FOR_ROMI
+          ? GameSirPro.LEFT_SHOULDER_BUTTON
+          : LogitechGamePad.LEFT_TRIGGER;
+      final int turboModeButtonIndex = CONFIGURE_FOR_ROMI
+          ? GameSirPro.RIGHT_SHOULDER_BUTTON
+          : LogitechGamePad.RIGHT_TRIGGER;
+      final int leftStickIndex = (CONFIGURE_FOR_ROMI
+          ? GameSirPro.LEFT_Y_AXIS
+          : LogitechGamePad.LEFT_Y_AXIS);
+      final int rightStickIndex = (CONFIGURE_FOR_ROMI
+          ? GameSirPro.RIGHT_Y_AXIS
+          : LogitechGamePad.RIGHT_Y_AXIS);
+
+      // Configure tank drive command (default for drive base).
+      DeadBandEnforcer drivingDeadband = new DeadBandEnforcer(Constants.Deadbands.DRIVING);
+      SpeedScaler normalSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_NORMAL);
+      SpeedScaler turtleSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURTLE);
+      SpeedScaler turboSpeedScaler = new SpeedScaler(Constants.SpeedLimits.MAX_SPEED_TURBO);
+      TurboTurtleScaler modeScaler = new TurboTurtleScaler(
+          normalSpeedScaler,
+          turtleSpeedScaler,
+          turboSpeedScaler,
+          () -> { // Turtle mode signal
+            return driverStick.getRawButton(turtleModeButtonIndex);
+          },
+          () -> { // Turbo mode signal
+            return driverStick.getRawButton(turboModeButtonIndex);
+          });
+      DrivePowerSupplier leftStick = () -> drivingDeadband.adjustSpeed(
+          modeScaler.adjustSpeed(
+              driverStick.getRawAxis(leftStickIndex)));
+      DrivePowerSupplier rightStick = () -> drivingDeadband.adjustSpeed(
+          modeScaler.adjustSpeed(
+              driverStick.getRawAxis(rightStickIndex)));
+
+      // Need to hang onto this to allow reference from configureButtonBindings()
+      // (though I could make it local if I just bound it here...).
+      switchDriveHandler = new SwitchDriveHandler(leftStick, rightStick);
+
+      TankDrive tankDrive = new TankDrive(
+          m_driveBase,
+          // Left side control
+          switchDriveHandler.getLeftSupplier(),
+          // Right side control
+          switchDriveHandler.getRightSupplier());
+      m_driveBase.setDefaultCommand(tankDrive);
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Example of how to use Romi on-board I/O features (if enabled).
+
+    if (m_onboardIO != null) {
+      Button onboardButtonA = new Button(m_onboardIO::getButtonAPressed);
+      onboardButtonA
+          .whenActive(new PrintCommand("Button A Pressed"))
+          .whenInactive(new PrintCommand("Button A Released"));
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Set up the lighting subsystem.
+
+    if (!CONFIGURE_FOR_ROMI) {
+      m_lighting = new Lighting(Constants.Lighting.PWM_PORT, Constants.Lighting.NUM_LIGHTS);
+      m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    } else {
+      m_lighting = null;
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Finish setting up commands on the stick(s) and dashboard.
+    configureButtonBindings(driverStick, switchDriveHandler);
+    configureSmartDashboard();
+  }
+
   /**
    * Returns robot-specific settings from the "save file" (or else the defaults,
    * on errors).
    */
   private static RobotSettings loadSettingsOrDefaults() {
+    if (CONFIGURE_FOR_ROMI) {
+      return getSettingsForRomi();
+    }
+
     RobotSettings settings = null;
     final String LOADING_ROBOT_PROPERTY_NAME = "Properties";
     if (LOAD_SETTINGS_FROM_DEPLOYED_FILES) {
@@ -247,41 +266,55 @@ public class RobotContainer {
     return getDefaultSettings();
   }
 
-  private static final double INCHES_PER_METER = 39.3701;
-
+  /** Returns the robot settings for Sally (2022 robot). */
   private static RobotSettings getSettingsForSally() {
     return new RobotSettings(
         "Sally", // robotName
-        Constants.TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
+        Constants.TRACK_WIDTH_INCHES_SALLY / Constants.INCHES_PER_METER,
         true, // leftMotorsInverted
-        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
         0 // pigeonCanID
     );
   }
 
+  /** Returns the robot settings for use on a Romi. */
+  private static RobotSettings getSettingsForRomi() {
+    return new RobotSettings(
+        "Romi", // robotName
+        Constants.TRACK_WIDTH_METERS_ROMI,
+        true, // leftMotorsInverted
+        false, // rightMotorsInverted
+        RobotSettings.GyroType.Romi,
+        0 // pigeonCanID
+    );
+  }
+
+  /** Returns the robot settings for Mae (2021 robot). */
   private static RobotSettings getSettingsForMae() {
     return new RobotSettings(
         "Mae", // robotName
-        Constants.TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
+        Constants.TRACK_WIDTH_INCHES_MAE / Constants.INCHES_PER_METER,
         true, // leftMotorsInverted
-        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
         0 // pigeonCanID
     );
   }
 
+  /** Returns the robot settings for Nike (2019 robot). */
   private static RobotSettings getSettingsForNike() {
     return new RobotSettings(
         "Nike", // robotName
-        Constants.TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
+        Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
         true, // leftMotorsInverted
-        false, // RIGHT_MOTORS_INVERTED_PROPERTY
+        false, // rightMotorsInverted
         RobotSettings.GyroType.Pigeon2,
         1 // pigeonCanID
     );
   }
 
+  /** Returns default settings (for the 2022 FRC robot). */
   private static RobotSettings getDefaultSettings() {
     return getSettingsForSally();
   }
@@ -294,12 +327,17 @@ public class RobotContainer {
    * {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    *
-   * @param driverStick the driver's joystick.
+   * @param driverStick        the driver's joystick.
+   * @param switchDriveHandler tracks status for "switch drive".
    */
-  private void configureButtonBindings(Joystick driverStick) {
-    JoystickButton b = new JoystickButton(driverStick, Constants.OperatorInterface.LogitechGamePad.START_BUTTON);
+  private void configureButtonBindings(Joystick driverStick, SwitchDriveHandler switchDriveHandler) {
+    final int switchDriveButtonIndex = CONFIGURE_FOR_ROMI
+        ? GameSirPro.S_BUTTON
+        : LogitechGamePad.START_BUTTON;
+
+    JoystickButton b = new JoystickButton(driverStick, switchDriveButtonIndex);
     b.whenPressed(new InstantCommand(() -> {
-      m_switchDriveHandler.switchDirections();
+      switchDriveHandler.switchDirections();
     }));
   }
 

@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.Filesystem;
  * would be to switch to a USB drive (which might make "default values" easier
  * to deploy to a given robot). These are apparently mounted at "/U" by the
  * roboRIO firmware image.
+ * 
+ * TODO(mjh): Break this apart into something that manages the robot settings,
+ * and a utility class to handle loading/storing them.
  */
 public class RobotSettings {
   /** Different types of FRC gyros understood as part of robot settings data. */

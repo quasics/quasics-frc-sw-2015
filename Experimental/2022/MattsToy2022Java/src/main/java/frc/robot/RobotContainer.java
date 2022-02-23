@@ -107,7 +107,8 @@ public class RobotContainer {
   private final OnBoardIO m_onboardIO;
 
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * The container for the robot. Contains (and connects) subsystems, OI devices,
+   * and commands.
    */
   public RobotContainer() {
     System.out.println("Operating directory: " + Filesystem.getOperatingDirectory());

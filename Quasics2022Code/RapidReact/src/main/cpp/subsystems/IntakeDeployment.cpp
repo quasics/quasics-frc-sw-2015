@@ -4,7 +4,15 @@
 
 #include "subsystems/IntakeDeployment.h"
 
-IntakeDeployment::IntakeDeployment() = default;
+IntakeDeployment::IntakeDeployment() {
+}
 
 // This method will be called once per scheduler run
-void IntakeDeployment::Periodic() {}
+void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
+  m_IntakeDeploymentMotor.Set(
+      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
+      percentSpeed);
+}
+
+void IntakeDeployment::Periodic() {
+}

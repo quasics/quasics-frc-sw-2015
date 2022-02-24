@@ -36,6 +36,7 @@ namespace MotorIds {
   namespace VictorSPX {
     constexpr int INTAKE_MOTOR_ID = 1;
     constexpr int CONVEYOR_MOTOR_ID = 2;
+    constexpr int INTAKE_DEPLOYMENT_MOTOR = 3;
   }  // namespace VictorSPX
 }  // namespace MotorIds
 

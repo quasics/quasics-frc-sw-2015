@@ -195,7 +195,7 @@ public abstract class AbstractDriveBase extends SubsystemBase {
    * relative to the robot's starting position/direction), rather than a
    * field-oriented perspective.
    */
-  public Pose2d GetPose() {
+  public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
 

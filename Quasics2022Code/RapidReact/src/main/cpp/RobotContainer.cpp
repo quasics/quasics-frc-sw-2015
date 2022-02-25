@@ -13,8 +13,10 @@
 #include "commands/BreathingLights.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/ExtendClimber.h"
+#include "commands/ExtendIntake.h"
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RetractClimber.h"
+#include "commands/RetractIntake.h"
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
@@ -142,6 +144,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));
   frc::SmartDashboard::PutData("Alliance Breathing Lights",
                                new BreathingAllianceLights(&m_lighting, 0.75));
+  frc::SmartDashboard::PutData("Extend Intake at 30% speed",
+                               new ExtendIntake(&m_intakeDeployment, 0.3));
+  frc::SmartDashboard::PutData("Retract Intake at 30%",
+                               new RetractIntake(&m_intakeDeployment, 0.3));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

@@ -14,9 +14,9 @@
 #include "subsystems/Conveyor.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
+#include "subsystems/IntakeDeployment.h"
 #include "subsystems/Lighting.h"
 #include "subsystems/Shooter.h"
-
 /**
  * This class is where the bulk of the robot should be declared.  Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -51,6 +51,7 @@ class RobotContainer {
   Conveyor m_conveyor;
   Climber m_climber;
   Lighting m_lighting;
+  IntakeDeployment m_intakeDeployment;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 

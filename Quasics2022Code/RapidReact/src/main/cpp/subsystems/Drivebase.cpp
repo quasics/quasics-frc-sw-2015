@@ -64,6 +64,15 @@ void Drivebase::ResetEncoders() {
 }
 
 void Drivebase::Periodic() {
+  auto rotation = m_gyro.GetRotation2d();
+  auto leftDistance = GetLeftDistance();
+  auto rightDistance = GetRightDistance();
+  std::cout << "rotation = " << rotation.Degrees().value()
+            << "degrees, leftDistance = " << leftDistance.value()
+            << "m, rightDistance = " << rightDistance.value() << "m"
+            << std::endl;
+
+  m_odometry.Update(rotation, leftDistance, rightDistance);
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

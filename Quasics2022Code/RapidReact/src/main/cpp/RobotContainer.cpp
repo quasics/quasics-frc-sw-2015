@@ -38,14 +38,17 @@ RobotContainer::RobotContainer() {
           bool isTurtle = m_driverStick.GetRawButton(
               OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
           if (isTurbo) {
-            return 0.80 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+            return -1 * 0.80 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           } else if (isTurtle) {
-            return 0.40 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+            return -1 * 0.40 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           } else {
-            return 0.60 * m_driverStick.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+            return -1 * 0.60 *
+                   m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
           }
         } else {
           bool isTurbo = m_driverStick.GetRawButton(

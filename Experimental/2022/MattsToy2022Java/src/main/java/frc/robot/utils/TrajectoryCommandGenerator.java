@@ -44,7 +44,7 @@ public class TrajectoryCommandGenerator {
 
   /// Defines maximum speed/acceleration for the trajectory.
   ///
-  /// Note that the default values are fairly low; you'll likely
+  /// Note that the default values are fairly low; we'll likely
   /// want use something larger for real code.
   public class SpeedProfile {
     double maxVelocity = 0.5; // MetersPerSecond

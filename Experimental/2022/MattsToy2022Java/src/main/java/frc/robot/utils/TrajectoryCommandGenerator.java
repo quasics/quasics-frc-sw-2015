@@ -29,17 +29,29 @@ public class TrajectoryCommandGenerator {
    */
   public static final double MAX_VOLTAGE = 10;
 
+  /// Drive profile settings, generally obtained from the FRC characterization
+  /// tool (SysID, in 2022).
   public static class DriveProfileData {
     double kS; // units::voltage::volt_t
     double kV; // VoltSecondsPerMeter
     double kA; // VoltSecondsSquaredPerMeter
   }
 
+  /// PID configuration settings, to control error correction.
   public static class PIDConfig {
-    double kP; /// < proportional coefficient for PID (from the
-               /// < frc-characterization tool)
-    double kI; /// < integral coefficient for PID (default to unused)
-    double kD; /// < derivative coefficient for PID (default to unused)
+    public PIDConfig(double p) {
+      this(p, 0, 0);
+    }
+
+    public PIDConfig(double p, double i, double d) {
+      this.kP = p;
+      this.kI = i;
+      this.kD = d;
+    }
+
+    final double kP; /// < proportional coefficient for PID (from the characterization tool)
+    final double kI; /// < integral coefficient for PID
+    final double kD; /// < derivative coefficient for PID (from the characterization tool)
   };
 
   /// Defines maximum speed/acceleration for the trajectory.
@@ -47,8 +59,17 @@ public class TrajectoryCommandGenerator {
   /// Note that the default values are fairly low; we'll likely
   /// want use something larger for real code.
   public class SpeedProfile {
-    double maxVelocity = 0.5; // MetersPerSecond
-    double maxAcceleration = 0.5; // MetersPerSecondSquared
+    public SpeedProfile() {
+      this(0.5, 0.5);
+    }
+
+    public SpeedProfile(double maxV, double maxA) {
+      maxVelocity = maxV;
+      maxAcceleration = maxA;
+    }
+
+    final double maxVelocity; // MetersPerSecond
+    final double maxAcceleration; // MetersPerSecondSquared
   };
 
   /// Values controlling for a RAMSETE follower in units of meters and

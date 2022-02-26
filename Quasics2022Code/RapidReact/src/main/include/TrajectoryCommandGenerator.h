@@ -56,8 +56,8 @@ class TrajectoryCommandGenerator {
   /// Note that the default values are fairly low; you'll likely
   /// want use something larger for real code.
   struct SpeedProfile {
-    MetersPerSecond maxVelocity = 0.5_mps;
-    MetersPerSecondSquared maxAcceleration = 0.5_mps_sq;
+    MetersPerSecond maxVelocity;
+    MetersPerSecondSquared maxAcceleration;
   };
 
   /// Values controlling for a RAMSETE follower in units of meters and
@@ -192,6 +192,7 @@ class TrajectoryCommandGenerator {
 };
 
 // defines the functions here instead of in a .cpp file
+// this generates a command from explicit data given
 inline frc2::SequentialCommandGroup*
 TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
     Drivebase* const drive, const DriveProfileData profileData,
@@ -230,6 +231,8 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
 }
 
 // defines the functions here instead of in a .cpp file
+// all calls of functions eventually end up here where it actually builds the
+// RameseteCommand
 inline frc2::SequentialCommandGroup*
 TrajectoryCommandGenerator::GenerateCommandForTrajectory(
     Drivebase* const drive, const DriveProfileData profileData,
@@ -239,6 +242,11 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       TRACK_WIDTH_INCHES_SALLY};
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       profileData.kS, profileData.kV, profileData.kA);
+
+  // this should be the equivalent of the Ramesete command created in WPILIB
+  // the above code is providing different data that is required and combining
+  // some of the data
+
   frc2::RamseteCommand ramseteCommand(
       trajectory, [drive]() { return drive->GetPose(); },
       frc::RamseteController{ramseteConfig.kRamseteB,

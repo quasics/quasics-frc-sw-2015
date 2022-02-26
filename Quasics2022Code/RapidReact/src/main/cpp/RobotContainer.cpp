@@ -9,6 +9,7 @@
 #include <frc2/command/button/JoystickButton.h>
 
 #include "Constants.h"
+#include "TrajectoryCommandGenerator.h"
 #include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
 #include "commands/DriveAtPowerForMeters.h"
@@ -24,7 +25,22 @@
 #include "commands/ShootForTime.h"
 #include "commands/TankDrive.h"
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer()
+    : m_trajectoryGenerator(
+          // Drive base being controlled
+          &m_drivebase,
+          // Drive profile data
+          {
+              CharacterizationValues::ks,  // kS
+              CharacterizationValues::kv,  // kV
+              CharacterizationValues::ka   // kA
+          },
+          // PID configuration values
+          {
+              CharacterizationValues::kp,  // kP
+              CharacterizationValues::ki,  // kI
+              CharacterizationValues::kd   // kD
+          }) {
   frc2::JoystickButton(&m_driverStick,
                        OperatorInterface::LogitechGamePad::YButton)
       .WhenPressed([this] { isSwitched = !(isSwitched); });
@@ -154,6 +170,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Drivebase: 20m at 80%",
       new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
+  frc::SmartDashboard::PutData(
+      "Trajectory: Start = 0,0 -> End = 5,5 -> intermediate = 0,5",
+      m_trajectoryGenerator.GenerateCommand(
+          TrajectoryCommandGenerator::SpeedProfile{0.5_mps, 0.8_mps_sq},
+          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+          std::vector<frc::Translation2d>{frc::Translation2d(0_m, 5_m)},
+          frc::Pose2d(5_m, 5_m, frc::Rotation2d(0_deg)),
+          TrajectoryCommandGenerator::ResetTelemetryAtStart));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

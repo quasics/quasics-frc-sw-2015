@@ -53,6 +53,7 @@ class RobotContainer {
   Climber m_climber;
   Lighting m_lighting;
   IntakeDeployment m_intakeDeployment;
+  TrajectoryCommandGenerator m_trajectoryGenerator;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 

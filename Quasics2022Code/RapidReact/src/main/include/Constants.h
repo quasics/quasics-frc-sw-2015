@@ -5,6 +5,8 @@
 #pragma once
 
 #include <units/length.h>
+#include <units/time.h>
+#include <units/voltage.h>
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -23,7 +25,18 @@ constexpr double EXTENSION_SPEED = 0.25;
 
 constexpr double RETRACTION_SPEED = -0.25;
 
-constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY = 22.0_in;
+constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
+    47.134344149315914763_in;  // This is track width for Mae. Sally
+                               // is  22.0_in;
+
+namespace CharacterizationValues {
+  constexpr auto ks = 0.31_V;
+  constexpr auto kv = 2.74 * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.349 * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 2.28;
+  constexpr auto ki = 0.0;
+  constexpr auto kd = 0.0;
+}  // namespace CharacterizationValues
 
 namespace MotorIds {
   namespace SparkMax {

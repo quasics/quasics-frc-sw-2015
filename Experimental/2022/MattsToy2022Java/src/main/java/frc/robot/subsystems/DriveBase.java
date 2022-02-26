@@ -164,7 +164,8 @@ public class DriveBase extends AbstractDriveBase {
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-    final double adjustmentForGearing = wheelCircumferenceMeters / Constants.DRIVE_BASE_GEAR_RATIO;
+    final double adjustmentForGearing = wheelCircumferenceMeters / robotSettings.gearRatio;
+    System.out.println("Using gear ratio: " + robotSettings.gearRatio);
     System.out.println("Adjustment for gearing (m/rotation): " + adjustmentForGearing);
 
     // Further conversion factor from m/min to m/s (used for velocity).

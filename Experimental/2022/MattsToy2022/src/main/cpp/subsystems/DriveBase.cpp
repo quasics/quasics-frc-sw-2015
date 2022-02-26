@@ -4,10 +4,25 @@
 
 #include "subsystems/DriveBase.h"
 
+#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
+#include <frc/ADXRS450_Gyro.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <iostream>
 #include <wpi/numbers>
 
+// Conditional compilation flags, controlling what sort of a gyro we shoud try
+// to set up for the drive base.  Only one should be enabled at a time; if more
+// than 1 is enabled, then only 1 will take effect.
+#define ENABLE_PIGEON2_GYRO
+// #define ENABLE_ADXRS450_GYRO
+
 DriveBase::DriveBase() {
+  SetName("DriveBase");
+
+  /////////////////////////
+  // Motor and encoder setup
+
   // Configure the motors.  (Must be done before adding them to motor
   // controller groups.)
   m_leftFront.SetInverted(true);
@@ -23,6 +38,26 @@ DriveBase::DriveBase() {
 
   // Set up the encoders so that they report units that we care about.
   ConfigureEncoders();
+
+  /////////////////////////
+  // Gyro setup
+
+  // Allocate a gyro (if one is enabled)
+#if defined(ENABLE_PIGEON2_GYRO)
+  m_gyro.reset(new ctre::phoenix::sensors::WPI_Pigeon2{PIGEON2_CAN_ID});
+#elif defined(ENABLE_ADXRS450_GYRO)
+  // Assume that the Chip Select jumper is set to CS0
+  m_gyro.reset(new frc::ADXRS450_Gyro{frc::SPI::Port::kOnboardCS0});
+#else
+  std::cerr
+      << "**** WARNING: No gyro is enabled for use with the drive base!\n";
+#endif  // ENABLE_ADXRS450_GYRO
+
+  // If we allocated a gyro, calibrate & reset it.
+  if (m_gyro) {
+    m_gyro->Calibrate();
+    m_gyro->Reset();
+  }
 }
 
 /**
@@ -135,4 +170,6 @@ units::meter_t DriveBase::GetRightDistance() {
 
 // This method will be called once per scheduler run
 void DriveBase::Periodic() {
+  // Log the heading (for debugging purposes).
+  frc::SmartDashboard::PutNumber("Heading (deg)", GetHeading());
 }

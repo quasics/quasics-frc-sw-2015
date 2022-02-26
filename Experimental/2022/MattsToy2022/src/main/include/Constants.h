@@ -28,6 +28,8 @@ constexpr double DRIVE_BASE_GEAR_RATIO_2021 = 10.71;
 constexpr double DRIVE_BASE_GEAR_RATIO_2022 = 8.45;
 constexpr double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_2022;
 
+constexpr int PIGEON2_CAN_ID = 1;
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

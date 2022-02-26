@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/interfaces/Gyro.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
@@ -32,6 +33,26 @@ class DriveBase : public frc2::SubsystemBase {
   units::meters_per_second_t GetLeftSpeed();
   units::meters_per_second_t GetRightSpeed();
 
+  /***
+   * @return The robot's heading (in degrees), if a gyro is enabled; 0, if
+   * not.
+   */
+  double GetHeading() {
+    if (m_gyro) {
+      return m_gyro->GetAngle();
+    }
+
+    // If we got here, gyro is disabled in code: just return a dummy value.
+    return 0;
+  }
+
+  /** Resets the gyro (back to a heading of 0). */
+  void ResetGyro() {
+    if (m_gyro) {
+      m_gyro->Reset();
+    }
+  }
+
  private:
   void ConfigureEncoders();
 
@@ -58,4 +79,6 @@ class DriveBase : public frc2::SubsystemBase {
 
   // Differential drive (used for actual motor control).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
+
+  std::unique_ptr<frc::Gyro> m_gyro;
 };

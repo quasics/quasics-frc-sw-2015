@@ -23,6 +23,8 @@ constexpr double EXTENSION_SPEED = 0.25;
 
 constexpr double RETRACTION_SPEED = -0.25;
 
+constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY = 22.0_in;
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

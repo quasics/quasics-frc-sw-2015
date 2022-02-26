@@ -7,6 +7,7 @@
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
@@ -54,6 +55,14 @@ class Drivebase : public frc2::SubsystemBase {
 
   /** Returns the current speed of the right-side wheels. */
   units::meters_per_second_t GetRightVelocity();
+
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+
+  frc::Pose2d GetPose();
+
+  void ResetOdometry(frc::Pose2d pose);
+
+  void TankDriveVolts(units::volt_t left, units::volt_t right);
 
   /** Resets the encoders used to report distances for left/right wheels. */
   void ResetEncoders();

@@ -10,6 +10,7 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+#include "TrajectoryCommandGenerator.h"
 #include "subsystems/Climber.h"
 #include "subsystems/Conveyor.h"
 #include "subsystems/Drivebase.h"

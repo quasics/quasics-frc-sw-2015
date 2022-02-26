@@ -113,3 +113,21 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
   // velocity in m/sec.
   return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
 }
+frc::Pose2d Drivebase::GetPose() {
+  return m_odometry.GetPose();
+}
+void Drivebase::ResetOdometry(frc::Pose2d pose) {
+  ResetEncoders();
+  m_odometry.ResetPosition(pose, m_gyro.GetRotation2d());
+}
+
+void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
+  m_leftSide->SetVoltage(left);
+  m_rightSide->SetVoltage(right);
+  m_drive->Feed();
+}
+
+frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
+  return frc::DifferentialDriveWheelSpeeds{GetLeftVelocity(),
+                                           GetRightVelocity()};
+}

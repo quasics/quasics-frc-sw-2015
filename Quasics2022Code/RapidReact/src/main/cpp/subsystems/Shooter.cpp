@@ -7,7 +7,7 @@
 Shooter::Shooter() {
   SetName("Shooter");
 
-  m_flyWheel.SetInverted(true);
+  m_flyWheel.SetInverted(false);
 }
 
 void Shooter::SetFlywheelSpeed(double percentSpeed) {

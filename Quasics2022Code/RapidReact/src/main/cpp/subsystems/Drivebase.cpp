@@ -9,11 +9,22 @@
 #include <iostream>
 #include <wpi/numbers>
 
+// Note: Mae appears to have the left motors marked as "Inverted" at the
+// firmware settings/configuration level, and thus we need to override
+// that when we're trying to talk to it in the same way that we do
+// Nike and Sally.
+#undef TARGETING_MAE_2021_ROBOT
+
 Drivebase::Drivebase() {
   SetName("Drivebase");
 
   m_rightFront.SetInverted(true);
   m_rightBack.SetInverted(true);
+
+#ifdef TARGETING_MAE_2021_ROBOT
+  m_leftBack.SetInverted(false);
+  m_leftFront.SetInverted(false);
+#endif
 
   m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
   m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
@@ -67,10 +78,10 @@ void Drivebase::Periodic() {
   auto rotation = m_gyro.GetRotation2d();
   auto leftDistance = GetLeftDistance();
   auto rightDistance = GetRightDistance();
-  std::cout << "rotation = " << rotation.Degrees().value()
-            << "degrees, leftDistance = " << leftDistance.value()
-            << "m, rightDistance = " << rightDistance.value() << "m"
-            << std::endl;
+  // std::cout << "rotation = " << rotation.Degrees().value()
+  //           << "degrees, leftDistance = " << leftDistance.value()
+  //           << "m, rightDistance = " << rightDistance.value() << "m"
+  //           << std::endl;
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
 }

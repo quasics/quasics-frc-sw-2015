@@ -272,6 +272,7 @@ public class RobotContainer {
     return new RobotSettings(
         "Sally", // robotName
         Constants.TRACK_WIDTH_INCHES_SALLY / Constants.INCHES_PER_METER,
+        Constants.DRIVE_BASE_GEAR_RATIO_2022,
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
@@ -284,6 +285,7 @@ public class RobotContainer {
     return new RobotSettings(
         "Romi", // robotName
         Constants.TRACK_WIDTH_METERS_ROMI,
+        1, // TODO(mjh): Check gear ratio for the Romi
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.Romi,
@@ -296,6 +298,7 @@ public class RobotContainer {
     return new RobotSettings(
         "Mae", // robotName
         Constants.TRACK_WIDTH_INCHES_MAE / Constants.INCHES_PER_METER,
+        Constants.DRIVE_BASE_GEAR_RATIO_2021,
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
@@ -308,6 +311,7 @@ public class RobotContainer {
     return new RobotSettings(
         "Nike", // robotName
         Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
+        Constants.DRIVE_BASE_GEAR_RATIO_2021,
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.Pigeon2,

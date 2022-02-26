@@ -35,8 +35,8 @@ public final class Constants {
   public static final double WHEEL_DIAMETER_INCHES = 6.0;
 
   /// Gear ratio used for the 2020/2021 robots.
-  public static final double DRIVE_BASE_GEAR_RATIO_2021 = 10.71;
-  public static final double DRIVE_BASE_GEAR_RATIO_2022 = 8.45;
+  public static final double DRIVE_BASE_GEAR_RATIO_2021 = 10.71; // Mae and Nike (???)
+  public static final double DRIVE_BASE_GEAR_RATIO_2022 = 8.45; // Sally
   public static final double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_2022;
 
   public static final int PIGEON2_CAN_ID = 1;

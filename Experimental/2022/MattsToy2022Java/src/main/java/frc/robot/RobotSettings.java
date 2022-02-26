@@ -42,6 +42,8 @@ public class RobotSettings {
   /** Track width of the robot (e.g., for path following support). */
   public final double trackWidthMeters;
 
+  public final double gearRatio;
+
   /**
    * Iff true, the motors on the left side of the drive base are installed in an
    * inverted configuration.
@@ -71,8 +73,11 @@ public class RobotSettings {
    * 
    * @param robotName           name of the robot (for debugging/logging)
    * @param trackWidthMeters    track width (m) of the robot
-   * @param leftMotorsInverted  iff true, motors on the left side are inverted
-   * @param rightMotorsInverted iff true, motors on the right side are inverted
+   * @param gearRatio           the gear ratio on the drive base
+   * @param leftMotorsInverted  iff true, drive motors on the left side are
+   *                            inverted
+   * @param rightMotorsInverted iff true, drive motors on the right side are
+   *                            inverted
    * @param installedGyroType   the type of gyro on the robot
    * @param pigeonCanId         the CAN ID for the gyro, if it's a Pigeon2 (or any
    *                            value, if it's not)
@@ -82,12 +87,14 @@ public class RobotSettings {
   public RobotSettings(
       String robotName,
       double trackWidthMeters,
+      double gearRatio,
       boolean leftMotorsInverted,
       boolean rightMotorsInverted,
       GyroType installedGyroType,
       int pigeonCanId) {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
+    this.gearRatio = gearRatio;
     this.leftMotorsInverted = leftMotorsInverted;
     this.rightMotorsInverted = rightMotorsInverted;
     this.installedGyroType = installedGyroType;
@@ -108,6 +115,12 @@ public class RobotSettings {
       throw new IllegalArgumentException("Error fetching track width");
     }
     this.trackWidthMeters = d;
+
+    d = getDoubleFromProperty(props, "gearRatio");
+    if (d == null) {
+      throw new IllegalArgumentException("Error fetching gear ratio");
+    }
+    this.gearRatio = d;
 
     String s = props.getProperty("robotName");
     if (s == null || s.length() == 0) {

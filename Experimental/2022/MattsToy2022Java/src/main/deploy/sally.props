@@ -1,5 +1,8 @@
 robotName=Sally
-trackWidthMeters=0.5588
 leftMotorsInverted=true
 rightMotorsInverted=false
 installedGyroType=ADXRS450
+
+# Per Sean and Meg
+trackWidthMeters=0.5588
+gearRatio=8.45

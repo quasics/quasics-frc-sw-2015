@@ -10,6 +10,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.io.BufferedWriter;
 
+import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
+import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
+import frc.robot.utils.TrajectoryCommandGenerator.SpeedProfile;
+
 import edu.wpi.first.wpilibj.Filesystem;
 
 /**
@@ -62,6 +66,39 @@ public class RobotSettings {
   /** The CAN ID for the installed gyro, if it is a Pigeon2. */
   public final int pigeonCanId;
 
+  public final double driveProfileKs;
+  public final double driveProfileKv;
+  public final double driveProfileKa;
+
+  public final double driveControlKp;
+  public final double driveControlKi;
+  public final double driveControlKd;
+
+  public RobotSettings(
+      String robotName,
+      double trackWidthMeters,
+      double gearRatio,
+      DriveProfileData profileData,
+      PIDConfig pidConfig,
+      boolean leftMotorsInverted,
+      boolean rightMotorsInverted,
+      GyroType installedGyroType,
+      int pigeonCanId) {
+    this(robotName,
+        trackWidthMeters,
+        gearRatio,
+        profileData.kS,
+        profileData.kV,
+        profileData.kA,
+        pidConfig.kP,
+        pidConfig.kI,
+        pidConfig.kD,
+        leftMotorsInverted,
+        rightMotorsInverted,
+        installedGyroType,
+        pigeonCanId);
+  }
+
   /**
    * Creates a RobotSettings object.
    * 
@@ -88,6 +125,12 @@ public class RobotSettings {
       String robotName,
       double trackWidthMeters,
       double gearRatio,
+      double driveProfileKs,
+      double driveProfileKv,
+      double driveProfileKa,
+      double driveControlKp,
+      double driveControlKi,
+      double driveControlKd,
       boolean leftMotorsInverted,
       boolean rightMotorsInverted,
       GyroType installedGyroType,
@@ -95,6 +138,15 @@ public class RobotSettings {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.gearRatio = gearRatio;
+
+    this.driveProfileKs = driveProfileKs;
+    this.driveProfileKv = driveProfileKv;
+    this.driveProfileKa = driveProfileKa;
+
+    this.driveControlKp = driveControlKp;
+    this.driveControlKi = driveControlKi;
+    this.driveControlKd = driveControlKd;
+
     this.leftMotorsInverted = leftMotorsInverted;
     this.rightMotorsInverted = rightMotorsInverted;
     this.installedGyroType = installedGyroType;
@@ -110,23 +162,22 @@ public class RobotSettings {
    * @throws IllegalArgumentException
    */
   public RobotSettings(Properties props) throws IllegalArgumentException {
-    Double d = getDoubleFromProperty(props, "trackWidthMeters");
-    if (d == null) {
-      throw new IllegalArgumentException("Error fetching track width");
-    }
-    this.trackWidthMeters = d;
-
-    d = getDoubleFromProperty(props, "gearRatio");
-    if (d == null) {
-      throw new IllegalArgumentException("Error fetching gear ratio");
-    }
-    this.gearRatio = d;
-
     String s = props.getProperty("robotName");
     if (s == null || s.length() == 0) {
       throw new IllegalArgumentException("Error fetching robot name");
     }
     this.robotName = s;
+
+    this.trackWidthMeters = getCheckedDouble(props, "trackWidthMeters", "Error fetching track width");
+    this.gearRatio = getCheckedDouble(props, "gearRatio", "Error fetching gear ratio");
+
+    this.driveProfileKs = getCheckedDouble(props, "driveProfileKs", "Error fetching kS value for drive profile");
+    this.driveProfileKv = getCheckedDouble(props, "driveProfileKv", "Error fetching kV value for drive profile");
+    this.driveProfileKa = getCheckedDouble(props, "driveProfileKa", "Error fetching kA value for drive profile");
+
+    this.driveControlKp = getCheckedDouble(props, "driveControlKp", "Error fetching kP value for drive control");
+    this.driveControlKi = getCheckedDouble(props, "driveControlKi", "Error fetching kI value for drive control");
+    this.driveControlKd = getCheckedDouble(props, "driveControlKd", "Error fetching kD value for drive control");
 
     Boolean b = getBooleanFromProperty(props, "leftMotorsInverted");
     if (b == null) {
@@ -291,6 +342,14 @@ public class RobotSettings {
     }
 
     return props;
+  }
+
+  private static double getCheckedDouble(Properties props, String propName, String errorText) {
+    Double d = getDoubleFromProperty(props, "propName");
+    if (d == null) {
+      throw new IllegalArgumentException(errorText);
+    }
+    return d;
   }
 
   private static Double getDoubleFromProperty(Properties props, String key) {

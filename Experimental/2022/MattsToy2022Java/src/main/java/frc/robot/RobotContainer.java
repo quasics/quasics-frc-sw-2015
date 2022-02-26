@@ -25,6 +25,8 @@ import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.utils.DrivePowerSupplier;
 import frc.robot.utils.SpeedScaler;
 import frc.robot.utils.SwitchDriveHandler;
+import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
+import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import frc.robot.utils.TurboTurtleScaler;
 import frc.robot.Constants.OperatorInterface.GameSirPro;
 import frc.robot.Constants.OperatorInterface.LogitechGamePad;
@@ -273,22 +275,14 @@ public class RobotContainer {
         "Sally", // robotName
         Constants.TRACK_WIDTH_INCHES_SALLY / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_2022,
+        // TODO(mjh) Calibrate Sally's values for kS, kV, and kA - these are from
+        // 2021/Mae
+        new DriveProfileData(0.31, 2.74, 0.249),
+        // TODO(mjh) Calibrate Sally's values for PID control - these are from 2021/Mae
+        new PIDConfig(2.28, 0, 0),
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
-        0 // pigeonCanID
-    );
-  }
-
-  /** Returns the robot settings for use on a Romi. */
-  private static RobotSettings getSettingsForRomi() {
-    return new RobotSettings(
-        "Romi", // robotName
-        Constants.TRACK_WIDTH_METERS_ROMI,
-        1, // TODO(mjh): Check gear ratio for the Romi
-        true, // leftMotorsInverted
-        false, // rightMotorsInverted
-        RobotSettings.GyroType.Romi,
         0 // pigeonCanID
     );
   }
@@ -299,6 +293,10 @@ public class RobotContainer {
         "Mae", // robotName
         Constants.TRACK_WIDTH_INCHES_MAE / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_2021,
+        // Drive configuration constants (from 2021 code)
+        new DriveProfileData(0.31, 2.74, 0.249),
+        // PID control constants (from 2021 code)
+        new PIDConfig(2.28, 0, 0),
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,
@@ -312,10 +310,34 @@ public class RobotContainer {
         "Nike", // robotName
         Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_2021,
+        // TODO(mjh) Calibrate Nike's values for kS, kV, and kA - these are from
+        // 2021/Mae
+        new DriveProfileData(0.31, 2.74, 0.249),
+        // TODO(mjh) Calibrate Nike's values for PID control - these are from 2021/Mae
+        new PIDConfig(2.28, 0, 0),
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.Pigeon2,
         1 // pigeonCanID
+    );
+  }
+
+  /** Returns the robot settings for use on a Romi. */
+  private static RobotSettings getSettingsForRomi() {
+    return new RobotSettings(
+        "Romi", // robotName
+        Constants.TRACK_WIDTH_METERS_ROMI,
+        1, // TODO(mjh): Check gear ratio for the Romi
+        // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
+        // supports this) - these are from 2021
+        new DriveProfileData(1.25, 5.7, 0.0176),
+        // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
+        // supports this) - these are from 2021
+        new PIDConfig(0.00352, 0, 0),
+        true, // leftMotorsInverted
+        false, // rightMotorsInverted
+        RobotSettings.GyroType.Romi,
+        0 // pigeonCanID
     );
   }
 

@@ -6,3 +6,11 @@ installedGyroType=ADXRS450
 # Per Sean and Meg
 trackWidthMeters=0.5588
 gearRatio=8.45
+
+# TODO(mjh): These are the 2021 constants for Mae; they need to be calculated for Sally
+driveProfileKs=0.31
+driveProfileKv=2.74
+driveProfileKa=0.349
+driveControlKp=2.28
+driveControlKi=0
+driveControlKd=0

@@ -6,3 +6,11 @@ installedGyroType=ADXRS450
 # From 2021 code
 trackWidthMeters=1.1972123413926241
 gearRatio=10.71
+
+# From 2021 constants for Mae
+driveProfileKs=0.31
+driveProfileKv=2.74
+driveProfileKa=0.349
+driveControlKp=2.28
+driveControlKi=0
+driveControlKd=0

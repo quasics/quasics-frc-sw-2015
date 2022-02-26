@@ -156,6 +156,11 @@ public class DriveBase extends AbstractDriveBase {
     m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
     m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
+    // "Drive safety" settings
+    // https://docs.wpilib.org/en/stable/docs/software/hardware-apis/motors/wpi-drive-classes.html#motor-safety
+    m_drive.setExpiration(0.1); // Set watchdog timeout to 0.1sec (should be default)
+    m_drive.setSafetyEnabled(true); // Turn on "drive safety" checks (should be default)
+
     ////////////////////////////////////////
     // Configure the encoders.
 

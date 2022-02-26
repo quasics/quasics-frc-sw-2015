@@ -32,9 +32,15 @@ public class TrajectoryCommandGenerator {
   /// Drive profile settings, generally obtained from the FRC characterization
   /// tool (SysID, in 2022).
   public static class DriveProfileData {
-    double kS; // units::voltage::volt_t
-    double kV; // VoltSecondsPerMeter
-    double kA; // VoltSecondsSquaredPerMeter
+    public DriveProfileData(double kS, double kV, double kA) {
+      this.kS = kS;
+      this.kV = kV;
+      this.kA = kA;
+    }
+
+    public final double kS; // units::voltage::volt_t
+    public final double kV; // VoltSecondsPerMeter
+    public final double kA; // VoltSecondsSquaredPerMeter
   }
 
   /// PID configuration settings, to control error correction.
@@ -49,9 +55,9 @@ public class TrajectoryCommandGenerator {
       this.kD = d;
     }
 
-    final double kP; /// < proportional coefficient for PID (from the characterization tool)
-    final double kI; /// < integral coefficient for PID
-    final double kD; /// < derivative coefficient for PID (from the characterization tool)
+    public final double kP; /// < proportional coefficient for PID (from the characterization tool)
+    public final double kI; /// < integral coefficient for PID
+    public final double kD; /// < derivative coefficient for PID (from the characterization tool)
   };
 
   /// Defines maximum speed/acceleration for the trajectory.
@@ -205,69 +211,3 @@ public class TrajectoryCommandGenerator {
             drive));
   }
 }
-
-/*
- * 
- * frc2::SequentialCommandGroup*
- * TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
- * CommonDriveSubsystem* const drive, const DriveProfileData profileData,
- * const PIDConfig pidConfig, const SpeedProfile speedProfile,
- * const frc::Pose2d& start,
- * const std::vector<frc::Translation2d>& interiorWaypoints,
- * const frc::Pose2d& end, TelemetryHandling telemetryHandling,
- * const RamseteConfig ramseteConfig) {
- * const frc::DifferentialDriveKinematics kDriveKinematics{
- * drive->GetTrackWidth()};
- * 
- * frc::SimpleMotorFeedforward<units::meter> feedForward(
- * profileData.kS, profileData.kV, profileData.kA);
- * frc::DifferentialDriveVoltageConstraint voltageConstraints(
- * feedForward, kDriveKinematics, 10_V);
- * 
- * frc::TrajectoryConfig config(speedProfile.maxVelocity,
- * speedProfile.maxAcceleration);
- * config.SetKinematics(kDriveKinematics);
- * config.AddConstraint(voltageConstraints);
- * 
- * auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
- * start, interiorWaypoints, end, config);
- * 
- * return GenerateCommandForTrajectory(drive, profileData, pidConfig,
- * trajectory,
- * telemetryHandling, ramseteConfig);
- * }
- * 
- * inline frc2::SequentialCommandGroup*
- * TrajectoryCommandGenerator::GenerateCommandForTrajectory(
- * CommonDriveSubsystem* const drive, const DriveProfileData profileData,
- * const PIDConfig pidConfig, frc::Trajectory trajectory,
- * TelemetryHandling telemetryHandling, RamseteConfig ramseteConfig) {
- * const frc::DifferentialDriveKinematics kDriveKinematics{
- * drive->GetTrackWidth()};
- * frc::SimpleMotorFeedforward<units::meter> feedForward(
- * profileData.kS, profileData.kV, profileData.kA);
- * frc2::RamseteCommand ramseteCommand(
- * trajectory, [drive]() { return drive->GetPose(); },
- * frc::RamseteController{ramseteConfig.kRamseteB,
- * ramseteConfig.kRamseteZeta},
- * feedForward, kDriveKinematics,
- * [drive]() { return drive->GetWheelSpeeds(); },
- * frc2::PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
- * frc2::PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
- * [drive](auto left, auto right) { drive->TankDriveVolts(left, right); },
- * {drive});
- * 
- * return new frc2::SequentialCommandGroup(
- * frc2::InstantCommand(
- * [drive, telemetryHandling, trajectory] {
- * if (telemetryHandling == ResetTelemetryAtStart) {
- * std::cout << "Resetting robot odometry" << std::endl;
- * drive->ResetOdometry(trajectory.InitialPose());
- * }
- * },
- * {drive}),
- * std::move(ramseteCommand),
- * frc2::InstantCommand([drive] { drive->TankDriveVolts(0_V, 0_V); },
- * {drive}));
- * }
- */

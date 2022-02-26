@@ -151,6 +151,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new ExtendIntake(&m_intakeDeployment, 0.3));
   frc::SmartDashboard::PutData("Retract Intake at 30%",
                                new RetractIntake(&m_intakeDeployment, 0.3));
+  frc::SmartDashboard::PutData(
+      "Drivebase: 20m at 80%",
+      new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

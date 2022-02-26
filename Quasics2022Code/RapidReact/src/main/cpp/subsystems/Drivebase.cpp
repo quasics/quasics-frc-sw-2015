@@ -4,6 +4,7 @@
 
 #include "subsystems/Drivebase.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 
 #include <iostream>
@@ -84,6 +85,11 @@ void Drivebase::Periodic() {
   //           << std::endl;
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
+  const auto newPose = m_odometry.GetPose();
+  frc::SmartDashboard::PutNumber("Direction",
+                                 newPose.Rotation().Degrees().value());
+  frc::SmartDashboard::PutNumber("X pos", newPose.X().value());
+  frc::SmartDashboard::PutNumber("Y pos", newPose.Y().value());
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

@@ -41,12 +41,10 @@ void BreathingAllianceLights::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void BreathingAllianceLights::Execute() {
   if (m_currentIntensityPercent >= m_maxIntensityPercent) {
-    m_breathingIn = false;
     m_increment = -0.01;
     m_currentIntensityPercent = m_maxIntensityPercent;
   }
   if (m_currentIntensityPercent <= 0) {
-    m_breathingIn = true;
     m_increment = 0.01;
     m_currentIntensityPercent = 0;
   }

@@ -32,12 +32,11 @@ class BreathingAllianceLights
   // Data members.
  private:
   Lighting* m_lighting;
-  // BUG(Matthew): Why have 2 variables here, especially when they're just
+  // (Matthew): Why have 2 variables here, especially when they're just
   // placeholders for the same constant (255/full intensity) in each case?
   // Why not just have one constant, and "pop it into" the right point of
-  // the triplet, based on the alliance info?
-  int red = 255;
-  int blue = 255;
+  // the triplet, based on the alliance info?(done)
+  int fullIntensity = 255;
 
   const double m_maxIntensityPercent;
   double m_currentIntensityPercent = 0;

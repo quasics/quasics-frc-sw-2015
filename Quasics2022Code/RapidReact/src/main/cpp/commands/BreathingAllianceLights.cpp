@@ -29,12 +29,12 @@ void BreathingAllianceLights::Initialize() {
 
   // OK, set the lights to initial intensity/color.
   if (m_ColorAlliance == ColorAlliance::kRed) {
-    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0, 0);
+    m_lighting->SetAllToColor(fullIntensity * m_currentIntensityPercent, 0, 0);
   } else if (m_ColorAlliance == ColorAlliance::kBlue) {
-    m_lighting->SetAllToColor(0, 0, blue * m_currentIntensityPercent);
+    m_lighting->SetAllToColor(0, 0, fullIntensity * m_currentIntensityPercent);
   } else {
-    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0,
-                              blue * m_currentIntensityPercent);
+    m_lighting->SetAllToColor(fullIntensity * m_currentIntensityPercent, 0,
+                              fullIntensity * m_currentIntensityPercent);
   }
 }
 
@@ -52,12 +52,12 @@ void BreathingAllianceLights::Execute() {
   }
 
   if (m_ColorAlliance == ColorAlliance::kRed) {
-    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0, 0);
+    m_lighting->SetAllToColor(fullIntensity * m_currentIntensityPercent, 0, 0);
   } else if (m_ColorAlliance == ColorAlliance::kBlue) {
-    m_lighting->SetAllToColor(0, 0, blue * m_currentIntensityPercent);
+    m_lighting->SetAllToColor(0, 0, fullIntensity * m_currentIntensityPercent);
   } else {
-    m_lighting->SetAllToColor(red * m_currentIntensityPercent, 0,
-                              blue * m_currentIntensityPercent);
+    m_lighting->SetAllToColor(fullIntensity * m_currentIntensityPercent, 0,
+                              fullIntensity * m_currentIntensityPercent);
   }
   m_currentIntensityPercent += m_increment;
 }

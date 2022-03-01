@@ -22,6 +22,7 @@ class BreathingAllianceLights
 
   // Standard command functions.
  public:
+  enum class ColorAlliance { kRed, kBlue, kInvalid };
   void Initialize() override;
 
   void Execute() override;
@@ -48,7 +49,8 @@ class BreathingAllianceLights
   bool m_breathingIn = true;
   double m_increment = 0.01;
 
-  // BUG(Matthew): Why not just store the frc::DriverStation::Alliance value,
+  // (Matthew): Why not just store the frc::DriverStation::Alliance value,
   // rather than a "boiled down" case?
-  bool m_isRed = true;
+
+  ColorAlliance m_ColorAlliance{ColorAlliance::kInvalid};
 };

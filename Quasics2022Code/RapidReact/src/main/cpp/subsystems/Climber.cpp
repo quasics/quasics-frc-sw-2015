@@ -9,9 +9,9 @@ Climber::Climber() {
 }
 
 void Climber::StartExtending() {
-  // TODO(Matthew): Switch to a named constant for the extension speed. (done)
+  // (Matthew): Switch to a named constant for the extension speed. (done)
   //
-  // TODO(Matthew): Consider how you should handle things if the arms are
+  // (Matthew): Consider how you should handle things if the arms are
   // already fully extended.(done)
 
   m_climbers.Set(EXTENSION_SPEED);
@@ -19,9 +19,9 @@ void Climber::StartExtending() {
 }
 
 void Climber::StartRetracting() {
-  // TODO(Matthew): Switch to a named constant for the retraction speed. (done)
+  // (Matthew): Switch to a named constant for the retraction speed. (done)
   //
-  // TODO(Matthew): Consider how you should handle things if the arms are
+  // (Matthew): Consider how you should handle things if the arms are
   // already fully retracted.(done)
 
   m_climbers.Set(RETRACTION_SPEED);
@@ -64,11 +64,11 @@ void Climber::Periodic() {
 }
 
 bool Climber::IsFullyExtended() {
-  // TODO(Matthew): Implement this method. (done)
+  // (Matthew): Implement this method. (done)
   return topLimitSwitch.Get();
 }
 
 bool Climber::IsFullyRetracted() {
-  // TODO(Matthew): Implement this method. (done)
+  // (Matthew): Implement this method. (done)
   return bottomLimitSwitch.Get();
 }

@@ -50,7 +50,7 @@ class BreathingAllianceLights
   double m_increment = 0.01;
 
   // (Matthew): Why not just store the frc::DriverStation::Alliance value,
-  // rather than a "boiled down" case?
+  // rather than a "boiled down" case?(done)
 
   ColorAlliance m_ColorAlliance{ColorAlliance::kInvalid};
 };

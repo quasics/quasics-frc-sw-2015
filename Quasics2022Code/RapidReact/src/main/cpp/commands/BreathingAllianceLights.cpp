@@ -22,7 +22,7 @@ void BreathingAllianceLights::Initialize() {
   // (Matthew): There actually *is* a 3rd case in the alliance values.
   // It might make sense to explicitly handle that, rather than just always
   // falling back on "It's not the red alliance, so it must be blue", without
-  // any indication that something is funky.
+  // any indication that something is funky.(done)
 
   // Reset the intensity before starting.
   m_currentIntensityPercent = 0;

@@ -4,6 +4,8 @@
 
 #include "subsystems/Lighting.h"
 
+#include <iostream>
+
 Lighting::Lighting() {
   SetName("Lighting");
 
@@ -37,13 +39,16 @@ frc::Color Lighting::Translate(StockColor c) {
   } else if (c == StockColor::White) {
     return frc::Color(255, 255, 255);
   } else {
-    // BUG(Matthew): It's probably worth letting the user know if they "fell
+    // (Matthew): It's probably worth letting the user know if they "fell
     // through" into this case because they're providing a StockColor that isn't
     // in the list above (e.g., printing an error message).  That way, if
     // someone defines a new color tomorrow (e.g., "Orange" for Halloween), but
     // doesn't update this function, there's some sort of diagnostic output that
     // can signal the source of the problem (rather than, "The lights are off,
-    // must be a loose wire....").
+    // must be a loose wire....").(done)
+    std::cout << "The StockColor Given is not defined, make sure to add it to "
+                 "the Lighting.h file"
+              << std::endl;
     return frc::Color(0, 0, 0);
   }
 }

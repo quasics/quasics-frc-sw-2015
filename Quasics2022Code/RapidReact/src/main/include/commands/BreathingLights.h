@@ -56,10 +56,10 @@ class BreathingLights
   const double intensityPercent;
   double currentIntensityPercent = 0;
 
-  // Bug(Matthew): Why do you need both of these?  If the increment is
+  // (Matthew): Why do you need both of these?  If the increment is
   // positive (or negative),then you know your breathing in (or out).
   // Alternatively, if you know you're breathing in (or out) then you
-  // know that you're incrementing (or decrementing) the current intensity.
-  bool breathingIn = true;
+  // know that you're incrementing (or decrementing) the current
+  // intensity.(done)
   double increment = 0.01;
 };

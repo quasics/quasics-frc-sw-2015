@@ -25,11 +25,9 @@ void BreathingLights::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void BreathingLights::Execute() {
   if (currentIntensityPercent >= intensityPercent) {
-    breathingIn = false;
     increment = -0.01;
   }
   if (currentIntensityPercent <= 0) {
-    breathingIn = true;
     increment = 0.01;
   }
   m_lighting->SetAllToColor(red * currentIntensityPercent,

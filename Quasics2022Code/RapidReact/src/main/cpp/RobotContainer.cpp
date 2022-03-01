@@ -180,6 +180,30 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
           std::vector<frc::Translation2d>{frc::Translation2d(0_m, 1_m)},
           frc::Pose2d(1_m, 1_m, frc::Rotation2d(0_deg)),
           TrajectoryCommandGenerator::ResetTelemetryAtStart));
+  frc::SmartDashboard::PutData(
+      "Trajectory: Start = 0,0 -> End = 1,0 -> intermediate = 1,0",
+      m_trajectoryGenerator.GenerateCommand(
+          TrajectoryCommandGenerator::SpeedProfile{
+              0.2_mps,
+              0.4_mps_sq},  // changed values from 0.5 and 0.8 to 0.2 and 0.4
+          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+          std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m)},
+          frc::Pose2d(1_m, 0_m, frc::Rotation2d(0_deg)),
+          TrajectoryCommandGenerator::ResetTelemetryAtStart));
+  frc::SmartDashboard::PutData(
+      "Trajectory: Start = 0,0 -> End = 0,0 -> intermediate = (1.5,0), "
+      "(1.5,1.5), "
+      "(0,1.5)",
+      m_trajectoryGenerator.GenerateCommand(
+          TrajectoryCommandGenerator::SpeedProfile{
+              0.2_mps,
+              0.4_mps_sq},  // changed values from 0.5 and 0.8 to 0.2 and 0.4
+          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+          std::vector<frc::Translation2d>{frc::Translation2d(1.5_m, 0_m),
+                                          frc::Translation2d(1.5_m, 1.5_m),
+                                          frc::Translation2d(0_m, 1.5_m)},
+          frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+          TrajectoryCommandGenerator::ResetTelemetryAtStart));
 }
 
 void RobotContainer::AddAutonomousCommandsToSmartDashboard() {

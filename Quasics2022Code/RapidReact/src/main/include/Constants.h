@@ -19,7 +19,8 @@
  */
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 
-constexpr double DRIVEBASE_GEAR_RATIO = 8.45;
+constexpr double DRIVEBASE_GEAR_RATIO = 10.71;  // gear ratio for Sally is 8.45
+// this is mae's gear ratio of 10.71
 
 constexpr double EXTENSION_SPEED = 0.25;
 
@@ -29,11 +30,12 @@ constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     47.134344149315914763_in;  // This is track width for Mae. Sally
                                // is  22.0_in;
 
+// this is the characterization for Mae currently
 namespace CharacterizationValues {
-  constexpr auto ks = 0.31_V;
-  constexpr auto kv = 2.74 * 1_V * 1_s / 1_m;
-  constexpr auto ka = 0.349 * 1_V * 1_s * 1_s / 1_m;
-  constexpr auto kp = 2.28;
+  constexpr auto ks = 0.13454_V;  // 0.31_V;
+  constexpr auto kv = 0.25674 /*2.74*/ * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.038544 /*0.349*/ * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 0.0013308 /*2.28*/;
   constexpr auto ki = 0.0;
   constexpr auto kd = 0.0;
 }  // namespace CharacterizationValues

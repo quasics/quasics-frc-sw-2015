@@ -41,7 +41,7 @@ public class RobotSettings {
     final public boolean leftInverted;
     final public boolean rightInverted;
 
-    DriveMotorInversion(boolean lefInverted, boolean rightInverted) {
+    DriveMotorInversion(boolean leftInverted, boolean rightInverted) {
       this.leftInverted = leftInverted;
       this.rightInverted = rightInverted;
     }

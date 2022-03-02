@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 
@@ -141,6 +142,14 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 
 // Note: 0.65 seems to be reasonable power for the high goal.
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Braking mode",
+      new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
+                               {&m_drivebase}));
+  frc::SmartDashboard::PutData(
+      "Coasting mode",
+      new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
+                               {&m_drivebase}));
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Shoot @ 65%",

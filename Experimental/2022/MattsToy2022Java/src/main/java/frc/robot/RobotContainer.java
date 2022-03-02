@@ -293,10 +293,10 @@ public class RobotContainer {
         "Mae", // robotName
         Constants.TRACK_WIDTH_INCHES_MAE / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_2021,
-        // Drive configuration constants (from 2021 code)
-        new DriveProfileData(0.31, 2.74, 0.249),
-        // PID control constants (from 2021 code)
-        new PIDConfig(2.28, 0, 0),
+        // Drive configuration constants (computed 01Mar2022 w/ SysId)
+        new DriveProfileData(0.13895, 1.3143, 0.1935),
+        // PID control constants (computed 01Mar2022 w/ SysId)
+        new PIDConfig(0.0011379, 0, 0),
         true, // leftMotorsInverted
         false, // rightMotorsInverted
         RobotSettings.GyroType.ADXRS450,

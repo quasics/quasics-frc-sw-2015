@@ -32,6 +32,21 @@ import edu.wpi.first.wpilibj.Filesystem;
  * TODO(mjh): Add gear ratio to this.
  */
 public class RobotSettings {
+  public enum DriveMotorInversion {
+    None(false, false),
+    Left(true, false),
+    Right(false, true),
+    Both(true, true);
+
+    final public boolean leftInverted;
+    final public boolean rightInverted;
+
+    DriveMotorInversion(boolean lefInverted, boolean rightInverted) {
+      this.leftInverted = leftInverted;
+      this.rightInverted = rightInverted;
+    }
+  }
+
   /** Different types of FRC gyros understood as part of robot settings data. */
   public enum GyroType {
     None,
@@ -113,8 +128,7 @@ public class RobotSettings {
       double gearRatio,
       DriveProfileData profileData,
       PIDConfig pidConfig,
-      boolean leftMotorsInverted,
-      boolean rightMotorsInverted,
+      DriveMotorInversion motorInversion,
       GyroType installedGyroType,
       int pigeonCanId) {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
@@ -129,8 +143,8 @@ public class RobotSettings {
     this.driveControlKi = pidConfig.kI;
     this.driveControlKd = pidConfig.kD;
 
-    this.leftMotorsInverted = leftMotorsInverted;
-    this.rightMotorsInverted = rightMotorsInverted;
+    this.leftMotorsInverted = motorInversion.leftInverted;
+    this.rightMotorsInverted = motorInversion.rightInverted;
     this.installedGyroType = installedGyroType;
     this.pigeonCanId = pigeonCanId;
   }

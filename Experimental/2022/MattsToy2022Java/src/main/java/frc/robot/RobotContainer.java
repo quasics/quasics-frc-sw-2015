@@ -280,8 +280,7 @@ public class RobotContainer {
         new DriveProfileData(0.31, 2.74, 0.249),
         // TODO(mjh) Calibrate Sally's values for PID control - these are from 2021/Mae
         new PIDConfig(2.28, 0, 0),
-        true, // leftMotorsInverted
-        false, // rightMotorsInverted
+        RobotSettings.DriveMotorInversion.Left,
         RobotSettings.GyroType.ADXRS450,
         0 // pigeonCanID
     );
@@ -297,8 +296,7 @@ public class RobotContainer {
         new DriveProfileData(0.13895, 1.3143, 0.1935),
         // PID control constants (computed 01Mar2022 w/ SysId)
         new PIDConfig(0.0011379, 0, 0),
-        true, // leftMotorsInverted
-        false, // rightMotorsInverted
+        RobotSettings.DriveMotorInversion.Left,
         RobotSettings.GyroType.ADXRS450,
         0 // pigeonCanID
     );
@@ -315,8 +313,7 @@ public class RobotContainer {
         new DriveProfileData(0.31, 2.74, 0.249),
         // TODO(mjh) Calibrate Nike's values for PID control - these are from 2021/Mae
         new PIDConfig(2.28, 0, 0),
-        true, // leftMotorsInverted
-        false, // rightMotorsInverted
+        RobotSettings.DriveMotorInversion.Left,
         RobotSettings.GyroType.Pigeon2,
         1 // pigeonCanID
     );
@@ -334,8 +331,10 @@ public class RobotContainer {
         // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
         // supports this) - these are from 2021
         new PIDConfig(0.00352, 0, 0),
-        true, // leftMotorsInverted
-        false, // rightMotorsInverted
+        // Note: Romi docs indicate that it's the right motor that's inverted, but I run
+        // the Romi in reverse because the USB camera is mounted on my upper deck that
+        // way.
+        RobotSettings.DriveMotorInversion.Left,
         RobotSettings.GyroType.Romi,
         0 // pigeonCanID
     );

@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.Filesystem;
  * 
  * TODO(mjh): Break this apart into something that manages the robot settings,
  * and a utility class to handle loading/storing them.
- * TODO(mjh): Add gear ratio to this.
  */
 public class RobotSettings {
   public enum DriveMotorInversion {

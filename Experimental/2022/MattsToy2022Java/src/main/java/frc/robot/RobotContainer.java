@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.io.IOException;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.OnBoardIO.ChannelMode;
 import frc.robot.subsystems.RomiDriveBase;
 import frc.robot.utils.DeadBandEnforcer;
 import frc.robot.utils.DrivePowerSupplier;
+import frc.robot.utils.PropsIO;
 import frc.robot.utils.SpeedScaler;
 import frc.robot.utils.SwitchDriveHandler;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
@@ -233,7 +235,12 @@ public class RobotContainer {
       final String specifiedRobotName = SmartDashboard
           .getString(LOADING_ROBOT_PROPERTY_NAME, DEFAULT_ROBOT_PROPERTY_NAME).trim();
       final String robotFileName = specifiedRobotName + ".props";
-      settings = RobotSettings.loadFromDeployedFile(robotFileName);
+      try {
+        settings = new RobotSettings(PropsIO.loadFromDeployedFile(robotFileName));
+      } catch (IllegalArgumentException | IOException e) {
+        System.err.println("Error loading settings from file '" + robotFileName + "'");
+        e.printStackTrace();
+      }
       if (settings != null) {
         return settings;
       }
@@ -252,7 +259,12 @@ public class RobotContainer {
       SmartDashboard.delete(LOADING_ROBOT_PROPERTY_NAME);
 
       // Try loading previously-saved robot settings from the file.
-      settings = RobotSettings.loadFromFile(SETTINGS_FILE_NAME);
+      try {
+        settings = new RobotSettings(PropsIO.loadFromFile(SETTINGS_FILE_NAME));
+      } catch (IllegalArgumentException | IOException e) {
+        System.err.println("Error loading settings from file '" + SETTINGS_FILE_NAME + "'");
+        e.printStackTrace();
+      }
       if (settings != null) {
         return settings;
       }
@@ -368,10 +380,12 @@ public class RobotContainer {
   }
 
   private static void writeSettingsToFile(RobotSettings settings) {
-    if (settings.writeToFile(SETTINGS_FILE_NAME)) {
+    try {
+      PropsIO.writeToFile(settings, SETTINGS_FILE_NAME, "Configuration for " + settings.robotName);
       System.out.println("Saved settings for " + settings.robotName);
-    } else {
+    } catch (IllegalArgumentException | IllegalAccessException | IOException e) {
       System.err.println("**** Failed to save settings for " + settings.robotName);
+      e.printStackTrace();
     }
   }
 

@@ -1,19 +1,10 @@
 package frc.robot;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.io.BufferedWriter;
 
+import frc.robot.utils.PropertyBasedObject;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
-
-import edu.wpi.first.wpilibj.Filesystem;
 
 /**
  * Used to hold various characteristics that vary between the robots that we
@@ -25,11 +16,8 @@ import edu.wpi.first.wpilibj.Filesystem;
  * would be to switch to a USB drive (which might make "default values" easier
  * to deploy to a given robot). These are apparently mounted at "/U" by the
  * roboRIO firmware image.
- * 
- * TODO(mjh): Break this apart into something that manages the robot settings,
- * and a utility class to handle loading/storing them.
  */
-public class RobotSettings {
+public class RobotSettings extends PropertyBasedObject {
   public enum DriveMotorInversion {
     None(false, false),
     Left(true, false),
@@ -190,141 +178,6 @@ public class RobotSettings {
     }
   }
 
-  /**
-   * Converts a simple filename to a File object, in a well-defined directory.
-   * 
-   * Note: the "deploy" directory doesn't appear to be writeable by the robot
-   * programs.
-   */
-  private static File getPropsFile(String fileName) {
-    return new File(Filesystem.getOperatingDirectory(), fileName);
-  }
-
-  /**
-   * @return a list of the property files (assumed to be RobotSettings storage) in
-   *         the "deploy" directory
-   */
-  public static List<File> getDeployedPropertyFiles() {
-    FilenameFilter filter = (File f, String name) -> {
-      return name.endsWith(".props");
-    };
-    return Arrays.asList(Filesystem.getOperatingDirectory().listFiles(filter));
-  }
-
-  /**
-   * Convenience method: will write to a file in a consistent directory.
-   * 
-   * @see #getPropsFile(String)
-   * @see #writeToFile(BufferedWriter)
-   */
-  public boolean writeToFile(String fileName) {
-    File f = getPropsFile(fileName);
-    try {
-      return writeToFile(Files.newBufferedWriter(f.toPath(), Charset.forName("US-ASCII")));
-    } catch (java.io.IOException ioe) {
-      System.err.format("Error creating writer to save settings to file '%s': %s%n", f.toString(), ioe);
-      return false;
-    }
-  }
-
-  /**
-   * Writes the data for the object to the specified writer, using the standard
-   * "Properties" format.
-   * 
-   * @param writer the sink to which the data should be stored
-   * @return true on success, false on any failure
-   * 
-   * @see #buildProperties()
-   * @see java.util.Properties#store(java.io.Writer, String)
-   */
-  public boolean writeToFile(BufferedWriter writer) {
-    boolean result = false;
-    try (writer) {
-      Properties props = buildProperties();
-      props.store(writer, "Data for robot '" + robotName);
-      result = true;
-    } catch (Exception x) {
-      System.err.format("Error saving settings: %s%n", x);
-    }
-
-    return result;
-  }
-
-  /**
-   * Convenience method: will load from a file in a well-defined directory.
-   * 
-   * @see #getPropsFile(String)
-   * @see #load(java.io.InputStream)
-   */
-  public static RobotSettings loadFromFile(String fileName) {
-    File f = getPropsFile(fileName);
-    try {
-      return load(new java.io.FileInputStream(f));
-    } catch (java.io.FileNotFoundException fnf) {
-      System.err.format("Can't find file: %s%n", f.toString());
-      return null;
-    }
-  }
-
-  /**
-   * Convenience method: will load from a file in the "deploy" directory.
-   * 
-   * @see #load(java.io.InputStream)
-   */
-  public static RobotSettings loadFromDeployedFile(String fileName) {
-    File f = new File(Filesystem.getDeployDirectory(), fileName);
-    try {
-      return load(new java.io.FileInputStream(f));
-    } catch (java.io.FileNotFoundException fnf) {
-      System.err.format("Can't find file: %s%n", f.toString());
-      return null;
-    }
-  }
-
-  /**
-   * Returns a RobotSettings object using properties read from the specified input
-   * stream.
-   * 
-   * @param in the InputStream from which the data is to be loaded
-   * @return a RobotSettings object on success, null on failure
-   * 
-   * @seee {@link #RobotSettings(Properties)}
-   */
-  public static RobotSettings load(java.io.InputStream in) {
-    Properties props = new Properties();
-    try (in) {
-      props.load(in);
-      return new RobotSettings(props);
-    } catch (Exception e) {
-      System.err.format("---------------------------------------%n"
-          + "Error loading settings: %s%n"
-          + "Data loaded (leading to failure) was: %s%n"
-          + "---------------------------------------%n", e, props);
-      return null;
-    }
-  }
-
-  /**
-   * Builds a Properties object containing all of the data represented by this
-   * object, with the keys being the names of each data field, and the values
-   * being a string version of the coresponding field value.
-   * 
-   * @return a Properties object holding key/value pairs for all of this object's
-   *         data
-   * @throws IllegalArgumentException
-   * @throws IllegalAccessException
-   */
-  private Properties buildProperties() throws IllegalArgumentException, IllegalAccessException {
-    Properties props = new Properties();
-    Class<?> myClass = getClass();
-    Field[] fields = myClass.getFields();
-    for (var field : fields) {
-      props.setProperty(field.getName(), field.get(this).toString());
-    }
-
-    return props;
-  }
-
   private static double getCheckedDouble(Properties props, String propName, String errorText) {
     Double d = getDoubleFromProperty(props, "propName");
     if (d == null) {
@@ -373,15 +226,6 @@ public class RobotSettings {
   // Methods from "Object"
 
   @Override
-  public String toString() {
-    try {
-      return buildProperties().toString();
-    } catch (Exception e) {
-      return "<Error: Failed to extract data for robot settings>";
-    }
-  }
-
-  @Override
   public int hashCode() {
     if (robotName != null) {
       return robotName.hashCode(); // *Reasonable* uniqueness is all that's required.
@@ -391,18 +235,9 @@ public class RobotSettings {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null) {
-      return false;
-    }
     if (!(o instanceof RobotSettings)) {
       return false;
     }
-
-    RobotSettings other = (RobotSettings) o;
-    try {
-      return this.buildProperties().equals(other.buildProperties());
-    } catch (IllegalArgumentException | IllegalAccessException e) {
-      return false;
-    }
+    return super.equals(o);
   }
 }

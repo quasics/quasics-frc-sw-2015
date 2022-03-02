@@ -38,6 +38,19 @@ Drivebase::Drivebase() {
   ConfigureEncoders();
 }
 
+void Drivebase::SetBrakingMode(bool enabled) {
+  if (enabled) {
+    m_leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_leftBack.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rightBack.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  } else {
+    m_leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_leftBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_rightBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  }
+}
 // This method will be called once per scheduler run
 
 void Drivebase::ConfigureEncoders() {

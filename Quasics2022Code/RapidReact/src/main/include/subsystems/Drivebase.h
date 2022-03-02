@@ -24,6 +24,8 @@ class Drivebase : public frc2::SubsystemBase {
   // Constructor.
   Drivebase();
 
+  void SetBrakingMode(bool enabled);
+
   /**
    * Sets the speeds for the left and right motors to the specified percentages
    * (-1.0 == full reverse, +1.0 == full forward, 0 = stopped).

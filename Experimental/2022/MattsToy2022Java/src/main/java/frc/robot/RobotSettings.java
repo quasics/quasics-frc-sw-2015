@@ -12,7 +12,6 @@ import java.io.BufferedWriter;
 
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
-import frc.robot.utils.TrajectoryCommandGenerator.SpeedProfile;
 
 import edu.wpi.first.wpilibj.Filesystem;
 

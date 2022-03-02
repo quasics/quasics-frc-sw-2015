@@ -32,10 +32,10 @@ constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
 
 // this is the characterization for Mae currently
 namespace CharacterizationValues {
-  constexpr auto ks = 0.13454_V;  // 0.31_V;
-  constexpr auto kv = 0.25674 /*2.74*/ * 1_V * 1_s / 1_m;
-  constexpr auto ka = 0.038544 /*0.349*/ * 1_V * 1_s * 1_s / 1_m;
-  constexpr auto kp = 0.0013308 /*2.28*/;
+  constexpr auto ks = 0.13895_V;  // 0.31_V;
+  constexpr auto kv = 1.3143 /*2.74*/ * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.1935 /*0.349*/ * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 0.0011379 /*2.28*/;
   constexpr auto ki = 0.0;
   constexpr auto kd = 0.0;
 }  // namespace CharacterizationValues

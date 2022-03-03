@@ -1,9 +1,9 @@
 {
   "counts per rotation": 1.0,
-  "encoder type": "Data Port",
+  "encoder type": "Encoder Port",
   "encoding": false,
-  "gearing denominator": 8.45,
-  "gearing numerator": 1.0,
+  "gearing denominator": 1.0,
+  "gearing numerator": 8.45,
   "gyro": "ADXRS450",
   "gyro ctor": "SPI (Onboard CS0)",
   "is drivetrain": true,

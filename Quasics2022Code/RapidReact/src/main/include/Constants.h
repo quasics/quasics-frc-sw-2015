@@ -13,9 +13,9 @@
 // "#undef NAME" or commenting them out).  This will control which set of values
 // are used to control stuff like PID feedback during path following, etc.
 
-#define Target_Sally
+#undef Target_Sally
 #undef Target_Mae
-#undef Target_Nike
+#define Target_Nike
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -70,13 +70,13 @@ namespace MaeDriverConstants {
 
 #ifdef Target_Mae
 namespace DriverConstants {
-  using MaeDriverConstants;
+  using namespace MaeDriverConstants;
 }
 #endif
 
 #ifdef Target_Nike
 namespace DriverConstants {
-  using NikeDriverConstants;
+  using namespace NikeDriverConstants;
 }
 #endif
 

@@ -19,6 +19,13 @@
 Drivebase::Drivebase() {
   SetName("Drivebase");
 
+#ifdef ENABLE_AD_GYRO
+  std::cerr << "**********************************\nYou are using an AD gyro\n";
+#else
+  std::cerr
+      << "**********************************\nYou are using a Pidgeon gyro\n";
+#endif
+
   m_rightFront.SetInverted(true);
   m_rightBack.SetInverted(true);
 

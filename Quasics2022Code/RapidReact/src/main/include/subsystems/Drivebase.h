@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
@@ -15,6 +16,9 @@
 #include "Constants.h"
 #include "units/length.h"
 #include "units/velocity.h"
+
+// Changes whether using AD gyro or Pidgeon Gyro
+#define ENABLE_AD_GYRO
 
 /**
  * Drive base subsystem, used for movement/navigation.
@@ -110,7 +114,11 @@ class Drivebase : public frc2::SubsystemBase {
   // (using "new"), we need to do the same thing for this (which uses them).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
-  // Defines the Gyro in CS0
+// Defines the Gyro in CS0
+#ifdef ENABLE_AD_GYRO
   frc::ADXRS450_Gyro m_gyro;
+#else
+  ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
+#endif
   frc::DifferentialDriveOdometry m_odometry{0_rad};
 };

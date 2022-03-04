@@ -35,6 +35,10 @@ constexpr double EXTENSION_SPEED = 0.25;
 
 constexpr double RETRACTION_SPEED = -0.25;
 
+namespace SensorIds {
+  constexpr int PIDGEON_CAN_ID = 1;
+}
+
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     47.134344149315914763_in;  // This is track width for Mae. Sally
                                // is  22.0_in;

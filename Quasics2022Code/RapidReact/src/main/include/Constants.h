@@ -8,6 +8,15 @@
 #include <units/time.h>
 #include <units/voltage.h>
 
+// Precisely ONE of the following should be enabled (either by saying "#define
+// NAME", or uncommenting it), while the others should disbled (by saying
+// "#undef NAME" or commenting them out).  This will control which set of values
+// are used to control stuff like PID feedback during path following, etc.
+
+#define Target_Sally
+#undef Target_Mae
+#undef Target_Nike
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -30,24 +39,48 @@ constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     47.134344149315914763_in;  // This is track width for Mae. Sally
                                // is  22.0_in;
 
-// this is the characterization for Mae currently
-namespace CharacterizationValues {
-  constexpr auto ks = 0.13895_V;  // 0.31_V;
-  constexpr auto kv = 1.3143 /*2.74*/ * 1_V * 1_s / 1_m;
-  constexpr auto ka = 0.1935 /*0.349*/ * 1_V * 1_s * 1_s / 1_m;
-  constexpr auto kp = 0.0011379 /*2.28*/;
-  constexpr auto ki = 0.0;
-  constexpr auto kd = 0.0;
-}  // namespace CharacterizationValues
+namespace SallyDriverConstants {
+  constexpr auto ks = 0_V;
+  constexpr auto kv = 0 * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0 * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 0;
+  constexpr auto ki = 0;
+  constexpr auto kd = 0;
+}  // namespace SallyDriverConstants
+namespace NikeDriverConstants {
+  constexpr auto ks = 0.14961_V;
+  constexpr auto kv = 1.3717 * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.1627 * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 2.5682;
+  constexpr auto ki = 0;
+  constexpr auto kd = 0;
+}  // namespace NikeDriverConstants
+namespace MaeDriverConstants {
+  constexpr auto ks = 0.13895_V;
+  constexpr auto kv = 1.3143 * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.1935 * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 0.0011379;
+  constexpr auto ki = 0;
+  constexpr auto kd = 0;
+}  // namespace MaeDriverConstants
 
-/*
-ks = 0.14961
-kv = 1.3717
-ka = 0.1627
-kp = 2.5682
-characterization for nike, Sally has no characterization yet
+#ifdef Target_Mae
+namespace DriverConstants {
+  using MaeDriverConstants;
+}
+#endif
 
-*/
+#ifdef Target_Nike
+namespace DriverConstants {
+  using NikeDriverConstants;
+}
+#endif
+
+#ifdef Target_Sally
+namespace DriverConstants {
+  using namespace SallyDriverConstants;
+}
+#endif
 
 namespace MotorIds {
   namespace SparkMax {

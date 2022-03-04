@@ -32,15 +32,15 @@ RobotContainer::RobotContainer()
           &m_drivebase,
           // Drive profile data
           {
-              CharacterizationValues::ks,  // kS
-              CharacterizationValues::kv,  // kV
-              CharacterizationValues::ka   // kA
+              DriverConstants::ks,  // kS
+              DriverConstants::kv,  // kV
+              DriverConstants::ka   // kA
           },
           // PID configuration values
           {
-              CharacterizationValues::kp,  // kP
-              CharacterizationValues::ki,  // kI
-              CharacterizationValues::kd   // kD
+              DriverConstants::kp,  // kP
+              DriverConstants::ki,  // kI
+              DriverConstants::kd   // kD
           }) {
   frc2::JoystickButton(&m_driverStick,
                        OperatorInterface::LogitechGamePad::YButton)

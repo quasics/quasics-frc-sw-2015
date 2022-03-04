@@ -40,6 +40,15 @@ namespace CharacterizationValues {
   constexpr auto kd = 0.0;
 }  // namespace CharacterizationValues
 
+/*
+ks = 0.14961
+kv = 1.3717
+ka = 0.1627
+kp = 2.5682
+characterization for nike, Sally has no characterization yet
+
+*/
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

@@ -154,6 +154,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
   frc::SmartDashboard::PutData("Shoot @ 65%",
                                new RunShooterAtSpeed(&m_shooter, 0.65));
+  frc::SmartDashboard::PutData("Shoot 50%",
+                               new RunShooterAtSpeed(&m_shooter, 0.5));
   frc::SmartDashboard::PutData("Intake: 50% forward",
                                new RunIntakeAtSpeed(&m_intake, 0.50));
   frc::SmartDashboard::PutData("Intake: 30% backward",

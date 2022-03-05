@@ -277,7 +277,14 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
 frc2::SequentialCommandGroup*
 RobotContainer::BuildAutonomousTrajectoryCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1));
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1_s));
+  return nullptr;
+}
+
+frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.6, 2_s));
   return nullptr;
 }
 

@@ -39,6 +39,7 @@ class RobotContainer {
       units::meter_t distanceToMove);
 
   frc2::SequentialCommandGroup* BuildAutonomousTrajectoryCommand();
+  frc2::ParallelCommandGroup* BuildShootBallSequence();
 
   void ConfigureJoystickButtonBindings();
   void AddTestButtonsToSmartDashboard();

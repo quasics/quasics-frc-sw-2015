@@ -22,5 +22,6 @@ void ExtendClimber::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool ExtendClimber::IsFinished() {
-  return m_climber->IsFullyExtended();
+  return false;
+  // return m_climber->IsFullyExtended();
 }

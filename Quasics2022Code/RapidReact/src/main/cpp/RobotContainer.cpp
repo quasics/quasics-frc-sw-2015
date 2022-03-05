@@ -42,10 +42,6 @@ RobotContainer::RobotContainer()
               DriverConstants::ki,  // kI
               DriverConstants::kd   // kD
           }) {
-  frc2::JoystickButton(&m_driverStick,
-                       OperatorInterface::LogitechGamePad::YButton)
-      .WhenPressed([this] { isSwitched = !(isSwitched); });
-
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -132,12 +128,20 @@ RobotContainer::RobotContainer()
 
   // Configure the button bindings
   ConfigureJoystickButtonBindings();
-  AddTestButtonsToSmartDashboard();
+
+  // Populate smart dashboard
   AddAutonomousCommandsToSmartDashboard();
+  AddTestButtonsToSmartDashboard();
 }
 
+// Configure your button bindings here
 void RobotContainer::ConfigureJoystickButtonBindings() {
-  // Configure your button bindings here
+  // Configure "switch drive" controls
+  frc2::JoystickButton(&m_driverStick,
+                       OperatorInterface::LogitechGamePad::YButton)
+      .WhenPressed([this] { isSwitched = !(isSwitched); });
+
+  // TODO: Configure other button bindings on driver and operator controllers.
 }
 
 // Note: 0.65 seems to be reasonable power for the high goal.

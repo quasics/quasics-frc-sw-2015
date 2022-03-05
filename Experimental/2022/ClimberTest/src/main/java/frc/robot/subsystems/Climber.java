@@ -32,7 +32,9 @@ import frc.robot.Constants;
  */
 public class Climber extends SubsystemBase {
 
-  private static final double MOTOR_SPEED_PERCENT = 0.25;
+  private static final double MOTOR_SPEED_PERCENT = 0.60;
+
+  private static final boolean LIMIT_SWITCH_INSTALLED = false;
 
   /** Helper to allow locking motors, without keeping them as class members. */
   private interface Locker {
@@ -195,24 +197,28 @@ public class Climber extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    switch (m_currentMode) {
-      case Extending:
-        if (isFullyExtended()) {
-          System.err.println(">>> Climber is fully extended: stopping operation.");
-          stop();
-        }
-        break;
+    super.periodic();
 
-      case Retracting:
-        if (isFullyRetracted()) {
-          System.err.println(">>> Climber is fully retracted: stopping operation.");
-          stop();
-        }
-        break;
+    if (LIMIT_SWITCH_INSTALLED) {
+      switch (m_currentMode) {
+        case Extending:
+          if (isFullyExtended()) {
+            System.err.println(">>> Climber is fully extended: stopping operation.");
+            stop();
+          }
+          break;
 
-      case None:
-        // Nothing to do....
-        break;
+        case Retracting:
+          if (isFullyRetracted()) {
+            System.err.println(">>> Climber is fully retracted: stopping operation.");
+            stop();
+          }
+          break;
+
+        case None:
+          // Nothing to do....
+          break;
+      }
     }
 
     // Status reporting (to use in debugging tests/hardware).

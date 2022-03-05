@@ -16,10 +16,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class RunConveyorAtSpeed
-    : public frc2::CommandHelper<frc2::CommandBase, RunConveyorAtSpeed> {
+class RunConveyorAtSpeedForTime
+    : public frc2::CommandHelper<frc2::CommandBase, RunConveyorAtSpeedForTime> {
  public:
-  RunConveyorAtSpeed(Conveyor* conveyor, double speed);
+  RunConveyorAtSpeedForTime(Conveyor* conveyor, double speed);
 
   void Initialize() override;
 

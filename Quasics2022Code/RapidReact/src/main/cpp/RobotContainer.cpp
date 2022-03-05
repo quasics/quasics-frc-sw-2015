@@ -19,7 +19,7 @@
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
-#include "commands/RunConveyorAtSpeed.h"
+#include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/SetLightsToColor.h"
@@ -181,11 +181,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Conveyor commands
   frc::SmartDashboard::PutData("Conveyor: 40% forward",
-                               new RunConveyorAtSpeed(&m_conveyor, 0.4));
-  frc::SmartDashboard::PutData("Conveyor: 30% backward",
-                               new RunConveyorAtSpeed(&m_conveyor, -0.3));
+                               new RunConveyorAtSpeedForTime(&m_conveyor, 0.4));
+  frc::SmartDashboard::PutData(
+      "Conveyor: 30% backward",
+      new RunConveyorAtSpeedForTime(&m_conveyor, -0.3));
   frc::SmartDashboard::PutData("Conveyor: 20% forward",
-                               new RunConveyorAtSpeed(&m_conveyor, 0.2));
+                               new RunConveyorAtSpeedForTime(&m_conveyor, 0.2));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
@@ -287,6 +288,13 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
 
   // Builds the command group object.
   return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup*
+RobotContainer::BuildAutonomousTrajectoryCommand() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  // commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1));
+  return nullptr;
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

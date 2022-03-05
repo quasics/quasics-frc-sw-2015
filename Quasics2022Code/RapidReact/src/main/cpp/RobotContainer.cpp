@@ -45,82 +45,42 @@ RobotContainer::RobotContainer()
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
+        // Figure out scaling for the current driving mode
+        const double scalingFactor = GetDriveSpeedScalingFactor();
+
+        // Get the "base" speed value from the correct joystick
+        double joystickValue;
         if (!isSwitched) {
-          bool isTurbo = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-          bool isTurtle = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-          if (isTurbo) {
-            return -1 * 0.80 *
-                   m_driverStick.GetRawAxis(
+          joystickValue =
+              -1 * m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          } else if (isTurtle) {
-            return -1 * 0.40 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          } else {
-            return -1 * 0.60 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          }
         } else {
-          bool isTurbo = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-          bool isTurtle = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-          if (isTurbo) {
-            return -1 * 0.80 *
-                   m_driverStick.GetRawAxis(
+          joystickValue =
+              -1 * m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          } else if (isTurtle) {
-            return -1 * 0.40 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          } else {
-            return -1 * 0.60 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          }
         }
+
+        // Return scaled speed.
+        return scalingFactor * joystickValue;
       },
       [this] {
+        // Figure out scaling for the current driving mode
+        const double scalingFactor = GetDriveSpeedScalingFactor();
+
+        // Get the "base" speed value from the correct joystick
+        double joystickValue;
         if (!isSwitched) {
-          bool isTurbo = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-          bool isTurtle = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-          if (isTurbo) {
-            return -1 * 0.80 *
-                   m_driverStick.GetRawAxis(
+          joystickValue =
+              -1 * m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          } else if (isTurtle) {
-            return -1 * 0.40 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          } else {
-            return -1 * 0.60 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-          }
         } else {
-          bool isTurbo = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-          bool isTurtle = m_driverStick.GetRawButton(
-              OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
-          if (isTurbo) {
-            return 1 * 0.80 *
-                   m_driverStick.GetRawAxis(
+          joystickValue =
+              +1 * m_driverStick.GetRawAxis(
                        OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          } else if (isTurtle) {
-            return 1 * 0.40 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          } else {
-            return 1 * 0.60 *
-                   m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
-          }
         }
+
+        // Return scaled speed.
+        return scalingFactor * joystickValue;
       }};
 
   // Initialize all of your commands and subsystems here
@@ -132,6 +92,21 @@ RobotContainer::RobotContainer()
   // Populate smart dashboard
   AddAutonomousCommandsToSmartDashboard();
   AddTestButtonsToSmartDashboard();
+}
+
+double RobotContainer::GetDriveSpeedScalingFactor() {
+  const bool isTurbo = m_driverStick.GetRawButton(
+      OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+  const bool isTurtle = m_driverStick.GetRawButton(
+      OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+
+  if (isTurbo) {
+    return TURBO_MODE_SPEED_SCALING;
+  } else if (isTurtle) {
+    return TURTLE_MODE_SPEED_SCALING;
+  } else {
+    return NORMAL_MODE_SPEED_SCALING;
+  }
 }
 
 // Configure your button bindings here

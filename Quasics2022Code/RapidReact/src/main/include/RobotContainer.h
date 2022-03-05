@@ -45,6 +45,9 @@ class RobotContainer {
   void AddTestTrajectoryCommandsToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
 
+  // Used when computing requested speeds for Tank Drive command.
+  double GetDriveSpeedScalingFactor();
+
   // The robot's subsystems and commands are defined here.
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

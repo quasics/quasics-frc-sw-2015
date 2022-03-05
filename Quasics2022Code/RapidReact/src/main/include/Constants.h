@@ -14,8 +14,8 @@
 // are used to control stuff like PID feedback during path following, etc.
 
 #undef Target_Sally
-#undef Target_Mae
-#define Target_Nike
+#define Target_Mae
+#undef Target_Nike
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide

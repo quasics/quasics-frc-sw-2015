@@ -217,6 +217,13 @@ void RobotContainer::AddTestTrajectoryCommandsToSmartDashboard() {
               ResetTelemetryAtStart));
 
   frc::SmartDashboard::PutData(
+      "MaeStartAndGrabTopComeBack",
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          "MaeStartAndGrabTopComeBack.wpilib.json",
+          TrajectoryCommandGenerator::TelemetryHandling::
+              ResetTelemetryAtStart));
+
+  frc::SmartDashboard::PutData(
       "Trajectory: Start = 0,0 -> End = 1,1 -> intermediate = 0,1",
       m_trajectoryGenerator.GenerateCommand(
           TrajectoryCommandGenerator::SpeedProfile{

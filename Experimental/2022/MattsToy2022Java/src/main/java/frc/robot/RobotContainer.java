@@ -323,6 +323,7 @@ public class RobotContainer {
         "Nike", // robotName
         Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_NIKE,
+        // Drive configuration constants (computed 03Mar2022 w/ SysId)
         new DriveProfileData(
             /* kS= */0.14961,
             /* kV= */1.3717,

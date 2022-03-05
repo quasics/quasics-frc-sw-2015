@@ -320,11 +320,11 @@ public class RobotContainer {
         "Nike", // robotName
         Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
         Constants.DRIVE_BASE_GEAR_RATIO_2021,
-        // TODO(mjh) Calibrate Nike's values for kS, kV, and kA - these are from
-        // 2021/Mae
-        new DriveProfileData(0.31, 2.74, 0.249),
-        // TODO(mjh) Calibrate Nike's values for PID control - these are from 2021/Mae
-        new PIDConfig(2.28, 0, 0),
+        new DriveProfileData(
+            /* ks= */0.14961,
+            /* kv= */1.3717,
+            /* ka= */0.1627),
+        new PIDConfig(2.5682, 0, 0),
         RobotSettings.DriveMotorInversion.Left,
         RobotSettings.GyroType.Pigeon2,
         1 // pigeonCanID

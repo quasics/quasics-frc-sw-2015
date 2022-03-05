@@ -8,10 +8,10 @@ pigeonCanId=1
 trackWidthMeters=1.1972123413926241
 gearRatio=10.71
 
-# TODO(mjh): These are the 2021 constants for Mae; they need to be calculated for Nike
-driveProfileKs=0.31
-driveProfileKv=2.74
-driveProfileKa=0.349
-driveControlKp=2.28
+# Calculated values for Nike, based on data from SysId
+driveProfileKs=0.14961
+driveProfileKv=1.3717
+driveProfileKa=0.1627
+driveControlKp=2.5682
 driveControlKi=0
 driveControlKd=0

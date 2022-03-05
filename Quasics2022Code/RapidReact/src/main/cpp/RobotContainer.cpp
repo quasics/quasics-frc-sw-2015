@@ -184,6 +184,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RunConveyorAtSpeed(&m_conveyor, 0.4));
   frc::SmartDashboard::PutData("Conveyor: 30% backward",
                                new RunConveyorAtSpeed(&m_conveyor, -0.3));
+  frc::SmartDashboard::PutData("Conveyor: 20% forward",
+                               new RunConveyorAtSpeed(&m_conveyor, 0.2));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));

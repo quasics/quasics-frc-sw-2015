@@ -52,15 +52,15 @@ Climber::Movement Climber::GetCurrentStatus() {
 
 // This method will be called once per scheduler run
 void Climber::Periodic() {
-  if (GetCurrentStatus() == Movement::eUp) {
-    if (IsFullyExtended()) {
-      Stop();
-    }
-  } else {
-    if (IsFullyRetracted()) {
-      Stop();
-    }
-  }
+  // if (GetCurrentStatus() == Movement::eUp) {
+  //   if (IsFullyExtended()) {
+  //     Stop();
+  //   }
+  // } else {
+  //   if (IsFullyRetracted()) {
+  //     Stop();
+  //   }
+  // }
 }
 
 bool Climber::IsFullyExtended() {

@@ -17,6 +17,7 @@ void RetractClimber::Initialize() {
 // Called once the command ends or is interrupted.
 void RetractClimber::End(bool interrupted) {
   m_climber->EnableBraking(true);
+  m_climber->Stop();
 }
 
 // Returns true when the command should end.

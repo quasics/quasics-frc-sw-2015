@@ -181,12 +181,20 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Drivebase: 20m at 80%",
       new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
+
+  frc::SmartDashboard::PutData(
+      "MaeTestVerySlow",
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          "MaeTestVerySlow.wpilib.json",
+          TrajectoryCommandGenerator::TelemetryHandling::
+              ResetTelemetryAtStart));
+
   frc::SmartDashboard::PutData(
       "Trajectory: Start = 0,0 -> End = 1,1 -> intermediate = 0,1",
       m_trajectoryGenerator.GenerateCommand(
           TrajectoryCommandGenerator::SpeedProfile{
-              0.2_mps,
-              0.4_mps_sq},  // changed values from 0.5 and 0.8 to 0.2 and 0.4
+              0.2_mps, 0.4_mps_sq},  // changed values from 0.5 and 0.8 to
+                                     // 0.2 and 0.4
           frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
           std::vector<frc::Translation2d>{frc::Translation2d(0_m, 1_m)},
           frc::Pose2d(1_m, 1_m, frc::Rotation2d(0_deg)),

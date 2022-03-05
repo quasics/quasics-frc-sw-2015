@@ -14,8 +14,8 @@
 // are used to control stuff like PID feedback during path following, etc.
 
 #undef Target_Sally
-#define Target_Mae
-#undef Target_Nike
+#undef Target_Mae
+#define Target_Nike
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -38,6 +38,11 @@ constexpr double RETRACTION_SPEED = -0.25;
 namespace SensorIds {
   constexpr int PIDGEON_CAN_ID = 1;
 }
+
+// Constants for scaling driving speeds in teleop mode.
+constexpr double TURBO_MODE_SPEED_SCALING = 0.8;
+constexpr double NORMAL_MODE_SPEED_SCALING = 0.8;
+constexpr double TURTLE_MODE_SPEED_SCALING = 0.8;
 
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     47.134344149315914763_in;  // This is track width for Mae. Sally

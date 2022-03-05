@@ -17,7 +17,7 @@ package frc.robot;
 public final class Constants {
     public static final class DIO {
         public static final int CLIMBER_UPPER_LIMIT_SWITCH_ID = 1;
-        public static final int CLIMBER_LOWER_LIMIT_SWITCH_ID = 1;
+        public static final int CLIMBER_LOWER_LIMIT_SWITCH_ID = 2;
     }
 
     public static final class MotorIds {

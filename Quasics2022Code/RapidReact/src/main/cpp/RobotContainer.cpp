@@ -143,8 +143,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RunShooterAtSpeed(&m_shooter, 0.5));
 
   // Intake commands
-  frc::SmartDashboard::PutData("Intake: 50% forward",
-                               new RunIntakeAtSpeed(&m_intake, 0.50));
+  frc::SmartDashboard::PutData("Intake: 80% forward",
+                               new RunIntakeAtSpeed(&m_intake, 0.80));
   frc::SmartDashboard::PutData("Intake: 30% backward",
                                new RunIntakeAtSpeed(&m_intake, -0.3));
 
@@ -152,7 +152,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Intake at 30% speed",
                                new ExtendIntake(&m_intakeDeployment, 0.3));
   frc::SmartDashboard::PutData("Retract Intake at 30%",
-                               new RetractIntake(&m_intakeDeployment, 0.3));
+                               new RetractIntake(&m_intakeDeployment, -0.3));
 
   // Conveyor commands
   frc::SmartDashboard::PutData(
@@ -164,6 +164,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Conveyor: 20% forward for 2 seconds",
       new RunConveyorAtSpeedForTime(&m_conveyor, 0.2, 2_s));
+
+  frc::SmartDashboard::PutData(
+      "Conveyor at 60%. infinite time",
+      new RunConveyorAtSpeedForTime(&m_conveyor, 0.6, 100_s));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));

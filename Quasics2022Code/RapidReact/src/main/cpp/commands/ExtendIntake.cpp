@@ -23,6 +23,7 @@ void ExtendIntake::Execute() {
 
 // Called once the command ends or is interrupted.
 void ExtendIntake::End(bool interrupted) {
+  m_intakeDeployment->SetMotorSpeed(0);
 }
 
 // Returns true when the command should end.

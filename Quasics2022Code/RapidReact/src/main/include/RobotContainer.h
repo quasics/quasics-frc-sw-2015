@@ -40,6 +40,7 @@ class RobotContainer {
 
   void ConfigureJoystickButtonBindings();
   void AddTestButtonsToSmartDashboard();
+  void AddTestTrajectoryCommandsToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
 
   // The robot's subsystems and commands are defined here.

@@ -142,6 +142,7 @@ void RobotContainer::ConfigureJoystickButtonBindings() {
 
 // Note: 0.65 seems to be reasonable power for the high goal.
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  // Basic drive base commands/tests
   frc::SmartDashboard::PutData(
       "Braking mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
@@ -152,21 +153,40 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                {&m_drivebase}));
   frc::SmartDashboard::PutData("Test Button Do Something",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
+  frc::SmartDashboard::PutData(
+      "Drivebase: 20m at 80%",
+      new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
+
+  // Shooter commands
   frc::SmartDashboard::PutData("Shoot @ 65%",
                                new RunShooterAtSpeed(&m_shooter, 0.65));
   frc::SmartDashboard::PutData("Shoot 50%",
                                new RunShooterAtSpeed(&m_shooter, 0.5));
+
+  // Intake commands
   frc::SmartDashboard::PutData("Intake: 50% forward",
                                new RunIntakeAtSpeed(&m_intake, 0.50));
   frc::SmartDashboard::PutData("Intake: 30% backward",
                                new RunIntakeAtSpeed(&m_intake, -0.3));
+
+  // Intake deployment commands
+  frc::SmartDashboard::PutData("Extend Intake at 30% speed",
+                               new ExtendIntake(&m_intakeDeployment, 0.3));
+  frc::SmartDashboard::PutData("Retract Intake at 30%",
+                               new RetractIntake(&m_intakeDeployment, 0.3));
+
+  // Conveyor commands
   frc::SmartDashboard::PutData("Conveyor: 40% forward",
                                new RunConveyorAtSpeed(&m_conveyor, 0.4));
   frc::SmartDashboard::PutData("Conveyor: 30% backward",
                                new RunConveyorAtSpeed(&m_conveyor, -0.3));
+
+  // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
+
+  // Lighting commands
   frc::SmartDashboard::PutData(
       "Set All ligths to Red",
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));
@@ -174,14 +194,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));
   frc::SmartDashboard::PutData("Alliance Breathing Lights",
                                new BreathingAllianceLights(&m_lighting, 0.75));
-  frc::SmartDashboard::PutData("Extend Intake at 30% speed",
-                               new ExtendIntake(&m_intakeDeployment, 0.3));
-  frc::SmartDashboard::PutData("Retract Intake at 30%",
-                               new RetractIntake(&m_intakeDeployment, 0.3));
-  frc::SmartDashboard::PutData(
-      "Drivebase: 20m at 80%",
-      new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
 
+  // Path following commands
+  AddTestTrajectoryCommandsToSmartDashboard();
+}
+
+void RobotContainer::AddTestTrajectoryCommandsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "MaeTestVerySlow",
       m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
@@ -199,6 +217,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
           std::vector<frc::Translation2d>{frc::Translation2d(0_m, 1_m)},
           frc::Pose2d(1_m, 1_m, frc::Rotation2d(0_deg)),
           TrajectoryCommandGenerator::ResetTelemetryAtStart));
+
   frc::SmartDashboard::PutData(
       "Trajectory: Start = 0,0 -> End = 1,0 -> intermediate = 1,0",
       m_trajectoryGenerator.GenerateCommand(
@@ -209,6 +228,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
           std::vector<frc::Translation2d>{frc::Translation2d(1_m, 0_m)},
           frc::Pose2d(1_m, 0_m, frc::Rotation2d(0_deg)),
           TrajectoryCommandGenerator::ResetTelemetryAtStart));
+
   frc::SmartDashboard::PutData(
       "Trajectory: Start = 0,0 -> End = 0,0 -> intermediate = (1.5,0), "
       "(1.5,1.5), "

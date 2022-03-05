@@ -5,13 +5,16 @@
 #include "commands/RunConveyorAtSpeedForTime.h"
 
 RunConveyorAtSpeedForTime::RunConveyorAtSpeedForTime(Conveyor* conveyor,
-                                                     double speed)
-    : m_conveyor(conveyor), m_conveyorSpeed(speed) {
+                                                     double speed,
+                                                     units::second_t time)
+    : m_conveyor(conveyor), m_conveyorSpeed(speed), m_time(time) {
   AddRequirements(m_conveyor);
 }
 
 // Called when the command is initially scheduled.
 void RunConveyorAtSpeedForTime::Initialize() {
+  m_stopWatch.Reset();
+  m_stopWatch.Start();
   m_conveyor->SetConveyorSpeed(m_conveyorSpeed);
 }
 
@@ -27,5 +30,8 @@ void RunConveyorAtSpeedForTime::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunConveyorAtSpeedForTime::IsFinished() {
+  if (m_stopWatch.HasElapsed(m_time)) {
+    return true;
+  }
   return false;
 }

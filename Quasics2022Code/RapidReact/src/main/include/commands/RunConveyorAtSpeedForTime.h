@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -19,7 +20,8 @@
 class RunConveyorAtSpeedForTime
     : public frc2::CommandHelper<frc2::CommandBase, RunConveyorAtSpeedForTime> {
  public:
-  RunConveyorAtSpeedForTime(Conveyor* conveyor, double speed);
+  RunConveyorAtSpeedForTime(Conveyor* conveyor, double speed,
+                            units::second_t time);
 
   void Initialize() override;
 
@@ -32,4 +34,6 @@ class RunConveyorAtSpeedForTime
  private:
   Conveyor* m_conveyor;
   const double m_conveyorSpeed;
+  frc::Timer m_stopWatch;
+  const units::second_t m_time;
 };

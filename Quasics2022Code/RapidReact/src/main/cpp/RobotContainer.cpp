@@ -6,6 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 
@@ -281,15 +282,45 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
 frc2::SequentialCommandGroup*
 RobotContainer::BuildAutonomousTrajectoryCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1_s));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
   return nullptr;
 }
 
+frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  // commands.push_back(m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+  //     "MaeStartAndGrabTopComeBack.wpilib.json",
+  //     TrajectoryCommandGenerator::TelemetryHandling::
+  //         ResetTelemetryAtStart));
+  // this should be the part where the robot moves. I do not know why it doesn't
+  // work
+  return nullptr;
+}
+
+frc2::SequentialCommandGroup* RobotContainer::PickingUpBalls() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<ExtendIntake>(&m_intakeDeployment, 0.7));
+  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.7));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BallsToShoot(int amountBalls) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  int count = amountBalls;
+  while (count >= 0) {
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(BuildShootBallSequence())));
+    count--;
+  }
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
 frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1_s));
   commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.6, 2_s));
-  return nullptr;
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 1_s));
+  return new frc2::ParallelCommandGroup(std::move(commands));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

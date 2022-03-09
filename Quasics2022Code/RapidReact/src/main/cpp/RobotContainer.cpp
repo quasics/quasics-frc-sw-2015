@@ -294,12 +294,11 @@ RobotContainer::BuildAutonomousTrajectoryCommand() {
 
 frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
-  //     "MaeStartAndGrabTopComeBack.wpilib.json",
-  //     TrajectoryCommandGenerator::TelemetryHandling::
-  //         ResetTelemetryAtStart));
-  // this should be the part where the robot moves. I do not know why it doesn't
-  // work
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          "MaeStartAndGrabTopComeBack.wpilib.json",
+          TrajectoryCommandGenerator::TelemetryHandling::
+              ResetTelemetryAtStart))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(PickingUpBalls())));
   return new frc2::ParallelRaceGroup(std::move(commands));

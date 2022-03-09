@@ -33,9 +33,10 @@ import frc.robot.Constants;
  */
 public class Climber extends SubsystemBase {
 
-  private static final double MOTOR_SPEED_PERCENT = 0.60;
+  private static final double NORMAL_MOTOR_SPEED_PERCENT = 0.60;
+  private static final double ADJUSTMENT_MOTOR_SPEED_PERCENT = NORMAL_MOTOR_SPEED_PERCENT * 0.5;
 
-  private static final boolean LIMIT_SWITCH_INSTALLED = false;
+  private static final boolean LIMIT_SWITCHES_INSTALLED = false;
 
   /** Helper to allow locking motors, without keeping them as class members. */
   private interface Locker {
@@ -56,8 +57,12 @@ public class Climber extends SubsystemBase {
     None, Both, Left, Right
   }
 
-  private final DigitalInput m_upperLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_UPPER_LIMIT_SWITCH_ID);
-  private final DigitalInput m_lowerLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_LOWER_LIMIT_SWITCH_ID);
+  private final DigitalInput m_upperLimitSwitch = LIMIT_SWITCHES_INSTALLED
+      ? new DigitalInput(Constants.DIO.CLIMBER_UPPER_LIMIT_SWITCH_ID)
+      : null;
+  private final DigitalInput m_lowerLimitSwitch = LIMIT_SWITCHES_INSTALLED
+      ? new DigitalInput(Constants.DIO.CLIMBER_LOWER_LIMIT_SWITCH_ID)
+      : null;
 
   /** Current motion of the climber arms. */
   private Motion m_currentMode = Motion.None;
@@ -114,13 +119,21 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean isFullyRetracted() {
-    // According to docs, limit switches report true iff the switch is *open*.
-    return !m_lowerLimitSwitch.get();
+    if (m_lowerLimitSwitch != null) {
+      // According to docs, limit switches report true iff the switch is *open*.
+      return !m_lowerLimitSwitch.get();
+    }
+
+    return false;
   }
 
   public boolean isFullyExtended() {
-    // According to docs, limit switches report true iff the switch is *open*.
-    return !m_upperLimitSwitch.get();
+    if (m_upperLimitSwitch != null) {
+      // According to docs, limit switches report true iff the switch is *open*.
+      return !m_upperLimitSwitch.get();
+    }
+
+    return false;
   }
 
   public void holdPosition() {
@@ -162,8 +175,8 @@ public class Climber extends SubsystemBase {
 
     m_currentMode = Motion.Extending;
     m_currentSide = Side.Both;
-    m_leftMotor.set(MOTOR_SPEED_PERCENT);
-    m_rightMotor.set(MOTOR_SPEED_PERCENT);
+    m_leftMotor.set(NORMAL_MOTOR_SPEED_PERCENT);
+    m_rightMotor.set(NORMAL_MOTOR_SPEED_PERCENT);
   }
 
   /** Begins retracting the arms, iff they aren't already fully retracted. */
@@ -175,8 +188,8 @@ public class Climber extends SubsystemBase {
     }
 
     m_currentMode = Motion.Retracting;
-    m_leftMotor.set(-MOTOR_SPEED_PERCENT);
-    m_rightMotor.set(-MOTOR_SPEED_PERCENT);
+    m_leftMotor.set(-NORMAL_MOTOR_SPEED_PERCENT);
+    m_rightMotor.set(-NORMAL_MOTOR_SPEED_PERCENT);
     m_currentSide = Side.Both;
   }
 
@@ -188,10 +201,10 @@ public class Climber extends SubsystemBase {
   public void retractSingleArm(boolean left) {
     m_currentMode = Motion.Retracting;
     if (left) {
-      m_leftMotor.set(-MOTOR_SPEED_PERCENT*0.5);
+      m_leftMotor.set(-ADJUSTMENT_MOTOR_SPEED_PERCENT);
       m_currentSide = Side.Left;
     } else {
-      m_rightMotor.set(-MOTOR_SPEED_PERCENT*0.5);
+      m_rightMotor.set(-ADJUSTMENT_MOTOR_SPEED_PERCENT);
       m_currentSide = Side.Right;
     }
   }
@@ -204,10 +217,10 @@ public class Climber extends SubsystemBase {
   public void extendSingleArm(boolean left) {
     m_currentMode = Motion.Extending;
     if (left) {
-      m_leftMotor.set(MOTOR_SPEED_PERCENT*0.5);
+      m_leftMotor.set(ADJUSTMENT_MOTOR_SPEED_PERCENT);
       m_currentSide = Side.Left;
     } else {
-      m_rightMotor.set(MOTOR_SPEED_PERCENT*0.5);
+      m_rightMotor.set(ADJUSTMENT_MOTOR_SPEED_PERCENT);
       m_currentSide = Side.Right;
     }
   }
@@ -247,7 +260,7 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     super.periodic();
 
-    if (LIMIT_SWITCH_INSTALLED) {
+    if (LIMIT_SWITCHES_INSTALLED) {
       switch (m_currentMode) {
         case Extending:
           if (isFullyExtended()) {
@@ -271,8 +284,11 @@ public class Climber extends SubsystemBase {
 
     // Status reporting (to use in debugging tests/hardware).
     SmartDashboard.putString("Mode", m_currentMode.toString());
-    SmartDashboard.putString("Upper limit", m_upperLimitSwitch.get() ? "open" : "closed");
-    SmartDashboard.putString("Lower limit", m_lowerLimitSwitch.get() ? "open" : "closed");
+    SmartDashboard.putString("Active side", m_currentSide.toString());
+    if (LIMIT_SWITCHES_INSTALLED) {
+      SmartDashboard.putString("Upper limit", m_upperLimitSwitch.get() ? "open" : "closed");
+      SmartDashboard.putString("Lower limit", m_lowerLimitSwitch.get() ? "open" : "closed");
+    }
     SmartDashboard.putString("Left pos", Double.toString(m_leftPositionFetcher.getPosition()));
     SmartDashboard.putString("Right pos", Double.toString(m_rightPositionFetcher.getPosition()));
   }

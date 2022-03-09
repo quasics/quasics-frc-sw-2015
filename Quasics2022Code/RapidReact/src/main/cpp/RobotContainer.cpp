@@ -7,6 +7,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/ParallelCommandGroup.h>
+#include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
 
@@ -283,6 +284,10 @@ frc2::SequentialCommandGroup*
 RobotContainer::BuildAutonomousTrajectoryCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(DrivingAndPickingUpBalls())));
+  commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
   return nullptr;
 }
@@ -295,13 +300,17 @@ frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls() {
   //         ResetTelemetryAtStart));
   // this should be the part where the robot moves. I do not know why it doesn't
   // work
-  return nullptr;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(PickingUpBalls())));
+  return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::PickingUpBalls() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ExtendIntake>(&m_intakeDeployment, 0.7));
-  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.7));
+  commands.push_back(std::make_unique<RunIntakeAtSpeed>(
+      &m_intake,
+      0.7));  // dont really know how to time the intake retraction correctly
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

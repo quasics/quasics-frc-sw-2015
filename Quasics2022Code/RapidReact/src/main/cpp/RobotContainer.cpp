@@ -289,25 +289,28 @@ RobotContainer::BuildAutonomousTrajectoryCommand() {
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(DrivingAndPickingUpBalls())));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          "PickUpTwoBallSallyPart2.wpilib.json",
+          TrajectoryCommandGenerator::TelemetryHandling::
+              ResetTelemetryAtStart))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
-  return nullptr;
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
-          "MaeStartAndGrabTopComeBack.wpilib.json",
+          "PickUpTwoBallSallyPart1.wpilib.json",
           TrajectoryCommandGenerator::TelemetryHandling::
-              ResetTelemetryAtStart))));  // next step is changing this to a
-                                          // part of the trajectory
+              ResetTelemetryAtStart))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(PickingUpBalls())));
   commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
-      &m_intakeDeployment, 0.7,
-      0.5_s));  // after this do another trajectory from where the other
-                // finishes and return to the starting position
+      &m_intakeDeployment, 0.7, 0.3_s));
+
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 

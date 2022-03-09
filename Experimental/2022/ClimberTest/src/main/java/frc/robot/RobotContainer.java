@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExtendClimberArms;
+import frc.robot.commands.ExtendOneArm;
 import frc.robot.commands.RetractClimberArms;
+import frc.robot.commands.RetractOneArm;
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,8 +34,14 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    SmartDashboard.putData("Extend left", new ExtendOneArm(m_climber, true));
+    SmartDashboard.putData("Retract left", new RetractOneArm(m_climber, true));
+    SmartDashboard.putData("Extend right", new ExtendOneArm(m_climber, false));
+    SmartDashboard.putData("Retract right", new RetractOneArm(m_climber, false));
+
     SmartDashboard.putData("Extend arms", new ExtendClimberArms(m_climber));
     SmartDashboard.putData("Retract arms", new RetractClimberArms(m_climber));
+
     SmartDashboard.putData("Hold position", new InstantCommand(() -> {
       m_climber.holdPosition();
     }, m_climber));

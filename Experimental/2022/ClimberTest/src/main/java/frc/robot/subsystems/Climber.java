@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,13 +52,20 @@ public class Climber extends SubsystemBase {
     None, Extending, Retracting
   }
 
+  public enum Side {
+    None, Both, Left, Right
+  }
+
   private final DigitalInput m_upperLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_UPPER_LIMIT_SWITCH_ID);
   private final DigitalInput m_lowerLimitSwitch = new DigitalInput(Constants.DIO.CLIMBER_LOWER_LIMIT_SWITCH_ID);
 
   /** Current motion of the climber arms. */
   private Motion m_currentMode = Motion.None;
 
-  private final MotorControllerGroup m_motors;
+  private Side m_currentSide = Side.None;
+
+  private final MotorController m_leftMotor;
+  private final MotorController m_rightMotor;
   private final Locker m_motorLocker;
   private final MotorPositionFetcher m_leftPositionFetcher;
   private final MotorPositionFetcher m_rightPositionFetcher;
@@ -75,7 +83,9 @@ public class Climber extends SubsystemBase {
         MotorType.kBrushless);
     var rightMotor = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_CLIMBER_MOTOR_ID,
         MotorType.kBrushless);
-    m_motors = new MotorControllerGroup(leftMotor, rightMotor);
+
+    m_leftMotor = leftMotor;
+    m_rightMotor = rightMotor;
 
     /////////////////////////////////////////////////////////////////
     // Set up locking support.
@@ -151,7 +161,9 @@ public class Climber extends SubsystemBase {
     }
 
     m_currentMode = Motion.Extending;
-    m_motors.set(MOTOR_SPEED_PERCENT);
+    m_currentSide = Side.Both;
+    m_leftMotor.set(MOTOR_SPEED_PERCENT);
+    m_rightMotor.set(MOTOR_SPEED_PERCENT);
   }
 
   /** Begins retracting the arms, iff they aren't already fully retracted. */
@@ -163,7 +175,41 @@ public class Climber extends SubsystemBase {
     }
 
     m_currentMode = Motion.Retracting;
-    m_motors.set(-MOTOR_SPEED_PERCENT);
+    m_leftMotor.set(-MOTOR_SPEED_PERCENT);
+    m_rightMotor.set(-MOTOR_SPEED_PERCENT);
+    m_currentSide = Side.Both;
+  }
+
+  /**
+   * Support function, used to help "rebalance" the two climber arms.
+   * 
+   * @param left
+   */
+  public void retractSingleArm(boolean left) {
+    m_currentMode = Motion.Retracting;
+    if (left) {
+      m_leftMotor.set(-MOTOR_SPEED_PERCENT);
+      m_currentSide = Side.Left;
+    } else {
+      m_rightMotor.set(-MOTOR_SPEED_PERCENT);
+      m_currentSide = Side.Right;
+    }
+  }
+
+  /**
+   * Support function, used to help "rebalance" the two climber arms.
+   * 
+   * @param left
+   */
+  public void extendSingleArm(boolean left) {
+    m_currentMode = Motion.Extending;
+    if (left) {
+      m_leftMotor.set(MOTOR_SPEED_PERCENT);
+      m_currentSide = Side.Left;
+    } else {
+      m_rightMotor.set(MOTOR_SPEED_PERCENT);
+      m_currentSide = Side.Right;
+    }
   }
 
   /**
@@ -176,8 +222,10 @@ public class Climber extends SubsystemBase {
    * @see #holdPosition()
    */
   public void stop() {
-    m_motors.stopMotor();
+    m_leftMotor.stopMotor();
+    m_rightMotor.stopMotor();
     m_currentMode = Motion.None;
+    m_currentSide = Side.None;
   }
 
   /**

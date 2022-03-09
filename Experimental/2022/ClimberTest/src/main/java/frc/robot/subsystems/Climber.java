@@ -188,10 +188,10 @@ public class Climber extends SubsystemBase {
   public void retractSingleArm(boolean left) {
     m_currentMode = Motion.Retracting;
     if (left) {
-      m_leftMotor.set(-MOTOR_SPEED_PERCENT);
+      m_leftMotor.set(-MOTOR_SPEED_PERCENT*0.5);
       m_currentSide = Side.Left;
     } else {
-      m_rightMotor.set(-MOTOR_SPEED_PERCENT);
+      m_rightMotor.set(-MOTOR_SPEED_PERCENT*0.5);
       m_currentSide = Side.Right;
     }
   }
@@ -204,10 +204,10 @@ public class Climber extends SubsystemBase {
   public void extendSingleArm(boolean left) {
     m_currentMode = Motion.Extending;
     if (left) {
-      m_leftMotor.set(MOTOR_SPEED_PERCENT);
+      m_leftMotor.set(MOTOR_SPEED_PERCENT*0.5);
       m_currentSide = Side.Left;
     } else {
-      m_rightMotor.set(MOTOR_SPEED_PERCENT);
+      m_rightMotor.set(MOTOR_SPEED_PERCENT*0.5);
       m_currentSide = Side.Right;
     }
   }

@@ -22,8 +22,8 @@ public final class Constants {
 
     public static final class MotorIds {
         public static final class SparkMax {
-            public static final int LEFT_CLIMBER_MOTOR_ID = 6;
-            public static final int RIGHT_CLIMBER_MOTOR_ID = 7;
+            public static final int RIGHT_CLIMBER_MOTOR_ID = 6;
+            public static final int LEFT_CLIMBER_MOTOR_ID = 7;
         }
     }
 }

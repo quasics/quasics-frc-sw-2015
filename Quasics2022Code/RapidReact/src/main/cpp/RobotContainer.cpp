@@ -21,6 +21,7 @@
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
+#include "commands/RetractIntakeAtSpeedForTime.h"
 #include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
@@ -280,6 +281,7 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+// sequence for the autonomous part
 frc2::SequentialCommandGroup*
 RobotContainer::BuildAutonomousTrajectoryCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
@@ -298,18 +300,21 @@ frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls() {
       m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
           "MaeStartAndGrabTopComeBack.wpilib.json",
           TrajectoryCommandGenerator::TelemetryHandling::
-              ResetTelemetryAtStart))));
+              ResetTelemetryAtStart))));  // next step is changing this to a
+                                          // part of the trajectory
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(PickingUpBalls())));
+  commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
+      &m_intakeDeployment, 0.7,
+      0.5_s));  // after this do another trajectory from where the other
+                // finishes and return to the starting position
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::PickingUpBalls() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ExtendIntake>(&m_intakeDeployment, 0.7));
-  commands.push_back(std::make_unique<RunIntakeAtSpeed>(
-      &m_intake,
-      0.7));  // dont really know how to time the intake retraction correctly
+  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.7));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

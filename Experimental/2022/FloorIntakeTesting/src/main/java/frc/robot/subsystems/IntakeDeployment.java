@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * Subsystem controlling deployment of the floor intake.
+ */
 public class IntakeDeployment extends SubsystemBase {
 
   /** Motor used to deploy/retract the floor intake. */
@@ -24,14 +27,25 @@ public class IntakeDeployment extends SubsystemBase {
   public IntakeDeployment() {
   }
 
+  /** Stops the winch. (Convenience method.) */
   public void stop() {
     setMotorSpeed(0);
   }
 
+  /**
+   * Sets the winch running at the specified speed to raise/lower the intake.
+   * 
+   * Note: positive speeds *should* be for winch deployment. However, if someone
+   * winds the winch in the wrong direction (or runs it out too far, so that it
+   * starts wrapping back around again), this won't be the case. :-(
+   * 
+   * @param speedPercent motor speed (as a percentage from -1.0 to +1.0)
+   */
   public void setMotorSpeed(double speedPercent) {
     m_winchMotor.set(VictorSPXControlMode.PercentOutput, speedPercent);
   }
 
+  /** Returns true iff the intake is fully deployed. */
   public boolean intakeIsDown() {
     return !m_limitSwitch.get();
   }

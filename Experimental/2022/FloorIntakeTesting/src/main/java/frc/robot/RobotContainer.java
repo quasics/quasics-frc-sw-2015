@@ -48,7 +48,7 @@ public class RobotContainer {
     SmartDashboard.putData("Lower intake", new RunWinch(m_intakeDeployment, .3));
     SmartDashboard.putData("Raise intake", new RunWinch(m_intakeDeployment, -.3));
 
-    SmartDashboard.putData("Deploy intake", new LowerIntakeAuto(m_intakeDeployment));
+    SmartDashboard.putData("Deploy intake", new LowerIntakeAuto(m_intakeDeployment, .3));
   }
 
   /**

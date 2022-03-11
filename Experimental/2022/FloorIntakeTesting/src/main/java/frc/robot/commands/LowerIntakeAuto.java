@@ -9,17 +9,19 @@ import frc.robot.subsystems.IntakeDeployment;
 
 public class LowerIntakeAuto extends CommandBase {
   final IntakeDeployment m_intake;
+  final double m_speed;
 
   /** Creates a new LowerIntakeAuto. */
-  public LowerIntakeAuto(IntakeDeployment intake) {
+  public LowerIntakeAuto(IntakeDeployment intake, double speed) {
     m_intake = intake;
+    m_speed = Math.abs(speed);
     addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setMotorSpeed(0.4);
+    m_intake.setMotorSpeed(m_speed);
   }
 
   // Called once the command ends or is interrupted.

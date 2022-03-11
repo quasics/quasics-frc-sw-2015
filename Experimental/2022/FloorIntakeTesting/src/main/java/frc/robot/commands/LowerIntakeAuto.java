@@ -8,31 +8,33 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeDeployment;
 
 public class LowerIntakeAuto extends CommandBase {
-  final IntakeDeployment m_intake;
+  final IntakeDeployment m_intakeDeployment;
   final double m_speed;
 
   /** Creates a new LowerIntakeAuto. */
-  public LowerIntakeAuto(IntakeDeployment intake, double speed) {
-    m_intake = intake;
+  public LowerIntakeAuto(IntakeDeployment intakeDeployment, double speed) {
+    m_intakeDeployment = intakeDeployment;
     m_speed = Math.abs(speed);
-    addRequirements(m_intake);
+    addRequirements(m_intakeDeployment);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setMotorSpeed(m_speed);
+    if (!m_intakeDeployment.intakeIsDown()) {
+      m_intakeDeployment.setMotorSpeed(m_speed);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.stop();
+    m_intakeDeployment.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.intakeIsDown();
+    return m_intakeDeployment.intakeIsDown();
   }
 }

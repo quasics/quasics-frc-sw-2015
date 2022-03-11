@@ -13,12 +13,22 @@ ExtendIntake::ExtendIntake(IntakeDeployment* IntakeDeployment, double speed)
 
 // Called when the command is initially scheduled.
 void ExtendIntake::Initialize() {
-  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  bool intakeStatus = m_intakeDeployment->IsIntakeDeployed();
+  if (intakeStatus) {
+    m_intakeDeployment->SetMotorSpeed(0);
+  } else {
+    m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ExtendIntake::Execute() {
-  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  bool intakeStatus = m_intakeDeployment->IsIntakeDeployed();
+  if (intakeStatus) {
+    m_intakeDeployment->SetMotorSpeed(0);
+  } else {
+    m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  }
 }
 
 // Called once the command ends or is interrupted.
@@ -28,8 +38,5 @@ void ExtendIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool ExtendIntake::IsFinished() {
-  if (m_intakeDeployment->IsIntakeDeployed()) {
-    return true;
-  }
-  return false;
+  return m_intakeDeployment->IsIntakeDeployed();
 }

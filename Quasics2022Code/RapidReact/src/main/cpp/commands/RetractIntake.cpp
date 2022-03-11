@@ -13,12 +13,12 @@ RetractIntake::RetractIntake(IntakeDeployment* intake, double speed)
 
 // Called when the command is initially scheduled.
 void RetractIntake::Initialize() {
-  m_intakeDeployment->SetMotorSpeed(-1 * intakeSpeed);
+  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RetractIntake::Execute() {
-  m_intakeDeployment->SetMotorSpeed(-1 * intakeSpeed);
+  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
 }
 
 // Called once the command ends or is interrupted.

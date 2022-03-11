@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.commands.LowerIntakeAuto;
 import frc.robot.commands.RunConveyor;
 import frc.robot.commands.RunFloorPickup;
+import frc.robot.commands.RunWinch;
 import frc.robot.subsystems.*;
 
 /**
@@ -24,6 +26,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   private final Conveyor m_conveyor = new Conveyor();
   private final FloorIntake m_floorIntake = new FloorIntake();
+  private final IntakeDeployment m_intakeDeployment = new IntakeDeployment();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -35,15 +38,17 @@ public class RobotContainer {
 
   private void configureSmartDashboardButtons() {
     SmartDashboard.putData("Pickup: +100%", new RunFloorPickup(m_floorIntake, 1.0));
-    SmartDashboard.putData("Pickup: +90%", new RunFloorPickup(m_floorIntake, 0.9));
     SmartDashboard.putData("Pickup: +80%", new RunFloorPickup(m_floorIntake, 0.8));
-    SmartDashboard.putData("Pickup: +70%", new RunFloorPickup(m_floorIntake, 0.7));
     SmartDashboard.putData("Pickup: +60%", new RunFloorPickup(m_floorIntake, 0.6));
-    SmartDashboard.putData("Pickup: +50%", new RunFloorPickup(m_floorIntake, 0.5));
     SmartDashboard.putData("Pickup: -25%", new RunFloorPickup(m_floorIntake, -0.25));
 
     SmartDashboard.putData("Conveyor: +50%", new RunConveyor(m_conveyor, 0.5));
     SmartDashboard.putData("Conveyor: -25%", new RunConveyor(m_conveyor, -0.25));
+
+    SmartDashboard.putData("Lower intake", new RunWinch(m_intakeDeployment, .3));
+    SmartDashboard.putData("Raise intake", new RunWinch(m_intakeDeployment, -.3));
+
+    SmartDashboard.putData("Deploy intake", new LowerIntakeAuto(m_intakeDeployment));
   }
 
   /**

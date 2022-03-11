@@ -5,6 +5,7 @@
 #pragma once
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
+#include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 
 #include "Constants.h"
@@ -19,6 +20,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   void SetMotorSpeed(double);
 
+  bool IsIntakeDeployed();
+
   void Periodic() override;
 
  private:
@@ -27,4 +30,6 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   ctre::phoenix::motorcontrol::can::VictorSPX m_IntakeDeploymentMotor{
       MotorIds::VictorSPX::INTAKE_DEPLOYMENT_MOTOR};
+
+  frc::DigitalInput intakeLimitSwitch{DigitalInput::INTAKE_LIMIT_SWITCH_ID};
 };

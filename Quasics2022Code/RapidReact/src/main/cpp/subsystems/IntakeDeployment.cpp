@@ -14,5 +14,9 @@ void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
       percentSpeed);
 }
 
+bool IntakeDeployment::IsIntakeDeployed() {
+  return !intakeLimitSwitch.Get();
+}
+
 void IntakeDeployment::Periodic() {
 }

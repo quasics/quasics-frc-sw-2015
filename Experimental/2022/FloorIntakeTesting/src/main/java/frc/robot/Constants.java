@@ -18,7 +18,12 @@ package frc.robot;
  */
 public final class Constants {
     public final class VictorCanIds {
-        public final static int CONVEYOR_MOTOR = 1;
         public final static int FLOOR_PICKUP_MOTOR = 1;
+        public final static int CONVEYOR_MOTOR = 2;
+        public final static int WINCH_MOTOR = 3;
+    }
+
+    public final class DigitalIOIds {
+        public final static int INTAKE_LIMIT_SWITCH = 9;
     }
 }

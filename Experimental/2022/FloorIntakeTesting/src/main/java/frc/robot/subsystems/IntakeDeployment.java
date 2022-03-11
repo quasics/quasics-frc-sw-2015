@@ -10,11 +10,15 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeDeployment extends SubsystemBase {
 
-  final VictorSPX m_winchMotor = new VictorSPX(3);
-  final DigitalInput m_limitSwitch = new DigitalInput(9);
+  /** Motor used to deploy/retract the floor intake. */
+  final VictorSPX m_winchMotor = new VictorSPX(Constants.VictorCanIds.WINCH_MOTOR);
+
+  /** Limit switch used to check if the floor intake is fully deployed. */
+  final DigitalInput m_limitSwitch = new DigitalInput(Constants.DigitalIOIds.INTAKE_LIMIT_SWITCH);
 
   /** Creates a new IntakeDeployment. */
   public IntakeDeployment() {

@@ -7,14 +7,25 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeDeployment;
 
+/**
+ * Sample command to use a limit switch (or similar digital input device) to
+ * control the robot's actions: in this case, to stop the winch on the intake
+ * when the limit switch is triggered.
+ */
 public class LowerIntakeAuto extends CommandBase {
-  final IntakeDeployment m_intakeDeployment;
-  final double m_speed;
+  private final IntakeDeployment m_intakeDeployment;
+  private final double m_speed;
 
-  /** Creates a new LowerIntakeAuto. */
+  /**
+   * Creates a new LowerIntakeAuto.
+   * 
+   * @param intakeDeployment the "intake deployment" (i.e., winch) subsystem
+   * @param speed            the speed (motor %) at which the intake should be
+   *                         deployed
+   */
   public LowerIntakeAuto(IntakeDeployment intakeDeployment, double speed) {
     m_intakeDeployment = intakeDeployment;
-    m_speed = Math.abs(speed);
+    m_speed = Math.min(+1, Math.abs(speed));
     addRequirements(m_intakeDeployment);
   }
 

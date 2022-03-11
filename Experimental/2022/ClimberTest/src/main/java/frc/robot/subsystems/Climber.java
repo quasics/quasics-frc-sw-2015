@@ -196,7 +196,7 @@ public class Climber extends SubsystemBase {
   /**
    * Support function, used to help "rebalance" the two climber arms.
    * 
-   * @param left
+   * @param left if true, move the left arm; otherwise, move the right one
    */
   public void retractSingleArm(boolean left) {
     m_currentMode = Motion.Retracting;
@@ -212,7 +212,7 @@ public class Climber extends SubsystemBase {
   /**
    * Support function, used to help "rebalance" the two climber arms.
    * 
-   * @param left
+   * @param left if true, move the left arm; otherwise, move the right one
    */
   public void extendSingleArm(boolean left) {
     m_currentMode = Motion.Extending;

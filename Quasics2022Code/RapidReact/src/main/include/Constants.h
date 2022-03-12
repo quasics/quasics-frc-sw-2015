@@ -123,12 +123,21 @@ namespace OperatorInterface {
 
   namespace LogitechGamePad {
 
+    constexpr int LEFT_X_AXIS = 0;
     constexpr int LEFT_Y_AXIS = 1;
+    constexpr int RIGHT_X_AXIS = 2;
     constexpr int RIGHT_Y_AXIS = 3;
 
-    constexpr int YButton = 4;        // for switch drive
     constexpr int LEFTSHOULDER = 5;   // Turbo Mode
     constexpr int RIGHTSHOULDER = 6;  // Turtle Mode
+    constexpr int AButton = 1;
+    constexpr int BButton = 2;
+    constexpr int XButton = 3;
+    constexpr int YButton = 4;  // for switch drive
+    constexpr int BACKBUTTON = 7;
+    constexpr int STARTBUTTON = 8;
+    constexpr int LEFTSTICKPRESS = 9;
+    constexpr int RIGHTSTICKPRESS = 10;
 
   }  // namespace LogitechGamePad
 }  // namespace OperatorInterface

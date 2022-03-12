@@ -10,6 +10,7 @@
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/button/JoystickButton.h>
+#include <frc2/command/button/Trigger.h>
 
 #include "Constants.h"
 #include "TrajectoryCommandGenerator.h"
@@ -90,7 +91,7 @@ RobotContainer::RobotContainer()
   m_drivebase.SetDefaultCommand(tankDrive);
 
   // Configure the button bindings
-  ConfigureJoystickButtonBindings();
+  ConfigureControllerButtonBindings();
 
   // Populate smart dashboard
   AddAutonomousCommandsToSmartDashboard();
@@ -113,15 +114,32 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
 }
 
 // Configure your button bindings here
-void RobotContainer::ConfigureJoystickButtonBindings() {
-  // Configure "switch drive" controls
-  frc2::JoystickButton(&m_driverStick,
-                       OperatorInterface::LogitechGamePad::YButton)
-      .WhenPressed([this] { isSwitched = !(isSwitched); });
-
-  // TODO: Configure other button bindings on driver and operator controllers.
+void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                                      frc2::Command* command) {
+  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command);
 }
 
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    int buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&operatorController, buttonId).WhileHeld(command);
+}
+
+// TODO: Configure other button bindings on driver and operator controllers.
+
+void RobotContainer::ConfigureControllerButtonBindings() {
+  static ExtendClimber extendClimber(&m_climber);
+  static RetractClimber retractClimber(&m_climber);
+  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
+  static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &extendClimber);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &retractClimber);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::LEFTSHOULDER, &runIntakeForward);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::RIGHTSHOULDER, &runIntakeBackward);
+}
 // Note: 0.65 seems to be reasonable power for the high goal.
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Basic drive base commands/tests

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/XboxController.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
@@ -32,6 +33,12 @@ class RobotContainer {
 
   frc2::Command* GetAutonomousCommand();
 
+  // Commands for button bindings
+  void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                        frc2::Command* command);
+
+  void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command* command);
+
   // "Helper" functions, used internally.
  private:
   frc2::SequentialCommandGroup* BuildShootAndMoveCommand(
@@ -44,10 +51,10 @@ class RobotContainer {
   frc2::ParallelCommandGroup* BuildShootBallSequence();
   frc2::SequentialCommandGroup* BallsToShoot(int amountBalls);
 
-  void ConfigureJoystickButtonBindings();
   void AddTestButtonsToSmartDashboard();
   void AddTestTrajectoryCommandsToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
+  void ConfigureControllerButtonBindings();
 
   // Used when computing requested speeds for Tank Drive command.
   double GetDriveSpeedScalingFactor();
@@ -55,6 +62,8 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here.
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
+  frc::Joystick driverJoystick{0};
+  frc::XboxController operatorController{1};
 
   Shooter m_shooter;
   Drivebase m_drivebase;

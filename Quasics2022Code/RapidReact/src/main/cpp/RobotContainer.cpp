@@ -24,6 +24,7 @@
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
+#include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
@@ -132,14 +133,31 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RetractClimber retractClimber(&m_climber);
   static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
+  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.3);
+  static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.3);
+  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
+  static RunShooterAtSpeed fastShoot(&m_shooter, 0.8);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
                                      &extendClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &retractClimber);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
+                                     &conveyorUp);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
+                                     &conveyorDown);
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Axis::kLeftTrigger,
+      &slowShoot);  // these might need to have a different command
+  RunCommandWhenOperatorButtonIsHeld(
+      frc::XboxController::Axis::kRightTrigger,  // these might need to have a
+                                                 // different command
+      &fastShoot);
+
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::LEFTSHOULDER, &runIntakeForward);
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::RIGHTSHOULDER, &runIntakeBackward);
+  // RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::)
 }
 // Note: 0.65 seems to be reasonable power for the high goal.
 void RobotContainer::AddTestButtonsToSmartDashboard() {

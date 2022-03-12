@@ -328,20 +328,23 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-// sequence for the autonomous part
-frc2::SequentialCommandGroup*
-RobotContainer::BuildAutonomousTrajectoryCommand() {
+// example sequence for the autonomous part
+frc2::SequentialCommandGroup* RobotContainer::BuildExampleAutonomousCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      DrivingAndPickingUpBalls("PickUpTwoBallSallyPart1"))));
+      DrivePickUpPositionBall("PickUpTwoBallSallyPart1"))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      DrivePickUpPositionBall("PickUpTwoBallSallyPart1"))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       DrivingBackToShoot("PickUpTwoBallSallyPart2"))));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
+
+// helper functions for autonomous
 
 frc2::ParallelCommandGroup* RobotContainer::DrivingBackToShoot(
     std::string Path) {
@@ -357,24 +360,32 @@ frc2::ParallelCommandGroup* RobotContainer::DrivingBackToShoot(
   return new frc2::ParallelCommandGroup(std::move(commands));
 }
 
-frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls(
+frc2::SequentialCommandGroup* RobotContainer::DrivePickUpPositionBall(
     std::string Path) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   Path = Path + ".wpilib.json";
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(DrivingAndPickingUpBall(Path))));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBall(
+    std::string Path) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
           Path, TrajectoryCommandGenerator::TelemetryHandling::
                     ResetTelemetryAtStart))));
   commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(PickingUpBalls())));
+      std::move(std::unique_ptr<frc2::Command>(PickingUpBall())));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
-// this one needs to be corrected because if we are picking up 2 balls there
-// needs to be some way so they dont get jammed
-
-frc2::SequentialCommandGroup* RobotContainer::PickingUpBalls() {
+frc2::SequentialCommandGroup* RobotContainer::PickingUpBall() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));

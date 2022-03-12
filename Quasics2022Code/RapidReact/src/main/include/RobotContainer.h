@@ -45,10 +45,11 @@ class RobotContainer {
       double powerShoot, units::second_t timeShoot, double powerMove,
       units::meter_t distanceToMove);
 
-  frc2::SequentialCommandGroup* BuildAutonomousTrajectoryCommand();
+  frc2::SequentialCommandGroup* BuildExampleAutonomousCommand();
   frc2::ParallelCommandGroup* DrivingBackToShoot(std::string Path);
-  frc2::ParallelRaceGroup* DrivingAndPickingUpBalls(std::string Path);
-  frc2::SequentialCommandGroup* PickingUpBalls();
+  frc2::SequentialCommandGroup* DrivePickUpPositionBall(std::string Path);
+  frc2::ParallelRaceGroup* DrivingAndPickingUpBall(std::string Path);
+  frc2::SequentialCommandGroup* PickingUpBall();
   frc2::ParallelCommandGroup* BuildShootBallSequence();
   frc2::SequentialCommandGroup* BallsToShoot(int amountBalls);
 

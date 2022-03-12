@@ -21,7 +21,7 @@ public class ExtendOneArm extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.retractSingleArm(leftSide);
+    climber.extendSingleArm(leftSide);
   }
 
   // Called once the command ends or is interrupted.

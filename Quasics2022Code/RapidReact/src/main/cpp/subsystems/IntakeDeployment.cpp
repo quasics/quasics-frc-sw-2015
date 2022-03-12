@@ -4,6 +4,8 @@
 
 #include "subsystems/IntakeDeployment.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 IntakeDeployment::IntakeDeployment() {
 }
 
@@ -19,4 +21,6 @@ bool IntakeDeployment::IsIntakeDeployed() {
 }
 
 void IntakeDeployment::Periodic() {
+  frc::SmartDashboard::PutString("Limit switch",
+                                 intakeLimitSwitch.Get() ? "open" : "closed");
 }

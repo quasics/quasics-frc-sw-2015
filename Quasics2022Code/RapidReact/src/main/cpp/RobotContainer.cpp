@@ -371,6 +371,9 @@ frc2::ParallelRaceGroup* RobotContainer::DrivingAndPickingUpBalls(
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
+// this one needs to be corrected because if we are picking up 2 balls there
+// needs to be some way so they dont get jammed
+
 frc2::SequentialCommandGroup* RobotContainer::PickingUpBalls() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(

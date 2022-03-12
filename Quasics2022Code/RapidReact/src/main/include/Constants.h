@@ -111,7 +111,7 @@ namespace MotorIds {
 namespace DigitalInput {
   constexpr int TOP_LIMIT_SWITCH_ID = 1;
   constexpr int BOTTON_LIMIT_SWITCH_ID = 2;
-  constexpr int INTAKE_LIMIT_SWITCH_ID = 3;
+  constexpr int INTAKE_LIMIT_SWITCH_ID = 9;
 }  // namespace DigitalInput
 
 namespace LightingValues {

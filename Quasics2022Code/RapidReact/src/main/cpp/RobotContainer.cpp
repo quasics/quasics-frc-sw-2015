@@ -170,8 +170,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RunIntakeAtSpeed(&m_intake, -0.3));
 
   // Intake deployment commands
-  frc::SmartDashboard::PutData("Extend Intake at 30% speed",
-                               new ExtendIntake(&m_intakeDeployment, 0.3));
+  frc::SmartDashboard::PutData(
+      "Extend Intake at 20% speed",
+      new ExtendIntake(&m_intakeDeployment,
+                       0.2));  // seems like 20% is a safe speed for the intake
+                               // not to over rotate
   frc::SmartDashboard::PutData("Retract Intake at 30%",
                                new RetractIntake(&m_intakeDeployment, -0.3));
 

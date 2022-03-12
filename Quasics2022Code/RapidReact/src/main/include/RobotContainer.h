@@ -52,6 +52,7 @@ class RobotContainer {
   frc2::SequentialCommandGroup* PickingUpBall();
   frc2::ParallelCommandGroup* BuildShootBallSequence();
   frc2::SequentialCommandGroup* BallsToShoot(int amountBalls);
+  frc2::SequentialCommandGroup* Move(std::string Path);
 
   void AddTestButtonsToSmartDashboard();
   void AddTestTrajectoryCommandsToSmartDashboard();

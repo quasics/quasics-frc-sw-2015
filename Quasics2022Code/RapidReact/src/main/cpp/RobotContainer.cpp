@@ -411,6 +411,16 @@ frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
   return new frc2::ParallelCommandGroup(std::move(commands));
 }
 
+frc2::SequentialCommandGroup* RobotContainer::Move(std::string Path) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  Path = Path + ".wpilib.json";
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          Path, TrajectoryCommandGenerator::TelemetryHandling::
+                    ResetTelemetryAtStart))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_autonomousOptions.GetSelected();
 }

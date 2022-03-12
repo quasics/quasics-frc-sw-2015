@@ -19,6 +19,7 @@
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/ExtendClimber.h"
 #include "commands/ExtendIntake.h"
+#include "commands/ExtendIntakeAuto.h"
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
@@ -177,6 +178,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                // not to over rotate
   frc::SmartDashboard::PutData("Retract Intake at 30%",
                                new RetractIntake(&m_intakeDeployment, -0.3));
+  frc::SmartDashboard::PutData("Extend Intake auto",
+                               new ExtendIntakeAuto(&m_intakeDeployment, -0.3));
 
   // Conveyor commands
   frc::SmartDashboard::PutData(

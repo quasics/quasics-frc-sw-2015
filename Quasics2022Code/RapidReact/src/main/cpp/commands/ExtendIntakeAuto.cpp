@@ -2,9 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "commands/ExtendIntake.h"
+#include "commands/ExtendIntakeAuto.h"
 
-ExtendIntake::ExtendIntake(IntakeDeployment* IntakeDeployment, double speed)
+ExtendIntakeAuto::ExtendIntakeAuto(IntakeDeployment* IntakeDeployment,
+                                   double speed)
     : m_intakeDeployment(IntakeDeployment), intakeSpeed(speed) {
   // Use addRequirements() here to declare subsystem dependencies.
 
@@ -12,21 +13,21 @@ ExtendIntake::ExtendIntake(IntakeDeployment* IntakeDeployment, double speed)
 }
 
 // Called when the command is initially scheduled.
-void ExtendIntake::Initialize() {
+void ExtendIntakeAuto::Initialize() {
   m_intakeDeployment->SetMotorSpeed(intakeSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ExtendIntake::Execute() {
+void ExtendIntakeAuto::Execute() {
   m_intakeDeployment->SetMotorSpeed(intakeSpeed);
 }
 
 // Called once the command ends or is interrupted.
-void ExtendIntake::End(bool interrupted) {
+void ExtendIntakeAuto::End(bool interrupted) {
   m_intakeDeployment->SetMotorSpeed(0);
 }
 
 // Returns true when the command should end.
-bool ExtendIntake::IsFinished() {
-  return false;
+bool ExtendIntakeAuto::IsFinished() {
+  return m_intakeDeployment->IsIntakeDeployed();
 }

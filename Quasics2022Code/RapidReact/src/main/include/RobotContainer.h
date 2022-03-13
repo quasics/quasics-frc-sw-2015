@@ -83,6 +83,7 @@ class RobotContainer {
   void AddTestButtonsToSmartDashboard();
   void AddTestTrajectoryCommandsToSmartDashboard();
   void AddAutonomousCommandsToSmartDashboard();
+  void AddLightingCommandsToSmartDashboard();
   void ConfigureControllerButtonBindings();
 
   // Used when computing requested speeds for Tank Drive command.

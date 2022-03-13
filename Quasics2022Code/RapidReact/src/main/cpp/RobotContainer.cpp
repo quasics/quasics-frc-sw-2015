@@ -175,11 +175,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Coasting mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
-  frc::SmartDashboard::PutData("Test Button Do Something",
+  frc::SmartDashboard::PutData("Simple 1m movement",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
-  frc::SmartDashboard::PutData(
-      "Drivebase: 20m at 80%",
-      new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
+  //   frc::SmartDashboard::PutData(
+  //       "Drivebase: 20m at 80%",
+  //       new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
 
   // Shooter commands
   frc::SmartDashboard::PutData("Shoot @ 65%",
@@ -206,15 +206,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Conveyor commands
   frc::SmartDashboard::PutData(
-      "Conveyor: 40% forward for 2 seconds",
-      new RunConveyorAtSpeedForTime(&m_conveyor, 0.4, 2_s));
-  frc::SmartDashboard::PutData(
       "Conveyor: 30% backward for 2 seconds",
       new RunConveyorAtSpeedForTime(&m_conveyor, -0.3, 2_s));
-  frc::SmartDashboard::PutData(
-      "Conveyor: 20% forward for 2 seconds",
-      new RunConveyorAtSpeedForTime(&m_conveyor, 0.2, 2_s));
-
+  //   frc::SmartDashboard::PutData(
+  //       "Conveyor: 40% forward for 2 seconds",
+  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.4, 2_s));
+  //   frc::SmartDashboard::PutData(
+  //       "Conveyor: 20% forward for 2 seconds",
+  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.2, 2_s));
   frc::SmartDashboard::PutData(
       "Conveyor at 60%. infinite time",
       new RunConveyorAtSpeedForTime(&m_conveyor, 0.6, 100_s));
@@ -225,6 +224,13 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RetractClimber(&m_climber));
 
   // Lighting commands
+  // AddLightingCommandsToSmartDashboard();
+
+  // Path following commands
+  // AddTestTrajectoryCommandsToSmartDashboard();
+}
+
+void RobotContainer::AddLightingCommandsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Set All ligths to Red",
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));
@@ -232,9 +238,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));
   frc::SmartDashboard::PutData("Alliance Breathing Lights",
                                new BreathingAllianceLights(&m_lighting, 0.75));
-
-  // Path following commands
-  AddTestTrajectoryCommandsToSmartDashboard();
 }
 
 void RobotContainer::AddTestTrajectoryCommandsToSmartDashboard() {

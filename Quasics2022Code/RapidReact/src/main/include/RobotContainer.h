@@ -59,6 +59,15 @@ class RobotContainer {
   frc2::SequentialCommandGroup* BSP5();
   frc2::SequentialCommandGroup* BSP6();
 
+  frc2::SequentialCommandGroup* RSPS1();
+  frc2::SequentialCommandGroup* BSPS2();
+
+  frc2::SequentialCommandGroup* RPSPS1();
+  frc2::SequentialCommandGroup* BPSPS2();
+
+  frc2::SequentialCommandGroup* RALL1();
+  frc2::SequentialCommandGroup* BALL2();
+
   // example auto command
   frc2::SequentialCommandGroup* BuildExampleAutonomousCommand();
 

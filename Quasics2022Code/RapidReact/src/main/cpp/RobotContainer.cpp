@@ -328,6 +328,125 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+// autonomous sequences
+//
+//
+//
+//
+//
+// shoot and move
+//
+frc2::SequentialCommandGroup* RobotContainer::RSM1() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(Move("RSM1Path"))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // path not made yet
+
+frc2::SequentialCommandGroup* RobotContainer::RSM2() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(Move("RSM2Path"))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // path not made yet
+
+frc2::SequentialCommandGroup* RobotContainer::BSM3() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(Move("BSM3Path"))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // path not made yet
+
+frc2::SequentialCommandGroup* RobotContainer::BSM4() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(Move("BSM4Path"))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // path not made yet
+//
+//
+//  pick up 1 then shoot
+//
+frc2::SequentialCommandGroup* RobotContainer::RSP1() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("RSP1(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("RSP1(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+
+frc2::SequentialCommandGroup* RobotContainer::RSP2() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("RSP2(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("RSP2(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+
+frc2::SequentialCommandGroup* RobotContainer::RSP3() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("RSP3(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("RSP3(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+
+frc2::SequentialCommandGroup* RobotContainer::BSP4() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("BSP4(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("BSP4(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+
+frc2::SequentialCommandGroup* RobotContainer::BSP5() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("BSP5(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("BSP5(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+
+frc2::SequentialCommandGroup* RobotContainer::BSP6() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivePickUpPositionBall("BSP6(Part1"))));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(DrivingBackToShoot("BSP6(Part2"))));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(2))));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}  // paths no made yet
+//
+//
+//
+//
+//
+//
+//
 // example sequence for the autonomous part
 frc2::SequentialCommandGroup* RobotContainer::BuildExampleAutonomousCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;

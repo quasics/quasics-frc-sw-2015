@@ -45,7 +45,24 @@ class RobotContainer {
       double powerShoot, units::second_t timeShoot, double powerMove,
       units::meter_t distanceToMove);
 
+  // autoCommands
+
+  frc2::SequentialCommandGroup* RSM1();
+  frc2::SequentialCommandGroup* RSM2();
+  frc2::SequentialCommandGroup* BSM3();
+  frc2::SequentialCommandGroup* BSM4();
+
+  frc2::SequentialCommandGroup* RSP1();
+  frc2::SequentialCommandGroup* RSP2();
+  frc2::SequentialCommandGroup* RSP3();
+  frc2::SequentialCommandGroup* BSP4();
+  frc2::SequentialCommandGroup* BSP5();
+  frc2::SequentialCommandGroup* BSP6();
+
+  // example auto command
   frc2::SequentialCommandGroup* BuildExampleAutonomousCommand();
+
+  // helper functions for auto commands
   frc2::ParallelCommandGroup* DrivingBackToShoot(std::string Path);
   frc2::SequentialCommandGroup* DrivePickUpPositionBall(std::string Path);
   frc2::ParallelRaceGroup* DrivingAndPickingUpBall(std::string Path);

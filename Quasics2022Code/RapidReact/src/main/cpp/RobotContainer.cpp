@@ -133,10 +133,10 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RetractClimber retractClimber(&m_climber);
   static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
-  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.3);
-  static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.3);
-  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
-  static RunShooterAtSpeed fastShoot(&m_shooter, 0.8);
+  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
+  static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
+  static RunShooterAtSpeed slowShoot(&m_shooter, 0.5);
+  static RunShooterAtSpeed fastShoot(&m_shooter, 0.75);
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.3);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.3);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
@@ -148,11 +148,11 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      &conveyorUp);
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Axis::kLeftTrigger,
+      frc::XboxController::Button::kX,
       &slowShoot);  // these might need to have a different command
   RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Axis::kRightTrigger,  // these might need to have a
-                                                 // different command
+      frc::XboxController::Button::kB,  // these might need to have a
+                                        // different command
       &fastShoot);
 
   RunCommandWhenDriverButtonIsHeld(
@@ -202,7 +202,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Retract Intake at 30%",
                                new RetractIntake(&m_intakeDeployment, -0.3));
   frc::SmartDashboard::PutData("Extend Intake auto",
-                               new ExtendIntakeAuto(&m_intakeDeployment, -0.3));
+                               new ExtendIntakeAuto(&m_intakeDeployment, 0.3));
 
   // Conveyor commands
   frc::SmartDashboard::PutData(
@@ -667,9 +667,9 @@ frc2::SequentialCommandGroup* RobotContainer::BallsToShoot(int amountBalls) {
 }
 frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.60, 1_s));
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.75, 1.5_s));
   commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 1_s));
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 1.5_s));
   return new frc2::ParallelCommandGroup(std::move(commands));
 }
 

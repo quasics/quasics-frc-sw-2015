@@ -110,6 +110,9 @@ void Drivebase::Periodic() {
                                  newPose.Rotation().Degrees().value());
   frc::SmartDashboard::PutNumber("X pos", newPose.X().value());
   frc::SmartDashboard::PutNumber("Y pos", newPose.Y().value());
+
+  frc::SmartDashboard::PutNumber("Left", m_leftFrontEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Right", m_rightFrontEncoder.GetPosition());
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

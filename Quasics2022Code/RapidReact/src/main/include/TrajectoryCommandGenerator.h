@@ -17,6 +17,7 @@
 #include <wpi/SmallString.h>
 #include <wpi/fs.h>
 
+#include <exception>
 #include <iostream>
 #include <vector>
 
@@ -143,6 +144,10 @@ class TrajectoryCommandGenerator {
    *     using its current position and orientation as the origin point (0,0).
    *     Otherwise, it will use the previously-established origin as a
    *     starting point (and first drive back to that).
+   *
+   * @return a sequential command group that includes directions to drive the
+   * specified trajectory, or nullptr on an error (e.g., file couldn't be
+   * found/read, was corrupted, etc.).
    */
   frc2::SequentialCommandGroup* GenerateCommandFromPathWeaverFile(
       const std::string jsonFileName, TelemetryHandling telemetryHandling) {
@@ -151,13 +156,26 @@ class TrajectoryCommandGenerator {
         directory + "/" + "paths" + "/" +
         jsonFileName;  // creates an adjusted location of the file
 
-    frc::Trajectory trajectory = frc::TrajectoryUtil::FromPathweaverJson(
-        filename);  // converts the file given from pathweaver to something the
-                    // code can use
+    try {
+      frc::Trajectory trajectory = frc::TrajectoryUtil::FromPathweaverJson(
+          filename);  // converts the file given from pathweaver to something
+                      // the code can use
 
-    return GenerateCommandForTrajectory(
-        m_drive, m_profileData, m_pidConfig, trajectory, telemetryHandling,
-        m_ramseteConfig);  // calls the function created further in the code
+      return GenerateCommandForTrajectory(
+          m_drive, m_profileData, m_pidConfig, trajectory, telemetryHandling,
+          m_ramseteConfig);  // calls the function created further in the code
+    } catch (const std::exception& e) {
+      // OK.  Something failed during this process (e.g., the specified JSON
+      // file couldn't be found/read, etc.).  So we'll log the error to stderr,
+      // and then return a nullptr to let the caller know.
+      std::cerr
+          << "**********************************************************\n"
+          << "Failure in GenerateCommandFromPathWeaverFile(): " << e.what()
+          << '\n'
+          << "when loading file: " << filename << '\n'
+          << "**********************************************************\n";
+      return nullptr;
+    }
   }  // this command takes in a file and uses it to build a trajectory
 
  private:

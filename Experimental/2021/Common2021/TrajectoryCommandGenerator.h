@@ -17,6 +17,7 @@
 #include <wpi/Path.h>
 #include <wpi/SmallString.h>
 
+#include <exception>
 #include <iostream>
 #include <vector>
 
@@ -139,6 +140,10 @@ class TrajectoryCommandGenerator {
    *     using its current position and orientation as the origin point (0,0).
    *     Otherwise, it will use the previously-established origin as a
    *     starting point (and first drive back to that).
+   *
+   * @return a sequential command group that includes directions to drive the
+   * specified trajectory, or nullptr on an error (e.g., file couldn't be
+   * found/read, was corrupted, etc.).
    */
   frc2::SequentialCommandGroup* GenerateCommandFromPathWeaverFile(
       const std::string jsonFileName, TelemetryHandling telemetryHandling) {
@@ -148,13 +153,25 @@ class TrajectoryCommandGenerator {
     frc::filesystem::GetDeployDirectory(deployDirectory);
     wpi::sys::path::append(deployDirectory, "paths");
     wpi::sys::path::append(deployDirectory, jsonFileName);
+    try {
+      frc::Trajectory trajectory =
+          frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
 
-    frc::Trajectory trajectory =
-        frc::TrajectoryUtil::FromPathweaverJson(deployDirectory);
-
-    return GenerateCommandForTrajectory(m_drive, m_profileData, m_pidConfig,
-                                        trajectory, telemetryHandling,
-                                        m_ramseteConfig);
+      return GenerateCommandForTrajectory(m_drive, m_profileData, m_pidConfig,
+                                          trajectory, telemetryHandling,
+                                          m_ramseteConfig);
+    } catch (const std::exception& e) {
+      // OK.  Something failed during this process (e.g., the specified JSON
+      // file couldn't be found/read, etc.).  So we'll log the error to stderr,
+      // and then return a nullptr to let the caller know.
+      std::cerr
+          << "**********************************************************\n"
+          << "Failure in GenerateCommandFromPathWeaverFile(): " << e.what()
+          << '\n'
+          << "when loading deployed file: " << jsonFileName << '\n'
+          << "**********************************************************\n";
+      return nullptr;
+    }
   }
 
  private:

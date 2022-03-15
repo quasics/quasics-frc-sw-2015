@@ -307,20 +307,20 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("Shoot @ 20% for 2sec, move @ 20% for 1",
                                 BuildShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
 
-  m_autonomousOptions.AddOption("RSM1", RSM1());
-  m_autonomousOptions.AddOption("RSM2", RSM2());
-  m_autonomousOptions.AddOption("BSM3", BSM3());
-  m_autonomousOptions.AddOption("BSM4", BSM4());
-  m_autonomousOptions.AddOption("RSP1", RSP1());
-  m_autonomousOptions.AddOption("RSP3", RSP3());
-  m_autonomousOptions.AddOption("BSP4", BSP4());
-  m_autonomousOptions.AddOption("BSP6", BSP6());
-  m_autonomousOptions.AddOption("RSPS1", RSPS1());
-  m_autonomousOptions.AddOption("BSPS2", BSPS2());
-  m_autonomousOptions.AddOption("RPSPS1", RPSPS1());
-  m_autonomousOptions.AddOption("BPSPS2", BPSPS2());
-  m_autonomousOptions.AddOption("RALL1", RALL1());
-  m_autonomousOptions.AddOption("BALL2", BALL2());
+  //   m_autonomousOptions.AddOption("RSM1", RSM1());
+  //   m_autonomousOptions.AddOption("RSM2", RSM2());
+  //   m_autonomousOptions.AddOption("BSM3", BSM3());
+  //   m_autonomousOptions.AddOption("BSM4", BSM4());
+  //   m_autonomousOptions.AddOption("RSP1", RSP1());
+  //   m_autonomousOptions.AddOption("RSP3", RSP3());
+  //   m_autonomousOptions.AddOption("BSP4", BSP4());
+  //   m_autonomousOptions.AddOption("BSP6", BSP6());
+  //   m_autonomousOptions.AddOption("RSPS1", RSPS1());
+  //   m_autonomousOptions.AddOption("BSPS2", BSPS2());
+  //   m_autonomousOptions.AddOption("RPSPS1", RPSPS1());
+  //   m_autonomousOptions.AddOption("BPSPS2", BPSPS2());
+  //   m_autonomousOptions.AddOption("RALL1", RALL1());
+  //   m_autonomousOptions.AddOption("BALL2", BALL2());
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 

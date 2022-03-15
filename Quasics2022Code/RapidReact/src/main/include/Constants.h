@@ -13,9 +13,9 @@
 // "#undef NAME" or commenting them out).  This will control which set of values
 // are used to control stuff like PID feedback during path following, etc.
 
-#undef Target_Sally
+#define Target_Sally
 #undef Target_Mae
-#define Target_Nike
+#undef Target_Nike
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -28,12 +28,12 @@
  */
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 
-constexpr double DRIVEBASE_GEAR_RATIO = 10.71;  // gear ratio for Sally is 8.45
+constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // gear ratio for Sally is 8.45
 // this is mae's gear ratio of 10.71
 
-constexpr double EXTENSION_SPEED = 0.60;
+constexpr double EXTENSION_SPEED = 0.80;
 
-constexpr double RETRACTION_SPEED = -0.60;
+constexpr double RETRACTION_SPEED = -0.80;
 
 namespace SensorIds {
   constexpr int PIDGEON_CAN_ID = 1;
@@ -45,8 +45,8 @@ constexpr double NORMAL_MODE_SPEED_SCALING = 0.5;
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.2;
 
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
-    47.134344149315914763_in;  // This is track width for Mae. Sally
-                               // is  22.0_in;
+    22.0_in;  // This is track width for Mae. Sally
+              // is  22.0_in;
 
 namespace SallyDriverConstants {
   constexpr auto ks = 0_V;

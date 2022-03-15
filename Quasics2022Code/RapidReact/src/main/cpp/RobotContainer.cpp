@@ -131,11 +131,11 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendClimber extendClimber(&m_climber);
   static RetractClimber retractClimber(&m_climber);
-  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
+  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
   static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
-  static RunShooterAtSpeed slowShoot(&m_shooter, 0.5);
+  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
   static RunShooterAtSpeed fastShoot(&m_shooter, 0.75);
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.3);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.3);
@@ -307,20 +307,20 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("Shoot @ 20% for 2sec, move @ 20% for 1",
                                 BuildShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
 
-  //   m_autonomousOptions.AddOption("RSM1", RSM1());
-  //   m_autonomousOptions.AddOption("RSM2", RSM2());
-  //   m_autonomousOptions.AddOption("BSM3", BSM3());
-  //   m_autonomousOptions.AddOption("BSM4", BSM4());
-  //   m_autonomousOptions.AddOption("RSP1", RSP1());
-  //   m_autonomousOptions.AddOption("RSP3", RSP3());
-  //   m_autonomousOptions.AddOption("BSP4", BSP4());
-  //   m_autonomousOptions.AddOption("BSP6", BSP6());
-  //   m_autonomousOptions.AddOption("RSPS1", RSPS1());
-  //   m_autonomousOptions.AddOption("BSPS2", BSPS2());
-  //   m_autonomousOptions.AddOption("RPSPS1", RPSPS1());
-  //   m_autonomousOptions.AddOption("BPSPS2", BPSPS2());
-  //   m_autonomousOptions.AddOption("RALL1", RALL1());
-  //   m_autonomousOptions.AddOption("BALL2", BALL2());
+  m_autonomousOptions.AddOption("RSM1", RSM1());
+  m_autonomousOptions.AddOption("RSM2", RSM2());
+  m_autonomousOptions.AddOption("BSM3", BSM3());
+  m_autonomousOptions.AddOption("BSM4", BSM4());
+  m_autonomousOptions.AddOption("RSP1", RSP1());
+  m_autonomousOptions.AddOption("RSP3", RSP3());
+  m_autonomousOptions.AddOption("BSP4", BSP4());
+  m_autonomousOptions.AddOption("BSP6", BSP6());
+  m_autonomousOptions.AddOption("RSPS1", RSPS1());
+  m_autonomousOptions.AddOption("BSPS2", BSPS2());
+  m_autonomousOptions.AddOption("RPSPS1", RPSPS1());
+  m_autonomousOptions.AddOption("BPSPS2", BPSPS2());
+  m_autonomousOptions.AddOption("RALL1", RALL1());
+  m_autonomousOptions.AddOption("BALL2", BALL2());
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 
@@ -356,8 +356,7 @@ frc2::SequentialCommandGroup* RobotContainer::RSM1() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(Move("RSM1Path"))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(Move("RSM1"))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -365,8 +364,7 @@ frc2::SequentialCommandGroup* RobotContainer::RSM2() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(Move("RSM2Path"))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(Move("RSM2"))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -374,8 +372,7 @@ frc2::SequentialCommandGroup* RobotContainer::BSM3() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(Move("BSM3Path"))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(Move("BSM3"))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -383,8 +380,7 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(Move("BSM4Path"))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(Move("BSM4"))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 //

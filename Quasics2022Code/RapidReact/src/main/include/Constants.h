@@ -31,9 +31,9 @@ constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO = 10.71;  // gear ratio for Sally is 8.45
 // this is mae's gear ratio of 10.71
 
-constexpr double EXTENSION_SPEED = 0.25;
+constexpr double EXTENSION_SPEED = 0.60;
 
-constexpr double RETRACTION_SPEED = -0.25;
+constexpr double RETRACTION_SPEED = -0.60;
 
 namespace SensorIds {
   constexpr int PIDGEON_CAN_ID = 1;

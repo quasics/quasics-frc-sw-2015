@@ -18,7 +18,7 @@
 #include "units/velocity.h"
 
 // Changes whether using AD gyro or Pidgeon Gyro
-#define ENABLE_AD_GYRO
+//#define ENABLE_AD_GYRO
 
 /**
  * Drive base subsystem, used for movement/navigation.

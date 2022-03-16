@@ -131,7 +131,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendClimber extendClimber(&m_climber);
   static RetractClimber retractClimber(&m_climber);
-  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
+  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
   static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
@@ -228,6 +228,15 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Path following commands
   // AddTestTrajectoryCommandsToSmartDashboard();
+
+  // Autonomous Helper Function Test
+
+  frc::SmartDashboard::PutData(
+      "RetractIntake at 70percent for 0.3 seconds",
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.7, 0.3_s));
+  frc::SmartDashboard::PutData(
+      "RetractIntake at 80percent for 0.6 seconds",
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.8, 0.77_s));
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
@@ -647,7 +656,7 @@ frc2::SequentialCommandGroup* RobotContainer::PickingUpBall() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
-  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.7));
+  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.8));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

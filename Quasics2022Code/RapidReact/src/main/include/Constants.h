@@ -49,10 +49,10 @@ constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
               // is  22.0_in;
 
 namespace SallyDriverConstants {
-  constexpr auto ks = 0_V;
-  constexpr auto kv = 0 * 1_V * 1_s / 1_m;
-  constexpr auto ka = 0 * 1_V * 1_s * 1_s / 1_m;
-  constexpr auto kp = 0;
+  constexpr auto ks = 0.18082_V;
+  constexpr auto kv = 1.0444 * 1_V * 1_s / 1_m;
+  constexpr auto ka = 0.21143 * 1_V * 1_s * 1_s / 1_m;
+  constexpr auto kp = 1.4414;
   constexpr auto ki = 0;
   constexpr auto kd = 0;
 }  // namespace SallyDriverConstants

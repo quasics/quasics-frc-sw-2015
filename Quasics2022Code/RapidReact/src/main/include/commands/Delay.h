@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -16,7 +17,7 @@
  */
 class Delay : public frc2::CommandHelper<frc2::CommandBase, Delay> {
  public:
-  Delay();
+  Delay(units::second_t time);
 
   void Initialize() override;
 
@@ -27,6 +28,6 @@ class Delay : public frc2::CommandHelper<frc2::CommandBase, Delay> {
   bool IsFinished() override;
 
  private:
-  // const units::second_t m_time;
-  // frc::Timer m_stopWatch;
+  const units::second_t m_time;
+  frc::Timer m_stopWatch;
 };

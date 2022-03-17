@@ -16,6 +16,7 @@
 #include "TrajectoryCommandGenerator.h"
 #include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
+#include "commands/Delay.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/ExtendClimber.h"
 #include "commands/ExtendIntake.h"
@@ -144,6 +145,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RunShooterAtSpeed fastShoot(&m_shooter, 0.65);
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.5);
+  static frc2::ParallelRaceGroup* buttonShooting = ButtonShooting();
   //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
   //                                      &extendClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -156,6 +158,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      &conveyorDown);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      &conveyorUp);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     buttonShooting);
   //   RunCommandWhenOperatorButtonIsHeld(
   //       frc::XboxController::Button::kX,
   //       &slowShoot);  // these might need to have a different command
@@ -253,8 +257,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // some testing for manual autonomous options
 
-  frc::SmartDashboard::PutData("RSM2Manual", RSM2Manual());
-  frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
+  // frc::SmartDashboard::PutData("RSM2Manual", RSM2Manual());
+  // frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
+
+  frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
@@ -358,12 +364,17 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShooting() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.65, 3.5_s));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<Delay>(0.5_s));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 3_s));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

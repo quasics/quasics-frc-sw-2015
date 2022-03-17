@@ -14,10 +14,6 @@ ExampleTriggerBasedCommand::ExampleTriggerBasedCommand(
   AddRequirements(m_lighting);
 }
 
-// Called when the command is initially scheduled.
-void ExampleTriggerBasedCommand::Initialize() {
-}
-
 // Called repeatedly when this Command is scheduled to run
 void ExampleTriggerBasedCommand::Execute() {
   if (m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) > 0.5) {
@@ -35,10 +31,4 @@ void ExampleTriggerBasedCommand::Execute() {
 // Called once the command ends or is interrupted.
 void ExampleTriggerBasedCommand::End(bool interrupted) {
   m_lighting->SetAllToColor(frc::Color(0, 0, 0));
-}
-
-// Returns true when the command should end.
-bool ExampleTriggerBasedCommand::IsFinished() {
-  // This command will never end.
-  return false;
 }

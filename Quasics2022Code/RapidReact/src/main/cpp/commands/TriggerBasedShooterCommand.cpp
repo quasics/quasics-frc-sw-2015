@@ -11,10 +11,6 @@ TriggerBasedShooterCommand::TriggerBasedShooterCommand(
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
-// Called when the command is initially scheduled.
-void TriggerBasedShooterCommand::Initialize() {
-}
-
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedShooterCommand::Execute() {
   if (m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) > 0.5) {
@@ -30,9 +26,4 @@ void TriggerBasedShooterCommand::Execute() {
 // Called once the command ends or is interrupted.
 void TriggerBasedShooterCommand::End(bool interrupted) {
   m_shooter->SetFlywheelSpeed(0);
-}
-
-// Returns true when the command should end.
-bool TriggerBasedShooterCommand::IsFinished() {
-  return false;
 }

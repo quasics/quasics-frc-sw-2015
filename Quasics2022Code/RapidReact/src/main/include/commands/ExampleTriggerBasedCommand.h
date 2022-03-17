@@ -24,13 +24,9 @@ class ExampleTriggerBasedCommand
   ExampleTriggerBasedCommand(Lighting* lighting,
                              frc::XboxController* xboxController);
 
-  void Initialize() override;
-
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   Lighting* const m_lighting;

@@ -24,13 +24,9 @@ class TriggerBasedShooterCommand
   TriggerBasedShooterCommand(Shooter* shooter,
                              frc::XboxController* xboxController);
 
-  void Initialize() override;
-
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   Shooter* const m_shooter;

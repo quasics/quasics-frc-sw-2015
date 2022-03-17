@@ -107,9 +107,9 @@ RobotContainer::RobotContainer()
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
   const bool isTurbo = m_driverStick.GetRawButton(
-      OperatorInterface::LogitechGamePad::LEFTSHOULDER);
-  const bool isTurtle = m_driverStick.GetRawButton(
       OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+  const bool isTurtle = m_driverStick.GetRawButton(
+      OperatorInterface::LogitechGamePad::LEFTSHOULDER);
 
   if (isTurbo) {
     return TURBO_MODE_SPEED_SCALING;
@@ -144,26 +144,34 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RunShooterAtSpeed fastShoot(&m_shooter, 0.75);
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.3);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.3);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     &extendClimber);
+  //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+  //                                      &extendClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &retractClimber);
+                                     &extendIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &retractIntake);
+  //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+  //                                      &retractClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      &conveyorDown);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      &conveyorUp);
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kX,
-      &slowShoot);  // these might need to have a different command
-  RunCommandWhenOperatorButtonIsHeld(
-      frc::XboxController::Button::kB,  // these might need to have a
-                                        // different command
-      &fastShoot);
+  //   RunCommandWhenOperatorButtonIsHeld(
+  //       frc::XboxController::Button::kX,
+  //       &slowShoot);  // these might need to have a different command
+  //   RunCommandWhenOperatorButtonIsHeld(
+  //       frc::XboxController::Button::kB,  // these might need to have a
+  //                                         // different command
+  //       &fastShoot);
 
-  RunCommandWhenDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::LEFTSHOULDER, &retractIntake);
-  RunCommandWhenDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::RIGHTSHOULDER, &extendIntake);
+  //   RunCommandWhenDriverButtonIsHeld(
+  //       OperatorInterface::LogitechGamePad::LEFTSHOULDER, &retractIntake);
+  //   RunCommandWhenDriverButtonIsHeld(
+  //       OperatorInterface::LogitechGamePad::RIGHTSHOULDER, &extendIntake);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
+                                   &extendClimber);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
+                                   &retractClimber);
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &runIntakeBackward);
   RunCommandWhenDriverButtonIsHeld(
@@ -242,6 +250,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "RetractIntake at 80percent for 0.6 seconds",
       new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.8, 0.77_s));
+
+  // some testing for manual autonomous options
+
+  frc::SmartDashboard::PutData("RSM2Manual", RSM2Manual());
+  frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {

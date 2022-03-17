@@ -32,9 +32,19 @@ void DriveAtPowerForMeters::End(bool interrupted) {
 bool DriveAtPowerForMeters::IsFinished() {
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t positionRight = m_drivebase->GetRightDistance();
-  if ((positionLeft >= (m_leftStartingPosition + m_distance)) or
-      (positionRight >= (m_rightStartingPosition + m_distance))) {
-    return true;
+  if (m_distance > 0_m) {
+    if ((positionLeft >= (m_leftStartingPosition + m_distance)) or
+        (positionRight >= (m_rightStartingPosition + m_distance))) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    if ((positionLeft <= (m_leftStartingPosition + m_distance)) or
+        (positionRight <= (m_rightStartingPosition + m_distance))) {
+      return true;
+    } else {
+      return false;
+    }
   }
-  return false;
 }

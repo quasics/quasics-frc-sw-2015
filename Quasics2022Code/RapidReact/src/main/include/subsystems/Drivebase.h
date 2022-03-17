@@ -7,6 +7,7 @@
 #include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/interfaces/Gyro.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
@@ -72,6 +73,12 @@ class Drivebase : public frc2::SubsystemBase {
 
   /** Resets the encoders used to report distances for left/right wheels. */
   void ResetEncoders();
+
+  units::degree_t GetAngle();
+
+  void SetLeftMotorPower(double power);
+
+  void SetRightMotorPower(double power);
 
   // Standard functions for subsystems.
  public:

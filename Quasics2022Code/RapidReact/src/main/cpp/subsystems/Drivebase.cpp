@@ -4,6 +4,7 @@
 
 #include "subsystems/Drivebase.h"
 
+#include <frc/interfaces/Gyro.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 
@@ -154,6 +155,19 @@ void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
   m_leftSide->SetVoltage(left);
   m_rightSide->SetVoltage(right);
   m_drive->Feed();
+}
+
+// number becomes larger as the angle turns counterclockwise
+units::degree_t Drivebase::GetAngle() {
+  return m_gyro.GetRotation2d().Degrees();
+}
+
+void Drivebase::SetLeftMotorPower(double power) {
+  m_leftSide->Set(power);
+}
+
+void Drivebase::SetRightMotorPower(double power) {
+  m_leftSide->Set(power);
 }
 
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {

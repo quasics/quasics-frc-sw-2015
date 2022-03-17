@@ -137,7 +137,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendClimber extendClimber(&m_climber);
   static RetractClimber retractClimber(&m_climber);
-  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.8);
+  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
   static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
@@ -206,7 +206,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Intake commands
   frc::SmartDashboard::PutData("Intake: 70% forward",
+                               new RunIntakeAtSpeed(&m_intake, 0.70));
+  frc::SmartDashboard::PutData("Intake: 80% forward",
                                new RunIntakeAtSpeed(&m_intake, 0.80));
+  frc::SmartDashboard::PutData("Intake: 90% forward",
+                               new RunIntakeAtSpeed(&m_intake, 0.90));
   frc::SmartDashboard::PutData("Intake: 30% backward",
                                new RunIntakeAtSpeed(&m_intake, -0.3));
 
@@ -364,7 +368,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShooting() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.65, 3.5_s));
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.65, 2.5_s));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));
@@ -374,7 +378,7 @@ frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<Delay>(0.5_s));
   commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 3_s));
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 2_s));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

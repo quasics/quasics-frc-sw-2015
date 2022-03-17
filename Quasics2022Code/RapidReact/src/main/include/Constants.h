@@ -41,7 +41,7 @@ namespace SensorIds {
 
 // Constants for scaling driving speeds in teleop mode.
 constexpr double TURBO_MODE_SPEED_SCALING = 0.8;
-constexpr double NORMAL_MODE_SPEED_SCALING = 0.5;
+constexpr double NORMAL_MODE_SPEED_SCALING = 0.6;
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.2;
 
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =

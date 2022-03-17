@@ -141,9 +141,9 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
   static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
-  static RunShooterAtSpeed fastShoot(&m_shooter, 0.75);
-  static ExtendIntake extendIntake(&m_intakeDeployment, 0.3);
-  static RetractIntake retractIntake(&m_intakeDeployment, -0.3);
+  static RunShooterAtSpeed fastShoot(&m_shooter, 0.65);
+  static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
+  static RetractIntake retractIntake(&m_intakeDeployment, -0.5);
   //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
   //                                      &extendClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -333,7 +333,8 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
   m_autonomousOptions.AddOption("Shoot @ 20% for 2sec, move @ 20% for 1",
                                 BuildShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
-
+  m_autonomousOptions.AddOption("RSM2Manual", RSM2Manual());
+  m_autonomousOptions.AddOption("BSM4Manual", BSM4Manual());
   m_autonomousOptions.AddOption("RSM1", RSM1());
   m_autonomousOptions.AddOption("RSM2", RSM2());
   m_autonomousOptions.AddOption("BSM3", BSM3());
@@ -349,6 +350,22 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("RALL1", RALL1());
   m_autonomousOptions.AddOption("BALL2", BALL2());
   frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
+}
+
+//
+/// Commands For the xB Button on the xbox controller should start shooter,
+/// delay intake and move intake upwards
+
+frc2::ParallelRaceGroup* RobotContainer::ButtonShooting() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  return new frc2::ParallelRaceGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(

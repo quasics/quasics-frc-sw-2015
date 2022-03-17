@@ -45,6 +45,10 @@ class RobotContainer {
       double powerShoot, units::second_t timeShoot, double powerMove,
       units::meter_t distanceToMove);
 
+  frc2::SequentialCommandGroup* RSM2Manual();
+
+  frc2::SequentialCommandGroup* BSM4Manual();
+
   // autoCommands
 
   frc2::SequentialCommandGroup* RSM1();

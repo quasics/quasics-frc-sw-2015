@@ -31,6 +31,7 @@
 #include "commands/SetLightsToColor.h"
 #include "commands/ShootForTime.h"
 #include "commands/TankDrive.h"
+#include "commands/TriggerBasedShooterCommand.h"
 
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
@@ -91,6 +92,10 @@ RobotContainer::RobotContainer()
 
   // Initialize all of your commands and subsystems here
   m_drivebase.SetDefaultCommand(tankDrive);
+
+  TriggerBasedShooterCommand triggerBasedShooterCommand(&m_shooter,
+                                                        &operatorController);
+  m_shooter.SetDefaultCommand(triggerBasedShooterCommand);
 
   // Configure the button bindings
   ConfigureControllerButtonBindings();
@@ -354,6 +359,25 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+frc2::SequentialCommandGroup* RobotContainer::RSM2Manual() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.60, -2.8_m));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(BallsToShoot(1))));
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.60, -2.8_m));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
 // autonomous sequences
 //
 //

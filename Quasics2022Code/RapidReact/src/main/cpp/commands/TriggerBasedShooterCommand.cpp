@@ -17,7 +17,7 @@ void TriggerBasedShooterCommand::Execute() {
     m_shooter->SetFlywheelSpeed(0.4);
   } else if (m_controller->GetRawAxis(
                  frc::XboxController::Axis::kRightTrigger) > 0.5) {
-    m_shooter->SetFlywheelSpeed(0.75);
+    m_shooter->SetFlywheelSpeed(0.6);
   } else {
     m_shooter->SetFlywheelSpeed(0);
   }

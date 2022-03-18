@@ -25,6 +25,7 @@
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
+#include "commands/RotateAtSpeedForDegrees.h"
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
@@ -265,6 +266,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
 
   frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
+
+  frc::SmartDashboard::PutData(
+      "RotateAt20%SpeedFor180degrees",
+      new RotateAtSpeedForDegrees(&m_drivebase, 0.2, 180_deg));
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {

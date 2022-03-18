@@ -167,7 +167,7 @@ void Drivebase::SetLeftMotorPower(double power) {
 }
 
 void Drivebase::SetRightMotorPower(double power) {
-  m_leftSide->Set(power);
+  m_rightSide->Set(power);
 }
 
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {

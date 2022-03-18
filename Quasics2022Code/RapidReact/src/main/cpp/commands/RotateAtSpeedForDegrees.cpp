@@ -9,28 +9,37 @@
 // RotateAtSpeedForDegrees::RotateAtSpeedForDegrees() {
 // }
 RotateAtSpeedForDegrees::RotateAtSpeedForDegrees(Drivebase* drivebase,
+                                                 double speed,
                                                  units::degree_t angle)
-    : m_drivebase(drivebase), m_angle(angle) {
+    : m_drivebase(drivebase), m_speed(speed), m_angle(angle) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
 }
 
 // Called when the command is initially scheduled.
 void RotateAtSpeedForDegrees::Initialize() {
-  // units::degree_t position = m_drivebase->GetAngle();
-  m_drivebase->SetLeftMotorPower(-0.6);
-  m_drivebase->SetRightMotorPower(0.6);
+  startingposition = m_drivebase->GetAngle();
+  m_drivebase->SetLeftMotorPower(-1 * m_speed);
+  m_drivebase->SetRightMotorPower(m_speed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtSpeedForDegrees::Execute() {
+  m_drivebase->SetLeftMotorPower(-1 * m_speed);
+  m_drivebase->SetRightMotorPower(m_speed);
 }
 
 // Called once the command ends or is interrupted.
 void RotateAtSpeedForDegrees::End(bool interrupted) {
+  m_drivebase->SetLeftMotorPower(0);
+  m_drivebase->SetRightMotorPower(0);
 }
 
 // Returns true when the command should end.
 bool RotateAtSpeedForDegrees::IsFinished() {
+  units::degree_t currentPosition = m_drivebase->GetAngle();
+  if (currentPosition >= (startingposition + m_angle)) {
+    return true;
+  }
   return false;
 }

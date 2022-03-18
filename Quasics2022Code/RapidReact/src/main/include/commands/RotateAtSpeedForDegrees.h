@@ -19,7 +19,8 @@
 class RotateAtSpeedForDegrees
     : public frc2::CommandHelper<frc2::CommandBase, RotateAtSpeedForDegrees> {
  public:
-  RotateAtSpeedForDegrees(Drivebase* drivebase, units::degree_t angle);
+  RotateAtSpeedForDegrees(Drivebase* drivebase, double speed,
+                          units::degree_t angle);
 
   void Initialize() override;
 
@@ -31,6 +32,8 @@ class RotateAtSpeedForDegrees
 
  private:
   Drivebase* m_drivebase;
+  const double m_speed;
   const units::degree_t m_angle;
-  units::degree_t position;
+
+  units::degree_t startingposition;
 };

@@ -268,8 +268,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
 
   frc::SmartDashboard::PutData(
-      "RotateAt20%SpeedFor180degrees",
-      new RotateAtSpeedForDegrees(&m_drivebase, 0.2, 180_deg));
+      "RotateAt30%SpeedFor180degrees",
+      new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {

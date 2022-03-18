@@ -19,20 +19,26 @@ RotateAtSpeedForDegrees::RotateAtSpeedForDegrees(Drivebase* drivebase,
 // Called when the command is initially scheduled.
 void RotateAtSpeedForDegrees::Initialize() {
   startingposition = m_drivebase->GetAngle();
-  m_drivebase->SetLeftMotorPower(-1 * m_speed);
-  m_drivebase->SetRightMotorPower(m_speed);
+  m_drivebase->SetBrakingMode(true);
+  m_drivebase->SetMotorPower(-1 * m_speed, m_speed);
+  //     m_drivebase->SetLeftMotorPower(-1 * m_speed);
+  // m_drivebase->SetRightMotorPower(m_speed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtSpeedForDegrees::Execute() {
-  m_drivebase->SetLeftMotorPower(-1 * m_speed);
-  m_drivebase->SetRightMotorPower(m_speed);
+  m_drivebase->SetBrakingMode(true);
+  m_drivebase->SetMotorPower(-1 * m_speed, m_speed);
+  // m_drivebase->SetLeftMotorPower(-1 * m_speed);
+  // m_drivebase->SetRightMotorPower(m_speed);
 }
 
 // Called once the command ends or is interrupted.
 void RotateAtSpeedForDegrees::End(bool interrupted) {
-  m_drivebase->SetLeftMotorPower(0);
-  m_drivebase->SetRightMotorPower(0);
+  m_drivebase->SetBrakingMode(true);
+  m_drivebase->SetMotorPower(0, 0);
+  // m_drivebase->SetLeftMotorPower(0);
+  // m_drivebase->SetRightMotorPower(0);
 }
 
 // Returns true when the command should end.

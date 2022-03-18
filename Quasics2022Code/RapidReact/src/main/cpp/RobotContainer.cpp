@@ -431,7 +431,7 @@ frc2::SequentialCommandGroup* RobotContainer::RSM2Manual() {
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(GenerateBallShootingSequence(1))));
   commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.60, -2.8_m));
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.50, -2.8_m));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -441,8 +441,17 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(GenerateBallShootingSequence(1))));
   commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.60, -2.8_m));
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.50, -2.8_m));
 
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::RedPickup1Shoot2() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 2.8_m));
+  commands.push_back(std::move(
+      std::unique_ptr<frc2::Command>(GenerateBallShootingSequence(2))));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 // autonomous sequences

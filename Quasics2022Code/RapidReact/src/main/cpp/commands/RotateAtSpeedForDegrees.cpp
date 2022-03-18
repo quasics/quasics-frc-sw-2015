@@ -30,8 +30,8 @@ void RotateAtSpeedForDegrees::Execute() {
   m_drivebase->SetBrakingMode(true);
   units::degree_t currentPosition = m_drivebase->GetAngle();
   if (currentPosition > ((startingposition + m_angle) * 0.5) &&
-      (m_speed * multiplier > 0.3)) {
-    multiplier = multiplier * 0.98;
+      (m_speed * multiplier > 0.26)) {
+    multiplier = multiplier * 0.99;
   }
   m_drivebase->SetMotorPower(-1 * m_speed * multiplier, m_speed * multiplier);
   // m_drivebase->SetLeftMotorPower(-1 * m_speed);

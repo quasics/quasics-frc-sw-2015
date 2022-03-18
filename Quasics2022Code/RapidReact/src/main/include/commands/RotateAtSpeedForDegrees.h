@@ -36,4 +36,5 @@ class RotateAtSpeedForDegrees
   const units::degree_t m_angle;
 
   units::degree_t startingposition;
+  double multiplier = 1.0;
 };

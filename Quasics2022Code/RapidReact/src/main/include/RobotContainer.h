@@ -45,6 +45,8 @@ class RobotContainer {
       double powerShoot, units::second_t timeShoot, double powerMove,
       units::meter_t distanceToMove);
 
+  frc2::SequentialCommandGroup* ConveyorShootingAuto();
+
   frc2::SequentialCommandGroup* RSM2Manual();
 
   frc2::SequentialCommandGroup* BSM4Manual();
@@ -83,7 +85,7 @@ class RobotContainer {
   frc2::ParallelRaceGroup* DrivingAndPickingUpBall(std::string Path);
   frc2::SequentialCommandGroup* PickingUpBall();
   frc2::ParallelCommandGroup* BuildShootBallSequence();
-  frc2::SequentialCommandGroup* BallsToShoot(int amountBalls);
+  frc2::SequentialCommandGroup* GenerateBallShootingSequence(int amountBalls);
   frc2::SequentialCommandGroup* Move(std::string Path);
 
   void AddTestButtonsToSmartDashboard();

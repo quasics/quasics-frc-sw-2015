@@ -773,7 +773,7 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateBallShootingSequence(
 }
 frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.75, 1.5_s));
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.6, 1.5_s));
   commands.push_back(
       std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 1.5_s));
   return new frc2::ParallelCommandGroup(std::move(commands));

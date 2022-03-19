@@ -77,7 +77,8 @@ class RobotContainer {
   frc2::SequentialCommandGroup* BALL2();
 
   // example auto command
-  frc2::ParallelRaceGroup* ButtonShooting();
+  frc2::ParallelRaceGroup* ButtonShootingHighGoal();
+  frc2::ParallelRaceGroup* ButtonShootingLowGoal();
   frc2::SequentialCommandGroup* ConveyorDelay();
   frc2::SequentialCommandGroup* BuildExampleAutonomousCommand();
 

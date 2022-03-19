@@ -140,7 +140,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RetractClimber retractClimber(&m_climber);
   static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
-  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
+  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.75);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
   static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
   static RunShooterAtSpeed fastShoot(&m_shooter, 0.65);
@@ -391,7 +391,7 @@ frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<Delay>(0.5_s));
   commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 2_s));
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.9, 2_s));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

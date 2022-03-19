@@ -33,7 +33,7 @@ import frc.robot.Constants;
  */
 public class Climber extends SubsystemBase {
 
-  private static final double NORMAL_MOTOR_SPEED_PERCENT = 0.60;
+  private static final double NORMAL_MOTOR_SPEED_PERCENT = 0.45;
   private static final double ADJUSTMENT_MOTOR_SPEED_PERCENT = NORMAL_MOTOR_SPEED_PERCENT * 0.5;
 
   private static final boolean LIMIT_SWITCHES_INSTALLED = false;

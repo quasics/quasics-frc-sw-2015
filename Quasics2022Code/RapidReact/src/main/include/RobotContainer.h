@@ -50,7 +50,8 @@ class RobotContainer {
   frc2::SequentialCommandGroup* RSM2Manual();
 
   frc2::SequentialCommandGroup* BSM4Manual();
-  frc2::SequentialCommandGroup* RedPickup1Shoot2();
+  frc2::SequentialCommandGroup* Pickup1Shoot2();
+  frc2::ParallelRaceGroup* BuildMaualDrivePickup();
 
   // autoCommands
 

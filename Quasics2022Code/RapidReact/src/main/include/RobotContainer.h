@@ -80,6 +80,7 @@ class RobotContainer {
   frc2::ParallelRaceGroup* ButtonShootingHighGoal();
   frc2::ParallelRaceGroup* ButtonShootingLowGoal();
   frc2::SequentialCommandGroup* ConveyorDelay();
+  frc2::SequentialCommandGroup* ConveyorRetractionDelay();
   frc2::SequentialCommandGroup* BuildExampleAutonomousCommand();
 
   // helper functions for auto commands

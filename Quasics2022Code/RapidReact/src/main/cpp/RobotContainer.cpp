@@ -140,7 +140,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RetractClimber retractClimber(&m_climber);
   static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
-  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.75);
+  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
   static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
   static RunShooterAtSpeed fastShoot(&m_shooter, 0.65);
@@ -213,10 +213,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Intake commands
   frc::SmartDashboard::PutData("Intake: 70% forward",
                                new RunIntakeAtSpeed(&m_intake, 0.70));
-  frc::SmartDashboard::PutData("Intake: 80% forward",
-                               new RunIntakeAtSpeed(&m_intake, 0.80));
-  frc::SmartDashboard::PutData("Intake: 90% forward",
-                               new RunIntakeAtSpeed(&m_intake, 0.90));
+  //   frc::SmartDashboard::PutData("Intake: 80% forward",
+  //                                new RunIntakeAtSpeed(&m_intake, 0.80));
+  //   frc::SmartDashboard::PutData("Intake: 90% forward",
+  //                                new RunIntakeAtSpeed(&m_intake, 0.90));
   frc::SmartDashboard::PutData("Intake: 30% backward",
                                new RunIntakeAtSpeed(&m_intake, -0.3));
 
@@ -232,18 +232,23 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new ExtendIntakeAuto(&m_intakeDeployment, 0.3));
 
   // Conveyor commands
-  frc::SmartDashboard::PutData(
-      "Conveyor: 30% backward for 2 seconds",
-      new RunConveyorAtSpeedForTime(&m_conveyor, -0.3, 2_s));
+  //   frc::SmartDashboard::PutData(
+  //       "Conveyor: 30% backward for 2 seconds",
+  //       new RunConveyorAtSpeedForTime(&m_conveyor, -0.3, 2_s));
   //   frc::SmartDashboard::PutData(
   //       "Conveyor: 40% forward for 2 seconds",
   //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.4, 2_s));
   //   frc::SmartDashboard::PutData(
   //       "Conveyor: 20% forward for 2 seconds",
   //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.2, 2_s));
-  frc::SmartDashboard::PutData(
-      "Conveyor at 60%. infinite time",
-      new RunConveyorAtSpeedForTime(&m_conveyor, 0.6, 100_s));
+  //   frc::SmartDashboard::PutData(
+  //       "Conveyor at 60%. infinite time",
+  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.6, 100_s));
+
+  frc::SmartDashboard::PutData("Conveyor 60% Forward",
+                               new RunConveyorAtSpeed(&m_conveyor, 0.6));
+  frc::SmartDashboard::PutData("Conveyor 60% Backward",
+                               new RunConveyorAtSpeed(&m_conveyor, -0.6));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
@@ -258,23 +263,26 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Autonomous Helper Function Test
 
-  frc::SmartDashboard::PutData(
-      "RetractIntake at 70percent for 0.3 seconds",
-      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.7, 0.3_s));
-  frc::SmartDashboard::PutData(
-      "RetractIntake at 80percent for 0.6 seconds",
-      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.8, 0.77_s));
+  //   frc::SmartDashboard::PutData(
+  //       "RetractIntake at 70percent for 0.3 seconds",
+  //       new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.7, 0.3_s));
+  //   frc::SmartDashboard::PutData(
+  //       "RetractIntake at 80percent for 0.6 seconds",
+  //       new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.8, 0.77_s));
 
   // some testing for manual autonomous options
 
   // frc::SmartDashboard::PutData("RSM2Manual", RSM2Manual());
   // frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
 
-  frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
+  //   frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
 
-  frc::SmartDashboard::PutData(
-      "RotateAt30%SpeedFor180degrees",
-      new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
+  //   frc::SmartDashboard::PutData(
+  //       "RotateAt30%SpeedFor180degrees",
+  //       new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
+  //
+  // frc::SmartDashboard::PutData("ConveyorRetractionDelay",
+  // ConveyorRetractionDelay());
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
@@ -409,6 +417,16 @@ frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+frc2::SequentialCommandGroup* RobotContainer::ConveyorRetractionDelay() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<Delay>(0.4_s));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, -0.9, 0.1_s));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.9, 2_s));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
 frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
     double powerShoot, units::second_t timeShoot, double powerMove,
     units::meter_t distanceToMove) {
@@ -432,6 +450,7 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+// current autonomous commands that are manual
 frc2::SequentialCommandGroup* RobotContainer::ConveyorShootingAuto() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::move(

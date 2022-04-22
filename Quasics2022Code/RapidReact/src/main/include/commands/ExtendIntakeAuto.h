@@ -32,4 +32,5 @@ class ExtendIntakeAuto
  private:
   IntakeDeployment* m_intakeDeployment;
   const double intakeSpeed;
+  double multiplier = 1.0;
 };

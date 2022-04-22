@@ -19,7 +19,12 @@ void ExtendIntakeAuto::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void ExtendIntakeAuto::Execute() {
-  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  double adjusted = intakeSpeed * multiplier;
+  if (adjusted > 0.2) {
+    m_intakeDeployment->SetMotorSpeed(adjusted);
+    multiplier *= 0.999;
+  }
+  m_intakeDeployment->SetMotorSpeed(adjusted);
 }
 
 // Called once the command ends or is interrupted.

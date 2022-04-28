@@ -18,6 +18,7 @@
 #include "subsystems/Intake.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/Lighting.h"
+#include "subsystems/RearRoller.h"
 #include "subsystems/Shooter.h"
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -113,6 +114,7 @@ class RobotContainer {
   Conveyor m_conveyor;
   Climber m_climber;
   Lighting m_lighting;
+  RearRoller m_rearRoller;
   IntakeDeployment m_intakeDeployment;
   TrajectoryCommandGenerator m_trajectoryGenerator;
 

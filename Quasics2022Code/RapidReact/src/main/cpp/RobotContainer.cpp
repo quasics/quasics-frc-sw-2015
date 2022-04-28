@@ -29,6 +29,7 @@
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
+#include "commands/RunRearRollerAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/SetLightsToColor.h"
 #include "commands/ShootForTime.h"
@@ -255,6 +256,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
 
+  // Rear Roller Test commands
+  frc::SmartDashboard::PutData("Run Roller at 40% speed",
+                               new RunRearRollerAtSpeed(&m_rearRoller, 0.4));
+  frc::SmartDashboard::PutData("Run Roller at -40% speed",
+                               new RunRearRollerAtSpeed(&m_rearRoller, -0.4));
   // Lighting commands
   // AddLightingCommandsToSmartDashboard();
 

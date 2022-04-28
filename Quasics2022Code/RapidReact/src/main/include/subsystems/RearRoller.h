@@ -5,6 +5,9 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
+
+#include "Constants.h"
 
 class RearRoller : public frc2::SubsystemBase {
  public:
@@ -13,9 +16,17 @@ class RearRoller : public frc2::SubsystemBase {
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
+  void SetRollerSpeed(double speed);
+
+  void Stop() {
+    SetRollerSpeed(0);
+  };
+
   void Periodic() override;
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+  rev::CANSparkMax m_rearRoller{MotorIds::SparkMax::REAR_ROLLER_ID,
+                                rev::CANSparkMax::MotorType::kBrushless};
 };

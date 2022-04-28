@@ -4,7 +4,13 @@
 
 #include "subsystems/RearRoller.h"
 
-RearRoller::RearRoller() = default;
+RearRoller::RearRoller() {
+  SetName("RearRoller");
+}
 
+void RearRoller::SetRollerSpeed(double speed) {
+  m_rearRoller.Set(speed);
+}
 // This method will be called once per scheduler run
-void RearRoller::Periodic() {}
+void RearRoller::Periodic() {
+}

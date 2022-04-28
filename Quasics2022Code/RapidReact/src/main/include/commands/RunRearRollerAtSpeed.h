@@ -7,6 +7,8 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/RearRoller.h"
+
 /**
  * An example command.
  *
@@ -17,7 +19,7 @@
 class RunRearRollerAtSpeed
     : public frc2::CommandHelper<frc2::CommandBase, RunRearRollerAtSpeed> {
  public:
-  RunRearRollerAtSpeed();
+  RunRearRollerAtSpeed(RearRoller* rearRoller, double speed);
 
   void Initialize() override;
 
@@ -26,4 +28,8 @@ class RunRearRollerAtSpeed
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  RearRoller* m_rearRoller;
+  const double m_rearRollerSpeed;
 };

@@ -36,7 +36,7 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
 
-#undef ENABLE_LIGHTING_CMDS
+#define ENABLE_LIGHTING_CMDS
 
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
@@ -259,9 +259,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RetractClimber(&m_climber));
 
   // Rear Roller Test commands
-  frc::SmartDashboard::PutData("Run Roller at 40% speed",
+  frc::SmartDashboard::PutData("Roller @ 40%",
                                new RunRearRollerAtSpeed(&m_shooter, 0.4));
-  frc::SmartDashboard::PutData("Run Roller at -40% speed",
+  frc::SmartDashboard::PutData("Roller @ -40%",
                                new RunRearRollerAtSpeed(&m_shooter, -0.4));
 
 #ifdef ENABLE_LIGHTING_CMDS

@@ -8,6 +8,8 @@
 #include <units/time.h>
 #include <units/voltage.h>
 
+#include <string_view>
+
 // Precisely ONE of the following should be enabled (either by saying "#define
 // NAME", or uncommenting it), while the others should disbled (by saying
 // "#undef NAME" or commenting them out).  This will control which set of values
@@ -177,3 +179,9 @@ namespace OperatorInterface {
     constexpr int RIGHT_STICK_PRESS = 12;
   }  // namespace LogitechGamePad
 }  // namespace OperatorInterface
+
+namespace NetworkTableNames {
+  constexpr std::string_view kSettingsTab("Settings");
+  constexpr std::string_view kShooterSpeedSliderName("shooterSPeed");
+  constexpr std::string_view kRollerSpeedSliderName("rollerSPeed");
+}  // namespace NetworkTableNames

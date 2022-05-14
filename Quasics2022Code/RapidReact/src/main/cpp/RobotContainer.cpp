@@ -33,6 +33,7 @@
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/SetLightsToColor.h"
 #include "commands/ShootForTime.h"
+#include "commands/ShooterTuningCommand.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
 
@@ -257,6 +258,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
+
+  // Shooter tuning
+  frc::SmartDashboard::PutData("Shooter tuning",
+                               new ShooterTuningCommand(&m_shooter, 0.4));
 
   // Rear Roller Test commands
   frc::SmartDashboard::PutData("Roller @ 40%",

@@ -4,28 +4,18 @@
 
 #include "commands/RunRearRollerAtSpeed.h"
 
-RunRearRollerAtSpeed::RunRearRollerAtSpeed(RearRoller* rearRoller, double speed)
-    : m_rearRoller(rearRoller), m_rearRollerSpeed(speed) {
-  AddRequirements(m_rearRoller);
+RunRearRollerAtSpeed::RunRearRollerAtSpeed(Shooter* shooter, double speed)
+    : m_shooter(shooter), m_rearRollerSpeed(speed) {
+  AddRequirements(m_shooter);
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
 void RunRearRollerAtSpeed::Initialize() {
-  m_rearRoller->SetRollerSpeed(m_rearRollerSpeed);
-}
-
-// Called repeatedly when this Command is scheduled to run
-void RunRearRollerAtSpeed::Execute() {
-  m_rearRoller->SetRollerSpeed(m_rearRollerSpeed);
+  m_shooter->SetRollerSpeed(m_rearRollerSpeed);
 }
 
 // Called once the command ends or is interrupted.
 void RunRearRollerAtSpeed::End(bool interrupted) {
-  m_rearRoller->Stop();
-}
-
-// Returns true when the command should end.
-bool RunRearRollerAtSpeed::IsFinished() {
-  return false;
+  m_shooter->Stop();
 }

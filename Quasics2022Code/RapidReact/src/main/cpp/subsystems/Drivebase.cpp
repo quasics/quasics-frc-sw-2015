@@ -5,6 +5,9 @@
 #include "subsystems/Drivebase.h"
 
 #include <frc/interfaces/Gyro.h>
+#include <frc/shuffleboard/BuiltInWidgets.h>
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/WidgetType.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 
@@ -44,6 +47,18 @@ Drivebase::Drivebase() {
   m_gyro.Reset();
 
   ConfigureEncoders();
+  ConfigureShuffleboard();
+}
+
+void Drivebase::ConfigureShuffleboard() {
+#ifdef ENABLE_FIELD_REPORTING
+  auto& tab = frc::Shuffleboard::GetTab(NetworkTableNames::kSensorsTab);
+
+  const auto pose = GetPose();
+  m_poseData.SetRobotPose(pose);
+  tab.Add(NetworkTableNames::kRobotPose, m_poseData)
+      .WithWidget(frc::BuiltInWidgets::kField);
+#endif  // ENABLE_FIELD_REPORTING
 }
 
 void Drivebase::SetBrakingMode(bool enabled) {
@@ -100,13 +115,13 @@ void Drivebase::Periodic() {
   auto rotation = m_gyro.GetRotation2d();
   auto leftDistance = GetLeftDistance();
   auto rightDistance = GetRightDistance();
-  // std::cout << "rotation = " << rotation.Degrees().value()
-  //           << "degrees, leftDistance = " << leftDistance.value()
-  //           << "m, rightDistance = " << rightDistance.value() << "m"
-  //           << std::endl;
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
   const auto newPose = m_odometry.GetPose();
+
+#ifdef ENABLE_FIELD_REPORTING
+  m_poseData.SetRobotPose(newPose);
+#endif  // ENABLE_FIELD_REPORTING
   frc::SmartDashboard::PutNumber("Direction",
                                  newPose.Rotation().Degrees().value());
   frc::SmartDashboard::PutNumber("X pos", newPose.X().value());
@@ -143,9 +158,11 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
   // velocity in m/sec.
   return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
 }
+
 frc::Pose2d Drivebase::GetPose() {
   return m_odometry.GetPose();
 }
+
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
   m_odometry.ResetPosition(pose, m_gyro.GetRotation2d());

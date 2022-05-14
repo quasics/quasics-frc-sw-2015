@@ -184,4 +184,7 @@ namespace NetworkTableNames {
   constexpr std::string_view kSettingsTab("Settings");
   constexpr std::string_view kShooterSpeedSliderName("shooterSPeed");
   constexpr std::string_view kRollerSpeedSliderName("rollerSPeed");
+
+  constexpr std::string_view kSensorsTab("Sensors");
+  constexpr std::string_view kRobotPose("Pose");
 }  // namespace NetworkTableNames

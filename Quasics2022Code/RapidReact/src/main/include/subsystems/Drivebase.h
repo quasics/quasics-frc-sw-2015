@@ -11,6 +11,7 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
@@ -19,7 +20,9 @@
 #include "units/velocity.h"
 
 // Changes whether using AD gyro or Pidgeon Gyro
-//#define ENABLE_AD_GYRO
+#undef ENABLE_AD_GYRO
+
+#undef ENABLE_FIELD_REPORTING
 
 /**
  * Drive base subsystem, used for movement/navigation.
@@ -89,6 +92,8 @@ class Drivebase : public frc2::SubsystemBase {
   /** Sets up the encoders to use meaningful units for distance/speed. */
   void ConfigureEncoders();
 
+  void ConfigureShuffleboard();
+
  private:
   // Individual motors.
   rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
@@ -128,4 +133,8 @@ class Drivebase : public frc2::SubsystemBase {
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 #endif
   frc::DifferentialDriveOdometry m_odometry{0_rad};
+
+#ifdef ENABLE_FIELD_REPORTING
+  frc::Field2d m_poseData;
+#endif  // ENABLE_FIELD_REPORTING
 };

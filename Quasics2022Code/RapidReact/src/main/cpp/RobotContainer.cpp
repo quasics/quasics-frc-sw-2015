@@ -151,7 +151,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.5);
   static frc2::ParallelRaceGroup* buttonShootingHighGoal =
-      ButtonShootingHighGoal();
+      ButtonShootingHighGoal();  // 0.40 Flywheel, 0.8 backroller
   static frc2::ParallelRaceGroup* buttonShootingLowGoal =
       ButtonShootingLowGoal();
   //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
@@ -412,6 +412,7 @@ frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ShootForTime>(
       &m_shooter, 0.60, 3.5_s));  // changed from 0.65
+  commands.push_back(std::make_unique<RunRearRollerAtSpeed>(&m_shooter, 0.8));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));

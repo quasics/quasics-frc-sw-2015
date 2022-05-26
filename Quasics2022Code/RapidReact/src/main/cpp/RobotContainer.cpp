@@ -146,8 +146,10 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
   static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
   static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
-  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4);
-  static RunShooterAtSpeed fastShoot(&m_shooter, 0.6);  // changed from 0.65
+  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4,
+                                     0.8);  // no proper values for slow shoot
+  static RunShooterAtSpeed fastShoot(&m_shooter, 0.4,
+                                     0.8);  // changed from 0.65
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
   static RetractIntake retractIntake(&m_intakeDeployment, -0.5);
   static frc2::ParallelRaceGroup* buttonShootingHighGoal =
@@ -210,9 +212,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Shooter commands
   frc::SmartDashboard::PutData("Shoot @ 65%",
-                               new RunShooterAtSpeed(&m_shooter, 0.65));
+                               new RunShooterAtSpeed(&m_shooter, 0.65, 0.8));
   frc::SmartDashboard::PutData("Shoot 50%",
-                               new RunShooterAtSpeed(&m_shooter, 0.5));
+                               new RunShooterAtSpeed(&m_shooter, 0.5, 0.8));
 
   // Intake commands
   frc::SmartDashboard::PutData("Intake: 70% forward",
@@ -410,9 +412,8 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(
-      &m_shooter, 0.60, 3.5_s));  // changed from 0.65
-  commands.push_back(std::make_unique<RunRearRollerAtSpeed>(&m_shooter, 0.8));
+  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.40, 3.5_s,
+                                                    0.8));  // changed from 0.65
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));
@@ -420,7 +421,8 @@ frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingLowGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.4, 3.5_s));
+  commands.push_back(std::make_unique<ShootForTime>(
+      &m_shooter, 0.4, 3.5_s, 0.8));  // needs adjusted and finetuned
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));

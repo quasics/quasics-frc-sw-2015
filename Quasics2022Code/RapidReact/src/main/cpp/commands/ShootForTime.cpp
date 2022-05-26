@@ -4,8 +4,12 @@
 
 #include "commands/ShootForTime.h"
 
-ShootForTime::ShootForTime(Shooter* shooter, double power, units::second_t time)
-    : m_shooter(shooter), m_power(power), m_time(time) {
+ShootForTime::ShootForTime(Shooter* shooter, double power, units::second_t time,
+                           double rollerSpeed)
+    : m_shooter(shooter),
+      m_power(power),
+      m_time(time),
+      m_rollerSpeed(rollerSpeed) {
   AddRequirements(m_shooter);
 }
 
@@ -14,11 +18,13 @@ void ShootForTime::Initialize() {
   m_stopWatch.Reset();
   m_stopWatch.Start();
   m_shooter->SetFlywheelSpeed(m_power);
+  m_shooter->SetRollerSpeed(m_rollerSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ShootForTime::Execute() {
   m_shooter->SetFlywheelSpeed(m_power);
+  m_shooter->SetRollerSpeed(m_rollerSpeed);
 }
 
 // Called once the command ends or is interrupted.

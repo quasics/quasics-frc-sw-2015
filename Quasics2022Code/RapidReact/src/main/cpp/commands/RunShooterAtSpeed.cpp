@@ -4,19 +4,24 @@
 
 #include "commands/RunShooterAtSpeed.h"
 
-RunShooterAtSpeed::RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed)
-    : m_shooter(shooter), m_flyWheelSpeed(flyWheelSpeed) {
+RunShooterAtSpeed::RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed,
+                                     double rollerSpeed)
+    : m_shooter(shooter),
+      m_flyWheelSpeed(flyWheelSpeed),
+      m_rollerSpeed(rollerSpeed) {
   AddRequirements(shooter);
 }
 
 // Called when the command is initially scheduled.
 void RunShooterAtSpeed::Initialize() {
   m_shooter->SetFlywheelSpeed(m_flyWheelSpeed);
+  m_shooter->SetRollerSpeed(m_rollerSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RunShooterAtSpeed::Execute() {
   m_shooter->SetFlywheelSpeed(m_flyWheelSpeed);
+  m_shooter->SetRollerSpeed(m_rollerSpeed);
 }
 
 // Called once the command ends or is interrupted.

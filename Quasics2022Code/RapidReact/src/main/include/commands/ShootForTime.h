@@ -20,7 +20,8 @@
 class ShootForTime
     : public frc2::CommandHelper<frc2::CommandBase, ShootForTime> {
  public:
-  ShootForTime(Shooter* shooter, double power, units::second_t time);
+  ShootForTime(Shooter* shooter, double power, units::second_t time,
+               double rollerSpeed = 0.0);
 
   void Initialize() override;
 
@@ -33,6 +34,8 @@ class ShootForTime
  private:
   Shooter* m_shooter;
   const double m_power;
+
   const units::second_t m_time;
   frc::Timer m_stopWatch;
+  double m_rollerSpeed;
 };

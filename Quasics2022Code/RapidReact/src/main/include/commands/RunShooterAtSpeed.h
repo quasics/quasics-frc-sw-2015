@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Shooter.h"
 
 /**
@@ -16,9 +17,10 @@
  * Command will *not* work!
  */
 class RunShooterAtSpeed
-  : public frc2::CommandHelper<frc2::CommandBase, RunShooterAtSpeed> {
-public:
-  RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed);
+    : public frc2::CommandHelper<frc2::CommandBase, RunShooterAtSpeed> {
+ public:
+  RunShooterAtSpeed(Shooter* shooter, double flyWheelSpeed,
+                    double rollerSpeed = 0.0);
 
   void Initialize() override;
 
@@ -28,7 +30,9 @@ public:
 
   bool IsFinished() override;
 
-private:
+ private:
   Shooter* m_shooter;
+
   const double m_flyWheelSpeed;
+  double m_rollerSpeed;
 };

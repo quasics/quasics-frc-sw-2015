@@ -51,7 +51,7 @@ class Lighting : public frc2::SubsystemBase {
   /**
    * Helper function to convert a StockColor to the corresponding frc::Color.
    */
-  frc::Color Translate(StockColor c);
+  static frc::Color Translate(StockColor c);
 
   // Standard subsystem methods.
  public:

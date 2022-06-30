@@ -10,7 +10,21 @@ Lighting::Lighting() {
   SetName("Lighting");
 
   m_ledStrip.SetLength(m_ledBuffer.size());
-  SetAllToColor(StockColor::Green);
+  // SetAllToColor(StockColor::Green);
+
+  // maybe a translate function is required from the values being returned
+  SetStripColors([this](int pos) {
+    int totalLights = m_ledBuffer.size();
+    int slotsForColor = totalLights / 3;
+    if (pos <= slotsForColor) {
+      return frc::AddressableLED::LEDData(0, 0, 255);
+    } else if (pos <= (slotsForColor * 2)) {
+      return frc::AddressableLED::LEDData(255, 255, 255);
+    } else {
+      return frc::AddressableLED::LEDData(255, 0, 0);
+    }
+  });
+
   m_ledStrip.Start();
 }
 
@@ -29,6 +43,15 @@ void Lighting::SetAllToColor(frc::Color c) {
   m_ledStrip.SetData(m_ledBuffer);
 }
 
+void Lighting::SetStripColors(
+    std::function<frc::AddressableLED::LEDData(int pos)> colorFunction) {
+  int pos = 0;
+  std::generate(m_ledBuffer.begin(), m_ledBuffer.end(),
+                [&] { return colorFunction(pos++); });
+
+  m_ledStrip.SetData(m_ledBuffer);
+}
+
 frc::Color Lighting::Translate(StockColor c) {
   if (c == StockColor::Red) {
     return frc::Color(255, 0, 0);
@@ -40,12 +63,12 @@ frc::Color Lighting::Translate(StockColor c) {
     return frc::Color(255, 255, 255);
   } else {
     // (Matthew): It's probably worth letting the user know if they "fell
-    // through" into this case because they're providing a StockColor that isn't
-    // in the list above (e.g., printing an error message).  That way, if
-    // someone defines a new color tomorrow (e.g., "Orange" for Halloween), but
-    // doesn't update this function, there's some sort of diagnostic output that
-    // can signal the source of the problem (rather than, "The lights are off,
-    // must be a loose wire....").(done)
+    // through" into this case because they're providing a StockColor that
+    // isn't in the list above (e.g., printing an error message).  That way,
+    // if someone defines a new color tomorrow (e.g., "Orange" for Halloween),
+    // but doesn't update this function, there's some sort of diagnostic
+    // output that can signal the source of the problem (rather than, "The
+    // lights are off, must be a loose wire....").(done)
     std::cout << "The StockColor Given is not defined, make sure to add it to "
                  "the Lighting.h file"
               << std::endl;

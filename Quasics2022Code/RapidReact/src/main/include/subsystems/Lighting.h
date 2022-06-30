@@ -23,6 +23,8 @@ class Lighting : public frc2::SubsystemBase {
    */
   enum class StockColor { Red, Green, Blue, White, Black };
 
+  typedef std::function<frc::AddressableLED::LEDData(int pos)> ColorFunction;
+
   /** Constructor. */
   Lighting();
 
@@ -52,6 +54,8 @@ class Lighting : public frc2::SubsystemBase {
    * Helper function to convert a StockColor to the corresponding frc::Color.
    */
   static frc::Color Translate(StockColor c);
+
+  void SetStripColors(ColorFunction colorFunction);
 
   // Standard subsystem methods.
  public:

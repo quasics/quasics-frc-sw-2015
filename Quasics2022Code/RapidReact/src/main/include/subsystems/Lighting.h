@@ -51,11 +51,40 @@ class Lighting : public frc2::SubsystemBase {
   void SetAllToColor(frc::Color c);
 
   /**
+   * Calls the provided function once for each cell on the strip, and sets the
+   * cell's color to the value that's returned.
+   *
+   * @param colorFunction  a function returning the color to use for the
+   *                       specified cell (pixel) on the strip
+   */
+  void SetEachCellToColor(std::function<frc::Color(int pos)> colorFunction);
+
+  void SetStripColors(ColorFunction colorFunction);
+
+  /**
    * Helper function to convert a StockColor to the corresponding frc::Color.
    */
   static frc::Color Translate(StockColor c);
 
-  void SetStripColors(ColorFunction colorFunction);
+  /**
+   * Helper function to convert a StockColor to the corresponding color data
+   * used for the strip's buffer.
+   */
+  static frc::AddressableLED::LEDData TranslateToLEDData(StockColor c) {
+    return TranslateToLEDData(Translate(c));
+  }
+
+  /**
+   * Helper function to convert an frc::Color to the corresponding color data
+   * used for the strip's buffer.
+   */
+  static frc::AddressableLED::LEDData TranslateToLEDData(frc::Color c) {
+    return {int(c.red * 255), int(c.green * 255), int(c.blue * 255)};
+  }
+
+  int GetNumberOfLEDs() {
+    return m_ledBuffer.size();
+  }
 
   // Standard subsystem methods.
  public:

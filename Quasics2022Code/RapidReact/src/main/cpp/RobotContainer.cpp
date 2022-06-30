@@ -22,6 +22,7 @@
 #include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAuto.h"
 #include "commands/MoveRobotTestCommand.h"
+#include "commands/PatrioticLightsCmd.h"
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
@@ -304,6 +305,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
+  frc::SmartDashboard::PutData("4th of July lights",
+                               new PatrioticLightsCmd(&m_lighting));
   frc::SmartDashboard::PutData(
       "Set All ligths to Red",
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));

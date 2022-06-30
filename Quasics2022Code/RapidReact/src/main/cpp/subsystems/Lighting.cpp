@@ -10,20 +10,7 @@ Lighting::Lighting() {
   SetName("Lighting");
 
   m_ledStrip.SetLength(m_ledBuffer.size());
-  // SetAllToColor(StockColor::Green);
-
-  // maybe a translate function is required from the values being returned
-  SetStripColors([this](int pos) {
-    int totalLights = m_ledBuffer.size();
-    int slotsForColor = totalLights / 3;
-    if (pos <= slotsForColor) {
-      return frc::AddressableLED::LEDData(0, 0, 255);
-    } else if (pos <= (slotsForColor * 2)) {
-      return frc::AddressableLED::LEDData(255, 255, 255);
-    } else {
-      return frc::AddressableLED::LEDData(255, 0, 0);
-    }
-  });
+  SetAllToColor(StockColor::Green);
 
   m_ledStrip.Start();
 }
@@ -74,6 +61,20 @@ frc::Color Lighting::Translate(StockColor c) {
               << std::endl;
     return frc::Color(0, 0, 0);
   }
+}
+
+void Lighting::SetEachCellToColor(
+    std::function<frc::Color(int pos)> colorFunction) {
+  // Update each element in the buffer to hold the desired color.
+  int pos = 0;
+  std::generate(m_ledBuffer.begin(), m_ledBuffer.end(),
+                [&pos, colorFunction]() {
+                  auto color = colorFunction(pos++);
+                  return TranslateToLEDData(color);
+                });
+
+  // Apply the new buffer full of colors to the strip.
+  m_ledStrip.SetData(m_ledBuffer);
 }
 
 // This method will be called once per scheduler run

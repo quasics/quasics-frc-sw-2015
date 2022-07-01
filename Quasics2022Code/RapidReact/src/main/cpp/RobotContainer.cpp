@@ -417,8 +417,9 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<ShootForTime>(&m_shooter, 0.40, 3.5_s,
-                                                    0.8));  // changed from 0.65
+  commands.push_back(
+      std::make_unique<ShootForTime>(&m_shooter, 0.6, 3.5_s,
+                                     0.35));  // changed from 0.65
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));
@@ -427,7 +428,7 @@ frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingLowGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ShootForTime>(
-      &m_shooter, 0.4, 3.5_s, 0.8));  // needs adjusted and finetuned
+      &m_shooter, 0.35, 3.5_s, 0));  // needs adjusted and finetuned
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));

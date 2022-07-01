@@ -305,8 +305,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
-  frc::SmartDashboard::PutData("4th of July lights",
-                               new PatrioticLightsCmd(&m_lighting));
+  frc::SmartDashboard::PutData(
+      "4th of July down", new PatrioticLightsCmd(&m_lighting, 3.0_s, true));
+  frc::SmartDashboard::PutData(
+      "4th of July up", new PatrioticLightsCmd(&m_lighting, 3.0_s, false));
   frc::SmartDashboard::PutData(
       "Set All ligths to Red",
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));

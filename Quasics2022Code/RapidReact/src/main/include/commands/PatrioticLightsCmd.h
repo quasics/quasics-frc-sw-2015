@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -19,7 +20,9 @@
 class PatrioticLightsCmd
     : public frc2::CommandHelper<frc2::CommandBase, PatrioticLightsCmd> {
  public:
-  PatrioticLightsCmd(Lighting* lighting);
+  PatrioticLightsCmd(Lighting* lighting,
+                     const units::second_t cycleTime = 3.0_s,
+                     bool lightsMoveDown = false);
 
   void Initialize() override;
 
@@ -30,4 +33,7 @@ class PatrioticLightsCmd
  private:
   Lighting* const m_lighting;
   int m_lastStartingPosition;
+  frc::Timer m_timer;
+  const units::second_t m_timerInterval;
+  const bool m_lightsMoveDown;
 };

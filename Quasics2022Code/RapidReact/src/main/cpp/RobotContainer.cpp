@@ -18,6 +18,7 @@
 #include "commands/BreathingLights.h"
 #include "commands/Delay.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/DriveTuningCommand.h"
 #include "commands/ExtendClimber.h"
 #include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAuto.h"
@@ -265,6 +266,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Shooter tuning
   frc::SmartDashboard::PutData("Shooter tuning",
                                new ShooterTuningCommand(&m_shooter, 0.4));
+
+  // Drive tuning
+
+  frc::SmartDashboard::PutData("Drivebase Tuning",
+                               new DriveTuningCommand(&m_drivebase, 0.0));
 
   // Rear Roller Test commands
   frc::SmartDashboard::PutData("Roller @ 40%",

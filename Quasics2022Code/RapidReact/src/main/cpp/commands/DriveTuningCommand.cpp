@@ -4,20 +4,44 @@
 
 #include "commands/DriveTuningCommand.h"
 
-DriveTuningCommand::DriveTuningCommand() {
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/WidgetType.h>
+
+#include "Constants.h"
+
+DriveTuningCommand::DriveTuningCommand(Drivebase* drivebase,
+                                       double initialDrivebaseSpeedPercent)
+    : m_drivebase(drivebase) {
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(m_drivebase);
+
+  wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
+      {"min", nt::Value::MakeDouble(-1.0)},
+      {"max", nt::Value::MakeDouble(+1.0)},
+      {"Block increment", nt::Value::MakeDouble(0.01)}};
+
+  auto& tab = frc::Shuffleboard::GetTab(NetworkTableNames::kSettingsTab);
+  m_drivebaseSpeedSlider =
+      tab.AddPersistent(NetworkTableNames::kDrivebaceSpeedSliderName,
+                        initialDrivebaseSpeedPercent)
+          .WithWidget(frc::BuiltInWidgets::kNumberSlider)
+          .WithProperties(speedSliderProperties)
+          .GetEntry();
 }
 
 // Called when the command is initially scheduled.
-void DriveTuningCommand::Initialize() {}
+void DriveTuningCommand::Initialize() {
+  m_drivebase->SetMotorPower(m_drivebaseSpeedSlider.GetDouble(0),
+                             m_drivebaseSpeedSlider.GetDouble(0));
+}
 
 // Called repeatedly when this Command is scheduled to run
-void DriveTuningCommand::Execute() {}
+void DriveTuningCommand::Execute() {
+  m_drivebase->SetMotorPower(m_drivebaseSpeedSlider.GetDouble(0),
+                             m_drivebaseSpeedSlider.GetDouble(0));
+}
 
 // Called once the command ends or is interrupted.
-void DriveTuningCommand::End(bool interrupted) {}
-
-// Returns true when the command should end.
-bool DriveTuningCommand::IsFinished() {
-  return false;
+void DriveTuningCommand::End(bool interrupted) {
+  m_drivebase->Stop();
 }

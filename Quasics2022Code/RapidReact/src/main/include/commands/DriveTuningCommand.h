@@ -6,6 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <networktables/NetworkTableEntry.h>
+
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -17,7 +20,8 @@
 class DriveTuningCommand
     : public frc2::CommandHelper<frc2::CommandBase, DriveTuningCommand> {
  public:
-  DriveTuningCommand();
+  DriveTuningCommand(Drivebase* drivebase,
+                     double initialDrivebaseSpeedPercent = 0.0);
 
   void Initialize() override;
 
@@ -25,5 +29,7 @@ class DriveTuningCommand
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
+ private:
+  Drivebase* const m_drivebase;
+  nt::NetworkTableEntry m_drivebaseSpeedSlider;
 };

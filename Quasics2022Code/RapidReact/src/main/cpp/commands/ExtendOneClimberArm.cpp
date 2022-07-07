@@ -4,18 +4,23 @@
 
 #include "commands/ExtendOneClimberArm.h"
 
-ExtendOneClimberArm::ExtendOneClimberArm() {
+ExtendOneClimberArm::ExtendOneClimberArm(Climber* climber, bool isLeftClimber)
+    : m_climber(climber), m_isLeftClimber(isLeftClimber) {
+  AddRequirements(m_climber);
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
-void ExtendOneClimberArm::Initialize() {}
+void ExtendOneClimberArm::Initialize() {
+}
 
 // Called repeatedly when this Command is scheduled to run
-void ExtendOneClimberArm::Execute() {}
+void ExtendOneClimberArm::Execute() {
+}
 
 // Called once the command ends or is interrupted.
-void ExtendOneClimberArm::End(bool interrupted) {}
+void ExtendOneClimberArm::End(bool interrupted) {
+}
 
 // Returns true when the command should end.
 bool ExtendOneClimberArm::IsFinished() {

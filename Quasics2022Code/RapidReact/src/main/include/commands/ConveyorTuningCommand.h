@@ -6,6 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <networktables/NetworkTableEntry.h>
+
+#include "subsystems/Conveyor.h"
 
 /**
  * An example command.
@@ -17,7 +20,7 @@
 class ConveyorTuningCommand
     : public frc2::CommandHelper<frc2::CommandBase, ConveyorTuningCommand> {
  public:
-  ConveyorTuningCommand();
+  ConveyorTuningCommand(Conveyor* conveyor, double initialConveyorSpeedPercent);
 
   void Initialize() override;
 
@@ -25,5 +28,7 @@ class ConveyorTuningCommand
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
+ private:
+  Conveyor* m_conveyor;
+  nt::NetworkTableEntry m_conveyorSpeedSlider;
 };

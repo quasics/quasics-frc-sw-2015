@@ -22,7 +22,7 @@ DriveTuningCommand::DriveTuningCommand(Drivebase* drivebase,
 
   auto& tab = frc::Shuffleboard::GetTab(NetworkTableNames::kSettingsTab);
   m_drivebaseSpeedSlider =
-      tab.AddPersistent(NetworkTableNames::kDrivebaceSpeedSliderName,
+      tab.AddPersistent(NetworkTableNames::kDrivebaseSpeedSliderName,
                         initialDrivebaseSpeedPercent)
           .WithWidget(frc::BuiltInWidgets::kNumberSlider)
           .WithProperties(speedSliderProperties)

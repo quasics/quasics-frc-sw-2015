@@ -16,6 +16,7 @@
 #include "TrajectoryCommandGenerator.h"
 #include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
+#include "commands/ConveyorTuningCommand.h"
 #include "commands/Delay.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/DriveTuningCommand.h"
@@ -271,6 +272,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   frc::SmartDashboard::PutData("Drivebase Tuning",
                                new DriveTuningCommand(&m_drivebase, 0.0));
+
+  // Conveyor tuning
+
+  frc::SmartDashboard::PutData("Conveyor Tuning",
+                               new ConveyorTuningCommand(&m_conveyor, 0.0));
 
   // Rear Roller Test commands
   frc::SmartDashboard::PutData("Roller @ 40%",

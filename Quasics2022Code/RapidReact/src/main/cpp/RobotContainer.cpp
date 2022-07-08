@@ -13,6 +13,7 @@
 #include <frc2/command/button/Trigger.h>
 
 #include "Constants.h"
+#include "FORCOMPETITIONRobotConstants.h"
 #include "TrajectoryCommandGenerator.h"
 #include "commands/BreathingAllianceLights.h"
 #include "commands/BreathingLights.h"
@@ -145,16 +146,25 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendClimber extendClimber(&m_climber);
   static RetractClimber retractClimber(&m_climber);
-  static RunIntakeAtSpeed runIntakeForward(&m_intake, 0.9);
-  static RunIntakeAtSpeed runIntakeBackward(&m_intake, -0.6);
-  static RunConveyorAtSpeed conveyorUp(&m_conveyor, 0.6);
-  static RunConveyorAtSpeed conveyorDown(&m_conveyor, -0.6);
-  static RunShooterAtSpeed slowShoot(&m_shooter, 0.4,
-                                     0.8);  // no proper values for slow shoot
-  static RunShooterAtSpeed fastShoot(&m_shooter, 0.4,
-                                     0.8);  // changed from 0.65
-  static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
-  static RetractIntake retractIntake(&m_intakeDeployment, -0.5);
+  static RunIntakeAtSpeed runIntakeForward(&m_intake,
+                                           RobotValues::INTAKE_FORWARD_SPEED);
+  static RunIntakeAtSpeed runIntakeBackward(&m_intake,
+                                            RobotValues::INTAKE_BACKWARD_SPEED);
+  static RunConveyorAtSpeed conveyorUp(&m_conveyor,
+                                       RobotValues::CONVEYOR_UP_SPEED);
+  static RunConveyorAtSpeed conveyorDown(&m_conveyor,
+                                         RobotValues::CONVEYOR_DOWN_SPEED);
+  static RunShooterAtSpeed slowShoot(
+      &m_shooter, RobotValues::SLOW_SHOOTER_SPEED,
+      RobotValues::SLOW_SHOOTER_BACKROLLER_SPEED);  // no proper values for slow
+                                                    // shoot
+  static RunShooterAtSpeed fastShoot(
+      &m_shooter, RobotValues::FAST_SHOOTER_SPEED,
+      RobotValues::FAST_SHOOTER_BACKROLLER_SPEED);  // changed from 0.65
+  static ExtendIntake extendIntake(&m_intakeDeployment,
+                                   RobotValues::EXTEND_INTAKE_SPEED);
+  static RetractIntake retractIntake(&m_intakeDeployment,
+                                     RobotValues::RETRACT_INTAKE_SPEED);
   static frc2::ParallelRaceGroup* buttonShootingHighGoal =
       ButtonShootingHighGoal();  // 0.40 Flywheel, 0.8 backroller
   static frc2::ParallelRaceGroup* buttonShootingLowGoal =
@@ -429,9 +439,9 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
 
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<ShootForTime>(&m_shooter, 0.6, 3.5_s,
-                                     0.35));  // changed from 0.65
+  commands.push_back(std::make_unique<ShootForTime>(
+      &m_shooter, RobotValues::FAST_SHOOTER_SPEED, 3.5_s,
+      RobotValues::FAST_SHOOTER_BACKROLLER_SPEED));  // changed from 0.65
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));
@@ -440,7 +450,9 @@ frc2::ParallelRaceGroup* RobotContainer::ButtonShootingHighGoal() {
 frc2::ParallelRaceGroup* RobotContainer::ButtonShootingLowGoal() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ShootForTime>(
-      &m_shooter, 0.35, 3.5_s, 0));  // needs adjusted and finetuned
+      &m_shooter, RobotValues::SLOW_SHOOTER_SPEED, 3.5_s,
+      RobotValues::SLOW_SHOOTER_BACKROLLER_SPEED));  // needs adjusted and
+                                                     // finetuned
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(ConveyorDelay())));
   return new frc2::ParallelRaceGroup(std::move(commands));

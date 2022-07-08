@@ -270,8 +270,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Drive tuning
 
-  frc::SmartDashboard::PutData("Drivebase Tuning",
-                               new DriveTuningCommand(&m_drivebase, 0.0));
+  // frc::SmartDashboard::PutData("Drivebase Tuning", new
+  // DriveTuningCommand(&m_drivebase, 0.0));
 
   // Conveyor tuning
 

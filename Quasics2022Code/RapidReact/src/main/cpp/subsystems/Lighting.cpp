@@ -10,6 +10,8 @@ Lighting::Lighting() {
   SetName("Lighting");
 
   m_ledStrip.SetLength(m_ledBuffer.size());
+
+  // Team color for the default!
   SetAllToColor(StockColor::Green);
 
   m_ledStrip.Start();
@@ -30,15 +32,6 @@ void Lighting::SetAllToColor(frc::Color c) {
   m_ledStrip.SetData(m_ledBuffer);
 }
 
-void Lighting::SetStripColors(
-    std::function<frc::AddressableLED::LEDData(int pos)> colorFunction) {
-  int pos = 0;
-  std::generate(m_ledBuffer.begin(), m_ledBuffer.end(),
-                [&] { return colorFunction(pos++); });
-
-  m_ledStrip.SetData(m_ledBuffer);
-}
-
 frc::Color Lighting::Translate(StockColor c) {
   if (c == StockColor::Red) {
     return frc::Color(255, 0, 0);
@@ -56,21 +49,20 @@ frc::Color Lighting::Translate(StockColor c) {
     // but doesn't update this function, there's some sort of diagnostic
     // output that can signal the source of the problem (rather than, "The
     // lights are off, must be a loose wire....").(done)
-    std::cout << "The StockColor Given is not defined, make sure to add it to "
+    std::cerr << "The StockColor Given is not defined, make sure to add it to "
                  "the Lighting.h file"
               << std::endl;
     return frc::Color(0, 0, 0);
   }
 }
 
-void Lighting::SetEachCellToColor(
-    std::function<frc::Color(int pos)> colorFunction) {
+void Lighting::SetEachCellToColor(FrcColorFunction colorFunction) {
   // Update each element in the buffer to hold the desired color.
   int pos = 0;
   std::generate(m_ledBuffer.begin(), m_ledBuffer.end(),
                 [&pos, colorFunction]() {
-                  auto color = colorFunction(pos++);
-                  return TranslateToLEDData(color);
+                  auto frcColor = colorFunction(pos++);
+                  return TranslateToLEDData(frcColor);
                 });
 
   // Apply the new buffer full of colors to the strip.

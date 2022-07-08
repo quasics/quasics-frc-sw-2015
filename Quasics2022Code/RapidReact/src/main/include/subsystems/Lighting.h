@@ -23,8 +23,6 @@ class Lighting : public frc2::SubsystemBase {
    */
   enum class StockColor { Red, Green, Blue, White, Black };
 
-  typedef std::function<frc::AddressableLED::LEDData(int pos)> ColorFunction;
-
   /** Constructor. */
   Lighting();
 
@@ -50,16 +48,16 @@ class Lighting : public frc2::SubsystemBase {
    */
   void SetAllToColor(frc::Color c);
 
+  typedef std::function<frc::Color(int pos)> FrcColorFunction;
+
   /**
-   * Calls the provided function once for each cell on the strip, and sets the
-   * cell's color to the value that's returned.
+   * Calls the provided function once for each cell on the strip, and sets
+   * the cell's color to the value that's returned.
    *
    * @param colorFunction  a function returning the color to use for the
    *                       specified cell (pixel) on the strip
    */
-  void SetEachCellToColor(std::function<frc::Color(int pos)> colorFunction);
-
-  void SetStripColors(ColorFunction colorFunction);
+  void SetEachCellToColor(FrcColorFunction colorFunction);
 
   /**
    * Helper function to convert a StockColor to the corresponding frc::Color.

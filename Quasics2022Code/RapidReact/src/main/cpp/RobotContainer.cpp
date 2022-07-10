@@ -43,6 +43,9 @@
 
 #define ENABLE_LIGHTING_CMDS
 
+// If defined, set the default lighting command to be cycling red/white/blue.
+#define BE_PATRIOTIC
+
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
           // Drive base being controlled
@@ -102,6 +105,11 @@ RobotContainer::RobotContainer()
 
   // Initialize all of your commands and subsystems here
   m_drivebase.SetDefaultCommand(tankDrive);
+
+#ifdef BE_PATRIOTIC
+  static PatrioticLightsCmd fourthOfJuly(&m_lighting, 3.0_s, true);
+  m_lighting.SetDefaultCommand(fourthOfJuly);
+#endif  // BE_PATRIOTIC
 
   TriggerBasedShooterCommand triggerBasedShooterCommand(&m_shooter,
                                                         &operatorController);

@@ -10,10 +10,10 @@ namespace RobotValues {
   constexpr double INTAKE_BACKWARD_SPEED = -0.6;
   constexpr double CONVEYOR_UP_SPEED = 0.6;
   constexpr double CONVEYOR_DOWN_SPEED = -0.6;
-  constexpr double SLOW_SHOOTER_SPEED = 0.4;
-  constexpr double SLOW_SHOOTER_BACKROLLER_SPEED = 0.8;
-  constexpr double FAST_SHOOTER_SPEED = 0.4;
-  constexpr double FAST_SHOOTER_BACKROLLER_SPEED = 0.8;
+  constexpr double SLOW_SHOOTER_SPEED = 0.35;
+  constexpr double SLOW_SHOOTER_BACKROLLER_SPEED = 0.0;
+  constexpr double FAST_SHOOTER_SPEED = 0.6;
+  constexpr double FAST_SHOOTER_BACKROLLER_SPEED = 0.35;
   constexpr double EXTEND_INTAKE_SPEED = 0.5;
   constexpr double RETRACT_INTAKE_SPEED = -0.5;
 }  // namespace RobotValues

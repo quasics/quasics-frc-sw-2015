@@ -4,6 +4,8 @@
 
 #include "commands/TriggerBasedShooterCommand.h"
 
+#include "FORCOMPETITIONRobotConstants.h"
+
 TriggerBasedShooterCommand::TriggerBasedShooterCommand(
     Shooter* shooter, frc::XboxController* xboxController)
     : m_shooter(shooter), m_controller(xboxController) {
@@ -14,10 +16,12 @@ TriggerBasedShooterCommand::TriggerBasedShooterCommand(
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedShooterCommand::Execute() {
   if (m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) > 0.5) {
-    m_shooter->SetFlywheelSpeed(0.4);
+    m_shooter->SetFlywheelSpeed(RobotValues::SLOW_SHOOTER_SPEED);
+    m_shooter->SetRollerSpeed(RobotValues::SLOW_SHOOTER_BACKROLLER_SPEED);
   } else if (m_controller->GetRawAxis(
                  frc::XboxController::Axis::kRightTrigger) > 0.5) {
-    m_shooter->SetFlywheelSpeed(0.6);
+    m_shooter->SetFlywheelSpeed(RobotValues::FAST_SHOOTER_SPEED);
+    m_shooter->SetRollerSpeed(RobotValues::FAST_SHOOTER_BACKROLLER_SPEED);
   } else {
     m_shooter->SetFlywheelSpeed(0);
   }

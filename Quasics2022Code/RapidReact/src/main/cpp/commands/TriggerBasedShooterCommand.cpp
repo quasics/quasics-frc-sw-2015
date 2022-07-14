@@ -23,11 +23,11 @@ void TriggerBasedShooterCommand::Execute() {
     m_shooter->SetFlywheelSpeed(RobotValues::FAST_SHOOTER_SPEED);
     m_shooter->SetRollerSpeed(RobotValues::FAST_SHOOTER_BACKROLLER_SPEED);
   } else {
-    m_shooter->SetFlywheelSpeed(0);
+    m_shooter->Stop();
   }
 }
 
 // Called once the command ends or is interrupted.
 void TriggerBasedShooterCommand::End(bool interrupted) {
-  m_shooter->SetFlywheelSpeed(0);
+  m_shooter->Stop();
 }

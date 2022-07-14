@@ -5,6 +5,13 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <frc/DigitalInput.h>
+
+#include <units/length.h>
+#include <units/time.h>
+#include <units/voltage.h>
+
+#include <string_view>
 
 class ExampleSubsystem : public frc2::SubsystemBase {
  public:
@@ -24,4 +31,5 @@ class ExampleSubsystem : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+  frc::DigitalInput intakeLimitSwitch{8};
 };

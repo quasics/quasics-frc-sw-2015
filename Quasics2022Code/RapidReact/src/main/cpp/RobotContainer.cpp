@@ -326,9 +326,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   //   frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
 
-  //   frc::SmartDashboard::PutData(
-  //       "RotateAt30%SpeedFor180degrees",
-  //       new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
+  frc::SmartDashboard::PutData(
+      "RotateAt30%SpeedFor180degrees",
+      new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
   //
   // frc::SmartDashboard::PutData("ConveyorRetractionDelay",
   // ConveyorRetractionDelay());
@@ -420,6 +420,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("Just shoot", GenerateBallShootingSequence(1));
   m_autonomousOptions.AddOption("Red - Shoot/Move", RSM2Manual());
   m_autonomousOptions.AddOption("Blue - Shoot/Move", BSM4Manual());
+  m_autonomousOptions.AddOption("Pickup 1 Shoot 2", Pickup1Shoot2());
 
 #ifdef ENABLE_TRAJECTORIES_IN_AUTO
   m_autonomousOptions.AddOption("RSM1", RSM1());
@@ -539,16 +540,16 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
 // 1.591-0.4889 - 0.1905 = 0.9116
 frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
+  // commands.push_back(
+  //     std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(BuildMaualDrivePickup())));
-  commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
+  // commands.push_back(
+  //    std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
   commands.push_back(
       std::make_unique<RotateAtSpeedForDegrees>(&m_drivebase, 0.4, 180_deg));
-  commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
-      &m_intakeDeployment, 0.8, 0.77_s));
+  // commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
+  //     &m_intakeDeployment, 0.8, 0.77_s));
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 2_m));
   commands.push_back(std::make_unique<RotateAtSpeedForDegrees>(
@@ -562,7 +563,7 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2() {
 
 frc2::ParallelRaceGroup* RobotContainer::BuildMaualDrivePickup() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.9));
+  // commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.9));
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 0.9116_m));
   return new frc2::ParallelRaceGroup(std::move(commands));

@@ -16,10 +16,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ExtendOneClimberArm
-    : public frc2::CommandHelper<frc2::CommandBase, ExtendOneClimberArm> {
+class MoveOneClimberArm
+    : public frc2::CommandHelper<frc2::CommandBase, MoveOneClimberArm> {
  public:
-  ExtendOneClimberArm(Climber* climber, bool isLeftClimber);
+  MoveOneClimberArm(Climber* climber, bool isLeftClimber, bool extend);
 
   void Initialize() override;
 
@@ -30,4 +30,5 @@ class ExtendOneClimberArm
  private:
   Climber* m_climber;
   const bool m_isLeftClimber;
+  const bool m_extend;
 };

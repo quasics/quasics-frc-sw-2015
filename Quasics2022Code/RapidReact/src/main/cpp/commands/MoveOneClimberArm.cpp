@@ -2,26 +2,31 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "commands/ExtendOneClimberArm.h"
+#include "commands/MoveOneClimberArm.h"
 
-ExtendOneClimberArm::ExtendOneClimberArm(Climber* climber, bool isLeftClimber)
-    : m_climber(climber), m_isLeftClimber(isLeftClimber) {
+MoveOneClimberArm::MoveOneClimberArm(Climber* climber, bool isLeftClimber,
+                                     bool extend)
+    : m_climber(climber), m_isLeftClimber(isLeftClimber), m_extend(extend) {
   AddRequirements(m_climber);
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
-void ExtendOneClimberArm::Initialize() {
-  m_climber->ExtendOneClimber(m_isLeftClimber);
+void MoveOneClimberArm::Initialize() {
+  if (m_extend == true) {
+    m_climber->ExtendOneClimber(m_isLeftClimber);
+  } else {
+    m_climber->RetractOneClimber(m_isLeftClimber);
+  }
 }
 
 // Called once the command ends or is interrupted.
-void ExtendOneClimberArm::End(bool interrupted) {
+void MoveOneClimberArm::End(bool interrupted) {
   m_climber->EnableBraking(true);
   m_climber->Stop();
 }
 
 // Returns true when the command should end.
-bool ExtendOneClimberArm::IsFinished() {
+bool MoveOneClimberArm::IsFinished() {
   return false;
 }

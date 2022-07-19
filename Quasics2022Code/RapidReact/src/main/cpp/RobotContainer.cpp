@@ -193,18 +193,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      buttonShootingHighGoal);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      buttonShootingLowGoal);
-  //   RunCommandWhenOperatorButtonIsHeld(
-  //       frc::XboxController::Button::kX,
-  //       &slowShoot);  // these might need to have a different command
-  //   RunCommandWhenOperatorButtonIsHeld(
-  //       frc::XboxController::Button::kB,  // these might need to have a
-  //                                         // different command
-  //       &fastShoot);
-
-  //   RunCommandWhenDriverButtonIsHeld(
-  //       OperatorInterface::LogitechGamePad::LEFTSHOULDER, &retractIntake);
-  //   RunCommandWhenDriverButtonIsHeld(
-  //       OperatorInterface::LogitechGamePad::RIGHTSHOULDER, &extendIntake);
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
                                    &extendClimber);
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
@@ -214,7 +202,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &runIntakeForward);
 }
-// Note: 0.65 seems to be reasonable power for the high goal.
+
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Basic drive base commands/tests
   frc::SmartDashboard::PutData(
@@ -225,57 +213,42 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Coasting mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
-  frc::SmartDashboard::PutData("Simple 1m movement",
+  frc::SmartDashboard::PutData("1 Meter Forward 20%",
                                new MoveRobotTestCommand(&m_drivebase, 0.2));
-  //   frc::SmartDashboard::PutData(
-  //       "Drivebase: 20m at 80%",
-  //       new DriveAtPowerForMeters(&m_drivebase, 0.8, 20_m));
+  frc::SmartDashboard::PutData("1 Meter Backward 20%",
+                               new MoveRobotTestCommand(&m_drivebase, -0.2));
 
-  // Shooter commands
-  frc::SmartDashboard::PutData("Shoot @ 65%",
-                               new RunShooterAtSpeed(&m_shooter, 0.65, 0.8));
-  frc::SmartDashboard::PutData("Shoot 50%",
-                               new RunShooterAtSpeed(&m_shooter, 0.5, 0.8));
+  // Shooter Commands
+  frc::SmartDashboard::PutData("Shooter Forward 50%",
+                               new RunShooterAtSpeed(&m_shooter, 0.5, 0.0));
+  frc::SmartDashboard::PutData("Shooter Backward 50%",
+                               new RunShooterAtSpeed(&m_shooter, -0.5, 0.0));
+
+  // Rear Roller Test commands
+  frc::SmartDashboard::PutData("Roller Forward 50%",
+                               new RunRearRollerAtSpeed(&m_shooter, 0.5));
+  frc::SmartDashboard::PutData("Roller Backward 50%",
+                               new RunRearRollerAtSpeed(&m_shooter, -0.5));
 
   // Intake commands
-  frc::SmartDashboard::PutData("Intake: 70% forward",
-                               new RunIntakeAtSpeed(&m_intake, 0.70));
-  //   frc::SmartDashboard::PutData("Intake: 80% forward",
-  //                                new RunIntakeAtSpeed(&m_intake, 0.80));
-  //   frc::SmartDashboard::PutData("Intake: 90% forward",
-  //                                new RunIntakeAtSpeed(&m_intake, 0.90));
-  frc::SmartDashboard::PutData("Intake: 30% backward",
-                               new RunIntakeAtSpeed(&m_intake, -0.3));
+  frc::SmartDashboard::PutData("Intake Forward 50%",
+                               new RunIntakeAtSpeed(&m_intake, 0.5));
+  frc::SmartDashboard::PutData("Intake Backward 50%",
+                               new RunIntakeAtSpeed(&m_intake, -0.5));
 
   // Intake deployment commands
-  frc::SmartDashboard::PutData(
-      "Extend Intake at 20% speed",
-      new ExtendIntake(&m_intakeDeployment,
-                       0.2));  // seems like 20% is a safe speed for the intake
-                               // not to over rotate
-  frc::SmartDashboard::PutData("Retract Intake at 30%",
-                               new RetractIntake(&m_intakeDeployment, -0.3));
+  frc::SmartDashboard::PutData("Extend Intake 20%",
+                               new ExtendIntake(&m_intakeDeployment, 0.2));
+  frc::SmartDashboard::PutData("Retract Intake 20%",
+                               new RetractIntake(&m_intakeDeployment, -0.2));
   frc::SmartDashboard::PutData("Extend Intake auto",
                                new ExtendIntakeAuto(&m_intakeDeployment, 0.3));
 
   // Conveyor commands
-  //   frc::SmartDashboard::PutData(
-  //       "Conveyor: 30% backward for 2 seconds",
-  //       new RunConveyorAtSpeedForTime(&m_conveyor, -0.3, 2_s));
-  //   frc::SmartDashboard::PutData(
-  //       "Conveyor: 40% forward for 2 seconds",
-  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.4, 2_s));
-  //   frc::SmartDashboard::PutData(
-  //       "Conveyor: 20% forward for 2 seconds",
-  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.2, 2_s));
-  //   frc::SmartDashboard::PutData(
-  //       "Conveyor at 60%. infinite time",
-  //       new RunConveyorAtSpeedForTime(&m_conveyor, 0.6, 100_s));
-
-  frc::SmartDashboard::PutData("Conveyor 60% Forward",
-                               new RunConveyorAtSpeed(&m_conveyor, 0.6));
-  frc::SmartDashboard::PutData("Conveyor 60% Backward",
-                               new RunConveyorAtSpeed(&m_conveyor, -0.6));
+  frc::SmartDashboard::PutData("Conveyor 50% Forward",
+                               new RunConveyorAtSpeed(&m_conveyor, 0.5));
+  frc::SmartDashboard::PutData("Conveyor 50% Backward",
+                               new RunConveyorAtSpeed(&m_conveyor, -0.5));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
@@ -286,52 +259,24 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Shooter tuning",
                                new ShooterTuningCommand(&m_shooter, 0.4));
 
-  // Drive tuning
-
-  // frc::SmartDashboard::PutData("Drivebase Tuning", new
-  // DriveTuningCommand(&m_drivebase, 0.0));
-
   // Conveyor tuning
 
   frc::SmartDashboard::PutData("Conveyor Tuning",
                                new ConveyorTuningCommand(&m_conveyor, 0.0));
 
-  // Rear Roller Test commands
-  frc::SmartDashboard::PutData("Roller @ 40%",
-                               new RunRearRollerAtSpeed(&m_shooter, 0.4));
-  frc::SmartDashboard::PutData("Roller @ -40%",
-                               new RunRearRollerAtSpeed(&m_shooter, -0.4));
+  // Drive tuning
+
+  // frc::SmartDashboard::PutData("Drivebase Tuning", new
+  // DriveTuningCommand(&m_drivebase, 0.0));
 
 #ifdef ENABLE_LIGHTING_CMDS
   // Lighting commands
   AddLightingCommandsToSmartDashboard();
 #endif
 
-  // Path following commands
-  // AddTestTrajectoryCommandsToSmartDashboard();
-
-  // Autonomous Helper Function Test
-
-  //   frc::SmartDashboard::PutData(
-  //       "RetractIntake at 70percent for 0.3 seconds",
-  //       new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.7, 0.3_s));
-  //   frc::SmartDashboard::PutData(
-  //       "RetractIntake at 80percent for 0.6 seconds",
-  //       new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.8, 0.77_s));
-
-  // some testing for manual autonomous options
-
-  // frc::SmartDashboard::PutData("RSM2Manual", RSM2Manual());
-  // frc::SmartDashboard::PutData("BSM4Manual", BSM4Manual());
-
-  //   frc::SmartDashboard::PutData("ConveyorDelay", ConveyorDelay());
-
   frc::SmartDashboard::PutData(
       "RotateAt30%SpeedFor180degrees",
       new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
-  //
-  // frc::SmartDashboard::PutData("ConveyorRetractionDelay",
-  // ConveyorRetractionDelay());
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
@@ -405,10 +350,6 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.SetDefaultOption(
       "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
 
-  m_autonomousOptions.AddOption(
-      "Move Forward 1m at 20% power",
-      new DriveAtPowerForMeters(&m_drivebase, 0.2, 1_m));
-
 #ifdef ENABLE_TEST_CMDS_IN_AUTO
   m_autonomousOptions.AddOption("Shoot @ 20% for 3 seconds",
                                 new ShootForTime(&m_shooter, 0.2, 3_s));
@@ -416,7 +357,8 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("Shoot @ 20% for 2sec, move @ 20% for 1m",
                                 BuildShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
 #endif
-
+  m_autonomousOptions.AddOption(
+      "Just Move", new DriveAtPowerForMeters(&m_drivebase, 0.5, 2_m));
   m_autonomousOptions.AddOption("Just shoot", GenerateBallShootingSequence(1));
   m_autonomousOptions.AddOption("Red - Shoot/Move", RSM2Manual());
   m_autonomousOptions.AddOption("Blue - Shoot/Move", BSM4Manual());
@@ -569,6 +511,28 @@ frc2::ParallelRaceGroup* RobotContainer::BuildMaualDrivePickup() {
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 // autonomous sequences
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -802,6 +766,22 @@ frc2::SequentialCommandGroup* RobotContainer::BALL2() {
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //

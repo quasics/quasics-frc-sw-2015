@@ -37,6 +37,9 @@ class Climber : public frc2::SubsystemBase {
    */
   void StartRetracting();
 
+  void ExtendOneClimber(bool isLeft);
+
+  void RetractOneClimber(bool isLeft);
   /**
    * Stops the climbing arms if they are currently extending/retracting.
    *

@@ -130,11 +130,11 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
       OperatorInterface::LogitechGamePad::LEFTSHOULDER);
 
   if (isTurbo) {
-    return TURBO_MODE_SPEED_SCALING;
+    return RobotValues::TURBO_MODE_SPEED_SCALING;
   } else if (isTurtle) {
-    return TURTLE_MODE_SPEED_SCALING;
+    return RobotValues::TURTLE_MODE_SPEED_SCALING;
   } else {
-    return NORMAL_MODE_SPEED_SCALING;
+    return RobotValues::NORMAL_MODE_SPEED_SCALING;
   }
 }
 

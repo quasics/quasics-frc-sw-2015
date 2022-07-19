@@ -122,33 +122,6 @@ namespace LightingValues {
   constexpr int NUM_LIGHTS = 60;
 }  // namespace LightingValues
 
-// these are some buttons that seem to have incorrect values below are the
-// imported versons of Mr. Healy's button bindings from his 2022MattsToy
-/*
-namespace OperatorInterface {
-  constexpr int DRIVER_JOYSTICK = 0;
-
-  namespace LogitechGamePad {
-
-    constexpr int LEFT_X_AXIS = 0;
-    constexpr int LEFT_Y_AXIS = 1;
-    constexpr int RIGHT_X_AXIS = 2;
-    constexpr int RIGHT_Y_AXIS = 3;
-
-    constexpr int LEFTSHOULDER = 5;   // Turbo Mode
-    constexpr int RIGHTSHOULDER = 6;  // Turtle Mode
-    constexpr int AButton = 1;
-    constexpr int BButton = 2;
-    constexpr int XButton = 3;
-    constexpr int YButton = 4;  // for switch drive
-    constexpr int BACKBUTTON = 7;
-    constexpr int STARTBUTTON = 8;
-    constexpr int LEFTSTICKPRESS = 9;
-    constexpr int RIGHTSTICKPRESS = 10;
-
-  }  // namespace LogitechGamePad
-}  // namespace OperatorInterface
-*/
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
 

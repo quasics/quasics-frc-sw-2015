@@ -28,6 +28,12 @@ void Climber::StartRetracting() {
   m_currentStatus = Movement::eDown;
 }
 
+void Climber::ExtendOneClimber(bool isLeft) {
+}
+
+void Climber::RetractOneClimber(bool isLeft) {
+}
+
 void Climber::Stop() {
   m_climbers.StopMotor();
   m_currentStatus = Movement::eStopped;

@@ -29,9 +29,23 @@ void Climber::StartRetracting() {
 }
 
 void Climber::ExtendOneClimber(bool isLeft) {
+  if (isLeft == true) {
+    m_climberLeft.Set(EXTENSION_SPEED);
+    m_currentStatus = Movement::eUp;
+  } else {
+    m_climberRight.Set(EXTENSION_SPEED);
+    m_currentStatus = Movement::eUp;
+  }
 }
 
 void Climber::RetractOneClimber(bool isLeft) {
+  if (isLeft == true) {
+    m_climberLeft.Set(RETRACTION_SPEED);
+    m_currentStatus = Movement::eDown;
+  } else {
+    m_climberRight.Set(RETRACTION_SPEED);
+    m_currentStatus = Movement::eDown;
+  }
 }
 
 void Climber::Stop() {

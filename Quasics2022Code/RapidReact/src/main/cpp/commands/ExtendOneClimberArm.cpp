@@ -12,14 +12,13 @@ ExtendOneClimberArm::ExtendOneClimberArm(Climber* climber, bool isLeftClimber)
 
 // Called when the command is initially scheduled.
 void ExtendOneClimberArm::Initialize() {
-}
-
-// Called repeatedly when this Command is scheduled to run
-void ExtendOneClimberArm::Execute() {
+  m_climber->ExtendOneClimber(m_isLeftClimber);
 }
 
 // Called once the command ends or is interrupted.
 void ExtendOneClimberArm::End(bool interrupted) {
+  m_climber->EnableBraking(true);
+  m_climber->Stop();
 }
 
 // Returns true when the command should end.

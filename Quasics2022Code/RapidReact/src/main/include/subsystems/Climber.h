@@ -10,6 +10,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
+#include "FORCOMPETITIONRobotConstants.h"
 
 class Climber : public frc2::SubsystemBase {
   // Inner types

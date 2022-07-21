@@ -1,17 +1,20 @@
+#pragma once
+
 // TO CHANGE MOTOR VALUES ON ROBOT LOOK BELOW
 // TO CHANGE MOTOR VALUES ON ROBOT LOOK BELOW
 // TO CHANGE MOTOR VALUES ON ROBOT LOOK BELOW
 // TO CHANGE MOTOR VALUES ON ROBOT LOOK BELOW
+
+// Climber Speeds
+constexpr double EXTENSION_SPEED = 1.00;
+
+constexpr double RETRACTION_SPEED = -1.00;
 
 namespace RobotValues {
   // Speed Scaling
   constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
   constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;
   constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
-
-  constexpr double CLIMBER_EXTENSION_SPEED = 0.0;
-  constexpr double CLIMBER_RETRACTION_SPEED =
-      0.0;  // cannot Include this file into the climber subsystem
 
   // Intake
   constexpr double INTAKE_FORWARD_SPEED = 0.9;

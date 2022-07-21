@@ -10,6 +10,8 @@
 
 #include <string_view>
 
+#include "FORCOMPETITIONRobotConstants.h"
+
 // Precisely ONE of the following should be enabled (either by saying "#define
 // NAME", or uncommenting it), while the others should disbled (by saying
 // "#undef NAME" or commenting them out).  This will control which set of values
@@ -33,18 +35,9 @@ constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // gear ratio for Sally is 8.45
 // this is mae's gear ratio of 10.71
 
-constexpr double EXTENSION_SPEED = 1.00;
-
-constexpr double RETRACTION_SPEED = -1.00;
-
 namespace SensorIds {
   constexpr int PIDGEON_CAN_ID = 1;
 }
-
-// Constants for scaling driving speeds in teleop mode.
-constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
-constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;
-constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     22.0_in;  // This is track width for Mae. Sally

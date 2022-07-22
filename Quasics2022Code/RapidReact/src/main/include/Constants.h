@@ -106,7 +106,8 @@ namespace MotorIds {
 
 namespace DigitalInput {
   constexpr int TOP_LIMIT_SWITCH_ID = 1;
-  constexpr int BOTTON_LIMIT_SWITCH_ID = 2;
+  constexpr int BOTTON_LIMIT_SWITCH_RIGHT_CLIMBER_ID = 2;
+  constexpr int BOTTOM_LIMIT_SWITCH_LEFT_CLIMBER_ID = 3;
   constexpr int INTAKE_LIMIT_SWITCH_ID = 9;
 }  // namespace DigitalInput
 

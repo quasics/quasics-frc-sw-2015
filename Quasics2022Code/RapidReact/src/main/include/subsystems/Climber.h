@@ -87,7 +87,11 @@ class Climber : public frc2::SubsystemBase {
 
   frc::DigitalInput topLimitSwitch{DigitalInput::TOP_LIMIT_SWITCH_ID};
 
-  frc::DigitalInput bottomLimitSwitch{DigitalInput::BOTTON_LIMIT_SWITCH_ID};
+  frc::DigitalInput bottomLimitSwitchRightClimber{
+      DigitalInput::BOTTON_LIMIT_SWITCH_RIGHT_CLIMBER_ID};
+
+  frc::DigitalInput bottomLimitSwitchLeftClimber{
+      DigitalInput::BOTTOM_LIMIT_SWITCH_LEFT_CLIMBER_ID};
 
   Movement m_currentStatus{Movement::eStopped};
 };

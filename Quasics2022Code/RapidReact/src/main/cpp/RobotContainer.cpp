@@ -534,6 +534,13 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2Edge() {
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+// go backwards 1.08 meters
+// rotate 135
+// move forwards 1.395
+// rotate 45ish
+// move forwards 2.857
+// use steps in edge to complete the rest
+
 frc2::ParallelRaceGroup* RobotContainer::BuildMaualDrivePickup(
     units::meter_t distance) {
   std::vector<std::unique_ptr<frc2::Command>> commands;

@@ -41,10 +41,10 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
 
-#define ENABLE_LIGHTING_CMDS
+#undef ENABLE_LIGHTING_CMDS
 
 // If defined, set the default lighting command to be cycling red/white/blue.
-#define BE_PATRIOTIC
+//#define BE_PATRIOTIC
 
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
@@ -114,6 +114,9 @@ RobotContainer::RobotContainer()
   TriggerBasedShooterCommand triggerBasedShooterCommand(&m_shooter,
                                                         &operatorController);
   m_shooter.SetDefaultCommand(triggerBasedShooterCommand);
+
+  BreathingAllianceLights BreathingAllianceLights(&m_lighting, 0.50);
+  m_lighting.SetDefaultCommand(BreathingAllianceLights);
 
   // Configure the button bindings
   ConfigureControllerButtonBindings();

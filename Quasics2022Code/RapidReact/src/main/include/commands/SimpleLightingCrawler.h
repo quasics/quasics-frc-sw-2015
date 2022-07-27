@@ -18,14 +18,22 @@
 class SimpleLightingCrawler
     : public frc2::CommandHelper<frc2::CommandBase, SimpleLightingCrawler> {
  public:
-  /// Constructor.  Sets up the "shifter" for use when the command is running.
+  /// Constructor.  Sets up the "shifter" for use when the command is running,
+  /// using the default color function.
+  ///
   /// @param lighting  the lighting subsystem
   SimpleLightingCrawler(Lighting* lighting)
+      : SimpleLightingCrawler(lighting, DefaultColorFunction) {
+  }
+
+  SimpleLightingCrawler(Lighting* lighting,
+                        Lighting::FrcColorFunction colorFunction)
       : m_shifter(lighting,  // lighting subsystem
-                  20.0_s,  // total time it should take to make one full circuit
-                           // of the strip
-                  true     // the pattern should crawl "down" the strip
-        ) {
+                  20.0_s,    // total time it should take to make one full
+                             // circuit of the strip
+                  true       // the pattern should crawl "down" the strip
+                  ),
+        m_colors(colorFunction) {
     AddRequirements(lighting);
   }
 
@@ -45,15 +53,17 @@ class SimpleLightingCrawler
   }
 
  private:
-  LightingShifter m_shifter;
-
   // This is a simple function to define a pattern for the lights that is a
   // repeating sequence of "5 off, 5 green".
-  const Lighting::FrcColorFunction m_colors = [](int pos) {
+  static frc::Color DefaultColorFunction(int pos) {
     constexpr auto cellCount = 5;
     constexpr auto groupSize = cellCount * 2;
     const auto posInGroup = pos % groupSize;
     return frc::Color(posInGroup < cellCount ? frc::Color::kBlack
                                              : frc::Color::kGreen);
   };
+
+ private:
+  LightingShifter m_shifter;
+  const Lighting::FrcColorFunction m_colors;
 };

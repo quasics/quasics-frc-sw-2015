@@ -287,6 +287,23 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Alliance crawl", new SimpleLightingCrawler(&m_lighting, [](int pos) {
+        frc::Color allianceColor;
+        if (frc::DriverStation::GetAlliance() == frc::DriverStation::kRed) {
+          allianceColor = frc::Color::kRed;
+        } else if (frc::DriverStation::GetAlliance() ==
+                   frc::DriverStation::kBlue) {
+          allianceColor = frc::Color::kBlue;
+        } else {
+          allianceColor = frc::Color::kGreen;
+        }
+        constexpr auto cellCount = 5;
+        constexpr auto groupSize = cellCount * 2;
+        const auto posInGroup = pos % groupSize;
+        return frc::Color(posInGroup < cellCount ? frc::Color::kBlack
+                                                 : allianceColor);
+      }));
   frc::SmartDashboard::PutData("Crawling Lights",
                                new SimpleLightingCrawler(&m_lighting));
   frc::SmartDashboard::PutData(

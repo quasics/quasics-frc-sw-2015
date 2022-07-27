@@ -93,8 +93,8 @@ namespace MotorIds {
     constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 5;
-    constexpr int LEFT_CLIMBER_MOTOR_ID = 6;
-    constexpr int RIGHT_CLIMBER_MOTOR_ID = 7;
+    constexpr int LEFT_CLIMBER_MOTOR_ID = 7;
+    constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
     constexpr int REAR_ROLLER_ID = 8;
   }  // namespace SparkMax
   namespace VictorSPX {
@@ -106,8 +106,8 @@ namespace MotorIds {
 
 namespace DigitalInput {
   constexpr int TOP_LIMIT_SWITCH_ID = 1;
-  constexpr int BOTTON_LIMIT_SWITCH_RIGHT_CLIMBER_ID = 2;
-  constexpr int BOTTOM_LIMIT_SWITCH_LEFT_CLIMBER_ID = 3;
+  constexpr int BOTTON_LIMIT_SWITCH_RIGHT_CLIMBER_ID = 3;
+  constexpr int BOTTOM_LIMIT_SWITCH_LEFT_CLIMBER_ID = 2;
   constexpr int INTAKE_LIMIT_SWITCH_ID = 9;
 }  // namespace DigitalInput
 

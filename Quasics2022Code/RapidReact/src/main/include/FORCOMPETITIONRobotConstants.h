@@ -8,7 +8,7 @@
 // Climber Speeds
 constexpr double EXTENSION_SPEED = 1.00;
 
-constexpr double RETRACTION_SPEED = -1.00;
+constexpr double RETRACTION_SPEED = -0.50;
 
 namespace RobotValues {
   // Speed Scaling

@@ -24,6 +24,7 @@
 #include "commands/ExtendClimber.h"
 #include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAuto.h"
+#include "commands/MoveOneClimberArm.h"
 #include "commands/MoveRobotTestCommand.h"
 #include "commands/PatrioticLightsCmd.h"
 #include "commands/RetractClimber.h"
@@ -257,6 +258,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
+  frc::SmartDashboard::PutData("Extend Left Climber",
+                               new MoveOneClimberArm(&m_climber, true, true));
 
   // Shooter tuning
   frc::SmartDashboard::PutData("Shooter tuning",

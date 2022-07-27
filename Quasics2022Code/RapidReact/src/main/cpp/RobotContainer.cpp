@@ -39,13 +39,15 @@
 #include "commands/SetLightsToColor.h"
 #include "commands/ShootForTime.h"
 #include "commands/ShooterTuningCommand.h"
+#include "commands/SimpleLightingCrawler.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
 
-#undef ENABLE_LIGHTING_CMDS
+// If defined, include various lighting commands on the smart dashboard.
+#define ENABLE_LIGHTING_CMDS
 
 // If defined, set the default lighting command to be cycling red/white/blue.
-//#define BE_PATRIOTIC
+#undef BE_PATRIOTIC
 
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
@@ -266,7 +268,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new ShooterTuningCommand(&m_shooter, 0.4));
 
   // Conveyor tuning
-
   frc::SmartDashboard::PutData("Conveyor Tuning",
                                new ConveyorTuningCommand(&m_conveyor, 0.0));
 
@@ -286,6 +287,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {
+  frc::SmartDashboard::PutData("Crawling Lights",
+                               new SimpleLightingCrawler(&m_lighting));
   frc::SmartDashboard::PutData(
       "4th of July down", new PatrioticLightsCmd(&m_lighting, 3.0_s, true));
   frc::SmartDashboard::PutData(

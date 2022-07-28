@@ -118,6 +118,7 @@ class RobotContainer {
   TrajectoryCommandGenerator m_trajectoryGenerator;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
+  // frc::SendableChooser<frc2::Command*> m_ClimberOptions;
 
   // variables
 

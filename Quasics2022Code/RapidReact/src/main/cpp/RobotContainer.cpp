@@ -260,8 +260,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
   frc::SmartDashboard::PutData("Retract Climber",
                                new RetractClimber(&m_climber));
+  frc::SmartDashboard::PutData("Extend Right Climber",
+                               new MoveOneClimberArm(&m_climber, false, true));
+  frc::SmartDashboard::PutData("Retract Right Climber",
+                               new MoveOneClimberArm(&m_climber, false, false));
   frc::SmartDashboard::PutData("Extend Left Climber",
                                new MoveOneClimberArm(&m_climber, true, true));
+  frc::SmartDashboard::PutData("Retract Left Climber",
+                               new MoveOneClimberArm(&m_climber, true, false));
 
   // Shooter tuning
   frc::SmartDashboard::PutData("Shooter tuning",
@@ -275,6 +281,13 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // frc::SmartDashboard::PutData("Drivebase Tuning", new
   // DriveTuningCommand(&m_drivebase, 0.0));
+  // m_ClimberOptions.SetDefaultOption(
+  //     "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
+  // m_ClimberOptions.AddOption("Extend Climber", new
+  // ExtendClimber(&m_climber)); m_ClimberOptions.AddOption("Retract
+  // Climber", new RetractClimber(&m_climber));
+
+  // frc::SmartDashboard::PutData("Climber Options", &m_ClimberOptions);
 
 #ifdef ENABLE_LIGHTING_CMDS
   // Lighting commands

@@ -242,11 +242,21 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Intake Backward 50%",
                                new RunIntakeAtSpeed(&m_intake, -0.5));
 
+  frc::SmartDashboard::PutData("Extend Intake 40%",
+                               new ExtendIntake(&m_intakeDeployment, -0.4));
+  frc::SmartDashboard::PutData("Retract Intake 40%",
+                               new RetractIntake(&m_intakeDeployment, 0.4));
+
+  frc::SmartDashboard::PutData("Extend Intake 60%",
+                               new ExtendIntake(&m_intakeDeployment, -0.6));
+  frc::SmartDashboard::PutData("Retract Intake 60%",
+                               new RetractIntake(&m_intakeDeployment, 0.6));
+
   // Intake deployment commands
   frc::SmartDashboard::PutData("Extend Intake 20%",
-                               new ExtendIntake(&m_intakeDeployment, 0.2));
+                               new ExtendIntake(&m_intakeDeployment, -0.2));
   frc::SmartDashboard::PutData("Retract Intake 20%",
-                               new RetractIntake(&m_intakeDeployment, -0.2));
+                               new RetractIntake(&m_intakeDeployment, 0.2));
   frc::SmartDashboard::PutData("Extend Intake auto",
                                new ExtendIntakeAuto(&m_intakeDeployment, 0.3));
 

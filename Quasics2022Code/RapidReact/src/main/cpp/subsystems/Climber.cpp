@@ -90,6 +90,6 @@ bool Climber::IsFullyExtended() {
 
 bool Climber::IsFullyRetracted() {
   // (Matthew): Implement this method. (done)
-  return !bottomLimitSwitchRightClimber.Get() ||
-         !bottomLimitSwitchLeftClimber.Get();
+  return !bottomLimitSwitchLeftClimber.Get() ||
+         !bottomLimitSwitchRightClimber.Get();
 }

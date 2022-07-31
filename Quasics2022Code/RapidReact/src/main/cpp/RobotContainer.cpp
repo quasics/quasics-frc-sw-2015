@@ -44,7 +44,7 @@
 #include "commands/TriggerBasedShooterCommand.h"
 
 // If defined, include various lighting commands on the smart dashboard.
-#define ENABLE_LIGHTING_CMDS
+#undef ENABLE_LIGHTING_CMDS
 
 // If defined, set the default lighting command to be cycling red/white/blue.
 #undef BE_PATRIOTIC
@@ -179,6 +179,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                    RobotValues::EXTEND_INTAKE_SPEED);
   static RetractIntake retractIntake(&m_intakeDeployment,
                                      RobotValues::RETRACT_INTAKE_SPEED);
+  static ExtendIntake extendIntakeSLOW(&m_intakeDeployment, 0.40);
   static frc2::ParallelRaceGroup* buttonShootingHighGoal =
       ButtonShootingHighGoal();  // 0.40 Flywheel, 0.8 backroller
   static frc2::ParallelRaceGroup* buttonShootingLowGoal =
@@ -207,6 +208,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &runIntakeBackward);
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &runIntakeForward);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::X_BUTTON,
+                                   &extendIntakeSLOW);
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
@@ -219,52 +222,44 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Coasting mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
-  frc::SmartDashboard::PutData("1 Meter Forward 20%",
-                               new MoveRobotTestCommand(&m_drivebase, 0.2));
-  frc::SmartDashboard::PutData("1 Meter Backward 20%",
-                               new MoveRobotTestCommand(&m_drivebase, -0.2));
+  frc::SmartDashboard::PutData("1 Meter Forward",
+                               new MoveRobotTestCommand(&m_drivebase, 0.35));
+  frc::SmartDashboard::PutData("1 Meter Backward",
+                               new MoveRobotTestCommand(&m_drivebase, -0.35));
 
   // Shooter Commands
-  frc::SmartDashboard::PutData("Shooter Forward 50%",
-                               new RunShooterAtSpeed(&m_shooter, 0.5, 0.0));
-  frc::SmartDashboard::PutData("Shooter Backward 50%",
-                               new RunShooterAtSpeed(&m_shooter, -0.5, 0.0));
+  frc::SmartDashboard::PutData("Shooter Forward",
+                               new RunShooterAtSpeed(&m_shooter, 0.6, 0.0));
+  frc::SmartDashboard::PutData("Shooter Backward",
+                               new RunShooterAtSpeed(&m_shooter, -0.6, 0.0));
 
   // Rear Roller Test commands
-  frc::SmartDashboard::PutData("Roller Forward 50%",
-                               new RunRearRollerAtSpeed(&m_shooter, 0.5));
-  frc::SmartDashboard::PutData("Roller Backward 50%",
-                               new RunRearRollerAtSpeed(&m_shooter, -0.5));
+  frc::SmartDashboard::PutData("Roller Forward",
+                               new RunRearRollerAtSpeed(&m_shooter, 0.35));
+  frc::SmartDashboard::PutData("Roller Backward",
+                               new RunRearRollerAtSpeed(&m_shooter, -0.35));
 
   // Intake commands
-  frc::SmartDashboard::PutData("Intake Forward 50%",
-                               new RunIntakeAtSpeed(&m_intake, 0.5));
-  frc::SmartDashboard::PutData("Intake Backward 50%",
-                               new RunIntakeAtSpeed(&m_intake, -0.5));
-
-  frc::SmartDashboard::PutData("Extend Intake 40%",
-                               new ExtendIntake(&m_intakeDeployment, -0.4));
-  frc::SmartDashboard::PutData("Retract Intake 40%",
-                               new RetractIntake(&m_intakeDeployment, 0.4));
 
   frc::SmartDashboard::PutData("Extend Intake 60%",
-                               new ExtendIntake(&m_intakeDeployment, -0.6));
+                               new ExtendIntake(&m_intakeDeployment, 0.6));
   frc::SmartDashboard::PutData("Retract Intake 60%",
-                               new RetractIntake(&m_intakeDeployment, 0.6));
+                               new RetractIntake(&m_intakeDeployment, -0.6));
+
+  frc::SmartDashboard::PutData("Intake Forward",
+                               new RunIntakeAtSpeed(&m_intake, 1.00));
+  frc::SmartDashboard::PutData("Intake Backward",
+                               new RunIntakeAtSpeed(&m_intake, -1.00));
 
   // Intake deployment commands
-  frc::SmartDashboard::PutData("Extend Intake 20%",
-                               new ExtendIntake(&m_intakeDeployment, -0.2));
-  frc::SmartDashboard::PutData("Retract Intake 20%",
-                               new RetractIntake(&m_intakeDeployment, 0.2));
   frc::SmartDashboard::PutData("Extend Intake auto",
                                new ExtendIntakeAuto(&m_intakeDeployment, 0.3));
 
   // Conveyor commands
-  frc::SmartDashboard::PutData("Conveyor 50% Forward",
-                               new RunConveyorAtSpeed(&m_conveyor, 0.5));
-  frc::SmartDashboard::PutData("Conveyor 50% Backward",
-                               new RunConveyorAtSpeed(&m_conveyor, -0.5));
+  frc::SmartDashboard::PutData("Conveyor Forward",
+                               new RunConveyorAtSpeed(&m_conveyor, 1.00));
+  frc::SmartDashboard::PutData("Conveyor Backward",
+                               new RunConveyorAtSpeed(&m_conveyor, -1.00));
 
   // Climber commands
   frc::SmartDashboard::PutData("Extend Climber", new ExtendClimber(&m_climber));
@@ -412,6 +407,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
   m_autonomousOptions.AddOption("Red - Shoot/Move", RSM2Manual());
   m_autonomousOptions.AddOption("Blue - Shoot/Move", BSM4Manual());
   m_autonomousOptions.AddOption("Pickup 1 Shoot 2", Pickup1Shoot2());
+  m_autonomousOptions.AddOption("Pickup 1 Shoot 2 Edge", Pickup1Shoot2Edge());
 
 #ifdef ENABLE_TRAJECTORIES_IN_AUTO
   m_autonomousOptions.AddOption("RSM1", RSM1());
@@ -572,9 +568,9 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2Edge() {
   commands.push_back(
       std::make_unique<RotateAtSpeedForDegrees>(&m_drivebase, 0.4, 90_deg));
   commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 2_m));
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 1.3_m));
   commands.push_back(std::make_unique<RotateAtSpeedForDegrees>(
-      &m_drivebase, 0.4, 20.84_deg));  // was 20.84
+      &m_drivebase, 0.4, 30.84_deg));  // was 20.84
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, 1.031_m));
   commands.push_back(std::move(
@@ -583,12 +579,16 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2Edge() {
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-// go backwards 1.08 meters
-// rotate 135
-// move forwards 1.395
-// rotate 45ish
-// move forwards 2.857
-// use steps in edge to complete the rest
+// shoot pick up 2 shoot
+// all rotations are clockwise
+//  go backwards 1.08 meters
+//  rotate 135
+//  move forwards 1.395
+//  rotate 135ish
+//  move forwards 2.857
+// rotate 180
+// move 0.9116 this and the rest are stuff from the previuos
+//  use steps in edge to complete the rest
 
 frc2::ParallelRaceGroup* RobotContainer::BuildMaualDrivePickup(
     units::meter_t distance) {

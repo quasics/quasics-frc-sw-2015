@@ -19,6 +19,7 @@ class IntakeDeployment : public frc2::SubsystemBase {
    */
 
   void SetMotorSpeed(double);
+  void SetBrakingMode(bool brake);
 
   bool IsIntakeDeployed();
 

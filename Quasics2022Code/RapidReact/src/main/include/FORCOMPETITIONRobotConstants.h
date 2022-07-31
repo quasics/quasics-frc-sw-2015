@@ -8,7 +8,7 @@
 // Climber Speeds
 constexpr double EXTENSION_SPEED = 1.00;
 
-constexpr double RETRACTION_SPEED = -0.20;
+constexpr double RETRACTION_SPEED = -1.00;
 
 namespace RobotValues {
   // Speed Scaling
@@ -17,8 +17,8 @@ namespace RobotValues {
   constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 
   // Intake
-  constexpr double INTAKE_FORWARD_SPEED = 0.9;
-  constexpr double INTAKE_BACKWARD_SPEED = -0.6;
+  constexpr double INTAKE_FORWARD_SPEED = 1.00;
+  constexpr double INTAKE_BACKWARD_SPEED = -1.00;
   // Conveyor
   constexpr double CONVEYOR_UP_SPEED = 0.6;
   constexpr double CONVEYOR_DOWN_SPEED = -0.6;

@@ -15,5 +15,5 @@ void Intake::Periodic() {
 void Intake::SetIntakeSpeed(double percentSpeed) {
   m_floorPickupMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      percentSpeed);
+      -percentSpeed);
 }

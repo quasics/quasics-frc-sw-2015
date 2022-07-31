@@ -11,9 +11,22 @@ IntakeDeployment::IntakeDeployment() {
 
 // This method will be called once per scheduler run
 void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
+  // dont know about this line maybe worth deleting
+  m_IntakeDeploymentMotor.SetNeutralMode(
+      ctre::phoenix::motorcontrol::NeutralMode::Brake);
   m_IntakeDeploymentMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
       percentSpeed);
+}
+
+void IntakeDeployment::SetBrakingMode(bool brake) {
+  if (brake) {
+    m_IntakeDeploymentMotor.SetNeutralMode(
+        ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  } else {
+    m_IntakeDeploymentMotor.SetNeutralMode(
+        ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  }
 }
 
 bool IntakeDeployment::IsIntakeDeployed() {

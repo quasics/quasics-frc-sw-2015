@@ -62,5 +62,5 @@ void BreathingAllianceLights::Execute() {
 
 // Called once the command ends or is interrupted.
 void BreathingAllianceLights::End(bool interrupted) {
-  m_lighting->SetAllToColor(0, 0, 0);
+  m_lighting->SetAllToColor(0, 255, 0);
 }

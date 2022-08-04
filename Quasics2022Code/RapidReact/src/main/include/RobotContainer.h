@@ -50,8 +50,9 @@ class RobotContainer {
   frc2::SequentialCommandGroup* RSM2Manual();
 
   frc2::SequentialCommandGroup* BSM4Manual();
-  frc2::SequentialCommandGroup* Pickup1Shoot2();
-  frc2::SequentialCommandGroup* Pickup1Shoot2Edge();
+  frc2::SequentialCommandGroup* Pickup1Shoot2FacingSide();
+  frc2::SequentialCommandGroup* Pickup1Shoot2FacingClimbers();
+  frc2::SequentialCommandGroup* Pickup1Shoot2FacingHuman();
   frc2::ParallelRaceGroup* BuildMaualDrivePickup(units::meter_t distance);
 
   // autoCommands
@@ -90,6 +91,7 @@ class RobotContainer {
   frc2::ParallelRaceGroup* DrivingAndPickingUpBall(std::string Path);
   frc2::SequentialCommandGroup* PickingUpBall();
   frc2::ParallelCommandGroup* BuildShootBallSequence();
+  // frc2::ParallelRaceGroup* RobotContainer::GenerateBallShootingSequence()
   frc2::SequentialCommandGroup* GenerateBallShootingSequence(int amountBalls);
   frc2::SequentialCommandGroup* Move(std::string Path);
 

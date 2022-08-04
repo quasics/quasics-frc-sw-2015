@@ -19,7 +19,7 @@ void RetractIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RetractIntake::Execute() {
-  // if(multiplier > 0.15){
+  // if(intakeSpeed * multiplier > 0.15){
   // multiplier = multiplier * 0.99
   // }
   // m_intakeDeployment->SetMotorSpeed(intakeSpeed*multiplier);

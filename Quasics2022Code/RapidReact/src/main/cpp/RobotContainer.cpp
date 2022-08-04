@@ -43,6 +43,12 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
 
+// SUGGESTION TO FIX INTAKE FALLING DOWN
+// MAKE LEFT AND RIGHT TRIGGERS ON DRIVER REMOTE TO BE EXTEND AND RETRACT INTAKE
+// basically flip intake deployment and intake feed
+// add control that will continue running intake deployment motor at low power
+// after it is retracted basically reverse slew for retraction
+
 // If defined, include various lighting commands on the smart dashboard.
 #undef ENABLE_LIGHTING_CMDS
 
@@ -298,10 +304,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Lighting commands
   AddLightingCommandsToSmartDashboard();
 #endif
-
-  frc::SmartDashboard::PutData(
-      "RotateAt30%SpeedFor180degrees",
-      new RotateAtSpeedForDegrees(&m_drivebase, 0.3, 180_deg));
 }
 
 void RobotContainer::AddLightingCommandsToSmartDashboard() {

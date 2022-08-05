@@ -117,18 +117,19 @@ void Drivebase::Periodic() {
   auto rightDistance = GetRightDistance();
 
   m_odometry.Update(rotation, leftDistance, rightDistance);
-  const auto newPose = m_odometry.GetPose();
+  // const auto newPose = m_odometry.GetPose();
 
 #ifdef ENABLE_FIELD_REPORTING
   m_poseData.SetRobotPose(newPose);
 #endif  // ENABLE_FIELD_REPORTING
-  frc::SmartDashboard::PutNumber("Direction",
-                                 newPose.Rotation().Degrees().value());
-  frc::SmartDashboard::PutNumber("X pos", newPose.X().value());
-  frc::SmartDashboard::PutNumber("Y pos", newPose.Y().value());
+  /*  frc::SmartDashboard::PutNumber("Direction",
+                                   newPose.Rotation().Degrees().value());
+    frc::SmartDashboard::PutNumber("X pos", newPose.X().value());
+    frc::SmartDashboard::PutNumber("Y pos", newPose.Y().value());
 
-  frc::SmartDashboard::PutNumber("Left", m_leftFrontEncoder.GetPosition());
-  frc::SmartDashboard::PutNumber("Right", m_rightFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Left", m_leftFrontEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Right", m_rightFrontEncoder.GetPosition());
+    */
 }
 
 void Drivebase::SetMotorPower(double leftPower, double rightPower) {

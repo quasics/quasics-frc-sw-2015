@@ -31,5 +31,5 @@ class RetractIntake
  private:
   IntakeDeployment* m_intakeDeployment;
   const double intakeSpeed;
-  // double multiplier = 1.0;
+  double multiplier = 1.0;
 };

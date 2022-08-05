@@ -245,12 +245,13 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Roller Backward",
                                new RunRearRollerAtSpeed(&m_shooter, -0.35));
 
-  // Intake commands
+  // Intake commands (NOTE: values for extension and retraction are inverse
+  //(-1 is extend at 100% speed)
 
-  frc::SmartDashboard::PutData("Extend Intake 60%",
-                               new ExtendIntake(&m_intakeDeployment, 0.6));
-  frc::SmartDashboard::PutData("Retract Intake 60%",
-                               new RetractIntake(&m_intakeDeployment, -0.6));
+  frc::SmartDashboard::PutData("Extend Intake 50%",
+                               new ExtendIntake(&m_intakeDeployment, 0.5));
+  frc::SmartDashboard::PutData("Retract Intake 50%",
+                               new RetractIntake(&m_intakeDeployment, -0.5));
 
   frc::SmartDashboard::PutData("Intake Forward",
                                new RunIntakeAtSpeed(&m_intake, 1.00));
@@ -404,7 +405,7 @@ void RobotContainer::AddAutonomousCommandsToSmartDashboard() {
                                 BuildShootAndMoveCommand(0.2, 2_s, 0.2, 1_m));
 #endif
   m_autonomousOptions.AddOption(
-      "Just Move", new DriveAtPowerForMeters(&m_drivebase, 0.5, 2_m));
+      "Just Move", new DriveAtPowerForMeters(&m_drivebase, -0.50, 2_m));
   m_autonomousOptions.AddOption("Just shoot", GenerateBallShootingSequence(1));
   m_autonomousOptions.AddOption("Red - Shoot/Move", RSM2Manual());
   m_autonomousOptions.AddOption("Blue - Shoot/Move", BSM4Manual());
@@ -532,12 +533,13 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
 
 frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingSide() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(
-  //     std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(BUCKLE())));
+  commands.push_back(
+      std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
   commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(0.9116_m))));
-  // commands.push_back(
-  //    std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
+      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(1.2116_m))));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 1.00, 0.3_s));
   commands.push_back(
       std::make_unique<RotateAtSpeedForDegrees>(&m_drivebase, 0.4, 180_deg));
   // commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
@@ -557,12 +559,13 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingSide() {
 // for Robot Sequence that is center of pentagon
 frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingClimbers() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(
-  //     std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(BUCKLE())));
+  commands.push_back(
+      std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
   commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(0.9116_m))));
-  // commands.push_back(
-  //    std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
+      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(1.2116_m))));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 1.00, 0.3_s));
   commands.push_back(
       std::make_unique<RotateAtSpeedForDegrees>(&m_drivebase, 0.4, 180_deg));
   // commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
@@ -582,12 +585,13 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingClimbers() {
 // for Robot Sequence on edge of Pentagon
 frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingHuman() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(
-  //     std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(BUCKLE())));
+  commands.push_back(
+      std::make_unique<ExtendIntakeAuto>(&m_intakeDeployment, 0.2));
   commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(0.9116_m))));
-  // commands.push_back(
-  //    std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 0.3_s));
+      std::unique_ptr<frc2::Command>(BuildMaualDrivePickup(1.2116_m))));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 1.00, 0.3_s));
   commands.push_back(
       std::make_unique<RotateAtSpeedForDegrees>(&m_drivebase, 0.4, 90_deg));
   // commands.push_back(std::make_unique<RetractIntakeAtSpeedForTime>(
@@ -623,7 +627,7 @@ frc2::SequentialCommandGroup* RobotContainer::Pickup1Shoot2FacingHuman() {
 frc2::ParallelRaceGroup* RobotContainer::BuildMaualDrivePickup(
     units::meter_t distance) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 0.9));
+  commands.push_back(std::make_unique<RunIntakeAtSpeed>(&m_intake, 1.00));
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.50, distance));
   return new frc2::ParallelRaceGroup(std::move(commands));
@@ -997,8 +1001,8 @@ frc2::SequentialCommandGroup* RobotContainer::GenerateBallShootingSequence(
 frc2::ParallelCommandGroup* RobotContainer::BuildShootBallSequence() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<ShootForTime>(
-      &m_shooter, 0.60,
-      1.5_s));  // might need to change this to 0.6 to match the rest
+      &m_shooter, 0.6, 1.5_s,
+      0.35));  // might need to change this to 0.6 to match the rest
   commands.push_back(
       std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.8, 1.5_s));
   return new frc2::ParallelCommandGroup(std::move(commands));
@@ -1016,4 +1020,13 @@ frc2::SequentialCommandGroup* RobotContainer::Move(std::string Path) {
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_autonomousOptions.GetSelected();
+}
+
+frc2::ParallelRaceGroup* RobotContainer::BUCKLE() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.50, -0.3_m));
+  commands.push_back(
+      std::make_unique<RetractIntake>(&m_intakeDeployment, -0.1));
+  return new frc2::ParallelRaceGroup(std::move(commands));
 }

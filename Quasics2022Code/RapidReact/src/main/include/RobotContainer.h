@@ -94,6 +94,7 @@ class RobotContainer {
   // frc2::ParallelRaceGroup* RobotContainer::GenerateBallShootingSequence()
   frc2::SequentialCommandGroup* GenerateBallShootingSequence(int amountBalls);
   frc2::SequentialCommandGroup* Move(std::string Path);
+  frc2::ParallelRaceGroup* BUCKLE();
 
   void AddTestButtonsToSmartDashboard();
   void AddTestTrajectoryCommandsToSmartDashboard();

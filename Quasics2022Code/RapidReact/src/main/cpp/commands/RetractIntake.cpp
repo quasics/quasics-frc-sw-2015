@@ -19,16 +19,17 @@ void RetractIntake::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RetractIntake::Execute() {
-  // if(intakeSpeed * multiplier > 0.15){
-  // multiplier = multiplier * 0.99
-  // }
-  // m_intakeDeployment->SetMotorSpeed(intakeSpeed*multiplier);
-  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
-  m_intakeDeployment->SetBrakingMode(true);
+  if (intakeSpeed * multiplier < -0.1) {
+    multiplier = multiplier * 0.99;
+  }
+  m_intakeDeployment->SetMotorSpeed(intakeSpeed * multiplier);
+  // m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  // m_intakeDeployment->SetBrakingMode(true);
 }
 
 // Called once the command ends or is interrupted.
 void RetractIntake::End(bool interrupted) {
+  // maybe delete these and then it will be overided whenveer they extend intake
   m_intakeDeployment->SetMotorSpeed(0);
   m_intakeDeployment->SetBrakingMode(true);
 }

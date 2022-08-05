@@ -4,6 +4,8 @@
 
 #include "subsystems/Climber.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 Climber::Climber() {
   SetName("Climber");
 }
@@ -72,6 +74,12 @@ Climber::Movement Climber::GetCurrentStatus() {
 
 // This method will be called once per scheduler run
 void Climber::Periodic() {
+  frc::SmartDashboard::PutString(
+      "Left Climber Limit Switch",
+      bottomLimitSwitchLeftClimber.Get() ? "open" : "closed");
+  frc::SmartDashboard::PutString(
+      "Left Climber Limit Switch",
+      bottomLimitSwitchRightClimber.Get() ? "open" : "closed");
   // if (GetCurrentStatus() == Movement::eUp) {
   //   if (IsFullyExtended()) {
   //     Stop();

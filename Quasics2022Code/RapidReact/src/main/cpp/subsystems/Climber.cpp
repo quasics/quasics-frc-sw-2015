@@ -78,7 +78,7 @@ void Climber::Periodic() {
       "Left Climber Limit Switch",
       bottomLimitSwitchLeftClimber.Get() ? "open" : "closed");
   frc::SmartDashboard::PutString(
-      "Left Climber Limit Switch",
+      "Right Climber Limit Switch",
       bottomLimitSwitchRightClimber.Get() ? "open" : "closed");
   // if (GetCurrentStatus() == Movement::eUp) {
   //   if (IsFullyExtended()) {

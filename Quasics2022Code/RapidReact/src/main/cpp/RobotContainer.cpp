@@ -251,7 +251,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Intake 50%",
                                new ExtendIntake(&m_intakeDeployment, 0.5));
   frc::SmartDashboard::PutData("Retract Intake 50%",
-                               new RetractIntake(&m_intakeDeployment, -0.5));
+                               new RetractIntake(&m_intakeDeployment, -0.75));
 
   frc::SmartDashboard::PutData("Intake Forward",
                                new RunIntakeAtSpeed(&m_intake, 1.00));
@@ -516,7 +516,7 @@ frc2::SequentialCommandGroup* RobotContainer::RSM2Manual() {
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(GenerateBallShootingSequence(1))));
   commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.50, -2.8_m));
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.35, -2.8_m));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -526,7 +526,7 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
   commands.push_back(std::move(
       std::unique_ptr<frc2::Command>(GenerateBallShootingSequence(1))));
   commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.50, -2.8_m));
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.35, -2.8_m));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

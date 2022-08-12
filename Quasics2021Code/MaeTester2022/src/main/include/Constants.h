@@ -108,7 +108,7 @@ namespace OIConstants {
 }  // namespace OIConstants
 
 namespace DrivebaseConstants {
-  constexpr double kNormalSpeedScaling = .6;
+  constexpr double kNormalSpeedScaling = 1.0;
   constexpr double kTurtleSpeedScaling = .4;
   constexpr double kTurboSpeedScaling = .8;
 

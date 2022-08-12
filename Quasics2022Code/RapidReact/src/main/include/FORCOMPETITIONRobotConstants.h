@@ -29,6 +29,6 @@ namespace RobotValues {
   constexpr double FAST_SHOOTER_SPEED = 0.6;
   constexpr double FAST_SHOOTER_BACKROLLER_SPEED = 0.35;
   // Intake Deployment
-  constexpr double EXTEND_INTAKE_SPEED = 0.3;
-  constexpr double RETRACT_INTAKE_SPEED = -0.5;
+  constexpr double EXTEND_INTAKE_SPEED = 0.25;
+  constexpr double RETRACT_INTAKE_SPEED = -0.65;
 }  // namespace RobotValues

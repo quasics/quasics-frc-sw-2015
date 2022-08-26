@@ -18,7 +18,8 @@ Lighting::Lighting() {
 }
 
 void Lighting::SetAllToColor(StockColor c) {
-  SetAllToColor(Translate(c));
+  auto color = Translate(c);
+  SetEachCellToColor([color](int pos) { return color; });
 }
 
 void Lighting::SetAllToColor(int r, int g, int b) {

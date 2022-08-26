@@ -6,8 +6,6 @@
 
 RetractIntake::RetractIntake(IntakeDeployment* intake, double speed)
     : m_intakeDeployment(intake), intakeSpeed(speed) {
-  // Use addRequirements() here to declare subsystem dependencies.
-
   AddRequirements(m_intakeDeployment);
 }
 
@@ -23,13 +21,12 @@ void RetractIntake::Execute() {
     multiplier = multiplier * 0.99;
   }
   m_intakeDeployment->SetMotorSpeed(intakeSpeed * multiplier);
-  // m_intakeDeployment->SetMotorSpeed(intakeSpeed);
-  // m_intakeDeployment->SetBrakingMode(true);
 }
 
 // Called once the command ends or is interrupted.
 void RetractIntake::End(bool interrupted) {
-  // maybe delete these and then it will be overided whenveer they extend intake
+  // maybe delete these and then it will be overridden whenveer they extend
+  // intake.
   m_intakeDeployment->SetMotorSpeed(0);
   m_intakeDeployment->SetBrakingMode(true);
 }

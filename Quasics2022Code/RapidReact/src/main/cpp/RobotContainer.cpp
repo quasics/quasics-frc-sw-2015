@@ -50,7 +50,7 @@
 // after it is retracted basically reverse slew for retraction
 
 // If defined, include various lighting commands on the smart dashboard.
-#undef ENABLE_LIGHTING_CMDS
+#define ENABLE_LIGHTING_CMDS
 
 // If defined, set the default lighting command to be cycling red/white/blue.
 #undef BE_PATRIOTIC
@@ -332,7 +332,7 @@ void RobotContainer::AddLightingCommandsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "4th of July up", new PatrioticLightsCmd(&m_lighting, 3.0_s, false));
   frc::SmartDashboard::PutData(
-      "Set All ligths to Red",
+      "Set All lights to Red",
       new SetLightsToColor(&m_lighting, Lighting::StockColor::Red));
   frc::SmartDashboard::PutData(
       "Breathing Lights", new BreathingLights(&m_lighting, 0, 255, 0, 0.75));

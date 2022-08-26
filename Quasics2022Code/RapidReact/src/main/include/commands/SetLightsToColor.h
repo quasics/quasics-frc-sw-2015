@@ -25,7 +25,7 @@ class SetLightsToColor
 
   // Standard "Command" functions.
  public:
-  void Initialize() override;
+  void Execute() override;
 
   // Data members.
  private:

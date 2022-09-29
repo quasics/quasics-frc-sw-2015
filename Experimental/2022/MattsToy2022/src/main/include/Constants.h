@@ -45,9 +45,11 @@ namespace MotorIds {
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
 
-  using Rate_t = units::unit_t<
+  using RateLimit = units::unit_t<
       units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
-  constexpr Rate_t DRIVER_JOYSTICK_RATE_LIMIT = 3.0 / 1_s;
+  // Rate limits for accelerating the drive base: require a ramp-up of (no less
+  // than) 1/3 sec from 0 to 100% (or vice versa).
+  constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 3.0 / 1_s;
 
   namespace LogitechGamePad {
     // Note: these values were derived from one of the Logitech-branded

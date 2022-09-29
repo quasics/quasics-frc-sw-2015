@@ -6,6 +6,7 @@
 
 #include <frc/Joystick.h>
 #include <frc/XboxController.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/InstantCommand.h>
@@ -129,4 +130,6 @@ class RobotContainer {
   // variables
 
   bool isSwitched = false;
+  frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;
+  frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;
 };

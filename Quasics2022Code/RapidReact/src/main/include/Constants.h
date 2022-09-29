@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <units/acceleration.h>
+#include <units/dimensionless.h>
 #include <units/length.h>
 #include <units/time.h>
 #include <units/voltage.h>
@@ -118,6 +120,10 @@ namespace LightingValues {
 
 namespace OperatorInterface {
   constexpr int DRIVER_JOYSTICK = 0;
+
+  using RateLimit = units::unit_t<
+      units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+  constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 3.0 / 1_s;
 
   namespace LogitechGamePad {
     // Note: these values were derived from one of the Logitech-branded

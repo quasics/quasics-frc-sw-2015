@@ -70,7 +70,9 @@ RobotContainer::RobotContainer()
               DriverConstants::kp,  // kP
               DriverConstants::ki,  // kI
               DriverConstants::kd   // kD
-          }) {
+          }),
+      m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
+      m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -80,17 +82,17 @@ RobotContainer::RobotContainer()
         // Get the "base" speed value from the correct joystick
         double joystickValue;
         if (!isSwitched) {
-          joystickValue =
-              -1 * m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          joystickValue = scalingFactor * -1 *
+                          m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         } else {
-          joystickValue =
-              -1 * m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          joystickValue = scalingFactor * -1 *
+                          m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }
 
         // Return scaled speed.
-        return scalingFactor * joystickValue;
+        return m_leftSpeedLimiter.Calculate(joystickValue);
       },
       [this] {
         // Figure out scaling for the current driving mode
@@ -99,17 +101,17 @@ RobotContainer::RobotContainer()
         // Get the "base" speed value from the correct joystick
         double joystickValue;
         if (!isSwitched) {
-          joystickValue =
-              -1 * m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+          joystickValue = scalingFactor * -1 *
+                          m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         } else {
-          joystickValue =
-              +1 * m_driverStick.GetRawAxis(
-                       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+          joystickValue = scalingFactor * +1 *
+                          m_driverStick.GetRawAxis(
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         }
 
         // Return scaled speed.
-        return scalingFactor * joystickValue;
+        return m_rightSpeedLimiter.Calculate(joystickValue);
       }};
 
   // Initialize all of your commands and subsystems here

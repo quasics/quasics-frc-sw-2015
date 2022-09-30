@@ -7,7 +7,10 @@
 #include "Constants.h"
 #include "commands/RainbowLighting.h"
 #include "commands/TankDrive.h"
+#include "commands/MoveInALine.h"
 #include "utils/DeadBandEnforcer.h"
+
+#include <frc/smartdashboard/SmartDashboard.h>
 
 using Rate_t = frc::SlewRateLimiter<units::scalar>::Rate_t;
 
@@ -35,6 +38,9 @@ RobotContainer::RobotContainer()
 
   // Configure the button bindings
   ConfigureButtonBindings();
+
+  frc::SmartDashboard::PutData(".5m @ 40%", new MoveInALine(&m_driveBase, 0.5_m, .40));
+  frc::SmartDashboard::PutData("1m @ 60%", new MoveInALine(&m_driveBase, 1_m, .60));
 }
 
 void RobotContainer::ConfigureButtonBindings() {

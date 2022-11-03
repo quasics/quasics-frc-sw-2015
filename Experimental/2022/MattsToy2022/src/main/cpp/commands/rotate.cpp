@@ -9,6 +9,7 @@ rotate::rotate(
     units::meter_t degrees,
     double percentSpeed) :
   m_driveBase(driveBase),
+  m_degrees(degrees),
   m_percentSpeed(percentSpeed),
   m_startPosition(0)
 {

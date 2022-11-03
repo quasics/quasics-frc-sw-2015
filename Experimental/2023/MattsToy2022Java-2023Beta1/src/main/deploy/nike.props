@@ -1,0 +1,17 @@
+robotName=Nike
+leftMotorsInverted=true
+rightMotorsInverted=false
+installedGyroType=Pigeon2
+pigeonCanId=1
+
+# From 2021 code
+trackWidthMeters=1.1972123413926241
+gearRatio=10.71
+
+# Calculated values for Nike, based on data from SysId
+driveProfileKs=0.14961
+driveProfileKv=1.3717
+driveProfileKa=0.1627
+driveControlKp=2.5682
+driveControlKi=0
+driveControlKd=0

@@ -1,0 +1,16 @@
+robotName=Mae
+leftMotorsInverted=true
+rightMotorsInverted=false
+installedGyroType=ADXRS450
+
+# From 2021 code
+trackWidthMeters=1.1972123413926241
+gearRatio=10.71
+
+# Computed for Mae on 01Mar2022 w/ SysId
+driveProfileKs=0.13895
+driveProfileKv=1.3143
+driveProfileKa=0.1935
+driveControlKp=0.0011379
+driveControlKi=0
+driveControlKd=0

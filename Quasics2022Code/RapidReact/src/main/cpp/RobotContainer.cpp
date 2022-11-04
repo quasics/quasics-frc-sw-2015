@@ -237,7 +237,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   // Shooter Commands
   frc::SmartDashboard::PutData("Shooter Forward",
-                               new RunShooterAtSpeed(&m_shooter, 0.6, 0.0));
+                               new RunShooterAtSpeed(&m_shooter, 0.6, 0.2));
   frc::SmartDashboard::PutData("Shooter Backward",
                                new RunShooterAtSpeed(&m_shooter, -0.6, 0.0));
 
@@ -253,7 +253,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Extend Intake 50%",
                                new ExtendIntake(&m_intakeDeployment, 0.5));
   frc::SmartDashboard::PutData("Retract Intake 50%",
-                               new RetractIntake(&m_intakeDeployment, -0.75));
+                               new RetractIntake(&m_intakeDeployment, -0.30));
 
   frc::SmartDashboard::PutData("Intake Forward",
                                new RunIntakeAtSpeed(&m_intake, 1.00));

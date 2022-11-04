@@ -13,7 +13,7 @@ constexpr double RETRACTION_SPEED = -1.00;
 namespace RobotValues {
   // Speed Scaling
   constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
-  constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;
+  constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;  // 0.75 initially
   constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 
   // Intake

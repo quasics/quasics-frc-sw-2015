@@ -5,13 +5,11 @@
 
 #include <iostream>
 
-rotate::rotate(DriveBase* driveBase, units::meter_t degrees,
+rotate::rotate(DriveBase* driveBase, int degrees,
                double percentSpeed)
     : m_driveBase(driveBase),
       m_degrees(degrees),
-      m_percentSpeed(percentSpeed),
-      m_startPosition(0) {
-  std::cerr << "test" << std::endl;
+      m_percentSpeed(percentSpeed) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_driveBase);
 }
@@ -19,7 +17,7 @@ rotate::rotate(DriveBase* driveBase, units::meter_t degrees,
 // Called when the command is initially scheduled.
 void rotate::Initialize() {
   std::cout << "Initializing" << std::endl;
-  m_startPosition = m_driveBase->GetLeftDistance();
+  m_driveBase->ResetGyro();
   m_driveBase->TankDrive(m_percentSpeed, -m_percentSpeed);
 }
 
@@ -38,7 +36,6 @@ void rotate::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool rotate::IsFinished() {
-  const units::meter_t currentPosition = m_driveBase->GetLeftDistance();
-
-  return (currentPosition >= (m_startPosition + m_degrees));
+  int degreesRotated = m_driveBase->GetHeading();
+  return (degreesRotated > 90);
 }

@@ -18,14 +18,14 @@ rotate::rotate(DriveBase* driveBase, int degrees,
 void rotate::Initialize() {
   std::cout << "Initializing" << std::endl;
   m_driveBase->ResetGyro();
-  m_driveBase->TankDrive(m_percentSpeed, -m_percentSpeed);
+  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void rotate::Execute() {
   std::cout << "Execute" << std::endl;
 
-  m_driveBase->TankDrive(m_percentSpeed, -m_percentSpeed);
+  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
 }
 
 // Called once the command ends or is interrupted.
@@ -34,8 +34,28 @@ void rotate::End(bool interrupted) {
   m_driveBase->Stop();
 }
 
+/*
+  move 1 meter
+  move on 90 degree arc of circle, turning left
+  move 1 meter
+  move on 90 degree arc of circle, turning left
+  move 1 meter
+  move on 90 degree arc of circle, turning right
+  move 1 meter
+  move on 90 degree arc of circle, turning right
+  move 1 meter
+  move on 90 degree arc of circle, turning right
+  move 1 meter
+  move on 90 degree arc of circle, turning right
+  move 1 meter
+  move on 90 degree arc of circle, turning left
+  move 1 meter
+  move on 90 degree arc of circle, turning left
+
+*/
+
 // Returns true when the command should end.
 bool rotate::IsFinished() {
   int degreesRotated = m_driveBase->GetHeading();
-  return (degreesRotated > 90);
+  return (degreesRotated > 90 || degreesRotated < -90);
 }

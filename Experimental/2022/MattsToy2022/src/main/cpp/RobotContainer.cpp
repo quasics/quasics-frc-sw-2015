@@ -15,6 +15,19 @@
 
 using Rate_t = frc::SlewRateLimiter<units::scalar>::Rate_t;
 
+/*
+
+frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<Delay>(0.5_s));
+  commands.push_back(
+      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.9, 3_s));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+*/
+
 RobotContainer::RobotContainer()
     : m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
       m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {

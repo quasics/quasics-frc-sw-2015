@@ -1,0 +1,17 @@
+[
+{
+"acceleration": 0.0,
+"curvature": 0.0,
+"pose": {
+"rotation": {
+"radians": 0.0
+},
+"translation": {
+"x": 0.0,
+"y": 16.4592
+}
+},
+"time": 0.0,
+"velocity": 0.0
+}
+]

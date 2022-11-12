@@ -14,7 +14,7 @@ ShooterTuningCommand::ShooterTuningCommand(Shooter* shooter,
                                            double initialRollerSpeedPercent)
     : m_shooter(shooter) {
   AddRequirements(m_shooter);
-
+#ifdef READY_FOR_BETA_3
   wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
       {"min", nt::Value::MakeDouble(-1.0)},
       {"max", nt::Value::MakeDouble(+1.0)},
@@ -33,6 +33,7 @@ ShooterTuningCommand::ShooterTuningCommand(Shooter* shooter,
           .WithWidget(frc::BuiltInWidgets::kNumberSlider)
           .WithProperties(speedSliderProperties)
           .GetEntry();
+#endif
 }
 
 // Called when the command is initially scheduled.

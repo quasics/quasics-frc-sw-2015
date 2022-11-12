@@ -14,7 +14,7 @@ DriveTuningCommand::DriveTuningCommand(Drivebase* drivebase,
     : m_drivebase(drivebase) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
-
+#ifdef READY_FOR_BETA_3
   wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
       {"min", nt::Value::MakeDouble(-1.0)},
       {"max", nt::Value::MakeDouble(+1.0)},
@@ -27,6 +27,7 @@ DriveTuningCommand::DriveTuningCommand(Drivebase* drivebase,
           .WithWidget(frc::BuiltInWidgets::kNumberSlider)
           .WithProperties(speedSliderProperties)
           .GetEntry();
+#endif
 }
 
 // Called when the command is initially scheduled.

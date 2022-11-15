@@ -19,7 +19,7 @@ ShooterTuningCommand::ShooterTuningCommand(Shooter* shooter,
   // The following code is broken when built under Beta 2.
   // 
   // Bug filed: https://github.com/wpilibsuite/BetaTest/issues/80
-  wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
+  wpi::StringMap<nt::Value> speedSliderProperties{
       {"min", nt::Value::MakeDouble(-1.0)},
       {"max", nt::Value::MakeDouble(+1.0)},
       {"Block increment", nt::Value::MakeDouble(0.01)}};

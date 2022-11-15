@@ -12,19 +12,19 @@
 DriveTuningCommand::DriveTuningCommand(Drivebase* drivebase,
                                        double initialDrivebaseSpeedPercent)
     : m_drivebase(drivebase) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
 
-#if 0 // BROKEN_IN_BETA_2
-  // The following code is broken when built under Beta 2.
-  // 
-  // Bug filed: https://github.com/wpilibsuite/BetaTest/issues/80
-  wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
+  wpi::StringMap<nt::Value> speedSliderProperties{
       {"min", nt::Value::MakeDouble(-1.0)},
       {"max", nt::Value::MakeDouble(+1.0)},
       {"Block increment", nt::Value::MakeDouble(0.01)}};
 
   auto& tab = frc::Shuffleboard::GetTab(NetworkTableNames::kSettingsTab);
+
+#if 0 // BROKEN_IN_BETA_2
+  // The following code is broken when built under Beta 2.
+  // 
+  // Bug filed: https://github.com/wpilibsuite/BetaTest/issues/80
   m_drivebaseSpeedSlider =
       tab.AddPersistent(NetworkTableNames::kDrivebaseSpeedSliderName,
                         initialDrivebaseSpeedPercent)

@@ -155,12 +155,15 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
 // Configure your button bindings here
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                                       frc2::Command* command) {
-  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command);
+  //I think this is the way to replace this(IS THIS CORRECT?) Replaced While Held with While True
+  //frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command); 
+  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileTrue(command);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command* command) {
-  frc2::JoystickButton(&operatorController, buttonId).WhileHeld(command);
+  //Same thing here I replaced While Held with While True check
+  frc2::JoystickButton(&operatorController, buttonId).WhileTrue(command);
 }
 
 // TODO: Configure other button bindings on driver and operator controllers.

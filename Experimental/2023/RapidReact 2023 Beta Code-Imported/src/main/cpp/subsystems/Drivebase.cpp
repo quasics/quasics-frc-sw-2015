@@ -12,7 +12,7 @@
 #include <rev/CANSparkMax.h>
 
 #include <iostream>
-#include <wpi/numbers>
+#include <numbers>
 
 // Note: Mae appears to have the left motors marked as "Inverted" at the
 // firmware settings/configuration level, and thus we need to override
@@ -78,7 +78,7 @@ void Drivebase::SetBrakingMode(bool enabled) {
 
 void Drivebase::ConfigureEncoders() {
   // Calculate wheel circumference (distance travelled per wheel revolution).
-  const units::meter_t wheelCircumference = WHEEL_DIAMETER * wpi::numbers::pi;
+  const units::meter_t wheelCircumference = WHEEL_DIAMETER * std::numbers::pi;
 
   // Compute distance traveled per rotation of the motor.
   const units::meter_t gearingConversion =

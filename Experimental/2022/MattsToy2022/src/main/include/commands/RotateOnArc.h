@@ -19,7 +19,7 @@
 class RotateOnArc
     : public frc2::CommandHelper<frc2::CommandBase, RotateOnArc> {
  public:
-  RotateOnArc(DriveBase* driveBase, bool turnLeft, double percentSpeed);
+  RotateOnArc(DriveBase* driveBase, int degrees, double percentSpeed, bool turnLeft);
 
   void Initialize() override;
 
@@ -30,9 +30,8 @@ class RotateOnArc
   bool IsFinished() override;
 
   private:
-    DriveBase* m_driveBase;
-    bool m_turnLeft;
-    double m_percentSpeed;
-    int m_degreesTurned;
-
+  DriveBase* m_driveBase;
+  int m_degrees;
+  double m_percentSpeed;
+  bool m_turnLeft;
 };

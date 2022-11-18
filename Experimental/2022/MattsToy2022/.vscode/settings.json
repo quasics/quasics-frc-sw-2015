@@ -82,5 +82,6 @@
     "cinttypes": "cpp",
     "typeinfo": "cpp",
     "matrixfunctions": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "Disabled"
 }

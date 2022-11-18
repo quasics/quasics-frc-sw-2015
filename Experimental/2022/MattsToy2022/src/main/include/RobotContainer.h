@@ -9,6 +9,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/PrintCommand.h>
 #include <units/dimensionless.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
 #include "subsystems/DriveBase.h"
 #include "subsystems/Lighting.h"
@@ -25,9 +26,13 @@ class RobotContainer {
   RobotContainer();
 
   frc2::Command* GetAutonomousCommand();
+  frc2::SequentialCommandGroup* Eight();
+
 
  private:
   void ConfigureButtonBindings();
+
+
 
  private:
   // Slew rate limiters to make joystick inputs more gentle.  (See example at
@@ -36,6 +41,8 @@ class RobotContainer {
   frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;
 
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
+
+
 
   DriveBase m_driveBase;
   Lighting m_lighting;

@@ -11,22 +11,12 @@
 #include "commands/RainbowLighting.h"
 #include "commands/TankDrive.h"
 #include "commands/rotate.h"
+#include "commands/RotateOnArc.h"
 #include "utils/DeadBandEnforcer.h"
 
 using Rate_t = frc::SlewRateLimiter<units::scalar>::Rate_t;
 
-/*
 
-frc2::SequentialCommandGroup* RobotContainer::ConveyorDelay() {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<Delay>(0.5_s));
-  commands.push_back(
-      std::make_unique<RunConveyorAtSpeedForTime>(&m_conveyor, 0.9, 3_s));
-
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
-
-*/
 
 RobotContainer::RobotContainer()
     : m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
@@ -45,6 +35,7 @@ RobotContainer::RobotContainer()
                 OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS));
         return m_rightSpeedLimiter.Calculate(currentRightValue);
       }};
+  
   m_driveBase.SetDefaultCommand(tankDrive);
 
   RainbowLighting rainbowLighting(&m_lighting, 0.1_s);
@@ -58,6 +49,31 @@ RobotContainer::RobotContainer()
   frc::SmartDashboard::PutData("1m @ 60%",
                                new MoveInALine(&m_driveBase, 1_m, .60));
   frc::SmartDashboard::PutData("turn 90", new rotate(&m_driveBase, 90, .30));
+  frc::SmartDashboard::PutData("turn 90 on arc", new RotateOnArc(&m_driveBase, 90, .60, true));
+  //frc::SmartDashboard::PutData("eight", new Eight());
+
+}
+
+frc2::SequentialCommandGroup* RobotContainer::Eight() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, 0.60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 void RobotContainer::ConfigureButtonBindings() {

@@ -56,22 +56,22 @@ RobotContainer::RobotContainer()
 
 frc2::SequentialCommandGroup* RobotContainer::Eight() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, 0.60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 1_m, .60));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .60, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
+  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

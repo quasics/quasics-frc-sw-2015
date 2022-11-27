@@ -14,6 +14,8 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+#include <numbers>
+#include <units/base.h>
 
 #include "Constants.h"
 #include "units/length.h"

@@ -8,6 +8,7 @@
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/interfaces/Gyro.h>
+#include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
@@ -134,7 +135,8 @@ class Drivebase : public frc2::SubsystemBase {
 #else
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 #endif
-  frc::DifferentialDriveOdometry m_odometry{0_rad};
+  frc::DifferentialDriveOdometry m_odometry{0_rad, 0_m, 0_m};
+  //frc::DifferentialDriveOdometry m_odometry{frc::Rotation2d(0_rad)};
 
 #ifdef ENABLE_FIELD_REPORTING
   frc::Field2d m_poseData;

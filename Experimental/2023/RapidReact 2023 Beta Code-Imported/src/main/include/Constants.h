@@ -25,6 +25,7 @@
 
 
 //BETA 3
+//#define READY_FOR_BETA_3
 #undef READY_FOR_BETA_3
 
 /**

@@ -166,7 +166,7 @@ frc::Pose2d Drivebase::GetPose() {
 
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
-  m_odometry.ResetPosition(pose, m_gyro.GetRotation2d());
+  m_odometry.ResetPosition(m_gyro.GetRotation2d(), 0_m, 0_m, pose);
 }
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {

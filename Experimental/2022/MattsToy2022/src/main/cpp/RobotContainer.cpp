@@ -50,7 +50,7 @@ RobotContainer::RobotContainer()
                                new MoveInALine(&m_driveBase, 1_m, .60));
   frc::SmartDashboard::PutData("turn 90", new rotate(&m_driveBase, 90, .30));
   frc::SmartDashboard::PutData("turn 90 on arc", new RotateOnArc(&m_driveBase, 90, .60, true));
-  //frc::SmartDashboard::PutData("eight", new Eight());
+  frc::SmartDashboard::PutData("eight", new Eight());
 
 }
 

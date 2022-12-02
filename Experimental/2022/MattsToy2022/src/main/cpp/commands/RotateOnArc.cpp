@@ -19,14 +19,14 @@ RotateOnArc::RotateOnArc(DriveBase* driveBase, int degrees,
 void RotateOnArc::Initialize() {
   std::cout << "Initializing" << std::endl;
   m_driveBase->ResetGyro();
-  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  m_driveBase->TankDrive(-0.5*m_percentSpeed, m_percentSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RotateOnArc::Execute() {
   std::cout << "Execute" << std::endl;
 
-  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  m_driveBase->TankDrive(-0.5*m_percentSpeed, m_percentSpeed);
 }
 
 // Called once the command ends or is interrupted.

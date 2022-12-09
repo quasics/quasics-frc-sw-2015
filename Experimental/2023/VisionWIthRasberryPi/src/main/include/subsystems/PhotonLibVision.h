@@ -21,5 +21,9 @@ class PhotonLibVision : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  photonlib::PhotonCamera camera{"photonvision"};
+  //photonlib::PhotonCamera camera{"photonvision"};
+  //trying this maybe it will work
+  photonlib::PhotonCamera camera{"mmal_service_16.1"};
+
+
 };

@@ -6,6 +6,7 @@
 
 #include <frc2/command/Command.h>
 
+#include "subsystems/PhotonLibVision.h"
 #include "commands/ExampleCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 
@@ -26,6 +27,7 @@ class RobotContainer {
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
+  PhotonLibVision m_photonvision;
 
   void ConfigureButtonBindings();
 };

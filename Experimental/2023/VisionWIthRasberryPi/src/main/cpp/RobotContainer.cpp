@@ -3,15 +3,20 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "RobotContainer.h"
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 
 RobotContainer::RobotContainer() : m_autonomousCommand(&m_subsystem) {
   // Initialize all of your commands and subsystems here
 
   // Configure the button bindings
+  
   ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+  //frc::SmartDashboard::PutNumber("something", 1);
   // Configure your button bindings here
 }
 

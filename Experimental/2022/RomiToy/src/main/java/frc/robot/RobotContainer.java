@@ -34,7 +34,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final OnBoardIO m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
-  private final PhotonVision m_photonVision = new PhotonVision("photonvision");
+  private final PhotonVision m_photonVision = new PhotonVision("RomiCamera");
 
   // Assumes a gamepad plugged into channnel 0
   private final Joystick m_controller = new Joystick(0);

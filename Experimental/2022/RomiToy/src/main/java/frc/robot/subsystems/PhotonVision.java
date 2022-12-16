@@ -15,10 +15,6 @@ public class PhotonVision extends SubsystemBase {
   PhotonPipelineResult latestResult = null;
 
   /** Creates a new PhotonVision. */
-  public PhotonVision() {
-    this("photonvision");
-  }
-
   public PhotonVision(String cameraName) {
     camera = new PhotonCamera(cameraName);
   }
@@ -32,11 +28,12 @@ public class PhotonVision extends SubsystemBase {
       return false;
     }
 
-    return latestResult.hasTargets();
+    boolean result = latestResult.hasTargets();
+    return result;
   }
 
   public PhotonTrackedTarget getBestTarget() {
-    if (!hasTargets()) {
+    if (latestResult == null) {
       return null;
     }
 

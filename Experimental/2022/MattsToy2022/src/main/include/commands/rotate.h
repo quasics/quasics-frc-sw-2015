@@ -19,7 +19,7 @@
 class rotate
     : public frc2::CommandHelper<frc2::CommandBase, rotate> {
  public:
-  rotate(DriveBase* driveBase, int degrees, double percentSpeed);
+  rotate(DriveBase* driveBase, int degrees, double percentSpeed, bool m_turnLeft);
 
   void Initialize() override;
 
@@ -33,4 +33,5 @@ class rotate
   DriveBase* m_driveBase;
   int m_degrees;
   double m_percentSpeed;
+  bool m_turnLeft;
 };

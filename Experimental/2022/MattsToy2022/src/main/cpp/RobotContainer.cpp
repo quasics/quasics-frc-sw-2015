@@ -44,34 +44,34 @@ RobotContainer::RobotContainer()
   // Configure the button bindings
   ConfigureButtonBindings();
 
-  frc::SmartDashboard::PutData(".5m @ 40%",
-                               new MoveInALine(&m_driveBase, 0.5_m, .40));
+  frc::SmartDashboard::PutData(".5m @ 20%",
+                               new MoveInALine(&m_driveBase, 0.5_m, .25));
   frc::SmartDashboard::PutData("1m @ 60%",
-                               new MoveInALine(&m_driveBase, 1_m, .60));
-  frc::SmartDashboard::PutData("turn 90", new rotate(&m_driveBase, 90, .30));
-  frc::SmartDashboard::PutData("turn 90 on arc", new RotateOnArc(&m_driveBase, 90, .60, true));
+                               new MoveInALine(&m_driveBase, 0.5_m, .25));
+  frc::SmartDashboard::PutData("turn 90", new rotate(&m_driveBase, 90, .25, true));
+  frc::SmartDashboard::PutData("turn 90 on arc", new RotateOnArc(&m_driveBase, 90, .25, true));
   frc::SmartDashboard::PutData("eight", Eight());
 
 }
 
 frc2::SequentialCommandGroup* RobotContainer::Eight() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, false));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
-  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.25_m, .20));
-  commands.push_back(std::make_unique<RotateOnArc>(&m_driveBase, 90, .20, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, false));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, true));
+  commands.push_back(std::make_unique<MoveInALine>(&m_driveBase, 0.3_m, .35));
+  commands.push_back(std::make_unique<rotate>(&m_driveBase, 84, .35, true));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

@@ -6,31 +6,38 @@
 #include <iostream>
 
 rotate::rotate(DriveBase* driveBase, int degrees,
-               double percentSpeed)
+               double percentSpeed, bool turnLeft)
     : m_driveBase(driveBase),
       m_degrees(degrees),
-      m_percentSpeed(percentSpeed) {
+      m_percentSpeed(percentSpeed),
+      m_turnLeft(turnLeft) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_driveBase);
 }
 
 // Called when the command is initially scheduled.
 void rotate::Initialize() {
-  std::cout << "Initializing" << std::endl;
   m_driveBase->ResetGyro();
-  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  if (m_turnLeft) {
+    m_driveBase->TankDrive(m_percentSpeed, -m_percentSpeed);
+  }
+  else {
+    m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void rotate::Execute() {
-  std::cout << "Execute" << std::endl;
-
-  m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  if (m_turnLeft) {
+    m_driveBase->TankDrive(m_percentSpeed, -m_percentSpeed);
+  }
+  else {
+    m_driveBase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  }
 }
 
 // Called once the command ends or is interrupted.
 void rotate::End(bool interrupted) {
-  std::cout << "End" << std::endl;
   m_driveBase->Stop();
 }
 

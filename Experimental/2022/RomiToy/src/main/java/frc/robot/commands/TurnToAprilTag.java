@@ -32,6 +32,7 @@ public class TurnToAprilTag extends CommandBase {
     if (!photonVision.hasTargets()) {
       System.out.println("No targets...");
       driveTrain.stop();
+      return;
     }
 
     var target = photonVision.getBestTarget();

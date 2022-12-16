@@ -136,6 +136,10 @@ void Drivebase::SetMotorPower(double leftPower, double rightPower) {
   m_drive->TankDrive(leftPower, rightPower);
 }
 
+void Drivebase::ArcadeDrive(double forwardSpeed, double rotationSpeed) {
+  m_drive->ArcadeDrive(forwardSpeed, rotationSpeed);
+}
+
 units::meter_t Drivebase::GetLeftDistance() {
   // Note that the conversion factor configured earlier means that we're getting
   // position in meters.

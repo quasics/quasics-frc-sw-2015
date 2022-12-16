@@ -43,6 +43,8 @@ class Drivebase : public frc2::SubsystemBase {
    */
   void SetMotorPower(double leftPower, double rightPower);
 
+  void ArcadeDrive(double forwardSpeed, double rotationSpeed);
+
   /** Convenience method to stop the drive base. */
   void Stop() {
     SetMotorPower(0, 0);

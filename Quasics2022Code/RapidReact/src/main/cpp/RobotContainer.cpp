@@ -26,6 +26,7 @@
 #include "commands/ExtendIntakeAuto.h"
 #include "commands/MoveOneClimberArm.h"
 #include "commands/MoveRobotTestCommand.h"
+#include "commands/MoveRobotToAprilTag.h"
 #include "commands/PatrioticLightsCmd.h"
 #include "commands/RetractClimber.h"
 #include "commands/RetractIntake.h"
@@ -192,6 +193,32 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       ButtonShootingHighGoal();  // 0.40 Flywheel, 0.8 backroller
   static frc2::ParallelRaceGroup* buttonShootingLowGoal =
       ButtonShootingLowGoal();
+
+  //
+  //
+  //
+  //
+
+  //
+  //
+  //
+  //
+
+  static MoveRobotToAprilTag moveRobotToAprilTag(&m_drivebase, &m_photonVision);
+
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::X_BUTTON,
+                                   &moveRobotToAprilTag);
+
+  //
+  //
+  //
+  //
+
+  //
+  //
+  //
+  //
+
   //   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
   //                                      &extendClimber);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -208,6 +235,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      buttonShootingHighGoal);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      buttonShootingLowGoal);
+
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
                                    &extendClimber);
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,

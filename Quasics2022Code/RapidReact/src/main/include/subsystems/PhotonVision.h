@@ -15,8 +15,11 @@ class PhotonVision : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
-  photonlib::PhotonPipelineResult GetData();
+
+  void GetData();
+
   bool HasTargets();
+
   photonlib::PhotonTrackedTarget GetTarget();
 
  private:

@@ -8,11 +8,10 @@ PhotonVision::PhotonVision() = default;
 
 // This method will be called once per scheduler run
 void PhotonVision::Periodic() {
-  currentData = camera.GetLatestResult();
 }
 
-photonlib::PhotonPipelineResult PhotonVision::GetData() {
-  return currentData;
+void PhotonVision::GetData() {
+  currentData = camera.GetLatestResult();
 }
 
 bool PhotonVision::HasTargets() {

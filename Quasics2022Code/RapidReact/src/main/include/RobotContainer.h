@@ -19,6 +19,7 @@
 #include "subsystems/Intake.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/Lighting.h"
+#include "subsystems/PhotonVision.h"
 #include "subsystems/Shooter.h"
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -123,6 +124,7 @@ class RobotContainer {
   Lighting m_lighting;
   IntakeDeployment m_intakeDeployment;
   TrajectoryCommandGenerator m_trajectoryGenerator;
+  PhotonVision m_photonVision;
 
   frc::SendableChooser<frc2::Command*> m_autonomousOptions;
   // frc::SendableChooser<frc2::Command*> m_ClimberOptions;

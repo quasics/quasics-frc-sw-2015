@@ -4,25 +4,25 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class DriveTime extends CommandBase {
-  private final double m_duration;
+public class DriveDistance extends CommandBase {
+  private final AbstractDriveBase m_drive;
+  private final double m_distance;
   private final double m_speed;
-  private final Drivetrain m_drive;
-  private long m_startTime;
 
   /**
-   * Creates a new DriveTime. This command will drive your robot for a desired speed and time.
+   * Creates a new DriveDistance. This command will drive your your robot for a desired distance at
+   * a desired speed.
    *
-   * @param speed The speed which the robot will drive. Negative is in reverse.
-   * @param time How much time to drive in seconds
+   * @param speed The speed at which the robot will drive
+   * @param inches The number of inches the robot will drive
    * @param drive The drivetrain subsystem on which this command will run
    */
-  public DriveTime(double speed, double time, Drivetrain drive) {
+  public DriveDistance(double speed, double inches, AbstractDriveBase drive) {
+    m_distance = inches;
     m_speed = speed;
-    m_duration = time * 1000;
     m_drive = drive;
     addRequirements(drive);
   }
@@ -30,8 +30,8 @@ public class DriveTime extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_startTime = System.currentTimeMillis();
     m_drive.arcadeDrive(0, 0);
+    m_drive.resetEncoders();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,6 +49,7 @@ public class DriveTime extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (System.currentTimeMillis() - m_startTime) >= m_duration;
+    // Compare distance travelled from start to desired distance
+    return Math.abs(m_drive.getAverageDistanceInch()) >= m_distance;
   }
 }

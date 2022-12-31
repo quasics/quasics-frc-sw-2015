@@ -11,9 +11,9 @@ import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends AbstractDriveBase {
   private static final double kCountsPerRevolution = 1440.0;
-  private static final double kWheelDiameterInch = 2.75591; // 70 mm
+  private static final double kWheelDiameterMillimeters = 70; // 2.75591 inches
 
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
@@ -36,23 +36,31 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
+    setName("Drivetrain");
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     m_rightMotor.setInverted(true);
 
     // Use inches as unit for encoder distances
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterInch) / kCountsPerRevolution);
+    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
+    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
     resetEncoders();
+
+    // Set up our base class.
+    configureDifferentialDrive(m_leftMotor, m_rightMotor);
   }
 
-  public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
-    m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
-  }
-
-  public void tankDrive(double leftSpeed, double rightSpeed) {
-    m_diffDrive.tankDrive(leftSpeed, rightSpeed);
+  public double getWheelPlacementDiameterMillimeters() {
+    /* 
+       Quoting from sample Romi code provided by WPILib:
+         The standard Romi chassis found here,
+         https://www.pololu.com/category/203/romi-chassis-kits,
+         has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
+         or 5.551 inches. We then take into consideration the width of the tires.
+    */
+    return 70.0;
   }
 
   public void resetEncoders() {
@@ -68,16 +76,12 @@ public class Drivetrain extends SubsystemBase {
     return m_rightEncoder.get();
   }
 
-  public double getLeftDistanceInch() {
+  public double getLeftDistanceMillimeters() {
     return m_leftEncoder.getDistance();
   }
 
-  public double getRightDistanceInch() {
+  public double getRightDistanceMillimeters() {
     return m_rightEncoder.getDistance();
-  }
-
-  public double getAverageDistanceInch() {
-    return (getLeftDistanceInch() + getRightDistanceInch()) / 2.0;
   }
 
   /**

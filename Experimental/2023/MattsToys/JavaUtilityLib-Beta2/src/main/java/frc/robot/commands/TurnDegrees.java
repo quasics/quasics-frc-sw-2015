@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class TurnDegrees extends CommandBase {
-  private final Drivetrain m_drive;
+  private final AbstractDriveBase m_drive;
   private final double m_degrees;
   private final double m_speed;
 
@@ -20,7 +20,7 @@ public class TurnDegrees extends CommandBase {
    * @param degrees Degrees to turn. Leverages encoders to compare distance.
    * @param drive The drive subsystem on which this command will run
    */
-  public TurnDegrees(double speed, double degrees, Drivetrain drive) {
+  public TurnDegrees(double speed, double degrees, AbstractDriveBase drive) {
     m_degrees = degrees;
     m_speed = speed;
     m_drive = drive;
@@ -55,7 +55,7 @@ public class TurnDegrees extends CommandBase {
        has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
        or 5.551 inches. We then take into consideration the width of the tires.
     */
-    double inchPerDegree = Math.PI * 5.551 / 360;
+    double inchPerDegree = Math.PI * m_drive.getWheelPlacementDiameterInch() / 360;
     // Compare distance travelled from start to distance based on degree turn
     return getAverageTurningDistance() >= (inchPerDegree * m_degrees);
   }

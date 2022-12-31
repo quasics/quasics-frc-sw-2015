@@ -4,28 +4,24 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-/*
- * Creates a new TurnTime command. This command will turn your robot for a
- * desired rotational speed and time.
- */
-public class TurnTime extends CommandBase {
+public class DriveTime extends CommandBase {
   private final double m_duration;
-  private final double m_rotationalSpeed;
-  private final Drivetrain m_drive;
+  private final double m_speed;
+  private final AbstractDriveBase m_drive;
   private long m_startTime;
 
   /**
-   * Creates a new TurnTime.
+   * Creates a new DriveTime. This command will drive your robot for a desired speed and time.
    *
-   * @param speed The speed which the robot will turn. Negative is in reverse.
-   * @param time How much time to turn in seconds
-   * @param drive The drive subsystem on which this command will run
+   * @param speed The speed which the robot will drive. Negative is in reverse.
+   * @param time How much time to drive in seconds
+   * @param drive The drivetrain subsystem on which this command will run
    */
-  public TurnTime(double speed, double time, Drivetrain drive) {
-    m_rotationalSpeed = speed;
+  public DriveTime(double speed, double time, AbstractDriveBase drive) {
+    m_speed = speed;
     m_duration = time * 1000;
     m_drive = drive;
     addRequirements(drive);
@@ -41,7 +37,7 @@ public class TurnTime extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.arcadeDrive(0, m_rotationalSpeed);
+    m_drive.arcadeDrive(m_speed, 0);
   }
 
   // Called once the command ends or is interrupted.

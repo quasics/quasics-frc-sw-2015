@@ -25,3 +25,5 @@ pluginManagement {
         }
     }
 }
+
+rootProject.name = 'utils-lib'

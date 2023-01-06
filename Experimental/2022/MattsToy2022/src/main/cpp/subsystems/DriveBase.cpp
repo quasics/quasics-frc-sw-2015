@@ -14,8 +14,8 @@
 // Conditional compilation flags, controlling what sort of a gyro we shoud try
 // to set up for the drive base.  Only one should be enabled at a time; if more
 // than 1 is enabled, then only 1 will take effect.
-#define ENABLE_PIGEON2_GYRO
-// #define ENABLE_ADXRS450_GYRO
+//#define ENABLE_PIGEON2_GYRO
+#define ENABLE_ADXRS450_GYRO
 
 DriveBase::DriveBase() {
   SetName("DriveBase");

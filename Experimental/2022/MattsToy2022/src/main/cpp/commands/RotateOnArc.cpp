@@ -30,7 +30,6 @@ void RotateOnArc::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void RotateOnArc::Execute() {
   std::cout << "Execute" << std::endl;
-
   if (m_turnLeft) {
     m_driveBase->TankDrive(m_percentSpeed, -0.60*m_percentSpeed);
   }

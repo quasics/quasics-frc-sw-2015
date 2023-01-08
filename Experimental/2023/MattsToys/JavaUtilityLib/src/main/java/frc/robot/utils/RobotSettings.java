@@ -2,7 +2,6 @@ package frc.robot.utils;
 
 import java.util.Properties;
 
-import frc.robot.utils.PropertyBasedObject;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 

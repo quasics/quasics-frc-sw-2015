@@ -103,8 +103,8 @@ public class RobotSettings extends PropertyBasedObject {
    * @param rightMotorsInverted iff true, drive motors on the right side are
    *                            inverted
    * @param installedGyroType   the type of gyro on the robot
-   * @param pigeonCanId         the CAN ID for the gyro, if it's a Pigeon2 (or any
-   *                            value, if it's not)
+   * @param pigeonCanId         the CAN ID for the gyro, if it's a Pigeon2 (this
+   *                            field is ignored, otherwise)
    * 
    * @see #load(java.io.InputStream)
    */

@@ -5,15 +5,38 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose. All constants should be declared globally (i.e. public static). Do
+ * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final double TRACK_WIDTH_METERS_ROMI = 0.165;
 
-    public static final double TRACK_WIDTH_METERS_ROMI = 0.165;
-    
+  /** Constants for speed limits/scaling under various driving modes. */
+  public static final class SpeedLimits {
+    /** Scaling factor to be applied in "turtle" mode. */
+    public static final double MAX_SPEED_TURTLE = 0.50;
+    /** Scaling factor to be applied in "normal" mode. */
+    public static final double MAX_SPEED_NORMAL = 0.65;
+    /** Scaling factor to be applied in "turbo" mode. */
+    public static final double MAX_SPEED_TURBO = 0.80;
+  }
+
+  /**
+   * Constants associated with "dead zones" on joysticks.
+   * 
+   * @see https://en.wikipedia.org/wiki/Deadband
+   */
+  public static final class Deadbands {
+    /**
+     * Dead band value to be used for deciding when the driver joysticks are at
+     * neutral.
+     */
+    public static final double DRIVING = 0.055;
+  }
 }

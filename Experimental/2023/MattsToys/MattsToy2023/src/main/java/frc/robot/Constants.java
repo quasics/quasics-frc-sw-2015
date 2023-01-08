@@ -47,6 +47,32 @@ public final class Constants {
     }
   }
 
+  /** Constants for speed limits/scaling under various driving modes. */
+  public static final class SpeedLimits {
+    /** Scaling factor to be applied in "turtle" mode. */
+    public static final double MAX_SPEED_TURTLE = 0.50;
+    /** Scaling factor to be applied in "normal" mode. */
+    public static final double MAX_SPEED_NORMAL = 0.65;
+    /** Scaling factor to be applied in "turbo" mode. */
+    public static final double MAX_SPEED_TURBO = 0.80;
+
+    /** Max speed overall */
+    public static final double ABSOLUTE_LIMIT = MAX_SPEED_TURBO;
+  }
+
+  /**
+   * Constants associated with "dead zones" on joysticks.
+   * 
+   * @see https://en.wikipedia.org/wiki/Deadband
+   */
+  public static final class Deadbands {
+    /**
+     * Dead band value to be used for deciding when the driver joysticks are at
+     * neutral.
+     */
+    public static final double DRIVING = 0.055;
+  }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

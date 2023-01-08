@@ -10,12 +10,9 @@ package frc.robot.sensors;
 public class DummyGyro extends SimulatedGyro {
   public DummyGyro() {
     super(
-        /* close */ () -> {
-        },
-        /* calibrate */ () -> {
-        },
-        /* reset */ () -> {
-        },
+        /* close */ TRIVIAL_RUNNABLE,
+        /* calibrate */ TRIVIAL_RUNNABLE,
+        /* reset */ TRIVIAL_RUNNABLE,
         /* getAngle */ () -> {
           return 0;
         },

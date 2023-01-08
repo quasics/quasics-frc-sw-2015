@@ -4,6 +4,8 @@
 
 package frc.robot.utils;
 
+import java.util.function.Supplier;
+
 /**
  * General interface for things that will manipulate motor speeds (e.g., as
  * specified by the driver joysticks).
@@ -71,5 +73,98 @@ public interface SpeedModifier {
    */
   static SpeedModifier generateDeadbandSpeedModifier(double deadbandValue) {
     return generateDeadbandSpeedModifier(-Math.abs(deadbandValue), Math.abs(deadbandValue));
+  }
+
+  /**
+   * Generates SpeedModifiers that apply a scaling factor to an input speed (e.g.,
+   * to implement "turtle mode", etc.).
+   * 
+   * @param scalingFactor the scaling factor to be applied to an input speed
+   */
+  static SpeedModifier generateSpeedScaler(double scalingFactor) {
+    return (double inputPercentage) -> inputPercentage * scalingFactor;
+  }
+
+  /**
+   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above
+   * +85% (forward), or -75% (reverse)").
+   * 
+   * @param min the final minimum speed allowed for the robot (typically, >= -1.0)
+   * @param max the final maximum speed allowed for the robot (typically), <=
+   *            +1.0)
+   * 
+   * @see https://en.wikipedia.org/wiki/Speed_(1994_film)
+   */
+  static SpeedModifier generateSpeedBounder(double min, double max) {
+    // Handle cases where folks accidentally swap the min and max values (e.g.,
+    // min = +0.95 and highValue = -0.85). This way, we'll always use the
+    // lesser value for the low end, etc.
+    final double stableMin = Math.min(min, max);
+    final double stableMax = Math.max(min, max);
+
+    // Detect pathological cases, where the robot would never be allowed to stop,
+    // because it's speed *couldn't* go to 0.
+    if (stableMin > 0 || stableMax < 0) {
+      // This would be a pathological case, where the robot is never allowed to stop,
+      // because it's speed *couldn't* go to 0. I'm going to treat this as an error,
+      // and just not provide any limits.
+      System.err.println("**** Bullock/Reaves error detected: refusing to set speed bounds!");
+      return (double inputPercentage) -> inputPercentage;
+    }
+
+    return (double inputPercentage) -> {
+      if (inputPercentage > stableMax) {
+        return stableMax;
+      } else if (inputPercentage < stableMin) {
+        return stableMin;
+      } else
+        return inputPercentage;
+    };
+  }
+
+  /**
+   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above
+   * 85% (forward or backward)").
+   * 
+   * @param absoluteLimit the final maximum % speed allowed for the robot
+   *                      (positive or negative)
+   * 
+   * @see #generateSpeedBounder(double, double)
+   */
+  static SpeedModifier generateSpeedBounder(double absoluteLimit) {
+    absoluteLimit = Math.abs(absoluteLimit);
+    return generateSpeedBounder(-absoluteLimit, absoluteLimit);
+  }
+
+  /**
+   * Generates a SpeedModifier that implements support for "normal/turtle/turbo"
+   * mode decisions.
+   * 
+   * @param normalScalingFactor scaling factor used when in "normal" mode (e.g.,
+   *                            0.60)
+   * @param turtleEnabled       supplies the signal to see if turtle mode is
+   *                            active
+   * @param turtleScalingFactor scaling factor used when in "turtle" mode (e.g.,
+   *                            0.40)
+   * @param turboEnabled        supplies the signal to see if turbo mode is active
+   * @param turboScalingFactor  scaling factor used when in "normal" mode (e.g.,
+   *                            0.85)
+   */
+  static SpeedModifier generateTurtleTurboSpeedModifier(
+      final double normalScalingFactor,
+      final Supplier<Boolean> turtleEnabled, final double turtleScalingFactor,
+      final Supplier<Boolean> turboEnabled, final double turboScalingFactor) {
+    final SpeedModifier turtleScaler = generateSpeedScaler(turtleScalingFactor);
+    final SpeedModifier turboScaler = generateSpeedScaler(turboScalingFactor);
+    final SpeedModifier normalScaler = generateSpeedScaler(normalScalingFactor);
+    return (double inputPercentage) -> {
+      if (turtleEnabled.get()) {
+        return turtleScaler.adjustSpeed(inputPercentage);
+      } else if (turboEnabled.get()) {
+        return turboScaler.adjustSpeed(inputPercentage);
+      } else {
+        return normalScaler.adjustSpeed(inputPercentage);
+      }
+    };
   }
 }

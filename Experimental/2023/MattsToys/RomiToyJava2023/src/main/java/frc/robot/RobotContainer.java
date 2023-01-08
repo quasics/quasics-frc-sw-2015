@@ -14,6 +14,9 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
+import frc.robot.utils.RobotSettings;
+import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
+import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Drivetrain m_drivetrain = new Drivetrain(getSettingsForRomi());
   private final OnBoardIO m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
 
   // Assumes a gamepad plugged into channnel 0
@@ -54,6 +57,27 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  /** Returns the robot settings for use on a Romi. */
+  private static RobotSettings getSettingsForRomi() {
+    return new RobotSettings(
+        "Romi", // robotName
+        Constants.TRACK_WIDTH_METERS_ROMI,
+        1, // TODO(mjh): Check gear ratio for the Romi
+        // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
+        // supports this) - these are from 2021
+        new DriveProfileData(1.25, 5.7, 0.0176),
+        // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
+        // supports this) - these are from 2021
+        new PIDConfig(0.00352, 0, 0),
+        // Note: Romi docs indicate that it's the right motor that's inverted, but I run
+        // the Romi in reverse because the USB camera is mounted on my upper deck that
+        // way.
+        RobotSettings.DriveMotorInversion.Left,
+        RobotSettings.GyroType.Romi,
+        0 // pigeonCanID
+    );
   }
 
   /**

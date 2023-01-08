@@ -7,11 +7,81 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+
 import frc.robot.Constants;
+import frc.robot.utils.RobotSettings;
+import frc.robot.sensors.DummyGyro;
 
 public class Drivebase extends AbstractDriveBase {
+  class TrivialEncoderImpl implements TrivialEncoder {
+    final RelativeEncoder encoder;
+
+    TrivialEncoderImpl(RelativeEncoder encoder) {
+      this.encoder = encoder;
+    }
+
+    @Override
+    public double getPosition() {
+      return encoder.getPosition();
+    }
+
+    @Override
+    public double getVelocity() {
+      return encoder.getVelocity();
+    }
+
+    @Override
+    public void reset() {
+      encoder.setPosition(0);
+    }
+  }
+
+  /**
+   * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
+   * used).
+   */
+  static class PigeonStatusChecker implements Runnable {
+    private int lastMask = 0;
+    private com.ctre.phoenix.sensors.Pigeon2_Faults m_faults = new com.ctre.phoenix.sensors.Pigeon2_Faults();
+
+    private com.ctre.phoenix.sensors.WPI_Pigeon2 m_pigeon;
+
+    PigeonStatusChecker(com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon) {
+      m_pigeon = pigeon;
+    }
+
+    private String getFaultMessage() {
+      if (!m_faults.hasAnyFault()) {
+        return "No faults";
+      }
+      String retval = "";
+      retval += m_faults.APIError ? "APIError, " : "";
+      retval += m_faults.AccelFault ? "AccelFault, " : "";
+      retval += m_faults.BootIntoMotion ? "BootIntoMotion, " : "";
+      retval += m_faults.GyroFault ? "GyroFault, " : "";
+      retval += m_faults.HardwareFault ? "HardwareFault, " : "";
+      retval += m_faults.MagnetometerFault ? "MagnetometerFault, " : "";
+      retval += m_faults.ResetDuringEn ? "ResetDuringEn, " : "";
+      retval += m_faults.SaturatedAccel ? "SaturatedAccel, " : "";
+      retval += m_faults.SaturatedMag ? "SaturatedMag, " : "";
+      retval += m_faults.SaturatedRotVelocity ? "SaturatedRotVelocity, " : "";
+      return retval;
+    }
+
+    @Override
+    public void run() {
+      m_pigeon.getFaults(m_faults);
+      int mask = m_faults.toBitfield();
+      if (mask != lastMask) {
+        System.err.println("Pigeon reports: " + getFaultMessage());
+        lastMask = mask;
+      }
+    }
+  }
 
   /** Motor group for the left side. */
   final private MotorController m_leftMotors;
@@ -20,13 +90,25 @@ public class Drivebase extends AbstractDriveBase {
   final private MotorController m_rightMotors;
 
   /** Encoder for the left side distance computations. */
-  final private RelativeEncoder m_leftEncoder;
+  final private TrivialEncoder m_leftEncoder;
 
   /** Encoder for the right side distance computations. */
-  final private RelativeEncoder m_rightEncoder;
+  final private TrivialEncoder m_rightEncoder;
+
+  final private Gyro m_gyro;
+
+  /**
+   * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
+   * we're using one).
+   *
+   * @see #USE_PIGEON_IMU
+   */
+  final private PigeonStatusChecker m_pigeonChecker;
 
   /** Creates a new Drivebase. */
-  public Drivebase() {
+  public Drivebase(RobotSettings settings) {
+    super(settings);
+
     super.setName("Drivebase");
 
     /////////////////////////////////
@@ -52,8 +134,8 @@ public class Drivebase extends AbstractDriveBase {
 
     /////////////////////////////////
     // Set up the differential drive.
-    m_leftEncoder = leftRear.getEncoder();
-    m_rightEncoder = rightRear.getEncoder();
+    final RelativeEncoder leftLiveEncoder = leftRear.getEncoder();
+    final RelativeEncoder rightLiveEncoder = rightRear.getEncoder();
 
     m_leftMotors = new MotorControllerGroup(leftFront, leftRear);
     m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
@@ -75,16 +157,41 @@ public class Drivebase extends AbstractDriveBase {
     final double velocityAdjustment = adjustmentForGearing / 60;
     System.out.println("Velocity adj.: " + velocityAdjustment);
 
-    m_leftEncoder.setPositionConversionFactor(adjustmentForGearing);
-    m_rightEncoder.setPositionConversionFactor(adjustmentForGearing);
+    leftLiveEncoder.setPositionConversionFactor(adjustmentForGearing);
+    rightLiveEncoder.setPositionConversionFactor(adjustmentForGearing);
 
-    m_leftEncoder.setVelocityConversionFactor(velocityAdjustment);
-    m_rightEncoder.setVelocityConversionFactor(velocityAdjustment);
+    leftLiveEncoder.setVelocityConversionFactor(velocityAdjustment);
+    rightLiveEncoder.setVelocityConversionFactor(velocityAdjustment);
 
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    leftLiveEncoder.setPosition(0);
+    rightLiveEncoder.setPosition(0);
+
+    m_leftEncoder = new TrivialEncoderImpl(leftLiveEncoder);
+    m_rightEncoder = new TrivialEncoderImpl(rightLiveEncoder);
+
+    ////////////////////////////////////////
+    // Configure the gyro.
+    switch (settings.installedGyroType) {
+      case Pigeon2:
+        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(
+            settings.pigeonCanId);
+        m_gyro = pigeon;
+        m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
+        break;
+      case ADXRS450:
+        m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        m_pigeonChecker = null;
+        break;
+      case None:
+      default:
+        m_gyro = new DummyGyro();
+        m_pigeonChecker = null;
+        break;
+    }
   }
 
+  // Give the base class what it needs to set up the differential drive, and do
+  // our own h/w-specific setup.
   @Override
   public void finalizeSetup() {
     super.configureDifferentialDrive(m_leftMotors, m_rightMotors);
@@ -95,30 +202,35 @@ public class Drivebase extends AbstractDriveBase {
     m_diffDrive.setSafetyEnabled(true); // Turn on "drive safety" checks (should be default)
   }
 
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    super.periodic();
+
+    // Update current info on faults.
+    if (m_pigeonChecker != null) {
+      m_pigeonChecker.run();
+    }
   }
 
   @Override
-  public double getLeftDistanceMillimeters() {
-    return m_leftEncoder.getPosition() * 1000;
+  protected TrivialEncoder getLeftEncoder() {
+    return m_leftEncoder;
   }
 
   @Override
-  public double getRightDistanceMillimeters() {
-    return m_rightEncoder.getPosition() * 1000;
+  protected TrivialEncoder getRightEncoder() {
+    return m_rightEncoder;
+  }
+
+  @Override
+  public Gyro getZAxisGyro() {
+    return m_gyro;
   }
 
   @Override
   public double getWheelPlacementDiameterMillimeters() {
     // TODO Auto-generated method stub
     return 0;
-  }
-
-  @Override
-  public void resetEncoders() {
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
   }
 }

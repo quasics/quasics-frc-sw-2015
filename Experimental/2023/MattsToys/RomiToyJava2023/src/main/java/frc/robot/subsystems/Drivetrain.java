@@ -6,8 +6,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.sensors.RomiGyro;
+import frc.robot.utils.RobotSettings;
 
 public class Drivetrain extends AbstractDriveBase {
   private static final double kCountsPerRevolution = 1440.0;
@@ -20,17 +22,45 @@ public class Drivetrain extends AbstractDriveBase {
 
   // The Romi has onboard encoders that are hardcoded
   // to use DIO pins 4/5 and 6/7 for the left and right
-  private final Encoder m_leftEncoder = new Encoder(4, 5);
-  private final Encoder m_rightEncoder = new Encoder(6, 7);
+  private final Encoder m_leftEncoderLive = new Encoder(4, 5);
+  private final Encoder m_rightEncoderLive = new Encoder(6, 7);
 
   // Set up the RomiGyro
   private final RomiGyro m_gyro = new RomiGyro();
 
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
+  
+  class TrivialEncoderImpl implements TrivialEncoder {
+    final Encoder encoder;
+
+    TrivialEncoderImpl(Encoder encoder) {
+      this.encoder = encoder;
+    }
+
+    @Override
+    public double getPosition() {
+      return encoder.getDistance();
+    }
+
+    @Override
+    public double getVelocity() {
+      return encoder.getRate();
+    }
+
+    @Override
+    public void reset() {
+      encoder.reset();
+    }
+  }
+
+  private final TrivialEncoder m_trivialLeftEncoder = new TrivialEncoderImpl(m_leftEncoderLive);
+  private final TrivialEncoder m_trivialRightEncoder = new TrivialEncoderImpl(m_rightEncoderLive);
 
   /** Creates a new Drivetrain. */
-  public Drivetrain() {
+  public Drivetrain(RobotSettings robotSettings) {
+    super(robotSettings);
+  
     setName("Drivetrain");
 
     // We need to invert one side of the drivetrain so that positive voltages
@@ -39,8 +69,8 @@ public class Drivetrain extends AbstractDriveBase {
     m_rightMotor.setInverted(true);
 
     // Use inches as unit for encoder distances
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
+    m_leftEncoderLive.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
+    m_rightEncoderLive.setDistancePerPulse((Math.PI * kWheelDiameterMillimeters) / kCountsPerRevolution);
     resetEncoders();
 
     // Set up our base class.
@@ -60,19 +90,6 @@ public class Drivetrain extends AbstractDriveBase {
          or 5.551 inches. We then take into consideration the width of the tires.
     */
     return 70.0;
-  }
-
-  public void resetEncoders() {
-    m_leftEncoder.reset();
-    m_rightEncoder.reset();
-  }
-
-  public double getLeftDistanceMillimeters() {
-    return m_leftEncoder.getDistance();
-  }
-
-  public double getRightDistanceMillimeters() {
-    return m_rightEncoder.getDistance();
   }
 
   /**
@@ -135,7 +152,38 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  protected TrivialEncoder getLeftEncoder() {
+    return m_trivialLeftEncoder;
+  }
+
+  @Override
+  protected TrivialEncoder getRightEncoder() {
+    return m_trivialRightEncoder;
+  }
+
+  @Override
+  public Gyro getZAxisGyro() {
+    return new Gyro() {
+      @Override
+      public void close() throws Exception {}
+
+      @Override
+      public void calibrate() {}
+
+      @Override
+      public void reset() {
+        m_gyro.reset();
+      }
+
+      @Override
+      public double getAngle() {
+        return m_gyro.getAngleZ();
+      }
+
+      @Override
+      public double getRate() {
+        return m_gyro.getRateZ();
+      }
+    };
   }
 }

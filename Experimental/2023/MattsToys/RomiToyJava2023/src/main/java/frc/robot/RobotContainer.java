@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,6 +17,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
 import frc.robot.utils.RobotSettings;
+import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -53,10 +56,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    ///////////////////////////////////////////
+    // Drive base setup
+
+    // "Late initialization"
     m_drivetrain.finalizeSetup();
 
-    // Configure the button bindings
-    configureButtonBindings();
+    // Default command for the subsystem.
+    m_drivetrain.setDefaultCommand(getTankDriveCommand());
+
+    ///////////////////////////////////////////
+    // Configure the various command bindings
+    configureBindings();
   }
 
   /** Returns the robot settings for use on a Romi. */
@@ -86,11 +97,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
-    // Default command is tank drive. This will run unless another command
-    // is scheduled over it.
-    m_drivetrain.setDefaultCommand(getTankDriveCommand());
-
+  private void configureBindings() {
     // Example of how to use the onboard IO
     Trigger onboardButtonA = new Trigger(m_onboardIO::getButtonAPressed);
     onboardButtonA
@@ -128,7 +135,12 @@ public class RobotContainer {
    * @return the command to run in teleop
    */
   public Command getTankDriveCommand() {
-    return new TankDrive(
-        m_drivetrain, () -> -m_controller.getRawAxis(1), () -> m_controller.getRawAxis(2));
+    final int leftDriveAxis = 1;
+    final int rightDriveAxis = 2;
+    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
+    SpeedModifier compositeModifier = tankDriveDeadbandModifier;
+    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_controller.getRawAxis(leftDriveAxis));
+    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_controller.getRawAxis(rightDriveAxis));
+    return new TankDrive(m_drivetrain, leftSpeedControl, rightSpeedControl);
   }
 }

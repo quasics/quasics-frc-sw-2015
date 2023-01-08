@@ -3,6 +3,12 @@ package frc.robot.sensors;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class SimulatedGyro implements Gyro {
+  /**
+   * Convenient trivial implementation for when we have nothing to do for some
+   * piece of the simulation.
+   */
+  public static final Runnable TRIVIAL_RUNNABLE = () -> {};
+
   public interface DoubleFunction {
     double get();
   }

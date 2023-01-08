@@ -46,6 +46,7 @@ public class RobotSettings extends PropertyBasedObject {
   /** Track width of the robot (e.g., for path following support). */
   public final double trackWidthMeters;
 
+  /** Gear ratio for the robot (e.g., "10.71" would mean "10.71:1") */
   public final double gearRatio;
 
   /**
@@ -149,19 +150,29 @@ public class RobotSettings extends PropertyBasedObject {
     }
     this.robotName = s;
 
-    this.trackWidthMeters = getCheckedDouble(props, "trackWidthMeters", "Error fetching track width");
-    this.gearRatio = getCheckedDouble(props, "gearRatio", "Error fetching gear ratio");
+    this.trackWidthMeters = getCheckedDouble(props,
+        "trackWidthMeters", "Error fetching track width");
+    this.gearRatio = getCheckedDouble(props,
+        "gearRatio", "Error fetching gear ratio");
 
-    this.driveProfileKs = getCheckedDouble(props, "driveProfileKs", "Error fetching kS value for drive profile");
-    this.driveProfileKv = getCheckedDouble(props, "driveProfileKv", "Error fetching kV value for drive profile");
-    this.driveProfileKa = getCheckedDouble(props, "driveProfileKa", "Error fetching kA value for drive profile");
+    this.driveProfileKs = getCheckedDouble(props,
+        "driveProfileKs", "Error fetching kS value for drive profile");
+    this.driveProfileKv = getCheckedDouble(props,
+        "driveProfileKv", "Error fetching kV value for drive profile");
+    this.driveProfileKa = getCheckedDouble(props,
+        "driveProfileKa", "Error fetching kA value for drive profile");
 
-    this.driveControlKp = getCheckedDouble(props, "driveControlKp", "Error fetching kP value for drive control");
-    this.driveControlKi = getCheckedDouble(props, "driveControlKi", "Error fetching kI value for drive control");
-    this.driveControlKd = getCheckedDouble(props, "driveControlKd", "Error fetching kD value for drive control");
+    this.driveControlKp = getCheckedDouble(props,
+        "driveControlKp", "Error fetching kP value for drive control");
+    this.driveControlKi = getCheckedDouble(props,
+        "driveControlKi", "Error fetching kI value for drive control");
+    this.driveControlKd = getCheckedDouble(props,
+        "driveControlKd", "Error fetching kD value for drive control");
 
-    this.leftMotorsInverted = getCheckedBoolean(props, "leftMotorsInverted", "Error fetching left-side inversion");
-    this.rightMotorsInverted = getCheckedBoolean(props, "rightMotorsInverted", "Error fetching right-side inversion");
+    this.leftMotorsInverted = getCheckedBoolean(props,
+        "leftMotorsInverted", "Error fetching left-side inversion");
+    this.rightMotorsInverted = getCheckedBoolean(props,
+        "rightMotorsInverted", "Error fetching right-side inversion");
 
     GyroType g = getGyroTypeFromProperty(props, "installedGyroType");
     if (g == null) {
@@ -171,7 +182,8 @@ public class RobotSettings extends PropertyBasedObject {
 
     // The "pigeonCanId" field is only valid if we're working *with* a Pigeon2.
     if (this.installedGyroType == GyroType.Pigeon2) {
-      this.pigeonCanId = getCheckedInteger(props, "pigeonCanId", "Error fetching CAN ID for installed Pigeon2");
+      this.pigeonCanId = getCheckedInteger(props,
+          "pigeonCanId", "Error fetching CAN ID for installed Pigeon2");
     } else {
       this.pigeonCanId = 0;
     }

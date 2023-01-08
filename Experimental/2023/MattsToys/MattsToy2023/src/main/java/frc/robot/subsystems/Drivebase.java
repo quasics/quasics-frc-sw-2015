@@ -95,6 +95,12 @@ public class Drivebase extends AbstractDriveBase {
   /** Encoder for the right side distance computations. */
   final private TrivialEncoder m_rightEncoder;
 
+  /**
+   * Gyro installed on the robot, based on settings provided to constructor.
+   * 
+   * This will either be a Pigeon2, an ADXRS450, or a DummyGyro (which always
+   * reports "no movement").
+   */
   final private Gyro m_gyro;
 
   /**

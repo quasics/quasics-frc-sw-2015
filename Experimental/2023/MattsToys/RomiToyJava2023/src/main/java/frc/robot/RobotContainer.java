@@ -27,25 +27,29 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain(getSettingsForRomi());
   private final OnBoardIO m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
 
-  // Assumes a gamepad plugged into channnel 0
-  private final Joystick m_controller = new Joystick(0);
+  // Assumes an Xbox Controller plugged into channnel 0
+  private final XboxController m_xboxController = new XboxController(0);
 
   // Create SmartDashboard chooser for autonomous routines
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-  // NOTE: The I/O pin functionality of the 5 exposed I/O pins depends on the hardware "overlay"
-  // that is specified when launching the wpilib-ws server on the Romi raspberry pi.
-  // By default, the following are available (listed in order from inside of the board to outside):
+  // NOTE: The I/O pin functionality of the 5 exposed I/O pins depends on the
+  // hardware "overlay" that is specified when launching the wpilib-ws server on
+  // the Romi raspberry pi.
+  //
+  // By default, the following are available (listed in order from inside of the
+  // board to outside):
   // - DIO 8 (mapped to Arduino pin 11, closest to the inside of the board)
   // - Analog In 0 (mapped to Analog Channel 6 / Arduino Pin 4)
   // - Analog In 1 (mapped to Analog Channel 2 / Arduino Pin 20)
@@ -54,7 +58,9 @@ public class RobotContainer {
   //
   // Your subsystem configuration should take the overlays into account
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     ///////////////////////////////////////////
     // Drive base setup
@@ -92,10 +98,10 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureBindings() {
     // Example of how to use the onboard IO
@@ -126,7 +132,9 @@ public class RobotContainer {
    */
   public Command getArcadeDriveCommand() {
     return new ArcadeDrive(
-        m_drivetrain, () -> -m_controller.getRawAxis(1), () -> m_controller.getRawAxis(2));
+        m_drivetrain,
+        () -> -m_xboxController.getLeftY(),
+        () -> m_xboxController.getLeftX());
   }
 
   /**
@@ -135,12 +143,31 @@ public class RobotContainer {
    * @return the command to run in teleop
    */
   public Command getTankDriveCommand() {
-    final int leftDriveAxis = 1;
-    final int rightDriveAxis = 2;
+    // Some simple bounds on driver inputs.
     SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
-    SpeedModifier compositeModifier = tankDriveDeadbandModifier;
-    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_controller.getRawAxis(leftDriveAxis));
-    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_controller.getRawAxis(rightDriveAxis));
+    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
+
+    // Mode signals for turtle & turbo.
+    Supplier<Boolean> turtleSignalSupplier = () -> {
+      return m_xboxController.getLeftBumper();
+    };
+    Supplier<Boolean> turboSignalSupplier = () -> {
+      return m_xboxController.getRightBumper();
+    };
+
+    // Build the speed modifier for normal / turtle / turbo support.
+    SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
+        Constants.SpeedLimits.MAX_SPEED_NORMAL,
+        turtleSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURTLE,
+        turboSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURBO);
+
+    // Build the overall chain used to translate driver inputs into motor %ages.
+    SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
+        modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
+
+    // Build the actual tank drive command.
+    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());
+    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getRightY());
     return new TankDrive(m_drivetrain, leftSpeedControl, rightSpeedControl);
   }
 }

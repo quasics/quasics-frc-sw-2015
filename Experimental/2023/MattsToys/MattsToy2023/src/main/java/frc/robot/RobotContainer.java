@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.RobotSettings;
+import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 
@@ -30,8 +34,16 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    //////////////////////////////////////
+    // Drive base setup
+
+    // "Late initialization"
     m_driveBase.finalizeSetup();
 
+    // Default command for the subsystem.
+    m_driveBase.setDefaultCommand(getTankDriveCommand());
+
+    //////////////////////////////////////
     // Configure the trigger bindings
     configureBindings();
   }
@@ -144,5 +156,32 @@ public class RobotContainer {
   /** Returns default settings (for the 2022 FRC robot). */
   private static RobotSettings getDefaultSettings() {
     return getSettingsForSally();
+  }
+
+  /**
+   * Use this to pass the teleop command to the main {@link Robot} class.
+   *
+   * @return the command to run in teleop
+   */
+  public Command getTankDriveCommand() {
+    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
+    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
+
+    Supplier<Boolean> turtleSignalSupplier = () -> {
+      return m_driverController.leftBumper().getAsBoolean();
+    };
+    Supplier<Boolean> turboSignalSupplier = () -> {
+      return m_driverController.rightBumper().getAsBoolean();
+    };
+
+    SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
+        Constants.SpeedLimits.MAX_SPEED_NORMAL,
+        turtleSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURTLE,
+        turboSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURBO);
+    SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
+        modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
+    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());
+    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getRightY());
+    return new TankDrive(m_driveBase, leftSpeedControl, rightSpeedControl);
   }
 }

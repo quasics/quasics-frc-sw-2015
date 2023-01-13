@@ -30,7 +30,7 @@ public class Drivetrain extends AbstractDriveBase {
 
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
-  
+
   class TrivialEncoderImpl implements TrivialEncoder {
     final Encoder encoder;
 
@@ -60,7 +60,7 @@ public class Drivetrain extends AbstractDriveBase {
   /** Creates a new Drivetrain. */
   public Drivetrain(RobotSettings robotSettings) {
     super(robotSettings);
-  
+
     setName("Drivetrain");
 
     // We need to invert one side of the drivetrain so that positive voltages
@@ -75,6 +75,12 @@ public class Drivetrain extends AbstractDriveBase {
 
     // Set up our base class.
     configureDifferentialDrive(m_leftMotor, m_rightMotor);
+
+    // It looks like the simulation on the Romi may not feed the drive safety checks
+    // as quickly as needed, so we'll disable the checks here. (This is *not*
+    // generally encouraged, but it both gets rid of repeated warnings in the
+    // Terminal and also prevents the drive from "stuttering".)
+    m_diffDrive.setSafetyEnabled(false);
   }
 
   public void finalizeSetup() {
@@ -82,13 +88,13 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   public double getWheelPlacementDiameterMillimeters() {
-    /* 
-       Quoting from sample Romi code provided by WPILib:
-         The standard Romi chassis found here,
-         https://www.pololu.com/category/203/romi-chassis-kits,
-         has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
-         or 5.551 inches. We then take into consideration the width of the tires.
-    */
+    /*
+     * Quoting from sample Romi code provided by WPILib:
+     * The standard Romi chassis found here,
+     * https://www.pololu.com/category/203/romi-chassis-kits,
+     * has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
+     * or 5.551 inches. We then take into consideration the width of the tires.
+     */
     return 70.0;
   }
 
@@ -165,10 +171,12 @@ public class Drivetrain extends AbstractDriveBase {
   public Gyro getZAxisGyro() {
     return new Gyro() {
       @Override
-      public void close() throws Exception {}
+      public void close() throws Exception {
+      }
 
       @Override
-      public void calibrate() {}
+      public void calibrate() {
+      }
 
       @Override
       public void reset() {

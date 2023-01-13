@@ -147,6 +147,11 @@ public class RobotContainer {
     SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
     SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
 
+    // Matt's Romi has additional hardware (upper deck, camera), which makes it
+    // easier to work with if we treat the front end as the back (since the camera
+    // is easiest to mount pointing towards the nominal rear).
+    SpeedModifier flippedRomiModifier = SpeedModifier.generateSpeedScaler(-1);
+
     // Mode signals for turtle & turbo.
     Supplier<Boolean> turtleSignalSupplier = () -> {
       return m_xboxController.getLeftBumper();
@@ -163,7 +168,8 @@ public class RobotContainer {
 
     // Build the overall chain used to translate driver inputs into motor %ages.
     SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
-        modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
+        modeModifier
+            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage))));
 
     // Build the actual tank drive command.
     Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());

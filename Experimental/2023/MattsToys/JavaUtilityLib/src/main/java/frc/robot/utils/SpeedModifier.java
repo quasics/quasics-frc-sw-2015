@@ -5,18 +5,19 @@
 package frc.robot.utils;
 
 import java.util.function.Supplier;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 /**
- * General interface for things that will manipulate motor speeds (e.g., as
- * specified by the driver joysticks).
+ * General interface for things that will manipulate motor speeds (e.g., as specified by the driver
+ * joysticks).
  * 
- * Note: I expect that this interface will often just be implemented via a
- * lambda, or by using convenience methods defined on the interface.
+ * Note: I expect that this interface will often just be implemented via a lambda, or by using
+ * convenience methods defined on the interface.
  */
 public interface SpeedModifier {
   /**
-   * Takes the specified input %age, and applies some type of modifier to it
-   * (e.g., for "dead band" handling, or speed caps, etc.).
+   * Takes the specified input %age, and applies some type of modifier to it (e.g., for "dead band"
+   * handling, or speed caps, etc.).
    * 
    * @param inputPercentage input %age of motor speed, to be adjusted
    * @return the modified value for the speed to be applied to a motor
@@ -27,15 +28,14 @@ public interface SpeedModifier {
   // Convenience functions, to create commont types of SpeedControllers
 
   /**
-   * Generates a speed modifier that implements a "deadband", where if
-   * lowValue < inputPercentage < highValue, then we'll treat it as "don't move";
-   * otherwise, we'll just return the input speed.
+   * Generates a speed modifier that implements a "deadband", where if lowValue < inputPercentage <
+   * highValue, then we'll treat it as "don't move"; otherwise, we'll just return the input speed.
    * 
-   * This is meant to compensate for things like a joystick not being fully
-   * calibrated, so that it will appear to be reporting a non-zero value when the
-   * driver isn't actually pushing the stick in one direction or another.
+   * This is meant to compensate for things like a joystick not being fully calibrated, so that it
+   * will appear to be reporting a non-zero value when the driver isn't actually pushing the stick
+   * in one direction or another.
    * 
-   * @param lowValue  the lower limit for the deadband (e.g., -0.05)
+   * @param lowValue the lower limit for the deadband (e.g., -0.05)
    * @param highValue the upper limit for the deadband (e.g., -0.05)
    * @return a SpeedModifier that handles deadband computations
    * 
@@ -50,8 +50,7 @@ public interface SpeedModifier {
 
     return (double inputPercentage) -> {
       // Does the input percentage fall into the deadband?
-      if (inputPercentage > sanityCheckedLowValue
-          && inputPercentage < sanityCheckedHighValue) {
+      if (inputPercentage > sanityCheckedLowValue && inputPercentage < sanityCheckedHighValue) {
         return 0;
       }
 
@@ -61,12 +60,12 @@ public interface SpeedModifier {
   }
 
   /**
-   * Generates a speed modifier that handles a "deadband", where if
-   * Math.abs(input) < Math.abs(deadband), then we'll treat it as "don't move";
-   * otherwise, we'll just return the input speed.
+   * Generates a speed modifier that handles a "deadband", where if Math.abs(input) <
+   * Math.abs(deadband), then we'll treat it as "don't move"; otherwise, we'll just return the input
+   * speed.
    * 
-   * @param deadbandValue the value (+/-) for which an input speed should be
-   *                      treated as effectively 0
+   * @param deadbandValue the value (+/-) for which an input speed should be treated as effectively
+   *        0
    * @return a SpeedModifier that handles deadband computations
    * 
    * @see https://en.wikipedia.org/wiki/Deadband
@@ -76,8 +75,8 @@ public interface SpeedModifier {
   }
 
   /**
-   * Generates SpeedModifiers that apply a scaling factor to an input speed (e.g.,
-   * to implement "turtle mode", etc.).
+   * Generates SpeedModifiers that apply a scaling factor to an input speed (e.g., to implement
+   * "turtle mode", etc.).
    * 
    * @param scalingFactor the scaling factor to be applied to an input speed
    */
@@ -86,12 +85,11 @@ public interface SpeedModifier {
   }
 
   /**
-   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above
-   * +85% (forward), or -75% (reverse)").
+   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above +85% (forward),
+   * or -75% (reverse)").
    * 
    * @param min the final minimum speed allowed for the robot (typically, >= -1.0)
-   * @param max the final maximum speed allowed for the robot (typically), <=
-   *            +1.0)
+   * @param max the final maximum speed allowed for the robot (typically), <= +1.0)
    * 
    * @see https://en.wikipedia.org/wiki/Speed_(1994_film)
    */
@@ -123,11 +121,10 @@ public interface SpeedModifier {
   }
 
   /**
-   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above
-   * 85% (forward or backward)").
+   * Provides an absolute bounding on speeds (e.g., "don't let the speed get above 85% (forward or
+   * backward)").
    * 
-   * @param absoluteLimit the final maximum % speed allowed for the robot
-   *                      (positive or negative)
+   * @param absoluteLimit the final maximum % speed allowed for the robot (positive or negative)
    * 
    * @see #generateSpeedBounder(double, double)
    */
@@ -137,21 +134,15 @@ public interface SpeedModifier {
   }
 
   /**
-   * Generates a SpeedModifier that implements support for "normal/turtle/turbo"
-   * mode decisions.
+   * Generates a SpeedModifier that implements support for "normal/turtle/turbo" mode decisions.
    * 
-   * @param normalScalingFactor scaling factor used when in "normal" mode (e.g.,
-   *                            0.60)
-   * @param turtleEnabled       supplies the signal to see if turtle mode is
-   *                            active
-   * @param turtleScalingFactor scaling factor used when in "turtle" mode (e.g.,
-   *                            0.40)
-   * @param turboEnabled        supplies the signal to see if turbo mode is active
-   * @param turboScalingFactor  scaling factor used when in "normal" mode (e.g.,
-   *                            0.85)
+   * @param normalScalingFactor scaling factor used when in "normal" mode (e.g., 0.60)
+   * @param turtleEnabled supplies the signal to see if turtle mode is active
+   * @param turtleScalingFactor scaling factor used when in "turtle" mode (e.g., 0.40)
+   * @param turboEnabled supplies the signal to see if turbo mode is active
+   * @param turboScalingFactor scaling factor used when in "normal" mode (e.g., 0.85)
    */
-  static SpeedModifier generateTurtleTurboSpeedModifier(
-      final double normalScalingFactor,
+  static SpeedModifier generateTurtleTurboSpeedModifier(final double normalScalingFactor,
       final Supplier<Boolean> turtleEnabled, final double turtleScalingFactor,
       final Supplier<Boolean> turboEnabled, final double turboScalingFactor) {
     final SpeedModifier turtleScaler = generateSpeedScaler(turtleScalingFactor);
@@ -165,6 +156,22 @@ public interface SpeedModifier {
       } else {
         return normalScaler.adjustSpeed(inputPercentage);
       }
+    };
+  }
+
+  /**
+   * Generates a SpeedModifier that wraps the WPILib "slew rate limiter" functionality, in order to
+   * cap the acceleration rate (and smoothing out the speed curve).
+   * 
+   * @param maximumSlewRate maximum change in the speed (as an absolute %age) per second of the
+   *        robot (e.g., .5 means it would take 2 seconds to go to full speed)
+   * 
+   * @see edu.wpi.first.math.filter.SlewRateLimiter
+   */
+  public static SpeedModifier generateSlewRateLimitModifier(double maximumSlewRate) {
+    final SlewRateLimiter filter = new SlewRateLimiter(maximumSlewRate);
+    return (double inputPercentage) -> {
+      return filter.calculate(inputPercentage);
     };
   }
 }

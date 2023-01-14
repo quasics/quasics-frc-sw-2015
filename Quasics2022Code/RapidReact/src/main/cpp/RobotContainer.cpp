@@ -87,7 +87,7 @@ RobotContainer::RobotContainer()
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         } else {
-          joystickValue = scalingFactor * -1 *
+          joystickValue = scalingFactor * +1 *
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }

@@ -6,8 +6,9 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutonomousDistance;
@@ -18,12 +19,14 @@ import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SpeedModifier;
+import frc.robot.utils.SwitchModeSpeedSupplier;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -43,6 +46,14 @@ public class RobotContainer {
 
   // Create SmartDashboard chooser for autonomous routines
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  /**
+   * Used to store if "switch mode" is engaged (i.e., if we're now treating
+   * the rear of the robot as the front).
+   * 
+   * This is set up by getTankDriveCommand().
+   */
+  private SwitchModeSpeedSupplier m_switchModeHandler;
 
   // NOTE: The I/O pin functionality of the 5 exposed I/O pins depends on the
   // hardware "overlay" that is specified when launching the wpilib-ws server on
@@ -114,6 +125,16 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
     m_chooser.addOption("Auto Routine Time", new AutonomousTime(m_drivetrain));
     SmartDashboard.putData(m_chooser);
+
+    // Add a command (triggered by the "Y" button) to trigger "switch mode" change.
+    Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
+    final Command changeDirectionCommand = runOnce(() -> {
+      System.out.println("Switching heading mode");
+      m_switchModeHandler.toggleSwitchMode();
+    });
+    yButton
+        // .debounce(0.1)   // Seems unreliable on Romi (too slow for feedback?)
+        .onTrue(changeDirectionCommand);
   }
 
   /**
@@ -171,9 +192,16 @@ public class RobotContainer {
         modeModifier
             .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage))));
 
+    // Generate the suppliers used to get "raw" speed signals for left and right.
+    Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());
+    Supplier<Double> rightStickSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getRightY());
+    m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+
+    // Get the (final) suppliers that will be polled for the left/right side speeds.
+    Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
+    Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
+
     // Build the actual tank drive command.
-    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());
-    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getRightY());
     return new TankDrive(m_drivetrain, leftSpeedControl, rightSpeedControl);
   }
 }

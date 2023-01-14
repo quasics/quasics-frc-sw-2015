@@ -8,36 +8,62 @@ import java.util.function.Supplier;
 
 /** Add your docs here. */
 public class SwitchModeSpeedSupplier {
-  /** Used to determine if the robot is currently in "switched mode". */
-  final Supplier<Boolean> m_directionsSwitchedSupplier;
+  /** Supplies speed for left side of robot. */
+  final Supplier<Double> m_leftSpeedSupplier;
 
-  /** Supplies speed for left side of robot in "normal" mode. */
-  final Supplier<Double> m_leftStickSupplier;
-  /** Supplies speed for right side of robot in "normal" mode. */
-  final Supplier<Double> m_rightStickSupplier;
+  /** Supplies speed for right side of robot. */
+  final Supplier<Double> m_rightSpeedSupplier;
 
-  public SwitchModeSpeedSupplier(Supplier<Double> rawLeftStickSupplier,
-      Supplier<Double> rawRightStickSupplier, Supplier<Boolean> directionsSwitchedSupplier) {
-    m_leftStickSupplier = rawLeftStickSupplier;
-    m_rightStickSupplier = rawRightStickSupplier;
-    m_directionsSwitchedSupplier = directionsSwitchedSupplier;
+  /**
+   * Used to store if "switch mode" is engaged (i.e., if we're now treating
+   * the rear of the robot as the front).
+   */
+  private boolean m_switchModeEngaged = false;
+
+  /**
+   * Constructor.
+   * 
+   * @param leftStickSupplier  used to get current value of left driver joystick
+   * @param rightStickSupplier used to get current value of right driver joystick
+   */
+  public SwitchModeSpeedSupplier(Supplier<Double> leftStickSupplier, Supplier<Double> rightStickSupplier) {
+    m_leftSpeedSupplier = () -> {
+      if (m_switchModeEngaged) {
+        return -rightStickSupplier.get();
+      }
+      return leftStickSupplier.get();
+    };
+  
+    m_rightSpeedSupplier = () -> {
+      if (m_switchModeEngaged) {
+        return -leftStickSupplier.get();
+      }
+      return rightStickSupplier.get();
+    };
+    }
+
+  /**
+   * Use this to toggle "switch mode" (from engaged -> not, and vice versa).
+   */
+  public void toggleSwitchMode() {
+    m_switchModeEngaged = !m_switchModeEngaged;
+  }
+
+  /**
+   * Use this to determine if "switch mode" is engaged (i.e., if we're now
+   * treating the rear of the robot as the front).
+   * 
+   * @return true iff "switch mode" is engaged
+   */
+  public boolean switchModeEngaged() {
+    return m_switchModeEngaged;
   }
 
   public Supplier<Double> getLeftSpeedSupplier() {
-    return () -> {
-      if (m_directionsSwitchedSupplier.get()) {
-        return -m_rightStickSupplier.get();
-      }
-      return m_leftStickSupplier.get();
-    };
+    return m_leftSpeedSupplier;
   }
 
   public Supplier<Double> getRightSpeedSupplier() {
-    return () -> {
-      if (m_directionsSwitchedSupplier.get()) {
-        return -m_leftStickSupplier.get();
-      }
-      return m_rightStickSupplier.get();
-    };
+    return m_rightSpeedSupplier;
   }
 }

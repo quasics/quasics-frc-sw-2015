@@ -14,11 +14,11 @@
 #include <iostream>
 #include <wpi/numbers>
 
-// Note: Mae appears to have the left motors marked as "Inverted" at the
+// Note: Mae and Sally appear to have the left motors marked as "Inverted" at the
 // firmware settings/configuration level, and thus we need to override
 // that when we're trying to talk to it in the same way that we do
-// Nike and Sally.
-#undef TARGETING_MAE_2021_ROBOT
+// Nike.
+#define TARGETING_MAE_2021_ROBOT
 
 Drivebase::Drivebase() {
   SetName("Drivebase");

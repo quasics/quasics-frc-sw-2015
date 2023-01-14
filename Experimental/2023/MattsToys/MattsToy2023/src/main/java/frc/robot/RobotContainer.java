@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.Supplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,6 +17,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SpeedModifier;
+import frc.robot.utils.SwitchModeSpeedSupplier;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 
@@ -31,6 +34,14 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  /**
+   * Used to manage "switch mode" (both providing the speed suppliers, and
+   * managing current "switch mode" state).
+   * 
+   * This is set up by getTankDriveCommand().
+   */
+  private SwitchModeSpeedSupplier m_switchModeHandler;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,6 +69,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // Add a command (triggered by the "Y" button on the driver controller) to trigger "switch mode" change.
+    Trigger yButton = m_driverController.y();
+    final Command changeDirectionCommand = runOnce(() -> {
+      if (m_switchModeHandler != null) {
+        System.out.println("Switching heading mode");
+        m_switchModeHandler.toggleSwitchMode();
+      }
+    });
+    yButton
+        .debounce(0.1)
+        .onTrue(changeDirectionCommand);
+
     // // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -76,7 +99,6 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return Autos.exampleAuto();
   }
-
 
   /** Returns the robot settings for Sally (2022 robot). */
   private static RobotSettings getSettingsForSally() {
@@ -164,9 +186,11 @@ public class RobotContainer {
    * @return the command to run in teleop
    */
   public Command getTankDriveCommand() {
+    // Some simple bounds on driver inputs.
     SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
     SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
 
+    // Mode signals for turtle & turbo.
     Supplier<Boolean> turtleSignalSupplier = () -> {
       return m_driverController.leftBumper().getAsBoolean();
     };
@@ -174,14 +198,26 @@ public class RobotContainer {
       return m_driverController.rightBumper().getAsBoolean();
     };
 
+    // Build the speed modifier for normal / turtle / turbo support.
     SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
         Constants.SpeedLimits.MAX_SPEED_NORMAL,
         turtleSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURTLE,
         turboSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURBO);
+
+    // Build the overall chain used to translate driver inputs into motor %ages.
     SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
         modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
-    Supplier<Double> leftSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());
-    Supplier<Double> rightSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getRightY());
+
+    // Generate the suppliers used to get "raw" speed signals for left and right.
+    Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());
+    Supplier<Double> rightStickSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getRightY());
+    m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+
+    // Get the (final) suppliers that will be polled for the left/right side speeds.
+    Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
+    Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
+
+    // Build the actual tank drive command.
     return new TankDrive(m_driveBase, leftSpeedControl, rightSpeedControl);
   }
 }

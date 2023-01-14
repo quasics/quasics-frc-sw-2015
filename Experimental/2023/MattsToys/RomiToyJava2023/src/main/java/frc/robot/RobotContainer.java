@@ -48,8 +48,8 @@ public class RobotContainer {
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /**
-   * Used to store if "switch mode" is engaged (i.e., if we're now treating
-   * the rear of the robot as the front).
+   * Used to manage "switch mode" (both providing the speed suppliers, and
+   * managing current "switch mode" state).
    * 
    * This is set up by getTankDriveCommand().
    */
@@ -129,11 +129,13 @@ public class RobotContainer {
     // Add a command (triggered by the "Y" button) to trigger "switch mode" change.
     Trigger yButton = new JoystickButton(m_xboxController, XboxController.Button.kY.value);
     final Command changeDirectionCommand = runOnce(() -> {
-      System.out.println("Switching heading mode");
-      m_switchModeHandler.toggleSwitchMode();
+      if (m_switchModeHandler != null) {
+        System.out.println("Switching heading mode");
+        m_switchModeHandler.toggleSwitchMode();
+      }
     });
     yButton
-        // .debounce(0.1)   // Seems unreliable on Romi (too slow for feedback?)
+        // .debounce(0.1) // Seems unreliable on Romi (too slow for feedback?)
         .onTrue(changeDirectionCommand);
   }
 

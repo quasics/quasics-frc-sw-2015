@@ -4,14 +4,17 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static frc.robot.Constants.*;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Deadbands;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.SpeedLimits;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
@@ -22,9 +25,12 @@ import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -32,8 +38,8 @@ public class RobotContainer {
   private final Drivebase m_driveBase = new Drivebase(getDefaultSettings());
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
 
   /**
    * Used to manage "switch mode" (both providing the speed suppliers, and
@@ -43,7 +49,9 @@ public class RobotContainer {
    */
   private SwitchModeSpeedSupplier m_switchModeHandler;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     //////////////////////////////////////
     // Drive base setup
@@ -60,16 +68,22 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
-    // Add a command (triggered by the "Y" button on the driver controller) to trigger "switch mode" change.
+    // Add a command (triggered by the "Y" button on the driver controller) to
+    // trigger "switch mode" change.
     Trigger yButton = m_driverController.y();
     final Command changeDirectionCommand = runOnce(() -> {
       if (m_switchModeHandler != null) {
@@ -83,9 +97,10 @@ public class RobotContainer {
 
     // // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
     // // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
@@ -104,8 +119,8 @@ public class RobotContainer {
   private static RobotSettings getSettingsForSally() {
     return new RobotSettings(
         "Sally", // robotName
-        Constants.TRACK_WIDTH_INCHES_SALLY / Constants.INCHES_PER_METER,
-        Constants.DRIVE_BASE_GEAR_RATIO_SALLY,
+        TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
+        DRIVE_BASE_GEAR_RATIO_SALLY,
         // TODO(mjh) Calibrate Sally's values for kS, kV, and kA - these are from
         // 2021/Mae
         new DriveProfileData(0.31, 2.74, 0.249),
@@ -121,8 +136,8 @@ public class RobotContainer {
   private static RobotSettings getSettingsForMae() {
     return new RobotSettings(
         "Mae", // robotName
-        Constants.TRACK_WIDTH_INCHES_MAE / Constants.INCHES_PER_METER,
-        Constants.DRIVE_BASE_GEAR_RATIO_MAE,
+        TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
+        DRIVE_BASE_GEAR_RATIO_MAE,
         // Drive configuration constants (computed 01Mar2022 w/ SysId)
         new DriveProfileData(
             /* kS= */0.13895,
@@ -140,8 +155,8 @@ public class RobotContainer {
   private static RobotSettings getSettingsForNike() {
     return new RobotSettings(
         "Nike", // robotName
-        Constants.TRACK_WIDTH_INCHES_NIKE / Constants.INCHES_PER_METER,
-        Constants.DRIVE_BASE_GEAR_RATIO_NIKE,
+        TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
+        DRIVE_BASE_GEAR_RATIO_NIKE,
         // Drive configuration constants (computed 03Mar2022 w/ SysId)
         new DriveProfileData(
             /* kS= */0.14961,
@@ -158,7 +173,7 @@ public class RobotContainer {
   private static RobotSettings getSettingsForRomi() {
     return new RobotSettings(
         "Romi", // robotName
-        Constants.TRACK_WIDTH_METERS_ROMI,
+        TRACK_WIDTH_METERS_ROMI,
         1, // TODO(mjh): Check gear ratio for the Romi
         // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
         // supports this) - these are from 2021
@@ -187,8 +202,8 @@ public class RobotContainer {
    */
   public Command getTankDriveCommand() {
     // Some simple bounds on driver inputs.
-    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
-    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
+    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
+    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
 
     // Mode signals for turtle & turbo.
     Supplier<Boolean> turtleSignalSupplier = () -> {
@@ -200,13 +215,16 @@ public class RobotContainer {
 
     // Build the speed modifier for normal / turtle / turbo support.
     SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
-        Constants.SpeedLimits.MAX_SPEED_NORMAL,
-        turtleSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURTLE,
-        turboSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURBO);
+        SpeedLimits.MAX_SPEED_NORMAL,
+        turtleSignalSupplier, SpeedLimits.MAX_SPEED_TURTLE,
+        turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO);
+
+    // Cap the acceleration rate
+    SpeedModifier slewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
 
     // Build the overall chain used to translate driver inputs into motor %ages.
     SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
-        modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
+        slewRateModifier.adjustSpeed(modeModifier.adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage))));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
     Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());

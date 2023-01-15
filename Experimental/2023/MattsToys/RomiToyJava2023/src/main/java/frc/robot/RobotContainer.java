@@ -4,12 +4,19 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static frc.robot.Constants.*;
+
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutonomousDistance;
 import frc.robot.commands.AutonomousTime;
@@ -22,12 +29,6 @@ import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -91,7 +92,7 @@ public class RobotContainer {
   private static RobotSettings getSettingsForRomi() {
     return new RobotSettings(
         "Romi", // robotName
-        Constants.TRACK_WIDTH_METERS_ROMI,
+        TRACK_WIDTH_METERS_ROMI,
         1, // TODO(mjh): Check gear ratio for the Romi
         // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
         // supports this) - these are from 2021
@@ -167,8 +168,8 @@ public class RobotContainer {
    */
   public Command getTankDriveCommand() {
     // Some simple bounds on driver inputs.
-    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Constants.Deadbands.DRIVING);
-    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(Constants.SpeedLimits.ABSOLUTE_LIMIT);
+    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
+    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
 
     // Matt's Romi has additional hardware (upper deck, camera), which makes it
     // easier to work with if we treat the front end as the back (since the camera
@@ -183,16 +184,19 @@ public class RobotContainer {
       return m_xboxController.getRightBumper();
     };
 
+    // Cap the acceleration rate
+    SpeedModifier slewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+
     // Build the speed modifier for normal / turtle / turbo support.
     SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
-        Constants.SpeedLimits.MAX_SPEED_NORMAL,
-        turtleSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURTLE,
-        turboSignalSupplier, Constants.SpeedLimits.MAX_SPEED_TURBO);
+        SpeedLimits.MAX_SPEED_NORMAL,
+        turtleSignalSupplier, SpeedLimits.MAX_SPEED_TURTLE,
+        turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO);
 
     // Build the overall chain used to translate driver inputs into motor %ages.
     SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
-        modeModifier
-            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage))));
+        slewRateModifier.adjustSpeed(modeModifier
+            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage)))));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
     Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());

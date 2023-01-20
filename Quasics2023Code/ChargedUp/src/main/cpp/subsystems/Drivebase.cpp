@@ -4,7 +4,19 @@
 
 #include "subsystems/Drivebase.h"
 
-Drivebase::Drivebase() = default;
+Drivebase::Drivebase() {
+    SetName("Drivebase");
+
+}
+
+
+
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {}
+void Drivebase::Periodic(){
+
+}
+
+void Drivebase::TankDrive(double leftPower, double rightPower) {
+    m_drive->TankDrive(leftPower, rightPower);
+}

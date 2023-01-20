@@ -49,6 +49,26 @@ namespace SensorIds {
 constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
     22.0_in;  // This is track width for Mae. Sally
               // is  22.0_in;
+/**
+ * 
+ * 
+ * 
+ * Constants for the self balancing feature
+ * 
+ * 
+ * 
+*/
+
+namespace SelfBalancingConstants{
+  constexpr auto ks = 0;
+  constexpr auto kP = 0;
+  constexpr auto kI = 0;
+  constexpr auto kD = 0;
+}
+
+
+
+
 
 namespace SallyDriverConstants {
   constexpr auto ks = 0.18082_V;

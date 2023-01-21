@@ -4,16 +4,28 @@
 
 #include "commands/SelfBalancing.h"
 
-SelfBalancing::SelfBalancing(Drivetrain* drivebase) {
+SelfBalancing::SelfBalancing(Drivetrain* drivebase) : m_drivebase(drivebase){
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
+  m_drivebase->ResetGyro();
+  noFeedFowardPower = false;
+  activatePID = false;
   pid.Reset();
-  m_drivebase->TankDrive(0.4, 0.4);
   pastAngle = m_drivebase->GetGyroAngleX();
+/*
+  if (pastAngle > 0){
+    slopeOfRamp = -1;
+  }
+  else{
+    slopeOfRamp = 1;
+  }
+*/
+  m_drivebase->TankDrive(slopeOfRamp*0.4, slopeOfRamp*0.4);
+
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -32,7 +44,18 @@ void SelfBalancing::Execute() {
     power = pid.Calculate(currentAngle, 0.0);
   }
 
-  m_drivebase->TankDrive(power, power);
+
+/*
+  if (pastAngle > 0){
+    slopeOfRamp = -1;
+  }
+  else{
+    slopeOfRamp = 1;
+  }
+  */
+
+  m_drivebase->TankDrive(slopeOfRamp*power, slopeOfRamp*power);
+  //pastAngle = currentAngle;
 }
 
 // Called once the command ends or is interrupted.

@@ -31,10 +31,12 @@ class SelfBalancing
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+  
   private:
   Drivetrain* m_drivebase;
   frc2::PIDController pid{SelfBalancingConstants::PID::kP, SelfBalancingConstants::PID::kI, SelfBalancingConstants::PID::kD};
   double pastAngle;
   bool noFeedFowardPower = false;
   bool activatePID = false;
+  double slopeOfRamp = 1;
 };

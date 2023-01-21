@@ -6,6 +6,7 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <rev/CANSparkMax.h>
 
 #include <units/length.h>
@@ -50,6 +51,9 @@ class Drivebase : public frc2::SubsystemBase {
   rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
   
+  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
+
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
 };

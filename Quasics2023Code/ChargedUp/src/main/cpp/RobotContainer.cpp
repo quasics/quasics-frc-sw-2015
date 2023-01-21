@@ -9,18 +9,23 @@
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
+#include "Constants.h"
 
 RobotContainer::RobotContainer() {
 
   TankDrive tankDrive(
     &m_driveBase,
     [this] {
-      return m_driverController.GetRawAxis(1);
+      return m_driverController.GetRawAxis(
+                                LogitechGamePad::LEFT_Y_AXIS);
     },
     [this] {
-      return m_driverController.GetRawAxis(3);
+       return m_driverController.GetRawAxis(
+                                LogitechGamePad::RIGHT_Y_AXIS);
     }
   );
+  
+  
 
   m_driveBase.SetDefaultCommand(tankDrive);
 

@@ -7,6 +7,12 @@
 Drivebase::Drivebase() {
     SetName("Drivebase");
 
+  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
+  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
+
+  m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
+
+
 }
 
 

@@ -15,7 +15,11 @@
  */
 
 namespace OperatorConstants {
-
-constexpr int kDriverControllerPort = 0;
-
+  constexpr int kDriverControllerPort = 0;
 }  // namespace OperatorConstants
+
+
+namespace DriveConstants {
+  constexpr double kCountsPerRevolution = 1440.0;
+  constexpr double kWheelDiameterInch = 2.75;
+}  // namespace DriveConstants

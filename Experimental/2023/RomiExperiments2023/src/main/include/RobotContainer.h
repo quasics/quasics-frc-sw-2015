@@ -9,6 +9,8 @@
 
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
+#include "subsystems/Drivetrain.h"
+#include "subsystems/OnBoardIO.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -29,6 +31,9 @@ class RobotContainer {
       OperatorConstants::kDriverControllerPort};
 
   // The robot's subsystems are defined here...
+  Drivetrain m_driveTrain;
+  OnBoardIO m_onBoardIo{OnBoardIO::ChannelMode::INPUT,
+                        OnBoardIO::ChannelMode::INPUT};
   ExampleSubsystem m_subsystem;
 
   void ConfigureBindings();

@@ -42,4 +42,6 @@ class RobotContainer {
   void ConfigureBindings();
 
   bool isInverted = true;
+  frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;
+  frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;
 };

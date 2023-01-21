@@ -11,7 +11,11 @@
 #include "commands/TankDrive.h"
 #include "Constants.h"
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer() :
+  m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
+  m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT}
+
+{
 
   TankDrive tankDrive {
     &m_driveBase,
@@ -22,7 +26,7 @@ RobotContainer::RobotContainer() {
 
       double joystickValue;
 
-      if(isInverted == true) {
+      if(isInverted) {
         joystickValue = -1 * scalingFactor *
                               m_driverController.GetRawAxis(
             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -33,7 +37,7 @@ RobotContainer::RobotContainer() {
                             m_driverController.GetRawAxis(
             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
      }
-     return joystickValue;
+     return m_leftSpeedLimiter.Calculate(joystickValue);
     },
     [this] {
 
@@ -41,18 +45,18 @@ RobotContainer::RobotContainer() {
 
       double joystickValue;
 
-      if(isInverted == true) {
+      if(isInverted) {
         joystickValue = -1 * scalingFactor *
                               m_driverController.GetRawAxis(
             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         
       }
-     else {
-      joystickValue = +1 * scalingFactor *
+      else {
+        joystickValue = +1 * scalingFactor *
                             m_driverController.GetRawAxis(
-            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
-     }
-     return joystickValue;
+        OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+      }
+    return m_rightSpeedLimiter.Calculate(joystickValue);
     }
   };
   

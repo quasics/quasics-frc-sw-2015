@@ -8,8 +8,22 @@
 
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
+#include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
+
+  TankDrive tankDrive(
+    &m_driveBase,
+    [this] {
+      return m_driverController.GetRawAxis(1);
+    },
+    [this] {
+      return m_driverController.GetRawAxis(3);
+    }
+  );
+
+  m_driveBase.SetDefaultCommand(tankDrive);
+
   // Initialize all of your commands and subsystems here
 
   // Configure the button bindings

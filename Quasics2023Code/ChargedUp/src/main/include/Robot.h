@@ -10,7 +10,6 @@
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
-#include "subsystems/Drivebase.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -32,5 +31,4 @@ class Robot : public frc::TimedRobot {
   std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
-  Drivebase m_drivebase;
 };

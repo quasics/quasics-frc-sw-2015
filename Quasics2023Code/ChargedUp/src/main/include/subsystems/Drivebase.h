@@ -50,9 +50,6 @@ class Drivebase : public frc2::SubsystemBase {
   rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
   
-  int x;
-  std::string * y;
-
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
 };

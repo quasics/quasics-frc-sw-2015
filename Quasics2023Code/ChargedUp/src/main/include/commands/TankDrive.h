@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -17,7 +18,8 @@
 class TankDrive
     : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
  public:
-  TankDrive();
+  TankDrive(Drivebase* drivebase, std::function<double()> leftSpeedFunction,
+            std::function<double()> rightSpeedFunction);
 
   void Initialize() override;
 
@@ -25,5 +27,13 @@ class TankDrive
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
+ private:
+ 
+  void UpdateSpeeds();
+
+   Drivebase* m_drivebase;
+  std::function<double()> m_leftSpeedFunction;
+  std::function<double()> m_rightSpeedFunction;
+
+  //working with logitech controller
 };

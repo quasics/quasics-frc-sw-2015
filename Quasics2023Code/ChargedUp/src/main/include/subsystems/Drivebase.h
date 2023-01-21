@@ -9,6 +9,7 @@
 #include <rev/CANSparkMax.h>
 
 #include <units/length.h>
+#include "Constants.h"
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -17,7 +18,9 @@ class Drivebase : public frc2::SubsystemBase {
   //values are in percentages from 1 to -1
   void TankDrive(double leftPower, double rightPower);
 
-  void Stop();
+  void Stop() {
+    TankDrive(0,0);
+  }
 
   units::meter_t GetLeftDistance();
 
@@ -31,9 +34,22 @@ class Drivebase : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+  // Individual motors.
+  rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
+                                rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
+                              rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
+                               rev::CANSparkMax::MotorType::kBrushless};
 
+  // encoders for each of the motors.
+  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
+  
   int x;
   std::string * y;
 

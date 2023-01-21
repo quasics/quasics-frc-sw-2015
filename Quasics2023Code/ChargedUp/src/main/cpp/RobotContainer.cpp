@@ -13,17 +13,48 @@
 
 RobotContainer::RobotContainer() {
 
-  TankDrive tankDrive(
+  TankDrive tankDrive {
     &m_driveBase,
     [this] {
-      return m_driverController.GetRawAxis(
-                                LogitechGamePad::LEFT_Y_AXIS);
+
+      // Figure out scaling for the current driving mode
+      const double scalingFactor = GetDriveSpeedScalingFactor();
+
+      double joystickValue;
+
+      if(!isInverted) {
+        joystickValue = -1 * scalingFactor *
+                              m_driverController.GetRawAxis(
+            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        
+      }
+     else {
+      joystickValue = +1 * scalingFactor *
+                            m_driverController.GetRawAxis(
+            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+     }
+     return joystickValue;
     },
     [this] {
-       return m_driverController.GetRawAxis(
-                                LogitechGamePad::RIGHT_Y_AXIS);
+
+      const double scalingFactor = GetDriveSpeedScalingFactor();
+
+      double joystickValue;
+
+      if(!isInverted) {
+        joystickValue = -1 * scalingFactor *
+                              m_driverController.GetRawAxis(
+            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        
+      }
+     else {
+      joystickValue = +1 * scalingFactor *
+                            m_driverController.GetRawAxis(
+            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+     }
+     return joystickValue;
     }
-  );
+  };
   
   
 
@@ -34,6 +65,22 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureBindings();
 }
+
+double RobotContainer::GetDriveSpeedScalingFactor() {
+  const bool isTurbo = m_driverStick.GetRawButton(
+      OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
+  const bool isTurtle = m_driverStick.GetRawButton(
+      OperatorInterface::LogitechGamePad::LEFTSHOULDER);
+
+  if (isTurbo) {
+    return RobotValues::TURBO_MODE_SPEED_SCALING;
+  } else if (isTurtle) {
+    return RobotValues::TURTLE_MODE_SPEED_SCALING;
+  } else {
+    return RobotValues::NORMAL_MODE_SPEED_SCALING;
+  }
+}
+
 
 void RobotContainer::ConfigureBindings() {
   // Configure your trigger bindings here

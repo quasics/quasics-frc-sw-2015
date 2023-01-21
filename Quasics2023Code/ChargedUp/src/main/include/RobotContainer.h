@@ -7,6 +7,7 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/Joystick.h>
+#include <frc/filter/SlewRateLimiter.h>
 
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -25,14 +26,20 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
+  double GetDriveSpeedScalingFactor();
+
  private:
+  frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_driverController{
       OperatorConstants::kDriverControllerPort};
+  
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
   Drivebase m_driveBase;
 
   void ConfigureBindings();
+
+  bool isInverted = true;
 };

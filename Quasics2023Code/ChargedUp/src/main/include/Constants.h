@@ -4,6 +4,11 @@
 
 #pragma once
 
+#include <units/acceleration.h>
+#include <units/dimensionless.h>
+#include <units/length.h>
+#include <units/time.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -22,6 +27,13 @@ constexpr int kDriverControllerPort = 0;
 
 }  // namespace OperatorConstants
 
+namespace RobotValues {
+    // Speed Scaling
+  constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
+  constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;  // 0.75 initially
+  constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
+}
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
@@ -31,29 +43,37 @@ namespace MotorIds {
   }  // namespace SparkMax
 }  // namespace MotorIds
 
-namespace LogitechGamePad {
-  // Note: these values were derived from one of the Logitech-branded
-  // controllers on 22Jan2022. But it looks like there *may* be differences
-  // between apparently identical devices.... :-(
+namespace OperatorInterface {
+  constexpr int DRIVER_JOYSTICK = 0;
 
-  // Axes - Used with the "getRawAxis()" function to access the data for the
-  // individual sticks on the controller (e.g., for "tank drive" coding).
-  constexpr int LEFT_X_AXIS = 0;
-  constexpr int LEFT_Y_AXIS = 1;
-  constexpr int RIGHT_X_AXIS = 2;
-  constexpr int RIGHT_Y_AXIS = 3;
+  using RateLimit = units::unit_t<
+      units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+  constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 2.0 / 1_s;
 
-  // Buttons
-  constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers
-  constexpr int B_BUTTON = 3;  // Labeled "3" on some controllers
-  constexpr int X_BUTTON = 1;  // Labeled "1" on some controllers
-  constexpr int Y_BUTTON = 4;  // Labeled "4" on some controllers
-  constexpr int LEFTSHOULDER = 5;
-  constexpr int RIGHTSHOULDER = 6;
-  constexpr int LEFT_TRIGGER = 7;
-  constexpr int RIGHT_TRIGGER = 8;
-  constexpr int BACK_BUTTON = 9;
-  constexpr int START_BUTTON = 10;
-  constexpr int LEFT_STICK_PRESS = 11;
-  constexpr int RIGHT_STICK_PRESS = 12;
+  namespace LogitechGamePad {
+    // Note: these values were derived from one of the Logitech-branded
+    // controllers on 22Jan2022. But it looks like there *may* be differences
+    // between apparently identical devices.... :-(
+
+    // Axes - Used with the "getRawAxis()" function to access the data for the
+    // individual sticks on the controller (e.g., for "tank drive" coding).
+    constexpr int LEFT_X_AXIS = 0;
+    constexpr int LEFT_Y_AXIS = 1;
+    constexpr int RIGHT_X_AXIS = 2;
+   constexpr int RIGHT_Y_AXIS = 3;
+
+    // Buttons
+    constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers
+    constexpr int B_BUTTON = 3;  // Labeled "3" on some controllers
+    constexpr int X_BUTTON = 1;  // Labeled "1" on some controllers
+    constexpr int Y_BUTTON = 4;  // Labeled "4" on some controllers
+    constexpr int LEFTSHOULDER = 5;
+    constexpr int RIGHTSHOULDER = 6;
+    constexpr int LEFT_TRIGGER = 7;
+    constexpr int RIGHT_TRIGGER = 8;
+    constexpr int BACK_BUTTON = 9;
+    constexpr int START_BUTTON = 10;
+    constexpr int LEFT_STICK_PRESS = 11;
+    constexpr int RIGHT_STICK_PRESS = 12;
   }  // namespace LogitechGamePad
+} //namespace OperatorInterface

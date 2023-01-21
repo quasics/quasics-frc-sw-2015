@@ -14,6 +14,9 @@ ShooterTuningCommand::ShooterTuningCommand(Shooter* shooter,
                                            double initialRollerSpeedPercent)
     : m_shooter(shooter) {
   AddRequirements(m_shooter);
+
+#undef READY_FOR_BETA_3
+
 #ifdef READY_FOR_BETA_3
   wpi::StringMap<std::shared_ptr<nt::Value>> speedSliderProperties{
       {"min", nt::Value::MakeDouble(-1.0)},

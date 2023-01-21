@@ -22,7 +22,7 @@ RobotContainer::RobotContainer() {
 
       double joystickValue;
 
-      if(!isInverted) {
+      if(isInverted == true) {
         joystickValue = -1 * scalingFactor *
                               m_driverController.GetRawAxis(
             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -41,7 +41,7 @@ RobotContainer::RobotContainer() {
 
       double joystickValue;
 
-      if(!isInverted) {
+      if(isInverted == true) {
         joystickValue = -1 * scalingFactor *
                               m_driverController.GetRawAxis(
             OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);

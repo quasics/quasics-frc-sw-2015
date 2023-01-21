@@ -23,3 +23,12 @@ namespace DriveConstants {
   constexpr double kCountsPerRevolution = 1440.0;
   constexpr double kWheelDiameterInch = 2.75;
 }  // namespace DriveConstants
+
+namespace SelfBalancingConstants{
+  namespace PID{
+     constexpr auto ks = 0;
+     constexpr auto kP = 0;
+     constexpr auto kI = 0;
+     constexpr auto kD = 0;
+  }
+}

@@ -9,6 +9,7 @@
 #include <frc2/command/button/Button.h>
 
 #include "commands/TeleopArcadeDrive.h"
+#include "commands/TankDrive.h"
 
 RobotContainer::RobotContainer() {
   // Configure the button bindings
@@ -17,9 +18,17 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
   // Also set default commands here
-  m_drive.SetDefaultCommand(TeleopArcadeDrive(
+#ifdef USE_ARCADE_DRIVE
+  m_drive.SetDefaultCommand(TankDrive(
       &m_drive, [this] { return -m_controller.GetRawAxis(1); },
       [this] { return -m_controller.GetRawAxis(2); }));
+#else  // USE_ARCADE_DRIVE
+  // Note that the axis #s are from Mr. Healy's wireless controller.
+  // Values for Quasics *wired* controllers may be different.
+  m_drive.SetDefaultCommand(TankDrive(
+      &m_drive, [this] { return -m_controller.GetRawAxis(1); },
+      [this] { return -m_controller.GetRawAxis(5); }));
+#endif  // USE_ARCADE_DRIVE
 
   // Example of how to use the onboard IO
   m_onboardButtonA.OnTrue(frc2::cmd::Print("Button A Pressed"))

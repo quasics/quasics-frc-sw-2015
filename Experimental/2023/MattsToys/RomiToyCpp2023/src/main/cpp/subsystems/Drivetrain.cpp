@@ -14,7 +14,8 @@ using namespace DriveConstants;
 // PWM channels 0 and 1 respectively
 // The Romi has onboard encoders that are hardcoded
 // to use DIO pins 4/5 and 6/7 for the left and right
-Drivetrain::Drivetrain() {
+Drivetrain::Drivetrain()
+{
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
@@ -27,63 +28,83 @@ Drivetrain::Drivetrain() {
   ResetEncoders();
 }
 
-void Drivetrain::Periodic() {
+void Drivetrain::Periodic()
+{
   // This method will be called once per scheduler run.
 }
 
-void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate) {
+void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate)
+{
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate);
 }
 
-void Drivetrain::ResetEncoders() {
+void Drivetrain::TankDrive(double leftSpeed, double rightSpeed)
+{
+  m_drive.TankDrive(leftSpeed, rightSpeed);
+}
+
+void Drivetrain::ResetEncoders()
+{
   m_leftEncoder.Reset();
   m_rightEncoder.Reset();
 }
 
-int Drivetrain::GetLeftEncoderCount() {
+int Drivetrain::GetLeftEncoderCount()
+{
   return m_leftEncoder.Get();
 }
 
-int Drivetrain::GetRightEncoderCount() {
+int Drivetrain::GetRightEncoderCount()
+{
   return m_rightEncoder.Get();
 }
 
-units::meter_t Drivetrain::GetLeftDistance() {
+units::meter_t Drivetrain::GetLeftDistance()
+{
   return units::meter_t{m_leftEncoder.GetDistance()};
 }
 
-units::meter_t Drivetrain::GetRightDistance() {
+units::meter_t Drivetrain::GetRightDistance()
+{
   return units::meter_t{m_rightEncoder.GetDistance()};
 }
 
-units::meter_t Drivetrain::GetAverageDistance() {
+units::meter_t Drivetrain::GetAverageDistance()
+{
   return (GetLeftDistance() + GetRightDistance()) / 2.0;
 }
 
-double Drivetrain::GetAccelX() {
+double Drivetrain::GetAccelX()
+{
   return m_accelerometer.GetX();
 }
 
-double Drivetrain::GetAccelY() {
+double Drivetrain::GetAccelY()
+{
   return m_accelerometer.GetY();
 }
 
-double Drivetrain::GetAccelZ() {
+double Drivetrain::GetAccelZ()
+{
   return m_accelerometer.GetZ();
 }
 
-double Drivetrain::GetGyroAngleX() {
+double Drivetrain::GetGyroAngleX()
+{
   return m_gyro.GetAngleX();
 }
 
-double Drivetrain::GetGyroAngleY() {
+double Drivetrain::GetGyroAngleY()
+{
   return m_gyro.GetAngleY();
 }
 
-double Drivetrain::GetGyroAngleZ() {
+double Drivetrain::GetGyroAngleZ()
+{
   return m_gyro.GetAngleZ();
 }
 
-void Drivetrain::ResetGyro() {
+void Drivetrain::ResetGyro()
+{
   m_gyro.Reset();
 }

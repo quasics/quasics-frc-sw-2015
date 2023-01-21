@@ -13,8 +13,9 @@
 
 #include "sensors/RomiGyro.h"
 
-class Drivetrain : public frc2::SubsystemBase {
- public:
+class Drivetrain : public frc2::SubsystemBase
+{
+public:
   static constexpr double kCountsPerRevolution = 1440.0;
   static constexpr units::meter_t kWheelDiameter = 70_mm;
 
@@ -32,6 +33,10 @@ class Drivetrain : public frc2::SubsystemBase {
    * @param zaxisRotate the commanded rotation
    */
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate);
+
+  void TankDrive(double leftSpeed, double rightSpeed);
+
+  void Stop() { TankDrive(0, 0); }
 
   /**
    * Resets the drive encoders to currently read a position of 0.
@@ -108,7 +113,7 @@ class Drivetrain : public frc2::SubsystemBase {
    */
   void ResetGyro();
 
- private:
+private:
   frc::Spark m_leftMotor{0};
   frc::Spark m_rightMotor{1};
 

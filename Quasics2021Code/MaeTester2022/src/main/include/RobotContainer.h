@@ -30,7 +30,7 @@
 
 // DEFINE this symbol to enable the pneumatics subsystem.  (This is not
 // installed on Nike.)
-#define ENABLE_PNEUMATICS
+#undef ENABLE_PNEUMATICS
 
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////

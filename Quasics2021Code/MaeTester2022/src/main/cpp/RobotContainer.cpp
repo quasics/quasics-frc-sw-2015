@@ -456,6 +456,7 @@ void RobotContainer::AddExampleTrajectoryCommandsToSmartDashboard() {
 }
 
 void RobotContainer::AddPneumaticsControlsToSmartDashboard() {
+#ifdef ENABLE_PNEUMATICS
   frc::SmartDashboard::PutData(
       "Extend Intake",
       new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
@@ -468,6 +469,7 @@ void RobotContainer::AddPneumaticsControlsToSmartDashboard() {
       "Toggle Intake",
       new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
                                {&pneumatics}));
+#endif  // ENABLE_PNEUMATICS
 }
 
 void RobotContainer::ConfigureSmartDashboard() {
@@ -541,9 +543,11 @@ frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
     units::second_t secondsToRunConveyor, units::second_t secondsToWait,
     units::second_t timeForRunShooter, double power, double amountToMove) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
+#ifdef ENABLE_PNEUMATICS
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(new frc2::InstantCommand(
           [this]() { pneumatics.ExtendSolenoid(); }, {&pneumatics}))));
+#endif  // ENABLE_PNEUMATICS
   commands.push_back(
       std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
           &drivebase, power, units::length::meter_t(amountToMove)))));

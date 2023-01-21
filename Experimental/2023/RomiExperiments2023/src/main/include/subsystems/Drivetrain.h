@@ -33,6 +33,10 @@ class Drivetrain : public frc2::SubsystemBase {
    */
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate);
 
+  void TankDrive(double leftSpeed, double rightSpeed);
+
+  void Stop();
+
   /**
    * Resets the drive encoders to currently read a position of 0.
    */

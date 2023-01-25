@@ -27,8 +27,8 @@ namespace DriveConstants {
 namespace SelfBalancingConstants{
   namespace PID{
      constexpr auto ks = 0;
-     constexpr auto kP = 1;
-     constexpr auto kI = 0;
+     constexpr auto kP = 0.5; // changed from 1
+     constexpr auto kI = 0.5;
      constexpr auto kD = 0;
   }
 }

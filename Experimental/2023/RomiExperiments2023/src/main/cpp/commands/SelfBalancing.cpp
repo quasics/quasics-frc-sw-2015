@@ -11,7 +11,6 @@ SelfBalancing::SelfBalancing(Drivetrain* drivebase) : m_drivebase(drivebase){
 
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
-  m_drivebase->ResetGyro();
   noFeedFowardPower = false;
   activatePID = false;
   pid.Reset();
@@ -39,7 +38,7 @@ void SelfBalancing::Execute() {
   if (noFeedFowardPower == false){
      power = 1;
      auto delta = currentAngle - pastAngle;
-     if (delta > 0.5 || delta < -0.5){
+     if (currentAngle > -2.5 and currentAngle < 2.5){
      //TEMPORARY FIX TO TEST OTHER CODE
      //if (false){
        noFeedFowardPower = true;

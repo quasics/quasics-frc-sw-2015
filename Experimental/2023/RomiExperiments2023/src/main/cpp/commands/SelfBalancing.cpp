@@ -45,6 +45,20 @@ void SelfBalancing::Execute() {
        activatePID = true;
      }
   }
+  /*
+    OHHHHH I GET IT THIS IS THE REASON IT WAS FAILING:
+      pid accounts for direction, so when the romi was going backward
+      and the slope was -1 then a double negation occured which made 
+      the romi continue going in the same direction. As the Romi got 
+      futher away the PID correction only increased which was the
+      reason why the Romi speed dramatically increased in 1 direction
+  
+  
+  
+  
+  
+  
+  */
   if (activatePID){
     power = pid.Calculate(currentAngle, 0.0);
   }
@@ -58,8 +72,13 @@ void SelfBalancing::Execute() {
     slopeOfRamp = -1;
   }
   
-
-  m_drivebase->TankDrive(slopeOfRamp*power, slopeOfRamp*power);
+  //SOLVED THE ISSUE I THINK. SORRY ABOUT THAT
+  if(!activatePID){
+    m_drivebase->TankDrive(slopeOfRamp*power, slopeOfRamp*power);
+  }
+  if(activatePID){
+    m_drivebase->TankDrive(power, power);
+  }
   pastAngle = currentAngle;
 }
 

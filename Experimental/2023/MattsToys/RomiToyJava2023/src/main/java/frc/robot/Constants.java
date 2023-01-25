@@ -30,7 +30,7 @@ public final class Constants {
     public static final double ABSOLUTE_LIMIT = MAX_SPEED_TURBO;
 
     /** Maximum acceleration, in (absolute) units per second. */
-    public static final double MAX_SLEW_RATE = 0.5;
+    public static final double MAX_SLEW_RATE = 2.0;
   }
 
   /**

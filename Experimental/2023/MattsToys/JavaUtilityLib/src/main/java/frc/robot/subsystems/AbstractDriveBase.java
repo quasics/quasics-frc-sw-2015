@@ -92,12 +92,14 @@ public abstract class AbstractDriveBase extends SubsystemBase {
 
   public final void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     if (m_diffDrive != null) {
+      System.out.println("Speeds: x-azis=" + xaxisSpeed + ", r=otational" + zaxisRotate);
       m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
     }
   }
 
   public final void tankDrive(double leftSpeed, double rightSpeed) {
     if (m_diffDrive != null) {
+      System.out.println("Speeds: l=" + leftSpeed + ", r=" + rightSpeed);
       m_diffDrive.tankDrive(leftSpeed, rightSpeed);
     }
   }

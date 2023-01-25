@@ -19,15 +19,15 @@ public class TankDrive extends CommandBase {
    *
    * @param drivetrain The drivetrain subsystem on which this command will run
    * @param leftSpeedSupplier Lambda supplier of left speed
-   * @param rightRotateSupplier Lambda supplier of right speed
+   * @param rightSpeedSupplier Lambda supplier of right speed
    */
   public TankDrive(
       AbstractDriveBase drivetrain,
       Supplier<Double> leftSpeedSupplier,
-      Supplier<Double> rightRotateSupplier) {
+      Supplier<Double> rightSpeedSupplier) {
     m_driveBase = drivetrain;
     m_leftSpeedSupplier = leftSpeedSupplier;
-    m_rightSpeedSupplier = rightRotateSupplier;
+    m_rightSpeedSupplier = rightSpeedSupplier;
     addRequirements(drivetrain);
   }
 

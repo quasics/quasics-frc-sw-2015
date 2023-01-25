@@ -185,7 +185,8 @@ public class RobotContainer {
     };
 
     // Cap the acceleration rate
-    SpeedModifier slewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+    SpeedModifier leftSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+    SpeedModifier rightSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
 
     // Build the speed modifier for normal / turtle / turbo support.
     SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
@@ -195,19 +196,26 @@ public class RobotContainer {
 
     // Build the overall chain used to translate driver inputs into motor %ages.
     SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
-        slewRateModifier.adjustSpeed(modeModifier
-            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage)))));
+        modeModifier
+            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(flippedRomiModifier.adjustSpeed(inputPercentage))));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
-    Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getLeftY());
-    Supplier<Double> rightStickSpeedControl = () -> compositeModifier.adjustSpeed(m_xboxController.getRightY());
-    m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+    Supplier<Double> leftStickSpeedControl = () -> {
+      double speed = m_xboxController.getRawAxis(1);
+      return leftSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
+    };
+    Supplier<Double> rightStickSpeedControl = () -> {
+      double speed = m_xboxController.getRawAxis(5);
+      return rightSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
+    };
 
-    // Get the (final) suppliers that will be polled for the left/right side speeds.
-    Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
-    Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
+    // Get the (final) suppliers that will be polled for the left/right side
+    // speeds.
+    // m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+    // Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
+    // Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
 
     // Build the actual tank drive command.
-    return new TankDrive(m_drivetrain, leftSpeedControl, rightSpeedControl);
+    return new TankDrive(m_drivetrain, leftStickSpeedControl, rightStickSpeedControl);
   }
 }

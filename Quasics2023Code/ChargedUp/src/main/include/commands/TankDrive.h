@@ -31,7 +31,7 @@ class TankDrive
  
   void UpdateSpeeds();
 
-   Drivebase* m_drivebase;
+  Drivebase* m_drivebase;
   std::function<double()> m_leftSpeedFunction;
   std::function<double()> m_rightSpeedFunction;
 

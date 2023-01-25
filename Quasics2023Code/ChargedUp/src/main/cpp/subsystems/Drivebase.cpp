@@ -4,6 +4,7 @@
 
 #include "subsystems/Drivebase.h"
 
+
 Drivebase::Drivebase() {
     SetName("Drivebase");
 
@@ -15,8 +16,36 @@ Drivebase::Drivebase() {
 
 }
 
+units::meter_t Drivebase::GetLeftDistance() {
+  // Note that the conversion factor configured earlier means that we're getting
+  // position in meters.
+  return units::meter_t(m_leftFrontEncoder.GetPosition());
+}
 
+units::meter_t Drivebase::GetRightDistance() {
+  // Note that the conversion factor configured earlier means that we're getting
+  // position in meters.
+  return units::meter_t(m_rightFrontEncoder.GetPosition());
+}
 
+units::meters_per_second_t Drivebase::GetLeftVelocity() {
+  // Note that the conversion factor configured earlier means that we're getting
+  // velocity in m/sec.
+  return units::meters_per_second_t(m_leftFrontEncoder.GetVelocity());
+}
+
+units::meters_per_second_t Drivebase::GetRightVelocity() {
+  // Note that the conversion factor configured earlier means that we're getting
+  // velocity in m/sec.
+  return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
+}
+
+void Drivebase::ResetEncoders() {
+  m_leftFrontEncoder.SetPosition(0);
+  m_rightFrontEncoder.SetPosition(0);
+  m_leftBackEncoder.SetPosition(0);
+  m_rightBackEncoder.SetPosition(0);
+}
 
 // This method will be called once per scheduler run
 void Drivebase::Periodic(){

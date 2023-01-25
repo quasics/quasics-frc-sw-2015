@@ -11,6 +11,8 @@
 
 #include <units/length.h>
 #include "Constants.h"
+#include "units/length.h"
+#include "units/velocity.h"
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -23,9 +25,23 @@ class Drivebase : public frc2::SubsystemBase {
     TankDrive(0,0);
   }
 
+  /**
+   * Returns the distance traveled by the left wheels since they were last
+   * reset.
+   */
   units::meter_t GetLeftDistance();
 
+  /**
+   * Returns the distance traveled by the right wheels since they were last
+   * reset.
+   */
   units::meter_t GetRightDistance();
+
+  /** Returns the current speed of the left-side wheels. */
+  units::meters_per_second_t GetLeftVelocity();
+
+  /** Returns the current speed of the right-side wheels. */
+  units::meters_per_second_t GetRightVelocity();
 
   void ResetEncoders();
 

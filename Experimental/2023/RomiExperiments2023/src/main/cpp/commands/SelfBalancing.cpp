@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/SelfBalancing.h"
-
+#include <iostream>
 SelfBalancing::SelfBalancing(Drivetrain* drivebase) : m_drivebase(drivebase){
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
@@ -15,27 +15,33 @@ void SelfBalancing::Initialize() {
   noFeedFowardPower = false;
   activatePID = false;
   pid.Reset();
-  pastAngle = m_drivebase->GetGyroAngleX();
-/*
-  if (pastAngle > 0){
-    slopeOfRamp = -1;
-  }
-  else{
+  pastAngle = m_drivebase->GetGyroAngleY();
+//added a minus 1 to compensate for negative deviations
+  if ((pastAngle) > 0){
     slopeOfRamp = 1;
   }
-*/
-  m_drivebase->TankDrive(slopeOfRamp*0.4, slopeOfRamp*0.4);
+  if(pastAngle < 0){
+    slopeOfRamp = -1;
+  }
+
+  m_drivebase->TankDrive(slopeOfRamp, slopeOfRamp);
 
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
-  double currentAngle = m_drivebase->GetGyroAngleX();
+  //PAST ANGLE READING ADJUSTEMENT FOR ACCURATE RESULTS
+  std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
+  //gyro not reading in degrees, going from 0 to 9
+  //also resets the gyro so its current position is 0
+  double currentAngle = m_drivebase->GetGyroAngleY();
   double power = 0.0;
   if (noFeedFowardPower == false){
-     power = 0.4;
+     power = 1;
      auto delta = currentAngle - pastAngle;
-     if (delta > 2.0 || delta < -2.0){
+     if (delta > 0.5 || delta < -0.5){
+     //TEMPORARY FIX TO TEST OTHER CODE
+     //if (false){
        noFeedFowardPower = true;
        activatePID = true;
      }
@@ -45,17 +51,17 @@ void SelfBalancing::Execute() {
   }
 
 
-/*
-  if (pastAngle > 0){
-    slopeOfRamp = -1;
-  }
-  else{
+//added a minus 1 to compensate for negative deviations
+  if ((pastAngle) > 0){
     slopeOfRamp = 1;
   }
-  */
+  if(pastAngle < 0){
+    slopeOfRamp = -1;
+  }
+  
 
   m_drivebase->TankDrive(slopeOfRamp*power, slopeOfRamp*power);
-  //pastAngle = currentAngle;
+  pastAngle = currentAngle;
 }
 
 // Called once the command ends or is interrupted.

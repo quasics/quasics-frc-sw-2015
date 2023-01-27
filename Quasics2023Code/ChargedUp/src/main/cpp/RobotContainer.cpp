@@ -11,6 +11,7 @@
 #include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
 #include "commands/DriveAtPowerForMeters.h"
+#include "commands/RotateAtAngle.h"
 #include "Constants.h"
 
 RobotContainer::RobotContainer() :
@@ -108,4 +109,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Drive 1m at 50%", 
                         new DriveAtPowerForMeters(&m_drivebase, 0.5, 1_m));
+
+  frc::SmartDashboard::PutData("Rotate 90 degrees",
+                        new RotateAtAngle(&m_drivebase, 0.5, 90_deg) );
 }

@@ -9,6 +9,7 @@
 #include <units/length.h>
 #include <units/time.h>
 
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -26,6 +27,10 @@ constexpr int kDriverControllerPort = 0;
 
 
 }  // namespace OperatorConstants
+
+namespace SensorIds {
+  constexpr int PIDGEON_CAN_ID = 1;
+}
 
 namespace RobotValues {
     // Speed Scaling

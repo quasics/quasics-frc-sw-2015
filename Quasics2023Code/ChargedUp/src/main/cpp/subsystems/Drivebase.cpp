@@ -16,6 +16,20 @@ Drivebase::Drivebase() {
 
 }
 
+void Drivebase::SetBrakingMode(bool enabled) {
+  if (enabled) {
+    m_leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_leftBack.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_rightBack.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  } else {
+    m_leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_leftBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+    m_rightBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  }
+}
+
 units::meter_t Drivebase::GetLeftDistance() {
   // Note that the conversion factor configured earlier means that we're getting
   // position in meters.
@@ -45,6 +59,10 @@ void Drivebase::ResetEncoders() {
   m_rightFrontEncoder.SetPosition(0);
   m_leftBackEncoder.SetPosition(0);
   m_rightBackEncoder.SetPosition(0);
+}
+
+units::degree_t Drivebase::GetAngle() {
+  return m_gyro.GetRotation2d().Degrees();
 }
 
 // This method will be called once per scheduler run

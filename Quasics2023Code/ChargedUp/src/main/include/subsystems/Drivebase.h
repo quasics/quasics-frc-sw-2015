@@ -7,9 +7,9 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
+#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <rev/CANSparkMax.h>
 
-#include <units/length.h>
 #include "Constants.h"
 #include "units/length.h"
 #include "units/velocity.h"
@@ -18,12 +18,14 @@ class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();
 
-  //values are in percentages from 1 to -1
+  // values are in percentages from 1 to -1
   void TankDrive(double leftPower, double rightPower);
 
   void Stop() {
     TankDrive(0,0);
   }
+
+  void SetBrakingMode(bool enabled);
 
   /**
    * Returns the distance traveled by the left wheels since they were last
@@ -44,6 +46,8 @@ class Drivebase : public frc2::SubsystemBase {
   units::meters_per_second_t GetRightVelocity();
 
   void ResetEncoders();
+
+  units::degree_t GetAngle();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -71,5 +75,8 @@ class Drivebase : public frc2::SubsystemBase {
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
+
+  ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
+
 
 };

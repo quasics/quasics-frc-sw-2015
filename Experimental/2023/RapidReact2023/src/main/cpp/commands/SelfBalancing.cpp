@@ -16,7 +16,7 @@ void SelfBalancing::Initialize() {
   activatePID = false;
   pid.Reset();
   pid.SetTolerance(2.5, 0);
-  pastAngle = m_drivebase->GetRoll();
+  pastAngle = m_drivebase->GetPitch();
   if ((pastAngle) > 0){
     slopeOfRamp = 1;
   }
@@ -24,17 +24,17 @@ void SelfBalancing::Initialize() {
     slopeOfRamp = -1;
   }
 
-  m_drivebase->SetMotorPower(slopeOfRamp, slopeOfRamp);
+  m_drivebase->SetMotorPower(slopeOfRamp*0.4, slopeOfRamp*0.4);
 
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
   std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
-  double currentAngle = m_drivebase->GetRoll();
+  double currentAngle = m_drivebase->GetPitch();
   double power = 0.0;
   if (noFeedFowardPower == false){
-     power = 1;
+     power = 0.4;
      if (currentAngle > -2.5 and currentAngle < 2.5){
        noFeedFowardPower = true;
        activatePID = true;
@@ -55,7 +55,7 @@ void SelfBalancing::Execute() {
     m_drivebase->SetMotorPower(slopeOfRamp*power, slopeOfRamp*power);
   }
   if(activatePID){
-    m_drivebase->SetMotorPower(power*-1, power*-1);
+    m_drivebase->SetMotorPower(power*-0.4, power*-0.4);
   }
   pastAngle = currentAngle;
 }

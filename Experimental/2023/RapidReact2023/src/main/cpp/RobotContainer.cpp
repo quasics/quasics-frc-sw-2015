@@ -42,6 +42,7 @@
 #include "commands/SimpleLightingCrawler.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedShooterCommand.h"
+#include "commands/SelfBalancing.h"
 
 // SUGGESTION TO FIX INTAKE FALLING DOWN
 // MAKE LEFT AND RIGHT TRIGGERS ON DRIVER REMOTE TO BE EXTEND AND RETRACT INTAKE
@@ -293,6 +294,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Conveyor tuning
   frc::SmartDashboard::PutData("Conveyor Tuning",
                                new ConveyorTuningCommand(&m_conveyor, 0.0));
+
+  //SELF BALANCING COMMAND BUTTTON
+  frc::SmartDashboard::PutData("Self Balancing Attempt", new SelfBalancing(&m_drivebase));
 
   // Drive tuning
 

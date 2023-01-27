@@ -184,6 +184,10 @@ double Drivebase::GetRoll(){
   return m_gyro.GetRoll();
 }
 
+double Drivebase::GetPitch(){
+  return m_gyro.GetPitch();
+}
+
 void Drivebase::SetLeftMotorPower(double power) {
   m_leftSide->Set(power);
 }

@@ -14,6 +14,7 @@ void SelfBalancing::Initialize() {
   noFeedFowardPower = false;
   activatePID = false;
   pid.Reset();
+  pid.SetTolerance(2.5, 0);
   pastAngle = m_drivebase->GetGyroAngleY();
 //added a minus 1 to compensate for negative deviations
   if ((pastAngle) > 0){
@@ -77,7 +78,7 @@ void SelfBalancing::Execute() {
     m_drivebase->TankDrive(slopeOfRamp*power, slopeOfRamp*power);
   }
   if(activatePID){
-    m_drivebase->TankDrive(power, power);
+    m_drivebase->TankDrive(power*-1, power*-1);
   }
   pastAngle = currentAngle;
 }

@@ -82,6 +82,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   units::degree_t GetAngle();
 
+  double GetRoll();
+
   void SetLeftMotorPower(double power);
 
   void SetRightMotorPower(double power);

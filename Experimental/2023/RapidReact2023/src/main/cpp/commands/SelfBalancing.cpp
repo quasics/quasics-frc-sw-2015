@@ -3,37 +3,61 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/SelfBalancing.h"
+#include <iostream>
 
-SelfBalancing::SelfBalancing(Drivebase* drivebase) {
+SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase){
   AddRequirements(drivebase);
   // Use addRequirements() here to declare subsystem dependencies.
 }
 
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
+  noFeedFowardPower = false;
+  activatePID = false;
   pid.Reset();
-  m_drivebase->SetMotorPower(0.4, 0.4);
-  pastAngle = m_drivebase->GetAngle();
+  pid.SetTolerance(2.5, 0);
+  pastAngle = m_drivebase->GetRoll();
+  if ((pastAngle) > 0){
+    slopeOfRamp = 1;
+  }
+  if(pastAngle < 0){
+    slopeOfRamp = -1;
+  }
+
+  m_drivebase->SetMotorPower(slopeOfRamp, slopeOfRamp);
+
 }
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
-  //Leave Space for the feed forward thing
-  units::degree_t currentAngle = m_drivebase->GetAngle();
+  std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
+  double currentAngle = m_drivebase->GetRoll();
   double power = 0.0;
   if (noFeedFowardPower == false){
-     power = 0.4;
-     auto delta = currentAngle - pastAngle;
-     if (delta > 2_deg || delta < -2_deg){
+     power = 1;
+     if (currentAngle > -2.5 and currentAngle < 2.5){
        noFeedFowardPower = true;
        activatePID = true;
      }
   }
   if (activatePID){
-    power = pid.Calculate(currentAngle.value(), 0.0);
+    power = pid.Calculate(currentAngle, 0.0);
   }
 
-  m_drivebase->SetMotorPower(power, power);
+  if ((pastAngle) > 0){
+    slopeOfRamp = 1;
+  }
+  if(pastAngle < 0){
+    slopeOfRamp = -1;
+  }
+  
+  if(!activatePID){
+    m_drivebase->SetMotorPower(slopeOfRamp*power, slopeOfRamp*power);
+  }
+  if(activatePID){
+    m_drivebase->SetMotorPower(power*-1, power*-1);
+  }
+  pastAngle = currentAngle;
 }
 
 // Called once the command ends or is interrupted.

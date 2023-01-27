@@ -180,6 +180,10 @@ units::degree_t Drivebase::GetAngle() {
   return m_gyro.GetRotation2d().Degrees();
 }
 
+double Drivebase::GetRoll(){
+  return m_gyro.GetRoll();
+}
+
 void Drivebase::SetLeftMotorPower(double power) {
   m_leftSide->Set(power);
 }

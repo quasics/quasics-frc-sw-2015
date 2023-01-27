@@ -33,8 +33,9 @@ class SelfBalancing
   private:
   Drivebase* m_drivebase;
   frc2::PIDController pid{SelfBalancingConstants::PID::kP, SelfBalancingConstants::PID::kI, SelfBalancingConstants::PID::kD};
-  units::degree_t pastAngle;
+  double pastAngle;
   bool noFeedFowardPower = false;
   bool activatePID = false;
+  double slopeOfRamp = 1;
 
 };

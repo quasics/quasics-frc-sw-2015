@@ -37,9 +37,10 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
-  Drivebase m_driveBase;
+  Drivebase m_drivebase;
 
   void ConfigureBindings();
+  void AddTestButtonsToSmartDashboard();
 
   bool isInverted = true;
   frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;

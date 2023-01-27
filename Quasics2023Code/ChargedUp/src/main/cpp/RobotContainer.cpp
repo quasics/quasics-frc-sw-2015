@@ -4,21 +4,21 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
+#include "commands/DriveAtPowerForMeters.h"
 #include "Constants.h"
 
 RobotContainer::RobotContainer() :
   m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
-  m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT}
-
-{
+  m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
 
   TankDrive tankDrive {
-    &m_driveBase,
+    &m_drivebase,
     [this] {
 
       // Figure out scaling for the current driving mode
@@ -62,12 +62,13 @@ RobotContainer::RobotContainer() :
   
   
 
-  m_driveBase.SetDefaultCommand(tankDrive);
+  m_drivebase.SetDefaultCommand(tankDrive);
 
   // Initialize all of your commands and subsystems here
 
   // Configure the button bindings
   ConfigureBindings();
+  AddTestButtonsToSmartDashboard();  
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
@@ -102,4 +103,9 @@ void RobotContainer::ConfigureBindings() {
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return autos::ExampleAuto(&m_subsystem);
+}
+
+void RobotContainer::AddTestButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData("Drive 1m at 50%", 
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 1_m));
 }

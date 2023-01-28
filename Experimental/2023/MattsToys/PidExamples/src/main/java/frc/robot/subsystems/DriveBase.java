@@ -47,7 +47,6 @@ public class DriveBase extends SubsystemBase {
     setName("DriveBase");
 
     final double GEAR_RATIO = Constants.DRIVE_BASE_GEAR_RATIO_SALLY;
-    final double WHEEL_CIRCUMFERENCE = Math.PI * Constants.WHEEL_DIAMETER_METERS;
     final double TRACK_WIDTH = Constants.TRACK_WIDTH_METERS_SALLY;
 
     m_rightRear.follow(m_rightFront);
@@ -59,11 +58,17 @@ public class DriveBase extends SubsystemBase {
     m_leftEncoder = m_leftFront.getEncoder();
     m_rightEncoder = m_rightFront.getEncoder();
 
-    m_leftEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
-    m_rightEncoder.setPositionConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
+    // Update velocity reporting to be in meters (vs. rotations)
+    final double wheelCircumference_meters = Math.PI * Constants.WHEEL_DIAMETER_METERS;
+    final double distancePerRotation_meters = wheelCircumference_meters / GEAR_RATIO;
+    m_leftEncoder.setPositionConversionFactor(distancePerRotation_meters);
+    m_rightEncoder.setPositionConversionFactor(distancePerRotation_meters);
 
-    m_leftEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
-    m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
+    // Update velocity reporting from RPM to m/s
+    final double velocityConversionFactor = distancePerRotation_meters // converting revolutions to meters
+        / 60; // converting minutes to seconds
+    m_leftEncoder.setVelocityConversionFactor(velocityConversionFactor);
+    m_rightEncoder.setVelocityConversionFactor(velocityConversionFactor);
 
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(m_pigeon.getYaw()),
@@ -80,6 +85,10 @@ public class DriveBase extends SubsystemBase {
     }
   }
 
+  public double getMaxSpeed() {
+    return Constants.MAX_SPEED_METERS_PER_SEC;
+  }
+
   public void stop() {
     m_leftController.setReference(0, ControlType.kDutyCycle);
     m_rightController.setReference(0, ControlType.kDutyCycle);
@@ -90,9 +99,6 @@ public class DriveBase extends SubsystemBase {
   public void tankDrive(double leftPercent, double rightPercent) {
     final double leftVelocity = leftPercent * Constants.MAX_SPEED_METERS_PER_SEC;
     final double rightVelocity = rightPercent * Constants.MAX_SPEED_METERS_PER_SEC;
-
-    System.out.println("Speeds: " + leftPercent + "% / " + rightPercent + "%"
-    + " (" + leftVelocity + " / " + rightVelocity + " m/s)");
 
     m_leftController.setReference(leftVelocity, ControlType.kDutyCycle);
     m_rightController.setReference(rightVelocity, ControlType.kDutyCycle);
@@ -121,10 +127,13 @@ public class DriveBase extends SubsystemBase {
     builder.addDoubleProperty("Right distance (m)",
         m_rightEncoder::getPosition,
         null);
-    builder.addDoubleProperty("Left velocity (RPM)",
+    builder.addDoubleProperty("Max speed",
+        this::getMaxSpeed,
+        null);
+    builder.addDoubleProperty("Left velocity (m/s)",
         m_leftEncoder::getVelocity,
         null);
-    builder.addDoubleProperty("Right velocity (RPM)",
+    builder.addDoubleProperty("Right velocity (m/s)",
         m_rightEncoder::getVelocity,
         null);
     builder.addDoubleProperty("Gyro angle",

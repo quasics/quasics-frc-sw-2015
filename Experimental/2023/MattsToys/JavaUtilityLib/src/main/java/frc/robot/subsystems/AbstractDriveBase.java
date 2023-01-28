@@ -13,25 +13,9 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.RobotSettings;
+import frc.robot.sensors.TrivialEncoder;
 
-public abstract class AbstractDriveBase extends SubsystemBase {
-  /**
-   * Wrapper for the core functionality that this class needs from the encoders.
-   * 
-   * This is required, as the RelativeEncoder class provided by the Spark Max
-   * controllers isn't *actually* a version of the WPILib Encoder type.
-   */
-  interface TrivialEncoder {
-    /** Returns the distance recorded by the encoder (in meters). */
-    double getPosition();
-
-    /** Returns the current speed reported by the encoder (in meters/sec). */
-    double getVelocity();
-
-    /** Resets the encoder's distance. */
-    void reset();
-  }
-
+public abstract class AbstractDriveBase extends SubsystemBase implements DriveBaseInterface {
   /** The differential drive object used for basic maneuvering. */
   protected DifferentialDrive m_diffDrive = null;
 
@@ -92,16 +76,18 @@ public abstract class AbstractDriveBase extends SubsystemBase {
 
   public final void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     if (m_diffDrive != null) {
-      System.out.println("Speeds: x-azis=" + xaxisSpeed + ", r=otational" + zaxisRotate);
       m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
     }
   }
 
-  public final void tankDrive(double leftSpeed, double rightSpeed) {
+  public final void drivePercent(double leftSpeed, double rightSpeed) {
     if (m_diffDrive != null) {
-      System.out.println("Speeds: l=" + leftSpeed + ", r=" + rightSpeed);
       m_diffDrive.tankDrive(leftSpeed, rightSpeed);
     }
+  }
+
+  public final void tankDrive(double leftSpeed, double rightSpeed) {
+    drivePercent(leftSpeed, rightSpeed);
   }
 
   //////////////////////////////////////////////////////////////////
@@ -111,7 +97,7 @@ public abstract class AbstractDriveBase extends SubsystemBase {
   public abstract Gyro getZAxisGyro();
 
   /** Returns the robot's current heading as reported by the gyro. */
-  Rotation2d getGyroAngle() {
+  public Rotation2d getGyroAngle() {
     return getZAxisGyro().getRotation2d();
   }
 

@@ -16,7 +16,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
 
-    public static final double DRIVER_DEADBAND = 0.03;
+    public static final double DRIVER_DEADBAND = 0.0625;
   }
 
   public static final class MotorIds {

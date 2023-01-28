@@ -38,6 +38,13 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private double adjustForDriverDeadband(double stickReading) {
+    if (Math.abs(stickReading) <= Constants.OperatorConstants.DRIVER_DEADBAND) {
+      stickReading = 0;
+    }
+    return stickReading;
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -61,10 +68,10 @@ public class RobotContainer {
     // Set "tank drive" as the default command for the drive base.
     TankDrive tankDrive = new TankDrive(m_driveBase,
         () -> {
-          return m_driverController.getLeftY();
+          return adjustForDriverDeadband(m_driverController.getLeftY());
         },
         () -> {
-          return m_driverController.getRightY();
+          return adjustForDriverDeadband(m_driverController.getRightY());
         });
     m_driveBase.setDefaultCommand(tankDrive);
   }

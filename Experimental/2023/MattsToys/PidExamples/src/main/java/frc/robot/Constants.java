@@ -15,6 +15,8 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+
+    public static final double DRIVER_DEADBAND = 0.03;
   }
 
   public static final class MotorIds {
@@ -26,12 +28,18 @@ public final class Constants {
     }
   }
 
+  public static final int PIGEON2_CAN_ID = 1;
+
   public static final double DRIVE_BASE_GEAR_RATIO_SALLY = 8.45; // 2022 robot
 
+  // TODO(mjh): Confirm this value for Sally....
   public static final double INCHES_PER_METER = 39.3701;
 
   public static final double WHEEL_DIAMETER_INCHES = 6.0;
   public static final double WHEEL_DIAMETER_METERS = WHEEL_DIAMETER_INCHES / INCHES_PER_METER;
+
+  public static final double TRACK_WIDTH_INCHES_SALLY = 22.0;
+  public static final double TRACK_WIDTH_METERS_SALLY = TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER;
 
   public static final double MAX_SPEED_METERS_PER_SEC = 5.0;
 

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.REVPhysicsSim;
@@ -14,7 +15,11 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
@@ -32,10 +37,18 @@ public class DriveBase extends SubsystemBase {
   private final RelativeEncoder m_leftEncoder;
   private final RelativeEncoder m_rightEncoder;
 
+  private final DifferentialDriveKinematics m_kinematics;
+  private final DifferentialDriveOdometry m_odometry;
+
+  private final Pigeon2 m_pigeon = new Pigeon2(Constants.PIGEON2_CAN_ID);
+
   /** Creates a new DriveBase. */
   public DriveBase() {
+    setName("DriveBase");
+
     final double GEAR_RATIO = Constants.DRIVE_BASE_GEAR_RATIO_SALLY;
     final double WHEEL_CIRCUMFERENCE = Math.PI * Constants.WHEEL_DIAMETER_METERS;
+    final double TRACK_WIDTH = Constants.TRACK_WIDTH_METERS_SALLY;
 
     m_rightRear.follow(m_rightFront);
     m_leftRear.follow(m_leftFront);
@@ -52,6 +65,10 @@ public class DriveBase extends SubsystemBase {
     m_leftEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
     m_rightEncoder.setVelocityConversionFactor(WHEEL_CIRCUMFERENCE / GEAR_RATIO);
 
+    m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(m_pigeon.getYaw()),
+        m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition());
 
     // simulation initiation
     if (Robot.isSimulation()) {
@@ -71,15 +88,47 @@ public class DriveBase extends SubsystemBase {
   }
 
   public void tankDrive(double leftPercent, double rightPercent) {
-    double leftVelocity = leftPercent * Constants.MAX_SPEED_METERS_PER_SEC;
-    double rightVelocity = rightPercent * Constants.MAX_SPEED_METERS_PER_SEC;
+    final double leftVelocity = leftPercent * Constants.MAX_SPEED_METERS_PER_SEC;
+    final double rightVelocity = rightPercent * Constants.MAX_SPEED_METERS_PER_SEC;
+
+    System.out.println("Speeds: " + leftPercent + "% / " + rightPercent + "%"
+    + " (" + leftVelocity + " / " + rightVelocity + " m/s)");
 
     m_leftController.setReference(leftVelocity, ControlType.kDutyCycle);
     m_rightController.setReference(rightVelocity, ControlType.kDutyCycle);
   }
 
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    m_odometry.update(Rotation2d.fromDegrees(m_pigeon.getYaw()),
+        m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition());
+
+    if (Robot.isSimulation()) {
+      REVPhysicsSim.getInstance().run();
+    }
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("DriveBase");
+
+    // Report key drive base data
+    builder.addDoubleProperty("Left distance (m)",
+        m_leftEncoder::getPosition,
+        null);
+    builder.addDoubleProperty("Right distance (m)",
+        m_rightEncoder::getPosition,
+        null);
+    builder.addDoubleProperty("Left velocity (RPM)",
+        m_leftEncoder::getVelocity,
+        null);
+    builder.addDoubleProperty("Right velocity (RPM)",
+        m_rightEncoder::getVelocity,
+        null);
+    builder.addDoubleProperty("Gyro angle",
+        m_pigeon::getYaw,
+        null);
   }
 }

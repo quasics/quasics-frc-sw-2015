@@ -10,6 +10,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,6 +37,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    // Set up smart dasbboard
+    SmartDashboard.putData(m_driveBase.getName(), m_driveBase); // Display drive info
   }
 
   private double adjustForDriverDeadband(double stickReading) {

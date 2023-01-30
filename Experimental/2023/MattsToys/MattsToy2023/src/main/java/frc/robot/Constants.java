@@ -32,10 +32,12 @@ public final class Constants {
 
   public static final double WHEEL_DIAMETER_INCHES = 6.0;
 
-  /// Gear ratio used for the 2020/2021 robots.
-  public static final double DRIVE_BASE_GEAR_RATIO_MAE = 10.71; // 2020/2021 robot
-  public static final double DRIVE_BASE_GEAR_RATIO_NIKE = 10.71; // 2017 robot, kept as spare drive base
-  public static final double DRIVE_BASE_GEAR_RATIO_SALLY = 8.45; // 2022 robot
+  public static final double DRIVE_BASE_GEAR_RATIO_NIKE = 10.71; ///< Gear ratio for 2017 robot, kept as spare drive base
+  public static final double DRIVE_BASE_GEAR_RATIO_MAE = 10.71;  ///< 2020/2021 robot gear ratio
+  public static final double DRIVE_BASE_GEAR_RATIO_SALLY = 8.45; ///< 2022 robot gear rato (swapped in new gearbox vs. 10.71 in KoP)
+  // TODO: Confirm gear ratio on 2023 robot
+  public static final double DRIVE_BASE_GEAR_RATIO_2023 = 8.45;  ///< 2023 robot gear ratio (KoP gearing is 8.45:1)
+
   public static final double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_SALLY;
 
   public static final int PIGEON2_CAN_ID = 1;

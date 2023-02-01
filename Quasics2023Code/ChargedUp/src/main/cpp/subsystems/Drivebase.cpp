@@ -13,6 +13,12 @@ Drivebase::Drivebase() {
 
   m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
+  m_leftFront.SetInverted(true);
+  m_leftBack.SetInverted(true);
+  m_rightFront.SetInverted(true);
+  m_rightBack.SetInverted(true);
+
+
 
 }
 

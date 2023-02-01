@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+
 import frc.robot.sensors.RomiGyro;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
 public class Drivetrain extends AbstractDriveBase {

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.Constants;
 import frc.robot.utils.RobotSettings;
 import frc.robot.sensors.DummyGyro;
+import frc.robot.sensors.TrivialEncoder;
 
 public class Drivebase extends AbstractDriveBase {
   class TrivialEncoderImpl implements TrivialEncoder {

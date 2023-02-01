@@ -14,6 +14,8 @@
  * they are needed.
  */
 
+#include <units/length.h>
+
 namespace OperatorConstants
 {
   constexpr int kDriverControllerPort = 0;   // Logitech
@@ -54,6 +56,22 @@ namespace MotorIds
   constexpr int LEFT_REAR_DRIVE_MOTOR_ID = 2;
   constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
   constexpr int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
+}
+
+namespace SensorIds
+{
+  constexpr int PIGEON2_CAN_ID = 1;
+}
+
+namespace RobotConstants
+{
+  constexpr double DRIVE_BASE_GEAR_RATIO_NIKE = 10.71; ///< Gear ratio for 2017 robot, kept as spare drive base
+  constexpr double DRIVE_BASE_GEAR_RATIO_MAE = 10.71;  ///< 2020/2021 robot gear ratio
+  constexpr double DRIVE_BASE_GEAR_RATIO_SALLY = 8.45; ///< 2022 robot gear rato (swapped in new gearbox vs. 10.71 in KoP)
+  // TODO: Confirm gear ratio on 2023 robot
+  constexpr double DRIVE_BASE_GEAR_RATIO_2023 = 8.45; ///< 2023 robot gear ratio (KoP gearing is 8.45:1)
+
+  constexpr units::inch_t WHEEL_DIAMETER = 6.0_in;
 }
 
 constexpr double MAX_DRIVE_SPEED_SCALING_FACTOR = .50;

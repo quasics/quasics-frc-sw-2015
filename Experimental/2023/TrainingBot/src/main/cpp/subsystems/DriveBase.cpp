@@ -32,12 +32,11 @@ DriveBase::DriveBase()
   std::unique_ptr<frc::MotorControllerGroup> m_leftSide(new frc::MotorControllerGroup(m_leftFront, m_leftRear));
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide(new frc::MotorControllerGroup(m_rightFront, m_rightRear));
   m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
-}
 
-units::degree_t DriveBase::GetAngle()
-{
-  // TODO(mjh): Implement this!
-  return units::degree_t(0);
+  // Set up the gyro
+  m_gyro.reset(new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID});
+  m_gyro->Calibrate();
+  m_gyro->Reset();
 }
 
 // This method will be called once per scheduler run

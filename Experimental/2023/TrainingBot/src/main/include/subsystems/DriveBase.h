@@ -85,6 +85,8 @@ private:
   rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
 
+  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
   // I'm using a pointer to the Gyro base type, rather than creating the actual

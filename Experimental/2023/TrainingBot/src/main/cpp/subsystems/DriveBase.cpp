@@ -29,14 +29,19 @@ DriveBase::DriveBase()
   m_rightFrontEncoder.SetVelocityConversionFactor(velocityConversionFactor.value());
 
   // Build the differential drive
-  std::unique_ptr<frc::MotorControllerGroup> m_leftSide(new frc::MotorControllerGroup(m_leftFront, m_leftRear));
-  std::unique_ptr<frc::MotorControllerGroup> m_rightSide(new frc::MotorControllerGroup(m_rightFront, m_rightRear));
+  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftRear));
+  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightRear));
   m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
   // Set up the gyro
   m_gyro.reset(new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID});
   m_gyro->Calibrate();
   m_gyro->Reset();
+
+  // This *shouldn't* be needed, but I'm leaving us more gap between when the motors
+  // are "fed" before the MotorSafety watchdog declares a failure.
+  m_drive->SetExpiration(1_s);
+  // m_drive->SetSafetyEnabled(false);  // Uncomment to disable motor safety checks completely.
 }
 
 // This method will be called once per scheduler run

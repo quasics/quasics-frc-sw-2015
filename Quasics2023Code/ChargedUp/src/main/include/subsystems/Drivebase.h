@@ -31,6 +31,9 @@ class Drivebase : public frc2::SubsystemBase {
    * Returns the distance traveled by the left wheels since they were last
    * reset.
    */
+  
+  void ConfigureEncoders();
+
   units::meter_t GetLeftDistance();
 
   /**

@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Drivebase.h"
+#include <rev/CANSparkMax.h>
+
 
 
 Drivebase::Drivebase() {
@@ -34,6 +36,35 @@ void Drivebase::SetBrakingMode(bool enabled) {
     m_leftBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
     m_rightBack.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   }
+}
+
+void Drivebase::ConfigureEncoders() {
+  // Calculate wheel circumference (distance travelled per wheel revolution).
+  const double pi = 3.1415926;
+  const units::meter_t wheelCircumference = WHEEL_DIAMETER * pi;
+
+  // Compute distance traveled per rotation of the motor.
+  const units::meter_t gearingConversion =
+      wheelCircumference / DRIVEBASE_GEAR_RATIO;
+
+  // Compute conversion factor (used to change "(motor) RPM" to "m/sec").
+  const units::meter_t velocityCorrection = gearingConversion / 60;
+
+  // Update encoders so that they will report distance as meters traveled,
+  // rather than rotations.
+  m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+  m_leftBackEncoder.SetPositionConversionFactor(gearingConversion.value());
+  m_rightFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+  m_rightBackEncoder.SetPositionConversionFactor(gearingConversion.value());
+
+  // Update encoders so that they will report velocity as m/sec, rather than
+  // RPM.
+  m_leftFrontEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+  m_leftBackEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+  m_rightFrontEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+  m_rightBackEncoder.SetVelocityConversionFactor(velocityCorrection.value());
+
+  ResetEncoders();
 }
 
 units::meter_t Drivebase::GetLeftDistance() {
@@ -72,7 +103,7 @@ units::degree_t Drivebase::GetAngle() {
 }
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic(){
+void Drivebase::Periodic() {
 
 }
 

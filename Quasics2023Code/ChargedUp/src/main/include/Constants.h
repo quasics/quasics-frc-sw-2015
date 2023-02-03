@@ -20,6 +20,10 @@
  * they are needed.
  */
 
+constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
+
+constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // gear ratio for Sally is 8.45
+
 namespace OperatorConstants {
 
 constexpr int kDriverControllerPort = 0;

@@ -79,7 +79,8 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "matrixfunctions": "cpp"
+    "matrixfunctions": "cpp",
+    "numbers": "cpp"
   },
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,

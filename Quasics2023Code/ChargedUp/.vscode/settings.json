@@ -18,6 +18,7 @@
   "files.associations": {
     "*.tcc": "cpp",
     "optional": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "*.inc": "cpp"
   }
 }

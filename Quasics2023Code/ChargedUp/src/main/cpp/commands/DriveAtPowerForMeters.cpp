@@ -24,6 +24,7 @@ void DriveAtPowerForMeters::Execute() {
 
 // Called once the command ends or is interrupted.
 void DriveAtPowerForMeters::End(bool interrupted) {
+  m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
 }
 

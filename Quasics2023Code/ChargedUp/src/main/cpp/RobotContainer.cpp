@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc2/command/button/Trigger.h>
 
 #include "commands/Autos.h"
@@ -108,8 +109,16 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Drive 1m at 50%", 
-                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 1_m));
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 0.89_m));
+  frc::SmartDashboard::PutData("Drive 2m at 50%",
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 1.89_m));
 
   frc::SmartDashboard::PutData("Rotate 90 degrees",
-                        new RotateAtAngle(&m_drivebase, 0.5, 90_deg) );
+                        new RotateAtAngle(&m_drivebase, 0.5, 60.3_deg) );
+  frc::SmartDashboard::PutData("Set Coasting Mode",
+                       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
+                               {&m_drivebase}));
+    frc::SmartDashboard::PutData("Set Breaking Mode",
+                       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
+                               {&m_drivebase}));
 }

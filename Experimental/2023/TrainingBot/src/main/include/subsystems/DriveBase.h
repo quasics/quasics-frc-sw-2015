@@ -42,6 +42,17 @@ public:
   void Stop() { TankDrive(0, 0); }
 
   /**
+   * Enable/disable "breaking mode" (i.e., lock the motors in place when the power is ~0).
+  */
+  void EnableBreakingMode(bool tf) {
+    auto mode = tf ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast;
+    m_leftFront.SetIdleMode(mode);
+    m_rightFront.SetIdleMode(mode);
+    m_leftRear.SetIdleMode(mode);
+    m_rightRear.SetIdleMode(mode);
+  }
+
+  /**
    * Returns the distance traveled by the left wheels since they were last
    * reset.
    */

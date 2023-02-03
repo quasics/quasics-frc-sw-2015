@@ -33,6 +33,9 @@ DriveBase::DriveBase()
   m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightRear));
   m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
+  ResetEncoders();
+  EnableBreakingMode(false);
+
   // Set up the gyro
   m_gyro.reset(new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID});
   m_gyro->Calibrate();

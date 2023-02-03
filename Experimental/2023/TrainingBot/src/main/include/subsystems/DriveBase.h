@@ -43,8 +43,9 @@ public:
 
   /**
    * Enable/disable "breaking mode" (i.e., lock the motors in place when the power is ~0).
-  */
-  void EnableBreakingMode(bool tf) {
+   */
+  void EnableBreakingMode(bool tf)
+  {
     auto mode = tf ? rev::CANSparkMax::IdleMode::kBrake : rev::CANSparkMax::IdleMode::kCoast;
     m_leftFront.SetIdleMode(mode);
     m_rightFront.SetIdleMode(mode);

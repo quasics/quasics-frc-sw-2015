@@ -4,7 +4,10 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/FunctionalCommand.h>
 #include <frc2/command/button/Trigger.h>
+#include <frc2/command/PrintCommand.h>
 
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
@@ -16,6 +19,8 @@ RobotContainer::RobotContainer()
 
   // Configure the button bindings
   ConfigureBindings();
+
+  frc::SmartDashboard::PutData("Sample cmd", new frc2::PrintCommand("Do something!"));
 }
 
 void RobotContainer::ConfigureBindings()

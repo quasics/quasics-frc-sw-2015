@@ -26,9 +26,8 @@ constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // gear ratio for Sally is 8.45
 
 namespace OperatorConstants {
 
+/** Joystick port for the driver's controller. */
 constexpr int kDriverControllerPort = 0;
-
-
 
 }  // namespace OperatorConstants
 

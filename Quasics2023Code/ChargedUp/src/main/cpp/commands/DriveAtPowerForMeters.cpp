@@ -21,6 +21,7 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
+  m_drivebase->SetBrakingMode(true);
   m_drivebase->TankDrive(m_motorPower, m_motorPower);
 }
 

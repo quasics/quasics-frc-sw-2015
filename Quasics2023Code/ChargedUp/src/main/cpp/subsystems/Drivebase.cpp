@@ -20,8 +20,9 @@ Drivebase::Drivebase() {
   m_rightFront.SetInverted(true);
   m_rightBack.SetInverted(true);
 
-
-
+  // Shouldn't be required for Pigeon, but would be for other gyros.  (So,
+  // better safe than sorry....)
+  m_gyro.Calibrate();
 }
 
 void Drivebase::SetBrakingMode(bool enabled) {

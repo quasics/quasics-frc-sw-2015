@@ -12,6 +12,8 @@ SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase){
 /*
 ADDED A CALIBRATION GYRO FUNCTION TO DRIVEBASE SUBSYSTEM
 ALSO IN DRIVEBASE CREATED A PITCH ADJUSTEMENT TO GYRO
+//ALSO CREATED DRIVE UNTIL ANGLE CHANGE COMMAND
+AND ADDED FUNCTIONALITY IN ROBOT CONTAINER TO IMPLEMENT THE SEQUENCE
 */
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {

@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -17,7 +18,7 @@
 class DriveUntilPitchAngleChange
     : public frc2::CommandHelper<frc2::CommandBase, DriveUntilPitchAngleChange> {
  public:
-  DriveUntilPitchAngleChange();
+  DriveUntilPitchAngleChange(Drivebase* drivebase);
 
   void Initialize() override;
 
@@ -26,4 +27,8 @@ class DriveUntilPitchAngleChange
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+  private:
+  Drivebase* m_drivebase;
+  double power = 0.35;
 };

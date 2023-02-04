@@ -20,6 +20,8 @@ Drivebase::Drivebase() {
   m_rightFront.SetInverted(true);
   m_rightBack.SetInverted(true);
 
+  ConfigureEncoders();
+
   // Shouldn't be required for Pigeon, but would be for other gyros.  (So,
   // better safe than sorry....)
   m_gyro.Calibrate();
@@ -52,8 +54,7 @@ void Drivebase::ConfigureEncoders() {
   const units::meter_t velocityCorrection = gearingConversion / 60;
 
   // Update encoders so that they will report distance as meters traveled,
-  // rather than rotations.
-  m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+  // rather than rotations. m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_leftBackEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_rightFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_rightBackEncoder.SetPositionConversionFactor(gearingConversion.value());

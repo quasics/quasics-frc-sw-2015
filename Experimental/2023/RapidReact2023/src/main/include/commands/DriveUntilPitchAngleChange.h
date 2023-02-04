@@ -30,5 +30,5 @@ class DriveUntilPitchAngleChange
 
   private:
   Drivebase* m_drivebase;
-  double power = 0.35;
+  double power = 0.5;
 };

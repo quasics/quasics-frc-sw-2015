@@ -8,6 +8,10 @@
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc/Joystick.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/ParallelCommandGroup.h>
+#include <frc2/command/ParallelRaceGroup.h>
 
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -28,6 +32,8 @@ class RobotContainer {
 
   double GetDriveSpeedScalingFactor();
 
+  frc2::SequentialCommandGroup* RedAndBlueDriveStation2GTFO();
+
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -38,6 +44,8 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
+
+  frc::SendableChooser<frc2::Command*> m_autonomousOptions;
 
   void ConfigureBindings();
   void AddTestButtonsToSmartDashboard();

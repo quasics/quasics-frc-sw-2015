@@ -59,9 +59,6 @@ constexpr units::length::inch_t TRACK_WIDTH_INCHES_SALLY =
  * 
 */
 
-namespace SelfBalancingConstantsPID{
-
-}
 
 namespace SelfBalancingConstants{
   namespace PID{

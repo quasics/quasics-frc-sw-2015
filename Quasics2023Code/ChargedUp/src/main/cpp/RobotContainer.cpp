@@ -8,6 +8,8 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/button/Trigger.h>
 
+#include "commands/SelfBalancing.h"
+#include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
@@ -123,4 +125,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData("Set Breaking Mode",
                        new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
+}
+
+frc2::SequentialCommandGroup* RobotContainer::RedAndBlueDriveStation2GTFO(){
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.5, 4_m));
+    commands.push_back(
+      std::make_unique<DriveUntilPitchAngleChange>(&m_drivebase, 0.5));
+  commands.push_back(
+      std::make_unique<SelfBalancing>(&m_drivebase));
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }

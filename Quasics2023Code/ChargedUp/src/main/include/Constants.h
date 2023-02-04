@@ -31,6 +31,21 @@ constexpr int kDriverControllerPort = 0;
 
 }  // namespace OperatorConstants
 
+namespace SelfBalancingConstants{
+  namespace PID{
+     constexpr auto ks = 0;
+     constexpr auto kP = 0.025;
+     constexpr auto kI = 0;
+     constexpr auto kD = 0;
+  }
+
+  namespace FeedForward{
+     constexpr auto kS = 0;
+     constexpr auto kV = 0;
+     constexpr auto kA = 0; // leave at 0
+  }
+}
+
 namespace SensorIds {
   constexpr int PIDGEON_CAN_ID = 1;
 }

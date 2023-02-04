@@ -15,14 +15,20 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed, units::d
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
   m_drivebase->SetBrakingMode(true);
-  m_drivebase->TankDrive(-m_percentSpeed, -m_percentSpeed);
+  if (m_angle >= 0_deg)
+    m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  else 
+    m_drivebase->TankDrive(m_percentSpeed, -m_percentSpeed);
   m_startAngle = m_drivebase->GetAngle();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
   m_drivebase->SetBrakingMode(true);
-  m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  if (m_angle >= 0_deg)
+    m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
+  else 
+    m_drivebase->TankDrive(m_percentSpeed, -m_percentSpeed);
 }
 
 // Called once the command ends or is interrupted.
@@ -33,6 +39,10 @@ void RotateAtAngle::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RotateAtAngle::IsFinished() {
+  // positive angle turns left, negative angle turns right
   units::degree_t currentAngle = m_drivebase->GetAngle();
-  return (currentAngle >= m_angle + m_startAngle);
+  if (m_angle >= 0_deg) 
+    return (currentAngle >= m_angle + m_startAngle);
+  else 
+    return (currentAngle <= m_angle + m_startAngle);
 }

@@ -55,7 +55,7 @@ void SelfBalancing::Execute() {
     m_drivebase->SetMotorPower(slopeOfRamp*power, slopeOfRamp*power);
   }
   if(activatePID){
-    m_drivebase->SetMotorPower(power*-0.4, power*-0.4);
+    m_drivebase->SetMotorPower(power, power);
   }
   pastAngle = currentAngle;
 }

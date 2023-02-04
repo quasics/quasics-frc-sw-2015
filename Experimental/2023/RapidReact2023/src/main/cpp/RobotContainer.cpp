@@ -240,7 +240,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   //SELF BALANCING TEST COMMAND
 
-  frc::SmartDashboard::PutData("MOVE AND BALANCE", MoveAndSelfBalance());
+  frc::SmartDashboard::PutData("MOVE AND BALANCE", MoveAndSelfBalance(0.5));
   frc::SmartDashboard::PutData("1 Meter Forward",
                                new MoveRobotTestCommand(&m_drivebase, 0.35));
   frc::SmartDashboard::PutData("1 Meter Backward",
@@ -555,10 +555,10 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
 
 
 //ROBOT BALANCING SEQUENCE
-frc2::SequentialCommandGroup* RobotContainer::MoveAndSelfBalance(){
+frc2::SequentialCommandGroup* RobotContainer::MoveAndSelfBalance(double power){
     std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
-      std::make_unique<DriveUntilPitchAngleChange>(&m_drivebase));
+      std::make_unique<DriveUntilPitchAngleChange>(&m_drivebase, power));
   commands.push_back(
       std::make_unique<SelfBalancing>(&m_drivebase));
     return new frc2::SequentialCommandGroup(std::move(commands));

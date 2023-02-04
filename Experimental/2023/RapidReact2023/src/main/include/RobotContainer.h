@@ -54,7 +54,7 @@ class RobotContainer {
 
   frc2::SequentialCommandGroup* BSM4Manual();
 
-  frc2::SequentialCommandGroup* MoveAndSelfBalance();
+  frc2::SequentialCommandGroup* MoveAndSelfBalance(double power);
 
 
   frc2::SequentialCommandGroup* Pickup1Shoot2FacingSide();

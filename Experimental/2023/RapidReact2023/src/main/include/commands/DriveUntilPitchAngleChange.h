@@ -18,7 +18,7 @@
 class DriveUntilPitchAngleChange
     : public frc2::CommandHelper<frc2::CommandBase, DriveUntilPitchAngleChange> {
  public:
-  DriveUntilPitchAngleChange(Drivebase* drivebase);
+  DriveUntilPitchAngleChange(Drivebase* drivebase, double power);
 
   void Initialize() override;
 
@@ -30,5 +30,5 @@ class DriveUntilPitchAngleChange
 
   private:
   Drivebase* m_drivebase;
-  double power = 0.5;
+  const double m_power;
 };

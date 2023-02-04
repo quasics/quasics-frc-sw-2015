@@ -5,7 +5,7 @@
 #include "subsystems/Drivebase.h"
 #include <rev/CANSparkMax.h>
 
-
+#include <iostream>
 
 Drivebase::Drivebase() {
     SetName("Drivebase");
@@ -54,7 +54,8 @@ void Drivebase::ConfigureEncoders() {
   const units::meter_t velocityCorrection = gearingConversion / 60;
 
   // Update encoders so that they will report distance as meters traveled,
-  // rather than rotations. m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
+  // rather than rotations.
+  m_leftFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_leftBackEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_rightFrontEncoder.SetPositionConversionFactor(gearingConversion.value());
   m_rightBackEncoder.SetPositionConversionFactor(gearingConversion.value());
@@ -94,10 +95,20 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
 }
 
 void Drivebase::ResetEncoders() {
+  /*
+  auto result = m_leftFrontEncoder.SetPosition(0);
+  if (result ==  rev::REVLibError::kOk) {
+    std::cerr << "Reset position to 0\n";
+  } else {
+    std::cerr << "Failed to reset position\n";
+  }
+  */
   m_leftFrontEncoder.SetPosition(0);
   m_rightFrontEncoder.SetPosition(0);
   m_leftBackEncoder.SetPosition(0);
   m_rightBackEncoder.SetPosition(0);
+  //std::cerr << "In drive base: left: " << GetLeftDistance().value() << ", right: " << GetRightDistance().value() << std::endl;
+
 }
 
 units::degree_t Drivebase::GetAngle() {

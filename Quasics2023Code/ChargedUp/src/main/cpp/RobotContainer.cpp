@@ -109,12 +109,12 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Drive 1m at 50%", 
-                        new DriveAtPowerForMeters(&m_drivebase, 0.3, 1_m));
-  frc::SmartDashboard::PutData("Drive 2m at 50%",
-                        new DriveAtPowerForMeters(&m_drivebase, 0.3, 2_m));
+                        new DriveAtPowerForMeters(&m_drivebase, 0.50, 1_m));
+  frc::SmartDashboard::PutData("Drive 1m at 20%",
+                        new DriveAtPowerForMeters(&m_drivebase, 0.20, 1_m));
 
   frc::SmartDashboard::PutData("Rotate 90 degrees",
-                        new RotateAtAngle(&m_drivebase, 0.5, 60.3_deg) );
+                        new RotateAtAngle(&m_drivebase, 0.2, 90_deg) );
 
   frc::SmartDashboard::PutData("Set Coasting Mode",
                        new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },

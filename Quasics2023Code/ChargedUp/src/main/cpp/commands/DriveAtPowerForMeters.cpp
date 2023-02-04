@@ -12,16 +12,16 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase, double motorP
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
-  m_drivebase->ResetEncoders();
+  // m_drivebase->ResetEncoders();
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
+  //std::cerr << "left: " << m_leftStartingPosition.value() << ", right: " << m_rightStartingPosition.value() << std::endl;
   m_drivebase->TankDrive(m_motorPower, m_motorPower);
 }
 
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  m_drivebase->SetBrakingMode(true);
   m_drivebase->TankDrive(m_motorPower, m_motorPower);
 }
 
@@ -29,15 +29,15 @@ void DriveAtPowerForMeters::Execute() {
 void DriveAtPowerForMeters::End(bool interrupted) {
   m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
+  //std::cerr << "Start Left: " << m_leftStartingPosition.value() << ", Start Right: "
+  // << m_rightStartingPosition.value() << ", Distance: " << m_distance.value() << std::endl;
 }
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t positionRight = m_drivebase->GetRightDistance();
-  std::cerr << "Start Left: " << m_leftStartingPosition.value() << ", Start Right: "
-   << m_rightStartingPosition.value() << ", Distance: " << m_distance.value() << std::endl;
-  std::cerr << "Left: " << positionLeft.value() << ", Right: " << positionRight.value() << std::endl;
+  //std::cerr << "Left: " << positionLeft.value() << ", Right: " << positionRight.value() << std::endl;
 
   if (m_distance > 0_m) {
     if ((positionLeft >= (m_leftStartingPosition + m_distance)) ||

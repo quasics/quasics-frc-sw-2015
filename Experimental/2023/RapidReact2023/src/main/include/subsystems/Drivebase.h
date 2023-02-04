@@ -135,6 +135,8 @@ class Drivebase : public frc2::SubsystemBase {
   // (using "new"), we need to do the same thing for this (which uses them).
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
+  double PitchShift = 0;
+
 // Defines the Gyro in CS0
 #ifdef ENABLE_AD_GYRO
   frc::ADXRS450_Gyro m_gyro;

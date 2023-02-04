@@ -11,6 +11,7 @@ SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase){
 }
 /*
 ADDED A CALIBRATION GYRO FUNCTION TO DRIVEBASE SUBSYSTEM
+ALSO IN DRIVEBASE CREATED A PITCH ADJUSTEMENT TO GYRO
 */
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
@@ -18,7 +19,7 @@ void SelfBalancing::Initialize() {
   activatePID = false;
   pid.Reset();
   pid.SetTolerance(2.5, 0);
-  pastAngle = m_drivebase->GetPitch();
+  pastAngle = m_drivebase->GetPitch();//ADJUST FOR NOT FLAT GYRO
   if ((pastAngle) > 0){
     slopeOfRamp = 1;
   }
@@ -33,7 +34,7 @@ void SelfBalancing::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
   std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
-  double currentAngle = m_drivebase->GetPitch();
+  double currentAngle = m_drivebase->GetPitch();//ADJUST FOR NOT FLAT GYRO
   double power = 0.0;
   if (noFeedFowardPower == false){
      power = 0.4;
@@ -57,7 +58,7 @@ void SelfBalancing::Execute() {
     m_drivebase->SetMotorPower(slopeOfRamp*power, slopeOfRamp*power);
   }
   if(activatePID){
-    m_drivebase->SetMotorPower(power, power);
+    m_drivebase->SetMotorPower(power*-1, power*-1);
   }
   pastAngle = currentAngle;
 }

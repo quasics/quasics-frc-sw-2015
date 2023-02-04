@@ -46,6 +46,8 @@ Drivebase::Drivebase() {
   m_gyro.Calibrate();
   m_gyro.Reset();
 
+  PitchShift = m_gyro.GetPitch();
+
   ConfigureEncoders();
   ConfigureShuffleboard();
 }
@@ -185,7 +187,7 @@ double Drivebase::GetRoll(){
 }
 
 double Drivebase::GetPitch(){
-  return m_gyro.GetPitch();
+  return m_gyro.GetPitch() - PitchShift;
 }
 
 void Drivebase::SetLeftMotorPower(double power) {
@@ -198,6 +200,7 @@ void Drivebase::SetRightMotorPower(double power) {
 
 void Drivebase::GyroCalibration(){
   m_gyro.Calibrate();
+  PitchShift = m_gyro.GetPitch();
 }
 
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {

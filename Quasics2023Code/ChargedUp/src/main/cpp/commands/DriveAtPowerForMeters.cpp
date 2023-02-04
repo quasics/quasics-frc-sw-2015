@@ -12,6 +12,7 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase, double motorP
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
+  multiplier = 1.0;
   // m_drivebase->ResetEncoders();
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();

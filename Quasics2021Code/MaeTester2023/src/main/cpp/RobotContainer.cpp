@@ -58,17 +58,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 RobotContainer::RobotContainer() {
-  //////////////////////////////////////////
-  // Vision processing setup.
-  //
-  // Adds sliders to the dashboard, allowing for customizing vision processing
-  // on the Raspberry Pi's "Vision" program.
-  m_visionSettingsHelper.InstallSliders();
-
-  // obtaining info from the network table
-  auto inst = nt::NetworkTableInstance::GetDefault();
-  auto table = inst.GetTable(NetworkTableNames::kVisionTable);
-  pathId = table->GetEntry(NetworkTableNames::kPathID);
 
   // Configure default commands for the key subsystems.
   InstallDefaultCommands();
@@ -77,7 +66,7 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings.
   ConfigureControllerButtonBindings();
   ConfigureSmartDashboard();
-  ConfigureAutoSelection();
+  //ConfigureAutoSelection();
 }
 
 double RobotContainer::deadband(double num) {
@@ -167,7 +156,7 @@ std::unique_ptr<TankDrive> RobotContainer::BuildTankDriveCommand() {
       });
 }
 
-void RobotContainer::InstallDefaultCommands() {
+/*void RobotContainer::InstallDefaultCommands() {
   auto tankDriveCmd = BuildTankDriveCommand();
   drivebase.SetDefaultCommand(*tankDriveCmd);
 
@@ -177,16 +166,16 @@ void RobotContainer::InstallDefaultCommands() {
       BuildShootingCommand());
   shooter.SetDefaultCommand(*shooterCmd);
 }
-
+*/
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command* command) {
   frc2::JoystickButton(&operatorController, buttonId)
-      .WhileHeld(command);  // see last year's code
+      .Trigger::WhileTrue(command);  // see last year's code
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                                       frc2::Command* command) {
-  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileHeld(command);
+  frc2::JoystickButton(&driverJoystick, logitechButtonId).Trigger::WhileTrue(command);
 }
 
 void RobotContainer::ConfigureControllerButtonBindings() {
@@ -214,16 +203,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static IncrementLinearActuator incrementShootingAngle(&shooter);
   static DecrementLinearActuator decrementShootingAngle(&shooter);
 
-#ifdef ENABLE_PNEUMATICS
-  // Moving the intake in/out (via pneumatics).
-  static std::unique_ptr<frc2::Command> openIntakeCommandPtr{
-      new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
-                               {&pneumatics})};
-  static std::unique_ptr<frc2::Command> closeIntakeCommandPtr{
-      new frc2::InstantCommand([this]() { pneumatics.RetractSolenoid(); },
-                               {&pneumatics})};
-#endif  // ENABLE_PNEUMATICS
-
   // Other commands.
   static IntakePowerCells intakepowercells(&intake);
 
@@ -240,13 +219,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      shooterToMaximumCommandPtr.get());
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      shooterToMinimumCommandPtr.get());
-
-#ifdef ENABLE_PNEUMATICS
-  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::BackButton,
-                                   closeIntakeCommandPtr.get());
-  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::StartButton,
-                                   openIntakeCommandPtr.get());
-#endif  // ENABLE_PNEUMATICS
 
   RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::LeftShoulder,
                                    &intakeForwardCommand);
@@ -274,79 +246,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
 #endif  // ENABLE_BINDINGS_FOR_DEMO
 }
 
-void RobotContainer::ConfigureAutoSelection() {
-  const double kDistanceToDriveMeters = 0.25;
-  const double kDrivingSpeedPercent = 0.5;
-  const double kShootingTimeSeconds = 7;
-
-  m_autoChooser.SetDefaultOption("Do nothing",
-                                 new frc2::PrintCommand("I refuse to move."));
-  m_autoChooser.AddOption("Move forward 3 ft",
-                          new DriveAtPowerForMeters(&drivebase, .5, 1_m));
-  m_autoChooser.AddOption("Move backwards 3 ft",
-                          new DriveAtPowerForMeters(&drivebase, .5, -1_m));
-  m_autoChooser.AddOption(
-      "Shoot 3/Wait 2",
-      BuildShootAndMoveSequence(3_s /*conveyor on (s)*/, 2_s /*wait (s)*/,
-                                units::second_t(kShootingTimeSeconds),
-                                kDrivingSpeedPercent, kDistanceToDriveMeters));
-
-  if (false) {
-    // Commands used to during the "At Home" game in 2021.
-    m_autoChooser.AddOption("Go in an S", GenerateRamseteCommandFromPathFile(
-                                              "TestingS.wpilib.json", true));
-    m_autoChooser.AddOption(
-        "Barrel Racing",
-        GenerateRamseteCommandFromPathFile("BarrelRacing.wpilib.json", true));
-    m_autoChooser.AddOption("Slalom", GenerateRamseteCommandFromPathFile(
-                                          "Slalom.wpilib.json", true));
-    m_autoChooser.AddOption("Bounce Path", BuildBouncePathCommand());
-
-    m_autoChooser.AddOption(
-        "Galactic Search Red A",
-        BuildGalacticSearchPath(
-            "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-            "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json"));
-
-    m_autoChooser.AddOption(
-        "Galactic Search Blue A",
-        BuildGalacticSearchPath("GSearchABlue Part1.wpilib.json",
-                                "GSearchABlue Part2.wpilib.json",
-                                "GSearchABlue Part3.wpilib.json",
-                                "GSearchABlue Part4.wpilib.json"));
-
-    m_autoChooser.AddOption(
-        "Galactic Search Red B",
-        BuildGalacticSearchPath(
-            "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-            "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json"));
-
-    m_autoChooser.AddOption(
-        "Galactic Search Blue B",
-        BuildGalacticSearchPath("GSearchBBlue Part1.wpilib.json",
-                                "GSearchBBlue Part2.wpilib.json",
-                                "GSearchBBlue Part3.wpilib.json",
-                                "GSearchBBlue Part4.wpilib.json"));
-
-    m_autoChooser.AddOption("Galactic Search Drive Only",
-                            GalacticSearchAutoPath());
-    m_autoChooser.AddOption("Galactic Search", GalacticSearchAutoPath());
-  }
-  if (false) {
-    // Commands used to test trajectory stuff, etc.
-    std::vector<frc::Translation2d> points{frc::Translation2d(1_m, 0_m),
-                                           frc::Translation2d(2_m, 0_m)};
-    m_autoChooser.AddOption(
-        "Go in a line",
-        GenerateRamseteCommand(
-            frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)), points,
-            frc::Pose2d(3_m, 0_m, frc::Rotation2d(0_deg)), true));
-    m_autoChooser.AddOption("Cross the Auto line",
-                            new DriveAtPowerForMeters(&drivebase, .5, 3.1_m));
-  }
-  frc::SmartDashboard::PutData("Auto mode", &m_autoChooser);
-}
-
 frc2::Command* RobotContainer::GetAutonomousCommand() {
   return m_autoChooser.GetSelected();
 }
@@ -368,10 +267,6 @@ void RobotContainer::AddShooterAngleControlsToSmartDashboard() {
       new frc2::InstantCommand([this]() { shooter.SetServoPosition(0.0); },
                                {&shooter}));
   frc::SmartDashboard::PutData(
-      "Max Shooter Pos",
-      new frc2::InstantCommand([this]() { shooter.SetServoPosition(1.0); },
-                               {&shooter}));
-  frc::SmartDashboard::PutData(
       "Inc Shooter Pos",
       new frc2::InstantCommand([this]() { shooter.IncrementPosition(); },
                                {&shooter}));
@@ -381,34 +276,6 @@ void RobotContainer::AddShooterAngleControlsToSmartDashboard() {
                                {&shooter}));
 }
 
-void RobotContainer::AddShootAndMoveTestsToSmartDashboard() {
-  // Adjustment for Robot specifications(BuildShootAndMoveSequence).
-  //
-  // To adjust power of shooting motor, change the value for
-  // "kShooterSpeedPercent" in the "BuildConveyorAndShootingSequence()"
-  // function.
-  const double kDistanceToDriveMeters = 0.25;
-  const double kDrivingSpeedPercent = 0.5;
-  const double kShootingTimeSeconds = 13;
-
-  frc::SmartDashboard::PutData(
-      "Shoot 1/Wait 1",
-      BuildShootAndMoveSequence(1_s /*conveyor on (s)*/, 1_s /*wait (s)*/,
-                                units::second_t(kShootingTimeSeconds),
-                                kDrivingSpeedPercent, kDistanceToDriveMeters));
-
-  frc::SmartDashboard::PutData(
-      "Shoot 4/Wait 1",
-      BuildShootAndMoveSequence(4_s /*conveyor on (s)*/, 1_s /*wait (s)*/,
-                                units::second_t(kShootingTimeSeconds),
-                                kDrivingSpeedPercent, kDistanceToDriveMeters));
-
-  frc::SmartDashboard::PutData(
-      "Shoot 3/Wait 2",
-      BuildShootAndMoveSequence(3_s /*conveyor on (s)*/, 2_s /*wait (s)*/,
-                                units::second_t(kShootingTimeSeconds),
-                                kDrivingSpeedPercent, kDistanceToDriveMeters));
-}
 
 void RobotContainer::AddShooterSpeedControlsToSmartDashboard() {
   // Various shooter speed controls
@@ -455,29 +322,11 @@ void RobotContainer::AddExampleTrajectoryCommandsToSmartDashboard() {
                                                  "TestingS.wpilib.json", true));
 }
 
-void RobotContainer::AddPneumaticsControlsToSmartDashboard() {
-#ifdef ENABLE_PNEUMATICS
-  frc::SmartDashboard::PutData(
-      "Extend Intake",
-      new frc2::InstantCommand([this]() { pneumatics.ExtendSolenoid(); },
-                               {&pneumatics}));
-  frc::SmartDashboard::PutData(
-      "Retract Intake",
-      new frc2::InstantCommand([this]() { pneumatics.RetractSolenoid(); },
-                               {&pneumatics}));
-  frc::SmartDashboard::PutData(
-      "Toggle Intake",
-      new frc2::InstantCommand([this]() { pneumatics.ToggleSolenoid(); },
-                               {&pneumatics}));
-#endif  // ENABLE_PNEUMATICS
-}
-
 void RobotContainer::ConfigureSmartDashboard() {
   if (true) {
     AddLightingButtonsToSmartDashboard();
   }
 
-  AddPneumaticsControlsToSmartDashboard();
   AddShooterAngleControlsToSmartDashboard();
   AddShooterSpeedControlsToSmartDashboard();
   AddShootAndMoveTestsToSmartDashboard();
@@ -500,63 +349,6 @@ void RobotContainer::ConfigureSmartDashboard() {
   }
 }
 
-frc2::SequentialCommandGroup* RobotContainer::BuildConveyorSeqeunceForAuto(
-    units::second_t secondsToRunConveyor, units::second_t secondsToWait) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new TimedConveyor(&intake, secondsToRunConveyor, true))));
-
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new TimedConveyor(&intake, secondsToRunConveyor, true))));
-
-  commands.push_back(std::move(
-      std::unique_ptr<frc2::Command>(new DelayForTime(secondsToWait))));
-
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new TimedConveyor(&intake, secondsToRunConveyor, true))));
-
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
-
-frc2::ParallelRaceGroup* RobotContainer::BuildConveyorAndShootingSequence(
-    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-    units::second_t timeForRunShooter) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-
-  const double kShooterSpeedPercent = 0.8;
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      BuildConveyorSeqeunceForAuto(secondsToRunConveyor, secondsToWait))));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      new ShootForTime(&shooter, timeForRunShooter, kShooterSpeedPercent))));
-
-  return new frc2::ParallelRaceGroup(std::move(commands));
-}
-
-frc2::SequentialCommandGroup* RobotContainer::BuildShootAndMoveSequence(
-    units::second_t secondsToRunConveyor, units::second_t secondsToWait,
-    units::second_t timeForRunShooter, double power, double amountToMove) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-#ifdef ENABLE_PNEUMATICS
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new frc2::InstantCommand(
-          [this]() { pneumatics.ExtendSolenoid(); }, {&pneumatics}))));
-#endif  // ENABLE_PNEUMATICS
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-          &drivebase, power, units::length::meter_t(amountToMove)))));
-  commands.push_back(
-      std::move(std::unique_ptr<frc2::Command>(BuildConveyorAndShootingSequence(
-          secondsToRunConveyor, secondsToWait, timeForRunShooter))));
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
-
 frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
   std::vector<std::unique_ptr<frc2::Command>> bouncePathPieces;
 
@@ -572,36 +364,6 @@ frc2::SequentialCommandGroup* RobotContainer::BuildBouncePathCommand() {
   return new frc2::SequentialCommandGroup(std::move(bouncePathPieces));
 }
 
-// This builds a Galactic Search Path from 4 json files
-frc2::ParallelCommandGroup* RobotContainer::BuildGalacticSearchPath(
-    std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
-    std::string jsonFile4, bool includeIntakeOperation) {
-  std::vector<std::unique_ptr<frc2::Command>> GalacticPieces;
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile1, true))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile2, false))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile3, false))));
-  GalacticPieces.push_back(std::move(std::unique_ptr<frc2::Command>(
-      GenerateRamseteCommandFromPathFile(jsonFile4, false))));
-
-  std::unique_ptr<frc2::Command> galacticPath(
-      new frc2::SequentialCommandGroup(std::move(GalacticPieces)));
-
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::move(galacticPath));
-
-  if (includeIntakeOperation) {
-    std::unique_ptr<frc2::Command> intakeAuto(new AutoIntakeCells(&intake));
-    commands.push_back(std::move(intakeAuto));
-  } else {
-    std::unique_ptr<frc2::Command> noIntakeAuto(
-        new frc2::PrintCommand("Not running the intake!"));
-    commands.push_back(std::move(noIntakeAuto));
-  }
-  return new frc2::ParallelCommandGroup(std::move(commands));
-}
 
 frc2::SequentialCommandGroup* RobotContainer::GenerateRamseteCommand(
     const frc::Pose2d& start,
@@ -674,80 +436,4 @@ frc::Trajectory RobotContainer::loadTraj(std::string jsonFile) {
   frc::Trajectory trajectory =
       frc::TrajectoryUtil::FromPathweaverJson(jsonFilePath);
   return trajectory;
-}
-
-/*These Functions evaluate, based on the path
-ID, whether an error has taken place, what alliance
-we're on, and what path we're following*/
-
-bool RobotContainer::RecognizeError() {
-  double path = pathId.GetDouble(-1);
-  if (path < 1) {
-    return true;
-  }
-  return false;
-}
-
-bool RobotContainer::RecognizePathA() {
-  double path = pathId.GetDouble(-1);
-  if (path < 3) {
-    return true;
-  }
-  return false;
-}
-
-bool RobotContainer::RecognizeBlueAlliance() {
-  double path = pathId.GetDouble(-1);
-  int correctedPath = path;
-  if (correctedPath % 2 == 0) {
-    return true;
-  }
-  return false;
-}
-
-/*These Conditional Commands evaluate first whether there is
-an error, then which alliance we're on, and then, based on what
-path we're following, builds the correct Galactic Search Path
-for the robot to follow.*/
-
-frc2::ConditionalCommand* RobotContainer::BuildBlueAlliancePaths() {
-  frc2::Command* blueB = BuildGalacticSearchPath(
-      "GSearchBBlue Part1.wpilib.json", "GSearchBBlue Part2.wpilib.json",
-      "GSearchBBlue Part3.wpilib.json", "GSearchBBlue Part4.wpilib.json");
-  frc2::Command* blueA = BuildGalacticSearchPath(
-      "GSearchABlue Part1.wpilib.json", "GSearchABlue Part2.wpilib.json",
-      "GSearchABlue Part3.wpilib.json", "GSearchABlue Part4.wpilib.json");
-  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(blueA),
-                                      std::unique_ptr<frc2::Command>(blueB),
-                                      [this] { return RecognizePathA(); });
-}
-
-frc2::ConditionalCommand* RobotContainer::BuildRedAlliancePaths() {
-  frc2::Command* redA = BuildGalacticSearchPath(
-      "GSearchARed Part1.wpilib.json", "GSearchARed Part2.wpilib.json",
-      "GSearchARed Part3.wpilib.json", "GSearchARed Part4.wpilib.json");
-  frc2::Command* redB = BuildGalacticSearchPath(
-      "GSearchBRed Part1.wpilib.json", "GSearchBRed Part2.wpilib.json",
-      "GSearchBRed Part3.wpilib.json", "GSearchBRed Part4.wpilib.json");
-  return new frc2::ConditionalCommand(std::unique_ptr<frc2::Command>(redA),
-                                      std::unique_ptr<frc2::Command>(redB),
-                                      [this] { return RecognizePathA(); });
-}
-
-frc2::ConditionalCommand* RobotContainer::ChooseWhichAlliance() {
-  frc2::Command* blueCombo = BuildBlueAlliancePaths();
-  frc2::Command* redCombo = BuildRedAlliancePaths();
-  return new frc2::ConditionalCommand(
-      std::unique_ptr<frc2::Command>(blueCombo),
-      std::unique_ptr<frc2::Command>(redCombo),
-      [this] { return RecognizeBlueAlliance(); });
-}
-
-frc2::ConditionalCommand* RobotContainer::GalacticSearchAutoPath() {
-  frc2::Command* AllianceCombo = ChooseWhichAlliance();
-  return new frc2::ConditionalCommand(
-      std::unique_ptr<frc2::Command>(
-          new frc2::PrintCommand("An error occured in path recognition")),
-      std::unique_ptr<frc2::Command>(AllianceCombo),
-      [this] { return RecognizeError(); });
 }

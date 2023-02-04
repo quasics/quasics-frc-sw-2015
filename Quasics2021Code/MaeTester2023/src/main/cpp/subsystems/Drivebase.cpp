@@ -10,18 +10,21 @@
 #include <units/time.h>
 
 #include <iostream>
-#include <wpi/numbers>
+#include <numbers>
 
 #include "Constants.h"
 
 #define USE_SPARKS_VIA_CAN
 
-#define EXECUTE_EVERY_N_TIMES(n, outputCmd)   \
-  {                                           \
-    static int counter = -1;                  \
-    if ((counter = (counter + 1) % n) == 0) { \
-      outputCmd;                              \
-    }                                         \
+#undef RESET_ENCODERS_ON_START
+
+#define EXECUTE_EVERY_N_TIMES(n, outputCmd) \
+  {                                         \
+    static int counter = -1;                \
+    if ((counter = (counter + 1) % n) == 0) \
+    {                                       \
+      outputCmd;                            \
+    }                                       \
   }
 
 static constexpr double kTicksPerRevolution_NeoMotor = 42;
@@ -37,7 +40,8 @@ static constexpr units::length::inch_t kWheelDiameter = 6.0_in;
 /// RevRobotics doesn't have updated libraries for 2022 ready yet, which
 /// means that this stuff will all need to be disabled, and it's easier when all
 /// of the references are in a single file.
-struct Drivebase::RevRoboticsStuff {
+struct Drivebase::RevRoboticsStuff
+{
 #ifdef USE_SPARKS_VIA_CAN
   rev::CANSparkMax m_leftFront{CANBusIds::SparkMaxIds::Left_Front_Number,
                                rev::CANSparkMax::MotorType::kBrushless};
@@ -52,53 +56,59 @@ struct Drivebase::RevRoboticsStuff {
   rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
 
-  void ResetEncoders() {
+  void ResetEncoders()
+  {
 #ifdef USE_SPARKS_VIA_CAN
     m_leftFrontEncoder.SetPosition(0.0);
     m_leftRearEncoder.SetPosition(0.0);
     m_rightRearEncoder.SetPosition(0.0);
     m_rightFrontEncoder.SetPosition(0.0);
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
   }
 
-  double GetLeftEncoderCount() {
+  double GetLeftEncoderCount()
+  {
 #ifdef USE_SPARKS_VIA_CAN
     return m_leftFrontEncoder.GetPosition();
 #else
     return 0;
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
   }
 
-  double GetRightEncoderCount() {
+  double GetRightEncoderCount()
+  {
 #ifdef USE_SPARKS_VIA_CAN
     return m_rightFrontEncoder.GetPosition();
 #else
     return 0;
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
   }
 
-  double GetLeftVelocity() {
+  double GetLeftVelocity()
+  {
 #ifdef USE_SPARKS_VIA_CAN
     return m_leftFrontEncoder.GetVelocity();
 #else
     return 0;
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
   }
 
-  double GetRightVelocity() {
+  double GetRightVelocity()
+  {
 #ifdef USE_SPARKS_VIA_CAN
     return m_rightFrontEncoder.GetVelocity();
 #else
     return 0;
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
   }
 };
 
 Drivebase::Drivebase()
     : m_revStuff(new RevRoboticsStuff),
-      m_odometry(units::degree_t(m_adiGyro.GetAngle())) {
+      m_odometry(frc::Rotation2d{}, 0_m, 0_m, frc::Pose2d{})
+{
   SetSubsystem("Drivebase");
 
 #ifdef USE_SPARKS_VIA_CAN
@@ -112,16 +122,16 @@ Drivebase::Drivebase()
                                                    m_revStuff->m_leftRear));
   m_rightMotors.reset(new frc::MotorControllerGroup(m_revStuff->m_rightFront,
                                                     m_revStuff->m_rightRear));
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
 
   // Default for the encoders is to report velocity in RPM; we want that to come
   // back as m/s.
   units::meter_t wheelCircumference =
-      kWheelDiameter * wpi::numbers::pi;  // Will auto-convert to meters
+      kWheelDiameter * std::numbers::pi; // Will auto-convert to meters
   units::meter_t velocityAdjustmentForGearing =
-      wheelCircumference / kGearRatio_2021;  // Should convert RPM to m/min
+      wheelCircumference / kGearRatio_2021; // Should convert RPM to m/min
   units::meter_t velocityAdjustment =
-      velocityAdjustmentForGearing / 60;  // Adjust to m/s
+      velocityAdjustmentForGearing / 60; // Adjust to m/s
   std::cout << "Wheel circumference: " << wheelCircumference.value()
             << " meters\n"
             << "Velocity adjustment: " << velocityAdjustment.value() << " m/s"
@@ -138,36 +148,53 @@ Drivebase::Drivebase()
       velocityAdjustment.to<double>());
 
   m_drive.reset(new frc::DifferentialDrive(*m_leftMotors, *m_rightMotors));
-#endif  // USE_SPARKS_VIA_CAN
+#endif // USE_SPARKS_VIA_CAN
 
+#ifdef RESET_ENCODERS_ON_START
   ResetEncoders();
+#endif // RESET_ENCODERS_ON_START
+
   m_adiGyro.Calibrate();
+
+  // We can ask the encoders for their position *now*, since we know that they
+  // will give it to us in meters, which is what the odometry wants.
+  m_odometry = frc::DifferentialDriveOdometry(
+      frc::Rotation2d(units::degree_t(m_adiGyro.GetAngle())),
+      GetLeftEncoderDistance(),
+      GetRightEncoderDistance(),
+      frc::Pose2d{});
 }
 
-Drivebase::~Drivebase() {
+Drivebase::~Drivebase()
+{
   delete m_revStuff;
 }
 
-void Drivebase::ResetEncoders() {
+void Drivebase::ResetEncoders()
+{
   m_revStuff->ResetEncoders();
 }
 
-double Drivebase::GetLeftEncoderCount() {
+double Drivebase::GetLeftEncoderCount()
+{
   return m_revStuff->GetLeftEncoderCount();
 }
 
-double Drivebase::GetRightEncoderCount() {
+double Drivebase::GetRightEncoderCount()
+{
   return m_revStuff->GetRightEncoderCount();
 }
 
-frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
+frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds()
+{
   return frc::DifferentialDriveWheelSpeeds{
       m_revStuff->GetLeftVelocity() * 1_m / 1_s,
       m_revStuff->GetRightVelocity() * 1_m / 1_s};
 }
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {
+void Drivebase::Periodic()
+{
   auto rotation = GetZAxisGyro().GetRotation2d();
   auto leftDistance = GetLeftEncoderDistance();
   auto rightDistance = GetRightEncoderDistance();
@@ -183,49 +210,63 @@ void Drivebase::Periodic() {
   //                                   << speeds.right << std::endl;)
 }
 
-void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
+void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed)
+{
   //   EXECUTE_EVERY_N_TIMES(50,
   //                         std::cerr << "Setting speeds: left=" << leftSpeed
   //                                   << ", right=" << rightSpeed <<
   //                                   std::endl;)
-  if (m_drive) {
+  if (m_drive)
+  {
     m_drive->TankDrive(leftSpeed, rightSpeed);
   }
 }
 
-void Drivebase::Stop() {
+void Drivebase::Stop()
+{
   SetMotorSpeed(0, 0);
 }
 
-frc::Pose2d Drivebase::GetPose() {
+frc::Pose2d Drivebase::GetPose()
+{
   return m_odometry.GetPose();
 }
 
-void Drivebase::ResetOdometry(frc::Pose2d pose) {
+void Drivebase::ResetOdometry(frc::Pose2d pose)
+{
   ResetEncoders();
-  m_odometry.ResetPosition(pose, m_adiGyro.GetRotation2d());
+  m_odometry.ResetPosition(frc::Rotation2d(units::degree_t(m_adiGyro.GetAngle())),
+      GetLeftEncoderDistance(),
+      GetRightEncoderDistance(),
+      pose);
 }
 
-void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-  if (m_leftMotors) {
+void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right)
+{
+  if (m_leftMotors)
+  {
     m_leftMotors->SetVoltage(left);
   }
-  if (m_leftMotors) {
+  if (m_leftMotors)
+  {
     m_rightMotors->SetVoltage(right);
   }
-  if (m_drive) {
+  if (m_drive)
+  {
     m_drive->Feed();
   }
 }
 
-units::meter_t Drivebase::GetRightEncoderDistance() {
+units::meter_t Drivebase::GetRightEncoderDistance()
+{
   auto distance = (GetRightEncoderCount() / kGearRatio_2021) *
-                  (kWheelDiameter * wpi::numbers::pi);
+                  (kWheelDiameter * std::numbers::pi);
   return distance;
 }
 
-units::meter_t Drivebase::GetLeftEncoderDistance() {
+units::meter_t Drivebase::GetLeftEncoderDistance()
+{
   auto distance = (GetLeftEncoderCount() / kGearRatio_2021) *
-                  (kWheelDiameter * wpi::numbers::pi);
+                  (kWheelDiameter * std::numbers::pi);
   return distance;
 }

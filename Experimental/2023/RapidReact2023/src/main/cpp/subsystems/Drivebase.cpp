@@ -196,6 +196,10 @@ void Drivebase::SetRightMotorPower(double power) {
   m_rightSide->Set(power);
 }
 
+void Drivebase::GyroCalibration(){
+  m_gyro.Calibrate();
+}
+
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
   return frc::DifferentialDriveWheelSpeeds{GetLeftVelocity(),
                                            GetRightVelocity()};

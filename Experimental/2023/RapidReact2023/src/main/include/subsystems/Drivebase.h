@@ -90,6 +90,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   void SetRightMotorPower(double power);
 
+  void GyroCalibration();
+
   // Standard functions for subsystems.
  public:
   void Periodic() override;

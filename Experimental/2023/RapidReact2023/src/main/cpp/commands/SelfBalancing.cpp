@@ -9,7 +9,9 @@ SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase){
   AddRequirements(drivebase);
   // Use addRequirements() here to declare subsystem dependencies.
 }
-
+/*
+ADDED A CALIBRATION GYRO FUNCTION TO DRIVEBASE SUBSYSTEM
+*/
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
   noFeedFowardPower = false;

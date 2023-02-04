@@ -234,6 +234,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Coasting mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
+  frc::SmartDashboard::PutData("Calibrate Gyro", new frc2::InstantCommand([this]() {m_drivebase.GyroCalibration(); }, {&m_drivebase}));
   frc::SmartDashboard::PutData("1 Meter Forward",
                                new MoveRobotTestCommand(&m_drivebase, 0.35));
   frc::SmartDashboard::PutData("1 Meter Backward",

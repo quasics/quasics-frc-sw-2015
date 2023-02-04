@@ -34,6 +34,7 @@
 #include "commands/RunConveyorAtSpeed.h"
 #include "commands/RunConveyorAtSpeedForTime.h"
 #include "commands/RunIntakeAtSpeed.h"
+#include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/RunRearRollerAtSpeed.h"
 #include "commands/RunShooterAtSpeed.h"
 #include "commands/SetLightsToColor.h"
@@ -235,6 +236,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
   frc::SmartDashboard::PutData("Calibrate Gyro", new frc2::InstantCommand([this]() {m_drivebase.GyroCalibration(); }, {&m_drivebase}));
+
+
+  //SELF BALANCING TEST COMMAND
+
+  frc::SmartDashboard::PutData("MOVE AND BALANCE", MoveAndSelfBalance());
   frc::SmartDashboard::PutData("1 Meter Forward",
                                new MoveRobotTestCommand(&m_drivebase, 0.35));
   frc::SmartDashboard::PutData("1 Meter Backward",
@@ -545,6 +551,19 @@ frc2::SequentialCommandGroup* RobotContainer::BSM4Manual() {
 //
 //
 //
+
+
+
+//ROBOT BALANCING SEQUENCE
+frc2::SequentialCommandGroup* RobotContainer::MoveAndSelfBalance(){
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<DriveUntilPitchAngleChange>(&m_drivebase));
+  commands.push_back(
+      std::make_unique<SelfBalancing>(&m_drivebase));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
 //
 //
 //

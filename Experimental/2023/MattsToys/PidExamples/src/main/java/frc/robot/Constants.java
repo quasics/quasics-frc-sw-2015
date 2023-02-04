@@ -36,7 +36,6 @@ public final class Constants {
   // TODO: Confirm gear ratio on 2023 robot
   public static final double DRIVE_BASE_GEAR_RATIO_2023 = 8.45;  ///< 2023 robot gear ratio (KoP gearing is 8.45:1)
 
-  // TODO(mjh): Confirm this value for Sally....
   public static final double INCHES_PER_METER = 39.3701;
 
   public static final double WHEEL_DIAMETER_INCHES = 6.0;

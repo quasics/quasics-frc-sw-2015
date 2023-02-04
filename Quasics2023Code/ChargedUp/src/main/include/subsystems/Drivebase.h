@@ -52,6 +52,10 @@ class Drivebase : public frc2::SubsystemBase {
 
   units::degree_t GetAngle();
 
+  double GetPitch();
+
+  void GyroCalibration();
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -78,6 +82,8 @@ class Drivebase : public frc2::SubsystemBase {
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
+
+  double PitchShift = 0;
 
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 

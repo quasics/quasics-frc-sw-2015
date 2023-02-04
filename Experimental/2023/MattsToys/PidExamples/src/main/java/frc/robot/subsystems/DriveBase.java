@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.sensors.OffsetGyro;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
@@ -20,6 +21,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveBase extends SubsystemBase {
@@ -41,6 +43,7 @@ public class DriveBase extends SubsystemBase {
   private final DifferentialDriveOdometry m_odometry;
 
   private final Pigeon2 m_pigeon = new Pigeon2(Constants.PIGEON2_CAN_ID);
+  private final Gyro m_pitchGyro = OffsetGyro.getPitchGyro(m_pigeon);
 
   /** Creates a new DriveBase. */
   public DriveBase() {
@@ -136,8 +139,11 @@ public class DriveBase extends SubsystemBase {
     builder.addDoubleProperty("Right velocity (m/s)",
         m_rightEncoder::getVelocity,
         null);
-    builder.addDoubleProperty("Gyro angle",
+    builder.addDoubleProperty("Gyro pitch (raw)",
         m_pigeon::getYaw,
+        null);
+    builder.addDoubleProperty("Gyro pitch (adj)",
+        m_pitchGyro::getAngle,
         null);
   }
 }

@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/DriveAtPowerForMeters.h"
+#include <iostream>
 
 DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase, double motorPower, units::meter_t distance) 
   : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
@@ -11,6 +12,7 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase, double motorP
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
+  m_drivebase->ResetEncoders();
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
   m_drivebase->TankDrive(m_motorPower, m_motorPower);
@@ -30,17 +32,21 @@ void DriveAtPowerForMeters::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {
-    units::meter_t positionLeft = m_drivebase->GetLeftDistance();
+  units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t positionRight = m_drivebase->GetRightDistance();
+  std::cerr << "Start Left: " << m_leftStartingPosition.value() << ", Start Right: "
+   << m_rightStartingPosition.value() << ", Distance: " << m_distance.value() << std::endl;
+  std::cerr << "Left: " << positionLeft.value() << ", Right: " << positionRight.value() << std::endl;
+
   if (m_distance > 0_m) {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance)) or
+    if ((positionLeft >= (m_leftStartingPosition + m_distance)) ||
         (positionRight >= (m_rightStartingPosition + m_distance))) {
       return true;
     } else {
       return false;
     }
   } else {
-    if ((positionLeft <= (m_leftStartingPosition + m_distance)) or
+    if ((positionLeft <= (m_leftStartingPosition + m_distance)) ||
         (positionRight <= (m_rightStartingPosition + m_distance))) {
       return true;
     } else {

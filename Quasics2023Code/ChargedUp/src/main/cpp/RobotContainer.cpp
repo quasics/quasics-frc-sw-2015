@@ -109,11 +109,24 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Drive 1m at 50%", 
+<<<<<<< .mine
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 0.9_m));
+  frc::SmartDashboard::PutData("Drive -1m at 50%", 
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, -0.9_m));
+||||||| .r2898
+                        new DriveAtPowerForMeters(&m_drivebase, 0.5, 1_m));
+=======
                         new DriveAtPowerForMeters(&m_drivebase, 0.5, 0.89_m));
   frc::SmartDashboard::PutData("Drive 2m at 50%",
                         new DriveAtPowerForMeters(&m_drivebase, 0.5, 1.89_m));
+>>>>>>> .r2909
 
   frc::SmartDashboard::PutData("Rotate 90 degrees",
+<<<<<<< .mine
+                        new RotateAtAngle(&m_drivebase, 0.5, 60_deg) );
+||||||| .r2898
+                        new RotateAtAngle(&m_drivebase, 0.5, 90_deg) );
+=======
                         new RotateAtAngle(&m_drivebase, 0.5, 60.3_deg) );
   frc::SmartDashboard::PutData("Set Coasting Mode",
                        new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
@@ -121,4 +134,5 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData("Set Breaking Mode",
                        new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
+>>>>>>> .r2909
 }

@@ -16,13 +16,31 @@ void DriveAtPowerForMeters::Initialize() {
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
   //std::cerr << "left: " << m_leftStartingPosition.value() << ", right: " << m_rightStartingPosition.value() << std::endl;
-  m_drivebase->TankDrive(m_motorPower, m_motorPower);
+  m_drivebase->TankDrive(m_motorPower * multiplier, m_motorPower * multiplier);
 }
 
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  m_drivebase->TankDrive(m_motorPower, m_motorPower);
+  units::meter_t positionLeft = m_drivebase->GetLeftDistance();
+  units::meter_t positionRight = m_drivebase->GetRightDistance();
+
+  // slow down towards the end
+  if (m_motorPower * multiplier > 0.26) {
+    if (m_distance > 0_m) {
+      if ((positionLeft >= (m_leftStartingPosition + m_distance) * 0.8) ||
+        (positionRight >= (m_rightStartingPosition + m_distance) * 0.8 )) {
+        multiplier *= 0.99;
+      }
+    }
+    else {
+      if ((positionLeft <= (m_leftStartingPosition + m_distance) * 0.8) ||
+        (positionRight <= (m_rightStartingPosition + m_distance) * 0.8))
+        multiplier *= 0.99;
+    }
+  }
+
+  m_drivebase->TankDrive(m_motorPower * multiplier, m_motorPower * multiplier);
 }
 
 // Called once the command ends or is interrupted.
@@ -37,6 +55,8 @@ void DriveAtPowerForMeters::End(bool interrupted) {
 bool DriveAtPowerForMeters::IsFinished() {
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t positionRight = m_drivebase->GetRightDistance();
+  // since driving straight, positionLeft and positionRight should be very similar
+  
   //std::cerr << "Left: " << positionLeft.value() << ", Right: " << positionRight.value() << std::endl;
 
   if (m_distance > 0_m) {

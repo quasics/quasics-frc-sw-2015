@@ -25,6 +25,11 @@ void RotateAtAngle::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
   m_drivebase->SetBrakingMode(true);
+  units::degree_t currentPosition = m_drivebase->GetAngle();
+  if (currentPosition > ((m_startAngle + m_angle) * 0.5) &&
+        (m_percentSpeed * multiplier > 0.26)) {
+    multiplier = multiplier * 0.99;
+  }
   if (m_angle >= 0_deg)
     m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
   else 

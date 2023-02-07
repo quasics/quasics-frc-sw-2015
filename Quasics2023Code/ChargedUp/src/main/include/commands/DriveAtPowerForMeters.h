@@ -37,5 +37,4 @@ private:
   const units::meter_t m_distance;
   units::meter_t m_leftStartingPosition;
   units::meter_t m_rightStartingPosition;
-  double multiplier = 1.0;
 };

@@ -34,6 +34,5 @@ class RotateAtAngle
   double m_percentSpeed;
   units::degree_t m_angle;
   units::degree_t m_startAngle;
-  double multiplier = 1.0; // slow down towards end of rotation so robot doesn't overshoot
 
 };

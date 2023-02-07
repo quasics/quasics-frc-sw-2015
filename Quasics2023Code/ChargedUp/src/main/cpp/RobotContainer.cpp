@@ -5,6 +5,8 @@
 #include "RobotContainer.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/PrintCommand.h>
+#include <iostream>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/button/Trigger.h>
 
@@ -72,6 +74,7 @@ RobotContainer::RobotContainer() :
 
   // Configure the button bindings
   ConfigureBindings();
+  AddAutonomousCommandsToSmartDashboard();
   AddTestButtonsToSmartDashboard();  
 }
 
@@ -125,6 +128,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData("Set Breaking Mode",
                        new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
+}
+
+void RobotContainer::AddAutonomousCommandsToSmartDashboard(){
+  m_autonomousOptions.SetDefaultOption(
+      "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
+  frc::SmartDashboard::PutData("Auto mode", &m_autonomousOptions);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::RedAndBlueDriveStation2GTFO(){

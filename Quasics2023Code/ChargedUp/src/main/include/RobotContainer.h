@@ -32,6 +32,8 @@ class RobotContainer {
 
   double GetDriveSpeedScalingFactor();
 
+  void AddAutonomousCommandsToSmartDashboard();
+
   frc2::SequentialCommandGroup* RedAndBlueDriveStation2GTFO();
 
  private:

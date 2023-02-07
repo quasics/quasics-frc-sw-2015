@@ -59,9 +59,6 @@
 
 RobotContainer::RobotContainer() {
 
-  // Configure default commands for the key subsystems.
-  InstallDefaultCommands();
-
   //////////////////////////////////////////
   // Configure the button bindings.
   ConfigureControllerButtonBindings();
@@ -329,8 +326,6 @@ void RobotContainer::ConfigureSmartDashboard() {
 
   AddShooterAngleControlsToSmartDashboard();
   AddShooterSpeedControlsToSmartDashboard();
-  AddShootAndMoveTestsToSmartDashboard();
-
   // Test command
   frc::SmartDashboard::PutData(
       "Load next ball", new RunConveyorUntilBallLoads(

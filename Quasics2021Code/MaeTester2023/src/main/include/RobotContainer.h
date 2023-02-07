@@ -55,9 +55,6 @@ class RobotContainer {
   /// on the subsystem.
   std::unique_ptr<TriggerDrivenShootingCommand> BuildShootingCommand();
 
-  /// Configures the default commands for various subsystems.
-  void InstallDefaultCommands();
-
   /// Configures the options shown in the selector for autonomous mode
   /// operations, and puts the selector widget on the smart dashboard.
   void ConfigureAutoSelection();

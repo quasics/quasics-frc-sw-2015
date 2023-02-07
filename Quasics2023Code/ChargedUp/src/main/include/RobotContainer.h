@@ -28,11 +28,13 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::CommandPtr GetAutonomousCommand();
+  frc2::Command* GetAutonomousTeamAndStationCommand();
+  frc2::Command* GetAutonomousRobotSequenceCommand();
 
   double GetDriveSpeedScalingFactor();
 
-  void AddAutonomousCommandsToSmartDashboard();
+  void AddTeamAndStationSelectorToSmartDashboard();
+  void AddRobotSequenceSelectorToSmartDashboard();
 
   frc2::SequentialCommandGroup* RedAndBlueDriveStation2GTFO();
 
@@ -47,7 +49,8 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
 
-  frc::SendableChooser<frc2::Command*> m_autonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_RobotSequenceAutonomousOptions;
 
   void ConfigureBindings();
   void AddTestButtonsToSmartDashboard();

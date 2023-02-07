@@ -27,15 +27,15 @@ void DriveAtPowerForMeters::Execute() {
   units::meter_t positionRight = m_drivebase->GetRightDistance();
   
   if (m_distance > 0_m) {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance) * 0.8) || 
-        (positionRight >= (m_rightStartingPosition + m_distance) * 0.8 )) {
+    if ((positionLeft >= (m_leftStartingPosition + m_distance) - 0.2) || 
+        (positionRight >= (m_rightStartingPosition + m_distance) - 0.2 )) {
       multiplier = 0.2;
     }
   }
 
   else {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance) * 0.8) ||
-        (positionRight >= (m_rightStartingPosition + m_distance) * 0.8 )) {
+    if ((positionLeft >= (m_leftStartingPosition + m_distance) - 0.2) ||
+        (positionRight >= (m_rightStartingPosition + m_distance) - 0.2 )) {
       multiplier = 0.2;
     }
   }

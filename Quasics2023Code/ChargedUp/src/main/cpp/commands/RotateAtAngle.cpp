@@ -31,14 +31,14 @@ void RotateAtAngle::Execute() {
 
   
   if (m_angle >= 0_deg) {
-    if (currentPosition > ((m_startAngle + m_angle) - 30_deg)) {
+    if (currentPosition > ((m_startAngle + m_angle) * 0.8)) {
       multiplier = 0.2;
     }
     m_drivebase->TankDrive(-m_percentSpeed * multiplier, m_percentSpeed * multiplier);
   }
 
   else {
-    if (currentPosition < ((m_startAngle + m_angle) - 30_deg)) {
+    if (currentPosition < ((m_startAngle + m_angle) * 0.8)) {
       multiplier = 0.2;
     }
     m_drivebase->TankDrive(m_percentSpeed * multiplier, -m_percentSpeed * multiplier);

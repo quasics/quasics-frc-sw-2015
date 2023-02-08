@@ -129,7 +129,12 @@ frc2::Command* RobotContainer::GetAutonomousCommand(){
       return RedAndBlueDriveStation2GTFO();
     }
   }
+/*
+TAKE A LOOK AT CONDITIONAL COMMANDS MIGHT BE AN ALT WAY TO DO THIS
+OR JUST DO THESE BASIC DECISIONS IF
+DONE THIS WAY THEN IT SHOULD GO COMMAND THEN STATION AND COLOR
 
+*/
   if (teamAndPosName == "blue1") {
     return new frc2::PrintCommand("Doing nothing, as instructed");
   } else {

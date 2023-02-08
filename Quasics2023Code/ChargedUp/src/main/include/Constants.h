@@ -31,6 +31,33 @@ constexpr int kDriverControllerPort = 0;
 
 }  // namespace OperatorConstants
 
+
+
+namespace AutonmousTeamAndStationPositions{
+  constexpr auto Blue1 = "Blue 1";
+  constexpr auto Blue2 = "Blue 2";
+  constexpr auto Blue3 = "Blue 3";
+  constexpr auto Red1 = "Red 1";
+  constexpr auto Red2 = "Red 2";
+  constexpr auto Red3 = "Red 3";
+
+}
+
+namespace AutonomousSelectedOperation{
+  const auto DoNothing = "Do nothing";
+  const auto GTFODock = "GTFO and Dock";
+}
+
+
+
+
+
+
+
+
+
+
+
 namespace SelfBalancingConstants{
   namespace PID{
      constexpr auto ks = 0;

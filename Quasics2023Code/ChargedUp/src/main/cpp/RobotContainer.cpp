@@ -75,6 +75,7 @@ RobotContainer::RobotContainer() :
   // Configure the button bindings
   ConfigureBindings();
   AddTeamAndStationSelectorToSmartDashboard();
+  AddRobotSequenceSelectorToSmartDashboard();
   AddTestButtonsToSmartDashboard();  
 }
 
@@ -137,14 +138,14 @@ void RobotContainer::AddTeamAndStationSelectorToSmartDashboard(){
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
       "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
   m_TeamAndStationAutonomousOptions.AddOption("GTFO RED AND BLUE", RedAndBlueDriveStation2GTFO());
-  frc::SmartDashboard::PutData("Auto mode", &m_TeamAndStationAutonomousOptions);
+  frc::SmartDashboard::PutData("Team and Station Auto Selector", &m_TeamAndStationAutonomousOptions);
 }
 
 void RobotContainer::AddRobotSequenceSelectorToSmartDashboard(){
   m_RobotSequenceAutonomousOptions.SetDefaultOption(
       "Do Nothing", new frc2::PrintCommand("I decline to do anything."));
-  m_TeamAndStationAutonomousOptions.AddOption("GTFO RED AND BLUE", RedAndBlueDriveStation2GTFO());
-  frc::SmartDashboard::PutData("Auto mode", &m_TeamAndStationAutonomousOptions);
+  m_RobotSequenceAutonomousOptions.AddOption("GTFO RED AND BLUE", RedAndBlueDriveStation2GTFO());
+  frc::SmartDashboard::PutData("Robot Sequence Auto Selector", &m_RobotSequenceAutonomousOptions);
 }
 
 frc2::SequentialCommandGroup* RobotContainer::RedAndBlueDriveStation2GTFO(){

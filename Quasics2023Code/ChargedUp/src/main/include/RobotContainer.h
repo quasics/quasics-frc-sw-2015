@@ -28,8 +28,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::Command* GetAutonomousTeamAndStationCommand();
-  frc2::Command* GetAutonomousRobotSequenceCommand();
+  frc2::Command* GetAutonomousCommand();
 
   double GetDriveSpeedScalingFactor();
 

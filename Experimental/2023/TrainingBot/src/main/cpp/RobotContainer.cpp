@@ -10,6 +10,7 @@
 #include <frc2/command/PrintCommand.h>
 
 #include "commands/Autos.h"
+#include "commands/DriveDistance.h"
 #include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
 
@@ -21,6 +22,7 @@ RobotContainer::RobotContainer()
   ConfigureBindings();
 
   frc::SmartDashboard::PutData("Sample cmd", new frc2::PrintCommand("Do something!"));
+  frc::SmartDashboard::PutData("1m @ 30%", new DriveDistance(&m_driveBase, 1_m, 0.3));
 }
 
 void RobotContainer::ConfigureBindings()

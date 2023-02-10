@@ -4,7 +4,7 @@
 
 #include "commands/RotateAtAngle.h"
 #include <units/angle.h>
-
+#include <iostream>
 
 RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed, units::degree_t angle) 
  : m_drivebase(drivebase), m_percentSpeed(percentSpeed), m_angle(angle) {
@@ -31,16 +31,18 @@ void RotateAtAngle::Execute() {
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
   
   if (m_angle >= 0_deg) {
-    if (degreesLeft < 30_deg) {
-      newSpeed = 0.2;
+    if (degreesLeft < 60_deg) {
+      newSpeed = 0.25;
     }
+    std::cout << "Degrees left: " << degreesLeft.value() << ", Speed: " << newSpeed << std::endl;
     m_drivebase->TankDrive(-newSpeed, newSpeed);
   }
 
   else {
-    if (degreesLeft < -30_deg) {
-      newSpeed = 0.2;
+    if (degreesLeft < -60_deg) {
+      newSpeed = 0.25;
     }
+    std::cout << "Degrees left: " << degreesLeft.value() << ", Speed: " << newSpeed << std::endl;
     m_drivebase->TankDrive(newSpeed, -newSpeed);
   }
 

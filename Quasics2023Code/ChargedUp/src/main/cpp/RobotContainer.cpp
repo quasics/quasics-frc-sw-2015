@@ -66,8 +66,6 @@ RobotContainer::RobotContainer() :
     }
   };
   
-  
-
   m_drivebase.SetDefaultCommand(tankDrive);
 
   // Initialize all of your commands and subsystems here
@@ -119,6 +117,12 @@ void RobotContainer::ConfigureBindings() {
 frc2::Command* RobotContainer::GetAutonomousCommand(){
   frc2::Command* selectedOperation = m_RobotSequenceAutonomousOptions.GetSelected();
   frc2::Command* teamAndPosCmd = m_TeamAndStationAutonomousOptions.GetSelected();
+  if (selectedOperation == nullptr || teamAndPosCmd == nullptr) {
+    // This shouldn't happen if things were set up right.  But it did.  So they weren't.
+    // We'll bail out, but at least return a valid pointer that will tell us something went wrong when it's run.
+    static frc2::PrintCommand somethingIsScrewyCommand("Can't decide what to do");
+    return &somethingIsScrewyCommand;
+  }
   std::string operationName = selectedOperation->GetName();
   std::string teamAndPosName = teamAndPosCmd->GetName();
 

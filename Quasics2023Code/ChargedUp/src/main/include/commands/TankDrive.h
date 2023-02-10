@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
 #include "subsystems/Drivebase.h"
 
 /**
@@ -15,8 +16,7 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class TankDrive
-    : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
+class TankDrive : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
  public:
   TankDrive(Drivebase* drivebase, std::function<double()> leftSpeedFunction,
             std::function<double()> rightSpeedFunction);
@@ -28,12 +28,11 @@ class TankDrive
   void End(bool interrupted) override;
 
  private:
- 
   void UpdateSpeeds();
 
   Drivebase* m_drivebase;
   std::function<double()> m_leftSpeedFunction;
   std::function<double()> m_rightSpeedFunction;
 
-  //working with logitech controller
+  // working with logitech controller
 };

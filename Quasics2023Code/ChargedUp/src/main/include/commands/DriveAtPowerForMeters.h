@@ -20,7 +20,8 @@
 class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
  public:
-  DriveAtPowerForMeters(Drivebase* drivebase, double motorPower, units::meter_t distance);
+  DriveAtPowerForMeters(Drivebase* drivebase, double motorPower,
+                        units::meter_t distance);
 
   void Initialize() override;
 
@@ -30,8 +31,7 @@ class DriveAtPowerForMeters
 
   bool IsFinished() override;
 
-private:
-
+ private:
   Drivebase* m_drivebase;
   double m_motorPower;
   units::meter_t m_distance;

@@ -6,8 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Drivebase.h"
 #include <units/length.h>
+
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -17,9 +18,11 @@
  * Command will *not* work!
  */
 class DriveUntilPitchAngleChange
-    : public frc2::CommandHelper<frc2::CommandBase, DriveUntilPitchAngleChange> {
+    : public frc2::CommandHelper<frc2::CommandBase,
+                                 DriveUntilPitchAngleChange> {
  public:
-  DriveUntilPitchAngleChange(Drivebase* drivebase, double power, units::meter_t distance = 10_m);
+  DriveUntilPitchAngleChange(Drivebase* drivebase, double power,
+                             units::meter_t distance = 10_m);
 
   void Initialize() override;
 
@@ -29,7 +32,7 @@ class DriveUntilPitchAngleChange
 
   bool IsFinished() override;
 
-  private:
+ private:
   Drivebase* m_drivebase;
   const double m_power;
   const units::meter_t m_distance;

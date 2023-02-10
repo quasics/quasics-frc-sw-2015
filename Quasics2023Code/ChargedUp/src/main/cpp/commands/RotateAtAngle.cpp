@@ -3,25 +3,27 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/RotateAtAngle.h"
+
 #include <units/angle.h>
+
 #include <iostream>
 
-RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed, units::degree_t angle) 
- : m_drivebase(drivebase), 
-   m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
-   // robot seems to overshoot about 2 degrees even after slowing down
-   m_angle((percentSpeed > 0) ? (angle - 2_deg) : (-angle + 2_deg)) {
+RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
+                             units::degree_t angle)
+    : m_drivebase(drivebase),
+      m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
+      // robot seems to overshoot about 2 degrees even after slowing down
+      m_angle((percentSpeed > 0) ? (angle - 2_deg) : (-angle + 2_deg)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
 }
-
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
   m_drivebase->SetBrakingMode(true);
   if (m_angle >= 0_deg)
     m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
-  else 
+  else
     m_drivebase->TankDrive(m_percentSpeed, -m_percentSpeed);
   m_startAngle = m_drivebase->GetAngle();
 }
@@ -34,7 +36,7 @@ void RotateAtAngle::Execute() {
 
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
   units::degree_t degreesLeftWhenSlowDown = 120_deg * m_percentSpeed - 10_deg;
-  
+
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown) {
       newSpeed = 0.25;
@@ -48,8 +50,6 @@ void RotateAtAngle::Execute() {
     }
     m_drivebase->TankDrive(newSpeed, -newSpeed);
   }
-
-
 }
 
 // Called once the command ends or is interrupted.
@@ -62,8 +62,8 @@ void RotateAtAngle::End(bool interrupted) {
 bool RotateAtAngle::IsFinished() {
   // positive angle turns left, negative angle turns right
   units::degree_t currentAngle = m_drivebase->GetAngle();
-  if (m_angle >= 0_deg) 
+  if (m_angle >= 0_deg)
     return (currentAngle >= m_angle + m_startAngle);
-  else 
+  else
     return (currentAngle <= m_angle + m_startAngle);
 }

@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include <frc/controller/PIDController.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc/controller/PIDController.h>
 #include <subsystems/Drivebase.h>
+
 #include "Constants.h"
 
 /**
@@ -30,12 +31,13 @@ class SelfBalancing
 
   bool IsFinished() override;
 
-  private:
+ private:
   Drivebase* m_drivebase;
-  frc2::PIDController pid{SelfBalancingConstants::PID::kP, SelfBalancingConstants::PID::kI, SelfBalancingConstants::PID::kD};
+  frc2::PIDController pid{SelfBalancingConstants::PID::kP,
+                          SelfBalancingConstants::PID::kI,
+                          SelfBalancingConstants::PID::kD};
   double pastAngle;
   bool noFeedFowardPower = false;
   bool activatePID = false;
   double slopeOfRamp = 1;
-
 };

@@ -6,8 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include "subsystems/Drivebase.h"
 #include <units/angle.h>
+
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -19,7 +20,8 @@
 class RotateAtAngle
     : public frc2::CommandHelper<frc2::CommandBase, RotateAtAngle> {
  public:
-  RotateAtAngle(Drivebase* drivebase, double percentSpeed, units::degree_t angle);
+  RotateAtAngle(Drivebase* drivebase, double percentSpeed,
+                units::degree_t angle);
 
   void Initialize() override;
 
@@ -34,5 +36,4 @@ class RotateAtAngle
   double m_percentSpeed;
   units::degree_t m_angle;
   units::degree_t m_startAngle;
-
 };

@@ -8,14 +8,8 @@
 
 SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase) {
   AddRequirements(drivebase);
-  // Use addRequirements() here to declare subsystem dependencies.
 }
-/*
-ADDED A CALIBRATION GYRO FUNCTION TO DRIVEBASE SUBSYSTEM
-ALSO IN DRIVEBASE CREATED A PITCH ADJUSTEMENT TO GYRO
-//ALSO CREATED DRIVE UNTIL ANGLE CHANGE COMMAND
-AND ADDED FUNCTIONALITY IN ROBOT CONTAINER TO IMPLEMENT THE SEQUENCE
-*/
+
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
   noFeedFowardPower = false;
@@ -35,7 +29,6 @@ void SelfBalancing::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
-  std::cout << "Current Gyro Reading: " << (pastAngle) << std::endl;
   double currentAngle = m_drivebase->GetPitch();  // ADJUST FOR NOT FLAT GYRO
   double power = 0.0;
   if (noFeedFowardPower == false) {
@@ -67,6 +60,3 @@ void SelfBalancing::Execute() {
 
 // Called once the command ends or is interrupted.
 void SelfBalancing::End(bool interrupted) { m_drivebase->Stop(); }
-
-// Returns true when the command should end.
-bool SelfBalancing::IsFinished() { return false; }

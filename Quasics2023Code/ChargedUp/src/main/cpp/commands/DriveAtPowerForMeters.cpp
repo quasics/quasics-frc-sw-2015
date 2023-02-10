@@ -12,6 +12,9 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
     : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
   // m_distance can be positive (forwards) or negative (backwards), m_motorPower
   // will always be positive after this code even if user enters weird values.
+  //
+  // TODO(josh/ethan): This documentation should be in the header, making it
+  // easily visible to users of the class.
 
   if (m_motorPower < 0) {
     if (m_distance < 0_m) {
@@ -26,7 +29,6 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
-  // m_drivebase->ResetEncoders();
   double newSpeed;
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
@@ -47,9 +49,6 @@ void DriveAtPowerForMeters::Initialize() {
     }
     m_drivebase->TankDrive(-newSpeed, -newSpeed);
   }
-
-  // std::cerr << "left: " << m_leftStartingPosition.value() << ", right: " <<
-  // m_rightStartingPosition.value() << std::endl;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -67,9 +66,7 @@ void DriveAtPowerForMeters::Execute() {
     }
     m_drivebase->TankDrive(newSpeed, newSpeed);
 
-  }
-
-  else {
+  } else {
     if (distanceLeft >= -distanceLeftWhenSlowDown) {
       newSpeed = 0.25;
     }
@@ -81,19 +78,12 @@ void DriveAtPowerForMeters::Execute() {
 void DriveAtPowerForMeters::End(bool interrupted) {
   m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
-  // std::cerr << "Start Left: " << m_leftStartingPosition.value() << ", Start
-  // Right: "
-  //  << m_rightStartingPosition.value() << ", Distance: " << m_distance.value()
-  //  << std::endl;
 }
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
-
-  // std::cerr << "Left: " << positionLeft.value() << ", Right: " <<
-  // positionRight.value() << std::endl;
 
   if (m_distance > 0_m) {
     return (positionLeft >= (m_leftStartingPosition + m_distance));

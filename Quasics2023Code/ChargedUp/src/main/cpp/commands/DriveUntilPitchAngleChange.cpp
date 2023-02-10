@@ -7,6 +7,9 @@
 // NORMALIZING THE INPUTS SO THAT THE CODE FAILS LESS TIMES
 // If distance or speed is negative, then we assume were going backward for
 // abs(distance) meters
+//
+// TODO(matthew): This documentation should be in the header, making it
+// easily visible to users of the class.
 DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
                                                        double power,
                                                        units::meter_t distance)
@@ -14,7 +17,6 @@ DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
       m_power((power < 0 || distance.value() < 0) ? -std::abs(power)
                                                   : std::abs(power)),
       m_distance(std::abs(distance.value())) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
 }
 

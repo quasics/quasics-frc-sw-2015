@@ -131,6 +131,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand()
     static frc2::PrintCommand somethingIsScrewyCommand("Can't decide what to do");
     return &somethingIsScrewyCommand;
   }
+
   std::string operationName = selectedOperation->GetName();
   std::string teamAndPosName = teamAndPosCmd->GetName();
 
@@ -140,11 +141,17 @@ frc2::Command *RobotContainer::GetAutonomousCommand()
   }
   else if (operationName == AutonomousSelectedOperation::GTFO)
   {
-    if (teamAndPosName == "blue1" || teamAndPosName == "blue3")
+    if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 || teamAndPosName == AutonmousTeamAndStationPositions::Red2)
     {
-      return RedAndBlueDriveStation2GTFOAndBalance();
+      std::vector<std::unique_ptr<frc2::Command>> commands;
+      commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
+      return new frc2::SequentialCommandGroup(std::move(commands));
     }
-    // TODO: Add the other cases
+    else{
+      std::vector<std::unique_ptr<frc2::Command>> commands;
+      commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
+      return new frc2::SequentialCommandGroup(std::move(commands));
+    }
   }
   else if (operationName == AutonomousSelectedOperation::GTFODock)
   {
@@ -160,7 +167,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand()
     {
       const bool firstTurnIsClockwise = (teamAndPosName == AutonmousTeamAndStationPositions::Blue3 || teamAndPosName == AutonmousTeamAndStationPositions::Red1);
       // Build a sequential command
-      std::vector<std::unique_ptr<frc2::Command>> commands; // SHIFTED IT TO UP TOP DELETE DELETE
+      std::vector<std::unique_ptr<frc2::Command>> commands; 
 
       commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(
@@ -177,7 +184,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand()
       // Add commands to move forward until we hit the ramp (or decide we're not going to), and to then balance
 
       // Build and return the sequence to run.
-      return new frc2::SequentialCommandGroup(std::move(commands)); // SHIFTED IT TO DOWN DELETE DELETE
+      return new frc2::PrintCommand("Invalid Input, Failed, Doing Nothing"); 
     }
   }
 
@@ -188,7 +195,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand()
 
   */
 
-  return m_RobotSequenceAutonomousOptions.GetSelected();
+  return m_RobotSequenceAutonomousOptions.GetSelected(); //CHANGE THIS
 }
 
 /*

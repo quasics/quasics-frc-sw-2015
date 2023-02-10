@@ -7,10 +7,14 @@
 #include <iostream>
 
 RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed, units::degree_t angle) 
- : m_drivebase(drivebase), m_percentSpeed(percentSpeed), m_angle(angle) {
+ : m_drivebase(drivebase), 
+   m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
+   // robot seems to overshoot about 2 degrees even after slowing down
+   m_angle((percentSpeed > 0) ? (angle - 2_deg) : (-angle + 2_deg)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
 }
+
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
@@ -29,20 +33,19 @@ void RotateAtAngle::Execute() {
   units::degree_t currentPosition = m_drivebase->GetAngle();
 
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
+  units::degree_t degreesLeftWhenSlowDown = 120_deg * m_percentSpeed - 10_deg;
   
   if (m_angle >= 0_deg) {
-    if (degreesLeft < 60_deg) {
+    if (degreesLeft < degreesLeftWhenSlowDown) {
       newSpeed = 0.25;
     }
-    std::cout << "Degrees left: " << degreesLeft.value() << ", Speed: " << newSpeed << std::endl;
     m_drivebase->TankDrive(-newSpeed, newSpeed);
   }
 
   else {
-    if (degreesLeft < -60_deg) {
+    if (-degreesLeft < degreesLeftWhenSlowDown) {
       newSpeed = 0.25;
     }
-    std::cout << "Degrees left: " << degreesLeft.value() << ", Speed: " << newSpeed << std::endl;
     m_drivebase->TankDrive(newSpeed, -newSpeed);
   }
 

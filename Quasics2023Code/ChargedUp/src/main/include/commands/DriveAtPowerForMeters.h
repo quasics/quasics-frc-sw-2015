@@ -33,8 +33,8 @@ class DriveAtPowerForMeters
 private:
 
   Drivebase* m_drivebase;
-  const double m_motorPower;
-  const units::meter_t m_distance;
+  double m_motorPower;
+  units::meter_t m_distance;
   units::meter_t m_leftStartingPosition;
   units::meter_t m_rightStartingPosition;
 };

@@ -7,40 +7,77 @@
 
 DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase, double motorPower, units::meter_t distance) 
   : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
+    // m_distance can be positive (forwards) or negative (backwards), m_motorPower will always be
+    // positive after this code even if user enters weird values.
+    
+    if (m_motorPower < 0) {
+      if (m_distance < 0_m) {
+        m_motorPower = -m_motorPower;
+      }
+      else {
+        m_motorPower = -m_motorPower;
+        m_distance = -m_distance;
+      }
+
+    }
     AddRequirements(drivebase);
 }
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
   // m_drivebase->ResetEncoders();
+  double newSpeed;
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
+  units::meter_t distanceLeft = m_distance;
+  units::meter_t distanceLeftWhenSlowDown = 0.5_m;
+
+
+  if (m_distance > 0_m) {
+    if (distanceLeft <= distanceLeftWhenSlowDown) {
+      newSpeed = 0.25;
+    }
+    m_drivebase->TankDrive(newSpeed, newSpeed);
+
+  }
+
+  else {
+    if (distanceLeft >= -distanceLeftWhenSlowDown) {
+      newSpeed = 0.25;
+    }
+    m_drivebase->TankDrive(-newSpeed, -newSpeed);
+  }
+
   //std::cerr << "left: " << m_leftStartingPosition.value() << ", right: " << m_rightStartingPosition.value() << std::endl;
-  m_drivebase->TankDrive(m_motorPower, m_motorPower);
+
+
 }
 
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  double multiplier;
+  double newSpeed = m_motorPower;
+  // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
-  units::meter_t positionRight = m_drivebase->GetRightDistance();
+  units::meter_t distanceLeft = (m_leftStartingPosition + m_distance) - positionLeft;
+  units::meter_t distanceLeftWhenSlowDown = 0.5_m;
+
   
   if (m_distance > 0_m) {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance) * 0.8) || 
-        (positionRight >= (m_rightStartingPosition + m_distance) * 0.8 )) {
-      multiplier = 0.2;
+    if (distanceLeft <= distanceLeftWhenSlowDown) {
+      newSpeed = 0.25;
     }
+    m_drivebase->TankDrive(newSpeed, newSpeed);
+
   }
 
   else {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance) * 0.8) ||
-        (positionRight >= (m_rightStartingPosition + m_distance) * 0.8 )) {
-      multiplier = 0.2;
+    if (distanceLeft >= -distanceLeftWhenSlowDown) {
+      newSpeed = 0.25;
     }
+    m_drivebase->TankDrive(-newSpeed, -newSpeed);
   }
 
-  m_drivebase->TankDrive(m_motorPower * multiplier, m_motorPower * multiplier);
 }
 
 // Called once the command ends or is interrupted.
@@ -53,25 +90,14 @@ void DriveAtPowerForMeters::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool DriveAtPowerForMeters::IsFinished() {
+  // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
-  units::meter_t positionRight = m_drivebase->GetRightDistance();
-  // since driving straight, positionLeft and positionRight should be very similar
   
   //std::cerr << "Left: " << positionLeft.value() << ", Right: " << positionRight.value() << std::endl;
 
   if (m_distance > 0_m) {
-    if ((positionLeft >= (m_leftStartingPosition + m_distance)) ||
-        (positionRight >= (m_rightStartingPosition + m_distance))) {
-      return true;
-    } else {
-      return false;
-    }
+    return (positionLeft >= (m_leftStartingPosition + m_distance));
   } else {
-    if ((positionLeft <= (m_leftStartingPosition + m_distance)) ||
-        (positionRight <= (m_rightStartingPosition + m_distance))) {
-      return true;
-    } else {
-      return false;
-    }
+    return (positionLeft <= (m_leftStartingPosition + m_distance));
   }
 }

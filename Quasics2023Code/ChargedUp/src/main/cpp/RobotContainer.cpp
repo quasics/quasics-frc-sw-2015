@@ -72,7 +72,6 @@ RobotContainer::RobotContainer() :
 
   // Configure the button bindings
   ConfigureBindings();
-  GetAutonomousCommand();
   AddTestButtonsToSmartDashboard();  
 }
 

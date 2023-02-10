@@ -45,6 +45,7 @@ namespace AutonmousTeamAndStationPositions{
 
 namespace AutonomousSelectedOperation{
   const auto DoNothing = "Do nothing";
+  const auto GTFO = "GTFO";
   const auto GTFODock = "GTFO and Dock";
 }
 

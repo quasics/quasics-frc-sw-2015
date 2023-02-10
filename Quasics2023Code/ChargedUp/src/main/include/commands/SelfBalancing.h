@@ -17,6 +17,8 @@
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
+ *
+ * TODO(matthew): Please update the documentation for this command.
  */
 class SelfBalancing
     : public frc2::CommandHelper<frc2::CommandBase, SelfBalancing> {
@@ -28,8 +30,6 @@ class SelfBalancing
   void Execute() override;
 
   void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   Drivebase* m_drivebase;

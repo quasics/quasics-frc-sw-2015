@@ -16,6 +16,8 @@
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
+ *
+ * TODO(josh/ethan): Please update the documentation for this command.
  */
 class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {

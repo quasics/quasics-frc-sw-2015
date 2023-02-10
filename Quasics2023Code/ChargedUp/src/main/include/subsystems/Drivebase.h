@@ -48,6 +48,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   void ResetEncoders();
 
+  // TODO(ethan/josh): Add docs to clarify what angle this is.  (I'm assuming
+  // it's "yaw", but it would be good to make this explicit.)
   units::degree_t GetAngle();
 
   double GetPitch();
@@ -81,7 +83,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
-  double PitchShift = 0;
+  // TODO(matthew): Add documentation for what this represents/does.
+  double m_pitchShift = 0;
 
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 };

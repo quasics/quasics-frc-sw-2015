@@ -3,12 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/Drivebase.h"
+
 #include <rev/CANSparkMax.h>
 
 #include <iostream>
 
 Drivebase::Drivebase() {
-    SetName("Drivebase");
+  SetName("Drivebase");
 
   m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
   m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
@@ -96,20 +97,10 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
 }
 
 void Drivebase::ResetEncoders() {
-  /*
-  auto result = m_leftFrontEncoder.SetPosition(0);
-  if (result ==  rev::REVLibError::kOk) {
-    std::cerr << "Reset position to 0\n";
-  } else {
-    std::cerr << "Failed to reset position\n";
-  }
-  */
   m_leftFrontEncoder.SetPosition(0);
   m_rightFrontEncoder.SetPosition(0);
   m_leftBackEncoder.SetPosition(0);
   m_rightBackEncoder.SetPosition(0);
-  //std::cerr << "In drive base: left: " << GetLeftDistance().value() << ", right: " << GetRightDistance().value() << std::endl;
-
 }
 
 units::degree_t Drivebase::GetAngle() {
@@ -117,19 +108,15 @@ units::degree_t Drivebase::GetAngle() {
 }
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {
-
-}
+void Drivebase::Periodic() {}
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {
-    m_drive->TankDrive(leftPower, rightPower);
+  m_drive->TankDrive(leftPower, rightPower);
 }
 
-double Drivebase::GetPitch(){
-  return m_gyro.GetPitch() - PitchShift;
-}
+double Drivebase::GetPitch() { return m_gyro.GetPitch() - PitchShift; }
 
-void Drivebase::GyroCalibration(){
+void Drivebase::GyroCalibration() {
   m_gyro.Calibrate();
   PitchShift = m_gyro.GetPitch();
 }

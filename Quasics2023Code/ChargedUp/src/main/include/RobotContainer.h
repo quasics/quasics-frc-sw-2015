@@ -54,6 +54,8 @@ class RobotContainer {
   void AddTestButtonsToSmartDashboard();
 
   bool isInverted = true;
-  frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;
-  frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;
+  frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter{
+      OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT};
+  frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter{
+      OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT};
 };

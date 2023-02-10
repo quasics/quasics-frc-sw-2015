@@ -21,9 +21,13 @@
 #include "commands/SelfBalancing.h"
 #include "commands/TankDrive.h"
 
-RobotContainer::RobotContainer()
-    : m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
-      m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
+RobotContainer::RobotContainer() {
+  // Initialize all of your commands and subsystems here
+  //
+  // TODO(josh/ethan): Y'all have a subtle bug in here, possibly based on
+  // limited testing while actually driving the robot.  I'd suggest doing some
+  // more testing, and come see me (or maybe get Meg to help you spot it in
+  // action) if you can't find it.
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -44,7 +48,6 @@ RobotContainer::RobotContainer()
       },
       [this] {
         const double scalingFactor = GetDriveSpeedScalingFactor();
-
         double joystickValue;
 
         if (isInverted) {
@@ -60,8 +63,6 @@ RobotContainer::RobotContainer()
       }};
 
   m_drivebase.SetDefaultCommand(tankDrive);
-
-  // Initialize all of your commands and subsystems here
 
   // Configure the button bindings
   ConfigureBindings();
@@ -95,18 +96,8 @@ void RobotContainer::ConfigureBindings() {
   // pressed, cancelling on release.
   m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
 }
-/*
-
-
-
-
-
-
-
-*/
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {
-  // frc2::Command *
   frc2::Command *selectedOperation =
       m_RobotSequenceAutonomousOptions.GetSelected();
   frc2::Command *teamAndPosCmd =
@@ -116,7 +107,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     // weren't. We'll bail out, but at least return a valid pointer that will
     // tell us something went wrong when it's run.
     static frc2::PrintCommand somethingIsScrewyCommand(
-        "Can't decide what to do");
+        "Selection error: can't decide what to do");
     return &somethingIsScrewyCommand;
   }
 
@@ -124,23 +115,40 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   std::string teamAndPosName = teamAndPosCmd->GetName();
 
   if (operationName == AutonomousSelectedOperation::DoNothing) {
-    return new frc2::PrintCommand("Doing nothing, as instructed");
+    static frc2::PrintCommand doNothing("Doing nothing, as instructed");
+    return &doNothing;
   } else if (operationName == AutonomousSelectedOperation::GTFO) {
     if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
+      // TODO(matthew): Why are you returning a command group (that will be
+      // leaked) that contains only a single command?
+      //
+      // Why not just have a simple staticly declared command (like in the
+      // "somethingIsScrewyCommand" case above), and return its address?  This
+      // will both simplify the code, and remove the memory leak in this case.
       std::vector<std::unique_ptr<frc2::Command>> commands;
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
       return new frc2::SequentialCommandGroup(std::move(commands));
     } else {
+      // TODO(matthew): As noted above, why are you returning a command group
+      // (that will be leaked) that contains only a single command?
       std::vector<std::unique_ptr<frc2::Command>> commands;
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
       return new frc2::SequentialCommandGroup(std::move(commands));
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
+    // TODO(matthew): This block is getting pretty long.  It might be worth
+    // turning it into a separate member function, similar to your initial
+    // RedAndBlueDriveStation2GTFOAndBalance() function, that is invoked from
+    // here to do the work.
+    std::vector<std::unique_ptr<frc2::Command>> commands;
     if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
+      // In this case, we need to move back out of the community area (for the
+      // mobility points), and then move forward and balance on the charging
+      // station.
       std::vector<std::unique_ptr<frc2::Command>> commands;
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
@@ -149,14 +157,14 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
               &m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
       commands.push_back(
           std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
-      return new frc2::SequentialCommandGroup(std::move(commands));
     } else {
+      // In this case, we need to move back out of the community area (for the
+      // mobility points), then turn and drive until we're in line with the
+      // middle of the charging station, and then move forward and balance on
+      // the charging station.
       const bool firstTurnIsClockwise =
           (teamAndPosName == AutonmousTeamAndStationPositions::Blue3 ||
            teamAndPosName == AutonmousTeamAndStationPositions::Red1);
-      // Build a sequential command
-      std::vector<std::unique_ptr<frc2::Command>> commands;
-
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
       commands.push_back(
@@ -176,35 +184,20 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
               &m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
       commands.push_back(
           std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
-      return new frc2::SequentialCommandGroup(std::move(commands));
-
       // Add commands to move forward until we hit the ramp (or decide we're not
       // going to), and to then balance
-
-      // Build and return the sequence to run.
-      return new frc2::PrintCommand("Invalid Input, Failed, Doing Nothing");
     }
+    return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
   /*
   TAKE A LOOK AT CONDITIONAL COMMANDS MIGHT BE AN ALT WAY TO DO THIS
   OR JUST DO THESE BASIC DECISIONS IF
   DONE THIS WAY THEN IT SHOULD GO COMMAND THEN STATION AND COLOR
-
   */
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
 }
-
-/*
-
-
-
-
-
-
-
-*/
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
@@ -276,72 +269,65 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
 }
-/*
 
-
-
-
-
-*/
+frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
+  if (text.empty()) {
+    text = name;
+  }
+  frc2::Command *cmd = new frc2::PrintCommand(text);
+  cmd->SetName(name);
+  return cmd;
+}
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
-  frc2::Command *blue1 = new frc2::PrintCommand("Blue 1");
-  blue1->SetName(AutonmousTeamAndStationPositions::Blue1);
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
-      AutonmousTeamAndStationPositions::Blue1, blue1);
+      AutonmousTeamAndStationPositions::Blue1,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue1,
+                             "Blue 1"));
 
-  frc2::Command *blue2 = new frc2::PrintCommand("Blue 2");
-  blue2->SetName(AutonmousTeamAndStationPositions::Blue2);
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Blue2, blue2);
+      AutonmousTeamAndStationPositions::Blue2,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue2,
+                             "Blue 2"));
 
-  frc2::Command *blue3 = new frc2::PrintCommand("Blue 3");
-  blue3->SetName(AutonmousTeamAndStationPositions::Blue3);
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Blue3, blue3);
+      AutonmousTeamAndStationPositions::Blue3,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue3,
+                             "Blue 3"));
 
-  frc2::Command *red1 = new frc2::PrintCommand("Red 1");
-  red1->SetName(AutonmousTeamAndStationPositions::Red1);
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red1, red1);
+      AutonmousTeamAndStationPositions::Red1,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red1, "Red 1"));
 
-  frc2::Command *red2 = new frc2::PrintCommand("Red 2");
-  red2->SetName(AutonmousTeamAndStationPositions::Red2);
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red2, red2);
+      AutonmousTeamAndStationPositions::Red2,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red2, "Red 2"));
 
-  frc2::Command *red3 = new frc2::PrintCommand("Red 3");
-  red3->SetName(AutonmousTeamAndStationPositions::Red3);
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red3, red3);
+      AutonmousTeamAndStationPositions::Red3,
+      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red3, "Red 3"));
 
   frc::SmartDashboard::PutData("Team and Station Auto Selector",
                                &m_TeamAndStationAutonomousOptions);
 }
 
 void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
-  frc2::Command *doNothingCommand = new frc2::PrintCommand("Do Nothing");
-  doNothingCommand->SetName(AutonomousSelectedOperation::DoNothing);
   m_RobotSequenceAutonomousOptions.SetDefaultOption(
-      AutonomousSelectedOperation::DoNothing, doNothingCommand);
+      AutonomousSelectedOperation::DoNothing,
+      BuildNamedPrintCommand(AutonomousSelectedOperation::DoNothing,
+                             "Do Nothing"));
 
-  frc2::Command *GTFODockCommand = new frc2::PrintCommand("GTFO and Dock");
-  GTFODockCommand->SetName(AutonomousSelectedOperation::GTFODock);
   m_RobotSequenceAutonomousOptions.AddOption(
-      AutonomousSelectedOperation::GTFODock, GTFODockCommand);
+      AutonomousSelectedOperation::GTFODock,
+      BuildNamedPrintCommand(AutonomousSelectedOperation::GTFODock,
+                             "GTFO and Dock"));
 
   frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
                                &m_RobotSequenceAutonomousOptions);
 }
-/*
 
-
-
-
-
-
-
-*/
+// TODO(matthew): Is this function still needed?  (You seem to have replaced it
+// with the logic now in GetAutonomousCommand().)
 frc2::SequentialCommandGroup *
 RobotContainer::RedAndBlueDriveStation2GTFOAndBalance() {
   std::vector<std::unique_ptr<frc2::Command>> commands;

@@ -27,6 +27,14 @@
       }
     },
   ],
-  "java.format.settings.url": "~/.vscode/eclipse-java-google-style.xml",
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "editor.formatOnSave": false,
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.java$",
+        "cmd": "google-java-format --replace ${file}"
+      },
+    ],
+  }
 }

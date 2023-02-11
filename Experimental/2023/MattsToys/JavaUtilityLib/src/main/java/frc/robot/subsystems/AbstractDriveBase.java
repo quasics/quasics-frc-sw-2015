@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utils.RobotSettings;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 public abstract class AbstractDriveBase extends SubsystemBase implements DriveBaseInterface {
   /** The differential drive object used for basic maneuvering. */
@@ -23,11 +23,9 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
   private MotorController m_rightMotor;
 
   /** Configured tank width for the robot. */
-  final private double m_tankWidth;
+  private final double m_tankWidth;
 
-  /**
-   * Tracks odometry for the robot. (Updated in periodic().)
-   */
+  /** Tracks odometry for the robot. (Updated in periodic().) */
   private DifferentialDriveOdometry m_odometry;
 
   /** Creates a new AbstractDriveBase. */
@@ -58,9 +56,9 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
    * This should call configureDifferentialDrive() to make sure that the base class has the
    * left/right motor controllers to work with. It's abstract to *force* the subclasses to do this
    * (rather than risk forgetting).
-   * 
-   * However, this method will not be automatically invoked by this library: the clients should make
-   * sure that it's invoked (either by their constructors, or by the RobotContainer during
+   *
+   * <p>However, this method will not be automatically invoked by this library: the clients should
+   * make sure that it's invoked (either by their constructors, or by the RobotContainer during
    * initialization).
    */
   public abstract void finalizeSetup();
@@ -135,12 +133,22 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
     return getRightEncoder().getVelocity();
   }
 
-  /**
-   * Resets both the left and right encoders to 0.
-   */
+  /** Resets both the left and right encoders to 0. */
   public final void resetEncoders() {
     getRightEncoder().reset();
     getLeftEncoder().reset();
+  }
+
+  public final double getLeftDistanceMeters() {
+    return getLeftEncoderPosition();
+  }
+
+  public final double getRightDistanceMeters() {
+    return getRightEncoderPosition();
+  }
+
+  public final double getAverageDistanceMeters() {
+    return (getLeftDistanceMeters() + getRightDistanceMeters()) / 2.0;
   }
 
   public final double getLeftDistanceMillimeters() {
@@ -189,8 +197,8 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
 
   /**
    * Returns the position of the robot on the field.
-   * 
-   * Note that this class reports position using a robot-based perspective (i.e., relative to the
+   *
+   * <p>Note that this class reports position using a robot-based perspective (i.e., relative to the
    * robot's starting position/direction), rather than a field-oriented perspective.
    */
   public final Pose2d getPose() {
@@ -206,7 +214,7 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
 
   /**
    * Updates the current odometry data for the robot.
-   * 
+   *
    * @see #periodic()
    */
   private final void updateOdometry() {
@@ -232,8 +240,8 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
 
   /**
    * Sets the robot's wheel speeds using the specified left/right voltage.
-   * 
-   * This is intended for use during path following/PID-controleld operations.
+   *
+   * <p>This is intended for use during path following/PID-controleld operations.
    */
   public final void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotor.setVoltage(leftVolts);

@@ -118,11 +118,17 @@ public final class Constants {
 
     private static final double CLOSE_COMMUNITY_LINE_METERS = 3.36;
     private static final double FAR_COMMUNITY_LINE_METERS = 4.91;
+    private static final double RAMP_DEPTH_METERS = 0.39;
 
     public double distanceToCommunityLineInMeters() {
-      // TODO: Check that the position #s are right.
-      if ((m_alliance == Alliance.Red && m_pos == 3)
+      if (m_pos == 2) {
+        // Distance to the community line, including extra distance for driving on the ramps.
+        // This is actually a slight overshoot (since I should only account for the difference
+        // caused by the angle), but that should be minor.
+        return FAR_COMMUNITY_LINE_METERS + (2 * RAMP_DEPTH_METERS);
+      } else if ((m_alliance == Alliance.Red && m_pos == 3)
           || (m_alliance == Alliance.Blue && m_pos == 1)) {
+        // TODO: Check that the position #s are right.
         return CLOSE_COMMUNITY_LINE_METERS;
       } else {
         // Note that this doesn't take into account additional distance for getting over the

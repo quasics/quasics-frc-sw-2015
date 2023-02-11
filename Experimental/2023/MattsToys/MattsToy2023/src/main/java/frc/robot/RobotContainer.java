@@ -142,7 +142,7 @@ public class RobotContainer {
 
     // Sanity check
     if (pos == null || op == null) {
-      return new PrintCommand("*** Error: Can't detect position and/or op!");
+      return new PrintCommand("*** Error: Can't detect position and/or op for auto mode!");
     }
 
     // Build the command/sequence, based on operation and position.

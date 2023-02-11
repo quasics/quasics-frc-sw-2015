@@ -160,7 +160,7 @@ public class RobotContainer {
   }
 
   /** Returns the robot settings for Sally (2022 robot). */
-  private static RobotSettings getSettingsForSally() {
+  protected static RobotSettings getSettingsForSally() {
     return new RobotSettings(
         "Sally", // robotName
         TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
@@ -176,7 +176,7 @@ public class RobotContainer {
   }
 
   /** Returns the robot settings for Mae (2021 robot). */
-  private static RobotSettings getSettingsForMae() {
+  protected static RobotSettings getSettingsForMae() {
     return new RobotSettings(
         "Mae", // robotName
         TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
@@ -192,7 +192,7 @@ public class RobotContainer {
   }
 
   /** Returns the robot settings for Nike (2019 robot). */
-  private static RobotSettings getSettingsForNike() {
+  protected static RobotSettings getSettingsForNike() {
     return new RobotSettings(
         "Nike", // robotName
         TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
@@ -207,7 +207,7 @@ public class RobotContainer {
   }
 
   /** Returns the robot settings for use on a Romi. */
-  private static RobotSettings getSettingsForRomi() {
+  protected static RobotSettings getSettingsForRomi() {
     return new RobotSettings(
         "Romi", // robotName
         TRACK_WIDTH_METERS_ROMI,

@@ -55,13 +55,13 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
   }
 
   /**
-   * This should call configureDifferentialDrive() to make sure that the base
-   * class has the left/right motor controllers to work with. It's abstract to
-   * *force* the subclasses to do this (rather than risk forgetting).
+   * This should call configureDifferentialDrive() to make sure that the base class has the
+   * left/right motor controllers to work with. It's abstract to *force* the subclasses to do this
+   * (rather than risk forgetting).
    * 
-   * However, this method will not be automatically invoked by this library: the
-   * clients should make sure that it's invoked (either by their constructors, or
-   * by the RobotContainer during initialization).
+   * However, this method will not be automatically invoked by this library: the clients should make
+   * sure that it's invoked (either by their constructors, or by the RobotContainer during
+   * initialization).
    */
   public abstract void finalizeSetup();
 
@@ -190,9 +190,8 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
   /**
    * Returns the position of the robot on the field.
    * 
-   * Note that this class reports position using a robot-based perspective (i.e.,
-   * relative to the robot's starting position/direction), rather than a
-   * field-oriented perspective.
+   * Note that this class reports position using a robot-based perspective (i.e., relative to the
+   * robot's starting position/direction), rather than a field-oriented perspective.
    */
   public final Pose2d getPose() {
     return m_odometry.getPoseMeters();

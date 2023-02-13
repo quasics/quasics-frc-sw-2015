@@ -4,8 +4,6 @@
 
 #include "commands/DriveUntilPitchAngleChange.h"
 
-// TODO(matthew): This documentation should be in the header, making it
-// easily visible to users of the class. DONE
 DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
                                                        double power,
                                                        units::meter_t distance)

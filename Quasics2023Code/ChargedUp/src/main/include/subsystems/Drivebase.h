@@ -52,6 +52,7 @@ class Drivebase : public frc2::SubsystemBase {
   // it's "yaw", but it would be good to make this explicit.)
   units::degree_t GetAngle();
 
+  /** Returns the robot's current pitch angle (nose pointed up/down). */
   double GetPitch();
 
   void GyroCalibration();
@@ -83,12 +84,16 @@ class Drivebase : public frc2::SubsystemBase {
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
-  // TODO(matthew): Add documentation for what this represents/does. DONE
-
-  // Because the Pigeon(gyro) on calibration does not fully reset itself. Its
-  // output is shifted so that it accurately represents the situation For
-  // Example: the reading of pitch was -4.something even though the robot was
-  // flat. Thus the output was shifted to 0
+  /**
+   * Used to adjust the values reported for "pitch", in order to account for the
+   * fact that the Pigeon may not be mounted perfectly level on the robot.  When
+   * calls are made to GetPitch(), this value will be subtracted from the value
+   * that is reported by the Pigeon.
+   *
+   * Note: this *does* assume that the robot code is restarted when the bot is
+   * on a level surface.  If this isn't the case, then the value would need to
+   * be reset (again) at some future point.
+   */
   double m_pitchShift = 0;
 
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};

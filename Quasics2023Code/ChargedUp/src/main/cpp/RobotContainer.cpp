@@ -121,20 +121,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName == AutonomousSelectedOperation::GTFO) {
     if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
-      // TODO(matthew): Why are you returning a command group (that will be
-      // leaked) that contains only a single command?
-      //
-      // Why not just have a simple staticly declared command (like in the
-      // "somethingIsScrewyCommand" case above), and return its address?  This
-      // will both simplify the code, and remove the memory leak in this case.
-      // DONE
-
       static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.5_m};
       return &JustDriving;
     } else {
-      // TODO(matthew): As noted above, why are you returning a command group
-      // (that will be leaked) that contains only a single command? DONE
-
       static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.0_m};
       return &JustDriving;
     }
@@ -353,6 +342,3 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
   frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
                                &m_RobotSequenceAutonomousOptions);
 }
-
-// TODO(matthew): Is this function still needed?  (You seem to have replaced it
-// with the logic now in GetAutonomousCommand().) DELETED DONE

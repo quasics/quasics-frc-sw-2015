@@ -11,6 +11,7 @@
 #include <frc2/command/button/Trigger.h>
 
 #include <iostream>
+#include <list>
 
 #include "Constants.h"
 #include "commands/Autos.h"
@@ -126,17 +127,16 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
       // Why not just have a simple staticly declared command (like in the
       // "somethingIsScrewyCommand" case above), and return its address?  This
       // will both simplify the code, and remove the memory leak in this case.
-      std::vector<std::unique_ptr<frc2::Command>> commands;
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
-      return new frc2::SequentialCommandGroup(std::move(commands));
+      // DONE
+
+      static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.5_m};
+      return &JustDriving;
     } else {
       // TODO(matthew): As noted above, why are you returning a command group
-      // (that will be leaked) that contains only a single command?
-      std::vector<std::unique_ptr<frc2::Command>> commands;
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
-      return new frc2::SequentialCommandGroup(std::move(commands));
+      // (that will be leaked) that contains only a single command? DONE
+
+      static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.0_m};
+      return &JustDriving;
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
     // TODO(matthew): This block is getting pretty long.  It might be worth
@@ -279,6 +279,34 @@ frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
   return cmd;
 }
 
+// Questions on if such a structure would work
+
+/*
+frc2::Command *BuildNamedPrintCommand(std::string name) {
+  frc2::Command *cmd = new frc2::PrintCommand(name);
+  cmd->SetName(name);
+  return cmd;
+}
+
+void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
+                               std::string name) {
+  selector.AddOption(name, BuildNamedPrintCommand(name));
+}
+
+const std::list<std::string>
+    nonDefaultTeamsAndPositionsList{
+          {AutonmousTeamAndStationPositions::Blue2},
+          {AutonmousTeamAndStationPositions::Blue3},
+          {AutonmousTeamAndStationPositions::Red1},
+          {AutonmousTeamAndStationPositions::Red2},
+          {AutonmousTeamAndStationPositions::Red3},
+    };
+
+for (const auto &element : nonDefaultTeamsAndPositionsList) {
+  AddNamedCommandToSelector(m_TeamAndStationAutonomousOptions, element);
+}
+*/
+
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
       AutonmousTeamAndStationPositions::Blue1,
@@ -327,14 +355,4 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
 }
 
 // TODO(matthew): Is this function still needed?  (You seem to have replaced it
-// with the logic now in GetAutonomousCommand().)
-frc2::SequentialCommandGroup *
-RobotContainer::RedAndBlueDriveStation2GTFOAndBalance() {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, -0.5, 4_m));
-  commands.push_back(
-      std::make_unique<DriveUntilPitchAngleChange>(&m_drivebase, 0.5));
-  commands.push_back(std::make_unique<SelfBalancing>(&m_drivebase));
-  return new frc2::SequentialCommandGroup(std::move(commands));
-}
+// with the logic now in GetAutonomousCommand().) DELETED DONE

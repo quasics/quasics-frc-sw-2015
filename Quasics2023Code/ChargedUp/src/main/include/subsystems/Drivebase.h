@@ -83,7 +83,12 @@ class Drivebase : public frc2::SubsystemBase {
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
-  // TODO(matthew): Add documentation for what this represents/does.
+  // TODO(matthew): Add documentation for what this represents/does. DONE
+
+  // Because the Pigeon(gyro) on calibration does not fully reset itself. Its
+  // output is shifted so that it accurately represents the situation For
+  // Example: the reading of pitch was -4.something even though the robot was
+  // flat. Thus the output was shifted to 0
   double m_pitchShift = 0;
 
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};

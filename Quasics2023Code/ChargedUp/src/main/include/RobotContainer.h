@@ -35,8 +35,6 @@ class RobotContainer {
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotSequenceSelectorToSmartDashboard();
 
-  frc2::SequentialCommandGroup* RedAndBlueDriveStation2GTFOAndBalance();
-
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed

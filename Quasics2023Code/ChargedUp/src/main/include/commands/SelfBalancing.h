@@ -18,7 +18,7 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * TODO(matthew): Please update the documentation for this command.
+ * TODO(matthew): Please update the documentation for this command. DONE
  */
 class SelfBalancing
     : public frc2::CommandHelper<frc2::CommandBase, SelfBalancing> {
@@ -33,11 +33,21 @@ class SelfBalancing
 
  private:
   Drivebase* m_drivebase;
+  // Used to calculate the power to give to the wheels
   frc2::PIDController pid{SelfBalancingConstants::PID::kP,
                           SelfBalancingConstants::PID::kI,
                           SelfBalancingConstants::PID::kD};
+  // Saves the angle that the robot was on for subsequent slope
+  // identification(see slopeOfRamp)
   double pastAngle;
+  // flag that turns off the FeedForward command(a.k.a balancing before PID
+  // Controller)
   bool noFeedFowardPower = false;
+  // flag that tells the robot when to begin finetuning the balancing with PID
+  // controller
   bool activatePID = false;
+  // Coefficient to change direction of power given to motors based of pastAngle
+  // pastAngle > 0 positive
+  // pastAngle < 0 negative
   double slopeOfRamp = 1;
 };

@@ -4,12 +4,8 @@
 
 #include "commands/DriveUntilPitchAngleChange.h"
 
-// NORMALIZING THE INPUTS SO THAT THE CODE FAILS LESS TIMES
-// If distance or speed is negative, then we assume were going backward for
-// abs(distance) meters
-//
 // TODO(matthew): This documentation should be in the header, making it
-// easily visible to users of the class.
+// easily visible to users of the class. DONE
 DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
                                                        double power,
                                                        units::meter_t distance)

@@ -17,12 +17,15 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * TODO(matthew): Please update the documentation for this command.
+ * TODO(matthew): Please update the documentation for this command. DONE
  */
 class DriveUntilPitchAngleChange
     : public frc2::CommandHelper<frc2::CommandBase,
                                  DriveUntilPitchAngleChange> {
  public:
+  // NORMALIZING THE INPUTS SO THAT THE CODE FAILS LESS TIMES
+  // If distance or speed is negative, then we assume were going backward for
+  // abs(distance) meters
   DriveUntilPitchAngleChange(Drivebase* drivebase, double power,
                              units::meter_t distance = 10_m);
 

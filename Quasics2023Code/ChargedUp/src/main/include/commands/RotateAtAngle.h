@@ -17,7 +17,8 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * TODO(ethan): Please update the documentation for this command.
+ * Rotates. Angle should be between -180 and 180 degrees to be optimized.
+ * If 270 degrees is inputted, robot will not optimize this to -90 degrees
  */
 class RotateAtAngle
     : public frc2::CommandHelper<frc2::CommandBase, RotateAtAngle> {
@@ -38,4 +39,5 @@ class RotateAtAngle
   double m_percentSpeed;
   units::degree_t m_angle;
   units::degree_t m_startAngle;
+  double m_multiplier;
 };

@@ -17,7 +17,9 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * TODO(josh/ethan): Please update the documentation for this command.
+ *  // m_distance can be positive (forwards) or negative (backwards),
+ m_motorPower
+    // will always be positive after this code even if user enters weird values.
  */
 class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {
@@ -39,4 +41,5 @@ class DriveAtPowerForMeters
   units::meter_t m_distance;
   units::meter_t m_leftStartingPosition;
   units::meter_t m_rightStartingPosition;
+  double m_multiplier;
 };

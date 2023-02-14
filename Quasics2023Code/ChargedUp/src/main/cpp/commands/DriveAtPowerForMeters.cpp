@@ -10,12 +10,6 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
                                              double motorPower,
                                              units::meter_t distance)
     : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
-  // m_distance can be positive (forwards) or negative (backwards), m_motorPower
-  // will always be positive after this code even if user enters weird values.
-  //
-  // TODO(josh/ethan): This documentation should be in the header, making it
-  // easily visible to users of the class.
-
   if (m_motorPower < 0) {
     if (m_distance < 0_m) {
       m_motorPower = -m_motorPower;
@@ -53,24 +47,35 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  double newSpeed = m_motorPower;
+  if (m_motorPower < 0.25) {
+    if (m_distance > 0_m)
+      m_drivebase->TankDrive(m_motorPower, m_motorPower);
+    else
+      m_drivebase->TankDrive(-m_motorPower, -m_motorPower);
+    return;
+  }
+
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t distanceLeft =
       (m_leftStartingPosition + m_distance) - positionLeft;
-  units::meter_t distanceLeftWhenSlowDown = 0.5_m;
+  units::meter_t distanceLeftWhenSlowDown = 1_m;
 
   if (m_distance > 0_m) {
-    if (distanceLeft <= distanceLeftWhenSlowDown) {
-      newSpeed = 0.25;
+    if (distanceLeft <= distanceLeftWhenSlowDown &&
+        m_motorPower * m_multiplier > 0.25) {
+      m_multiplier *= 0.99;
     }
-    m_drivebase->TankDrive(newSpeed, newSpeed);
+    m_drivebase->TankDrive(m_motorPower * m_multiplier,
+                           m_motorPower * m_multiplier);
 
   } else {
-    if (distanceLeft >= -distanceLeftWhenSlowDown) {
-      newSpeed = 0.25;
+    if (distanceLeft >= -distanceLeftWhenSlowDown &&
+        m_motorPower * m_multiplier > 0.25) {
+      m_multiplier *= 0.99;
     }
-    m_drivebase->TankDrive(-newSpeed, -newSpeed);
+    m_drivebase->TankDrive(-m_motorPower * m_multiplier,
+                           -m_motorPower * m_multiplier);
   }
 }
 

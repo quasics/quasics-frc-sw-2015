@@ -35,6 +35,8 @@ class RobotContainer {
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotSequenceSelectorToSmartDashboard();
 
+  void setInverted(bool invert);
+
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed

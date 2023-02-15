@@ -23,48 +23,34 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
 
 // Called when the command is initially scheduled.
 void DriveAtPowerForMeters::Initialize() {
-  double newSpeed;
+  m_multiplier = 1;
   m_leftStartingPosition = m_drivebase->GetLeftDistance();
   m_rightStartingPosition = m_drivebase->GetRightDistance();
-  units::meter_t distanceLeft = m_distance;
-  units::meter_t distanceLeftWhenSlowDown = 0.5_m;
 
   if (m_distance > 0_m) {
-    if (distanceLeft <= distanceLeftWhenSlowDown) {
-      newSpeed = 0.25;
-    }
-    m_drivebase->TankDrive(newSpeed, newSpeed);
+    m_drivebase->TankDrive(m_motorPower, m_motorPower);
 
   }
 
   else {
-    if (distanceLeft >= -distanceLeftWhenSlowDown) {
-      newSpeed = 0.25;
-    }
-    m_drivebase->TankDrive(-newSpeed, -newSpeed);
+    m_drivebase->TankDrive(-m_motorPower, -m_motorPower);
   }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  if (m_motorPower < 0.25) {
-    if (m_distance > 0_m)
-      m_drivebase->TankDrive(m_motorPower, m_motorPower);
-    else
-      m_drivebase->TankDrive(-m_motorPower, -m_motorPower);
-    return;
-  }
-
+  std::cerr << "power: " << m_motorPower << ", distance: " << m_distance.value()
+            << std::endl;
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t distanceLeft =
       (m_leftStartingPosition + m_distance) - positionLeft;
-  units::meter_t distanceLeftWhenSlowDown = 1_m;
+  units::meter_t distanceLeftWhenSlowDown = m_motorPower * 1.3_m;
 
   if (m_distance > 0_m) {
     if (distanceLeft <= distanceLeftWhenSlowDown &&
         m_motorPower * m_multiplier > 0.25) {
-      m_multiplier *= 0.99;
+      m_multiplier *= 0.95;
     }
     m_drivebase->TankDrive(m_motorPower * m_multiplier,
                            m_motorPower * m_multiplier);
@@ -72,7 +58,7 @@ void DriveAtPowerForMeters::Execute() {
   } else {
     if (distanceLeft >= -distanceLeftWhenSlowDown &&
         m_motorPower * m_multiplier > 0.25) {
-      m_multiplier *= 0.99;
+      m_multiplier *= 0.95;
     }
     m_drivebase->TankDrive(-m_motorPower * m_multiplier,
                            -m_motorPower * m_multiplier);

@@ -70,6 +70,8 @@ RobotContainer::RobotContainer() {
   AddTestButtonsToSmartDashboard();
 }
 
+void RobotContainer::setInverted(bool invert) { isInverted = invert; }
+
 double RobotContainer::GetDriveSpeedScalingFactor() {
   const bool isTurbo = m_driverStick.GetRawButton(
       OperatorInterface::LogitechGamePad::RIGHTSHOULDER);
@@ -197,6 +199,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Drive 1m at 100%", new DriveAtPowerForMeters(&m_drivebase, 1.00, 1_m));
 
   frc::SmartDashboard::PutData(
+      "Drive -1m at 25%", new DriveAtPowerForMeters(&m_drivebase, 0.25, -1_m));
+  frc::SmartDashboard::PutData(
       "Drive -1m at 45%", new DriveAtPowerForMeters(&m_drivebase, 0.45, -1_m));
   frc::SmartDashboard::PutData(
       "Drive -1m at 70%", new DriveAtPowerForMeters(&m_drivebase, 0.70, -1_m));
@@ -257,6 +261,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Set Breaking Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
+
+  frc::SmartDashboard::PutData(
+      "Set inverted",
+      new frc2::InstantCommand([this]() { setInverted(true); }));
+
+  frc::SmartDashboard::PutData(
+      "Set not inverted",
+      new frc2::InstantCommand([this]() { setInverted(false); }));
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

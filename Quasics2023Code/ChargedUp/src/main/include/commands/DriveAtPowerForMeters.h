@@ -41,5 +41,5 @@ class DriveAtPowerForMeters
   units::meter_t m_distance;
   units::meter_t m_leftStartingPosition;
   units::meter_t m_rightStartingPosition;
-  double m_multiplier;
+  double m_multiplier = 1;
 };

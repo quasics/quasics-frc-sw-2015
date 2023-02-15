@@ -19,6 +19,8 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
+  m_multiplier = 1;
+
   m_drivebase->SetBrakingMode(true);
   if (m_angle >= 0_deg)
     m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
@@ -29,24 +31,16 @@ void RotateAtAngle::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
-  if (m_percentSpeed < 0.25) {
-    if (m_angle > 0_deg)
-      m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
-    else
-      m_drivebase->TankDrive(m_percentSpeed, -m_percentSpeed);
-    return;
-  }
-
   m_drivebase->SetBrakingMode(true);
   units::degree_t currentPosition = m_drivebase->GetAngle();
 
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
-  units::degree_t degreesLeftWhenSlowDown = 90_deg;
+  units::degree_t degreesLeftWhenSlowDown = m_percentSpeed * 120_deg;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
         m_percentSpeed * m_multiplier > 0.25) {
-      m_multiplier *= .99;
+      m_multiplier *= .95;
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
@@ -55,7 +49,7 @@ void RotateAtAngle::Execute() {
   else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
         m_percentSpeed * m_multiplier > 0.25) {
-      m_multiplier *= .99;
+      m_multiplier *= .95;
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

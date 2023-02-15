@@ -126,64 +126,61 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
       return &JustDriving;
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
-    // TODO(matthew): This block is getting pretty long.  It might be worth
-    // turning it into a separate member function, similar to your initial
-    // RedAndBlueDriveStation2GTFOAndBalance() function, that is invoked from
-    // here to do the work.
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
-        teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
-      // In this case, we need to move back out of the community area (for the
-      // mobility points), and then move forward and balance on the charging
-      // station.
-      std::vector<std::unique_ptr<frc2::Command>> commands;
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
-              &m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
-    } else {
-      // In this case, we need to move back out of the community area (for the
-      // mobility points), then turn and drive until we're in line with the
-      // middle of the charging station, and then move forward and balance on
-      // the charging station.
-      const bool firstTurnIsClockwise =
-          (teamAndPosName == AutonmousTeamAndStationPositions::Blue3 ||
-           teamAndPosName == AutonmousTeamAndStationPositions::Red1);
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
-              RotateAtAngle{&m_drivebase, 0.5, -90_deg},
-              [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{&m_drivebase, 0.5, 1.889_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
-              RotateAtAngle{&m_drivebase, 0.5, -90_deg},
-              [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
-              &m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
-      // Add commands to move forward until we hit the ramp (or decide we're not
-      // going to), and to then balance
-    }
-    return new frc2::SequentialCommandGroup(std::move(commands));
+    return GTFODOCK(teamAndPosName, &m_drivebase);
   }
 
-  /*
-  TAKE A LOOK AT CONDITIONAL COMMANDS MIGHT BE AN ALT WAY TO DO THIS
-  OR JUST DO THESE BASIC DECISIONS IF
-  DONE THIS WAY THEN IT SHOULD GO COMMAND THEN STATION AND COLOR
-  */
-
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
+}
+
+// Helper function to plug into GTFO DOCK
+
+frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
+                                        Drivebase *m_drivebase) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
+    // In this case, we need to move back out of the community area (for the
+    // mobility points), and then move forward and balance on the charging
+    // station.
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters{m_drivebase, -0.5, 4.5_m}));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
+            m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new SelfBalancing{m_drivebase}));
+  } else {
+    // In this case, we need to move back out of the community area (for the
+    // mobility points), then turn and drive until we're in line with the
+    // middle of the charging station, and then move forward and balance on
+    // the charging station.
+    const bool firstTurnIsClockwise =
+        (teamAndPosName == AutonmousTeamAndStationPositions::Blue3 ||
+         teamAndPosName == AutonmousTeamAndStationPositions::Red1);
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters{m_drivebase, -0.5, 4.0_m}));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            RotateAtAngle{m_drivebase, 0.5, 90_deg},
+            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 1.889_m}));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            RotateAtAngle{m_drivebase, 0.5, 90_deg},
+            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
+            m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new SelfBalancing{m_drivebase}));
+    // Add commands to move forward until we hit the ramp (or decide we're not
+    // going to), and to then balance
+  }
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
@@ -302,6 +299,26 @@ const std::list<std::string>
 for (const auto &element : nonDefaultTeamsAndPositionsList) {
   AddNamedCommandToSelector(m_TeamAndStationAutonomousOptions, element);
 }
+*/
+
+/*Or the OG Stuff to implement
+void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
+                               std::string name, std::string text = "") {
+  selector.AddOption(name, BuildNamedPrintCommand(name, text));
+}
+
+  const std::list<std::tuple<std::string name, std::string text>>
+      nonDefaultTeamsAndPositionsList{
+          {AutonmousTeamAndStationPositions::Blue2, "Blue 2"},
+          {AutonmousTeamAndStationPositions::Blue3, "Blue 3"},
+          {AutonmousTeamAndStationPositions::Red1, "Red 1"},
+          {AutonmousTeamAndStationPositions::Red2, "Red 2"},
+          {AutonmousTeamAndStationPositions::Red3, "Red 3"},
+      };
+
+ for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
+    AddNamedCommandToSelector(m_TeamAndStationAutonomousOptions, name, text);
+  }
 */
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {

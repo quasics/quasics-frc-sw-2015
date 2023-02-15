@@ -19,7 +19,7 @@
  * Command will *not* work!
  *
  * TODO(matthew): Please update the documentation for this command, including
- * the comments above, indicating that this is "an example command".
+ * the comments above, indicating that this is "an example command".(DONE)
  */
 class SelfBalancing
     : public frc2::CommandHelper<frc2::CommandBase, SelfBalancing> {

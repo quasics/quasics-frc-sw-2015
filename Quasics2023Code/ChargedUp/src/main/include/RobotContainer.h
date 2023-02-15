@@ -28,7 +28,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::Command* GetAutonomousCommand();
+  frc2::Command *GetAutonomousCommand();
 
   double GetDriveSpeedScalingFactor();
 
@@ -36,6 +36,10 @@ class RobotContainer {
   void AddRobotSequenceSelectorToSmartDashboard();
 
   void setInverted(bool invert);
+
+ private:
+  static frc2::Command *GTFODOCK(std::string teamAndPosName,
+                                 Drivebase *drivebase);
 
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
@@ -47,8 +51,8 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
 
-  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
-  frc::SendableChooser<frc2::Command*> m_RobotSequenceAutonomousOptions;
+  frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;
 
   void ConfigureBindings();
   void AddTestButtonsToSmartDashboard();

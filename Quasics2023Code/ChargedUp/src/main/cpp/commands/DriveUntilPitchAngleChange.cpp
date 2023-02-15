@@ -32,11 +32,16 @@ bool DriveUntilPitchAngleChange::IsFinished() {
   double currentAngle = m_drivebase->GetPitch();
   units::meter_t distanceLeft = m_drivebase->GetLeftDistance();
   units::meter_t distanceRight = m_drivebase->GetRightDistance();
+
   // NOT DONE CONTINUE WORKING ON THIS
   if (currentAngle > 10 || currentAngle < -10) {
     return true;
-  } else if (distanceLeft >= m_distance || distanceRight >= m_distance) {
-    return true;
+  } else if (m_power >= 0) {
+    return (distanceLeft >= (m_distance + m_leftStartingPosition) ||
+            distanceRight >= (m_distance + m_rightStartingPosition));
+  } else {
+    return (distanceLeft <= (m_leftStartingPosition - m_distance) ||
+            distanceRight <= (m_rightStartingPosition - m_distance));
   }
   return false;
 }

@@ -42,4 +42,6 @@ class DriveUntilPitchAngleChange
   Drivebase* m_drivebase;
   const double m_power;
   const units::meter_t m_distance;
+  units::meter_t m_leftStartingPosition;
+  units::meter_t m_rightStartingPosition;
 };

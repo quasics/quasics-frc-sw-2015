@@ -24,11 +24,7 @@
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
-  //
-  // TODO(josh/ethan): Y'all have a subtle bug in here, possibly based on
-  // limited testing while actually driving the robot.  I'd suggest doing some
-  // more testing, and come see me (or maybe get Meg to help you spot it in
-  // action) if you can't find it.
+
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -58,7 +54,7 @@ RobotContainer::RobotContainer() {
         } else {
           joystickValue = +1 * scalingFactor *
                           m_driverController.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         }
         return m_rightSpeedLimiter.Calculate(joystickValue);
       }};

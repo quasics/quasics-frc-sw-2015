@@ -48,8 +48,7 @@ class Drivebase : public frc2::SubsystemBase {
 
   void ResetEncoders();
 
-  // TODO(ethan/josh): Add docs to clarify what angle this is.  (I'm assuming
-  // it's "yaw", but it would be good to make this explicit.)
+  // gets current yaw of robot
   units::degree_t GetAngle();
 
   /** Returns the robot's current pitch angle (nose pointed up/down). */

@@ -74,7 +74,7 @@ RobotContainer::RobotContainer()
           }),
       m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
       m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
-  TankDrive tankDrive{
+    TankDrive tankDrive{
       &m_drivebase,
       [this] {
         // Figure out scaling for the current driving mode

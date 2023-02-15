@@ -43,7 +43,7 @@ RobotContainer::RobotContainer() {
         } else {
           joystickValue = +1 * scalingFactor *
                           m_driverController.GetRawAxis(
-                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+                              OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }
         return m_leftSpeedLimiter.Calculate(joystickValue);
       },

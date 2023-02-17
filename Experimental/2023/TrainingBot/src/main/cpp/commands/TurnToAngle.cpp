@@ -43,7 +43,7 @@ void TurnToAngle::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TurnToAngle::IsFinished() {
-    std::cerr << "current angle " << m_driveBase->GetAngle().value() << ", target " << targetAngle.value() << "\n";
+    std::cerr << "current angle " << m_driveBase->GetAngle().value() << ", target " << m_targetAngle.value() << "\n";
   if(m_angle == 0_deg) {
     std::cerr << "0 deg stop\n";
     return true;

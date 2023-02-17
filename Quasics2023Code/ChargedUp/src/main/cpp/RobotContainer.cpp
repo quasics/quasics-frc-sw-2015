@@ -194,6 +194,24 @@ frc2::Command *RobotContainer::moveToDefense(std::string teamAndPosName,
         new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
   }
 
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Red2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red1) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
+  }
+
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 0_m}));  // placeholder
+  }
+
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 0_m}));  // placeholder
+  }
+
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

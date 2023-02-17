@@ -9,7 +9,6 @@
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 
-#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <rev/CANSparkMax.h>
 #include <units/length.h>
 #include <units/velocity.h>

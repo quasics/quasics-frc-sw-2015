@@ -4,10 +4,16 @@
 
 #include "subsystems/DriveBase.h"
 
+#include <frc/ADXRS450_Gyro.h>
+
+#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
+
 #include <cmath>
 #include <numbers>
 #include <units/time.h>
 #include <units/velocity.h>
+
+#undef ENABLE_PIGEON
 
 DriveBase::DriveBase()
 {
@@ -37,7 +43,13 @@ DriveBase::DriveBase()
   EnableBreakingMode(false);
 
   // Set up the gyro
-  m_gyro.reset(new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID});
+  m_gyro.reset(
+#ifdef ENABLE_PIGEON
+    new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID}
+#else
+    new frc::ADXRS450_Gyro(frc::SPI::Port::kOnboardCS0)
+#endif
+  );
   m_gyro->Calibrate();
   m_gyro->Reset();
 

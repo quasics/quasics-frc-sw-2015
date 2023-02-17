@@ -4,20 +4,18 @@
 
 #include "subsystems/DriveBase.h"
 
-#include <frc/ADXRS450_Gyro.h>
-
-#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
-
 #include <cmath>
+#include <iostream>
 #include <numbers>
 #include <units/time.h>
 #include <units/velocity.h>
 
-#undef ENABLE_PIGEON
-
 DriveBase::DriveBase()
 {
+  std::cerr << "Building DriveBase\n";
   SetName("DriveBase");
+
+  std::cerr << "--- Configuring motors\n";
 
   // Things that may change from year to year.
   const double GEAR_RATIO = RobotConstants::DRIVE_BASE_GEAR_RATIO_2023; // Also used for Sally
@@ -41,22 +39,22 @@ DriveBase::DriveBase()
 
   ResetEncoders();
   EnableBreakingMode(false);
+  std::cerr << "--- Done configuring motors\n";
 
   // Set up the gyro
-  m_gyro.reset(
-#ifdef ENABLE_PIGEON
-    new ctre::phoenix::sensors::WPI_Pigeon2{SensorIds::PIGEON2_CAN_ID}
-#else
-    new frc::ADXRS450_Gyro(frc::SPI::Port::kOnboardCS0)
-#endif
-  );
-  m_gyro->Calibrate();
-  m_gyro->Reset();
+  std::cerr << "--- Configuring gyro\n";
+
+  std::cerr << "------ Calibrating gyro\n";
+  m_gyro.Calibrate();
+  std::cerr << "------ Done calibrating gyro\n";
+  m_gyro.Reset();
+  std::cerr << "--- Done configuring gyro\n";
 
   // This *shouldn't* be needed, but I'm leaving us more gap between when the motors
   // are "fed" before the MotorSafety watchdog declares a failure.
   m_drive->SetExpiration(1_s);
-  // m_drive->SetSafetyEnabled(false);  // Uncomment to disable motor safety checks completely.
+  m_drive->SetSafetyEnabled(false); // Uncomment to disable motor safety checks completely.
+  std::cerr << "Done building DriveBase\n";
 }
 
 // This method will be called once per scheduler run

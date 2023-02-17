@@ -4,12 +4,15 @@
 
 #pragma once
 
+#include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/interfaces/Gyro.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <rev/CANSparkMax.h>
+
 #include <units/length.h>
 #include <units/velocity.h>
 
@@ -76,9 +79,15 @@ public:
     m_rightFrontEncoder.SetPosition(0);
   }
 
-  units::degree_t GetAngle() { return units::degree_t(m_gyro->GetAngle()); }
+  units::degree_t GetAngle()
+  {
+    return units::degree_t(m_gyro.GetAngle());
+  }
 
-  void ResetGyro() { m_gyro->Reset(); }
+  void ResetGyro()
+  {
+    m_gyro.Reset();
+  }
 
 private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -100,12 +109,9 @@ private:
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
-  // I'm using a pointer to the Gyro base type, rather than creating the actual
-  // gyro here, because our different drive bases don't all use the same kind of
-  // gyros (which is unfortunate).  Doing it this way means that the code that
-  // "knows about" the DriveBase class only sees that we have a (generic) Gyro,
-  // and not a specific one.  As a result, if we change the type of Gyro being
-  // set up in the .cpp file, nothing *outside* the .cpp file should need to
-  // change (or be rebuilt).
-  std::unique_ptr<frc::Gyro> m_gyro;
+#ifdef ENABLE_AD_GYRO
+  frc::ADXRS450_Gyro m_gyro;
+#else
+  ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIGEON2_CAN_ID};
+#endif
 };

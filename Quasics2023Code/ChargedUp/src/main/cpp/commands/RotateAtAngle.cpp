@@ -12,7 +12,6 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
       m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
-      // robot seems to overshoot about 2 degrees even after slowing down
       m_angle((percentSpeed > 0) ? (angle) : (-angle)) {
   AddRequirements(m_drivebase);
 }

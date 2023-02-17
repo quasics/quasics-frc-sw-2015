@@ -48,6 +48,18 @@ namespace CANBusIds {
   }  // namespace Other
 }  // namespace CANBusIds
 
+namespace PneumaticsIds {
+  constexpr int IntakeSolenoidForward = 1;
+  constexpr int IntakeSolenoidBackward = 0;
+
+  constexpr int IntakeSolenoid2Forward = 3;
+  constexpr int IntakeSolenoid2Backward = 2;
+
+  // This is passed to the compressor, for use as a default behind the
+  // scenes.
+  constexpr int DefaultSolenoidId = IntakeSolenoidForward;
+}  // namespace PneumaticsIds
+
 namespace PwmIds {
   constexpr int ShooterServo = 1;
   constexpr int LedControl = 7;
@@ -114,3 +126,17 @@ namespace DrivebaseConstants {
   constexpr units::unit_t<frc::RamseteController::b_unit> kRamseteB{2};
   constexpr units::unit_t<frc::RamseteController::zeta_unit> kRamseteZeta{0.7};
 }  // namespace DrivebaseConstants
+
+namespace NetworkTableNames {
+  constexpr const char* kVisionTable("Vision");
+  constexpr const char* kTargetXEntry("target_x");
+
+  constexpr const char* kVisionSettingsTable("VisionSettings");
+  constexpr const char* kLowHSetting("Low_H");
+  constexpr const char* kLowSSetting("Low_S");
+  constexpr const char* kLowVSetting("Low_V");
+  constexpr const char* kHighHSetting("High_H");
+  constexpr const char* kHighSSetting("High_S");
+  constexpr const char* kHighVSetting("High_V");
+  constexpr const char* kPathID("path_id");
+}  // namespace NetworkTableNames

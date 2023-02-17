@@ -12,22 +12,25 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/ParallelCommandGroup.h>
-#include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/ParallelRaceGroup.h>
 #include <networktables/NetworkTableEntry.h>
 
 #include "SpeedScaler.h"  // TODO(scott): Replace this example.
+#include "VisionSettingsHelper.h"
 #include "commands/ColorLights.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerDrivenShootingCommand.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
+#include "subsystems/Pneumatics.h"
 #include "subsystems/Shooter.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 // Conditional compilation flags start here.
 
+// DEFINE this symbol to enable the pneumatics subsystem.  (This is not
+// installed on Nike.)
+#undef ENABLE_PNEUMATICS
 
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,6 +58,9 @@ class RobotContainer {
   /// on the subsystem.
   std::unique_ptr<TriggerDrivenShootingCommand> BuildShootingCommand();
 
+  /// Configures the default commands for various subsystems.
+  void InstallDefaultCommands();
+
   /// Configures the options shown in the selector for autonomous mode
   /// operations, and puts the selector widget on the smart dashboard.
   void ConfigureAutoSelection();
@@ -66,6 +72,7 @@ class RobotContainer {
   void AddShooterAngleControlsToSmartDashboard();
   void AddShooterSpeedControlsToSmartDashboard();
   void AddShootAndMoveTestsToSmartDashboard();
+  void AddPneumaticsControlsToSmartDashboard();
   void AddExampleTrajectoryCommandsToSmartDashboard();
   void AddSampleMovementCommandsToSmartDashboard();
 
@@ -131,6 +138,22 @@ class RobotContainer {
   /// Blue alliance.
   bool RecognizeBlueAlliance();
 
+  /// Builds a command group for the GS challenge, taking the 4 paths to
+  /// balls and the end zone from the specified files.  (Will optionally
+  /// include the intake operation, running in parallel.)
+  frc2::ParallelCommandGroup* BuildGalacticSearchPath(
+      std::string jsonFile1, std::string jsonFile2, std::string jsonFile3,
+      std::string jsonFile4, bool includeIntakeOperation = true);
+
+  /// Builds a conditional command that handles GS Paths A/B for Blue alliance.
+  frc2::ConditionalCommand* BuildBlueAlliancePaths();
+
+  /// Builds a conditional command that handles GS Paths A/B for Red alliance.
+  frc2::ConditionalCommand* BuildRedAlliancePaths();
+
+  /// Builds a conditional command that picks GS handling for Blue or Red
+  /// alliance.
+  frc2::ConditionalCommand* ChooseWhichAlliance();
 
   /// Builds a conditional command that picks GS handling for any alternative
   /// signalled by the RasPi.
@@ -139,7 +162,16 @@ class RobotContainer {
   //////////////////////////////////////////////////////////////////
   // Functions for simple "shoot and move" auto mode in Infinite Recharge.
  private:
+  frc2::SequentialCommandGroup* BuildConveyorSeqeunceForAuto(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait);
 
+  frc2::ParallelRaceGroup* BuildConveyorAndShootingSequence(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter);
+
+  frc2::SequentialCommandGroup* BuildShootAndMoveSequence(
+      units::second_t secondsToRunConveyor, units::second_t secondsToWait,
+      units::second_t timeForRunShooter, double power, double amountToMove);
 
   //////////////////////////////////////////////////////////////////
   // Subsystems
@@ -149,6 +181,9 @@ class RobotContainer {
   Intake intake;
   Lights lights;
 
+#ifdef ENABLE_PNEUMATICS
+  Pneumatics pneumatics;
+#endif  // ENABLE_PNEUMATICS
 
   //////////////////////////////////////////////////////////////////
   // Controllers
@@ -169,5 +204,11 @@ class RobotContainer {
   //////////////////////////////////////////////////////////////////
   // Stuff for 2021 approach to vision processing.
  private:
+  /// Used to tune/store the Vision.py code's color range.
+  VisionSettingsHelper m_visionSettingsHelper{
+      VisionSettingsHelper::GetSuggestedRoboRioDirectory() +
+      "visionSettings.dat"};
+
   /// Used to read the GS path identification provided by the RasPi.
+  nt::NetworkTableEntry pathId;
 };

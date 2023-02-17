@@ -20,7 +20,7 @@
 #include "units/velocity.h"
 
 // Changes whether using AD gyro or Pidgeon Gyro
-#undef ENABLE_AD_GYRO
+#define ENABLE_AD_GYRO
 
 #undef ENABLE_FIELD_REPORTING
 

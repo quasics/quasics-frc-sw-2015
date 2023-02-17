@@ -26,7 +26,11 @@ Drivebase::Drivebase() {
   // Shouldn't be required for Pigeon, but would be for other gyros.  (So,
   // better safe than sorry....)
   m_gyro.Calibrate();
+#ifndef ENABLE_AD_GYRO
   m_pitchShift = m_gyro.GetPitch();
+#else
+  m_pitchShift = 0;
+#endif
 }
 
 void Drivebase::SetBrakingMode(bool enabled) {
@@ -114,9 +118,17 @@ void Drivebase::TankDrive(double leftPower, double rightPower) {
   m_drive->TankDrive(leftPower, rightPower);
 }
 
+#ifndef ENABLE_AD_GYRO
 double Drivebase::GetPitch() { return m_gyro.GetPitch() - m_pitchShift; }
+#else  // ad gyro cannot get pitch
+double Drivebase::GetPitch() { return 0; }
+#endif
 
 void Drivebase::GyroCalibration() {
   m_gyro.Calibrate();
+#ifndef ENABLE_AD_GYRO
   m_pitchShift = m_gyro.GetPitch();
+#else
+  m_pitchShift = 0;
+#endif
 }

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <ctre/phoenix/sensors/WPI_Pigeon2.h>
+#include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
@@ -13,6 +14,8 @@
 #include "Constants.h"
 #include "units/length.h"
 #include "units/velocity.h"
+
+#undef ENABLE_AD_GYRO
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -94,6 +97,9 @@ class Drivebase : public frc2::SubsystemBase {
    * be reset (again) at some future point.
    */
   double m_pitchShift = 0;
-
+#ifdef ENABLE_AD_GYRO
+  frc::ADXRS450_Gyro m_gyro;
+#else
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
+#endif
 };

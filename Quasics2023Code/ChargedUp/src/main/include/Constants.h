@@ -81,6 +81,7 @@ constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
 constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
 constexpr int RIGHT_INTAKE_DEPLYMENT_MOTOR_ID = 5;
 constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;
+constexpr int INTAKE_MOTOR_CLAMP_ID = 7;
 }  // namespace SparkMax
 }  // namespace MotorIds
 

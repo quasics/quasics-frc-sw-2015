@@ -23,4 +23,9 @@ void IntakeDeployment::EnableBraking(bool value) {
   m_leftDeploymentMotor.SetIdleMode(mode);
   m_rightDeploymentMotor.SetIdleMode(mode);
 }
+
+bool IntakeDeployment::IsIntakeDeployed() {
+  // possible function that migbht need to be implemented
+  return false;
+}
 void IntakeDeployment::Periodic() {}

@@ -20,6 +20,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   void EnableBraking(bool value);
 
+  bool IsIntakeDeployed();
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */

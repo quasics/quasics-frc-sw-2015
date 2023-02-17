@@ -8,3 +8,13 @@ Intake::Intake() = default;
 
 // This method will be called once per scheduler run
 void Intake::Periodic() {}
+
+void Intake::SetIntakeSpeed(double percentSpeed) {
+  m_intakeClamp.Set(percentSpeed);
+}
+
+bool Intake::IsIntakeDeployed() {
+  // possible function that might need to be implemeneted to prevent the intake
+  // from overextending
+  return false;
+}

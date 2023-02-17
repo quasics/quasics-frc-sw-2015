@@ -5,6 +5,9 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
+
+#include "Constants.h"
 
 class Intake : public frc2::SubsystemBase {
  public:
@@ -15,7 +18,13 @@ class Intake : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  void SetIntakeSpeed(double percentSpeed);
+
+  bool IsIntakeDeployed();
+
  private:
+  rev::CANSparkMax m_intakeClamp{MotorIds::SparkMax::INTAKE_MOTOR_CLAMP_ID,
+                                 rev::CANSparkMax::MotorType::kBrushless};
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

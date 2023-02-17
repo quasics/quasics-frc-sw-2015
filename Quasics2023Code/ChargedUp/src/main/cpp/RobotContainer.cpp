@@ -117,8 +117,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
   } else if (operationName == AutonomousSelectedOperation::GTFO) {
-    if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
-        teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
+    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.5_m};
       return &JustDriving;
     } else {
@@ -127,6 +127,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
     return GTFODOCK(teamAndPosName, &m_drivebase);
+  } else if (operationName == AutonomousSelectedOperation::moveToDefense) {
+    return moveToDefense(teamAndPosName, &m_drivebase);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -137,12 +139,11 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
                                         Drivebase *m_drivebase) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  if (teamAndPosName == AutonmousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonmousTeamAndStationPositions::Red2) {
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     // In this case, we need to move back out of the community area (for the
     // mobility points), and then move forward and balance on the charging
     // station.
-    std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{m_drivebase, -0.5, 4.5_m}));
     commands.push_back(
@@ -156,8 +157,8 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
     // middle of the charging station, and then move forward and balance on
     // the charging station.
     const bool firstTurnIsClockwise =
-        (teamAndPosName == AutonmousTeamAndStationPositions::Blue3 ||
-         teamAndPosName == AutonmousTeamAndStationPositions::Red1);
+        (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
+         teamAndPosName == AutonomousTeamAndStationPositions::Red1);
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{m_drivebase, -0.5, 4.0_m}));
     commands.push_back(
@@ -180,6 +181,19 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
     // Add commands to move forward until we hit the ramp (or decide we're not
     // going to), and to then balance
   }
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::moveToDefense(std::string teamAndPosName,
+                                             Drivebase *m_drivebase) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
+  }
+
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -289,11 +303,11 @@ void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
 
 const std::list<std::string>
     nonDefaultTeamsAndPositionsList{
-          {AutonmousTeamAndStationPositions::Blue2},
-          {AutonmousTeamAndStationPositions::Blue3},
-          {AutonmousTeamAndStationPositions::Red1},
-          {AutonmousTeamAndStationPositions::Red2},
-          {AutonmousTeamAndStationPositions::Red3},
+          {AutonomousTeamAndStationPositions::Blue2},
+          {AutonomousTeamAndStationPositions::Blue3},
+          {AutonomousTeamAndStationPositions::Red1},
+          {AutonomousTeamAndStationPositions::Red2},
+          {AutonomousTeamAndStationPositions::Red3},
     };
 
 for (const auto &element : nonDefaultTeamsAndPositionsList) {
@@ -309,11 +323,11 @@ void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
 
   const std::list<std::tuple<std::string name, std::string text>>
       nonDefaultTeamsAndPositionsList{
-          {AutonmousTeamAndStationPositions::Blue2, "Blue 2"},
-          {AutonmousTeamAndStationPositions::Blue3, "Blue 3"},
-          {AutonmousTeamAndStationPositions::Red1, "Red 1"},
-          {AutonmousTeamAndStationPositions::Red2, "Red 2"},
-          {AutonmousTeamAndStationPositions::Red3, "Red 3"},
+          {AutonomousTeamAndStationPositions::Blue2, "Blue 2"},
+          {AutonomousTeamAndStationPositions::Blue3, "Blue 3"},
+          {AutonomousTeamAndStationPositions::Red1, "Red 1"},
+          {AutonomousTeamAndStationPositions::Red2, "Red 2"},
+          {AutonomousTeamAndStationPositions::Red3, "Red 3"},
       };
 
  for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
@@ -323,31 +337,31 @@ void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
-      AutonmousTeamAndStationPositions::Blue1,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue1,
+      AutonomousTeamAndStationPositions::Blue1,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue1,
                              "Blue 1"));
 
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Blue2,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue2,
+      AutonomousTeamAndStationPositions::Blue2,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue2,
                              "Blue 2"));
 
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Blue3,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Blue3,
+      AutonomousTeamAndStationPositions::Blue3,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue3,
                              "Blue 3"));
 
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red1,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red1, "Red 1"));
+      AutonomousTeamAndStationPositions::Red1,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red1, "Red 1"));
 
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red2,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red2, "Red 2"));
+      AutonomousTeamAndStationPositions::Red2,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red2, "Red 2"));
 
   m_TeamAndStationAutonomousOptions.AddOption(
-      AutonmousTeamAndStationPositions::Red3,
-      BuildNamedPrintCommand(AutonmousTeamAndStationPositions::Red3, "Red 3"));
+      AutonomousTeamAndStationPositions::Red3,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red3, "Red 3"));
 
   frc::SmartDashboard::PutData("Team and Station Auto Selector",
                                &m_TeamAndStationAutonomousOptions);

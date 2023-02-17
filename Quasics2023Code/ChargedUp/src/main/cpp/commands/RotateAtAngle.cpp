@@ -64,7 +64,6 @@ void RotateAtAngle::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RotateAtAngle::IsFinished() {
-  // positive angle turns left, negative angle turns right
   units::degree_t currentAngle = m_drivebase->GetAngle();
   if (m_angle >= 0_deg)
     return (currentAngle >= m_angle + m_startAngle);

@@ -30,7 +30,7 @@ constexpr int kDriverControllerPort = 0;
 
 }  // namespace OperatorConstants
 
-namespace AutonmousTeamAndStationPositions {
+namespace AutonomousTeamAndStationPositions {
 constexpr auto Blue1 = "Blue 1";
 constexpr auto Blue2 = "Blue 2";
 constexpr auto Blue3 = "Blue 3";
@@ -38,12 +38,13 @@ constexpr auto Red1 = "Red 1";
 constexpr auto Red2 = "Red 2";
 constexpr auto Red3 = "Red 3";
 
-}  // namespace AutonmousTeamAndStationPositions
+}  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
+const auto moveToDefense = "Move to defense";
 }  // namespace AutonomousSelectedOperation
 
 namespace SelfBalancingConstants {

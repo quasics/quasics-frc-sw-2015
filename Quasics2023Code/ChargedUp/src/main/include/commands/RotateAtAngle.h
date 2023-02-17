@@ -17,6 +17,7 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
+ * Positive angle turns left, negative angle turns right
  * Rotates. Angle should be between -180 and 180 degrees to be optimized.
  * If 270 degrees is inputted, robot will not optimize this to -90 degrees
  */

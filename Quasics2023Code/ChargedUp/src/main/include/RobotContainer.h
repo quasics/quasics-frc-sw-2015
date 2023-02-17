@@ -41,6 +41,9 @@ class RobotContainer {
   static frc2::Command *GTFODOCK(std::string teamAndPosName,
                                  Drivebase *drivebase);
 
+  static frc2::Command *moveToDefense(std::string teamAndPosName,
+                                 Drivebase *drivebase);
+
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed

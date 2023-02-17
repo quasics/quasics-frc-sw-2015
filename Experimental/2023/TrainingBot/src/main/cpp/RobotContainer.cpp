@@ -11,8 +11,9 @@
 
 #include "commands/Autos.h"
 #include "commands/DriveDistance.h"
-#include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
+#include "commands/TurnToAngle.h"
+#include "commands/ExampleCommand.h"
 
 RobotContainer::RobotContainer()
 {
@@ -23,6 +24,8 @@ RobotContainer::RobotContainer()
 
   frc::SmartDashboard::PutData("Sample cmd", new frc2::PrintCommand("Do something!"));
   frc::SmartDashboard::PutData("1m @ 30%", new DriveDistance(&m_driveBase, 1_m, 0.3));
+  frc::SmartDashboard::PutData("+45 degree turn", new TurnToAngle(&m_driveBase, 45_deg, 0.3));
+  frc::SmartDashboard::PutData("-90 degree turn", new TurnToAngle(&m_driveBase, -90_deg, 0.3));
 }
 
 void RobotContainer::ConfigureBindings()

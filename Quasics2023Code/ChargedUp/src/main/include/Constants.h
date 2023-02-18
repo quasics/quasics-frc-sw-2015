@@ -69,7 +69,7 @@ namespace SelfBalancingConstants {
 namespace PID {
 constexpr auto ks = 0;
 constexpr auto kP = 0.025;
-constexpr auto kI = 0;
+constexpr auto kI = 0.005;
 constexpr auto kD = 0;
 }  // namespace PID
 

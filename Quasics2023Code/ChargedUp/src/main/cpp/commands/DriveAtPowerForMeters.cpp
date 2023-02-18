@@ -39,8 +39,9 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  std::cerr << "power: " << m_motorPower << ", distance: " << m_distance.value()
-            << std::endl;
+  /*std::cerr << "power: " << m_motorPower << ", distance: " <<
+     m_distance.value()
+            << std::endl;*/
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t distanceLeft =

@@ -4,6 +4,7 @@
 
 #include "subsystems/Drivebase.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <rev/CANSparkMax.h>
 
 #include <iostream>
@@ -112,7 +113,9 @@ units::degree_t Drivebase::GetAngle() {
 }
 
 // This method will be called once per scheduler run
-void Drivebase::Periodic() {}
+void Drivebase::Periodic() {
+  frc::SmartDashboard::PutNumber("Gyro:", GetPitch());
+}
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {
   m_drive->TankDrive(leftPower, rightPower);

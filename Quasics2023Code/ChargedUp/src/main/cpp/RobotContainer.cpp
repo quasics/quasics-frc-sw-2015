@@ -78,6 +78,8 @@ RobotContainer::RobotContainer() {
   // Configure the button bindings
   ConfigureBindings();
   AddTestButtonsToSmartDashboard();
+  AddTeamAndStationSelectorToSmartDashboard();
+  AddRobotSequenceSelectorToSmartDashboard();
 }
 
 void RobotContainer::setInverted(bool invert) { isInverted = invert; }
@@ -133,7 +135,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName == AutonomousSelectedOperation::GTFO) {
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.5_m};
+      static DriveAtPowerForMeters JustDriving{
+          &m_drivebase, -0.5,
+          4.5_m - 10_in};  // TODO Change for all subseqeunt drives over the
+                           // charging station
       return &JustDriving;
     } else {
       static DriveAtPowerForMeters JustDriving{&m_drivebase, -0.5, 4.0_m};

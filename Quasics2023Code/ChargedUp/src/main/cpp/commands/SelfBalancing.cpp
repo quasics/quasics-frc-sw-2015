@@ -15,7 +15,7 @@ void SelfBalancing::Initialize() {
   noFeedFowardPower = false;
   activatePID = false;
   pid.Reset();
-  pid.SetTolerance(2.5, 0);
+  pid.SetTolerance(2.0, 0);
   pastAngle = m_drivebase->GetPitch();  // ADJUST FOR NOT FLAT GYRO
   if ((pastAngle) > 0) {
     slopeOfRamp = 1;
@@ -33,7 +33,7 @@ void SelfBalancing::Execute() {
   double power = 0.0;
   if (noFeedFowardPower == false) {
     power = 0.4;
-    if (currentAngle > -2.5 and currentAngle < 2.5) {
+    if (currentAngle > -2.0 and currentAngle < 2.0) {
       noFeedFowardPower = true;
       activatePID = true;
     }
@@ -60,3 +60,5 @@ void SelfBalancing::Execute() {
 
 // Called once the command ends or is interrupted.
 void SelfBalancing::End(bool interrupted) { m_drivebase->Stop(); }
+
+// FOR TESTING PURPOSES HAVE IT REPORTING THE GYRO ANGLE TO THE SMART DASHBOARD

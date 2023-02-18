@@ -133,8 +133,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return GTFODOCK(teamAndPosName, &m_drivebase);
   } else if (operationName == AutonomousSelectedOperation::moveToDefense) {
     return moveToDefense(teamAndPosName, &m_drivebase);
-  } else if (true /*PLACE HOLDER JOSH PLEASE CHANGE*/) {
-    // THIS IS ALSO PLACE HOLDER STUFF
+  } else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
+    return ScoreAndLeave(teamAndPosName, &m_drivebase, &m_intakeDeployment,
+                         &m_intakeClamp);
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
@@ -239,6 +240,11 @@ frc2::Command *RobotContainer::moveToDefense(std::string teamAndPosName,
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
+
+frc2::Command *RobotContainer::ScoreAndLeave(std::string teamAndPosName,
+                                             Drivebase *drivebase,
+                                             IntakeDeployment *IntakeDeployment,
+                                             IntakeClamp *intakeClamp) {}
 
 frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
                                           Drivebase *drivebase) {

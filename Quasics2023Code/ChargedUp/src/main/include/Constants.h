@@ -45,7 +45,7 @@ const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
 const auto moveToDefense = "Move to defense";
-
+const auto ScoreAndLeave = "Score a Game Piece and GTOF";
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";
 const auto ScoreThenCharge = "Score Game Piece then Charge";

@@ -49,6 +49,11 @@ class RobotContainer {
   static frc2::Command *JustCharge(std::string teamAndPosName,
                                    Drivebase *drivebase);
 
+  static frc2::Command *ScoreAndLeave(std::string teamAndPosName,
+                                      Drivebase *drivebase,
+                                      IntakeDeployment *intakeDeployment,
+                                      IntakeClamp *intakeClamp);
+
   static frc2::Command *ScoreThenCharge(std::string teamAndPosName,
                                         Drivebase *drivebase,
                                         IntakeDeployment *intakeDeployment,

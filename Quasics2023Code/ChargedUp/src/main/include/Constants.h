@@ -44,16 +44,16 @@ namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
-const auto moveToDefenseAgainstScoringWall =
+const auto MoveToDefenseAgainstScoringWall =
     "Move to defense against scoring wall";
-const auto moveToDefenseAgainstOuterWall = "Move to defense against outer wall";
-const auto scoreAndMoveToDefenseAgainstScoringWall =
+const auto MoveToDefenseAgainstOuterWall = "Move to defense against outer wall";
+const auto ScoreAndMoveToDefenseAgainstScoringWall =
     "Score then move to defense against scoring wall";
-const auto scoreAndMoveToDefenseAgainstOuterWall =
+const auto ScoreAndMoveToDefenseAgainstOuterWall =
     "Score then move to defense against outer wall";
-const auto dropAndMoveToDefenseAgainstScoringWall =
+const auto DropAndMoveToDefenseAgainstScoringWall =
     "Drop then move to defense against scoring wall";
-const auto dropAndMoveToDefenseAgainstOuterWall =
+const auto DropAndMoveToDefenseAgainstOuterWall =
     "Drop then move to defense against outer wall";
 const auto ScoreAndLeave = "Score a Game Piece and GTOF";
 const auto ScorePiece = "Score Game Piece";

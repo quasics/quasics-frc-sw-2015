@@ -132,10 +132,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
     return GTFODOCK(teamAndPosName, &m_drivebase);
   } else if (operationName ==
-             AutonomousSelectedOperation::moveToDefenseAgainstScoringWall) {
+             AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall) {
     return moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase);
   } else if (operationName ==
-             AutonomousSelectedOperation::moveToDefenseAgainstOuterWall) {
+             AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall) {
     return moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase);
   } /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(teamAndPosName, &m_drivebase, &m_intakeDeployment,
@@ -144,13 +144,41 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return &doNothing;
   } */
   else if (operationName == AutonomousSelectedOperation::
-                                scoreAndMoveToDefenseAgainstScoringWall) {
+                                ScoreAndMoveToDefenseAgainstScoringWall) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>());
+
+    return new frc2::SequentialCommandGroup(std::move(commands));
+
   } else if (operationName == AutonomousSelectedOperation::
-                                  scoreAndMoveToDefenseAgainstOuterWall) {
+                                  ScoreAndMoveToDefenseAgainstOuterWall) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>());
+
+    return new frc2::SequentialCommandGroup(std::move(commands));
+
   } else if (operationName == AutonomousSelectedOperation::
-                                  dropAndMoveToDefenseAgainstScoringWall) {
+                                  DropAndMoveToDefenseAgainstScoringWall) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>());
+
+    return new frc2::SequentialCommandGroup(std::move(commands));
+
   } else if (operationName == AutonomousSelectedOperation::
-                                  dropAndMoveToDefenseAgainstOuterWall) {
+                                  DropAndMoveToDefenseAgainstOuterWall) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>());
+
+    return new frc2::SequentialCommandGroup(std::move(commands));
+
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
     return ScoreGamePieceHelperCommand(&m_drivebase, &m_intakeDeployment,
                                        &m_intakeClamp);
@@ -624,23 +652,23 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "Get Out of the Community then Get on the Charging Station"},
           {AutonomousSelectedOperation::JustCharge,
            "Just Get on the Starting Station"},
-          {AutonomousSelectedOperation::moveToDefenseAgainstScoringWall,
+          {AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall,
            "Get out of the Community and Move to Defensive Position by hugging "
            "the scoring wall"},
-          {AutonomousSelectedOperation::moveToDefenseAgainstOuterWall,
+          {AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall,
            "Get out of the community and move to defensive position by hugging "
            "the outer wall"},
           {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
-          {AutonomousSelectedOperation::scoreAndMoveToDefenseAgainstScoringWall,
+          {AutonomousSelectedOperation::ScoreAndMoveToDefenseAgainstScoringWall,
            "Score a piece then move to defensive position by hugging "
            "the scoring wall"},
-          {AutonomousSelectedOperation::scoreAndMoveToDefenseAgainstOuterWall,
+          {AutonomousSelectedOperation::ScoreAndMoveToDefenseAgainstOuterWall,
            "Score a piece then move to defensive position by hugging "
            "the outer wall"},
-          {AutonomousSelectedOperation::dropAndMoveToDefenseAgainstScoringWall,
+          {AutonomousSelectedOperation::DropAndMoveToDefenseAgainstScoringWall,
            "Drop a piece then move to defensive position by hugging "
            "the scoring wall"},
-          {AutonomousSelectedOperation::dropAndMoveToDefenseAgainstOuterWall,
+          {AutonomousSelectedOperation::DropAndMoveToDefenseAgainstOuterWall,
            "Drop a piece then move to defensive position by hugging "
            "the outer wall"},
           {AutonomousSelectedOperation::ScoreThenCharge,

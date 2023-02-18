@@ -547,6 +547,8 @@ frc2::SequentialCommandGroup *RobotContainer::ScoreGamePieceHelperCommand(
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  // Test commands for Drive At Power for Meters
+  /*
   frc::SmartDashboard::PutData(
       "Drive 1m at 45%", new DriveAtPowerForMeters(&m_drivebase, 0.45, 1_m));
   frc::SmartDashboard::PutData(
@@ -579,35 +581,40 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Drive 0.3_m at 100%",
       new DriveAtPowerForMeters(&m_drivebase, 1.00, 0.3_m));
+  */
 
-  frc::SmartDashboard::PutData("Rotate 90 degrees at 45%",
-                               new RotateAtAngle(&m_drivebase, 0.45, 90_deg));
-  frc::SmartDashboard::PutData("Rotate 90 degrees at 70%",
-                               new RotateAtAngle(&m_drivebase, 0.70, 90_deg));
-  frc::SmartDashboard::PutData("Rotate 90 degrees at 100%",
-                               new RotateAtAngle(&m_drivebase, 1.00, 90_deg));
+  // Angle testing Commands
+  /*
+    frc::SmartDashboard::PutData("Rotate 90 degrees at 45%",
+                                 new RotateAtAngle(&m_drivebase, 0.45, 90_deg));
+    frc::SmartDashboard::PutData("Rotate 90 degrees at 70%",
+                                 new RotateAtAngle(&m_drivebase, 0.70, 90_deg));
+    frc::SmartDashboard::PutData("Rotate 90 degrees at 100%",
+                                 new RotateAtAngle(&m_drivebase, 1.00, 90_deg));
 
-  frc::SmartDashboard::PutData("Rotate -90 degrees at 45%",
-                               new RotateAtAngle(&m_drivebase, 0.45, -90_deg));
-  frc::SmartDashboard::PutData("Rotate -90 degrees at 70%",
-                               new RotateAtAngle(&m_drivebase, 0.70, -90_deg));
-  frc::SmartDashboard::PutData("Rotate -90 degrees at 100%",
-                               new RotateAtAngle(&m_drivebase, 1.00, -90_deg));
+    frc::SmartDashboard::PutData("Rotate -90 degrees at 45%",
+                                 new RotateAtAngle(&m_drivebase, 0.45,
+    -90_deg)); frc::SmartDashboard::PutData("Rotate -90 degrees at 70%", new
+    RotateAtAngle(&m_drivebase, 0.70, -90_deg));
+    frc::SmartDashboard::PutData("Rotate -90 degrees at 100%",
+                                 new RotateAtAngle(&m_drivebase, 1.00,
+    -90_deg));
 
-  frc::SmartDashboard::PutData("Rotate 180 degrees at 45%",
-                               new RotateAtAngle(&m_drivebase, 0.45, 180_deg));
-  frc::SmartDashboard::PutData("Rotate 180 degrees at 70%",
-                               new RotateAtAngle(&m_drivebase, 0.70, 180_deg));
-  frc::SmartDashboard::PutData("Rotate 180 degrees at 100%",
-                               new RotateAtAngle(&m_drivebase, 1.00, 180_deg));
+    frc::SmartDashboard::PutData("Rotate 180 degrees at 45%",
+                                 new RotateAtAngle(&m_drivebase, 0.45,
+    180_deg)); frc::SmartDashboard::PutData("Rotate 180 degrees at 70%", new
+    RotateAtAngle(&m_drivebase, 0.70, 180_deg));
+    frc::SmartDashboard::PutData("Rotate 180 degrees at 100%",
+                                 new RotateAtAngle(&m_drivebase, 1.00,
+    180_deg));
 
-  frc::SmartDashboard::PutData("Rotate 45 degrees at 45%",
-                               new RotateAtAngle(&m_drivebase, 0.45, 45_deg));
-  frc::SmartDashboard::PutData("Rotate 45 degrees at 70%",
-                               new RotateAtAngle(&m_drivebase, 0.70, 45_deg));
-  frc::SmartDashboard::PutData("Rotate 45 degrees at 100%",
-                               new RotateAtAngle(&m_drivebase, 1.00, 45_deg));
-
+    frc::SmartDashboard::PutData("Rotate 45 degrees at 45%",
+                                 new RotateAtAngle(&m_drivebase, 0.45, 45_deg));
+    frc::SmartDashboard::PutData("Rotate 45 degrees at 70%",
+                                 new RotateAtAngle(&m_drivebase, 0.70, 45_deg));
+    frc::SmartDashboard::PutData("Rotate 45 degrees at 100%",
+                                 new RotateAtAngle(&m_drivebase, 1.00, 45_deg));
+  */
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },

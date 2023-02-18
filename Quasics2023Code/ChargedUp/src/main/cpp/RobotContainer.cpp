@@ -176,7 +176,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
 }
 
-// Helper function to plug into GTFO DOCK
+// The functions that go into the autonomous chooser thingy above
 
 frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
                                         Drivebase *m_drivebase) {
@@ -305,9 +305,8 @@ frc2::Command *RobotContainer::ScoreThenCharge(
       new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  // find out why it doesnt work with Mr. Healy
-  /*commands.push_back(
-      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));*/
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -372,9 +371,37 @@ frc2::Command *RobotContainer::DropGamePieceThenChargeCommand(
       new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  // find out why it doesnt work with Mr. Healy
-  /*commands.push_back(
-      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));*/
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup *RobotContainer::DropGamePieceHelperCommand(
+    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup *RobotContainer::ScoreGamePieceHelperCommand(
+    Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+    IntakeClamp *intakeClamp) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

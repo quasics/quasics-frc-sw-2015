@@ -65,6 +65,13 @@ class RobotContainer {
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
+  frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
+      IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
+
+  frc2::SequentialCommandGroup *ScoreGamePieceHelperCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      IntakeClamp *intakeClamp);
+
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed

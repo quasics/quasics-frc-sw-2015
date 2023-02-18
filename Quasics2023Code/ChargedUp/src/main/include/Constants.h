@@ -44,7 +44,9 @@ namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
-const auto moveToDefenseAgainstScoringWall = "Move to defense";
+const auto moveToDefenseAgainstScoringWall =
+    "Move to defense against scoring wall";
+const auto moveToDefenseAgainstOuterWall = "Move to defense against outer wall";
 const auto ScoreAndLeave = "Score a Game Piece and GTOF";
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";

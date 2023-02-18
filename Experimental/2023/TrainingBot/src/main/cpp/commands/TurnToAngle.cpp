@@ -7,7 +7,8 @@
 #include <cmath>
 #include <iostream>
 
-TurnToAngle::TurnToAngle(DriveBase* driveBase, units::degree_t rotationDegree, double speed) {
+TurnToAngle::TurnToAngle(DriveBase *driveBase, units::degree_t rotationDegree, double speed)
+{
   m_driveBase = driveBase;
   m_angle = rotationDegree;
   m_speed = std::abs(speed);
@@ -18,40 +19,51 @@ TurnToAngle::TurnToAngle(DriveBase* driveBase, units::degree_t rotationDegree, d
 }
 
 // Called when the command is initially scheduled.
-void TurnToAngle::Initialize() {
+void TurnToAngle::Initialize()
+{
   m_targetAngle = m_angle + m_driveBase->GetAngle();
   std::cerr << "Initialized Target angle: " << m_targetAngle.value() << "\n";
 }
 
 // Called repeatedly when this Command is scheduled to run
-void TurnToAngle::Execute() {
-  if(m_angle.value() > 0) {
+void TurnToAngle::Execute()
+{
+  if (m_angle.value() > 0)
+  {
     std::cerr << "Set speed to " << m_speed << ", " << -m_speed << "\n";
     m_driveBase->TankDrive(m_speed, -m_speed);
   }
-  else if(m_angle.value() < 0) {
+  else if (m_angle.value() < 0)
+  {
     std::cerr << "Set speed to " << -m_speed << ", " << m_speed << "\n";
     m_driveBase->TankDrive(-m_speed, m_speed);
-  }       
+  }
 }
 
 // Called once the command ends or is interrupted.
-void TurnToAngle::End(bool interrupted) {
-    std::cerr << "Stopping\n";
+void TurnToAngle::End(bool interrupted)
+{
+  std::cerr << "Stopping\n";
   m_driveBase->Stop();
 }
 
 // Returns true when the command should end.
-bool TurnToAngle::IsFinished() {
-    std::cerr << "current angle " << m_driveBase->GetAngle().value() << ", target " << m_targetAngle.value() << "\n";
-  if(m_angle == 0_deg) {
+bool TurnToAngle::IsFinished()
+{
+  units::degree_t currentAngle = m_driveBase->GetAngle();
+  std::cerr << "current angle " << currentAngle.value() << ", target " << m_targetAngle.value() << "\n";
+  if (m_angle == 0_deg)
+  {
     std::cerr << "0 deg stop\n";
     return true;
-  } else if(m_angle.value() > 0 && m_driveBase->GetAngle() >= m_targetAngle) {
+  }
+  else if (m_angle.value() > 0 && currentAngle >= m_targetAngle)
+  {
     std::cerr << ">0 angle stop\n";
     return true;
   }
-  else if(m_angle.value() < 0 && m_driveBase->GetAngle() <= m_targetAngle) {
+  else if (m_angle.value() < 0 && currentAngle <= m_targetAngle)
+  {
     std::cerr << "<0 angle stop\n";
     return true;
   }

@@ -93,6 +93,9 @@ constexpr int RIGHT_INTAKE_DEPLYMENT_MOTOR_ID = 5;
 constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;
 constexpr int INTAKE_MOTOR_CLAMP_ID = 7;
 }  // namespace SparkMax
+namespace VictorSPX {
+constexpr int INTAKE_MOTOR_ROLLER_ID = 1;
+}
 }  // namespace MotorIds
 
 namespace OperatorInterface {

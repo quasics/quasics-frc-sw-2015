@@ -137,12 +137,13 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName ==
              AutonomousSelectedOperation::moveToDefenseAgainstOuterWall) {
     return moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase);
-  } else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
+  } /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(teamAndPosName, &m_drivebase, &m_intakeDeployment,
                          &m_intakeClamp);
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
-  } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
+  } */
+  else if (operationName == AutonomousSelectedOperation::ScorePiece) {
     return ScoreGamePieceHelperCommand(&m_drivebase, &m_intakeDeployment,
                                        &m_intakeClamp);
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
@@ -362,11 +363,12 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
-
+/*
 frc2::Command *RobotContainer::ScoreAndLeave(std::string teamAndPosName,
                                              Drivebase *drivebase,
                                              IntakeDeployment *IntakeDeployment,
-                                             IntakeClamp *intakeClamp) {}
+                                             IntakeClamp *intakeClamp) {
+                                             }*/
 
 frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
                                           Drivebase *drivebase) {
@@ -614,13 +616,12 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "Get Out of the Community then Get on the Charging Station"},
           {AutonomousSelectedOperation::JustCharge,
            "Just Get on the Starting Station"},
-          {AutonomousSelectedOperation::moveToDefenseAgainstScoringWall,
+                    {AutonomousSelectedOperation::moveToDefenseAgainstScoringWall,
            "Get out of the Community and Move to Defensive Position by hugging "
            "the scoring wall"},
           {AutonomousSelectedOperation::moveToDefenseAgainstOuterWall,
            "Get out of the community and move to defensive position by hugging "
-           "the outer wall"},
-          {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
+           "the outer wall"},          {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
           {AutonomousSelectedOperation::ScoreThenCharge,
            "Score the Game Piece then Get on the Charging Station"},
           {AutonomousSelectedOperation::ScoreThenEndNearGamePiece,

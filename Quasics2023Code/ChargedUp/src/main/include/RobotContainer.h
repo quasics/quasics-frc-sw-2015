@@ -57,6 +57,9 @@ class RobotContainer {
   static frc2::Command *ScoreThenEndNearGamePieceCommand(
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
+  static frc2::Command *DropGamePieceThenGTFOCommand(
+      std::string teamAndPosName, Drivebase *drivebase,
+      IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

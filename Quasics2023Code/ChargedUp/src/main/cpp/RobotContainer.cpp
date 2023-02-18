@@ -155,6 +155,19 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
              AutonomousSelectedOperation::ScoreThenEndNearGamePiece) {
     return ScoreThenEndNearGamePieceCommand(
         teamAndPosName, &m_drivebase, &m_intakeDeployment, &m_intakeClamp);
+  } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    // TODO CODE US BEING REUSED PROBABLY ALSO PUT INTO HELPER FUNCTION
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
+    return DropGamePieceThenGTFOCommand(teamAndPosName, &m_drivebase,
+                                        &m_intakeDeployment, &m_intakeClamp);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -312,6 +325,28 @@ frc2::Command *RobotContainer::ScoreThenEndNearGamePieceCommand(
       new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new RotateAtAngle(drivebase, 0.5, 180_deg)));
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(drivebase, 0.5, 5.0_m)));
+  } else {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(drivebase, 0.5, 4.5_m)));
+  }
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::DropGamePieceThenGTFOCommand(
+    std::string teamAndPosName, Drivebase *drivebase,
+    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+  // SAME THING HERE REPEATED CODE
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(

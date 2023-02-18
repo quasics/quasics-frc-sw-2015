@@ -614,8 +614,12 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "Get Out of the Community then Get on the Charging Station"},
           {AutonomousSelectedOperation::JustCharge,
            "Just Get on the Starting Station"},
-          {AutonomousSelectedOperation::moveToDefense,
-           "Get out of the Community and Move to Defensive Position"},
+          {AutonomousSelectedOperation::moveToDefenseAgainstScoringWall,
+           "Get out of the Community and Move to Defensive Position by hugging "
+           "the scoring wall"},
+          {AutonomousSelectedOperation::moveToDefenseAgainstOuterWall,
+           "Get out of the community and move to defensive position by hugging "
+           "the outer wall"},
           {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
           {AutonomousSelectedOperation::ScoreThenCharge,
            "Score the Game Piece then Get on the Charging Station"},

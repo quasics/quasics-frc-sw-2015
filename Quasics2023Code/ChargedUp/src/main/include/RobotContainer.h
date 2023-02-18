@@ -18,6 +18,7 @@
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
+#include "subsystems/IntakeRoller.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -85,11 +86,13 @@ class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_driverController{
       OperatorConstants::kDriverControllerPort};
+  frc::XboxController m_operatorController{1};
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
   IntakeClamp m_intakeClamp;
+  IntakeRoller m_intakeRoller;
   IntakeDeployment m_intakeDeployment;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;

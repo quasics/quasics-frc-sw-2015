@@ -25,7 +25,10 @@
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 #include "commands/TankDrive.h"
+#include "commands/TriggerBasedRollerCommand.h"
 
+#define UsingRollerForIntake
+#undef UsingClampForIntake
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
 
@@ -64,6 +67,13 @@ RobotContainer::RobotContainer() {
       }};
 
   m_drivebase.SetDefaultCommand(tankDrive);
+
+#ifdef UsingRollerForIntake
+  TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,
+                                                      &m_operatorController);
+
+  m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
+#endif
 
   // Configure the button bindings
   ConfigureBindings();

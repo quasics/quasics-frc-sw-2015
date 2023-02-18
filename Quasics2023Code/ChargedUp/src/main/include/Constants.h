@@ -52,6 +52,7 @@ const auto ScoreThenCharge = "Score Game Piece then Charge";
 const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
 const auto DropGamePiece = "Drop Game Piece";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
+const auto DropAndCharge = "Drop and Charge";
 }  // namespace AutonomousSelectedOperation
 
 namespace SelfBalancingConstants {

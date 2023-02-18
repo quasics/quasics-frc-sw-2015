@@ -168,6 +168,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
     return DropGamePieceThenGTFOCommand(teamAndPosName, &m_drivebase,
                                         &m_intakeDeployment, &m_intakeClamp);
+  } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
+    return DropGamePieceThenChargeCommand(teamAndPosName, &m_drivebase,
+                                          &m_intakeDeployment, &m_intakeClamp);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -355,6 +358,23 @@ frc2::Command *RobotContainer::DropGamePieceThenGTFOCommand(
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters(drivebase, 0.5, 4.0_m)));
   }
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::DropGamePieceThenChargeCommand(
+    std::string teamAndPosName, Drivebase *drivebase,
+    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  // same thing here helper function would be nice
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  // find out why it doesnt work with Mr. Healy
+  /*commands.push_back(
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));*/
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

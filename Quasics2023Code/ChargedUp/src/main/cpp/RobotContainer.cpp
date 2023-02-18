@@ -134,6 +134,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName ==
              AutonomousSelectedOperation::moveToDefenseAgainstScoringWall) {
     return moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase);
+  } else if (operationName ==
+             AutonomousSelectedOperation::moveToDefenseAgainstOuterWall) {
+    return moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase);
   } else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(teamAndPosName, &m_drivebase, &m_intakeDeployment,
                          &m_intakeClamp);
@@ -268,6 +271,13 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
 
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveAtPowerForMeters{m_drivebase, 0.5, 3.845_m}));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
+    std::string teamAndPosName, Drivebase *m_drivebase) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

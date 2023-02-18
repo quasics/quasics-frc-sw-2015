@@ -43,8 +43,11 @@ class RobotContainer {
   static frc2::Command *GTFODOCK(std::string teamAndPosName,
                                  Drivebase *drivebase);
 
-  static frc2::Command *moveToDefenseAgainstScoringWall(std::string teamAndPosName,
-                                      Drivebase *drivebase);
+  static frc2::Command *moveToDefenseAgainstScoringWall(
+      std::string teamAndPosName, Drivebase *drivebase);
+
+  static frc2::Command *moveToDefenseAgainstOuterWall(
+      std::string teamAndPosName, Drivebase *drivebase);
 
   static frc2::Command *JustCharge(std::string teamAndPosName,
                                    Drivebase *drivebase);

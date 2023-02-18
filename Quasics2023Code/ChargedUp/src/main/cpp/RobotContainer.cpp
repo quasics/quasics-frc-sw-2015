@@ -143,6 +143,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
         new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(teamAndPosName, &m_drivebase);
@@ -233,35 +235,55 @@ frc2::Command *RobotContainer::moveToDefense(std::string teamAndPosName,
 }
 
 frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
-                                          Drivebase *m_drivebase) {
+                                          Drivebase *drivebase) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveUntilPitchAngleChange(m_drivebase, -0.5)));
+        new DriveUntilPitchAngleChange(drivebase, -0.5)));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing(m_drivebase)));
+        std::unique_ptr<frc2::Command>(new SelfBalancing(drivebase)));
   } else {
     const bool firstTurnIsClockwise =
         (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
          teamAndPosName == AutonomousTeamAndStationPositions::Red3);
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{m_drivebase, 0.5, 90_deg},
-            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            RotateAtAngle{drivebase, 0.5, 90_deg},
+            RotateAtAngle{drivebase, 0.5, -90_deg},
             [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(m_drivebase, 0.5, 1.719_m)));
+        new DriveAtPowerForMeters(drivebase, 0.5, 1.719_m)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{m_drivebase, 0.5, 90_deg},
-            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            RotateAtAngle{drivebase, 0.5, 90_deg},
+            RotateAtAngle{drivebase, 0.5, -90_deg},
             [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveUntilPitchAngleChange(m_drivebase, 0.5)));
+        new DriveUntilPitchAngleChange(drivebase, 0.5)));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing(m_drivebase)));
+        std::unique_ptr<frc2::Command>(new SelfBalancing(drivebase)));
   }
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *ScoreThenCharge(std::string teamAndPosName, Drivebase *drivebase,
+                               IntakeDeployment *intakeDeployment,
+                               IntakeClamp *intakeClamp) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  // find out why it doesnt work with Mr. Healy
+  /*commands.push_back(
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));*/
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

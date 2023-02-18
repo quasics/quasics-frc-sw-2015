@@ -47,7 +47,12 @@ class RobotContainer {
                                       Drivebase *drivebase);
 
   static frc2::Command *JustCharge(std::string teamAndPosName,
-                                   Drivebase *m_drivebase);
+                                   Drivebase *drivebase);
+
+  static frc2::Command *ScoreThenCharge(std::string teamAndPosName,
+                                        Drivebase *drivebase,
+                                        IntakeDeployment *intakeDeployment,
+                                        IntakeClamp *intakeClamp);
 
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

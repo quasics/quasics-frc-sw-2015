@@ -20,6 +20,8 @@ class IntakeRoller : public frc2::SubsystemBase {
 
   void SetRollerSpeed(double percentSpeed);
 
+  void Stop();
+
  private:
   ctre::phoenix::motorcontrol::can::VictorSPX m_floorRollerPickupMotor{
       MotorIds::VictorSPX::INTAKE_MOTOR_ROLLER_ID};

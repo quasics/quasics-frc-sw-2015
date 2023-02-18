@@ -14,3 +14,8 @@ void IntakeRoller::SetRollerSpeed(double percentSpeed) {
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
       -percentSpeed);
 }
+
+void IntakeRoller::Stop() {
+  m_floorRollerPickupMotor.Set(
+      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, 0);
+}

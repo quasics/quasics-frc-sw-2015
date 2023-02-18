@@ -18,6 +18,8 @@
 
 #include "Constants.h"
 
+#define ENABLE_AD_GYRO
+
 class DriveBase : public frc2::SubsystemBase
 {
   // Things that *any* subsystem "knows" how to do
@@ -110,7 +112,7 @@ private:
   std::unique_ptr<frc::DifferentialDrive> m_drive;
 
 #ifdef ENABLE_AD_GYRO
-  frc::ADXRS450_Gyro m_gyro;
+  frc::ADXRS450_Gyro m_gyro{frc::SPI::Port::kOnboardCS0};
 #else
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIGEON2_CAN_ID};
 #endif

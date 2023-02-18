@@ -497,41 +497,14 @@ frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
   return cmd;
 }
 
-// Questions on if such a structure would work
-
-/*
-frc2::Command *BuildNamedPrintCommand(std::string name) {
-  frc2::Command *cmd = new frc2::PrintCommand(name);
-  cmd->SetName(name);
-  return cmd;
-}
-
-void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
-                               std::string name) {
-  selector.AddOption(name, BuildNamedPrintCommand(name));
-}
-
-const std::list<std::string>
-    nonDefaultTeamsAndPositionsList{
-          {AutonomousTeamAndStationPositions::Blue2},
-          {AutonomousTeamAndStationPositions::Blue3},
-          {AutonomousTeamAndStationPositions::Red1},
-          {AutonomousTeamAndStationPositions::Red2},
-          {AutonomousTeamAndStationPositions::Red3},
-    };
-
-for (const auto &element : nonDefaultTeamsAndPositionsList) {
-  AddNamedCommandToSelector(m_TeamAndStationAutonomousOptions, element);
-}
-*/
-
-/*Or the OG Stuff to implement
 void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
                                std::string name, std::string text = "") {
   selector.AddOption(name, BuildNamedPrintCommand(name, text));
 }
 
-  const std::list<std::tuple<std::string name, std::string text>>
+void AddingNamedPositionsToSelectorWithLoop(
+    frc::SendableChooser<frc2::Command *> &selector) {
+  const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
           {AutonomousTeamAndStationPositions::Blue2, "Blue 2"},
           {AutonomousTeamAndStationPositions::Blue3, "Blue 3"},
@@ -540,10 +513,38 @@ void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
           {AutonomousTeamAndStationPositions::Red3, "Red 3"},
       };
 
- for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
-    AddNamedCommandToSelector(m_TeamAndStationAutonomousOptions, name, text);
+  for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
+    AddNamedCommandToSelector(selector, name, text);
   }
-*/
+}
+
+void AddingNamedAutonomousSequencesToSelectorWithLoop(
+    frc::SendableChooser<frc2::Command *> &selector) {
+  const std::list<std::tuple<std::string, std::string>>
+      nonDefaultAutonomousSequenceList{
+          {AutonomousSelectedOperation::DropAndCharge,
+           "Drop the Game Piece then Charge"},
+          {AutonomousSelectedOperation::DropAndGTFO,
+           "Drop the Game Piece then Get Out of Community"},
+          {AutonomousSelectedOperation::DropGamePiece,
+           "Just drop the Game Piece"},
+          {AutonomousSelectedOperation::GTFO, "Just Get out of the Community"},
+          {AutonomousSelectedOperation::GTFODock,
+           "Get Out of the Community then Get on the Charging Station"},
+          {AutonomousSelectedOperation::JustCharge,
+           "Just Get on the Starting Station"},
+          {AutonomousSelectedOperation::moveToDefense,
+           "Get out of the Community and Move to Defensive Position"},
+          {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
+          {AutonomousSelectedOperation::ScoreThenCharge,
+           "Score the Game Piece then Get on the Charging Station"},
+          {AutonomousSelectedOperation::ScoreThenEndNearGamePiece,
+           "Score then End next to a Game Piece"}};
+
+  for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
+    AddNamedCommandToSelector(selector, name, text);
+  }
+}
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
@@ -551,27 +552,7 @@ void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
       BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue1,
                              "Blue 1"));
 
-  m_TeamAndStationAutonomousOptions.AddOption(
-      AutonomousTeamAndStationPositions::Blue2,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue2,
-                             "Blue 2"));
-
-  m_TeamAndStationAutonomousOptions.AddOption(
-      AutonomousTeamAndStationPositions::Blue3,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue3,
-                             "Blue 3"));
-
-  m_TeamAndStationAutonomousOptions.AddOption(
-      AutonomousTeamAndStationPositions::Red1,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red1, "Red 1"));
-
-  m_TeamAndStationAutonomousOptions.AddOption(
-      AutonomousTeamAndStationPositions::Red2,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red2, "Red 2"));
-
-  m_TeamAndStationAutonomousOptions.AddOption(
-      AutonomousTeamAndStationPositions::Red3,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Red3, "Red 3"));
+  AddingNamedPositionsToSelectorWithLoop(m_TeamAndStationAutonomousOptions);
 
   frc::SmartDashboard::PutData("Team and Station Auto Selector",
                                &m_TeamAndStationAutonomousOptions);
@@ -583,10 +564,8 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
       BuildNamedPrintCommand(AutonomousSelectedOperation::DoNothing,
                              "Do Nothing"));
 
-  m_RobotSequenceAutonomousOptions.AddOption(
-      AutonomousSelectedOperation::GTFODock,
-      BuildNamedPrintCommand(AutonomousSelectedOperation::GTFODock,
-                             "GTFO and Dock"));
+  AddingNamedAutonomousSequencesToSelectorWithLoop(
+      m_RobotSequenceAutonomousOptions);
 
   frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
                                &m_RobotSequenceAutonomousOptions);

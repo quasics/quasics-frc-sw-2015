@@ -15,9 +15,13 @@
 
 #include "Constants.h"
 #include "commands/Autos.h"
+#include "commands/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/ExampleCommand.h"
+#include "commands/ExtendIntakeAtSpeedForTime.h"
+#include "commands/ReleaseWithIntakeAtSpeedForTime.h"
+#include "commands/RetractIntakeAtSpeedForTime.h"
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 #include "commands/TankDrive.h"
@@ -133,6 +137,15 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     // THIS IS ALSO PLACE HOLDER STUFF
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
+  } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  } else if (operationName == AutonomousSelectedOperation::JustCharge) {
+    return JustCharge(teamAndPosName, &m_drivebase);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -216,6 +229,39 @@ frc2::Command *RobotContainer::moveToDefense(std::string teamAndPosName,
         new DriveAtPowerForMeters{m_drivebase, 0.5, 0_m}));  // placeholder
   }
 
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
+                                          Drivebase *m_drivebase) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveUntilPitchAngleChange(m_drivebase, -0.5)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new SelfBalancing(m_drivebase)));
+  } else {
+    const bool firstTurnIsClockwise =
+        (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
+         teamAndPosName == AutonomousTeamAndStationPositions::Red3);
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            RotateAtAngle{m_drivebase, 0.5, 90_deg},
+            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(m_drivebase, 0.5, 1.719_m)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            RotateAtAngle{m_drivebase, 0.5, 90_deg},
+            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveUntilPitchAngleChange(m_drivebase, 0.5)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new SelfBalancing(m_drivebase)));
+  }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

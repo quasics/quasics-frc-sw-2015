@@ -45,6 +45,9 @@ const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
 const auto moveToDefense = "Move to defense";
+
+const auto ScorePiece = "Score Game Piece";
+const auto JustCharge = "Just Charge";
 }  // namespace AutonomousSelectedOperation
 
 namespace SelfBalancingConstants {

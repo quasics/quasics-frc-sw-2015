@@ -16,6 +16,8 @@
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/ExampleSubsystem.h"
+#include "subsystems/IntakeClamp.h"
+#include "subsystems/IntakeDeployment.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -42,7 +44,10 @@ class RobotContainer {
                                  Drivebase *drivebase);
 
   static frc2::Command *moveToDefense(std::string teamAndPosName,
-                                 Drivebase *drivebase);
+                                      Drivebase *drivebase);
+
+  static frc2::Command *JustCharge(std::string teamAndPosName,
+                                   Drivebase *m_drivebase);
 
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
@@ -53,6 +58,8 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
+  IntakeClamp m_intakeClamp;
+  IntakeDeployment m_intakeDeployment;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;

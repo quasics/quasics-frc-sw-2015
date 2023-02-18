@@ -148,6 +148,13 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return new frc2::SequentialCommandGroup(std::move(commands));
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(teamAndPosName, &m_drivebase);
+  } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
+    return ScoreThenCharge(teamAndPosName, &m_drivebase, &m_intakeDeployment,
+                           &m_intakeClamp);
+  } else if (operationName ==
+             AutonomousSelectedOperation::ScoreThenEndNearGamePiece) {
+    return ScoreThenEndNearGamePieceCommand(
+        teamAndPosName, &m_drivebase, &m_intakeDeployment, &m_intakeClamp);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -267,10 +274,11 @@ frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-frc2::Command *ScoreThenCharge(std::string teamAndPosName, Drivebase *drivebase,
-                               IntakeDeployment *intakeDeployment,
-                               IntakeClamp *intakeClamp) {
+frc2::Command *RobotContainer::ScoreThenCharge(
+    std::string teamAndPosName, Drivebase *drivebase,
+    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
+  // TODO Maybe make the scoring part into a helper function ask how
   commands.push_back(std::unique_ptr<frc2::Command>(
       new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
@@ -284,6 +292,34 @@ frc2::Command *ScoreThenCharge(std::string teamAndPosName, Drivebase *drivebase,
   // find out why it doesnt work with Mr. Healy
   /*commands.push_back(
       std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));*/
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::ScoreThenEndNearGamePieceCommand(
+    std::string teamAndPosName, Drivebase *drivebase,
+    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  // TODO Maybe make the scoring part into a helper function ask how
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new RotateAtAngle(drivebase, 0.5, 180_deg)));
+  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(drivebase, 0.5, 4.5_m)));
+  } else {
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveAtPowerForMeters(drivebase, 0.5, 4.0_m)));
+  }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

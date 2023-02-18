@@ -48,6 +48,8 @@ const auto moveToDefense = "Move to defense";
 
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";
+const auto ScoreThenCharge = "Score Game Piece then Charge";
+const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
 }  // namespace AutonomousSelectedOperation
 
 namespace SelfBalancingConstants {

@@ -4,20 +4,28 @@
 
 #include "commands/ReleaseWithIntake.h"
 
-ReleaseWithIntake::ReleaseWithIntake() {
+ReleaseWithIntake::ReleaseWithIntake(IntakeClamp* clamp, double power)
+    : m_IntakeClamp(clamp), m_clampPower(-std::abs(power)) {
   // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(m_IntakeClamp);
 }
 
 // Called when the command is initially scheduled.
-void ReleaseWithIntake::Initialize() {}
+void ReleaseWithIntake::Initialize() {
+  m_IntakeClamp->EnableBraking(true);
+  m_IntakeClamp->SetIntakeClampSpeed(m_clampPower);
+}
 
 // Called repeatedly when this Command is scheduled to run
-void ReleaseWithIntake::Execute() {}
+void ReleaseWithIntake::Execute() {
+  m_IntakeClamp->SetIntakeClampSpeed(m_clampPower);
+}
 
 // Called once the command ends or is interrupted.
-void ReleaseWithIntake::End(bool interrupted) {}
+void ReleaseWithIntake::End(bool interrupted) {
+  m_IntakeClamp->Stop();
+  m_IntakeClamp->EnableBraking(true);
+}
 
 // Returns true when the command should end.
-bool ReleaseWithIntake::IsFinished() {
-  return false;
-}
+bool ReleaseWithIntake::IsFinished() { return false; }

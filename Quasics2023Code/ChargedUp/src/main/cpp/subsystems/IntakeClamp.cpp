@@ -4,16 +4,28 @@
 
 #include "subsystems/IntakeClamp.h"
 
-Intake::Intake() = default;
+IntakeClamp::IntakeClamp() = default;
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void IntakeClamp::Periodic() {}
 
-void Intake::SetIntakeSpeed(double percentSpeed) {
+void IntakeClamp::SetIntakeClampSpeed(double percentSpeed) {
   m_intakeClamp.Set(percentSpeed);
 }
 
-bool Intake::IsIntakeDeployed() {
+void IntakeClamp::Stop() { m_intakeClamp.StopMotor(); }
+
+void IntakeClamp::EnableBraking(bool value) {
+  rev::CANSparkMax::IdleMode mode;
+  if (value) {
+    mode = rev::CANSparkMax::IdleMode::kBrake;
+  } else {
+    mode = rev::CANSparkMax::IdleMode::kCoast;
+  }
+  m_intakeClamp.SetIdleMode(mode);
+}
+
+bool IntakeClamp::IsIntakeClampDeployed() {
   // possible function that might need to be implemeneted to prevent the intake
   // from overextending
   return false;

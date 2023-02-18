@@ -9,18 +9,22 @@
 
 #include "Constants.h"
 
-class Intake : public frc2::SubsystemBase {
+class IntakeClamp : public frc2::SubsystemBase {
  public:
-  Intake();
+  IntakeClamp();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
 
-  void SetIntakeSpeed(double percentSpeed);
+  void SetIntakeClampSpeed(double percentSpeed);
 
-  bool IsIntakeDeployed();
+  void Stop();
+
+  void EnableBraking(bool value);
+
+  bool IsIntakeClampDeployed();
 
  private:
   rev::CANSparkMax m_intakeClamp{MotorIds::SparkMax::INTAKE_MOTOR_CLAMP_ID,

@@ -7,6 +7,8 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/IntakeClamp.h"
+
 /**
  * An example command.
  *
@@ -17,7 +19,7 @@
 class ReleaseWithIntake
     : public frc2::CommandHelper<frc2::CommandBase, ReleaseWithIntake> {
  public:
-  ReleaseWithIntake();
+  ReleaseWithIntake(IntakeClamp* clamp, double power);
 
   void Initialize() override;
 
@@ -26,4 +28,8 @@ class ReleaseWithIntake
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  IntakeClamp* m_IntakeClamp;
+  const double m_clampPower;
 };

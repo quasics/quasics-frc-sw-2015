@@ -22,7 +22,7 @@ void ExtendIntake::Execute() { m_intakeDeployment->SetMotorSpeed(intakeSpeed); }
 
 // Called once the command ends or is interrupted.
 void ExtendIntake::End(bool interrupted) {
-  m_intakeDeployment->SetMotorSpeed(0);
+  m_intakeDeployment->Stop();
   m_intakeDeployment->EnableBraking(true);
 }
 

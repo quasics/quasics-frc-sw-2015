@@ -47,6 +47,14 @@ const auto GTFODock = "GTFO and Dock";
 const auto moveToDefenseAgainstScoringWall =
     "Move to defense against scoring wall";
 const auto moveToDefenseAgainstOuterWall = "Move to defense against outer wall";
+const auto scoreAndMoveToDefenseAgainstScoringWall =
+    "Score then move to defense against scoring wall";
+const auto scoreAndMoveToDefenseAgainstOuterWall =
+    "Score then move to defense against outer wall";
+const auto dropAndMoveToDefenseAgainstScoringWall =
+    "Drop then move to defense against scoring wall";
+const auto dropAndMoveToDefenseAgainstOuterWall =
+    "Drop then move to defense against outer wall";
 const auto ScoreAndLeave = "Score a Game Piece and GTOF";
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";

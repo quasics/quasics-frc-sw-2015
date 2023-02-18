@@ -65,10 +65,10 @@ class RobotContainer {
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
-  frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
+  static frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
-  frc2::SequentialCommandGroup *ScoreGamePieceHelperCommand(
+  static frc2::SequentialCommandGroup *ScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeClamp *intakeClamp);
 

@@ -138,14 +138,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
-    return new frc2::SequentialCommandGroup(std::move(commands));
+    return ScoreGamePieceHelperCommand(&m_drivebase, &m_intakeDeployment,
+                                       &m_intakeClamp);
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(teamAndPosName, &m_drivebase);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
@@ -156,15 +150,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return ScoreThenEndNearGamePieceCommand(
         teamAndPosName, &m_drivebase, &m_intakeDeployment, &m_intakeClamp);
   } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    // TODO CODE US BEING REUSED PROBABLY ALSO PUT INTO HELPER FUNCTION
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
-    return new frc2::SequentialCommandGroup(std::move(commands));
+    return DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp);
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
     return DropGamePieceThenGTFOCommand(teamAndPosName, &m_drivebase,
                                         &m_intakeDeployment, &m_intakeClamp);
@@ -215,13 +201,10 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
             RotateAtAngle{m_drivebase, 0.5, 90_deg},
             RotateAtAngle{m_drivebase, 0.5, -90_deg},
             [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
-            m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new DriveUntilPitchAngleChange{m_drivebase, 0.5}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new SelfBalancing{m_drivebase}));
-    // Add commands to move forward until we hit the ramp (or decide we're not
-    // going to), and to then balance
   }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -294,17 +277,8 @@ frc2::Command *RobotContainer::ScoreThenCharge(
     std::string teamAndPosName, Drivebase *drivebase,
     IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // TODO Maybe make the scoring part into a helper function ask how
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      ScoreGamePieceHelperCommand(drivebase, intakeDeployment, intakeClamp)));
   commands.push_back(
       std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
   return new frc2::SequentialCommandGroup(std::move(commands));
@@ -314,17 +288,8 @@ frc2::Command *RobotContainer::ScoreThenEndNearGamePieceCommand(
     std::string teamAndPosName, Drivebase *drivebase,
     IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // TODO Maybe make the scoring part into a helper function ask how
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      ScoreGamePieceHelperCommand(drivebase, intakeDeployment, intakeClamp)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new RotateAtAngle(drivebase, 0.5, 180_deg)));
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -341,14 +306,9 @@ frc2::Command *RobotContainer::ScoreThenEndNearGamePieceCommand(
 frc2::Command *RobotContainer::DropGamePieceThenGTFOCommand(
     std::string teamAndPosName, Drivebase *drivebase,
     IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
-  // SAME THING HERE REPEATED CODE
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      DropGamePieceHelperCommand(intakeDeployment, intakeClamp)));
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -364,13 +324,8 @@ frc2::Command *RobotContainer::DropGamePieceThenChargeCommand(
     std::string teamAndPosName, Drivebase *drivebase,
     IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  // same thing here helper function would be nice
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      DropGamePieceHelperCommand(intakeDeployment, intakeClamp)));
   commands.push_back(
       std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
   return new frc2::SequentialCommandGroup(std::move(commands));

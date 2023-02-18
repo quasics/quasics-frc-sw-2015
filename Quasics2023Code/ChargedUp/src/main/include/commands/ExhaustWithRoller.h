@@ -7,6 +7,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/IntakeRoller.h"
 /**
  * An example command.
  *
@@ -17,7 +18,7 @@
 class ExhaustWithRoller
     : public frc2::CommandHelper<frc2::CommandBase, ExhaustWithRoller> {
  public:
-  ExhaustWithRoller();
+  ExhaustWithRoller(IntakeRoller* intakeRoller, double power);
 
   void Initialize() override;
 
@@ -26,4 +27,8 @@ class ExhaustWithRoller
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  IntakeRoller* m_intakeRoller;
+  const double m_power;
 };

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <frc2/command/button/CommandJoystick.h>
 #include <frc/Joystick.h>
@@ -26,16 +27,23 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
+  // "Helper functions".  
  private:
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // Sample function, showing how you can build a sequence of simple commands that
+  // will perform some more complex operation.
+  frc2::SequentialCommandGroup* BuildSampleCommandSequence();
+
+  void ConfigureBindings();
+
+  // Private data for the class.
+ private:
+  // Things the drive team uses to control the robot.
   frc2::CommandJoystick m_driverController{
       OperatorConstants::kDriverControllerPort};
   frc2::CommandXboxController m_operatorController{
       OperatorConstants::kOperatorControllerPort};
 
-  // The robot's subsystems are defined here...
+  // The robot's subsystems.
   ExampleSubsystem m_subsystem;
   DriveBase m_driveBase;
-
-  void ConfigureBindings();
 };

@@ -4,8 +4,11 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+
+#include "subsystems/IntakeClamp.h"
 
 /**
  * An example command.
@@ -15,9 +18,11 @@
  * Command will *not* work!
  */
 class ReleaseWithIntakeAtSpeedForTime
-    : public frc2::CommandHelper<frc2::CommandBase, ReleaseWithIntakeAtSpeedForTime> {
+    : public frc2::CommandHelper<frc2::CommandBase,
+                                 ReleaseWithIntakeAtSpeedForTime> {
  public:
-  ReleaseWithIntakeAtSpeedForTime();
+  ReleaseWithIntakeAtSpeedForTime(IntakeClamp* clamp, double power,
+                                  units::second_t time);
 
   void Initialize() override;
 
@@ -26,4 +31,10 @@ class ReleaseWithIntakeAtSpeedForTime
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+ private:
+  IntakeClamp* m_IntakeClamp;
+  const double m_clampPower;
+  const units::second_t m_time;
+  frc::Timer m_stopWatch;
 };

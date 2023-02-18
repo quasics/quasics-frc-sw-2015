@@ -147,8 +147,11 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                 ScoreAndMoveToDefenseAgainstScoringWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
-    commands.push_back(std::unique_ptr<frc2::Command>());
-    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(ScoreGamePieceHelperCommand(
+            &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -156,8 +159,11 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                   ScoreAndMoveToDefenseAgainstOuterWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
-    commands.push_back(std::unique_ptr<frc2::Command>());
-    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(ScoreGamePieceHelperCommand(
+            &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -165,8 +171,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                   DropAndMoveToDefenseAgainstScoringWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
-    commands.push_back(std::unique_ptr<frc2::Command>());
-    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -174,8 +182,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                   DropAndMoveToDefenseAgainstOuterWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
-    commands.push_back(std::unique_ptr<frc2::Command>());
-    commands.push_back(std::unique_ptr<frc2::Command>());
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 

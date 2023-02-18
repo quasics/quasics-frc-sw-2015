@@ -129,6 +129,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return GTFODOCK(teamAndPosName, &m_drivebase);
   } else if (operationName == AutonomousSelectedOperation::moveToDefense) {
     return moveToDefense(teamAndPosName, &m_drivebase);
+  } else if (true /*PLACE HOLDER JOSH PLEASE CHANGE*/) {
+    // THIS IS ALSO PLACE HOLDER STUFF
+    static frc2::PrintCommand doNothing("Doing nothing, as instructed");
+    return &doNothing;
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS

@@ -77,9 +77,13 @@ class RobotContainer {
   static frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
-  static frc2::SequentialCommandGroup *ScoreGamePieceHelperCommand(
+  static frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeClamp *intakeClamp);
+
+  static frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      IntakeRoller *intakeRoller);
 
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/XboxController.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/CommandPtr.h>
@@ -33,8 +34,14 @@ class RobotContainer {
 
   frc2::Command *GetAutonomousCommand();
 
+  void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                        frc2::Command *command);
+
+  void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command *command);
+
   double GetDriveSpeedScalingFactor();
 
+  void ConfigureControllerButtonBindings();
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotSequenceSelectorToSmartDashboard();
 
@@ -58,10 +65,7 @@ class RobotContainer {
                                       IntakeDeployment *intakeDeployment,
                                       IntakeClamp *intakeClamp);
 
-  static frc2::Command *ScoreThenCharge(std::string teamAndPosName,
-                                        Drivebase *drivebase,
-                                        IntakeDeployment *intakeDeployment,
-                                        IntakeClamp *intakeClamp);
+  frc2::Command *ScoreThenCharge(std::string teamAndPosName);
 
   static frc2::Command *ScoreThenEndNearGamePieceCommand(
       std::string teamAndPosName, Drivebase *drivebase,
@@ -85,11 +89,14 @@ class RobotContainer {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller);
 
+  frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint();
+
  private:
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc2::CommandXboxController m_driverController{
       OperatorConstants::kDriverControllerPort};
+  frc::Joystick driverJoystick{0};
   frc::XboxController m_operatorController{1};
 
   // The robot's subsystems are defined here...

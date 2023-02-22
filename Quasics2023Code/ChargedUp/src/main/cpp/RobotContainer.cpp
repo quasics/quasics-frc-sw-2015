@@ -8,6 +8,7 @@
 #include <frc2/command/ConditionalCommand.h>
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/PrintCommand.h>
+#include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 
 #include <iostream>
@@ -15,22 +16,27 @@
 
 #include "Constants.h"
 #include "commands/Autos.h"
+#include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/ExampleCommand.h"
 #include "commands/ExhaustWithRollerAtSpeedForTime.h"
+#include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/IntakeWithRollerAtSpeedForTime.h"
+#include "commands/ReleaseWithIntake.h"
 #include "commands/ReleaseWithIntakeAtSpeedForTime.h"
+#include "commands/RetractIntake.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedRollerCommand.h"
 
-#define UsingRollerForIntake
+#undef UsingRollerForIntake
 #undef UsingClampForIntake
+
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
 
@@ -101,6 +107,16 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
   }
 }
 
+void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                                      frc2::Command *command) {
+  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileTrue(command);
+}
+
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    int buttonId, frc2::Command *command) {
+  frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
+}
+
 void RobotContainer::ConfigureBindings() {
   // Configure your trigger bindings here
 
@@ -112,6 +128,22 @@ void RobotContainer::ConfigureBindings() {
   // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
   // pressed, cancelling on release.
   m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
+}
+
+void RobotContainer::ConfigureControllerButtonBindings() {
+  static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
+  static RetractIntake retractIntake(&m_intakeDeployment, 0.7);
+  static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
+  static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
+
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+                                     &clampWithIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     &releaseWithIntake);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
+                                   &extendIntake);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
+                                   &retractIntake);
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {
@@ -212,8 +244,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(teamAndPosName, &m_drivebase);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
-    return ScoreThenCharge(teamAndPosName, &m_drivebase, &m_intakeDeployment,
-                           &m_intakeClamp);
+    return ScoreThenCharge(teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::ScoreThenEndNearGamePiece) {
     return ScoreThenEndNearGamePieceCommand(
@@ -466,20 +497,37 @@ frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-frc2::Command *RobotContainer::ScoreThenCharge(
-    std::string teamAndPosName, Drivebase *drivebase,
-    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+frc2::SequentialCommandGroup *
+RobotContainer::GetScoreSequenceFromStartingPoint() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  // 1. Drive up (TBD)
+
+  // 2. Deposit game piece
+#ifdef UsingRollerForIntake
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand(
+          &m_drivebase, &m_intakeDeployment, &m_intakeRoller)));
+#elif defined(UsingClampForIntake)
+  // TODO: Add the version to use the clamp
+#else
+  // Paranoid fallback: at least say you couldn't do it
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new frc2::PrintCommand("Don't know how to deposit game piece!")));
+  std::cerr << "********** Don't know how to deposit game piece!\n";
+#endif
+
+  // 3. Backup
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::Command *RobotContainer::ScoreThenCharge(std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
-      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
-          drivebase, intakeDeployment, intakeClamp)));
-#ifdef UsingRollerForIntake
-/*commands.push_back(
-    std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand(
-        drivebase, intakeDeployment, intakeRoller)));*/
-#endif
+      std::unique_ptr<frc2::Command>(GetScoreSequenceFromStartingPoint()));
   commands.push_back(
-      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, &m_drivebase)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 

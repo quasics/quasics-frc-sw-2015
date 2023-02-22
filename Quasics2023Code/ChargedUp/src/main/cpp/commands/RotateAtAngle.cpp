@@ -12,7 +12,9 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
       m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
-      m_angle((percentSpeed > 0) ? (angle) : (-angle)) {
+      // -5 and +5 added because robot generally overshoots 5 degrees even at
+      // slow speeds
+      m_angle((percentSpeed > 0) ? (angle - 5_deg) : (-angle + 5_deg)) {
   AddRequirements(m_drivebase);
 }
 
@@ -34,12 +36,15 @@ void RotateAtAngle::Execute() {
   units::degree_t currentPosition = m_drivebase->GetAngle();
 
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
-  units::degree_t degreesLeftWhenSlowDown = m_percentSpeed * 120_deg;
+  units::degree_t degreesLeftWhenSlowDown = m_percentSpeed * 150_deg;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.25) {
+        m_percentSpeed * m_multiplier > 0.27) {
       m_multiplier *= .95;
+      m_multiplier = (m_multiplier * m_percentSpeed > 0.27
+                          ? m_multiplier * m_percentSpeed
+                          : 0.27);  // speed must be >= 0.27
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
@@ -47,8 +52,11 @@ void RotateAtAngle::Execute() {
 
   else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.25) {
+        m_percentSpeed * m_multiplier > 0.27) {
       m_multiplier *= .95;
+      m_multiplier =
+          (m_multiplier * m_percentSpeed > 0.27 ? m_multiplier * m_percentSpeed
+                                                : 0.27);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

@@ -114,7 +114,8 @@ units::degree_t Drivebase::GetAngle() {
 
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
-  frc::SmartDashboard::PutNumber("Gyro:", GetPitch());
+  frc::SmartDashboard::PutNumber("Pitch:", GetPitch());
+  frc::SmartDashboard::PutNumber("Turning Angle:", GetAngle().value());
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

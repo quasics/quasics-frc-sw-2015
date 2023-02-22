@@ -26,7 +26,7 @@ RobotContainer::RobotContainer()
   frc::SmartDashboard::PutData("1m @ 30%", new DriveDistance(&m_driveBase, 1_m, 0.3));
   frc::SmartDashboard::PutData("+45 degree turn", new TurnToAngle(&m_driveBase, 45_deg, 0.3));
   frc::SmartDashboard::PutData("-90 degree turn", new TurnToAngle(&m_driveBase, -90_deg, 0.3));
-  frc::SmartDashboard::PutData("Sample sequence", BuildSampleCommandSequence());
+  frc::SmartDashboard::PutData("Square sequence", BuildSquareCommandSequence());
 }
 
 void RobotContainer::ConfigureBindings()
@@ -66,17 +66,19 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
   return autos::ExampleAuto(&m_subsystem);
 }
 
-frc2::SequentialCommandGroup *RobotContainer::BuildSampleCommandSequence()
+frc2::SequentialCommandGroup *RobotContainer::BuildSquareCommandSequence()
 {
   // Holds the set of commands to run in sequence (i.e., one after the other).
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   // Build the sequence of commands.
+  for (int i = 1 ; i <= 4 ; i++ ) {
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new frc2::PrintCommand("Hello!")));
+      new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new frc2::PrintCommand("Goodbye...")));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
 
   // Build the SequentialCommandGroup, and return it.
   return new frc2::SequentialCommandGroup(std::move(commands));
+  }
 }

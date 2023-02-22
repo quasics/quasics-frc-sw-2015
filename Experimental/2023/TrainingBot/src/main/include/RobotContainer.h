@@ -31,7 +31,7 @@ class RobotContainer {
  private:
   // Sample function, showing how you can build a sequence of simple commands that
   // will perform some more complex operation.
-  frc2::SequentialCommandGroup* BuildSampleCommandSequence();
+  frc2::SequentialCommandGroup* BuildSquareCommandSequence();
 
   void ConfigureBindings();
 

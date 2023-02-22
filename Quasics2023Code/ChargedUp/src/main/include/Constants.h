@@ -91,6 +91,12 @@ constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;  // 0.75 initially
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 }  // namespace RobotValues
 
+namespace PhotonVisionConstants {
+constexpr units::length::inch_t CAMERA_HEIGHT = 19.25_in;
+constexpr units::length::inch_t TARGET_HEIGHT = 14.25_in;
+constexpr auto CAMERA_PITCH = 0;
+}  // namespace PhotonVisionConstants
+
 namespace MotorIds {
 namespace SparkMax {
 constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;

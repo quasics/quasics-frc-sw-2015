@@ -328,13 +328,13 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
   if (teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 3.793_m}));
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
   }
 
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 1.708_m}));
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
   }
 
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -395,13 +395,13 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
   if (teamAndPosName == AutonomousTeamAndStationPositions::Red3 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Blue1) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 3.793_m}));
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
   }
 
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 1.708_m}));
+        new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
   }
 
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||

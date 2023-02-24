@@ -313,62 +313,68 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
     std::string teamAndPosName, Drivebase *m_drivebase) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          frc2::ConditionalCommand(
+              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              RotateAtAngle(m_drivebase, 0.5, 180_deg),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red2 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red1;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+          })));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red1) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          DriveAtPowerForMeters{m_drivebase, 0.5, 4_m},
+          frc2::ConditionalCommand(
+              DriveAtPowerForMeters{m_drivebase, 0.5, 2_m},
+              frc2::PrintCommand{"Doing nothing"},
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red2;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+          })));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red1) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 180_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          frc2::ConditionalCommand(
+              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              frc2::PrintCommand{"Doing nothing"},
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red2 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red1;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+          })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveAtPowerForMeters{m_drivebase, 0.5, 1.462_m}));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 25.8_deg}));
-  }
-
-  else {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -25.8_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          RotateAtAngle{m_drivebase, 0.5, 25.8_deg},
+          RotateAtAngle{m_drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+          })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveAtPowerForMeters{m_drivebase, 0.5, 3.845_m}));
@@ -378,79 +384,78 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
 
 frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
     std::string teamAndPosName, Drivebase *m_drivebase) {
+  const bool isBlue =
+      teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+      AutonomousTeamAndStationPositions::Blue2 ||
+      AutonomousTeamAndStationPositions::Blue3;
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          frc2::ConditionalCommand(
+              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              RotateAtAngle(m_drivebase, 0.5, 180_deg),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue1 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Red3 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Red2;
+          })));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red3 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          DriveAtPowerForMeters{m_drivebase, 0.5, 4_m},
+          frc2::ConditionalCommand(
+              DriveAtPowerForMeters{m_drivebase, 0.5, 2_m},
+              frc2::PrintCommand{"Doing nothing"},
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red2;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Red3 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Blue1;
+          })));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red3 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue1) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red1) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 180_deg}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
-  }
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
-  }
-
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
-
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 90_deg}));
-  }
-
-  else {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -90_deg}));
-  }
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          frc2::ConditionalCommand(
+              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              frc2::PrintCommand{"Doing nothing"},
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue1 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2;
+              }),
+          [teamAndPosName] {
+            return teamAndPosName == AutonomousTeamAndStationPositions::Red1 ||
+                   teamAndPosName == AutonomousTeamAndStationPositions::Red2;
+          })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
 
-  if (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-      teamAndPosName == AutonomousTeamAndStationPositions::Blue3) {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, -47.9_deg}));
-  }
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new frc2::ConditionalCommand(RotateAtAngle{m_drivebase, 0.5, 90_deg},
+                                   RotateAtAngle{m_drivebase, 0.5, -90_deg},
+                                   [isBlue] { return isBlue; })));
 
-  else {
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle{m_drivebase, 0.5, 47.9_deg}));
-  }
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
+
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new frc2::ConditionalCommand(RotateAtAngle{m_drivebase, 0.5, -47.9_deg},
+                                   RotateAtAngle{m_drivebase, 0.5, 47.9_deg},
+                                   [isBlue] { return isBlue; })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveAtPowerForMeters{m_drivebase, 0.5, 1.948_m}));
@@ -636,13 +641,13 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Drive 1m at 100%", new DriveAtPowerForMeters(&m_drivebase, 1.00, 1_m));
 
   frc::SmartDashboard::PutData(
-      "Drive -1m at 25%", new DriveAtPowerForMeters(&m_drivebase, 0.25, -1_m));
+      "Drive -1m at 25%", new DriveAtPowerForMeters(&m_drivebase, 0.25,
+  -1_m)); frc::SmartDashboard::PutData( "Drive -1m at 45%", new
+  DriveAtPowerForMeters(&m_drivebase, 0.45, -1_m));
   frc::SmartDashboard::PutData(
-      "Drive -1m at 45%", new DriveAtPowerForMeters(&m_drivebase, 0.45, -1_m));
-  frc::SmartDashboard::PutData(
-      "Drive -1m at 70%", new DriveAtPowerForMeters(&m_drivebase, 0.70, -1_m));
-  frc::SmartDashboard::PutData(
-      "Drive -1m at 100%", new DriveAtPowerForMeters(&m_drivebase, 1.00, -1_m));
+      "Drive -1m at 70%", new DriveAtPowerForMeters(&m_drivebase, 0.70,
+  -1_m)); frc::SmartDashboard::PutData( "Drive -1m at 100%", new
+  DriveAtPowerForMeters(&m_drivebase, 1.00, -1_m));
 
   frc::SmartDashboard::PutData(
       "Drive 3m at 45%", new DriveAtPowerForMeters(&m_drivebase, 0.45, 3_m));
@@ -665,11 +670,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Angle testing Commands
   /*
     frc::SmartDashboard::PutData("Rotate 90 degrees at 45%",
-                                 new RotateAtAngle(&m_drivebase, 0.45, 90_deg));
-    frc::SmartDashboard::PutData("Rotate 90 degrees at 70%",
-                                 new RotateAtAngle(&m_drivebase, 0.70, 90_deg));
+                                 new RotateAtAngle(&m_drivebase, 0.45,
+    90_deg)); frc::SmartDashboard::PutData("Rotate 90 degrees at 70%", new
+    RotateAtAngle(&m_drivebase, 0.70, 90_deg));
     frc::SmartDashboard::PutData("Rotate 90 degrees at 100%",
-                                 new RotateAtAngle(&m_drivebase, 1.00, 90_deg));
+                                 new RotateAtAngle(&m_drivebase, 1.00,
+    90_deg));
 
     frc::SmartDashboard::PutData("Rotate -90 degrees at 45%",
                                  new RotateAtAngle(&m_drivebase, 0.45,
@@ -688,11 +694,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     180_deg));
 
     frc::SmartDashboard::PutData("Rotate 45 degrees at 45%",
-                                 new RotateAtAngle(&m_drivebase, 0.45, 45_deg));
-    frc::SmartDashboard::PutData("Rotate 45 degrees at 70%",
-                                 new RotateAtAngle(&m_drivebase, 0.70, 45_deg));
+                                 new RotateAtAngle(&m_drivebase, 0.45,
+    45_deg)); frc::SmartDashboard::PutData("Rotate 45 degrees at 70%", new
+    RotateAtAngle(&m_drivebase, 0.70, 45_deg));
     frc::SmartDashboard::PutData("Rotate 45 degrees at 100%",
-                                 new RotateAtAngle(&m_drivebase, 1.00, 45_deg));
+                                 new RotateAtAngle(&m_drivebase, 1.00,
+    45_deg));
   */
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
@@ -759,10 +766,12 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
           {AutonomousSelectedOperation::JustCharge,
            "Just Get on the Starting Station"},
           {AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall,
-           "Get out of the Community and Move to Defensive Position by hugging "
+           "Get out of the Community and Move to Defensive Position by "
+           "hugging "
            "the scoring wall"},
           {AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall,
-           "Get out of the community and move to defensive position by hugging "
+           "Get out of the community and move to defensive position by "
+           "hugging "
            "the outer wall"},
           {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
           {AutonomousSelectedOperation::ScoreAndMoveToDefenseAgainstScoringWall,

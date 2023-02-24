@@ -18,7 +18,7 @@ DriveBase::DriveBase()
   std::cerr << "--- Configuring motors\n";
 
   // Things that may change from year to year.
-  const double GEAR_RATIO = RobotConstants::DRIVE_BASE_GEAR_RATIO_2023; // Also used for Sally
+  const double GEAR_RATIO = RobotConstants::DRIVE_BASE_GEAR_RATIO_MAE; // Also used for Sally
 
   // Update velocity reporting to be in meters (vs. rotations)
   const units::meter_t wheelCircumference = std::numbers::pi * RobotConstants::WHEEL_DIAMETER;

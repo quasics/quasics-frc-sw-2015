@@ -72,13 +72,24 @@ frc2::SequentialCommandGroup *RobotContainer::BuildSquareCommandSequence()
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   // Build the sequence of commands.
-  for (int i = 1 ; i <= 4 ; i++ ) {
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveDistance(&m_driveBase, 1_m, 0.5)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveDistance(&m_driveBase, 1_m, 0.5)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveDistance(&m_driveBase, 1_m, 0.5)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
 
   // Build the SequentialCommandGroup, and return it.
   return new frc2::SequentialCommandGroup(std::move(commands));
-  }
+  
 }

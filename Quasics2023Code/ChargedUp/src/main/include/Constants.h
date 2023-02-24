@@ -5,6 +5,7 @@
 #pragma once
 
 #include <units/acceleration.h>
+#include <units/angle.h>
 #include <units/dimensionless.h>
 #include <units/length.h>
 #include <units/time.h>
@@ -92,9 +93,26 @@ constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 }  // namespace RobotValues
 
 namespace PhotonVisionConstants {
+
+namespace CameraAndTargetValues {
 constexpr units::length::inch_t CAMERA_HEIGHT = 19.25_in;
 constexpr units::length::inch_t TARGET_HEIGHT = 14.25_in;
-constexpr auto CAMERA_PITCH = 0;
+constexpr units::radian_t CAMERA_PITCH = 0_rad;
+const units::meter_t GOAL_RANGE_METERS = 3_ft;
+}  // namespace CameraAndTargetValues
+namespace LinearPID {
+const double kP = 0.1;
+const double kI = 0.0;
+const double kD = 0.0;
+}  // namespace LinearPID
+
+namespace AngularPID {
+const double kP = 0.1;
+const double kI = 0.0;
+const double kD = 0.0;
+}  // namespace AngularPID
+
+// namespace CameraAndTargetValues
 }  // namespace PhotonVisionConstants
 
 namespace MotorIds {

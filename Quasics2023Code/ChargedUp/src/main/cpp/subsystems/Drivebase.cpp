@@ -122,6 +122,10 @@ void Drivebase::TankDrive(double leftPower, double rightPower) {
   m_drive->TankDrive(leftPower, rightPower);
 }
 
+void Drivebase::ArcadeDrive(double power, double angle) {
+  m_drive->ArcadeDrive(power, angle);
+}
+
 #ifndef ENABLE_AD_GYRO
 double Drivebase::GetPitch() { return m_gyro.GetPitch() - m_pitchShift; }
 #else  // ad gyro cannot get pitch

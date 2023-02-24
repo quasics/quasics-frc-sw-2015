@@ -6,6 +6,11 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <photonlib/PhotonCamera.h>
+#include <photonlib/PhotonUtils.h>
+
+#include <optional>
+
+#include "Constants.h"
 
 // MAKE SURE LIBRARY HAS THIS FILE INSTALLED
 // https://maven.photonvision.org/repository/internal/org/photonvision/PhotonLib-json/1.0/PhotonLib-json-1.0.json
@@ -19,7 +24,16 @@ class PhotonLibVision : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  bool AprilTagIdentified(double IDWantedTarget);
+  bool AprilTagTargetIdentified(int IDWantedTarget);
+
+  std::optional<photonlib::PhotonTrackedTarget> GetIdentifiedAprilTarget(
+      int IDWantedTarget);
+  bool GetIdentifiedAprilTarget(int IDWantedTarget,
+                                photonlib::PhotonTrackedTarget& result);
+
+  bool CalculateDistanceAndAngleToTarget(int idWantedTarget,
+                                         units::meter_t& distance,
+                                         units::degree_t& angle);
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be

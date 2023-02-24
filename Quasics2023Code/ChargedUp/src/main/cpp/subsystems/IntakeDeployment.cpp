@@ -4,14 +4,21 @@
 
 #include "subsystems/IntakeDeployment.h"
 
+#undef ENABLE_INTAKE_DEPLOYMENT
 IntakeDeployment::IntakeDeployment() {}
 
 // This method will be called once per scheduler run
 void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
+#ifdef ENABLE_INTAKE_DEPLOYMENT
   m_intakeDeployment.Set(percentSpeed);
+#endif
 }
 
-void IntakeDeployment::Stop() { m_intakeDeployment.StopMotor(); }
+void IntakeDeployment::Stop() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT
+  m_intakeDeployment.StopMotor();
+#endif
+}
 
 void IntakeDeployment::EnableBraking(bool value) {
   rev::CANSparkMax::IdleMode mode;
@@ -20,8 +27,10 @@ void IntakeDeployment::EnableBraking(bool value) {
   } else {
     mode = rev::CANSparkMax::IdleMode::kCoast;
   }
+#ifdef ENABLE_INTAKE_DEPLOYMENT
   m_leftDeploymentMotor.SetIdleMode(mode);
   m_rightDeploymentMotor.SetIdleMode(mode);
+#endif
 }
 
 bool IntakeDeployment::IsIntakeDeployed() {

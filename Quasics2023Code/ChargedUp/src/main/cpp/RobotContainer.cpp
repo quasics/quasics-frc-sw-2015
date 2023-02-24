@@ -15,6 +15,7 @@
 #include <list>
 
 #include "Constants.h"
+#include "commands/AprilTagDriveToTarget.h"
 #include "commands/Autos.h"
 #include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
@@ -718,6 +719,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Set not inverted",
       new frc2::InstantCommand([this]() { setInverted(false); }));
+
+  frc::SmartDashboard::PutData(
+      "Drive To April Tag",
+      new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

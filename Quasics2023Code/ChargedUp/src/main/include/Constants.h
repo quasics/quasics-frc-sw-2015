@@ -95,10 +95,13 @@ constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 namespace PhotonVisionConstants {
 
 namespace CameraAndTargetValues {
-constexpr units::length::inch_t CAMERA_HEIGHT = 19.25_in;
-constexpr units::length::inch_t TARGET_HEIGHT = 14.25_in;
+constexpr units::length::inch_t CAMERA_HEIGHT =
+    8_in;  // 19.25_in on real bot this is for testing
+constexpr units::length::inch_t TARGET_HEIGHT =
+    12_in;  // 14.25on real field this is for testing
 constexpr units::radian_t CAMERA_PITCH = 0_rad;
-const units::meter_t GOAL_RANGE_METERS = 3_ft;
+const units::meter_t GOAL_RANGE_METERS =
+    2_ft;  // 3ft on real field this is for testing
 }  // namespace CameraAndTargetValues
 namespace LinearPID {
 const double kP = 0.1;

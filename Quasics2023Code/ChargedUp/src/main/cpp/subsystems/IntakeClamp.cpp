@@ -4,16 +4,23 @@
 
 #include "subsystems/IntakeClamp.h"
 
+#undef ENABLE_CLAMP_MOTORS
 IntakeClamp::IntakeClamp() = default;
 
 // This method will be called once per scheduler run
 void IntakeClamp::Periodic() {}
 
 void IntakeClamp::SetIntakeClampSpeed(double percentSpeed) {
+#ifdef ENABLE_CLAMP_MOTORS
   m_intakeClamp.Set(percentSpeed);
+#endif
 }
 
-void IntakeClamp::Stop() { m_intakeClamp.StopMotor(); }
+void IntakeClamp::Stop() {
+#ifdef ENABLE_CLAMP_MOTORS
+  m_intakeClamp.StopMotor();
+#endif
+}
 
 void IntakeClamp::EnableBraking(bool value) {
   rev::CANSparkMax::IdleMode mode;
@@ -22,7 +29,9 @@ void IntakeClamp::EnableBraking(bool value) {
   } else {
     mode = rev::CANSparkMax::IdleMode::kCoast;
   }
+#ifdef ENABLE_CLAMP_MOTORS
   m_intakeClamp.SetIdleMode(mode);
+#endif
 }
 
 bool IntakeClamp::IsIntakeClampDeployed() {

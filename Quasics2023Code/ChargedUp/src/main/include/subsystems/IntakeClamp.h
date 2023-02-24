@@ -9,6 +9,8 @@
 
 #include "Constants.h"
 
+#undef ENABLE_CLAMP_MOTORS
+
 class IntakeClamp : public frc2::SubsystemBase {
  public:
   IntakeClamp();
@@ -27,8 +29,10 @@ class IntakeClamp : public frc2::SubsystemBase {
   bool IsIntakeClampDeployed();
 
  private:
+#ifdef ENABLE_CLAMP_MOTORS
   rev::CANSparkMax m_intakeClamp{MotorIds::SparkMax::INTAKE_MOTOR_CLAMP_ID,
                                  rev::CANSparkMax::MotorType::kBrushless};
+#endif
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

@@ -10,6 +10,8 @@
 
 #include "Constants.h"
 
+#undef ENABLE_INTAKE_DEPLOYMENT
+
 class IntakeDeployment : public frc2::SubsystemBase {
  public:
   IntakeDeployment();
@@ -28,6 +30,7 @@ class IntakeDeployment : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
+#ifdef ENABLE_INTAKE_DEPLOYMENT
   rev::CANSparkMax m_leftDeploymentMotor{
       MotorIds::SparkMax::LEFT_INTAKE_DEPLOYMENT_MOTOR_ID,
       rev::CANSparkMax::MotorType::kBrushless};
@@ -37,6 +40,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   frc::MotorControllerGroup m_intakeDeployment{m_leftDeploymentMotor,
                                                m_rightDeploymentMotor};
+
+#endif
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

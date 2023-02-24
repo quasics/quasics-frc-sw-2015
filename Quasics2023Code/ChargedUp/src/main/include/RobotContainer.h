@@ -20,6 +20,7 @@
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
+#include "subsystems/PhotonLibVision.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -105,6 +106,7 @@ class RobotContainer {
   IntakeClamp m_intakeClamp;
   IntakeRoller m_intakeRoller;
   IntakeDeployment m_intakeDeployment;
+  PhotonLibVision m_photonLibVision;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;

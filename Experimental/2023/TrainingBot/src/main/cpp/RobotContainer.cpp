@@ -14,6 +14,7 @@
 #include "commands/TankDrive.h"
 #include "commands/TurnToAngle.h"
 #include "commands/ExampleCommand.h"
+#include "commands/SetBreakingMode.h"
 
 RobotContainer::RobotContainer()
 {
@@ -73,9 +74,7 @@ frc2::SequentialCommandGroup *RobotContainer::BuildSquareCommandSequence()
 
   // Build the sequence of commands.
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveDistance(&m_driveBase, 1_m, 0.5)));
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+      new SetBreakingMode(&m_driveBase, true)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
@@ -88,6 +87,12 @@ frc2::SequentialCommandGroup *RobotContainer::BuildSquareCommandSequence()
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new DriveDistance(&m_driveBase, 1_m, 0.5)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new SetBreakingMode(&m_driveBase, false)));
 
   // Build the SequentialCommandGroup, and return it.
   return new frc2::SequentialCommandGroup(std::move(commands));

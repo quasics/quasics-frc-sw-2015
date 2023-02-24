@@ -506,24 +506,20 @@ frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
 frc2::SequentialCommandGroup *
 RobotContainer::GetScoreSequenceFromStartingPoint() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-
-  // 1. Drive up (TBD)
-
-  // 2. Deposit game piece
 #ifdef UsingRollerForIntake
   commands.push_back(
       std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand(
           &m_drivebase, &m_intakeDeployment, &m_intakeRoller)));
 #elif defined(UsingClampForIntake)
-  // TODO: Add the version to use the clamp
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
+          &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
 #else
   // Paranoid fallback: at least say you couldn't do it
   commands.push_back(std::unique_ptr<frc2::Command>(
       new frc2::PrintCommand("Don't know how to deposit game piece!")));
   std::cerr << "********** Don't know how to deposit game piece!\n";
 #endif
-
-  // 3. Backup
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

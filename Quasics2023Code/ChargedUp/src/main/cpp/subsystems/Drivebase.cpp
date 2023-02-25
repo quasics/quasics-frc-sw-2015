@@ -122,7 +122,8 @@ units::degree_t Drivebase::GetAngle() {
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Pitch:", GetPitch());
-  frc::SmartDashboard::PutNumber("Turning Angle:", GetAngle().value());
+  frc::SmartDashboard::PutNumber("Roll:", GetRoll());
+  frc::SmartDashboard::PutNumber("Yaw:", GetAngle().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 }
 
@@ -134,21 +135,29 @@ void Drivebase::ArcadeDrive(double power, double angle) {
   m_drive->ArcadeDrive(power, angle);
 }
 
+double Drivebase::GetPitchImpl() {
 #ifdef ENABLE_PIGEON
-double Drivebase::GetPitch() {
   return m_pigeon.GetPitch() - m_pitchShift;
-}
 #else  // ad gyro cannot get pitch
-double Drivebase::GetPitch() {
   return 0;
-}
 #endif
+}
+
+double Drivebase::GetRollImpl() {
+#ifdef ENABLE_PIGEON
+  return m_pigeon.GetRoll() - m_rollShift;
+#else  // ad gyro cannot get pitch
+  return 0;
+#endif
+}
 
 void Drivebase::GyroCalibration() {
 #ifdef ENABLE_PIGEON
   m_pitchShift = m_pigeon.GetPitch();
+  m_rollShift = m_pigeon.GetRoll();
 #elif defined ENABLE_AD_GYRO
   m_adGyro.Calibrate();
   m_pitchShift = 0;
+  m_rollShift = 0;
 #endif
 }

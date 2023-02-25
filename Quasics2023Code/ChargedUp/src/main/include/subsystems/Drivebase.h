@@ -57,7 +57,14 @@ class Drivebase : public frc2::SubsystemBase {
   units::degree_t GetAngle();
 
   /** Returns the robot's current pitch angle (nose pointed up/down). */
-  double GetPitch();
+  double GetPitch() {
+    return GetRollImpl();
+  }
+
+  /** Returns the robot's current roll angle. */
+  double GetRoll() {
+    return GetPitchImpl();
+  }
 
   void GyroCalibration();
 
@@ -65,6 +72,13 @@ class Drivebase : public frc2::SubsystemBase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
+
+ private:
+  /** Returns the robot's current pitch angle (nose pointed up/down). */
+  double GetPitchImpl();
+
+  /** Returns the robot's current roll angle. */
+  double GetRollImpl();
 
  private:
   // Individual motors.
@@ -99,6 +113,7 @@ class Drivebase : public frc2::SubsystemBase {
    * be reset (again) at some future point.
    */
   double m_pitchShift = 0;
+  double m_rollShift = 0;
 #ifdef ENABLE_AD_GYRO
   frc::ADXRS450_Gyro m_adGyro;
 #elif defined(ENABLE_PIGEON)

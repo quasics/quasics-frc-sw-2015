@@ -16,6 +16,7 @@
 #include "units/velocity.h"
 
 #undef ENABLE_AD_GYRO
+#undef ENABLE_PIGEON
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -102,8 +103,8 @@ class Drivebase : public frc2::SubsystemBase {
    */
   double m_pitchShift = 0;
 #ifdef ENABLE_AD_GYRO
-  frc::ADXRS450_Gyro m_gyro;
-#else
-  // ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
+  frc::ADXRS450_Gyro m_adGyro;
+#elif defined(ENABLE_PIGEON)
+  ctre::phoenix::sensors::WPI_Pigeon2 m_pigeon{SensorIds::PIDGEON_CAN_ID};
 #endif
 };

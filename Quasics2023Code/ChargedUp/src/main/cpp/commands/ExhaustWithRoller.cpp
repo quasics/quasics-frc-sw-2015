@@ -16,10 +16,16 @@ void ExhaustWithRoller::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ExhaustWithRoller::Execute() { m_intakeRoller->SetRollerSpeed(m_power); }
+void ExhaustWithRoller::Execute() {
+  m_intakeRoller->SetRollerSpeed(m_power);
+}
 
 // Called once the command ends or is interrupted.
-void ExhaustWithRoller::End(bool interrupted) { m_intakeRoller->Stop(); }
+void ExhaustWithRoller::End(bool interrupted) {
+  m_intakeRoller->Stop();
+}
 
 // Returns true when the command should end.
-bool ExhaustWithRoller::IsFinished() { return false; }
+bool ExhaustWithRoller::IsFinished() {
+  return false;
+}

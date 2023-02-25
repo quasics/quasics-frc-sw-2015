@@ -130,7 +130,9 @@ void Drivebase::ArcadeDrive(double power, double angle) {
 double Drivebase::GetPitch() { /*return m_gyro.GetPitch() - m_pitchShift;*/
 }
 #else  // ad gyro cannot get pitch
-double Drivebase::GetPitch() { return 0; }
+double Drivebase::GetPitch() {
+  return 0;
+}
 #endif
 
 void Drivebase::GyroCalibration() {

@@ -18,7 +18,9 @@ void ExtendIntake::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void ExtendIntake::Execute() { m_intakeDeployment->SetMotorSpeed(intakeSpeed); }
+void ExtendIntake::Execute() {
+  m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+}
 
 // Called once the command ends or is interrupted.
 void ExtendIntake::End(bool interrupted) {
@@ -27,4 +29,6 @@ void ExtendIntake::End(bool interrupted) {
 }
 
 // Returns true when the command should end.
-bool ExtendIntake::IsFinished() { return false; }
+bool ExtendIntake::IsFinished() {
+  return false;
+}

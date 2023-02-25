@@ -59,6 +59,8 @@ void SelfBalancing::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void SelfBalancing::End(bool interrupted) { m_drivebase->Stop(); }
+void SelfBalancing::End(bool interrupted) {
+  m_drivebase->Stop();
+}
 
 // FOR TESTING PURPOSES HAVE IT REPORTING THE GYRO ANGLE TO THE SMART DASHBOARD

@@ -91,7 +91,9 @@ RobotContainer::RobotContainer() {
   AddRobotSequenceSelectorToSmartDashboard();
 }
 
-void RobotContainer::setInverted(bool invert) { isInverted = invert; }
+void RobotContainer::setInverted(bool invert) {
+  isInverted = invert;
+}
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
   const bool isTurbo = m_driverStick.GetRawButton(

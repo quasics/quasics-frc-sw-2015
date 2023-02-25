@@ -28,4 +28,6 @@ void ReleaseWithIntake::End(bool interrupted) {
 }
 
 // Returns true when the command should end.
-bool ReleaseWithIntake::IsFinished() { return false; }
+bool ReleaseWithIntake::IsFinished() {
+  return false;
+}

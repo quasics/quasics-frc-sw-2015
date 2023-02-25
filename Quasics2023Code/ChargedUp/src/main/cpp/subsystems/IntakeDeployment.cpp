@@ -5,7 +5,8 @@
 #include "subsystems/IntakeDeployment.h"
 
 #undef ENABLE_INTAKE_DEPLOYMENT
-IntakeDeployment::IntakeDeployment() {}
+IntakeDeployment::IntakeDeployment() {
+}
 
 // This method will be called once per scheduler run
 void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
@@ -37,4 +38,5 @@ bool IntakeDeployment::IsIntakeDeployed() {
   // possible function that migbht need to be implemented
   return false;
 }
-void IntakeDeployment::Periodic() {}
+void IntakeDeployment::Periodic() {
+}

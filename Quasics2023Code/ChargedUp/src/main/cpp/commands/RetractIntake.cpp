@@ -27,4 +27,6 @@ void RetractIntake::End(bool interrupted) {
 }
 
 // Returns true when the command should end.
-bool RetractIntake::IsFinished() { return false; }
+bool RetractIntake::IsFinished() {
+  return false;
+}

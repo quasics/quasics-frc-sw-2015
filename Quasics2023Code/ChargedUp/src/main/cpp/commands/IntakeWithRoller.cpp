@@ -11,13 +11,21 @@ IntakeWithRoller::IntakeWithRoller(IntakeRoller* intakeRoller, double power)
 }
 
 // Called when the command is initially scheduled.
-void IntakeWithRoller::Initialize() { m_intakeRoller->SetRollerSpeed(m_power); }
+void IntakeWithRoller::Initialize() {
+  m_intakeRoller->SetRollerSpeed(m_power);
+}
 
 // Called repeatedly when this Command is scheduled to run
-void IntakeWithRoller::Execute() { m_intakeRoller->SetRollerSpeed(m_power); }
+void IntakeWithRoller::Execute() {
+  m_intakeRoller->SetRollerSpeed(m_power);
+}
 
 // Called once the command ends or is interrupted.
-void IntakeWithRoller::End(bool interrupted) { m_intakeRoller->Stop(); }
+void IntakeWithRoller::End(bool interrupted) {
+  m_intakeRoller->Stop();
+}
 
 // Returns true when the command should end.
-bool IntakeWithRoller::IsFinished() { return false; }
+bool IntakeWithRoller::IsFinished() {
+  return false;
+}

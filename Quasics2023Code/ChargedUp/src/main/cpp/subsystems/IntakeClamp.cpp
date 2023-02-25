@@ -8,7 +8,8 @@
 IntakeClamp::IntakeClamp() = default;
 
 // This method will be called once per scheduler run
-void IntakeClamp::Periodic() {}
+void IntakeClamp::Periodic() {
+}
 
 void IntakeClamp::SetIntakeClampSpeed(double percentSpeed) {
 #ifdef ENABLE_CLAMP_MOTORS

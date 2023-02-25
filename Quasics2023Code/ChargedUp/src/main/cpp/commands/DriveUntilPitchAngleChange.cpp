@@ -25,7 +25,9 @@ void DriveUntilPitchAngleChange::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void DriveUntilPitchAngleChange::End(bool interrupted) { m_drivebase->Stop(); }
+void DriveUntilPitchAngleChange::End(bool interrupted) {
+  m_drivebase->Stop();
+}
 
 // Returns true when the command should end.
 bool DriveUntilPitchAngleChange::IsFinished() {

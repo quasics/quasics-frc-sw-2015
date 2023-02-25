@@ -11,13 +11,18 @@ MoveFloorEjection::MoveFloorEjection(FloorEjection* floorEjection, double power)
 }
 
 // Called when the command is initially scheduled.
-void MoveFloorEjection::Initialize() {}
+void MoveFloorEjection::Initialize() {
+}
 
 // Called repeatedly when this Command is scheduled to run
-void MoveFloorEjection::Execute() {}
+void MoveFloorEjection::Execute() {
+}
 
 // Called once the command ends or is interrupted.
-void MoveFloorEjection::End(bool interrupted) {}
+void MoveFloorEjection::End(bool interrupted) {
+}
 
 // Returns true when the command should end.
-bool MoveFloorEjection::IsFinished() { return false; }
+bool MoveFloorEjection::IsFinished() {
+  return false;
+}

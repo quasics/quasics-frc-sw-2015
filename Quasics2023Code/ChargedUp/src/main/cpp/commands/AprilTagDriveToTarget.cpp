@@ -16,13 +16,19 @@ AprilTagDriveToTarget::AprilTagDriveToTarget(PhotonLibVision* photonLibVision,
 }
 
 // Called when the command is initially scheduled.
-void AprilTagDriveToTarget::Initialize() { UpdateDrivingParameters(); }
+void AprilTagDriveToTarget::Initialize() {
+  UpdateDrivingParameters();
+}
 
 // Called repeatedly when this Command is scheduled to run
-void AprilTagDriveToTarget::Execute() { UpdateDrivingParameters(); }
+void AprilTagDriveToTarget::Execute() {
+  UpdateDrivingParameters();
+}
 
 // Called once the command ends or is interrupted.
-void AprilTagDriveToTarget::End(bool interrupted) { m_drivebase->Stop(); }
+void AprilTagDriveToTarget::End(bool interrupted) {
+  m_drivebase->Stop();
+}
 
 // Returns true when the command should end.
 bool AprilTagDriveToTarget::IsFinished() {

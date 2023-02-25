@@ -26,7 +26,9 @@ class Drivebase : public frc2::SubsystemBase {
 
   void ArcadeDrive(double power, double angle);
 
-  void Stop() { TankDrive(0, 0); }
+  void Stop() {
+    TankDrive(0, 0);
+  }
 
   void SetBrakingMode(bool enabled);
 

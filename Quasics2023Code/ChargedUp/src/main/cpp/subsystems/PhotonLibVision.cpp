@@ -7,7 +7,8 @@
 PhotonLibVision::PhotonLibVision() = default;
 
 // This method will be called once per scheduler run
-void PhotonLibVision::Periodic() {}
+void PhotonLibVision::Periodic() {
+}
 
 bool PhotonLibVision::AprilTagTargetIdentified(int IDWantedTarget) {
   photonlib::PhotonPipelineResult result = camera.GetLatestResult();

@@ -28,4 +28,6 @@ void ClampWithIntake::End(bool interrupted) {
 }
 
 // Returns true when the command should end.
-bool ClampWithIntake::IsFinished() { return false; }
+bool ClampWithIntake::IsFinished() {
+  return false;
+}

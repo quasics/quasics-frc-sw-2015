@@ -17,4 +17,5 @@ void FloorEjection::Stop() {
 }
 
 // This method will be called once per scheduler run
-void FloorEjection::Periodic() {}
+void FloorEjection::Periodic() {
+}

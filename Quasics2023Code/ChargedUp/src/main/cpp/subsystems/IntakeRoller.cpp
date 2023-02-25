@@ -6,10 +6,12 @@
 
 #undef ENABLE_ROLLER_INTAKE
 
-IntakeRoller::IntakeRoller() {}
+IntakeRoller::IntakeRoller() {
+}
 
 // This method will be called once per scheduler run
-void IntakeRoller::Periodic() {}
+void IntakeRoller::Periodic() {
+}
 
 void IntakeRoller::SetRollerSpeed(double percentSpeed) {
 #ifdef ENABLE_ROLLER_INTAKE

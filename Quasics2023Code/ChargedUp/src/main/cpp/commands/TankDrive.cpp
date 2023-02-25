@@ -14,13 +14,19 @@ TankDrive::TankDrive(Drivebase* drivebase,
 }
 
 // Called when the command is initially scheduled.
-void TankDrive::Initialize() { UpdateSpeeds(); }
+void TankDrive::Initialize() {
+  UpdateSpeeds();
+}
 
 // Called repeatedly when this Command is scheduled to run
-void TankDrive::Execute() { UpdateSpeeds(); }
+void TankDrive::Execute() {
+  UpdateSpeeds();
+}
 
 // Called once the command ends or is interrupted.
-void TankDrive::End(bool interrupted) { m_drivebase->Stop(); }
+void TankDrive::End(bool interrupted) {
+  m_drivebase->Stop();
+}
 
 void TankDrive::UpdateSpeeds() {
   m_drivebase->TankDrive(m_leftSpeedFunction(), m_rightSpeedFunction());

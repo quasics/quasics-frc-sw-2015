@@ -22,13 +22,13 @@ void IntakeDeployment::Stop() {
 }
 
 void IntakeDeployment::EnableBraking(bool value) {
+#ifdef ENABLE_INTAKE_DEPLOYMENT
   rev::CANSparkMax::IdleMode mode;
   if (value) {
     mode = rev::CANSparkMax::IdleMode::kBrake;
   } else {
     mode = rev::CANSparkMax::IdleMode::kCoast;
   }
-#ifdef ENABLE_INTAKE_DEPLOYMENT
   m_leftDeploymentMotor.SetIdleMode(mode);
   m_rightDeploymentMotor.SetIdleMode(mode);
 #endif

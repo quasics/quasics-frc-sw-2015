@@ -14,10 +14,11 @@ TriggerBasedRollerCommand::TriggerBasedRollerCommand(
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedRollerCommand::Execute() {
   if (m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) > 0.5) {
-    m_intakeRoller->SetRollerSpeed(-1.0);
-  } else if (m_controller->GetRawAxis(
-                 frc::XboxController::Axis::kRightTrigger) > 0.5) {
-    m_intakeRoller->SetRollerSpeed(1.0);
+    m_intakeRoller->SetRollerSpeed(-0.47);
+    // TODO GO TO CLASSES AND FINED NAMED WAYS OF JOYSTICK
+  } else if (m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) <
+             -0.5) {
+    m_intakeRoller->SetRollerSpeed(0.47);
   } else {
     m_intakeRoller->Stop();
   }

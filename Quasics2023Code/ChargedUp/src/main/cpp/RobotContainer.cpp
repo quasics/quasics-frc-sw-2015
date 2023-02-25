@@ -147,13 +147,13 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      &clampWithIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      &releaseWithIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &ejectPiece);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &ejectPiece);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &resetEjection);
-  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
-                                   &extendIntake);  // extendIntake
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
+                                   &extendIntake);  // extendIntake
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
                                    &retractIntake);
 }
 

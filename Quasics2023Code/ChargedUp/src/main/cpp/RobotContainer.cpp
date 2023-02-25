@@ -36,8 +36,6 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedRollerCommand.h"
 
-#undef UsingClampForIntake
-
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
 
@@ -77,7 +75,7 @@ RobotContainer::RobotContainer() {
 
   m_drivebase.SetDefaultCommand(tankDrive);
 
-#ifdef ENABLE_ROLLER_INTAKE
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
   TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,
                                                       &m_operatorController);
 
@@ -516,14 +514,16 @@ frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
 frc2::SequentialCommandGroup *
 RobotContainer::GetScoreSequenceFromStartingPoint() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-#ifdef UsingRollerForIntake
+#ifdef USING_ROLLER_FOR_AUTO_INTAKE
   commands.push_back(
       std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand(
           &m_drivebase, &m_intakeDeployment, &m_intakeRoller)));
-#elif defined(UsingClampForIntake)
+  std::cerr << "Using roller for auto intake.\n";
+#elif defined(USING_CLAMP_FOR_AUTO_INTAKE)
   commands.push_back(
       std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
           &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+  std::cerr << "Using clamp for auto intake.\n";
 #else
   // Paranoid fallback: at least say you couldn't do it
   commands.push_back(std::unique_ptr<frc2::Command>(

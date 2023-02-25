@@ -7,7 +7,7 @@
 #include <iostream>
 
 IntakeDeployment::IntakeDeployment() {
-#ifdef ENABLE_INTAKE_DEPLOYMENT
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   std::cerr << "Intake deployment is enabled\n";
 #else
   std::cerr << "Intake deployment is NOT enabled\n";
@@ -16,19 +16,19 @@ IntakeDeployment::IntakeDeployment() {
 
 // This method will be called once per scheduler run
 void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
-#ifdef ENABLE_INTAKE_DEPLOYMENT
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   m_intakeDeployment.Set(percentSpeed);
 #endif
 }
 
 void IntakeDeployment::Stop() {
-#ifdef ENABLE_INTAKE_DEPLOYMENT
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   m_intakeDeployment.StopMotor();
 #endif
 }
 
 void IntakeDeployment::EnableBraking(bool value) {
-#ifdef ENABLE_INTAKE_DEPLOYMENT
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   rev::CANSparkMax::IdleMode mode;
   if (value) {
     mode = rev::CANSparkMax::IdleMode::kBrake;

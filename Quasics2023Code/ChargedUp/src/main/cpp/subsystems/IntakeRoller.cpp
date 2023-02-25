@@ -7,7 +7,7 @@
 #include <iostream>
 
 IntakeRoller::IntakeRoller() {
-#ifdef ENABLE_ROLLER_INTAKE
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
   std::cerr << "Intake roller is enabled\n";
 #else
   std::cerr << "Intake roller is NOT enabled\n";
@@ -19,13 +19,13 @@ void IntakeRoller::Periodic() {
 }
 
 void IntakeRoller::SetRollerSpeed(double percentSpeed) {
-#ifdef ENABLE_ROLLER_INTAKE
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
   m_floorRollerPickupMotor.Set(-percentSpeed);
 #endif
 }
 
 void IntakeRoller::Stop() {
-#ifdef ENABLE_ROLLER_INTAKE
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
   m_floorRollerPickupMotor.Set(0);
 #endif
 }

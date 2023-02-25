@@ -10,8 +10,6 @@
 
 #include "Constants.h"
 
-#define ENABLE_ROLLER_INTAKE
-
 class IntakeRoller : public frc2::SubsystemBase {
  public:
   IntakeRoller();
@@ -26,7 +24,7 @@ class IntakeRoller : public frc2::SubsystemBase {
   void Stop();
 
  private:
-#ifdef ENABLE_ROLLER_INTAKE
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
   rev::CANSparkMax m_floorRollerPickupMotor{
       MotorIds::SparkMax::INTAKE_MOTOR_ROLLER_ID,
       rev::CANSparkMax::MotorType::kBrushless};

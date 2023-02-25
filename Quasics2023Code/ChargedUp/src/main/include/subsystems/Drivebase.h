@@ -15,9 +15,6 @@
 #include "units/length.h"
 #include "units/velocity.h"
 
-#undef ENABLE_AD_GYRO
-#define ENABLE_PIGEON
-
 class Drivebase : public frc2::SubsystemBase {
  public:
   Drivebase();

@@ -22,16 +22,12 @@
  * they are needed.
  */
 
+namespace RobotPhysics {
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
-
-constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // gear ratio for Sally is 8.45
-
-namespace OperatorConstants {
-
-/** Joystick port for the driver's controller. */
-constexpr int kDriverControllerPort = 0;
-
-}  // namespace OperatorConstants
+constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
+constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
+constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // 2023 robot gearing
+}  // namespace RobotPhysics
 
 namespace AutonomousTeamAndStationPositions {
 constexpr auto Blue1 = "Blue 1";
@@ -40,7 +36,6 @@ constexpr auto Blue3 = "Blue 3";
 constexpr auto Red1 = "Red 1";
 constexpr auto Red2 = "Red 2";
 constexpr auto Red3 = "Red 3";
-
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSelectedOperation {
@@ -87,12 +82,11 @@ namespace SensorIds {
 constexpr int PIDGEON_CAN_ID = 1;
 }
 
-namespace RobotValues {
-// Speed Scaling
+namespace RobotSpeedScaling {
 constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
-constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;  // 0.75 initially
+constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
-}  // namespace RobotValues
+}  // namespace RobotSpeedScaling
 
 namespace PhotonVisionConstants {
 namespace CameraAndTargetValues {
@@ -137,11 +131,21 @@ namespace VictorSPX {
 }
 }  // namespace MotorIds
 
+namespace OperatorConstants {
+/** Joystick port for the driver's controller. */
+// CODE_REVIEW: This is a duplicate constant, and should be cleaned up. (mjh)
+// See DRIVER_JOYSTICK, below.
+constexpr int kDriverControllerPort = 0;
+}  // namespace OperatorConstants
+
 namespace OperatorInterface {
+// CODE_REVIEW: This is a duplicate constant, and should be cleaned up. (mjh)
+// See kDriverControllerPort, above.
 constexpr int DRIVER_JOYSTICK = 0;
 
 using RateLimit = units::unit_t<
     units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 2.0 / 1_s;
 
 namespace LogitechGamePad {

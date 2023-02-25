@@ -54,11 +54,11 @@ void Drivebase::SetBrakingMode(bool enabled) {
 void Drivebase::ConfigureEncoders() {
   // Calculate wheel circumference (distance travelled per wheel revolution).
   const double pi = 3.1415926;
-  const units::meter_t wheelCircumference = WHEEL_DIAMETER * pi;
+  const units::meter_t wheelCircumference = RobotPhysics::WHEEL_DIAMETER * pi;
 
   // Compute distance traveled per rotation of the motor.
   const units::meter_t gearingConversion =
-      wheelCircumference / DRIVEBASE_GEAR_RATIO;
+      wheelCircumference / RobotPhysics::DRIVEBASE_GEAR_RATIO;
 
   // Compute conversion factor (used to change "(motor) RPM" to "m/sec").
   const units::meter_t velocityCorrection = gearingConversion / 60;

@@ -10,12 +10,7 @@ IntakeRoller::IntakeRoller() {}
 void IntakeRoller::Periodic() {}
 
 void IntakeRoller::SetRollerSpeed(double percentSpeed) {
-  m_floorRollerPickupMotor.Set(
-      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      -percentSpeed);
+  m_floorRollerPickupMotor.Set(-percentSpeed);
 }
 
-void IntakeRoller::Stop() {
-  m_floorRollerPickupMotor.Set(
-      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, 0);
-}
+void IntakeRoller::Stop() { m_floorRollerPickupMotor.Set(0); }

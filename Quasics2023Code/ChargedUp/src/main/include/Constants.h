@@ -19,6 +19,8 @@
  * command-specific namespaces within this header, which can then be used where
  * they are needed.
  */
+#undef ENABLE_CLAMP_INTAKE
+#define ENABLE_ROLLER_INTAKE
 
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 
@@ -127,10 +129,17 @@ constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
 constexpr int RIGHT_INTAKE_DEPLYMENT_MOTOR_ID =
     5;  // NOTE THE LOWER ONE IF 5 THE UPPER ONE IS 6
 constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;
+
+#ifdef ENABLE_CLAMP_INTAKE
 constexpr int INTAKE_MOTOR_CLAMP_ID = 7;
+#endif
+
+#ifdef ENABLE_ROLLER_INTAKE
+constexpr int INTAKE_MOTOR_ROLLER_ID = 7;
+#endif
 }  // namespace SparkMax
 namespace VictorSPX {
-constexpr int INTAKE_MOTOR_ROLLER_ID = 1;
+constexpr int GAME_PIECE_FLIPPER_ID = 1;
 }
 }  // namespace MotorIds
 

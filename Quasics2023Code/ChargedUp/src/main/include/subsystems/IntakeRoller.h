@@ -6,6 +6,7 @@
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <frc2/command/SubsystemBase.h>
+#include <rev/CANSparkMax.h>
 
 #include "Constants.h"
 
@@ -23,8 +24,10 @@ class IntakeRoller : public frc2::SubsystemBase {
   void Stop();
 
  private:
-  ctre::phoenix::motorcontrol::can::VictorSPX m_floorRollerPickupMotor{
-      MotorIds::VictorSPX::INTAKE_MOTOR_ROLLER_ID};
+  rev::CANSparkMax m_floorRollerPickupMotor{
+      MotorIds::SparkMax::INTAKE_MOTOR_ROLLER_ID,
+      rev::CANSparkMax::MotorType::kBrushless};
+
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

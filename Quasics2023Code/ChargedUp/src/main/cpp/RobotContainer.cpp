@@ -143,7 +143,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                      &releaseWithIntake);
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
                                    &extendIntake);
-  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
                                    &retractIntake);
 }
 

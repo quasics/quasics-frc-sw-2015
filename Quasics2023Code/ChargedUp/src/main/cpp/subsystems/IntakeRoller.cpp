@@ -4,13 +4,21 @@
 
 #include "subsystems/IntakeRoller.h"
 
+#undef ENABLE_ROLLER_INTAKE
+
 IntakeRoller::IntakeRoller() {}
 
 // This method will be called once per scheduler run
 void IntakeRoller::Periodic() {}
 
 void IntakeRoller::SetRollerSpeed(double percentSpeed) {
+#ifdef ENABLE_ROLLER_INTAKE
   m_floorRollerPickupMotor.Set(-percentSpeed);
+#endif
 }
 
-void IntakeRoller::Stop() { m_floorRollerPickupMotor.Set(0); }
+void IntakeRoller::Stop() {
+#ifdef ENABLE_ROLLER_INTAKE
+  m_floorRollerPickupMotor.Set(0);
+#endif
+}

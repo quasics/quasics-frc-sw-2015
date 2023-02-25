@@ -4,7 +4,7 @@
 
 #include "subsystems/IntakeDeployment.h"
 
-#define ENABLE_INTAKE_DEPLOYMENT
+#undef ENABLE_INTAKE_DEPLOYMENT
 IntakeDeployment::IntakeDeployment() {}
 
 // This method will be called once per scheduler run

@@ -26,9 +26,9 @@ Drivebase::Drivebase() {
 
   // Shouldn't be required for Pigeon, but would be for other gyros.  (So,
   // better safe than sorry....)
-  m_gyro.Calibrate();
+  // m_gyro.Calibrate();
 #ifndef ENABLE_AD_GYRO
-  m_pitchShift = m_gyro.GetPitch();
+  // m_pitchShift = m_gyro.GetPitch();
 #else
   m_pitchShift = 0;
 #endif
@@ -109,7 +109,7 @@ void Drivebase::ResetEncoders() {
 }
 
 units::degree_t Drivebase::GetAngle() {
-  return m_gyro.GetRotation2d().Degrees();
+  // return m_gyro.GetRotation2d().Degrees();
 }
 
 // This method will be called once per scheduler run
@@ -127,15 +127,16 @@ void Drivebase::ArcadeDrive(double power, double angle) {
 }
 
 #ifndef ENABLE_AD_GYRO
-double Drivebase::GetPitch() { return m_gyro.GetPitch() - m_pitchShift; }
+double Drivebase::GetPitch() { /*return m_gyro.GetPitch() - m_pitchShift;*/
+}
 #else  // ad gyro cannot get pitch
 double Drivebase::GetPitch() { return 0; }
 #endif
 
 void Drivebase::GyroCalibration() {
-  m_gyro.Calibrate();
+  // m_gyro.Calibrate();
 #ifndef ENABLE_AD_GYRO
-  m_pitchShift = m_gyro.GetPitch();
+  // m_pitchShift = m_gyro.GetPitch();
 #else
   m_pitchShift = 0;
 #endif

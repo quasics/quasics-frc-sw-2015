@@ -102,6 +102,6 @@ class Drivebase : public frc2::SubsystemBase {
 #ifdef ENABLE_AD_GYRO
   frc::ADXRS450_Gyro m_gyro;
 #else
-  ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
+  // ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 #endif
 };

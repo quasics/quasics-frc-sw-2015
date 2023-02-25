@@ -10,6 +10,8 @@
 
 #include "Constants.h"
 
+#undef ENABLE_ROLLER_INTAKE
+
 class IntakeRoller : public frc2::SubsystemBase {
  public:
   IntakeRoller();
@@ -24,9 +26,11 @@ class IntakeRoller : public frc2::SubsystemBase {
   void Stop();
 
  private:
+#ifdef ENABLE_ROLLER_INTAKE
   rev::CANSparkMax m_floorRollerPickupMotor{
       MotorIds::SparkMax::INTAKE_MOTOR_ROLLER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
+#endif
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

@@ -10,7 +10,7 @@
 
 #include "Constants.h"
 
-#undef ENABLE_INTAKE_DEPLOYMENT
+#define ENABLE_INTAKE_DEPLOYMENT
 
 class IntakeDeployment : public frc2::SubsystemBase {
  public:

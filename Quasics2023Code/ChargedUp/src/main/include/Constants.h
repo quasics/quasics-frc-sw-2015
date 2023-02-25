@@ -146,6 +146,7 @@ constexpr int DRIVER_JOYSTICK = 0;
 using RateLimit = units::unit_t<
     units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
 
+/** Limit on robot accessleration. */
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 2.0 / 1_s;
 
 namespace LogitechGamePad {

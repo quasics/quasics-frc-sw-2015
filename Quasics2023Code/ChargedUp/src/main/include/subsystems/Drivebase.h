@@ -16,7 +16,7 @@
 #include "units/velocity.h"
 
 #undef ENABLE_AD_GYRO
-#undef ENABLE_PIGEON
+#define ENABLE_PIGEON
 
 class Drivebase : public frc2::SubsystemBase {
  public:

@@ -26,6 +26,7 @@
 #include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/IntakeWithRollerAtSpeedForTime.h"
+#include "commands/MoveFloorEjection.h"
 #include "commands/ReleaseWithIntake.h"
 #include "commands/ReleaseWithIntakeAtSpeedForTime.h"
 #include "commands/RetractIntake.h"
@@ -35,7 +36,6 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedRollerCommand.h"
 
-#undef UsingRollerForIntake
 #undef UsingClampForIntake
 
 RobotContainer::RobotContainer() {
@@ -50,11 +50,11 @@ RobotContainer::RobotContainer() {
 
         if (isInverted) {
           joystickValue = -1 * scalingFactor *
-                          m_driverController.GetRawAxis(
+                          m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         } else {
           joystickValue = +1 * scalingFactor *
-                          m_driverController.GetRawAxis(
+                          m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }
         return m_leftSpeedLimiter.Calculate(joystickValue);
@@ -65,11 +65,11 @@ RobotContainer::RobotContainer() {
 
         if (isInverted) {
           joystickValue = -1 * scalingFactor *
-                          m_driverController.GetRawAxis(
+                          m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         } else {
           joystickValue = +1 * scalingFactor *
-                          m_driverController.GetRawAxis(
+                          m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         }
         return m_rightSpeedLimiter.Calculate(joystickValue);
@@ -77,7 +77,7 @@ RobotContainer::RobotContainer() {
 
   m_drivebase.SetDefaultCommand(tankDrive);
 
-#ifdef UsingRollerForIntake
+#ifdef ENABLE_ROLLER_INTAKE
   TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,
                                                       &m_operatorController);
 
@@ -86,6 +86,7 @@ RobotContainer::RobotContainer() {
 
   // Configure the button bindings
   ConfigureBindings();
+  ConfigureControllerButtonBindings();
   AddTestButtonsToSmartDashboard();
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotSequenceSelectorToSmartDashboard();
@@ -112,7 +113,7 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                                       frc2::Command *command) {
-  frc2::JoystickButton(&driverJoystick, logitechButtonId).WhileTrue(command);
+  frc2::JoystickButton(&m_driverStick, logitechButtonId).WhileTrue(command);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -130,21 +131,28 @@ void RobotContainer::ConfigureBindings() {
 
   // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
   // pressed, cancelling on release.
-  m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
+  // m_driverStick.B().WhileTrue(m_subsystem.ExampleMethodCommand());
 }
 
 void RobotContainer::ConfigureControllerButtonBindings() {
-  static ExtendIntake extendIntake(&m_intakeDeployment, 0.5);
-  static RetractIntake retractIntake(&m_intakeDeployment, 0.7);
+  static ExtendIntake extendIntake(&m_intakeDeployment, 0.15);
+  static RetractIntake retractIntake(&m_intakeDeployment, 0.30);
   static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
   static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
+  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
+  static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
+  static frc2::PrintCommand placeholder("Doing something!!!!");
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &clampWithIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      &releaseWithIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &ejectPiece);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &resetEjection);
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
-                                   &extendIntake);
+                                   &extendIntake);  // extendIntake
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
                                    &retractIntake);
 }

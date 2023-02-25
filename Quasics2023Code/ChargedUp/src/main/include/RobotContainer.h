@@ -17,6 +17,7 @@
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/ExampleSubsystem.h"
+#include "subsystems/FloorEjection.h"
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
@@ -93,11 +94,17 @@ class RobotContainer {
   frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint();
 
  private:
+  // CODE_REVIEW: Consolidate to just one driver joystick/controller, please!!!!
+  // (mjh)
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
-  frc::Joystick driverJoystick{0};
+
+  // Removed this
+  // frc2::CommandXboxController m_driverController{
+  //     OperatorConstants::kDriverControllerPort};
+
+  // frc::Joystick driverJoystick{0};
+
   frc::XboxController m_operatorController{1};
 
   // The robot's subsystems are defined here...
@@ -107,6 +114,7 @@ class RobotContainer {
   IntakeRoller m_intakeRoller;
   IntakeDeployment m_intakeDeployment;
   PhotonLibVision m_photonLibVision;
+  FloorEjection m_floorEjection;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;

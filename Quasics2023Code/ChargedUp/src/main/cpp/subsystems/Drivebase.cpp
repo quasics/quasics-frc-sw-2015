@@ -123,6 +123,7 @@ units::degree_t Drivebase::GetAngle() {
 void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Pitch:", GetPitch());
   frc::SmartDashboard::PutNumber("Turning Angle:", GetAngle().value());
+  // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

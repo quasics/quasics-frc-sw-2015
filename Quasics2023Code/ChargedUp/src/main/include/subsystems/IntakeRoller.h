@@ -10,7 +10,7 @@
 
 #include "Constants.h"
 
-#undef ENABLE_ROLLER_INTAKE
+#define ENABLE_ROLLER_INTAKE
 
 class IntakeRoller : public frc2::SubsystemBase {
  public:

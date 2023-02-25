@@ -24,13 +24,13 @@ void IntakeClamp::Stop() {
 }
 
 void IntakeClamp::EnableBraking(bool value) {
+#ifdef ENABLE_CLAMP_MOTORS
   rev::CANSparkMax::IdleMode mode;
   if (value) {
     mode = rev::CANSparkMax::IdleMode::kBrake;
   } else {
     mode = rev::CANSparkMax::IdleMode::kCoast;
   }
-#ifdef ENABLE_CLAMP_MOTORS
   m_intakeClamp.SetIdleMode(mode);
 #endif
 }

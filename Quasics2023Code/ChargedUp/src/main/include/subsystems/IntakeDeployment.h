@@ -35,7 +35,7 @@ class IntakeDeployment : public frc2::SubsystemBase {
       MotorIds::SparkMax::LEFT_INTAKE_DEPLOYMENT_MOTOR_ID,
       rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightDeploymentMotor{
-      MotorIds::SparkMax::RIGHT_INTAKE_DEPLYMENT_MOTOR_ID,
+      MotorIds::SparkMax::RIGHT_INTAKE_DEPLOYMENT_MOTOR_ID,
       rev::CANSparkMax::MotorType::kBrushless};
 
   frc::MotorControllerGroup m_intakeDeployment{m_leftDeploymentMotor,

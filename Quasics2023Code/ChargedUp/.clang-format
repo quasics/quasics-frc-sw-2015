@@ -2,6 +2,7 @@
 # For list of options, see https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
 BasedOnStyle: Google
+FixNamespaceComments: 'true'
 NamespaceIndentation: Inner
 SpaceInEmptyParentheses: 'false'
 SpacesInParentheses: 'false'

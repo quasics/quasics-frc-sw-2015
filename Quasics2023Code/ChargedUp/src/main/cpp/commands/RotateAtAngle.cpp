@@ -11,15 +11,28 @@
 RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
-      m_percentSpeed((percentSpeed > 0) ? percentSpeed : -percentSpeed),
-      // -5 and +5 added because robot generally overshoots 5 degrees even at
-      // slow speeds
-      m_angle((percentSpeed > 0) ? (angle - 5_deg) : (-angle + 5_deg)) {
+      m_percentSpeed(percentSpeed),
+
+      m_angle(angle) {
   AddRequirements(m_drivebase);
 }
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
+  if (m_percentSpeed < 0) {
+    if (m_angle < 0_deg) {
+      m_percentSpeed = -m_percentSpeed;
+    } else {
+      m_angle = -m_angle;
+      m_percentSpeed = -m_percentSpeed;
+    }
+  }
+
+  // -6 and +6 added because robot generally overshoots 6 degrees even at
+  // slow speeds
+
+  m_angle = (m_angle > 0_deg) ? m_angle - 6_deg : m_angle + 6_deg;
+
   m_multiplier = 1;
 
   m_drivebase->SetBrakingMode(true);
@@ -40,11 +53,11 @@ void RotateAtAngle::Execute() {
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.27) {
+        m_percentSpeed * m_multiplier > 0.25) {
       m_multiplier *= .95;
-      m_multiplier = (m_multiplier * m_percentSpeed > 0.27
+      m_multiplier = (m_multiplier * m_percentSpeed > 0.25
                           ? m_multiplier * m_percentSpeed
-                          : 0.27);  // speed must be >= 0.27
+                          : 0.25);  // speed must be >= 0.25
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
@@ -52,11 +65,11 @@ void RotateAtAngle::Execute() {
 
   else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.27) {
+        m_percentSpeed * m_multiplier > 0.25) {
       m_multiplier *= .95;
       m_multiplier =
-          (m_multiplier * m_percentSpeed > 0.27 ? m_multiplier * m_percentSpeed
-                                                : 0.27);
+          (m_multiplier * m_percentSpeed > 0.25 ? m_multiplier * m_percentSpeed
+                                                : 0.25);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

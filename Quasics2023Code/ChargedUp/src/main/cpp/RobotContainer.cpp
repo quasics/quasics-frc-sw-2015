@@ -366,7 +366,7 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
           })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 1.462_m}));
+      new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
@@ -698,6 +698,13 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                  new RotateAtAngle(&m_drivebase, 1.00,
     45_deg));
   */
+
+  frc::SmartDashboard::PutData("Rotate 180 degrees at 50%",
+                               new RotateAtAngle(&m_drivebase, 0.50, 180_deg));
+  frc::SmartDashboard::PutData("Rotate -180 degrees at 50%",
+                               new RotateAtAngle(&m_drivebase, 0.50, -180_deg));
+  frc::SmartDashboard::PutData("Rotate 90 degrees at 50%",
+                               new RotateAtAngle(&m_drivebase, 0.50, 90_deg));
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },

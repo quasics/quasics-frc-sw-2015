@@ -4,8 +4,14 @@
 
 #include "subsystems/IntakeDeployment.h"
 
-#undef ENABLE_INTAKE_DEPLOYMENT
+#include <iostream>
+
 IntakeDeployment::IntakeDeployment() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT
+  std::cerr << "Intake deployment is enabled\n";
+#else
+  std::cerr << "Intake deployment is NOT enabled\n";
+#endif
 }
 
 // This method will be called once per scheduler run

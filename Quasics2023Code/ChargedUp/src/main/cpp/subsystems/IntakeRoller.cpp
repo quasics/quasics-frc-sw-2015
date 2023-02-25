@@ -4,9 +4,14 @@
 
 #include "subsystems/IntakeRoller.h"
 
-#undef ENABLE_ROLLER_INTAKE
+#include <iostream>
 
 IntakeRoller::IntakeRoller() {
+#ifdef ENABLE_ROLLER_INTAKE
+  std::cerr << "Intake roller is enabled\n";
+#else
+  std::cerr << "Intake roller is NOT enabled\n";
+#endif
 }
 
 // This method will be called once per scheduler run

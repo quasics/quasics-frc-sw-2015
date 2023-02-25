@@ -4,8 +4,15 @@
 
 #include "subsystems/IntakeClamp.h"
 
-#undef ENABLE_CLAMP_MOTORS
-IntakeClamp::IntakeClamp() = default;
+#include <iostream>
+
+IntakeClamp::IntakeClamp() {
+#ifdef ENABLE_CLAMP_MOTORS
+  std::cerr << "Clamp motors are enabled\n";
+#else
+  std::cerr << "Clamp motors are NOT enabled\n";
+#endif
+}
 
 // This method will be called once per scheduler run
 void IntakeClamp::Periodic() {

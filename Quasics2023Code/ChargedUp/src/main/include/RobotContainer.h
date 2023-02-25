@@ -50,8 +50,7 @@ class RobotContainer {
   void setInverted(bool invert);
 
  private:
-  static frc2::Command *GTFODOCK(std::string teamAndPosName,
-                                 Drivebase *drivebase);
+  frc2::Command *GTFODOCK(std::string teamAndPosName);
 
   static frc2::Command *moveToDefenseAgainstScoringWall(
       std::string teamAndPosName, Drivebase *drivebase);
@@ -80,6 +79,8 @@ class RobotContainer {
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
+  frc2::Command *ScoreGTFOThenCharge(std::string teamAndPosName);
+
   static frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
@@ -87,9 +88,7 @@ class RobotContainer {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeClamp *intakeClamp);
 
-  static frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller);
+  frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand();
 
   frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint();
 

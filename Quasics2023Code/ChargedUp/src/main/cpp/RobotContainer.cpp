@@ -27,6 +27,7 @@
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/MoveFloorEjection.h"
+#include "commands/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/ReleaseWithIntake.h"
 #include "commands/ReleaseWithIntakeAtSpeedForTime.h"
 #include "commands/RetractIntake.h"
@@ -139,6 +140,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
   static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
+  static SelfBalancing selfBalancing(&m_drivebase);
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
@@ -153,6 +155,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
                                    &extendIntake);  // extendIntake
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
                                    &retractIntake);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::X_BUTTON,
+                                   &selfBalancing);
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {
@@ -188,7 +192,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
       return &JustDriving;
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {
-    return GTFODOCK(teamAndPosName, &m_drivebase);
+    return GTFODOCK(teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall) {
     return moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase);
@@ -273,8 +277,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 
 // The functions that go into the autonomous chooser thingy above
 
-frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
-                                        Drivebase *m_drivebase) {
+frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -282,12 +285,12 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
     // mobility points), and then move forward and balance on the charging
     // station.
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, -0.5, 4.5_m}));
+        new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.5_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
-            m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
+            &m_drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing{m_drivebase}));
+        std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
   } else {
     // In this case, we need to move back out of the community area (for the
     // mobility points), then turn and drive until we're in line with the
@@ -297,23 +300,23 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName,
         (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
          teamAndPosName == AutonomousTeamAndStationPositions::Red1);
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, -0.5, 4.0_m}));
+        new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{m_drivebase, 0.5, 90_deg},
-            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+            RotateAtAngle{&m_drivebase, 0.5, -90_deg},
             [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters{m_drivebase, 0.5, 1.889_m}));
+        new DriveAtPowerForMeters{&m_drivebase, 0.5, 1.889_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{m_drivebase, 0.5, 90_deg},
-            RotateAtAngle{m_drivebase, 0.5, -90_deg},
+            RotateAtAngle{&m_drivebase, 0.5, -90_deg},
+            RotateAtAngle{&m_drivebase, 0.5, 90_deg},
             [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveUntilPitchAngleChange{m_drivebase, 0.5}));
+        new DriveUntilPitchAngleChange{&m_drivebase, 0.5}));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing{m_drivebase}));
+        std::unique_ptr<frc2::Command>(new SelfBalancing{&m_drivebase}));
   }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -516,8 +519,7 @@ RobotContainer::GetScoreSequenceFromStartingPoint() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 #ifdef USING_ROLLER_FOR_AUTO_INTAKE
   commands.push_back(
-      std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand(
-          &m_drivebase, &m_intakeDeployment, &m_intakeRoller)));
+      std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand()));
   std::cerr << "Using roller for auto intake.\n";
 #elif defined(USING_CLAMP_FOR_AUTO_INTAKE)
   commands.push_back(
@@ -591,6 +593,14 @@ frc2::Command *RobotContainer::DropGamePieceThenChargeCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
+frc2::Command *RobotContainer::ScoreGTFOThenCharge(std::string teamAndPosName) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  return new frc2::SequentialCommandGroup(std::move(commands));
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(RollerScoreGamePieceHelperCommand()));
+  commands.push_back(std::unique_ptr<frc2::Command>(GTFODOCK(teamAndPosName)));
+}
+
 frc2::SequentialCommandGroup *RobotContainer::DropGamePieceHelperCommand(
     IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
@@ -620,10 +630,14 @@ frc2::SequentialCommandGroup *RobotContainer::ClampScoreGamePieceHelperCommand(
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-frc2::SequentialCommandGroup *RobotContainer::RollerScoreGamePieceHelperCommand(
-    Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-    IntakeRoller *intakeRoller) {
+frc2::SequentialCommandGroup *
+RobotContainer::RollerScoreGamePieceHelperCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.3_s)));
+  commands.push_back(std::unique_ptr<frc2::Command>(
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.3, 0.5_s)));
+  /*
   commands.push_back(std::unique_ptr<frc2::Command>(
       new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
@@ -634,6 +648,7 @@ frc2::SequentialCommandGroup *RobotContainer::RollerScoreGamePieceHelperCommand(
       new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+    */
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -807,7 +822,9 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
           {AutonomousSelectedOperation::ScoreThenCharge,
            "Score the Game Piece then Get on the Charging Station"},
           {AutonomousSelectedOperation::ScoreThenEndNearGamePiece,
-           "Score then End next to a Game Piece"}};
+           "Score then End next to a Game Piece"},
+          {AutonomousSelectedOperation::ScoreGTFOCharge,
+           "Score, GTFO then Charge"}};
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
     AddNamedCommandToSelector(selector, name, text);

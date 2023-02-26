@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.utils.RobotSettings;
+import frc.robot.utils.RobotSettingsLibrary;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -16,43 +18,16 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
  */
 public final class Constants {
 
+  public static final RobotSettingsLibrary.Robot CURRENT_ROBOT = RobotSettingsLibrary.Robot.Gladys;
+
+  public static final RobotSettings ROBOT_SETTINGS =
+      RobotSettingsLibrary.getSettingsForRobot(CURRENT_ROBOT);
+
   public static final double INCHES_PER_METER = 39.3701;
-
-  public static final double TRACK_WIDTH_METERS_ROMI = 0.165;
-
-  // TODO(mjh): Confirm this value for Sally....
-  public static final double TRACK_WIDTH_INCHES_SALLY = 22.0;
-
-  // TODO(mjh): Confirm this value for Mae....
-  /** 2021 robot's width, from in-code constants (which are in meters) */
-  public static final double TRACK_WIDTH_INCHES_MAE = 47.134344149315914763;
-
-  // TODO(mjh): Confirm this for Nike
-  public static final double TRACK_WIDTH_INCHES_NIKE = TRACK_WIDTH_INCHES_MAE;
 
   public static final double WHEEL_DIAMETER_INCHES = 6.0;
 
-  /** Gear ratio for 2017 robot, kept as spare drive base. */
-  public static final double DRIVE_BASE_GEAR_RATIO_NIKE = 10.71;
-  /** 2020/2021 robot gear ratio. */
-  public static final double DRIVE_BASE_GEAR_RATIO_MAE = 10.71;
-  /** 2022 robot gear rato (swapped in new gearbox vs. 10.71 in KoP) */
-  public static final double DRIVE_BASE_GEAR_RATIO_SALLY = 8.45;
-  /** 2023 robot gear ratio (KoP gearing is 8.45:1 this year) */
-  public static final double DRIVE_BASE_GEAR_RATIO_2023 = 8.45;
-
-  public static final double DRIVE_BASE_GEAR_RATIO = DRIVE_BASE_GEAR_RATIO_SALLY;
-
   public static final int PIGEON2_CAN_ID = 1;
-
-  public static final class MotorIds {
-    public static final class SparkMax {
-      public static final int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-      public static final int LEFT_REAR_DRIVE_MOTOR_ID = 2;
-      public static final int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
-      public static final int RIGHT_REAR_DRIVE_MOTOR_ID = 4;
-    }
-  }
 
   /** Constants for speed limits/scaling under various driving modes. */
   public static final class SpeedLimits {

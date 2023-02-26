@@ -12,33 +12,12 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.Constants;
 import frc.robot.sensors.NullGyro;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
+/** Provides drive base support for a "big bot" built using SparkMax motors on a CAN bus. */
 public class Drivebase extends AbstractDriveBase {
-  class TrivialEncoderImpl implements TrivialEncoder {
-    final RelativeEncoder encoder;
-
-    TrivialEncoderImpl(RelativeEncoder encoder) {
-      this.encoder = encoder;
-    }
-
-    @Override
-    public double getPosition() {
-      return encoder.getPosition();
-    }
-
-    @Override
-    public double getVelocity() {
-      return encoder.getVelocity();
-    }
-
-    @Override
-    public void reset() {
-      encoder.setPosition(0);
-    }
-  }
-
   /** Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if used). */
   static class PigeonStatusChecker implements Runnable {
     private int lastMask = 0;
@@ -117,25 +96,17 @@ public class Drivebase extends AbstractDriveBase {
     // Set up the motors/groups.
 
     // Create the individual motors.
-    final CANSparkMax leftRear =
-        new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID, MotorType.kBrushless);
-    final CANSparkMax rightRear =
-        new CANSparkMax(
-            Constants.MotorIds.SparkMax.RIGHT_REAR_DRIVE_MOTOR_ID, MotorType.kBrushless);
-    final CANSparkMax leftFront =
-        new CANSparkMax(
-            Constants.MotorIds.SparkMax.LEFT_FRONT_DRIVE_MOTOR_ID, MotorType.kBrushless);
+    final CANSparkMax leftRear = new CANSparkMax(settings.leftRearMotorId, MotorType.kBrushless);
+    final CANSparkMax rightRear = new CANSparkMax(settings.rightRearMotorId, MotorType.kBrushless);
+    final CANSparkMax leftFront = new CANSparkMax(settings.leftFrontMotorId, MotorType.kBrushless);
     final CANSparkMax rightFront =
-        new CANSparkMax(
-            Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID, MotorType.kBrushless);
+        new CANSparkMax(settings.rightFrontMotorId, MotorType.kBrushless);
 
     // Configure which motors are inverted/not.
-    final boolean LEFT_INVERTED = false;
-    final boolean RIGHT_INVERTED = false;
-    leftRear.setInverted(LEFT_INVERTED);
-    leftFront.setInverted(LEFT_INVERTED);
-    rightRear.setInverted(RIGHT_INVERTED);
-    rightFront.setInverted(RIGHT_INVERTED);
+    leftRear.setInverted(settings.leftMotorsInverted);
+    leftFront.setInverted(settings.leftMotorsInverted);
+    rightRear.setInverted(settings.rightMotorsInverted);
+    rightFront.setInverted(settings.rightMotorsInverted);
 
     /////////////////////////////////
     // Set up the differential drive.
@@ -153,9 +124,8 @@ public class Drivebase extends AbstractDriveBase {
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-    final double GEAR_RATIO = Constants.DRIVE_BASE_GEAR_RATIO;
-    final double adjustmentForGearing = wheelCircumferenceMeters / GEAR_RATIO;
-    System.out.println("Using gear ratio: " + GEAR_RATIO);
+    final double adjustmentForGearing = wheelCircumferenceMeters / settings.gearRatio;
+    System.out.println("Using gear ratio: " + settings.gearRatio);
     System.out.println("Adjustment for gearing (m/rotation): " + adjustmentForGearing);
 
     // Further conversion factor from m/min to m/s (used for velocity).
@@ -171,8 +141,8 @@ public class Drivebase extends AbstractDriveBase {
     leftLiveEncoder.setPosition(0);
     rightLiveEncoder.setPosition(0);
 
-    m_leftEncoder = new TrivialEncoderImpl(leftLiveEncoder);
-    m_rightEncoder = new TrivialEncoderImpl(rightLiveEncoder);
+    m_leftEncoder = new SparkMaxEncoderWrapper(leftLiveEncoder);
+    m_rightEncoder = new SparkMaxEncoderWrapper(rightLiveEncoder);
 
     ////////////////////////////////////////
     // Configure the gyro.

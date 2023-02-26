@@ -1,20 +1,18 @@
 package frc.robot.utils;
 
-import java.util.Properties;
-
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
+import java.util.Properties;
 
 /**
- * Used to hold various characteristics that vary between the robots that we
- * have on hand (e.g., drive base width, motor inversions), allowing the code to
- * adapt to the hardware on which it is deployed.
- * 
- * Note: We are currently using either the "operating" or "deploy" directories
- * when reading/writing files holding settings data. If we want, another option
- * would be to switch to a USB drive (which might make "default values" easier
- * to deploy to a given robot). These are apparently mounted at "/U" by the
- * roboRIO firmware image.
+ * Used to hold various characteristics that vary between the robots that we have on hand (e.g.,
+ * drive base width, motor inversions), allowing the code to adapt to the hardware on which it is
+ * deployed.
+ *
+ * <p>Note: We are currently using either the "operating" or "deploy" directories when
+ * reading/writing files holding settings data. If we want, another option would be to switch to a
+ * USB drive (which might make "default values" easier to deploy to a given robot). These are
+ * apparently mounted at "/U" by the roboRIO firmware image.
  */
 public class RobotSettings extends PropertyBasedObject {
   public enum DriveMotorInversion {
@@ -23,8 +21,8 @@ public class RobotSettings extends PropertyBasedObject {
     Right(false, true),
     Both(true, true);
 
-    final public boolean leftInverted;
-    final public boolean rightInverted;
+    public final boolean leftInverted;
+    public final boolean rightInverted;
 
     DriveMotorInversion(boolean leftInverted, boolean rightInverted) {
       this.leftInverted = leftInverted;
@@ -49,15 +47,20 @@ public class RobotSettings extends PropertyBasedObject {
   /** Gear ratio for the robot (e.g., "10.71" would mean "10.71:1") */
   public final double gearRatio;
 
+  public final int leftFrontMotorId;
+  public final int leftRearMotorId;
+  public final int rightFrontMotorId;
+  public final int rightRearMotorId;
+
   /**
-   * Iff true, the motors on the left side of the drive base are installed in an
-   * inverted configuration.
+   * Iff true, the motors on the left side of the drive base are installed in an inverted
+   * configuration.
    */
   public final boolean leftMotorsInverted;
 
   /**
-   * Iff true, the motors on the right side of the drive base are installed in an
-   * inverted configuration.
+   * Iff true, the motors on the right side of the drive base are installed in an inverted
+   * configuration.
    */
   public final boolean rightMotorsInverted;
 
@@ -83,35 +86,35 @@ public class RobotSettings extends PropertyBasedObject {
 
   /**
    * Creates a RobotSettings object.
-   * 
-   * Note: this constructor is expected to be used only for building settings in
-   * the RobotContainer class either for immediate use in writing them to an
-   * active file, or as a default set to use when we can't load stuff *from* a
-   * file. The preferred way to get RobotSettings is to load them from a file
-   * (either a "deployed" one, or from a previous save point).
-   * 
-   * @param robotName           name of the robot (for debugging/logging)
-   * @param trackWidthMeters    track width (m) of the robot
-   * @param gearRatio           the gear ratio on the drive base
-   * @param profileData         drive profiling constants (kS/kV/kA)
-   *                            characterizing the robot's drive base (e.g., with
-   *                            SysId)
-   * @param driveControl        PID values derived from characterizing the robot's
-   *                            drive base (e.g., with SysId)
-   * @param leftMotorsInverted  iff true, drive motors on the left side are
-   *                            inverted
-   * @param rightMotorsInverted iff true, drive motors on the right side are
-   *                            inverted
-   * @param installedGyroType   the type of gyro on the robot
-   * @param pigeonCanId         the CAN ID for the gyro, if it's a Pigeon2 (this
-   *                            field is ignored, otherwise)
-   * 
+   *
+   * <p>Note: this constructor is expected to be used only for building settings in the
+   * RobotContainer class either for immediate use in writing them to an active file, or as a
+   * default set to use when we can't load stuff *from* a file. The preferred way to get
+   * RobotSettings is to load them from a file (either a "deployed" one, or from a previous save
+   * point).
+   *
+   * @param robotName name of the robot (for debugging/logging)
+   * @param trackWidthMeters track width (m) of the robot
+   * @param gearRatio the gear ratio on the drive base
+   * @param profileData drive profiling constants (kS/kV/kA) characterizing the robot's drive base
+   *     (e.g., with SysId)
+   * @param driveControl PID values derived from characterizing the robot's drive base (e.g., with
+   *     SysId)
+   * @param leftMotorsInverted iff true, drive motors on the left side are inverted
+   * @param rightMotorsInverted iff true, drive motors on the right side are inverted
+   * @param installedGyroType the type of gyro on the robot
+   * @param pigeonCanId the CAN ID for the gyro, if it's a Pigeon2 (this field is ignored,
+   *     otherwise)
    * @see #load(java.io.InputStream)
    */
   public RobotSettings(
       String robotName,
       double trackWidthMeters,
       double gearRatio,
+      int leftFrontMotorId,
+      int leftRearMotorId,
+      int rightFrontMotorId,
+      int rightRearMotorId,
       DriveProfileData profileData,
       PIDConfig pidConfig,
       DriveMotorInversion motorInversion,
@@ -120,6 +123,11 @@ public class RobotSettings extends PropertyBasedObject {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.gearRatio = gearRatio;
+
+    this.leftFrontMotorId = leftFrontMotorId;
+    this.leftRearMotorId = leftRearMotorId;
+    this.rightFrontMotorId = rightFrontMotorId;
+    this.rightRearMotorId = rightRearMotorId;
 
     this.driveProfileKs = profileData.kS;
     this.driveProfileKv = profileData.kV;
@@ -137,10 +145,8 @@ public class RobotSettings extends PropertyBasedObject {
 
   /**
    * Creates a RobotSettings object.
-   * 
-   * @param props a Properties object from which the robot settings should be
-   *              retrieved
-   * 
+   *
+   * @param props a Properties object from which the robot settings should be retrieved
    * @throws IllegalArgumentException
    */
   public RobotSettings(Properties props) throws IllegalArgumentException {
@@ -150,29 +156,37 @@ public class RobotSettings extends PropertyBasedObject {
     }
     this.robotName = s;
 
-    this.trackWidthMeters = getCheckedDouble(props,
-        "trackWidthMeters", "Error fetching track width");
-    this.gearRatio = getCheckedDouble(props,
-        "gearRatio", "Error fetching gear ratio");
+    this.trackWidthMeters =
+        getCheckedDouble(props, "trackWidthMeters", "Error fetching track width");
+    this.gearRatio = getCheckedDouble(props, "gearRatio", "Error fetching gear ratio");
 
-    this.driveProfileKs = getCheckedDouble(props,
-        "driveProfileKs", "Error fetching kS value for drive profile");
-    this.driveProfileKv = getCheckedDouble(props,
-        "driveProfileKv", "Error fetching kV value for drive profile");
-    this.driveProfileKa = getCheckedDouble(props,
-        "driveProfileKa", "Error fetching kA value for drive profile");
+    this.leftFrontMotorId =
+        getCheckedInteger(props, "leftFrontMotorId", "Error fetching front left motor ID");
+    this.leftRearMotorId =
+        getCheckedInteger(props, "leftRearMotorId", "Error fetching rear left motor ID");
+    this.rightFrontMotorId =
+        getCheckedInteger(props, "rightFrontMotorId", "Error fetching front right motor ID");
+    this.rightRearMotorId =
+        getCheckedInteger(props, "rightRearMotorId", "Error fetching rear right motor ID");
 
-    this.driveControlKp = getCheckedDouble(props,
-        "driveControlKp", "Error fetching kP value for drive control");
-    this.driveControlKi = getCheckedDouble(props,
-        "driveControlKi", "Error fetching kI value for drive control");
-    this.driveControlKd = getCheckedDouble(props,
-        "driveControlKd", "Error fetching kD value for drive control");
+    this.driveProfileKs =
+        getCheckedDouble(props, "driveProfileKs", "Error fetching kS value for drive profile");
+    this.driveProfileKv =
+        getCheckedDouble(props, "driveProfileKv", "Error fetching kV value for drive profile");
+    this.driveProfileKa =
+        getCheckedDouble(props, "driveProfileKa", "Error fetching kA value for drive profile");
 
-    this.leftMotorsInverted = getCheckedBoolean(props,
-        "leftMotorsInverted", "Error fetching left-side inversion");
-    this.rightMotorsInverted = getCheckedBoolean(props,
-        "rightMotorsInverted", "Error fetching right-side inversion");
+    this.driveControlKp =
+        getCheckedDouble(props, "driveControlKp", "Error fetching kP value for drive control");
+    this.driveControlKi =
+        getCheckedDouble(props, "driveControlKi", "Error fetching kI value for drive control");
+    this.driveControlKd =
+        getCheckedDouble(props, "driveControlKd", "Error fetching kD value for drive control");
+
+    this.leftMotorsInverted =
+        getCheckedBoolean(props, "leftMotorsInverted", "Error fetching left-side inversion");
+    this.rightMotorsInverted =
+        getCheckedBoolean(props, "rightMotorsInverted", "Error fetching right-side inversion");
 
     GyroType g = getGyroTypeFromProperty(props, "installedGyroType");
     if (g == null) {
@@ -182,8 +196,8 @@ public class RobotSettings extends PropertyBasedObject {
 
     // The "pigeonCanId" field is only valid if we're working *with* a Pigeon2.
     if (this.installedGyroType == GyroType.Pigeon2) {
-      this.pigeonCanId = getCheckedInteger(props,
-          "pigeonCanId", "Error fetching CAN ID for installed Pigeon2");
+      this.pigeonCanId =
+          getCheckedInteger(props, "pigeonCanId", "Error fetching CAN ID for installed Pigeon2");
     } else {
       this.pigeonCanId = 0;
     }

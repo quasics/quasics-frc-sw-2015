@@ -12,8 +12,12 @@ import java.util.Map;
 /**
  * Collection of robot characteristics for various Quasics robots.
  *
- * <p>* Nike - our 2017 robot * Mae - 2020/2021 robot * Sally - 2022 robot * Gladys - 2023 robot *
- * Romi
+ * <ul>
+ *   <li>Nike - our 2017 robot
+ *   <li>Mae - 2020/2021 robot
+ *   <li>Sally - 2022 robot
+ *   <li>Gladys - 2023 robot Romi (used for training)
+ * </ul>
  */
 public class RobotSettingsLibrary {
 
@@ -55,6 +59,11 @@ public class RobotSettingsLibrary {
             "Gladys", // robotName
             TrackWidths.GLADYS,
             GearRatios.GLADYS,
+            // Drive base motor CAN IDs
+            1,
+            2,
+            3,
+            4,
             // TODO(mjh) Calibrate Gladys' values for kS, kV, and kA (DriveProfileData)
             (DriveProfileData) null,
             // TODO(mjh) Calibrate Gladys' values for PID control (PIDConfig)
@@ -69,6 +78,11 @@ public class RobotSettingsLibrary {
             "Sally", // robotName
             TrackWidths.SALLY,
             GearRatios.SALLY,
+            // Drive base motor CAN IDs
+            1,
+            2,
+            3,
+            4,
             // TODO(mjh) Calibrate Sally's values for kS, kV, and kA
             new DriveProfileData(0.31, 2.74, 0.249),
             // TODO(mjh) Calibrate Sally's values for PID control
@@ -83,6 +97,11 @@ public class RobotSettingsLibrary {
             "Mae", // robotName
             TrackWidths.MAE,
             GearRatios.MAE,
+            // Drive base motor CAN IDs
+            1,
+            2,
+            3,
+            4,
             // Drive configuration constants (computed 01Mar2022 w/ SysId)
             new DriveProfileData(/* kS= */ 0.13895, /* kV= */ 1.3143, /* kA= */ 0.1935),
             // PID control constants (computed 01Mar2022 w/ SysId)
@@ -97,6 +116,11 @@ public class RobotSettingsLibrary {
             "Nike", // robotName
             TrackWidths.NIKE,
             GearRatios.NIKE,
+            // Drive base motor CAN IDs
+            1,
+            2,
+            3,
+            4,
             // Drive configuration constants (computed 03Mar2022 w/ SysId)
             new DriveProfileData(/* kS= */ 0.14961, /* kV= */ 1.3717, /* kA= */ 0.1627),
             new PIDConfig(2.5682, 0, 0),
@@ -110,6 +134,11 @@ public class RobotSettingsLibrary {
             "Romi", // robotName
             TrackWidths.ROMI,
             GearRatios.ROMI,
+            // Drive base motor IDs (not used for Romi)
+            -1,
+            -1,
+            -1,
+            -1,
             // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
             // supports this) - these are from 2021
             new DriveProfileData(1.25, 5.7, 0.0176),

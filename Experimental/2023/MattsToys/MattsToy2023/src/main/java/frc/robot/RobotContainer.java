@@ -20,11 +20,8 @@ import frc.robot.Constants.SpeedLimits;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
-import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
-import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -36,7 +33,7 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   // TODO: Modify this to try to load current settings from filesystem.
-  private final Drivebase m_driveBase = new Drivebase(getDefaultSettings());
+  private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -157,79 +154,6 @@ public class RobotContainer {
 
     // Fallback case.
     return new PrintCommand("*** Error: Couldn't generate command for auto mode!");
-  }
-
-  /** Returns the robot settings for Sally (2022 robot). */
-  protected static RobotSettings getSettingsForSally() {
-    return new RobotSettings(
-        "Sally", // robotName
-        TRACK_WIDTH_INCHES_SALLY / INCHES_PER_METER,
-        DRIVE_BASE_GEAR_RATIO_SALLY,
-        // TODO(mjh) Calibrate Sally's values for kS, kV, and kA
-        new DriveProfileData(0.31, 2.74, 0.249),
-        // TODO(mjh) Calibrate Sally's values for PID control
-        new PIDConfig(2.28, 0, 0),
-        RobotSettings.DriveMotorInversion.Left,
-        RobotSettings.GyroType.ADXRS450,
-        0 // pigeonCanID
-        );
-  }
-
-  /** Returns the robot settings for Mae (2021 robot). */
-  protected static RobotSettings getSettingsForMae() {
-    return new RobotSettings(
-        "Mae", // robotName
-        TRACK_WIDTH_INCHES_MAE / INCHES_PER_METER,
-        DRIVE_BASE_GEAR_RATIO_MAE,
-        // Drive configuration constants (computed 01Mar2022 w/ SysId)
-        new DriveProfileData(/* kS= */ 0.13895, /* kV= */ 1.3143, /* kA= */ 0.1935),
-        // PID control constants (computed 01Mar2022 w/ SysId)
-        new PIDConfig(0.0011379, 0, 0),
-        RobotSettings.DriveMotorInversion.Left,
-        RobotSettings.GyroType.ADXRS450,
-        0 // pigeonCanID
-        );
-  }
-
-  /** Returns the robot settings for Nike (2019 robot). */
-  protected static RobotSettings getSettingsForNike() {
-    return new RobotSettings(
-        "Nike", // robotName
-        TRACK_WIDTH_INCHES_NIKE / INCHES_PER_METER,
-        DRIVE_BASE_GEAR_RATIO_NIKE,
-        // Drive configuration constants (computed 03Mar2022 w/ SysId)
-        new DriveProfileData(/* kS= */ 0.14961, /* kV= */ 1.3717, /* kA= */ 0.1627),
-        new PIDConfig(2.5682, 0, 0),
-        RobotSettings.DriveMotorInversion.Left,
-        RobotSettings.GyroType.Pigeon2,
-        1 // pigeonCanID
-        );
-  }
-
-  /** Returns the robot settings for use on a Romi. */
-  protected static RobotSettings getSettingsForRomi() {
-    return new RobotSettings(
-        "Romi", // robotName
-        TRACK_WIDTH_METERS_ROMI,
-        1, // TODO(mjh): Check gear ratio for the Romi
-        // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
-        // supports this) - these are from 2021
-        new DriveProfileData(1.25, 5.7, 0.0176),
-        // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
-        // supports this) - these are from 2021
-        new PIDConfig(0.00352, 0, 0),
-        // Note: Romi docs indicate that it's the right motor that's inverted, but I run
-        // the Romi in reverse because the USB camera is mounted on my upper deck that
-        // way.
-        RobotSettings.DriveMotorInversion.Left,
-        RobotSettings.GyroType.Romi,
-        0 // pigeonCanID
-        );
-  }
-
-  /** Returns default settings (for the 2022 FRC robot). */
-  private static RobotSettings getDefaultSettings() {
-    return getSettingsForSally();
   }
 
   /**

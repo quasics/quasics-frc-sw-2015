@@ -7,8 +7,10 @@ package frc.robot.sensors;
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import frc.robot.sensors.ThreeAxisGyro;
 
-public class RomiGyro {
+public class RomiGyro implements ThreeAxisGyro {
   private final SimDouble m_simRateX;
   private final SimDouble m_simRateY;
   private final SimDouble m_simRateZ;
@@ -128,5 +130,20 @@ public class RomiGyro {
       m_angleYOffset = m_simAngleY.get();
       m_angleZOffset = m_simAngleZ.get();
     }
+  }
+
+  @Override
+  public Gyro getPitchGyro() {
+    return new SingleAxisWrapper(() -> {return getAngleZ();});
+  }
+
+  @Override
+  public Gyro getRollGyro() {
+    return new SingleAxisWrapper(() -> {return getAngleX();});
+  }
+
+  @Override
+  public Gyro getYawGyro() {
+    return new SingleAxisWrapper(() -> {return getAngleY();});
   }
 }

@@ -16,7 +16,9 @@ import java.util.Map;
  *   <li>Nike - our 2017 robot
  *   <li>Mae - 2020/2021 robot
  *   <li>Sally - 2022 robot
- *   <li>Gladys - 2023 robot Romi (used for training)
+ *   <li>Gladys - 2023 robot
+ *   <li>Romi (used for training)
+ *   <li>MattsRomi (used for training)
  * </ul>
  */
 public class RobotSettingsLibrary {
@@ -26,7 +28,8 @@ public class RobotSettingsLibrary {
     Mae,
     Sally,
     Gladys,
-    Romi;
+    Romi,
+    MattsRomi;
   }
 
   private static final Map<Robot, RobotSettings> m_settingsMap =
@@ -72,9 +75,9 @@ public class RobotSettingsLibrary {
             3,
             4,
             // TODO(mjh) Calibrate Gladys' values for kS, kV, and kA (DriveProfileData)
-            (DriveProfileData) null,
+            new DriveProfileData(0.31, 2.74, 0.249),
             // TODO(mjh) Calibrate Gladys' values for PID control (PIDConfig)
-            (PIDConfig) null,
+            new PIDConfig(2.28, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.ADXRS450,
             1 // pigeonCanID
@@ -156,6 +159,28 @@ public class RobotSettingsLibrary {
             // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
             // supports this) - these are from 2021
             new PIDConfig(0.00352, 0, 0),
+            RobotSettings.DriveMotorInversion.Right,
+            RobotSettings.GyroType.Romi,
+            0 // pigeonCanID
+            ));
+    m_settingsMap.put(
+        Robot.MattsRomi,
+        new RobotSettings(
+            "MattsRomi", // robotName
+            TrackWidths.ROMI,
+            GearRatios.ROMI,
+            WheelDiameters.ROMI,
+            // Drive base motor IDs (not used for Romi)
+            -1,
+            -1,
+            -1,
+            -1,
+            // TODO(mjh): Recalibrate Romi's values for kS, kV, and kA (if SysId ever
+            // supports this) - these are from 2021
+            new DriveProfileData(1.25, 5.7, 0.0176),
+            // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
+            // supports this) - these are from 2021
+            new PIDConfig(0.00352, 0, 0),
             // Note: Romi docs indicate that it's the right motor that's inverted, but I run
             // the Romi in reverse because the USB camera is mounted on my upper deck that
             // way.
@@ -191,8 +216,13 @@ public class RobotSettingsLibrary {
     return m_settingsMap.get(Robot.Nike);
   }
 
-  /** Returns the robot settings for use on a Romi. */
+  /** Returns the robot settings for use on a standard Romi. */
   public static RobotSettings getSettingsForRomi() {
     return m_settingsMap.get(Robot.Romi);
+  }
+
+  /** Returns the robot settings for use on Matt's Romi. */
+  public static RobotSettings getSettingsForMattsRomi() {
+    return m_settingsMap.get(Robot.MattsRomi);
   }
 }

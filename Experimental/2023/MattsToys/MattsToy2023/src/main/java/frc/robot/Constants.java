@@ -25,8 +25,6 @@ public final class Constants {
 
   public static final double INCHES_PER_METER = 39.3701;
 
-  public static final double WHEEL_DIAMETER_INCHES = 6.0;
-
   public static final int PIGEON2_CAN_ID = 1;
 
   /** Constants for speed limits/scaling under various driving modes. */

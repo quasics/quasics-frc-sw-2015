@@ -10,7 +10,6 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import frc.robot.Constants;
 import frc.robot.sensors.NullGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
@@ -119,8 +118,7 @@ public class Drivebase extends AbstractDriveBase {
     ////////////////////////////////////////
     // Configure the encoders.
 
-    final double wheelCircumferenceMeters =
-        edu.wpi.first.math.util.Units.inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
+    final double wheelCircumferenceMeters = Math.PI * settings.wheelDiameterMeters;
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).

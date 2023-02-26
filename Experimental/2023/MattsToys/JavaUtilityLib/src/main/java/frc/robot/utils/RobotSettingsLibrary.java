@@ -34,6 +34,12 @@ public class RobotSettingsLibrary {
 
   private static final double INCHES_PER_METER = 39.3701;
 
+  /** Diameters of different wheels (in meters). */
+  private interface WheelDiameters {
+    public static final double ROMI = 0.07; // 70 mm / 2.75591 inches
+    public static final double ANDYMARK_6IN_PLACTION = 6.0 / INCHES_PER_METER;
+  }
+
   private interface GearRatios {
     public static final double NIKE = 10.71;
     public static final double MAE = 10.71;
@@ -59,6 +65,7 @@ public class RobotSettingsLibrary {
             "Gladys", // robotName
             TrackWidths.GLADYS,
             GearRatios.GLADYS,
+            WheelDiameters.ANDYMARK_6IN_PLACTION,
             // Drive base motor CAN IDs
             1,
             2,
@@ -78,6 +85,7 @@ public class RobotSettingsLibrary {
             "Sally", // robotName
             TrackWidths.SALLY,
             GearRatios.SALLY,
+            WheelDiameters.ANDYMARK_6IN_PLACTION,
             // Drive base motor CAN IDs
             1,
             2,
@@ -97,6 +105,7 @@ public class RobotSettingsLibrary {
             "Mae", // robotName
             TrackWidths.MAE,
             GearRatios.MAE,
+            WheelDiameters.ANDYMARK_6IN_PLACTION,
             // Drive base motor CAN IDs
             1,
             2,
@@ -116,6 +125,7 @@ public class RobotSettingsLibrary {
             "Nike", // robotName
             TrackWidths.NIKE,
             GearRatios.NIKE,
+            WheelDiameters.ANDYMARK_6IN_PLACTION,
             // Drive base motor CAN IDs
             1,
             2,
@@ -134,6 +144,7 @@ public class RobotSettingsLibrary {
             "Romi", // robotName
             TrackWidths.ROMI,
             GearRatios.ROMI,
+            WheelDiameters.ROMI,
             // Drive base motor IDs (not used for Romi)
             -1,
             -1,

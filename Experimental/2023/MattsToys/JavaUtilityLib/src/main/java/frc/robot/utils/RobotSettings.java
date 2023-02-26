@@ -47,6 +47,8 @@ public class RobotSettings extends PropertyBasedObject {
   /** Gear ratio for the robot (e.g., "10.71" would mean "10.71:1") */
   public final double gearRatio;
 
+  public final double wheelDiameterMeters;
+
   /** Device ID (CAN, etc.) for left front motor on drive base. */
   public final int leftFrontMotorId;
   /** Device ID (CAN, etc.) for left rear motor on drive base. */
@@ -115,6 +117,7 @@ public class RobotSettings extends PropertyBasedObject {
       String robotName,
       double trackWidthMeters,
       double gearRatio,
+      double wheelDiameterMeters,
       int leftFrontMotorId,
       int leftRearMotorId,
       int rightFrontMotorId,
@@ -127,6 +130,7 @@ public class RobotSettings extends PropertyBasedObject {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.gearRatio = gearRatio;
+    this.wheelDiameterMeters = wheelDiameterMeters;
 
     this.leftFrontMotorId = leftFrontMotorId;
     this.leftRearMotorId = leftRearMotorId;
@@ -163,6 +167,8 @@ public class RobotSettings extends PropertyBasedObject {
     this.trackWidthMeters =
         getCheckedDouble(props, "trackWidthMeters", "Error fetching track width");
     this.gearRatio = getCheckedDouble(props, "gearRatio", "Error fetching gear ratio");
+    this.wheelDiameterMeters =
+        getCheckedDouble(props, "wheelDiameterMeters", "Error fetching wheel diameter (m)");
 
     this.leftFrontMotorId =
         getCheckedInteger(props, "leftFrontMotorId", "Error fetching front left motor ID");

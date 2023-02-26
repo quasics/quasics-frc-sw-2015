@@ -71,7 +71,7 @@ public class Drivetrain extends AbstractDriveBase {
     m_leftMotor.setInverted(robotSettings.leftMotorsInverted);
     m_rightMotor.setInverted(robotSettings.rightMotorsInverted);
 
-    // Use inches as unit for encoder distances
+    // Use meters as unit for encoder distances
     final double wheelDistancePerPulse = (Math.PI * robotSettings.wheelDiameterMeters) / kCountsPerRevolution;
     m_leftEncoderLive.setDistancePerPulse(wheelDistancePerPulse);
     m_rightEncoderLive.setDistancePerPulse(wheelDistancePerPulse);

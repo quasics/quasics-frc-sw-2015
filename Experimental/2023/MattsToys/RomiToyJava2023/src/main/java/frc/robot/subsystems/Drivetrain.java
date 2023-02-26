@@ -68,7 +68,8 @@ public class Drivetrain extends AbstractDriveBase {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    m_rightMotor.setInverted(true);
+    m_leftMotor.setInverted(robotSettings.leftMotorsInverted);
+    m_rightMotor.setInverted(robotSettings.rightMotorsInverted);
 
     // Use inches as unit for encoder distances
     final double wheelDistancePerPulse = (Math.PI * robotSettings.wheelDiameterMeters) / kCountsPerRevolution;

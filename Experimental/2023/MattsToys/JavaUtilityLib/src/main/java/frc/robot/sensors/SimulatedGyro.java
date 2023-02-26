@@ -1,30 +1,27 @@
 package frc.robot.sensors;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import java.util.function.Supplier;
 
 public class SimulatedGyro implements Gyro {
   /**
-   * Convenient trivial implementation for when we have nothing to do for some
-   * piece of the simulation.
+   * Convenient trivial implementation for when we have nothing to do for some piece of the
+   * simulation.
    */
   public static final Runnable TRIVIAL_RUNNABLE = () -> {};
-
-  public interface DoubleFunction {
-    double get();
-  }
 
   private final Runnable closeFunction;
   private final Runnable calibrateFunction;
   private final Runnable resetFunction;
-  private final DoubleFunction getAngleFcn;
-  private final DoubleFunction getRateFcn;
+  private final Supplier<Double> getAngleFcn;
+  private final Supplier<Double> getRateFcn;
 
   public SimulatedGyro(
       Runnable closeFunction,
       Runnable calibrateFunction,
       Runnable resetFunction,
-      DoubleFunction getAngleFcn,
-      DoubleFunction getRateFcn) {
+      Supplier<Double> getAngleFcn,
+      Supplier<Double> getRateFcn) {
     this.closeFunction = closeFunction;
     this.calibrateFunction = calibrateFunction;
     this.resetFunction = resetFunction;

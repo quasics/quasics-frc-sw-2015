@@ -19,36 +19,25 @@ public abstract interface ThreeAxisGyro {
   public abstract Gyro getYawGyro();
 
   /** Simple wrapper class to be help implement the interface. */
-  public class SingleAxisWrapper implements Gyro {
-    /** Source for reporting the angle. */
-    final Supplier<Double> m_angleSupplier;
-
-    /** Used by "reset()" to establish a new baseline for the angle. */
-    double m_calibrationOffset = 0;
-
-    SingleAxisWrapper(Supplier<Double> supplier) {
-      m_angleSupplier = supplier;
+  public class SingleAxisWrapper extends OffsetGyro {
+    SingleAxisWrapper(final Supplier<Double> angleSupplier, final Supplier<Double> rateSupplier) {
+      super(
+          new SimulatedGyro(
+              SimulatedGyro.TRIVIAL_RUNNABLE,
+              SimulatedGyro.TRIVIAL_RUNNABLE,
+              SimulatedGyro.TRIVIAL_RUNNABLE,
+              angleSupplier,
+              () -> {
+                if (rateSupplier == null) {
+                  throw new UnsupportedOperationException("Can't supply rate");
+                } else {
+                  return rateSupplier.get();
+                }
+              }));
     }
 
-    @Override
-    public void close() throws Exception {}
-
-    @Override
-    public void calibrate() {}
-
-    @Override
-    public void reset() {
-      m_calibrationOffset = m_angleSupplier.get();
-    }
-
-    @Override
-    public double getAngle() {
-      return m_angleSupplier.get() - m_calibrationOffset;
-    }
-
-    @Override
-    public double getRate() {
-      throw new UnsupportedOperationException("getRate() isn't supported");
+    SingleAxisWrapper(Supplier<Double> angleSupplier) {
+      this(angleSupplier, null);
     }
   }
 }

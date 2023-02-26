@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
@@ -71,6 +72,10 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
   public void periodic() {
     // This method will be called once per scheduler run
     updateOdometry();
+
+    SmartDashboard.putNumber("Left distance", getLeftDistanceMeters());
+    SmartDashboard.putNumber("Right distance", getRightDistanceMeters());
+    SmartDashboard.putNumber("Yaw", getGyroAngle().getDegrees());
   }
 
   //////////////////////////////////////////////////////////////////
@@ -92,15 +97,36 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
     drivePercent(leftSpeed, rightSpeed);
   }
 
+  @Override
+  public final void stop() {
+    drivePercent(0, 0);
+  }
+
   //////////////////////////////////////////////////////////////////
   // Positioning/pose information support.
 
-  /** Returns a Gyro to be used in looking at the robot's heading. */
-  public abstract Gyro getZAxisGyro();
+  /** Returns a Gyro to be used in looking at the robot's heading/yaw (rotation on Z-axis). */
+  public abstract Gyro getYawGyro();
+
+  /**
+   * Returns a Gyro to be used in looking at the robot's pitch (rotation on Y-axis).
+   *
+   * <p>Note that this may be a NullGyro (always returning 0) if the robot's hardware doesn't
+   * support this.
+   */
+  public abstract Gyro getPitchGyro();
+
+  /**
+   * Returns a Gyro to be used in looking at the robot's roll (rotation on X-axis).
+   *
+   * <p>Note that this may be a NullGyro (always returning 0) if the robot's hardware doesn't
+   * support this.
+   */
+  public abstract Gyro getRollGyro();
 
   /** Returns the robot's current heading as reported by the gyro. */
   public Rotation2d getGyroAngle() {
-    return getZAxisGyro().getRotation2d();
+    return getYawGyro().getRotation2d();
   }
 
   /** Returns an encoder wrapper for the wheels on the robot's left side. */
@@ -225,7 +251,7 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
     // Get my gyro angle. We are negating the value because gyros return positive
     // values as the robot turns clockwise. This is not standard convention that is
     // used by the WPILib classes.
-    var gyroAngle = Rotation2d.fromDegrees(-getZAxisGyro().getAngle());
+    var gyroAngle = Rotation2d.fromDegrees(-getYawGyro().getAngle());
 
     // Update the pose
     m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());

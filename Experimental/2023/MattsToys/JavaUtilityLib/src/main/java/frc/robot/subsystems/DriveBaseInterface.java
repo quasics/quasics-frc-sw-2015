@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 public interface DriveBaseInterface {
   public void drivePercent(double leftSpeed, double rightSpeed);
 
+  public void stop();
+
   /** Returns a Gyro to be used in looking at the robot's heading. */
-  public abstract Gyro getZAxisGyro();
+  public abstract Gyro getYawGyro();
 
   /**
    * @return the current reading for the left encoder (in meters)
@@ -33,9 +35,6 @@ public interface DriveBaseInterface {
    */
   public double getRightSpeed();
 
-  /**
-   * Resets both the left and right encoders to 0.
-   */
+  /** Resets both the left and right encoders to 0. */
   public void resetEncoders();
-
 }

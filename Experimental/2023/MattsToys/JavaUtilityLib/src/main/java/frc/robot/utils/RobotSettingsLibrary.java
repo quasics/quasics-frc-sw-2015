@@ -48,7 +48,7 @@ public class RobotSettingsLibrary {
     public static final double MAE = 10.71;
     public static final double SALLY = 8.45;
     public static final double GLADYS = 8.45;
-    public static final double ROMI = 1;
+    public static final double ROMI = 1440.0; // Based on sample code
   }
 
   /** Track widths for various robots (in meters). */
@@ -159,7 +159,7 @@ public class RobotSettingsLibrary {
             // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
             // supports this) - these are from 2021
             new PIDConfig(0.00352, 0, 0),
-            RobotSettings.DriveMotorInversion.Right,
+            RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.Romi,
             0 // pigeonCanID
             ));
@@ -181,10 +181,9 @@ public class RobotSettingsLibrary {
             // TODO(mjh): Recalibrate Romi's values for PID control (if SysId ever
             // supports this) - these are from 2021
             new PIDConfig(0.00352, 0, 0),
-            // Note: Romi docs indicate that it's the right motor that's inverted, but I run
-            // the Romi in reverse because the USB camera is mounted on my upper deck that
-            // way.
-            RobotSettings.DriveMotorInversion.Left,
+            // Note: Matt runs the Romi in reverse because the USB camera is mounted on
+            // his unit's upper deck facing that backwards.
+            RobotSettings.DriveMotorInversion.Right,
             RobotSettings.GyroType.Romi,
             0 // pigeonCanID
             ));

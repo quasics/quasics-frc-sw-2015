@@ -12,10 +12,10 @@ public class NullGyro extends SimulatedGyro {
         /* calibrate */ TRIVIAL_RUNNABLE,
         /* reset */ TRIVIAL_RUNNABLE,
         /* getAngle */ () -> {
-          return 0;
+          return 0.0;
         },
         /* getRate */ () -> {
-          return 0;
+          return 0.0;
         });
 
     System.err.println(

@@ -158,11 +158,7 @@ public class Drivebase extends AbstractDriveBase {
               new com.ctre.phoenix.sensors.WPI_Pigeon2(settings.pigeonCanId);
           m_pigeonChecker = new PigeonStatusChecker(pigeon);
           m_realGyro = pigeon;
-          m_rollGyro =
-              new ThreeAxisGyro.SingleAxisWrapper(
-                  () -> {
-                    return pigeon.getRoll();
-                  });
+          m_rollGyro = new ThreeAxisGyro.SingleAxisWrapper(pigeon::getRoll);
           m_pitchGyro = new ThreeAxisGyro.SingleAxisWrapper(pigeon::getPitch);
           m_yawGyro = new ThreeAxisGyro.SingleAxisWrapper(pigeon::getYaw);
         }

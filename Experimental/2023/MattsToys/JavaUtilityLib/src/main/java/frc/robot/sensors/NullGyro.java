@@ -4,11 +4,9 @@
 
 package frc.robot.sensors;
 
-/**
- * A completely fake gyro, which always reports "no movement".
- */
-public class DummyGyro extends SimulatedGyro {
-  public DummyGyro() {
+/** A completely fake gyro, which always reports "no movement". */
+public class NullGyro extends SimulatedGyro {
+  public NullGyro() {
     super(
         /* close */ TRIVIAL_RUNNABLE,
         /* calibrate */ TRIVIAL_RUNNABLE,
@@ -20,8 +18,7 @@ public class DummyGyro extends SimulatedGyro {
           return 0;
         });
 
-    System.err.println("********\n" +
-        "* Creating dummy gyro: all headings from this will be 0!!!!" +
-        "********\n");
+    System.err.println(
+        "********\n* Creating fake gyro: all headings from this will be 0!!!!\n********\n");
   }
 }

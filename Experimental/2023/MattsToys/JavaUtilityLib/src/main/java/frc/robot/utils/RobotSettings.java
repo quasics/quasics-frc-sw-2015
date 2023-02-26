@@ -47,9 +47,13 @@ public class RobotSettings extends PropertyBasedObject {
   /** Gear ratio for the robot (e.g., "10.71" would mean "10.71:1") */
   public final double gearRatio;
 
+  /** Device ID (CAN, etc.) for left front motor on drive base. */
   public final int leftFrontMotorId;
+  /** Device ID (CAN, etc.) for left rear motor on drive base. */
   public final int leftRearMotorId;
+  /** Device ID (CAN, etc.) for right front motor on drive base. */
   public final int rightFrontMotorId;
+  /** Device ID (CAN, etc.) for right rear motor on drive base. */
   public final int rightRearMotorId;
 
   /**

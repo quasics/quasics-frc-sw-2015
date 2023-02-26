@@ -87,10 +87,12 @@ public class Drivetrain extends AbstractDriveBase {
     m_diffDrive.setSafetyEnabled(false);
   }
 
+  @Override
   public void finalizeSetup() {
     configureDifferentialDrive(m_leftMotor, m_rightMotor);
   }
 
+  @Override
   public double getWheelPlacementDiameterMillimeters() {
     /*
      * Quoting from sample Romi code provided by WPILib:
@@ -130,7 +132,7 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   /**
-   * Current angle of the Romi around the X-axis.
+   * Current angle of the Romi around the X-axis (roll).
    *
    * @return The current angle of the Romi in degrees
    */
@@ -139,7 +141,7 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   /**
-   * Current angle of the Romi around the Y-axis.
+   * Current angle of the Romi around the Y-axis (pitch).
    *
    * @return The current angle of the Romi in degrees
    */
@@ -148,7 +150,7 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   /**
-   * Current angle of the Romi around the Z-axis.
+   * Current angle of the Romi around the Z-axis (yaw).
    *
    * @return The current angle of the Romi in degrees
    */

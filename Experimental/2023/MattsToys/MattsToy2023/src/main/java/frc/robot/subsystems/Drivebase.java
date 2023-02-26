@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.sensors.NullGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.sensors.ThreeAxisGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
@@ -73,10 +74,16 @@ public class Drivebase extends AbstractDriveBase {
   /**
    * Gyro installed on the robot, based on settings provided to constructor.
    *
-   * <p>This will either be a Pigeon2, an ADXRS450, or a NullGyro (which always reports "no
-   * movement").
+   * <p>The underlying gyro will either be a Pigeon2, an ADXRS450, or a NullGyro (which always
+   * reports "no movement").
    */
-  private final Gyro m_gyro;
+  private final Gyro m_realGyro;
+
+  private final Gyro m_yawGyro;
+  private final Gyro m_rollGyro;
+  private final Gyro m_pitchGyro;
+
+  // private final Gyro m_
 
   /**
    * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff we're using one).
@@ -146,19 +153,30 @@ public class Drivebase extends AbstractDriveBase {
     // Configure the gyro.
     switch (settings.installedGyroType) {
       case Pigeon2:
-        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon =
-            new com.ctre.phoenix.sensors.WPI_Pigeon2(settings.pigeonCanId);
-        m_gyro = pigeon;
-        m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
+        {
+          final com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon =
+              new com.ctre.phoenix.sensors.WPI_Pigeon2(settings.pigeonCanId);
+          m_pigeonChecker = new PigeonStatusChecker(pigeon);
+          m_realGyro = pigeon;
+          m_rollGyro =
+              new ThreeAxisGyro.SingleAxisWrapper(
+                  () -> {
+                    return pigeon.getRoll();
+                  });
+          m_pitchGyro = new ThreeAxisGyro.SingleAxisWrapper(pigeon::getPitch);
+          m_yawGyro = new ThreeAxisGyro.SingleAxisWrapper(pigeon::getYaw);
+        }
         break;
       case ADXRS450:
-        m_gyro =
-            new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        m_yawGyro =
+            m_realGyro =
+                new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
         m_pigeonChecker = null;
+        m_rollGyro = m_pitchGyro = new NullGyro();
         break;
       case None:
       default:
-        m_gyro = new NullGyro();
+        m_rollGyro = m_pitchGyro = m_yawGyro = m_realGyro = new NullGyro();
         m_pigeonChecker = null;
         break;
     }
@@ -198,13 +216,23 @@ public class Drivebase extends AbstractDriveBase {
   }
 
   @Override
-  public Gyro getZAxisGyro() {
-    return m_gyro;
-  }
-
-  @Override
   public double getWheelPlacementDiameterMillimeters() {
     // TODO Auto-generated method stub
     return 0;
+  }
+
+  @Override
+  public Gyro getPitchGyro() {
+    return m_pitchGyro;
+  }
+
+  @Override
+  public Gyro getRollGyro() {
+    return m_rollGyro;
+  }
+
+  @Override
+  public Gyro getYawGyro() {
+    return m_yawGyro;
   }
 }

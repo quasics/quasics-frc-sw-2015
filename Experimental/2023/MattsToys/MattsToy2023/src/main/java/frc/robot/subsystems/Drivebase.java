@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -230,5 +231,41 @@ public class Drivebase extends AbstractDriveBase {
   @Override
   public Gyro getYawGyro() {
     return m_yawGyro;
+  }
+
+  /**
+   * Current (raw) angle of the robot around the X-axis (roll).
+   *
+   * @return The current angle of the robot in degrees
+   */
+  public double getGyroAngleX() {
+    if (m_realGyro instanceof WPI_Pigeon2) {
+      return ((WPI_Pigeon2) m_realGyro).getRoll();
+    }
+    return 0;
+  }
+
+  /**
+   * Current (raw) angle of the robot around the Y-axis (pitch).
+   *
+   * @return The current angle of the robot in degrees, or 0 if a Pigeon2 is not installed.
+   */
+  public double getGyroAngleY() {
+    if (m_realGyro instanceof WPI_Pigeon2) {
+      return ((WPI_Pigeon2) m_realGyro).getPitch();
+    }
+    return 0;
+  }
+
+  /**
+   * Current (raw) angle of the robot around the Z-axis (yaw).
+   *
+   * @return The current angle of the robot in degrees, or 0 if a Pigeon2 is not installed.
+   */
+  public double getGyroAngleZ() {
+    if (m_realGyro instanceof WPI_Pigeon2) {
+      return ((WPI_Pigeon2) m_realGyro).getYaw();
+    }
+    return m_realGyro.getAngle();
   }
 }

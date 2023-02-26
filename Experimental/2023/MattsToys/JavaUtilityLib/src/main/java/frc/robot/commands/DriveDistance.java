@@ -4,14 +4,16 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.AbstractDriveBase;
 
 public class DriveDistance extends CommandBase {
   private final AbstractDriveBase m_drive;
   // Distance to drive in meters.
   private final double m_distance;
   private final double m_speed;
+  private final boolean m_inReverse;
+  private double m_targetDistance = 0;
 
   /**
    * Creates a new DriveDistance. This command will drive your your robot for a desired distance at
@@ -22,8 +24,10 @@ public class DriveDistance extends CommandBase {
    * @param drive The drivetrain subsystem on which this command will run
    */
   public DriveDistance(double speed, double meters, AbstractDriveBase drive) {
-    m_distance = meters;
-    m_speed = speed;
+    m_inReverse = (speed < 0 || meters < 0);
+    final int sign = (m_inReverse ? -1 : +1);
+    m_distance = Math.abs(meters) * sign;
+    m_speed = Math.abs(speed) * sign;
     m_drive = drive;
     addRequirements(drive);
   }
@@ -31,26 +35,27 @@ public class DriveDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.arcadeDrive(0, 0);
-    m_drive.resetEncoders();
+    m_drive.tankDrive(0, 0);
+    m_targetDistance = m_drive.getLeftDistanceMeters() + m_distance;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.arcadeDrive(m_speed, 0);
+    m_drive.tankDrive(m_speed, m_speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drive.arcadeDrive(0, 0);
+    m_drive.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // Compare distance travelled from start to desired distance
-    return Math.abs(m_drive.getAverageDistanceMillimeters()) >= m_distance;
+    final double currentDistance = m_drive.getLeftDistanceMeters();
+    return (m_inReverse && currentDistance <= m_targetDistance)
+        || (!m_inReverse && currentDistance >= m_targetDistance);
   }
 }

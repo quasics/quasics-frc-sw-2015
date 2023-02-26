@@ -83,7 +83,7 @@ public class RomiGyro {
   }
 
   /**
-   * Get the currently reported angle around the X-axis.
+   * Get the currently reported angle around the X-axis (roll).
    *
    * @return current angle around X-axis in degrees
    */
@@ -96,7 +96,7 @@ public class RomiGyro {
   }
 
   /**
-   * Get the currently reported angle around the X-axis.
+   * Get the currently reported angle around the Y-axis (pitch).
    *
    * @return current angle around Y-axis in degrees
    */
@@ -109,7 +109,7 @@ public class RomiGyro {
   }
 
   /**
-   * Get the currently reported angle around the Z-axis.
+   * Get the currently reported angle around the Z-axis (yaw).
    *
    * @return current angle around Z-axis in degrees
    */

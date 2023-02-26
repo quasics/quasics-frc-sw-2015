@@ -14,8 +14,6 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
 public class Drivetrain extends AbstractDriveBase {
-  private static final double kCountsPerRevolution = 1440.0;
-
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
   private final Spark m_leftMotor = new Spark(0);
@@ -28,35 +26,15 @@ public class Drivetrain extends AbstractDriveBase {
 
   // Set up the RomiGyro
   private final RomiGyro m_gyro = new RomiGyro();
+  private final Gyro m_yawGyro = m_gyro.getYawGyro();
+  private final Gyro m_pitchGyro = m_gyro.getPitchGyro();
+  private final Gyro m_rollGyro = m_gyro.getRollGyro();
 
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
-  class TrivialEncoderImpl implements TrivialEncoder {
-    final Encoder encoder;
-
-    TrivialEncoderImpl(Encoder encoder) {
-      this.encoder = encoder;
-    }
-
-    @Override
-    public double getPosition() {
-      return encoder.getDistance();
-    }
-
-    @Override
-    public double getVelocity() {
-      return encoder.getRate();
-    }
-
-    @Override
-    public void reset() {
-      encoder.reset();
-    }
-  }
-
-  private final TrivialEncoder m_trivialLeftEncoder = new TrivialEncoderImpl(m_leftEncoderLive);
-  private final TrivialEncoder m_trivialRightEncoder = new TrivialEncoderImpl(m_rightEncoderLive);
+  private final TrivialEncoder m_trivialLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoderLive);
+  private final TrivialEncoder m_trivialRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoderLive);
 
   /** Creates a new Drivetrain. */
   public Drivetrain(RobotSettings robotSettings) {
@@ -71,7 +49,8 @@ public class Drivetrain extends AbstractDriveBase {
     m_rightMotor.setInverted(robotSettings.rightMotorsInverted);
 
     // Use meters as unit for encoder distances
-    final double wheelDistancePerPulse = (Math.PI * robotSettings.wheelDiameterMeters) / kCountsPerRevolution;
+    final double wheelCircumferenceMeters = Math.PI * robotSettings.wheelDiameterMeters;
+    final double wheelDistancePerPulse = wheelCircumferenceMeters / robotSettings.gearRatio;
     m_leftEncoderLive.setDistancePerPulse(wheelDistancePerPulse);
     m_rightEncoderLive.setDistancePerPulse(wheelDistancePerPulse);
     resetEncoders();
@@ -156,10 +135,13 @@ public class Drivetrain extends AbstractDriveBase {
   public double getGyroAngleZ() {
     return m_gyro.getAngleZ();
   }
-
+  
   /** Reset the gyro. */
   public void resetGyro() {
     m_gyro.reset();
+    m_yawGyro.reset();
+    m_pitchGyro.reset();
+    m_rollGyro.reset();
   }
 
   @Override
@@ -173,30 +155,17 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   @Override
-  public Gyro getZAxisGyro() {
-    return new Gyro() {
-      @Override
-      public void close() throws Exception {
-      }
+  public Gyro getYawGyro() {
+    return m_yawGyro;
+  }
 
-      @Override
-      public void calibrate() {
-      }
+  @Override
+  public Gyro getPitchGyro() {
+    return m_pitchGyro;
+  }
 
-      @Override
-      public void reset() {
-        m_gyro.reset();
-      }
-
-      @Override
-      public double getAngle() {
-        return m_gyro.getAngleZ();
-      }
-
-      @Override
-      public double getRate() {
-        return m_gyro.getRateZ();
-      }
-    };
+  @Override
+  public Gyro getRollGyro() {
+    return m_rollGyro;
   }
 }

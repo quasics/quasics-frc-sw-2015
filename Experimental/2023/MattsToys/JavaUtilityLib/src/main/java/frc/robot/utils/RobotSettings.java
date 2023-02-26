@@ -275,4 +275,13 @@ public class RobotSettings extends PropertyBasedObject {
     }
     return super.equals(o);
   }
+
+  @Override
+  public String toString() {
+    return super.toString()
+        .toString()
+        .replaceAll(", ", ",\n  ")
+        .replaceFirst("[^\\{]*\\{", "{\n  ")
+        .replaceAll("}", "\n}");
+  }
 }

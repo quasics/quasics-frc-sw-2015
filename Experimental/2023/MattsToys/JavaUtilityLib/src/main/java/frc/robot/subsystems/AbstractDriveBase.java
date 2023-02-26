@@ -22,15 +22,19 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
   private MotorController m_leftMotor;
   private MotorController m_rightMotor;
 
-  /** Configured tank width for the robot. */
-  private final double m_tankWidth;
-
   /** Tracks odometry for the robot. (Updated in periodic().) */
   private DifferentialDriveOdometry m_odometry;
 
+  protected final RobotSettings m_robotSettings;
+
   /** Creates a new AbstractDriveBase. */
   public AbstractDriveBase(RobotSettings robotSettings) {
-    m_tankWidth = robotSettings.trackWidthMeters;
+    if (robotSettings == null) {
+      throw new IllegalArgumentException("Null robot settings");
+    }
+
+    m_robotSettings = robotSettings;
+    System.err.println("Configuring using settings:\n" + robotSettings);
   }
 
   // Set up the differential drive controller
@@ -235,7 +239,7 @@ public abstract class AbstractDriveBase extends SubsystemBase implements DriveBa
 
   /** Returns the width between the robot's tracks. */
   public double getTrackWidth() {
-    return m_tankWidth;
+    return m_robotSettings.trackWidthMeters;
   }
 
   /**

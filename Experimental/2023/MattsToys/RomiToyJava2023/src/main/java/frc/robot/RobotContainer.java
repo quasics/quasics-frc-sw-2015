@@ -123,6 +123,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    // return new frc.robot.commands.DriveDistance(0.25, 0.21991148575, m_drivetrain);
     return m_chooser.getSelected();
   }
 
@@ -172,13 +173,15 @@ public class RobotContainer {
             .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
+    // On the GameSir and Xbox controllers, full forward = -1, full back = +1, so
+    // we'll need to invert them to translate to what we're using in the drive base.
     Supplier<Double> leftStickSpeedControl = () -> {
       double speed = m_xboxController.getRawAxis(1);
-      return leftSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
+      return -leftSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
     Supplier<Double> rightStickSpeedControl = () -> {
       double speed = m_xboxController.getRawAxis(5);
-      return rightSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
+      return -rightSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
 
     // Get the (final) suppliers that will be polled for the left/right side

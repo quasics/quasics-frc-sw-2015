@@ -7,15 +7,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-
 import frc.robot.Constants;
-import frc.robot.utils.RobotSettings;
-import frc.robot.sensors.DummyGyro;
+import frc.robot.sensors.NullGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 public class Drivebase extends AbstractDriveBase {
   class TrivialEncoderImpl implements TrivialEncoder {
@@ -41,13 +39,11 @@ public class Drivebase extends AbstractDriveBase {
     }
   }
 
-  /**
-   * Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if
-   * used).
-   */
+  /** Utility class to handle detecting/reporting on faults with a Pigeon2 IMU (if used). */
   static class PigeonStatusChecker implements Runnable {
     private int lastMask = 0;
-    private com.ctre.phoenix.sensors.Pigeon2_Faults m_faults = new com.ctre.phoenix.sensors.Pigeon2_Faults();
+    private com.ctre.phoenix.sensors.Pigeon2_Faults m_faults =
+        new com.ctre.phoenix.sensors.Pigeon2_Faults();
 
     private com.ctre.phoenix.sensors.WPI_Pigeon2 m_pigeon;
 
@@ -85,32 +81,31 @@ public class Drivebase extends AbstractDriveBase {
   }
 
   /** Motor group for the left side. */
-  final private MotorController m_leftMotors;
+  private final MotorController m_leftMotors;
 
   /** Motor group for the right side. */
-  final private MotorController m_rightMotors;
+  private final MotorController m_rightMotors;
 
   /** Encoder for the left side distance computations. */
-  final private TrivialEncoder m_leftEncoder;
+  private final TrivialEncoder m_leftEncoder;
 
   /** Encoder for the right side distance computations. */
-  final private TrivialEncoder m_rightEncoder;
+  private final TrivialEncoder m_rightEncoder;
 
   /**
    * Gyro installed on the robot, based on settings provided to constructor.
-   * 
-   * This will either be a Pigeon2, an ADXRS450, or a DummyGyro (which always
-   * reports "no movement").
+   *
+   * <p>This will either be a Pigeon2, an ADXRS450, or a NullGyro (which always reports "no
+   * movement").
    */
-  final private Gyro m_gyro;
+  private final Gyro m_gyro;
 
   /**
-   * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff
-   * we're using one).
+   * Status checker used to monitor for faults reported by the Pigeon 2 IMU (iff we're using one).
    *
    * @see #USE_PIGEON_IMU
    */
-  final private PigeonStatusChecker m_pigeonChecker;
+  private final PigeonStatusChecker m_pigeonChecker;
 
   /** Creates a new Drivebase. */
   public Drivebase(RobotSettings settings) {
@@ -122,14 +117,17 @@ public class Drivebase extends AbstractDriveBase {
     // Set up the motors/groups.
 
     // Create the individual motors.
-    final CANSparkMax leftRear = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID,
-        MotorType.kBrushless);
-    final CANSparkMax rightRear = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_REAR_DRIVE_MOTOR_ID,
-        MotorType.kBrushless);
-    final CANSparkMax leftFront = new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_FRONT_DRIVE_MOTOR_ID,
-        MotorType.kBrushless);
-    final CANSparkMax rightFront = new CANSparkMax(Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID,
-        MotorType.kBrushless);
+    final CANSparkMax leftRear =
+        new CANSparkMax(Constants.MotorIds.SparkMax.LEFT_REAR_DRIVE_MOTOR_ID, MotorType.kBrushless);
+    final CANSparkMax rightRear =
+        new CANSparkMax(
+            Constants.MotorIds.SparkMax.RIGHT_REAR_DRIVE_MOTOR_ID, MotorType.kBrushless);
+    final CANSparkMax leftFront =
+        new CANSparkMax(
+            Constants.MotorIds.SparkMax.LEFT_FRONT_DRIVE_MOTOR_ID, MotorType.kBrushless);
+    final CANSparkMax rightFront =
+        new CANSparkMax(
+            Constants.MotorIds.SparkMax.RIGHT_FRONT_DRIVE_MOTOR_ID, MotorType.kBrushless);
 
     // Configure which motors are inverted/not.
     final boolean LEFT_INVERTED = false;
@@ -150,8 +148,8 @@ public class Drivebase extends AbstractDriveBase {
     ////////////////////////////////////////
     // Configure the encoders.
 
-    final double wheelCircumferenceMeters = edu.wpi.first.math.util.Units
-        .inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
+    final double wheelCircumferenceMeters =
+        edu.wpi.first.math.util.Units.inchesToMeters(Constants.WHEEL_DIAMETER_INCHES);
     System.out.println("Wheel circumference (m): " + wheelCircumferenceMeters);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
@@ -180,18 +178,19 @@ public class Drivebase extends AbstractDriveBase {
     // Configure the gyro.
     switch (settings.installedGyroType) {
       case Pigeon2:
-        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon = new com.ctre.phoenix.sensors.WPI_Pigeon2(
-            settings.pigeonCanId);
+        com.ctre.phoenix.sensors.WPI_Pigeon2 pigeon =
+            new com.ctre.phoenix.sensors.WPI_Pigeon2(settings.pigeonCanId);
         m_gyro = pigeon;
         m_pigeonChecker = new PigeonStatusChecker((com.ctre.phoenix.sensors.WPI_Pigeon2) m_gyro);
         break;
       case ADXRS450:
-        m_gyro = new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
+        m_gyro =
+            new edu.wpi.first.wpilibj.ADXRS450_Gyro(edu.wpi.first.wpilibj.SPI.Port.kOnboardCS0);
         m_pigeonChecker = null;
         break;
       case None:
       default:
-        m_gyro = new DummyGyro();
+        m_gyro = new NullGyro();
         m_pigeonChecker = null;
         break;
     }

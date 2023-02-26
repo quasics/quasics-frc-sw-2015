@@ -4,36 +4,16 @@
 
 package frc.robot.sensors;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /** Add your docs here. */
 public abstract class ThreeAxisGyro {
-  public final class NullGyro implements Gyro {
-    // From Gyro
-    public void calibrate() {}
-
-    public double getAngle() {
-      return 0;
-    }
-
-    public double getRate() {
-      return 0;
-    }
-
-    public Rotation2d getRotation2d() {
-      return new Rotation2d();
-    }
-
-    public void reset() {}
-
-    // From AutoCloseable
-    public void close() {}
-  }
-
+  /** Returns a Gyro object that can track rotation on the X axis (roll). */
   public abstract Gyro getRollGyro();
 
+  /** Returns a Gyro object that can track rotation on the Y axis (pitch). */
   public abstract Gyro getPitchGyro();
 
+  /** Returns a Gyro object that can track rotation on the Z axis (yaw). */
   public abstract Gyro getYawGyro();
 }

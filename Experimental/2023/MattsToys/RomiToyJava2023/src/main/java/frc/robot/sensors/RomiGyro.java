@@ -133,16 +133,16 @@ public class RomiGyro implements ThreeAxisGyro {
 
   @Override
   public Gyro getPitchGyro() {
-    return new SingleAxisWrapper(() -> {return getAngleZ();});
+    return new SingleAxisWrapper(() -> {return getAngleZ();}, ()->{return getRateZ();});
   }
 
   @Override
   public Gyro getRollGyro() {
-    return new SingleAxisWrapper(() -> {return getAngleX();});
+    return new SingleAxisWrapper(() -> {return getAngleX();}, ()->{return getRateX();});
   }
 
   @Override
   public Gyro getYawGyro() {
-    return new SingleAxisWrapper(() -> {return getAngleY();});
+    return new SingleAxisWrapper(() -> {return getAngleY();}, ()->{return getRateY();});
   }
 }

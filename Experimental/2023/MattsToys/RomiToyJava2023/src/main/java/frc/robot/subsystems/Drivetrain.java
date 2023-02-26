@@ -15,7 +15,6 @@ import frc.robot.utils.RobotSettings;
 
 public class Drivetrain extends AbstractDriveBase {
   private static final double kCountsPerRevolution = 1440.0;
-  private static final double kWheelDiameterMillimeters = 70; // 2.75591 inches
 
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively

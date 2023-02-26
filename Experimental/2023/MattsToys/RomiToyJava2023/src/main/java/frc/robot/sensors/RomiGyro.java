@@ -8,7 +8,6 @@ import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import frc.robot.sensors.ThreeAxisGyro;
 
 public class RomiGyro implements ThreeAxisGyro {
   private final SimDouble m_simRateX;

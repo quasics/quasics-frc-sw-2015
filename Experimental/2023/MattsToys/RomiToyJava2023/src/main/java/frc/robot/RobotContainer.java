@@ -24,12 +24,9 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
-import frc.robot.utils.RobotSettings;
 import frc.robot.utils.RobotSettingsLibrary;
 import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
-import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
-import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

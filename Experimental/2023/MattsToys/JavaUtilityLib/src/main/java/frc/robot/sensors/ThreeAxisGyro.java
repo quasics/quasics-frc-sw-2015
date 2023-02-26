@@ -20,7 +20,8 @@ public abstract interface ThreeAxisGyro {
 
   /** Simple wrapper class to be help implement the interface. */
   public class SingleAxisWrapper extends OffsetGyro {
-    SingleAxisWrapper(final Supplier<Double> angleSupplier, final Supplier<Double> rateSupplier) {
+    public SingleAxisWrapper(
+        final Supplier<Double> angleSupplier, final Supplier<Double> rateSupplier) {
       super(
           new SimulatedGyro(
               SimulatedGyro.TRIVIAL_RUNNABLE,
@@ -36,7 +37,7 @@ public abstract interface ThreeAxisGyro {
               }));
     }
 
-    SingleAxisWrapper(Supplier<Double> angleSupplier) {
+    public SingleAxisWrapper(Supplier<Double> angleSupplier) {
       this(angleSupplier, null);
     }
   }

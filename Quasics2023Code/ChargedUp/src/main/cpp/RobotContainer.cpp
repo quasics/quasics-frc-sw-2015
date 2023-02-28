@@ -37,7 +37,9 @@
 #include "commands/TankDrive.h"
 #include "commands/TriggerBasedRollerCommand.h"
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer()
+    : m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
+      m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   // Initialize all of your commands and subsystems here
 
   TankDrive tankDrive{

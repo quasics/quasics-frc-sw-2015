@@ -41,7 +41,7 @@ void TurnToAngle::Execute()
   {
     std::cerr << "Set speed to " << -m_speed << ", " << m_speed << "\n";
     m_driveBase->TankDrive(-m_speed, m_speed);
-    if (m_angle.value() >= m_targetAngle.value()-3)
+    if (m_angle.value() >= m_targetAngle.value()+3)
     {
       m_driveBase->TankDrive(-.15, .15);
     }

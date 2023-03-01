@@ -28,22 +28,29 @@ void TurnToAngle::Initialize()
 // Called repeatedly when this Command is scheduled to run
 void TurnToAngle::Execute()
 {
+  const double SLOW_SPEED = 0.15;
+
+   units::degree_t currentAngle = m_driveBase->GetAngle();
   if (m_angle.value() > 0)
   {
-    std::cerr << "Set speed to " << m_speed << ", " << -m_speed << "\n";
-    m_driveBase->TankDrive(m_speed, -m_speed);
-    if (m_angle.value() >= m_targetAngle.value()-3)
+    if (currentAngle.value() >= m_targetAngle.value() - 5)
     {
-      m_driveBase->TankDrive(.15, -.15);
+      std::cerr << "Set speed to " << SLOW_SPEED << ", " << -SLOW_SPEED << "\n";
+      m_driveBase->TankDrive(SLOW_SPEED, -SLOW_SPEED);
+    } else {
+      std::cerr << "Set speed to " << m_speed << ", " << -m_speed << "\n";
+      m_driveBase->TankDrive(m_speed, -m_speed);
     }
   }
   else if (m_angle.value() < 0)
   {
-    std::cerr << "Set speed to " << -m_speed << ", " << m_speed << "\n";
-    m_driveBase->TankDrive(-m_speed, m_speed);
-    if (m_angle.value() >= m_targetAngle.value()+3)
+    if (currentAngle.value() <= m_targetAngle.value() + 5)
     {
-      m_driveBase->TankDrive(-.15, .15);
+      std::cerr << "Set speed to " << -SLOW_SPEED << ", " << SLOW_SPEED << "\n";
+      m_driveBase->TankDrive(-SLOW_SPEED, SLOW_SPEED);
+    } else {
+      std::cerr << "Set speed to " << -m_speed << ", " << m_speed << "\n";
+      m_driveBase->TankDrive(-m_speed, m_speed);
     }
   }
 }

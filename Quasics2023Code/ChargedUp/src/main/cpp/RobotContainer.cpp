@@ -22,9 +22,11 @@
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/ExampleCommand.h"
+#include "commands/ExhaustWithRoller.h"
 #include "commands/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/ExtendIntake.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
+#include "commands/IntakeWithRoller.h"
 #include "commands/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/MoveFloorEjection.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
@@ -122,6 +124,8 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
 
+// ToggleOnTrue command can be used or should this be in each individual command
+
 void RobotContainer::ConfigureBindings() {
   // Configure your trigger bindings here
 
@@ -140,25 +144,30 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static RetractIntake retractIntake(&m_intakeDeployment, 0.30);
   static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
   static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
+  static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
+  static IntakeWithRoller intakeWithRoller(&m_intakeRoller, 0.85);
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
   static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
   static SelfBalancing selfBalancing(&m_drivebase);
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &clampWithIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
-                                     &releaseWithIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     &ejectPiece);
+                                     &retractIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &extendIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+                                     &ejectPiece);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      &resetEjection);
-  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::A_BUTTON,
-                                   &extendIntake);  // extendIntake
+
   RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::Y_BUTTON,
-                                   &retractIntake);
-  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::X_BUTTON,
                                    &selfBalancing);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
+  // NEED TO ADD TOGGLES FOR BRAKING MODE AND SWITCHING BETWEEN CUBE AND CONE
+  // B FOR BRAKING ON LOGITECH, X FOR CUBE TO CONE, Start with Cube
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

@@ -84,8 +84,8 @@ constexpr int PIDGEON_CAN_ID = 1;
 }
 
 namespace RobotSpeedScaling {
-constexpr double TURBO_MODE_SPEED_SCALING = 0.85;
-constexpr double NORMAL_MODE_SPEED_SCALING = 0.75;
+constexpr double TURBO_MODE_SPEED_SCALING = 0.55;
+constexpr double NORMAL_MODE_SPEED_SCALING = 0.70;
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 }  // namespace RobotSpeedScaling
 
@@ -148,7 +148,7 @@ using RateLimit = units::unit_t<
     units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
 
 /** Limit on robot accessleration. */
-constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 2.0 / 1_s;
+constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
 namespace LogitechGamePad {
   // Note: these values were derived from one of the Logitech-branded

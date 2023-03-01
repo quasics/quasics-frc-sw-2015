@@ -37,6 +37,7 @@
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 #include "commands/TankDrive.h"
+#include "commands/ToggleBrakingMode.h"
 #include "commands/TriggerBasedRollerCommand.h"
 
 RobotContainer::RobotContainer()
@@ -149,6 +150,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
   static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
   static SelfBalancing selfBalancing(&m_drivebase);
+  static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
@@ -166,6 +168,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
   RunCommandWhenDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
+  RunCommandWhenDriverButtonIsHeld(OperatorInterface::LogitechGamePad::B_BUTTON,
+                                   &toggleBrakingMode);
   // NEED TO ADD TOGGLES FOR BRAKING MODE AND SWITCHING BETWEEN CUBE AND CONE
   // B FOR BRAKING ON LOGITECH, X FOR CUBE TO CONE, Start with Cube
 }

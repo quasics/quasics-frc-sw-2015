@@ -29,6 +29,9 @@ class Drivebase : public frc2::SubsystemBase {
   }
 
   void SetBrakingMode(bool enabled);
+  bool IsInBrakingMode() {
+    return m_isBraking;
+  }
 
   /**
    * Returns the distance traveled by the left wheels since they were last
@@ -101,6 +104,8 @@ class Drivebase : public frc2::SubsystemBase {
   std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
   std::unique_ptr<frc::DifferentialDrive> m_drive;
+
+  bool m_isBraking = false;  // To be adjusted in the constructor
 
   /**
    * Used to adjust the values reported for "pitch", in order to account for the

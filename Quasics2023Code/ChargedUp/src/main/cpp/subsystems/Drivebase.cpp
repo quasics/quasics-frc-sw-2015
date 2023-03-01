@@ -35,9 +35,13 @@ Drivebase::Drivebase() {
 #elif defined(ENABLE_AD_GYRO)
   m_adGyro.Calibrate();
 #endif
+
+  // Establish an initial, known braking mode
+  SetBrakingMode(false);
 }
 
 void Drivebase::SetBrakingMode(bool enabled) {
+  m_isBraking = enabled;
   if (enabled) {
     m_leftFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_rightFront.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);

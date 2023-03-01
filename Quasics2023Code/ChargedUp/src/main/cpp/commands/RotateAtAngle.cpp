@@ -10,9 +10,7 @@
 
 RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
-    : m_drivebase(drivebase),
-      m_percentSpeed(percentSpeed),
-      m_angle(angle) {
+    : m_drivebase(drivebase), m_percentSpeed(percentSpeed), m_angle(angle) {
   AddRequirements(m_drivebase);
 }
 
@@ -47,7 +45,8 @@ void RotateAtAngle::Execute() {
   m_drivebase->SetBrakingMode(true);
   const units::degree_t currentPosition = m_drivebase->GetAngle();
 
-  const units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
+  const units::degree_t degreesLeft =
+      (m_startAngle + m_angle) - currentPosition;
   std::cerr << degreesLeft.value() << std::endl;
   const units::degree_t degreesLeftWhenSlowDown = m_angle / 4;
   const double minimumSpeed = 0.30;  // speed must be >= 0.30
@@ -63,14 +62,13 @@ void RotateAtAngle::Execute() {
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
-  }
-  else {
+  } else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
         m_percentSpeed * m_multiplier > minimumSpeed) {
       m_multiplier *= scalingFactor;
-      m_multiplier =
-          (m_multiplier * m_percentSpeed > minimumSpeed ? m_multiplier * m_percentSpeed
-                                                : minimumSpeed);
+      m_multiplier = (m_multiplier * m_percentSpeed > minimumSpeed
+                          ? m_multiplier * m_percentSpeed
+                          : minimumSpeed);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

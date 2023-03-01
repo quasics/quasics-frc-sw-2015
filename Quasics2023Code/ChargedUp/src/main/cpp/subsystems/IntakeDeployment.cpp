@@ -37,6 +37,8 @@ void IntakeDeployment::EnableBraking(bool value) {
   }
   m_leftDeploymentMotor.SetIdleMode(mode);
   m_rightDeploymentMotor.SetIdleMode(mode);
+#else
+//(void)mode;
 #endif
 }
 

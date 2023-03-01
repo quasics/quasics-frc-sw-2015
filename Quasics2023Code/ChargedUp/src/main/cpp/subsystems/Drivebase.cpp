@@ -115,7 +115,9 @@ units::degree_t Drivebase::GetAngle() {
 #if defined(ENABLE_PIGEON)
   return m_pigeon.GetRotation2d().Degrees();
 #else
-  return 0_deg;
+  return m_adGyro.GetAngle() *
+         -1_deg;  // convert double returned by GetAngle() to degrees. multiply
+                  // by -1 because values are flipped for some reason
 #endif
 }
 

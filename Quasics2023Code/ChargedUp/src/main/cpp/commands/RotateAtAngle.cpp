@@ -31,7 +31,7 @@ void RotateAtAngle::Initialize() {
   // -6 and +6 added because robot generally overshoots 6 degrees even at
   // slow speeds
 
-  m_angle = (m_angle > 0_deg) ? m_angle - 6_deg : m_angle + 6_deg;
+  // m_angle = (m_angle > 0_deg) ? m_angle - 6_deg : m_angle + 6_deg;
 
   m_multiplier = 1;
 
@@ -49,15 +49,16 @@ void RotateAtAngle::Execute() {
   units::degree_t currentPosition = m_drivebase->GetAngle();
 
   units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
-  units::degree_t degreesLeftWhenSlowDown = m_percentSpeed * 150_deg;
+  std::cerr << degreesLeft.value() << std::endl;
+  units::degree_t degreesLeftWhenSlowDown = m_angle / 4;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.25) {
-      m_multiplier *= .95;
-      m_multiplier = (m_multiplier * m_percentSpeed > 0.25
+        m_percentSpeed * m_multiplier > 0.30) {
+      m_multiplier *= .98;
+      m_multiplier = (m_multiplier * m_percentSpeed > 0.30
                           ? m_multiplier * m_percentSpeed
-                          : 0.25);  // speed must be >= 0.25
+                          : 0.30);  // speed must be >= 0.30
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
@@ -65,11 +66,11 @@ void RotateAtAngle::Execute() {
 
   else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
-        m_percentSpeed * m_multiplier > 0.25) {
-      m_multiplier *= .95;
+        m_percentSpeed * m_multiplier > 0.30) {
+      m_multiplier *= .98;
       m_multiplier =
-          (m_multiplier * m_percentSpeed > 0.25 ? m_multiplier * m_percentSpeed
-                                                : 0.25);
+          (m_multiplier * m_percentSpeed > 0.30 ? m_multiplier * m_percentSpeed
+                                                : 0.30);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);
@@ -78,6 +79,9 @@ void RotateAtAngle::Execute() {
 
 // Called once the command ends or is interrupted.
 void RotateAtAngle::End(bool interrupted) {
+  units::degree_t currentPosition = m_drivebase->GetAngle();
+  units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
+  std::cerr << "Final value: " << degreesLeft.value() << std::endl;
   m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
 }

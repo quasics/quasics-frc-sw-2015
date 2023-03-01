@@ -23,6 +23,8 @@
  * Angle should be between -180 and 180 degrees to be optimized.
  * If 270 degrees is inputted, robot will not optimize this to -90 degrees
  */
+// CODE_REVIEW: Finish cleaning up the comments above.  This *isn't* an
+// "example command", for example.
 class RotateAtAngle
     : public frc2::CommandHelper<frc2::CommandBase, RotateAtAngle> {
  public:

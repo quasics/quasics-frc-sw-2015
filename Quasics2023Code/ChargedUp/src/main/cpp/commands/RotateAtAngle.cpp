@@ -16,6 +16,10 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
+  // CODE_REVIEW: This is making undocumented assumptions about the signs for
+  // speed and angle.  Please either add some comments in the header to clarify
+  // how they work/should be used, or normalize them above, or something.  (For
+  // example, what if the user passes in -90 degrees, and -0.5 for speed?)
   if (m_percentSpeed < 0) {
     if (m_angle < 0_deg) {
       m_percentSpeed = -m_percentSpeed;
@@ -25,14 +29,10 @@ void RotateAtAngle::Initialize() {
     }
   }
 
-  // -6 and +6 added because robot generally overshoots 6 degrees even at
-  // slow speeds
-
-  // m_angle = (m_angle > 0_deg) ? m_angle - 6_deg : m_angle + 6_deg;
-
   m_multiplier = 1;
 
   m_drivebase->SetBrakingMode(true);
+
   if (m_angle >= 0_deg)
     m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
   else
@@ -42,15 +42,15 @@ void RotateAtAngle::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
-  m_drivebase->SetBrakingMode(true);
+  const double minimumSpeed = 0.30;  // speed must be >= 0.30
+  const double scalingFactor = 0.98;
+
   const units::degree_t currentPosition = m_drivebase->GetAngle();
 
   const units::degree_t degreesLeft =
       (m_startAngle + m_angle) - currentPosition;
   std::cerr << degreesLeft.value() << std::endl;
   const units::degree_t degreesLeftWhenSlowDown = m_angle / 4;
-  const double minimumSpeed = 0.30;  // speed must be >= 0.30
-  const double scalingFactor = 0.98;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&

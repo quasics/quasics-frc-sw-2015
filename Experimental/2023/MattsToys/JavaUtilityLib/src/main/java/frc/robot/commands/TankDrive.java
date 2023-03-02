@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.DriveBaseInterface;
 import java.util.function.Supplier;
 
 public class TankDrive extends CommandBase {
-  private final AbstractDriveBase m_driveBase;
+  private final DriveBaseInterface m_driveBase;
   private final Supplier<Double> m_leftSpeedSupplier;
   private final Supplier<Double> m_rightSpeedSupplier;
 
@@ -22,13 +23,13 @@ public class TankDrive extends CommandBase {
    * @param rightSpeedSupplier Lambda supplier of right speed
    */
   public TankDrive(
-      AbstractDriveBase drivetrain,
+      DriveBaseInterface drivetrain,
       Supplier<Double> leftSpeedSupplier,
       Supplier<Double> rightSpeedSupplier) {
     m_driveBase = drivetrain;
     m_leftSpeedSupplier = leftSpeedSupplier;
     m_rightSpeedSupplier = rightSpeedSupplier;
-    addRequirements(drivetrain);
+    addRequirements((Subsystem) drivetrain);
   }
 
   // Called when the command is initially scheduled.

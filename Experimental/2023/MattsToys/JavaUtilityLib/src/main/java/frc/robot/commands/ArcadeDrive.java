@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.AbstractDriveBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.DriveBaseInterface;
 import java.util.function.Supplier;
 
@@ -23,13 +23,13 @@ public class ArcadeDrive extends CommandBase {
    * @param zaxisRotateSupplier Lambda supplier of rotational speed
    */
   public ArcadeDrive(
-      AbstractDriveBase drivetrain,
+      DriveBaseInterface drivetrain,
       Supplier<Double> xaxisSpeedSupplier,
       Supplier<Double> zaxisRotateSupplier) {
     m_driveBase = drivetrain;
     m_xaxisSpeedSupplier = xaxisSpeedSupplier;
     m_zaxisRotateSupplier = zaxisRotateSupplier;
-    addRequirements(drivetrain);
+    addRequirements((Subsystem) drivetrain);
   }
 
   // Called when the command is initially scheduled.

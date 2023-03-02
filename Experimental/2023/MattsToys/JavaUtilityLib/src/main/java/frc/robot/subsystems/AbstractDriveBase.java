@@ -82,25 +82,23 @@ public abstract class AbstractDriveBase extends SubsystemBase
   //////////////////////////////////////////////////////////////////
   // Basic maneuvering support.
 
+  @Override
   public final void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
     if (m_diffDrive != null) {
       m_diffDrive.arcadeDrive(xaxisSpeed, zaxisRotate);
     }
   }
 
-  public final void drivePercent(double leftSpeed, double rightSpeed) {
+  @Override
+  public final void tankDrive(double leftSpeed, double rightSpeed) {
     if (m_diffDrive != null) {
       m_diffDrive.tankDrive(leftSpeed, rightSpeed);
     }
   }
 
-  public final void tankDrive(double leftSpeed, double rightSpeed) {
-    drivePercent(leftSpeed, rightSpeed);
-  }
-
   @Override
   public final void stop() {
-    drivePercent(0, 0);
+    m_diffDrive.stopMotor();
   }
 
   //////////////////////////////////////////////////////////////////

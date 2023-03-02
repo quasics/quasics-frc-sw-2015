@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.AbstractDriveBase;
+import frc.robot.subsystems.DriveBaseInterface;
 import java.util.function.Supplier;
 
 public class ArcadeDrive extends CommandBase {
-  private final AbstractDriveBase m_driveBase;
+  private final DriveBaseInterface m_driveBase;
   private final Supplier<Double> m_xaxisSpeedSupplier;
   private final Supplier<Double> m_zaxisRotateSupplier;
 

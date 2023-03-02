@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /** Add your docs here. */
 public interface DriveBaseInterface {
-  public void drivePercent(double leftSpeed, double rightSpeed);
+  public void tankDrive(double leftSpeed, double rightSpeed);
+
+  public void arcadeDrive(double forwardSpeed, double turnSpeed);
 
   public void stop();
 

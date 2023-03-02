@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
-public abstract class AbstractDriveBase extends SubsystemBase implements DriveBaseInterface {
+public abstract class AbstractDriveBase extends SubsystemBase
+    implements DriveBaseWith3AxisGyroInterface {
   /** The differential drive object used for basic maneuvering. */
   protected DifferentialDrive m_diffDrive = null;
 

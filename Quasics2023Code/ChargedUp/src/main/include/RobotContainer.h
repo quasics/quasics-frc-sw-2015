@@ -52,39 +52,37 @@ class RobotContainer {
  private:
   frc2::Command *GTFODOCK(std::string teamAndPosName);
 
-  static frc2::Command *moveToDefenseAgainstScoringWall(
-      std::string teamAndPosName, Drivebase *drivebase);
+  frc2::Command *moveToDefenseAgainstScoringWall(std::string teamAndPosName,
+                                                 Drivebase *drivebase);
 
-  static frc2::Command *moveToDefenseAgainstOuterWall(
-      std::string teamAndPosName, Drivebase *drivebase);
+  frc2::Command *moveToDefenseAgainstOuterWall(std::string teamAndPosName,
+                                               Drivebase *drivebase);
 
-  static frc2::Command *JustCharge(std::string teamAndPosName,
-                                   Drivebase *drivebase);
+  frc2::Command *JustCharge(std::string teamAndPosName, Drivebase *drivebase);
 
-  static frc2::Command *ScoreAndLeave(std::string teamAndPosName,
-                                      Drivebase *drivebase,
-                                      IntakeDeployment *intakeDeployment,
-                                      IntakeClamp *intakeClamp);
+  frc2::Command *ScoreAndLeave(std::string teamAndPosName, Drivebase *drivebase,
+                               IntakeDeployment *intakeDeployment,
+                               IntakeClamp *intakeClamp);
 
   frc2::Command *ScoreThenCharge(std::string teamAndPosName);
 
-  static frc2::Command *ScoreThenEndNearGamePieceCommand(
+  frc2::Command *ScoreThenEndNearGamePieceCommand(
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
-  static frc2::Command *DropGamePieceThenGTFOCommand(
+  frc2::Command *DropGamePieceThenGTFOCommand(
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
-  static frc2::Command *DropGamePieceThenChargeCommand(
+  frc2::Command *DropGamePieceThenChargeCommand(
       std::string teamAndPosName, Drivebase *drivebase,
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
   frc2::Command *ScoreGTFOThenCharge(std::string teamAndPosName);
 
-  static frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
+  frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
 
-  static frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand(
+  frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeClamp *intakeClamp);
 

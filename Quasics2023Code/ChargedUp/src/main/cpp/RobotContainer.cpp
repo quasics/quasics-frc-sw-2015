@@ -311,23 +311,25 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName) {
     // mobility points), then turn and drive until we're in line with the
     // middle of the charging station, and then move forward and balance on
     // the charging station.
-    const bool firstTurnIsClockwise =
-        (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
+    const bool firstTurnIsCounterClockwise =
+        (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
          teamAndPosName == AutonomousTeamAndStationPositions::Red1);
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{&m_drivebase, -0.5, 4.0_m}));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{&m_drivebase, 0.5, 90_deg},
-            RotateAtAngle{&m_drivebase, 0.5, -90_deg},
-            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+                                     RotateAtAngle{&m_drivebase, 0.5, -90_deg},
+                                     [firstTurnIsCounterClockwise]() {
+                                       return firstTurnIsCounterClockwise;
+                                     })));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{&m_drivebase, 0.5, 1.889_m}));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{&m_drivebase, 0.5, -90_deg},
-            RotateAtAngle{&m_drivebase, 0.5, 90_deg},
-            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, -90_deg},
+                                     RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+                                     [firstTurnIsCounterClockwise]() {
+                                       return firstTurnIsCounterClockwise;
+                                     })));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveUntilPitchAngleChange{&m_drivebase, 0.5}));
     commands.push_back(
@@ -506,21 +508,23 @@ frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
     commands.push_back(
         std::unique_ptr<frc2::Command>(new SelfBalancing(drivebase)));
   } else {
-    const bool firstTurnIsClockwise =
-        (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
+    const bool firstTurnIsCounterClockwise =
+        (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
          teamAndPosName == AutonomousTeamAndStationPositions::Red3);
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, 90_deg},
-            RotateAtAngle{drivebase, 0.5, -90_deg},
-            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
+                                     RotateAtAngle{drivebase, 0.5, -90_deg},
+                                     [firstTurnIsCounterClockwise]() {
+                                       return firstTurnIsCounterClockwise;
+                                     })));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters(drivebase, 0.5, 1.719_m)));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, 90_deg},
-            RotateAtAngle{drivebase, 0.5, -90_deg},
-            [firstTurnIsClockwise]() { return firstTurnIsClockwise; })));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
+                                     RotateAtAngle{drivebase, 0.5, -90_deg},
+                                     [firstTurnIsCounterClockwise]() {
+                                       return firstTurnIsCounterClockwise;
+                                     })));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveUntilPitchAngleChange(drivebase, 0.5)));
     commands.push_back(

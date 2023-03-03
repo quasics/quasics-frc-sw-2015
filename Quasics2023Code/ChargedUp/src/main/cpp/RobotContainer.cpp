@@ -210,13 +210,12 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     return GTFODOCK(teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall) {
-    return moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase);
+    return moveToDefenseAgainstScoringWall(teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall) {
-    return moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase);
+    return moveToDefenseAgainstOuterWall(teamAndPosName);
   } /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
-    return ScoreAndLeave(teamAndPosName, &m_drivebase, &m_intakeDeployment,
-                         &m_intakeClamp);
+    return ScoreAndLeave(teamAndPosName);
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;
   } */
@@ -225,10 +224,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(
-        std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
-            &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+        std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand()));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase)));
+        moveToDefenseAgainstScoringWall(teamAndPosName)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -237,10 +235,9 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(
-        std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
-            &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+        std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand()));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase)));
+        moveToDefenseAgainstOuterWall(teamAndPosName)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -248,10 +245,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                   DropAndMoveToDefenseAgainstScoringWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(DropGamePieceHelperCommand()));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        moveToDefenseAgainstScoringWall(teamAndPosName, &m_drivebase)));
+        moveToDefenseAgainstScoringWall(teamAndPosName)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
@@ -259,32 +256,28 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
                                   DropAndMoveToDefenseAgainstOuterWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(DropGamePieceHelperCommand()));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        moveToDefenseAgainstOuterWall(teamAndPosName, &m_drivebase)));
+        moveToDefenseAgainstOuterWall(teamAndPosName)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
-    return ClampScoreGamePieceHelperCommand(&m_drivebase, &m_intakeDeployment,
-                                            &m_intakeClamp);
+    return ClampScoreGamePieceHelperCommand();
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
-    return JustCharge(teamAndPosName, &m_drivebase);
+    return JustCharge(teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
     return ScoreThenCharge(teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::ScoreThenEndNearGamePiece) {
-    return ScoreThenEndNearGamePieceCommand(
-        teamAndPosName, &m_drivebase, &m_intakeDeployment, &m_intakeClamp);
+    return ScoreThenEndNearGamePieceCommand(teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
-    return DropGamePieceHelperCommand(&m_intakeDeployment, &m_intakeClamp);
+    return DropGamePieceHelperCommand();
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
-    return DropGamePieceThenGTFOCommand(teamAndPosName, &m_drivebase,
-                                        &m_intakeDeployment, &m_intakeClamp);
+    return DropGamePieceThenGTFOCommand(teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
-    return DropGamePieceThenChargeCommand(teamAndPosName, &m_drivebase,
-                                          &m_intakeDeployment, &m_intakeClamp);
+    return DropGamePieceThenChargeCommand(teamAndPosName);
   }
 
   return m_RobotSequenceAutonomousOptions.GetSelected();  // CHANGE THIS
@@ -339,15 +332,15 @@ frc2::Command *RobotContainer::GTFODOCK(std::string teamAndPosName) {
 }
 
 frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
-    std::string teamAndPosName, Drivebase *m_drivebase) {
+    std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          RotateAtAngle{&m_drivebase, 0.5, -90_deg},
           frc2::ConditionalCommand(
-              RotateAtAngle{m_drivebase, 0.5, 90_deg},
-              RotateAtAngle(m_drivebase, 0.5, 180_deg),
+              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+              RotateAtAngle(&m_drivebase, 0.5, 180_deg),
               [teamAndPosName] {
                 return teamAndPosName ==
                            AutonomousTeamAndStationPositions::Red2 ||
@@ -361,9 +354,9 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          DriveAtPowerForMeters{m_drivebase, 0.5, 4_m},
+          DriveAtPowerForMeters{&m_drivebase, 0.5, 4_m},
           frc2::ConditionalCommand(
-              DriveAtPowerForMeters{m_drivebase, 0.5, 2_m},
+              DriveAtPowerForMeters{&m_drivebase, 0.5, 2_m},
               frc2::PrintCommand{"Doing nothing"},
               [teamAndPosName] {
                 return teamAndPosName ==
@@ -378,9 +371,9 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          RotateAtAngle{&m_drivebase, 0.5, -90_deg},
           frc2::ConditionalCommand(
-              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
               frc2::PrintCommand{"Doing nothing"},
               [teamAndPosName] {
                 return teamAndPosName ==
@@ -394,25 +387,25 @@ frc2::Command *RobotContainer::moveToDefenseAgainstScoringWall(
           })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 2_m}));
+      new DriveAtPowerForMeters{&m_drivebase, 0.5, 2_m}));
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          RotateAtAngle{m_drivebase, 0.5, 25.8_deg},
-          RotateAtAngle{m_drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
+          RotateAtAngle{&m_drivebase, 0.5, 25.8_deg},
+          RotateAtAngle{&m_drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
             return teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
                    teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
                    teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
           })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 3.845_m}));
+      new DriveAtPowerForMeters{&m_drivebase, 0.5, 3.845_m}));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
-    std::string teamAndPosName, Drivebase *m_drivebase) {
+    std::string teamAndPosName) {
   const bool isBlue =
       teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
       AutonomousTeamAndStationPositions::Blue2 ||
@@ -421,10 +414,10 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          RotateAtAngle{&m_drivebase, 0.5, -90_deg},
           frc2::ConditionalCommand(
-              RotateAtAngle{m_drivebase, 0.5, 90_deg},
-              RotateAtAngle(m_drivebase, 0.5, 180_deg),
+              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+              RotateAtAngle(&m_drivebase, 0.5, 180_deg),
               [teamAndPosName] {
                 return teamAndPosName ==
                            AutonomousTeamAndStationPositions::Blue1 ||
@@ -438,9 +431,9 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          DriveAtPowerForMeters{m_drivebase, 0.5, 4_m},
+          DriveAtPowerForMeters{&m_drivebase, 0.5, 4_m},
           frc2::ConditionalCommand(
-              DriveAtPowerForMeters{m_drivebase, 0.5, 2_m},
+              DriveAtPowerForMeters{&m_drivebase, 0.5, 2_m},
               frc2::PrintCommand{"Doing nothing"},
               [teamAndPosName] {
                 return teamAndPosName ==
@@ -455,9 +448,9 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
 
   commands.push_back(
       std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-          RotateAtAngle{m_drivebase, 0.5, -90_deg},
+          RotateAtAngle{&m_drivebase, 0.5, -90_deg},
           frc2::ConditionalCommand(
-              RotateAtAngle{m_drivebase, 0.5, 90_deg},
+              RotateAtAngle{&m_drivebase, 0.5, 90_deg},
               frc2::PrintCommand{"Doing nothing"},
               [teamAndPosName] {
                 return teamAndPosName ==
@@ -471,64 +464,60 @@ frc2::Command *RobotContainer::moveToDefenseAgainstOuterWall(
           })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
+      new DriveAtPowerForMeters{&m_drivebase, 0.5, 4_m}));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new frc2::ConditionalCommand(RotateAtAngle{m_drivebase, 0.5, 90_deg},
-                                   RotateAtAngle{m_drivebase, 0.5, -90_deg},
+      new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+                                   RotateAtAngle{&m_drivebase, 0.5, -90_deg},
                                    [isBlue] { return isBlue; })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 4_m}));
+      new DriveAtPowerForMeters{&m_drivebase, 0.5, 4_m}));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new frc2::ConditionalCommand(RotateAtAngle{m_drivebase, 0.5, -47.9_deg},
-                                   RotateAtAngle{m_drivebase, 0.5, 47.9_deg},
+      new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, -47.9_deg},
+                                   RotateAtAngle{&m_drivebase, 0.5, 47.9_deg},
                                    [isBlue] { return isBlue; })));
 
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters{m_drivebase, 0.5, 1.948_m}));
+      new DriveAtPowerForMeters{&m_drivebase, 0.5, 1.948_m}));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 /*
-frc2::Command *RobotContainer::ScoreAndLeave(std::string teamAndPosName,
-                                             Drivebase *drivebase,
-                                             IntakeDeployment *IntakeDeployment,
-                                             IntakeClamp *intakeClamp) {
+frc2::Command *RobotContainer::ScoreAndLeave(std::string teamAndPosName) {
                                              }*/
 
-frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName,
-                                          Drivebase *drivebase) {
+frc2::Command *RobotContainer::JustCharge(std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveUntilPitchAngleChange(drivebase, -0.5)));
+        new DriveUntilPitchAngleChange(&m_drivebase, -0.5)));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing(drivebase)));
+        std::unique_ptr<frc2::Command>(new SelfBalancing(&m_drivebase)));
   } else {
     const bool firstTurnIsCounterClockwise =
         (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
          teamAndPosName == AutonomousTeamAndStationPositions::Red3);
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                     RotateAtAngle{drivebase, 0.5, -90_deg},
+        new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+                                     RotateAtAngle{&m_drivebase, 0.5, -90_deg},
                                      [firstTurnIsCounterClockwise]() {
                                        return firstTurnIsCounterClockwise;
                                      })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 1.719_m)));
+        new DriveAtPowerForMeters(&m_drivebase, 0.5, 1.719_m)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                     RotateAtAngle{drivebase, 0.5, -90_deg},
+        new frc2::ConditionalCommand(RotateAtAngle{&m_drivebase, 0.5, 90_deg},
+                                     RotateAtAngle{&m_drivebase, 0.5, -90_deg},
                                      [firstTurnIsCounterClockwise]() {
                                        return firstTurnIsCounterClockwise;
                                      })));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveUntilPitchAngleChange(drivebase, 0.5)));
+        new DriveUntilPitchAngleChange(&m_drivebase, 0.5)));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new SelfBalancing(drivebase)));
+        std::unique_ptr<frc2::Command>(new SelfBalancing(&m_drivebase)));
   }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -542,8 +531,7 @@ RobotContainer::GetScoreSequenceFromStartingPoint() {
   std::cerr << "Using roller for auto intake.\n";
 #elif defined(USING_CLAMP_FOR_AUTO_INTAKE)
   commands.push_back(
-      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
-          &m_drivebase, &m_intakeDeployment, &m_intakeClamp)));
+      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand()));
   std::cerr << "Using clamp for auto intake.\n";
 #else
   // Paranoid fallback: at least say you couldn't do it
@@ -560,55 +548,51 @@ frc2::Command *RobotContainer::ScoreThenCharge(std::string teamAndPosName) {
   commands.push_back(
       std::unique_ptr<frc2::Command>(GetScoreSequenceFromStartingPoint()));
   commands.push_back(
-      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, &m_drivebase)));
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::Command *RobotContainer::ScoreThenEndNearGamePieceCommand(
-    std::string teamAndPosName, Drivebase *drivebase,
-    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+    std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
-      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand(
-          drivebase, intakeDeployment, intakeClamp)));
+      std::unique_ptr<frc2::Command>(ClampScoreGamePieceHelperCommand()));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new RotateAtAngle(drivebase, 0.5, 180_deg)));
+      new RotateAtAngle(&m_drivebase, 0.5, 180_deg)));
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 5.0_m)));
+        new DriveAtPowerForMeters(&m_drivebase, 0.5, 5.0_m)));
   } else {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 4.5_m)));
+        new DriveAtPowerForMeters(&m_drivebase, 0.5, 4.5_m)));
   }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::Command *RobotContainer::DropGamePieceThenGTFOCommand(
-    std::string teamAndPosName, Drivebase *drivebase,
-    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+    std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      DropGamePieceHelperCommand(intakeDeployment, intakeClamp)));
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(DropGamePieceHelperCommand()));
   if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
       teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 4.5_m)));
+        new DriveAtPowerForMeters(&m_drivebase, 0.5, 4.5_m)));
   } else {
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 4.0_m)));
+        new DriveAtPowerForMeters(&m_drivebase, 0.5, 4.0_m)));
   }
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::Command *RobotContainer::DropGamePieceThenChargeCommand(
-    std::string teamAndPosName, Drivebase *drivebase,
-    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+    std::string teamAndPosName) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(std::unique_ptr<frc2::Command>(
-      DropGamePieceHelperCommand(intakeDeployment, intakeClamp)));
   commands.push_back(
-      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName, drivebase)));
+      std::unique_ptr<frc2::Command>(DropGamePieceHelperCommand()));
+  commands.push_back(
+      std::unique_ptr<frc2::Command>(JustCharge(teamAndPosName)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -620,32 +604,30 @@ frc2::Command *RobotContainer::ScoreGTFOThenCharge(std::string teamAndPosName) {
   commands.push_back(std::unique_ptr<frc2::Command>(GTFODOCK(teamAndPosName)));
 }
 
-frc2::SequentialCommandGroup *RobotContainer::DropGamePieceHelperCommand(
-    IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+frc2::SequentialCommandGroup *RobotContainer::DropGamePieceHelperCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+      new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
-frc2::SequentialCommandGroup *RobotContainer::ClampScoreGamePieceHelperCommand(
-    Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-    IntakeClamp *intakeClamp) {
+frc2::SequentialCommandGroup *
+RobotContainer::ClampScoreGamePieceHelperCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
+      new DriveAtPowerForMeters(&m_drivebase, 0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ReleaseWithIntakeAtSpeedForTime(intakeClamp, 0.5, 0.3_s)));
+      new ReleaseWithIntakeAtSpeedForTime(&m_intakeClamp, 0.5, 0.3_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
+      new DriveAtPowerForMeters(&m_drivebase, -0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
@@ -658,15 +640,15 @@ RobotContainer::RollerScoreGamePieceHelperCommand() {
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.3, 0.5_s)));
   /*
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
+      new DriveAtPowerForMeters(&m_drivebase, 0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new ExhaustWithRollerAtSpeedForTime(intakeRoller, 0.5, 0.3_s)));
+      new ExhaustWithRollerAtSpeedForTime(&m_intakeRoller, 0.5, 0.3_s)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
+      new DriveAtPowerForMeters(&m_drivebase, -0.5, 0.3_m)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.5_s)));
     */
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

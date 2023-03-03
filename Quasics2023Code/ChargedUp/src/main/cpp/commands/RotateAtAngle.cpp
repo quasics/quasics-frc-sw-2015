@@ -10,16 +10,18 @@
 
 RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
-    : m_drivebase(drivebase), m_percentSpeed(percentSpeed), m_angle(angle) {
+    : m_drivebase(drivebase),
+      m_percentSpeed(percentSpeed),
+      m_angle((angle > 0_deg) ? (angle - 3_deg) : (angle + 3_deg)) {
   AddRequirements(m_drivebase);
 }
 
 // Called when the command is initially scheduled.
 void RotateAtAngle::Initialize() {
-  // CODE_REVIEW: This is making undocumented assumptions about the signs for
-  // speed and angle.  Please either add some comments in the header to clarify
-  // how they work/should be used, or normalize them above, or something.  (For
-  // example, what if the user passes in -90 degrees, and -0.5 for speed?)
+  // This code makes sure that the angle is negative and not the speed. If the
+  // user enters 90_deg at -50% speed, that will be converted to -90_deg at 50%
+  // speed. If the user enters -90_deg at -50% speed, that will be converted to
+  // -90_deg at 50% speed
   if (m_percentSpeed < 0) {
     if (m_angle < 0_deg) {
       m_percentSpeed = -m_percentSpeed;
@@ -43,14 +45,13 @@ void RotateAtAngle::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
   const double minimumSpeed = 0.30;  // speed must be >= 0.30
-  const double scalingFactor = 0.98;
+  const double scalingFactor = 0.90;
 
   const units::degree_t currentPosition = m_drivebase->GetAngle();
 
   const units::degree_t degreesLeft =
       (m_startAngle + m_angle) - currentPosition;
-  std::cerr << degreesLeft.value() << std::endl;
-  const units::degree_t degreesLeftWhenSlowDown = m_angle / 4;
+  const units::degree_t degreesLeftWhenSlowDown = 30_deg;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
@@ -58,7 +59,7 @@ void RotateAtAngle::Execute() {
       m_multiplier *= scalingFactor;
       m_multiplier = (m_multiplier * m_percentSpeed > minimumSpeed
                           ? m_multiplier * m_percentSpeed
-                          : minimumSpeed);
+                          : minimumSpeed * m_percentSpeed);
     }
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
@@ -68,7 +69,7 @@ void RotateAtAngle::Execute() {
       m_multiplier *= scalingFactor;
       m_multiplier = (m_multiplier * m_percentSpeed > minimumSpeed
                           ? m_multiplier * m_percentSpeed
-                          : minimumSpeed);
+                          : minimumSpeed * m_percentSpeed);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

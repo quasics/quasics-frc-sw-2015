@@ -735,6 +735,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new RotateAtAngle(&m_drivebase, 0.50, -180_deg));
   frc::SmartDashboard::PutData("Rotate 90 degrees at 50%",
                                new RotateAtAngle(&m_drivebase, 0.50, 90_deg));
+
+  frc::SmartDashboard::PutData(
+      "Drive 2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50, 2_m));
+  frc::SmartDashboard::PutData(
+      "Drive -2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50, -2_m));
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
@@ -756,6 +761,17 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Drive To April Tag",
       new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
+  frc::SmartDashboard::PutData(
+      "Curiousity",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.075_s));
+  frc::SmartDashboard::PutData(
+      "Curiousity lower",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.065_s));
+  frc::SmartDashboard::PutData("Safety", new MoveFloorEjectionAtPowerForTime(
+                                             &m_floorEjection, 0.1, 0.75_s));
+  frc::SmartDashboard::PutData(
+      "Safety Back",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

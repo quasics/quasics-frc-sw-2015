@@ -9,7 +9,9 @@
 DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
                                              double motorPower,
                                              units::meter_t distance)
-    : m_drivebase(drivebase), m_motorPower(motorPower), m_distance(distance) {
+    : m_drivebase(drivebase),
+      m_motorPower(motorPower),
+      m_distance(distance > 0_m ? distance - 1_in : distance + 1_in) {
   if (m_motorPower < 0) {
     if (m_distance < 0_m) {
       m_motorPower = -m_motorPower;
@@ -39,27 +41,33 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  /*std::cerr << "power: " << m_motorPower << ", distance: " <<
-     m_distance.value()
-            << std::endl;*/
+  const double minimumSpeed = 0.3;
+  const double scalingFactor = 0.9;
+
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();
   units::meter_t distanceLeft =
       (m_leftStartingPosition + m_distance) - positionLeft;
-  units::meter_t distanceLeftWhenSlowDown = m_motorPower * 1.3_m;
+  units::meter_t distanceLeftWhenSlowDown = m_motorPower * 1_m;
 
   if (m_distance > 0_m) {
     if (distanceLeft <= distanceLeftWhenSlowDown &&
-        m_motorPower * m_multiplier > 0.25) {
-      m_multiplier *= 0.95;
+        m_motorPower * m_multiplier > minimumSpeed) {
+      m_multiplier *= scalingFactor;
+      m_multiplier = (m_multiplier * m_motorPower > minimumSpeed
+                          ? m_multiplier
+                          : minimumSpeed / m_motorPower);
     }
     m_drivebase->TankDrive(m_motorPower * m_multiplier,
                            m_motorPower * m_multiplier);
 
   } else {
     if (distanceLeft >= -distanceLeftWhenSlowDown &&
-        m_motorPower * m_multiplier > 0.25) {
-      m_multiplier *= 0.95;
+        m_motorPower * m_multiplier > minimumSpeed) {
+      m_multiplier *= scalingFactor;
+      m_multiplier = (m_multiplier * m_motorPower > minimumSpeed
+                          ? m_multiplier
+                          : minimumSpeed / m_motorPower);
     }
     m_drivebase->TankDrive(-m_motorPower * m_multiplier,
                            -m_motorPower * m_multiplier);

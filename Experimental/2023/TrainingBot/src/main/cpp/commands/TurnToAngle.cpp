@@ -72,12 +72,12 @@ bool TurnToAngle::IsFinished()
     std::cerr << "0 deg stop\n";
     return true;
   }
-  else if (m_angle.value() > 0 && currentAngle >= m_targetAngle)
+  else if (m_angle.value() > 0 && currentAngle >= (m_targetAngle - 0.5_deg))
   {
     std::cerr << ">0 angle stop\n";
     return true;
   }
-  else if (m_angle.value() < 0 && currentAngle <= m_targetAngle)
+  else if (m_angle.value() < 0 && currentAngle <= (m_targetAngle + 0.5_deg))
   {
     std::cerr << "<0 angle stop\n";
     return true;

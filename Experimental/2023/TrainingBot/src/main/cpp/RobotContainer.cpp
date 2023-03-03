@@ -34,31 +34,31 @@ void RobotContainer::ConfigureBindings()
 {
   using namespace OperatorConstants::LogitechGamePad;
 
-  //
-  // Configure your trigger bindings here.
+//   //
+//   // Configure your trigger bindings here.
 
-  // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  frc2::Trigger([this]
-                { return m_subsystem.ExampleCondition(); })
-      .OnTrue(ExampleCommand(&m_subsystem).ToPtr());
+//   // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+//   frc2::Trigger([this]
+//                 { return m_subsystem.ExampleCondition(); })
+//       .OnTrue(ExampleCommand(&m_subsystem).ToPtr());
 
-  // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
-  // pressed, cancelling on release.
-  m_operatorController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
+//   // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
+//   // pressed, cancelling on release.
+//   m_operatorController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
 
-  //
-  // Configure default commands for subsystems.
+//   //
+//   // Configure default commands for subsystems.
 
-  // Default for drive base is (of course) tank driving.
-  TankDrive tankDrive(
-      &m_driveBase, // The drive base it works with
-      // provides left speed control
-      [this]()
-      { return m_driverController.GetRawAxis(LEFT_Y_AXIS); },
-      // provides right speed control
-      [this]()
-      { return m_driverController.GetRawAxis(RIGHT_Y_AXIS); });
-  m_driveBase.SetDefaultCommand(tankDrive);
+//   // Default for drive base is (of course) tank driving.
+//   TankDrive tankDrive(
+//       &m_driveBase, // The drive base it works with
+//       // provides left speed control
+//       [this]()
+//       { return m_driverController.GetRawAxis(LEFT_Y_AXIS); },
+//       // provides right speed control
+//       [this]()
+//       { return m_driverController.GetRawAxis(RIGHT_Y_AXIS); });
+//   m_driveBase.SetDefaultCommand(tankDrive);
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand()
@@ -78,19 +78,19 @@ frc2::SequentialCommandGroup *RobotContainer::BuildSquareCommandSequence()
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new DriveDistance(&m_driveBase, 1_m, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
-      new TurnToAngle(&m_driveBase, -90_deg, 0.3)));
+      new TurnToAngle(&m_driveBase, -90_deg, 0.5)));
   commands.push_back(std::unique_ptr<frc2::Command>(
       new SetBreakingMode(&m_driveBase, false)));
 

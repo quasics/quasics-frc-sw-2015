@@ -4,36 +4,39 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.AbstractDriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.AbstractDriveBase;
+import frc.robot.subsystems.DriveBaseInterface;
 
 public class TurnDegrees extends CommandBase {
-  private final AbstractDriveBase m_drive;
+  private final DriveBaseInterface m_drive;
   private final double m_degrees;
   private final double m_speed;
+  private double m_targetAngle = 0;
 
   /**
-   * Creates a new TurnDegrees. This command will turn your robot for a desired
-   * rotation (in
+   * Creates a new TurnDegrees. This command will turn your robot for a desired rotation (in
    * degrees) and rotational speed.
    *
-   * @param speed   The speed which the robot will drive. Negative is in reverse.
+   * @param speed The speed which the robot will drive. Negative is in reverse.
    * @param degrees Degrees to turn. Leverages encoders to compare distance.
-   * @param drive   The drive subsystem on which this command will run
+   * @param drive The drive subsystem on which this command will run
    */
-  public TurnDegrees(double speed, double degrees, AbstractDriveBase drive) {
+  public TurnDegrees(double speed, double degrees, DriveBaseInterface drive) {
+    // TODO(mjh): Update this code to handle +/- degrees and speeds correctly.
     m_degrees = degrees;
     m_speed = speed;
     m_drive = drive;
-    addRequirements(drive);
+    addRequirements((Subsystem) drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Set motors to stop, read encoder values for starting point
+    // Set motors to stop, read gyro value for starting point
     m_drive.arcadeDrive(0, 0);
-    m_drive.resetEncoders();
+    m_targetAngle = m_drive.getYawDegrees() + m_degrees;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,25 +54,40 @@ public class TurnDegrees extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    final double kCloseEnough = 0.25; // within this many degrees?  We're OK.
+    // TODO(mjh): Replace "kCloseEnough" with a c-tor parameter.
+
+    final double currentAngleDegrees = m_drive.getYawDegrees();
+    if (m_degrees < 0 && currentAngleDegrees <= (m_targetAngle + kCloseEnough)) {
+      return true;
+    } else if (m_degrees > 0 && currentAngleDegrees >= (m_targetAngle - kCloseEnough)) {
+      return true;
+    } else {
+      return false;
+    }
     /*
-     * Need to convert distance travelled to degrees. The Standard
+     * We could also convert distance travelled to degrees. The Standard
      * Romi Chassis found here,
      * https://www.pololu.com/category/203/romi-chassis-kits,
      * has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
-     * or 5.551 inches. We then take into consideration the width of the tires.
+     * or 5.551 inches. We could then take into consideration the width of the tires:
+     *
+     *    // Compare distance travelled from start to distance based on degree turn
+     *    double inchPerDegree = Math.PI * getWheelPlacementDiameterInch() / 360;
+     *    return getAverageTurningDistance() >= (inchPerDegree * m_degrees);
      */
-    double inchPerDegree = Math.PI * getWheelPlacementDiameterInch() / 360;
-    // Compare distance travelled from start to distance based on degree turn
-    return getAverageTurningDistance() >= (inchPerDegree * m_degrees);
   }
 
-  private double getAverageTurningDistance() {
-    double leftDistance = Math.abs(m_drive.getLeftDistanceInch());
-    double rightDistance = Math.abs(m_drive.getRightDistanceInch());
+  protected double getAverageTurningDistance() {
+    // Note that this assumes that the encoders were reset at the beginning.
+    // A better approach would be to capture the initial readings, and then
+    // compute offsets.
+    double leftDistance = Math.abs(m_drive.getLeftEncoderPositionMeters());
+    double rightDistance = Math.abs(m_drive.getLeftEncoderPositionMeters());
     return (leftDistance + rightDistance) / 2.0;
   }
 
-  public final double getWheelPlacementDiameterInch() {
-    return m_drive.getWheelPlacementDiameterMillimeters() / AbstractDriveBase.MILLIMETERS_PER_INCH;
+  protected final double getWheelPlacementDiameterInch() {
+    return m_drive.getLeftEncoderPositionMeters() / AbstractDriveBase.MILLIMETERS_PER_INCH;
   }
 }

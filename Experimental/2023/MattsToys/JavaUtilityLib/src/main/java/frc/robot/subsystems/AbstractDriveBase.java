@@ -104,6 +104,8 @@ public abstract class AbstractDriveBase extends SubsystemBase
   //////////////////////////////////////////////////////////////////
   // Positioning/pose information support.
 
+  public abstract double getYawDegrees();
+
   /** Returns a Gyro to be used in looking at the robot's heading/yaw (rotation on Z-axis). */
   public abstract Gyro getYawGyro();
 
@@ -137,14 +139,16 @@ public abstract class AbstractDriveBase extends SubsystemBase
   /**
    * @return the current reading for the left encoder (in meters)
    */
-  public final double getLeftEncoderPosition() {
+  @Override
+  public final double getLeftEncoderPositionMeters() {
     return getLeftEncoder().getPosition();
   }
 
   /**
    * @return the current reading for the right encoder (in meters)
    */
-  public final double getRightEncoderPosition() {
+  @Override
+  public final double getRightEncoderPositionMeters() {
     return getRightEncoder().getPosition();
   }
 
@@ -167,60 +171,6 @@ public abstract class AbstractDriveBase extends SubsystemBase
     getRightEncoder().reset();
     getLeftEncoder().reset();
   }
-
-  public final double getLeftDistanceMeters() {
-    return getLeftEncoderPosition();
-  }
-
-  public final double getRightDistanceMeters() {
-    return getRightEncoderPosition();
-  }
-
-  public final double getAverageDistanceMeters() {
-    return (getLeftDistanceMeters() + getRightDistanceMeters()) / 2.0;
-  }
-
-  public final double getLeftDistanceMillimeters() {
-    return getLeftEncoderPosition() * 1000;
-  }
-
-  public final double getRightDistanceMillimeters() {
-    return getRightEncoderPosition() * 1000;
-  }
-
-  public final double getAverageDistanceMillimeters() {
-    return (getLeftDistanceMillimeters() + getRightDistanceMillimeters()) / 2.0;
-  }
-
-  // "Inch-equivalent" methods
-
-  public static final double MILLIMETERS_PER_INCH = 25.4;
-
-  public final double getLeftDistanceInch() {
-    return getLeftDistanceMillimeters() / MILLIMETERS_PER_INCH;
-  }
-
-  public final double getRightDistanceInch() {
-    return getRightDistanceMillimeters() / MILLIMETERS_PER_INCH;
-  }
-
-  public final double getAverageDistanceInch() {
-    return (getLeftDistanceInch() + getRightDistanceInch()) / 2.0;
-  }
-
-  //////////////////////////////////////////////////////////////////
-  // Functions used to support the "TurnDegrees" command.
-  //
-  // Note that they are *only* used for that command, which was...
-  // um... "borrowed" from the Romi sample code. If that command is
-  // rewritten to use the gyro for control, then this can be eliminated.
-
-  public abstract double getWheelPlacementDiameterMillimeters();
-
-  public final double getWheelPlacementDiameterInch() {
-    return getWheelPlacementDiameterMillimeters() / MILLIMETERS_PER_INCH;
-  }
-
   //////////////////////////////////////////////////////////////////
   // Trajectory-following support.
 
@@ -253,7 +203,7 @@ public abstract class AbstractDriveBase extends SubsystemBase
     var gyroAngle = Rotation2d.fromDegrees(-getYawGyro().getAngle());
 
     // Update the pose
-    m_odometry.update(gyroAngle, getLeftEncoderPosition(), getRightEncoderPosition());
+    m_odometry.update(gyroAngle, getLeftEncoderPositionMeters(), getRightEncoderPositionMeters());
   }
 
   /** Resets the robot's odometry data. */
@@ -276,5 +226,65 @@ public abstract class AbstractDriveBase extends SubsystemBase
     m_leftMotor.setVoltage(leftVolts);
     m_rightMotor.setVoltage(rightVolts);
     m_diffDrive.feed();
+  }
+
+  //////////////////////////////////////////////////////////////////
+  // TODO(mjh): Thin out these methods, which are mostly redundant.
+  // At the least, I should write utilities to convert meters ->
+  // inches, etc., and just use those in conjunction with the "in
+  // meters" functions.
+
+  public final double getLeftDistanceMeters() {
+    return getLeftEncoderPositionMeters();
+  }
+
+  public final double getRightDistanceMeters() {
+    return getRightEncoderPositionMeters();
+  }
+
+  public final double getAverageDistanceMeters() {
+    return (getLeftDistanceMeters() + getRightDistanceMeters()) / 2.0;
+  }
+
+  public final double getLeftDistanceMillimeters() {
+    return getLeftEncoderPositionMeters() * 1000;
+  }
+
+  public final double getRightDistanceMillimeters() {
+    return getRightEncoderPositionMeters() * 1000;
+  }
+
+  public final double getAverageDistanceMillimeters() {
+    return (getLeftDistanceMillimeters() + getRightDistanceMillimeters()) / 2.0;
+  }
+
+  // "Inch-equivalent" methods
+
+  public static final double MILLIMETERS_PER_INCH = 25.4;
+  public static final double METERS_PER_INCH = MILLIMETERS_PER_INCH / 1000.0;
+
+  public final double getLeftDistanceInch() {
+    return getLeftDistanceMillimeters() / MILLIMETERS_PER_INCH;
+  }
+
+  public final double getRightDistanceInch() {
+    return getRightDistanceMillimeters() / MILLIMETERS_PER_INCH;
+  }
+
+  public final double getAverageDistanceInch() {
+    return (getLeftDistanceInch() + getRightDistanceInch()) / 2.0;
+  }
+
+  //////////////////////////////////////////////////////////////////
+  // Functions used to support alt. forms of the "TurnDegrees" command.
+  //
+  // Note that they are *only* used for that command, which was...
+  // um... "borrowed" from the Romi sample code. If that command is
+  // rewritten to use the gyro for control, then this can be eliminated.
+
+  public abstract double getWheelPlacementDiameterMillimeters();
+
+  public final double getWheelPlacementDiameterInch() {
+    return getWheelPlacementDiameterMillimeters() / MILLIMETERS_PER_INCH;
   }
 }

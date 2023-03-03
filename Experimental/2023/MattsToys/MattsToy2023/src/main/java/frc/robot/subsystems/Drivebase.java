@@ -219,6 +219,11 @@ public class Drivebase extends AbstractDriveBase {
   }
 
   @Override
+  public final double getYawDegrees() {
+    return m_realGyro.getAngle();
+  }
+
+  @Override
   public Gyro getPitchGyro() {
     return m_pitchGyro;
   }

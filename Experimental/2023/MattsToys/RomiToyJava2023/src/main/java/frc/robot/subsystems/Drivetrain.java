@@ -109,6 +109,11 @@ public class Drivetrain extends AbstractDriveBase {
     return m_accelerometer.getZ();
   }
 
+  @Override
+  public final double getYawDegrees() {
+    return m_gyro.getAngleZ();
+  }
+
   /**
    * Current angle of the Romi around the X-axis (roll).
    *

@@ -15,17 +15,19 @@ public interface DriveBaseInterface {
   public void stop();
 
   /** Returns a Gyro to be used in looking at the robot's heading. */
-  public abstract Gyro getYawGyro();
+  public Gyro getYawGyro();
+
+  public double getYawDegrees();
 
   /**
    * @return the current reading for the left encoder (in meters)
    */
-  public double getLeftEncoderPosition();
+  public double getLeftEncoderPositionMeters();
 
   /**
    * @return the current reading for the right encoder (in meters)
    */
-  public double getRightEncoderPosition();
+  public double getRightEncoderPositionMeters();
 
   /**
    * @return the current speed for the left wheels (in meters/sec)

@@ -14,6 +14,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/CommandXboxController.h>
 
+#include "ConfigSettings.h"
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/ExampleSubsystem.h"
@@ -99,6 +100,7 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   PhotonLibVision m_photonLibVision;
   FloorEjection m_floorEjection;
+  ConfigSettings *m_configSettings;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;

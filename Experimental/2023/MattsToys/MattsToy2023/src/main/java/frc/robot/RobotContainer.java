@@ -18,8 +18,10 @@ import frc.robot.Constants.Deadbands;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SpeedLimits;
 import frc.robot.commands.DriveDistance;
+import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Lighting;
 import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
 import java.util.List;
@@ -34,6 +36,9 @@ import java.util.function.Supplier;
 public class RobotContainer {
   // TODO: Modify this to try to load current settings from filesystem.
   private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
+
+  private final Lighting m_lighting =
+      new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -70,6 +75,10 @@ public class RobotContainer {
 
     // Default command for the subsystem.
     m_driveBase.setDefaultCommand(getTankDriveCommand());
+
+    //////////////////////////////////////
+    // Lighting setup
+    m_lighting.setDefaultCommand(new SimpleLighting(m_lighting));
 
     //////////////////////////////////////
     // Configure the trigger bindings

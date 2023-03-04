@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public interface LightingInterface {
   /** Interface to use in populating the data for each LED on the strip. */
@@ -109,7 +110,7 @@ public interface LightingInterface {
    * Trivial implementation of the interface, for use on robots that don't support lighting (but
    * want to have a subsystem available for convenience/common code).
    */
-  public static final class MockLighting implements LightingInterface {
+  public static final class MockLighting extends SubsystemBase implements LightingInterface {
     @Override
     public void SetStripColor(ColorSupplier function) {
       // Do nothing with the lighting request.

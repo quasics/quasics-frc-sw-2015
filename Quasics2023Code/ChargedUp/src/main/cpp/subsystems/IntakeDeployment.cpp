@@ -40,24 +40,28 @@ double IntakeDeployment::GetLeftPosition() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   return m_leftDeploymentEncoder.GetPosition();  // rotations
 #endif
+  return 0;
 }
 
 double IntakeDeployment::GetLeftVelocity() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   return m_leftDeploymentEncoder.GetVelocity();  // RPM
 #endif
+  return 0;
 }
 
 double IntakeDeployment::GetRightPosition() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   return m_rightDeploymentEncoder.GetPosition();
 #endif
+  return 0;
 }
 
 double IntakeDeployment::GetRightVelocity() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   return m_rightDeploymentEncoder.GetVelocity();
 #endif
+  return 0;
 }
 
 void IntakeDeployment::EnableBraking(bool value) {
@@ -80,8 +84,10 @@ bool IntakeDeployment::IsIntakeDeployed() {
   return false;
 }
 void IntakeDeployment::Periodic() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   frc::SmartDashboard::PutNumber("Roller Position",
                                  m_leftDeploymentEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Roller Velocity",
                                  m_rightDeploymentEncoder.GetVelocity());
+#endif
 }

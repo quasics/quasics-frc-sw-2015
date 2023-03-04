@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.LightingInterface;
 
-/** An example command that uses the lighting subsystem to establish a single color. */
+/** An example command that uses a lighting subsystem implementation to establish a single color. */
 public class SimpleLighting extends CommandBase {
+  /** The lighting subsystem we're talking to. */
   private final LightingInterface m_subsystem;
+
+  /** The color to be set for the robot's LEDs. */
   private final LightingInterface.StockColor color;
 
   /**

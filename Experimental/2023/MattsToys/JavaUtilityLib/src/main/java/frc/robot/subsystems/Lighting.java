@@ -45,6 +45,8 @@ public class Lighting extends SubsystemBase implements LightingInterface {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
 
+    setName("Lighting");
+
     // Configure data members.
     m_led = new AddressableLED(pwmPort);
     m_ledBuffer = new AddressableLEDBuffer(numLights);

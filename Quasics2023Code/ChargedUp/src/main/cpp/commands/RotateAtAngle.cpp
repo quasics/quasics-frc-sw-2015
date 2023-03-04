@@ -12,7 +12,7 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
       m_percentSpeed(percentSpeed),
-      m_angle((angle > 0_deg) ? (angle - 3_deg) : (angle + 3_deg)) {
+      m_angle((angle > 0_deg) ? (angle - 2_deg) : (angle + 2_deg)) {
   AddRequirements(m_drivebase);
 }
 
@@ -45,13 +45,14 @@ void RotateAtAngle::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
   const double minimumSpeed = 0.30;  // speed must be >= 0.30
-  const double scalingFactor = 0.90;
+  const double scalingFactor = 0.80;
 
   const units::degree_t currentPosition = m_drivebase->GetAngle();
 
   const units::degree_t degreesLeft =
       (m_startAngle + m_angle) - currentPosition;
-  const units::degree_t degreesLeftWhenSlowDown = 30_deg;
+  const units::degree_t degreesLeftWhenSlowDown =
+      150_deg * (m_percentSpeed - 0.30);
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
@@ -78,9 +79,6 @@ void RotateAtAngle::Execute() {
 
 // Called once the command ends or is interrupted.
 void RotateAtAngle::End(bool interrupted) {
-  units::degree_t currentPosition = m_drivebase->GetAngle();
-  units::degree_t degreesLeft = (m_startAngle + m_angle) - currentPosition;
-  std::cerr << "Final value: " << degreesLeft.value() << std::endl;
   m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
 }

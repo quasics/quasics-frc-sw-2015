@@ -104,4 +104,15 @@ public interface LightingInterface {
     // Uses the lambda to set the color for the full strip.
     SetStripColor(function);
   }
+
+  /**
+   * Trivial implementation of the interface, for use on robots that don't support lighting (but
+   * want to have a subsystem available for convenience/common code).
+   */
+  public static final class MockLighting implements LightingInterface {
+    @Override
+    public void SetStripColor(ColorSupplier function) {
+      // Do nothing with the lighting request.
+    }
+  }
 }

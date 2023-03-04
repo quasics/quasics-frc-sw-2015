@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lighting extends SubsystemBase implements LightingInterface {
@@ -37,49 +36,6 @@ public class Lighting extends SubsystemBase implements LightingInterface {
 
     // Start up the LED handling.
     m_led.start();
-  }
-
-  /**
-   * Convenience function: sets the strip to a solid color.
-   *
-   * <p>Note: unlike with various other APIs, the component values for WPI's version of color
-   * specification are all as percentages (0.0-1.0).
-   *
-   * @param color the color to make all of the lights in the strip
-   */
-  public void SetStripColor(Color color) {
-    // Defines a "lambda" function that will be used to fulfill the
-    // requirements of the ColorFunctor type. (It will return the
-    // same color for each position in the strip.)
-    ColorSupplier function = (var position) -> color;
-
-    // Uses the lambda to set the color for the full strip.
-    SetStripColor(function);
-  }
-
-  /**
-   * Convenience function: sets the strip to a solid color from the stock set.
-   *
-   * @param color the color to make all of the lights in the strip
-   */
-  public void SetStripColor(StockColor color) {
-    SetStripColor(color.toWpiColor());
-  }
-
-  /**
-   * Convenience function: sets the strip to a solid color, specified as an RGB tripet of values
-   * (each [0..255]).
-   *
-   * @param red red component (0-255)
-   * @param green green component (0-255)
-   * @param blue blue component (0-255)
-   */
-  public void SetStripColor(int red, int green, int blue) {
-    // Note: WPI expects color component values to be percentages in the range
-    // [0.0-1.0], so we need to convert to the right scale.
-    var color = new Color(red / 255.0, green / 255.0, blue / 255.0);
-
-    SetStripColor(color);
   }
 
   /**

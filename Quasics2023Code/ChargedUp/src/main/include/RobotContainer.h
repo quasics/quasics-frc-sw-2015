@@ -22,6 +22,7 @@
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
+#include "subsystems/Lighting.h"
 #include "subsystems/PhotonLibVision.h"
 
 /**
@@ -100,6 +101,7 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   PhotonLibVision m_photonLibVision;
   FloorEjection m_floorEjection;
+  Lighting m_lighting;  
   ConfigSettings *m_configSettings;
 
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;

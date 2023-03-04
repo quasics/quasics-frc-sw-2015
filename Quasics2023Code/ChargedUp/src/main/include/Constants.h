@@ -177,3 +177,8 @@ namespace LogitechGamePad {
   constexpr int RIGHT_STICK_PRESS = 12;
 }  // namespace LogitechGamePad
 }  // namespace OperatorInterface
+
+namespace LightingValues {
+constexpr int PORT_NUMBER = 0;
+constexpr int PIXEL_NUMBER = 14;
+}  // namespace LightingValues

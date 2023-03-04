@@ -15,6 +15,20 @@ import java.util.Properties;
  * apparently mounted at "/U" by the roboRIO firmware image.
  */
 public class RobotSettings extends PropertyBasedObject {
+  public static final int MIN_PWM_PORT_NUM = 0;
+  public static final int MAX_PWM_PORT_NUM = 9;
+
+  /**
+   * Returns true iff the specified value is a legal PWM port number.
+   *
+   * <p>Note: this is provided as a convenience function. The RobotSettings class doesn't require
+   * valid PWM ports for data, since not all robots might have a port configured/available for use
+   * (e.g., on a ROMI, or robots without lighting strips installed, etc).
+   */
+  public static boolean isValidPwmPort(int portNum) {
+    return (portNum >= MIN_PWM_PORT_NUM && portNum <= MAX_PWM_PORT_NUM);
+  }
+
   public enum DriveMotorInversion {
     None(false, false),
     Left(true, false),

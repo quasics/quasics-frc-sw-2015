@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Deadbands;
@@ -22,6 +23,8 @@ import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.LightingInterface;
+import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
 import java.util.List;
@@ -37,8 +40,10 @@ public class RobotContainer {
   // TODO: Modify this to try to load current settings from filesystem.
   private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
 
-  private final Lighting m_lighting =
-      new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH);
+  private final LightingInterface m_lighting =
+      RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)
+          ? new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH)
+          : new LightingInterface.MockLighting();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -78,7 +83,7 @@ public class RobotContainer {
 
     //////////////////////////////////////
     // Lighting setup
-    m_lighting.setDefaultCommand(new SimpleLighting(m_lighting));
+    ((Subsystem) m_lighting).setDefaultCommand(new SimpleLighting(m_lighting));
 
     //////////////////////////////////////
     // Configure the trigger bindings

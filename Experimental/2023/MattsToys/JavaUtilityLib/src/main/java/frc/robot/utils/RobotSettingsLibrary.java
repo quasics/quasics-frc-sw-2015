@@ -23,6 +23,15 @@ import java.util.Map;
  */
 public class RobotSettingsLibrary {
 
+  public static final int INVALID_PWM_PORT = -1;
+  public static final int LED_PWM_PORT = 0;
+
+  public interface LedLengths {
+    public static final int TEST_STRIP_LENGTH = 14;
+    public static final int GLADYS_STRIP_LENGTH = 14;
+    public static final int ROMI_STRIP_LENGTH = -1;
+  }
+
   public enum Robot {
     Nike,
     Mae,
@@ -80,8 +89,9 @@ public class RobotSettingsLibrary {
             new PIDConfig(2.28, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.ADXRS450,
-            1 // pigeonCanID
-            ));
+            1, // pigeonCanID
+            LED_PWM_PORT,
+            LedLengths.GLADYS_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.Sally,
         new RobotSettings(
@@ -100,8 +110,9 @@ public class RobotSettingsLibrary {
             new PIDConfig(2.28, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.ADXRS450,
-            1 // pigeonCanID
-            ));
+            1, // pigeonCanID
+            LED_PWM_PORT,
+            LedLengths.TEST_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.Mae,
         new RobotSettings(
@@ -120,8 +131,9 @@ public class RobotSettingsLibrary {
             new PIDConfig(0.0011379, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.ADXRS450,
-            1 // pigeonCanID
-            ));
+            1, // pigeonCanID
+            LED_PWM_PORT,
+            LedLengths.TEST_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.Nike,
         new RobotSettings(
@@ -139,8 +151,9 @@ public class RobotSettingsLibrary {
             new PIDConfig(2.5682, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.Pigeon2,
-            1 // pigeonCanID
-            ));
+            1, // pigeonCanID
+            LED_PWM_PORT,
+            LedLengths.TEST_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.Romi,
         new RobotSettings(
@@ -161,8 +174,9 @@ public class RobotSettingsLibrary {
             new PIDConfig(0.00352, 0, 0),
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.Romi,
-            0 // pigeonCanID
-            ));
+            -1, // pigeonCanID
+            INVALID_PWM_PORT,
+            LedLengths.ROMI_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.MattsRomi,
         new RobotSettings(
@@ -185,8 +199,9 @@ public class RobotSettingsLibrary {
             // his unit's upper deck facing that backwards.
             RobotSettings.DriveMotorInversion.Right,
             RobotSettings.GyroType.Romi,
-            0 // pigeonCanID
-            ));
+            -1, // pigeonCanID
+            INVALID_PWM_PORT,
+            LedLengths.ROMI_STRIP_LENGTH));
   }
 
   public RobotSettingsLibrary() {}

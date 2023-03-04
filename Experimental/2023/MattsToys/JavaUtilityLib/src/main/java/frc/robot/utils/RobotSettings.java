@@ -90,6 +90,9 @@ public class RobotSettings extends PropertyBasedObject {
   /** kD constant for drive base PID control (obtained from SysId tool). */
   public final double driveControlKd;
 
+  public final int ledPort;
+  public final int ledStripLength;
+
   /**
    * Creates a RobotSettings object.
    *
@@ -126,11 +129,16 @@ public class RobotSettings extends PropertyBasedObject {
       PIDConfig pidConfig,
       DriveMotorInversion motorInversion,
       GyroType installedGyroType,
-      int pigeonCanId) {
+      int pigeonCanId,
+      int ledPort,
+      int ledStripLength) {
     this.robotName = (robotName != null && robotName.length() > 0 ? robotName : "<unknown>");
     this.trackWidthMeters = trackWidthMeters;
     this.gearRatio = gearRatio;
     this.wheelDiameterMeters = wheelDiameterMeters;
+
+    this.ledPort = ledPort;
+    this.ledStripLength = ledStripLength;
 
     this.leftFrontMotorId = leftFrontMotorId;
     this.leftRearMotorId = leftRearMotorId;
@@ -178,6 +186,10 @@ public class RobotSettings extends PropertyBasedObject {
         getCheckedInteger(props, "rightFrontMotorId", "Error fetching front right motor ID");
     this.rightRearMotorId =
         getCheckedInteger(props, "rightRearMotorId", "Error fetching rear right motor ID");
+
+    this.ledPort = getCheckedInteger(props, "ledPort", "Error fetching LED port");
+    this.ledStripLength =
+        getCheckedInteger(props, "ledStripLength", "Error fetching LED strip length");
 
     this.driveProfileKs =
         getCheckedDouble(props, "driveProfileKs", "Error fetching kS value for drive profile");

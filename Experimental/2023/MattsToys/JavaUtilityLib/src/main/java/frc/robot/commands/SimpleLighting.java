@@ -5,20 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Lighting;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.LightingInterface;
 
 /** An example command that uses the lighting subsystem to establish a single color. */
 public class SimpleLighting extends CommandBase {
-  private final Lighting m_subsystem;
-  private final Lighting.StockColor color;
+  private final LightingInterface m_subsystem;
+  private final LightingInterface.StockColor color;
 
   /**
    * Creates a new SimpleLighting.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimpleLighting(Lighting subsystem) {
-    this(subsystem, Lighting.StockColor.Green);
+  public SimpleLighting(LightingInterface subsystem) {
+    this(subsystem, LightingInterface.StockColor.Green);
   }
 
   /**
@@ -26,12 +27,12 @@ public class SimpleLighting extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimpleLighting(Lighting subsystem, Lighting.StockColor color) {
+  public SimpleLighting(LightingInterface subsystem, LightingInterface.StockColor color) {
     setName("Lighting");
 
     m_subsystem = subsystem;
     this.color = color;
-    addRequirements(subsystem);
+    addRequirements((Subsystem) subsystem);
   }
 
   @Override

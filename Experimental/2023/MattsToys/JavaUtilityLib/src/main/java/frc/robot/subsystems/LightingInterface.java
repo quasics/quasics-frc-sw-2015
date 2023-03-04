@@ -111,6 +111,11 @@ public interface LightingInterface {
    * want to have a subsystem available for convenience/common code).
    */
   public static final class MockLighting extends SubsystemBase implements LightingInterface {
+    /** Constructor. */
+    public MockLighting() {
+      setName("MockLighting");
+    }
+
     @Override
     public void SetStripColor(ColorSupplier function) {
       // Do nothing with the lighting request.

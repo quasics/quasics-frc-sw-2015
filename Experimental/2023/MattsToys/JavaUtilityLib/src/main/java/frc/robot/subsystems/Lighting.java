@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.RobotSettings;
 
+/** An example subsystem for controlling an LED strip for custom lighting on the robot. */
 public class Lighting extends SubsystemBase implements LightingInterface {
   /** The raw interface to the addressable LED strip connected to the Rio. */
   private final AddressableLED m_led;
@@ -17,12 +19,34 @@ public class Lighting extends SubsystemBase implements LightingInterface {
   /**
    * Constructor.
    *
+   * @param settings settings "brick", used to provide PWM port and strip length.
+   */
+  public Lighting(RobotSettings settings) {
+    this(settings.ledPort, settings.ledStripLength);
+  }
+
+  /**
+   * Constructor.
+   *
    * @param pwmPort PWM port to which the LED strip is connected
    * @param numLights number of (logical) lights on the LED strip
    */
   public Lighting(int pwmPort, int numLights) {
-    m_led = new AddressableLED(pwmPort);
+    // Sanity-check inputs.
+    if (!RobotSettings.isValidPwmPort(pwmPort)) {
+      throw new IllegalArgumentException("Invalid PWM port: " + pwmPort);
+    }
 
+    if (numLights < 0) {
+      throw new IllegalArgumentException("Invalid LED strip length: " + numLights);
+    } else if (numLights == 0) {
+      System.err.println("WARNING: configuring LED strip support with 0 LEDs on it!");
+    } else {
+      System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
+    }
+
+    // Configure data members.
+    m_led = new AddressableLED(pwmPort);
     m_ledBuffer = new AddressableLEDBuffer(numLights);
     m_led.setLength(m_ledBuffer.getLength());
 

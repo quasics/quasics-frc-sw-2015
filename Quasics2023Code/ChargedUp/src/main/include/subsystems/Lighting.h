@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/AddressableLED.h>
+#include <frc/util/Color.h>
 #include <frc2/command/SubsystemBase.h>
 
 #include "Constants.h"
@@ -12,6 +13,15 @@
 class Lighting : public frc2::SubsystemBase {
  public:
   Lighting();
+
+  /**
+   * Sets the entire strip to the color specified by an RGB "triplet".
+   *
+   * @param r  red component, in the range 0..255 (off to full intensity)
+   * @param g  green component, in the range 0..255 (off to full intensity)
+   * @param b  blue component, in the range 0..255 (off to full intensity)
+   */
+  void SetAllToColor(int r, int g, int b);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

@@ -41,8 +41,8 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
-  const double minimumSpeed = 0.3;
-  const double scalingFactor = 0.9;
+  const double minimumSpeed = 0.4;
+  const double scalingFactor = 0.8;
 
   // use left position: both left and right should be the same
   units::meter_t positionLeft = m_drivebase->GetLeftDistance();

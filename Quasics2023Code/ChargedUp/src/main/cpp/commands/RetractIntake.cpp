@@ -4,6 +4,8 @@
 
 #include "commands/RetractIntake.h"
 
+#include "Constants.h"
+
 RetractIntake::RetractIntake(IntakeDeployment* intake, double speed)
     : m_intakeDeployment(intake), intakeSpeed(-std::abs(speed)) {
   AddRequirements(m_intakeDeployment);
@@ -28,5 +30,5 @@ void RetractIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RetractIntake::IsFinished() {
-  return false;
+  return m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY;
 }

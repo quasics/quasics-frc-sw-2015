@@ -4,6 +4,8 @@
 
 #include "subsystems/IntakeDeployment.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <iostream>
 
 IntakeDeployment::IntakeDeployment() {
@@ -27,6 +29,37 @@ void IntakeDeployment::Stop() {
 #endif
 }
 
+void IntakeDeployment::ResetEncoders() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  m_leftDeploymentEncoder.SetPosition(0);
+  m_rightDeploymentEncoder.SetPosition(0);
+#endif
+}
+
+double IntakeDeployment::GetLeftPosition() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  return m_leftDeploymentEncoder.GetPosition();  // rotations
+#endif
+}
+
+double IntakeDeployment::GetLeftVelocity() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  return m_leftDeploymentEncoder.GetVelocity();  // RPM
+#endif
+}
+
+double IntakeDeployment::GetRightPosition() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  return m_rightDeploymentEncoder.GetPosition();
+#endif
+}
+
+double IntakeDeployment::GetRightVelocity() {
+#ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  return m_rightDeploymentEncoder.GetVelocity();
+#endif
+}
+
 void IntakeDeployment::EnableBraking(bool value) {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   rev::CANSparkMax::IdleMode mode;
@@ -47,4 +80,8 @@ bool IntakeDeployment::IsIntakeDeployed() {
   return false;
 }
 void IntakeDeployment::Periodic() {
+  frc::SmartDashboard::PutNumber("Roller Position",
+                                 m_leftDeploymentEncoder.GetPosition());
+  frc::SmartDashboard::PutNumber("Roller Velocity",
+                                 m_rightDeploymentEncoder.GetVelocity());
 }

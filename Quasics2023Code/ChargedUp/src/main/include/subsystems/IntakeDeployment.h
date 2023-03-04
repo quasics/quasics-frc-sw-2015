@@ -18,6 +18,16 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   void Stop();
 
+  void ResetEncoders();
+
+  double GetLeftPosition();
+
+  double GetLeftVelocity();
+
+  double GetRightPosition();
+
+  double GetRightVelocity();
+
   void EnableBraking(bool value);
 
   bool IsIntakeDeployed();
@@ -38,6 +48,12 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   frc::MotorControllerGroup m_intakeDeployment{m_leftDeploymentMotor,
                                                m_rightDeploymentMotor};
+
+  rev::SparkMaxRelativeEncoder m_leftDeploymentEncoder =
+      m_leftDeploymentMotor.GetEncoder();
+
+  rev::SparkMaxRelativeEncoder m_rightDeploymentEncoder =
+      m_rightDeploymentMotor.GetEncoder();
 
 #endif
   // Components (e.g. motor controllers and sensors) should generally be

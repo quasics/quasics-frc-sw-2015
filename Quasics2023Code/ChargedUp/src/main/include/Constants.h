@@ -29,6 +29,12 @@ constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
 constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // 2023 robot gearing
 }  // namespace RobotPhysics
 
+namespace Intake {
+// if intakeDeployment velocity is < STOP_VELOCITY, robot will stop
+// intakeDeployment because deployment is completed
+constexpr double STOP_VELOCITY = 1;
+}  // namespace Intake
+
 namespace AutonomousTeamAndStationPositions {
 constexpr auto Blue1 = "Blue 1";
 constexpr auto Blue2 = "Blue 2";

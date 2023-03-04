@@ -15,7 +15,9 @@ import java.util.Properties;
  * apparently mounted at "/U" by the roboRIO firmware image.
  */
 public class RobotSettings extends PropertyBasedObject {
+  /** Lowest valid PWM port number. */
   public static final int MIN_PWM_PORT_NUM = 0;
+  /** Highest valid PWM port number. */
   public static final int MAX_PWM_PORT_NUM = 9;
 
   /**

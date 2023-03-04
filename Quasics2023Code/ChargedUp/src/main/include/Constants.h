@@ -124,9 +124,11 @@ namespace SparkMax {
   constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
   constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
 
+  // Intake deployment controls (same for both intake options)
+  constexpr int RIGHT_INTAKE_DEPLOYMENT_MOTOR_ID = 5;
+  constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;
+
   // Constants for Intake option #1
-  constexpr int RIGHT_INTAKE_DEPLOYMENT_MOTOR_ID = 5;  // Lower motor
-  constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;   // Upper motor
   constexpr int INTAKE_MOTOR_CLAMP_ID = 7;
 
   // Constants for Intake option #2

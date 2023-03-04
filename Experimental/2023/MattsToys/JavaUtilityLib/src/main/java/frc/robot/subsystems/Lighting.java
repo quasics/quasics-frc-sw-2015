@@ -9,54 +9,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Lighting extends SubsystemBase {
-  public enum StockColor {
-    Green(0, 255, 0),
-    Red(255, 0, 0),
-    Blue(0, 0, 255),
-    White(255, 255, 255),
-    Black(0, 0, 0);
-    private final int r, g, b;
-
-    // Constructor
-    StockColor(int r, int g, int b) {
-      this.r = r;
-      this.g = g;
-      this.b = b;
-    }
-
-    /** Converts the stock color to the representation used by WPILib. */
-    public Color toWpiColor() {
-      return toWpiColor(1.0);
-    }
-
-    /**
-     * Converts the stock color to the representation used by WPILib, scaled to the specified
-     * intensity (brightness).
-     *
-     * @param intensityPercent intensity to which the color should be scaled (0.0-1.0)
-     */
-    public Color toWpiColor(double intensityPercent) {
-      return new Color(
-          intensityPercent * r / 255.0, intensityPercent * g / 255.0, intensityPercent * b / 255.0);
-    }
-
-    /** Returns the red component of the color (0..255). */
-    public int getR() {
-      return r;
-    }
-
-    /** Returns the green component of the color (0..255). */
-    public int getG() {
-      return g;
-    }
-
-    /** Returns the blue component of the color (0..255). */
-    public int getB() {
-      return b;
-    }
-  }
-
+public class Lighting extends SubsystemBase implements LightingInterface {
   /** The raw interface to the addressable LED strip connected to the Rio. */
   private final AddressableLED m_led;
   /** The buffer used to set the values for each pixel/LED on the strip. */
@@ -86,26 +39,6 @@ public class Lighting extends SubsystemBase {
     m_led.start();
   }
 
-  /** Helper interface to use in populating the data for each LED on the strip. */
-  public interface ColorFunctor {
-    /** Returns the color to be used for the LED at a given position on the strip. */
-    public Color getColorForLed(int position);
-  }
-
-  /**
-   * Sets the color for each LED in the strip, using the specified function to generate the values
-   * for each position.
-   *
-   * @param function Function generating the color for each LED
-   */
-  public void SetStripColor(ColorFunctor function) {
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setLED(i, function.getColorForLed(i));
-    }
-
-    m_led.setData(m_ledBuffer);
-  }
-
   /**
    * Convenience function: sets the strip to a solid color.
    *
@@ -118,7 +51,7 @@ public class Lighting extends SubsystemBase {
     // Defines a "lambda" function that will be used to fulfill the
     // requirements of the ColorFunctor type. (It will return the
     // same color for each position in the strip.)
-    ColorFunctor function = (var position) -> color;
+    ColorSupplier function = (var position) -> color;
 
     // Uses the lambda to set the color for the full strip.
     SetStripColor(function);
@@ -147,6 +80,20 @@ public class Lighting extends SubsystemBase {
     var color = new Color(red / 255.0, green / 255.0, blue / 255.0);
 
     SetStripColor(color);
+  }
+
+  /**
+   * Sets the color for each LED in the strip, using the specified function to generate the values
+   * for each position.
+   *
+   * @param function Function generating the color for each LED
+   */
+  public void SetStripColor(ColorSupplier function) {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      m_ledBuffer.setLED(i, function.getColorForLed(i));
+    }
+
+    m_led.setData(m_ledBuffer);
   }
 
   @Override

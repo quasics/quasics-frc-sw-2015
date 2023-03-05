@@ -7,9 +7,9 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <subsystems/Drivebase.h>
 
 #include "Constants.h"
+#include "subsystems/Drivebase.h"
 
 /**
  * An example command.
@@ -18,8 +18,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * TODO(matthew): Please update the documentation for this command, including
- * the comments above, indicating that this is "an example command".(DONE)
+ * CODE_REVIEW(matthew): Please update the documentation for this command,
+ * including the comments above (which indicate that this is "an example
+ * command"), so that it's clear what the command does, and how it is expected
+ * to be used.
  */
 class SelfBalancing
     : public frc2::CommandHelper<frc2::CommandBase, SelfBalancing> {

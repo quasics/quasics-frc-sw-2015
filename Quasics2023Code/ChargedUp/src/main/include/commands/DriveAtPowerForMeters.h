@@ -20,6 +20,11 @@
  *  // m_distance can be positive (forwards) or negative (backwards),
  m_motorPower
     // will always be positive after this code even if user enters weird values.
+ *
+ * CODE_REVIEW(josh): Please update the documentation for this command,
+ * including the comments above (which indicate that this is "an example
+ * command"), so that it's clear what the command does, and how it is expected
+ * to be used.
  */
 class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase, DriveAtPowerForMeters> {

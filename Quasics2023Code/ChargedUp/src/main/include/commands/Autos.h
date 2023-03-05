@@ -1,16 +1,21 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+#ifndef COMMANDS_AUTOS_H
+#define COMMANDS_AUTOS_H
 
-#pragma once
+#include <frc2/command/Command.h>
 
-#include <frc2/command/CommandPtr.h>
+#include "subsystems/Drivebase.h"
+#include "subsystems/FloorEjection.h"
+#include "subsystems/IntakeClamp.h"
+#include "subsystems/IntakeDeployment.h"
+#include "subsystems/IntakeRoller.h"
 
-#include "subsystems/ExampleSubsystem.h"
+namespace AutonomousCommands {
+frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
+                                    IntakeDeployment *intakeDeployment,
+                                    IntakeClamp *intakeClamp,
+                                    FloorEjection *floorEjection,
+                                    std::string operationName,
+                                    std::string teamAndPosName);
+}
 
-namespace autos {
-/**
- * Example static factory for an autonomous command.
- */
-frc2::CommandPtr ExampleAuto(ExampleSubsystem* subsystem);
-}  // namespace autos
+#endif  // COMMANDS_AUTOS_H

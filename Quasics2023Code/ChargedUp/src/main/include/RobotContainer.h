@@ -51,46 +51,14 @@ class RobotContainer {
 
   void setInverted(bool invert);
 
- private:
-  frc2::Command *GTFODOCK(std::string teamAndPosName);
-
-  frc2::Command *moveToDefenseAgainstScoringWall(std::string teamAndPosName);
-
-  frc2::Command *moveToDefenseAgainstOuterWall(std::string teamAndPosName);
-
-  frc2::Command *JustCharge(std::string teamAndPosName);
-
-  frc2::Command *ScoreAndLeave(std::string teamAndPosName);
-
-  frc2::Command *ScoreThenCharge(std::string teamAndPosName);
-
-  frc2::Command *ScoreThenEndNearGamePieceCommand(std::string teamAndPosName);
-  frc2::Command *DropGamePieceThenGTFOCommand(std::string teamAndPosName);
-
-  frc2::Command *DropGamePieceThenChargeCommand(std::string teamAndPosName);
-
-  frc2::Command *ScoreGTFOThenCharge(std::string teamAndPosName);
-
-  frc2::SequentialCommandGroup *DropGamePieceHelperCommand();
-
-  frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand();
-
-  frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand();
-
-  frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint();
+  void AddTestButtonsToSmartDashboard();
 
  private:
-  // CODE_REVIEW: Consolidate to just one driver joystick/controller, please!!!!
-  // (mjh)
+  // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
-  // Removed this
-  // frc2::CommandXboxController m_driverController{
-  //     OperatorConstants::kDriverControllerPort};
-
-  // frc::Joystick driverJoystick{0};
-
+  // Operator's controller.
   frc::XboxController m_operatorController{1};
 
   // The robot's subsystems are defined here...
@@ -101,15 +69,16 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   PhotonLibVision m_photonLibVision;
   FloorEjection m_floorEjection;
-  Lighting m_lighting;  
-  ConfigSettings *m_configSettings;
+  Lighting m_lighting;
 
+  // Settings accessed across multiple commands
+  ConfigSettings m_configSettings;
+
+  // Supporting autonomous mode command selection/building.
   frc::SendableChooser<frc2::Command *> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;
 
-  void ConfigureBindings();
-  void AddTestButtonsToSmartDashboard();
-
+  // Supporting tank drive-related stuff.
   bool isInverted = true;
   frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;
   frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;

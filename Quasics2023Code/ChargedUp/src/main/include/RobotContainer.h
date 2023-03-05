@@ -17,7 +17,6 @@
 #include "ConfigSettings.h"
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/FloorEjection.h"
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
@@ -62,7 +61,6 @@ class RobotContainer {
   frc::XboxController m_operatorController{1};
 
   // The robot's subsystems are defined here...
-  ExampleSubsystem m_subsystem;
   Drivebase m_drivebase;
   IntakeClamp m_intakeClamp;
   IntakeRoller m_intakeRoller;

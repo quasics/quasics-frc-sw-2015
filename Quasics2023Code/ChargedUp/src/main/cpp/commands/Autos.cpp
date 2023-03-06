@@ -406,11 +406,11 @@ namespace Helpers {
                                      FloorEjection *floorEjection,
                                      std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    return new frc2::SequentialCommandGroup(std::move(commands));
     commands.push_back(std::unique_ptr<frc2::Command>(
         RollerScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
 }  // namespace Helpers

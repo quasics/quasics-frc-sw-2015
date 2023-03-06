@@ -18,61 +18,12 @@
 #include "commands/SelfBalancing.h"
 
 namespace AutonomousCommands {
-// The functions that go into the autonomous chooser thingy above
-namespace {  // anonymous namespace
-  //
-  // Prototypes for all of the helper functions
-  //
-  frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
-      IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp);
-
-  frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp);
-
-  frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand(
-      FloorEjection *floorEjection);
-
-  frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName);
-
-  frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
-                                                 std::string teamAndPosName);
-
-  frc2::Command *MoveToDefenseAgainstOuterWall(Drivebase *drivebase,
-                                               std::string teamAndPosName);
-
-  frc2::Command *JustCharge(Drivebase *drivebase, std::string teamAndPosName);
-
-  frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint(
-      Drivebase *drivebase, FloorEjection *floorEjection,
-      IntakeClamp *intakeClamp);
-
-  frc2::Command *ScoreThenCharge(Drivebase *drivebase,
-                                 FloorEjection *floorEjection,
-                                 IntakeClamp *intakeClamp,
-                                 std::string teamAndPosName);
-
-  frc2::Command *ScoreThenEndNearGamePieceCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
-
-  frc2::Command *DropGamePieceThenGTFOCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
-
-  frc2::Command *DropGamePieceThenChargeCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
-
-  frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
-                                     FloorEjection *floorEjection,
-                                     std::string teamAndPosName);
-
+namespace Helpers {
   //
   // Implementation of all of the helper functions
   //
-  frc2::SequentialCommandGroup *DropGamePieceHelperCommand(
-      IntakeDeployment *intakeDeployment, IntakeClamp *intakeClamp) {
+  frc2::Command *DropGamePieceHelperCommand(IntakeDeployment *intakeDeployment,
+                                            IntakeClamp *intakeClamp) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
         new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
@@ -83,7 +34,7 @@ namespace {  // anonymous namespace
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::SequentialCommandGroup *ClampScoreGamePieceHelperCommand(
+  frc2::Command *ClampScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeClamp *intakeClamp) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
@@ -100,7 +51,7 @@ namespace {  // anonymous namespace
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::SequentialCommandGroup *RollerScoreGamePieceHelperCommand(
+  frc2::Command *RollerScoreGamePieceHelperCommand(
       FloorEjection *floorEjection) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -368,9 +319,9 @@ namespace {  // anonymous namespace
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::SequentialCommandGroup *GetScoreSequenceFromStartingPoint(
-      Drivebase *drivebase, FloorEjection *floorEjection,
-      IntakeClamp *intakeClamp) {
+  frc2::Command *GetScoreSequenceFromStartingPoint(Drivebase *drivebase,
+                                                   FloorEjection *floorEjection,
+                                                   IntakeClamp *intakeClamp) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 #ifdef USING_ROLLER_FOR_AUTO_INTAKE
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -462,7 +413,7 @@ namespace {  // anonymous namespace
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
   }
 
-}  // anonymous namespace
+}  // namespace Helpers
 
 frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                     IntakeDeployment *intakeDeployment,
@@ -470,19 +421,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                     FloorEjection *floorEjection,
                                     std::string operationName,
                                     std::string teamAndPosName) {
-  // frc2::Command *selectedOperation =
-  //     m_RobotSequenceAutonomousOptions.GetSelected();
-  // frc2::Command *teamAndPosCmd =
-  //     m_TeamAndStationAutonomousOptions.GetSelected();
-  // if (selectedOperation == nullptr || teamAndPosCmd == nullptr) {
-  //   // This shouldn't happen if things were set up right.  But it did.  So
-  //   they
-  //   // weren't. We'll bail out, but at least return a valid pointer that will
-  //   // tell us something went wrong when it's run.
-  //   static frc2::PrintCommand somethingIsScrewyCommand(
-  //       "Selection error: can't decide what to do");
-  //   return &somethingIsScrewyCommand;
-  // }
+  using namespace Helpers;
 
   if (operationName == AutonomousSelectedOperation::DoNothing) {
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");

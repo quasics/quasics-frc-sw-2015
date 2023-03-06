@@ -58,6 +58,7 @@ namespace Helpers {
         new MoveFloorEjectionAtPowerForTime(floorEjection, 0.5, 0.3_s)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new MoveFloorEjectionAtPowerForTime(floorEjection, 0.3, 0.5_s)));
+    // CODE_REVIEW(matthew): Is this code still needed?  If not, get rid of it.
     /*
     commands.push_back(std::unique_ptr<frc2::Command>(
         new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
@@ -281,6 +282,7 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  // CODE_REVIEW(matthew): Is this function supposed to be implemented?
   /*
   frc2::Command *ScoreAndLeave(std::string teamAndPosName) {
                                                }*/
@@ -445,7 +447,11 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName ==
              AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall) {
     return MoveToDefenseAgainstOuterWall(drivebase, teamAndPosName);
-  } /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
+  }
+  // CODE_REVIEW(matthew): Is this code still needed?  If so, it should be
+  // implemented; if not, it should be removed (after making sure that it's
+  // not left behind in the operation selector.)
+  /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(teamAndPosName);
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");
     return &doNothing;

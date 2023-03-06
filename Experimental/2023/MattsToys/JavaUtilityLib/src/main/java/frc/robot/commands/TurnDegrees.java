@@ -72,8 +72,9 @@ public class TurnDegrees extends CommandBase {
      * has a wheel placement diameter (149 mm) - width of the wheel (8 mm) = 141 mm
      * or 5.551 inches. We could then take into consideration the width of the tires:
      *
-     *    // Compare distance travelled from start to distance based on degree turn
-     *    double inchPerDegree = Math.PI * getWheelPlacementDiameterInch() / 360;
+     *    // Compare distance traveled from start to distance based on degree turn
+     *    final double distanceTraveledInFullTurn = Math.PI * getWheelPlacementDiameterInch();
+     *    final double inchPerDegree = distanceTraveledInFullTurn / 360;
      *    return getAverageTurningDistance() >= (inchPerDegree * m_degrees);
      */
   }

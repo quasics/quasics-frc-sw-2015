@@ -32,5 +32,8 @@ void ExtendIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool ExtendIntake::IsFinished() {
+#ifdef ENABLE_INTAKE_LIMIT_SWITCH
+  return m_intakeDeployment->IsIntakeDeployed();
+#endif
   return m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY;
 }

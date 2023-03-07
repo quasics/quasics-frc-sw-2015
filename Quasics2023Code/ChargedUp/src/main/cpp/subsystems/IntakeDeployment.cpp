@@ -80,9 +80,11 @@ void IntakeDeployment::EnableBraking(bool value) {
 }
 
 bool IntakeDeployment::IsIntakeDeployed() {
-  // possible function that migbht need to be implemented
-  return false;
+#ifdef ENABLE_INTAKE_LIMIT_SWITCH
+  return !intakeLimitSwitch.Get();
+#endif
 }
+
 void IntakeDeployment::Periodic() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   frc::SmartDashboard::PutNumber("Roller Position",

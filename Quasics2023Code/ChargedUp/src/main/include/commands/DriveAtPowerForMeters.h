@@ -17,9 +17,8 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- *  // m_distance can be positive (forwards) or negative (backwards),
- m_motorPower
-    // will always be positive after this code even if user enters weird values.
+ * m_distance can be positive (forwards) or negative (backwards), m_motorPower
+ * will always be positive after this code even if user enters weird values.
  *
  * CODE_REVIEW(josh): Please update the documentation for this command,
  * including the comments above (which indicate that this is "an example

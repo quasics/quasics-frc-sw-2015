@@ -44,6 +44,10 @@ constexpr auto Red2 = "Red 2";
 constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
+namespace DigitalInput {
+constexpr int INTAKE_LIMIT_SWITCH_ID = 9;
+}
+
 namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";

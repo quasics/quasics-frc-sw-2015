@@ -25,3 +25,5 @@
 // Note that it's OK for this to be disabled when the roller is enabled,
 // since we might not want to actually have things happen.
 #undef USING_ROLLER_FOR_AUTO_INTAKE
+
+#undef ENABLE_INTAKE_LIMIT_SWITCH

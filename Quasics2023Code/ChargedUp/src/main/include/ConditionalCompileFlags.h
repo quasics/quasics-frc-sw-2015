@@ -6,9 +6,9 @@
 
 #undef ENABLE_CLAMP_MOTORS
 
-#define ENABLE_ROLLER_INTAKE_MOTORS
+#undef ENABLE_ROLLER_INTAKE_MOTORS
 
-#define ENABLE_INTAKE_DEPLOYMENT_MOTORS
+#undef ENABLE_INTAKE_DEPLOYMENT_MOTORS
 
 // Controlling which gyro is enabled for the robot.
 #undef ENABLE_AD_GYRO
@@ -24,4 +24,4 @@
 
 // Note that it's OK for this to be disabled when the roller is enabled,
 // since we might not want to actually have things happen.
-#define USING_ROLLER_FOR_AUTO_INTAKE
+#undef USING_ROLLER_FOR_AUTO_INTAKE

@@ -83,6 +83,7 @@ bool IntakeDeployment::IsIntakeDeployed() {
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
   return !intakeLimitSwitch.Get();
 #endif
+  return false;
 }
 
 void IntakeDeployment::Periodic() {

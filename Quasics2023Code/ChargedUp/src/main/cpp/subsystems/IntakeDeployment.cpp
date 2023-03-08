@@ -96,7 +96,7 @@ void IntakeDeployment::Periodic() {
   frc::SmartDashboard::PutNumber("Roller Position",
                                  m_leftDeploymentEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Roller Velocity",
-                                 m_rightDeploymentEncoder.GetVelocity());
+                                 m_leftDeploymentEncoder.GetVelocity());
 #endif
 
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH

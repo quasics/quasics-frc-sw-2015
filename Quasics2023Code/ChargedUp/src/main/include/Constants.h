@@ -35,6 +35,10 @@ namespace Intake {
 constexpr double STOP_VELOCITY = 1;
 }  // namespace Intake
 
+namespace Floor {
+constexpr double STOP_VELOCITY = 1;
+}
+
 namespace AutonomousTeamAndStationPositions {
 constexpr auto Blue1 = "Blue 1";
 constexpr auto Blue2 = "Blue 2";
@@ -146,6 +150,11 @@ namespace VictorSPX {
   constexpr int GAME_PIECE_FLIPPER_ID = 1;
 }
 }  // namespace MotorIds
+
+namespace ThroughBore {
+constexpr int A_CHANNEL = 0;
+constexpr int B_CHANNEL = 1;
+}  // namespace ThroughBore
 
 namespace OperatorConstants {
 /** Joystick port for the driver's controller. */

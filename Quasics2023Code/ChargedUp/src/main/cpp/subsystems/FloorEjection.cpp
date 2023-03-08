@@ -4,11 +4,27 @@
 
 #include "subsystems/FloorEjection.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 FloorEjection::FloorEjection() = default;
 
 void FloorEjection::SetFloorEjectionPower(double power) {
   m_floorEjectionMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, power);
+}
+
+double FloorEjection::GetPosition() {
+#ifdef ENABLE_FLOOR_EJECTION_ENCODER
+  return m_floorEjectionEncoder.GetDistance();
+#endif
+  return 0;
+}
+
+double FloorEjection::GetVelocity() {
+#ifdef ENABLE_FLOOR_EJECTION_ENCODER
+  return m_floorEjectionEncoder.GetRate();
+#endif
+  return 0;
 }
 
 void FloorEjection::Stop() {
@@ -18,4 +34,10 @@ void FloorEjection::Stop() {
 
 // This method will be called once per scheduler run
 void FloorEjection::Periodic() {
+#ifdef ENABLE_FLOOR_EJECTION_ENCODER
+  frc::SmartDashboard::PutNumber("Floor ejection position",
+                                 m_floorEjectionEncoder.GetDistance());
+  frc::SmartDashboard::PutNumber("Floor ejection velocity",
+                                 m_floorEjectionEncoder.GetRate());
+#endif
 }

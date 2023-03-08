@@ -31,7 +31,7 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   void EnableBraking(bool value);
 
-  bool IsIntakeDeployed();
+  bool IsIntakeDeployed(bool extend);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -59,7 +59,14 @@ class IntakeDeployment : public frc2::SubsystemBase {
 #endif
 
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
-  frc::DigitalInput intakeLimitSwitch{DigitalInput::INTAKE_LIMIT_SWITCH_ID};
+  frc::DigitalInput m_leftExtendIntakeLimitSwitch{
+      DigitalInput::INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID};
+  frc::DigitalInput m_rightExtendIntakeLimitSwitch{
+      DigitalInput::INTAKE_EXTEND_RIGHT_LIMIT_SWITCH_ID};
+  frc::DigitalInput m_leftRetractIntakeLimitSwitch{
+      DigitalInput::INTAKE_RETRACT_LEFT_LIMIT_SWITCH_ID};
+  frc::DigitalInput m_rightRetractIntakeLimitSwitch{
+      DigitalInput::INTAKE_RETRACT_RIGHT_LIMIT_SWITCH_ID};
 #endif
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

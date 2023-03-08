@@ -45,8 +45,11 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace DigitalInput {
-constexpr int INTAKE_LIMIT_SWITCH_ID = 9;
-}
+constexpr int INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID = 1;
+constexpr int INTAKE_EXTEND_RIGHT_LIMIT_SWITCH_ID = 2;
+constexpr int INTAKE_RETRACT_LEFT_LIMIT_SWITCH_ID = 3;
+constexpr int INTAKE_RETRACT_RIGHT_LIMIT_SWITCH_ID = 4;
+}  // namespace DigitalInput
 
 namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";

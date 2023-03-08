@@ -79,9 +79,14 @@ void IntakeDeployment::EnableBraking(bool value) {
 #endif
 }
 
-bool IntakeDeployment::IsIntakeDeployed() {
+bool IntakeDeployment::IsIntakeDeployed(bool extend) {
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
-  return !intakeLimitSwitch.Get();
+  if (extend) {
+    return !m_leftExtendIntakeLimitSwitch.Get() ||
+           !m_rightExtendIntakeLimitSwitch.Get();
+  }
+  return !m_leftRetractIntakeLimitSwitch.Get() ||
+         !m_rightRetractIntakeLimitSwitch.Get();
 #endif
   return false;
 }
@@ -92,5 +97,20 @@ void IntakeDeployment::Periodic() {
                                  m_leftDeploymentEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Roller Velocity",
                                  m_rightDeploymentEncoder.GetVelocity());
+#endif
+
+#ifdef ENABLE_INTAKE_LIMIT_SWITCH
+  frc::SmartDashboard::PutString(
+      "Left extend limit switch",
+      m_leftExtendIntakeLimitSwitch.Get() ? "open" : "closed");
+  frc::SmartDashboard::PutString(
+      "Right extend limit switch",
+      m_rightExtendIntakeLimitSwitch.Get() ? "open" : "closed");
+  frc::SmartDashboard::PutString(
+      "Left retract limit switch",
+      m_leftRetractIntakeLimitSwitch.Get() ? "open" : "closed");
+  frc::SmartDashboard::PutString(
+      "Right retract limit switch",
+      m_rightRetractIntakeLimitSwitch.Get() ? "open" : "closed");
 #endif
 }

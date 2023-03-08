@@ -272,9 +272,23 @@ namespace Helpers {
   // CODE_REVIEW(matthew): Is this function supposed to be implemented?
   // JOSH was supposed to implement this, he hasn't been here, thus I assigned
   // this to Ethan on 3/7/23
-  /*
-  frc2::Command *ScoreAndLeave(std::string teamAndPosName) {
-                                               }*/
+
+  frc2::Command *ScoreAndLeave(Drivebase *drivebase,
+                               FloorEjection *floorEjection,
+                               std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        RollerScoreGamePieceHelperCommand(floorEjection)));
+    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new DriveAtPowerForMeters(drivebase, -0.5, 4.5_m)));
+    } else {
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new DriveAtPowerForMeters(drivebase, -0.5, 4.0_m)));
+    }
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
 
   frc2::Command *JustCharge(Drivebase *drivebase, std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
@@ -442,13 +456,10 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   // not left behind in the operation selector.)
   // Temporary Placeholder if Ethan gets the ScoreandLeave autonomous command
   // implemented tonight then this will be changed accordingly 3/7/23
-  /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
-    return ScoreAndLeave(teamAndPosName);
-    static frc2::PrintCommand doNothing("Doing nothing, as instructed");
-    return &doNothing;
-  } */
-  else if (operationName == AutonomousSelectedOperation::
-                                ScoreAndMoveToDefenseAgainstScoringWall) {
+  else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
+    return ScoreAndLeave(drivebase, floorEjection, teamAndPosName);
+  } else if (operationName == AutonomousSelectedOperation::
+                                  ScoreAndMoveToDefenseAgainstScoringWall) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(

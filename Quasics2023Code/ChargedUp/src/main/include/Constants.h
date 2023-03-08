@@ -66,7 +66,7 @@ const auto DropAndMoveToDefenseAgainstScoringWall =
     "Drop then move to defense against scoring wall";
 const auto DropAndMoveToDefenseAgainstOuterWall =
     "Drop then move to defense against outer wall";
-const auto ScoreAndLeave = "Score a Game Piece and GTOF";
+const auto ScoreAndLeave = "Score a Game Piece and GTFO";
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";
 const auto ScoreThenCharge = "Score Game Piece then Charge";

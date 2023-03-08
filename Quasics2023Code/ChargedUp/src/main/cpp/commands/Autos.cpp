@@ -58,19 +58,6 @@ namespace Helpers {
         new MoveFloorEjectionAtPowerForTime(floorEjection, 0.5, 0.3_s)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new MoveFloorEjectionAtPowerForTime(floorEjection, 0.3, 0.5_s)));
-    // CODE_REVIEW(matthew): Is this code still needed?  If not, get rid of it.
-    /*
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, 0.5, 0.3_m)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExhaustWithRollerAtSpeedForTime(intakeRoller, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new DriveAtPowerForMeters(drivebase, -0.5, 0.3_m)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-      */
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -283,6 +270,8 @@ namespace Helpers {
   }
 
   // CODE_REVIEW(matthew): Is this function supposed to be implemented?
+  // JOSH was supposed to implement this, he hasn't been here, thus I assigned
+  // this to Ethan on 3/7/23
   /*
   frc2::Command *ScoreAndLeave(std::string teamAndPosName) {
                                                }*/
@@ -451,6 +440,8 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   // CODE_REVIEW(matthew): Is this code still needed?  If so, it should be
   // implemented; if not, it should be removed (after making sure that it's
   // not left behind in the operation selector.)
+  // Temporary Placeholder if Ethan gets the ScoreandLeave autonomous command
+  // implemented tonight then this will be changed accordingly 3/7/23
   /*else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(teamAndPosName);
     static frc2::PrintCommand doNothing("Doing nothing, as instructed");

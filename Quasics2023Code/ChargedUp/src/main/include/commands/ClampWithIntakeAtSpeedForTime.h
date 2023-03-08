@@ -17,11 +17,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * CODE_REVIEW(matthew): Please update the documentation for this command,
- * including the comments above (which indicate that this is "an example
- * command"), so that it's clear what the command does, and how it is expected
- * to be used.
  */
+
+// This is an outdated command since this intake will not be used on this year's
+// bot Runs the motor to clamp down upon the game piece at a designated power
+// for a designated time
 class ClampWithIntakeAtSpeedForTime
     : public frc2::CommandHelper<frc2::CommandBase,
                                  ClampWithIntakeAtSpeedForTime> {

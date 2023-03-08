@@ -9,18 +9,16 @@
 
 #include "subsystems/IntakeClamp.h"
 
-/**
+/*
  * An example command.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
- *
- * CODE_REVIEW(matthew): Please update the documentation for this command,
- * including the comments above (which indicate that this is "an example
- * command"), so that it's clear what the command does, and how it is expected
- * to be used.
  */
+
+// This is an Outdated Command since Clamp Will not be used in this year's bot
+// Runs the Motor on the clamp to close upon the game piece
 class ClampWithIntake
     : public frc2::CommandHelper<frc2::CommandBase, ClampWithIntake> {
  public:

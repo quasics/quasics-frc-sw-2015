@@ -36,6 +36,7 @@
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
+#include "commands/SetLightsToColor.h"
 #include "commands/TankDrive.h"
 #include "commands/ToggleBrakingMode.h"
 #include "commands/TriggerBasedRollerCommand.h"
@@ -229,6 +230,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Safety Back",
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
+
+  frc::SmartDashboard::PutData("Set lights to red",
+                               new SetLightsToColor(&m_lighting, 255, 0, 0));
+  frc::SmartDashboard::PutData("Set lights to blue",
+                               new SetLightsToColor(&m_lighting, 0, 0, 255));
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

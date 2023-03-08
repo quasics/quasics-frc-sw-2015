@@ -10,7 +10,7 @@
 #include "subsystems/Lighting.h"
 
 /**
- * An example command.
+ * Changes the color of the entire light strip using RGB data.
  *
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in
@@ -24,16 +24,13 @@
 class SetLightsToColor
     : public frc2::CommandHelper<frc2::CommandBase, SetLightsToColor> {
  public:
-  SetLightsToColor();
-
-  void Initialize() override;
+  SetLightsToColor(Lighting* lighting, int r, int g, int b);
 
   void Execute() override;
 
-  void End(bool interrupted) override;
-
-  bool IsFinished() override;
-
  private:
-  Lighting *m_lighting;
+  Lighting* m_lighting;
+  int m_r;
+  int m_g;
+  int m_b;
 };

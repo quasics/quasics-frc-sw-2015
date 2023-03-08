@@ -17,11 +17,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * CODE_REVIEW(matthew): Please update the documentation for this command,
- * including the comments above (which indicate that this is "an example
- * command"), so that it's clear what the command does, and how it is expected
- * to be used.
  */
+
+// Outdated Command this intake will not be used on the robot
+// Runs the clamp motor backwards at a speed for a time to allow the robot to
+// release the game piece held with a clamp
 class ReleaseWithIntakeAtSpeedForTime
     : public frc2::CommandHelper<frc2::CommandBase,
                                  ReleaseWithIntakeAtSpeedForTime> {

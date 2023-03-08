@@ -17,11 +17,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * CODE_REVIEW(matthew): Please update the documentation for this command,
- * including the comments above (which indicate that this is "an example
- * command"), so that it's clear what the command does, and how it is expected
- * to be used.
  */
+
+// Given a speed and a time will move the floor in a certain direction to rid
+// the robot of the game piece
 class MoveFloorEjectionAtPowerForTime
     : public frc2::CommandHelper<frc2::CommandBase,
                                  MoveFloorEjectionAtPowerForTime> {

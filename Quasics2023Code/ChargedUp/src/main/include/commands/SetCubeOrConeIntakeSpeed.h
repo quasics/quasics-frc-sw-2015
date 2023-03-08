@@ -16,11 +16,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  *
- * CODE_REVIEW(matthew): Please update the documentation for this command,
- * including the comments above (which indicate that this is "an example
- * command"), so that it's clear what the command does, and how it is expected
- * to be used.
  */
+
+// Changes the value in config settings when a button is toggled in the
+// controller allows for the intake to switch speeds between cone and cube
 class SetCubeOrConeIntakeSpeed
     : public frc2::CommandHelper<frc2::CommandBase, SetCubeOrConeIntakeSpeed> {
  public:

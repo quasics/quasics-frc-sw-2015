@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <units/angle.h>
+#include <units/length.h>
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -32,3 +35,25 @@ namespace SelfBalancingConstants{
      constexpr auto kD = 0.0;
   }
 }
+
+namespace PhotonVisionConstants {
+namespace CameraAndTargetValues {
+  constexpr units::meter_t CAMERA_HEIGHT = 8_in;   // 19.25_in on real bot
+  constexpr units::meter_t TARGET_HEIGHT = 12_in;  // 14.25on real field
+  constexpr units::radian_t CAMERA_PITCH = 0_rad;
+  const units::meter_t GOAL_RANGE_METERS = 2_ft;  // 3ft on real field
+}  // namespace CameraAndTargetValues
+
+namespace LinearPID {
+  const double kP = 0.1;
+  const double kI = 0.0;
+  const double kD = 0.0;
+}  // namespace LinearPID
+
+namespace AngularPID {
+  const double kP = 0.1;
+  const double kI = 0.0;
+  const double kD = 0.0;
+}  // namespace AngularPID
+
+} 

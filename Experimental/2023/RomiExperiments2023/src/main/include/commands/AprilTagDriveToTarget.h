@@ -7,7 +7,7 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <subsystems/Drivebase.h>
+#include <subsystems/Drivetrain.h>
 
 #include "Constants.h"
 #include "subsystems/PhotonLibVision.h"
@@ -27,7 +27,7 @@
 class AprilTagDriveToTarget
     : public frc2::CommandHelper<frc2::CommandBase, AprilTagDriveToTarget> {
  public:
-  AprilTagDriveToTarget(PhotonLibVision* photonLibVision, Drivebase* drivebase,
+  AprilTagDriveToTarget(PhotonLibVision* photonLibVision, Drivetrain* drivetrain,
                         int targetToDriveTo);
 
   void Initialize() override;
@@ -50,7 +50,7 @@ class AprilTagDriveToTarget
                                      PhotonVisionConstants::AngularPID::kD};
 
   PhotonLibVision* m_photonLibVision;
-  Drivebase* m_drivebase;
+  Drivetrain* m_drivetrain;
   const int m_targetToDriveTo;
   units::degree_t m_angle;
   units::meter_t m_distance;

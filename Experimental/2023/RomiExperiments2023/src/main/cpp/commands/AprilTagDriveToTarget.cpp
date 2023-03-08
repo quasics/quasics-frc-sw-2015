@@ -5,14 +5,14 @@
 #include "commands/AprilTagDriveToTarget.h"
 
 AprilTagDriveToTarget::AprilTagDriveToTarget(PhotonLibVision* photonLibVision,
-                                             Drivebase* drivebase,
+                                             Drivetrain* drivetrain,
                                              int targetToDriveTo)
     : m_photonLibVision(photonLibVision),
-      m_drivebase(drivebase),
+      m_drivetrain(drivetrain),
       m_targetToDriveTo(targetToDriveTo) {
   // Use addRequirements() here to declare subsystem dependencies.
 
-  AddRequirements({photonLibVision, drivebase});
+  AddRequirements({photonLibVision, drivetrain});
 }
 
 // Called when the command is initially scheduled.
@@ -27,7 +27,7 @@ void AprilTagDriveToTarget::Execute() {
 
 // Called once the command ends or is interrupted.
 void AprilTagDriveToTarget::End(bool interrupted) {
-  m_drivebase->Stop();
+  m_drivetrain->Stop();
 }
 
 // Returns true when the command should end.
@@ -52,6 +52,6 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
             .value());
     double rotationSpeed = -turnController.Calculate(m_angle.value(), 0);
-    m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
+    m_drivetrain->ArcadeDrive(forwardSpeed, rotationSpeed);
   }
 }

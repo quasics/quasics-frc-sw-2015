@@ -49,9 +49,9 @@ namespace Helpers {
                                  IntakeRoller *intakeRoller,
                                  std::string teamAndPosName);
 
-  frc2::Command *ScoreThenEndNearGamePieceCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller, std::string teamAndPosName);
+  frc2::Command *ScoreThenEndNearGamePieceCommand(Drivebase *drivebase,
+                                                  FloorEjection floorEjection,
+                                                  std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenGTFOCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,

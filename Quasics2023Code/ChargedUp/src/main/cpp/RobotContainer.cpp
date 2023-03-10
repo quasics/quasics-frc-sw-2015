@@ -182,7 +182,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   std::string teamAndPosName = teamAndPosCmd->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      &m_drivebase, &m_intakeDeployment, &m_intakeClamp, &m_floorEjection,
+      &m_drivebase, &m_intakeDeployment, &m_intakeRoller, &m_floorEjection,
       operationName, teamAndPosName);
 }
 

@@ -5,14 +5,13 @@
 
 #include "subsystems/Drivebase.h"
 #include "subsystems/FloorEjection.h"
-#include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
 
 namespace AutonomousCommands {
 frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                     IntakeDeployment *intakeDeployment,
-                                    IntakeClamp *intakeClamp,
+                                    IntakeRoller *intakeRoller,
                                     FloorEjection *floorEjection,
                                     std::string operationName,
                                     std::string teamAndPosName);
@@ -22,11 +21,11 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
 // exposed for testing support only.)
 namespace Helpers {
   frc2::Command *DropGamePieceHelperCommand(IntakeDeployment *intakeDeployment,
-                                            IntakeClamp *intakeClamp);
+                                            IntakeRoller *intakeRoller);
 
   frc2::Command *ClampScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp);
+      IntakeRoller *intakeRoller);
 
   frc2::Command *RollerScoreGamePieceHelperCommand(
       FloorEjection *floorEjection);
@@ -43,24 +42,24 @@ namespace Helpers {
 
   frc2::Command *GetScoreSequenceFromStartingPoint(Drivebase *drivebase,
                                                    FloorEjection *floorEjection,
-                                                   IntakeClamp *intakeClamp);
+                                                   IntakeRoller *intakeRoller);
 
   frc2::Command *ScoreThenCharge(Drivebase *drivebase,
                                  FloorEjection *floorEjection,
-                                 IntakeClamp *intakeClamp,
+                                 IntakeRoller *intakeRoller,
                                  std::string teamAndPosName);
 
   frc2::Command *ScoreThenEndNearGamePieceCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
+      IntakeRoller *intakeRoller, std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenGTFOCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
+      IntakeRoller *intakeRoller, std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenChargeCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeClamp *intakeClamp, std::string teamAndPosName);
+      IntakeRoller *intakeRoller, std::string teamAndPosName);
 
   frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
                                      FloorEjection *floorEjection,

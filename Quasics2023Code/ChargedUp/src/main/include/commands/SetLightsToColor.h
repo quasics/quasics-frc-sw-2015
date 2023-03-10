@@ -27,6 +27,7 @@ class SetLightsToColor
   SetLightsToColor(Lighting* lighting, int r, int g, int b);
 
   void Execute() override;
+  bool IsFinished() override;
 
  private:
   Lighting* m_lighting;

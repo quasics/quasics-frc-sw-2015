@@ -26,7 +26,7 @@ namespace RobotPhysics {
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
 constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
-constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // 2023 robot gearing
+constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_MAE;  // 2023 robot gearing
 }  // namespace RobotPhysics
 
 namespace Intake {
@@ -115,13 +115,13 @@ namespace CameraAndTargetValues {
 }  // namespace CameraAndTargetValues
 
 namespace LinearPID {
-  const double kP = 0.1;
+  const double kP = 0.01;
   const double kI = 0.0;
   const double kD = 0.0;
 }  // namespace LinearPID
 
 namespace AngularPID {
-  const double kP = 0.1;
+  const double kP = 0.01;
   const double kI = 0.0;
   const double kD = 0.0;
 }  // namespace AngularPID

@@ -33,8 +33,7 @@ void AprilTagDriveToTarget::End(bool interrupted) {
 // Returns true when the command should end.
 bool AprilTagDriveToTarget::IsFinished() {
   if (m_distance <
-          (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS +
-           2_in) &&
+          (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS) &&
       ((m_angle > -2_deg) && (m_angle < 2_deg))) {
     return true;
   }

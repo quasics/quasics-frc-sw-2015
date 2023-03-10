@@ -4,10 +4,13 @@
 
 #include "commands/SetLightsToColor.h"
 
+#include <iostream>
+
 SetLightsToColor::SetLightsToColor(Lighting* lighting, int r, int g, int b) {
   m_r = r;
   m_g = g;
   m_b = b;
+  m_lighting = lighting;
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_lighting);
 }
@@ -15,4 +18,8 @@ SetLightsToColor::SetLightsToColor(Lighting* lighting, int r, int g, int b) {
 // Called repeatedly when this Command is scheduled to run
 void SetLightsToColor::Execute() {
   m_lighting->SetAllToColor(m_r, m_g, m_b);
+}
+
+bool SetLightsToColor::IsFinished() {
+  return false;
 }

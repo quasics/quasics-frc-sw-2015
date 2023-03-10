@@ -199,6 +199,34 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Drive -2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50, -2_m));
   frc::SmartDashboard::PutData(
+      "Ejection 1s 45%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 1.0_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 1s 70%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 1.0_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 1s 100%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 1.0_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.5s 45%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 0.5_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.5s 70%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 0.5_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.5s 100%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.5_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.3s 45%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 0.3_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.3s 70%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 0.3_s));
+  frc::SmartDashboard::PutData(
+      "Ejection 0.3s 100%",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.3_s));
+
+  frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));

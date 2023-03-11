@@ -4,7 +4,6 @@
  */
 #pragma once
 
-
 //
 // High-level control of functionality in subsystems.
 //
@@ -33,7 +32,6 @@
 // If defined, enables attempting to detect when the intake  is running up
 // against a hard stop while extending/retracting.
 #undef ENABLE_INTAKE_HARD_STOP_DETECTION
-
 
 //
 // High-level control of options in auto mode.

@@ -31,6 +31,8 @@ Drivebase::Drivebase() {
   // Shouldn't be required for Pigeon, but would be for other gyros.  (So,
   // better safe than sorry....)
 #ifdef ENABLE_PIGEON
+  m_pigeon.Calibrate();
+  m_pigeon.Reset();
   m_pitchShift = m_pigeon.GetPitch();
 #elif defined(ENABLE_AD_GYRO)
   m_adGyro.Calibrate();

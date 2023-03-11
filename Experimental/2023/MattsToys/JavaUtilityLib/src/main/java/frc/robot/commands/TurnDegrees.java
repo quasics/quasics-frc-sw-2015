@@ -8,27 +8,46 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.AbstractDriveBase;
 import frc.robot.subsystems.DriveBaseInterface;
+import frc.robot.utils.MathUtils;
 
 public class TurnDegrees extends CommandBase {
+  public static final double DEFAULT_TOLERANCE_DEGREES = 1;
+
   private final DriveBaseInterface m_drive;
   private final double m_degrees;
   private final double m_speed;
+  private final double m_toleranceDegrees;
   private double m_targetAngle = 0;
 
   /**
    * Creates a new TurnDegrees. This command will turn your robot for a desired rotation (in
    * degrees) and rotational speed.
    *
+   * @param drive The drive subsystem on which this command will run
    * @param speed The speed which the robot will drive. Negative is in reverse.
    * @param degrees Degrees to turn. Leverages encoders to compare distance.
-   * @param drive The drive subsystem on which this command will run
+   * @param toleranceDegrees How close is close enough (i.e., the "+/-" value).
    */
-  public TurnDegrees(double speed, double degrees, DriveBaseInterface drive) {
+  public TurnDegrees(
+      DriveBaseInterface drive, double speed, double degrees, double toleranceDegrees) {
     // TODO(mjh): Update this code to handle +/- degrees and speeds correctly.
     m_degrees = degrees;
     m_speed = speed;
     m_drive = drive;
+    m_toleranceDegrees = toleranceDegrees;
     addRequirements((Subsystem) drive);
+  }
+
+  /**
+   * Creates a new TurnDegrees. This command will turn your robot for a desired rotation (in
+   * degrees) and rotational speed.
+   *
+   * @param drive The drive subsystem on which this command will run
+   * @param speed The speed which the robot will drive. Negative is in reverse.
+   * @param degrees Degrees to turn. Leverages encoders to compare distance.
+   */
+  public TurnDegrees(DriveBaseInterface drive, double speed, double degrees) {
+    this(drive, speed, degrees, DEFAULT_TOLERANCE_DEGREES);
   }
 
   // Called when the command is initially scheduled.
@@ -54,17 +73,8 @@ public class TurnDegrees extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    final double kCloseEnough = 0.25; // within this many degrees?  We're OK.
-    // TODO(mjh): Replace "kCloseEnough" with a c-tor parameter.
-
     final double currentAngleDegrees = m_drive.getYawDegrees();
-    if (m_degrees < 0 && currentAngleDegrees <= (m_targetAngle + kCloseEnough)) {
-      return true;
-    } else if (m_degrees > 0 && currentAngleDegrees >= (m_targetAngle - kCloseEnough)) {
-      return true;
-    } else {
-      return false;
-    }
+    return MathUtils.withinTolerance(m_targetAngle, currentAngleDegrees, m_toleranceDegrees);
     /*
      * We could also convert distance travelled to degrees. The Standard
      * Romi Chassis found here,

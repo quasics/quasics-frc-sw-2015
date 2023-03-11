@@ -20,11 +20,11 @@ public class DriveDistance extends CommandBase {
    * Creates a new DriveDistance. This command will drive your your robot for a desired distance at
    * a desired speed.
    *
+   * @param drive The drivetrain subsystem on which this command will run
    * @param speed The speed at which the robot will drive
    * @param meters The number of meters the robot will drive
-   * @param drive The drivetrain subsystem on which this command will run
    */
-  public DriveDistance(double speed, double meters, DriveBaseInterface drive) {
+  public DriveDistance(DriveBaseInterface drive, double speed, double meters) {
     m_inReverse = (speed < 0 || meters < 0);
     final int sign = (m_inReverse ? -1 : +1);
     m_distance = Math.abs(meters) * sign;

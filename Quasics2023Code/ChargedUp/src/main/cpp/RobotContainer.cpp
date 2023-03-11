@@ -187,6 +187,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  /*
   frc::SmartDashboard::PutData("Rotate 180 degrees at 50%",
                                new RotateAtAngle(&m_drivebase, 0.50, 180_deg));
   frc::SmartDashboard::PutData("Rotate -180 degrees at 50%",
@@ -225,7 +226,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Ejection 0.3s 100%",
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.3_s));
-
+*/
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
@@ -263,6 +264,17 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                new SetLightsToColor(&m_lighting, 255, 0, 0));
   frc::SmartDashboard::PutData("Set lights to blue",
                                new SetLightsToColor(&m_lighting, 0, 0, 255));
+
+  frc::SmartDashboard::PutData(
+      "Intake Extension Timed",
+      new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.3, 0.2_s));
+  frc::SmartDashboard::PutData(
+      "Intake Retraction Timed",
+      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.2_s));
+  frc::SmartDashboard::PutData("Intake Extension",
+                               new ExtendIntake(&m_intakeDeployment, 0.3));
+  frc::SmartDashboard::PutData("Intake Retraction",
+                               new ExtendIntake(&m_intakeDeployment, 0.5));
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

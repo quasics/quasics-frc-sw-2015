@@ -18,7 +18,7 @@ public class RunSingleMotor extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_singleMotor.setPower(0.1);
+    m_singleMotor.setPower(0.4);
     System.out.println("Running single motor");
   }
 
@@ -26,7 +26,7 @@ public class RunSingleMotor extends CommandBase {
   @Override
   public void execute() {
     System.out.println("Running single motor");
-    m_singleMotor.setPower(0.1);
+    m_singleMotor.setPower(0.4);
   }
 
   // Called once the command ends or is interrupted.

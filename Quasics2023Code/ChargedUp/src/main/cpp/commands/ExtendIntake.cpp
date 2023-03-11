@@ -35,5 +35,6 @@ bool ExtendIntake::IsFinished() {
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
   return m_intakeDeployment->IsIntakeDeployed(true);
 #endif
-  return m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY;
+  // return m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY;
+  return false;
 }

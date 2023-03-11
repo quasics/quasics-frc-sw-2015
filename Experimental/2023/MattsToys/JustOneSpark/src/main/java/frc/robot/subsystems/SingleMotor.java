@@ -13,7 +13,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class SingleMotor extends SubsystemBase {
   //CANSparkMax m_motor1 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID1, MotorType.kBrushless);
   //CANSparkMax m_motor2 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID2, MotorType.kBrushless);
-  CANSparkMax m_motor7 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID7, MotorType.kBrushless);
+  //CANSparkMax m_motor5 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID5, MotorType.kBrushless);
+  CANSparkMax m_motor6 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID6, MotorType.kBrushless);
   //CANSparkMax m_motor3 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID3, MotorType.kBrushless);
   //CANSparkMax m_motor4 = new CANSparkMax(Constants.SINGLE_MOTOR_CAN_ID4, MotorType.kBrushless);
   /** Creates a new SingleMotor. */
@@ -22,7 +23,8 @@ public class SingleMotor extends SubsystemBase {
   public void setPower(double percent) {
     //m_motor1.set(-percent);
     //m_motor2.set(percent);
-    m_motor7.set(-percent);
+    //m_motor5.set(-percent);
+    m_motor6.set(-percent);
     //m_motor3.set(percent);
     //m_motor4.set(percent);
   }

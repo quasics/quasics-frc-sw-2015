@@ -17,8 +17,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final int SINGLE_MOTOR_CAN_ID1 = 5;
-  public static final int SINGLE_MOTOR_CAN_ID2 = 6;
+  public static final int SINGLE_MOTOR_CAN_ID5 = 5;
+  public static final int SINGLE_MOTOR_CAN_ID6 = 6;
   public static final int SINGLE_MOTOR_CAN_ID7 = 7;
   //public static final int SINGLE_MOTOR_CAN_ID3 = 3;
   //public static final int SINGLE_MOTOR_CAN_ID4 = 4;

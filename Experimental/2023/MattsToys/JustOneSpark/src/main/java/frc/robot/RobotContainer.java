@@ -35,7 +35,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    SmartDashboard.putData("Run motor " + Constants.SINGLE_MOTOR_CAN_ID1, new RunSingleMotor(m_singleMotor));
+    SmartDashboard.putData("Run motor " + Constants.SINGLE_MOTOR_CAN_ID6, new RunSingleMotor(m_singleMotor));
     System.err.println("Done with container init");
   }
 

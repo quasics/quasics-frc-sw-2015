@@ -21,6 +21,7 @@ import frc.robot.Constants.SpeedLimits;
 import frc.robot.commands.DriveDistance;
 import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TurnDegreesUsingPid;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
@@ -92,6 +93,11 @@ public class RobotContainer {
     //////////////////////////////////////
     // Set up the choices of things to do during auto mode.
     setupAutoSelection();
+  }
+
+  private void configureTestCommands() {
+    SmartDashboard.putData("Turn +45 degrees", new TurnDegreesUsingPid(m_driveBase, +45));
+    SmartDashboard.putData("Turn -90 degrees", new TurnDegreesUsingPid(m_driveBase, -90));
   }
 
   /**

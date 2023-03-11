@@ -120,6 +120,14 @@ void RobotContainer::RunCommandWhileDriverButtonIsHeld(int logitechButtonId,
   frc2::JoystickButton(&m_driverStick, logitechButtonId).WhileTrue(command);
 }
 
+void RobotContainer::RunCommandWhenDriverButtonIsPressed(
+    int logitechButtonId, frc2::Command *command) {
+  // Note: it would be good to have "debouncing" here, too.
+  // See
+  // https://docs.wpilib.org/en/stable/docs/software/commandbased/binding-commands-to-triggers.html#debouncing-triggers
+  frc2::JoystickButton(&m_driverStick, logitechButtonId).OnTrue(command);
+}
+
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command *command) {
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
@@ -156,12 +164,10 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
   RunCommandWhileDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
-  RunCommandWhileDriverButtonIsHeld(
+  RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);
-  RunCommandWhileDriverButtonIsHeld(
+  RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
-  // NEED TO ADD TOGGLES FOR BRAKING MODE AND SWITCHING BETWEEN CUBE AND CONE
-  // B FOR BRAKING ON LOGITECH, X FOR CUBE TO CONE, Start with Cube
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

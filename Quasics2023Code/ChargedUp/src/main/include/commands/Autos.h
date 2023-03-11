@@ -30,6 +30,10 @@ namespace Helpers {
   frc2::Command *FlipperScoreGamePieceHelperCommand(
       FloorEjection *floorEjection);
 
+  frc2::Command *GamePiecePickupHelperCommand(
+      Drivebase *drivebase, IntakeRoller *intakeRoller,
+      IntakeDeployment *intakeDeployment);
+
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName);
 
   frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
@@ -53,9 +57,9 @@ namespace Helpers {
                                                   FloorEjection floorEjection,
                                                   std::string teamAndPosName);
 
-  frc2::Command *DropGamePieceThenGTFOCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller, std::string teamAndPosName);
+  frc2::Command *DropGamePieceThenGTFOCommand(Drivebase *drivebase,
+                                              FloorEjection *floorEjection,
+                                              std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenChargeCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,

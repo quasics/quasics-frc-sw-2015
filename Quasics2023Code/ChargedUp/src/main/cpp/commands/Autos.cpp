@@ -62,6 +62,15 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  frc2::Command *GamePiecePickupHelperCommand(
+      Drivebase *drivebase, IntakeRoller *intakeRoller,
+      IntakeDeployment *intakeDeployment) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.3_s)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -385,12 +394,12 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::Command *DropGamePieceThenGTFOCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller, std::string teamAndPosName) {
+  frc2::Command *DropGamePieceThenGTFOCommand(Drivebase *drivebase,
+                                              FloorEjection *floorEjection,
+                                              std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(
@@ -522,8 +531,8 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
     return DropGamePieceHelperCommand(intakeDeployment, intakeRoller);
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
-    return DropGamePieceThenGTFOCommand(drivebase, intakeDeployment,
-                                        intakeRoller, teamAndPosName);
+    return DropGamePieceThenGTFOCommand(drivebase, floorEjection,
+                                        teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
     return DropGamePieceThenChargeCommand(drivebase, intakeDeployment,
                                           intakeRoller, teamAndPosName);

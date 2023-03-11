@@ -41,6 +41,7 @@
 #include "commands/TankDrive.h"
 #include "commands/ToggleBrakingMode.h"
 #include "commands/TriggerBasedRollerCommand.h"
+#include "commands/TurnDegreesImported.h"
 
 RobotContainer::RobotContainer()
     : m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
@@ -197,18 +198,25 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Turn by 90 degrees left",
+      new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
+  frc::SmartDashboard::PutData(
+      "Turn by 90 degrees right",
+      new TurnDegreesImported(&m_drivebase, 0.5, -90_deg));
   /*
   frc::SmartDashboard::PutData("Rotate 180 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, 180_deg));
-  frc::SmartDashboard::PutData("Rotate -180 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, -180_deg));
+                               new RotateAtAngle(&m_drivebase, 0.50,
+  180_deg)); frc::SmartDashboard::PutData("Rotate -180 degrees at 50%", new
+  RotateAtAngle(&m_drivebase, 0.50, -180_deg));
   frc::SmartDashboard::PutData("Rotate 90 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, 90_deg));
+                               new RotateAtAngle(&m_drivebase, 0.50,
+  90_deg));
 
   frc::SmartDashboard::PutData(
-      "Drive 2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50, 2_m));
-  frc::SmartDashboard::PutData(
-      "Drive -2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50, -2_m));
+      "Drive 2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50,
+  2_m)); frc::SmartDashboard::PutData( "Drive -2m at 50%", new
+  DriveAtPowerForMeters(&m_drivebase, 0.50, -2_m));
   frc::SmartDashboard::PutData(
       "Ejection 1s 45%",
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 1.0_s));
@@ -254,37 +262,38 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Set not inverted",
       new frc2::InstantCommand([this]() { setInverted(false); }));
+  /*
+    frc::SmartDashboard::PutData(
+        "Drive To April Tag",
+        new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
+    frc::SmartDashboard::PutData(
+        "Curiousity",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.075_s));
+    frc::SmartDashboard::PutData(
+        "Curiousity lower",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.065_s));
+    frc::SmartDashboard::PutData("Safety", new MoveFloorEjectionAtPowerForTime(
+                                               &m_floorEjection, 0.1, 0.75_s));
+    frc::SmartDashboard::PutData(
+        "Safety Back",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
 
-  frc::SmartDashboard::PutData(
-      "Drive To April Tag",
-      new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
-  frc::SmartDashboard::PutData(
-      "Curiousity",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.075_s));
-  frc::SmartDashboard::PutData(
-      "Curiousity lower",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.065_s));
-  frc::SmartDashboard::PutData("Safety", new MoveFloorEjectionAtPowerForTime(
-                                             &m_floorEjection, 0.1, 0.75_s));
-  frc::SmartDashboard::PutData(
-      "Safety Back",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
+    frc::SmartDashboard::PutData("Set lights to red",
+                                 new SetLightsToColor(&m_lighting, 255, 0, 0));
+    frc::SmartDashboard::PutData("Set lights to blue",
+                                 new SetLightsToColor(&m_lighting, 0, 0, 255));
 
-  frc::SmartDashboard::PutData("Set lights to red",
-                               new SetLightsToColor(&m_lighting, 255, 0, 0));
-  frc::SmartDashboard::PutData("Set lights to blue",
-                               new SetLightsToColor(&m_lighting, 0, 0, 255));
-
-  frc::SmartDashboard::PutData(
-      "Intake Extension Timed",
-      new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.3, 0.2_s));
-  frc::SmartDashboard::PutData(
-      "Intake Retraction Timed",
-      new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.2_s));
-  frc::SmartDashboard::PutData("Intake Extension",
-                               new ExtendIntake(&m_intakeDeployment, 0.3));
-  frc::SmartDashboard::PutData("Intake Retraction",
-                               new ExtendIntake(&m_intakeDeployment, 0.5));
+    frc::SmartDashboard::PutData(
+        "Intake Extension Timed",
+        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.3, 0.2_s));
+    frc::SmartDashboard::PutData(
+        "Intake Retraction Timed",
+        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.2_s));
+    frc::SmartDashboard::PutData("Intake Extension",
+                                 new ExtendIntake(&m_intakeDeployment, 0.3));
+    frc::SmartDashboard::PutData("Intake Retraction",
+                                 new ExtendIntake(&m_intakeDeployment, 0.5));
+    */
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -36,6 +37,10 @@ class TurnDegreesImported
   const units::degree_t m_angle;
 
   units::degree_t startingposition;
+  units::degree_t angleTest;
   double multiplier = 1.0;
   bool turningleft = true;
+  double DecreaseForCompensation =
+      0.83;  // prevents overshoot //maybe change this to a deg subtraction
+  //  units::degree_t angleShift = 0_deg;
 };

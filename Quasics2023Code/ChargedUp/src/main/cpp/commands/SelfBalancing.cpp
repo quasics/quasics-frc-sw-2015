@@ -37,7 +37,7 @@ void SelfBalancing::Execute() {
   double power = 0.0;
   if (noFeedFowardPower == false) {
     power = 0.4;
-    if (currentAngle > -5.0 and currentAngle < 5.0) {
+    if (currentAngle > -2.0 and currentAngle < 2.0) {
       noFeedFowardPower = true;
       activatePID = true;
     }

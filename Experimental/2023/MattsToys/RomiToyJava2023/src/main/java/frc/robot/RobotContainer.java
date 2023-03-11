@@ -157,6 +157,15 @@ public class RobotContainer {
       return m_xboxController.getRightBumper();
     };
 
+    // Mode signal for "drive straight" mode.
+    //
+    // Note: this might be better implemented as an alternate command, triggered when the button is
+    // held down, and using PID control to prevent turning.  But this is a short-term solution,
+    // meant to demonstrate one approach.
+    Supplier<Boolean> driveStraightSignalSupplier = () -> {
+      return m_xboxController.getAButton();
+    };
+
     // Cap the acceleration rate
     SpeedModifier leftSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
     SpeedModifier rightSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
@@ -175,22 +184,28 @@ public class RobotContainer {
     // Generate the suppliers used to get "raw" speed signals for left and right.
     // On the GameSir and Xbox controllers, full forward = -1, full back = +1, so
     // we'll need to invert them to translate to what we're using in the drive base.
-    Supplier<Double> leftStickSpeedControl = () -> {
-      double speed = m_xboxController.getRawAxis(1);
+    //
+    // Note that if we're in "drive straight lines" mode, we'll *only* read the left stick.
+    // (Choice is arbitrary.)
+    final int LEFT_STICK_AXIS = 1;
+    final int RIGHT_STICK_AXIS = 5;
+    Supplier<Double> leftStickSupplier = () -> {
+      double speed = m_xboxController.getRawAxis(LEFT_STICK_AXIS);
       return -leftSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
-    Supplier<Double> rightStickSpeedControl = () -> {
-      double speed = m_xboxController.getRawAxis(5);
+    Supplier<Double> rightStickSupplier = () -> {
+      final boolean inDriveStraightMode = driveStraightSignalSupplier.get();
+      double speed = m_xboxController.getRawAxis(inDriveStraightMode ? LEFT_STICK_AXIS : RIGHT_STICK_AXIS);
       return -rightSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
 
     // Get the (final) suppliers that will be polled for the left/right side
     // speeds.
-    // m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+    // m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSupplier, rightStickSupplier);
     // Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
     // Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
 
     // Build the actual tank drive command.
-    return new TankDrive(m_drivetrain, leftStickSpeedControl, rightStickSpeedControl);
+    return new TankDrive(m_drivetrain, leftStickSupplier, rightStickSupplier);
   }
 }

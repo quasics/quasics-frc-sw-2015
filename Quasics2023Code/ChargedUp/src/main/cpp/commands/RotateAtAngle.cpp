@@ -44,7 +44,7 @@ void RotateAtAngle::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
-  const double minimumSpeed = 0.30;  // speed must be >= 0.30
+  const double minimumSpeed = 0.47;  // speed must be >= 0.30
   const double scalingFactor = 0.80;
 
   const units::degree_t currentPosition = m_drivebase->GetAngle();

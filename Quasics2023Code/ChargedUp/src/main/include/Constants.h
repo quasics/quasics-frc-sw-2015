@@ -26,7 +26,9 @@ namespace RobotPhysics {
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
 constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
-constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_MAE;  // 2023 robot gearing
+constexpr double DRIVEBASE_GEAR_RATIO =
+    DRIVEBASE_GEAR_RATIO_SALLY;  // 2023 robot gearing
+// ADD GLADYS CONSTANT
 }  // namespace RobotPhysics
 
 namespace Intake {

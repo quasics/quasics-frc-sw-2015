@@ -128,7 +128,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 // ToggleOnTrue command can be used or should this be in each individual command
 
 void RobotContainer::ConfigureControllerButtonBindings() {
-  static ExtendIntake extendIntake(&m_intakeDeployment, 0.50);
+  static ExtendIntake extendIntake(&m_intakeDeployment, 0.30);
   static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
   static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
   static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);

@@ -16,7 +16,10 @@ void SelfBalancing::Initialize() {
   activatePID = false;
   pid.Reset();
   pid.SetTolerance(2.0, 0);
-  pastAngle = m_drivebase->GetPitch();  // ADJUST FOR NOT FLAT GYRO
+  pastAngle =
+      m_drivebase->GetPitch() *
+      -1;  // GYRO ON GLADYS IS GIVING ROLL AS UP AND
+           // DOWN ANGLE NEGATED BECAUSE OF VALUES Negative up positive down
   if ((pastAngle) > 0) {
     slopeOfRamp = 1;
   }
@@ -29,11 +32,14 @@ void SelfBalancing::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
-  double currentAngle = m_drivebase->GetPitch();  // ADJUST FOR NOT FLAT GYRO
+  double currentAngle =
+      m_drivebase->GetPitch() *
+      -1;  // GYRO ON GLADYS IS GIVING ROLL AS UP AND
+           // DOWN ANGLE NEGATED BECAUSE OF VALUES Negative up positive down
   double power = 0.0;
   if (noFeedFowardPower == false) {
     power = 0.4;
-    if (currentAngle > -2.0 and currentAngle < 2.0) {
+    if (currentAngle > -5.0 and currentAngle < 5.0) {
       noFeedFowardPower = true;
       activatePID = true;
     }

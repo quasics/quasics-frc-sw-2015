@@ -79,14 +79,15 @@ void IntakeDeployment::EnableBraking(bool value) {
 #endif
 }
 
-bool IntakeDeployment::IsIntakeDeployed(bool extend) {
+bool IntakeDeployment::IsIntakeDeployed(LimitSwitch limitSwitch) {
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
-  if (extend) {
+  if (limitSwitch == LimitSwitch::Extended) {
     return !m_leftExtendIntakeLimitSwitch.Get() ||
            !m_rightExtendIntakeLimitSwitch.Get();
+  } else if (limitSwitch == LimitSwitch::Retracted) {
+    return !m_leftRetractIntakeLimitSwitch.Get() ||
+           !m_rightRetractIntakeLimitSwitch.Get();
   }
-  return !m_leftRetractIntakeLimitSwitch.Get() ||
-         !m_rightRetractIntakeLimitSwitch.Get();
 #endif
   return false;
 }

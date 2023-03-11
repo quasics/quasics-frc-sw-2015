@@ -13,6 +13,8 @@
 
 class IntakeDeployment : public frc2::SubsystemBase {
  public:
+  enum class LimitSwitch { Extended, Retracted };
+
   IntakeDeployment();
 
   void SetMotorSpeed(double percentSpeed);
@@ -31,7 +33,12 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   void EnableBraking(bool value);
 
-  bool IsIntakeDeployed(bool extend);
+  /**
+   * Returns true if the limit switches are enabled on the intake, and if the
+   * indicated limit switch is being triggered.
+   *
+   */
+  bool IsIntakeDeployed(LimitSwitch limitSwitch);
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

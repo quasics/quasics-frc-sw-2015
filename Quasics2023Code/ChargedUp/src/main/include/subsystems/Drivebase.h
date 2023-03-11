@@ -61,12 +61,14 @@ class Drivebase : public frc2::SubsystemBase {
 
   /** Returns the robot's current pitch angle (nose pointed up/down). */
   double GetPitch() {
-    return GetRollImpl();
+    return GetPitchImpl();
+    // return GetRollImpl();
   }
 
   /** Returns the robot's current roll angle. */
   double GetRoll() {
-    return GetPitchImpl();
+    // return GetPitchImpl();
+    return GetRollImpl();
   }
 
   void GyroCalibration();

@@ -127,8 +127,8 @@ units::degree_t Drivebase::GetAngle() {
 
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
-  frc::SmartDashboard::PutNumber("Pitch:", GetPitch());
-  frc::SmartDashboard::PutNumber("Roll:", GetRoll());
+  frc::SmartDashboard::PutNumber("Pitch Adjusted Value:", GetPitchImpl());
+  frc::SmartDashboard::PutNumber("Roll Adjusted Value:", GetRollImpl());
   frc::SmartDashboard::PutNumber("Yaw:", GetAngle().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 }

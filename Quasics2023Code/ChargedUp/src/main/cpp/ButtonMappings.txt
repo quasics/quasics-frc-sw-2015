@@ -1,0 +1,17 @@
+Driver controller (Logitech)
+* Left stick - Tank drive (left wheels)
+* Right stick - Tank drive (right wheels)
+* A - 
+* B - Toggle breaking mode on/off (when pressed)
+* X - Toggle cube vs. cone (when pressed)
+* Y - Self balancing mode (while held)
+* Left shoulder - Turtle mode (while held)
+* Right shoulder - Turbo mode (while held)
+* Left trigger - Intake roller (while held)
+* Right trigger - Intake exhaust (while held)
+* Start - 
+* Back - 
+
+
+Operator controller (Xbox)
+* 

@@ -3,11 +3,22 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/PhotonLibVision.h"
+#include <iostream>
 
 PhotonLibVision::PhotonLibVision() = default;
 
 // This method will be called once per scheduler run
 void PhotonLibVision::Periodic() {
+  /*photonlib::PhotonPipelineResult result = camera.GetLatestResult();
+  if (result.HasTargets()) {
+    std::span<const photonlib::PhotonTrackedTarget> targets =
+        result.GetTargets();
+    for (const photonlib::PhotonTrackedTarget& target : targets) {
+      int targetID = target.GetFiducialId();
+      std::cout << "Seeing Target" << targetID << std::endl;
+}
+  }
+  std::cout << "Not Seeing Target" << std::endl;*/
 }
 
 bool PhotonLibVision::AprilTagTargetIdentified(int IDWantedTarget) {

@@ -5,6 +5,7 @@
 #include "subsystems/Drivetrain.h"
 
 #include <numbers>
+#include <iostream>
 
 #include "Constants.h"
 
@@ -32,6 +33,7 @@ void Drivetrain::Periodic() {
 }
 
 void Drivetrain::ArcadeDrive(double xaxisSpeed, double zaxisRotate) {
+  std::cout << "Activating Arcade Drive" << std::endl;
   m_drive.ArcadeDrive(xaxisSpeed, zaxisRotate);
 }
 

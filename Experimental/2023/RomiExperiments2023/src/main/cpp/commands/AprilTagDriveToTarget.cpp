@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/AprilTagDriveToTarget.h"
+#include <iostream>
 
 AprilTagDriveToTarget::AprilTagDriveToTarget(PhotonLibVision* photonLibVision,
                                              Drivetrain* drivetrain,
@@ -42,11 +43,13 @@ bool AprilTagDriveToTarget::IsFinished() {
 }
 
 void AprilTagDriveToTarget::UpdateDrivingParameters() {
+  std::cout << "Begginning to Look at Stuff" << std::endl;
   bool targetFound =
       m_photonLibVision->AprilTagTargetIdentified(m_targetToDriveTo);
   if (targetFound == true) {
     m_photonLibVision->CalculateDistanceAndAngleToTarget(m_targetToDriveTo,
                                                          m_distance, m_angle);
+    std::cout << "Performing Calculations" << std::endl;
     double forwardSpeed = -forwardController.Calculate(
         m_distance.value(),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS

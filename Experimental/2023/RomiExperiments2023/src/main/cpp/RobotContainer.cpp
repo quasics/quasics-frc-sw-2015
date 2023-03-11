@@ -9,6 +9,7 @@
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
 #include "commands/SelfBalancing.h"
+#include "commands/AprilTagDriveToTarget.h"
 
 RobotContainer::RobotContainer()
 {
@@ -43,7 +44,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
   // std::unique_ptr<frc2::CommandBase> ptr(new SelfBalancing(&m_driveTrain));
   return frc2::CommandPtr(                // Build a CommandPtr object from....
     std::unique_ptr<frc2::CommandBase>(   // a std::unique_ptr to CommandBase, which wraps....
-      new SelfBalancing(&m_driveTrain)    // the command we want to have executed.
+      new AprilTagDriveToTarget(&m_vision, &m_driveTrain, 0)    // the command we want to have executed.
     )
   );
 }

@@ -10,6 +10,7 @@
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/Drivetrain.h"
+#include "subsystems/PhotonLibVision.h"
 #include "subsystems/OnBoardIO.h"
 
 /**
@@ -32,6 +33,7 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   Drivetrain m_driveTrain;
+  PhotonLibVision m_vision;
   OnBoardIO m_onBoardIo{OnBoardIO::ChannelMode::INPUT,
                         OnBoardIO::ChannelMode::INPUT};
   ExampleSubsystem m_subsystem;

@@ -123,8 +123,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    final double kP = 0.01;
+    final double kI = 0.002;
+    final double kD = 0.0;
+    return new frc.robot.commands.TurnDegreesUsingPid(m_drivetrain, 90, 0.01, kP, kI, kD);
     // return new frc.robot.commands.DriveDistance(0.25, 0.21991148575, m_drivetrain);
-    return m_chooser.getSelected();
+    // return m_chooser.getSelected();
   }
 
   /**

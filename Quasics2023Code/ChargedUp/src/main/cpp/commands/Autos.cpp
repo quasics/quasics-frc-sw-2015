@@ -14,6 +14,7 @@
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
+#include "commands/TurnDegreesImported.h"
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
 
@@ -86,16 +87,16 @@ namespace Helpers {
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{drivebase, -0.5, 4.0_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                       RotateAtAngle{drivebase, 0.5, -90_deg},
+          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
+                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
                                        [firstTurnIsCounterClockwise]() {
                                          return firstTurnIsCounterClockwise;
                                        })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{drivebase, 0.5, 1.889_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, -90_deg},
-                                       RotateAtAngle{drivebase, 0.5, 90_deg},
+          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, -90_deg},
+                                       TurnDegreesImported{drivebase, 0.5, 90_deg},
                                        [firstTurnIsCounterClockwise]() {
                                          return firstTurnIsCounterClockwise;
                                        })));
@@ -113,10 +114,10 @@ namespace Helpers {
 
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, -90_deg},
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
             frc2::ConditionalCommand(
-                RotateAtAngle{drivebase, 0.5, 90_deg},
-                RotateAtAngle(drivebase, 0.5, 180_deg),
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
+                TurnDegreesImported(drivebase, 0.5, 180_deg),
                 [teamAndPosName] {
                   return teamAndPosName ==
                              AutonomousTeamAndStationPositions::Red2 ||
@@ -149,9 +150,9 @@ namespace Helpers {
 
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, -90_deg},
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
             frc2::ConditionalCommand(
-                RotateAtAngle{drivebase, 0.5, 90_deg},
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
                 frc2::PrintCommand{"Doing nothing"},
                 [teamAndPosName] {
                   return teamAndPosName ==
@@ -170,8 +171,8 @@ namespace Helpers {
 
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, 25.8_deg},
-            RotateAtAngle{drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
+            TurnDegreesImported{drivebase, 0.5, 25.8_deg},
+            TurnDegreesImported{drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
               return teamAndPosName ==
                          AutonomousTeamAndStationPositions::Blue1 ||
                      teamAndPosName ==
@@ -195,10 +196,10 @@ namespace Helpers {
 
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, -90_deg},
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
             frc2::ConditionalCommand(
-                RotateAtAngle{drivebase, 0.5, 90_deg},
-                RotateAtAngle(drivebase, 0.5, 180_deg),
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
+                TurnDegreesImported(drivebase, 0.5, 180_deg),
                 [teamAndPosName] {
                   return teamAndPosName ==
                              AutonomousTeamAndStationPositions::Blue1 ||
@@ -231,9 +232,9 @@ namespace Helpers {
 
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            RotateAtAngle{drivebase, 0.5, -90_deg},
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
             frc2::ConditionalCommand(
-                RotateAtAngle{drivebase, 0.5, 90_deg},
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
                 frc2::PrintCommand{"Doing nothing"},
                 [teamAndPosName] {
                   return teamAndPosName ==
@@ -251,16 +252,16 @@ namespace Helpers {
         new DriveAtPowerForMeters{drivebase, 0.5, 4_m}));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                     RotateAtAngle{drivebase, 0.5, -90_deg},
+        new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
+                                     TurnDegreesImported{drivebase, 0.5, -90_deg},
                                      [isBlue] { return isBlue; })));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{drivebase, 0.5, 4_m}));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, -47.9_deg},
-                                     RotateAtAngle{drivebase, 0.5, 47.9_deg},
+        new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, -47.9_deg},
+                                     TurnDegreesImported{drivebase, 0.5, 47.9_deg},
                                      [isBlue] { return isBlue; })));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -303,16 +304,16 @@ namespace Helpers {
           (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
            teamAndPosName == AutonomousTeamAndStationPositions::Red3);
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                       RotateAtAngle{drivebase, 0.5, -90_deg},
+          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
+                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
                                        [firstTurnIsCounterClockwise]() {
                                          return firstTurnIsCounterClockwise;
                                        })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters(drivebase, 0.5, 1.719_m)));
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(RotateAtAngle{drivebase, 0.5, 90_deg},
-                                       RotateAtAngle{drivebase, 0.5, -90_deg},
+          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
+                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
                                        [firstTurnIsCounterClockwise]() {
                                          return firstTurnIsCounterClockwise;
                                        })));
@@ -366,7 +367,7 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         RollerScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new RotateAtAngle(drivebase, 0.5, 180_deg)));
+        new TurnDegreesImported(drivebase, 0.5, 180_deg)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(

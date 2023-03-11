@@ -14,9 +14,9 @@
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
-#include "commands/TurnDegreesImported.h"
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
+#include "commands/TurnDegreesImported.h"
 
 namespace AutonomousCommands {
 namespace Helpers {
@@ -52,7 +52,7 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::Command *RollerScoreGamePieceHelperCommand(
+  frc2::Command *FlipperScoreGamePieceHelperCommand(
       FloorEjection *floorEjection) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -86,20 +86,22 @@ namespace Helpers {
            teamAndPosName == AutonomousTeamAndStationPositions::Red1);
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{drivebase, -0.5, 4.0_m}));
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
-                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
-                                       [firstTurnIsCounterClockwise]() {
-                                         return firstTurnIsCounterClockwise;
-                                       })));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{drivebase, 0.5, 1.889_m}));
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, -90_deg},
-                                       TurnDegreesImported{drivebase, 0.5, 90_deg},
-                                       [firstTurnIsCounterClockwise]() {
-                                         return firstTurnIsCounterClockwise;
-                                       })));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveUntilPitchAngleChange{drivebase, 0.5}));
       commands.push_back(
@@ -251,18 +253,20 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{drivebase, 0.5, 4_m}));
 
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
-                                     TurnDegreesImported{drivebase, 0.5, -90_deg},
-                                     [isBlue] { return isBlue; })));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            TurnDegreesImported{drivebase, 0.5, 90_deg},
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
+            [isBlue] { return isBlue; })));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{drivebase, 0.5, 4_m}));
 
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, -47.9_deg},
-                                     TurnDegreesImported{drivebase, 0.5, 47.9_deg},
-                                     [isBlue] { return isBlue; })));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            TurnDegreesImported{drivebase, 0.5, -47.9_deg},
+            TurnDegreesImported{drivebase, 0.5, 47.9_deg},
+            [isBlue] { return isBlue; })));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
         new DriveAtPowerForMeters{drivebase, 0.5, 1.948_m}));
@@ -279,7 +283,7 @@ namespace Helpers {
                                std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(
@@ -303,20 +307,22 @@ namespace Helpers {
       const bool firstTurnIsCounterClockwise =
           (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
            teamAndPosName == AutonomousTeamAndStationPositions::Red3);
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
-                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
-                                       [firstTurnIsCounterClockwise]() {
-                                         return firstTurnIsCounterClockwise;
-                                       })));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters(drivebase, 0.5, 1.719_m)));
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new frc2::ConditionalCommand(TurnDegreesImported{drivebase, 0.5, 90_deg},
-                                       TurnDegreesImported{drivebase, 0.5, -90_deg},
-                                       [firstTurnIsCounterClockwise]() {
-                                         return firstTurnIsCounterClockwise;
-                                       })));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveUntilPitchAngleChange(drivebase, 0.5)));
       commands.push_back(
@@ -331,7 +337,7 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 #ifdef USING_ROLLER_FOR_AUTO_INTAKE
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     std::cerr << "Using roller for auto intake.\n";
 #elif defined(USING_CLAMP_FOR_AUTO_INTAKE)
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -365,7 +371,7 @@ namespace Helpers {
                                                   std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -412,7 +418,7 @@ namespace Helpers {
                                      std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -463,7 +469,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstScoringWall(drivebase, teamAndPosName)));
 
@@ -474,7 +480,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        RollerScoreGamePieceHelperCommand(floorEjection)));
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstOuterWall(drivebase, teamAndPosName)));
 
@@ -503,7 +509,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     return new frc2::SequentialCommandGroup(std::move(commands));
 
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
-    return RollerScoreGamePieceHelperCommand(floorEjection);
+    return FlipperScoreGamePieceHelperCommand(floorEjection);
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(drivebase, teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {

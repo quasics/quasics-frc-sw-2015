@@ -27,7 +27,7 @@ namespace Helpers {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller);
 
-  frc2::Command *RollerScoreGamePieceHelperCommand(
+  frc2::Command *FlipperScoreGamePieceHelperCommand(
       FloorEjection *floorEjection);
 
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName);

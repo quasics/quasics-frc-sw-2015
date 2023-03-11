@@ -33,6 +33,17 @@ class TriggerBasedRollerCommand
   void End(bool interrupted) override;
 
  private:
+  bool IsRightTriggerPressed() {
+    return m_controller->GetRawAxis(frc::XboxController::Axis::kRightTrigger) >
+           0.5;
+  }
+
+  bool IsLeftTriggerPressed() {
+    return m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) >
+           0.5;
+  }
+
+ private:
   IntakeRoller* const m_intakeRoller;
   frc::XboxController* const m_controller;
 };

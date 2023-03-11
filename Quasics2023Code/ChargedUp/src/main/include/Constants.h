@@ -26,9 +26,11 @@ namespace RobotPhysics {
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
 constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
-constexpr double DRIVEBASE_GEAR_RATIO =
-    DRIVEBASE_GEAR_RATIO_SALLY;  // 2023 robot gearing
-// ADD GLADYS CONSTANT
+constexpr double DRIVEBASE_GEAR_RATIO_GLADYS = 8.45;
+
+// Used to isolate the gear ratio for the robot we're actually building for,
+// from the various "known values" for each of the possible robots.
+constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_GLADYS;
 }  // namespace RobotPhysics
 
 namespace Intake {
@@ -107,6 +109,14 @@ constexpr double TURBO_MODE_SPEED_SCALING = 0.55;
 constexpr double NORMAL_MODE_SPEED_SCALING = 0.70;
 constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 }  // namespace RobotSpeedScaling
+
+namespace IntakeConstants {
+namespace RollerSpeeds {
+  constexpr double FORWARD = 0.85;
+  constexpr double BACKWARD = -0.85;
+
+}  // namespace RollerSpeeds
+}  // namespace IntakeConstants
 
 namespace PhotonVisionConstants {
 namespace CameraAndTargetValues {

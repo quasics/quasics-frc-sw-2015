@@ -42,8 +42,8 @@
 #include "commands/TriggerBasedRollerCommand.h"
 
 RobotContainer::RobotContainer()
-    : m_leftSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
-      m_rightSpeedLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
+    : m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
+      m_rightSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   // Initialize all of your commands and subsystems here
 
   TankDrive tankDrive{
@@ -62,7 +62,7 @@ RobotContainer::RobotContainer()
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
         }
-        return m_leftSpeedLimiter.Calculate(joystickValue);
+        return m_leftSlewRateLimiter.Calculate(joystickValue);
       },
       [this] {
         const double scalingFactor = GetDriveSpeedScalingFactor();
@@ -77,7 +77,7 @@ RobotContainer::RobotContainer()
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         }
-        return m_rightSpeedLimiter.Calculate(joystickValue);
+        return m_rightSlewRateLimiter.Calculate(joystickValue);
       }};
 
   m_drivebase.SetDefaultCommand(tankDrive);

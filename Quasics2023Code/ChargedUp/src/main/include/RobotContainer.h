@@ -78,6 +78,6 @@ class RobotContainer {
 
   // Supporting tank drive-related stuff.
   bool isInverted = true;
-  frc::SlewRateLimiter<units::scalar> m_leftSpeedLimiter;
-  frc::SlewRateLimiter<units::scalar> m_rightSpeedLimiter;
+  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter;
+  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter;
 };

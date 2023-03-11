@@ -34,6 +34,7 @@
 #include "commands/RetractIntake.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
 #include "commands/RotateAtAngle.h"
+#include "commands/RunIntakeCubeOrConeToggleCommand.h"
 #include "commands/SelfBalancing.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
 #include "commands/SetLightsToColor.h"
@@ -122,10 +123,9 @@ void RobotContainer::RunCommandWhileDriverButtonIsHeld(int logitechButtonId,
 
 void RobotContainer::RunCommandWhenDriverButtonIsPressed(
     int logitechButtonId, frc2::Command *command) {
-  // Note: it would be good to have "debouncing" here, too.
-  // See
-  // https://docs.wpilib.org/en/stable/docs/software/commandbased/binding-commands-to-triggers.html#debouncing-triggers
-  frc2::JoystickButton(&m_driverStick, logitechButtonId).OnTrue(command);
+  frc2::JoystickButton(&m_driverStick, logitechButtonId)
+      .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
+      .OnTrue(command);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
@@ -141,7 +141,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
   static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
-  static IntakeWithRoller intakeWithRoller(&m_intakeRoller, 0.85);
+  static RunIntakeCubeOrConeToggleCommand intakeWithRoller(&m_intakeRoller,
+                                                           &m_configSettings);
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
   static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
   static SelfBalancing selfBalancing(&m_drivebase);
@@ -168,6 +169,9 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
+  RunCommandWhenDriverButtonIsPressed(
+      OperatorInterface::LogitechGamePad::BACK_BUTTON,
+      new frc2::InstantCommand([this]() { isInverted = !isInverted; }));
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

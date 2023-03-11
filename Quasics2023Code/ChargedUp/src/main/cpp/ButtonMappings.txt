@@ -14,4 +14,17 @@ Driver controller (Logitech)
 
 
 Operator controller (Xbox)
-* 
+* Left stick - 
+* Right stick - 
+* View button - 
+* Xbox button - 
+* Menu button - 
+* Right bumper - 
+* Left bumper - 
+* Left trigger - Intake roller backward (while held)
+* Right trigger - Intake roller forward (while held)
+* X button - eject piece (while held)
+* Y button - retrack intake (while held)
+* A button - extend intake (while held)
+* B button - reset ejection (while held)
+* D-pad - 

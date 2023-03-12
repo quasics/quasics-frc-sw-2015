@@ -23,8 +23,6 @@ public final class Constants {
   public static final RobotSettings ROBOT_SETTINGS =
       RobotSettingsLibrary.getSettingsForRobot(CURRENT_ROBOT);
 
-  public static final double INCHES_PER_METER = 39.3701;
-
   public static final class LightingValues {
     public static final int LED_STRIP_PWM_PORT = 0;
     public static final int LED_STRIP_LENGTH = 14;

@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -260,19 +261,16 @@ public abstract class AbstractDriveBase extends SubsystemBase
 
   // "Inch-equivalent" methods
 
-  public static final double MILLIMETERS_PER_INCH = 25.4;
-  public static final double METERS_PER_INCH = MILLIMETERS_PER_INCH / 1000.0;
-
   public final double getLeftDistanceInch() {
-    return getLeftDistanceMillimeters() / MILLIMETERS_PER_INCH;
+    return Units.metersToInches(getLeftDistanceMeters());
   }
 
   public final double getRightDistanceInch() {
-    return getRightDistanceMillimeters() / MILLIMETERS_PER_INCH;
+    return Units.metersToInches(getRightDistanceMeters());
   }
 
   public final double getAverageDistanceInch() {
-    return (getLeftDistanceInch() + getRightDistanceInch()) / 2.0;
+    return Units.metersToInches(getAverageDistanceMeters());
   }
 
   //////////////////////////////////////////////////////////////////
@@ -285,6 +283,6 @@ public abstract class AbstractDriveBase extends SubsystemBase
   public abstract double getWheelPlacementDiameterMillimeters();
 
   public final double getWheelPlacementDiameterInch() {
-    return getWheelPlacementDiameterMillimeters() / MILLIMETERS_PER_INCH;
+    return Units.metersToInches(getWheelPlacementDiameterMillimeters() * 1000);
   }
 }

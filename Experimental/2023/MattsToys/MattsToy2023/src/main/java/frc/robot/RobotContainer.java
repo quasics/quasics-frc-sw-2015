@@ -169,7 +169,7 @@ public class RobotContainer {
       case eMoveBack:
         return new SequentialCommandGroup(
             new PrintCommand("Auto mode: driving backward from position " + pos),
-            new DriveDistance(-0.5, pos.distanceToCommunityLineInMeters(), m_driveBase));
+            new DriveDistance(m_driveBase, -0.5, pos.distanceToCommunityLineInMeters()));
     }
 
     // Fallback case.

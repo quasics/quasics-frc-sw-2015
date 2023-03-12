@@ -9,6 +9,8 @@ import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * Collection of robot characteristics for various Quasics robots.
  *
@@ -44,12 +46,10 @@ public class RobotSettingsLibrary {
   private static final Map<Robot, RobotSettings> m_settingsMap =
       new HashMap<Robot, RobotSettings>();
 
-  private static final double INCHES_PER_METER = 39.3701;
-
   /** Diameters of different wheels (in meters). */
   private interface WheelDiameters {
-    public static final double ROMI = 0.07; // 70 mm / 2.75591 inches
-    public static final double ANDYMARK_6IN_PLACTION = 6.0 / INCHES_PER_METER;
+    public static final double ROMI = 0.07; // 70 mm or 2.75591 inches
+    public static final double ANDYMARK_6IN_PLACTION = Units.inchesToMeters(6.0);
   }
 
   private interface GearRatios {
@@ -60,13 +60,17 @@ public class RobotSettingsLibrary {
     public static final double ROMI = 1440.0; // Based on sample code
   }
 
-  /** Track widths for various robots (in meters). */
+  /**
+   * Track widths for various robots (in meters).
+   * 
+   * TODO(mjh): Confirm track widths for Sally and Gladys.
+   */
   private interface TrackWidths {
-    public static final double GLADYS = 22.0 / INCHES_PER_METER;
-    public static final double SALLY = 22.0 / INCHES_PER_METER;
+    public static final double GLADYS = Units.inchesToMeters(22.0);
+    public static final double SALLY = Units.inchesToMeters(22.0);
     public static final double MAE =
-        47.134344149315914763 / INCHES_PER_METER; // from in-code constants
-    public static final double NIKE = 22.0 / INCHES_PER_METER;
+    Units.inchesToMeters(47.134344149315914763); // from in-code constants
+    public static final double NIKE = Units.inchesToMeters(22.0);
     public static final double ROMI = 0.165;
   }
 

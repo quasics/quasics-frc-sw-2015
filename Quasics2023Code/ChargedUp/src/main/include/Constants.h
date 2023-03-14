@@ -100,6 +100,14 @@ namespace FeedForward {
 }  // namespace FeedForward
 }  // namespace SelfBalancingConstants
 
+namespace StraightDrivingConstants {
+namespace PID {
+  constexpr auto kP = 0.025;
+  constexpr auto kI = 0.005;
+  constexpr auto kD = 0;
+}  // namespace PID
+}  // namespace StraightDrivingConstants
+
 namespace SensorIds {
 constexpr int PIDGEON_CAN_ID = 1;
 }

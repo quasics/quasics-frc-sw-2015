@@ -1,14 +1,16 @@
+ADJUSTED VERSION
+
 Driver controller (Logitech)
 * Left stick - Tank drive (left wheels)
 * Right stick - Tank drive (right wheels)
-* A - Drive straight while held (while held) -- PLANNED
+* A - Drive straight while held (while held) -- Written(Untested)
 * B - Toggle breaking mode on/off (when pressed)
-* X - Toggle cube vs. cone (when pressed)
+* X - 
 * Y - Self balancing mode (while held)
 * Left shoulder - Turtle mode (while held)
 * Right shoulder - Turbo mode (while held)
-* Left trigger - Intake roller (while held)
-* Right trigger - Intake exhaust (while held)
+* Left trigger - 
+* Right trigger - 
 * Start - 
 * Back - Toggle switch drive (when pressed)
 
@@ -19,12 +21,12 @@ Operator controller (Xbox)
 * View button - 
 * Xbox button - 
 * Menu button - 
-* Right bumper - 
-* Left bumper - 
-* Left trigger - Intake roller backward (while held)
-* Right trigger - Intake roller forward (while held)
-* X button - Eject piece (while held)
-* Y button - Retrack intake (while held)
+* Right bumper - Reset ejection (while held)
+* Left bumper - Eject piece (while held) 
+* Left trigger - Intake roller (while held)
+* Right trigger - Intake exhaust (while held)
+* X button - Toggle cube vs. cone (when pressed)
+* Y button - Retract intake (while held)
 * A button - Extend intake (while held)
-* B button - Reset ejection (while held)
+* B button - 
 * D-pad - 

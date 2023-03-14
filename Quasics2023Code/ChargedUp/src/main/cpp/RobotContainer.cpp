@@ -46,6 +46,8 @@
 #include "commands/TurnDegreesImported.h"
 
 #undef NormalDriving
+#define splitStickMovement
+
 RobotContainer::RobotContainer()
     : m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
       m_rightSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
@@ -89,6 +91,7 @@ RobotContainer::RobotContainer()
   m_drivebase.SetDefaultCommand(tankDrive);
 #endif
 
+#ifdef splitStickMovement
   ArcadeDrive arcadeDrive{
       &m_drivebase,
       [this] {
@@ -103,6 +106,7 @@ RobotContainer::RobotContainer()
       }};
 
   m_drivebase.SetDefaultCommand(arcadeDrive);
+#endif
 
 #ifdef ENABLE_ROLLER_INTAKE_MOTORS
   TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,

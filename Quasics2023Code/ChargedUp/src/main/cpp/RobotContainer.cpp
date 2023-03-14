@@ -95,13 +95,15 @@ RobotContainer::RobotContainer()
   ArcadeDrive arcadeDrive{
       &m_drivebase,
       [this] {
-        double powertoRobot = m_driverStick.GetRawAxis(
-            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        double powertoRobot =
+            0.5 * m_driverStick.GetRawAxis(
+                      OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
         return m_leftSlewRateLimiter.Calculate(powertoRobot);
       },
       [this] {
-        double rotationtoRobot = m_driverStick.GetRawAxis(
-            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        double rotationtoRobot =
+            0.75 * m_driverStick.GetRawAxis(
+                       OperatorInterface::LogitechGamePad::RIGHT_X_AXIS);
         return rotationtoRobot;
       }};
 

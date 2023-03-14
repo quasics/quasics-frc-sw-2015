@@ -36,7 +36,8 @@ constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_GLADYS;
 namespace Intake {
 // if intakeDeployment velocity is < STOP_VELOCITY, robot will stop
 // intakeDeployment because deployment is completed
-constexpr double STOP_VELOCITY = 1;
+constexpr double STOP_VELOCITY = 0;
+constexpr int CLOCKS_UNTIL_ABOVE_STOP_VELOCITY = 0;
 }  // namespace Intake
 
 namespace Floor {

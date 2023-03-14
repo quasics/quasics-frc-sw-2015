@@ -15,11 +15,13 @@ RetractIntake::RetractIntake(IntakeDeployment* intake, double speed)
 void RetractIntake::Initialize() {
   m_intakeDeployment->SetMotorSpeed(intakeSpeed);
   m_intakeDeployment->EnableBraking(true);
+  m_clocks = 0;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RetractIntake::Execute() {
   m_intakeDeployment->SetMotorSpeed(intakeSpeed);
+  m_clocks++;
 }
 
 // Called once the command ends or is interrupted.
@@ -37,13 +39,8 @@ bool RetractIntake::IsFinished() {
   }
 
 #if defined(ENABLE_INTAKE_HARD_STOP_DETECTION)
-  // CODE_REVIEW(ethan): Note that this is assuming that we instantly
-  // exceed "STOP_VELOCITY" when we start moving.  It would probably be
-  // better to do something a little more sophisticated, like see if we
-  // get up to some velocity within X cycles (and stop if we don't), and
-  // then look for when the velocity suddenly falls off/drops below some
-  // value.
-  if (m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY) {
+  if (m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY &&
+      m_clocks > Intake::CLOCKS_UNTIL_ABOVE_STOP_VELOCITY) {
     return true;
   }
 #endif

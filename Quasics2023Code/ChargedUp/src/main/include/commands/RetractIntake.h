@@ -36,4 +36,5 @@ class RetractIntake
  private:
   IntakeDeployment* m_intakeDeployment;
   const double intakeSpeed;
+  int m_clocks;
 };

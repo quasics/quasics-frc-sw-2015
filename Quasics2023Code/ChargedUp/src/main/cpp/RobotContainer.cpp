@@ -16,6 +16,7 @@
 
 #include "Constants.h"
 #include "commands/AprilTagDriveToTarget.h"
+#include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
@@ -44,11 +45,13 @@
 #include "commands/TriggerBasedRollerCommand.h"
 #include "commands/TurnDegreesImported.h"
 
+#undef NormalDriving
 RobotContainer::RobotContainer()
     : m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
       m_rightSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   // Initialize all of your commands and subsystems here
 
+#ifdef NormalDriving
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -84,6 +87,22 @@ RobotContainer::RobotContainer()
       }};
 
   m_drivebase.SetDefaultCommand(tankDrive);
+#endif
+
+  ArcadeDrive arcadeDrive{
+      &m_drivebase,
+      [this] {
+        double powertoRobot = m_driverStick.GetRawAxis(
+            OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        return m_leftSlewRateLimiter.Calculate(powertoRobot);
+      },
+      [this] {
+        double rotationtoRobot = m_driverStick.GetRawAxis(
+            OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+        return rotationtoRobot;
+      }};
+
+  m_drivebase.SetDefaultCommand(arcadeDrive);
 
 #ifdef ENABLE_ROLLER_INTAKE_MOTORS
   TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,

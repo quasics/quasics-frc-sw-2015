@@ -38,6 +38,7 @@
 #include "commands/SelfBalancing.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
 #include "commands/SetLightsToColor.h"
+#include "commands/StraightLineDriving.h"
 #include "commands/TankDrive.h"
 #include "commands/ToggleBrakingMode.h"
 #include "commands/TriggerBasedRollerCommand.h"
@@ -139,8 +140,8 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 void RobotContainer::ConfigureControllerButtonBindings() {
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.30);
   static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
-  static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5);
-  static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5);
+  // static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
+  // static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
   static RunIntakeCubeOrConeToggleCommand intakeWithRoller(&m_intakeRoller,
                                                            &m_configSettings);
@@ -149,27 +150,38 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
+  static StraightLineDriving straightLineDriving(&m_drivebase, &m_driverStick);
   static frc2::PrintCommand placeholder("Doing something!!!!");
+
+  // Rollers Controlled by Command TriggerBasedRollerCommand
+  // AFTER ROLLER TRANSFER TOGGLE BUTTON NEEDS TO BE FIXED LOOK INTO
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
                                      &retractIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      &ejectPiece);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
+                                     &resetEjection);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &resetEjection);
 
-  RunCommandWhileDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::Y_BUTTON, &selfBalancing);
-  RunCommandWhileDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
-  RunCommandWhileDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
-  RunCommandWhenDriverButtonIsPressed(
-      OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);
+  /*
+RunCommandWhileDriverButtonIsHeld(
+    OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
+RunCommandWhileDriverButtonIsHeld(
+    OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
+  */
+  /*RunCommandWhenDriverButtonIsPressed(
+      OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);*/
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
+  RunCommandWhenDriverButtonIsPressed(
+      OperatorInterface::LogitechGamePad::A_BUTTON,
+      &straightLineDriving);  // UNTESTED
+  RunCommandWhileDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::Y_BUTTON, &selfBalancing);
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::BACK_BUTTON,
       new frc2::InstantCommand([this]() { isInverted = !isInverted; }));

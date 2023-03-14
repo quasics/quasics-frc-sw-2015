@@ -14,9 +14,9 @@ TriggerBasedRollerCommand::TriggerBasedRollerCommand(
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedRollerCommand::Execute() {
   if (IsLeftTriggerPressed()) {
-    m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::BACKWARD);
-  } else if (IsRightTriggerPressed()) {
     m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::FORWARD);
+  } else if (IsRightTriggerPressed()) {
+    m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::BACKWARD);
   } else {
     m_intakeRoller->Stop();
   }

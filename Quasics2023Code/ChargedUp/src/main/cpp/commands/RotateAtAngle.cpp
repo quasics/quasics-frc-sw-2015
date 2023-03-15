@@ -12,7 +12,7 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
       m_percentSpeed(percentSpeed),
-      m_angle((angle > 0_deg) ? (angle - 2_deg) : (angle + 2_deg)) {
+      m_angle((angle > 0_deg) ? (angle - 4_deg) : (angle + 4_deg)) {
   AddRequirements(m_drivebase);
 }
 
@@ -44,8 +44,8 @@ void RotateAtAngle::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void RotateAtAngle::Execute() {
-  const double minimumSpeed = 0.50;  // speed must be >= 0.30
-  const double scalingFactor = 0.80;
+  const double minimumSpeed = 0.30;  // speed must be >= 0.30
+  const double scalingFactor = 0.90;
 
   const units::degree_t currentPosition = m_drivebase->GetAngle();
 
@@ -54,23 +54,22 @@ void RotateAtAngle::Execute() {
   const units::degree_t degreesLeftWhenSlowDown =
       150_deg * (m_percentSpeed - 0.30);
 
+  std::cout << degreesLeft.value() << std::endl;
+
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
         m_percentSpeed * m_multiplier > minimumSpeed) {
       m_multiplier *= scalingFactor;
-      m_multiplier = (m_multiplier * m_percentSpeed > minimumSpeed
-                          ? m_multiplier * m_percentSpeed
-                          : minimumSpeed * m_percentSpeed);
     }
+
+    std::cout << "Speed: " << m_percentSpeed * m_multiplier << std::endl;
+
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);
   } else {
     if (-degreesLeft < degreesLeftWhenSlowDown &&
         m_percentSpeed * m_multiplier > minimumSpeed) {
       m_multiplier *= scalingFactor;
-      m_multiplier = (m_multiplier * m_percentSpeed > minimumSpeed
-                          ? m_multiplier * m_percentSpeed
-                          : minimumSpeed * m_percentSpeed);
     }
     m_drivebase->TankDrive(m_percentSpeed * m_multiplier,
                            -m_percentSpeed * m_multiplier);

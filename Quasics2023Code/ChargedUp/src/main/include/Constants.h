@@ -225,5 +225,10 @@ namespace LogitechGamePad {
 
 namespace LightingValues {
 constexpr int PORT_NUMBER = 9;
-constexpr int PIXEL_NUMBER = 14;
+
+constexpr int TEST_STRIP_PIXEL_COUNT = 14;
+constexpr int SALLY_STRIP_PIXEL_COUNT = 60;
+constexpr int GLADYS_STRIP_PIXEL_COUNT = 120;
+
+constexpr int PIXEL_NUMBER = TEST_STRIP_PIXEL_COUNT;
 }  // namespace LightingValues

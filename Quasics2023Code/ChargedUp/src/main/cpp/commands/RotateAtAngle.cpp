@@ -12,7 +12,7 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
                              units::degree_t angle)
     : m_drivebase(drivebase),
       m_percentSpeed(percentSpeed),
-      m_angle((angle > 0_deg) ? (angle - 4_deg) : (angle + 4_deg)) {
+      m_angle((angle > 0_deg) ? (angle - 3_deg) : (angle + 3_deg)) {
   AddRequirements(m_drivebase);
 }
 
@@ -52,7 +52,7 @@ void RotateAtAngle::Execute() {
   const units::degree_t degreesLeft =
       (m_startAngle + m_angle) - currentPosition;
   const units::degree_t degreesLeftWhenSlowDown =
-      150_deg * (m_percentSpeed - 0.30);
+      150_deg * (m_percentSpeed - 0.30) + 10_deg;
 
   std::cout << degreesLeft.value() << std::endl;
 

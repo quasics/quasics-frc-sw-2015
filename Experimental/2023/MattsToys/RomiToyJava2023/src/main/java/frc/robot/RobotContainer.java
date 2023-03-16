@@ -36,6 +36,8 @@ import frc.robot.utils.SwitchModeSpeedSupplier;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private static final boolean USE_TANK_DRIVE = false;
+
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain(RobotSettingsLibrary.getSettingsForMattsRomi());
   private final OnBoardIO m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
@@ -79,7 +81,10 @@ public class RobotContainer {
     m_drivetrain.finalizeSetup();
 
     // Default command for the subsystem.
-    m_drivetrain.setDefaultCommand(getTankDriveCommand());
+    m_drivetrain.setDefaultCommand(
+        USE_TANK_DRIVE
+            ? getTankDriveCommand()
+            : getSplitArcadeDriveCommand());
 
     ///////////////////////////////////////////
     // Configure the various command bindings
@@ -123,11 +128,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    final double kP = 0.01;
-    final double kI = 0.002;
-    final double kD = 0.0;
-    return new frc.robot.commands.TurnDegreesUsingPid(m_drivetrain, 90, 0.01, kP, kI, kD);
-    // return new frc.robot.commands.DriveDistance(0.25, 0.21991148575, m_drivetrain);
+    final double kP = 0.025;
+    final double kI = 0.015;
+    final double kD = 0.01;
+    return new frc.robot.commands.TurnDegreesUsingPid(m_drivetrain, 90, 1, kP, kI, kD);
+    // return new frc.robot.commands.DriveDistance(0.25, 0.21991148575,
+    // m_drivetrain);
     // return m_chooser.getSelected();
   }
 
@@ -143,29 +149,63 @@ public class RobotContainer {
         () -> m_xboxController.getLeftX());
   }
 
+  /** Dead band modifier for driving controls. */
+  final SpeedModifier m_drivingStickDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
+  /** Absolute speed caps for driving controls. */
+  final SpeedModifier m_absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
+
+  /** Signal supplier for "turtle mode" while driving. */
+  final Supplier<Boolean> m_turtleSignalSupplier = () -> {
+    return m_xboxController.getLeftBumper();
+  };
+  /** Signal supplier for "turbo mode" while driving. */
+  final Supplier<Boolean> m_turboSignalSupplier = () -> {
+    return m_xboxController.getRightBumper();
+  };
+
+  /** The speed modifier for normal / turtle / turbo support. */
+  final SpeedModifier m_modeSpeedModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
+      SpeedLimits.MAX_SPEED_NORMAL,
+      m_turtleSignalSupplier, SpeedLimits.MAX_SPEED_TURTLE,
+      m_turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO);
+
   /**
-   * Use this to pass the teleop command to the main {@link Robot} class.
-   *
-   * @return the command to run in teleop
+   * Generates a command for running "split arcade drive", where the left stick
+   * controls forward/backward speed, and the right stick controls rotational
+   * speed.
+   */
+  public Command getSplitArcadeDriveCommand() {
+    // Build the overall chain used to translate driver inputs into motor %ages.
+    SpeedModifier compositeModifier = (double inputPercentage) -> m_absoluteSpeedCaps.adjustSpeed(
+        m_modeSpeedModifier
+            .adjustSpeed(m_drivingStickDeadbandModifier.adjustSpeed(inputPercentage)));
+
+    // Cap the acceleration rate
+    SpeedModifier forwardSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+    SpeedModifier rotationSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+
+    Supplier<Double> forwardSpeedSupplier = () -> {
+      final double rawSpeed = m_xboxController.getLeftY();
+      return -forwardSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(rawSpeed));
+    };
+    Supplier<Double> rotationSpeedSupplier = () -> {
+      final double rawSpeed = m_xboxController.getRightY();
+      return -rotationSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(rawSpeed));
+    };
+
+    return new ArcadeDrive(m_drivetrain, forwardSpeedSupplier, rotationSpeedSupplier);
+  }
+
+  /**
+   * Generates a command for running "tank drive", where the left stick controls
+   * forward/backward speed, and the right stick controls rotational speed.
    */
   public Command getTankDriveCommand() {
-    // Some simple bounds on driver inputs.
-    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
-    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
-
-    // Mode signals for turtle & turbo.
-    Supplier<Boolean> turtleSignalSupplier = () -> {
-      return m_xboxController.getLeftBumper();
-    };
-    Supplier<Boolean> turboSignalSupplier = () -> {
-      return m_xboxController.getRightBumper();
-    };
-
     // Mode signal for "drive straight" mode.
     //
-    // Note: this might be better implemented as an alternate command, triggered when the button is
-    // held down, and using PID control to prevent turning.  But this is a short-term solution,
-    // meant to demonstrate one approach.
+    // Note: this might be better implemented as an alternate command, triggered
+    // when the button is held down, and using PID control to prevent turning. But
+    // this is a short-term solution, meant to demonstrate one approach.
     Supplier<Boolean> driveStraightSignalSupplier = () -> {
       return m_xboxController.getAButton();
     };
@@ -174,42 +214,42 @@ public class RobotContainer {
     SpeedModifier leftSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
     SpeedModifier rightSlewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
 
-    // Build the speed modifier for normal / turtle / turbo support.
-    SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
-        SpeedLimits.MAX_SPEED_NORMAL,
-        turtleSignalSupplier, SpeedLimits.MAX_SPEED_TURTLE,
-        turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO);
-
     // Build the overall chain used to translate driver inputs into motor %ages.
-    SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
-        modeModifier
-            .adjustSpeed(tankDriveDeadbandModifier.adjustSpeed(inputPercentage)));
+    SpeedModifier compositeModifier = (double inputPercentage) -> m_absoluteSpeedCaps.adjustSpeed(
+        m_modeSpeedModifier
+            .adjustSpeed(m_drivingStickDeadbandModifier.adjustSpeed(inputPercentage)));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
     // On the GameSir and Xbox controllers, full forward = -1, full back = +1, so
     // we'll need to invert them to translate to what we're using in the drive base.
     //
-    // Note that if we're in "drive straight lines" mode, we'll *only* read the left stick.
-    // (Choice is arbitrary.)
-    final int LEFT_STICK_AXIS = 1;
-    final int RIGHT_STICK_AXIS = 5;
+    // Note that if we're in "drive straight lines" mode, we'll *only* read the left
+    // stick. (Choice is arbitrary.)
     Supplier<Double> leftStickSupplier = () -> {
-      double speed = m_xboxController.getRawAxis(LEFT_STICK_AXIS);
+      double speed = m_xboxController.getLeftY();
       return -leftSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
     Supplier<Double> rightStickSupplier = () -> {
       final boolean inDriveStraightMode = driveStraightSignalSupplier.get();
-      double speed = m_xboxController.getRawAxis(inDriveStraightMode ? LEFT_STICK_AXIS : RIGHT_STICK_AXIS);
+      double speed = inDriveStraightMode ? m_xboxController.getLeftY() : m_xboxController.getRightY();
       return -rightSlewRateModifier.adjustSpeed(compositeModifier.adjustSpeed(speed));
     };
 
     // Get the (final) suppliers that will be polled for the left/right side
     // speeds.
-    // m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSupplier, rightStickSupplier);
-    // Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();
-    // Supplier<Double> rightSpeedControl = m_switchModeHandler.getRightSpeedSupplier();
+    // m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSupplier,
+    // rightStickSupplier);
+    // Supplier<Double> leftSpeedControl =
+    // m_switchModeHandler.getLeftSpeedSupplier();
+    // Supplier<Double> rightSpeedControl =
+    // m_switchModeHandler.getRightSpeedSupplier();
+    final Supplier<Double> leftSpeedControl = leftStickSupplier;
+    final Supplier<Double> rightSpeedControl = () -> {
+      final boolean inDriveStraightMode = driveStraightSignalSupplier.get();
+      return inDriveStraightMode ? leftStickSupplier.get() : rightStickSupplier.get();
+    };
 
     // Build the actual tank drive command.
-    return new TankDrive(m_drivetrain, leftStickSupplier, rightStickSupplier);
+    return new TankDrive(m_drivetrain, leftSpeedControl, rightSpeedControl);
   }
 }

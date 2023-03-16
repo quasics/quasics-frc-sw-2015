@@ -224,6 +224,6 @@ namespace LogitechGamePad {
 }  // namespace OperatorInterface
 
 namespace LightingValues {
-constexpr int PORT_NUMBER = 0;
+constexpr int PORT_NUMBER = 9;
 constexpr int PIXEL_NUMBER = 14;
 }  // namespace LightingValues

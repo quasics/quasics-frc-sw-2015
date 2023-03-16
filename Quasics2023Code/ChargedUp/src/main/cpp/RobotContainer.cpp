@@ -30,6 +30,7 @@
 #include "commands/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/MoveFloorEjection.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
+#include "commands/PauseRobot.h"
 #include "commands/ReleaseWithIntake.h"
 #include "commands/ReleaseWithIntakeAtSpeedForTime.h"
 #include "commands/RetractIntake.h"
@@ -305,6 +306,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Set not inverted",
       new frc2::InstantCommand([this]() { setInverted(false); }));
+
+  frc::SmartDashboard::PutData("Test Command", TESTCOMMAND());
   /*
     frc::SmartDashboard::PutData(
         "Drive To April Tag",
@@ -440,4 +443,17 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
 
   frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
                                &m_RobotSequenceAutonomousOptions);
+}
+
+frc2::SequentialCommandGroup *RobotContainer::TESTCOMMAND() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));
+  commands.push_back(
+      std::make_unique<TurnDegreesImported>(&m_drivebase, 0.5, 90_deg));
+  commands.push_back(std::make_unique<PauseRobot>(&m_drivebase, 0.1_s));
+  commands.push_back(
+      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));
+  // Builds the command group object.
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }

@@ -53,6 +53,8 @@ class RobotContainer {
 
   void AddTestButtonsToSmartDashboard();
 
+  frc2::SequentialCommandGroup *TESTCOMMAND();
+
  private:
   // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

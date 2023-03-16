@@ -6,9 +6,9 @@
 
 #include <iostream>
 
-#undef CURRENT_TURN_VERSION
+#define CURRENT_TURN_VERSION
 #undef FASTER_SLOW_DOWN
-#define NO_SLOW_DOWN
+#undef NO_SLOW_DOWN
 TurnDegreesImported::TurnDegreesImported(Drivebase* drivebase, double speed,
                                          units::degree_t angle)
     : m_drivebase(drivebase),

@@ -53,6 +53,10 @@ constexpr auto Red2 = "Red 2";
 constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
+namespace AutonomousSpeeds {
+constexpr auto DRIVE_SPEED = 0.5;
+}
+
 namespace DigitalInput {
 constexpr int INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID = 1;
 constexpr int INTAKE_EXTEND_RIGHT_LIMIT_SWITCH_ID = 2;
@@ -224,30 +228,6 @@ namespace LogitechGamePad {
 }  // namespace OperatorInterface
 
 namespace LightingValues {
-/** PWM port to which the LED strip is connected. */
-constexpr int PORT_NUMBER = 9;
-
-/** Number of LEDs on the test strip used by the coding team. */
-constexpr int TEST_STRIP_PIXEL_COUNT = 14;
-/**
- * Number of (logical) LEDs on the lighting strips used for Sally.
- *
- * Note: the actual # of LEDs was 2x this (one strip on each side of the robot),
- * but they were wired in series, so that it looked to the code like there was a
- * single strip, and any lighting effects were applied the same way to both.
- */
-constexpr int SALLY_STRIP_PIXEL_COUNT = 60;
-
-/**
- * Number of LEDs on the lighting strip(s) used for Gladys.
- *
- * Note: we're going to have 2 physical strips (one on front, one on back), but
- * it's currently unclear whether connected together into a single logical
- * (long) strip, or if we're going to have them connected in series into a
- * single (shorter) strip like on Sally.
- */
-constexpr int GLADYS_STRIP_PIXEL_COUNT = 120;
-
-/** Number of (logical) LEDs on the robot's lighting strip. */
-constexpr int PIXEL_NUMBER = TEST_STRIP_PIXEL_COUNT;
+constexpr int PORT_NUMBER = 0;
+constexpr int PIXEL_NUMBER = 14;
 }  // namespace LightingValues

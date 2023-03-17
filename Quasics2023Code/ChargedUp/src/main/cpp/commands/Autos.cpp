@@ -13,6 +13,7 @@
 #include "commands/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
+#include "commands/PauseRobot.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
 #include "commands/RotateAtAngle.h"
 #include "commands/SelfBalancing.h"
@@ -102,6 +103,8 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+      commands.push_back(
+          std::make_unique<PauseRobot>(drivebase, 0.1_s));  // ADDED PAUSE
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMeters{drivebase, 0.5, 1.889_m}));
       commands.push_back(
@@ -111,6 +114,8 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+      commands.push_back(
+          std::make_unique<PauseRobot>(drivebase, 0.1_s));  // ADDED PAUSE
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveUntilPitchAngleChange{drivebase, 0.5}));
       commands.push_back(

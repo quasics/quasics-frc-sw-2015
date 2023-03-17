@@ -45,7 +45,7 @@ void TurnDegreesImported::Execute() {
   if (turningleft) {
     units::degree_t currentPosition = m_drivebase->GetAngle();
     if (currentPosition > ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.26)) {
+        (m_speed * multiplier > 0.30)) {
 #ifdef FASTER_SLOW_DOWN
       multiplier = multiplier * 0.90;
 #endif
@@ -55,7 +55,7 @@ void TurnDegreesImported::Execute() {
   } else {
     units::degree_t currentPosition = m_drivebase->GetAngle();
     if (currentPosition < ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.26)) {
+        (m_speed * multiplier > 0.30)) {
 #ifdef FASTER_SLOW_DOWN
       multiplier = multiplier * 0.90;
 #endif

@@ -37,24 +37,26 @@ bool AprilTagDriveToTarget::IsFinished() {
           (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS +
            2_in) &&
       ((m_angle > -2_deg) && (m_angle < 2_deg))) {
+    std::cout << "Destination Reached" << std::endl;
     return true;
   }
   return false;
 }
 
 void AprilTagDriveToTarget::UpdateDrivingParameters() {
-  std::cout << "Begginning to Look at Stuff" << std::endl;
+  std::cout << "Beginning to Look at Stuff" << std::endl;
   bool targetFound =
       m_photonLibVision->AprilTagTargetIdentified(m_targetToDriveTo);
   if (targetFound == true) {
     m_photonLibVision->CalculateDistanceAndAngleToTarget(m_targetToDriveTo,
                                                          m_distance, m_angle);
-    std::cout << "Performing Calculations" << std::endl;
+    std::cout << "Performing Calculations based on distance"<< m_distance.value() << " and angle "<< m_angle.value() << std::endl;
     double forwardSpeed = -forwardController.Calculate(
         m_distance.value(),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
             .value());
-    double rotationSpeed = -turnController.Calculate(m_angle.value(), 0);
+    double rotationSpeed = turnController.Calculate(m_angle.value(), 0);
+    std::cout << "Sending Calculations: Speed: "<< forwardSpeed << " Rotation: "<< rotationSpeed << std::endl;
     m_drivetrain->ArcadeDrive(forwardSpeed, rotationSpeed);
   }
 }

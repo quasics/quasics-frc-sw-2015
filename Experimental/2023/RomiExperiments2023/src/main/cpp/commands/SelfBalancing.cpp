@@ -31,7 +31,7 @@ void SelfBalancing::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
   //PAST ANGLE READING ADJUSTEMENT FOR ACCURATE RESULTS
-  std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
+  //std::cout <<"Current Gyro Reading: " << (pastAngle) << std::endl;
   //gyro not reading in degrees, going from 0 to 9
   //also resets the gyro so its current position is 0
   double currentAngle = m_drivebase->GetGyroAngleY();

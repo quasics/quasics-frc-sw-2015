@@ -5,13 +5,13 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1000",
-      "maximized": "0",
+      "height": "1009",
+      "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "958",
-      "xpos": "961",
-      "ypos": "31"
+      "width": "1920",
+      "xpos": "0",
+      "ypos": "23"
     }
   },
   "Window": {
@@ -32,7 +32,7 @@
     },
     "###Other Devices": {
       "Collapsed": "0",
-      "Pos": "939,20",
+      "Pos": "1356,93",
       "Size": "250,695"
     },
     "###System Joysticks": {
@@ -52,7 +52,7 @@
     },
     "Robot State": {
       "Collapsed": "0",
-      "Pos": "5,20",
+      "Pos": "44,35",
       "Size": "92,99"
     }
   }

@@ -17,7 +17,11 @@ double FloorEjection::GetPosition() {
 #ifdef ENABLE_FLOOR_EJECTION_ENCODER
   return m_floorEjectionEncoder.GetDistance();
 #endif
-  return 0;
+  return m_floorEjectionEncoder.GetAbsolutePosition();
+}
+
+void FloorEjection::ResetEncoder() {
+  m_floorEjectionEncoder.Reset();
 }
 
 double FloorEjection::GetVelocity() {
@@ -40,4 +44,5 @@ void FloorEjection::Periodic() {
   frc::SmartDashboard::PutNumber("Floor ejection velocity",
                                  m_floorEjectionEncoder.GetRate());
 #endif
+  frc::SmartDashboard::PutNumber("Encoder Position", GetPosition());
 }

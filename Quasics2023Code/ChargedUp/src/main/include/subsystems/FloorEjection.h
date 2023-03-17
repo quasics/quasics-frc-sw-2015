@@ -5,6 +5,7 @@
 #pragma once
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
+#include <frc/DutyCycleEncoder.h>
 #include <frc/Encoder.h>
 #include <frc2/command/SubsystemBase.h>
 
@@ -17,6 +18,8 @@ class FloorEjection : public frc2::SubsystemBase {
   void SetFloorEjectionPower(double power);
 
   double GetPosition();
+
+  void ResetEncoder();
 
   double GetVelocity();
 
@@ -31,6 +34,9 @@ class FloorEjection : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   ctre::phoenix::motorcontrol::can::VictorSPX m_floorEjectionMotor{
       MotorIds::VictorSPX::GAME_PIECE_FLIPPER_ID};
+
+  frc::DutyCycleEncoder m_floorEjectionEncoder{
+      DigitalInput::FLOOR_INTAKE_ENCODER};
 #ifdef ENABLE_FLOOR_EJECTION_ENCODER
 
   frc::Encoder m_floorEjectionEncoder{ThroughBore::A_CHANNEL,

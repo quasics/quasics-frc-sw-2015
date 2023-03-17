@@ -40,6 +40,7 @@
 #include "commands/SelfBalancing.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
 #include "commands/SetLightsToColor.h"
+#include "commands/ShootTheGamePiece.h"
 #include "commands/StraightLineDriving.h"
 #include "commands/TankDrive.h"
 #include "commands/ToggleBrakingMode.h"
@@ -177,8 +178,9 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
   static RunIntakeCubeOrConeToggleCommand intakeWithRoller(&m_intakeRoller,
                                                            &m_configSettings);
-  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.3);
-  static MoveFloorEjection resetEjection(&m_floorEjection, -0.3);
+  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.1);
+  static MoveFloorEjection resetEjection(&m_floorEjection, -0.1);
+  static ShootTheGamePiece shootPiece(&m_floorEjection, 45, 0.3);
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
@@ -197,7 +199,7 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      &resetEjection);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &resetEjection);
+                                     &shootPiece);
 
   /*
 RunCommandWhileDriverButtonIsHeld(
@@ -243,6 +245,10 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
+      "Reset Encoder",
+      new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },
+                               {&m_floorEjection}));
+  /*frc::SmartDashboard::PutData(
       "Turn by 90 degrees left",
       new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
   frc::SmartDashboard::PutData(
@@ -254,7 +260,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Rotate -180 degrees at 50%",
                                new RotateAtAngle(&m_drivebase, 0.50, -180_deg));
   frc::SmartDashboard::PutData("Rotate 90 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, 90_deg));
+                               new RotateAtAngle(&m_drivebase, 0.50, 90_deg));*/
   /*
     frc::SmartDashboard::PutData(
         "Drive 2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50,

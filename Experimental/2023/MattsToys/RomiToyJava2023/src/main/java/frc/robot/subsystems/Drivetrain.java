@@ -13,6 +13,9 @@ import frc.robot.sensors.RomiGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
+/**
+ * Extends the AbstractDriveBase class for use with the Romi hardware.
+ */
 public class Drivetrain extends AbstractDriveBase {
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
@@ -24,19 +27,27 @@ public class Drivetrain extends AbstractDriveBase {
   private final Encoder m_leftEncoderLive = new Encoder(4, 5);
   private final Encoder m_rightEncoderLive = new Encoder(6, 7);
 
-  // Set up the RomiGyro
+  // Set up the BuiltInAccelerometer
+  private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
+
+  // Set up the (real) RomiGyro
   private final RomiGyro m_gyro = new RomiGyro();
+
+  // Set up the wrappers for access to individual-axis gyros.
   private final Gyro m_yawGyro = m_gyro.getYawGyro();
   private final Gyro m_pitchGyro = m_gyro.getPitchGyro();
   private final Gyro m_rollGyro = m_gyro.getRollGyro();
 
-  // Set up the BuiltInAccelerometer
-  private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
-
+  // Set up the encoder wrappers used with the base class functionality.
   private final TrivialEncoder m_trivialLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoderLive);
   private final TrivialEncoder m_trivialRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoderLive);
 
-  /** Creates a new Drivetrain. */
+  /**
+   * Constructor.
+   * 
+   * @param robotSettings the settings to be used with the current robot; these
+   *                      will influence things like motor inversion, etc.
+   */
   public Drivetrain(RobotSettings robotSettings) {
     super(robotSettings);
 

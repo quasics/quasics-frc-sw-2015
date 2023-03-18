@@ -65,6 +65,7 @@ constexpr auto DRIVE_SPEED = 0.5;
 
 namespace DigitalInput {
 constexpr int INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID = 3;
+constexpr int FLOOR_RETRACTION_LIMIT_SWITCH_ID = 4;
 /*
 constexpr int INTAKE_EXTEND_RIGHT_LIMIT_SWITCH_ID = 2;
 constexpr int INTAKE_RETRACT_LEFT_LIMIT_SWITCH_ID = 3;

@@ -27,9 +27,9 @@ double FloorEjection::GetPosition() {
   std::cout << "GetDistance Function: " << m_floorEjectionEncoder.GetDistance()
             << std::endl;
   std::cout << "GetPositionOffset Function: "
-            << m_floorEjectionEncoder.GetPositionOffset() << std::endl;*/
+            << m_floorEjectionEncoder.GetPositionOffset() << std::endl;
   std::cout << "Am I connected: " << m_floorEjectionEncoder.IsConnected()
-            << std::endl;
+            << std::endl;*/
   return m_floorEjectionEncoder.GetAbsolutePosition();
 }
 
@@ -49,6 +49,21 @@ void FloorEjection::Stop() {
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, 0);
 }
 
+bool FloorEjection::FloorRetracted() {
+  // we are assuming that the switch is wired to report true when openend
+  return !m_floorRetractionLimitSwitch.Get();
+}
+
+void FloorEjection::SetBrakingMode(bool brake) {
+  if (brake) {
+    m_floorEjectionMotor.SetNeutralMode(
+        ctre::phoenix::motorcontrol::NeutralMode::Brake);
+  } else {
+    m_floorEjectionMotor.SetNeutralMode(
+        ctre::phoenix::motorcontrol::NeutralMode::Coast);
+  }
+}
+
 // This method will be called once per scheduler run
 void FloorEjection::Periodic() {
 #ifdef ENABLE_FLOOR_EJECTION_ENCODER
@@ -56,16 +71,21 @@ void FloorEjection::Periodic() {
                                  m_floorEjectionEncoder.GetDistance());
   frc::SmartDashboard::PutNumber("Floor ejection velocity",
                                  m_floorEjectionEncoder.GetRate());
+
 #endif
-  frc::SmartDashboard::PutNumber("Is it Connected",
-                                 m_floorEjectionEncoder.IsConnected());
-  frc::SmartDashboard::PutNumber("Encoder Position", GetPosition());
-  frc::SmartDashboard::PutNumber("Absolute Position: ",
-                                 m_floorEjectionEncoder.GetAbsolutePosition());
-  frc::SmartDashboard::PutNumber("Get Function: ",
-                                 m_floorEjectionEncoder.Get().value());
-  frc::SmartDashboard::PutNumber("GetDistance Function: ",
-                                 m_floorEjectionEncoder.GetDistance());
-  frc::SmartDashboard::PutNumber("GetPositionOffset Function: ",
-                                 m_floorEjectionEncoder.GetPositionOffset());
+  frc::SmartDashboard::PutString("Floor Retraction Limit Switch",
+                                 FloorRetracted() ? "true" : "false");
+  // frc::SmartDashboard::PutBoolean("Floor Retracted", FloorRetracted());
+  /*
+    frc::SmartDashboard::PutNumber("Is it Connected",
+                                   m_floorEjectionEncoder.IsConnected());
+    frc::SmartDashboard::PutNumber("Encoder Position", GetPosition());
+    frc::SmartDashboard::PutNumber("Absolute Position: ",
+                                   m_floorEjectionEncoder.GetAbsolutePosition());
+    frc::SmartDashboard::PutNumber("Get Function: ",
+                                   m_floorEjectionEncoder.Get().value());
+    frc::SmartDashboard::PutNumber("GetDistance Function: ",
+                                   m_floorEjectionEncoder.GetDistance());
+    frc::SmartDashboard::PutNumber("GetPositionOffset Function: ",
+                                   m_floorEjectionEncoder.GetPositionOffset());*/
 }

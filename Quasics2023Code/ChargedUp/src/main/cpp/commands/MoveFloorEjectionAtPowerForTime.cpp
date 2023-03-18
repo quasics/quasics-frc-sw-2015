@@ -15,16 +15,19 @@ MoveFloorEjectionAtPowerForTime::MoveFloorEjectionAtPowerForTime(
 void MoveFloorEjectionAtPowerForTime::Initialize() {
   m_stopWatch.Reset();
   m_stopWatch.Start();
+  m_floorEjection->SetBrakingMode(true);
   m_floorEjection->SetFloorEjectionPower(m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void MoveFloorEjectionAtPowerForTime::Execute() {
+  m_floorEjection->SetBrakingMode(true);
   m_floorEjection->SetFloorEjectionPower(m_power);
 }
 
 // Called once the command ends or is interrupted.
 void MoveFloorEjectionAtPowerForTime::End(bool interrupted) {
+  m_floorEjection->SetBrakingMode(true);
   m_floorEjection->Stop();
 }
 

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
+#include <frc/DigitalInput.h>
 #include <frc/DutyCycleEncoder.h>
 #include <frc/Encoder.h>
 #include <frc2/command/SubsystemBase.h>
@@ -24,6 +25,10 @@ class FloorEjection : public frc2::SubsystemBase {
   double GetVelocity();
 
   void Stop();
+
+  bool FloorRetracted();
+
+  void SetBrakingMode(bool brake);
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -37,6 +42,9 @@ class FloorEjection : public frc2::SubsystemBase {
 
   frc::DutyCycleEncoder m_floorEjectionEncoder{
       DigitalInput::FLOOR_INTAKE_ENCODER};
+
+  frc::DigitalInput m_floorRetractionLimitSwitch{
+      DigitalInput::FLOOR_RETRACTION_LIMIT_SWITCH_ID};
 
   // frc::Encoder m_floorEjectionEncoder{DigitalInput::FLOOR_INTAKE_ENCODER};
 #ifdef ENABLE_FLOOR_EJECTION_ENCODER

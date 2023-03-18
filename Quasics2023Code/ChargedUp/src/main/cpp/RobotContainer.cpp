@@ -17,6 +17,7 @@
 #include "Constants.h"
 #include "commands/AprilTagDriveToTarget.h"
 #include "commands/ArcadeDrive.h"
+#include "commands/AutoFloorRetract.h"
 #include "commands/Autos.h"
 #include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
@@ -290,6 +291,40 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
         "Drive To April Tag",
         new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
   }
+
+  frc::SmartDashboard::PutData("Autonmous Floor Retraction",
+                               new AutoFloorRetract(&m_floorEjection, 0.1));
+  /*
+    frc::SmartDashboard::PutData(
+        "Shoot 70 for 0.15",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.7, 0.15_s));
+    frc::SmartDashboard::PutData(
+        "Shoot 70 for 0.1",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.7, 0.1_s));
+    frc::SmartDashboard::PutData(
+        "Shoot 80 for 0.1",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.8, 0.1_s));
+    frc::SmartDashboard::PutData(
+        "Shoot 90 for 0.1",
+        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.9, 0.1_s));*/
+  frc::SmartDashboard::PutData(
+      "Shoot 40 for 0.1",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.4, 0.1_s));
+  frc::SmartDashboard::PutData(
+      "Shoot 50 for 0.1",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.1_s));
+  frc::SmartDashboard::PutData(
+      "Shoot 30 for 0.25",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.3, 0.25_s));
+  frc::SmartDashboard::PutData(
+      "Shoot 35 for 0.25",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.35, 0.25_s));
+  frc::SmartDashboard::PutData(
+      "Shoot 40 for 0.2",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.4, 0.2_s));
+  frc::SmartDashboard::PutData(
+      "Shoot 50 for 0.2",
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.2_s));
 
   /*
     frc::SmartDashboard::PutData(

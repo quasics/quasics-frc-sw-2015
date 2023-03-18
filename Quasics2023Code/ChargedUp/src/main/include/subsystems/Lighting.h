@@ -37,8 +37,30 @@ class Lighting : public frc2::SubsystemBase {
       std::function<frc::AddressableLED::LEDData(int)> colorFunction);
 
   /** Convenience function to return the # of LEDs on the robot. */
-  int GetNumberOfLEDs() {
+  static int GetNumberOfLEDs() {
     return LightingValues::PIXEL_NUMBER;
+  }
+
+  /**
+   * Convenience function to decide if given LED position is on the front of
+   * the robot.
+   *
+   * @param position  position of an LED on the strip (from 0 to length-1)
+   * @return true if the LED is on the front of the robot
+   */
+  static bool IsFrontSideLED(int position) {
+    return position >= (GetNumberOfLEDs() / 2);
+  }
+
+  /**
+   * Convenience function to decide if given LED position is on the rear of
+   * the robot.
+   *
+   * @param position  position of an LED on the strip (from 0 to length-1)
+   * @return true if the LED is on the rear of the robot
+   */
+  static bool IsRearSideLED(int position) {
+    return position < (GetNumberOfLEDs() / 2);
   }
 
   /**

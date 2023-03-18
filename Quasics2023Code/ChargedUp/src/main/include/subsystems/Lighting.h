@@ -10,8 +10,18 @@
 
 #include "Constants.h"
 
+/**
+ * Subsystem providing access to the LED strip lighting on the robot.
+ *
+ * Assumptions:
+ *   * There are 2*N LEDs on the (logical) LED strip.  (Actually 2 strips wired
+ *     end-to-end.)
+ *   * The first N LEDs are on the back of the robot.
+ *   * The other N LEDs are on the front of the robot.
+ */
 class Lighting : public frc2::SubsystemBase {
  public:
+  /** Constructor. */
   Lighting();
 
   /**
@@ -29,9 +39,10 @@ class Lighting : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
+  /** The underlying object that provides actual control of the strip. */
   frc::AddressableLED m_led{LightingValues::PORT_NUMBER};
+
+  /** The buffer used to send individual LED colors to the strip. */
   std::array<frc::AddressableLED::LEDData, LightingValues::PIXEL_NUMBER>
       m_ledBuffer;
 };

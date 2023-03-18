@@ -9,6 +9,9 @@ BlackAndWhiteLights::BlackAndWhiteLights(Lighting* lighting) {
   AddRequirements(m_lighting);
 }
 
+// This is a "static" member function, which means that it doesn't get called
+// through an object.  As a result, it can be passed directly to the
+// "SetLightsColors" function in the code below.
 frc::AddressableLED::LEDData BlackAndWhiteLights::colorFunction(int position) {
   if (position % 2 == 0) {
     return Lighting::WHITE;

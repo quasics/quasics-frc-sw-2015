@@ -11,6 +11,11 @@ SplitLightingExample::SplitLightingExample(
   AddRequirements(m_lighting);
 }
 
+// This is a "normal" member function, which means that it must be called via an
+// object (e.g., "aCommand.ColorFunction(4)", or "cmdPtr->ColorFunction(6)").
+// As a result, it can't be passed directly to the "SetLightsColors" function in
+// the code below; we'll instead need to use "std::bind" to set things up so
+// that it has a suitable wrapper that lets it be used like a "raw" function.
 frc::AddressableLED::LEDData SplitLightingExample::ColorFunction(int pos) {
   if (Lighting::IsFrontSideLED(pos))
     return m_frontColor;
@@ -22,7 +27,8 @@ void SplitLightingExample::UpdateColors() {
   m_lighting->SetLightColors(std::bind(
       // This is the member function we want to have invoked
       &SplitLightingExample::ColorFunction,
-      // It (invisibly) has "this" passed as its first parameter.
+      // It (invisibly) has "this" passed as its first parameter, providing the
+      // object on which the function was called.
       this,
       // There's another paramter that will be provided when the function is
       // *used*, so we provide a "placeholder" for the bind() function.

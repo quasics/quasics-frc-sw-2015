@@ -10,6 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class KickerPlate extends SubsystemBase {
+  // Note that this assumes we're using it as a duty cycle (absolute) encoder. If
+  // we're using it as a quadrature (relative) encoder, then we'd need to use 2
+  // DIO ports on the Rio, and use an Encoder object.
+  //
+  // @see
+  // https://www.chiefdelphi.com/t/rev-through-bore-encoder-programming/424784
+  // @see https://docs.revrobotics.com/through-bore-encoder/application-examples
   private DutyCycleEncoder m_rotaryEncoder =
       new DutyCycleEncoder(new DigitalInput(Constants.ROTARY_ENCODER_CHANNEL));
 

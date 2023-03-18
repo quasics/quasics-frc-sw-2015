@@ -1,0 +1,7 @@
+Alliance | Switch Mode | cone, cube, nothing | pattern
+ red     | off         | nothing             | solid red, both strips
+ red     | off         | cone                | red / white alternating pixels, both strips
+ red     | off         | cube                | red / purple alternating pixels, both strips
+ red     | on          | nothing             | solid pink, both strips
+ red     | on          | cone                | 
+ red     | on          | cube                | 

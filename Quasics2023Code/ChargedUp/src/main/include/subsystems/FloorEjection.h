@@ -37,6 +37,8 @@ class FloorEjection : public frc2::SubsystemBase {
 
   frc::DutyCycleEncoder m_floorEjectionEncoder{
       DigitalInput::FLOOR_INTAKE_ENCODER};
+
+  // frc::Encoder m_floorEjectionEncoder{DigitalInput::FLOOR_INTAKE_ENCODER};
 #ifdef ENABLE_FLOOR_EJECTION_ENCODER
 
   frc::Encoder m_floorEjectionEncoder{ThroughBore::A_CHANNEL,

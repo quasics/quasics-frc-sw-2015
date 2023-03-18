@@ -65,6 +65,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
 #endif
 
+  frc::DigitalInput m_leftExtendIntakeLimitSwitch{
+      DigitalInput::INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID};
 #ifdef ENABLE_INTAKE_LIMIT_SWITCH
   frc::DigitalInput m_leftExtendIntakeLimitSwitch{
       DigitalInput::INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID};

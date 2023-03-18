@@ -178,8 +178,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
   static RunIntakeCubeOrConeToggleCommand intakeWithRoller(&m_intakeRoller,
                                                            &m_configSettings);
-  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.1);
-  static MoveFloorEjection resetEjection(&m_floorEjection, -0.1);
+  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.2);
+  static MoveFloorEjection resetEjection(&m_floorEjection, -0.2);
   static ShootTheGamePiece shootPiece(&m_floorEjection, 45, 0.3);
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);

@@ -37,7 +37,7 @@ bool AprilTagDriveToTarget::IsFinished() {
           (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS +
            2_in) &&
       ((m_angle > -2_deg) && (m_angle < 2_deg))) {
-    std::cout << "Destination Reached" << std::endl;
+    std::cout << "Destination Reached. Distance Away: "<< m_distance.value() << std::endl;
     return true;
   }
   return false;
@@ -51,7 +51,7 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
     m_photonLibVision->CalculateDistanceAndAngleToTarget(m_targetToDriveTo,
                                                          m_distance, m_angle);
     std::cout << "Performing Calculations based on distance"<< m_distance.value() << " and angle "<< m_angle.value() << std::endl;
-    double forwardSpeed = -forwardController.Calculate(
+    double forwardSpeed = forwardController.Calculate(
         m_distance.value(),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
             .value());

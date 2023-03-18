@@ -41,7 +41,7 @@ namespace CameraAndTargetValues {
   constexpr units::meter_t CAMERA_HEIGHT = 4_in;   // 19.25_in on real bot
   constexpr units::meter_t TARGET_HEIGHT = 0_in;  // 14.25on real field
   constexpr units::radian_t CAMERA_PITCH = 0_rad;
-  const units::meter_t GOAL_RANGE_METERS = 3_in;  // 3ft on real field
+  const units::meter_t GOAL_RANGE_METERS = 2_ft;  // 3ft on real field
 }  // namespace CameraAndTargetValues
 
 namespace LinearPID {

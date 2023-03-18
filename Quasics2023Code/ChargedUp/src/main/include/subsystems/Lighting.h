@@ -33,10 +33,23 @@ class Lighting : public frc2::SubsystemBase {
    */
   void SetAllToColor(int r, int g, int b);
 
+  void SetLightColors(
+      std::function<frc::AddressableLED::LEDData(int)> colorFunction);
+
+  /** Convenience function to return the # of LEDs on the robot. */
+  int GetNumberOfLEDs() {
+    return LightingValues::PIXEL_NUMBER;
+  }
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
+
+  // Useful color constants.
+ public:
+  static const frc::AddressableLED::LEDData WHITE;
+  static const frc::AddressableLED::LEDData BLACK;
 
  private:
   /** The underlying object that provides actual control of the strip. */

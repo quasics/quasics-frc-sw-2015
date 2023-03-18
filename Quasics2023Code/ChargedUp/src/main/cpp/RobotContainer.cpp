@@ -18,6 +18,7 @@
 #include "commands/AprilTagDriveToTarget.h"
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
+#include "commands/BlackAndWhiteLights.h"
 #include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/DriveAtPowerForMeters.h"
@@ -244,6 +245,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData("Black&White",
+                               new BlackAndWhiteLights(&m_lighting));
   frc::SmartDashboard::PutData(
       "Reset Encoder",
       new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },

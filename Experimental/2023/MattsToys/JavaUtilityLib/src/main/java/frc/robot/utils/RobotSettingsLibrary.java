@@ -15,12 +15,12 @@ import edu.wpi.first.math.util.Units;
  * Collection of robot characteristics for various Quasics robots.
  *
  * <ul>
- *   <li>Nike - our 2017 robot
- *   <li>Mae - 2020/2021 robot
- *   <li>Sally - 2022 robot
- *   <li>Gladys - 2023 robot
- *   <li>Romi (used for training)
- *   <li>MattsRomi (used for training)
+ * <li>Nike - our 2017 robot
+ * <li>Mae - 2020/2021 robot
+ * <li>Sally - 2022 robot
+ * <li>Gladys - 2023 robot
+ * <li>Romi (used for training)
+ * <li>MattsRomi (used for training)
  * </ul>
  */
 public class RobotSettingsLibrary {
@@ -43,8 +43,7 @@ public class RobotSettingsLibrary {
     MattsRomi;
   }
 
-  private static final Map<Robot, RobotSettings> m_settingsMap =
-      new HashMap<Robot, RobotSettings>();
+  private static final Map<Robot, RobotSettings> m_settingsMap = new HashMap<Robot, RobotSettings>();
 
   /** Diameters of different wheels (in meters). */
   private interface WheelDiameters {
@@ -68,8 +67,7 @@ public class RobotSettingsLibrary {
   private interface TrackWidths {
     public static final double GLADYS = Units.inchesToMeters(22.0);
     public static final double SALLY = Units.inchesToMeters(22.0);
-    public static final double MAE =
-    Units.inchesToMeters(47.134344149315914763); // from in-code constants
+    public static final double MAE = Units.inchesToMeters(47.134344149315914763); // from in-code constants
     public static final double NIKE = Units.inchesToMeters(22.0);
     public static final double ROMI = 0.165;
   }
@@ -208,7 +206,8 @@ public class RobotSettingsLibrary {
             LedLengths.ROMI_STRIP_LENGTH));
   }
 
-  public RobotSettingsLibrary() {}
+  public RobotSettingsLibrary() {
+  }
 
   public static RobotSettings getSettingsForRobot(Robot robot) {
     return m_settingsMap.get(robot);

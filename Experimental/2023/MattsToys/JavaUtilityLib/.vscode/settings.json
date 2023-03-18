@@ -26,7 +26,7 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "emeraldwalk.runonsave": {
     "commands": [
       {
@@ -34,5 +34,7 @@
         "cmd": "google-java-format --replace ${file}"
       },
     ],
-  }
+  },
+  "editor.formatOnPaste": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable"
   }

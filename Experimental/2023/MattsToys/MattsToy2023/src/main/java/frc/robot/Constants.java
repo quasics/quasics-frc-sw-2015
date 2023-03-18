@@ -17,6 +17,7 @@ import frc.robot.utils.RobotSettingsLibrary;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final int ROTARY_ENCODER_CHANNEL = 2;
 
   // TODO: Modify this to try to load current settings from filesystem using the
   // Preferences class from WPILib.
@@ -112,5 +113,9 @@ public final class Constants {
 
     private final int m_pos;
     private final Alliance m_alliance;
+  }
+
+  public static class DebugSettings {
+    public static final boolean KickerPlateDebugEnabled = true;
   }
 }

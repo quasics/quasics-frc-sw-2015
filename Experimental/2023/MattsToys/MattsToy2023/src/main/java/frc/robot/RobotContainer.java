@@ -23,6 +23,7 @@ import frc.robot.commands.SimpleLighting;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnDegreesUsingPid;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.KickerPlate;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
 import frc.robot.utils.RobotSettings;
@@ -39,6 +40,7 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
+  private final KickerPlate m_kicker = new KickerPlate();
 
   private final LightingInterface m_lighting =
       RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)

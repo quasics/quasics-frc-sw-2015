@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * Trivial class for the "kicker" on the 2023 robot, which is used to dump game pieces out of the
+ * intake storage area.
+ */
 public class KickerPlate extends SubsystemBase {
   // Note that this assumes we're using it as a duty cycle (absolute) encoder. If
   // we're using it as a quadrature (relative) encoder, then we'd need to use 2

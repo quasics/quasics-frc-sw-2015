@@ -32,23 +32,23 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // TODO: Modify this to try to load current settings from filesystem.
   private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
 
-  private final LightingInterface m_lighting =
-      RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)
-          ? new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH)
-          : new LightingInterface.MockLighting();
+  private final LightingInterface m_lighting = RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)
+      ? new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH)
+      : new LightingInterface.MockLighting();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(
+      OperatorConstants.kDriverControllerPort);
 
   public enum AutoModeOperation {
     eDoNothing,
@@ -64,14 +64,18 @@ public class RobotContainer {
   SendableChooser<AutoModeOperation> commandChooser = new SendableChooser<AutoModeOperation>();
 
   /**
-   * Used to manage "switch mode" (both providing the speed suppliers, and managing current "switch
+   * Used to manage "switch mode" (both providing the speed suppliers, and
+   * managing current "switch
    * mode" state).
    *
-   * <p>This is set up by getTankDriveCommand().
+   * <p>
+   * This is set up by getTankDriveCommand().
    */
   private SwitchModeSpeedSupplier m_switchModeHandler;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     //////////////////////////////////////
     // Drive base setup
@@ -101,26 +105,26 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}
+   * constructor with an arbitrary predicate, or via the named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+   * for {@link CommandXboxController Xbox} and
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers, or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
+   * Flight joysticks}.
    */
   private void configureBindings() {
     // Add a command (triggered by the "Y" button on the driver controller) to
     // trigger "switch mode" change.
     Trigger yButton = m_driverController.y();
-    final Command changeDirectionCommand =
-        runOnce(
-            () -> {
-              if (m_switchModeHandler != null) {
-                System.out.println("Switching heading mode");
-                m_switchModeHandler.toggleSwitchMode();
-              }
-            });
+    final Command changeDirectionCommand = runOnce(
+        () -> {
+          if (m_switchModeHandler != null) {
+            System.out.println("Switching heading mode");
+            m_switchModeHandler.toggleSwitchMode();
+          }
+        });
     yButton.debounce(0.1).onTrue(changeDirectionCommand);
 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`.
@@ -183,49 +187,38 @@ public class RobotContainer {
    */
   public Command getTankDriveCommand() {
     // Some simple bounds on driver inputs.
-    SpeedModifier tankDriveDeadbandModifier =
-        SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
-    SpeedModifier absoluteSpeedCaps =
-        SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
+    SpeedModifier tankDriveDeadbandModifier = SpeedModifier.generateDeadbandSpeedModifier(Deadbands.DRIVING);
+    SpeedModifier absoluteSpeedCaps = SpeedModifier.generateSpeedBounder(SpeedLimits.ABSOLUTE_LIMIT);
 
     // Mode signals for turtle & turbo.
-    Supplier<Boolean> turtleSignalSupplier =
-        () -> {
-          return m_driverController.leftBumper().getAsBoolean();
-        };
-    Supplier<Boolean> turboSignalSupplier =
-        () -> {
-          return m_driverController.rightBumper().getAsBoolean();
-        };
+    Supplier<Boolean> turtleSignalSupplier = () -> {
+      return m_driverController.leftBumper().getAsBoolean();
+    };
+    Supplier<Boolean> turboSignalSupplier = () -> {
+      return m_driverController.rightBumper().getAsBoolean();
+    };
 
     // Build the speed modifier for normal / turtle / turbo support.
-    SpeedModifier modeModifier =
-        SpeedModifier.generateTurtleTurboSpeedModifier(
-            SpeedLimits.MAX_SPEED_NORMAL,
-            turtleSignalSupplier,
-            SpeedLimits.MAX_SPEED_TURTLE,
-            turboSignalSupplier,
-            SpeedLimits.MAX_SPEED_TURBO);
+    SpeedModifier modeModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
+        SpeedLimits.MAX_SPEED_NORMAL,
+        turtleSignalSupplier,
+        SpeedLimits.MAX_SPEED_TURTLE,
+        turboSignalSupplier,
+        SpeedLimits.MAX_SPEED_TURBO);
 
     // Cap the acceleration rate
-    SpeedModifier slewRateModifier =
-        SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
+    SpeedModifier slewRateModifier = SpeedModifier.generateSlewRateLimitModifier(SpeedLimits.MAX_SLEW_RATE);
 
     // Build the overall chain used to translate driver inputs into motor %ages.
-    SpeedModifier compositeModifier =
-        (double inputPercentage) ->
-            absoluteSpeedCaps.adjustSpeed(
-                slewRateModifier.adjustSpeed(
-                    modeModifier.adjustSpeed(
-                        tankDriveDeadbandModifier.adjustSpeed(inputPercentage))));
+    SpeedModifier compositeModifier = (double inputPercentage) -> absoluteSpeedCaps.adjustSpeed(
+        slewRateModifier.adjustSpeed(
+            modeModifier.adjustSpeed(
+                tankDriveDeadbandModifier.adjustSpeed(inputPercentage))));
 
     // Generate the suppliers used to get "raw" speed signals for left and right.
-    Supplier<Double> leftStickSpeedControl =
-        () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());
-    Supplier<Double> rightStickSpeedControl =
-        () -> compositeModifier.adjustSpeed(m_driverController.getRightY());
-    m_switchModeHandler =
-        new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
+    Supplier<Double> leftStickSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getLeftY());
+    Supplier<Double> rightStickSpeedControl = () -> compositeModifier.adjustSpeed(m_driverController.getRightY());
+    m_switchModeHandler = new SwitchModeSpeedSupplier(leftStickSpeedControl, rightStickSpeedControl);
 
     // Get the (final) suppliers that will be polled for the left/right side speeds.
     Supplier<Double> leftSpeedControl = m_switchModeHandler.getLeftSpeedSupplier();

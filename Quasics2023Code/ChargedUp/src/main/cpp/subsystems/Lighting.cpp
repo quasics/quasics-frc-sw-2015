@@ -6,11 +6,26 @@
 
 #include <iostream>
 
+////////////////////////////////////////////////////////////////////////////
+// Simple "stock colors"
+////////////////////////////////////////////////////////////////////////////
+
 const frc::AddressableLED::LEDData Lighting::WHITE{255, 255, 255};
 const frc::AddressableLED::LEDData Lighting::BLACK{0, 0, 0};
 const frc::AddressableLED::LEDData Lighting::GREEN{0, 255, 0};
 const frc::AddressableLED::LEDData Lighting::BLUE{0, 0, 255};
 const frc::AddressableLED::LEDData Lighting::RED{255, 0, 0};
+
+////////////////////////////////////////////////////////////////////////////
+// The following are based on data from https://htmlcolorcodes.com/colors/
+////////////////////////////////////////////////////////////////////////////
+
+// "Bright orange"
+const frc::AddressableLED::LEDData Lighting::ORANGE{255, 172, 28};
+// "Bright purple"
+const frc::AddressableLED::LEDData Lighting::PURPLE{191, 64, 191};
+// "Hot pink"
+const frc::AddressableLED::LEDData Lighting::PINK{255, 105, 180};
 
 Lighting::Lighting() {
   m_led.SetLength(LightingValues::PIXEL_NUMBER);

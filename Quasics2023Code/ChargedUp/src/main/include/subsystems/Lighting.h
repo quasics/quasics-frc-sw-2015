@@ -75,6 +75,9 @@ class Lighting : public frc2::SubsystemBase {
   static const frc::AddressableLED::LEDData GREEN;
   static const frc::AddressableLED::LEDData BLUE;
   static const frc::AddressableLED::LEDData RED;
+  static const frc::AddressableLED::LEDData ORANGE;
+  static const frc::AddressableLED::LEDData PURPLE;
+  static const frc::AddressableLED::LEDData PINK;
 
  private:
   /** The underlying object that provides actual control of the strip. */

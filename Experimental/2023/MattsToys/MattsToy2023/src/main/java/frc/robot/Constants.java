@@ -18,6 +18,8 @@ import frc.robot.utils.RobotSettingsLibrary;
  */
 public final class Constants {
 
+  // TODO: Modify this to try to load current settings from filesystem using the
+  // Preferences class from WPILib.
   public static final RobotSettingsLibrary.Robot CURRENT_ROBOT = RobotSettingsLibrary.Robot.Gladys;
 
   public static final RobotSettings ROBOT_SETTINGS =

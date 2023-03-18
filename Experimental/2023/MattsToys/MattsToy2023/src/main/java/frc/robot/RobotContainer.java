@@ -38,7 +38,6 @@ import java.util.function.Supplier;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // TODO: Modify this to try to load current settings from filesystem.
   private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
 
   private final LightingInterface m_lighting =
@@ -93,6 +92,10 @@ public class RobotContainer {
     //////////////////////////////////////
     // Set up the choices of things to do during auto mode.
     setupAutoSelection();
+
+    //////////////////////////////////////
+    // Put test commands on the smart dashboard.
+    configureTestCommands();
   }
 
   private void configureTestCommands() {

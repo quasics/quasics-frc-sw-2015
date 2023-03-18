@@ -27,5 +27,8 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable"
 }

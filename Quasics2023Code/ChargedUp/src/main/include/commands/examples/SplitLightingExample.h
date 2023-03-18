@@ -10,11 +10,8 @@
 #include "subsystems/Lighting.h"
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * An example command to control the lights on the robot, using one color for
+ * the front LEDs and a different color for the rear ones.
  */
 class SplitLightingExample
     : public frc2::CommandHelper<frc2::CommandBase, SplitLightingExample> {

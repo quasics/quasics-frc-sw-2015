@@ -39,8 +39,8 @@ import java.util.function.Supplier;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
-  private final KickerPlate m_kicker = new KickerPlate();
+  final Drivebase m_driveBase = new Drivebase(ROBOT_SETTINGS);
+  final KickerPlate m_kicker = new KickerPlate();
 
   private final LightingInterface m_lighting =
       RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)

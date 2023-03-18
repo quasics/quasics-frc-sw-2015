@@ -18,7 +18,6 @@
 #include "commands/AprilTagDriveToTarget.h"
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
-#include "commands/BlackAndWhiteLights.h"
 #include "commands/ClampWithIntake.h"
 #include "commands/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/DriveAtPowerForMeters.h"
@@ -47,6 +46,7 @@
 #include "commands/ToggleBrakingMode.h"
 #include "commands/TriggerBasedRollerCommand.h"
 #include "commands/TurnDegreesImported.h"
+#include "commands/examples/BlackAndWhiteLights.h"
 
 #undef NormalDriving
 #define splitStickMovement

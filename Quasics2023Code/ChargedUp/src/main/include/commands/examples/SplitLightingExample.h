@@ -32,6 +32,14 @@ class SplitLightingExample
   bool IsFinished() override;
 
  private:
+  // The function that will yield the color for each LED on the strips.
+  frc::AddressableLED::LEDData ColorFunction(int pos);
+
+  // Helper function, invoked by Initialize() and Execute().
+  void UpdateColors();
+
+ private:
   Lighting* const m_lighting;
-  const std::function<frc::AddressableLED::LEDData(int)> m_colorFunction;
+  const frc::AddressableLED::LEDData m_frontColor;
+  const frc::AddressableLED::LEDData m_rearColor;
 };

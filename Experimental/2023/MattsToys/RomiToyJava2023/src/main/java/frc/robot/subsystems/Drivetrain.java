@@ -140,7 +140,7 @@ public class Drivetrain extends AbstractDriveBase {
   public double getGyroAngleZ() {
     return m_gyro.getAngleZ();
   }
-  
+
   /** Reset the gyro. */
   public void resetGyro() {
     m_gyro.reset();

@@ -22,6 +22,12 @@
  * they are needed.
  */
 
+// REFERENCE POINTS
+// Blue 1: (2.25, 4.75)
+// Blue 2: (2.25, 2.75)
+// Blue 3: (2.25, 0.75)
+// Note: red autonomous commands are mirrored, reference points not needed
+
 namespace RobotPhysics {
 constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
 constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;

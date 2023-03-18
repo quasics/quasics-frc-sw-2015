@@ -16,6 +16,7 @@
 class SplitLightingExample
     : public frc2::CommandHelper<frc2::CommandBase, SplitLightingExample> {
  public:
+  /** Constructor. */
   SplitLightingExample(Lighting* lighting,
                        frc::AddressableLED::LEDData frontColor,
                        frc::AddressableLED::LEDData rearColor);

@@ -47,6 +47,7 @@
 #include "commands/TriggerBasedRollerCommand.h"
 #include "commands/TurnDegreesImported.h"
 #include "commands/examples/BlackAndWhiteLights.h"
+#include "commands/examples/SplitLightingExample.h"
 
 #undef NormalDriving
 #define splitStickMovement
@@ -245,58 +246,24 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  // Sample lighting commands.
   frc::SmartDashboard::PutData("Black&White",
                                new BlackAndWhiteLights(&m_lighting));
+  frc::SmartDashboard::PutData(
+      "Split Lighting",
+      new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));
+
+  if (false) {
+    frc::SmartDashboard::PutData("Red lights",
+                                 new SetLightsToColor(&m_lighting, 255, 0, 0));
+    frc::SmartDashboard::PutData("Blue lights",
+                                 new SetLightsToColor(&m_lighting, 0, 0, 255));
+  }
+
   frc::SmartDashboard::PutData(
       "Reset Encoder",
       new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },
                                {&m_floorEjection}));
-  /*frc::SmartDashboard::PutData(
-      "Turn by 90 degrees left",
-      new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
-  frc::SmartDashboard::PutData(
-      "Turn by 90 degrees right",
-      new TurnDegreesImported(&m_drivebase, 0.5, -90_deg));
-
-  frc::SmartDashboard::PutData("Rotate 180 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, 180_deg));
-  frc::SmartDashboard::PutData("Rotate -180 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, -180_deg));
-  frc::SmartDashboard::PutData("Rotate 90 degrees at 50%",
-                               new RotateAtAngle(&m_drivebase, 0.50, 90_deg));*/
-  /*
-    frc::SmartDashboard::PutData(
-        "Drive 2m at 50%", new DriveAtPowerForMeters(&m_drivebase, 0.50,
-    2_m)); frc::SmartDashboard::PutData( "Drive -2m at 50%", new
-    DriveAtPowerForMeters(&m_drivebase, 0.50, -2_m));
-    frc::SmartDashboard::PutData(
-        "Ejection 1s 45%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 1.0_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 1s 70%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 1.0_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 1s 100%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 1.0_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.5s 45%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 0.5_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.5s 70%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 0.5_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.5s 100%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.5_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.3s 45%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.45, 0.3_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.3s 70%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.70, 0.3_s));
-    frc::SmartDashboard::PutData(
-        "Ejection 0.3s 100%",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.3_s));
-  */
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
@@ -316,10 +283,15 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new frc2::InstantCommand([this]() { setInverted(false); }));
 
   frc::SmartDashboard::PutData("Test Command", TESTCOMMAND());
-  /*
+
+  if (false) {
+    // AprilTag test commands
     frc::SmartDashboard::PutData(
         "Drive To April Tag",
         new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
+  }
+
+  /*
     frc::SmartDashboard::PutData(
         "Curiousity",
         new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.075_s));
@@ -331,11 +303,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData(
         "Safety Back",
         new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
-
-    frc::SmartDashboard::PutData("Set lights to red",
-                                 new SetLightsToColor(&m_lighting, 255, 0, 0));
-    frc::SmartDashboard::PutData("Set lights to blue",
-                                 new SetLightsToColor(&m_lighting, 0, 0, 255));
 
     frc::SmartDashboard::PutData(
         "Intake Extension Timed",

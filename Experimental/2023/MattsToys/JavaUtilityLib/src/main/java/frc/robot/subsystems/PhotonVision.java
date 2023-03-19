@@ -14,11 +14,23 @@ public class PhotonVision extends SubsystemBase {
   public final static int INVALID_TARGET_ID = -1;
 
   private final PhotonCamera m_camera;
+  private final double m_cameraHeightMeters;
+  private final double m_cameraPitchDegrees;
 
   /** Creates a new PhotonVision. */
-  public PhotonVision(String cameraName) {
+  public PhotonVision(String cameraName, double cameraHeightMeters, double cameraPitchDegrees) {
     setName("PhotonVision (" + cameraName + ")");
     m_camera = new PhotonCamera(cameraName);
+    m_cameraHeightMeters = cameraHeightMeters;
+    m_cameraPitchDegrees = cameraPitchDegrees;
+  }
+
+  public double getCameraHeight() {
+    return m_cameraHeightMeters;
+  }
+
+  public double getCameraPitch() {
+    return m_cameraPitchDegrees;
   }
 
   /**

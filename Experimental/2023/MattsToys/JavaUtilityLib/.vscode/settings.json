@@ -27,14 +27,14 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "editor.formatOnSave": true,
-  "emeraldwalk.runonsave": {
-    "commands": [
-      {
-        "match": "\\.java$",
-        "cmd": "google-java-format --replace ${file}"
-      },
-    ],
-  },
+  // "emeraldwalk.runonsave": {
+  //   "commands": [
+  //     {
+  //       "match": "\\.java$",
+  //       "cmd": "google-java-format --replace ${file}"
+  //     },
+  //   ],
+  // },
   "editor.formatOnPaste": true,
   "editor.formatOnSaveMode": "modificationsIfAvailable"
   }

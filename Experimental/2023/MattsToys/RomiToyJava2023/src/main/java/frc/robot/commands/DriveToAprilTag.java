@@ -37,6 +37,7 @@ public class DriveToAprilTag extends CommandBase {
   final private double m_cameraPitchRadians;
   final private double m_goalDistanceMeters;
   final private double m_goalToleranceMeters;
+  final private double m_feedForward;
 
   private double m_lastDistance;
   private double m_lastAngle;
@@ -57,16 +58,18 @@ public class DriveToAprilTag extends CommandBase {
    * @param kP                  "kP" constant for PID control on motion
    * @param kI                  "kI" constant for PID control on motion
    * @param kD                  "kD" constant for PID control on motion
+   * @param feedForward         feedForward value for forward motion
    */
   public DriveToAprilTag(DriveBaseInterface driveBase, PhotonVision photonVision, int tagNum, double tagHeightMeters,
       double goalDistanceMeters, double goalToleranceMeters,
-      double kP, double kI, double kD) {
+      double kP, double kI, double kD, double feedForward) {
     m_driveBase = driveBase;
     m_photonVision = photonVision;
     m_tagNum = tagNum;
     m_tagHeightMeters = tagHeightMeters;
     m_goalDistanceMeters = goalDistanceMeters;
     m_goalToleranceMeters = goalToleranceMeters;
+    m_feedForward = feedForward;
     m_cameraHeightMeters = m_photonVision.getCameraHeight();
     m_cameraPitchRadians = Units.degreesToRadians(m_photonVision.getCameraPitch());
 
@@ -82,6 +85,7 @@ public class DriveToAprilTag extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.err.println("Starting to drive to AprilTag " + m_tagNum);
     m_driveBase.stop();
 
     // Reset "last" info to arbitrary values.
@@ -106,11 +110,13 @@ public class DriveToAprilTag extends CommandBase {
 
     // Use the range as the measurement we give to the PID controller.
     // -1.0 required to ensure positive PID controller effort _increases_ range
-    final double forwardSpeed = -m_forwardController.calculate(range, m_goalDistanceMeters);
+    final double pidForwardSpeed = -m_forwardController.calculate(range * 10, m_goalDistanceMeters * 10);
+    final double forwardSpeed = (Math.signum(pidForwardSpeed) * m_feedForward) + pidForwardSpeed;
 
     // Also calculate angular power
     // -1.0 required to ensure positive PID controller effort _increases_ yaw
-    final double rotationSpeed = -m_rotationController.calculate(target.getYaw(), 0);
+    final double rotationSpeed = m_rotationController.calculate(target.getYaw(), 0);
+    System.err.println("Speeds: forward=" + forwardSpeed + ", rotation=" + rotationSpeed);
 
     // Remember the results for use in "isFinished()".
     m_lastAngle = target.getYaw();
@@ -128,18 +134,26 @@ public class DriveToAprilTag extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (!m_photonVision.isConnected()) {
+      System.err.println("Not connected to camera: bailing out");
+      return true;
+    }
     if (!m_photonVision.targetAvailable(m_tagNum)) {
       // If we can't see the target, bail out.
+      System.err.println("Target not found: bailing out");
       return true;
     }
     if (!MathUtils.withinTolerance(m_goalDistanceMeters, m_lastDistance, m_goalToleranceMeters)) {
       // Still too far away
+      System.err.println("Too far away (" + m_lastDistance + ", want " + m_goalDistanceMeters);
       return false;
     }
     if (!MathUtils.withinTolerance(0, m_lastAngle, ANGLE_TOLERANCE_DEGREES)) {
       // Not pointed correctly
+      System.err.println("Too far away (" + m_lastAngle + ", want " + 0);
       return false;
     }
+    System.err.println("Target found and in distance: done!");
     return true;
   }
 }

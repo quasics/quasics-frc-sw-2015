@@ -24,6 +24,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.utils.RobotSettingsLibrary;
 import frc.robot.utils.SpeedModifier;
 import frc.robot.utils.SwitchModeSpeedSupplier;
@@ -41,6 +42,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain(RobotSettingsLibrary.getSettingsForMattsRomi());
   private final OnBoardIO m_onboardIO = new OnBoardIO(ChannelMode.INPUT, ChannelMode.INPUT);
+  private final PhotonVision m_photonVision = new PhotonVision("photonvision", 0.10, // cameraHeightMeters
+      0 // cameraPitchDegrees
+  );
 
   // Assumes an Xbox Controller plugged into channnel 0
   private final XboxController m_xboxController = new XboxController(0);
@@ -131,7 +135,11 @@ public class RobotContainer {
     final double kP = 0.025;
     final double kI = 0.015;
     final double kD = 0.01;
-    return new frc.robot.commands.TurnDegreesUsingPid(m_drivetrain, 90, 1, kP, kI, kD);
+    final int targetTag = 4;
+    return new frc.robot.commands.DriveToAprilTag(m_drivetrain, m_photonVision, targetTag, 0.145, 0.10, 0.01, kP, kI,
+        kD);
+    // return new frc.robot.commands.TurnDegreesUsingPid(m_drivetrain, 90, 1, kP,
+    // kI, kD);
     // return new frc.robot.commands.DriveDistance(0.25, 0.21991148575,
     // m_drivetrain);
     // return m_chooser.getSelected();

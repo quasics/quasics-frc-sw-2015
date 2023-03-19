@@ -162,12 +162,17 @@ public class RobotContainer {
   final Supplier<Boolean> m_turboSignalSupplier = () -> {
     return m_xboxController.getRightBumper();
   };
+  /** Signal supplier for "overdrive mode" while driving. */
+  final Supplier<Boolean> m_overdriveSignalSupplier = () -> {
+    return m_turtleSignalSupplier.get() && m_turboSignalSupplier.get();
+  };
 
   /** The speed modifier for normal / turtle / turbo support. */
-  final SpeedModifier m_modeSpeedModifier = SpeedModifier.generateTurtleTurboSpeedModifier(
+  final SpeedModifier m_modeSpeedModifier = SpeedModifier.generateTurtleTurboOverdriveSpeedModifier(
       SpeedLimits.MAX_SPEED_NORMAL,
       m_turtleSignalSupplier, SpeedLimits.MAX_SPEED_TURTLE,
-      m_turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO);
+      m_turboSignalSupplier, SpeedLimits.MAX_SPEED_TURBO,
+      m_overdriveSignalSupplier, SpeedLimits.MAX_SPEED_OVERDRIVE);
 
   /**
    * Generates a command for running "split arcade drive", where the left stick

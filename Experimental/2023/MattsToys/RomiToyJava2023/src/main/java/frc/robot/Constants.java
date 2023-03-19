@@ -25,6 +25,8 @@ public final class Constants {
     public static final double MAX_SPEED_NORMAL = 0.65;
     /** Scaling factor to be applied in "turbo" mode. */
     public static final double MAX_SPEED_TURBO = 0.80;
+    /** Scaling factor to be applied in "overdrive" mode. */
+    public static final double MAX_SPEED_OVERDRIVE = 1.0;
 
     /** Max speed overall */
     public static final double ABSOLUTE_LIMIT = MAX_SPEED_TURBO;

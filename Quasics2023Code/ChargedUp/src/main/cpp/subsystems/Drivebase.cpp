@@ -127,6 +127,20 @@ units::degree_t Drivebase::GetAngle() {
 #endif
 }
 
+frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
+  return frc::DifferentialDriveWheelSpeeds{GetLeftVelocity(),
+                                           GetRightVelocity()};
+}
+
+void Drivebase::ResetOdometry(frc::Pose2d pose) {
+  ResetEncoders();
+  m_odometry.ResetPosition(m_pigeon.GetRotation2d(), 0_m, 0_m, pose);
+}
+
+frc::Pose2d Drivebase::GetPose() {
+  return m_odometry.GetPose();
+}
+
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Pitch Adjusted Value:", GetPitchImpl());
@@ -141,6 +155,12 @@ void Drivebase::TankDrive(double leftPower, double rightPower) {
 
 void Drivebase::ArcadeDrive(double power, double angle) {
   m_drive->ArcadeDrive(power, angle);
+}
+
+void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
+  m_leftSide->SetVoltage(left);
+  m_rightSide->SetVoltage(right);
+  m_drive->Feed();
 }
 
 double Drivebase::GetPitchImpl() {

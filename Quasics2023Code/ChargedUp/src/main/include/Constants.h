@@ -34,6 +34,8 @@ constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
 constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
 constexpr double DRIVEBASE_GEAR_RATIO_GLADYS = 8.45;
 
+constexpr units::length::inch_t TRACK_WIDTH_INCHES_GLADYS = 22.0_in;
+
 // Used to isolate the gear ratio for the robot we're actually building for,
 // from the various "known values" for each of the possible robots.
 constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_GLADYS;

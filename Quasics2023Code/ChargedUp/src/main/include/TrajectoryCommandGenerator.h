@@ -24,7 +24,7 @@
 #include "Constants.h"
 
 // In "Common2021"
-//#include "CommonDriveSubsystem.h"
+// #include "CommonDriveSubsystem.h"
 #include "subsystems/Drivebase.h"
 
 class TrajectoryCommandGenerator {
@@ -39,17 +39,17 @@ class TrajectoryCommandGenerator {
   /// Drive profile settings, generally obtained from the frc-characterization
   /// tool.
   struct DriveProfileData {
-    units::voltage::volt_t kS;
-    VoltSecondsPerMeter kV;
-    VoltSecondsSquaredPerMeter kA;
+    units::voltage::volt_t kS = 0.25829_V;
+    VoltSecondsPerMeter kV = 4.5623 * (1_V * 1_s / 1_m);
+    VoltSecondsSquaredPerMeter kA = 1.608 * (1_V * 1_s * 1_s / 1_m);
   };
 
   /// PID configuration settings, to control error correction.
   struct PIDConfig {
-    double kP;      ///< proportional coefficient for PID (from the
-                    ///< frc-characterization tool)
-    double kI = 0;  ///< integral coefficient for PID (default to unused)
-    double kD = 0;  ///< derivative coefficient for PID (default to unused)
+    double kP = 5.1527;  ///< proportional coefficient for PID (from the
+                         ///< frc-characterization tool)
+    double kI = 0;       ///< integral coefficient for PID (default to unused)
+    double kD = 0;       ///< derivative coefficient for PID (default to unused)
   };
 
   /// Defines maximum speed/acceleration for the trajectory.
@@ -57,8 +57,8 @@ class TrajectoryCommandGenerator {
   /// Note that the default values are fairly low; you'll likely
   /// want use something larger for real code.
   struct SpeedProfile {
-    MetersPerSecond maxVelocity;
-    MetersPerSecondSquared maxAcceleration;
+    MetersPerSecond maxVelocity = 4.5623 * (1_m / 1_s);
+    MetersPerSecondSquared maxAcceleration = 1.608 * (1_m / (1_s * 1_s));
   };
 
   /// Values controlling for a RAMSETE follower in units of meters and
@@ -220,7 +220,7 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
     const frc::Pose2d& end, TelemetryHandling telemetryHandling,
     const RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
-      TRACK_WIDTH_INCHES_SALLY};
+      TRACK_WIDTH_INCHES_GLADYS};
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       profileData.kS, profileData.kV, profileData.kA);
@@ -257,7 +257,7 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
     const PIDConfig pidConfig, frc::Trajectory trajectory,
     TelemetryHandling telemetryHandling, RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
-      TRACK_WIDTH_INCHES_SALLY};
+      TRACK_WIDTH_INCHES_GLADYS};
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       profileData.kS, profileData.kV, profileData.kA);
 

@@ -7,6 +7,8 @@
 #include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
@@ -23,6 +25,8 @@ class Drivebase : public frc2::SubsystemBase {
   void TankDrive(double leftPower, double rightPower);
 
   void ArcadeDrive(double power, double angle);
+
+  void TankDriveVolts(units::volt_t left, units::volt_t right);
 
   void Stop() {
     TankDrive(0, 0);
@@ -54,10 +58,16 @@ class Drivebase : public frc2::SubsystemBase {
   /** Returns the current speed of the right-side wheels. */
   units::meters_per_second_t GetRightVelocity();
 
+  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
+
   void ResetEncoders();
 
   // gets current yaw of robot
   units::degree_t GetAngle();
+
+  frc::Pose2d GetPose();
+
+  void ResetOdometry(frc::Pose2d pose);
 
   /** Returns the robot's current pitch angle (nose pointed up/down). */
   double GetPitch() {
@@ -126,4 +136,7 @@ class Drivebase : public frc2::SubsystemBase {
 #elif defined(ENABLE_PIGEON)
   ctre::phoenix::sensors::WPI_Pigeon2 m_pigeon{SensorIds::PIDGEON_CAN_ID};
 #endif
+
+  frc::DifferentialDriveOdometry m_odometry{
+      0_rad, 0_m, 0_m};  // m_odometry delcared somehwere ELSE?!?!?!
 };

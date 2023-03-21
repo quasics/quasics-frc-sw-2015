@@ -239,6 +239,8 @@ namespace LogitechGamePad {
 }  // namespace OperatorInterface
 
 namespace LightingValues {
-constexpr int PORT_NUMBER = 0;
-constexpr int PIXEL_NUMBER = 14;
+constexpr int PORT_NUMBER = 9;
+constexpr int TEST_STRIP_PIXEL_COUNT = 14;
+constexpr int GLADYS_STRIP_PIXEL_COUNT = 120;  // 2 x 60pixel strips
+constexpr int PIXEL_NUMBER = GLADYS_STRIP_PIXEL_COUNT;
 }  // namespace LightingValues

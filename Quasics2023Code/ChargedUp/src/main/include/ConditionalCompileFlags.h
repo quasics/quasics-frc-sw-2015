@@ -12,8 +12,9 @@
 #undef ENABLE_AD_GYRO
 #define ENABLE_PIGEON
 
-// If defined, enables the use of a limit switch with the intake.
-#undef ENABLE_INTAKE_LIMIT_SWITCH
+// If defined, enables the use of additional limit switches with the intake (2
+// on each side: 1 for extended, 1 for retracted).
+#undef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
 
 // If defined, enables the motors on the clamp subsystem.
 #undef ENABLE_CLAMP_MOTORS

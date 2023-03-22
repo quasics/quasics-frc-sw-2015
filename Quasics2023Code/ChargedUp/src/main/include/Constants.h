@@ -68,10 +68,13 @@ constexpr auto DRIVE_SPEED = 0.5;
 namespace DigitalInput {
 constexpr int INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID = 3;
 constexpr int FLOOR_RETRACTION_LIMIT_SWITCH_ID = 4;
-/*
+
+#ifdef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
 constexpr int INTAKE_EXTEND_RIGHT_LIMIT_SWITCH_ID = 2;
 constexpr int INTAKE_RETRACT_LEFT_LIMIT_SWITCH_ID = 3;
-constexpr int INTAKE_RETRACT_RIGHT_LIMIT_SWITCH_ID = 4;*/
+constexpr int INTAKE_RETRACT_RIGHT_LIMIT_SWITCH_ID = 4;
+#endif
+
 constexpr int FLOOR_INTAKE_ENCODER = 2;
 }  // namespace DigitalInput
 
@@ -138,7 +141,6 @@ namespace IntakeConstants {
 namespace RollerSpeeds {
   constexpr double FORWARD = 0.85;
   constexpr double BACKWARD = -0.85;
-
 }  // namespace RollerSpeeds
 }  // namespace IntakeConstants
 
@@ -194,20 +196,20 @@ constexpr int B_CHANNEL = 1;
 
 namespace OperatorConstants {
 /** Joystick port for the driver's controller. */
-// CODE_REVIEW: This is a duplicate constant, and should be cleaned up. (mjh)
+// CODE_REVIEW(matthew): This is a duplicate constant, and should be cleaned up.
 // See DRIVER_JOYSTICK, below.
 constexpr int kDriverControllerPort = 0;
 }  // namespace OperatorConstants
 
 namespace OperatorInterface {
-// CODE_REVIEW: This is a duplicate constant, and should be cleaned up. (mjh)
+// CODE_REVIEW(matthew): This is a duplicate constant, and should be cleaned up.
 // See kDriverControllerPort, above.
 constexpr int DRIVER_JOYSTICK = 0;
 
 using RateLimit = units::unit_t<
     units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
 
-/** Limit on robot accessleration. */
+/** Limit on robot acceleration. */
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
 namespace LogitechGamePad {

@@ -80,7 +80,7 @@ void IntakeDeployment::EnableBraking(bool value) {
 }
 
 bool IntakeDeployment::IsIntakeDeployed(LimitSwitch limitSwitch) {
-#ifdef ENABLE_INTAKE_LIMIT_SWITCH
+#ifdef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
   if (limitSwitch == LimitSwitch::Extended) {
     return !m_leftExtendIntakeLimitSwitch.Get() ||
            !m_rightExtendIntakeLimitSwitch.Get();
@@ -98,15 +98,13 @@ void IntakeDeployment::Periodic() {
                                  m_leftDeploymentEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Roller Velocity",
                                  m_leftDeploymentEncoder.GetVelocity());
-  frc::SmartDashboard::PutString(
-      "Left extend limit switch",
-      m_leftExtendIntakeLimitSwitch.Get() ? "open" : "closed");
 #endif
 
-#ifdef ENABLE_INTAKE_LIMIT_SWITCH
   frc::SmartDashboard::PutString(
       "Left extend limit switch",
       m_leftExtendIntakeLimitSwitch.Get() ? "open" : "closed");
+
+#ifdef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
   frc::SmartDashboard::PutString(
       "Right extend limit switch",
       m_rightExtendIntakeLimitSwitch.Get() ? "open" : "closed");

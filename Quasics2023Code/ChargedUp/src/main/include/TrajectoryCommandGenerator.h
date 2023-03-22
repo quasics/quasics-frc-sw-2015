@@ -54,8 +54,8 @@ class TrajectoryCommandGenerator {
   /// Note that the default values are fairly low; you'll likely
   /// want use something larger for real code.
   struct SpeedProfile {
-    MetersPerSecond maxVelocity = 4.5623 * (1_m / 1_s);
-    MetersPerSecondSquared maxAcceleration = 1.608 * (1_m / (1_s * 1_s));
+    MetersPerSecond maxVelocity = 0.4 * (1_m / 1_s);
+    MetersPerSecondSquared maxAcceleration = 0.2 * (1_m / (1_s * 1_s));
   };
 
   /// Values controlling for a RAMSETE follower in units of meters and

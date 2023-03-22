@@ -300,6 +300,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   frc::SmartDashboard::PutData("Test Command", TESTCOMMAND());
 
+  frc::SmartDashboard::PutData("PATHWEAVER TEST COMMAND", TestPathCommand());
+
   if (false) {
     // AprilTag test commands
     frc::SmartDashboard::PutData(

@@ -30,16 +30,27 @@
 // Note: red autonomous commands are mirrored, reference points not needed
 
 namespace RobotPhysics {
-constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
+/** Drive base gear ratio used for Mae (2020/2021 robot). */
 constexpr double DRIVEBASE_GEAR_RATIO_MAE = 10.71;
+/** Drive base gear ratio used for Sally (2022 robot/development drive base). */
 constexpr double DRIVEBASE_GEAR_RATIO_SALLY = 8.45;
+/** Drive base gear ratio used for Gladys (2023 robot). */
 constexpr double DRIVEBASE_GEAR_RATIO_GLADYS = 8.45;
 
-constexpr units::length::inch_t TRACK_WIDTH_INCHES_GLADYS = 22.0_in;
-
-// Used to isolate the gear ratio for the robot we're actually building for,
-// from the various "known values" for each of the possible robots.
+/**
+ * Drive base gear ratio on the currently-targeted robot.
+ *
+ * Used to isolate the gear ratio for the robot we're actually building for,
+ * from the various "known values" for each of the possible robots.
+ */
 constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_GLADYS;
+
+/** Wheel diameter used with all of our 2020-2023 robot drive bases. */
+constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
+
+/** Track width for Gladys. */
+// TODO(matthew): Confirm that this is correct.
+constexpr units::length::inch_t TRACK_WIDTH_INCHES_GLADYS = 22.0_in;
 }  // namespace RobotPhysics
 
 namespace Intake {

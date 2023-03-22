@@ -117,7 +117,7 @@ void Drivebase::ResetEncoders() {
   m_rightBackEncoder.SetPosition(0);
 }
 
-units::degree_t Drivebase::GetAngle() {
+units::degree_t Drivebase::GetYaw() {
 #if defined(ENABLE_PIGEON)
   return m_pigeon.GetRotation2d().Degrees();
 #else
@@ -145,7 +145,7 @@ frc::Pose2d Drivebase::GetPose() {
 void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Pitch Adjusted Value:", GetPitchImpl());
   frc::SmartDashboard::PutNumber("Roll Adjusted Value:", GetRollImpl());
-  frc::SmartDashboard::PutNumber("Yaw:", GetAngle().value());
+  frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 }
 

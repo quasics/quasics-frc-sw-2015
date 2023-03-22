@@ -26,12 +26,12 @@ void TurnDegreesImported::Initialize() {
   std::cout << "Wanted Turn" << m_angle.value() << std::endl;
   multiplier = 1.0;
   turningleft = angleTest > 0_deg;  // substitution
-  startingposition = m_drivebase->GetAngle();
+  startingposition = m_drivebase->GetYaw();
   m_drivebase->SetBrakingMode(true);
   m_drivebase->TankDrive(-1 * m_speed, m_speed);
 #endif
 #ifdef NO_SLOW_DOWN
-  startingposition = m_drivebase->GetAngle();
+  startingposition = m_drivebase->GetYaw();
   turningleft = m_angle > 0_deg;
   m_drivebase->SetBrakingMode(true);
   m_drivebase->TankDrive(-1 * m_speed, m_speed);
@@ -42,8 +42,8 @@ void TurnDegreesImported::Initialize() {
 void TurnDegreesImported::Execute() {
 #ifdef CURRENT_TURN_VERSION
   m_drivebase->SetBrakingMode(true);
+  units::degree_t currentPosition = m_drivebase->GetYaw();
   if (turningleft) {
-    units::degree_t currentPosition = m_drivebase->GetAngle();
     if (currentPosition > ((startingposition + angleTest) * 0.5) &&
         (m_speed * multiplier > 0.30)) {
 #ifdef FASTER_SLOW_DOWN
@@ -53,7 +53,6 @@ void TurnDegreesImported::Execute() {
     }
     m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
   } else {
-    units::degree_t currentPosition = m_drivebase->GetAngle();
     if (currentPosition < ((startingposition + angleTest) * 0.5) &&
         (m_speed * multiplier > 0.30)) {
 #ifdef FASTER_SLOW_DOWN
@@ -78,7 +77,7 @@ void TurnDegreesImported::End(bool interrupted) {
 // Returns true when the command should end.
 bool TurnDegreesImported::IsFinished() {
 #ifdef CURRENT_TURN_VERSION
-  units::degree_t currentPosition = m_drivebase->GetAngle();
+  units::degree_t currentPosition = m_drivebase->GetYaw();
   if (turningleft) {
     if (currentPosition >= (startingposition + angleTest)) {
       std::cout << "Difference Left "

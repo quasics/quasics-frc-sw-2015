@@ -39,7 +39,7 @@ void RotateAtAngle::Initialize() {
     m_drivebase->TankDrive(-m_percentSpeed, m_percentSpeed);
   else
     m_drivebase->TankDrive(m_percentSpeed, -m_percentSpeed);
-  m_startAngle = m_drivebase->GetAngle();
+  m_startAngle = m_drivebase->GetYaw();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -47,7 +47,7 @@ void RotateAtAngle::Execute() {
   const double minimumSpeed = 0.30;  // speed must be >= 0.30
   const double scalingFactor = 0.90;
 
-  const units::degree_t currentPosition = m_drivebase->GetAngle();
+  const units::degree_t currentPosition = m_drivebase->GetYaw();
 
   const units::degree_t degreesLeft =
       (m_startAngle + m_angle) - currentPosition;
@@ -84,7 +84,7 @@ void RotateAtAngle::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RotateAtAngle::IsFinished() {
-  units::degree_t currentAngle = m_drivebase->GetAngle();
+  units::degree_t currentAngle = m_drivebase->GetYaw();
   if (m_angle >= 0_deg)
     return (currentAngle >= m_angle + m_startAngle);
   else

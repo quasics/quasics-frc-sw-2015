@@ -18,14 +18,14 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase,
 
 // Called when the command is initially scheduled.
 void StraightLineDriving::Initialize() {
-  originalAngle = m_drivebase->GetAngle();
+  originalAngle = m_drivebase->GetYaw();
   robotSpeed = m_driverStick->GetRawAxis(
       OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void StraightLineDriving::Execute() {
-  currentAngle = m_drivebase->GetAngle();
+  currentAngle = m_drivebase->GetYaw();
   double rotationCorrection =
       pid.Calculate(currentAngle.value(), originalAngle.value());
   m_drivebase->ArcadeDrive(robotSpeed, rotationCorrection);

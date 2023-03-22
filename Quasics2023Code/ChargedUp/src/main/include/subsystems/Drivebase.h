@@ -63,7 +63,7 @@ class Drivebase : public frc2::SubsystemBase {
   void ResetEncoders();
 
   // gets current yaw of robot
-  units::degree_t GetAngle();
+  units::degree_t GetYaw();
 
   frc::Pose2d GetPose();
 
@@ -83,6 +83,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   void GyroCalibration();
 
+  // Functions common to all subsystems.
+ public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */

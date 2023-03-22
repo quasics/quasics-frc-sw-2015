@@ -22,9 +22,6 @@
 #include <vector>
 
 #include "Constants.h"
-
-// In "Common2021"
-// #include "CommonDriveSubsystem.h"
 #include "subsystems/Drivebase.h"
 
 class TrajectoryCommandGenerator {
@@ -92,13 +89,13 @@ class TrajectoryCommandGenerator {
                              const DriveProfileData& profileData,
                              const PIDConfig& pidConfig)
       : m_drive(drive), m_profileData(profileData), m_pidConfig(pidConfig) {
-  }  // generates a Trajectory passing in a pointer to a drivebase, the
-     // performance of the drivebase, values for error correction
+  }
 
+  // Defines an enum class that gives the telemetry handling two states.
   enum TelemetryHandling {
     ResetTelemetryAtStart,
     UseExistingTelemetry,
-  };  // creates an enum class that gives the telemetry handling two states
+  };
 
   /**
    * Generates a sample command to follow the specified trajectory.
@@ -190,14 +187,14 @@ class TrajectoryCommandGenerator {
       const std::vector<frc::Translation2d>& interiorWaypoints,
       const frc::Pose2d& end, TelemetryHandling telemetryHandling,
       const RamseteConfig ramseteConfig);  // this is a .h file so these
-                                           // descirbe what these functions take
+                                           // describe what these functions take
 
   static frc2::SequentialCommandGroup* GenerateCommandForTrajectory(
       Drivebase* const drive, const DriveProfileData profileData,
       const PIDConfig pidConfig, frc::Trajectory trajectory,
       TelemetryHandling telemetryHandling,
       const RamseteConfig ramseteConfig);  // this is a .h file so these
-                                           // descirbe what these functions take
+                                           // describe what these functions take
 
  private:
   Drivebase* m_drive;

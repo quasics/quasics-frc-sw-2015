@@ -11,6 +11,11 @@
 
 #include "Constants.h"
 
+/**
+ * TODO: Add comments describing the class as a whole.
+ */
+// CODE_REVIEW(ethan): This class should have a comment block (above) describing
+// what it is/does.
 class IntakeDeployment : public frc2::SubsystemBase {
  public:
   enum class LimitSwitch { Extended, Retracted };
@@ -35,8 +40,7 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   /**
    * Returns true if the limit switches are enabled on the intake, and if the
-   * indicated limit switch is being triggered.
-   *
+   * indicated limit switch is being triggered (on either side, if appropriate).
    */
   bool IsIntakeDeployed(LimitSwitch limitSwitch);
 
@@ -45,8 +49,11 @@ class IntakeDeployment : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  ///////////////////////////////////////////////////////////////
+  // Data members (motors, encoders, digital inputs, etc.)
  private:
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
+  // Motors that control the left/right side of the intake deployment hardware.
   rev::CANSparkMax m_leftDeploymentMotor{
       MotorIds::SparkMax::LEFT_INTAKE_DEPLOYMENT_MOTOR_ID,
       rev::CANSparkMax::MotorType::kBrushless};
@@ -54,17 +61,25 @@ class IntakeDeployment : public frc2::SubsystemBase {
       MotorIds::SparkMax::RIGHT_INTAKE_DEPLOYMENT_MOTOR_ID,
       rev::CANSparkMax::MotorType::kBrushless};
 
-  frc::MotorControllerGroup m_intakeDeployment{m_leftDeploymentMotor,
-                                               m_rightDeploymentMotor};
-
+  // Encoders, to keep track of where the relative motion of the deployment
+  // mechanism.
   rev::SparkMaxRelativeEncoder m_leftDeploymentEncoder =
       m_leftDeploymentMotor.GetEncoder();
-
   rev::SparkMaxRelativeEncoder m_rightDeploymentEncoder =
       m_rightDeploymentMotor.GetEncoder();
 
+  // Motor controller group, binding the left/right side motors into a single
+  // pair.
+  //
+  // CODE_REVIEW(ethan): Is there a reason why we're using a controller group
+  // (which allows motor speeds to be set independently), rather than just
+  // having one of the motors configured as the "follower" of the other, so that
+  // they automatically run at the same speeds all the time?
+  frc::MotorControllerGroup m_intakeDeployment{m_leftDeploymentMotor,
+                                               m_rightDeploymentMotor};
 #endif
 
+  // Limit switches for the intake deployment hardware.
   frc::DigitalInput m_leftExtendIntakeLimitSwitch{
       DigitalInput::INTAKE_EXTEND_LEFT_LIMIT_SWITCH_ID};
 #ifdef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
@@ -75,6 +90,4 @@ class IntakeDeployment : public frc2::SubsystemBase {
   frc::DigitalInput m_rightRetractIntakeLimitSwitch{
       DigitalInput::INTAKE_RETRACT_RIGHT_LIMIT_SWITCH_ID};
 #endif
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
 };

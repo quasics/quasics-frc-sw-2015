@@ -30,7 +30,7 @@
 // subsystem.
 #undef ENABLE_FLOOR_EJECTION_ENCODER
 
-// If defined, enables attempting to detect when the intake  is running up
+// If defined, enables attempting to detect when the intake is running up
 // against a hard stop while extending/retracting.
 #undef ENABLE_INTAKE_HARD_STOP_DETECTION
 

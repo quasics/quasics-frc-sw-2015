@@ -12,6 +12,12 @@
 
 #include "Constants.h"
 
+/**
+ * TODO: Add comments describing the class as a whole.
+ */
+// CODE_REVIEW(matthew): This class should have a comment block (above)
+// describing what it is/does.  (And the functions should probably be
+// documented, too, since some of them aren't necessarily intuitively obvious.)
 class FloorEjection : public frc2::SubsystemBase {
  public:
   FloorEjection();

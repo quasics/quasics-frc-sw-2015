@@ -9,16 +9,14 @@
 
 #include "Constants.h"
 
-#undef ENABLE_CLAMP_MOTORS
-
+/**
+ * TODO: Add comments describing the class as a whole.
+ */
+// CODE_REVIEW(ethan): This class should have a comment block (above) describing
+// what it is/does.
 class IntakeClamp : public frc2::SubsystemBase {
  public:
   IntakeClamp();
-
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic() override;
 
   void SetIntakeClampSpeed(double percentSpeed);
 
@@ -27,6 +25,13 @@ class IntakeClamp : public frc2::SubsystemBase {
   void EnableBraking(bool value);
 
   bool IsIntakeClampDeployed();
+
+  // Functions common to all subsystems.
+ public:
+  /**
+   * Will be called periodically whenever the CommandScheduler runs.
+   */
+  void Periodic() override;
 
  private:
 #ifdef ENABLE_CLAMP_MOTORS

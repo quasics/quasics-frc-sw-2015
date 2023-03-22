@@ -29,6 +29,9 @@ class FloorEjection : public frc2::SubsystemBase {
   bool FloorRetracted();
 
   void SetBrakingMode(bool brake);
+
+  // Functions common to all subsystems.
+ public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */

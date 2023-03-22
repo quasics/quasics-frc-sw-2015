@@ -10,18 +10,25 @@
 
 #include "Constants.h"
 
+/**
+ * TODO: Add comments describing the class as a whole.
+ */
+// CODE_REVIEW(ethan): This class should have a comment block (above) describing
+// what it is/does.
 class IntakeRoller : public frc2::SubsystemBase {
  public:
   IntakeRoller();
 
+  void SetRollerSpeed(double percentSpeed);
+
+  void Stop();
+
+  // Functions common to all subsystems.
+ public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   void Periodic() override;
-
-  void SetRollerSpeed(double percentSpeed);
-
-  void Stop();
 
  private:
 #ifdef ENABLE_ROLLER_INTAKE_MOTORS

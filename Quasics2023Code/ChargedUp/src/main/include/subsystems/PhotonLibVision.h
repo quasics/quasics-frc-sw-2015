@@ -15,25 +15,33 @@
 // MAKE SURE LIBRARY HAS THIS FILE INSTALLED
 // https://maven.photonvision.org/repository/internal/org/photonvision/PhotonLib-json/1.0/PhotonLib-json-1.0.json
 
+/**
+ * TODO: Add comments describing the class as a whole.
+ */
+// CODE_REVIEW(matthew): This class should have a comment block (above)
+// describing what it is/does.
 class PhotonLibVision : public frc2::SubsystemBase {
  public:
   PhotonLibVision();
-
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic() override;
 
   bool AprilTagTargetIdentified(int IDWantedTarget);
 
   std::optional<photonlib::PhotonTrackedTarget> GetIdentifiedAprilTarget(
       int IDWantedTarget);
+
   bool GetIdentifiedAprilTarget(int IDWantedTarget,
                                 photonlib::PhotonTrackedTarget& result);
 
   bool CalculateDistanceAndAngleToTarget(int idWantedTarget,
                                          units::meter_t& distance,
                                          units::degree_t& angle);
+
+  // Functions common to all subsystems.
+ public:
+  /**
+   * Will be called periodically whenever the CommandScheduler runs.
+   */
+  void Periodic() override;
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be

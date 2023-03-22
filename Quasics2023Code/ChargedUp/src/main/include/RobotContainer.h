@@ -16,6 +16,7 @@
 
 #include "ConfigSettings.h"
 #include "Constants.h"
+#include "TrajectoryCommandGenerator.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/FloorEjection.h"
 #include "subsystems/IntakeClamp.h"
@@ -55,6 +56,8 @@ class RobotContainer {
 
   frc2::SequentialCommandGroup *TESTCOMMAND();
 
+  frc2::SequentialCommandGroup *TestPathCommand();
+
  private:
   // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
@@ -71,6 +74,8 @@ class RobotContainer {
   PhotonLibVision m_photonLibVision;
   FloorEjection m_floorEjection;
   Lighting m_lighting;
+
+  TrajectoryCommandGenerator m_trajectoryGenerator;
 
   // Settings accessed across multiple commands
   ConfigSettings m_configSettings;

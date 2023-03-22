@@ -9,6 +9,7 @@
 #include <units/dimensionless.h>
 #include <units/length.h>
 #include <units/time.h>
+#include <units/voltage.h>
 
 #include "ConditionalCompileFlags.h"
 
@@ -103,6 +104,15 @@ const auto DropGamePiece = "Drop Game Piece";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
 const auto DropAndCharge = "Drop and Charge";
 }  // namespace AutonomousSelectedOperation
+
+namespace PathWeaverConstants {
+constexpr auto kS = 0.25829_V;
+constexpr auto kV = 4.5623 * (1_V * 1_s / 1_m);
+constexpr auto kA = 1.608 * (1_V * 1_s * 1_s / 1_m);
+constexpr double kP = 5.1527;
+constexpr double kI = 0;
+constexpr double kD = 0;
+}  // namespace PathWeaverConstants
 
 namespace SelfBalancingConstants {
 namespace PID {

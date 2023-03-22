@@ -54,7 +54,22 @@
 #define splitStickMovement
 
 RobotContainer::RobotContainer()
-    : m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
+    : m_trajectoryGenerator(
+          // Drive base being controlled
+          &m_drivebase,
+          // Drive profile data
+          {
+              PathWeaverConstants::kS,  // kS
+              PathWeaverConstants::kV,  // kV
+              PathWeaverConstants::kA   // kA
+          },
+          // PID configuration values
+          {
+              PathWeaverConstants::kP,  // kP
+              PathWeaverConstants::kI,  // kI
+              PathWeaverConstants::kD   // kD
+          }),
+      m_leftSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT},
       m_rightSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   // Initialize all of your commands and subsystems here
 
@@ -465,5 +480,16 @@ frc2::SequentialCommandGroup *RobotContainer::TESTCOMMAND() {
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));
   // Builds the command group object.
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup *RobotContainer::TestPathCommand() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      m_trajectoryGenerator.GenerateCommandFromPathWeaverFile(
+          "GTFODockB1.wpilib.json",
+          TrajectoryCommandGenerator::TelemetryHandling::
+              ResetTelemetryAtStart))));
+
   return new frc2::SequentialCommandGroup(std::move(commands));
 }

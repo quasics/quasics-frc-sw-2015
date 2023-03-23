@@ -147,6 +147,12 @@ void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Roll Adjusted Value:", GetRollImpl());
   frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
+
+  units::degree_t angle = GetYaw();
+  units::meter_t leftDistance = GetLeftDistance();
+  units::meter_t rightDistance = GetRightDistance();
+
+  m_odometry.Update(angle, leftDistance, rightDistance);
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

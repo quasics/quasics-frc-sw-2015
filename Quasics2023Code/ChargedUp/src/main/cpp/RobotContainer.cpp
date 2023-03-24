@@ -219,12 +219,11 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &shootPiece);
 
-  /*
-RunCommandWhileDriverButtonIsHeld(
-    OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
-RunCommandWhileDriverButtonIsHeld(
-    OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
-  */
+  RunCommandWhileDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
+  RunCommandWhileDriverButtonIsHeld(
+      OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
+
   /*RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);*/
   RunCommandWhenDriverButtonIsPressed(

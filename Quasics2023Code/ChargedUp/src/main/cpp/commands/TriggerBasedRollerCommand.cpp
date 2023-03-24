@@ -5,18 +5,29 @@
 #include "commands/TriggerBasedRollerCommand.h"
 
 TriggerBasedRollerCommand::TriggerBasedRollerCommand(
-    IntakeRoller* intakeRoller, frc::XboxController* xboxController)
-    : m_intakeRoller(intakeRoller), m_controller(xboxController) {
+    IntakeRoller* intakeRoller, ConfigSettings* settings,
+    frc::XboxController* xboxController)
+    : m_intakeRoller(intakeRoller),
+      m_settings(settings),
+      m_controller(xboxController) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_intakeRoller);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedRollerCommand::Execute() {
+  bool intakingCubes = m_settings->intakingCubes;
   if (IsLeftTriggerPressed()) {
-    m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::FORWARD);
+    if (intakingCubes) {
+      m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::CUBES);
+    } else {
+      m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::CONES);
+    }
   } else if (IsRightTriggerPressed()) {
-    m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::BACKWARD);
+    if (intakingCubes) {
+      m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CUBES);
+    }
+    m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CONES);
   } else {
     m_intakeRoller->Stop();
   }

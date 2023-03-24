@@ -137,8 +137,8 @@ RobotContainer::RobotContainer()
 #endif
 
 #ifdef ENABLE_ROLLER_INTAKE_MOTORS
-  TriggerBasedRollerCommand triggerBasedRollerCommand(&m_intakeRoller,
-                                                      &m_operatorController);
+  TriggerBasedRollerCommand triggerBasedRollerCommand(
+      &m_intakeRoller, &m_configSettings, &m_operatorController);
 
   m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
 #endif
@@ -194,8 +194,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   // static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   // static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
-  static RunIntakeCubeOrConeToggleCommand intakeWithRoller(&m_intakeRoller,
-                                                           &m_configSettings);
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.2);
   static MoveFloorEjection resetEjection(&m_floorEjection, -0.2);
   static ShootTheGamePiece shootPiece(&m_floorEjection, 45, 0.3);
@@ -206,7 +204,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
   // Rollers Controlled by Command TriggerBasedRollerCommand
-  // AFTER ROLLER TRANSFER TOGGLE BUTTON NEEDS TO BE FIXED LOOK INTO
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
                                      &retractIntake);
@@ -219,18 +216,13 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &shootPiece);
 
-  RunCommandWhileDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::LEFT_TRIGGER, &intakeWithRoller);
-  RunCommandWhileDriverButtonIsHeld(
-      OperatorInterface::LogitechGamePad::RIGHT_TRIGGER, &exhaustWithRoller);
-
-  /*RunCommandWhenDriverButtonIsPressed(
-      OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);*/
+  RunCommandWhenDriverButtonIsPressed(
+      OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
-  RunCommandWhenDriverButtonIsPressed(
+  /*RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::A_BUTTON,
-      &straightLineDriving);  // UNTESTED
+      &straightLineDriving);  UNTESTED*/
   RunCommandWhileDriverButtonIsHeld(
       OperatorInterface::LogitechGamePad::Y_BUTTON, &selfBalancing);
   RunCommandWhenDriverButtonIsPressed(

@@ -127,15 +127,16 @@ constexpr double kD = 0;
 
 namespace SelfBalancingConstants {
 namespace PID {
+  constexpr auto ks = 0;
   constexpr auto kP = 0.025;
   constexpr auto kI = 0.005;
   constexpr auto kD = 0;
 }  // namespace PID
 
 namespace FeedForward {
-  constexpr auto kS = PathWeaverConstants::kS;
-  constexpr auto kV = PathWeaverConstants::kV;
-  constexpr auto kA = PathWeaverConstants::kA;
+  constexpr auto kS = 0;
+  constexpr auto kV = 0;
+  constexpr auto kA = 0;  // leave at 0
 }  // namespace FeedForward
 }  // namespace SelfBalancingConstants
 
@@ -159,8 +160,8 @@ constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 
 namespace IntakeConstants {
 namespace RollerSpeeds {
-  constexpr double FORWARD = 0.85;
-  constexpr double BACKWARD = -0.85;
+  constexpr double CUBES = 0.50;
+  constexpr double CONES = 0.85;
 }  // namespace RollerSpeeds
 }  // namespace IntakeConstants
 
@@ -197,13 +198,11 @@ namespace SparkMax {
   constexpr int RIGHT_INTAKE_DEPLOYMENT_MOTOR_ID = 5;
   constexpr int LEFT_INTAKE_DEPLOYMENT_MOTOR_ID = 6;
 
-#ifdef ENABLE_CLAMP_MOTORS
+  // Constants for Intake option #1
   constexpr int INTAKE_MOTOR_CLAMP_ID = 7;
-#endif  // ENABLE_CLAMP_MOTORS
 
-#ifdef ENABLE_ROLLER_INTAKE_MOTORS
+  // Constants for Intake option #2
   constexpr int INTAKE_MOTOR_ROLLER_ID = 7;
-#endif  // ENABLE_ROLLER_INTAKE_MOTORS
 }  // namespace SparkMax
 
 namespace VictorSPX {

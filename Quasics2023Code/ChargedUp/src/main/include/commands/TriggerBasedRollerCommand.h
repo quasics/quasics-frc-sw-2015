@@ -8,6 +8,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "ConfigSettings.h"
 #include "subsystems/IntakeRoller.h"
 
 /**
@@ -26,6 +27,7 @@ class TriggerBasedRollerCommand
     : public frc2::CommandHelper<frc2::CommandBase, TriggerBasedRollerCommand> {
  public:
   TriggerBasedRollerCommand(IntakeRoller* intakeRoller,
+                            ConfigSettings* settings,
                             frc::XboxController* xboxController);
 
   void Execute() override;
@@ -45,5 +47,6 @@ class TriggerBasedRollerCommand
 
  private:
   IntakeRoller* const m_intakeRoller;
+  ConfigSettings* m_settings;
   frc::XboxController* const m_controller;
 };

@@ -7,6 +7,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "ConfigSettings.h"
 #include "subsystems/Lighting.h"
 
 /**
@@ -21,7 +22,7 @@
 class MatchPlayLighting
     : public frc2::CommandHelper<frc2::CommandBase, MatchPlayLighting> {
  public:
-  MatchPlayLighting(Lighting* lighting);
+  MatchPlayLighting(Lighting* lighting, ConfigSettings* configSettings);
 
   void Initialize() override;
 
@@ -32,5 +33,7 @@ class MatchPlayLighting
   bool IsFinished() override;
 
  private:
+  static frc::AddressableLED::LEDData colorFunction(int position);
   Lighting* m_lighting;
+  ConfigSettings* m_configSettings;
 };

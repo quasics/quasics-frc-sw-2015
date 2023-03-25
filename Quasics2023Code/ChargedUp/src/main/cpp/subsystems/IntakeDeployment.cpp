@@ -92,6 +92,10 @@ bool IntakeDeployment::IsIntakeDeployed(LimitSwitch limitSwitch) {
   return false;
 }
 
+/*bool IntakeDeployment::IsIntakeDeployed() {
+  return !m_leftExtendIntakeLimitSwitch.Get();
+}*/
+
 void IntakeDeployment::Periodic() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   frc::SmartDashboard::PutNumber("Roller Position",

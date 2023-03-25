@@ -44,6 +44,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
    */
   bool IsIntakeDeployed(LimitSwitch limitSwitch);
 
+  // bool IsIntakeDeployed();
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */

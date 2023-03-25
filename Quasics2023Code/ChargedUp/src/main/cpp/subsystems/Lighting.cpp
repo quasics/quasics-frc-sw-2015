@@ -30,13 +30,20 @@ const frc::AddressableLED::LEDData Lighting::PINK{255, 105, 180};
 Lighting::Lighting() {
   SetName("Lighting");
   m_led.SetLength(LightingValues::PIXEL_NUMBER);
-  SetAllToColor(0, 255, 0);
+  SetAllToColor(GREEN);
   m_led.Start();
 }
 
 void Lighting::SetAllToColor(int r, int g, int b) {
   for (int i = 0; i < LightingValues::PIXEL_NUMBER; i++) {
     m_ledBuffer[i].SetRGB(r, g, b);
+  }
+  m_led.SetData(m_ledBuffer);
+}
+
+void Lighting::SetAllToColor(const frc::AddressableLED::LEDData& color) {
+  for (int i = 0; i < LightingValues::PIXEL_NUMBER; i++) {
+    m_ledBuffer[i] = color;
   }
   m_led.SetData(m_ledBuffer);
 }

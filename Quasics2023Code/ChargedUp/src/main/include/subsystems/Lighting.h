@@ -33,6 +33,11 @@ class Lighting : public frc2::SubsystemBase {
    */
   void SetAllToColor(int r, int g, int b);
 
+  /**
+   * Sets the entire strip to the color specified by a LEDData value.
+   */
+  void SetAllToColor(const frc::AddressableLED::LEDData& color);
+
   void SetLightColors(
       std::function<frc::AddressableLED::LEDData(int)> colorFunction);
 

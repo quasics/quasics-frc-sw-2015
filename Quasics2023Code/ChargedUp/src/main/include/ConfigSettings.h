@@ -3,8 +3,12 @@
 
 enum class RequestedPayload { eNothing, eCubes, eCones };
 
+/** Structure used to hold data used across commands. */
 struct ConfigSettings {
+  /** Used to signal intake speed (based on target game piece type). */
   bool intakingCubes = true;
+
+  /** Used to signal human player what should be loaded. */
   RequestedPayload requestedPayload = RequestedPayload::eNothing;
 };
 

@@ -116,20 +116,35 @@ RobotContainer::RobotContainer()
       &m_drivebase,
       [this] {
         const double scalingFactor = GetDriveSpeedScalingFactor();
+        double powertoRobot;
 
-        double powertoRobot =
-            scalingFactor * 0.5 *
-            m_driverStick.GetRawAxis(
-                OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+        if (isInverted)
+          powertoRobot = (-1) * scalingFactor * 0.5 *
+                         m_driverStick.GetRawAxis(
+                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+
+        else
+          powertoRobot = scalingFactor * 0.5 *
+                         m_driverStick.GetRawAxis(
+                             OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+
         return m_leftSlewRateLimiter.Calculate(powertoRobot);
       },
       [this] {
         const double scalingFactor = GetDriveSpeedScalingFactor();
+        double rotationtoRobot;
 
-        double rotationtoRobot =
-            scalingFactor * 0.75 *
-            m_driverStick.GetRawAxis(
-                OperatorInterface::LogitechGamePad::RIGHT_X_AXIS);
+        if (isInverted)
+          rotationtoRobot =
+              (-1) * scalingFactor * 0.75 *
+              m_driverStick.GetRawAxis(
+                  OperatorInterface::LogitechGamePad::RIGHT_X_AXIS);
+
+        else
+          rotationtoRobot =
+              scalingFactor * 0.75 *
+              m_driverStick.GetRawAxis(
+                  OperatorInterface::LogitechGamePad::RIGHT_X_AXIS);
         return rotationtoRobot;
       }};
 

@@ -155,9 +155,9 @@ constexpr int PIDGEON_CAN_ID = 1;
 }
 
 namespace RobotSpeedScaling {
-constexpr double TURBO_MODE_SPEED_SCALING = 0.55;
-constexpr double NORMAL_MODE_SPEED_SCALING = 0.70;
-constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
+constexpr double TURBO_MODE_SPEED_SCALING = 1.00;
+constexpr double NORMAL_MODE_SPEED_SCALING = 0.80;
+constexpr double TURTLE_MODE_SPEED_SCALING = 0.50;
 }  // namespace RobotSpeedScaling
 
 namespace IntakeConstants {

@@ -119,12 +119,12 @@ RobotContainer::RobotContainer()
         double powertoRobot;
 
         if (isInverted)
-          powertoRobot = (-1) * scalingFactor * 0.5 *
+          powertoRobot = (-1) * scalingFactor *
                          m_driverStick.GetRawAxis(
                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
 
         else
-          powertoRobot = scalingFactor * 0.5 *
+          powertoRobot = scalingFactor *
                          m_driverStick.GetRawAxis(
                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
 

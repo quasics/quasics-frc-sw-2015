@@ -80,6 +80,7 @@ constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
 constexpr auto DROP_FLOOR_EJECTION_SPEED = 0.2;
 constexpr auto DROP_FLOOR_EJECTION_TIME = 0.2_s;
 constexpr auto INTAKE_EXTENSION_SPEED = 0.5;
+constexpr auto FLOOR_RETRACTION_SPEED = 0.5;
 }  // namespace AutonomousSpeeds
 
 namespace DigitalInput {

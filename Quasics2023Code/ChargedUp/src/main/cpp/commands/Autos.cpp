@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 #include "commands/PauseRobot.h"
+#include "commands/floor/AutoFloorRetract.h"
 #include "commands/floor/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/intake/AutoIntakeExtension.h"
 #include "commands/intake/ExhaustWithRoller.h"
@@ -33,6 +34,8 @@ namespace Helpers {
         std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
             floorEjection, AutonomousSpeeds::DROP_FLOOR_EJECTION_SPEED,
             AutonomousSpeeds::DROP_FLOOR_EJECTION_TIME)));
+    commands.push_back(std::unique_ptr<frc2::Command>(new AutoFloorRetract(
+        floorEjection, AutonomousSpeeds::FLOOR_RETRACTION_SPEED)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -42,6 +45,8 @@ namespace Helpers {
         std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
             floorEjection, AutonomousSpeeds::SCORE_FLOOR_EJECTION_SPEED,
             AutonomousSpeeds::SCORE_FLOOR_EJECTION_TIME)));
+    commands.push_back(std::unique_ptr<frc2::Command>(new AutoFloorRetract(
+        floorEjection, AutonomousSpeeds::FLOOR_RETRACTION_SPEED)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

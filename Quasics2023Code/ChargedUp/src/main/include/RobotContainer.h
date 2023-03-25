@@ -93,7 +93,6 @@ class RobotContainer {
   frc::SendableChooser<frc2::Command *> m_RobotSequenceAutonomousOptions;
 
   // Supporting tank drive-related stuff.
-  bool isInverted = true;
   frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter;
   frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter;
 };

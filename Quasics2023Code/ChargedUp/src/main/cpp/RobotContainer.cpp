@@ -82,7 +82,7 @@ RobotContainer::RobotContainer()
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double joystickValue;
 
-        if (isInverted) {
+        if (m_configSettings.switchDriveEngaged) {
           joystickValue = -1 * scalingFactor *
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -97,7 +97,7 @@ RobotContainer::RobotContainer()
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double joystickValue;
 
-        if (isInverted) {
+        if (m_configSettings.switchDriveEngaged) {
           joystickValue = -1 * scalingFactor *
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
@@ -119,7 +119,7 @@ RobotContainer::RobotContainer()
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double powertoRobot;
 
-        if (isInverted)
+        if (m_configSettings.switchDriveEngaged)
           powertoRobot = (-1) * scalingFactor *
                          m_driverStick.GetRawAxis(
                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -135,7 +135,7 @@ RobotContainer::RobotContainer()
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double rotationtoRobot;
 
-        if (isInverted)
+        if (m_configSettings.switchDriveEngaged)
           rotationtoRobot =
               (-1) * scalingFactor * 0.75 *
               m_driverStick.GetRawAxis(
@@ -172,7 +172,7 @@ RobotContainer::RobotContainer()
 }
 
 void RobotContainer::setInverted(bool invert) {
-  isInverted = invert;
+  m_configSettings.switchDriveEngaged = invert;
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
@@ -257,7 +257,10 @@ void RobotContainer::ConfigureControllerButtonBindings() {
       OperatorInterface::LogitechGamePad::Y_BUTTON, &selfBalancing);
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::BACK_BUTTON,
-      new frc2::InstantCommand([this]() { isInverted = !isInverted; }));
+      new frc2::InstantCommand([this]() {
+        m_configSettings.switchDriveEngaged =
+            !m_configSettings.switchDriveEngaged;
+      }));
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

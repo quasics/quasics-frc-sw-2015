@@ -6,6 +6,9 @@ enum class RequestedPayload { eNothing, eCubes, eCones };
 
 /** Structure used to hold data used across commands. */
 struct ConfigSettings {
+  /** Used to signal if "switch mode" is engaged for driving. */
+  bool switchDriveEngaged = true;
+
   /** Used to signal intake speed (based on target game piece type). */
   bool intakingCubes = true;
 

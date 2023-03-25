@@ -74,6 +74,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Push information to the dashboard, showing the configured robot.
+    SmartDashboard.putString("Robot", ROBOT_SETTINGS.robotName);
+
     //////////////////////////////////////
     // Drive base setup
 

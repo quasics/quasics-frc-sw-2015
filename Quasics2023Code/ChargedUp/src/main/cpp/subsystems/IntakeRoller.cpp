@@ -7,6 +7,8 @@
 #include <iostream>
 
 IntakeRoller::IntakeRoller() {
+  SetName("IntakeRoller");
+
 #ifdef ENABLE_ROLLER_INTAKE_MOTORS
   std::cerr << "Intake roller is enabled\n";
 #else

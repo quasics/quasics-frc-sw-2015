@@ -4,7 +4,9 @@
 
 #include "subsystems/PhotonLibVision.h"
 
-PhotonLibVision::PhotonLibVision() = default;
+PhotonLibVision::PhotonLibVision() {
+  SetName("PhotonLibVision");
+}
 
 // This method will be called once per scheduler run
 void PhotonLibVision::Periodic() {

@@ -9,6 +9,8 @@
 #include <iostream>
 
 IntakeDeployment::IntakeDeployment() {
+  SetName("IntakeDeployment");
+
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
   std::cerr << "Intake deployment is enabled\n";
 #else

@@ -8,7 +8,9 @@
 
 #include <iostream>
 
-FloorEjection::FloorEjection() = default;
+FloorEjection::FloorEjection() {
+  SetName("FloorEjection");
+}
 
 void FloorEjection::SetFloorEjectionPower(double power) {
   m_floorEjectionMotor.Set(

@@ -7,6 +7,8 @@
 #include <iostream>
 
 IntakeClamp::IntakeClamp() {
+  SetName("IntakeClamp");
+
 #ifdef ENABLE_CLAMP_MOTORS
   std::cerr << "Clamp motors are enabled\n";
 #else

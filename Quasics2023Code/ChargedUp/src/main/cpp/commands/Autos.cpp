@@ -400,11 +400,11 @@ namespace Helpers {
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     } else {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
+              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }

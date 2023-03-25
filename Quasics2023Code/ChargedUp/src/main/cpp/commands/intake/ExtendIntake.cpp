@@ -34,11 +34,11 @@ void ExtendIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool ExtendIntake::IsFinished() {
-  if (m_intakeDeployment->IsIntakeDeployed(
+  /*if (m_intakeDeployment->IsIntakeDeployed(
           IntakeDeployment::LimitSwitch::Extended)) {
     // Note: This can only happen if the intake limit switches are enabled.
     return true;
-  }
+  }*/
 
 #if defined(ENABLE_INTAKE_HARD_STOP_DETECTION)
 

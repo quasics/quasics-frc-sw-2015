@@ -33,4 +33,6 @@ class AutoIntakeExtension
  private:
   IntakeDeployment* m_intakeDeployment;
   double m_deploymentSpeed;
+  double counter = 0;
+  double counterReset = 0;
 };

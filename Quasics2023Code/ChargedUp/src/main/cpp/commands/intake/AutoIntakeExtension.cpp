@@ -4,6 +4,8 @@
 
 #include "commands/intake/AutoIntakeExtension.h"
 
+#include <iostream>
+
 AutoIntakeExtension::AutoIntakeExtension(IntakeDeployment* intakeDeployment,
                                          double deploymentSpeed)
     : m_intakeDeployment(intakeDeployment),
@@ -31,7 +33,17 @@ void AutoIntakeExtension::End(bool interrupted) {
 bool AutoIntakeExtension::IsFinished() {
   if (m_intakeDeployment->IsIntakeDeployed(
           IntakeDeployment::LimitSwitch::Extended)) {
-    return true;
+    std::cerr << "Intake Limit switch says it's pressed.\n";
+    counter++;
+    counterReset = 0;
+    if (counter > 5) {
+      return true;
+    }
   }
+  std::cerr << "Intake Limit switch says it's not pressed.\n";
+  if (counterReset > 1) {
+    counter = 0;
+  }
+  counterReset++;
   return false;
 }

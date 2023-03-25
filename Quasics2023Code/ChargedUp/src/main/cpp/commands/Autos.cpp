@@ -70,6 +70,7 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.3_s)));
     return new frc2::SequentialCommandGroup(std::move(commands));
+    // TODO: fix this so it actually picks up game pieces
   }
 
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName) {
@@ -452,6 +453,19 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  frc2::Command *ScoreTwiceThenChargeCommand(Drivebase *drivebase,
+                                             IntakeDeployment *intakeDeployment,
+                                             IntakeRoller *intakeRoller,
+                                             FloorEjection *floorEjection,
+                                             std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(ScoreThenEndNearGamePieceCommand(
+            drivebase, floorEjection, teamAndPosName)));
+    // TODO: finish this, didn't have time
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
 }  // namespace Helpers
 
 frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
@@ -486,13 +500,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName ==
              AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall) {
     return MoveToDefenseAgainstOuterWall(drivebase, teamAndPosName);
-  }
-  // CODE_REVIEW(matthew): Is this code still needed?  If so, it should be
-  // implemented; if not, it should be removed (after making sure that it's
-  // not left behind in the operation selector.)
-  // Temporary Placeholder if Ethan gets the ScoreandLeave autonomous command
-  // implemented tonight then this will be changed accordingly 3/7/23
-  else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
+  } else if (operationName == AutonomousSelectedOperation::ScoreAndLeave) {
     return ScoreAndLeave(drivebase, floorEjection, teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::
                                   ScoreAndMoveToDefenseAgainstScoringWall) {
@@ -557,6 +565,11 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
     return DropGamePieceThenChargeCommand(drivebase, intakeDeployment,
                                           intakeRoller, teamAndPosName);
+  } else if (operationName ==
+             AutonomousSelectedOperation::ScoreTwiceThenCharge) {
+    return ScoreTwiceThenChargeCommand(drivebase, intakeDeployment,
+                                       intakeRoller, floorEjection,
+                                       teamAndPosName);
   }
 
   static frc2::PrintCommand fallThroughCaseCommand(

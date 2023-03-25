@@ -453,7 +453,9 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
           {AutonomousSelectedOperation::ScoreThenEndNearGamePiece,
            "Score then End next to a Game Piece"},
           {AutonomousSelectedOperation::ScoreGTFOCharge,
-           "Score, GTFO then Charge"}};
+           "Score, GTFO then Charge"},
+          {AutonomousSelectedOperation::ScoreTwiceThenCharge,
+           "Score, get another piece and score that, then charge"}};
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
     AddNamedCommandToSelector(selector, name, text);

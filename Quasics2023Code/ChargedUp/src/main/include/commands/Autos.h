@@ -68,6 +68,12 @@ namespace Helpers {
   frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
                                      FloorEjection *floorEjection,
                                      std::string teamAndPosName);
+
+  frc2::Command *ScoreTwiceThenChargeCommand(Drivebase *drivebase,
+                                             IntakeDeployment *intakeDeployment,
+                                             IntakeRoller *intakeRoller,
+                                             FloorEjection *floorEjection,
+                                             std::string teamAndPosName);
 }  // namespace Helpers
 }  // namespace AutonomousCommands
 

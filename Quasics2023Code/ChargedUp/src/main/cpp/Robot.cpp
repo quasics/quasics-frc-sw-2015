@@ -20,6 +20,9 @@ void Robot::RobotInit() {
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+
+  // Do custom stuff (e.g., reporting) for Gladys periodically.
+  m_container.Periodic();
 }
 
 /**

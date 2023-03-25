@@ -61,6 +61,11 @@ class RobotContainer {
 
   frc2::SequentialCommandGroup *TestPathCommand();
 
+  // Note: this is different from the Periodic functions in the subsystems,
+  // which are called by the framework.  We're *making* this happen via custom
+  // code in Robot.cpp.
+  void Periodic();
+
  private:
   // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

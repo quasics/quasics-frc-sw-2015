@@ -17,6 +17,7 @@ public interface DriveBaseInterface {
   /** Returns a Gyro to be used in looking at the robot's heading. */
   public Gyro getYawGyro();
 
+  /** Returns the current yaw angle (in degrees). */
   public double getYawDegrees();
 
   /**

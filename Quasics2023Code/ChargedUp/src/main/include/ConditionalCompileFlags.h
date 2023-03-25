@@ -5,6 +5,12 @@
 #pragma once
 
 //
+// Debugging support
+//
+
+#define SHOW_SUBSYSTEMS_ON_DASHBOARD
+
+//
 // High-level control of functionality in subsystems.
 //
 

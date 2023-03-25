@@ -169,6 +169,12 @@ RobotContainer::RobotContainer()
   AddTestButtonsToSmartDashboard();
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotSequenceSelectorToSmartDashboard();
+
+#ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
+  frc::SmartDashboard::PutData(&m_drivebase);
+  frc::SmartDashboard::PutData(&m_intakeRoller);
+  frc::SmartDashboard::PutData(&m_floorEjection);
+#endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
 }
 
 void RobotContainer::setInverted(bool invert) {

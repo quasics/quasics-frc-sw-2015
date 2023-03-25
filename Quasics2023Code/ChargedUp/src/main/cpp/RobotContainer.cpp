@@ -16,10 +16,10 @@
 
 #include "Constants.h"
 #include "commands/Autos.h"
-#include "commands/ClampWithIntake.h"
-#include "commands/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/PauseRobot.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
+#include "commands/clamp/ClampWithIntake.h"
+#include "commands/clamp/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/examples/BlackAndWhiteLights.h"
 #include "commands/examples/SplitLightingExample.h"
 #include "commands/floor/AutoFloorRetract.h"

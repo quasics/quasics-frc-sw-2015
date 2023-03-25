@@ -9,8 +9,8 @@
 ExtendIntake::ExtendIntake(IntakeDeployment* IntakeDeployment, double speed)
     : m_intakeDeployment(IntakeDeployment), intakeSpeed(std::abs(speed)) {
   // Use addRequirements() here to declare subsystem dependencies.
-
   AddRequirements(m_intakeDeployment);
+  SetName("ExtendIntake");
 }
 
 // Called when the command is initially scheduled.

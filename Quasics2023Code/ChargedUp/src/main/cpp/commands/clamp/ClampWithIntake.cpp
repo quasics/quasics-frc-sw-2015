@@ -8,6 +8,7 @@ ClampWithIntake::ClampWithIntake(IntakeClamp* clamp, double power)
     : m_IntakeClamp(clamp), m_clampPower(std::abs(power)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_IntakeClamp);
+  SetName("ClampWithIntake");
 }
 
 // Called when the command is initially scheduled.

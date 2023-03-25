@@ -10,6 +10,7 @@ MoveFloorEjection::MoveFloorEjection(FloorEjection* floorEjection, double power)
     : m_floorEjection(floorEjection), m_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(floorEjection);
+  SetName("MoveFloorEjection");
 }
 
 // Called when the command is initially scheduled.

@@ -12,6 +12,7 @@ AutoFloorRetract::AutoFloorRetract(FloorEjection* floorEjection,
       m_retractionSpeed(-std::abs(retractionSpeed)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(floorEjection);
+  SetName("AutoFloorRetract");
 }
 
 // Called when the command is initially scheduled.

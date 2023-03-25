@@ -9,6 +9,7 @@ SplitLightingExample::SplitLightingExample(
     frc::AddressableLED::LEDData rearColor)
     : m_lighting(lighting), m_frontColor(frontColor), m_rearColor(rearColor) {
   AddRequirements(m_lighting);
+  SetName("SplitLightingExample");
 }
 
 // This is a "normal" member function, which means that it must be called via an

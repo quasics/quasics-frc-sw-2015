@@ -9,6 +9,7 @@ MoveFloorEjectionAtPowerForTime::MoveFloorEjectionAtPowerForTime(
     : m_floorEjection(floorEjection), m_power(power), m_time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(floorEjection);
+  SetName("MoveFloorEjectionAtPowerForTime");
 }
 
 // Called when the command is initially scheduled.

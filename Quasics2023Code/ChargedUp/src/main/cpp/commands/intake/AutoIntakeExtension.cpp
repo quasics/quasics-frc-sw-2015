@@ -12,6 +12,7 @@ AutoIntakeExtension::AutoIntakeExtension(IntakeDeployment* intakeDeployment,
       m_deploymentSpeed(std::abs(deploymentSpeed)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intakeDeployment);
+  SetName("AutoIntakeExtension");
 }
 
 // Called when the command is initially scheduled.

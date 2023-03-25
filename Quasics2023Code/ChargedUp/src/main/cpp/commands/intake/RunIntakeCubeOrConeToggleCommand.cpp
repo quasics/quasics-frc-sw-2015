@@ -10,6 +10,7 @@ RunIntakeCubeOrConeToggleCommand::RunIntakeCubeOrConeToggleCommand(
     : m_intakeRoller(intakeRoller), m_settings(settings) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intakeRoller);
+  SetName("RunIntakeCubeOrConeToggleCommand");
 }
 
 // Called when the command is initially scheduled.

@@ -4,9 +4,10 @@
 
 #include "commands/examples/BlackAndWhiteLights.h"
 
-BlackAndWhiteLights::BlackAndWhiteLights(Lighting* lighting) {
-  m_lighting = lighting;
+BlackAndWhiteLights::BlackAndWhiteLights(Lighting* lighting)
+    : m_lighting(lighting) {
   AddRequirements(m_lighting);
+  SetName("BlackAndWhiteLights");
 }
 
 // This is a "static" member function, which means that it doesn't get called

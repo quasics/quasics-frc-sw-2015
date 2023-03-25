@@ -9,6 +9,7 @@ ShootTheGamePiece::ShootTheGamePiece(FloorEjection* floorEjection, double angle,
     : m_floorEjection(floorEjection), m_angle(angle), m_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(floorEjection);
+  SetName("ShootTheGamePiece");
 }
 
 // Called when the command is initially scheduled.

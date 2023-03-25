@@ -9,6 +9,7 @@
 RetractIntake::RetractIntake(IntakeDeployment* intake, double speed)
     : m_intakeDeployment(intake), intakeSpeed(-std::abs(speed)) {
   AddRequirements(m_intakeDeployment);
+  SetName("RetractIntake");
 }
 
 // Called when the command is initially scheduled.

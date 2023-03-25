@@ -8,6 +8,7 @@ ExhaustWithRoller::ExhaustWithRoller(IntakeRoller* intakeRoller, double power)
     : m_intakeRoller(intakeRoller), m_power(-std::abs(power)) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intakeRoller);
+  SetName("ExhaustWithRoller");
 }
 
 // Called when the command is initially scheduled.

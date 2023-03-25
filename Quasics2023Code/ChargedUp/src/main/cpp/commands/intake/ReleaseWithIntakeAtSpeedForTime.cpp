@@ -8,8 +8,8 @@ ReleaseWithIntakeAtSpeedForTime::ReleaseWithIntakeAtSpeedForTime(
     IntakeClamp* clamp, double power, units::second_t time)
     : m_IntakeClamp(clamp), m_clampPower(-std::abs(power)), m_time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
-
   AddRequirements(m_IntakeClamp);
+  SetName("ReleaseWithIntakeAtSpeedForTime");
 }
 
 // Called when the command is initially scheduled.

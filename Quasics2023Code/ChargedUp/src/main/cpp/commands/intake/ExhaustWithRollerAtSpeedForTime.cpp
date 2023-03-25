@@ -8,8 +8,8 @@ ExhaustWithRollerAtSpeedForTime::ExhaustWithRollerAtSpeedForTime(
     IntakeRoller* IntakeRoller, double power, units::second_t time)
     : m_intakeRoller(IntakeRoller), m_power(-std::abs(power)), m_time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
-
   AddRequirements(m_intakeRoller);
+  SetName("ExhaustWithRollerAtSpeedForTime");
 }
 
 // Called when the command is initially scheduled.

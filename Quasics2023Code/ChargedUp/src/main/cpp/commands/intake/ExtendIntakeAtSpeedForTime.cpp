@@ -11,6 +11,7 @@ ExtendIntakeAtSpeedForTime::ExtendIntakeAtSpeedForTime(
       m_time(time) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_intakeDeployment);
+  SetName("ExtendIntakeAtSpeedForTime");
 }
 // Called when the command is initially scheduled.
 void ExtendIntakeAtSpeedForTime::Initialize() {

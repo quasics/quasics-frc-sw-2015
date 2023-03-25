@@ -33,7 +33,15 @@ class MatchPlayLighting
   bool IsFinished() override;
 
  private:
-  static frc::AddressableLED::LEDData colorFunction(int position);
+  frc::AddressableLED::LEDData GetComplexColorFunction(
+      frc::AddressableLED::LEDData allianceColor,
+      RequestedPayload requestedPayload, int pos);
+
+ private:
+  static frc::AddressableLED::LEDData SimpleColorFunction(int position);
+
+  // Data members
+ private:
   Lighting* m_lighting;
   ConfigSettings* m_configSettings;
 };

@@ -13,6 +13,7 @@ SetLightsToColor::SetLightsToColor(Lighting* lighting, int r, int g, int b) {
   m_lighting = lighting;
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_lighting);
+  SetName("SetLightsToColor");
 }
 
 // Called repeatedly when this Command is scheduled to run

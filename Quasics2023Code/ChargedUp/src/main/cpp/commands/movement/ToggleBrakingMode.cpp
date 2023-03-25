@@ -9,6 +9,7 @@ ToggleBrakingMode::ToggleBrakingMode(Drivebase* drivebase)
   // Use addRequirements() here to declare subsystem dependencies.
   // NOTE WE ARE KNOWINGLY NOT ADDING REQUIREMENTS HERE THIS IS SO WE CAN CHANGE
   // THE BRAKING MODE WITHOUT STOPPING TO DRIVE
+  SetName("ToggleBrakingMode");
 }
 
 // Called when the command is initially scheduled.

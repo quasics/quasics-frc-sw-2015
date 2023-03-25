@@ -14,6 +14,7 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase,
     : m_drivebase(drivebase), m_driverStick(driverStick) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
+  SetName("StraightLineDriving");
 }
 
 // Called when the command is initially scheduled.

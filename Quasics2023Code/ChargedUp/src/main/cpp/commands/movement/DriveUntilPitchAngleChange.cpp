@@ -12,6 +12,7 @@ DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
                                                   : std::abs(power)),
       m_distance(std::abs(distance.value())) {
   AddRequirements(drivebase);
+  SetName("DriveUntilPitchAngleChange");
 }
 
 // Called when the command is initially scheduled.

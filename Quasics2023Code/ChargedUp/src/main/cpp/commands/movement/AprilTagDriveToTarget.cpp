@@ -13,6 +13,7 @@ AprilTagDriveToTarget::AprilTagDriveToTarget(PhotonLibVision* photonLibVision,
   // Use addRequirements() here to declare subsystem dependencies.
 
   AddRequirements({photonLibVision, drivebase});
+  SetName("AprilTagDriveToTarget");
 }
 
 // Called when the command is initially scheduled.

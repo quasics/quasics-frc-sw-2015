@@ -9,6 +9,7 @@
 #define CURRENT_TURN_VERSION
 #undef FASTER_SLOW_DOWN
 #undef NO_SLOW_DOWN
+
 TurnDegreesImported::TurnDegreesImported(Drivebase* drivebase, double speed,
                                          units::degree_t angle)
     : m_drivebase(drivebase),
@@ -16,6 +17,7 @@ TurnDegreesImported::TurnDegreesImported(Drivebase* drivebase, double speed,
       m_angle(angle) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_drivebase);
+  SetName("TurnDegreesImported");
 }
 
 // Called when the command is initially scheduled.

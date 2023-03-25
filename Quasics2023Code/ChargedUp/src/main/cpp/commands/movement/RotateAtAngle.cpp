@@ -14,6 +14,7 @@ RotateAtAngle::RotateAtAngle(Drivebase* drivebase, double percentSpeed,
       m_percentSpeed(percentSpeed),
       m_angle((angle > 0_deg) ? (angle - 3_deg) : (angle + 3_deg)) {
   AddRequirements(m_drivebase);
+  SetName("RotateAtAngle");
 }
 
 // Called when the command is initially scheduled.

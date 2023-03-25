@@ -12,6 +12,7 @@ TriggerBasedRollerCommand::TriggerBasedRollerCommand(
       m_controller(xboxController) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_intakeRoller);
+  SetName("TriggerBasedRollerCommand");
 }
 
 // Called repeatedly when this Command is scheduled to run

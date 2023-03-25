@@ -11,6 +11,7 @@ TankDrive::TankDrive(Drivebase* drivebase,
       m_leftSpeedFunction(leftSpeedFunction),
       m_rightSpeedFunction(rightSpeedFunction) {
   AddRequirements(drivebase);
+  SetName("TankDrive");
 }
 
 // Called when the command is initially scheduled.

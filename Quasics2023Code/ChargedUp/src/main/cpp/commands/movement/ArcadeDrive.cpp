@@ -12,6 +12,7 @@ ArcadeDrive::ArcadeDrive(Drivebase* drivebase,
       m_turnFunction(turnFunction) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(drivebase);
+  SetName("ArcadeDrive");
 }
 
 // Called when the command is initially scheduled.

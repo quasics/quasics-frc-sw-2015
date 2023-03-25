@@ -10,6 +10,7 @@ SetAllianceColor::SetAllianceColor(Lighting* lighting) {
   m_lighting = lighting;
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_lighting);
+  SetName("SetAllianceColor");
 }
 
 // Called when the command is initially scheduled.

@@ -8,6 +8,7 @@
 
 SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase) {
   AddRequirements(drivebase);
+  SetName("SelfBalancing");
 }
 
 // Called when the command is initially scheduled.

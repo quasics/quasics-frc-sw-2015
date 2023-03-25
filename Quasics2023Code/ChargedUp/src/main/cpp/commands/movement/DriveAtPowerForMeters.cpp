@@ -21,6 +21,7 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
     }
   }
   AddRequirements(drivebase);
+  SetName("DriveAtPowerForMeters");
 }
 
 // Called when the command is initially scheduled.

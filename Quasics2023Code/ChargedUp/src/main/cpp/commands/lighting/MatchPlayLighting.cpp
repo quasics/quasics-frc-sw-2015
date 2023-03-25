@@ -11,6 +11,7 @@ MatchPlayLighting::MatchPlayLighting(Lighting* lighting,
   m_lighting = lighting;
   m_configSettings = configSettings;
   AddRequirements(m_lighting);
+  SetName("MatchPlayLighting");
 }
 
 // This is a "normal" member function, which means that it must be called via an

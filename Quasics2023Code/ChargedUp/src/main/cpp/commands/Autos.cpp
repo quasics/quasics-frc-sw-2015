@@ -1,6 +1,7 @@
 #include "commands/Autos.h"
 
 #include <frc2/command/ConditionalCommand.h>
+#include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/PrintCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
@@ -10,6 +11,7 @@
 #include "Constants.h"
 #include "commands/DriveAtPowerForMeters.h"
 #include "commands/DriveUntilPitchAngleChange.h"
+#include "commands/ExhaustWithRoller.h"
 #include "commands/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
@@ -63,14 +65,26 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  frc2::ParallelRaceGroup *MoveAndIntake(Drivebase *drivebase,
+                                         IntakeRoller *intakeRoller) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+        drivebase, AutonomousSpeeds::DRIVE_SPEED, 0.5_m)));
+    commands.push_back(std::unique_ptr<frc2::Command>(new ExhaustWithRoller(
+        intakeRoller, IntakeConstants::RollerSpeeds::CUBES)));
+
+    return new frc2::ParallelRaceGroup(std::move(commands));
+  }
+
   frc2::Command *GamePiecePickupHelperCommand(
       Drivebase *drivebase, IntakeRoller *intakeRoller,
       IntakeDeployment *intakeDeployment) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
         new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.3_s)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase, intakeRoller)));
     return new frc2::SequentialCommandGroup(std::move(commands));
-    // TODO: fix this so it actually picks up game pieces
   }
 
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName) {
@@ -462,7 +476,25 @@ namespace Helpers {
     commands.push_back(
         std::unique_ptr<frc2::Command>(ScoreThenEndNearGamePieceCommand(
             drivebase, floorEjection, teamAndPosName)));
-    // TODO: finish this, didn't have time
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(GamePiecePickupHelperCommand(
+            drivebase, intakeRoller, intakeDeployment)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new TurnDegreesImported(drivebase, 0.5, 180_deg)));
+    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m)));
+    } else {
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+    }
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        FlipperScoreGamePieceHelperCommand(floorEjection)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

@@ -11,6 +11,7 @@
 #include "Constants.h"
 #include "commands/PauseRobot.h"
 #include "commands/floor/MoveFloorEjectionAtPowerForTime.h"
+#include "commands/intake/AutoIntakeExtension.h"
 #include "commands/intake/ExhaustWithRoller.h"
 #include "commands/intake/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/intake/ExtendIntakeAtSpeedForTime.h"
@@ -26,42 +27,21 @@ namespace Helpers {
   //
   // Implementation of all of the helper functions
   //
-  frc2::Command *DropGamePieceHelperCommand(IntakeDeployment *intakeDeployment,
-                                            IntakeRoller *intakeRoller) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExhaustWithRollerAtSpeedForTime(intakeRoller, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-    return new frc2::SequentialCommandGroup(std::move(commands));
-  }
-
-  frc2::Command *ClampScoreGamePieceHelperCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-        drivebase, AutonomousSpeeds::DRIVE_SPEED, 0.3_m)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExhaustWithRollerAtSpeedForTime(intakeRoller, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.3_m)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.5_s)));
-    return new frc2::SequentialCommandGroup(std::move(commands));
-  }
-
-  frc2::Command *FlipperScoreGamePieceHelperCommand(
-      FloorEjection *floorEjection) {
+  frc2::Command *DropGamePieceHelperCommand(FloorEjection *floorEjection) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(
         std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
-            floorEjection, AutonomousSpeeds::FLOOR_EJECTION_SPEED,
-            AutonomousSpeeds::FLOOR_EJECTION_TIME)));
+            floorEjection, AutonomousSpeeds::DROP_FLOOR_EJECTION_SPEED,
+            AutonomousSpeeds::DROP_FLOOR_EJECTION_TIME)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *ScoreGamePieceHelperCommand(FloorEjection *floorEjection) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
+            floorEjection, AutonomousSpeeds::SCORE_FLOOR_EJECTION_SPEED,
+            AutonomousSpeeds::SCORE_FLOOR_EJECTION_TIME)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -76,12 +56,9 @@ namespace Helpers {
     return new frc2::ParallelRaceGroup(std::move(commands));
   }
 
-  frc2::Command *GamePiecePickupHelperCommand(
-      Drivebase *drivebase, IntakeRoller *intakeRoller,
-      IntakeDeployment *intakeDeployment) {
+  frc2::Command *GamePiecePickupHelperCommand(Drivebase *drivebase,
+                                              IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new ExtendIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.3_s)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase, intakeRoller)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -317,7 +294,7 @@ namespace Helpers {
                                std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(
@@ -375,7 +352,7 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 #ifdef USING_ROLLER_FOR_AUTO_INTAKE
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     std::cerr << "Using roller for auto intake.\n";
 #elif defined(USING_CLAMP_FOR_AUTO_INTAKE)
     commands.push_back(std::unique_ptr<frc2::Command>(
@@ -409,7 +386,7 @@ namespace Helpers {
                                                   std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.1_s));
@@ -431,7 +408,7 @@ namespace Helpers {
                                               std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(
@@ -445,12 +422,12 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::Command *DropGamePieceThenChargeCommand(
-      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      IntakeRoller *intakeRoller, std::string teamAndPosName) {
+  frc2::Command *DropGamePieceThenChargeCommand(Drivebase *drivebase,
+                                                FloorEjection *floorEjection,
+                                                std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+        DropGamePieceHelperCommand(floorEjection)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(JustCharge(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -461,7 +438,7 @@ namespace Helpers {
                                      std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -476,9 +453,8 @@ namespace Helpers {
     commands.push_back(
         std::unique_ptr<frc2::Command>(ScoreThenEndNearGamePieceCommand(
             drivebase, floorEjection, teamAndPosName)));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(GamePiecePickupHelperCommand(
-            drivebase, intakeRoller, intakeDeployment)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        GamePiecePickupHelperCommand(drivebase, intakeRoller)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -492,7 +468,7 @@ namespace Helpers {
               drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(JustCharge(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -539,7 +515,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstScoringWall(drivebase, teamAndPosName)));
 
@@ -550,7 +526,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FlipperScoreGamePieceHelperCommand(floorEjection)));
+        ScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstOuterWall(drivebase, teamAndPosName)));
 
@@ -561,7 +537,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+        DropGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstScoringWall(drivebase, teamAndPosName)));
 
@@ -572,14 +548,14 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(std::unique_ptr<frc2::Command>(
-        DropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+        DropGamePieceHelperCommand(floorEjection)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveToDefenseAgainstOuterWall(drivebase, teamAndPosName)));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
 
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
-    return FlipperScoreGamePieceHelperCommand(floorEjection);
+    return ScoreGamePieceHelperCommand(floorEjection);
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(drivebase, teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
@@ -590,13 +566,13 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     return ScoreThenEndNearGamePieceCommand(drivebase, floorEjection,
                                             teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
-    return DropGamePieceHelperCommand(intakeDeployment, intakeRoller);
+    return DropGamePieceHelperCommand(floorEjection);
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
     return DropGamePieceThenGTFOCommand(drivebase, floorEjection,
                                         teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
-    return DropGamePieceThenChargeCommand(drivebase, intakeDeployment,
-                                          intakeRoller, teamAndPosName);
+    return DropGamePieceThenChargeCommand(drivebase, floorEjection,
+                                          teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::ScoreTwiceThenCharge) {
     return ScoreTwiceThenChargeCommand(drivebase, intakeDeployment,

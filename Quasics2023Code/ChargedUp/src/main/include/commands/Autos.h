@@ -27,7 +27,7 @@ namespace Helpers {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller);
 
-  frc2::Command *FlipperScoreGamePieceHelperCommand(
+  frc2::Command *ScoreGamePieceHelperCommand(
       FloorEjection *floorEjection);
 
   frc2::Command *GamePiecePickupHelperCommand(

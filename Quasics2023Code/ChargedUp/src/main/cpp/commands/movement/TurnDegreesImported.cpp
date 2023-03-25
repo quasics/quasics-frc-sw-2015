@@ -45,7 +45,7 @@ void TurnDegreesImported::Execute() {
   units::degree_t currentPosition = m_drivebase->GetYaw();
   if (turningleft) {
     if (currentPosition > ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.30)) {
+        (m_speed * multiplier > 0.45)) {
 #ifdef FASTER_SLOW_DOWN
       multiplier = multiplier * 0.90;
 #endif
@@ -54,7 +54,7 @@ void TurnDegreesImported::Execute() {
     m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
   } else {
     if (currentPosition < ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.30)) {
+        (m_speed * multiplier > 0.45)) {
 #ifdef FASTER_SLOW_DOWN
       multiplier = multiplier * 0.90;
 #endif

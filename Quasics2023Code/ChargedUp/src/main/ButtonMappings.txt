@@ -21,12 +21,12 @@ Operator controller (Xbox)
 * View button - 
 * Xbox button - 
 * Menu button - 
-* Right bumper - Reset ejection (while held) TODO WHEN LIMIT SWITCH CLICKED STOP THING
+* Right bumper - Reset ejection (when pressed) TODO WHEN LIMIT SWITCH CLICKED STOP THING
 * Left bumper - Eject piece (while held) 
 * Left trigger - Intake roller (while held)
 * Right trigger - Intake exhaust (while held)
 * X button - Toggle cube vs. cone (when pressed)
 * Y button - Retract intake (while held)
 * A button - Extend intake (while held)
-* B button - TODO ADD SHOOTING 
+* B button - Shoot the Cube
 * D-pad - 

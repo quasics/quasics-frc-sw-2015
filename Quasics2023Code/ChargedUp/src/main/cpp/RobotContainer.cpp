@@ -216,10 +216,12 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   // static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   // static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
-  static MoveFloorEjection ejectPiece(&m_floorEjection, 0.2);
-  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.5);
-  static ShootTheGamePiece shootPiece(&m_floorEjection, 45,
-                                      0.3);  // Not Working Yet
+  static MoveFloorEjection moveFloor(&m_floorEjection, 0.2);
+  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
+  // static ShootTheGamePiece shootPiece(&m_floorEjection, 45,0.3);  // Not
+  // Working Yet
+  static MoveFloorEjectionAtPowerForTime shootPiece(&m_floorEjection, 0.45,
+                                                    0.25_s);
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
@@ -234,11 +236,11 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
-                                     &ejectPiece);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
-                                     &resetFloorEjection);
-  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &shootPiece);*/
+                                     &moveFloor);
+  RunCommandWhenOperatorButtonIsPressed(
+      frc::XboxController::Button::kRightBumper, &resetFloorEjection);
+  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kB,
+                                        &shootPiece);
 
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
@@ -337,9 +339,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData(
         "Shoot 90 for 0.1",
         new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.9, 0.1_s));*/
-  frc::SmartDashboard::PutData(
-      "Shoot 40 for 0.1",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.4, 0.1_s));
+  frc::SmartDashboard::PutData("YEET", new MoveFloorEjectionAtPowerForTime(
+                                           &m_floorEjection, 1.00, 0.2_s));
   frc::SmartDashboard::PutData(
       "Shoot 50 for 0.1",
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.1_s));

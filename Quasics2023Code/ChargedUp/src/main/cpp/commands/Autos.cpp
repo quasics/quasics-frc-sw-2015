@@ -56,10 +56,10 @@ namespace Helpers {
   frc2::Command *FlipperScoreGamePieceHelperCommand(
       FloorEjection *floorEjection) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new MoveFloorEjectionAtPowerForTime(floorEjection, 0.5, 0.3_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new MoveFloorEjectionAtPowerForTime(floorEjection, 0.3, 0.5_s)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
+            floorEjection, AutonomousSpeeds::FLOOR_EJECTION_SPEED,
+            AutonomousSpeeds::FLOOR_EJECTION_TIME)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

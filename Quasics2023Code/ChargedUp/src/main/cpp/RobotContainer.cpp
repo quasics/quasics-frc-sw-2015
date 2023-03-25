@@ -40,7 +40,6 @@
 #include "commands/RunIntakeCubeOrConeToggleCommand.h"
 #include "commands/SelfBalancing.h"
 #include "commands/SetCubeOrConeIntakeSpeed.h"
-#include "commands/SetLightsToColor.h"
 #include "commands/ShootTheGamePiece.h"
 #include "commands/StraightLineDriving.h"
 #include "commands/TankDrive.h"
@@ -49,6 +48,7 @@
 #include "commands/TurnDegreesImported.h"
 #include "commands/examples/BlackAndWhiteLights.h"
 #include "commands/examples/SplitLightingExample.h"
+#include "commands/lighting/SetLightsToColor.h"
 
 #undef NormalDriving
 #define splitStickMovement

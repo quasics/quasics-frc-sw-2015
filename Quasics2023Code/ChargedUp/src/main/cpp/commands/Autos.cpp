@@ -485,7 +485,7 @@ namespace Helpers {
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m)));
+              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
     } else {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
@@ -494,7 +494,7 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         FlipperScoreGamePieceHelperCommand(floorEjection)));
     commands.push_back(
-        std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
+        std::unique_ptr<frc2::Command>(JustCharge(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

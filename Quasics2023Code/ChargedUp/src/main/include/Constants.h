@@ -75,8 +75,8 @@ constexpr auto Red3 = "Red 3";
 
 namespace AutonomousSpeeds {
 constexpr auto DRIVE_SPEED = 0.5;
-constexpr auto FLOOR_EJECTION_SPEED = 0.35;
-constexpr auto FLOOR_EJECTION_TIME = 0.25_s;
+constexpr auto FLOOR_EJECTION_SPEED = 0.45;
+constexpr auto FLOOR_EJECTION_TIME = 0.3_s;
 }  // namespace AutonomousSpeeds
 
 namespace DigitalInput {

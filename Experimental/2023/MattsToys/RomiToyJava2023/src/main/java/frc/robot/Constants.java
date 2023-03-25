@@ -29,7 +29,7 @@ public final class Constants {
     public static final double MAX_SPEED_OVERDRIVE = 1.0;
 
     /** Max speed overall */
-    public static final double ABSOLUTE_LIMIT = MAX_SPEED_TURBO;
+    public static final double ABSOLUTE_LIMIT = MAX_SPEED_OVERDRIVE;
 
     /** Maximum acceleration, in (absolute) units per second. */
     public static final double MAX_SLEW_RATE = 2.0;

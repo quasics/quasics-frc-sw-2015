@@ -116,6 +116,6 @@ public final class Constants {
   }
 
   public static class DebugSettings {
-    public static final boolean KickerPlateDebugEnabled = true;
+    public static final boolean KickerPlateDebugEnabled = false;
   }
 }

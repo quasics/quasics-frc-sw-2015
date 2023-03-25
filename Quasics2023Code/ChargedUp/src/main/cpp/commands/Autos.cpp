@@ -9,12 +9,12 @@
 #include <string>
 
 #include "Constants.h"
-#include "commands/ExhaustWithRoller.h"
-#include "commands/ExhaustWithRollerAtSpeedForTime.h"
-#include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/PauseRobot.h"
-#include "commands/RetractIntakeAtSpeedForTime.h"
+#include "commands/intake/ExhaustWithRoller.h"
+#include "commands/intake/ExhaustWithRollerAtSpeedForTime.h"
+#include "commands/intake/ExtendIntakeAtSpeedForTime.h"
+#include "commands/intake/RetractIntakeAtSpeedForTime.h"
 #include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/RotateAtAngle.h"

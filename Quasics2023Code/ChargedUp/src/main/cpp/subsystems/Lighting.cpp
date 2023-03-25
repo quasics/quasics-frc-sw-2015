@@ -28,6 +28,7 @@ const frc::AddressableLED::LEDData Lighting::PURPLE{191, 64, 191};
 const frc::AddressableLED::LEDData Lighting::PINK{255, 105, 180};
 
 Lighting::Lighting() {
+  SetName("Lighting");
   m_led.SetLength(LightingValues::PIXEL_NUMBER);
   SetAllToColor(0, 255, 0);
   m_led.Start();

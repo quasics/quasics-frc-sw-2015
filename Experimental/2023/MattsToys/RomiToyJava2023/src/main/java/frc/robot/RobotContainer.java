@@ -152,9 +152,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this to pass the teleop command to the main {@link Robot} class.
+   * Sets up a simple ArcadeDrive command.
    *
-   * @return the command to run in teleop
+   * @return a simple arcade drive command, bound fully to the left joystick
    */
   public Command getArcadeDriveCommand() {
     return new ArcadeDrive(
@@ -191,7 +191,7 @@ public class RobotContainer {
   /**
    * Generates a command for running "split arcade drive", where the left stick
    * controls forward/backward speed, and the right stick controls rotational
-   * speed.
+   * speed. This will also apply speed caps, deadbands, etc.
    */
   public Command getSplitArcadeDriveCommand() {
     // Build the overall chain used to translate driver inputs into motor %ages.

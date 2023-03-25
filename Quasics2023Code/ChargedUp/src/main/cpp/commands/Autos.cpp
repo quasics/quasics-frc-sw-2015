@@ -9,17 +9,17 @@
 #include <string>
 
 #include "Constants.h"
-#include "commands/DriveAtPowerForMeters.h"
-#include "commands/DriveUntilPitchAngleChange.h"
 #include "commands/ExhaustWithRoller.h"
 #include "commands/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/ExtendIntakeAtSpeedForTime.h"
 #include "commands/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/PauseRobot.h"
 #include "commands/RetractIntakeAtSpeedForTime.h"
-#include "commands/RotateAtAngle.h"
-#include "commands/SelfBalancing.h"
-#include "commands/TurnDegreesImported.h"
+#include "commands/movement/DriveAtPowerForMeters.h"
+#include "commands/movement/DriveUntilPitchAngleChange.h"
+#include "commands/movement/RotateAtAngle.h"
+#include "commands/movement/SelfBalancing.h"
+#include "commands/movement/TurnDegreesImported.h"
 
 namespace AutonomousCommands {
 namespace Helpers {

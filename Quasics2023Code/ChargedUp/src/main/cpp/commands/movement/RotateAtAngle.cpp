@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "commands/RotateAtAngle.h"
+#include "commands/movement/RotateAtAngle.h"
 
 #include <units/angle.h>
 

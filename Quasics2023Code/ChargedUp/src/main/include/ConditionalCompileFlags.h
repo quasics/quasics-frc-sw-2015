@@ -8,6 +8,8 @@
 // High-level control of functionality in subsystems.
 //
 
+#undef ENABLE_MATCH_PLAY_LIGHTING
+
 // Controlling which gyro is enabled for the robot.
 #undef ENABLE_AD_GYRO
 #define ENABLE_PIGEON

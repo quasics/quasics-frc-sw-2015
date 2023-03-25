@@ -38,6 +38,7 @@
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
 #include "commands/intake/RunIntakeCubeOrConeToggleCommand.h"
 #include "commands/intake/TriggerBasedRollerCommand.h"
+#include "commands/lighting/MatchPlayLighting.h"
 #include "commands/lighting/SetLightsToColor.h"
 #include "commands/movement/AprilTagDriveToTarget.h"
 #include "commands/movement/ArcadeDrive.h"
@@ -157,6 +158,11 @@ RobotContainer::RobotContainer()
 
   m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
 #endif
+
+#ifdef ENABLE_MATCH_PLAY_LIGHTING
+  MatchPlayLighting matchPlayLighting(&m_lighting, &m_configSettings);
+  m_lighting.SetDefaultCommand(matchPlayLighting);
+#endif  // ENABLE_MATCH_PLAY_LIGHTING
 
   // Configure the button bindings
   ConfigureControllerButtonBindings();

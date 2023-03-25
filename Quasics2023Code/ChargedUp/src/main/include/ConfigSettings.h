@@ -1,6 +1,7 @@
 #ifndef CONFIG_SETTINGS_H
 #define CONFIG_SETTINGS_H
 
+/** Types of things we can ask the human player to feed the robot. */
 enum class RequestedPayload { eNothing, eCubes, eCones };
 
 /** Structure used to hold data used across commands. */

@@ -42,29 +42,65 @@ void TurnDegreesImported::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void TurnDegreesImported::Execute() {
-#ifdef CURRENT_TURN_VERSION
-  m_drivebase->SetBrakingMode(true);
-  units::degree_t currentPosition = m_drivebase->GetYaw();
-  if (turningleft) {
-    if (currentPosition > ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.45)) {
-#ifdef FASTER_SLOW_DOWN
-      multiplier = multiplier * 0.90;
-#endif
-      multiplier = multiplier * 0.95;
+  /*
+  #ifdef CURRENT_TURN_VERSION
+    m_drivebase->SetBrakingMode(true);
+    units::degree_t currentPosition = m_drivebase->GetYaw();
+    if (turningleft) {
+      if (currentPosition > ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.5)) {
+  #ifdef FASTER_SLOW_DOWN
+        multiplier = multiplier * 0.90;
+  #endif
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
+    } else {
+      if (currentPosition < ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.5)) {
+  #ifdef FASTER_SLOW_DOWN
+        multiplier = multiplier * 0.90;
+  #endif
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
     }
-    m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
+  */
+
+  if (m_angle > 100_deg) {
+    m_drivebase->SetBrakingMode(true);
+    units::degree_t currentPosition = m_drivebase->GetYaw();
+    if (turningleft) {
+      if (currentPosition > ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.48)) {
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
+    } else {
+      if (currentPosition < ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.48)) {
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
+    }
   } else {
-    if (currentPosition < ((startingposition + angleTest) * 0.5) &&
-        (m_speed * multiplier > 0.45)) {
-#ifdef FASTER_SLOW_DOWN
-      multiplier = multiplier * 0.90;
-#endif
-      multiplier = multiplier * 0.95;
+    m_drivebase->SetBrakingMode(true);
+    units::degree_t currentPosition = m_drivebase->GetYaw();
+    if (turningleft) {
+      if (currentPosition > ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.35)) {
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
+    } else {
+      if (currentPosition < ((startingposition + angleTest) * 0.5) &&
+          (m_speed * multiplier > 0.35)) {
+        multiplier = multiplier * 0.95;
+      }
+      m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
     }
-    m_drivebase->TankDrive(-1 * m_speed * multiplier, m_speed * multiplier);
   }
-#endif
+// #endif
 #ifdef NO_SLOW_DOWN
   m_drivebase->SetBrakingMode(true);
   m_drivebase->TankDrive(-1 * m_speed, m_speed);
@@ -104,7 +140,7 @@ bool TurnDegreesImported::IsFinished() {
 #endif
 
 #ifdef NO_SLOW_DOWN
-  units::degree_t currentPosition = m_drivebase->GetAngle();
+  units::degree_t currentPosition = m_drivebase->GetYaw();
   if (turningleft) {
     if (currentPosition >=
         (startingposition + m_angle) -

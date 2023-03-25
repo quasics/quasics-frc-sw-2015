@@ -54,7 +54,7 @@ namespace Helpers {
                                          IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-        drivebase, AutonomousSpeeds::DRIVE_SPEED, 0.5_m)));
+        drivebase, AutonomousSpeeds::DRIVE_SPEED, 0.8_m)));
     commands.push_back(std::unique_ptr<frc2::Command>(new ExhaustWithRoller(
         intakeRoller, IntakeConstants::RollerSpeeds::CUBES)));
 
@@ -104,8 +104,6 @@ namespace Helpers {
               })));
       commands.push_back(
           std::make_unique<PauseRobot>(drivebase, 0.1_s));  // ADDED PAUSE
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters{drivebase, 0.5, 1.889_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
               drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
@@ -384,7 +382,7 @@ namespace Helpers {
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5.0_m)));
+              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));
     } else {
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
@@ -399,6 +397,7 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
+
     commands.push_back(std::unique_ptr<frc2::Command>(
         ScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -450,8 +449,8 @@ namespace Helpers {
     commands.push_back(
         std::unique_ptr<frc2::Command>(ScoreThenEndNearGamePieceCommand(
             drivebase, intakeDeployment, floorEjection, teamAndPosName)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        GamePiecePickupHelperCommand(drivebase, intakeRoller)));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase, intakeRoller)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||

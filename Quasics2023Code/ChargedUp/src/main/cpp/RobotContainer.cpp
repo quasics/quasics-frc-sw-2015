@@ -26,6 +26,7 @@
 #include "commands/floor/MoveFloorEjection.h"
 #include "commands/floor/MoveFloorEjectionAtPowerForTime.h"
 #include "commands/floor/ShootTheGamePiece.h"
+#include "commands/intake/AutoIntakeExtension.h"
 #include "commands/intake/ExhaustWithRoller.h"
 #include "commands/intake/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/intake/ExtendIntake.h"
@@ -341,6 +342,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   frc::SmartDashboard::PutData("Autonmous Floor Retraction",
                                new AutoFloorRetract(&m_floorEjection, 0.1));
+
+  frc::SmartDashboard::PutData(
+      "Autonmous Intake Extension",
+      new AutoIntakeExtension(&m_intakeDeployment, 0.5));
   /*
     frc::SmartDashboard::PutData(
         "Shoot 70 for 0.15",

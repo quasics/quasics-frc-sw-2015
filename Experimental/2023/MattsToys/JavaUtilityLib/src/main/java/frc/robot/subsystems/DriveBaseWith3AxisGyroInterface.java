@@ -14,4 +14,10 @@ public interface DriveBaseWith3AxisGyroInterface extends DriveBaseInterface {
 
   /** Returns a Gyro to be used in looking at the robot's pitch (rotation on Y-axis). */
   public abstract Gyro getPitchGyro();
+
+  /** Returns the current roll angle (in degrees). */
+  public double getRollDegrees();
+
+  /** Returns the current pitch angle (in degrees). */
+  public double getPitchDegrees();
 }

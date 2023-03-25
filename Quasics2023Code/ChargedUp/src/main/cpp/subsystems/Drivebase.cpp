@@ -148,11 +148,14 @@ void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 
-  units::degree_t angle = GetYaw();
-  units::meter_t leftDistance = GetLeftDistance();
-  units::meter_t rightDistance = GetRightDistance();
+  // auto angle = GetYaw();
+  auto leftDistance = GetLeftDistance();
+  auto rightDistance = GetRightDistance();
 
-  m_odometry.Update(angle, leftDistance, rightDistance);
+  frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
+  frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());
+
+  // m_odometry.Update(angle, leftDistance, rightDistance);
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

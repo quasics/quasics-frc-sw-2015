@@ -26,8 +26,9 @@ void TriggerBasedRollerCommand::Execute() {
   } else if (IsRightTriggerPressed()) {
     if (intakingCubes) {
       m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CUBES);
+    } else {
+      m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CONES);
     }
-    m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CONES);
   } else {
     m_intakeRoller->Stop();
   }

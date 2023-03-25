@@ -44,6 +44,9 @@ class RobotContainer {
                                            frc2::Command *command);
   void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command *command);
 
+  void RunCommandWhenOperatorButtonIsPressed(int buttonId,
+                                             frc2::Command *command);
+
   double GetDriveSpeedScalingFactor();
 
   void ConfigureControllerButtonBindings();

@@ -186,6 +186,13 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
 
+void RobotContainer::RunCommandWhenOperatorButtonIsPressed(
+    int buttonId, frc2::Command *command) {
+  frc2::JoystickButton(&m_operatorController, buttonId)
+      .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
+      .OnTrue(command);
+}
+
 // ToggleOnTrue command can be used or should this be in each individual command
 
 void RobotContainer::ConfigureControllerButtonBindings() {
@@ -195,8 +202,9 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   // static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
   static MoveFloorEjection ejectPiece(&m_floorEjection, 0.2);
-  static MoveFloorEjection resetEjection(&m_floorEjection, -0.2);
-  static ShootTheGamePiece shootPiece(&m_floorEjection, 45, 0.3);
+  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.5);
+  static ShootTheGamePiece shootPiece(&m_floorEjection, 45,
+                                      0.3);  // Not Working Yet
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
@@ -204,7 +212,8 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
   // Rollers Controlled by Command TriggerBasedRollerCommand
-
+  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kX,
+                                        &toggleCubeOrCone);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
                                      &retractIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -212,12 +221,10 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      &ejectPiece);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
-                                     &resetEjection);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &shootPiece);
+                                     &resetFloorEjection);
+  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+                                     &shootPiece);*/
 
-  RunCommandWhenDriverButtonIsPressed(
-      OperatorInterface::LogitechGamePad::X_BUTTON, &toggleCubeOrCone);
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
   /*RunCommandWhenDriverButtonIsPressed(

@@ -160,8 +160,8 @@ constexpr double TURTLE_MODE_SPEED_SCALING = 0.35;
 
 namespace IntakeConstants {
 namespace RollerSpeeds {
-  constexpr double CUBES = 0.50;
-  constexpr double CONES = 0.85;
+  constexpr double CUBES = 0.60;
+  constexpr double CONES = 1.00;
 }  // namespace RollerSpeeds
 }  // namespace IntakeConstants
 

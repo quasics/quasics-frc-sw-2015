@@ -32,12 +32,6 @@ void RetractIntake::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RetractIntake::IsFinished() {
-  if (m_intakeDeployment->IsIntakeDeployed(
-          IntakeDeployment::LimitSwitch::Retracted)) {
-    // Note: This can only happen if the intake limit switches are enabled.
-    return true;
-  }
-
 #if defined(ENABLE_INTAKE_HARD_STOP_DETECTION)
   if (m_intakeDeployment->GetLeftVelocity() < Intake::STOP_VELOCITY &&
       m_clocks > Intake::CLOCKS_UNTIL_ABOVE_STOP_VELOCITY) {

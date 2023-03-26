@@ -38,7 +38,7 @@ class TurnDegreesImported
 
   units::degree_t startingposition;
   units::degree_t angleTest;
-  double multiplier = 1.0;
+  double subtraction = 0;
   bool turningleft = true;
   double DecreaseForCompensation =
       0.83;  // prevents overshoot //maybe change this to a deg subtraction

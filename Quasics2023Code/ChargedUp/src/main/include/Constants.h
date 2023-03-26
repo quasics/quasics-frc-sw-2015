@@ -74,11 +74,12 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSpeeds {
-constexpr auto DRIVE_SPEED = 0.5;
+constexpr auto DRIVE_SPEED = 0.8;
+constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
 constexpr auto DROP_FLOOR_EJECTION_SPEED = 0.2;
-constexpr auto DROP_FLOOR_EJECTION_TIME = 0.2_s;
+constexpr auto DROP_FLOOR_EJECTION_TIME = 0.3_s;
 constexpr auto INTAKE_EXTENSION_SPEED = 0.5;
 constexpr auto FLOOR_RETRACTION_SPEED = 0.5;
 }  // namespace AutonomousSpeeds
@@ -116,6 +117,7 @@ const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";
 const auto ScoreThenCharge = "Score Game Piece then Charge";
 const auto ScoreGTFOCharge = "Score Game Piece, GTFO and Charge";
+const auto DropGTFOCharge = "Drop Game Piece, GTFO Charge";
 const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
 const auto DropGamePiece = "Drop Game Piece";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
@@ -136,8 +138,8 @@ constexpr double kD = 0;
 namespace SelfBalancingConstants {
 namespace PID {
   constexpr auto ks = 0;
-  constexpr auto kP = 0.025;
-  constexpr auto kI = 0.005;
+  constexpr auto kP = 0.022;
+  constexpr auto kI = 0.003;
   constexpr auto kD = 0;
 }  // namespace PID
 

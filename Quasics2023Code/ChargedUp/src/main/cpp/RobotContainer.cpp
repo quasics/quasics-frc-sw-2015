@@ -294,11 +294,24 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
   // Sample lighting commands.
-  frc::SmartDashboard::PutData("Black&White",
+  /*frc::SmartDashboard::PutData("Black&White",
                                new BlackAndWhiteLights(&m_lighting));
   frc::SmartDashboard::PutData(
       "Split Lighting",
-      new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));
+      new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));*/
+
+  frc::SmartDashboard::PutData(
+      "Turn 90 Left Degrees: ",
+      new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
+  frc::SmartDashboard::PutData(
+      "Turn 90 Right Degrees: ",
+      new TurnDegreesImported(&m_drivebase, 0.5, -90_deg));
+  frc::SmartDashboard::PutData(
+      "Turn 180 Left Degrees: ",
+      new TurnDegreesImported(&m_drivebase, 0.5, 180_deg));
+  frc::SmartDashboard::PutData(
+      "Turn 180 Right Degrees: ",
+      new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));
 
   if (false) {
     frc::SmartDashboard::PutData("Red lights",
@@ -359,7 +372,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
     frc::SmartDashboard::PutData(
         "Shoot 90 for 0.1",
         new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.9, 0.1_s));*/
-  frc::SmartDashboard::PutData("YEET", new MoveFloorEjectionAtPowerForTime(
+  /*frc::SmartDashboard::PutData("YEET", new MoveFloorEjectionAtPowerForTime(
                                            &m_floorEjection, 1.00, 0.2_s));
   frc::SmartDashboard::PutData(
       "Shoot 50 for 0.1",
@@ -375,7 +388,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.4, 0.2_s));
   frc::SmartDashboard::PutData(
       "Shoot 50 for 0.2",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.2_s));
+      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.2_s));*/
 
   /*
     frc::SmartDashboard::PutData(
@@ -476,7 +489,8 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
           {AutonomousSelectedOperation::ScoreGTFOCharge,
            "Score, GTFO then Charge"},
           {AutonomousSelectedOperation::ScoreTwiceThenCharge,
-           "Score, get another piece and score that, then charge"}};
+           "Score, get another piece and score that, then charge"},
+          {AutonomousSelectedOperation::DropGTFOCharge, "Drop GTFO Charge"}};
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
     AddNamedCommandToSelector(selector, name, text);

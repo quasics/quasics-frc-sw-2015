@@ -4,6 +4,8 @@
 
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 
+#include <iostream>
+
 DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
                                                        double power,
                                                        units::meter_t distance)
@@ -17,16 +19,19 @@ DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
 
 // Called when the command is initially scheduled.
 void DriveUntilPitchAngleChange::Initialize() {
+  // std::cout << "Starting Until Pitch Angle Change" << std::endl;
   m_drivebase->TankDrive(m_power, m_power);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void DriveUntilPitchAngleChange::Execute() {
+  // std::cout << "Feeding Power" << m_power << std::endl;
   m_drivebase->TankDrive(m_power, m_power);
 }
 
 // Called once the command ends or is interrupted.
 void DriveUntilPitchAngleChange::End(bool interrupted) {
+  // std::cout << "Ending The Driving" << std::endl;
   m_drivebase->Stop();
 }
 

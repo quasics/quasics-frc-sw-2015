@@ -20,15 +20,14 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
 // Helper functions used in the primary command.  (These are
 // exposed for testing support only.)
 namespace Helpers {
-  frc2::Command *DropGamePieceHelperCommand(IntakeDeployment *intakeDeployment,
+  frc2::Command *DropGamePieceHelperCommand(Drivebase *drivebase,
                                             IntakeRoller *intakeRoller);
 
   frc2::Command *ClampScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller);
 
-  frc2::Command *ScoreGamePieceHelperCommand(
-      FloorEjection *floorEjection);
+  frc2::Command *ScoreGamePieceHelperCommand(FloorEjection *floorEjection);
 
   frc2::Command *GamePiecePickupHelperCommand(
       Drivebase *drivebase, IntakeRoller *intakeRoller,
@@ -57,6 +56,10 @@ namespace Helpers {
                                                   FloorEjection floorEjection,
                                                   std::string teamAndPosName);
 
+  frc2::Command *DropThenEndNearGamePieceCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      FloorEjection *floorEjection, std::string teamAndPosName);
+
   frc2::Command *DropGamePieceThenGTFOCommand(Drivebase *drivebase,
                                               FloorEjection *floorEjection,
                                               std::string teamAndPosName);
@@ -68,12 +71,22 @@ namespace Helpers {
   frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
                                      FloorEjection *floorEjection,
                                      std::string teamAndPosName);
+  frc2::Command *DropGTFOThenCharge(Drivebase *drivebase,
+                                    IntakeDeployment *intakeDeployment,
+                                    FloorEjection *floorEjection,
+                                    std::string teamAndPosName);
 
   frc2::Command *ScoreTwiceThenChargeCommand(Drivebase *drivebase,
                                              IntakeDeployment *intakeDeployment,
                                              IntakeRoller *intakeRoller,
                                              FloorEjection *floorEjection,
                                              std::string teamAndPosName);
+
+  frc2::Command *DropTwiceThenChargeCommand(Drivebase *drivebase,
+                                            IntakeDeployment *intakeDeployment,
+                                            IntakeRoller *intakeRoller,
+                                            FloorEjection *floorEjection,
+                                            std::string teamAndPosName);
 }  // namespace Helpers
 }  // namespace AutonomousCommands
 

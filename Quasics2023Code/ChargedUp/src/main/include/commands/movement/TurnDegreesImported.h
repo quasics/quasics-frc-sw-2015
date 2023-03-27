@@ -17,6 +17,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
+// CODE_REVIEW(matthew): This class should have a comment block (above)
+// describing what it is/does, rather than saying that it's an "example
+// command".  And how does this differ from the "RotateAtAngle" command?  When
+// would we use one vs. the other?
 class TurnDegreesImported
     : public frc2::CommandHelper<frc2::CommandBase, TurnDegreesImported> {
  public:
@@ -32,15 +36,21 @@ class TurnDegreesImported
   bool IsFinished() override;
 
  private:
-  Drivebase* m_drivebase;
+  /** Drive base used to move the robot. */
+  Drivebase* const m_drivebase;
+  /** Desired (maximum) speed for the turn. */
   const double m_speed;
+  /** Desired amount by which the robot should turn when the command runs. */
   const units::degree_t m_angle;
 
-  units::degree_t startingposition;
-  units::degree_t angleTest;
-  double subtraction = 0;
-  bool turningleft = true;
-  double DecreaseForCompensation =
-      0.83;  // prevents overshoot //maybe change this to a deg subtraction
-  //  units::degree_t angleShift = 0_deg;
+  /**
+   * Current angle (yaw) of the robot when the command starts running.  This
+   * allows us to determine when the full turn from the starting position has
+   * been completed.
+   */
+  units::degree_t m_startingposition;
+
+  // CODE_REVIEW(matthew): What is this for?  Why isn't it just a local variable
+  // in Execute()?
+  double m_subtraction = 0;
 };

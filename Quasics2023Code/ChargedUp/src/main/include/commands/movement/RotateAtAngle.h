@@ -15,7 +15,6 @@
  * Angle should be between -180 and 180.
  * If 270 degrees is inputted, robot will not optimize this to -90
  * degrees.
- *
  */
 class RotateAtAngle
     : public frc2::CommandHelper<frc2::CommandBase, RotateAtAngle> {
@@ -32,9 +31,27 @@ class RotateAtAngle
   bool IsFinished() override;
 
  private:
-  Drivebase* m_drivebase;
+  /** Drive base used to move the robot. */
+  Drivebase* const m_drivebase;
+
+  // CODE_REVIEW(ethan): the m_percentSpeed and m_angle values should be
+  // "const", and set in the constructor (where they're specified when the
+  // object is created).  Recomputing them whenever the command executes is
+  // "fragile" coding.
+  /** Desired (maximum) speed for the turn. */
   double m_percentSpeed;
+
+  /** Desired amount by which the robot should turn when the command runs. */
   units::degree_t m_angle;
+
+  /**
+   * Current angle (yaw) of the robot when the command starts running.  This
+   * allows us to determine when the full turn from the starting position has
+   * been completed.
+   */
   units::degree_t m_startAngle;
+
+  // CODE_REVIEW(ethan): Please document what is this for, and how it is to be
+  // used.
   double m_multiplier = 1;
 };

@@ -15,6 +15,7 @@ const frc::AddressableLED::LEDData Lighting::BLACK{0, 0, 0};
 const frc::AddressableLED::LEDData Lighting::GREEN{0, 255, 0};
 const frc::AddressableLED::LEDData Lighting::BLUE{0, 0, 255};
 const frc::AddressableLED::LEDData Lighting::RED{255, 0, 0};
+const frc::AddressableLED::LEDData Lighting::CYAN{0, 255, 25};
 
 ////////////////////////////////////////////////////////////////////////////
 // The following are based on data from https://htmlcolorcodes.com/colors/

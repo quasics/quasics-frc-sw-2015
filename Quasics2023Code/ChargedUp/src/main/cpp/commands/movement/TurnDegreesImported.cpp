@@ -74,11 +74,11 @@ bool TurnDegreesImported::IsFinished() {
   } else {
     units::degree_t currentPosition = m_drivebase->GetYaw();
     if (m_angle > 0_deg) {
-      if (currentPosition > m_startingposition + m_angle - 12.5_deg) {
+      if (currentPosition > m_startingposition + m_angle - 3.5_deg) {
         return true;
       }
     } else {
-      if (currentPosition < m_startingposition + m_angle + 12.5_deg) {
+      if (currentPosition < m_startingposition + m_angle + 3.5_deg) {
         return true;
       }
     }

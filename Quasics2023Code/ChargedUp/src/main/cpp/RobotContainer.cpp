@@ -238,7 +238,6 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
-  static StraightLineDriving straightLineDriving(&m_drivebase, &m_driverStick);
   static frc2::PrintCommand placeholder("Doing something!!!!");
 
   // Rollers Controlled by Command TriggerBasedRollerCommand
@@ -299,7 +298,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Split Lighting",
       new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));*/
-
+  frc::SmartDashboard::PutData("STRAIGHT LINE DRIVING FORWARD",
+                               new StraightLineDriving(&m_drivebase, 0.8, 6_m));
+  frc::SmartDashboard::PutData(
+      "STRAIGHT LINE DRIVING BACKWARD",
+      new StraightLineDriving(&m_drivebase, -0.8, 6_m));
   frc::SmartDashboard::PutData(
       "Turn 90 Left Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));

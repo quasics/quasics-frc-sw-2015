@@ -21,7 +21,8 @@
 class StraightLineDriving
     : public frc2::CommandHelper<frc2::CommandBase, StraightLineDriving> {
  public:
-  StraightLineDriving(Drivebase* drivebase, frc::Joystick* driverStick);
+  StraightLineDriving(Drivebase* drivebase, double speed,
+                      units::meter_t distance);
 
   void Initialize() override;
 
@@ -33,7 +34,8 @@ class StraightLineDriving
 
  private:
   Drivebase* const m_drivebase;
-  frc::Joystick* const m_driverStick;
+  const double m_speed;
+  const units::meter_t m_distance;
 
   frc2::PIDController pid{StraightDrivingConstants::PID::kP,
                           StraightDrivingConstants::PID::kI,
@@ -42,4 +44,8 @@ class StraightLineDriving
   units::degree_t originalAngle = 0_deg;
   units::degree_t currentAngle = 0_deg;
   double robotSpeed = 0;
+  units::meter_t originalDistance = 0_m;
+  units::meter_t currentDistance = 0_m;
+  units::meter_t distanceToDestination = 0_m;
+  double subtraction = 0;
 };

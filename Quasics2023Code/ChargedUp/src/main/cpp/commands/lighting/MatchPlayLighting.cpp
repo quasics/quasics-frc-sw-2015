@@ -52,6 +52,7 @@ void MatchPlayLighting::Execute() {
   const auto allianceData = frc::DriverStation::GetAlliance();
   const RequestedPayload requestedPayload = m_configSettings->requestedPayload;
   const bool singleLights = (requestedPayload == RequestedPayload::eNothing);
+  bool switchDriveEngaged = m_configSettings->switchDriveEngaged;
 
   // Set the lights, based on the above information.
   if (singleLights) {
@@ -86,12 +87,20 @@ void MatchPlayLighting::Execute() {
         // *used*, so we provide a "placeholder" for the bind() function.
         std::placeholders::_1));
 
-    /* frc::AddressableLED::LEDData gamePieceIndicator;
-     if (requestedPayload == RequestedPayload::eCones) {
-       m_lighting->SetLightColors(SimpleColorFunction);
-     } else if (requestedPayload == RequestedPayload::eCubes) {
-       m_lighting->SetLightColors(SimpleColorFunction);
-     } */
+    frc::AddressableLED::LEDData gamePieceIndicator;
+    if (requestedPayload == RequestedPayload::eCones) {
+      gamePieceIndicator = Lighting::WHITE;
+    } else if (requestedPayload == RequestedPayload::eCubes) {
+      gamePieceIndicator = Lighting::PURPLE;
+    }
+
+    if (switchDriveEngaged) {
+      if (allianceData == frc::DriverStation::kRed) {
+        m_lighting->SetAllToColor(Lighting::PINK);
+      } else if (allianceData == frc::DriverStation::kBlue) {
+        m_lighting->SetAllToColor(Lighting::CYAN);
+      }
+    }
   }
 }
 

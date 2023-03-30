@@ -6,6 +6,7 @@
 
 #include <frc/Joystick.h>
 #include <frc/controller/PIDController.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -40,6 +41,9 @@ class StraightLineDriving
   frc2::PIDController pid{StraightDrivingConstants::PID::kP,
                           StraightDrivingConstants::PID::kI,
                           StraightDrivingConstants::PID::kD};
+
+  frc::SlewRateLimiter<units::scalar> SlewRateLimiter{1 / 1_s};
+  bool accelerating = true;
 
   units::degree_t originalAngle = 0_deg;
   units::degree_t currentAngle = 0_deg;

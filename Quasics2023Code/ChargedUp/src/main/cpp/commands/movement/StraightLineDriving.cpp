@@ -27,6 +27,7 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase, double speed,
 
 // Called when the command is initially scheduled.
 void StraightLineDriving::Initialize() {
+  accelerating = true;
   subtraction = 0;
   gradualreduction = 0.5;
   counter = 0;
@@ -39,6 +40,9 @@ void StraightLineDriving::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void StraightLineDriving::Execute() {
+  if (SlewRateLimiter.Calculate(m_speed) >= m_speed) {
+    accelerating = false;
+  }
   currentDistance = m_drivebase->GetLeftDistance();
   distanceToDestination = originalDistance + m_distance - currentDistance;
   currentAngle = m_drivebase->GetYaw();
@@ -52,10 +56,21 @@ void StraightLineDriving::Execute() {
       gradualreduction = gradualreduction - 0.1;
     }
   }
+
   if (m_distance >= 0_m) {
-    m_drivebase->ArcadeDrive(m_speed - subtraction, rotationCorrection);
+    if (accelerating) {
+      m_drivebase->ArcadeDrive(SlewRateLimiter.Calculate(m_speed),
+                               rotationCorrection);
+    } else {
+      m_drivebase->ArcadeDrive(m_speed - subtraction, rotationCorrection);
+    }
   } else {
-    m_drivebase->ArcadeDrive(m_speed + subtraction, -1 * rotationCorrection);
+    if (accelerating) {
+      m_drivebase->ArcadeDrive(SlewRateLimiter.Calculate(m_speed),
+                               -1 * rotationCorrection);
+    } else {
+      m_drivebase->ArcadeDrive(m_speed + subtraction, -1 * rotationCorrection);
+    }
   }
 
   m_drivebase->SetBrakingMode(true);

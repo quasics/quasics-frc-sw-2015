@@ -152,7 +152,7 @@ namespace FeedForward {
 
 namespace StraightDrivingConstants {
 namespace PID {
-  constexpr auto kP = 0.01;
+  constexpr auto kP = 0.025;
   constexpr auto kI = 0.000;
   constexpr auto kD = 0;
 }  // namespace PID

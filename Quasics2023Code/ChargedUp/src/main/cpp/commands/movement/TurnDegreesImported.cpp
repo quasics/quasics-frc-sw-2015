@@ -62,11 +62,11 @@ bool TurnDegreesImported::IsFinished() {
   if (std::abs(m_angle.value()) == 90) {
     units::degree_t currentPosition = m_drivebase->GetYaw();
     if (m_angle > 0_deg) {
-      if (currentPosition > m_startingposition + m_angle - 5_deg) {  // was 35
+      if (currentPosition > m_startingposition + m_angle - 12_deg) {  // was 35
         return true;
       }
     } else {
-      if (currentPosition < m_startingposition + m_angle + 5_deg) {
+      if (currentPosition < m_startingposition + m_angle + 12_deg) {
         return true;
       }
     }
@@ -74,11 +74,11 @@ bool TurnDegreesImported::IsFinished() {
   } else {
     units::degree_t currentPosition = m_drivebase->GetYaw();
     if (m_angle > 0_deg) {
-      if (currentPosition > m_startingposition + m_angle - 3.5_deg) {
+      if (currentPosition > m_startingposition + m_angle - 20_deg) {
         return true;
       }
     } else {
-      if (currentPosition < m_startingposition + m_angle + 3.5_deg) {
+      if (currentPosition < m_startingposition + m_angle + 20_deg) {
         return true;
       }
     }

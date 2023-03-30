@@ -18,10 +18,10 @@
 #include "commands/intake/ExtendIntakeAtSpeedForTime.h"
 #include "commands/intake/IntakeWithRoller.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
-#include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/RotateAtAngle.h"
 #include "commands/movement/SelfBalancing.h"
+#include "commands/movement/StraightLineDriving.h"
 #include "commands/movement/TurnDegreesImported.h"
 
 namespace AutonomousCommands {
@@ -56,7 +56,7 @@ namespace Helpers {
   frc2::ParallelRaceGroup *MoveAndIntake(Drivebase *drivebase,
                                          IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.3_m)));
     commands.push_back(std::unique_ptr<frc2::Command>(new IntakeWithRoller(
         intakeRoller, IntakeConstants::RollerSpeeds::CUBES)));
@@ -79,14 +79,10 @@ namespace Helpers {
       // In this case, we need to move back out of the community area (for the
       // mobility points), and then move forward and balance on the charging
       // station.
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
-              drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-              4.0_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
-              drivebase, AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-              0.5_m}));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 4.0_m}));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 0.5_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
               drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
@@ -100,9 +96,8 @@ namespace Helpers {
       const bool firstTurnIsCounterClockwise =
           (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
            teamAndPosName == AutonomousTeamAndStationPositions::Red1);
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
-              drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, 90_deg},
@@ -112,9 +107,8 @@ namespace Helpers {
               })));
       commands.push_back(
           std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -156,11 +150,10 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            DriveAtPowerForMeters{drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                  4_m},
+            StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m},
             frc2::ConditionalCommand(
-                DriveAtPowerForMeters{drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                      2_m},
+                StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
+                                    2_m},
                 frc2::PrintCommand{"Doing nothing"},
                 [teamAndPosName] {
                   return teamAndPosName ==
@@ -192,7 +185,7 @@ namespace Helpers {
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 2_m}));
 
     commands.push_back(
@@ -206,7 +199,7 @@ namespace Helpers {
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 3.845_m}));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -240,11 +233,10 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            DriveAtPowerForMeters{drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                  4_m},
+            StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m},
             frc2::ConditionalCommand(
-                DriveAtPowerForMeters{drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                      2_m},
+                StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
+                                    2_m},
                 frc2::PrintCommand{"Doing nothing"},
                 [teamAndPosName] {
                   return teamAndPosName ==
@@ -276,7 +268,7 @@ namespace Helpers {
                      teamAndPosName == AutonomousTeamAndStationPositions::Red2;
             })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
 
     commands.push_back(
@@ -285,7 +277,7 @@ namespace Helpers {
             TurnDegreesImported{drivebase, 0.5, -90_deg},
             [isBlue] { return isBlue; })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
 
     commands.push_back(
@@ -294,7 +286,7 @@ namespace Helpers {
             TurnDegreesImported{drivebase, 0.5, 47.9_deg},
             [isBlue] { return isBlue; })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.948_m}));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -311,13 +303,11 @@ namespace Helpers {
         ScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     } else {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -342,9 +332,8 @@ namespace Helpers {
                 return firstTurnIsCounterClockwise;
               })));
       commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.719_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.719_m)));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, 90_deg},
@@ -388,13 +377,12 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));
     } else {
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters(drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                    3.5_m)));  // URGENT CHANGED THIS
+          new StraightLineDriving(drivebase, AutonomousSpeeds::DRIVE_SPEED,
+                                  3.5_m)));  // URGENT CHANGED THIS
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -412,13 +400,12 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));
     } else {
       commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMeters(drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                    3.5_m)));  // URGENT CHANGED THIS
+          new StraightLineDriving(drivebase, AutonomousSpeeds::DRIVE_SPEED,
+                                  3.5_m)));  // URGENT CHANGED THIS
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -433,13 +420,11 @@ namespace Helpers {
         ScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     } else {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -478,7 +463,7 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
         DropGamePieceHelperCommand(drivebase, floorEjection)));
-    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
         drivebase, AutonomousSpeeds::DRIVE_SPEED, -0.25_m)));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
@@ -497,17 +482,15 @@ namespace Helpers {
     commands.push_back(
         std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase, intakeRoller)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new TurnDegreesImported(drivebase, 0.5, -175_deg)));  // URGENT
+        new TurnDegreesImported(drivebase, 0.5, -180_deg)));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
     } else {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
     commands.push_back(std::unique_ptr<frc2::Command>(
         ScoreGamePieceHelperCommand(floorEjection)));
@@ -532,13 +515,11 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
     } else {
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters(
-              drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
     commands.push_back(
         std::unique_ptr<frc2::Command>(DropThenEndNearGamePieceCommand(
@@ -564,13 +545,13 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName == AutonomousSelectedOperation::GTFO) {
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      static DriveAtPowerForMeters JustDriving{
+      static StraightLineDriving JustDriving{
           drivebase, -AutonomousSpeeds::DRIVE_SPEED,
           4.5_m - 10_in};  // TODO Change for all subseqeunt
                            // drives over the charging station
       return &JustDriving;
     } else {
-      static DriveAtPowerForMeters JustDriving{
+      static StraightLineDriving JustDriving{
           drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m};
       return &JustDriving;
     }

@@ -48,4 +48,6 @@ class StraightLineDriving
   units::meter_t currentDistance = 0_m;
   units::meter_t distanceToDestination = 0_m;
   double subtraction = 0;
+  double gradualreduction = 0.5;
+  int counter = 0;
 };

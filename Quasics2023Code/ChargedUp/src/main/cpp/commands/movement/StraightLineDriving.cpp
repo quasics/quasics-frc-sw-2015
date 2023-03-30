@@ -28,6 +28,8 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase, double speed,
 // Called when the command is initially scheduled.
 void StraightLineDriving::Initialize() {
   subtraction = 0;
+  gradualreduction = 0.5;
+  counter = 0;
   originalDistance = m_drivebase->GetLeftDistance();
   originalAngle = m_drivebase->GetYaw();
   std::cout << "Starting Angle: " << originalAngle.value() << std::endl;
@@ -42,18 +44,17 @@ void StraightLineDriving::Execute() {
   currentAngle = m_drivebase->GetYaw();
   double rotationCorrection =
       pid.Calculate(currentAngle.value(), originalAngle.value());
-  if (distanceToDestination < 0.5_m && m_speed > 0.3) {
-    subtraction = std::abs(m_speed) - 0.3;
-    /*if (m_distance >= 0_m) {
-      subtraction = std::abs(m_speed) - 0.3;
-    } else {
-      subtraction = -1 * (std::abs(m_speed) - 0.3);
-    }*/
+  if (std::abs(distanceToDestination.value()) < 1 && std::abs(m_speed) > 0.3) {
+    std::cout << "Applying Reduction" << std::endl;
+    subtraction = std::abs(m_speed) - 0.3 - gradualreduction;
+    counter++;
+    if (gradualreduction > 0 && counter % 5 == 0) {
+      gradualreduction = gradualreduction - 0.1;
+    }
   }
   if (m_distance >= 0_m) {
     m_drivebase->ArcadeDrive(m_speed - subtraction, rotationCorrection);
   } else {
-    std::cout << "Driving Backwards" << std::endl;
     m_drivebase->ArcadeDrive(m_speed + subtraction, -1 * rotationCorrection);
   }
 

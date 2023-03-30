@@ -72,145 +72,8 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
-  frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
-        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      // In this case, we need to move back out of the community area (for the
-      // mobility points), and then move forward and balance on the charging
-      // station.
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 4.0_m}));
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 0.5_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
-              drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new SelfBalancing{drivebase}));
-    } else {
-      // In this case, we need to move back out of the community area (for the
-      // mobility points), then turn and drive until we're in line with the
-      // middle of the charging station, and then move forward and balance on
-      // the charging station.
-      const bool firstTurnIsCounterClockwise =
-          (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-           teamAndPosName == AutonomousTeamAndStationPositions::Red1);
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-              TurnDegreesImported{drivebase, 0.5, 90_deg},
-              TurnDegreesImported{drivebase, 0.5, -90_deg},
-              [firstTurnIsCounterClockwise]() {
-                return firstTurnIsCounterClockwise;
-              })));
-      commands.push_back(
-          std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-              TurnDegreesImported{drivebase, 0.5, -90_deg},
-              TurnDegreesImported{drivebase, 0.5, 90_deg},
-              [firstTurnIsCounterClockwise]() {
-                return firstTurnIsCounterClockwise;
-              })));
-      commands.push_back(
-          std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveUntilPitchAngleChange{drivebase, 0.5}));
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new SelfBalancing{drivebase}));
-    }
-    return new frc2::SequentialCommandGroup(std::move(commands));
-  }
-
-  frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
-                                                 std::string teamAndPosName) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            TurnDegreesImported{drivebase, 0.5, -90_deg},
-            frc2::ConditionalCommand(
-                TurnDegreesImported{drivebase, 0.5, 90_deg},
-                TurnDegreesImported(drivebase, 0.5, 180_deg),
-                [teamAndPosName] {
-                  return teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Red2 ||
-                         teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Red1;
-                }),
-            [teamAndPosName] {
-              return teamAndPosName ==
-                         AutonomousTeamAndStationPositions::Blue2 ||
-                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
-            })));
-    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m},
-            frc2::ConditionalCommand(
-                StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
-                                    2_m},
-                frc2::PrintCommand{"Doing nothing"},
-                [teamAndPosName] {
-                  return teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Blue2 ||
-                         teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Red2;
-                }),
-            [teamAndPosName] {
-              return teamAndPosName ==
-                         AutonomousTeamAndStationPositions::Red1 ||
-                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
-            })));
-
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            TurnDegreesImported{drivebase, 0.5, -90_deg},
-            frc2::ConditionalCommand(
-                TurnDegreesImported{drivebase, 0.5, 90_deg},
-                frc2::PrintCommand{"Doing nothing"},
-                [teamAndPosName] {
-                  return teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Red2 ||
-                         teamAndPosName ==
-                             AutonomousTeamAndStationPositions::Red1;
-                }),
-            [teamAndPosName] {
-              return teamAndPosName ==
-                         AutonomousTeamAndStationPositions::Blue2 ||
-                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
-            })));
-    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-        drivebase, AutonomousSpeeds::DRIVE_SPEED, 2_m}));
-
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-            TurnDegreesImported{drivebase, 0.5, 25.8_deg},
-            TurnDegreesImported{drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
-              return teamAndPosName ==
-                         AutonomousTeamAndStationPositions::Blue1 ||
-                     teamAndPosName ==
-                         AutonomousTeamAndStationPositions::Blue2 ||
-                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
-            })));
-    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-        drivebase, AutonomousSpeeds::DRIVE_SPEED, 3.845_m}));
-
-    return new frc2::SequentialCommandGroup(std::move(commands));
-  }
-
-  frc2::Command *MoveToDefenseAgainstOuterWall(Drivebase *drivebase,
-                                               std::string teamAndPosName) {
-    const bool isBlue =
-        teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
-        AutonomousTeamAndStationPositions::Blue2 ||
-        AutonomousTeamAndStationPositions::Blue3;
+  frc2::Command *moveToBlue3OrRed1(Drivebase *drivebase,
+                                   std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
 
     commands.push_back(
@@ -268,6 +131,78 @@ namespace Helpers {
                      teamAndPosName == AutonomousTeamAndStationPositions::Red2;
             })));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *moveToBlue1OrRed3(Drivebase *drivebase,
+                                   std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
+            frc2::ConditionalCommand(
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
+                TurnDegreesImported(drivebase, 0.5, 180_deg),
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red2 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red1;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m},
+            frc2::ConditionalCommand(
+                StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
+                                    2_m},
+                frc2::PrintCommand{"Doing nothing"},
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Blue2 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red2;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Red1 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            TurnDegreesImported{drivebase, 0.5, -90_deg},
+            frc2::ConditionalCommand(
+                TurnDegreesImported{drivebase, 0.5, 90_deg},
+                frc2::PrintCommand{"Doing nothing"},
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red2 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red1;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *moveToDefenseFromBlue3OrRed1(Drivebase *drivebase,
+                                              std::string teamAndPosName) {
+    const bool isBlue =
+        teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+        AutonomousTeamAndStationPositions::Blue2 ||
+        AutonomousTeamAndStationPositions::Blue3;
+    std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
 
@@ -290,8 +225,284 @@ namespace Helpers {
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.948_m}));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
+    return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  frc2::Command *moveToDefenseFromBlue1OrRed3(Drivebase *drivebase,
+                                              std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+        drivebase, AutonomousSpeeds::DRIVE_SPEED, 2_m}));
+
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            TurnDegreesImported{drivebase, 0.5, 25.8_deg},
+            TurnDegreesImported{drivebase, 0.5, -25.8_deg}, [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue1 ||
+                     teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+        drivebase, AutonomousSpeeds::DRIVE_SPEED, 3.845_m}));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+      // In this case, we need to move back out of the community area (for the
+      // mobility points), and then move forward and balance on the charging
+      // station.
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 4.0_m}));
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 0.5_m}));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
+              drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new SelfBalancing{drivebase}));
+    } else {
+      // In this case, we need to move back out of the community area (for the
+      // mobility points), then turn and drive until we're in line with the
+      // middle of the charging station, and then move forward and balance on
+      // the charging station.
+      const bool firstTurnIsCounterClockwise =
+          (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+           teamAndPosName == AutonomousTeamAndStationPositions::Red1);
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+      commands.push_back(
+          std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+      commands.push_back(
+          std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new DriveUntilPitchAngleChange{drivebase, 0.5}));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new SelfBalancing{drivebase}));
+    }
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
+                                                 std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToBlue1OrRed3(drivebase, teamAndPosName)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseFromBlue1OrRed3(drivebase, teamAndPosName)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  frc2::Command *MoveToDefenseAgainstOuterWall(Drivebase *drivebase,
+                                               std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToBlue3OrRed1(drivebase, teamAndPosName)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        moveToDefenseFromBlue3OrRed1(drivebase, teamAndPosName)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
+  /*
+    frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
+                                                   std::string teamAndPosName)
+    { std::vector<std::unique_ptr<frc2::Command>> commands;
+
+      // if red do this
+      // if blue do this
+      // blue 3 or red 1 will always be executed if for outer
+
+      // turning for blue 1 and 2 will always be executed  SAME FOR RED 2 and
+    3
+      // Opposite Direction conditional command for distance to travel call
+    blue 3
+      // red 1 is blue 3 with
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              frc2::ConditionalCommand(
+                  TurnDegreesImported{drivebase, 0.5, 90_deg},
+                  TurnDegreesImported(drivebase, 0.5, 180_deg),
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red2 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red1;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Blue3;
+              })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
+    4_m}, frc2::ConditionalCommand( StraightLineDriving{drivebase,
+    AutonomousSpeeds::DRIVE_SPEED, 2_m}, frc2::PrintCommand{"Doing nothing"},
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue2 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red2;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red1 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Blue3;
+              })));
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              frc2::ConditionalCommand(
+                  TurnDegreesImported{drivebase, 0.5, 90_deg},
+                  frc2::PrintCommand{"Doing nothing"},
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red2 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red1;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Blue3;
+              })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(std::unique_ptr<frc2::Command>(new
+    StraightLineDriving{ drivebase, AutonomousSpeeds::DRIVE_SPEED, 2_m}));
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 25.8_deg},
+              TurnDegreesImported{drivebase, 0.5, -25.8_deg}, [teamAndPosName]
+    { return teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+                       teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Blue2 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Blue3;
+              })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(std::unique_ptr<frc2::Command>(new
+    StraightLineDriving{ drivebase, AutonomousSpeeds::DRIVE_SPEED, 3.845_m}));
+
+      return new frc2::SequentialCommandGroup(std::move(commands));
+    }
+
+    frc2::Command *MoveToDefenseAgainstOuterWall(Drivebase *drivebase,
+                                                 std::string teamAndPosName) {
+      const bool isBlue =
+          teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
+          AutonomousTeamAndStationPositions::Blue2 ||
+          AutonomousTeamAndStationPositions::Blue3;
+      std::vector<std::unique_ptr<frc2::Command>> commands;
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              frc2::ConditionalCommand(
+                  TurnDegreesImported{drivebase, 0.5, 90_deg},
+                  TurnDegreesImported(drivebase, 0.5, 180_deg),
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue1 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue2;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red3 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Red2;
+              })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              StraightLineDriving{drivebase, AutonomousSpeeds::DRIVE_SPEED,
+    4_m}, frc2::ConditionalCommand( StraightLineDriving{drivebase,
+    AutonomousSpeeds::DRIVE_SPEED, 2_m}, frc2::PrintCommand{"Doing nothing"},
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue2 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Red2;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red3 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Blue1;
+              })));
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              frc2::ConditionalCommand(
+                  TurnDegreesImported{drivebase, 0.5, 90_deg},
+                  frc2::PrintCommand{"Doing nothing"},
+                  [teamAndPosName] {
+                    return teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue1 ||
+                           teamAndPosName ==
+                               AutonomousTeamAndStationPositions::Blue2;
+                  }),
+              [teamAndPosName] {
+                return teamAndPosName ==
+                           AutonomousTeamAndStationPositions::Red1 ||
+                       teamAndPosName ==
+    AutonomousTeamAndStationPositions::Red2;
+              })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(std::unique_ptr<frc2::Command>(new
+    StraightLineDriving{ drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, -90_deg},
+              [isBlue] { return isBlue; })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(std::unique_ptr<frc2::Command>(new
+    StraightLineDriving{ drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
+
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              TurnDegreesImported{drivebase, 0.5, -47.9_deg},
+              TurnDegreesImported{drivebase, 0.5, 47.9_deg},
+              [isBlue] { return isBlue; })));
+      commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+      commands.push_back(std::unique_ptr<frc2::Command>(new
+    StraightLineDriving{ drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.948_m}));
+
+      return new frc2::SequentialCommandGroup(std::move(commands));
+    }
+  */
   frc2::Command *ScoreAndLeave(Drivebase *drivebase,
                                IntakeDeployment *intakeDeployment,
                                FloorEjection *floorEjection,

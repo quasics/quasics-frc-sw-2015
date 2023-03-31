@@ -6,6 +6,8 @@
 
 #include <frc/DriverStation.h>
 
+#include <iostream>
+
 MatchPlayLighting::MatchPlayLighting(Lighting* lighting,
                                      ConfigSettings* configSettings) {
   m_lighting = lighting;
@@ -27,9 +29,19 @@ frc::AddressableLED::LEDData MatchPlayLighting::GetComplexColorFunction(
     return allianceColor;
   }
 
+  if (requestedPayload == RequestedPayload::eNothing) {
+    return allianceColor;
+  }
+  if (requestedPayload == RequestedPayload::eCones) {
+    return Lighting::ORANGE;
+  } else if (requestedPayload == RequestedPayload::eCubes) {
+    return Lighting::GREEN;
+  }
+
   // TODO: Add logic to return the right color for odd-numbered LEDs.  For now,
   // we'll just use the alliance color for everything.
-  return allianceColor;
+  return Lighting::WHITE;
+  ;
 }
 
 frc::AddressableLED::LEDData MatchPlayLighting::SimpleColorFunction(
@@ -54,54 +66,35 @@ void MatchPlayLighting::Execute() {
   const bool singleLights = (requestedPayload == RequestedPayload::eNothing);
   bool switchDriveEngaged = m_configSettings->switchDriveEngaged;
 
-  // Set the lights, based on the above information.
-  if (singleLights) {
-    // We're just showing one color (solid).
+  frc::AddressableLED::LEDData allianceColor = Lighting::GREEN;
+  if (switchDriveEngaged) {
     if (allianceData == frc::DriverStation::kRed) {
-      m_lighting->SetAllToColor(255, 0, 0);
+      allianceColor = Lighting::PINK;
     } else if (allianceData == frc::DriverStation::kBlue) {
-      m_lighting->SetAllToColor(0, 0, 255);
-    } else {
-      m_lighting->SetAllToColor(0, 255, 0);
+      allianceColor = Lighting::CYAN;
     }
   } else {
-    // We have some sort of pattern we need to show
-    frc::AddressableLED::LEDData allianceColor = Lighting::GREEN;
     if (allianceData == frc::DriverStation::kRed) {
       allianceColor = Lighting::RED;
     } else if (allianceData == frc::DriverStation::kBlue) {
       allianceColor = Lighting::BLUE;
     }
-
-    m_lighting->SetLightColors(std::bind(
-        // This is the member function we want to have invoked
-        &MatchPlayLighting::GetComplexColorFunction,
-        // It (invisibly) has "this" passed as its first parameter, providing
-        // the object on which the function was called.
-        this,
-        // We want to pass in the alliance color as the next parameter
-        allianceColor,
-        // We want to pass in the requested payload as the next parameter
-        requestedPayload,
-        // There's another paramter that will be provided when the function is
-        // *used*, so we provide a "placeholder" for the bind() function.
-        std::placeholders::_1));
-
-    frc::AddressableLED::LEDData gamePieceIndicator;
-    if (requestedPayload == RequestedPayload::eCones) {
-      gamePieceIndicator = Lighting::WHITE;
-    } else if (requestedPayload == RequestedPayload::eCubes) {
-      gamePieceIndicator = Lighting::PURPLE;
-    }
-
-    if (switchDriveEngaged) {
-      if (allianceData == frc::DriverStation::kRed) {
-        m_lighting->SetAllToColor(Lighting::PINK);
-      } else if (allianceData == frc::DriverStation::kBlue) {
-        m_lighting->SetAllToColor(Lighting::CYAN);
-      }
-    }
   }
+
+  // Set the lights, based on the above information.
+  m_lighting->SetLightColors(std::bind(
+      // This is the member function we want to have invoked
+      &MatchPlayLighting::GetComplexColorFunction,
+      // It (invisibly) has "this" passed as its first parameter, providing
+      // the object on which the function was called.
+      this,
+      // We want to pass in the alliance color as the next parameter
+      allianceColor,
+      // We want to pass in the requested payload as the next parameter
+      requestedPayload,
+      // There's another paramter that will be provided when the function is
+      // *used*, so we provide a "placeholder" for the bind() function.
+      std::placeholders::_1));
 }
 
 // Called once the command ends or is interrupted.

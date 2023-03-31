@@ -15,7 +15,7 @@ const frc::AddressableLED::LEDData Lighting::BLACK{0, 0, 0};
 const frc::AddressableLED::LEDData Lighting::GREEN{0, 255, 0};
 const frc::AddressableLED::LEDData Lighting::BLUE{0, 0, 255};
 const frc::AddressableLED::LEDData Lighting::RED{255, 0, 0};
-const frc::AddressableLED::LEDData Lighting::CYAN{0, 255, 25};
+const frc::AddressableLED::LEDData Lighting::CYAN{0, 255, 255};
 
 ////////////////////////////////////////////////////////////////////////////
 // The following are based on data from https://htmlcolorcodes.com/colors/
@@ -24,9 +24,9 @@ const frc::AddressableLED::LEDData Lighting::CYAN{0, 255, 25};
 // "Bright orange"
 const frc::AddressableLED::LEDData Lighting::ORANGE{255, 172, 28};
 // "Bright purple"
-const frc::AddressableLED::LEDData Lighting::PURPLE{191, 64, 191};
-// "Hot pink"
-const frc::AddressableLED::LEDData Lighting::PINK{255, 105, 180};
+const frc::AddressableLED::LEDData Lighting::PURPLE{255, 0, 255};
+// "Cerise"
+const frc::AddressableLED::LEDData Lighting::PINK{222, 49, 99};
 
 Lighting::Lighting() {
   SetName("Lighting");

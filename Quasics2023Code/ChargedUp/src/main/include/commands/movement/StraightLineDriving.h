@@ -42,7 +42,7 @@ class StraightLineDriving
                           StraightDrivingConstants::PID::kI,
                           StraightDrivingConstants::PID::kD};
 
-  frc::SlewRateLimiter<units::scalar> SlewRateLimiter{1 / 1_s};
+  frc::SlewRateLimiter<units::scalar> SlewRateLimiter{0.5 / 1_s};
   bool accelerating = true;
 
   units::degree_t originalAngle = 0_deg;

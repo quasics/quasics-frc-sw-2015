@@ -74,7 +74,7 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSpeeds {
-constexpr auto DRIVE_SPEED = 0.8;
+constexpr auto DRIVE_SPEED = 0.4;
 constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
@@ -152,8 +152,8 @@ namespace FeedForward {
 
 namespace StraightDrivingConstants {
 namespace PID {
-  constexpr auto kP = 0.025;
-  constexpr auto kI = 0.000;
+  constexpr auto kP = 0.05;
+  constexpr auto kI = 0.001;
   constexpr auto kD = 0;
 }  // namespace PID
 }  // namespace StraightDrivingConstants

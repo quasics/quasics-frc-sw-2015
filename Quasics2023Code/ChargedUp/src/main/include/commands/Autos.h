@@ -29,6 +29,9 @@ namespace Helpers {
 
   frc2::Command *ScoreGamePieceHelperCommand(FloorEjection *floorEjection);
 
+  frc2::Command *MoveAndIntake(Drivebase *drivebase, IntakeRoller *intakeRoller,
+                               units::meter_t distance);
+
   frc2::Command *GamePiecePickupHelperCommand(
       Drivebase *drivebase, IntakeRoller *intakeRoller,
       IntakeDeployment *intakeDeployment);
@@ -54,11 +57,13 @@ namespace Helpers {
 
   frc2::Command *ScoreThenEndNearGamePieceCommand(Drivebase *drivebase,
                                                   FloorEjection floorEjection,
+                                                  IntakeRoller *intakeRoller,
                                                   std::string teamAndPosName);
 
   frc2::Command *DropThenEndNearGamePieceCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      FloorEjection *floorEjection, std::string teamAndPosName);
+      FloorEjection *floorEjection, IntakeRoller *intakeRoller,
+      std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenGTFOCommand(Drivebase *drivebase,
                                               FloorEjection *floorEjection,

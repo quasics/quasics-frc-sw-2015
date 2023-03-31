@@ -48,9 +48,10 @@ void StraightLineDriving::Execute() {
   currentAngle = m_drivebase->GetYaw();
   double rotationCorrection =
       pid.Calculate(currentAngle.value(), originalAngle.value());
-  if (std::abs(distanceToDestination.value()) < 1 && std::abs(m_speed) > 0.3) {
+  if (std::abs(distanceToDestination.value()) < 1.5 &&
+      std::abs(m_speed) > 0.35) {
     std::cout << "Applying Reduction" << std::endl;
-    subtraction = std::abs(m_speed) - 0.3 - gradualreduction;
+    subtraction = std::abs(m_speed) - 0.35 - gradualreduction;
     counter++;
     if (gradualreduction > 0 && counter % 5 == 0) {
       gradualreduction = gradualreduction - 0.1;

@@ -11,6 +11,12 @@
 #define SHOW_SUBSYSTEMS_ON_DASHBOARD
 
 //
+// Operator interface configuration
+//
+
+#undef DUAL_LOGITECH_CONTROLLERS
+
+//
 // High-level control of functionality in subsystems.
 //
 

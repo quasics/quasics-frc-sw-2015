@@ -76,7 +76,12 @@ class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   // Operator's controller.
-  frc::XboxController m_operatorController{1};
+#ifdef DUAL_LOGITECH_CONTROLLERS
+  frc::Joystick m_driverStick{OperatorInterface::OPERATOR_JOYSTICK};
+#else
+  frc::XboxController m_operatorController{
+      OperatorInterface::OPERATOR_JOYSTICK};
+#endif
 
   // The robot's subsystems are defined here...
   Drivebase m_drivebase;

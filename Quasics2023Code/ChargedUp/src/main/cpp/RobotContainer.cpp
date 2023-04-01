@@ -42,6 +42,7 @@
 #include "commands/intake/TriggerBasedRollerCommand.h"
 #include "commands/lighting/MatchPlayLighting.h"
 #include "commands/lighting/SetLightsToColor.h"
+#include "commands/lighting/SignalRequestedPayload.h"
 #include "commands/movement/AprilTagDriveToTarget.h"
 #include "commands/movement/ArcadeDrive.h"
 #include "commands/movement/DriveAtPowerForMeters.h"
@@ -380,6 +381,15 @@ void RobotContainer::AddSampleLightingToSmartDashboard() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Request nothing", new SignalRequestedPayload(
+                             &m_configSettings, RequestedPayload::eNothing));
+  frc::SmartDashboard::PutData(
+      "Request cones",
+      new SignalRequestedPayload(&m_configSettings, RequestedPayload::eCones));
+  frc::SmartDashboard::PutData(
+      "Request cubes",
+      new SignalRequestedPayload(&m_configSettings, RequestedPayload::eCubes));
   // frc::SmartDashboard::PutData("STRAIGHT LINE DRIVING FORWARD",
   //                              new StraightLineDriving(&m_drivebase, 0.8,
   //                              6_m));

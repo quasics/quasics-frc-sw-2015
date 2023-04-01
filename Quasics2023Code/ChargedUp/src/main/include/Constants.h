@@ -159,6 +159,12 @@ namespace PID {
 }  // namespace PID
 }  // namespace StraightDrivingConstants
 
+namespace PIDTurningConstants {
+constexpr auto kP = 0.05;
+constexpr auto kI = 0.001;
+constexpr auto kD = 0;
+}  // namespace PIDTurningConstants
+
 namespace SensorIds {
 constexpr int PIDGEON_CAN_ID = 1;
 }

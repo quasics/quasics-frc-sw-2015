@@ -36,6 +36,10 @@ Lighting::Lighting() {
   m_led.Start();
 }
 
+void Lighting::SetDefaultLighting() {
+  SetAllToColor(GREEN);
+}
+
 void Lighting::SetAllToColor(int r, int g, int b) {
   for (int i = 0; i < LightingValues::PIXEL_NUMBER; i++) {
     m_ledBuffer[i].SetRGB(r, g, b);

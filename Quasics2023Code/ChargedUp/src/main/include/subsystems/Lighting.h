@@ -73,6 +73,8 @@ class Lighting : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
+  void SetDefaultLighting();
+
   // Useful color constants.
  public:
   static const frc::AddressableLED::LEDData WHITE;

@@ -67,6 +67,9 @@ class RobotContainer {
 
   frc2::SequentialCommandGroup *TestPathCommand();
 
+  void SetDefaultTankDrive();
+  void SetDefaultSplitArcadeDrive();
+
  private:
   // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};

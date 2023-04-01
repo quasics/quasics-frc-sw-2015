@@ -76,6 +76,39 @@ RobotContainer::RobotContainer()
   // Initialize all of your commands and subsystems here
 
 #ifdef ENABLE_TANK_DRIVE
+  SetDefaultTankDrive();
+#elif defined(ENABLE_SPLIT_ARCADE_DRIVE)
+  SetDefaultSplitArcadeDrive();
+#else
+  static_assert(false, "Default drive mode not configured!");
+#endif
+
+#ifdef ENABLE_ROLLER_INTAKE_MOTORS
+  TriggerBasedRollerCommand triggerBasedRollerCommand(
+      &m_intakeRoller, &m_configSettings, &m_operatorController);
+
+  m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
+#endif
+
+#ifdef ENABLE_MATCH_PLAY_LIGHTING
+  MatchPlayLighting matchPlayLighting(&m_lighting, &m_configSettings);
+  m_lighting.SetDefaultCommand(matchPlayLighting);
+#endif  // ENABLE_MATCH_PLAY_LIGHTING
+
+  // Configure the button bindings
+  ConfigureControllerButtonBindings();
+  AddTestButtonsToSmartDashboard();
+  AddTeamAndStationSelectorToSmartDashboard();
+  AddRobotSequenceSelectorToSmartDashboard();
+
+#ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
+  frc::SmartDashboard::PutData(&m_drivebase);
+  frc::SmartDashboard::PutData(&m_intakeRoller);
+  frc::SmartDashboard::PutData(&m_floorEjection);
+#endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
+}
+
+void RobotContainer::SetDefaultTankDrive() {
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -111,9 +144,9 @@ RobotContainer::RobotContainer()
       }};
 
   m_drivebase.SetDefaultCommand(tankDrive);
-#endif
+}
 
-#ifdef ENABLE_SPLIT_ARCADE_DRIVE
+void RobotContainer::SetDefaultSplitArcadeDrive() {
   ArcadeDrive arcadeDrive{
       &m_drivebase,
       [this] {
@@ -151,31 +184,6 @@ RobotContainer::RobotContainer()
       }};
 
   m_drivebase.SetDefaultCommand(arcadeDrive);
-#endif
-
-#ifdef ENABLE_ROLLER_INTAKE_MOTORS
-  TriggerBasedRollerCommand triggerBasedRollerCommand(
-      &m_intakeRoller, &m_configSettings, &m_operatorController);
-
-  m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
-#endif
-
-#ifdef ENABLE_MATCH_PLAY_LIGHTING
-  MatchPlayLighting matchPlayLighting(&m_lighting, &m_configSettings);
-  m_lighting.SetDefaultCommand(matchPlayLighting);
-#endif  // ENABLE_MATCH_PLAY_LIGHTING
-
-  // Configure the button bindings
-  ConfigureControllerButtonBindings();
-  AddTestButtonsToSmartDashboard();
-  AddTeamAndStationSelectorToSmartDashboard();
-  AddRobotSequenceSelectorToSmartDashboard();
-
-#ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
-  frc::SmartDashboard::PutData(&m_drivebase);
-  frc::SmartDashboard::PutData(&m_intakeRoller);
-  frc::SmartDashboard::PutData(&m_floorEjection);
-#endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
 }
 
 void RobotContainer::EngageSwitchDrive(bool invert) {

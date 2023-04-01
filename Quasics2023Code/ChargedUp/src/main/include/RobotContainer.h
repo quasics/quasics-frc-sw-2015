@@ -43,6 +43,28 @@ class RobotContainer {
   // code in Robot.cpp.
   void Periodic();
 
+  // Binding default commands to subsystems.
+ private:
+  void SetDefaultTankDrive();
+  void SetDefaultSplitArcadeDrive();
+  void SetupIntakeControls();
+  void SetupLighting();
+
+  // Map various commands to physical/on-screen controls.
+ private:
+  void ConfigureDriverControllerButtonBindings();
+  void ConfigureOperatorControllerButtonBindings();
+  void AddTeamAndStationSelectorToSmartDashboard();
+  void AddRobotSequenceSelectorToSmartDashboard();
+  void AddTestButtonsToSmartDashboard();
+  void AddSampleLightingToSmartDashboard();
+
+  // Driving support.
+ private:
+  void EngageSwitchDrive(bool invert);
+  double GetDriveSpeedScalingFactor();
+
+  // Helper functions.
  private:
   void RunCommandWhileDriverButtonIsHeld(int logitechButtonId,
                                          frc2::Command *command);
@@ -53,22 +75,11 @@ class RobotContainer {
   void RunCommandWhenOperatorButtonIsPressed(int buttonId,
                                              frc2::Command *command);
 
-  double GetDriveSpeedScalingFactor();
-
-  void ConfigureControllerButtonBindings();
-  void AddTeamAndStationSelectorToSmartDashboard();
-  void AddRobotSequenceSelectorToSmartDashboard();
-
-  void EngageSwitchDrive(bool invert);
-
-  void AddTestButtonsToSmartDashboard();
-
-  frc2::SequentialCommandGroup *TESTCOMMAND();
+  frc2::SequentialCommandGroup *TestDrivingAndTurningCommand();
 
   frc2::SequentialCommandGroup *TestPathCommand();
 
-  void SetDefaultTankDrive();
-  void SetDefaultSplitArcadeDrive();
+  static int TranslateXBoxButtonToLogitechButton(int xboxButtonId);
 
  private:
   // Driver's controller.
@@ -77,7 +88,7 @@ class RobotContainer {
 
   // Operator's controller.
 #ifdef DUAL_LOGITECH_CONTROLLERS
-  frc::Joystick m_driverStick{OperatorInterface::OPERATOR_JOYSTICK};
+  frc::Joystick m_operatorStick{OperatorInterface::OPERATOR_JOYSTICK};
 #else
   frc::XboxController m_operatorController{
       OperatorInterface::OPERATOR_JOYSTICK};

@@ -6,10 +6,12 @@
 
 TriggerBasedRollerCommand::TriggerBasedRollerCommand(
     IntakeRoller* intakeRoller, ConfigSettings* settings,
-    frc::XboxController* xboxController)
+    std::function<bool()> intakeTriggered,
+    std::function<bool()> exhaustTriggered)
     : m_intakeRoller(intakeRoller),
       m_settings(settings),
-      m_controller(xboxController) {
+      m_intakeTriggered(intakeTriggered),
+      m_exhaustTriggered(exhaustTriggered) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_intakeRoller);
   SetName("TriggerBasedRollerCommand");
@@ -18,13 +20,13 @@ TriggerBasedRollerCommand::TriggerBasedRollerCommand(
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedRollerCommand::Execute() {
   bool intakingCubes = m_settings->intakingCubes;
-  if (IsLeftTriggerPressed()) {
+  if (m_intakeTriggered()) {
     if (intakingCubes) {
       m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::CUBES);
     } else {
       m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::CONES);
     }
-  } else if (IsRightTriggerPressed()) {
+  } else if (m_exhaustTriggered()) {
     if (intakingCubes) {
       m_intakeRoller->SetRollerSpeed(-1 * IntakeConstants::RollerSpeeds::CUBES);
     } else {

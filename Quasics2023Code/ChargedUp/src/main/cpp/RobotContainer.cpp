@@ -11,6 +11,7 @@
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 
+#include <cassert>
 #include <iostream>
 #include <list>
 
@@ -83,29 +84,58 @@ RobotContainer::RobotContainer()
   static_assert(false, "Default drive mode not configured!");
 #endif
 
-#ifdef ENABLE_ROLLER_INTAKE_MOTORS
-  TriggerBasedRollerCommand triggerBasedRollerCommand(
-      &m_intakeRoller, &m_configSettings, &m_operatorController);
+  // Configure intake handling
+  SetupIntakeControls();
 
-  m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
-#endif
-
-#ifdef ENABLE_MATCH_PLAY_LIGHTING
-  MatchPlayLighting matchPlayLighting(&m_lighting, &m_configSettings);
-  m_lighting.SetDefaultCommand(matchPlayLighting);
-#endif  // ENABLE_MATCH_PLAY_LIGHTING
+  // Configure lighting
+  SetupLighting();
 
   // Configure the button bindings
-  ConfigureControllerButtonBindings();
+  ConfigureDriverControllerButtonBindings();
+  ConfigureOperatorControllerButtonBindings();
   AddTestButtonsToSmartDashboard();
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotSequenceSelectorToSmartDashboard();
+  // AddSampleLightingToSmartDashboard();
 
 #ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
   frc::SmartDashboard::PutData(&m_drivebase);
   frc::SmartDashboard::PutData(&m_intakeRoller);
   frc::SmartDashboard::PutData(&m_floorEjection);
 #endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
+}
+
+void RobotContainer::SetupLighting() {
+#ifdef ENABLE_MATCH_PLAY_LIGHTING
+  MatchPlayLighting matchPlayLighting(&m_lighting, &m_configSettings);
+  m_lighting.SetDefaultCommand(matchPlayLighting);
+#endif  // ENABLE_MATCH_PLAY_LIGHTING
+}
+
+void RobotContainer::SetupIntakeControls() {
+  // Left trigger on the operator controller
+  std::function<bool()> intakeTriggered = [this] {
+#ifdef DUAL_LOGITECH_CONTROLLERS
+    return this->m_operatorStick.GetRawAxis(
+               OperatorInterface::LogitechGamePad::LEFT_TRIGGER) > 0.5;
+#else
+    return this->m_operatorController.GetRawAxis(
+               frc::XboxController::Axis::kLeftTrigger) > 0.5;
+#endif
+  };
+  std::function<bool()> exhaustTriggered = [this] {
+#ifdef DUAL_LOGITECH_CONTROLLERS
+    return this->m_operatorStick.GetRawAxis(
+               OperatorInterface::LogitechGamePad::RIGHT_TRIGGER) > 0.5;
+#else
+    return this->m_operatorController.GetRawAxis(
+               frc::XboxController::Axis::kRightTrigger) > 0.5;
+#endif
+  };
+  TriggerBasedRollerCommand triggerBasedRollerCommand(
+      &m_intakeRoller, &m_configSettings, intakeTriggered, exhaustTriggered);
+
+  m_intakeRoller.SetDefaultCommand(triggerBasedRollerCommand);
 }
 
 void RobotContainer::SetDefaultTankDrive() {
@@ -217,50 +247,66 @@ void RobotContainer::RunCommandWhenDriverButtonIsPressed(
       .OnTrue(command);
 }
 
+int RobotContainer::TranslateXBoxButtonToLogitechButton(int xboxButtonId) {
+  // These *should* be identity mappings, but this will let us make sure.
+  switch (xboxButtonId) {
+    case frc::XboxController::Button::kLeftBumper:
+      return OperatorInterface::LogitechGamePad::LEFTSHOULDER;
+    case frc::XboxController::Button::kRightBumper:
+      return OperatorInterface::LogitechGamePad::RIGHTSHOULDER;
+    case frc::XboxController::Button::kLeftStick:
+      return OperatorInterface::LogitechGamePad::LEFT_STICK_PRESS;
+    case frc::XboxController::Button::kRightStick:
+      return OperatorInterface::LogitechGamePad::RIGHT_STICK_PRESS;
+    case frc::XboxController::Button::kA:
+      return OperatorInterface::LogitechGamePad::A_BUTTON;
+    case frc::XboxController::Button::kB:
+      return OperatorInterface::LogitechGamePad::B_BUTTON;
+    case frc::XboxController::Button::kX:
+      return OperatorInterface::LogitechGamePad::X_BUTTON;
+    case frc::XboxController::Button::kY:
+      return OperatorInterface::LogitechGamePad::Y_BUTTON;
+    case frc::XboxController::Button::kBack:
+      return OperatorInterface::LogitechGamePad::BACK_BUTTON;
+    case frc::XboxController::Button::kStart:
+      return OperatorInterface::LogitechGamePad::START_BUTTON;
+    default:
+      std::cerr << "Can't identify mapping for Xbox button " << xboxButtonId
+                << std::endl;
+      assert(false);
+      return -1;
+  }
+}
+
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command *command) {
+#ifdef DUAL_LOGITECH_CONTROLLERS
+  frc2::JoystickButton(&m_operatorStick,
+                       TranslateXBoxButtonToLogitechButton(buttonId))
+      .WhileTrue(command);
+#else
+  // TranslateXBoxButtonToLogitechButton
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
+#endif
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsPressed(
     int buttonId, frc2::Command *command) {
+#ifdef DUAL_LOGITECH_CONTROLLERS
+  frc2::JoystickButton(&m_operatorStick,
+                       TranslateXBoxButtonToLogitechButton(buttonId))
+      .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
+      .OnTrue(command);
+#else
   frc2::JoystickButton(&m_operatorController, buttonId)
       .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
       .OnTrue(command);
+#endif
 }
 
-// ToggleOnTrue command can be used or should this be in each individual command
-
-void RobotContainer::ConfigureControllerButtonBindings() {
-  static ExtendIntake extendIntake(&m_intakeDeployment, 0.30);
-  static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
-  // static ClampWithIntake clampWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
-  // static ReleaseWithIntake releaseWithIntake(&m_intakeClamp, 0.5); NOT NEEDED
-  static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
-  static MoveFloorEjection moveFloor(&m_floorEjection, 0.2);
-  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
-  // static ShootTheGamePiece shootPiece(&m_floorEjection, 45,0.3);  // Not
-  // Working Yet
-  static MoveFloorEjectionAtPowerForTime shootPiece(&m_floorEjection, 0.45,
-                                                    0.25_s);
+void RobotContainer::ConfigureDriverControllerButtonBindings() {
   static SelfBalancing selfBalancing(&m_drivebase);
   static ToggleBrakingMode toggleBrakingMode(&m_drivebase);
-  static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
-  static frc2::PrintCommand placeholder("Doing something!!!!");
-
-  // Rollers Controlled by Command TriggerBasedRollerCommand
-  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kX,
-                                        &toggleCubeOrCone);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     &retractIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &extendIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
-                                     &moveFloor);
-  RunCommandWhenOperatorButtonIsPressed(
-      frc::XboxController::Button::kRightBumper, &resetFloorEjection);
-  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kB,
-                                        &shootPiece);
 
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::B_BUTTON, &toggleBrakingMode);
@@ -275,6 +321,31 @@ void RobotContainer::ConfigureControllerButtonBindings() {
         m_configSettings.switchDriveEngaged =
             !m_configSettings.switchDriveEngaged;
       }));
+}
+
+void RobotContainer::ConfigureOperatorControllerButtonBindings() {
+  static ExtendIntake extendIntake(&m_intakeDeployment, 0.30);
+  static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
+  static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
+  static MoveFloorEjection moveFloor(&m_floorEjection, 0.2);
+  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
+  static MoveFloorEjectionAtPowerForTime shootPiece(&m_floorEjection, 0.45,
+                                                    0.25_s);
+  static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
+
+  // Rollers Controlled by Command TriggerBasedRollerCommand
+  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kX,
+                                        &toggleCubeOrCone);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &retractIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &extendIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
+                                     &moveFloor);
+  RunCommandWhenOperatorButtonIsPressed(
+      frc::XboxController::Button::kRightBumper, &resetFloorEjection);
+  RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kB,
+                                        &shootPiece);
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {
@@ -299,18 +370,21 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
       operationName, teamAndPosName);
 }
 
-void RobotContainer::AddTestButtonsToSmartDashboard() {
-  // Sample lighting commands.
-  /*frc::SmartDashboard::PutData("Black&White",
+void RobotContainer::AddSampleLightingToSmartDashboard() {
+  frc::SmartDashboard::PutData("Black&White",
                                new BlackAndWhiteLights(&m_lighting));
   frc::SmartDashboard::PutData(
       "Split Lighting",
-      new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));*/
-  frc::SmartDashboard::PutData("STRAIGHT LINE DRIVING FORWARD",
-                               new StraightLineDriving(&m_drivebase, 0.8, 6_m));
-  frc::SmartDashboard::PutData(
-      "STRAIGHT LINE DRIVING BACKWARD",
-      new StraightLineDriving(&m_drivebase, -0.8, 6_m));
+      new SplitLightingExample(&m_lighting, Lighting::RED, Lighting::BLUE));
+}
+
+void RobotContainer::AddTestButtonsToSmartDashboard() {
+  // frc::SmartDashboard::PutData("STRAIGHT LINE DRIVING FORWARD",
+  //                              new StraightLineDriving(&m_drivebase, 0.8,
+  //                              6_m));
+  // frc::SmartDashboard::PutData(
+  //     "STRAIGHT LINE DRIVING BACKWARD",
+  //     new StraightLineDriving(&m_drivebase, -0.8, 6_m));
   frc::SmartDashboard::PutData(
       "Turn 90 Left Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
@@ -353,7 +427,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Set not inverted",
       new frc2::InstantCommand([this]() { EngageSwitchDrive(false); }));
 
-  frc::SmartDashboard::PutData("Test Command", TESTCOMMAND());
+  frc::SmartDashboard::PutData("Test Command", TestDrivingAndTurningCommand());
 
   frc::SmartDashboard::PutData("PATHWEAVER TEST COMMAND", TestPathCommand());
 
@@ -370,61 +444,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Autonmous Intake Extension",
       new AutoIntakeExtension(&m_intakeDeployment, 0.5));
-  /*
-    frc::SmartDashboard::PutData(
-        "Shoot 70 for 0.15",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.7, 0.15_s));
-    frc::SmartDashboard::PutData(
-        "Shoot 70 for 0.1",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.7, 0.1_s));
-    frc::SmartDashboard::PutData(
-        "Shoot 80 for 0.1",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.8, 0.1_s));
-    frc::SmartDashboard::PutData(
-        "Shoot 90 for 0.1",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.9, 0.1_s));*/
-  /*frc::SmartDashboard::PutData("YEET", new MoveFloorEjectionAtPowerForTime(
-                                           &m_floorEjection, 1.00, 0.2_s));
-  frc::SmartDashboard::PutData(
-      "Shoot 50 for 0.1",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.1_s));
-  frc::SmartDashboard::PutData(
-      "Shoot 30 for 0.25",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.3, 0.25_s));
-  frc::SmartDashboard::PutData(
-      "Shoot 35 for 0.25",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.35, 0.25_s));
-  frc::SmartDashboard::PutData(
-      "Shoot 40 for 0.2",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.4, 0.2_s));
-  frc::SmartDashboard::PutData(
-      "Shoot 50 for 0.2",
-      new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 0.5, 0.2_s));*/
-
-  /*
-    frc::SmartDashboard::PutData(
-        "Curiousity",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.075_s));
-    frc::SmartDashboard::PutData(
-        "Curiousity lower",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, 1.00, 0.065_s));
-    frc::SmartDashboard::PutData("Safety", new MoveFloorEjectionAtPowerForTime(
-                                               &m_floorEjection, 0.1, 0.75_s));
-    frc::SmartDashboard::PutData(
-        "Safety Back",
-        new MoveFloorEjectionAtPowerForTime(&m_floorEjection, -0.1, 1_s));
-
-    frc::SmartDashboard::PutData(
-        "Intake Extension Timed",
-        new ExtendIntakeAtSpeedForTime(&m_intakeDeployment, 0.3, 0.2_s));
-    frc::SmartDashboard::PutData(
-        "Intake Retraction Timed",
-        new RetractIntakeAtSpeedForTime(&m_intakeDeployment, 0.5, 0.2_s));
-    frc::SmartDashboard::PutData("Intake Extension",
-                                 new ExtendIntake(&m_intakeDeployment, 0.3));
-    frc::SmartDashboard::PutData("Intake Retraction",
-                                 new ExtendIntake(&m_intakeDeployment, 0.5));
-    */
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
@@ -533,7 +552,7 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
                                &m_RobotSequenceAutonomousOptions);
 }
 
-frc2::SequentialCommandGroup *RobotContainer::TESTCOMMAND() {
+frc2::SequentialCommandGroup *RobotContainer::TestDrivingAndTurningCommand() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(
       std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));

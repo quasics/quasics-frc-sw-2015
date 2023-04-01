@@ -28,25 +28,16 @@ class TriggerBasedRollerCommand
  public:
   TriggerBasedRollerCommand(IntakeRoller* intakeRoller,
                             ConfigSettings* settings,
-                            frc::XboxController* xboxController);
+                            std::function<bool()> intakeTriggered,
+                            std::function<bool()> exhaustTriggered);
 
   void Execute() override;
 
   void End(bool interrupted) override;
 
  private:
-  bool IsRightTriggerPressed() {
-    return m_controller->GetRawAxis(frc::XboxController::Axis::kRightTrigger) >
-           0.5;
-  }
-
-  bool IsLeftTriggerPressed() {
-    return m_controller->GetRawAxis(frc::XboxController::Axis::kLeftTrigger) >
-           0.5;
-  }
-
- private:
   IntakeRoller* const m_intakeRoller;
   ConfigSettings* m_settings;
-  frc::XboxController* const m_controller;
+  std::function<bool()> m_intakeTriggered;
+  std::function<bool()> m_exhaustTriggered;
 };

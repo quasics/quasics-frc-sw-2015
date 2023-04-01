@@ -227,10 +227,10 @@ constexpr int B_CHANNEL = 1;
 }  // namespace ThroughBore
 
 namespace OperatorInterface {
-// Joystick slot used for "driver" controller (normally a Logitech).
+// Joystick slot used for "driver" controller (normally Logitech hardware).
 constexpr int DRIVER_JOYSTICK = 0;
 
-// Joystick slot used for "operator" controller (normally an Xbox).
+// Joystick slot used for "operator" controller (normally Xbox hardware).
 constexpr int OPERATOR_JOYSTICK = 1;
 
 using RateLimit = units::unit_t<

@@ -106,9 +106,10 @@ class RobotContainer {
   FloorEjection m_floorEjection;
   Lighting m_lighting;
 
+  // Used to load/build trajectory commands.
   TrajectoryCommandGenerator m_trajectoryGenerator;
 
-  // Settings accessed across multiple commands
+  // Settings accessed across multiple commands.
   ConfigSettings m_configSettings;
 
   // Supporting autonomous mode command selection/building.

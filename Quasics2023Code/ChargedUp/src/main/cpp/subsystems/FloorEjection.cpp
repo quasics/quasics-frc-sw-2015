@@ -13,8 +13,10 @@ FloorEjection::FloorEjection() {
 }
 
 void FloorEjection::SetFloorEjectionPower(double power) {
+#ifdef ENABLE_FLOOR_EJECTION_MOTOR
   m_floorEjectionMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, power);
+#endif
 }
 
 double FloorEjection::GetPosition() {
@@ -47,8 +49,10 @@ double FloorEjection::GetVelocity() {
 }
 
 void FloorEjection::Stop() {
+#ifdef ENABLE_FLOOR_EJECTION_MOTOR
   m_floorEjectionMotor.Set(
       ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, 0);
+#endif
 }
 
 bool FloorEjection::FloorRetracted() {
@@ -57,6 +61,7 @@ bool FloorEjection::FloorRetracted() {
 }
 
 void FloorEjection::SetBrakingMode(bool brake) {
+#ifdef ENABLE_FLOOR_EJECTION_MOTOR
   if (brake) {
     m_floorEjectionMotor.SetNeutralMode(
         ctre::phoenix::motorcontrol::NeutralMode::Brake);
@@ -64,6 +69,7 @@ void FloorEjection::SetBrakingMode(bool brake) {
     m_floorEjectionMotor.SetNeutralMode(
         ctre::phoenix::motorcontrol::NeutralMode::Coast);
   }
+#endif
 }
 
 // This method will be called once per scheduler run

@@ -441,9 +441,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Normal mode driving",
       new frc2::InstantCommand([this]() { SetDriveMode(DriveMode::eNormal); }));
 
-  frc::SmartDashboard::PutData("Test Command", TestDrivingAndTurningCommand());
+  /*frc::SmartDashboard::PutData("Test Command",
+  TestDrivingAndTurningCommand());
 
-  frc::SmartDashboard::PutData("PATHWEAVER TEST COMMAND", TestPathCommand());
+  frc::SmartDashboard::PutData("PATHWEAVER TEST COMMAND", TestPathCommand());*/
 
   if (false) {
     // AprilTag test commands

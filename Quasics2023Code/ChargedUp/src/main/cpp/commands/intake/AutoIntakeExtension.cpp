@@ -32,7 +32,7 @@ void AutoIntakeExtension::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool AutoIntakeExtension::IsFinished() {
-  if (m_intakeDeployment->IsIntakeDeployed(
+  if (!m_intakeDeployment->IsIntakeDeployed(
           IntakeDeployment::LimitSwitch::Extended)) {
     std::cerr << "Intake Limit switch says it's pressed.\n";
     counter++;

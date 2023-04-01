@@ -22,8 +22,6 @@ TriggerBasedRollerCommand::TriggerBasedRollerCommand(
 // Called repeatedly when this Command is scheduled to run
 void TriggerBasedRollerCommand::Execute() {
   bool intakingCubes = m_settings->intakingCubes;
-  frc::SmartDashboard::PutString("Intake Setting",
-                                 intakingCubes ? "Cubes" : "Cones");
   if (m_intakeTriggered()) {
     if (intakingCubes) {
       m_intakeRoller->SetRollerSpeed(IntakeConstants::RollerSpeeds::CUBES);

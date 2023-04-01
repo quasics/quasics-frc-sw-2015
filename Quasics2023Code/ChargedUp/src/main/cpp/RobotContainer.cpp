@@ -589,5 +589,7 @@ frc2::SequentialCommandGroup *RobotContainer::TestPathCommand() {
 }
 
 void RobotContainer::Periodic() {
+  frc::SmartDashboard::PutString(
+      "Intake Setting", m_configSettings.intakingCubes ? "Cubes" : "Cones");
   // Do something.....
 }

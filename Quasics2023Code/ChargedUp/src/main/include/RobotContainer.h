@@ -36,6 +36,8 @@ class RobotContainer {
  public:
   RobotContainer();
 
+  // Called by the Robot class when autonomous mode starts, to get the command
+  // (or command sequence) to be executed.
   frc2::Command *GetAutonomousCommand();
 
   // Note: this is different from the Periodic functions in the subsystems,

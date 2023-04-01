@@ -226,19 +226,11 @@ constexpr int A_CHANNEL = 0;
 constexpr int B_CHANNEL = 1;
 }  // namespace ThroughBore
 
-namespace OperatorConstants {
-/** Joystick port for the driver's controller. */
-// CODE_REVIEW(matthew): This is a duplicate constant, and should be cleaned up.
-// See DRIVER_JOYSTICK, below.
-constexpr int kDriverControllerPort = 0;
-}  // namespace OperatorConstants
-
 namespace OperatorInterface {
-// CODE_REVIEW(matthew): This is a duplicate constant, and should be cleaned up.
-// See kDriverControllerPort, above.
+// Joystick slot used for "driver" controller (normally a Logitech).
 constexpr int DRIVER_JOYSTICK = 0;
 
-// Joystick slot used for "operator" controller.
+// Joystick slot used for "operator" controller (normally an Xbox).
 constexpr int OPERATOR_JOYSTICK = 1;
 
 using RateLimit = units::unit_t<

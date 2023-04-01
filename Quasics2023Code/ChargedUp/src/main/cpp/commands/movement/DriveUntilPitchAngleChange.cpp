@@ -20,6 +20,8 @@ DriveUntilPitchAngleChange::DriveUntilPitchAngleChange(Drivebase *drivebase,
 // Called when the command is initially scheduled.
 void DriveUntilPitchAngleChange::Initialize() {
   std::cout << "Starting Until Pitch Angle Change" << std::endl;
+  m_leftStartingPosition = m_drivebase->GetLeftDistance();
+  m_rightStartingPosition = m_drivebase->GetRightDistance();
   m_drivebase->TankDrive(m_power, m_power);
 }
 

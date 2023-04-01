@@ -36,8 +36,8 @@ void TurnDegreesImported::Execute() {
   units::degree_t currentPosition = m_drivebase->GetYaw();
   if (std::abs((m_startingposition + m_angle - currentPosition).value()) <
           52.5 &&
-      (std::abs(m_speed) > 0.3)) {
-    m_subtraction = std::abs(m_speed) - 0.3;
+      (std::abs(m_speed) > 0.30)) {
+    m_subtraction = std::abs(m_speed) - 0.30;
     std::cout << "Invoking subtraction" << std::endl;
   }
   m_drivebase->SetBrakingMode(true);
@@ -74,11 +74,11 @@ bool TurnDegreesImported::IsFinished() {
   } else {
     units::degree_t currentPosition = m_drivebase->GetYaw();
     if (m_angle > 0_deg) {
-      if (currentPosition > m_startingposition + m_angle - 20_deg) {
+      if (currentPosition > m_startingposition + m_angle - 22_deg) {
         return true;
       }
-    } else {
-      if (currentPosition < m_startingposition + m_angle + 20_deg) {
+    } else {  // the right turn encounters friction needs to stop a little later
+      if (currentPosition < m_startingposition + m_angle + 15_deg) {
         return true;
       }
     }

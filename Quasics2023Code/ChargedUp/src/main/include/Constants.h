@@ -74,7 +74,7 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSpeeds {
-constexpr auto DRIVE_SPEED = 0.4;
+constexpr auto DRIVE_SPEED = 0.8;
 constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
@@ -124,6 +124,7 @@ const auto DropAndGTFO = "Drop Game Piece and Leave";
 const auto DropAndCharge = "Drop and Charge";
 const auto ScoreTwiceThenCharge =
     "Score one game piece, get and score another from the center, then charge";
+const auto DropTwiceThenCharge = "Drop Get Another, Drop, Charge";
 }  // namespace AutonomousSelectedOperation
 
 namespace PathWeaverConstants {

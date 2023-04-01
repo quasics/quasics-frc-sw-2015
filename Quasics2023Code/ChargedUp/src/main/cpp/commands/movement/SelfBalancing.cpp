@@ -13,6 +13,7 @@ SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase) {
 
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
+  std::cout << "Begginnning to Self Balance" << std::endl;
   noFeedFowardPower = false;
   activatePID = false;
   pid.Reset();
@@ -31,6 +32,7 @@ void SelfBalancing::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
+  std::cout << "Self Balancing" << std::endl;
   double currentAngle =
       m_drivebase->GetPitch() * -1;  // GYRO ON GLADYS IS GIVING ROLL AS UP AND
                                      // DOWN ANGLE NEGATED BECAUSE OF VALUES
@@ -65,6 +67,7 @@ void SelfBalancing::Execute() {
 
 // Called once the command ends or is interrupted.
 void SelfBalancing::End(bool interrupted) {
+  std::cout << "Ending Balancing" << std::endl;
   m_drivebase->Stop();
 }
 

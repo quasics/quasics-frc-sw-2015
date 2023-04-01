@@ -92,6 +92,11 @@ namespace Helpers {
                                             IntakeRoller *intakeRoller,
                                             FloorEjection *floorEjection,
                                             std::string teamAndPosName);
+  frc2::Command *DropThree(Drivebase *drivebase,
+                           IntakeDeployment *intakeDeployment,
+                           IntakeRoller *intakeRoller,
+                           FloorEjection *floorEjection,
+                           std::string teamAndPosName);
 }  // namespace Helpers
 }  // namespace AutonomousCommands
 

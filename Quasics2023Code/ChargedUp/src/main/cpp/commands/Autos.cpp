@@ -44,12 +44,12 @@ namespace Helpers {
 
   frc2::Command *ScoreGamePieceHelperCommand(FloorEjection *floorEjection) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    /*commands.push_back(
+    commands.push_back(
         std::unique_ptr<frc2::Command>(new MoveFloorEjectionAtPowerForTime(
             floorEjection, AutonomousSpeeds::SCORE_FLOOR_EJECTION_SPEED,
             AutonomousSpeeds::SCORE_FLOOR_EJECTION_TIME)));
     commands.push_back(std::unique_ptr<frc2::Command>(new AutoFloorRetract(
-        floorEjection, AutonomousSpeeds::FLOOR_RETRACTION_SPEED)));*/
+        floorEjection, AutonomousSpeeds::FLOOR_RETRACTION_SPEED)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -538,7 +538,7 @@ namespace Helpers {
            teamAndPosName == AutonomousTeamAndStationPositions::Red3);
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
-              TurnDegreesImported{drivebase, 0.5, 90_deg},
+              TurnDegreesImported{drivebase, 0.5, 95_deg},  // CHANGED
               TurnDegreesImported{drivebase, 0.5, -90_deg},
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
@@ -761,6 +761,15 @@ namespace Helpers {
 
 }  // namespace Helpers
 
+frc2::Command *DropThree(Drivebase *drivebase,
+                         IntakeDeployment *intakeDeployment,
+                         IntakeRoller *intakeRoller,
+                         FloorEjection *floorEjection,
+                         std::string teamAndPosName) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
 frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                     IntakeDeployment *intakeDeployment,
                                     IntakeRoller *intakeRoller,
@@ -868,6 +877,10 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     return ScoreTwiceThenChargeCommand(drivebase, intakeDeployment,
                                        intakeRoller, floorEjection,
                                        teamAndPosName);
+  } else if (operationName ==
+             AutonomousSelectedOperation::DropTwiceThenCharge) {
+    return DropTwiceThenChargeCommand(drivebase, intakeDeployment, intakeRoller,
+                                      floorEjection, teamAndPosName);
   }
 
   static frc2::PrintCommand fallThroughCaseCommand(

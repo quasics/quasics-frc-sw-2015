@@ -122,9 +122,9 @@ const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
 const auto DropGamePiece = "Drop Game Piece";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
 const auto DropAndCharge = "Drop and Charge";
-const auto ScoreTwiceThenCharge =
-    "Score one game piece, get and score another from the center, then charge";
+const auto ScoreTwiceThenCharge = "Score get another score charge";
 const auto DropTwiceThenCharge = "Drop Get Another, Drop, Charge";
+const auto DropThree = "Drop, Pickup, Repeat 3 times";
 }  // namespace AutonomousSelectedOperation
 
 namespace PathWeaverConstants {

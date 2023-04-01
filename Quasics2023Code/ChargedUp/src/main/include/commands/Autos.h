@@ -36,6 +36,16 @@ namespace Helpers {
       Drivebase *drivebase, IntakeRoller *intakeRoller,
       IntakeDeployment *intakeDeployment);
 
+  frc2::Command *ScoreTwoGamePiecesHelperCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      IntakeRoller *intakeRoller, FloorEjection *floorEjection, bool Dropping,
+      std::string teamAndPosName);
+
+  frc2::Command *DrivingBackToStartingPositionHelperCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      IntakeRoller *intakeRoller, FloorEjection *floorEjection,
+      std::string teamAndPosName);
+
   frc2::Command *GTFODOCK(Drivebase *drivebase, std::string teamAndPosName);
 
   frc2::Command *MoveToDefenseAgainstScoringWall(Drivebase *drivebase,
@@ -55,10 +65,10 @@ namespace Helpers {
                                  IntakeRoller *intakeRoller,
                                  std::string teamAndPosName);
 
-  frc2::Command *ScoreThenEndNearGamePieceCommand(Drivebase *drivebase,
-                                                  FloorEjection floorEjection,
-                                                  IntakeRoller *intakeRoller,
-                                                  std::string teamAndPosName);
+  frc2::Command *ScoreThenEndNearGamePieceCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      FloorEjection *floorEjection, IntakeRoller *intakeRoller,
+      std::string teamAndPosName);
 
   frc2::Command *DropThenEndNearGamePieceCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,

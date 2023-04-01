@@ -63,7 +63,8 @@ class RobotContainer {
 
   // Driving support.
  private:
-  void EngageSwitchDrive(bool invert);
+  enum class DriveMode { eNormal, eSwitched };
+  void SetDriveMode(DriveMode mode);
   double GetDriveSpeedScalingFactor();
 
   // Helper functions.

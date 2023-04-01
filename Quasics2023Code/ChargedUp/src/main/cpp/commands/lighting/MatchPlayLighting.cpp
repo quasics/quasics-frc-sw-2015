@@ -63,20 +63,20 @@ void MatchPlayLighting::Execute() {
   // Figure out what we need to communicate.
   const auto allianceData = frc::DriverStation::GetAlliance();
   const RequestedPayload requestedPayload = m_configSettings->requestedPayload;
-  bool switchDriveEngaged = m_configSettings->switchDriveEngaged;
+  const bool normalDriveEngaged = m_configSettings->normalDriveEngaged;
 
   frc::AddressableLED::LEDData allianceColor = Lighting::GREEN;
-  if (switchDriveEngaged) {
-    if (allianceData == frc::DriverStation::kRed) {
-      allianceColor = Lighting::PINK;
-    } else if (allianceData == frc::DriverStation::kBlue) {
-      allianceColor = Lighting::CYAN;
-    }
-  } else {
+  if (normalDriveEngaged) {
     if (allianceData == frc::DriverStation::kRed) {
       allianceColor = Lighting::RED;
     } else if (allianceData == frc::DriverStation::kBlue) {
       allianceColor = Lighting::BLUE;
+    }
+  } else {
+    if (allianceData == frc::DriverStation::kRed) {
+      allianceColor = Lighting::PINK;
+    } else if (allianceData == frc::DriverStation::kBlue) {
+      allianceColor = Lighting::CYAN;
     }
   }
 

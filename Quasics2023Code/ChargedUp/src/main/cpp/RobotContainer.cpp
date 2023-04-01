@@ -147,7 +147,7 @@ void RobotContainer::SetDefaultTankDrive() {
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double joystickValue;
 
-        if (m_configSettings.switchDriveEngaged) {
+        if (m_configSettings.normalDriveEngaged) {
           joystickValue = -1 * scalingFactor *
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -162,7 +162,7 @@ void RobotContainer::SetDefaultTankDrive() {
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double joystickValue;
 
-        if (m_configSettings.switchDriveEngaged) {
+        if (m_configSettings.normalDriveEngaged) {
           joystickValue = -1 * scalingFactor *
                           m_driverStick.GetRawAxis(
                               OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
@@ -184,7 +184,7 @@ void RobotContainer::SetDefaultSplitArcadeDrive() {
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double powertoRobot;
 
-        if (m_configSettings.switchDriveEngaged)
+        if (m_configSettings.normalDriveEngaged)
           powertoRobot = (-1) * scalingFactor *
                          m_driverStick.GetRawAxis(
                              OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
@@ -200,7 +200,7 @@ void RobotContainer::SetDefaultSplitArcadeDrive() {
         const double scalingFactor = GetDriveSpeedScalingFactor();
         double rotationtoRobot;
 
-        if (m_configSettings.switchDriveEngaged)
+        if (m_configSettings.normalDriveEngaged)
           rotationtoRobot =
               (-1) * scalingFactor * 0.75 *
               m_driverStick.GetRawAxis(
@@ -217,8 +217,8 @@ void RobotContainer::SetDefaultSplitArcadeDrive() {
   m_drivebase.SetDefaultCommand(arcadeDrive);
 }
 
-void RobotContainer::EngageSwitchDrive(bool invert) {
-  m_configSettings.switchDriveEngaged = invert;
+void RobotContainer::SetDriveMode(DriveMode mode) {
+  m_configSettings.normalDriveEngaged = (mode == DriveMode::eNormal);
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
@@ -319,8 +319,8 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
   RunCommandWhenDriverButtonIsPressed(
       OperatorInterface::LogitechGamePad::BACK_BUTTON,
       new frc2::InstantCommand([this]() {
-        m_configSettings.switchDriveEngaged =
-            !m_configSettings.switchDriveEngaged;
+        m_configSettings.normalDriveEngaged =
+            !m_configSettings.normalDriveEngaged;
       }));
 }
 
@@ -430,13 +430,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
 
-  frc::SmartDashboard::PutData(
-      "Set inverted",
-      new frc2::InstantCommand([this]() { EngageSwitchDrive(true); }));
+  frc::SmartDashboard::PutData("Switch mode driving",
+                               new frc2::InstantCommand([this]() {
+                                 SetDriveMode(DriveMode::eSwitched);
+                               }));
 
   frc::SmartDashboard::PutData(
-      "Set not inverted",
-      new frc2::InstantCommand([this]() { EngageSwitchDrive(false); }));
+      "Normal mode driving",
+      new frc2::InstantCommand([this]() { SetDriveMode(DriveMode::eNormal); }));
 
   frc::SmartDashboard::PutData("Test Command", TestDrivingAndTurningCommand());
 

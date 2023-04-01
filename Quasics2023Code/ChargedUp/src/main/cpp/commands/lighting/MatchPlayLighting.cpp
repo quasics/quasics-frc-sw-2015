@@ -63,7 +63,6 @@ void MatchPlayLighting::Execute() {
   // Figure out what we need to communicate.
   const auto allianceData = frc::DriverStation::GetAlliance();
   const RequestedPayload requestedPayload = m_configSettings->requestedPayload;
-  const bool singleLights = (requestedPayload == RequestedPayload::eNothing);
   bool switchDriveEngaged = m_configSettings->switchDriveEngaged;
 
   frc::AddressableLED::LEDData allianceColor = Lighting::GREEN;

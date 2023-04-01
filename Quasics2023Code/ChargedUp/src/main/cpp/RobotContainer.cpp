@@ -328,7 +328,8 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
   static MoveFloorEjection moveFloor(&m_floorEjection, 0.2);
-  static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
+  // static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
+  static MoveFloorEjection resetFloorEjection(&m_floorEjection, -0.2);
   static MoveFloorEjectionAtPowerForTime shootPiece(&m_floorEjection, 0.45,
                                                     0.25_s);
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);

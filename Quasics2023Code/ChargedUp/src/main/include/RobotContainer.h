@@ -86,7 +86,6 @@ class RobotContainer {
  private:
   // Driver's controller.
   frc::Joystick m_driverStick{OperatorInterface::DRIVER_JOYSTICK};
-  // Replace with CommandPS4Controller or CommandJoystick if needed
 
   // Operator's controller.
 #ifdef DUAL_LOGITECH_CONTROLLERS

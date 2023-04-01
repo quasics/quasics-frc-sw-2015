@@ -38,6 +38,12 @@ class RobotContainer {
 
   frc2::Command *GetAutonomousCommand();
 
+  // Note: this is different from the Periodic functions in the subsystems,
+  // which are called by the framework.  We're *making* this happen via custom
+  // code in Robot.cpp.
+  void Periodic();
+
+ private:
   void RunCommandWhileDriverButtonIsHeld(int logitechButtonId,
                                          frc2::Command *command);
   void RunCommandWhenDriverButtonIsPressed(int logitechButtonId,
@@ -53,18 +59,13 @@ class RobotContainer {
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotSequenceSelectorToSmartDashboard();
 
-  void setInverted(bool invert);
+  void EngageSwitchDrive(bool invert);
 
   void AddTestButtonsToSmartDashboard();
 
   frc2::SequentialCommandGroup *TESTCOMMAND();
 
   frc2::SequentialCommandGroup *TestPathCommand();
-
-  // Note: this is different from the Periodic functions in the subsystems,
-  // which are called by the framework.  We're *making* this happen via custom
-  // code in Robot.cpp.
-  void Periodic();
 
  private:
   // Driver's controller.

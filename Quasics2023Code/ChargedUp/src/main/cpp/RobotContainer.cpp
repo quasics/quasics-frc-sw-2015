@@ -52,8 +52,8 @@
 #include "commands/movement/ToggleBrakingMode.h"
 #include "commands/movement/TurnDegreesImported.h"
 
-#undef NormalDriving
-#define splitStickMovement
+#undef ENABLE_TANK_DRIVE
+#define ENABLE_SPLIT_ARCADE_DRIVE
 
 RobotContainer::RobotContainer()
     : m_trajectoryGenerator(
@@ -75,7 +75,7 @@ RobotContainer::RobotContainer()
       m_rightSlewRateLimiter{OperatorInterface::DRIVER_JOYSTICK_RATE_LIMIT} {
   // Initialize all of your commands and subsystems here
 
-#ifdef NormalDriving
+#ifdef ENABLE_TANK_DRIVE
   TankDrive tankDrive{
       &m_drivebase,
       [this] {
@@ -113,7 +113,7 @@ RobotContainer::RobotContainer()
   m_drivebase.SetDefaultCommand(tankDrive);
 #endif
 
-#ifdef splitStickMovement
+#ifdef ENABLE_SPLIT_ARCADE_DRIVE
   ArcadeDrive arcadeDrive{
       &m_drivebase,
       [this] {
@@ -178,7 +178,7 @@ RobotContainer::RobotContainer()
 #endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
 }
 
-void RobotContainer::setInverted(bool invert) {
+void RobotContainer::EngageSwitchDrive(bool invert) {
   m_configSettings.switchDriveEngaged = invert;
 }
 
@@ -339,11 +339,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "Set inverted",
-      new frc2::InstantCommand([this]() { setInverted(true); }));
+      new frc2::InstantCommand([this]() { EngageSwitchDrive(true); }));
 
   frc::SmartDashboard::PutData(
       "Set not inverted",
-      new frc2::InstantCommand([this]() { setInverted(false); }));
+      new frc2::InstantCommand([this]() { EngageSwitchDrive(false); }));
 
   frc::SmartDashboard::PutData("Test Command", TESTCOMMAND());
 

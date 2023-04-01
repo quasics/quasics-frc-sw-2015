@@ -21,6 +21,7 @@
 #include "commands/clamp/ClampWithIntake.h"
 #include "commands/clamp/ClampWithIntakeAtSpeedForTime.h"
 #include "commands/examples/BlackAndWhiteLights.h"
+#include "commands/examples/RainbowLighting.h"
 #include "commands/examples/SplitLightingExample.h"
 #include "commands/floor/AutoFloorRetract.h"
 #include "commands/floor/MoveFloorEjection.h"
@@ -97,7 +98,7 @@ RobotContainer::RobotContainer()
   AddTestButtonsToSmartDashboard();
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotSequenceSelectorToSmartDashboard();
-  // AddSampleLightingToSmartDashboard();
+  AddSampleLightingToSmartDashboard();
 
 #ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
   frc::SmartDashboard::PutData(&m_drivebase);
@@ -373,6 +374,7 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddSampleLightingToSmartDashboard() {
+  frc::SmartDashboard::PutData("Rainbow", new RainbowLighting(&m_lighting));
   frc::SmartDashboard::PutData("Black&White",
                                new BlackAndWhiteLights(&m_lighting));
   frc::SmartDashboard::PutData(

@@ -7,13 +7,13 @@ enum class RequestedPayload { eNothing, eCubes, eCones };
 /** Structure used to hold data used across commands. */
 struct ConfigSettings {
   /** If false, signals that "switch mode" is engaged for driving. */
-  bool normalDriveEngaged = true;
+  volatile bool normalDriveEngaged = true;
 
   /** Used to signal intake speed (based on target game piece type). */
-  bool intakingCubes = true;
+  volatile bool intakingCubes = true;
 
   /** Used to signal human player what should be loaded. */
-  RequestedPayload requestedPayload = RequestedPayload::eNothing;
+  volatile RequestedPayload requestedPayload = RequestedPayload::eNothing;
 };
 
 #endif  // CONFIG_SETTINGS_H

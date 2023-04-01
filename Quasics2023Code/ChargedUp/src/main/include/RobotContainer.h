@@ -75,11 +75,13 @@ class RobotContainer {
   void RunCommandWhenOperatorButtonIsPressed(int buttonId,
                                              frc2::Command *command);
 
+  static int TranslateXBoxButtonToLogitechButton(int xboxButtonId);
+
+  // Generate some test commands (for debugging).
+ private:
   frc2::SequentialCommandGroup *TestDrivingAndTurningCommand();
 
   frc2::SequentialCommandGroup *TestPathCommand();
-
-  static int TranslateXBoxButtonToLogitechButton(int xboxButtonId);
 
  private:
   // Driver's controller.

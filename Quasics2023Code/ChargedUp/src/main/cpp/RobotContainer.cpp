@@ -48,6 +48,7 @@
 #include "commands/movement/ArcadeDrive.h"
 #include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
+#include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
 #include "commands/movement/SelfBalancing.h"
 #include "commands/movement/StraightLineDriving.h"
@@ -398,6 +399,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   // frc::SmartDashboard::PutData(
   //     "STRAIGHT LINE DRIVING BACKWARD",
   //     new StraightLineDriving(&m_drivebase, -0.8, 6_m));
+  /*
   frc::SmartDashboard::PutData(
       "Turn 90 Left Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
@@ -409,7 +411,15 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new TurnDegreesImported(&m_drivebase, 0.5, 180_deg));
   frc::SmartDashboard::PutData(
       "Turn 180 Right Degrees: ",
-      new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));
+      new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));*/
+  frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
+                               new PIDTurning(&m_drivebase, 90_deg));
+  frc::SmartDashboard::PutData("Turn 90 Right Degrees: ",
+                               new PIDTurning(&m_drivebase, -90_deg));
+  frc::SmartDashboard::PutData("Turn 180 Left Degrees: ",
+                               new PIDTurning(&m_drivebase, 180_deg));
+  frc::SmartDashboard::PutData("Turn 180 Right Degrees: ",
+                               new PIDTurning(&m_drivebase, -180_deg));
 
   if (false) {
     frc::SmartDashboard::PutData("Red lights",

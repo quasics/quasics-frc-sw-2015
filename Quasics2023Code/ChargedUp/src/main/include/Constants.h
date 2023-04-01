@@ -237,6 +237,9 @@ namespace OperatorInterface {
 // See kDriverControllerPort, above.
 constexpr int DRIVER_JOYSTICK = 0;
 
+// Joystick slot used for "operator" controller.
+constexpr int OPERATOR_JOYSTICK = 1;
+
 using RateLimit = units::unit_t<
     units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
 

@@ -156,8 +156,8 @@ void PIDTurning::FeedForward() {
 */
   if (feedForward) {
     if (std::abs((startingAngle + m_angle - currentAngle).value()) < 45 &&
-        (std::abs(m_speed) > 0.30)) {
-      m_subtraction = std::abs(m_speed) - 0.30;
+        (std::abs(m_speed) > 0.20)) {
+      m_subtraction = std::abs(m_speed) - 0.20;
       std::cout << "Invoking subtraction" << std::endl;
     }
     m_drivebase->SetBrakingMode(true);

@@ -17,7 +17,9 @@
 #include "commands/intake/ExhaustWithRollerAtSpeedForTime.h"
 #include "commands/intake/ExtendIntakeAtSpeedForTime.h"
 #include "commands/intake/IntakeWithRoller.h"
+#include "commands/intake/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
+#include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
@@ -25,7 +27,7 @@
 #include "commands/movement/StraightLineDriving.h"
 #include "commands/movement/TurnDegreesImported.h"
 
-#define USING_PID_TURNING
+#undef USING_PID_TURNING
 #define USING_INTAKE_TO_SCORE
 
 namespace AutonomousCommands {
@@ -37,11 +39,10 @@ namespace Helpers {
   frc2::Command *IntakeDropGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new ExhaustWithRollerAtSpeedForTime(
-            intakeRoller, IntakeConstants::RollerSpeeds::CUBES, 0.4_s)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new AutoIntakeExtension(intakeDeployment, 0.5)));
+        new IntakeWithRollerAtSpeedForTime(intakeRoller, -0.2, 0.8_s)));
+    /*commands.push_back(std::unique_ptr<frc2::Command>(
+        new AutoIntakeExtension(intakeDeployment, 0.5)));*/
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -51,10 +52,10 @@ namespace Helpers {
     /*commands.push_back(std::unique_ptr<frc2::Command>(
         new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.4_s)));*/
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new ExhaustWithRollerAtSpeedForTime(
-            intakeRoller, IntakeConstants::RollerSpeeds::CONES, 0.4_s)));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new AutoIntakeExtension(intakeDeployment, 0.5)));
+        std::unique_ptr<frc2::Command>(new IntakeWithRollerAtSpeedForTime(
+            intakeRoller, -IntakeConstants::RollerSpeeds::CONES, 1_s)));
+    /*commands.push_back(std::unique_ptr<frc2::Command>(
+        new AutoIntakeExtension(intakeDeployment, 0.5)));*/
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
@@ -446,10 +447,13 @@ namespace Helpers {
       // In this case, we need to move back out of the community area (for the
       // mobility points), and then move forward and balance on the charging
       // station.
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+              drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
+              4.0_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 4.0_m}));
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-          drivebase, AutonomousSpeeds::OVER_CHARGING_STATION_SPEED, 0.5_m}));
+          drivebase, 0.75 * AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
+          0.5_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
               drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
@@ -917,6 +921,8 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorScoreGamePieceHelperCommand(floorEjection)));
 #endif
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -935,8 +941,8 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
 #endif
-    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-        drivebase, AutonomousSpeeds::DRIVE_SPEED, -0.25_m)));
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));

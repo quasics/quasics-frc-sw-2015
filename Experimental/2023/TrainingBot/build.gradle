@@ -1,8 +1,7 @@
 plugins {
     id "cpp"
     id "google-test-test-suite"
-    id "edu.wpi.first.GradleRIO" version "2023.3.2"
-// If code does not works, try replacing the 2023.3.2 with 2023.4.2, Otherwise, ignore this message -Josh
+    id "edu.wpi.first.GradleRIO" version "2023.4.2"
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)

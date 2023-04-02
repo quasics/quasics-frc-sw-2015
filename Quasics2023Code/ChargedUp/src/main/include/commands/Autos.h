@@ -85,10 +85,12 @@ namespace Helpers {
 
   frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
                                      FloorEjection *floorEjection,
+                                     IntakeRoller *intakeRoller,
                                      std::string teamAndPosName);
   frc2::Command *DropGTFOThenCharge(Drivebase *drivebase,
                                     IntakeDeployment *intakeDeployment,
                                     FloorEjection *floorEjection,
+                                    IntakeRoller *intakeRoller,
                                     std::string teamAndPosName);
 
   frc2::Command *ScoreTwiceThenChargeCommand(Drivebase *drivebase,

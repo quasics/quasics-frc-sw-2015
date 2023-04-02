@@ -26,6 +26,7 @@
 #include "commands/movement/TurnDegreesImported.h"
 
 #define USING_PID_TURNING
+#define USING_INTAKE_TO_SCORE
 
 namespace AutonomousCommands {
 namespace Helpers {
@@ -33,22 +34,25 @@ namespace Helpers {
   // Implementation of all of the helper functions
   //
 
-  frc2::Command *IntakeDropGamePieceHelperCommand(IntakeRoller *intakeRoller) {
+  frc2::Command *IntakeDropGamePieceHelperCommand(
+      IntakeDeployment *intakeDeployment, IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(
         std::unique_ptr<frc2::Command>(new ExhaustWithRollerAtSpeedForTime(
             intakeRoller, IntakeConstants::RollerSpeeds::CUBES, 0.4_s)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new AutoIntakeExtension(intakeDeployment, 0.5)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
   frc2::Command *IntakeScoreGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.4_s)));
+    /*commands.push_back(std::unique_ptr<frc2::Command>(
+        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.4_s)));*/
     commands.push_back(
         std::unique_ptr<frc2::Command>(new ExhaustWithRollerAtSpeedForTime(
-            intakeRoller, IntakeConstants::RollerSpeeds::CUBES, 0.4_s)));
+            intakeRoller, IntakeConstants::RollerSpeeds::CONES, 0.4_s)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         new AutoIntakeExtension(intakeDeployment, 0.5)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -216,7 +220,25 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Red3 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue1;
             })));
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, -90_deg},
+            frc2::ConditionalCommand(
+                PIDTurning{drivebase, 90_deg},
+                frc2::PrintCommand{"Doing nothing"},
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Blue1 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Blue2;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Red1 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Red2;
+            })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -234,6 +256,7 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Red1 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Red2;
             })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
 
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -242,6 +265,24 @@ namespace Helpers {
   frc2::Command *moveToBlue1OrRed3(Drivebase *drivebase,
                                    std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, -90_deg},
+            frc2::ConditionalCommand(
+                PIDTurning{drivebase, 90_deg}, PIDTurning(drivebase, 180_deg),
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red2 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red1;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -259,6 +300,7 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Blue2 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
@@ -278,7 +320,25 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Red1 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, -90_deg},
+            frc2::ConditionalCommand(
+                PIDTurning{drivebase, 90_deg},
+                frc2::PrintCommand{"Doing nothing"},
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red2 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Red1;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -296,6 +356,7 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Blue2 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -309,21 +370,33 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, 90_deg}, PIDTurning{drivebase, -90_deg},
+            [isBlue] { return isBlue; })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, 90_deg},
             TurnDegreesImported{drivebase, 0.5, -90_deg},
             [isBlue] { return isBlue; })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 4_m}));
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, -47.9_deg}, PIDTurning{drivebase, 47.9_deg},
+            [isBlue] { return isBlue; })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, -47.9_deg},
             TurnDegreesImported{drivebase, 0.5, 47.9_deg},
             [isBlue] { return isBlue; })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.948_m}));
@@ -337,7 +410,18 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 2_m}));
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, 25.8_deg}, PIDTurning{drivebase, -25.8_deg},
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue1 ||
+                     teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Blue2 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
+            })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, 25.8_deg},
@@ -348,6 +432,7 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Blue2 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Blue3;
             })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
         drivebase, AutonomousSpeeds::DRIVE_SPEED, 3.845_m}));
@@ -820,12 +905,18 @@ namespace Helpers {
   frc2::Command *ScoreGTFOThenCharge(Drivebase *drivebase,
                                      IntakeDeployment *intakeDeployment,
                                      FloorEjection *floorEjection,
+                                     IntakeRoller *intakeRoller,
                                      std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+#ifdef USING_INTAKE_TO_SCORE
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        IntakeScoreGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorScoreGamePieceHelperCommand(floorEjection)));
+#endif
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -834,10 +925,16 @@ namespace Helpers {
   frc2::Command *DropGTFOThenCharge(Drivebase *drivebase,
                                     IntakeDeployment *intakeDeployment,
                                     FloorEjection *floorEjection,
+                                    IntakeRoller *intakeRoller,
                                     std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+#ifdef USING_INTAKE_TO_SCORE
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
+#endif
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
         drivebase, AutonomousSpeeds::DRIVE_SPEED, -0.25_m)));
     commands.push_back(
@@ -1109,7 +1206,10 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                           floorEjection, teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropGTFOCharge) {
     return DropGTFOThenCharge(drivebase, intakeDeployment, floorEjection,
-                              teamAndPosName);
+                              intakeRoller, teamAndPosName);
+  } else if (operationName == AutonomousSelectedOperation::ScoreGTFOCharge) {
+    return ScoreGTFOThenCharge(drivebase, intakeDeployment, floorEjection,
+                               intakeRoller, teamAndPosName);
   } else if (operationName ==
              AutonomousSelectedOperation::ScoreTwiceThenCharge) {
     return ScoreTwiceThenChargeCommand(drivebase, intakeDeployment,

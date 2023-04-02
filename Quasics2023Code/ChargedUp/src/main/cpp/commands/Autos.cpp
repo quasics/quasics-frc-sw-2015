@@ -19,10 +19,13 @@
 #include "commands/intake/IntakeWithRoller.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
+#include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
 #include "commands/movement/SelfBalancing.h"
 #include "commands/movement/StraightLineDriving.h"
 #include "commands/movement/TurnDegreesImported.h"
+
+#define USING_PID_TURNING
 
 namespace AutonomousCommands {
 namespace Helpers {
@@ -133,8 +136,14 @@ namespace Helpers {
       IntakeRoller *intakeRoller, FloorEjection *floorEjection,
       std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, -180_deg)));
+
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -151,7 +160,24 @@ namespace Helpers {
   frc2::Command *moveToBlue3OrRed1(Drivebase *drivebase,
                                    std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, -90_deg},
+            frc2::ConditionalCommand(
+                PIDTurning{drivebase, 90_deg}, PIDTurning(drivebase, 180_deg),
+                [teamAndPosName] {
+                  return teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Blue1 ||
+                         teamAndPosName ==
+                             AutonomousTeamAndStationPositions::Blue2;
+                }),
+            [teamAndPosName] {
+              return teamAndPosName ==
+                         AutonomousTeamAndStationPositions::Red3 ||
+                     teamAndPosName == AutonomousTeamAndStationPositions::Red2;
+            })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -169,6 +195,8 @@ namespace Helpers {
                          AutonomousTeamAndStationPositions::Red3 ||
                      teamAndPosName == AutonomousTeamAndStationPositions::Red2;
             })));
+#endif
+
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
@@ -352,6 +380,15 @@ namespace Helpers {
            teamAndPosName == AutonomousTeamAndStationPositions::Red1);
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
           drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
+
+#ifdef USING_PID_TURNING
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              PIDTurning{drivebase, 90_deg}, PIDTurning{drivebase, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+#else
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, 90_deg},
@@ -359,10 +396,19 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+#endif
       commands.push_back(
           std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
           drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.889_m}));
+#ifdef USING_PID_TURNING
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              PIDTurning{drivebase, -90_deg}, PIDTurning{drivebase, 90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+#else
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, -90_deg},
@@ -370,6 +416,7 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+#endif
       commands.push_back(
           std::make_unique<PauseRobot>(drivebase, 0.3_s));  // ADDED PAUSE
       commands.push_back(std::unique_ptr<frc2::Command>(
@@ -611,6 +658,14 @@ namespace Helpers {
       const bool firstTurnIsCounterClockwise =
           (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
            teamAndPosName == AutonomousTeamAndStationPositions::Red3);
+#ifdef USING_PID_TURNING
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              PIDTurning{drivebase, 90_deg},  // CHANGED
+              PIDTurning{drivebase, -90_deg}, [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+#else
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, 95_deg},  // CHANGED
@@ -618,9 +673,18 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+#endif
       commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
           drivebase, AutonomousSpeeds::DRIVE_SPEED, 1.719_m)));
+#ifdef USING_PID_TURNING
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+              PIDTurning{drivebase, 90_deg}, PIDTurning{drivebase, -90_deg},
+              [firstTurnIsCounterClockwise]() {
+                return firstTurnIsCounterClockwise;
+              })));
+#else
       commands.push_back(
           std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
               TurnDegreesImported{drivebase, 0.5, 90_deg},
@@ -628,6 +692,7 @@ namespace Helpers {
               [firstTurnIsCounterClockwise]() {
                 return firstTurnIsCounterClockwise;
               })));
+#endif
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveUntilPitchAngleChange(drivebase, 0.5)));
       commands.push_back(
@@ -660,8 +725,13 @@ namespace Helpers {
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorScoreGamePieceHelperCommand(floorEjection)));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -689,8 +759,13 @@ namespace Helpers {
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -780,11 +855,16 @@ namespace Helpers {
         std::unique_ptr<frc2::Command>(ScoreThenEndNearGamePieceCommand(
             drivebase, intakeDeployment, floorEjection, intakeRoller,
             teamAndPosName)));
-    /*commands.push_back(
-        std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase,
-       intakeRoller)));*/
+/*commands.push_back(
+    std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase,
+   intakeRoller)));*/
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, -180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -811,11 +891,16 @@ namespace Helpers {
         std::unique_ptr<frc2::Command>(DropThenEndNearGamePieceCommand(
             drivebase, intakeDeployment, floorEjection, intakeRoller,
             teamAndPosName)));
-    /*commands.push_back(
-        std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase,
-       intakeRoller)));*/
+/*commands.push_back(
+    std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase,
+   intakeRoller)));*/
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, -180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -844,8 +929,13 @@ namespace Helpers {
         std::unique_ptr<frc2::Command>(ScoreTwoGamePiecesHelperCommand(
             drivebase, intakeDeployment, intakeRoller, floorEjection, true,
             teamAndPosName)));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -861,26 +951,45 @@ namespace Helpers {
           teamAndPosName == AutonomousTeamAndStationPositions::Red2) ||
          (teamAndPosName == AutonomousTeamAndStationPositions::Blue3 ||
           teamAndPosName == AutonomousTeamAndStationPositions::Blue2));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, 90_deg},  // CHANGED
+            PIDTurning{drivebase, -90_deg},
+            [turnLeftForThirdCube]() { return turnLeftForThirdCube; })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, 90_deg},  // CHANGED
             TurnDegreesImported{drivebase, 0.5, -90_deg},
             [turnLeftForThirdCube]() { return turnLeftForThirdCube; })));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveAndIntake(drivebase, intakeRoller, 1_m)));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
+#endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     commands.push_back(std::unique_ptr<frc2::Command>(
         MoveAndIntake(drivebase, intakeRoller, 1_m)));
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
+            PIDTurning{drivebase, 90_deg},  // CHANGED
+            PIDTurning{drivebase, -90_deg},
+            [turnLeftForThirdCube]() { return !turnLeftForThirdCube; })));
+#else
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
             TurnDegreesImported{drivebase, 0.5, 90_deg},  // CHANGED
             TurnDegreesImported{drivebase, 0.5, -90_deg},
-            [turnLeftForThirdCube]() {
-              return !turnLeftForThirdCube;
-            })));  // negated to reverse the turn
+            [turnLeftForThirdCube]() { return !turnLeftForThirdCube; })));
+#endif  // negated to reverse the turn
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(

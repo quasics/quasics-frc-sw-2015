@@ -42,6 +42,8 @@ class PIDTurning : public frc2::CommandHelper<frc2::CommandBase, PIDTurning> {
   bool feedForward = true;
   bool activatePID = false;
   double rotationCorrection = 0;
+  double m_speed = 0.5;
+  double m_subtraction = 0;
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   std::unique_ptr<frc2::PIDController> dynamicPid;

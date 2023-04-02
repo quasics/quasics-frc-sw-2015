@@ -20,14 +20,14 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
 // Helper functions used in the primary command.  (These are
 // exposed for testing support only.)
 namespace Helpers {
-  frc2::Command *DropGamePieceHelperCommand(Drivebase *drivebase,
-                                            IntakeRoller *intakeRoller);
+  frc2::Command *FloorDropGamePieceHelperCommand(Drivebase *drivebase,
+                                                 IntakeRoller *intakeRoller);
 
-  frc2::Command *ClampScoreGamePieceHelperCommand(
+  frc2::Command *ClampFloorScoreGamePieceHelperCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller);
 
-  frc2::Command *ScoreGamePieceHelperCommand(FloorEjection *floorEjection);
+  frc2::Command *FloorScoreGamePieceHelperCommand(FloorEjection *floorEjection);
 
   frc2::Command *MoveAndIntake(Drivebase *drivebase, IntakeRoller *intakeRoller,
                                units::meter_t distance);

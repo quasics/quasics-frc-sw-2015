@@ -70,6 +70,8 @@ void PIDTurning::Initialize() {
 #else
   pid.Reset();
   pid.SetTolerance(1.0, 0);
+  m_speed = 0.5;
+  m_subtraction = 0;
 #endif
   startingAngle = m_drivebase->GetYaw();
   FeedForward();
@@ -94,14 +96,20 @@ void PIDTurning::Execute() {
 #else
 
   FeedForward();
-  if (std::abs((startingAngle + m_angle - currentAngle).value()) < 10) {
+  if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 2) &&
+      feedForward == true) {
+    std::cout << "Turning off the feedforward" << std::endl;
     feedForward = false;
   }
   if (!feedForward) {
     rotationCorrection = pid.Calculate(currentAngle.value(),
                                        startingAngle.value() + m_angle.value());
+    std::cout << "Sending PID correction Power: " << rotationCorrection
+              << "Angle Away"
+              << std::abs((startingAngle + m_angle - currentAngle).value())
+              << std::endl;
+    m_drivebase->ArcadeDrive(0, rotationCorrection);
   }
-  m_drivebase->ArcadeDrive(0, rotationCorrection);
 
 #endif
 }
@@ -120,8 +128,14 @@ bool PIDTurning::IsFinished() {
   }
   return false;
 #else
-
-  if (std::abs((startingAngle + m_angle - currentAngle).value()) < 1) {
+  // if the current condition and the correction speed is less than 0.2
+  if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 1) &&
+      ((std::abs(rotationCorrection) < 0.3) &&
+       (std::abs((m_drivebase->GetLeftVelocity()).value()) < 0.05 &&
+        std::abs(m_drivebase->GetRightVelocity().value()) < 0.05))) {
+    std::cout << "Finished: StartingValue: " << startingAngle.value()
+              << "requested angle: " << m_angle.value() << "currentAngle"
+              << currentAngle.value() << std::endl;
     return true;
   }
   return false;
@@ -130,11 +144,27 @@ bool PIDTurning::IsFinished() {
 
 void PIDTurning::FeedForward() {
   currentAngle = m_drivebase->GetYaw();
-  if (feedForward) {
+  /*if (feedForward) {
     if (m_angle > 0_deg) {
+      std::cout << "sending power for turning left" << std::endl;
       m_drivebase->ArcadeDrive(0, 0.5);
     } else {
+      std::cout << "sending power for turning right" << std::endl;
       m_drivebase->ArcadeDrive(0, -0.5);
+    }
+  }
+*/
+  if (feedForward) {
+    if (std::abs((startingAngle + m_angle - currentAngle).value()) < 45 &&
+        (std::abs(m_speed) > 0.30)) {
+      m_subtraction = std::abs(m_speed) - 0.30;
+      std::cout << "Invoking subtraction" << std::endl;
+    }
+    m_drivebase->SetBrakingMode(true);
+    if (m_angle > 0_deg) {
+      m_drivebase->ArcadeDrive(0, (m_speed - m_subtraction));
+    } else {
+      m_drivebase->ArcadeDrive(0, (-m_speed + m_subtraction));
     }
   }
 }

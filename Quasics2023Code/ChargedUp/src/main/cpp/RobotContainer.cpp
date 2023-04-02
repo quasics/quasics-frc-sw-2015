@@ -471,19 +471,19 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Autonmous Intake Extension",
       new AutoIntakeExtension(&m_intakeDeployment, 0.5));
-  /*
-    nt::GenericEntry *entry =
-        frc::Shuffleboard::GetTab("Tuning")
-            .Add("Turn kP", 0.01)
-            .WithWidget(
-                frc::BuiltInWidgets::kNumberSlider)  // specify the widget here
-            .WithProperties({// specify widget properties here
-                             {"min", nt::Value::MakeDouble(0)},
-                             {"max", nt::Value::MakeDouble(.03)}})
-            .GetEntry();
-    // Later on....
-    double value = entry->GetFloat(0.0);
-    (void)value;  // To get around warnings about unused variables.*/
+
+  /* nt::GenericEntry *entry =
+       frc::Shuffleboard::GetTab("Tuning")
+           .Add("Turn kP", 0.01)
+           .WithWidget(
+               frc::BuiltInWidgets::kNumberSlider)  // specify the widget here
+           .WithProperties({// specify widget properties here
+                            {"min", nt::Value::MakeDouble(0)},
+                            {"max", nt::Value::MakeDouble(.03)}})
+           .GetEntry();
+   // Later on....
+   double value = entry->GetFloat(0.0);
+   (void)value;  // To get around warnings about unused variables.*/
 }
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
@@ -617,7 +617,7 @@ frc2::SequentialCommandGroup *RobotContainer::TestPathCommand() {
 }
 
 void RobotContainer::Periodic() {
-  std::cout << "Periodic Invoked" << std::endl;
+  /*std::cout << "Periodic Invoked" << std::endl;*/
   frc::SmartDashboard::PutString(
       "Intake Setting", m_configSettings.intakingCubes ? "Cubes" : "Cones");
   // Do something.....

@@ -153,15 +153,15 @@ namespace FeedForward {
 
 namespace StraightDrivingConstants {
 namespace PID {
-  constexpr auto kP = 0.05;
-  constexpr auto kI = 0.001;
+  constexpr auto kP = 0.02;
+  constexpr auto kI = 0.005;
   constexpr auto kD = 0;
 }  // namespace PID
 }  // namespace StraightDrivingConstants
 
 namespace PIDTurningConstants {
-constexpr auto kP = 0.05;
-constexpr auto kI = 0.000;
+constexpr auto kP = 0.060;
+constexpr auto kI = 0.00;
 constexpr auto kD = 0;
 }  // namespace PIDTurningConstants
 

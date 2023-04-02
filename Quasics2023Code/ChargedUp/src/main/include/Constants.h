@@ -161,7 +161,7 @@ namespace PID {
 
 namespace PIDTurningConstants {
 constexpr auto kP = 0.05;
-constexpr auto kI = 0.001;
+constexpr auto kI = 0.000;
 constexpr auto kD = 0;
 }  // namespace PIDTurningConstants
 

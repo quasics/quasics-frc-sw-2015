@@ -70,6 +70,11 @@ void PIDTurning::Initialize() {
 #else
   pid.Reset();
   pid.SetTolerance(1.0, 0);
+  startingAngle = 0_deg;
+  currentAngle = 0_deg;
+  feedForward = true;
+  activatePID = false;
+  rotationCorrection = 0;
   m_speed = 0.5;
   m_subtraction = 0;
 #endif
@@ -96,7 +101,7 @@ void PIDTurning::Execute() {
 #else
 
   FeedForward();
-  if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 2) &&
+  if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 4) &&
       feedForward == true) {
     std::cout << "Turning off the feedforward" << std::endl;
     feedForward = false;
@@ -156,14 +161,16 @@ void PIDTurning::FeedForward() {
 */
   if (feedForward) {
     if (std::abs((startingAngle + m_angle - currentAngle).value()) < 45 &&
-        (std::abs(m_speed) > 0.20)) {
-      m_subtraction = std::abs(m_speed) - 0.20;
-      std::cout << "Invoking subtraction" << std::endl;
+        (std::abs(m_speed) > 0.3)) {
+      m_subtraction = std::abs(m_speed) - 0.3;
+      std::cout << "Invoking subtraction." << std::endl;
     }
     m_drivebase->SetBrakingMode(true);
     if (m_angle > 0_deg) {
+      std::cout << "New Speed: " << (m_speed - m_subtraction) << std::endl;
       m_drivebase->ArcadeDrive(0, (m_speed - m_subtraction));
     } else {
+      std::cout << "New Speed: " << (m_speed + m_subtraction) << std::endl;
       m_drivebase->ArcadeDrive(0, (-m_speed + m_subtraction));
     }
   }

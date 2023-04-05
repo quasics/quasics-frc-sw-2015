@@ -145,17 +145,17 @@ frc::Pose2d Drivebase::GetPose() {
 void Drivebase::Periodic() {
   frc::SmartDashboard::PutString(
       "DriveBase Mode", IsInBrakingMode() ? "Brake Mode" : "Coast Mode");
-  frc::SmartDashboard::PutNumber("Pitch", GetPitchImpl());
+  /*frc::SmartDashboard::PutNumber("Pitch", GetPitchImpl());
   frc::SmartDashboard::PutNumber("Roll", GetRollImpl());
-  frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
+  frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());*/
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 
   // auto angle = GetYaw();
-  auto leftDistance = GetLeftDistance();
-  auto rightDistance = GetRightDistance();
+  // auto leftDistance = GetLeftDistance();
+  // auto rightDistance = GetRightDistance();
 
-  frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
-  frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());
+  /*frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
+  frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());*/
 
   // m_odometry.Update(angle, leftDistance, rightDistance);
 }

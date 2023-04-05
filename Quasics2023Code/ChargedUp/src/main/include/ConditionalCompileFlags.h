@@ -8,7 +8,7 @@
 // Debugging support
 //
 
-#define SHOW_SUBSYSTEMS_ON_DASHBOARD
+#undef SHOW_SUBSYSTEMS_ON_DASHBOARD
 
 //
 // Operator interface configuration

@@ -436,22 +436,29 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },
                                {&m_floorEjection}));*/
   frc::SmartDashboard::PutData(
-      "Set Coasting Mode",
+      "Break Intake", new frc2::InstantCommand(
+                          [this]() { m_intakeDeployment.EnableBraking(true); },
+                          {&m_intakeDeployment}));
+  frc::SmartDashboard::PutData(
+      "Coast Intake", new frc2::InstantCommand(
+                          [this]() { m_intakeDeployment.EnableBraking(false); },
+                          {&m_intakeDeployment}));
+  frc::SmartDashboard::PutData(
+      "Coast Drive",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
                                {&m_drivebase}));
 
   frc::SmartDashboard::PutData(
-      "Set Breaking Mode",
+      "Break Drive",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(true); },
                                {&m_drivebase}));
 
-  frc::SmartDashboard::PutData("Switch mode driving",
-                               new frc2::InstantCommand([this]() {
-                                 SetDriveMode(DriveMode::eSwitched);
-                               }));
+  frc::SmartDashboard::PutData(
+      "Switch Drive", new frc2::InstantCommand(
+                          [this]() { SetDriveMode(DriveMode::eSwitched); }));
 
   frc::SmartDashboard::PutData(
-      "Normal mode driving",
+      "Normal Drive",
       new frc2::InstantCommand([this]() { SetDriveMode(DriveMode::eNormal); }));
 
   /*frc::SmartDashboard::PutData("Test Command",

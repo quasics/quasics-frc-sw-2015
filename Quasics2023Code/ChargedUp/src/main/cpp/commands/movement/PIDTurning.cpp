@@ -101,6 +101,22 @@ void PIDTurning::Execute() {
 #else
 
   FeedForward();
+  // NEEDS TO BE TESTED
+  /*
+  if(m_angle >= 0_deg){
+  if (((startingAngle + m_angle - currentAngle).value() < 1) &&
+      feedForward == true) {
+    // std::cout << "Turning off the feedforward" << std::endl;
+    feedForward = false;
+      }
+  }else{
+    if (((startingAngle + m_angle - currentAngle).value() > 1) &&
+      feedForward == true) {
+    // std::cout << "Turning off the feedforward" << std::endl;
+    feedForward = false;
+  }
+  }*/
+
   if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 1) &&
       feedForward == true) {
     // std::cout << "Turning off the feedforward" << std::endl;

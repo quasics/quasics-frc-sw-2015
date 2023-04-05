@@ -81,8 +81,8 @@ void FloorEjection::Periodic() {
                                  m_floorEjectionEncoder.GetRate());
 
 #endif
-  frc::SmartDashboard::PutString("Floor Retraction Limit Switch",
-                                 FloorRetracted() ? "true" : "false");
+  /*frc::SmartDashboard::PutString("Floor Retraction Limit Switch",
+                                 FloorRetracted() ? "true" : "false");*/
   // frc::SmartDashboard::PutBoolean("Floor Retracted", FloorRetracted());
   /*
     frc::SmartDashboard::PutNumber("Is it Connected",

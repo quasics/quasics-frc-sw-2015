@@ -1,9 +1,8 @@
-ADJUSTED VERSION
 
 Driver controller (Logitech)
-* Left stick - Tank drive (left wheels)
-* Right stick - Tank drive (right wheels)
-* A - Drive straight while held (while held) -- Written(Untested)
+* Left stick - Arcade Drive Movement Speed
+* Right stick - Arcade Drive Rotation Speed
+* A - 
 * B - Toggle breaking mode on/off (when pressed)
 * X - 
 * Y - Self balancing mode (while held)
@@ -21,12 +20,12 @@ Operator controller (Xbox)
 * View button - 
 * Xbox button - 
 * Menu button - 
-* Right bumper - Reset ejection (when pressed) TODO WHEN LIMIT SWITCH CLICKED STOP THING
-* Left bumper - Eject piece (while held) 
+* Right bumper - 
+* Left bumper - 
 * Left trigger - Intake roller (while held)
 * Right trigger - Intake exhaust (while held)
 * X button - Toggle cube vs. cone (when pressed)
 * Y button - Retract intake (while held)
 * A button - Extend intake (while held)
-* B button - Shoot the Cube
+* B button - 
 * D-pad - 

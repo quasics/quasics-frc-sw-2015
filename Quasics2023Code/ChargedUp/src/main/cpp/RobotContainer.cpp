@@ -346,12 +346,12 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &retractIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
+  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      &moveFloor);
   RunCommandWhenOperatorButtonIsPressed(
       frc::XboxController::Button::kRightBumper, &resetFloorEjection);
   RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kB,
-                                        &shootPiece);
+                                        &shootPiece);*/ //WE ARE NOT USING FLOOR ANYMORE
 }
 
 frc2::Command *RobotContainer::GetAutonomousCommand() {

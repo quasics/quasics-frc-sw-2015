@@ -100,10 +100,10 @@ bool IntakeDeployment::IsIntakeDeployed(LimitSwitch limitSwitch) {
 
 void IntakeDeployment::Periodic() {
 #ifdef ENABLE_INTAKE_DEPLOYMENT_MOTORS
-  frc::SmartDashboard::PutNumber("Roller Position",
+  /*frc::SmartDashboard::PutNumber("Roller Position",
                                  m_leftDeploymentEncoder.GetPosition());
   frc::SmartDashboard::PutNumber("Roller Velocity",
-                                 m_leftDeploymentEncoder.GetVelocity());
+                                 m_leftDeploymentEncoder.GetVelocity());*/
 #endif
 
   frc::SmartDashboard::PutString(

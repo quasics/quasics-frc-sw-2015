@@ -143,8 +143,10 @@ frc::Pose2d Drivebase::GetPose() {
 
 // This method will be called once per scheduler run
 void Drivebase::Periodic() {
-  frc::SmartDashboard::PutNumber("Pitch Adjusted Value:", GetPitchImpl());
-  frc::SmartDashboard::PutNumber("Roll Adjusted Value:", GetRollImpl());
+  frc::SmartDashboard::PutString(
+      "DriveBase Mode", IsInBrakingMode() ? "Brake Mode" : "Coast Mode");
+  frc::SmartDashboard::PutNumber("Pitch", GetPitchImpl());
+  frc::SmartDashboard::PutNumber("Roll", GetRollImpl());
   frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
   // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 

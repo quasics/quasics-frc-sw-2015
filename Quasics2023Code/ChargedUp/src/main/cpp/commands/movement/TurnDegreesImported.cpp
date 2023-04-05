@@ -38,7 +38,7 @@ void TurnDegreesImported::Execute() {
           52.5 &&
       (std::abs(m_speed) > 0.30)) {
     m_subtraction = std::abs(m_speed) - 0.30;
-    std::cout << "Invoking subtraction" << std::endl;
+    // std::cout << "Invoking subtraction" << std::endl;
   }
   m_drivebase->SetBrakingMode(true);
   if (m_speed > 0) {

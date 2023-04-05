@@ -101,7 +101,7 @@ RobotContainer::RobotContainer()
   AddTestButtonsToSmartDashboard();
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotSequenceSelectorToSmartDashboard();
-  AddSampleLightingToSmartDashboard();
+  // AddSampleLightingToSmartDashboard();
 
 #ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
   frc::SmartDashboard::PutData(&m_drivebase);
@@ -414,6 +414,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn 180 Right Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));*/
+  /*
   frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 90_deg));
   frc::SmartDashboard::PutData("Turn 90 Right Degrees: ",
@@ -421,7 +422,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Turn 180 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 180_deg));
   frc::SmartDashboard::PutData("Turn 180 Right Degrees: ",
-                               new PIDTurning(&m_drivebase, -180_deg));
+                               new PIDTurning(&m_drivebase, -180_deg));*/
 
   if (false) {
     frc::SmartDashboard::PutData("Red lights",
@@ -430,10 +431,10 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                  new SetLightsToColor(&m_lighting, 0, 0, 255));
   }
 
-  frc::SmartDashboard::PutData(
+  /*frc::SmartDashboard::PutData(
       "Reset Encoder",
       new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },
-                               {&m_floorEjection}));
+                               {&m_floorEjection}));*/
   frc::SmartDashboard::PutData(
       "Set Coasting Mode",
       new frc2::InstantCommand([this]() { m_drivebase.SetBrakingMode(false); },
@@ -465,12 +466,12 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
         new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
   }
 
-  frc::SmartDashboard::PutData("Autonmous Floor Retraction",
+  /*frc::SmartDashboard::PutData("Autonmous Floor Retraction",
                                new AutoFloorRetract(&m_floorEjection, 0.1));
 
   frc::SmartDashboard::PutData(
       "Autonmous Intake Extension",
-      new AutoIntakeExtension(&m_intakeDeployment, 0.5));
+      new AutoIntakeExtension(&m_intakeDeployment, 0.5));*/
 
   /* nt::GenericEntry *entry =
        frc::Shuffleboard::GetTab("Tuning")

@@ -17,8 +17,8 @@ AutoFloorRetract::AutoFloorRetract(FloorEjection* floorEjection,
 
 // Called when the command is initially scheduled.
 void AutoFloorRetract::Initialize() {
-  std::cout << "Limit Switch Closed" << m_floorEjection->FloorRetracted()
-            << std::endl;
+  /*std::cout << "Limit Switch Closed" << m_floorEjection->FloorRetracted()
+            << std::endl;*/
   m_floorEjection->SetFloorEjectionPower(m_retractionSpeed);
 }
 
@@ -29,7 +29,7 @@ void AutoFloorRetract::Execute() {
 
 // Called once the command ends or is interrupted.
 void AutoFloorRetract::End(bool interrupted) {
-  std::cout << "Stopping Flipper" << std::endl;
+  /*std::cout << "Stopping Flipper" << std::endl;*/
   m_floorEjection->Stop();
 }
 

@@ -55,7 +55,7 @@ void RotateAtAngle::Execute() {
   const units::degree_t degreesLeftWhenSlowDown =
       150_deg * (m_percentSpeed - 0.30) + 10_deg;
 
-  std::cout << degreesLeft.value() << std::endl;
+  // std::cout << degreesLeft.value() << std::endl;
 
   if (m_angle >= 0_deg) {
     if (degreesLeft < degreesLeftWhenSlowDown &&
@@ -63,7 +63,7 @@ void RotateAtAngle::Execute() {
       m_multiplier *= scalingFactor;
     }
 
-    std::cout << "Speed: " << m_percentSpeed * m_multiplier << std::endl;
+    // std::cout << "Speed: " << m_percentSpeed * m_multiplier << std::endl;
 
     m_drivebase->TankDrive(-m_percentSpeed * m_multiplier,
                            m_percentSpeed * m_multiplier);

@@ -277,7 +277,7 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       frc2::InstantCommand(
           [drive, telemetryHandling, trajectory] {
             if (telemetryHandling == ResetTelemetryAtStart) {
-              std::cout << "Resetting robot odometry" << std::endl;
+              // std::cout << "Resetting robot odometry" << std::endl;
               drive->ResetOdometry(trajectory.InitialPose());
             }
           },

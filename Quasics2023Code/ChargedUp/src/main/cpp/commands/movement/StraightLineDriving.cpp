@@ -29,11 +29,11 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase, double speed,
 void StraightLineDriving::Initialize() {
   accelerating = true;
   subtraction = 0;
-  gradualreduction = 0.5;
+  gradualreduction = m_speed - 0.35;
   counter = 0;
   originalDistance = m_drivebase->GetLeftDistance();
   originalAngle = m_drivebase->GetYaw();
-  // std::cout << "Starting Angle: " << originalAngle.value() << std::endl;
+  std::cout << "Starting Angle: " << originalAngle.value() << std::endl;
   m_drivebase->ArcadeDrive(m_speed, 0);
   m_drivebase->SetBrakingMode(true);
 }
@@ -54,7 +54,11 @@ void StraightLineDriving::Execute() {
     subtraction = std::abs(m_speed) - 0.35 - gradualreduction;
     counter++;
     if (gradualreduction > 0 && counter % 5 == 0) {
-      gradualreduction = gradualreduction - 0.1;
+      if (gradualreduction <= 0) {
+        gradualreduction = 0;
+      } else {
+        gradualreduction = gradualreduction - 0.1;
+      }
     }
   }
 
@@ -79,7 +83,7 @@ void StraightLineDriving::Execute() {
 
 // Called once the command ends or is interrupted.
 void StraightLineDriving::End(bool interrupted) {
-  // std::cout << "Ending Angle: " << currentAngle.value() << std::endl;
+  std::cout << "Ending Angle: " << currentAngle.value() << std::endl;
   m_drivebase->Stop();
   m_drivebase->SetBrakingMode(true);
 }

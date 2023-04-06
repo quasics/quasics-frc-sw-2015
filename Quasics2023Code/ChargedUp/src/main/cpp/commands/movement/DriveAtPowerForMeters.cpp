@@ -11,15 +11,20 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
                                              units::meter_t distance)
     : m_drivebase(drivebase),
       m_motorPower(motorPower),
-      m_distance(distance > 0_m ? distance - 1_in : distance + 1_in) {
-  if (m_motorPower < 0) {
+      m_distance(
+          distance /*distance > 0_m ? distance - 1_in : distance + 1_in*/) {
+  if (m_motorPower < 0 || m_distance < 0_m) {
+    m_motorPower = -std::abs(m_motorPower);
+    m_distance = -units::meter_t(std::abs(m_distance.value()));
+  }
+  /*if (m_motorPower < 0) {
     if (m_distance < 0_m) {
       m_motorPower = -m_motorPower;
     } else {
       m_motorPower = -m_motorPower;
       m_distance = -m_distance;
     }
-  }
+  }*/
   AddRequirements(drivebase);
   SetName("DriveAtPowerForMeters");
 }

@@ -75,9 +75,10 @@ namespace Helpers {
       FloorEjection *floorEjection, IntakeRoller *intakeRoller,
       std::string teamAndPosName);
 
-  frc2::Command *DropGamePieceThenGTFOCommand(Drivebase *drivebase,
-                                              FloorEjection *floorEjection,
-                                              std::string teamAndPosName);
+  frc2::Command *DropGamePieceThenGTFOCommand(
+      Drivebase *drivebase, IntakeDeployment *intakeDeployment,
+      FloorEjection *floorEjection, IntakeRoller *intakeRoller,
+      std::string teamAndPosName);
 
   frc2::Command *DropGamePieceThenChargeCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
@@ -98,6 +99,11 @@ namespace Helpers {
                                              IntakeRoller *intakeRoller,
                                              FloorEjection *floorEjection,
                                              std::string teamAndPosName);
+  frc2::Command *DropTwo(Drivebase *drivebase,
+                         IntakeDeployment *intakeDeployment,
+                         IntakeRoller *intakeRoller,
+                         FloorEjection *floorEjection,
+                         std::string teamAndPosName);
 
   frc2::Command *DropTwiceThenChargeCommand(Drivebase *drivebase,
                                             IntakeDeployment *intakeDeployment,

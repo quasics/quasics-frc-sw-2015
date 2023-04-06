@@ -49,6 +49,7 @@
 #include "commands/movement/AprilTagDriveToTarget.h"
 #include "commands/movement/ArcadeDrive.h"
 #include "commands/movement/DriveAtPowerForMeters.h"
+#include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
@@ -395,14 +396,32 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Request cubes",
       new SignalRequestedPayload(&m_configSettings, RequestedPayload::eCubes));
+  frc::SmartDashboard::PutData("STRAIGHT DRIVING 4_m 0.6speed",
+                               new StraightLineDriving(&m_drivebase, 0.6, 3_m));
+  frc::SmartDashboard::PutData("STRAIGHT DRIVING 4_m 0.7speed",
+                               new StraightLineDriving(&m_drivebase, 0.7, 3_m));
+  frc::SmartDashboard::PutData("STRAIGHT DRIVING 4_m 0.8speed",
+                               new StraightLineDriving(&m_drivebase, 0.8, 3_m));
+  frc::SmartDashboard::PutData(
+      "DRIVE AT POWER FOR METERS 0.5, 3_m",
+      new DriveAtPowerForMetersWorkingVersion(&m_drivebase, 0.5, 3_m));
+  frc::SmartDashboard::PutData(
+      "DRIVE AT POWER FOR METERS -0.5, 3_m",
+      new DriveAtPowerForMetersWorkingVersion(&m_drivebase, -0.5, 3_m));
+  frc::SmartDashboard::PutData(
+      "DRIVE AT POWER FOR METERS 0.5, -3_m",
+      new DriveAtPowerForMetersWorkingVersion(&m_drivebase, 0.5, -3_m));
+  frc::SmartDashboard::PutData(
+      "DRIVE AT POWER FOR METERS -0.5, -3_m",
+      new DriveAtPowerForMetersWorkingVersion(&m_drivebase, -0.5, -3_m));
   // frc::SmartDashboard::PutData("STRAIGHT LINE DRIVING FORWARD",
   //                              new StraightLineDriving(&m_drivebase, 0.8,
   //                              6_m));
   // frc::SmartDashboard::PutData(
   //     "STRAIGHT LINE DRIVING BACKWARD",
   //     new StraightLineDriving(&m_drivebase, -0.8, 6_m));
-  /*
-  frc::SmartDashboard::PutData(
+
+  /*frc::SmartDashboard::PutData(
       "Turn 90 Left Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, 90_deg));
   frc::SmartDashboard::PutData(
@@ -414,7 +433,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn 180 Right Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));*/
-  /*
+
   frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 90_deg));
   frc::SmartDashboard::PutData("Turn 90 Right Degrees: ",
@@ -422,7 +441,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData("Turn 180 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 180_deg));
   frc::SmartDashboard::PutData("Turn 180 Right Degrees: ",
-                               new PIDTurning(&m_drivebase, -180_deg));*/
+                               new PIDTurning(&m_drivebase, -180_deg));
 
   if (false) {
     frc::SmartDashboard::PutData("Red lights",
@@ -568,7 +587,11 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "Score, GTFO then Charge"},
           {AutonomousSelectedOperation::ScoreTwiceThenCharge,
            "Score, get another piece and score that, then charge"},
-          {AutonomousSelectedOperation::DropGTFOCharge, "Drop GTFO Charge"}};
+          {AutonomousSelectedOperation::DropGTFOCharge, "Drop GTFO Charge"},
+          {AutonomousSelectedOperation::DropTwiceThenCharge,
+           "Drop Twice Charge"},
+          {AutonomousSelectedOperation::DropTwice, "Drop Two"},
+          {AutonomousSelectedOperation::DropThree, "Drop Three"}};
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
     AddNamedCommandToSelector(selector, name, text);

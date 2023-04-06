@@ -27,7 +27,7 @@
 #include "commands/movement/StraightLineDriving.h"
 #include "commands/movement/TurnDegreesImported.h"
 
-#undef USING_PID_TURNING
+#define USING_PID_TURNING
 #define USING_INTAKE_TO_SCORE
 
 namespace AutonomousCommands {
@@ -844,10 +844,16 @@ namespace Helpers {
       FloorEjection *floorEjection, IntakeRoller *intakeRoller,
       std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+
+#ifdef USING_INTAKE_TO_SCORE
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
+#endif
 #ifdef USING_PID_TURNING
     commands.push_back(
         std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
@@ -855,6 +861,8 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
 #endif
+    commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
+        intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
@@ -875,13 +883,20 @@ namespace Helpers {
   }
   frc2::Command *DropGamePieceThenGTFOCommand(
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
-      FloorEjection *floorEjection, std::string teamAndPosName) {
+      FloorEjection *floorEjection, IntakeRoller *intakeRoller,
+      std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
+
+#ifdef USING_INTAKE_TO_SCORE
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+#else
     commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
         intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
 
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorScoreGamePieceHelperCommand(floorEjection)));
+#endif
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
@@ -1020,6 +1035,40 @@ namespace Helpers {
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
+  frc2::Command *DropTwo(Drivebase *drivebase,
+                         IntakeDeployment *intakeDeployment,
+                         IntakeRoller *intakeRoller,
+                         FloorEjection *floorEjection,
+                         std::string teamAndPosName) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(DropThenEndNearGamePieceCommand(
+            drivebase, intakeDeployment, floorEjection, intakeRoller,
+            teamAndPosName)));
+/*commands.push_back(
+    std::unique_ptr<frc2::Command>(MoveAndIntake(drivebase,
+   intakeRoller)));*/
+#ifdef USING_PID_TURNING
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -180_deg)));
+#else
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        new TurnDegreesImported(drivebase, 0.5, -180_deg)));
+#endif
+    commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
+    if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
+        teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
+    } else {
+      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+    }
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+    return new frc2::SequentialCommandGroup(std::move(commands));
+  }
+
   // URGENT ON THE RED SIDE FOR RED 2 SET UP CLOSER TO LOADING STATION
   // ON THE BLUE SIDE SET UP TO COLLECT THE CUBE FURTHER AWAY FROM THE STATION
   frc2::Command *DropThree(Drivebase *drivebase,
@@ -1028,10 +1077,9 @@ namespace Helpers {
                            FloorEjection *floorEjection,
                            std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(ScoreTwoGamePiecesHelperCommand(
-            drivebase, intakeDeployment, intakeRoller, floorEjection, true,
-            teamAndPosName)));
+    commands.push_back(std::unique_ptr<frc2::Command>(
+        DropTwo(drivebase, intakeDeployment, intakeRoller, floorEjection,
+                teamAndPosName)));
 #ifdef USING_PID_TURNING
     commands.push_back(
         std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, 180_deg)));
@@ -1078,8 +1126,8 @@ namespace Helpers {
         new TurnDegreesImported(drivebase, 0.5, 180_deg)));
 #endif
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
-    commands.push_back(std::unique_ptr<frc2::Command>(
-        MoveAndIntake(drivebase, intakeRoller, 1_m)));
+    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
+        drivebase, AutonomousSpeeds::DRIVE_SPEED, 1_m)));
 #ifdef USING_PID_TURNING
     commands.push_back(
         std::unique_ptr<frc2::Command>(new frc2::ConditionalCommand(
@@ -1096,13 +1144,13 @@ namespace Helpers {
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, AutonomousSpeeds::DRIVE_SPEED, 5_m - 10_in)));
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m - 10_in)));
     } else {
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+          drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     commands.push_back(std::unique_ptr<frc2::Command>(
-        FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
+        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
 
     // if at red 3,2 or blue 3, 2 make a left
     // if at blue 1 or red 1 make a right
@@ -1206,7 +1254,8 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     return FloorDropGamePieceHelperCommand(drivebase, floorEjection);
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
     return DropGamePieceThenGTFOCommand(drivebase, intakeDeployment,
-                                        floorEjection, teamAndPosName);
+                                        floorEjection, intakeRoller,
+                                        teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropAndCharge) {
     return DropGamePieceThenChargeCommand(drivebase, intakeDeployment,
                                           floorEjection, teamAndPosName);
@@ -1225,6 +1274,12 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
              AutonomousSelectedOperation::DropTwiceThenCharge) {
     return DropTwiceThenChargeCommand(drivebase, intakeDeployment, intakeRoller,
                                       floorEjection, teamAndPosName);
+  } else if (operationName == AutonomousSelectedOperation::DropTwice) {
+    return DropTwo(drivebase, intakeDeployment, intakeRoller, floorEjection,
+                   teamAndPosName);
+  } else if (operationName == AutonomousSelectedOperation::DropThree) {
+    return DropThree(drivebase, intakeDeployment, intakeRoller, floorEjection,
+                     teamAndPosName);
   }
 
   static frc2::PrintCommand fallThroughCaseCommand(

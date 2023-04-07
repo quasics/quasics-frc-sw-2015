@@ -20,6 +20,7 @@
 #include "commands/intake/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
 #include "commands/movement/DriveAtPowerForMeters.h"
+#include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
@@ -447,10 +448,10 @@ namespace Helpers {
       // In this case, we need to move back out of the community area (for the
       // mobility points), and then move forward and balance on the charging
       // station.
-      commands.push_back(
-          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new DriveAtPowerForMetersWorkingVersion{
               drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-              4.0_m}));
+              4.75_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
           drivebase, 0.75 * AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
           0.5_m}));
@@ -468,6 +469,7 @@ namespace Helpers {
           (teamAndPosName == AutonomousTeamAndStationPositions::Blue1 ||
            teamAndPosName == AutonomousTeamAndStationPositions::Red1);
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
+          // POSSIBLE ERROR
           drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m}));
 
 #ifdef USING_PID_TURNING
@@ -726,11 +728,13 @@ namespace Helpers {
         FloorScoreGamePieceHelperCommand(floorEjection)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new StraightLineDriving(  // POSSIBLE ERROR
+              drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     } else {
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new StraightLineDriving(  // POSSIBLE ERROR
+              drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -899,11 +903,13 @@ namespace Helpers {
 #endif
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new StraightLineDriving(  // POSSIBLE ERROR
+              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     } else {
-      commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
-          drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
+      commands.push_back(std::unique_ptr<frc2::Command>(
+          new StraightLineDriving(  // POSSIBLE ERROR
+              drivebase, -1 * AutonomousSpeeds::DRIVE_SPEED, 4.0_m)));
     }
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
@@ -937,7 +943,7 @@ namespace Helpers {
         FloorScoreGamePieceHelperCommand(floorEjection)));
 #endif
     commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
+        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));  // POSSIBLE ERROR
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -956,8 +962,9 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorDropGamePieceHelperCommand(drivebase, floorEjection)));
 #endif
-    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new DriveAtPowerForMetersWorkingVersion{
+            drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -1064,6 +1071,8 @@ namespace Helpers {
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving(
           drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -20_deg)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -1174,13 +1183,13 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
       static StraightLineDriving JustDriving{
-          drivebase, -AutonomousSpeeds::DRIVE_SPEED,
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED,  // POSSIBLE ERROR
           4.5_m - 10_in};  // TODO Change for all subseqeunt
                            // drives over the charging station
       return &JustDriving;
     } else {
       static StraightLineDriving JustDriving{
-          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m};
+          drivebase, -AutonomousSpeeds::DRIVE_SPEED, 4.0_m};  // POSSIBLE ERROR
       return &JustDriving;
     }
   } else if (operationName == AutonomousSelectedOperation::GTFODock) {

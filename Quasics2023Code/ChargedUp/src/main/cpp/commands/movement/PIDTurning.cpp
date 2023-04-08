@@ -15,6 +15,7 @@ PIDTurning::PIDTurning(Drivebase* drivebase, units::degree_t angle)
   AddRequirements(drivebase);
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
+
   kP_entry =
       frc::Shuffleboard::GetTab("Tuning Rotation")
           .Add("Turn kP", 0.05)
@@ -129,6 +130,16 @@ void PIDTurning::Execute() {
               << "Angle Away"
               << std::abs((startingAngle + m_angle - currentAngle).value())
               << std::endl;
+
+    /*
+    if (rotationCorrection >= 0) {
+      m_drivebase->ArcadeDrive(0, rotationCorrection + 0.2);
+    } else {
+      m_drivebase->ArcadeDrive(0, rotationCorrection - 0.2);
+    }
+
+
+    */
     if (rotationCorrection >= 0) {
       m_drivebase->ArcadeDrive(0, rotationCorrection + 0.15);
     } else {

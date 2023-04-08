@@ -434,14 +434,14 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "Turn 180 Right Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));*/
 
-  /*frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
+  frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 90_deg));
   frc::SmartDashboard::PutData("Turn 90 Right Degrees: ",
                                new PIDTurning(&m_drivebase, -90_deg));
   frc::SmartDashboard::PutData("Turn 180 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 180_deg));
   frc::SmartDashboard::PutData("Turn 180 Right Degrees: ",
-                               new PIDTurning(&m_drivebase, -180_deg));*/
+                               new PIDTurning(&m_drivebase, -180_deg));
 
   if (false) {
     frc::SmartDashboard::PutData("Red lights",
@@ -591,7 +591,9 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
           {AutonomousSelectedOperation::DropTwiceThenCharge,
            "Drop Twice Charge"},
           {AutonomousSelectedOperation::DropTwice, "Drop Two"},
-          {AutonomousSelectedOperation::DropThree, "Drop Three"}};
+          {AutonomousSelectedOperation::DropThree, "Drop Three"},
+          {AutonomousSelectedOperation::DropThenEndNearGamePiece,
+           "Drop Get Out Pickup Cube"}};
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
     AddNamedCommandToSelector(selector, name, text);

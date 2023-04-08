@@ -74,7 +74,7 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSpeeds {
-constexpr auto DRIVE_SPEED = 0.75;
+constexpr auto DRIVE_SPEED = 0.5;
 constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
@@ -120,6 +120,7 @@ const auto ScoreGTFOCharge = "Score Game Piece, GTFO and Charge";
 const auto DropGTFOCharge = "Drop Game Piece, GTFO Charge";
 const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
 const auto DropGamePiece = "Drop Game Piece";
+const auto DropThenEndNearGamePiece = "Drop Go out pickup cube";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
 const auto DropAndCharge = "Drop and Charge";
 const auto ScoreTwiceThenCharge = "Score get another score charge";
@@ -140,7 +141,7 @@ constexpr double kD = 0;
 namespace SelfBalancingConstants {
 namespace PID {
   constexpr auto ks = 0;
-  constexpr auto kP = 0.022;
+  constexpr auto kP = 0.025;
   constexpr auto kI = 0.003;
   constexpr auto kD = 0;
 }  // namespace PID
@@ -161,15 +162,15 @@ namespace PID {
 }  // namespace StraightDrivingConstants
 
 namespace PIDTurningConstants {
+/*
 constexpr auto kP = 0.02;
 constexpr auto kI = 0.03;
-constexpr auto kD = 0;
+constexpr auto kD = 0;*/
 
-/*
 constexpr auto kP = 0.02;
 constexpr auto kI = 0.005;
 constexpr auto kD = 0;
-*/
+
 }  // namespace PIDTurningConstants
 
 namespace SensorIds {

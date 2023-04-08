@@ -451,7 +451,7 @@ namespace Helpers {
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMetersWorkingVersion{
               drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-              4.5_m}));
+              3.7_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
           drivebase, 0.75 * AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
           0.1_m}));
@@ -870,7 +870,7 @@ namespace Helpers {
     commands.push_back(std::make_unique<PauseRobot>(drivebase, 0.3_s));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
         teamAndPosName == AutonomousTeamAndStationPositions::Red2) {
-      /*commands.push_back(std::unique_ptr<frc2::Command>(new
+      /*commands.push_back(std::unique_ptr<frc2::Command>(newf
          StraightLineDriving( drivebase,
          AutonomousSpeeds::DRIVE_SPEED, 4.7_m)));*/
       commands.push_back(std::unique_ptr<frc2::Command>(
@@ -1248,7 +1248,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
     return new frc2::SequentialCommandGroup(std::move(commands));
 
   } else if (operationName == AutonomousSelectedOperation::ScorePiece) {
-    return FloorScoreGamePieceHelperCommand(floorEjection);
+    return IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller);
   } else if (operationName == AutonomousSelectedOperation::JustCharge) {
     return JustCharge(drivebase, teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::ScoreThenCharge) {
@@ -1260,7 +1260,7 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
                                             floorEjection, intakeRoller,
                                             teamAndPosName);
   } else if (operationName == AutonomousSelectedOperation::DropGamePiece) {
-    return FloorDropGamePieceHelperCommand(drivebase, floorEjection);
+    return IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller);
   } else if (operationName == AutonomousSelectedOperation::DropAndGTFO) {
     return DropGamePieceThenGTFOCommand(drivebase, intakeDeployment,
                                         floorEjection, intakeRoller,
@@ -1289,6 +1289,11 @@ frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
   } else if (operationName == AutonomousSelectedOperation::DropThree) {
     return DropThree(drivebase, intakeDeployment, intakeRoller, floorEjection,
                      teamAndPosName);
+  } else if (operationName ==
+             AutonomousSelectedOperation::DropThenEndNearGamePiece) {
+    return DropThenEndNearGamePieceCommand(drivebase, intakeDeployment,
+                                           floorEjection, intakeRoller,
+                                           teamAndPosName);
   }
 
   static frc2::PrintCommand fallThroughCaseCommand(

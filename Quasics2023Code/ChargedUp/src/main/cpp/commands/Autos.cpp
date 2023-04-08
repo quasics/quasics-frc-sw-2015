@@ -451,10 +451,10 @@ namespace Helpers {
       commands.push_back(std::unique_ptr<frc2::Command>(
           new DriveAtPowerForMetersWorkingVersion{
               drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-              4.75_m}));
+              4.5_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
           drivebase, 0.75 * AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
-          0.5_m}));
+          0.1_m}));
       commands.push_back(
           std::unique_ptr<frc2::Command>(new DriveUntilPitchAngleChange{
               drivebase, 0.5}));  // LOOK INTO HOW TO DO OR
@@ -1072,9 +1072,9 @@ namespace Helpers {
           drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -20_deg)));
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -35_deg)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
+        new IntakeWithRollerAtSpeedForTime(intakeRoller, -0.5, 0.8_s)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

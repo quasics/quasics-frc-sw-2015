@@ -29,7 +29,7 @@ StraightLineDriving::StraightLineDriving(Drivebase* drivebase, double speed,
 void StraightLineDriving::Initialize() {
   accelerating = true;
   subtraction = 0;
-  gradualreduction = m_speed - 0.35;
+  gradualreduction = std::abs(m_speed) - 0.35;
   counter = 0;
   originalDistance = m_drivebase->GetLeftDistance();
   originalAngle = m_drivebase->GetYaw();

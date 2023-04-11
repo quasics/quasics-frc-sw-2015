@@ -4,9 +4,8 @@
 
 #include "commands/movement/SelfBalancing.h"
 
-#include <iostream>
+#undef ENABLE_FEED_FORWARD_SCALING
 
-#undef Feed_Forward_Scaling
 SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase) {
   AddRequirements(drivebase);
   SetName("SelfBalancing");
@@ -14,7 +13,6 @@ SelfBalancing::SelfBalancing(Drivebase* drivebase) : m_drivebase(drivebase) {
 
 // Called when the command is initially scheduled.
 void SelfBalancing::Initialize() {
-  // std::cout << "Begginnning to Self Balance" << std::endl;
   m_noFeedFowardPower = false;
   m_activatePID = false;
   m_pid.Reset();
@@ -32,15 +30,16 @@ void SelfBalancing::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void SelfBalancing::Execute() {
-  // std::cout << "Self Balancing" << std::endl;
   const double currentAngle =
       m_drivebase->GetPitch() * -1;  // GYRO ON GLADYS IS GIVING ROLL AS UP AND
                                      // DOWN ANGLE NEGATED BECAUSE OF VALUES
                                      // Negative up positive down
 
+  // CODE_REVIEW(matthew): Get rid of "magic numbers" in here, like 0.4, 0.6,
+  // etc.
   double power = 0.0;
-  if (m_noFeedFowardPower == false) {
-#ifdef Feed_Forward_Scaling
+  if (!m_noFeedFowardPower) {
+#ifdef ENABLE_FEED_FORWARD_SCALING
     if (std::abs(currentAngle) > ANGLE_FOR_PHASE_CHANGE) {
       power = 0.6;
     } else {
@@ -55,6 +54,7 @@ void SelfBalancing::Execute() {
     }
   }
 
+  // Figure out the power to be applied to the motors.
   if (m_activatePID) {
     power = m_pid.Calculate(currentAngle, 0.0) * -1;
   } else {
@@ -68,7 +68,6 @@ void SelfBalancing::Execute() {
 
 // Called once the command ends or is interrupted.
 void SelfBalancing::End(bool interrupted) {
-  // std::cout << "Ending Balancing" << std::endl;
   m_drivebase->Stop();
 }
 

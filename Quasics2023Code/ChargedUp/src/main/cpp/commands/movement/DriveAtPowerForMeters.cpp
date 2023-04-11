@@ -17,14 +17,6 @@ DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
     m_motorPower = -std::abs(m_motorPower);
     m_distance = -units::meter_t(std::abs(m_distance.value()));
   }
-  /*if (m_motorPower < 0) {
-    if (m_distance < 0_m) {
-      m_motorPower = -m_motorPower;
-    } else {
-      m_motorPower = -m_motorPower;
-      m_distance = -m_distance;
-    }
-  }*/
   AddRequirements(drivebase);
   SetName("DriveAtPowerForMeters");
 }
@@ -47,6 +39,12 @@ void DriveAtPowerForMeters::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void DriveAtPowerForMeters::Execute() {
+  // CODE_REVIEW(ethan): Avoid "magic numbers".  You should indicate where
+  // this value is coming from (experimental/tuning data, or guessing, etc.), so
+  // that it can be updated if needed.
+  //
+  // CODE_REVIEW(ethan): Please add comments, indicating how your algorithm for
+  // gradually slowing down is intended to work, and how these values fit in.
   const double minimumSpeed = 0.4;
   const double scalingFactor = 0.8;
 

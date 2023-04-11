@@ -32,18 +32,25 @@ class PIDTurning : public frc2::CommandHelper<frc2::CommandBase, PIDTurning> {
 
   bool IsFinished() override;
 
+ private:
   void FeedForward();
 
+  // CODE_REVIEW(matthew): The names don't make it clear what some of these
+  // variables do (e.g., "m_subtraction").  Please either update the names to
+  // better reflect purpose, or add comments to clarify (or both).
  private:
   Drivebase* m_drivebase;
   const units::degree_t m_angle;
-  units::degree_t startingAngle = 0_deg;
-  units::degree_t currentAngle = 0_deg;
-  bool feedForward = true;
-  bool activatePID = false;
-  double rotationCorrection = 0;
+  units::degree_t m_startingAngle = 0_deg;
+  units::degree_t m_currentAngle = 0_deg;
+  bool m_feedForward = true;
+  bool m_activatePID = false;
+  double m_rotationCorrection = 0;
   double m_speed = 0.5;
   double m_subtraction = 0;
+
+  static constexpr double ANGLE_TOLERANCE = 1.0;
+  static constexpr double VELOCITY_TOLERANCE = 0.0;
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   std::unique_ptr<frc2::PIDController> dynamicPid;
@@ -53,7 +60,7 @@ class PIDTurning : public frc2::CommandHelper<frc2::CommandBase, PIDTurning> {
   nt::GenericEntry* angle_entry = nullptr;
   double angle = 0;
 #else
-  frc2::PIDController pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
-                          PIDTurningConstants::kD};
+  frc2::PIDController m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
+                            PIDTurningConstants::kD};
 #endif
 };

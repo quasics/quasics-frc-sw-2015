@@ -58,8 +58,19 @@ PIDTurning::PIDTurning(Drivebase* drivebase, units::degree_t angle)
 
 // Called when the command is initially scheduled.
 void PIDTurning::Initialize() {
-  feedForward = true;
-  activatePID = false;
+  m_feedForward = true;
+  m_activatePID = false;
+  m_startingAngle = m_drivebase->GetYaw();
+  m_currentAngle = 0_deg;  // Overwritten in FeedForward()
+  m_feedForward = true;
+  m_activatePID = false;
+  m_rotationCorrection = 0;
+  // CODE_REVIEW(matthew): Avoid "magic numbers".  You should indicate where
+  // this value is coming from (experimental/tuning data, or guessing, etc.), so
+  // that it can be updated if needed.
+  m_speed = 0.5;
+  m_subtraction = 0;
+
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   double p = kP_entry->GetDouble(0.0);
   double i = kI_entry->GetDouble(0.0);
@@ -69,17 +80,9 @@ void PIDTurning::Initialize() {
   std::cerr << "Turning Angle " << angle;
   dynamicPid.reset(new frc2::PIDController(p, i, d));
 #else
-  pid.Reset();
-  pid.SetTolerance(1.0, 0);
-  startingAngle = 0_deg;
-  currentAngle = 0_deg;
-  feedForward = true;
-  activatePID = false;
-  rotationCorrection = 0;
-  m_speed = 0.5;
-  m_subtraction = 0;
+  m_pid.Reset();
+  m_pid.SetTolerance(ANGLE_TOLERANCE, VELOCITY_TOLERANCE);
 #endif
-  startingAngle = m_drivebase->GetYaw();
   FeedForward();
 }
 
@@ -87,17 +90,17 @@ void PIDTurning::Initialize() {
 void PIDTurning::Execute() {
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   FeedForward();
-  if (std::abs(startingAngle.value() + angle - currentAngle.value()) < 10) {
-    feedForward = false;
+  if (std::abs(m_startingAngle.value() + angle - m_currentAngle.value()) < 10) {
+    m_feedForward = false;
   }
-  if (!feedForward) {
-    rotationCorrection =
+  if (!m_feedForward) {
+    m_rotationCorrection =
         (dynamicPid == nullptr)
             ? 0.0
-            : dynamicPid->Calculate(currentAngle.value(),
-                                    startingAngle.value() + angle);
+            : dynamicPid->Calculate(m_currentAngle.value(),
+                                    m_startingAngle.value() + angle);
   }
-  m_drivebase->ArcadeDrive(0, rotationCorrection);
+  m_drivebase->ArcadeDrive(0, m_rotationCorrection);
 
 #else
 
@@ -105,45 +108,45 @@ void PIDTurning::Execute() {
   // NEEDS TO BE TESTED
 
   if (m_angle >= 0_deg) {
-    if (((startingAngle + m_angle - currentAngle).value() < 1) &&
-        feedForward == true) {
+    if (((m_startingAngle + m_angle - m_currentAngle).value() < 1) &&
+        m_feedForward == true) {
       std::cout << "Turning off the feedforward" << std::endl;
-      feedForward = false;
+      m_feedForward = false;
     }
   } else {
-    if (((startingAngle + m_angle - currentAngle).value() > -1) &&
-        feedForward == true) {
+    if (((m_startingAngle + m_angle - m_currentAngle).value() > -1) &&
+        m_feedForward == true) {
       std::cout << "Turning off the feedforward" << std::endl;
-      feedForward = false;
+      m_feedForward = false;
     }
   }
   /*
-    if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 1) &&
-        feedForward == true) {
+    if ((std::abs((startingAngle + m_angle - m_currentAngle).value()) < 1) &&
+        m_feedForward == true) {
       // std::cout << "Turning off the feedforward" << std::endl;
-      feedForward = false;
+      m_feedForward = false;
     }*/
-  if (!feedForward) {
-    rotationCorrection = pid.Calculate(currentAngle.value(),
-                                       startingAngle.value() + m_angle.value());
-    std::cout << "Sending PID correction Power: " << rotationCorrection
+  if (!m_feedForward) {
+    m_rotationCorrection = m_pid.Calculate(
+        m_currentAngle.value(), m_startingAngle.value() + m_angle.value());
+    std::cout << "Sending PID correction Power: " << m_rotationCorrection
               << "Angle Away"
-              << std::abs((startingAngle + m_angle - currentAngle).value())
+              << std::abs((m_startingAngle + m_angle - m_currentAngle).value())
               << std::endl;
 
     /*
-    if (rotationCorrection >= 0) {
-      m_drivebase->ArcadeDrive(0, rotationCorrection + 0.2);
+    if (m_rotationCorrection >= 0) {
+      m_drivebase->ArcadeDrive(0, m_rotationCorrection + 0.2);
     } else {
-      m_drivebase->ArcadeDrive(0, rotationCorrection - 0.2);
+      m_drivebase->ArcadeDrive(0, m_rotationCorrection - 0.2);
     }
 
 
     */
-    if (rotationCorrection >= 0) {
-      m_drivebase->ArcadeDrive(0, rotationCorrection + 0.15);
+    if (m_rotationCorrection >= 0) {
+      m_drivebase->ArcadeDrive(0, m_rotationCorrection + 0.15);
     } else {
-      m_drivebase->ArcadeDrive(0, rotationCorrection - 0.15);
+      m_drivebase->ArcadeDrive(0, m_rotationCorrection - 0.15);
     }
   }
 
@@ -159,19 +162,20 @@ void PIDTurning::End(bool interrupted) {
 // Returns true when the command should end.
 bool PIDTurning::IsFinished() {
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
-  if (std::abs((startingAngle.value() + angle - currentAngle.value())) < 1) {
+  if (std::abs((m_startingAngle.value() + angle - m_currentAngle.value())) <
+      1) {
     return true;
   }
   return false;
 #else
   // if the current condition and the correction speed is less than 0.2
-  if ((std::abs((startingAngle + m_angle - currentAngle).value()) < 1) &&
-      ((std::abs(rotationCorrection) < 0.3) &&
+  if ((std::abs((m_startingAngle + m_angle - m_currentAngle).value()) < 1) &&
+      ((std::abs(m_rotationCorrection) < 0.3) &&
        (std::abs((m_drivebase->GetLeftVelocity()).value()) < 0.05 &&
         std::abs(m_drivebase->GetRightVelocity().value()) < 0.05))) {
-    std::cout << "Finished: StartingValue: " << startingAngle.value()
-              << "requested angle: " << m_angle.value() << "currentAngle"
-              << currentAngle.value() << std::endl;
+    std::cout << "Finished: StartingValue: " << m_startingAngle.value()
+              << "requested angle: " << m_angle.value() << "m_currentAngle"
+              << m_currentAngle.value() << std::endl;
     return true;
   }
   return false;
@@ -179,8 +183,8 @@ bool PIDTurning::IsFinished() {
 }
 
 void PIDTurning::FeedForward() {
-  currentAngle = m_drivebase->GetYaw();
-  /*if (feedForward) {
+  m_currentAngle = m_drivebase->GetYaw();
+  /*if (m_feedForward) {
     if (m_angle > 0_deg) {
       std::cout << "sending power for turning left" << std::endl;
       m_drivebase->ArcadeDrive(0, 0.5);
@@ -190,8 +194,8 @@ void PIDTurning::FeedForward() {
     }
   }
 */
-  if (feedForward) {
-    if (std::abs((startingAngle + m_angle - currentAngle).value()) < 45 &&
+  if (m_feedForward) {
+    if (std::abs((m_startingAngle + m_angle - m_currentAngle).value()) < 45 &&
         (std::abs(m_speed) > 0.3)) {
       m_subtraction = std::abs(m_speed) - 0.3;
       std::cout << "Invoking subtraction." << std::endl;

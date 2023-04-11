@@ -16,6 +16,8 @@ void SelfBalancing::Initialize() {
   m_noFeedFowardPower = false;
   m_activatePID = false;
   m_pid.Reset();
+  // CODE_REVIEW(matthew): Avoid magic numbers.  What do these values mean, and
+  // how were they established?
   m_pid.SetTolerance(2.0, 0);
 
   const double pitchUpDegrees =
@@ -25,6 +27,8 @@ void SelfBalancing::Initialize() {
   m_pastAngle = pitchUpDegrees;
   const int slopeOfRamp = GetPowerSignFromAngle(pitchUpDegrees);
 
+  // CODE_REVIEW(matthew): Avoid magic numbers.  What do these values mean, and
+  // how were they established?
   m_drivebase->TankDrive(slopeOfRamp * 0.4, slopeOfRamp * 0.4);
 }
 

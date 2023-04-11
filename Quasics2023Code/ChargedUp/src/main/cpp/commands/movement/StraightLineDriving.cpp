@@ -7,8 +7,8 @@
 #include <iostream>
 
 // When button pressed, read current angle, in execute
-// pid.calculate(m_currentAngle, to original reading) Use arcade drive give use
-// forward power as what is given by joystick
+// m_pid.calculate(m_currentAngle, to original reading) Use arcade drive give
+// use forward power as what is given by joystick
 // GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS)
 
 // given distance: if speed negative distance becomes negative if speed positive
@@ -47,7 +47,7 @@ void StraightLineDriving::Execute() {
   m_distanceToDestination = m_originalDistance + m_distance - m_currentDistance;
   m_currentAngle = m_drivebase->GetYaw();
   double rotationCorrection =
-      pid.Calculate(m_currentAngle.value(), m_originalAngle.value());
+      m_pid.Calculate(m_currentAngle.value(), m_originalAngle.value());
   if (std::abs(m_distanceToDestination.value()) < 1.5 &&
       std::abs(m_speed) > 0.35) {
     // std::cout << "Applying Reduction" << std::endl;

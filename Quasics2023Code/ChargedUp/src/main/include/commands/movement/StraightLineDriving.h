@@ -45,9 +45,9 @@ class StraightLineDriving
   const double m_speed;
   const units::meter_t m_distance;
 
-  frc2::PIDController pid{StraightDrivingConstants::PID::kP,
-                          StraightDrivingConstants::PID::kI,
-                          StraightDrivingConstants::PID::kD};
+  frc2::PIDController m_pid{StraightDrivingConstants::PID::kP,
+                            StraightDrivingConstants::PID::kI,
+                            StraightDrivingConstants::PID::kD};
 
   // CODE_REVIEW(matthew): The names don't make it clear what some of these
   // variables do (e.g., "m_subtraction").  Please either update the names to

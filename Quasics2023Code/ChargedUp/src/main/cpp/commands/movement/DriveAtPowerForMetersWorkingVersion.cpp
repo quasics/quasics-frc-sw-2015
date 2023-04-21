@@ -9,12 +9,11 @@
 DriveAtPowerForMetersWorkingVersion::DriveAtPowerForMetersWorkingVersion(
     Drivebase* drivebase, double motorPower, units::meter_t distance)
     : m_drivebase(drivebase),
-      m_motorPower(m_motorPower > 0 && m_distance > 0_m
-                       ? motorPower
-                       : -std::abs(m_motorPower)),
-      m_distance(m_motorPower > 0 && m_distance > 0_m
+      m_motorPower(motorPower > 0 && distance > 0_m ? motorPower
+                                                    : -std::abs(motorPower)),
+      m_distance(motorPower > 0 && distance > 0_m
                      ? distance
-                     : -units::meter_t(std::abs(m_distance.value()))) {
+                     : -units::meter_t(std::abs(distance.value()))) {
   AddRequirements(drivebase);
   SetName("DriveAtPowerForMetersWorkingVersion");
 }

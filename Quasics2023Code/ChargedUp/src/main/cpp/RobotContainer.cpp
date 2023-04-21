@@ -387,7 +387,7 @@ void RobotContainer::AddSampleLightingToSmartDashboard() {
 }
 
 void RobotContainer::AddTestButtonsToSmartDashboard() {
-  frc::SmartDashboard::PutData(
+  /*frc::SmartDashboard::PutData(
       "Request nothing", new SignalRequestedPayload(
                              &m_configSettings, RequestedPayload::eNothing));
   frc::SmartDashboard::PutData(
@@ -395,7 +395,8 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       new SignalRequestedPayload(&m_configSettings, RequestedPayload::eCones));
   frc::SmartDashboard::PutData(
       "Request cubes",
-      new SignalRequestedPayload(&m_configSettings, RequestedPayload::eCubes));
+      new SignalRequestedPayload(&m_configSettings,
+  RequestedPayload::eCubes));*/
   /*frc::SmartDashboard::PutData("STRAIGHT DRIVING 4_m 0.6speed",
                                new StraightLineDriving(&m_drivebase, 0.6, 3_m));
   frc::SmartDashboard::PutData("STRAIGHT DRIVING 4_m 0.7speed",

@@ -106,9 +106,9 @@ void IntakeDeployment::Periodic() {
                                  m_leftDeploymentEncoder.GetVelocity());*/
 #endif
 
-  /*frc::SmartDashboard::PutString(
+  frc::SmartDashboard::PutString(
       "Left extend limit switch",
-      m_leftExtendIntakeLimitSwitch.Get() ? "open" : "closed");*/
+      m_leftExtendIntakeLimitSwitch.Get() ? "open" : "closed");
 
 #ifdef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
   frc::SmartDashboard::PutString(

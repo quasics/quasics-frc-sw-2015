@@ -74,7 +74,7 @@ constexpr auto Red3 = "Red 3";
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSpeeds {
-constexpr auto DRIVE_SPEED = 0.5;
+constexpr auto DRIVE_SPEED = 0.75;
 constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;

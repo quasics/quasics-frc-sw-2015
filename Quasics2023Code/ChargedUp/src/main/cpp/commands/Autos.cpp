@@ -54,7 +54,7 @@ namespace Helpers {
         new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.4_s)));*/
     commands.push_back(
         std::unique_ptr<frc2::Command>(new IntakeWithRollerAtSpeedForTime(
-            intakeRoller, -IntakeConstants::RollerSpeeds::CONES, 1_s)));
+            intakeRoller, -IntakeConstants::RollerSpeeds::CONES, 1.5_s)));
     /*commands.push_back(std::unique_ptr<frc2::Command>(
         new AutoIntakeExtension(intakeDeployment, 0.5)));*/
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -942,8 +942,10 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         FloorScoreGamePieceHelperCommand(floorEjection)));
 #endif
-    commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
-        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));  // POSSIBLE ERROR
+    commands.push_back(
+        std::unique_ptr<frc2::Command>(new DriveAtPowerForMetersWorkingVersion{
+            drivebase, -AutonomousSpeeds::DRIVE_SPEED,
+            0.25_m}));  // POSSIBLE ERROR
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -1072,9 +1074,9 @@ namespace Helpers {
           drivebase, AutonomousSpeeds::DRIVE_SPEED, 4.5_m)));
     }
     commands.push_back(
-        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -35_deg)));
+        std::unique_ptr<frc2::Command>(new PIDTurning(drivebase, -30_deg)));
     commands.push_back(std::unique_ptr<frc2::Command>(
-        new IntakeWithRollerAtSpeedForTime(intakeRoller, -0.5, 0.8_s)));
+        new IntakeWithRollerAtSpeedForTime(intakeRoller, -0.8, 0.75_s)));
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

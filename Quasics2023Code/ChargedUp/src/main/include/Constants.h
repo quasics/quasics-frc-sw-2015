@@ -260,10 +260,14 @@ namespace LogitechGamePad {
 
   // Axes - Used with the "getRawAxis()" function to access the data for the
   // individual sticks on the controller (e.g., for "tank drive" coding).
+
+  // PLEASE NOTE******
+  //  Make sure the logitech controller is in X MODE(setting on the back)
+  // or else the axis will be wrong
   constexpr int LEFT_X_AXIS = 0;
   constexpr int LEFT_Y_AXIS = 1;
-  constexpr int RIGHT_X_AXIS = 2;
-  constexpr int RIGHT_Y_AXIS = 3;
+  constexpr int RIGHT_X_AXIS = 4;
+  constexpr int RIGHT_Y_AXIS = 5;
 
   // Buttons
   constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers

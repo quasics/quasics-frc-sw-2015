@@ -254,20 +254,24 @@ using RateLimit = units::unit_t<
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
 namespace LogitechGamePad {
-  // Note: these values were derived from one of the Logitech-branded
-  // controllers on 22Jan2022. But it looks like there *may* be differences
-  // between apparently identical devices.... :-(
-
   // Axes - Used with the "getRawAxis()" function to access the data for the
   // individual sticks on the controller (e.g., for "tank drive" coding).
-
-  // PLEASE NOTE******
-  //  Make sure the logitech controller is in X MODE(setting on the back)
-  // or else the axis will be wrong
+  //
+  // Note: these values assume that the switch on the bottom of the Logitech
+  // controller is in the "D" position.
+  //
+  // If the switch is in the "D" position, the controller will enumerate as a
+  // Logitech Dualshock controller, the right joystick X/Y axes are 2and 3,
+  // respectively, and the left and right triggers show up as *buttons* 7 and 8.
+  //
+  // If the switch is in the "X" position, it will enumerate as a Logitech
+  // Gamepad F310. In this mode, the right joystick X/Y axes are 4 and 5,
+  // respectively, and the left and right triggers on the front enumerate as
+  // joysticks 2 and 3.
   constexpr int LEFT_X_AXIS = 0;
   constexpr int LEFT_Y_AXIS = 1;
-  constexpr int RIGHT_X_AXIS = 4;
-  constexpr int RIGHT_Y_AXIS = 5;
+  constexpr int RIGHT_X_AXIS = 2;
+  constexpr int RIGHT_Y_AXIS = 3;
 
   // Buttons
   constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers

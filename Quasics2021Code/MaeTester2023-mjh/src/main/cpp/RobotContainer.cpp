@@ -47,6 +47,8 @@
 // DEFINE this to disable "turbo" mode (e.g., with untrusted drivers :-).
 #define DISABLE_TURBO_MODE
 
+#define ENABLE_BINDINGS_FOR_DEMO
+
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -196,25 +198,23 @@ void RobotContainer::ConfigureControllerButtonBindings() {
   static IncrementLinearActuator incrementShootingAngle(&shooter);
   static DecrementLinearActuator decrementShootingAngle(&shooter);
 
-#define ENABLE_BINDINGS_FOR_DEMO
 #ifdef ENABLE_BINDINGS_FOR_DEMO
-  // Bindings defined by Matt Healy and Meg Gilmore on 12Aug2021,
-  // for use at the demo on 14Aug2021.
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &conveyorBackwardCommand);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
-                                     &conveyorForwardCommand);
-
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
-                                     shooterToMaximumCommandPtr.get());
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
-                                     shooterToMinimumCommandPtr.get());
+  // Bindings defined by Matt Healy on 18May2023, moving all controls onto
+  // a single controller for convenience at demos.
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::AButton,
+                                   &conveyorBackwardCommand);
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::BButton,
+                                   &conveyorForwardCommand);
 
   RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::LeftShoulder,
-                                   &intakeForwardCommand);
+                                   shooterToMaximumCommandPtr.get());
   RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::RightShoulder,
-                                   &intakeReverseCommand);
+                                   shooterToMinimumCommandPtr.get());
 
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::XButton,
+                                   &runShooterFullSpeed); // see last year's code
+  RunCommandWhenDriverButtonIsHeld(OIConstants::LogitechGamePad::YButton,
+                                   &runShooterLowSpeed); // see last year's code
 #else
   RunCommandWhenOperatorButtonIsHeld(
       frc::XboxController::Button::kA,

@@ -74,10 +74,22 @@ namespace OIConstants {
   namespace LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
+    //
+    // Note: these values assume that the switch on the bottom of the Logitech
+    // controller is in the "D" position.
+    //
+    // If the switch is in the "D" position, the controller will enumerate as a
+    // Logitech Dualshock controller, the right joystick X/Y axes are 2and 3,
+    // respectively, and the left and right triggers show up as *buttons* 7 and 8.
+    //
+    // If the switch is in the "X" position, it will enumerate as a Logitech
+    // Gamepad F310. In this mode, the right joystick X/Y axes are 4 and 5,
+    // respectively, and the left and right triggers on the front enumerate as
+    // joysticks 2 and 3.
     constexpr int LeftXAxis = 0;
     constexpr int LeftYAxis = 1;
-    constexpr int RightXAxis = 4;
-    constexpr int RightYAxis = 5;
+    constexpr int RightXAxis = 2;
+    constexpr int RightYAxis = 3;
 
     // Buttons
     constexpr int AButton = 1;

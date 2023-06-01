@@ -193,39 +193,41 @@ void Drivebase::SetMotorSpeed(double leftSpeed, double rightSpeed) {
   }
 }
 
-void Drivebase::Stop() {
-  SetMotorSpeed(0, 0);
+void Drivebase::ArcadeDrive(double forwardSpeed, double turnSpeed) {
+  if (m_drive) {
+    m_drive->ArcadeDrive(forwardSpeed, turnSpeed);
+  }
 }
 
-frc::Pose2d Drivebase::GetPose() {
-  return m_odometry.GetPose();
-}
+void Drivebase::Stop() { SetMotorSpeed(0, 0); }
+
+frc::Pose2d Drivebase::GetPose() { return m_odometry.GetPose(); }
 
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
   m_odometry.ResetPosition(m_adiGyro.GetRotation2d(), 0_m, 0_m, pose);
 }
 
-void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-  if (m_leftMotors) {
+  void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
+    if (m_leftMotors) {
     m_leftMotors->SetVoltage(left);
-  }
-  if (m_leftMotors) {
+    }
+    if (m_leftMotors) {
     m_rightMotors->SetVoltage(right);
-  }
-  if (m_drive) {
+    }
+    if (m_drive) {
     m_drive->Feed();
+    }
   }
-}
 
-units::meter_t Drivebase::GetRightEncoderDistance() {
-  auto distance = (GetRightEncoderCount() / kGearRatio_2021) *
-                  (kWheelDiameter * std::numbers::pi);
-  return distance;
-}
+  units::meter_t Drivebase::GetRightEncoderDistance() {
+    auto distance = (GetRightEncoderCount() / kGearRatio_2021) *
+                    (kWheelDiameter * std::numbers::pi);
+    return distance;
+  }
 
-units::meter_t Drivebase::GetLeftEncoderDistance() {
-  auto distance = (GetLeftEncoderCount() / kGearRatio_2021) *
-                  (kWheelDiameter * std::numbers::pi);
-  return distance;
-}
+  units::meter_t Drivebase::GetLeftEncoderDistance() {
+    auto distance = (GetLeftEncoderCount() / kGearRatio_2021) *
+                    (kWheelDiameter * std::numbers::pi);
+    return distance;
+  }

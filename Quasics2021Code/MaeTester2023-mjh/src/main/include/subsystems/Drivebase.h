@@ -27,6 +27,7 @@ class Drivebase : public frc2::SubsystemBase {
   void Periodic() override;
   void Stop();
   void SetMotorSpeed(double leftSpeed, double rightSpeed);
+  void ArcadeDrive(double forwardSpeed, double turnSpeed);
   frc::Gyro& GetZAxisGyro() {
     return m_adiGyro;
   }

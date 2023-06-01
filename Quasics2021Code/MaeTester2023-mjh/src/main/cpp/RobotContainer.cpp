@@ -49,7 +49,7 @@
 
 #define ENABLE_BINDINGS_FOR_DEMO
 
-#undef ENABLE_ARCADE_DRIVE
+#define ENABLE_ARCADE_DRIVE
 
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////
@@ -212,8 +212,14 @@ std::unique_ptr<ArcadeDrive> RobotContainer::BuildSplitArcadeDriveCommand() {
 
 void RobotContainer::InstallDefaultCommands() {
 #ifdef ENABLE_ARCADE_DRIVE
+  std::cerr << "***********\n"
+            << "*********** CONFIGURED FOR SPLIT ARCADE DRIVE\n"
+            << "***********\n";
   auto driveCmd = BuildSplitArcadeDriveCommand();
 #else
+  std::cerr << "***********\n"
+            << "*********** CONFIGURED FOR TANK DRIVE\n"
+            << "***********\n";
   auto driveCmd = BuildTankDriveCommand();
 #endif
 

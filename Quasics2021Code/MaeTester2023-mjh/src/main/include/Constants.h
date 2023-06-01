@@ -72,46 +72,46 @@ namespace DigitalIOMappings {
 
 namespace OIConstants {
   namespace LogitechGamePad {
-    // Axes - Used with the "getRawAxis()" function to access the data for the
-    // individual sticks on the controller (e.g., for "tank drive" coding).
-    //
-    // Note: these values assume that the switch on the bottom of the Logitech
-    // controller is in the "D" position.
-    //
-    // If the switch is in the "D" position, the controller will enumerate as a
-    // Logitech Dualshock controller, the right joystick X/Y axes are 2and 3,
-    // respectively, and the left and right triggers show up as *buttons* 7 and 8.
-    //
-    // If the switch is in the "X" position, it will enumerate as a Logitech
-    // Gamepad F310. In this mode, the right joystick X/Y axes are 4 and 5,
-    // respectively, and the left and right triggers on the front enumerate as
-    // joysticks 2 and 3.
-    constexpr int LeftXAxis = 0;
-    constexpr int LeftYAxis = 1;
-    constexpr int RightXAxis = 2;
-    constexpr int RightYAxis = 3;
+  // Axes - Used with the "getRawAxis()" function to access the data for the
+  // individual sticks on the controller (e.g., for "tank drive" coding).
+  //
+  // Note: these values assume that the switch on the bottom of the Logitech
+  // controller is in the "D" position.
+  //
+  // If the switch is in the "D" position, the controller will enumerate as a
+  // Logitech Dualshock controller, the right joystick X/Y axes are 2 and 3,
+  // respectively, and the left and right triggers show up as *buttons* 7 and 8.
+  //
+  // If the switch is in the "X" position, it will enumerate as a Logitech
+  // Gamepad F310. In this mode, the right joystick X/Y axes are 4 and 5,
+  // respectively, and the left and right triggers on the front enumerate as
+  // joysticks 2 and 3.
+  constexpr int LeftXAxis = 0;
+  constexpr int LeftYAxis = 1;
+  constexpr int RightXAxis = 2;
+  constexpr int RightYAxis = 3;
 
-    // Buttons
-    constexpr int AButton = 1;
-    constexpr int BButton = 2;
-    constexpr int XButton = 3;
-    constexpr int YButton = 4;
-    constexpr int LeftShoulder = 5;
-    constexpr int RightShoulder = 6;
+  // Buttons
+  constexpr int AButton = 1;
+  constexpr int BButton = 2;
+  constexpr int XButton = 3;
+  constexpr int YButton = 4;
+  constexpr int LeftShoulder = 5;
+  constexpr int RightShoulder = 6;
 
-    // The following buttons are below the shoulder, and would be triggers on an
-    // Xbox controller.
-    constexpr int LeftTriggerButton = 7;
-    constexpr int RightTriggerButton = 8;
+  // The following buttons are below the shoulder, and would be triggers on an
+  // Xbox controller.
+  constexpr int LeftTriggerButton = 7;
+  constexpr int RightTriggerButton = 8;
 
-    // TODO(scott): Check the values for the following.
-    constexpr int BackButton = 9;
-    constexpr int StartButton = 10;
-    constexpr int LeftStickPress = 11;
-    constexpr int RightStickPress = 12;
+  // TODO(scott): Check the values for the following.
+  constexpr int BackButton = 9;
+  constexpr int StartButton = 10;
+  constexpr int LeftStickPress = 11;
+  constexpr int RightStickPress = 12;
 
-    constexpr int InvalidButton = 99;
-    constexpr int InvalidAxis = 98;
+  constexpr int InvalidButton = 99;
+  constexpr int InvalidAxis = 98;
   }  // namespace LogitechGamePad
 
   // "Dead band" values for the drive joysticks

@@ -15,6 +15,7 @@
 #include <networktables/NetworkTableEntry.h>
 
 #include "SpeedScaler.h"  // TODO(scott): Replace this example.
+#include "commands/ArcadeDrive.h"
 #include "commands/ColorLights.h"
 #include "commands/TankDrive.h"
 #include "commands/TriggerDrivenShootingCommand.h"
@@ -47,6 +48,10 @@ class RobotContainer {
   /// Builds the (fairly complex) tank drive command, but doesn't install it
   /// on the subsystem.
   std::unique_ptr<TankDrive> BuildTankDriveCommand();
+
+  /// Builds the (fairly complex) split arcade drive command, but doesn't
+  /// install it on the subsystem.
+  std::unique_ptr<ArcadeDrive> BuildSplitArcadeDriveCommand();
 
   /// Builds the (somewhat complex) shooting command, but doesn't install it
   /// on the subsystem.

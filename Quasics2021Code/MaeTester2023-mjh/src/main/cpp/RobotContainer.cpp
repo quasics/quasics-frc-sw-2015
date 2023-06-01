@@ -49,6 +49,8 @@
 
 #define ENABLE_BINDINGS_FOR_DEMO
 
+#undef ENABLE_ARCADE_DRIVE
+
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -151,9 +153,71 @@ std::unique_ptr<TankDrive> RobotContainer::BuildTankDriveCommand() {
       });
 }
 
+std::unique_ptr<ArcadeDrive> RobotContainer::BuildSplitArcadeDriveCommand() {
+#if defined(DISABLE_TURBO_MODE)
+  constexpr int turtleTrigger =
+      OIConstants::LogitechGamePad::RightTriggerButton;
+  constexpr int turboTrigger = OIConstants::LogitechGamePad::InvalidButton;
+#else
+  constexpr int turtleTrigger = OIConstants::LogitechGamePad::LeftTriggerButton;
+  constexpr int turboTrigger = OIConstants::LogitechGamePad::RightTriggerButton;
+#endif  // DISABLE_TURBO_MODE
+
+  std::function<SpeedScaler::Mode()> speedModeSupplier = [this, turtleTrigger,
+                                                          turboTrigger] {
+    SpeedScaler::Mode result = SpeedScaler::Normal;
+    if (turtleTrigger != OIConstants::LogitechGamePad::InvalidButton &&
+        driverJoystick.GetRawButton(turtleTrigger)) {
+      result = SpeedScaler::Turtle;
+    } else if (turboTrigger != OIConstants::LogitechGamePad::InvalidButton &&
+               driverJoystick.GetRawButton(turboTrigger)) {
+      result = SpeedScaler::Turbo;
+    }
+
+    // If we're changing modes, log it to the console.
+    static SpeedScaler::Mode lastMode = SpeedScaler::Mode(-1);
+    if (result != lastMode) {
+      std::cout << "Driving in " << result << " mode" << std::endl;
+    }
+    lastMode = result;
+
+    return result;
+  };
+
+  SpeedScaler speedScaler{
+      speedModeSupplier,                        // Speed mode
+      DrivebaseConstants::kNormalSpeedScaling,  // Scaling factor for normal
+                                                // mode
+      DrivebaseConstants::kTurtleSpeedScaling,  // Scaling factor for turtle
+                                                // mode
+      DrivebaseConstants::kTurboSpeedScaling    // Scaling factor for turbo
+                                                // mode
+  };
+
+  return std::make_unique<ArcadeDrive>(
+      &drivebase,
+      /* forwardSpeed */
+      [this, speedScaler] {
+        double stickValue =
+            -driverJoystick.GetRawAxis(OIConstants::LogitechGamePad::LeftYAxis);
+        return speedScaler(deadband(stickValue));
+      },
+      /* turnSpeed */
+      [this, speedScaler] {
+        double stickValue = -driverJoystick.GetRawAxis(
+            OIConstants::LogitechGamePad::RightXAxis);
+        return speedScaler(deadband(stickValue));
+      });
+}
+
 void RobotContainer::InstallDefaultCommands() {
-  auto tankDriveCmd = BuildTankDriveCommand();
-  drivebase.SetDefaultCommand(*tankDriveCmd);
+#ifdef ENABLE_ARCADE_DRIVE
+  auto driveCmd = BuildSplitArcadeDriveCommand();
+#else
+  auto driveCmd = BuildTankDriveCommand();
+#endif
+
+  drivebase.SetDefaultCommand(*driveCmd);
 
   lights.SetDefaultCommand(m_defaultLightingCommand);
 

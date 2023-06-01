@@ -10,11 +10,7 @@
 #include "subsystems/Drivebase.h"
 
 /**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
+ * Implements arcade drive support.
  */
 class ArcadeDrive : public frc2::CommandHelper<frc2::CommandBase, ArcadeDrive> {
  public:

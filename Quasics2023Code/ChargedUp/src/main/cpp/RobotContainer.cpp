@@ -44,6 +44,7 @@
 #include "commands/intake/SetCubeOrConeIntakeSpeed.h"
 #include "commands/intake/TriggerBasedRollerCommand.h"
 #include "commands/lighting/MatchPlayLighting.h"
+#include "commands/lighting/PatrioticLighting.h"
 #include "commands/lighting/SetLightsToColor.h"
 #include "commands/lighting/SignalRequestedPayload.h"
 #include "commands/movement/AprilTagDriveToTarget.h"
@@ -434,6 +435,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Turn 180 Right Degrees: ",
       new TurnDegreesImported(&m_drivebase, 0.5, -180_deg));*/
+
+  frc::SmartDashboard::PutData(
+      "4th of July (up)", new PatrioticLighting(&m_lighting, 3.0_s, false));
+  frc::SmartDashboard::PutData("4th of July (down)",
+                               new PatrioticLighting(&m_lighting, 3.0_s, true));
 
   frc::SmartDashboard::PutData("Turn 90 Left Degrees: ",
                                new PIDTurning(&m_drivebase, 90_deg));

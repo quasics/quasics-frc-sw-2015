@@ -143,11 +143,11 @@ constexpr double kI = 0;
 constexpr double kD = 0;
 }  // namespace PathWeaverConstants
 
-constexpr units::length::inch_t TRACK_WIDTH_INCHES_GLADYS = 0.559_m;
-extern const frc::DifferentialDriveKinematics kDriveKinematics;
+constexpr units::length::meter_t TRACK_WIDTH_METERS_GLADYS = 0.559_m;
+const frc::DifferentialDriveKinematics kDriveKinematics(TRACK_WIDTH_METERS_GLADYS);
 
-constexpr auto kMaxSpeed = 3_mps;
-constexpr auto kMaxAcceleration = 1_mps_sq;
+constexpr auto kMaxSpeed = 1_mps;
+constexpr auto kMaxAcceleration = 0.5_mps_sq;
 
 constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
 constexpr auto kRamseteZeta = 0.7 / 1_rad;

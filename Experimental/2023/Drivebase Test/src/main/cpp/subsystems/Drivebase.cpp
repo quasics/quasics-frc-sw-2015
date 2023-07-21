@@ -2,6 +2,7 @@
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 //figure out what encoder returns so you can transfer
 Drivebase::Drivebase()
@@ -16,10 +17,6 @@ Drivebase::Drivebase()
 
   ResetEncoders();
 }
-
-
-
-
 
 void Drivebase::ConfigureEncoders() {
   // Calculate wheel circumference (distance travelled per wheel revolution).
@@ -50,23 +47,21 @@ void Drivebase::ConfigureEncoders() {
   ResetEncoders();
 }
 
-
-
-
-
-
-
-
-
-
-
-//Will be using the front encoders
-
 void Drivebase::Periodic() {
   // Implementation of subsystem periodic method goes here.
+  // Will be using the front encoders
   m_odometry.Update(m_gyro.GetRotation2d(),
                     GetLeftDistance(),
                     GetRightDistance());
+
+
+  frc::SmartDashboard::PutNumber("GetWheelSpeeds() Left Velocity", double{GetLeftVelocity()});
+  frc::SmartDashboard::PutNumber("GetWheelSpeeds() Right Velocity", double{GetRightVelocity()});
+  
+  //For Pose 2d how do you know which pose is it returning. Is it an X, Y, and a Rotation, Or an Translation and Rotation
+  //frc::SmartDashboard::PutData("GetPose() Translation", GetPose().Translation());
+
+                    
 }
 
 void Drivebase::ArcadeDrive(double fwd, double rot) {
@@ -79,12 +74,6 @@ void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
   m_drive.Feed();
 }
 
-
-
-
-
-
-
 void Drivebase::ResetEncoders() {
   m_leftFrontEncoder.SetPosition(0);
   m_rightFrontEncoder.SetPosition(0);
@@ -92,19 +81,9 @@ void Drivebase::ResetEncoders() {
   m_rightBackEncoder.SetPosition(0);
 }
 
-
-
-
-
-
-
-
-
 units::meter_t Drivebase::GetAverageEncoderDistance() {
   return (GetLeftDistance() + GetRightDistance()) / 2.0;
 }
-
-
 
 units::meter_t Drivebase::GetLeftDistance() {
   // Note that the conversion factor configured earlier means that we're getting
@@ -129,10 +108,6 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
   // velocity in m/sec.
   return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
 }
-
-
-
-
 
 void Drivebase::SetMaxOutput(double maxOutput) {
   m_drive.SetMaxOutput(maxOutput);

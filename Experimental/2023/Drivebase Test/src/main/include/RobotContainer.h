@@ -8,6 +8,7 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.h"
+#include "subsystems/Drivebase.h"
 #include "subsystems/ExampleSubsystem.h"
 
 /**
@@ -28,6 +29,7 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
+  Drivebase m_drive;
 
   void ConfigureBindings();
 };

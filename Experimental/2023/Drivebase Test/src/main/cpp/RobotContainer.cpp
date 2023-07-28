@@ -6,6 +6,7 @@
 
 #include <frc2/command/button/Trigger.h>
 
+#include "commands/DriveFromVoltageForTime.h"
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
 #include <frc/controller/SimpleMotorFeedforward.h>
@@ -17,13 +18,17 @@
 #include <frc/controller/PIDController.h>
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/Commands.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/InstantCommand.h>
 
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
+  m_drive.SetDefaultCommand(frc2::InstantCommand([this]{m_drive.Stop();}, {&m_drive}) );
 
   // Configure the button bindings
   ConfigureBindings();
+  AddTestButtonsOnSmartDashboard();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -55,7 +60,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
         // frc::Translation2d{1_m, 1_m}, frc::Translation2d{2_m, -1_m}
       },
       // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{3_m, 0_m, 0_deg},
+      frc::Pose2d{1_m, 0_m, 0_deg},
       // Pass the config
       config);
 
@@ -68,8 +73,8 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       [this] { return m_drive.GetWheelSpeeds(); },
       frc2::PIDController{PathWeaverConstants::kP, 0, 0},
       frc2::PIDController{PathWeaverConstants::kP, 0, 0},
-      [this](auto left, auto right) { m_drive.TankDriveVolts(left, right); },
-      {&m_drive})};
+      [this](auto left, auto right) { m_drive.TankDriveVolts(left, -right); },
+      {&m_drive})}; 
 
   // Reset odometry to the starting pose of the trajectory.
   m_drive.ResetOdometry(exampleTrajectory.InitialPose());
@@ -79,4 +84,9 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
           frc2::cmd::RunOnce([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}))
       // Because Mr. Healy is professionally paranoid....
       .AndThen(frc2::cmd::RunOnce([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}));
+}
+
+void RobotContainer::AddTestButtonsOnSmartDashboard(){
+  frc::SmartDashboard::PutData("3volts left, -3Volts right, 3 sec", new DriveFromVoltageForTime(&m_drive, 3_V, -3_V, 3_s));
+  frc::SmartDashboard::PutData("3volts both, 3 sec", new DriveFromVoltageForTime(&m_drive, 3_V, 3_V, 3_s));
 }

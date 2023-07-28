@@ -1,4 +1,6 @@
+
 #include "subsystems/Drivebase.h"
+
 
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
@@ -60,6 +62,14 @@ void Drivebase::Periodic() {
   
   //For Pose 2d how do you know which pose is it returning. Is it an X, Y, and a Rotation, Or an Translation and Rotation
   //frc::SmartDashboard::PutData("GetPose() Translation", GetPose().Translation());
+  frc::SmartDashboard::PutNumber("GetPose.X() Translation in Meters", double{GetPose().X()});
+  frc::SmartDashboard::PutNumber("GetPose.Y() Translation in Meters", double{GetPose().Y()});
+  frc::SmartDashboard::PutNumber("GetHeading() Yaw", double(GetHeading()));
+  frc::SmartDashboard::PutNumber("Pitch", double((m_gyro.GetPitch())));
+  frc::SmartDashboard::PutNumber("Roll", double((m_gyro.GetRoll())));
+
+  /*frc::SmartDashboard::PutNumber("GetPose.Translation() in Meters", double{GetPose().Translation()});
+  frc::SmartDashboard::PutNumber("GetPose.Rotation() in Meters", double{GetPose().Rotation()});*/
 
                     
 }
@@ -114,7 +124,7 @@ void Drivebase::SetMaxOutput(double maxOutput) {
 }
 
 units::degree_t Drivebase::GetHeading() const {
-  return m_gyro.GetRotation2d().Degrees();
+  return m_gyro.GetRotation2d().Degrees(); //yaw
 }
 
 double Drivebase::GetTurnRate() {

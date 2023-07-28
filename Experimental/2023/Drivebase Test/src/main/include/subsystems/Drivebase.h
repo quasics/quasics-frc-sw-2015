@@ -27,6 +27,8 @@ class Drivebase : public frc2::SubsystemBase {
 
   // Subsystem methods go here.
 
+  void Stop() { ArcadeDrive(0, 0); }
+
   /**
    * Drives the robot using arcade controls.
    *
@@ -48,32 +50,13 @@ class Drivebase : public frc2::SubsystemBase {
    */
   void ResetEncoders();
 
+  units::meter_t GetLeftDistance();
 
+  units::meter_t GetRightDistance();
 
+  units::meters_per_second_t GetLeftVelocity();
 
-
-
-
-units::meter_t GetLeftDistance();
-
-units::meter_t GetRightDistance();
-
-units::meters_per_second_t GetLeftVelocity();
-
-units::meters_per_second_t GetRightVelocity();
-
-
-
-
-
-
-
-
-
-
-
-
-
+  units::meters_per_second_t GetRightVelocity();
 
   /**
    * Gets the average distance of the TWO encoders.
@@ -81,10 +64,6 @@ units::meters_per_second_t GetRightVelocity();
    * @return the average of the TWO encoder readings
    */
   units::meter_t GetAverageEncoderDistance();
-
-
-
-
 
   /**
    * Sets the max output of the drive.  Useful for scaling the drive to drive

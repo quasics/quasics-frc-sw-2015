@@ -29,7 +29,7 @@ void Shooter::Periodic() {
 }
 
 void Shooter::SetSpeed(double speed) {
-  shootingMotor.Set(speed);  // Yeet the ball
+  shootingMotor.Set(-speed);  // Yeet the ball
 }
 
 void Shooter::Stop() {

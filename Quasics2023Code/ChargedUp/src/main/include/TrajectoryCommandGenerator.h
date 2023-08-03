@@ -24,6 +24,8 @@
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
 
+#define ENABLE_TRAJECTORY_LOGGING
+
 class TrajectoryCommandGenerator {
   //
   // Type definitions, referenced above.
@@ -100,6 +102,37 @@ class TrajectoryCommandGenerator {
   /**
    * Generates a sample command to follow the specified trajectory.
    *
+   * @param name
+   *     the name to be attached to the resulting command (group)
+   * @param speedProfile
+   *     maximum velocity/acceleration constraints to be observed
+   * @param start
+   *     the starting pose of the robot, relative to drive telemetry data
+   * @param interiorWaypoints
+   *     the points on the field through which the robot should pass while
+   *     passing from "start" to "end"
+   * @param end
+   *     the ending pose of the robot, relative to drive telemetry data
+   * @param telemetryHandling
+   *     if ResetTelemetryAtStart, the command will (at its initiation) reset
+   *     the drive telemetry, allowing it to start following the trajectory
+   *     using its current position and orientation as the origin point (0,0).
+   *     Otherwise, it will use the previously-established origin as a
+   *     starting point (and first drive back to that).
+   */
+  frc2::SequentialCommandGroup* GenerateCommand(
+      const std::string& name, const SpeedProfile speedProfile,
+      const frc::Pose2d& start,
+      const std::vector<frc::Translation2d>& interiorWaypoints,
+      const frc::Pose2d& end, TelemetryHandling telemetryHandling) {
+    return GenerateCommandFromDiscreteSegments(
+        name, m_drive, m_profileData, m_pidConfig, speedProfile, start,
+        interiorWaypoints, end, telemetryHandling, m_ramseteConfig);
+  }  // uses explicit data given to the command to build a trajectory
+
+  /**
+   * Generates a sample (unnamed) command to follow the specified trajectory.
+   *
    * @param speedProfile
    *     maximum velocity/acceleration constraints to be observed
    * @param start
@@ -120,9 +153,8 @@ class TrajectoryCommandGenerator {
       const SpeedProfile speedProfile, const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
       const frc::Pose2d& end, TelemetryHandling telemetryHandling) {
-    return GenerateCommandFromDiscreteSegments(
-        m_drive, m_profileData, m_pidConfig, speedProfile, start,
-        interiorWaypoints, end, telemetryHandling, m_ramseteConfig);
+    return GenerateCommand("", speedProfile, start, interiorWaypoints, end,
+                           telemetryHandling);
   }  // uses explicit data given to the command to build a trajectory
 
   /**
@@ -159,7 +191,8 @@ class TrajectoryCommandGenerator {
                       // the code can use
 
       return GenerateCommandForTrajectory(
-          m_drive, m_profileData, m_pidConfig, trajectory, telemetryHandling,
+          "", m_drive, m_profileData, m_pidConfig, trajectory,
+          telemetryHandling,
           m_ramseteConfig);  // calls the function created further in the code
     } catch (const std::exception& e) {
       // OK.  Something failed during this process (e.g., the specified JSON
@@ -181,18 +214,18 @@ class TrajectoryCommandGenerator {
   // that's going to make the code go "boom" when you try to use
   // the command later....
   static frc2::SequentialCommandGroup* GenerateCommandFromDiscreteSegments(
-      Drivebase* const drive, const DriveProfileData profileData,
-      const PIDConfig pidConfig, const SpeedProfile speedProfile,
-      const frc::Pose2d& start,
+      std::string_view name, Drivebase* const drive,
+      const DriveProfileData profileData, const PIDConfig pidConfig,
+      const SpeedProfile speedProfile, const frc::Pose2d& start,
       const std::vector<frc::Translation2d>& interiorWaypoints,
       const frc::Pose2d& end, TelemetryHandling telemetryHandling,
       const RamseteConfig ramseteConfig);  // this is a .h file so these
                                            // describe what these functions take
 
   static frc2::SequentialCommandGroup* GenerateCommandForTrajectory(
-      Drivebase* const drive, const DriveProfileData profileData,
-      const PIDConfig pidConfig, frc::Trajectory trajectory,
-      TelemetryHandling telemetryHandling,
+      std::string_view name, Drivebase* const drive,
+      const DriveProfileData profileData, const PIDConfig pidConfig,
+      frc::Trajectory trajectory, TelemetryHandling telemetryHandling,
       const RamseteConfig ramseteConfig);  // this is a .h file so these
                                            // describe what these functions take
 
@@ -210,9 +243,9 @@ class TrajectoryCommandGenerator {
 // this generates a command from explicit data given
 inline frc2::SequentialCommandGroup*
 TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
-    Drivebase* const drive, const DriveProfileData profileData,
-    const PIDConfig pidConfig, const SpeedProfile speedProfile,
-    const frc::Pose2d& start,
+    const std::string_view name, Drivebase* const drive,
+    const DriveProfileData profileData, const PIDConfig pidConfig,
+    const SpeedProfile speedProfile, const frc::Pose2d& start,
     const std::vector<frc::Translation2d>& interiorWaypoints,
     const frc::Pose2d& end, TelemetryHandling telemetryHandling,
     const RamseteConfig ramseteConfig) {
@@ -221,8 +254,6 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
 
   frc::SimpleMotorFeedforward<units::meter> feedForward(
       profileData.kS, profileData.kV, profileData.kA);
-  frc::DifferentialDriveVoltageConstraint voltageConstraints(
-      feedForward, kDriveKinematics, 10_V);
 
   frc::TrajectoryConfig config(
       speedProfile.maxVelocity,
@@ -231,8 +262,12 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
   config.SetKinematics(
       kDriveKinematics);  // this is telling the command the width of the track
                           // beteween the motors
-  config.AddConstraint(
-      voltageConstraints);  /////This is adding a voltage constraint of 10V
+
+  // Note: this sets up a voltage constraint of 10V.  (This can be changed, if
+  // needed.)
+  frc::DifferentialDriveVoltageConstraint voltageConstraints(
+      feedForward, kDriveKinematics, 10_V);
+  config.AddConstraint(voltageConstraints);
 
   auto trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       start, interiorWaypoints, end,
@@ -240,9 +275,25 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
                 // trajectory
 
   return GenerateCommandForTrajectory(
-      drive, profileData, pidConfig, trajectory, telemetryHandling,
+      name, drive, profileData, pidConfig, trajectory, telemetryHandling,
       ramseteConfig);  // takes in the trajectory(created above) and some other
                        // parameters and calls the function
+}
+
+// defines the functions here instead of in a .cpp file
+// convenience function for printing out the data of an frc::Trajectory object.
+inline std::ostream& operator<<(std::ostream& os,
+                                const frc::Trajectory& trajectory) {
+  os << "{\n";
+  for (const auto& state : trajectory.States()) {
+    os << "  "
+       << "t: " << state.t.value() << ", vel: " << state.velocity.value()
+       << ", a: " << state.acceleration.value() << ", pose: ("
+       << state.pose.X().value() << "," << state.pose.Y().value() << ")"
+       << "\n";
+  }
+  os << "}\n";
+  return os;
 }
 
 // defines the functions here instead of in a .cpp file
@@ -250,9 +301,10 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
 // RameseteCommand
 inline frc2::SequentialCommandGroup*
 TrajectoryCommandGenerator::GenerateCommandForTrajectory(
-    Drivebase* const drive, const DriveProfileData profileData,
-    const PIDConfig pidConfig, frc::Trajectory trajectory,
-    TelemetryHandling telemetryHandling, RamseteConfig ramseteConfig) {
+    std::string_view name, Drivebase* const drive,
+    const DriveProfileData profileData, const PIDConfig pidConfig,
+    frc::Trajectory trajectory, TelemetryHandling telemetryHandling,
+    RamseteConfig ramseteConfig) {
   const frc::DifferentialDriveKinematics kDriveKinematics{
       RobotPhysics::TRACK_WIDTH_INCHES_GLADYS};
   frc::SimpleMotorFeedforward<units::meter> feedForward(
@@ -273,7 +325,14 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       [drive](auto left, auto right) { drive->TankDriveVolts(left, -right); },
       {drive});
 
-  return new frc2::SequentialCommandGroup(
+#ifdef ENABLE_TRAJECTORY_LOGGING
+  if (!name.empty()) {
+    std::cerr << "Building trajectory command: " << name
+              << " for:" << trajectory;
+  }
+#endif  // ENABLE_TRAJECTORY_LOGGING
+
+  auto* group = new frc2::SequentialCommandGroup(
       frc2::InstantCommand(
           [drive, telemetryHandling, trajectory] {
             if (telemetryHandling == ResetTelemetryAtStart) {
@@ -285,4 +344,8 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       std::move(ramseteCommand),
       frc2::InstantCommand([drive] { drive->TankDriveVolts(0_V, 0_V); },
                            {drive}));
+  if (!name.empty()) {
+    group->SetName(name);
+  }
+  return group;
 }

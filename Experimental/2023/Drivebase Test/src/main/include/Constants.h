@@ -13,6 +13,10 @@
 #include <units/voltage.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 
+#define USING_GLADYS_TRAJECTORY_CONSTANTS
+#undef USING_SALLY_TRAJECTORY_CONSTANTS
+#undef USING_MAE_TRAJECTORY_CONSTANTS
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -135,12 +139,30 @@ constexpr int PIDGEON_CAN_ID = 1;
 //Beggining The Trajectory Tutorial Stuff
 
 namespace PathWeaverConstants {
+#ifdef USING_MAE_TRAJECTORY_CONSTANTS
+constexpr auto kS = 0.13895_V;
+constexpr auto kV = 1.3143 * (1_V * 1_s / 1_m);
+constexpr auto kA = 0.1935 * (1_V * 1_s * 1_s / 1_m);
+constexpr double kP = 0.001379;
+constexpr double kI = 0;
+constexpr double kD = 0;
+#endif
+#ifdef USING_GLADYS_TRAJECTORY_CONSTANTS
 constexpr auto kS = 0.25829_V;
 constexpr auto kV = 4.5623 * (1_V * 1_s / 1_m);
 constexpr auto kA = 1.608 * (1_V * 1_s * 1_s / 1_m);
 constexpr double kP = 5.1527;
 constexpr double kI = 0;
 constexpr double kD = 0;
+#endif
+#ifdef USING_SALLY_TRAJECTORY_CONSTANTS
+constexpr auto kS = 0.19529_V;
+constexpr auto kV = 2.2329 * (1_V * 1_s / 1_m);
+constexpr auto kA = 0.36638 * (1_V * 1_s * 1_s / 1_m);
+constexpr double kP = 0.29613;
+constexpr double kI = 0;
+constexpr double kD = 0;
+#endif
 }  // namespace PathWeaverConstants
 
 constexpr units::length::meter_t TRACK_WIDTH_METERS_GLADYS = 0.559_m;

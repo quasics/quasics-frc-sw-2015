@@ -149,15 +149,15 @@ void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("Pitch", GetPitchImpl());
   frc::SmartDashboard::PutNumber("Roll", GetRollImpl());
   */
-  frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
-  // std::cerr << "Yaw: " << GetAngle().value() << std::endl;
+  // frc::SmartDashboard::PutNumber("Yaw:", GetYaw().value());
+  //  std::cerr << "Yaw: " << GetAngle().value() << std::endl;
 
   auto angle = GetYaw();
   auto leftDistance = GetLeftDistance();
   auto rightDistance = GetRightDistance();
-
-  frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
-  frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());
+  /*
+    frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
+    frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());*/
 
   m_odometry.Update(angle, leftDistance, rightDistance);
 }

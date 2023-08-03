@@ -63,3 +63,7 @@
 // Note that it's OK for this to be disabled when the roller is enabled,
 // since we might not want to actually have things happen.
 #define USING_ROLLER_FOR_AUTO_INTAKE
+
+#define USING_GLADYS_TRAJECTORY_CONSTANTS
+#undef USING_SALLY_TRAJECTORY_CONSTANTS
+#undef USING_MAE_TRAJECTORY_CONSTANTS

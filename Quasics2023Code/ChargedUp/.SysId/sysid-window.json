@@ -15,22 +15,22 @@
     "###Analyzer": {
       "Collapsed": "0",
       "Pos": "320,25",
-      "Size": "360,550"
+      "Size": "360,689"
     },
     "###Generator": {
       "Collapsed": "0",
       "Pos": "2,18",
-      "Size": "310,608"
+      "Size": "310,682"
     },
     "###Logger": {
       "Collapsed": "0",
-      "Pos": "1,675",
-      "Size": "310,309"
+      "Pos": "1305,64",
+      "Size": "310,594"
     },
     "###Program Log": {
       "Collapsed": "0",
-      "Pos": "320,580",
-      "Size": "360,135"
+      "Pos": "297,722",
+      "Size": "1162,387"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -51,6 +51,11 @@
       "Collapsed": "0",
       "Pos": "400,318",
       "Size": "480,84"
+    },
+    "Warning": {
+      "Collapsed": "0",
+      "Pos": "777,14",
+      "Size": "848,972"
     }
   }
 }

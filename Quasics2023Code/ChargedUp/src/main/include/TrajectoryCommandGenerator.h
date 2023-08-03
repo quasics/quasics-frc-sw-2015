@@ -270,7 +270,7 @@ TrajectoryCommandGenerator::GenerateCommandForTrajectory(
       [drive]() { return drive->GetWheelSpeeds(); },
       frc2::PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
       frc2::PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
-      [drive](auto left, auto right) { drive->TankDriveVolts(left, right); },
+      [drive](auto left, auto right) { drive->TankDriveVolts(left, -right); },
       {drive});
 
   return new frc2::SequentialCommandGroup(

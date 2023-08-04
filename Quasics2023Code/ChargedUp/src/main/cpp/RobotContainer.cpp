@@ -454,6 +454,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Negative X",
       m_trajectoryGenerator.GenerateCommand(
+          "Negative X",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps, 0.4_mps_sq},  // changed values from 0.5 and 0.8 to
                                      // 0.2 and 0.4
@@ -465,6 +466,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Negative Y",
       m_trajectoryGenerator.GenerateCommand(
+          "Negative Y",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps, 0.4_mps_sq},  // changed values from 0.5 and 0.8 to
                                      // 0.2 and 0.4
@@ -476,6 +478,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Positive Y",
       m_trajectoryGenerator.GenerateCommand(
+          "Positive Y",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps, 0.4_mps_sq},  // changed values from 0.5 and 0.8 to
                                      // 0.2 and 0.4
@@ -487,6 +490,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "(0,0) -> (1,0) -> (1,1)",
       m_trajectoryGenerator.GenerateCommand(
+          "(0,0) -> (1,0) -> (1,1)",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps, 0.4_mps_sq},  // changed values from 0.5 and 0.8 to
                                      // 0.2 and 0.4
@@ -498,6 +502,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       " Postive X",
       m_trajectoryGenerator.GenerateCommand(
+          " Postive X",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps,
               0.4_mps_sq},  // changed values from 0.5 and 0.8 to 0.2 and 0.4
@@ -511,6 +516,9 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
       "(1.5,1.5), "
       "(0,1.5)",
       m_trajectoryGenerator.GenerateCommand(
+          "Trajectory: Start = 0,0 -> End = 0,0 -> intermediate = (1.5,0), "
+          "(1.5,1.5), "
+          "(0,1.5)",
           TrajectoryCommandGenerator::SpeedProfile{
               0.2_mps,
               0.4_mps_sq},  // changed values from 0.5 and 0.8 to 0.2 and 0.4

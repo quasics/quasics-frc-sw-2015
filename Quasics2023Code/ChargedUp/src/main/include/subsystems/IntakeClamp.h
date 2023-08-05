@@ -14,6 +14,10 @@
  */
 // CODE_REVIEW(ethan): This class should have a comment block (above) describing
 // what it is/does.
+//
+// CODE_REVIEW(matthew): Given that this hardware is no longer installed in
+// the robot, this subsystem (and commands that use it) should probably be
+// removed from the code base.
 class IntakeClamp : public frc2::SubsystemBase {
  public:
   IntakeClamp();

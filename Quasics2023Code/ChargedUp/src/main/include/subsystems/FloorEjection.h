@@ -18,6 +18,12 @@
 // CODE_REVIEW(matthew): This class should have a comment block (above)
 // describing what it is/does.  (And the functions should probably be
 // documented, too, since some of them aren't necessarily intuitively obvious.)
+//
+// CODE_REVIEW(matthew): Given that this hardware is no longer installed in
+// the robot, this subsystem (and commands that use it) should probably be
+// removed from the code base.  (This caused a problem during match 4 at the
+// Steel City Showdown event, since the selected auto mode command used this,
+// and thus the robot failed to work correctly in that match.)
 class FloorEjection : public frc2::SubsystemBase {
  public:
   FloorEjection();

@@ -25,10 +25,6 @@
 #include "commands/examples/BlackAndWhiteLights.h"
 #include "commands/examples/RainbowLighting.h"
 #include "commands/examples/SplitLightingExample.h"
-#include "commands/floor/AutoFloorRetract.h"
-#include "commands/floor/MoveFloorEjection.h"
-#include "commands/floor/MoveFloorEjectionAtPowerForTime.h"
-#include "commands/floor/ShootTheGamePiece.h"
 #include "commands/intake/AutoIntakeExtension.h"
 #include "commands/intake/ExhaustWithRoller.h"
 #include "commands/intake/ExhaustWithRollerAtSpeedForTime.h"
@@ -108,7 +104,6 @@ RobotContainer::RobotContainer()
 #ifdef SHOW_SUBSYSTEMS_ON_DASHBOARD
   frc::SmartDashboard::PutData(&m_drivebase);
   frc::SmartDashboard::PutData(&m_intakeRoller);
-  frc::SmartDashboard::PutData(&m_floorEjection);
 #endif  // SHOW_SUBSYSTEMS_ON_DASHBOARD
 }
 
@@ -334,11 +329,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   static ExtendIntake extendIntake(&m_intakeDeployment, 0.30);
   static RetractIntake retractIntake(&m_intakeDeployment, 0.50);
   static ExhaustWithRoller exhaustWithRoller(&m_intakeRoller, 0.85);
-  static MoveFloorEjection moveFloor(&m_floorEjection, 0.2);
-  // static AutoFloorRetract resetFloorEjection(&m_floorEjection, 0.4);
-  static MoveFloorEjection resetFloorEjection(&m_floorEjection, -0.2);
-  static MoveFloorEjectionAtPowerForTime shootPiece(&m_floorEjection, 0.45,
-                                                    0.25_s);
+
   static SetCubeOrConeIntakeSpeed toggleCubeOrCone(&m_configSettings);
 
   // Rollers Controlled by Command TriggerBasedRollerCommand
@@ -350,8 +341,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &extendIntake);
   /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kLeftBumper,
                                      &moveFloor);
-  RunCommandWhenOperatorButtonIsPressed(
-      frc::XboxController::Button::kRightBumper, &resetFloorEjection);
+
   RunCommandWhenOperatorButtonIsPressed(frc::XboxController::Button::kB,
                                         &shootPiece);*/ //WE ARE NOT USING FLOOR ANYMORE
 }
@@ -374,8 +364,8 @@ frc2::Command *RobotContainer::GetAutonomousCommand() {
   std::string teamAndPosName = teamAndPosCmd->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      &m_drivebase, &m_intakeDeployment, &m_intakeRoller, &m_floorEjection,
-      operationName, teamAndPosName);
+      &m_drivebase, &m_intakeDeployment, &m_intakeRoller, operationName,
+      teamAndPosName);
 }
 
 void RobotContainer::AddSampleLightingToSmartDashboard() {
@@ -536,10 +526,6 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                  new SetLightsToColor(&m_lighting, 0, 0, 255));
   }
 
-  /*frc::SmartDashboard::PutData(
-      "Reset Encoder",
-      new frc2::InstantCommand([this]() { m_floorEjection.ResetEncoder(); },
-                               {&m_floorEjection}));*/
   frc::SmartDashboard::PutData(
       "Break Intake", new frc2::InstantCommand(
                           [this]() { m_intakeDeployment.EnableBraking(true); },
@@ -578,8 +564,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
         new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
   }
 
-  /*frc::SmartDashboard::PutData("Autonmous Floor Retraction",
-                               new AutoFloorRetract(&m_floorEjection, 0.1));
+  /*
 
   frc::SmartDashboard::PutData(
       "Autonmous Intake Extension",

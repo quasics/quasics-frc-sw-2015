@@ -18,7 +18,6 @@
 #include "Constants.h"
 #include "TrajectoryCommandGenerator.h"
 #include "subsystems/Drivebase.h"
-#include "subsystems/FloorEjection.h"
 #include "subsystems/IntakeClamp.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
@@ -104,7 +103,6 @@ class RobotContainer {
   IntakeRoller m_intakeRoller;
   IntakeDeployment m_intakeDeployment;
   PhotonLibVision m_photonLibVision;
-  FloorEjection m_floorEjection;
   Lighting m_lighting;
 
   // Used to load/build trajectory commands.

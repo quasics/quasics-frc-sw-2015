@@ -45,7 +45,6 @@
 #include "commands/lighting/SignalRequestedPayload.h"
 #include "commands/movement/AprilTagDriveToTarget.h"
 #include "commands/movement/ArcadeDrive.h"
-#include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
@@ -694,19 +693,6 @@ void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
 
   frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
                                &m_RobotSequenceAutonomousOptions);
-}
-
-frc2::SequentialCommandGroup *RobotContainer::TestDrivingAndTurningCommand() {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));
-  commands.push_back(
-      std::make_unique<TurnDegreesImported>(&m_drivebase, 0.5, 90_deg));
-  commands.push_back(std::make_unique<PauseRobot>(&m_drivebase, 0.1_s));
-  commands.push_back(
-      std::make_unique<DriveAtPowerForMeters>(&m_drivebase, 0.4, 1_m));
-  // Builds the command group object.
-  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 frc2::SequentialCommandGroup *RobotContainer::TestPathCommand() {

@@ -17,7 +17,6 @@
 #include "commands/intake/IntakeWithRoller.h"
 #include "commands/intake/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
-#include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
@@ -868,8 +867,6 @@ namespace Helpers {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller, std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
-        intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
     commands.push_back(

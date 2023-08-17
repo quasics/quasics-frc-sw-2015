@@ -30,21 +30,12 @@
 // on each side: 1 for extended, 1 for retracted).
 #undef ENABLE_EXPANDED_INTAKE_LIMIT_SWITCHES
 
-// If defined, enables the motors on the clamp subsystem.
-#undef ENABLE_CLAMP_MOTORS
-
 // If defined, enables the motors on the roller-based intake.
 #define ENABLE_ROLLER_INTAKE_MOTORS
 
 // If defined, enables the motors on intake deployment/retraction
 // subsystem.
-#define ENABLE_INTAKE_DEPLOYMENT_MOTORS
-
-// If defined, enables the use of an encoder on the floor ejection
-// subsystem.
-#undef ENABLE_FLOOR_EJECTION_ENCODER
-
-#define ENABLE_FLOOR_EJECTION_MOTOR
+#defined ENABLE_INTAKE_DEPLOYMENT_MOTORS
 
 // If defined, enables attempting to detect when the intake is running up
 // against a hard stop while extending/retracting.
@@ -54,16 +45,12 @@
 // High-level control of options in auto mode.
 //
 
-// Note that it's OK for this to be disabled when the clamp is enabled,
-// since we might not want to actually have things happen.
-#undef USING_CLAMP_FOR_AUTO_INTAKE
-
 // If defined, enables the roller during auto mode.
 //
 // Note that it's OK for this to be disabled when the roller is enabled,
 // since we might not want to actually have things happen.
 #define USING_ROLLER_FOR_AUTO_INTAKE
 
-#define USING_GLADYS_TRAJECTORY_CONSTANTS
-#undef USING_SALLY_TRAJECTORY_CONSTANTS
+#undef USING_GLADYS_TRAJECTORY_CONSTANTS
+#define USING_SALLY_TRAJECTORY_CONSTANTS
 #undef USING_MAE_TRAJECTORY_CONSTANTS

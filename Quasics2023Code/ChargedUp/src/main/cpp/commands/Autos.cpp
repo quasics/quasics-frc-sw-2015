@@ -38,21 +38,15 @@ namespace Helpers {
     std::vector<std::unique_ptr<frc2::Command>> commands;
     commands.push_back(std::unique_ptr<frc2::Command>(
         new IntakeWithRollerAtSpeedForTime(intakeRoller, -0.2, 0.8_s)));
-    /*commands.push_back(std::unique_ptr<frc2::Command>(
-        new AutoIntakeExtension(intakeDeployment, 0.5)));*/
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 
   frc2::Command *IntakeScoreGamePieceHelperCommand(
       IntakeDeployment *intakeDeployment, IntakeRoller *intakeRoller) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    /*commands.push_back(std::unique_ptr<frc2::Command>(
-        new RetractIntakeAtSpeedForTime(intakeDeployment, 0.5, 0.4_s)));*/
     commands.push_back(
         std::unique_ptr<frc2::Command>(new IntakeWithRollerAtSpeedForTime(
             intakeRoller, -IntakeConstants::RollerSpeeds::CONES, 1.5_s)));
-    /*commands.push_back(std::unique_ptr<frc2::Command>(
-        new AutoIntakeExtension(intakeDeployment, 0.5)));*/
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

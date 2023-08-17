@@ -155,10 +155,6 @@ void Drivebase::Periodic() {
   auto angle = GetYaw();
   auto leftDistance = GetLeftDistance();
   auto rightDistance = GetRightDistance();
-  /*
-    frc::SmartDashboard::PutNumber("Left Distance: ", leftDistance.value());
-    frc::SmartDashboard::PutNumber("Right Distance: ", rightDistance.value());*/
-
   m_odometry.Update(angle, leftDistance, rightDistance);
 }
 

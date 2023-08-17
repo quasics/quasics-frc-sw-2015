@@ -23,11 +23,11 @@
  * to be used.  You should also indicate how this differs from
  * "DriveAtPowerForMeters", and why they're both available.
  */
-class DriveAtPowerForMetersWorkingVersion
+class DriveAtPowerForMeters
     : public frc2::CommandHelper<frc2::CommandBase,
-                                 DriveAtPowerForMetersWorkingVersion> {
+                                 DriveAtPowerForMeters> {
  public:
-  DriveAtPowerForMetersWorkingVersion(Drivebase* drivebase, double motorPower,
+  DriveAtPowerForMeters(Drivebase* drivebase, double motorPower,
                                       units::meter_t distance);
 
   void Initialize() override;

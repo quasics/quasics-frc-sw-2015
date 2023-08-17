@@ -2,12 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
+#include "commands/movement/DriveAtPowerForMeters.h"
 
 #include <iostream>
 
-DriveAtPowerForMetersWorkingVersion::DriveAtPowerForMetersWorkingVersion(
-    Drivebase* drivebase, double motorPower, units::meter_t distance)
+DriveAtPowerForMeters::DriveAtPowerForMeters(Drivebase* drivebase,
+                                             double motorPower,
+                                             units::meter_t distance)
     : m_drivebase(drivebase),
       m_motorPower(motorPower > 0 && distance > 0_m ? motorPower
                                                     : -std::abs(motorPower)),
@@ -15,11 +16,11 @@ DriveAtPowerForMetersWorkingVersion::DriveAtPowerForMetersWorkingVersion(
                      ? distance
                      : -units::meter_t(std::abs(distance.value()))) {
   AddRequirements(drivebase);
-  SetName("DriveAtPowerForMetersWorkingVersion");
+  SetName("DriveAtPowerForMeters");
 }
 
 // Called when the command is initially scheduled.
-void DriveAtPowerForMetersWorkingVersion::Initialize() {
+void DriveAtPowerForMeters::Initialize() {
   m_accelerating = true;
   m_subtraction = 0;
   m_gradualreduction = std::abs(m_motorPower) - 0.35;
@@ -30,7 +31,7 @@ void DriveAtPowerForMetersWorkingVersion::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
-void DriveAtPowerForMetersWorkingVersion::Execute() {
+void DriveAtPowerForMeters::Execute() {
   if (m_slewRateLimiter.Calculate(m_motorPower) >= m_motorPower) {
     std::cout << "stopped accelerating" << std::endl;
     m_accelerating = false;
@@ -77,14 +78,14 @@ void DriveAtPowerForMetersWorkingVersion::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void DriveAtPowerForMetersWorkingVersion::End(bool interrupted) {
+void DriveAtPowerForMeters::End(bool interrupted) {
   std::cout << "finished" << std::endl;
   m_drivebase->SetBrakingMode(true);
   m_drivebase->Stop();
 }
 
 // Returns true when the command should end.
-bool DriveAtPowerForMetersWorkingVersion::IsFinished() {
+bool DriveAtPowerForMeters::IsFinished() {
   if (m_distance > 0_m) {
     if (m_currentDistance >= (m_originalDistance + m_distance)) {
       return true;

@@ -17,7 +17,7 @@
 #include "commands/intake/IntakeWithRoller.h"
 #include "commands/intake/IntakeWithRollerAtSpeedForTime.h"
 #include "commands/intake/RetractIntakeAtSpeedForTime.h"
-#include "commands/movement/DriveAtPowerForMetersWorkingVersion.h"
+#include "commands/movement/DriveAtPowerForMeters.h"
 #include "commands/movement/DriveUntilPitchAngleChange.h"
 #include "commands/movement/PIDTurning.h"
 #include "commands/movement/RotateAtAngle.h"
@@ -413,8 +413,8 @@ namespace Helpers {
       // In this case, we need to move back out of the community area (for the
       // mobility points), and then move forward and balance on the charging
       // station.
-      commands.push_back(std::unique_ptr<frc2::Command>(
-          new DriveAtPowerForMetersWorkingVersion{
+      commands.push_back(
+          std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
               drivebase, -AutonomousSpeeds::OVER_CHARGING_STATION_SPEED,
               3.7_m}));
       commands.push_back(std::unique_ptr<frc2::Command>(new StraightLineDriving{
@@ -688,8 +688,6 @@ namespace Helpers {
                                IntakeRoller *intakeRoller,
                                std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
-        intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeScoreGamePieceHelperCommand(intakeDeployment, intakeRoller)));
     if (teamAndPosName == AutonomousTeamAndStationPositions::Blue2 ||
@@ -765,8 +763,6 @@ namespace Helpers {
                                  IntakeRoller *intakeRoller,
                                  std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
-        intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeScoreGamePieceHelperCommand(intakeDeployment, intakeRoller)));
     commands.push_back(
@@ -778,8 +774,6 @@ namespace Helpers {
       Drivebase *drivebase, IntakeDeployment *intakeDeployment,
       IntakeRoller *intakeRoller, std::string teamAndPosName) {
     std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(std::unique_ptr<frc2::Command>(new AutoIntakeExtension(
-        intakeDeployment, AutonomousSpeeds::INTAKE_EXTENSION_SPEED)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeScoreGamePieceHelperCommand(intakeDeployment, intakeRoller)));
 #ifdef USING_PID_TURNING
@@ -882,10 +876,8 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeScoreGamePieceHelperCommand(intakeDeployment, intakeRoller)));
 
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new DriveAtPowerForMetersWorkingVersion{
-            drivebase, -AutonomousSpeeds::DRIVE_SPEED,
-            0.25_m}));  // POSSIBLE ERROR
+    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));  // POSSIBLE ERROR
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));
@@ -900,9 +892,8 @@ namespace Helpers {
     commands.push_back(std::unique_ptr<frc2::Command>(
         IntakeDropGamePieceHelperCommand(intakeDeployment, intakeRoller)));
 
-    commands.push_back(
-        std::unique_ptr<frc2::Command>(new DriveAtPowerForMetersWorkingVersion{
-            drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
+    commands.push_back(std::unique_ptr<frc2::Command>(new DriveAtPowerForMeters{
+        drivebase, -AutonomousSpeeds::DRIVE_SPEED, 0.25_m}));
     commands.push_back(
         std::unique_ptr<frc2::Command>(GTFODOCK(drivebase, teamAndPosName)));
     return new frc2::SequentialCommandGroup(std::move(commands));

@@ -35,7 +35,7 @@
 
 // If defined, enables the motors on intake deployment/retraction
 // subsystem.
-#defined ENABLE_INTAKE_DEPLOYMENT_MOTORS
+#define ENABLE_INTAKE_DEPLOYMENT_MOTORS
 
 // If defined, enables attempting to detect when the intake is running up
 // against a hard stop while extending/retracting.

@@ -484,6 +484,7 @@ namespace Helpers {
         moveToBlue1OrRed3(drivebase, teamAndPosName)));
     commands.push_back(std::unique_ptr<frc2::Command>(
         moveToDefenseFromBlue1OrRed3(drivebase, teamAndPosName)));
+
     return new frc2::SequentialCommandGroup(std::move(commands));
   }
 

@@ -42,7 +42,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
       frc::SimpleMotorFeedforward<units::meters>{
           PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
-      kDriveKinematics, 10_V};
+      kDriveKinematics, 5_V};
 
   // Set up config for trajectory
   frc::TrajectoryConfig config{kMaxSpeed, kMaxAcceleration};
@@ -50,6 +50,8 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   config.SetKinematics(kDriveKinematics);
   // Apply the voltage constraint
   config.AddConstraint(autoVoltageConstraint);
+
+  config.SetReversed(true);
 
   // An example trajectory to follow.  All units in meters.
   auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -60,7 +62,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
         // frc::Translation2d{1_m, 1_m}, frc::Translation2d{2_m, -1_m}
       },
       // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{1_m, 0_m, 0_deg},
+      frc::Pose2d{-1_m, 0_m, 0_deg},
       // Pass the config
       config);
 

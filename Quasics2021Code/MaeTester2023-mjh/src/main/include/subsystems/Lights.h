@@ -37,7 +37,7 @@ class Lights : public frc2::SubsystemBase {
   void TurnStripOff();
 
  private:
-  static constexpr int kLength = 60;
+  static constexpr int kLength = 45;
   frc::AddressableLED m_led{PwmIds::LedControl};
   std::array<frc::AddressableLED::LEDData, kLength> m_ledBuffer;
 };

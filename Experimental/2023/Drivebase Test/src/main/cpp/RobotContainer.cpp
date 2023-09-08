@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/button/Trigger.h>
+#include <iostream>
 
 #include "commands/DriveFromVoltageForTime.h"
 #include "commands/Autos.h"
@@ -51,7 +52,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // Apply the voltage constraint
   config.AddConstraint(autoVoltageConstraint);
 
-  config.SetReversed(true);
+  //config.SetReversed(true);
 
   // An example trajectory to follow.  All units in meters.
   auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -59,10 +60,11 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       frc::Pose2d{0_m, 0_m, 0_deg},
       // Pass through these two interior waypoints, making an 's' curve path
       {
-        // frc::Translation2d{1_m, 1_m}, frc::Translation2d{2_m, -1_m}
+        //frc::Translation2d{1_m, 0_m},
+        //frc::Translation2d{-1_m, 1_m}
       },
       // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{-1_m, 0_m, 0_deg},
+      frc::Pose2d{1_m, 0_m, 0_deg},
       // Pass the config
       config);
 
@@ -80,6 +82,18 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
   // Reset odometry to the starting pose of the trajectory.
   m_drive.ResetOdometry(exampleTrajectory.InitialPose());
+
+
+
+
+  for (const auto& state : exampleTrajectory.States()) {
+    std::cout << "  "
+       << "t: " << state.t.value() << ", vel: " << state.velocity.value()
+       << ", a: " << state.acceleration.value() << ", pose: ("
+       << state.pose.X().value() << "," << state.pose.Y().value() << ")"
+       << std::endl;
+  }
+
 
   return std::move(ramseteCommand)
       .BeforeStarting(

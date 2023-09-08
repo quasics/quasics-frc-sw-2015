@@ -439,7 +439,7 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
                                  new PIDTurning(&m_drivebase, 180_deg));
     frc::SmartDashboard::PutData("Turn 180 Right Degrees: ",
                                  new PIDTurning(&m_drivebase, -180_deg));*/
-
+  frc::TrajectoryConfig config{0.2_mps, 0.4_mps_sq};
   frc::SmartDashboard::PutData(
       "Negative X",
       m_trajectoryGenerator.GenerateCommand(
@@ -628,15 +628,17 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "Get Out of the Community then Get on the Charging Station"},
           {AutonomousSelectedOperation::JustCharge,
            "Just Get on the Starting Station"},
-          {AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall,
-           "Get out of the Community and Move to Defensive Position by "
-           "hugging "
-           "the scoring wall"},
-          {AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall,
-           "Get out of the community and move to defensive position by "
-           "hugging "
-           "the outer wall"},
+          /*
+         {AutonomousSelectedOperation::MoveToDefenseAgainstScoringWall,
+          "Get out of the Community and Move to Defensive Position by "
+          "hugging "
+          "the scoring wall"},
+         {AutonomousSelectedOperation::MoveToDefenseAgainstOuterWall,
+          "Get out of the community and move to defensive position by "
+          "hugging "
+          "the outer wall"},*/
           {AutonomousSelectedOperation::ScorePiece, "Score The game Piece"},
+          /*
           {AutonomousSelectedOperation::ScoreAndMoveToDefenseAgainstScoringWall,
            "Score a piece then move to defensive position by hugging "
            "the scoring wall"},
@@ -648,20 +650,20 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
            "the scoring wall"},
           {AutonomousSelectedOperation::DropAndMoveToDefenseAgainstOuterWall,
            "Drop a piece then move to defensive position by hugging "
-           "the outer wall"},
+           "the outer wall"},*/
           {AutonomousSelectedOperation::ScoreThenCharge,
            "Score the Game Piece then Get on the Charging Station"},
           {AutonomousSelectedOperation::ScoreThenEndNearGamePiece,
            "Score then End next to a Game Piece"},
           {AutonomousSelectedOperation::ScoreGTFOCharge,
            "Score, GTFO then Charge"},
-          {AutonomousSelectedOperation::ScoreTwiceThenCharge,
-           "Score, get another piece and score that, then charge"},
+          //{AutonomousSelectedOperation::ScoreTwiceThenCharge,
+          // "Score, get another piece and score that, then charge"},
           {AutonomousSelectedOperation::DropGTFOCharge, "Drop GTFO Charge"},
-          {AutonomousSelectedOperation::DropTwiceThenCharge,
-           "Drop Twice Charge"},
+          //{AutonomousSelectedOperation::DropTwiceThenCharge,
+          // "Drop Twice Charge"},
           {AutonomousSelectedOperation::DropTwice, "Drop Two"},
-          {AutonomousSelectedOperation::DropThree, "Drop Three"},
+          //{AutonomousSelectedOperation::DropThree, "Drop Three"},
           {AutonomousSelectedOperation::DropThenEndNearGamePiece,
            "Drop Get Out Pickup Cube"}};
 

@@ -71,6 +71,9 @@ void Drivebase::Periodic() {
   /*frc::SmartDashboard::PutNumber("GetPose.Translation() in Meters", double{GetPose().Translation()});
   frc::SmartDashboard::PutNumber("GetPose.Rotation() in Meters", double{GetPose().Rotation()});*/
 
+  frc::SmartDashboard::PutNumber("Left Wheel Distance", double(GetLeftDistance()));
+  frc::SmartDashboard::PutNumber("Right Wheel Distance", double(GetRightDistance()));
+
                     
 }
 

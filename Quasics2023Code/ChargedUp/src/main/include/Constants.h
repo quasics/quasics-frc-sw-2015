@@ -75,6 +75,7 @@ constexpr auto Red3 = "Red 3";
 
 namespace AutonomousSpeeds {
 constexpr auto DRIVE_SPEED = 0.75;
+constexpr auto BRIDGE_DRIVE_SPEED = 0.5;
 constexpr auto OVER_CHARGING_STATION_SPEED = 0.5;
 constexpr auto SCORE_FLOOR_EJECTION_SPEED = 0.45;
 constexpr auto SCORE_FLOOR_EJECTION_TIME = 0.3_s;
@@ -101,21 +102,25 @@ namespace AutonomousSelectedOperation {
 const auto DoNothing = "Do nothing";
 const auto GTFO = "GTFO";
 const auto GTFODock = "GTFO and Dock";
+/*
 const auto MoveToDefenseAgainstScoringWall =
     "Move to defense against scoring wall";
-const auto MoveToDefenseAgainstOuterWall = "Move to defense against outer wall";
+const auto MoveToDefenseAgainstOuterWall =
+    "Move to defense against outer wall";  COMMENT OUT
 const auto ScoreAndMoveToDefenseAgainstScoringWall =
-    "Score then move to defense against scoring wall";
+    "Score then move to defense against scoring wall";  COMMENT OUT
 const auto ScoreAndMoveToDefenseAgainstOuterWall =
-    "Score then move to defense against outer wall";
+    "Score then move to defense against outer wall";  COMMENT OUT
 const auto DropAndMoveToDefenseAgainstScoringWall =
-    "Drop then move to defense against scoring wall";
+    "Drop then move to defense against scoring wall";  COMMENT OUT
 const auto DropAndMoveToDefenseAgainstOuterWall =
-    "Drop then move to defense against outer wall";
+    "Drop then move to defense against outer wall";  COMMENT OUT
+*/
 const auto ScoreAndLeave = "Score a Game Piece and GTFO";
 const auto ScorePiece = "Score Game Piece";
 const auto JustCharge = "Just Charge";
-const auto ScoreThenCharge = "Score Game Piece then Charge";
+const auto ScoreThenCharge =
+    "Score Game Piece then Charge";  // I dont Remmeber if this was tested
 const auto ScoreGTFOCharge = "Score Game Piece, GTFO and Charge";
 const auto DropGTFOCharge = "Drop Game Piece, GTFO Charge";
 const auto ScoreThenEndNearGamePiece = "Score then end near game piece";
@@ -123,10 +128,13 @@ const auto DropGamePiece = "Drop Game Piece";
 const auto DropThenEndNearGamePiece = "Drop Go out pickup cube";
 const auto DropAndGTFO = "Drop Game Piece and Leave";
 const auto DropAndCharge = "Drop and Charge";
-const auto ScoreTwiceThenCharge = "Score get another score charge";
-const auto DropTwiceThenCharge = "Drop Get Another, Drop, Charge";
-const auto DropTwice = "Drop Get Another, Drop";
-const auto DropThree = "Drop, Pickup, Repeat 3 times";
+/*const auto ScoreTwiceThenCharge =
+    "Score get another score charge";  // COMMENT OUT
+const auto DropTwiceThenCharge =
+    "Drop Get Another, Drop, Charge";  // COMMENT OUT*/
+const auto DropTwice =
+    "Drop Get Another, Drop";  // Good for sides DO NOT USE FOR MIDDLE
+// const auto DropThree = "Drop, Pickup, Repeat 3 times";  // COMMENT OUT
 }  // namespace AutonomousSelectedOperation
 
 namespace PathWeaverConstants {

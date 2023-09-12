@@ -1,5 +1,6 @@
 
 #include "subsystems/Drivebase.h"
+#include <iostream>
 
 
 #include <frc/geometry/Rotation2d.h>
@@ -88,10 +89,15 @@ void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
 }
 
 void Drivebase::ResetEncoders() {
+  std::cout << "Reseting Encoders to 0" << std::endl;
   m_leftFrontEncoder.SetPosition(0);
   m_rightFrontEncoder.SetPosition(0);
   m_leftBackEncoder.SetPosition(0);
   m_rightBackEncoder.SetPosition(0);
+  std::cout << "Left Front Encoder: " << GetLeftDistance().value() << std::endl;
+  std::cout << "Right Front Encoder: " << GetRightDistance().value() << std::endl;
+  //std::cout << "RAW ------ Left Front Encoder: " << m_leftFrontEncoder.GetPosition() << std::endl;
+  //std::cout << "RAW ------ Right Front Encoder: " << m_rightFrontEncoder.GetPosition() << std::endl;
 }
 
 units::meter_t Drivebase::GetAverageEncoderDistance() {
@@ -149,4 +155,5 @@ frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
   m_odometry.ResetPosition(m_gyro.GetRotation2d(),GetLeftDistance(), GetRightDistance(), pose);
+  std::cout << "X Position: " << m_odometry.GetPose().X().value() << " Y Position: " << m_odometry.GetPose().Y().value() << std::endl;
 }

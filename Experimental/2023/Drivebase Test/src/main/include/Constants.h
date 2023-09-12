@@ -13,8 +13,8 @@
 #include <units/voltage.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 
-#undef USING_GLADYS_TRAJECTORY_CONSTANTS
-#define USING_SALLY_TRAJECTORY_CONSTANTS
+#define USING_GLADYS_TRAJECTORY_CONSTANTS
+#undef USING_SALLY_TRAJECTORY_CONSTANTS
 #undef USING_MAE_TRAJECTORY_CONSTANTS
 
 /**

@@ -69,7 +69,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       config);
 
   frc2::CommandPtr ramseteCommand{frc2::RamseteCommand(
-      exampleTrajectory, [this] { return m_drive.GetPose(); },
+      exampleTrajectory, [this] { return m_drive.GetPose(); }, // Displaying Get Pose in Dashboard
       frc::RamseteController{kRamseteB, kRamseteZeta},
       frc::SimpleMotorFeedforward<units::meters>{
           PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
@@ -81,7 +81,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       {&m_drive})}; 
 
   // Reset odometry to the starting pose of the trajectory.
-  m_drive.ResetOdometry(exampleTrajectory.InitialPose());
+  m_drive.ResetOdometry(exampleTrajectory.InitialPose()); // maybe here is the fundamental issue?????
 
 
 
@@ -105,4 +105,5 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 void RobotContainer::AddTestButtonsOnSmartDashboard(){
   frc::SmartDashboard::PutData("3volts left, -3Volts right, 3 sec", new DriveFromVoltageForTime(&m_drive, 3_V, -3_V, 3_s));
   frc::SmartDashboard::PutData("3volts both, 3 sec", new DriveFromVoltageForTime(&m_drive, 3_V, 3_V, 3_s));
+  frc::SmartDashboard::PutData("Reset Encoders", new frc2::InstantCommand([this]() { m_drive.ResetEncoders(); }, {&m_drive}));
 }

@@ -121,8 +121,18 @@ public class Drivetrain extends AbstractDriveBase {
   }
 
   @Override
+  public final double getPitchDegrees() {
+    return m_pitchGyro.getAngle();
+  }
+
+  @Override
+  public final double getRollDegrees() {
+    return m_rollGyro.getAngle();
+  }
+
+  @Override
   public final double getYawDegrees() {
-    return m_gyro.getAngleZ();
+    return m_yawGyro.getAngle();
   }
 
   /**

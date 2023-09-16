@@ -24,6 +24,9 @@ Drivebase::Drivebase(){
 
   m_gyro.Calibrate();
   m_gyro.Reset();
+
+  //I DONT KNOW IF THIS IS SAFE
+  //m_drive->SetSafetyEnabled(false);
 }
 
 

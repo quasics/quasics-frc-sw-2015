@@ -7,6 +7,7 @@
 #include <frc2/command/button/Trigger.h>
 #include <iostream>
 
+#include "TrajectoryGenerator.h"
 #include "commands/DriveFromVoltageForTime.h"
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
@@ -21,6 +22,10 @@
 #include <frc2/command/Commands.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/InstantCommand.h>
+
+#include <frc/Filesystem.h>
+#include <frc/trajectory/TrajectoryUtil.h>
+#include <wpi/fs.h>
 
 
 RobotContainer::RobotContainer() {
@@ -39,67 +44,7 @@ void RobotContainer::ConfigureBindings() {
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-// Create a voltage constraint to ensure we don't accelerate too fast
-  frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
-      frc::SimpleMotorFeedforward<units::meters>{
-          PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
-      kDriveKinematics, 5_V};
-
-  // Set up config for trajectory
-  frc::TrajectoryConfig config{kMaxSpeed, kMaxAcceleration};
-  // Add kinematics to ensure max speed is actually obeyed
-  config.SetKinematics(kDriveKinematics);
-  // Apply the voltage constraint
-  config.AddConstraint(autoVoltageConstraint);
-
-  //config.SetReversed(true);
-
-  // An example trajectory to follow.  All units in meters.
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d{0_m, 0_m, 0_deg},
-      // Pass through these two interior waypoints, making an 's' curve path
-      {
-        //frc::Translation2d{1_m, 0_m},
-        //frc::Translation2d{-1_m, 1_m}
-      },
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{1_m, 0_m, 0_deg},
-      // Pass the config
-      config);
-
-  frc2::CommandPtr ramseteCommand{frc2::RamseteCommand(
-      exampleTrajectory, [this] { return m_drive.GetPose(); }, // Displaying Get Pose in Dashboard
-      frc::RamseteController{kRamseteB, kRamseteZeta},
-      frc::SimpleMotorFeedforward<units::meters>{
-          PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
-      kDriveKinematics,
-      [this] { return m_drive.GetWheelSpeeds(); },
-      frc2::PIDController{PathWeaverConstants::kP, 0, 0},
-      frc2::PIDController{PathWeaverConstants::kP, 0, 0},
-      [this](auto left, auto right) { m_drive.TankDriveVolts(left, right); },
-      {&m_drive})}; 
-
-  // Reset odometry to the starting pose of the trajectory.
-  m_drive.ResetOdometry(exampleTrajectory.InitialPose()); // maybe here is the fundamental issue?????
-
-
-
-
-  for (const auto& state : exampleTrajectory.States()) {
-    std::cout << "  "
-       << "t: " << state.t.value() << ", vel: " << state.velocity.value()
-       << ", a: " << state.acceleration.value() << ", pose: ("
-       << state.pose.X().value() << "," << state.pose.Y().value() << ")"
-       << std::endl;
-  }
-
-
-  return std::move(ramseteCommand)
-      .BeforeStarting(
-          frc2::cmd::RunOnce([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}))
-      // Because Mr. Healy is professionally paranoid....
-      .AndThen(frc2::cmd::RunOnce([this] { m_drive.TankDriveVolts(0_V, 0_V); }, {}));
+  return GetCommandForTrajectory("LoopyPath.wpilib.json", &m_drive);
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard(){

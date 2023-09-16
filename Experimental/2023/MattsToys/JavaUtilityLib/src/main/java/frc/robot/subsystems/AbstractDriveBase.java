@@ -37,7 +37,7 @@ public abstract class AbstractDriveBase extends SubsystemBase
     }
 
     m_robotSettings = robotSettings;
-    System.err.println("Configuring using settings:\n" + robotSettings);
+    System.err.println("Configuring drive base using settings:\n" + robotSettings);
   }
 
   // Set up the differential drive controller

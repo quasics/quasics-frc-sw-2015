@@ -4,12 +4,11 @@
 
 package frc.robot.utils;
 
+import edu.wpi.first.math.util.Units;
 import frc.robot.utils.TrajectoryCommandGenerator.DriveProfileData;
 import frc.robot.utils.TrajectoryCommandGenerator.PIDConfig;
 import java.util.HashMap;
 import java.util.Map;
-
-import edu.wpi.first.math.util.Units;
 
 /**
  * Collection of robot characteristics for various Quasics robots.
@@ -27,10 +26,12 @@ public class RobotSettingsLibrary {
 
   public static final int INVALID_PWM_PORT = -1;
   public static final int LED_PWM_PORT = 0;
+  public static final int MAE_LED_PWM_PORT = 7;
 
   public interface LedLengths {
     public static final int TEST_STRIP_LENGTH = 14;
     public static final int GLADYS_STRIP_LENGTH = 14;
+    public static final int MAE_STRIP_LENGTH = 45;
     public static final int ROMI_STRIP_LENGTH = -1;
   }
 
@@ -61,7 +62,8 @@ public class RobotSettingsLibrary {
 
   /**
    * Track widths for various robots (in meters).
-   * 
+   *
+   * <p>
    * TODO(mjh): Confirm track widths for Sally and Gladys.
    */
   private interface TrackWidths {
@@ -134,8 +136,8 @@ public class RobotSettingsLibrary {
             RobotSettings.DriveMotorInversion.Left,
             RobotSettings.GyroType.ADXRS450,
             1, // pigeonCanID
-            LED_PWM_PORT,
-            LedLengths.TEST_STRIP_LENGTH));
+            MAE_LED_PWM_PORT,
+            LedLengths.MAE_STRIP_LENGTH));
     m_settingsMap.put(
         Robot.Nike,
         new RobotSettings(

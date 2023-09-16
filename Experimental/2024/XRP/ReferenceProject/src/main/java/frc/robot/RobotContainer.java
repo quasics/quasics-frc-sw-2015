@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.AutonomousDistance;
 import frc.robot.commands.AutonomousTime;
+import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.XRPOnBoardIO;
@@ -28,6 +29,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private static final boolean ENABLE_TANK_DRIVE = true;
+
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final XRPOnBoardIO m_onboardIO = new XRPOnBoardIO();
@@ -41,6 +44,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Default command is arcade drive. This will run unless another command
+    // is scheduled over it.
+    if (ENABLE_TANK_DRIVE) {
+      m_drivetrain.setDefaultCommand(getTankDriveCommand());
+    } else {
+      m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
+    }
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -52,10 +63,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Default command is arcade drive. This will run unless another command
-    // is scheduled over it.
-    m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
-
     // Example of how to use the onboard IO
     Trigger userButton = new Trigger(m_onboardIO::getUserButtonPressed);
     userButton
@@ -94,6 +101,16 @@ public class RobotContainer {
    */
   public Command getArcadeDriveCommand() {
     return new ArcadeDrive(
+        m_drivetrain, () -> -m_controller.getRawAxis(1), () -> -m_controller.getRawAxis(2));
+  }
+
+  /**
+   * Use this to pass the teleop command to the main {@link Robot} class.
+   *
+   * @return the command to run in teleop
+   */
+  public Command getTankDriveCommand() {
+    return new TankDrive(
         m_drivetrain, () -> -m_controller.getRawAxis(1), () -> -m_controller.getRawAxis(2));
   }
 }

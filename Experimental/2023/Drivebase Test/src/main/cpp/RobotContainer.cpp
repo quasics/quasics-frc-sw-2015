@@ -25,7 +25,7 @@
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
-  m_drive.SetDefaultCommand(frc2::InstantCommand([this]{m_drive.Stop();}, {&m_drive}) );
+  m_drive.SetDefaultCommand(frc2::InstantCommand([this]{m_drive.TankDriveVolts(0_V, 0_V);}, {&m_drive}) );
 
   // Configure the button bindings
   ConfigureBindings();
@@ -77,7 +77,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       [this] { return m_drive.GetWheelSpeeds(); },
       frc2::PIDController{PathWeaverConstants::kP, 0, 0},
       frc2::PIDController{PathWeaverConstants::kP, 0, 0},
-      [this](auto left, auto right) { m_drive.TankDriveVolts(left, -right); },
+      [this](auto left, auto right) { m_drive.TankDriveVolts(left, right); },
       {&m_drive})}; 
 
   // Reset odometry to the starting pose of the trajectory.

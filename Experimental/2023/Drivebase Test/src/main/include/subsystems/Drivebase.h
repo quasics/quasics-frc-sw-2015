@@ -27,16 +27,6 @@ class Drivebase : public frc2::SubsystemBase {
 
   // Subsystem methods go here.
 
-  void Stop() { ArcadeDrive(0, 0); }
-
-  /**
-   * Drives the robot using arcade controls.
-   *
-   * @param fwd the commanded forward movement
-   * @param rot the commanded rotation
-   */
-  void ArcadeDrive(double fwd, double rot);
-
   /**
    * Controls each side of the drive directly with a voltage.
    *
@@ -139,13 +129,11 @@ class Drivebase : public frc2::SubsystemBase {
 
 
   // The motors on the left side of the drive
-  frc::MotorControllerGroup m_leftMotors{m_leftFront, m_leftBack};
-
-  // The motors on the right side of the drive
-  frc::MotorControllerGroup m_rightMotors{m_rightFront, m_rightBack};
+  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
 
   // The robot's drive
-  frc::DifferentialDrive m_drive{m_leftMotors, m_rightMotors};
+    std::unique_ptr<frc::DifferentialDrive> m_drive;
 
   // The gyro sensor
   //instead of this I have pigeon
@@ -154,5 +142,6 @@ class Drivebase : public frc2::SubsystemBase {
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 
   // Odometry class for tracking robot pose
-  frc::DifferentialDriveOdometry m_odometry;
+    frc::DifferentialDriveOdometry m_odometry{
+      0_rad, 0_m, 0_m};
 };

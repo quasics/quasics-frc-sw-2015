@@ -8,18 +8,33 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 //figure out what encoder returns so you can transfer
-Drivebase::Drivebase()
-    :
-      m_odometry{m_gyro.GetRotation2d(), units::meter_t{0}, units::meter_t{0}} {
-  // We need to invert one side of the drivetrain so that positive voltages
-  // result in both sides moving forward. Depending on how your robot's
-  // gearbox is constructed, you might have to invert the left side instead.
-  m_rightMotors.SetInverted(true);
+Drivebase::Drivebase(){
+  SetName("Drivebase");
+  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
+  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
 
-  // Set the distance per pulse for the encoders
+  m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
 
-  ResetEncoders();
+  m_leftFront.SetInverted(false);
+  m_leftBack.SetInverted(false);
+  m_rightFront.SetInverted(true);
+  m_rightBack.SetInverted(true);
+
+  ConfigureEncoders();
+
+  m_gyro.Calibrate();
+  m_gyro.Reset();
 }
+
+
+
+
+
+
+
+
+
+
 
 void Drivebase::ConfigureEncoders() {
   // Calculate wheel circumference (distance travelled per wheel revolution).
@@ -50,13 +65,25 @@ void Drivebase::ConfigureEncoders() {
   ResetEncoders();
 }
 
+
+
+
+
+
 void Drivebase::Periodic() {
+  //return m_pigeon.GetRotation2d().Degrees();
+
   // Implementation of subsystem periodic method goes here.
   // Will be using the front encoders
+
+  /*Making it match
   m_odometry.Update(m_gyro.GetRotation2d(),
                     GetLeftDistance(),
+                    GetRightDistance());*/
+  
+  m_odometry.Update(m_gyro.GetRotation2d().Degrees(),
+                    GetLeftDistance(),
                     GetRightDistance());
-
 
   frc::SmartDashboard::PutNumber("GetWheelSpeeds() Left Velocity", double{GetLeftVelocity()});
   frc::SmartDashboard::PutNumber("GetWheelSpeeds() Right Velocity", double{GetRightVelocity()});
@@ -78,14 +105,32 @@ void Drivebase::Periodic() {
                     
 }
 
-void Drivebase::ArcadeDrive(double fwd, double rot) {
+/*void Drivebase::ArcadeDrive(double fwd, double rot) {
+  //unnecessary
   m_drive.ArcadeDrive(fwd, rot);
-}
+}*/
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
-  m_leftMotors.SetVoltage(left);
-  m_rightMotors.SetVoltage(right);
-  m_drive.Feed();
+  /*This is a difference TRYING TO REPLICATE
+
+  These lines are used in the constructor of Drivebase.cpp
+
+  m_leftSide.reset(new frc::MotorControllerGroup(m_leftFront, m_leftBack));
+  m_rightSide.reset(new frc::MotorControllerGroup(m_rightFront, m_rightBack));
+
+  m_drive.reset(new frc::DifferentialDrive(*m_leftSide, *m_rightSide));
+
+  Then these are created in Drivebase.
+
+  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
+  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
+
+
+
+*/
+  m_leftSide->SetVoltage(left);
+  m_rightSide->SetVoltage(right);
+  m_drive->Feed();
 }
 
 void Drivebase::ResetEncoders() {
@@ -101,6 +146,7 @@ void Drivebase::ResetEncoders() {
 }
 
 units::meter_t Drivebase::GetAverageEncoderDistance() {
+  //unnecessary
   return (GetLeftDistance() + GetRightDistance()) / 2.0;
 }
 
@@ -128,15 +174,18 @@ units::meters_per_second_t Drivebase::GetRightVelocity() {
   return units::meters_per_second_t(m_rightFrontEncoder.GetVelocity());
 }
 
-void Drivebase::SetMaxOutput(double maxOutput) {
+/*void Drivebase::SetMaxOutput(double maxOutput) {
+  //unnecessary
   m_drive.SetMaxOutput(maxOutput);
-}
+}*/
 
 units::degree_t Drivebase::GetHeading() const {
+  //unnecessary
   return m_gyro.GetRotation2d().Degrees(); //yaw
 }
 
 double Drivebase::GetTurnRate() {
+  //unnecessary
   return -m_gyro.GetRate();
 }
 
@@ -149,11 +198,21 @@ frc::Pose2d Drivebase::GetPose() {
 frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
     //this seems to be used in the 
     //figure out what the rate of an encoder returns DONE
-  return {GetLeftVelocity(),GetRightVelocity()};
+
+  //TRYING TO REPLICATE DRIVEBASE
+  return frc::DifferentialDriveWheelSpeeds{GetLeftVelocity(),
+                                           GetRightVelocity()};
+  //return {GetLeftVelocity(),GetRightVelocity()};
 }
 
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
+  m_odometry.ResetPosition(m_gyro.GetRotation2d(), 0_m, 0_m, pose);
+  /*TRYING TO REPLICATE DRIVEBASE
   m_odometry.ResetPosition(m_gyro.GetRotation2d(),GetLeftDistance(), GetRightDistance(), pose);
   std::cout << "X Position: " << m_odometry.GetPose().X().value() << " Y Position: " << m_odometry.GetPose().Y().value() << std::endl;
+  */
 }
+
+
+

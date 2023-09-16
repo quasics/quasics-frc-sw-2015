@@ -13,6 +13,7 @@ import frc.robot.utils.RobotSettings;
 public class Lighting extends SubsystemBase implements LightingInterface {
   /** The raw interface to the addressable LED strip connected to the Rio. */
   private final AddressableLED m_led;
+
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
 
@@ -32,6 +33,8 @@ public class Lighting extends SubsystemBase implements LightingInterface {
    * @param numLights number of (logical) lights on the LED strip
    */
   public Lighting(int pwmPort, int numLights) {
+    System.err.println("Setting up lighting: port=" + pwmPort + ", length=" + numLights);
+
     // Sanity-check inputs.
     if (!RobotSettings.isValidPwmPort(pwmPort)) {
       throw new IllegalArgumentException("Invalid PWM port: " + pwmPort);

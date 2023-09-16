@@ -44,7 +44,7 @@ public class RobotContainer {
 
   private final LightingInterface m_lighting =
       RobotSettings.isValidPwmPort(ROBOT_SETTINGS.ledPort)
-          ? new Lighting(LightingValues.LED_STRIP_PWM_PORT, LightingValues.LED_STRIP_LENGTH)
+          ? new Lighting(ROBOT_SETTINGS.ledPort, ROBOT_SETTINGS.ledStripLength)
           : new LightingInterface.MockLighting();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

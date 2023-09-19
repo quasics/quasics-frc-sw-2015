@@ -37,16 +37,35 @@ void RunningLights::Execute() {
   if (!m_timer.HasElapsed(m_stepTime)) {
     return;
   }
-  const int pulseStartPosition = (m_lastPos + 1) % m_lights->GetStripLength();
 
-  m_lights->SetStripColor([this, pulseStartPosition](int position) {
-    // TODO: Handle wrap-around
-    if (position >= pulseStartPosition &&
-        position < (pulseStartPosition + this->m_pulseSize)) {
-      return this->m_pulseColor;
-    }
-    return Lights::BLACK;
-  });
+  // Position where the pulse starts on the LED strip.
+  const int pulseStartPosition = (m_lastPos + 1) % m_lights->GetStripLength();
+  // Note: this is the first position *after* the pulse ends.
+  const int pulseEndPosition =
+      (m_lastPos + 1 + m_pulseSize) % m_lights->GetStripLength();
+
+  // Light 'em up!
+  m_lights->SetStripColor(
+      [this, pulseStartPosition, pulseEndPosition](int position) {
+        if (pulseStartPosition <= pulseEndPosition) {
+          // Simple case: turning on lights from [startPos,endPos)
+          if (position >= pulseStartPosition &&
+              position < (pulseStartPosition + this->m_pulseSize)) {
+            return this->m_pulseColor;
+          }
+        } else {
+          // Handles wrap-around: turn on lights from [0,endPos] and
+          // [startPos,...]
+          if (position >= pulseStartPosition || position < pulseEndPosition) {
+            return this->m_pulseColor;
+          }
+        }
+
+        // All other lights should be off.
+        return Lights::BLACK;
+      });
+
+  // Update data used for the next pulse.
   m_lastPos = pulseStartPosition;
   m_timer.Reset();
 }

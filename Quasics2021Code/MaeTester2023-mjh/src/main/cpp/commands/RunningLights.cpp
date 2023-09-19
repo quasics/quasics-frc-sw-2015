@@ -4,11 +4,18 @@
 
 #include "commands/RunningLights.h"
 
-const units::second_t RunningLights::STEP_TIME = 0.05_s;
-const int RunningLights::PULSE_SIZE = 5;
-const frc::AddressableLED::LEDData RunningLights::PULSE_COLOR = Lights::GREEN;
+const units::second_t RunningLights::DEFAULT_STEP_TIME = 0.05_s;
+const int RunningLights::DEFAULT_PULSE_SIZE = 5;
+const frc::AddressableLED::LEDData RunningLights::DEFAULT_PULSE_COLOR =
+    Lights::GREEN;
 
-RunningLights::RunningLights(Lights* lights) : m_lights(lights) {
+RunningLights::RunningLights(Lights* lights, units::second_t stepTime,
+                             int pulseSize,
+                             frc::AddressableLED::LEDData pulseColor)
+    : m_lights(lights),
+      m_stepTime(stepTime),
+      m_pulseSize(pulseSize),
+      m_pulseColor(pulseColor) {
   AddRequirements(m_lights);
 }
 
@@ -27,16 +34,16 @@ void RunningLights::Execute() {
   if (m_lights == nullptr) {
     return;
   }
-  if (!m_timer.HasElapsed(STEP_TIME)) {
+  if (!m_timer.HasElapsed(m_stepTime)) {
     return;
   }
   const int pulseStartPosition = (m_lastPos + 1) % m_lights->GetStripLength();
 
-  m_lights->SetStripColor([pulseStartPosition](int position) {
+  m_lights->SetStripColor([this, pulseStartPosition](int position) {
     // TODO: Handle wrap-around
     if (position >= pulseStartPosition &&
-        position < (pulseStartPosition + PULSE_SIZE)) {
-      return PULSE_COLOR;
+        position < (pulseStartPosition + this->m_pulseSize)) {
+      return this->m_pulseColor;
     }
     return Lights::BLACK;
   });

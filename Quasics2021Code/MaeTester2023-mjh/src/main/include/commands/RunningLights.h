@@ -19,16 +19,26 @@
  */
 class RunningLights
     : public frc2::CommandHelper<frc2::CommandBase, RunningLights> {
+ public:
+  static const units::second_t DEFAULT_STEP_TIME;
+  static const int DEFAULT_PULSE_SIZE;
+  static const frc::AddressableLED::LEDData DEFAULT_PULSE_COLOR;
+
  private:
-  Lights* m_lights;
+  Lights* const m_lights;
+  const units::second_t m_stepTime;
+  const int m_pulseSize;
+  const frc::AddressableLED::LEDData m_pulseColor;
+
   frc::Timer m_timer;
   int m_lastPos;
-  static const units::second_t STEP_TIME;
-  static const int PULSE_SIZE;
-  static const frc::AddressableLED::LEDData PULSE_COLOR;
 
  public:
-  RunningLights(Lights* lights);
+  RunningLights(Lights* lights)
+      : RunningLights(lights, DEFAULT_STEP_TIME, DEFAULT_PULSE_SIZE,
+                      DEFAULT_PULSE_COLOR) {}
+  RunningLights(Lights* lights, units::second_t stepTime, int pulseSize,
+                frc::AddressableLED::LEDData pulseColor);
 
   void Initialize() override;
 

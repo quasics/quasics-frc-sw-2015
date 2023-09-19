@@ -37,6 +37,7 @@
 #include "commands/RunOnlyIntakeMotor.h"
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
+#include "commands/RunningLights.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
@@ -50,6 +51,8 @@
 #define ENABLE_BINDINGS_FOR_DEMO
 
 #define ENABLE_ARCADE_DRIVE
+
+#define ENABLE_RUNNING_LIGHTS
 
 // Conditional compilation flags end here.
 ///////////////////////////////////////////////////////////////////////////////
@@ -225,7 +228,12 @@ void RobotContainer::InstallDefaultCommands() {
 
   drivebase.SetDefaultCommand(*driveCmd);
 
+#ifdef ENABLE_RUNNING_LIGHTS
+  static RunningLights runningLightsCmd;
+  lights.SetDefaultCommand(runningLightsCmd);
+#else
   lights.SetDefaultCommand(m_defaultLightingCommand);
+#endif  // ENABLE_RUNNING_LIGHTS
 
   std::unique_ptr<TriggerDrivenShootingCommand> shooterCmd(
       BuildShootingCommand());

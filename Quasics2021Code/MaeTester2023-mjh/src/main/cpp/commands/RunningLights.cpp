@@ -48,6 +48,7 @@ void RunningLights::Execute() {
     return Lights::BLACK;
   });
   m_lastPos = pulseStartPosition;
+  m_timer.Reset();
 }
 
 // Called once the command ends or is interrupted.

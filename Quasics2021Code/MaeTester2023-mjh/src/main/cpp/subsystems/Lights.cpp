@@ -6,6 +6,12 @@
 
 #include <iostream>
 
+const frc::AddressableLED::LEDData Lights::BLACK(0, 0, 0);
+const frc::AddressableLED::LEDData Lights::GREEN(0, 255, 0);
+const frc::AddressableLED::LEDData Lights::RED(255, 0, 0);
+const frc::AddressableLED::LEDData Lights::BLUE(0, 0, 255);
+const frc::AddressableLED::LEDData Lights::WHITE(255, 255, 255);
+
 Lights::Lights() {
   SetSubsystem("Lights");
 

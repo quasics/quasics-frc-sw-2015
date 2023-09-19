@@ -13,6 +13,13 @@
 
 class Lights : public frc2::SubsystemBase {
  public:
+  static const frc::AddressableLED::LEDData BLACK;
+  static const frc::AddressableLED::LEDData GREEN;
+  static const frc::AddressableLED::LEDData RED;
+  static const frc::AddressableLED::LEDData BLUE;
+  static const frc::AddressableLED::LEDData WHITE;
+
+ public:
   Lights();
 
   /**
@@ -35,6 +42,8 @@ class Lights : public frc2::SubsystemBase {
 
   /** Turns all of the pixels on the strip off. */
   void TurnStripOff();
+
+  int GetStripLength() { return kLength; }
 
  private:
   static constexpr int kLength = 45;

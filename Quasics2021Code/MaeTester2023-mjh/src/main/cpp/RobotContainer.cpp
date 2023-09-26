@@ -229,7 +229,8 @@ void RobotContainer::InstallDefaultCommands() {
   drivebase.SetDefaultCommand(*driveCmd);
 
 #ifdef ENABLE_RUNNING_LIGHTS
-  static RunningLights runningLightsCmd(&lights);
+  //static RunningLights runningLightsCmd(&lights);
+  static RunningLights runningLightsCmd(&lights, 0.025_s, 5, Lights::GREEN);
   lights.SetDefaultCommand(runningLightsCmd);
 #else
   lights.SetDefaultCommand(m_defaultLightingCommand);

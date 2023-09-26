@@ -38,8 +38,8 @@ void Lights::Periodic() {
 }
 
 void Lights::SetStripColor(int red, int green, int blue) {
-  std::cout << "Setting strip to solid color (" << red << "," << green << ","
-            << blue << ")" << std::endl;
+  /*std::cout << "Setting strip to solid color (" << red << "," << green << ","
+            << blue << ")" << std::endl;*/
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i].SetRGB(red, green, blue);
   }
@@ -48,7 +48,7 @@ void Lights::SetStripColor(int red, int green, int blue) {
 
 void Lights::SetStripColor(
     std::function<frc::AddressableLED::LEDData(int position)> colorFcn) {
-  std::cout << "Setting strip colors" << std::endl;
+  //std::cout << "Setting strip colors" << std::endl;
   for (int i = 0; i < kLength; i++) {
     m_ledBuffer[i] = colorFcn(i);
   }

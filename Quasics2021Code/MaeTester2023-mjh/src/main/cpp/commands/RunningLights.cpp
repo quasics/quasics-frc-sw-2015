@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/RunningLights.h"
+#include <iostream>
 
 const units::second_t RunningLights::DEFAULT_STEP_TIME = 0.05_s;
 const int RunningLights::DEFAULT_PULSE_SIZE = 5;

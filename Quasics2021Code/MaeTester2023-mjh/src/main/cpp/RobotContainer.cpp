@@ -38,6 +38,7 @@
 #include "commands/RunOnlyIntakeMotorReverse.h"
 #include "commands/RunShootingMotor.h"
 #include "commands/RunningLights.h"
+#include "commands/RunningLightsInverse.h"
 #include "subsystems/Drivebase.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Lights.h"
@@ -230,8 +231,10 @@ void RobotContainer::InstallDefaultCommands() {
 
 #ifdef ENABLE_RUNNING_LIGHTS
   //static RunningLights runningLightsCmd(&lights);
-  static RunningLights runningLightsCmd(&lights, 0.025_s, 5, Lights::GREEN);
-  lights.SetDefaultCommand(runningLightsCmd);
+  //static RunningLights runningLightsCmd(&lights, 0.025_s, 5, Lights::GREEN);
+  //lights.SetDefaultCommand(runningLightsCmd);
+  static RunningLightsInverse runningLightsInverseCmd(&lights);
+  lights.SetDefaultCommand(runningLightsInverseCmd);
 #else
   lights.SetDefaultCommand(m_defaultLightingCommand);
 #endif  // ENABLE_RUNNING_LIGHTS

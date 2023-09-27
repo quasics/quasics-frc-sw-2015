@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private static final boolean ENABLE_TANK_DRIVE = true;
+  private static final boolean ENABLE_TANK_DRIVE = false;
 
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
@@ -44,13 +44,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Default command is arcade drive. This will run unless another command
+    // Set the default command for movement. This will run unless another command
     // is scheduled over it.
-    if (ENABLE_TANK_DRIVE) {
-      m_drivetrain.setDefaultCommand(getTankDriveCommand());
-    } else {
-      m_drivetrain.setDefaultCommand(getArcadeDriveCommand());
-    }
+    m_drivetrain.setDefaultCommand(
+      ENABLE_TANK_DRIVE ? getTankDriveCommand()
+                        : getArcadeDriveCommand());
 
     // Configure the button bindings
     configureButtonBindings();
@@ -100,6 +98,7 @@ public class RobotContainer {
    * @return the command to run in teleop
    */
   public Command getArcadeDriveCommand() {
+    System.out.println("Building arcade drive command....");
     return new ArcadeDrive(
         m_drivetrain, () -> -m_controller.getRawAxis(1), () -> -m_controller.getRawAxis(2));
   }
@@ -110,6 +109,7 @@ public class RobotContainer {
    * @return the command to run in teleop
    */
   public Command getTankDriveCommand() {
+    System.out.println("Building tank drive command....");
     return new TankDrive(
         m_drivetrain, () -> -m_controller.getRawAxis(1), () -> -m_controller.getRawAxis(2));
   }

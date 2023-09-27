@@ -13,8 +13,8 @@
 #include <units/voltage.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 
-#define USING_GLADYS_TRAJECTORY_CONSTANTS
-#undef USING_SALLY_TRAJECTORY_CONSTANTS
+#undef USING_GLADYS_TRAJECTORY_CONSTANTS
+#define USING_SALLY_TRAJECTORY_CONSTANTS
 #undef USING_MAE_TRAJECTORY_CONSTANTS
 
 /**
@@ -168,8 +168,8 @@ constexpr double kD = 0;
 constexpr units::length::meter_t TRACK_WIDTH_METERS_GLADYS = 0.559_m;
 const frc::DifferentialDriveKinematics kDriveKinematics(TRACK_WIDTH_METERS_GLADYS);
 
-constexpr auto kMaxSpeed = 1_mps;
-constexpr auto kMaxAcceleration = 0.5_mps_sq;
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 1.5_mps_sq;
 
 constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
 constexpr auto kRamseteZeta = 0.7 / 1_rad;

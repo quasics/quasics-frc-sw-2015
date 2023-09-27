@@ -84,6 +84,11 @@ void Drivebase::Periodic() {
                     GetLeftDistance(),
                     GetRightDistance());*/
   
+  //test
+  /*m_odometry.Update(0_deg,
+                    GetLeftDistance(),
+                    GetRightDistance());*/
+                    
   m_odometry.Update(m_gyro.GetRotation2d().Degrees(),
                     GetLeftDistance(),
                     GetRightDistance());
@@ -98,6 +103,7 @@ void Drivebase::Periodic() {
   frc::SmartDashboard::PutNumber("GetHeading() Yaw", double(GetHeading()));
   frc::SmartDashboard::PutNumber("Pitch", double((m_gyro.GetPitch())));
   frc::SmartDashboard::PutNumber("Roll", double((m_gyro.GetRoll())));
+  frc::SmartDashboard::PutNumber("IMPORTANT WHAT GYRO IS SENDING", double(m_odometry.GetPose().Rotation().Degrees()));
 
   /*frc::SmartDashboard::PutNumber("GetPose.Translation() in Meters", double{GetPose().Translation()});
   frc::SmartDashboard::PutNumber("GetPose.Rotation() in Meters", double{GetPose().Rotation()});*/
@@ -210,6 +216,8 @@ frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
 
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
+  //Test
+  //m_odometry.ResetPosition(0_deg, 0_m, 0_m, pose);
   m_odometry.ResetPosition(m_gyro.GetRotation2d(), 0_m, 0_m, pose);
   /*TRYING TO REPLICATE DRIVEBASE
   m_odometry.ResetPosition(m_gyro.GetRotation2d(),GetLeftDistance(), GetRightDistance(), pose);

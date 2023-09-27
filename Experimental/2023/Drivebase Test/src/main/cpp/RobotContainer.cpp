@@ -44,7 +44,7 @@ void RobotContainer::ConfigureBindings() {
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return GetCommandForTrajectory("LoopyPath.wpilib.json", &m_drive);
+  return GetCommandForTrajectory("ContinuosPath.wpilib.json", &m_drive);
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard(){

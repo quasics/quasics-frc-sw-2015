@@ -21,7 +21,7 @@ public final class Constants {
 
   // TODO: Modify this to try to load current settings from filesystem using the
   // Preferences class from WPILib.
-  public static final RobotSettingsLibrary.Robot CURRENT_ROBOT = RobotSettingsLibrary.Robot.Gladys;
+  public static final RobotSettingsLibrary.Robot CURRENT_ROBOT = RobotSettingsLibrary.Robot.Mae;
 
   public static final RobotSettings ROBOT_SETTINGS =
       RobotSettingsLibrary.getSettingsForRobot(CURRENT_ROBOT);
@@ -35,8 +35,10 @@ public final class Constants {
   public static final class SpeedLimits {
     /** Scaling factor to be applied in "turtle" mode. */
     public static final double MAX_SPEED_TURTLE = 0.50;
+
     /** Scaling factor to be applied in "normal" mode. */
     public static final double MAX_SPEED_NORMAL = 0.65;
+
     /** Scaling factor to be applied in "turbo" mode. */
     public static final double MAX_SPEED_TURBO = 0.80;
 

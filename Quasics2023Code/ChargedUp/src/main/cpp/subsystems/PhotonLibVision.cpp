@@ -4,6 +4,8 @@
 
 #include "subsystems/PhotonLibVision.h"
 
+#include <iostream>
+
 PhotonLibVision::PhotonLibVision() {
   SetName("PhotonLibVision");
 }
@@ -20,6 +22,7 @@ bool PhotonLibVision::AprilTagTargetIdentified(int IDWantedTarget) {
     for (const photonlib::PhotonTrackedTarget& target : targets) {
       int targetID = target.GetFiducialId();
       if (targetID == IDWantedTarget) {
+        std::cout << "ID " << IDWantedTarget << "Acquired" << std::endl;
         return true;
       }
     }

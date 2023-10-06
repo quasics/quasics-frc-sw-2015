@@ -556,11 +556,11 @@ void RobotContainer::AddTestButtonsToSmartDashboard() {
 
   frc::SmartDashboard::PutData("PATHWEAVER TEST COMMAND", TestPathCommand());*/
 
-  if (false) {
+  if (true) {
     // AprilTag test commands
     frc::SmartDashboard::PutData(
         "Drive To April Tag",
-        new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 3));
+        new AprilTagDriveToTarget(&m_photonLibVision, &m_drivebase, 2));
   }
 
   /*

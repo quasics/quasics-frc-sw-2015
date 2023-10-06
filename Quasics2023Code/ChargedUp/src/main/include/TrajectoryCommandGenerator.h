@@ -24,7 +24,7 @@
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
 
-#define ENABLE_TRAJECTORY_LOGGING
+#undef ENABLE_TRAJECTORY_LOGGING
 
 class TrajectoryCommandGenerator {
   //
@@ -282,7 +282,7 @@ TrajectoryCommandGenerator::GenerateCommandFromDiscreteSegments(
 
 // defines the functions here instead of in a .cpp file
 // convenience function for printing out the data of an frc::Trajectory object.
-inline std::ostream& operator<<(std::ostream& os,
+/*inline std::ostream& operator<<(std::ostream& os,
                                 const frc::Trajectory& trajectory) {
   os << "{\n";
   for (const auto& state : trajectory.States()) {
@@ -295,7 +295,7 @@ inline std::ostream& operator<<(std::ostream& os,
   os << "}\n";
   return os;
 }
-
+*/
 // defines the functions here instead of in a .cpp file
 // all calls of functions eventually end up here where it actually builds the
 // RameseteCommand

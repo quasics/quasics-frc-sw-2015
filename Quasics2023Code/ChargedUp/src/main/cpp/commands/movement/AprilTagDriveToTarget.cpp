@@ -4,6 +4,8 @@
 
 #include "commands/movement/AprilTagDriveToTarget.h"
 
+#include <iostream>
+
 AprilTagDriveToTarget::AprilTagDriveToTarget(PhotonLibVision* photonLibVision,
                                              Drivebase* drivebase,
                                              int targetToDriveTo)
@@ -33,8 +35,9 @@ void AprilTagDriveToTarget::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool AprilTagDriveToTarget::IsFinished() {
-  if (m_distance <
-          (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS) &&
+  if (std::abs(m_distance.value()) <
+          (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
+               .value()) &&
       ((m_angle > -2_deg) && (m_angle < 2_deg))) {
     return true;
   }
@@ -48,10 +51,17 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
     m_photonLibVision->CalculateDistanceAndAngleToTarget(m_targetToDriveTo,
                                                          m_distance, m_angle);
     double forwardSpeed = -forwardController.Calculate(
-        m_distance.value(),
+        std::abs(m_distance.value()),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
             .value());
-    double rotationSpeed = -turnController.Calculate(m_angle.value(), 0);
+    // deleted a negative sign in rotationSpeed
+    double rotationSpeed = turnController.Calculate(m_angle.value(), 0);
+    std::cout << "Distance to Target " << std::abs(m_distance.value())
+              << std::endl;
+
+    std::cout << "Angle to Target " << m_angle.value() << std::endl;
+    std::cout << "Forward Speed " << forwardSpeed << " Rotation Speed "
+              << rotationSpeed << std::endl;
     m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
   }
 }

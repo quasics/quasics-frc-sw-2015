@@ -25,7 +25,7 @@ void RunningLightsInverse::Initialize() {
   if (m_lights == nullptr) return;
 
   m_lights->SetStripColor(0, 0, 0);
-  m_lastPos = 0;
+  m_lastPos = m_lights->GetStripLength();
   m_timer.Reset();
   m_timer.Start();
 }

@@ -46,6 +46,9 @@ test {
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
 
+wpi.sim.envVar("HALSIMXRP_HOST", "192.168.42.1");
+wpi.sim.addDep("Sim XRP Client", "edu.wpi.first.halsim", "halsim_xrp").defaultEnabled = true;
+
 //Sets the websocket client remote host. -- Not used for XRP
 // wpi.sim.envVar("HALSIMWS_HOST", "192.168.42.1")
 // wpi.sim.envVar("HALSIMWS_FILTERS", "AIO,DIO,DriverStation,Encoder,Gyro,XRPMotor,XRPServo")
@@ -68,6 +71,3 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
-
-wpi.sim.envVar("HALSIMXRP_HOST", "192.168.42.1");
-wpi.sim.addDep("Sim XRP Client", "edu.wpi.first.halsim", "halsim_xrp").defaultEnabled = true;

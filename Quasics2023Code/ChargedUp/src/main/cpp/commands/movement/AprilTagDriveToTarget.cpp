@@ -54,14 +54,21 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
         std::abs(m_distance.value()),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
             .value());
+    // adding extra speed
+
+    if (forwardSpeed > 0) {
+      forwardSpeed = forwardSpeed + 0.2;
+    } else {
+      forwardSpeed = forwardSpeed - 0.2;
+    }
     // deleted a negative sign in rotationSpeed
     double rotationSpeed = turnController.Calculate(m_angle.value(), 0);
-    std::cout << "Distance to Target " << std::abs(m_distance.value())
+    std::cout << "Distance to Target: " << std::abs(m_distance.value())
               << std::endl;
 
-    std::cout << "Angle to Target " << m_angle.value() << std::endl;
-    std::cout << "Forward Speed " << forwardSpeed << " Rotation Speed "
-              << rotationSpeed << std::endl;
-    m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
+    std::cout << "Angle to Target: " << m_angle.value() << std::endl;
+    std::cout << "Forward Speed: " << forwardSpeed
+              << " Rotation Speed: " << rotationSpeed << std::endl;
+    // m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
   }
 }

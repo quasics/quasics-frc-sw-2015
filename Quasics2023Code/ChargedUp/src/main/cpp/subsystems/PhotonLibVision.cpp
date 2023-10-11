@@ -22,7 +22,7 @@ bool PhotonLibVision::AprilTagTargetIdentified(int IDWantedTarget) {
     for (const photonlib::PhotonTrackedTarget& target : targets) {
       int targetID = target.GetFiducialId();
       if (targetID == IDWantedTarget) {
-        std::cout << "ID " << IDWantedTarget << "Acquired" << std::endl;
+        // std::cout << "ID " << IDWantedTarget << "Acquired" << std::endl;
         return true;
       }
     }
@@ -86,7 +86,7 @@ bool PhotonLibVision::CalculateDistanceAndAngleToTarget(
 
   auto target = possibleTarget.value();
 
-  const units::degree_t angleToTarget(target.GetYaw());
+  const units::degree_t angleToTarget(target.GetPitch());
   units::meter_t range = photonlib::PhotonUtils::CalculateDistanceToTarget(
       PhotonVisionConstants::CameraAndTargetValues::CAMERA_HEIGHT,
       PhotonVisionConstants::CameraAndTargetValues::TARGET_HEIGHT,

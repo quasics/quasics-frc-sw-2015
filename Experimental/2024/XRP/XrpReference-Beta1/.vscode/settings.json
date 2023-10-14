@@ -26,5 +26,11 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "editor.formatOnPaste": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2,
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "editor.formatOnSave": true
 }

@@ -15,5 +15,10 @@
     "**/*~": true
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
-  "wpilib.skipSelectSimulateExtension": true
+  "wpilib.skipSelectSimulateExtension": true,
+  "editor.tabSize": 2,
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable"
 }

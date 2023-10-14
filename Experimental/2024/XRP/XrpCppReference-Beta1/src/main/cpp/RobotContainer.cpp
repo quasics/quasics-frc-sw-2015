@@ -9,18 +9,27 @@
 #include <frc2/command/button/JoystickButton.h>
 
 #include "commands/TeleopArcadeDrive.h"
+#include "commands/TeleopTankDrive.h"
+
+constexpr bool ENABLE_TANK_DRIVE = true;
 
 RobotContainer::RobotContainer() {
+  // Set default commands here
+  if (ENABLE_TANK_DRIVE) {
+    m_drive.SetDefaultCommand(TeleopTankDrive(
+        &m_drive, [this] { return -m_controller.GetRawAxis(1); },
+        [this] { return m_controller.GetRawAxis(2); }));
+  } else {
+    m_drive.SetDefaultCommand(TeleopArcadeDrive(
+        &m_drive, [this] { return -m_controller.GetRawAxis(1); },
+        [this] { return -m_controller.GetRawAxis(2); }));
+  }
+
   // Configure the button bindings
   ConfigureButtonBindings();
 }
 
 void RobotContainer::ConfigureButtonBindings() {
-  // Also set default commands here
-  m_drive.SetDefaultCommand(TeleopArcadeDrive(
-      &m_drive, [this] { return -m_controller.GetRawAxis(1); },
-      [this] { return -m_controller.GetRawAxis(2); }));
-
   // Example of how to use the onboard IO
   m_userButton.OnTrue(frc2::cmd::Print("USER Button Pressed"))
       .OnFalse(frc2::cmd::Print("USER Button Released"));

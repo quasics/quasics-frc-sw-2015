@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <functional>
-
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
+
+#include <functional>
 
 #include "subsystems/Drivetrain.h"
 

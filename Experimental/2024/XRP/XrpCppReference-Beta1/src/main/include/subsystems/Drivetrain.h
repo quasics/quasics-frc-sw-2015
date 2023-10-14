@@ -37,6 +37,19 @@ class Drivetrain : public frc2::SubsystemBase {
   void ArcadeDrive(double xaxisSpeed, double zaxisRotate);
 
   /**
+   * Drives the robot using tank controls.
+   *
+   * @param leftSpeed the speed for left-side motors
+   * @param rightSpeed the speed for right-side motors
+   */
+  void TankDrive(double leftSpeed, double rightSpeed);
+
+  /** Stops the robot (i.e., sets speed to 0). */
+  void Stop() {
+    ArcadeDrive(0, 0);
+  }
+
+  /**
    * Resets the drive encoders to currently read a position of 0.
    */
   void ResetEncoders();

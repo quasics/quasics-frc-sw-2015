@@ -52,6 +52,7 @@ class AprilTagDriveToTarget
   PhotonLibVision* m_photonLibVision;
   Drivebase* m_drivebase;
   const int m_targetToDriveTo;
-  units::degree_t m_angle;
+  units::degree_t m_pitchTarget;
+  units::degree_t m_yawTarget;
   units::meter_t m_distance;
 };

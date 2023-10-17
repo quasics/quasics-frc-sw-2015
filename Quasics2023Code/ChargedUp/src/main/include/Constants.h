@@ -219,8 +219,8 @@ namespace RollerSpeeds {
 
 namespace PhotonVisionConstants {
 namespace CameraAndTargetValues {
-  constexpr units::meter_t CAMERA_HEIGHT = 10_in;    // 19.25_in on real bot
-  constexpr units::meter_t TARGET_HEIGHT = 16.5_in;  // 14.25on real field
+  constexpr units::meter_t CAMERA_HEIGHT = 10_in;  // 19.25_in on real bot
+  constexpr units::meter_t TARGET_HEIGHT = 17_in;  // 14.25on real field
   constexpr units::radian_t CAMERA_PITCH = 0_rad;
   const units::meter_t GOAL_RANGE_METERS = 2_ft;  // 3ft on real field
 }  // namespace CameraAndTargetValues
@@ -232,7 +232,7 @@ namespace LinearPID {
 }  // namespace LinearPID
 
 namespace AngularPID {
-  const double kP = 0.03;
+  const double kP = 0.02;
   const double kI = 0.0;
   const double kD = 0.0;
 }  // namespace AngularPID

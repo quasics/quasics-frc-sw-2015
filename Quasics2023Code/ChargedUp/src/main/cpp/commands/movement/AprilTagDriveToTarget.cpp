@@ -38,7 +38,7 @@ bool AprilTagDriveToTarget::IsFinished() {
   if (std::abs(m_distance.value()) <
           (PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
                .value()) &&
-      ((m_angle > -2_deg) && (m_angle < 2_deg))) {
+      ((m_yawTarget > -2_deg) && (m_yawTarget < 2_deg))) {
     return true;
   }
   return false;
@@ -48,8 +48,8 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
   bool targetFound =
       m_photonLibVision->AprilTagTargetIdentified(m_targetToDriveTo);
   if (targetFound == true) {
-    m_photonLibVision->CalculateDistanceAndAngleToTarget(m_targetToDriveTo,
-                                                         m_distance, m_angle);
+    m_photonLibVision->CalculateDistanceAndAnglesToTarget(
+        m_targetToDriveTo, m_distance, m_pitchTarget, m_yawTarget);
     double forwardSpeed = -forwardController.Calculate(
         std::abs(m_distance.value()),
         PhotonVisionConstants::CameraAndTargetValues::GOAL_RANGE_METERS
@@ -62,13 +62,14 @@ void AprilTagDriveToTarget::UpdateDrivingParameters() {
       forwardSpeed = forwardSpeed - 0.2;
     }
     // deleted a negative sign in rotationSpeed
-    double rotationSpeed = turnController.Calculate(m_angle.value(), 0);
+    double rotationSpeed = turnController.Calculate(m_yawTarget.value(), 0);
     std::cout << "Distance to Target: " << std::abs(m_distance.value())
               << std::endl;
 
-    std::cout << "Angle to Target: " << m_angle.value() << std::endl;
+    std::cout << "Angle to Target: " << m_pitchTarget.value() << std::endl;
     std::cout << "Forward Speed: " << forwardSpeed
               << " Rotation Speed: " << rotationSpeed << std::endl;
-    // m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
+    m_drivebase->ArcadeDrive(forwardSpeed, rotationSpeed);
+    m_drivebase->SetBrakingMode(true);
   }
 }

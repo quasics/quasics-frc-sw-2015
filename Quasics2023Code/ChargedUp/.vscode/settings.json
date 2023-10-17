@@ -98,7 +98,8 @@
     "xstddef": "cpp",
     "xstring": "cpp",
     "xtr1common": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "cassert": "cpp"
   },
   "editor.formatOnSave": true,
   "C_Cpp.clang_format_fallbackStyle": "Google"

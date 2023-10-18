@@ -135,10 +135,23 @@ frc::DifferentialDriveWheelSpeeds Drivebase::GetWheelSpeeds() {
 void Drivebase::ResetOdometry(frc::Pose2d pose) {
   ResetEncoders();
   m_odometry.ResetPosition(m_pigeon.GetRotation2d(), 0_m, 0_m, pose);
+  // FOR_VISION
+  m_poseEstimator.ResetPosition(m_pigeon.GetRotation2d(), GetLeftDistance(),
+                                GetRightDistance(), pose);
 }
 
 frc::Pose2d Drivebase::GetPose() {
   return m_odometry.GetPose();
+}
+
+// FOR_VISION
+frc::Pose2d Drivebase::GetEstimatedPose() {
+  return m_poseEstimator.GetEstimatedPosition();
+}
+
+void Drivebase::UpdateEstimatedOdometry() {
+  m_poseEstimator.Update(m_pigeon.GetRotation2d(), GetLeftDistance(),
+                         GetRightDistance());
 }
 
 // This method will be called once per scheduler run
@@ -156,6 +169,15 @@ void Drivebase::Periodic() {
   auto leftDistance = GetLeftDistance();
   auto rightDistance = GetRightDistance();
   m_odometry.Update(angle, leftDistance, rightDistance);
+
+  // FOR_VISION
+  UpdateEstimatedOdometry();
+  auto result = m_PhotonVision.UpdateFieldPosition(
+      m_poseEstimator.GetEstimatedPosition());
+  if (result) {
+    m_poseEstimator.AddVisionMeasurement(
+        result.value().estimatedPose.ToPose2d(), result.value().timestamp);
+  }
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

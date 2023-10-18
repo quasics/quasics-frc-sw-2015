@@ -44,7 +44,8 @@ class PhotonLibVision : public frc2::SubsystemBase {
 
   frc::Translation3d GetTargetPlacement(int targetID);
 
-  bool GetFieldPosition();
+  std::optional<photonlib::EstimatedRobotPose> UpdateFieldPosition(
+      frc::Pose2d estimatedPose);
 
   // Functions common to all subsystems.
  public:

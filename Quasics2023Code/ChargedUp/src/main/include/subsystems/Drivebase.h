@@ -7,6 +7,7 @@
 #include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/estimator/DifferentialDrivePoseEstimator.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/motorcontrol/MotorControllerGroup.h>
@@ -14,6 +15,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
+#include "subsystems/PhotonLibVision.h"
 #include "units/length.h"
 #include "units/velocity.h"
 
@@ -66,6 +68,12 @@ class Drivebase : public frc2::SubsystemBase {
   units::degree_t GetYaw();
 
   frc::Pose2d GetPose();
+
+  // FOR VISION
+
+  frc::Pose2d GetEstimatedPose();
+
+  void UpdateEstimatedOdometry();
 
   void ResetOdometry(frc::Pose2d pose);
 
@@ -141,4 +149,14 @@ class Drivebase : public frc2::SubsystemBase {
 
   frc::DifferentialDriveOdometry m_odometry{
       0_rad, 0_m, 0_m};  // m_odometry delcared somehwere ELSE?!?!?!
+
+  frc::DifferentialDriveKinematics m_kinematics{
+      units::meter_t{RobotPhysics::TRACK_WIDTH_INCHES_GLADYS}};
+
+  // FOR_VISION
+  frc::DifferentialDrivePoseEstimator m_poseEstimator{
+      m_kinematics, m_pigeon.GetRotation2d(), GetLeftDistance(),
+      GetRightDistance(), frc::Pose2d{}};
+
+  PhotonLibVision m_PhotonVision;
 };

@@ -15,6 +15,9 @@
 
 #undef PITCH_CALIBRATION
 
+//*******IMPORTANT****** SEARCH FOR "FOR_VISION" TO LOCATE STUFF USED FOR VISION
+// STUFF
+
 PhotonLibVision::PhotonLibVision() {
   SetName("PhotonLibVision");
   frc::SmartDashboard::PutNumber("Length to april tag", 0);
@@ -139,10 +142,11 @@ bool PhotonLibVision::CalculateDistanceAndAnglesToTarget(
   return true;
 }
 
-bool PhotonLibVision::GetFieldPosition() {
+std::optional<photonlib::EstimatedRobotPose>
+PhotonLibVision::UpdateFieldPosition(frc::Pose2d estimatedPose) {
   // Transfered Everything into the h. file
 
-    // THIS STUFF CAN BE SUBSTITUTED WITH THE OFFICIAL APRIL TAG LAYOUT EVENTUALLY
+  // THIS STUFF CAN BE SUBSTITUTED WITH THE OFFICIAL APRIL TAG LAYOUT EVENTUALLY
 
   /*
   std::vector<frc::AprilTag> tags = {
@@ -168,5 +172,6 @@ bool PhotonLibVision::GetFieldPosition() {
       photonlib::PhotonCamera("USB_Camera"), robotToCam);
 
   */
-  return true;
-}
+  estimator.SetReferencePose(frc::Pose3d(estimatedPose));
+  return estimator.Update();
+};

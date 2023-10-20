@@ -178,6 +178,12 @@ void Drivebase::Periodic() {
     m_poseEstimator.AddVisionMeasurement(
         result.value().estimatedPose.ToPose2d(), result.value().timestamp);
   }
+
+  frc::Pose2d robotPose = GetEstimatedPose();
+  frc::SmartDashboard::PutNumber("X position", robotPose.X().value());
+  frc::SmartDashboard::PutNumber("Y position", robotPose.Y().value());
+
+  frc::SmartDashboard::PutNumber("Yaw", robotPose.Rotation().Degrees().value());
 }
 
 void Drivebase::TankDrive(double leftPower, double rightPower) {

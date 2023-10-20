@@ -59,29 +59,28 @@ class PhotonLibVision : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
   photonlib::PhotonCamera camera{"USB_Camera"};
 
-  /*
   std::vector<frc::AprilTag> tags = {
       {586, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())},
-      {583, frc::Pose3d(22.8_in, 0_in, 19.1_in, frc::Rotation3d())},
-      {585, frc::Pose3d(62_in, 126_in, 17_in, frc::Rotation3d())}};
+      {583, frc::Pose3d(0_in, 22.8_in, 19.1_in, frc::Rotation3d())}};
+  // {585, frc::Pose3d(62_in, 126_in, 17_in, frc::Rotation3d())}};
 
-  std::shared_ptr<frc::AprilTagFieldLayout> aprilTags =
-      std::make_shared<frc::AprilTagFieldLayout>(tags, 2000_ft, 2000_ft);*/
-  /*frc::AprilTagFieldLayout aprilTags =
-  frc::AprilTagFieldLayout(tags, 54_ft, 27_ft);*/
-
-  std::vector<frc::AprilTag> tags = {
-      {0, frc::Pose3d(units::meter_t(3), units::meter_t(3), units::meter_t(3),
-                      frc::Rotation3d())},
-      {1, frc::Pose3d(units::meter_t(5), units::meter_t(5), units::meter_t(5),
-                      frc::Rotation3d())}};
-
+  // std::shared_ptr<frc::AprilTagFieldLayout> aprilTags =
+  //   std::make_shared<frc::AprilTagFieldLayout>(tags, 2000_ft, 2000_ft);
   frc::AprilTagFieldLayout aprilTags =
       frc::AprilTagFieldLayout(tags, 54_ft, 27_ft);
-  // DOWN TO HERE
-
+  /*
+std::vector<frc::AprilTag> tags = {
+    {0, frc::Pose3d(units::meter_t(3), units::meter_t(3), units::meter_t(3),
+                    frc::Rotation3d())},
+    {1, frc::Pose3d(units::meter_t(5), units::meter_t(5), units::meter_t(5),
+                    frc::Rotation3d())}};*/
+  /*
+    frc::AprilTagFieldLayout aprilTags =
+        frc::AprilTagFieldLayout(tags, 54_ft, 27_ft);
+    // DOWN TO HERE
+  */
   frc::Transform3d robotToCam =
-      frc::Transform3d(frc::Translation3d(0.5_m, 0_m, 0.5_m),
+      frc::Transform3d(frc::Translation3d(0.0_m, 0_m, 0.0_m),
                        frc::Rotation3d(0_rad, 0_rad, 0_rad));
 
   photonlib::PhotonPoseEstimator estimator = photonlib::PhotonPoseEstimator(

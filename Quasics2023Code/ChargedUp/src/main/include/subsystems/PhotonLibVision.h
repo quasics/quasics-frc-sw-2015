@@ -61,15 +61,19 @@ class PhotonLibVision : public frc2::SubsystemBase {
 
   std::vector<frc::AprilTag> tags = {
       {586, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())},
-      {583, frc::Pose3d(0_in, 22.8_in, 19.1_in, frc::Rotation3d())}};
-  // {585, frc::Pose3d(62_in, 126_in, 17_in, frc::Rotation3d())}};
+      {-1, frc::Pose3d(0_in, -23.3_in, 17_in, frc::Rotation3d())},
+      {585, frc::Pose3d(126_in, -62_in, 17_in,
+                        frc::Rotation3d(0_deg, 0_deg, 180_deg))}};
+  // REPLACE -1 WITH APRIL TAG ID. I DIDNT SEE ANOTHER 6 INCH PRINTED
+
+  // 4 inch april tag 583 at (0, 0, 19.1_in)
 
   // std::shared_ptr<frc::AprilTagFieldLayout> aprilTags =
   //   std::make_shared<frc::AprilTagFieldLayout>(tags, 2000_ft, 2000_ft);
   frc::AprilTagFieldLayout aprilTags =
       frc::AprilTagFieldLayout(tags, 54_ft, 27_ft);
   /*
-std::vector<frc::AprilTag> tags = {
+  std::vector<frc::AprilTag> tags = {
     {0, frc::Pose3d(units::meter_t(3), units::meter_t(3), units::meter_t(3),
                     frc::Rotation3d())},
     {1, frc::Pose3d(units::meter_t(5), units::meter_t(5), units::meter_t(5),

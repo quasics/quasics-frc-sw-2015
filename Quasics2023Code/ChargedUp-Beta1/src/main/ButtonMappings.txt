@@ -1,0 +1,31 @@
+
+Driver controller (Logitech)
+* Left stick - Arcade Drive Movement Speed
+* Right stick - Arcade Drive Rotation Speed
+* A - 
+* B - Toggle breaking mode on/off (when pressed)
+* X - 
+* Y - Self balancing mode (while held)
+* Left shoulder - Turtle mode (while held)
+* Right shoulder - Turbo mode (while held)
+* Left trigger - 
+* Right trigger - 
+* Start - 
+* Back - Toggle switch drive (when pressed)
+
+
+Operator controller (Xbox)
+* Left stick - 
+* Right stick - 
+* View button - 
+* Xbox button - 
+* Menu button - 
+* Right bumper - 
+* Left bumper - 
+* Left trigger - Intake roller (while held)
+* Right trigger - Intake exhaust (while held)
+* X button - Toggle cube vs. cone (when pressed)
+* Y button - Retract intake (while held)
+* A button - Extend intake (while held)
+* B button - 
+* D-pad - 

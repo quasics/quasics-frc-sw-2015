@@ -233,7 +233,8 @@ void RobotContainer::InstallDefaultCommands() {
   //static RunningLights runningLightsCmd(&lights);
   //static RunningLights runningLightsCmd(&lights, 0.025_s, 5, Lights::GREEN);
   //lights.SetDefaultCommand(runningLightsCmd);
-  static RunningLightsInverse runningLightsInverseCmd(&lights);
+  //static RunningLightsInverse runningLightsInverseCmd(&lights);
+  static RunningLightsInverse runningLightsInverseCmd(&lights, 0.025_s, 5, Lights::GREEN);
   lights.SetDefaultCommand(runningLightsInverseCmd);
 #else
   lights.SetDefaultCommand(m_defaultLightingCommand);

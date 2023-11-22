@@ -33,24 +33,19 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kWheelRadiusMeters = 0.0508;
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
-  // Motor constants/gains are for example purposes only, and must be determined for your own robot.
+  // Sample PID constants.
   private static final double kP = 8.5;
   private static final double kI = 0;
   private static final double kD = 0;
+
+  // Motor gains are for example purposes only, and must be determined for your own robot.
   private static final double kS = 1; // Voltage needed to overcome the motor’s static friction
   private static final double kV = 3; // Voltage needed to hold at a given constant velocity.
                                       // (This is a scaling constant, applied to the velocity,
                                       // as the relationship is linear for FRC-legal components.)
 
-  private final PIDController m_leftPIDController = new PIDController(kP, kI, kD);
-  private final PIDController m_rightPIDController = new PIDController(kP, kI, kD);
-
   private final DifferentialDriveKinematics m_kinematics =
       new DifferentialDriveKinematics(kTrackWidthMeters);
-
-  // Gains are for example purposes only - must be determined for your own
-  // robot!
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(kS, kV);
 
   private final MotorControllerGroup m_leftGroup;
   private final MotorControllerGroup m_rightGroup;
@@ -76,6 +71,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   /** Subsystem constructor. */
   public SimulationDrivebase() {
+    super(kTrackWidthMeters, kP, kI, kD, kS, kV);
+
     super.setName(getClass().getSimpleName());
 
     // Hardware allocation
@@ -128,32 +125,14 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoder.reset();
   }
 
-  /** Sets speeds to the drivetrain motors. */
-  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-    var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-    double leftOutput =
-        m_leftPIDController.calculate(m_leftEncoder.getRate(), speeds.leftMetersPerSecond);
-    double rightOutput =
-        m_rightPIDController.calculate(m_rightEncoder.getRate(), speeds.rightMetersPerSecond);
-
-    m_leftGroup.setVoltage(leftOutput + leftFeedforward);
-    m_rightGroup.setVoltage(rightOutput + rightFeedforward);
-  }
-
   //---------------------------------------------------------------------------
   // Implementations of abstract functions from the base class.
   //---------------------------------------------------------------------------
 
-  /**
-   * Controls the robot using arcade drive.
-   *
-   * @param xSpeed the speed for the x axis (in m/s)
-   * @param rot    the rotation (in radians/s)
-   */
   @Override
-  public void arcadeDrive(double xSpeed, double rot) {
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
+  protected void setMotorVoltages(double leftVoltage, double rightVoltage) {
+    m_leftGroup.setVoltage(leftVoltage);
+    m_rightGroup.setVoltage(rightVoltage);
   }
 
   @Override

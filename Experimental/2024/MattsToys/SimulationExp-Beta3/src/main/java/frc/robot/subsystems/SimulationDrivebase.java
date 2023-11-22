@@ -29,19 +29,28 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  private static final double kTrackWidth = 0.381 * 2;
-  private static final double kWheelRadius = 0.0508;
-  private static final int kEncoderResolution = -4096;
+  private static final double kTrackWidthMeters = 0.381 * 2;
+  private static final double kWheelRadiusMeters = 0.0508;
+  private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
-  private final PIDController m_leftPIDController = new PIDController(8.5, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
+  // Motor constants/gains are for example purposes only, and must be determined for your own robot.
+  private static final double kP = 8.5;
+  private static final double kI = 0;
+  private static final double kD = 0;
+  private static final double kS = 1; // Voltage needed to overcome the motor’s static friction
+  private static final double kV = 3; // Voltage needed to hold at a given constant velocity.
+                                      // (This is a scaling constant, applied to the velocity,
+                                      // as the relationship is linear for FRC-legal components.)
+
+  private final PIDController m_leftPIDController = new PIDController(kP, kI, kD);
+  private final PIDController m_rightPIDController = new PIDController(kP, kI, kD);
 
   private final DifferentialDriveKinematics m_kinematics =
-      new DifferentialDriveKinematics(kTrackWidth);
+      new DifferentialDriveKinematics(kTrackWidthMeters);
 
   // Gains are for example purposes only - must be determined for your own
   // robot!
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(kS, kV);
 
   private final MotorControllerGroup m_leftGroup;
   private final MotorControllerGroup m_rightGroup;
@@ -59,7 +68,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
       LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
-      m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidth, kWheelRadius, null);
+      m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidthMeters, kWheelRadiusMeters, null);
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
   private final EncoderSim m_leftEncoderSim;
@@ -109,8 +118,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
-    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
+    m_leftEncoder.setDistancePerPulse(
+        2 * Math.PI * kWheelRadiusMeters / kEncoderResolutionTicksPerRevolution);
+    m_rightEncoder.setDistancePerPulse(
+        2 * Math.PI * kWheelRadiusMeters / kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();

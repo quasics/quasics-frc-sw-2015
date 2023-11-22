@@ -116,11 +116,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     /** Resets robot odometry. */
     public void resetOdometry(Pose2d pose) {
-        getLeftEncoder().reset();
-        getRightEncoder().reset();
         m_drivetrainSimulator.setPose(pose);
-        getOdometry().resetPosition(
-                getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition(), pose);
+        super.resetOdometry(pose);
     }
 
     /** Update our simulation. This should be run every robot loop in simulation. */

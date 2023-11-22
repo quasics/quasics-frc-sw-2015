@@ -37,6 +37,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     updateOdometry();
   }
 
+  /** Resets robot odometry. */
+  public void resetOdometry(Pose2d pose) {
+    getLeftEncoder().reset();
+    getRightEncoder().reset();
+    getOdometry().resetPosition(
+        getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition(), pose);
+  }
+
   protected abstract DifferentialDriveOdometry getOdometry();
 
   protected abstract TrivialEncoder getLeftEncoder();

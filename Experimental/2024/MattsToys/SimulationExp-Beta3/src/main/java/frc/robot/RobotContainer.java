@@ -30,12 +30,11 @@ public class RobotContainer {
       m_drivebase = new SimulationDrivebase();
     }
     configureBindings();
-
-    m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_controller));
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
   }
 
   private void configureBindings() {
+    m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_controller));
+    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
   }
 
   public Command getAutonomousCommand() {

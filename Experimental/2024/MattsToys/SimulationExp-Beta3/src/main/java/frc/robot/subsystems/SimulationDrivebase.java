@@ -34,6 +34,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kD = 0;
 
   // Motor gains are for example purposes only, and must be determined for your own robot.
+  // https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#the-permanent-magnet-dc-motor-feedforward-equation
   private static final double kS = 1; // Voltage needed to overcome the motor’s static friction
   private static final double kV = 3; // Voltage needed to hold at a given constant velocity.
                                       // (This is a scaling constant, applied to the velocity,

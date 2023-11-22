@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.IGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
@@ -50,6 +51,7 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
+  private final IGyro m_wrappedGyro = IGyro.wrapAnalogGyro(m_gyro);
 
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightRear = new CANSparkMax(RIGHT_REAR_CAN_ID, MotorType.kBrushless);
@@ -230,5 +232,9 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
 
   protected TrivialEncoder getRightEncoder() {
     return m_rightTrivialEncoder;
+  }
+
+  protected IGyro getGyro() {
+    return m_wrappedGyro;
   }
 }

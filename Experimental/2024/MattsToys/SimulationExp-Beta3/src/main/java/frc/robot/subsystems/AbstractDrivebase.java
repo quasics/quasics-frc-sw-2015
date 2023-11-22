@@ -4,8 +4,10 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
@@ -18,11 +20,30 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public AbstractDrivebase() {
   }
 
+  /** Update robot odometry. */
+  public void updateOdometry() {
+    getOdometry().update(
+        getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition());
+  }
+
+  /** Check the current robot pose. */
+  public Pose2d getPose() {
+    return getOdometry().getPoseMeters();
+  }
+
+  /** Update odometry - this should be run every robot loop. */
+  @Override
+  public void periodic() {
+    updateOdometry();
+  }
+
   protected abstract DifferentialDriveOdometry getOdometry();
 
   protected abstract TrivialEncoder getLeftEncoder();
 
   protected abstract TrivialEncoder getRightEncoder();
+
+  protected abstract IGyro getGyro();
 
   /**
    * 

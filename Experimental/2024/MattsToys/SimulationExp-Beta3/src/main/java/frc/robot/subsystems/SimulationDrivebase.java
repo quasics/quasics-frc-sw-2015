@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 public class SimulationDrivebase extends AbstractDrivebase {
@@ -50,6 +51,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     private final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
 
     private final AnalogGyro m_gyro = new AnalogGyro(0);
+    private final IGyro m_wrappedGyro = IGyro.wrapAnalogGyro(m_gyro);
 
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
@@ -112,24 +114,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
         setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
     }
 
-    /** Update robot odometry. */
-    public void updateOdometry() {
-        getOdometry().update(
-                m_gyro.getRotation2d(), m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
-    }
-
     /** Resets robot odometry. */
     public void resetOdometry(Pose2d pose) {
-        m_leftEncoder.reset();
-        m_rightEncoder.reset();
+        getLeftEncoder().reset();
+        getRightEncoder().reset();
         m_drivetrainSimulator.setPose(pose);
-        m_odometry.resetPosition(
-                m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), pose);
-    }
-
-    /** Check the current robot pose. */
-    public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
+        getOdometry().resetPosition(
+                getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition(), pose);
     }
 
     /** Update our simulation. This should be run every robot loop in simulation. */
@@ -150,24 +141,34 @@ public class SimulationDrivebase extends AbstractDrivebase {
         m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
     }
 
-    /** Update odometry - this should be run every robot loop. */
+    /** Updates field simulation. */
+    @Override
     public void periodic() {
-        updateOdometry();
-        var pose = m_odometry.getPoseMeters();
+        super.periodic();
+
+        var pose = getOdometry().getPoseMeters();
         SmartDashboard.putNumber("X", pose.getX());
         SmartDashboard.putNumber("Y", pose.getY());
         m_fieldSim.setRobotPose(pose);
     }
 
+    @Override
     protected DifferentialDriveOdometry getOdometry() {
         return m_odometry;
     }
 
+    @Override
     protected TrivialEncoder getLeftEncoder() {
         return m_leftTrivialEncoder;
     }
 
+    @Override
     protected TrivialEncoder getRightEncoder() {
         return m_rightTrivialEncoder;
+    }
+
+    @Override
+    protected IGyro getGyro() {
+        return m_wrappedGyro;
     }
 }

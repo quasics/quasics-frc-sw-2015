@@ -13,6 +13,7 @@ import frc.robot.sensors.TrivialEncoder;
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
   public static final double MAX_SPEED = 3.0;
+
   /** Maximum rotational speed is 1/2 rotation per second. */
   public static final double MAX_ANGULAR_SPEED = Math.PI;
 
@@ -41,8 +42,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder().reset();
     getRightEncoder().reset();
-    getOdometry().resetPosition(
-        getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition(), pose);
+    getOdometry().resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition(),
+        getRightEncoder().getPosition(), pose);
   }
 
   protected abstract DifferentialDriveOdometry getOdometry();
@@ -54,7 +55,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   protected abstract IGyro getGyro();
 
   /**
-   * 
+   *
    * @param xSpeed the speed for the x axis (in m/s)
    * @param rot    the rotation (in radians/s)
    */

@@ -4,13 +4,9 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -43,9 +39,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kV = 3; // Voltage needed to hold at a given constant velocity.
                                       // (This is a scaling constant, applied to the velocity,
                                       // as the relationship is linear for FRC-legal components.)
-
-  private final DifferentialDriveKinematics m_kinematics =
-      new DifferentialDriveKinematics(kTrackWidthMeters);
 
   private final MotorControllerGroup m_leftGroup;
   private final MotorControllerGroup m_rightGroup;

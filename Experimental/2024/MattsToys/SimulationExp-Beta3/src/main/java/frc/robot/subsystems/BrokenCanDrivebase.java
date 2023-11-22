@@ -69,6 +69,8 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   public BrokenCanDrivebase() {
     super(TRACK_WIDTH_METERS, kP, kI, kD, kS, kV);
 
+    super.setName(getClass().getSimpleName());
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.

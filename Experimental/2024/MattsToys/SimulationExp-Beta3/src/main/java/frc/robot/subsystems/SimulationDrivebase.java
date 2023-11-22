@@ -86,8 +86,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_wrappedGyro = IGyro.wrapAnalogGyro(rawGyro);
 
     // Initial odometry; it will be updated in periodic().
-    m_odometry = new DifferentialDriveOdometry(
-        rawGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
+        m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
     // Finish configuring the hardware.
     configureDriveMotorsAndSensors();

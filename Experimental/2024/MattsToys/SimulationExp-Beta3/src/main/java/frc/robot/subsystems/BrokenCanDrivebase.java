@@ -23,10 +23,8 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   private static final double kD = 0;
 
   // Motor gains are for example purposes only, and must be determined for your own robot.
-  private static final double kS = 1; // Voltage needed to overcome the motor’s static friction
-  private static final double kV = 3; // Voltage needed to hold at a given constant velocity.
-                                      // (This is a scaling constant, applied to the velocity,
-                                      // as the relationship is linear for FRC-legal components.)
+  private static final double kS = 1;
+  private static final double kV = 3;
 
   // Motor IDs are based on those Quasics has used over the last couple of years.
   static final int LEFT_FRONT_CAN_ID = 1;
@@ -34,6 +32,7 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   static final int RIGHT_FRONT_CAN_ID = 3;
   static final int RIGHT_REAR_CAN_ID = 4;
 
+  // The robot's physical characteristics (and directly derived values).
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
   static final double GLADYS_GEAR_RATIO = 8.45;
   static final double TRACK_WIDTH_METERS = 0.381 * 2;
@@ -42,6 +41,7 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
       WHEEL_CIRCUMFERENCE_METERS / GLADYS_GEAR_RATIO;
   static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
+  // Hardware control/sensing.
   private final AnalogGyro m_gyro = new AnalogGyro(0);
   private final IGyro m_wrappedGyro = IGyro.wrapAnalogGyro(m_gyro);
 
@@ -62,8 +62,8 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   private final DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(m_gyro.getRotation2d(), m_leftTrivialEncoder.getPosition(),
-          m_rightTrivialEncoder.getPosition());
+      new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
+          m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
   /** Creates a new Drivebase. */
   public BrokenCanDrivebase() {
@@ -71,10 +71,16 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
 
     super.setName(getClass().getSimpleName());
 
+    ////////////////////////////////////////
+    // Configure the motors.
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     m_rightGroup.setInverted(true);
+
+    // Tell the motors to brake if they're not being told how fast to go (e.g., when the robot is
+    // disabled, or not being driven in auto mode).
     m_leftFront.setIdleMode(IdleMode.kBrake);
     m_leftRear.setIdleMode(IdleMode.kBrake);
     m_rightFront.setIdleMode(IdleMode.kBrake);

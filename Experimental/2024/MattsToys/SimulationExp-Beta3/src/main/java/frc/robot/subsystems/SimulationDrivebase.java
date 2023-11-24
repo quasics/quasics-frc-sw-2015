@@ -120,7 +120,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   //---------------------------------------------------------------------------
 
   @Override
-  protected void setMotorVoltages(double leftVoltage, double rightVoltage) {
+  public void setMotorVoltages(double leftVoltage, double rightVoltage) {
     m_leftGroup.setVoltage(leftVoltage);
     m_rightGroup.setVoltage(rightVoltage);
   }

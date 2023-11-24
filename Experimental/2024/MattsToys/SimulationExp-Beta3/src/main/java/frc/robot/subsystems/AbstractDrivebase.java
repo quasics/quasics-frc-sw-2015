@@ -50,6 +50,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
   }
 
+  public DifferentialDriveKinematics getKinematics() {
+    return m_kinematics;
+  }
+
+  /** @return current wheel speeds (in m/s) */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(
+        getLeftEncoder().getVelocity(), getRightEncoder().getVelocity());
+  }
+
   /** Update the robot's odometry. */
   public void updateOdometry() {
     getOdometry().update(
@@ -108,5 +118,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected abstract IGyro getGyro();
 
-  protected abstract void setMotorVoltages(double leftVoltage, double rightVoltage);
+  /**
+   * Declared as public so that it can be used with RamseteCommand objects.
+   * @param leftVoltage  voltage for left-side motors
+   * @param rightVoltage voltage for right-side motors
+   */
+  public abstract void setMotorVoltages(double leftVoltage, double rightVoltage);
 }

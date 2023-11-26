@@ -16,4 +16,5 @@ SpacesInParentheses: 'false'
 # Always use spaces for tabs, rather than native tabs (makes rendering consistent).
 UseTab: Never
 
+# Allow really short functions to go on a single line (e.g., "int f() { return 0; }").
 AllowShortFunctionsOnASingleLine: 'false'

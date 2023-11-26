@@ -1,3 +1,5 @@
+# Sets up default formatting for code files in this project.
+#
 # For a tool to generate a customized configuration, see https://zed0.co.uk/clang-format-configurator/
 # For list of options, see https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 

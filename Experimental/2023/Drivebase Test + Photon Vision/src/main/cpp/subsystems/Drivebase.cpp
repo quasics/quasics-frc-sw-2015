@@ -29,16 +29,6 @@ Drivebase::Drivebase(){
   //m_drive->SetSafetyEnabled(false);
 }
 
-
-
-
-
-
-
-
-
-
-
 void Drivebase::ConfigureEncoders() {
   // Calculate wheel circumference (distance travelled per wheel revolution).
   const double pi = 3.1415926;
@@ -74,50 +64,34 @@ void Drivebase::ConfigureEncoders() {
 
 
 void Drivebase::Periodic() {
-  //return m_pigeon.GetRotation2d().Degrees();
-
-  // Implementation of subsystem periodic method goes here.
-  // Will be using the front encoders
-
-  /*Making it match
-  m_odometry.Update(m_gyro.GetRotation2d(),
-                    GetLeftDistance(),
-                    GetRightDistance());*/
   
-  //test
-  /*m_odometry.Update(0_deg,
-                    GetLeftDistance(),
-                    GetRightDistance());*/
-                    
-  m_odometry.Update(m_gyro.GetRotation2d().Degrees(),
-                    GetLeftDistance(),
-                    GetRightDistance());
+  auto angle = m_gyro.GetRotation2d().Degrees();
+  auto leftDistance = GetLeftDistance();
+  auto rightDistance = GetRightDistance();
+  m_odometry.Update(angle, leftDistance, rightDistance);
 
-  frc::SmartDashboard::PutNumber("GetWheelSpeeds() Left Velocity", double{GetLeftVelocity()});
-  frc::SmartDashboard::PutNumber("GetWheelSpeeds() Right Velocity", double{GetRightVelocity()});
-  
-  //For Pose 2d how do you know which pose is it returning. Is it an X, Y, and a Rotation, Or an Translation and Rotation
-  //frc::SmartDashboard::PutData("GetPose() Translation", GetPose().Translation());
-  frc::SmartDashboard::PutNumber("GetPose.X() Translation in Meters", double{GetPose().X()});
-  frc::SmartDashboard::PutNumber("GetPose.Y() Translation in Meters", double{GetPose().Y()});
-  frc::SmartDashboard::PutNumber("GetHeading() Yaw", double(GetHeading()));
-  frc::SmartDashboard::PutNumber("Pitch", double((m_gyro.GetPitch())));
-  frc::SmartDashboard::PutNumber("Roll", double((m_gyro.GetRoll())));
-  frc::SmartDashboard::PutNumber("IMPORTANT WHAT GYRO IS SENDING", double(m_odometry.GetPose().Rotation().Degrees()));
+  // FOR_VISION
+  UpdateEstimatedOdometry();
+  auto result = m_PhotonVision.UpdateFieldPosition(
+      m_poseEstimator.GetEstimatedPosition());
+  if (result) {
+    m_poseEstimator.AddVisionMeasurement(
+        result.value().estimatedPose.ToPose2d(), result.value().timestamp);
+  }
 
-  /*frc::SmartDashboard::PutNumber("GetPose.Translation() in Meters", double{GetPose().Translation()});
-  frc::SmartDashboard::PutNumber("GetPose.Rotation() in Meters", double{GetPose().Rotation()});*/
+  frc::Pose2d robotPose = GetEstimatedPose();
+  frc::SmartDashboard::PutNumber("X position", robotPose.X().value());
+  frc::SmartDashboard::PutNumber("Y position", robotPose.Y().value());
 
-  frc::SmartDashboard::PutNumber("Left Wheel Distance", double(GetLeftDistance()));
-  frc::SmartDashboard::PutNumber("Right Wheel Distance", double(GetRightDistance()));
-
+  frc::SmartDashboard::PutNumber("Yaw", robotPose.Rotation().Degrees().value());
                     
 }
 
-/*void Drivebase::ArcadeDrive(double fwd, double rot) {
-  //unnecessary
-  m_drive.ArcadeDrive(fwd, rot);
-}*/
+frc::Pose2d Drivebase::GetEstimatedPose() {
+  return m_poseEstimator.GetEstimatedPosition();
+}
+
+
 
 void Drivebase::TankDriveVolts(units::volt_t left, units::volt_t right) {
   /*This is a difference TRYING TO REPLICATE
@@ -225,5 +199,8 @@ void Drivebase::ResetOdometry(frc::Pose2d pose) {
   */
 }
 
-
+void Drivebase::UpdateEstimatedOdometry() {
+  m_poseEstimator.Update(m_gyro.GetRotation2d(), GetLeftDistance(),
+                         GetRightDistance());
+}
 

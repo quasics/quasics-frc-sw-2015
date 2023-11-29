@@ -11,8 +11,12 @@
 #include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
 #include <units/voltage.h>
-
+#include <frc/estimator/DifferentialDrivePoseEstimator.h>
+#include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include "Constants.h"
+#include "subsystems/PhotonLibVision.h"
+
 
 class Drivebase : public frc2::SubsystemBase {
  public:
@@ -84,6 +88,8 @@ class Drivebase : public frc2::SubsystemBase {
    */
   frc::Pose2d GetPose();
 
+  frc::Pose2d GetEstimatedPose();
+
   /**
    * Returns the current wheel speeds of the robot.
    *
@@ -97,6 +103,8 @@ class Drivebase : public frc2::SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   void ResetOdometry(frc::Pose2d pose);
+
+  void UpdateEstimatedOdometry();
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -142,6 +150,16 @@ class Drivebase : public frc2::SubsystemBase {
   ctre::phoenix::sensors::WPI_Pigeon2 m_gyro{SensorIds::PIDGEON_CAN_ID};
 
   // Odometry class for tracking robot pose
-    frc::DifferentialDriveOdometry m_odometry{
-      0_rad, 0_m, 0_m};
+  frc::DifferentialDriveOdometry m_odometry{
+    0_rad, 0_m, 0_m};
+
+    frc::DifferentialDriveKinematics m_kinematics{
+      units::meter_t{RobotPhysics::TRACK_WIDTH_INCHES_GLADYS}};
+
+  frc::DifferentialDrivePoseEstimator m_poseEstimator{
+    m_kinematics, m_gyro.GetRotation2d(), GetLeftDistance(),
+    GetRightDistance(), frc::Pose2d{}};
+
+  PhotonLibVision m_PhotonVision;
+
 };

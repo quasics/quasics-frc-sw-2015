@@ -144,34 +144,6 @@ bool PhotonLibVision::CalculateDistanceAndAnglesToTarget(
 
 std::optional<photonlib::EstimatedRobotPose>
 PhotonLibVision::UpdateFieldPosition(frc::Pose2d estimatedPose) {
-  // Transfered Everything into the h. file
-
-  // THIS STUFF CAN BE SUBSTITUTED WITH THE OFFICIAL APRIL TAG LAYOUT EVENTUALLY
-
-  /*
-  std::vector<frc::AprilTag> tags = {
-      {0, frc::Pose3d(units::meter_t(3), units::meter_t(3), units::meter_t(3),
-                      frc::Rotation3d())},
-      {1, frc::Pose3d(units::meter_t(5), units::meter_t(5), units::meter_t(5),
-                      frc::Rotation3d())}};
-
-
-  frc::AprilTagFieldLayout aprilTags(tags, 54_ft, 27_ft);
-  //DOWN TO HERE
-
-
-
-
-  frc::Transform3d robotToCam =
-      frc::Transform3d(frc::Translation3d(0.5_m, 0_m, 0.5_m),
-                       frc::Rotation3d(0_rad, 0_rad, 0_rad));
-
-
-  photonlib::PhotonPoseEstimator estimator(
-      aprilTags, photonlib::CLOSEST_TO_REFERENCE_POSE,
-      photonlib::PhotonCamera("USB_Camera"), robotToCam);
-
-  */
   estimator.SetReferencePose(frc::Pose3d(estimatedPose));
   return estimator.Update();
 };

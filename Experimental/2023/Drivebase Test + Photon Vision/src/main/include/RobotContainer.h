@@ -6,6 +6,8 @@
 
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <units/length.h>
 
 #include "Constants.h"
 #include "subsystems/Drivebase.h"
@@ -22,6 +24,15 @@ class RobotContainer {
   RobotContainer();
 
   frc2::CommandPtr GetAutonomousCommand();
+    
+  //frc2::CommandPtr DriveInALine(units::meter_t distance, bool reversed, Drivebase *drivebase);
+
+  frc2::CommandPtr DriveInALineUsingAprilTags(units::meter_t distance);
+
+    frc2::SequentialCommandGroup *DriveStraightLineAprilTag(
+      units::meter_t distance);
+
+  frc2::CommandPtr TestManualBuild();
 
   void AddTestButtonsOnSmartDashboard();
 
@@ -29,7 +40,7 @@ class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   // The robot's subsystems are defined here...
-  Drivebase m_drive;
+  Drivebase m_drivebase;
 
   void ConfigureBindings();
 };

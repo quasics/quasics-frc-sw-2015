@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-
 #include <frc2/command/CommandPtr.h>
+#include "subsystems/Drivebase.h"
 
 namespace autos {
 /**

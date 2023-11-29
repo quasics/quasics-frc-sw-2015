@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
 #include <units/dimensionless.h>
@@ -162,7 +163,15 @@ constexpr double kP = 0.29613;
 constexpr double kI = 0;
 constexpr double kD = 0;
 #endif
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 1.5_mps_sq;
 
+constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
+constexpr auto kRamseteZeta = 0.7 / 1_rad;
+
+constexpr units::length::meter_t TRACK_WIDTH_METERS_GLADYS = 0.559_m;
+const frc::DifferentialDriveKinematics kDriveKinematics(
+    TRACK_WIDTH_METERS_GLADYS);
 }  // namespace PathWeaverConstants
 
 namespace SelfBalancingConstants {

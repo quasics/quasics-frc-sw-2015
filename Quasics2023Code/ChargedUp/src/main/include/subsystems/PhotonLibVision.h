@@ -61,10 +61,15 @@ class PhotonLibVision : public frc2::SubsystemBase {
 
   std::vector<frc::AprilTag> tags = {
       {586, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())},
-      {-1, frc::Pose3d(0_in, -23.3_in, 17_in, frc::Rotation3d())},
+      {0, frc::Pose3d(60_in, 265.0_in, 20.5_in,
+                      frc::Rotation3d(0_deg, 0_deg, -90_deg))},
+      {1, frc::Pose3d(26.5_in, 253.0_in, 20.5_in,
+                      frc::Rotation3d(0_deg, 0_deg, -90_deg))},
       {585, frc::Pose3d(126_in, -62_in, 17_in,
                         frc::Rotation3d(0_deg, 0_deg, 180_deg))}};
+
   // REPLACE -1 WITH APRIL TAG ID. I DIDNT SEE ANOTHER 6 INCH PRINTED
+  // Reply (by matthew): done I added a new april tag id 0  on door
 
   // 4 inch april tag 583 at (0, 0, 19.1_in)
 
@@ -84,7 +89,7 @@ class PhotonLibVision : public frc2::SubsystemBase {
     // DOWN TO HERE
   */
   frc::Transform3d robotToCam =
-      frc::Transform3d(frc::Translation3d(0.0_m, 0_m, 0.0_m),
+      frc::Transform3d(frc::Translation3d(0.3048_m, 0_m, 0.0_m),
                        frc::Rotation3d(0_rad, 0_rad, 0_rad));
 
   photonlib::PhotonPoseEstimator estimator = photonlib::PhotonPoseEstimator(

@@ -44,14 +44,51 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    */
   public AbstractDrivebase(
       double trackWidthMeters, double kP, double kI, double kD, double kS, double kV) {
+    this(trackWidthMeters, kP, kI, kD, kS, kV, 0);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param trackWidthMeters  track width (from SysID using the "Drivetrain (Angular)" test)
+   * @param kP  kP value for PID control of motors
+   * @param kI  kI value for PID control of motors
+   * @param kD  kD value for PID control of motors
+   * @param kS  voltage needed to overcome the drive motors' static friction
+   * @param kV  voltage scaling value used to hold a given velocity
+   * @param kA  voltage scaling value used to hold a given acceleration
+   *
+   * @see
+   *     https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#the-permanent-magnet-dc-motor-feedforward-equation
+   * @see
+   *     https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
+   */
+  public AbstractDrivebase(
+      double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
     m_leftPIDController = new PIDController(kP, kI, kD);
     m_rightPIDController = new PIDController(kP, kI, kD);
-    m_feedforward = new SimpleMotorFeedforward(kS, kV);
+    m_feedforward = new SimpleMotorFeedforward(kS, kV, kA);
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
   }
 
   public DifferentialDriveKinematics getKinematics() {
     return m_kinematics;
+  }
+
+  public SimpleMotorFeedforward getMotorFeedforward() {
+    return m_feedforward;
+  }
+
+  public double getKP() {
+    return m_leftPIDController.getP();
+  }
+
+  public double getKI() {
+    return m_leftPIDController.getI();
+  }
+
+  public double getKD() {
+    return m_leftPIDController.getD();
   }
 
   /** @return current wheel speeds (in m/s) */
@@ -77,6 +114,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     getRightEncoder().reset();
     getOdometry().resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition(),
         getRightEncoder().getPosition(), pose);
+  }
+
+  public final void stop() {
+    arcadeDrive(0, 0);
   }
 
   /**

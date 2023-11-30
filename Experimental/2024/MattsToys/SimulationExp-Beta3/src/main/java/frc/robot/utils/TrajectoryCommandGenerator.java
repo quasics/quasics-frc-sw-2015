@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.AbstractDrivebase;
 import java.io.File;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -31,55 +31,6 @@ public class TrajectoryCommandGenerator {
    * "voltage sag" due to current draw.
    */
   public static final double MAX_VOLTAGE = 10;
-
-  /// Drive profile settings, generally obtained from the FRC characterization
-  /// tool (SysID, in 2022).
-  public static class DriveProfileData {
-    public DriveProfileData(double kS, double kV, double kA) {
-      this.kS = kS;
-      this.kV = kV;
-      this.kA = kA;
-    }
-
-    public final double kS; // units::voltage::volt_t
-    public final double kV; // VoltSecondsPerMeter
-    public final double kA; // VoltSecondsSquaredPerMeter
-  }
-
-  /// PID configuration settings, to control error correction.
-  public static class PIDConfig {
-    public PIDConfig(double p) {
-      this(p, 0, 0);
-    }
-
-    public PIDConfig(double p, double i, double d) {
-      this.kP = p;
-      this.kI = i;
-      this.kD = d;
-    }
-
-    public final double kP; /// < proportional coefficient for PID (from the characterization tool)
-    public final double kI; /// < integral coefficient for PID
-    public final double kD; /// < derivative coefficient for PID (from the characterization tool)
-  };
-
-  /// Defines maximum speed/acceleration for the trajectory.
-  ///
-  /// Note that the default values are fairly low; we'll likely
-  /// want use something larger for real code.
-  public class SpeedProfile {
-    public SpeedProfile() {
-      this(0.5, 0.5);
-    }
-
-    public SpeedProfile(double maxV, double maxA) {
-      maxVelocity = maxV;
-      maxAcceleration = maxA;
-    }
-
-    final double maxVelocity; // MetersPerSecond
-    final double maxAcceleration; // MetersPerSecondSquared
-  };
 
   /// Values controlling for a RAMSETE follower in units of meters and
   /// seconds.
@@ -98,64 +49,55 @@ public class TrajectoryCommandGenerator {
   };
 
   private final AbstractDrivebase m_drive;
-  private final DriveProfileData m_profileData;
-  private final PIDConfig m_pidConfig;
 
-  TrajectoryCommandGenerator(
-      AbstractDrivebase driveBase, DriveProfileData profileData, PIDConfig pidConfig) {
+  public TrajectoryCommandGenerator(AbstractDrivebase driveBase) {
     this.m_drive = driveBase;
-    this.m_profileData = profileData;
-    this.m_pidConfig = pidConfig;
   }
 
   public SequentialCommandGroup generateCommandFromPathWeaverFile(
-      SpeedProfile speedProfile, String jsonFileName, boolean resetTelemetryAtStart) {
+      String jsonFileName, boolean resetTelemetryAtStart) {
     File pathsDirectory = new File(Filesystem.getDeployDirectory(), "paths");
     File jsonFile = new File(pathsDirectory, jsonFileName);
     Trajectory trajectory;
     try {
       trajectory = TrajectoryUtil.fromPathweaverJson(jsonFile.toPath());
-      return GenerateCommandForTrajectory(m_drive, m_profileData, m_pidConfig, trajectory,
-          resetTelemetryAtStart, new RamseteConfig());
+      return GenerateCommandForTrajectory(
+          m_drive, trajectory, resetTelemetryAtStart, new RamseteConfig());
     } catch (IOException e) {
       e.printStackTrace();
       return null;
     }
   }
 
-  public SequentialCommandGroup generateCommand(SpeedProfile speedProfile, Pose2d start,
-      Vector<Translation2d> interiorWaypoints, Pose2d end, boolean resetTelemetryAtStart) {
-    return GenerateCommandFromDiscreteSegments(m_drive, m_profileData, m_pidConfig, speedProfile,
-        start, interiorWaypoints, end, resetTelemetryAtStart, new RamseteConfig());
+  public SequentialCommandGroup generateCommand(TrajectoryConfig speedConfig, Pose2d start,
+      List<Translation2d> interiorWaypoints, Pose2d end, boolean resetTelemetryAtStart) {
+    return GenerateCommandFromDiscreteSegments(m_drive, speedConfig, start, interiorWaypoints, end,
+        resetTelemetryAtStart, new RamseteConfig());
   }
 
   private static SequentialCommandGroup GenerateCommandFromDiscreteSegments(AbstractDrivebase drive,
-      DriveProfileData driveProfile, PIDConfig pidConfig, SpeedProfile speedProfile, Pose2d start,
-      Vector<Translation2d> interiorWaypoints, Pose2d end, boolean resetTelemetryAtStart,
-      RamseteConfig ramseteConfig) {
+      TrajectoryConfig trajectoryConfig, Pose2d start, List<Translation2d> interiorWaypoints,
+      Pose2d end, boolean resetTelemetryAtStart, RamseteConfig ramseteConfig) {
     final DifferentialDriveKinematics kDriveKinematics = drive.getKinematics();
 
-    final SimpleMotorFeedforward feedForward =
-        new SimpleMotorFeedforward(driveProfile.kS, driveProfile.kV, driveProfile.kA);
+    final SimpleMotorFeedforward feedForward = drive.getMotorFeedforward();
     final DifferentialDriveVoltageConstraint voltageConstraints =
         new DifferentialDriveVoltageConstraint(feedForward, kDriveKinematics, MAX_VOLTAGE);
 
-    final TrajectoryConfig config =
-        new TrajectoryConfig(speedProfile.maxVelocity, speedProfile.maxAcceleration);
-    config.setKinematics(kDriveKinematics);
-    config.addConstraint(voltageConstraints);
+    TrajectoryConfig actualTrajectoryConfig = new TrajectoryConfig(
+        trajectoryConfig.getMaxVelocity(), trajectoryConfig.getMaxAcceleration());
+    actualTrajectoryConfig.setKinematics(kDriveKinematics);
+    actualTrajectoryConfig.addConstraint(voltageConstraints);
 
-    var trajectory = TrajectoryGenerator.generateTrajectory(start, interiorWaypoints, end, config);
+    var trajectory = TrajectoryGenerator.generateTrajectory(
+        start, interiorWaypoints, end, actualTrajectoryConfig);
 
-    return GenerateCommandForTrajectory(
-        drive, driveProfile, pidConfig, trajectory, resetTelemetryAtStart, ramseteConfig);
+    return GenerateCommandForTrajectory(drive, trajectory, resetTelemetryAtStart, ramseteConfig);
   }
 
   static SequentialCommandGroup GenerateCommandForTrajectory(AbstractDrivebase drive,
-      DriveProfileData driveProfile, PIDConfig pidConfig, Trajectory trajectory,
-      boolean resetTelemetryAtStart, RamseteConfig ramseteConfig) {
-    final SimpleMotorFeedforward feedForward =
-        new SimpleMotorFeedforward(driveProfile.kS, driveProfile.kV, driveProfile.kA);
+      Trajectory trajectory, boolean resetTelemetryAtStart, RamseteConfig ramseteConfig) {
+    final SimpleMotorFeedforward feedForward = drive.getMotorFeedforward();
     final Supplier<Pose2d> poseSupplier = () -> {
       return drive.getPose();
     };
@@ -165,12 +107,13 @@ public class TrajectoryCommandGenerator {
     final BiConsumer<Double, Double> motorVoltageConsumer = (var left, var right) -> {
       drive.setMotorVoltages(left, right);
     };
+    final double kP = drive.getKP();
+    final double kI = drive.getKI();
+    final double kD = drive.getKD();
     RamseteCommand ramseteCommand = new RamseteCommand(trajectory, poseSupplier,
         new RamseteController(ramseteConfig.kRamseteB, ramseteConfig.kRamseteZeta), feedForward,
-        drive.getKinematics(), wheelSpeedSupplier,
-        new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD),
-        new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD), motorVoltageConsumer,
-        (Subsystem) drive);
+        drive.getKinematics(), wheelSpeedSupplier, new PIDController(kP, kI, kD),
+        new PIDController(kP, kI, kD), motorVoltageConsumer, (Subsystem) drive);
 
     return new SequentialCommandGroup(new InstantCommand(() -> {
       if (resetTelemetryAtStart) {

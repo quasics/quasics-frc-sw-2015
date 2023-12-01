@@ -8,6 +8,9 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <units/angular_velocity.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
 
 #include <numbers>
 
@@ -49,10 +52,13 @@ class IDrivebase {
   }
   virtual ~IDrivebase() = default;
 
-  void arcadeDrive(double xPower, double rotationPower);
+  void arcadeDrive(units::meters_per_second_t xSpeed,
+                   units::radians_per_second_t rot) {
+    setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+  }
 
   void stop() {
-    arcadeDrive(0, 0);
+    arcadeDrive(0_mps, 0_rad_per_s);
   }
 
   const frc::DifferentialDriveKinematics& getKinematics() {
@@ -75,6 +81,17 @@ class IDrivebase {
     return m_leftPIDController->GetD();
   }
 
+  void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+    auto leftFeedforward = m_feedforward->Calculate(speeds.left);
+    auto rightFeedforward = m_feedforward->Calculate(speeds.right);
+    double leftOutput = m_leftPIDController->Calculate(
+        getLeftEncoder().getVelocity().value(), speeds.left.value());
+    double rightOutput = m_rightPIDController->Calculate(
+        getRightEncoder().getVelocity().value(), speeds.right.value());
+    setMotorVoltages(units::volt_t{leftOutput} + leftFeedforward,
+                     units::volt_t{rightOutput} + rightFeedforward);
+  }
+
   /** @return current wheel speeds (in m/s) */
   frc::DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return frc::DifferentialDriveWheelSpeeds{getLeftEncoder().getVelocity(),
@@ -94,7 +111,7 @@ class IDrivebase {
   }
 
   /** Resets robot odometry. */
-  void resetOdometry(frc::Pose2d pose) {
+  virtual void resetOdometry(frc::Pose2d pose) {
     getLeftEncoder().reset();
     getRightEncoder().reset();
     getOdometry().ResetPosition(getGyro().getRotation2d(),
@@ -108,7 +125,8 @@ class IDrivebase {
   virtual void Periodic();
 
  protected:
-  virtual void setMotorVoltages(double leftPower, double rightPower) = 0;
+  virtual void setMotorVoltages(units::volt_t leftPower,
+                                units::volt_t rightPower) = 0;
 
   virtual frc::DifferentialDriveOdometry& getOdometry() = 0;
 

@@ -25,7 +25,8 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
   }
 
  protected:
-  void setMotorVoltages(double leftPower, double rightPower) override {
+  void setMotorVoltages(units::volt_t leftPower,
+                        units::volt_t rightPower) override {
     // TODO: implement this
   }
 

@@ -19,11 +19,12 @@
 
 class IDrivebase {
  public:
-  /** Maximum linear speed is 3 meters per second. */
-  static constexpr double MAX_SPEED = 3.0;
+  /** Maximum linear speed. */
+  static constexpr units::meters_per_second_t MAX_SPEED{3.0};
 
   /** Maximum rotational speed is 1/2 rotation per second. */
-  static constexpr double MAX_ANGULAR_SPEED = std::numbers::pi;
+  static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
+      std::numbers::pi};
 
   using SimpleMotorFeedforward = frc::SimpleMotorFeedforward<units::meters>;
   using kv_unit = SimpleMotorFeedforward::kv_unit;

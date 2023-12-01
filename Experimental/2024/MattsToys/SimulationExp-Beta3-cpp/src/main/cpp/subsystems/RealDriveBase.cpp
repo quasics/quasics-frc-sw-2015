@@ -17,4 +17,5 @@ RealDriveBase::RealDriveBase()
       m_odometry{m_trivialGyro->getRotation2d(),
                  m_leftTrivialEncoder->getPosition(),
                  m_rightTrivialEncoder->getPosition()} {
+  SetName("RealDriveBase");
 }

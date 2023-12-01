@@ -7,7 +7,16 @@
 #include <frc2/command/Commands.h>
 #include <frc2/command/FunctionalCommand.h>
 
+#include "Robot.h"
+#include "subsystems/SimulatedDriveBase.h"
+
 RobotContainer::RobotContainer() {
+  if (Robot::IsReal()) {
+    // Configure real drive base
+  } else {
+    // Configure simulation drive base
+    m_drivebase.reset(new SimulatedDriveBase);
+  }
   ConfigureBindings();
 }
 

@@ -7,6 +7,7 @@
 #include <frc2/command/CommandPtr.h>
 
 #include "Constants.h"
+#include "subsystems/IDrivebase.h"
 #include "subsystems/Lighting.h"
 
 class RobotContainer {
@@ -20,4 +21,5 @@ class RobotContainer {
 
  private:
   Lighting m_lighting{LedConstants::LED_PWM_PORT, LedConstants::LED_STRIP_SIZE};
+  std::unique_ptr<IDrivebase> m_drivebase;
 };

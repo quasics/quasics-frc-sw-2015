@@ -4,7 +4,12 @@
 
 #pragma once
 
+#include <units/acceleration.h>
+#include <units/angle.h>
+#include <units/dimensionless.h>
 #include <units/length.h>
+#include <units/time.h>
+#include <units/voltage.h>
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -50,6 +55,51 @@ namespace SparkMax {
   constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
 }
 }
+
+namespace OperatorInterface {
+    constexpr int DRIVER_JOYSTICK = 0;
+
+    using RateLimit = units::unit_t<
+    units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+
+    /** Limit on robot acceleration. */
+constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
+
+namespace LogitechGamePad {
+  // Axes - Used with the "getRawAxis()" function to access the data for the
+  // individual sticks on the controller (e.g., for "tank drive" coding).
+  //
+  // Note: these values assume that the switch on the bottom of the Logitech
+  // controller is in the "D" position.
+  //
+  // If the switch is in the "D" position, the controller will enumerate as a
+  // Logitech Dualshock controller, the right joystick X/Y axes are 2and 3,
+  // respectively, and the left and right triggers show up as *buttons* 7 and 8.
+  //
+  // If the switch is in the "X" position, it will enumerate as a Logitech
+  // Gamepad F310. In this mode, the right joystick X/Y axes are 4 and 5,
+  // respectively, and the left and right triggers on the front enumerate as
+  // joysticks 2 and 3.
+  constexpr int LEFT_X_AXIS = 0;
+  constexpr int LEFT_Y_AXIS = 1;
+  constexpr int RIGHT_X_AXIS = 2;
+  constexpr int RIGHT_Y_AXIS = 3;
+
+  // Buttons
+  constexpr int A_BUTTON = 2;  // Labeled "2" on some controllers
+  constexpr int B_BUTTON = 3;  // Labeled "3" on some controllers
+  constexpr int X_BUTTON = 1;  // Labeled "1" on some controllers
+  constexpr int Y_BUTTON = 4;  // Labeled "4" on some controllers
+  constexpr int LEFTSHOULDER = 5;
+  constexpr int RIGHTSHOULDER = 6;
+  constexpr int LEFT_TRIGGER = 7;
+  constexpr int RIGHT_TRIGGER = 8;
+  constexpr int BACK_BUTTON = 9;
+  constexpr int START_BUTTON = 10;
+  constexpr int LEFT_STICK_PRESS = 11;
+  constexpr int RIGHT_STICK_PRESS = 12;
+}  // namespace LogitechGamePad
+}  // namespace OperatorInterface
 
 namespace OperatorConstants {
 

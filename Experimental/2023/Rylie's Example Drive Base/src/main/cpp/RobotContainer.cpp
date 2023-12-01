@@ -5,28 +5,58 @@
 #include "RobotContainer.h"
 
 #include <frc2/command/button/Trigger.h>
+#include <frc/Joystick.h>
 
+#include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/ExampleCommand.h"
+#include "commands/TankDrive.h"
 
-RobotContainer::RobotContainer() {
+RobotContainer::RobotContainer() : m_leftSlewRateLimiter{1 / 1_s},
+      m_rightSlewRateLimiter{1 / 1_s}{
   // Initialize all of your commands and subsystems here
 
   // Configure the button bindings
   ConfigureBindings();
+  SetDefaultArcadeDrive();
+}
+
+void::RobotContainer::SetDefaultTankDrive(){
+  TankDrive tankDrive{
+    &m_drivebase,
+    [this] {
+      double joystickValue;
+      joystickValue = -1 * m_driverStick.GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+      return m_leftSlewRateLimiter.Calculate(joystickValue);
+    },
+    [this] {
+      double joystickValue;
+      joystickValue = -1 * m_driverStick.GetRawAxis(OperatorInterface::LogitechGamePad::RIGHT_Y_AXIS);
+      return m_rightSlewRateLimiter.Calculate(joystickValue);
+    }
+  };
+  m_drivebase.SetDefaultCommand(tankDrive);
+}
+
+void RobotContainer::SetDefaultArcadeDrive(){
+  ArcadeDrive arcadeDrive{
+ &m_drivebase,
+    [this] {
+      double joystickValue;
+      joystickValue = -1 * m_driverStick.GetRawAxis(OperatorInterface::LogitechGamePad::LEFT_Y_AXIS);
+      return m_leftSlewRateLimiter.Calculate(joystickValue);
+    },
+    [this] {
+      double joystickValue;
+      joystickValue = -1 * m_driverStick.GetRawAxis(OperatorInterface::LogitechGamePad::RIGHT_X_AXIS);
+      return m_rightSlewRateLimiter.Calculate(joystickValue);
+    }
+};
+m_drivebase.SetDefaultCommand(arcadeDrive);
 }
 
 void RobotContainer::ConfigureBindings() {
-  // Configure your trigger bindings here
 
-  // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  frc2::Trigger([this] {
-    return m_subsystem.ExampleCondition();
-  }).OnTrue(ExampleCommand(&m_subsystem).ToPtr());
-
-  // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
-  // pressed, cancelling on release.
-  m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

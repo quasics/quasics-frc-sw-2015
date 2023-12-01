@@ -8,11 +8,13 @@
 #include <frc2/command/FunctionalCommand.h>
 
 #include "Robot.h"
+#include "subsystems/RealDriveBase.h"
 #include "subsystems/SimulatedDriveBase.h"
 
 RobotContainer::RobotContainer() {
   if (Robot::IsReal()) {
     // Configure real drive base
+    m_drivebase.reset(new RealDriveBase);
   } else {
     // Configure simulation drive base
     m_drivebase.reset(new SimulatedDriveBase);

@@ -120,6 +120,15 @@ class IDrivebase {
                                 getRightEncoder().getPosition(), pose);
   }
 
+  frc2::Subsystem& asFrcSubsystem() {
+    // Note that I need to do the "dynamic_cast" below in order to safely
+    // convert types between the custom "IDrivebase" interface that the smart
+    // pointer knows about and a "Subsystem" type that exposes the
+    // "SetDefaultCommand" method that we want to use.  (In Java, this
+    // hoop-jumping isn't needed.)
+    return dynamic_cast<frc2::Subsystem&>(*this);
+  }
+
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */

@@ -19,6 +19,22 @@
 #include "sensors/IGyro.h"
 #include "sensors/TrivialEncoder.h"
 
+/**
+ * Constructor.
+ *
+ * @param trackWidthMeters  track width (from SysID using the "Drivetrain
+ * (Angular)" test)
+ * @param kP  kP value for PID control of motors
+ * @param kI  kI value for PID control of motors
+ * @param kD  kD value for PID control of motors
+ * @param kS  voltage needed to overcome the drive motors' static friction
+ * @param kV  voltage scaling value used to hold at a given velocity
+ *
+ * @see
+ *     https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#the-permanent-magnet-dc-motor-feedforward-equation
+ * @see
+ *     https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
+ */
 class IDrivebase {
  public:
   /** Maximum linear speed. */

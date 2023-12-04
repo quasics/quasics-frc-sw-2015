@@ -8,6 +8,7 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Subsystem.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
@@ -84,14 +85,29 @@ class IDrivebase {
   }
 
   void setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+    // Compute the basic voltages we'd need for the desired speeds.
     auto leftFeedforward = m_feedforward->Calculate(speeds.left);
     auto rightFeedforward = m_feedforward->Calculate(speeds.right);
+
+    // Compute a delta, based on current/historical data.
     double leftOutput = m_leftPIDController->Calculate(
         getLeftEncoder().getVelocity().value(), speeds.left.value());
     double rightOutput = m_rightPIDController->Calculate(
         getRightEncoder().getVelocity().value(), speeds.right.value());
-    setMotorVoltages(units::volt_t{leftOutput} + leftFeedforward,
-                     units::volt_t{rightOutput} + rightFeedforward);
+
+    // Sum the values to get left/right *actual* voltages needed.
+    const auto leftVoltage = units::volt_t{leftOutput} + leftFeedforward;
+    const auto rightVoltage = units::volt_t{rightOutput} + rightFeedforward;
+    setMotorVoltages(leftVoltage, rightVoltage);
+
+    // Optional logging of speed data to SmartDashboard.
+    constexpr bool LOG_SPEED_DATA = false;
+    if (LOG_SPEED_DATA) {
+      frc::SmartDashboard::PutNumber("Left speed", speeds.left.value());
+      frc::SmartDashboard::PutNumber("Right speed", speeds.right.value());
+      frc::SmartDashboard::PutNumber("Left volts", leftVoltage.value());
+      frc::SmartDashboard::PutNumber("Right volts", rightVoltage.value());
+    }
   }
 
   /** @return current wheel speeds (in m/s) */

@@ -5,6 +5,7 @@
 #include "subsystems/SimulatedDriveBase.h"
 
 #include <frc/RobotController.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 // Gains are for example purposes only - must be determined for your own
 // robot!
@@ -21,6 +22,27 @@ SimulatedDriveBase::SimulatedDriveBase()
     : IDrivebase(SIMULATED_TRACK_WIDTH_METERS, kP, kI, kD, kS, kV, kA),
       m_odometry{frc::Rotation2d(), units::meter_t(0), units::meter_t(0)} {
   SetName("SimulatedDriveBase");
+  m_gyro.Reset();
+
+  // We need to invert one side of the drivetrain so that positive voltages
+  // result in both sides moving forward. Depending on how your robot's
+  // gearbox is constructed, you might have to invert the left side instead.
+  m_rightGroup.SetInverted(true);
+
+  // Set the distance per pulse for the drive encoders. We can simply use the
+  // distance traveled for one rotation of the wheel divided by the encoder
+  // resolution.
+  m_leftEncoder.SetDistancePerPulse(2 * std::numbers::pi * kWheelRadius /
+                                    kEncoderResolution);
+  m_rightEncoder.SetDistancePerPulse(2 * std::numbers::pi * kWheelRadius /
+                                     kEncoderResolution);
+
+  m_leftEncoder.Reset();
+  m_rightEncoder.Reset();
+
+  m_rightGroup.SetInverted(true);
+
+  frc::SmartDashboard::PutData("Field", &m_fieldSim);
 }
 
 void SimulatedDriveBase::SimulationPeriodic() {

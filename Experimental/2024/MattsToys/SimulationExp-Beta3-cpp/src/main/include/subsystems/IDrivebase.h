@@ -8,6 +8,7 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
+#include <frc2/command/Subsystem.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 #include <units/voltage.h>

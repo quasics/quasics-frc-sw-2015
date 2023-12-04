@@ -38,10 +38,6 @@ void RobotContainer::ConfigureBindings() {
   m_lighting.SetDefaultCommand(std::move(lightingExample));
 
   ArcadeDriveCommand arcadeDrive(*m_drivebase, m_controller);
-  // Note that I need to do the "dynamic_cast" below in order to safely convert
-  // types between the custom "IDrivebase" interface that the smart pointer
-  // knows about and a "Subsystem" type that exposes the "SetDefaultCommand"
-  // method that we want to use.
   m_drivebase->asFrcSubsystem().SetDefaultCommand(std::move(arcadeDrive));
 }
 

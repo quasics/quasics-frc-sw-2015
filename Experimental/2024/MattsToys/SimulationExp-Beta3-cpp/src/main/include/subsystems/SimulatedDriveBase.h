@@ -53,8 +53,7 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
   }
 
   IGyro& getGyro() override {
-    // TODO: Implement this
-    return IGyro::getNullGyro();
+    return *m_iGyro;
   }
 
  private:

@@ -26,9 +26,7 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
 
  protected:
   void setMotorVoltages(units::volt_t leftPower,
-                        units::volt_t rightPower) override {
-    // TODO: implement this
-  }
+                        units::volt_t rightPower) override;
 
   frc::DifferentialDriveOdometry& getOdometry() override {
     return m_odometry;
@@ -47,6 +45,15 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
   }
 
  private:
+  void configureEncoders();
+
+  void resetEncoders() {
+    m_leftFrontEncoder.SetPosition(0);
+    m_leftBackEncoder.SetPosition(0);
+    m_rightFrontEncoder.SetPosition(0);
+    m_rightBackEncoder.SetPosition(0);
+  }
+
   rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
@@ -62,15 +69,13 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
   rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
 
-  std::unique_ptr<frc::MotorControllerGroup> m_leftSide;
-  std::unique_ptr<frc::MotorControllerGroup> m_rightSide;
+  frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};
+  frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       FunctionalTrivialEncoder::forRevEncoder(m_leftFrontEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       FunctionalTrivialEncoder::forRevEncoder(m_rightFrontEncoder)};
-
-  std::unique_ptr<frc::DifferentialDrive> m_drive;
 
   frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
   std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};

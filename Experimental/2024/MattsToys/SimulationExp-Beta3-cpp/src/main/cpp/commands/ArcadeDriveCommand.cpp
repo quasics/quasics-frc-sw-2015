@@ -34,7 +34,7 @@ void ArcadeDriveCommand::updateSpeeds() {
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const units::meters_per_second_t xSpeed =
-      -m_speedLimiter.Calculate(m_controller.GetLeftY()) *
+      -m_speedLimiter.Calculate(m_controller.GetRawAxis(0)) *
       IDrivebase::MAX_SPEED;
 
   // Get the rate of angular rotation. We are inverting this because we want a
@@ -42,7 +42,7 @@ void ArcadeDriveCommand::updateSpeeds() {
   // mathematics). Xbox controllers return positive values when you pull to
   // the right by default.
   const units::radians_per_second_t rot =
-      -m_rotLimiter.Calculate(m_controller.GetRightX()) *
+      -m_rotLimiter.Calculate(m_controller.GetRawAxis(1)) *
       IDrivebase::MAX_ANGULAR_SPEED;
 
   m_drivebase.arcadeDrive(xSpeed, rot);

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/XboxController.h>
 #include <frc2/command/CommandPtr.h>
 
 #include "Constants.h"
@@ -20,6 +21,8 @@ class RobotContainer {
   void ConfigureBindings();
 
  private:
+  frc::XboxController m_controller{0};
+
   Lighting m_lighting{LedConstants::LED_PWM_PORT, LedConstants::LED_STRIP_SIZE};
   std::unique_ptr<IDrivebase> m_drivebase;
 };

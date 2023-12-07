@@ -35,11 +35,12 @@ bool ArcadeDriveCommand::IsFinished() {
 
 void ArcadeDriveCommand::updateSpeeds() {
   const bool isReal = frc::RobotBase::IsReal();
+  // TODO: add deadband code.
   const double leftStickValue =
       isReal ? m_controller.GetLeftX() : m_controller.GetRawAxis(0);
   const double rightStickValue =
       isReal ? m_controller.GetRightY() : m_controller.GetRawAxis(1);
-
+  
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const units::meters_per_second_t xSpeed =

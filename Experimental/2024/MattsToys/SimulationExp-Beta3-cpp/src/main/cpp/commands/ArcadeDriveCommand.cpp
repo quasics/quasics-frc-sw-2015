@@ -4,6 +4,9 @@
 
 #include "commands/ArcadeDriveCommand.h"
 
+#include <frc/RobotBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 ArcadeDriveCommand::ArcadeDriveCommand(IDrivebase& drivebase,
                                        frc::XboxController& controller)
     : m_drivebase(drivebase), m_controller(controller) {
@@ -31,19 +34,28 @@ bool ArcadeDriveCommand::IsFinished() {
 }
 
 void ArcadeDriveCommand::updateSpeeds() {
+  const bool isReal = frc::RobotBase::IsReal();
+  const double leftStickValue =
+      isReal ? m_controller.GetLeftX() : m_controller.GetRawAxis(0);
+  const double rightStickValue =
+      isReal ? m_controller.GetRightY() : m_controller.GetRawAxis(1);
+
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const units::meters_per_second_t xSpeed =
-      -m_speedLimiter.Calculate(m_controller.GetRawAxis(0)) *
-      IDrivebase::MAX_SPEED;
+      -m_speedLimiter.Calculate(leftStickValue) * IDrivebase::MAX_SPEED;
 
   // Get the rate of angular rotation. We are inverting this because we want a
   // positive value when we pull to the left (remember, CCW is positive in
   // mathematics). Xbox controllers return positive values when you pull to
   // the right by default.
   const units::radians_per_second_t rot =
-      -m_rotLimiter.Calculate(m_controller.GetRawAxis(1)) *
-      IDrivebase::MAX_ANGULAR_SPEED;
+      -m_rotLimiter.Calculate(rightStickValue) * IDrivebase::MAX_ANGULAR_SPEED;
+
+  frc::SmartDashboard::PutNumber("Left stick", leftStickValue);
+  frc::SmartDashboard::PutNumber("Right stick", rightStickValue);
+  frc::SmartDashboard::PutNumber("Forward speed", xSpeed.value());
+  frc::SmartDashboard::PutNumber("Rotation speed", rot.value());
 
   m_drivebase.arcadeDrive(xSpeed, rot);
 }

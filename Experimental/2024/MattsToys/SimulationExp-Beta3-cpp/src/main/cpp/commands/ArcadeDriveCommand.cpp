@@ -10,7 +10,7 @@
 ArcadeDriveCommand::ArcadeDriveCommand(IDrivebase& drivebase,
                                        frc::XboxController& controller)
     : m_drivebase(drivebase), m_controller(controller) {
-  AddRequirements(dynamic_cast<frc2::Subsystem*>(&m_drivebase));
+  AddRequirements(&m_drivebase.asFrcSubsystem());
 }
 
 // Called when the command is initially scheduled.

@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <frc/XboxController.h>
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
@@ -13,9 +12,13 @@
 
 class ArcadeDriveCommand
     : public frc2::CommandHelper<frc2::Command, ArcadeDriveCommand> {
+ public:
+  typedef std::function<double()> PercentSupplier;
+
  private:
   IDrivebase& m_drivebase;
-  frc::XboxController& m_controller;
+  PercentSupplier m_forwardSupplier;
+  PercentSupplier m_rotationSupplier;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
@@ -23,7 +26,8 @@ class ArcadeDriveCommand
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{3 / 1_s};
 
  public:
-  ArcadeDriveCommand(IDrivebase& drivebase, frc::XboxController& controller);
+  ArcadeDriveCommand(IDrivebase& drivebase, PercentSupplier forwardSupplier,
+                     PercentSupplier rotationSupplier);
 
   void Initialize() override;
 

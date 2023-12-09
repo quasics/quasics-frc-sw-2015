@@ -11,6 +11,7 @@
 #include "commands/ArcadeDriveCommand.h"
 #include "subsystems/RealDriveBase.h"
 #include "subsystems/SimulatedDriveBase.h"
+#include "utils/DeadBandEnforcer.h"
 
 RobotContainer::RobotContainer() {
   if (Robot::IsReal()) {
@@ -37,7 +38,22 @@ void RobotContainer::ConfigureBindings() {
       {&m_lighting});
   m_lighting.SetDefaultCommand(std::move(lightingExample));
 
-  ArcadeDriveCommand arcadeDrive(*m_drivebase, m_controller);
+  // Set up arcade drive command as a default.
+  const bool isReal = frc::RobotBase::IsReal();
+  static DeadBandEnforcer stickDeadBand(-0.01);
+  ArcadeDriveCommand::PercentSupplier forwardSupplier =
+      // Note: "=" says automatically capture (copies of) any variables
+      // referenced; "this" needs to be explicitly captured.
+      [=, this]() {
+        return stickDeadBand(isReal ? m_controller.GetLeftX()
+                                    : m_controller.GetRawAxis(0));
+      };
+  ArcadeDriveCommand::PercentSupplier rotationSupplier = [=, this]() {
+    return stickDeadBand(isReal ? m_controller.GetRightX()
+                                : m_controller.GetRawAxis(1));
+  };
+  ArcadeDriveCommand arcadeDrive(*m_drivebase, forwardSupplier,
+                                 rotationSupplier);
   m_drivebase->asFrcSubsystem().SetDefaultCommand(std::move(arcadeDrive));
 }
 

@@ -8,8 +8,11 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 ArcadeDriveCommand::ArcadeDriveCommand(IDrivebase& drivebase,
-                                       frc::XboxController& controller)
-    : m_drivebase(drivebase), m_controller(controller) {
+                                       PercentSupplier forwardSupplier,
+                                       PercentSupplier rotationSupplier)
+    : m_drivebase(drivebase),
+      m_forwardSupplier(forwardSupplier),
+      m_rotationSupplier(rotationSupplier) {
   AddRequirements(&m_drivebase.asFrcSubsystem());
 }
 
@@ -35,12 +38,9 @@ bool ArcadeDriveCommand::IsFinished() {
 
 void ArcadeDriveCommand::updateSpeeds() {
   const bool isReal = frc::RobotBase::IsReal();
-  // TODO: add deadband code.
-  const double leftStickValue =
-      isReal ? m_controller.GetLeftX() : m_controller.GetRawAxis(0);
-  const double rightStickValue =
-      isReal ? m_controller.GetRightY() : m_controller.GetRawAxis(1);
-  
+  const double leftStickValue = m_forwardSupplier();
+  const double rightStickValue = m_rotationSupplier();
+
   // Get the x speed. We are inverting this because Xbox controllers return
   // negative values when we push forward.
   const units::meters_per_second_t xSpeed =

@@ -27,7 +27,7 @@ SimulatedDriveBase::SimulatedDriveBase()
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
-  m_rightGroup.SetInverted(true);
+  m_rightMotor.SetInverted(true);
 
   // Set the distance per pulse for the drive encoders. We can simply use the
   // distance traveled for one rotation of the wheel divided by the encoder
@@ -40,7 +40,7 @@ SimulatedDriveBase::SimulatedDriveBase()
   m_leftEncoder.Reset();
   m_rightEncoder.Reset();
 
-  m_rightGroup.SetInverted(true);
+  m_rightMotor.SetInverted(true);
 
   frc::SmartDashboard::PutData("Field", &m_fieldSim);
 }
@@ -50,9 +50,9 @@ void SimulatedDriveBase::SimulationPeriodic() {
   // simulation, and write the simulated positions and velocities to our
   // simulated encoder and gyro. We negate the right side so that positive
   // voltages make the right side move forward.
-  m_drivetrainSimulator.SetInputs(units::volt_t{m_leftGroup.Get()} *
+  m_drivetrainSimulator.SetInputs(units::volt_t{m_leftMotor.Get()} *
                                       frc::RobotController::GetInputVoltage(),
-                                  units::volt_t{m_rightGroup.Get()} *
+                                  units::volt_t{m_rightMotor.Get()} *
                                       frc::RobotController::GetInputVoltage());
   m_drivetrainSimulator.Update(20_ms);
 

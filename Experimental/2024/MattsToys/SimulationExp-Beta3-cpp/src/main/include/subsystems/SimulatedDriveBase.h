@@ -36,8 +36,8 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
  protected:
   void setMotorVoltages(units::volt_t leftPower,
                         units::volt_t rightPower) override {
-    m_leftGroup.SetVoltage(leftPower);
-    m_rightGroup.SetVoltage(rightPower);
+    m_leftMotor.SetVoltage(leftPower);
+    m_rightMotor.SetVoltage(rightPower);
   }
 
   frc::DifferentialDriveOdometry& getOdometry() override {
@@ -61,11 +61,9 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
   static constexpr double kWheelRadius = 0.0508;  // meters
   static constexpr int kEncoderResolution = 4096;
 
+  // Note that we'll simply simulate 1 motor on each side.
   frc::PWMSparkMax m_leftMotor{1};
   frc::PWMSparkMax m_rightMotor{3};
-
-  frc::MotorControllerGroup m_leftGroup{m_leftMotor};
-  frc::MotorControllerGroup m_rightGroup{m_rightMotor};
 
   frc::Encoder m_leftEncoder{0, 1};
   frc::Encoder m_rightEncoder{2, 3};

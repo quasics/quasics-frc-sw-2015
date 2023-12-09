@@ -18,7 +18,7 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
  public:
   SimulatedDriveBase();
 
-  virtual void resetOdometry(frc::Pose2d pose) {
+  virtual void resetOdometry(frc::Pose2d pose) override {
     IDrivebase::resetOdometry(pose);
     m_drivetrainSimulator.SetPose(pose);
   }
@@ -61,13 +61,11 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
   static constexpr double kWheelRadius = 0.0508;  // meters
   static constexpr int kEncoderResolution = 4096;
 
-  frc::PWMSparkMax m_leftLeader{1};
-  frc::PWMSparkMax m_leftFollower{2};
-  frc::PWMSparkMax m_rightLeader{3};
-  frc::PWMSparkMax m_rightFollower{4};
+  frc::PWMSparkMax m_leftMotor{1};
+  frc::PWMSparkMax m_rightMotor{3};
 
-  frc::MotorControllerGroup m_leftGroup{m_leftLeader, m_leftFollower};
-  frc::MotorControllerGroup m_rightGroup{m_rightLeader, m_rightFollower};
+  frc::MotorControllerGroup m_leftGroup{m_leftMotor};
+  frc::MotorControllerGroup m_rightGroup{m_rightMotor};
 
   frc::Encoder m_leftEncoder{0, 1};
   frc::Encoder m_rightEncoder{2, 3};

@@ -9,7 +9,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/IDriveBase.h"
+#include "subsystems/IDrivebase.h"
 
 class ArcadeDriveCommand
     : public frc2::CommandHelper<frc2::Command, ArcadeDriveCommand> {

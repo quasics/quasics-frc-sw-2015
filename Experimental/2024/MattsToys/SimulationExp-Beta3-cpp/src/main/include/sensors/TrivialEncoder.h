@@ -27,10 +27,17 @@ class TrivialEncoder {
   /** Resets the encoder's distance. */
   virtual void reset() = 0;
 
+  // Helper functions, making it easy to get IGyros.
+ public:
+  /** @return a stubbed version of a TrivialEncoder as a simple placeholder. */
   static inline TrivialEncoder& getNullEncoder();
 
+  /** @return an TrivialEncoder wrapped around an <code>frc::Encoder</code>. */
   static std::unique_ptr<TrivialEncoder> wrapEncoder(frc::Encoder& encoder);
 
+  /**
+   * @return an TrivialEncoder wrapped around an
+   * <code>rev::RelativeEncoder</code>. */
   static std::unique_ptr<TrivialEncoder> wrapEncoder(
       rev::RelativeEncoder& encoder);
 };

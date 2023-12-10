@@ -32,16 +32,28 @@ class TrivialEncoder {
   /** @return a stubbed version of a TrivialEncoder as a simple placeholder. */
   static inline TrivialEncoder& getNullEncoder();
 
-  /** @return an TrivialEncoder wrapped around an <code>frc::Encoder</code>. */
+  /**
+   * Note: assumes that the underlying encoder has been configured to return
+   * meter-based values for position/velocity.
+   *
+   * @return an TrivialEncoder wrapped around an <code>frc::Encoder</code>.
+   */
   static std::unique_ptr<TrivialEncoder> wrapEncoder(frc::Encoder& encoder);
 
   /**
+   * Note: assumes that the underlying encoder has been configured to return
+   * meter-based values for position/velocity.
+   *
    * @return an TrivialEncoder wrapped around an
    * <code>rev::RelativeEncoder</code>. */
   static std::unique_ptr<TrivialEncoder> wrapEncoder(
       rev::RelativeEncoder& encoder);
 };
 
+/**
+ * Defines an TrivialEncoder subclass that uses std::function objects to
+ * encapsulate the underyling behaviors.
+ */
 class FunctionalTrivialEncoder : public TrivialEncoder {
  public:
   using Runnable = std::function<void()>;

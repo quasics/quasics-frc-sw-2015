@@ -24,6 +24,7 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
     IDrivebase::Periodic();
   }
 
+  // Methods required by the IDrivebase class.
  protected:
   void setMotorVoltages(units::volt_t leftPower,
                         units::volt_t rightPower) override;
@@ -44,6 +45,7 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
     return *m_trivialGyro;
   }
 
+  // Internal helper functions.
  private:
   void configureEncoders();
 
@@ -54,6 +56,9 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
     m_rightBackEncoder.SetPosition(0);
   }
 
+  // Data members.
+ private:
+  // Drive base motors.
   rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
@@ -63,22 +68,27 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
   rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
 
-  // encoders for each of the motors.
+  // Encoders for each of the motors.
   rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
   rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
   rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
 
+  // Motor controller groups, pairing sets on left/right.
   frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};
   frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 
+  // Gyro.
+  frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
+
+  // Odometry information for the robot.
+  frc::DifferentialDriveOdometry m_odometry;
+
+  // Standardized wrappers around underlying gyros/encoders.  (Needed by
+  // IDrivebase class.)
+  std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_leftFrontEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_rightFrontEncoder)};
-
-  frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
-  std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};
-
-  frc::DifferentialDriveOdometry m_odometry;
 };

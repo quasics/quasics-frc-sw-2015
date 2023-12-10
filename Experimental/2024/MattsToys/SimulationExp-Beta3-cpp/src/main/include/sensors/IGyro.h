@@ -18,8 +18,8 @@
 class IGyro {
   // Convenient type alises.
  public:
-  using angle_t = double;  // units::degree_t
-  using rate_t = double;   // units::degrees_per_second_t
+  using angle_t = units::degree_t;
+  using rate_t = units::degrees_per_second_t;
 
  public:
   virtual ~IGyro() = default;
@@ -60,7 +60,7 @@ class FunctionalGyro : public IGyro {
  public:
   using Runnable = std::function<void()>;
   using AngleSupplier = std::function<angle_t()>;
-  using RateSupplier = std::function<rate_t()>;  // units::degrees_per_second_t
+  using RateSupplier = std::function<rate_t()>;
   using RotationSupplier = std::function<frc::Rotation2d()>;
 
  private:
@@ -118,14 +118,20 @@ inline IGyro& IGyro::getNullGyro() {
 
 inline std::unique_ptr<IGyro> IGyro::wrapGyro(frc::AnalogGyro& g) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
-      [&]() { g.Calibrate(); }, [&]() { return g.GetAngle(); },
-      [&]() { return g.GetRate(); }, [&]() { return g.GetRotation2d(); },
-      [&]() { g.Reset(); }));
+      [&]() { g.Calibrate(); },
+      // WPILib docs indicate that AnalogGyro::GetAngle() returns degrees
+      [&]() { return units::degree_t(g.GetAngle()); },
+      // WPILib docs indicate that AnalogGyro::GetRate() returns degrees/sec
+      [&]() { return units::degrees_per_second_t(g.GetRate()); },
+      [&]() { return g.GetRotation2d(); }, [&]() { g.Reset(); }));
 }
 
 inline std::unique_ptr<IGyro> IGyro::wrapGyro(frc::ADXRS450_Gyro& g) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
-      [&]() { g.Calibrate(); }, [&]() { return g.GetAngle(); },
-      [&]() { return g.GetRate(); }, [&]() { return g.GetRotation2d(); },
-      [&]() { g.Reset(); }));
+      [&]() { g.Calibrate(); },
+      // WPILib docs indicate that ADXRS450_Gyro::GetAngle() returns degrees
+      [&]() { return units::degree_t(g.GetAngle()); },
+      // WPILib docs indicate that ADXRS450_Gyro::GetRate() returns degrees/sec
+      [&]() { return units::degrees_per_second_t(g.GetRate()); },
+      [&]() { return g.GetRotation2d(); }, [&]() { g.Reset(); }));
 }

@@ -74,9 +74,9 @@ class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
 
   std::unique_ptr<IGyro> m_iGyro{IGyro::wrapGyro(m_gyro)};
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
-      FunctionalTrivialEncoder::forWpiLibEncoder(m_leftEncoder)};
+      FunctionalTrivialEncoder::wrapEncoder(m_leftEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
-      FunctionalTrivialEncoder::forWpiLibEncoder(m_rightEncoder)};
+      FunctionalTrivialEncoder::wrapEncoder(m_rightEncoder)};
 
   // Simulation classes help us simulate our robot
   frc::sim::AnalogGyroSim m_gyroSim{m_gyro};

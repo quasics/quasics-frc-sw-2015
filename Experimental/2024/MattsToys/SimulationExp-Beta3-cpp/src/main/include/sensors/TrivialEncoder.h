@@ -5,6 +5,15 @@
 #include <units/length.h>
 #include <units/velocity.h>
 
+/**
+ * A convenient wrapper, representing basic functionality of any
+ * encoder.
+ *
+ * This is required because REV doesn't use the WPILib core <code>Encoder</code>
+ * class as the base type for the encoders that are available for the SparkMax,
+ * and thus I had to create a wrapper type that could be used to access any
+ * arbitrary encoder in a consistent fashion.
+ */
 class TrivialEncoder {
  public:
   virtual ~TrivialEncoder() = default;
@@ -19,6 +28,11 @@ class TrivialEncoder {
   virtual void reset() = 0;
 
   static inline TrivialEncoder& getNullEncoder();
+
+  static std::unique_ptr<TrivialEncoder> wrapEncoder(frc::Encoder& encoder);
+
+  static std::unique_ptr<TrivialEncoder> wrapEncoder(
+      rev::RelativeEncoder& encoder);
 };
 
 class FunctionalTrivialEncoder : public TrivialEncoder {
@@ -48,22 +62,6 @@ class FunctionalTrivialEncoder : public TrivialEncoder {
   units::meters_per_second_t getVelocity() override {
     return m_speedSupplier();
   }
-
-  static std::unique_ptr<TrivialEncoder> forWpiLibEncoder(
-      frc::Encoder& encoder) {
-    return std::unique_ptr<TrivialEncoder>(new FunctionalTrivialEncoder(
-        [&]() { return units::meter_t(encoder.GetDistance()); },
-        [&]() { return units::meters_per_second_t(encoder.GetRate()); },
-        [&]() { encoder.Reset(); }));
-  };
-
-  static std::unique_ptr<TrivialEncoder> forRevEncoder(
-      rev::RelativeEncoder& encoder) {
-    return std::unique_ptr<TrivialEncoder>(new FunctionalTrivialEncoder(
-        [&]() { return units::meter_t(encoder.GetPosition()); },
-        [&]() { return units::meters_per_second_t(encoder.GetVelocity()); },
-        [&]() { encoder.SetPosition(0); }));
-  };
 };
 
 inline TrivialEncoder& TrivialEncoder::getNullEncoder() {
@@ -76,3 +74,18 @@ inline TrivialEncoder& TrivialEncoder::getNullEncoder() {
       [&]() {}};
   return nullEncoder;
 }
+inline std::unique_ptr<TrivialEncoder> TrivialEncoder::wrapEncoder(
+    frc::Encoder& encoder) {
+  return std::unique_ptr<TrivialEncoder>(new FunctionalTrivialEncoder(
+      [&]() { return units::meter_t(encoder.GetDistance()); },
+      [&]() { return units::meters_per_second_t(encoder.GetRate()); },
+      [&]() { encoder.Reset(); }));
+};
+
+inline std::unique_ptr<TrivialEncoder> TrivialEncoder::wrapEncoder(
+    rev::RelativeEncoder& encoder) {
+  return std::unique_ptr<TrivialEncoder>(new FunctionalTrivialEncoder(
+      [&]() { return units::meter_t(encoder.GetPosition()); },
+      [&]() { return units::meters_per_second_t(encoder.GetVelocity()); },
+      [&]() { encoder.SetPosition(0); }));
+};

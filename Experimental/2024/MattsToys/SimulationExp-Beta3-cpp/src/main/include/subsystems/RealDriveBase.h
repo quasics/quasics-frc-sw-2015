@@ -73,9 +73,9 @@ class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
   frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
-      FunctionalTrivialEncoder::forRevEncoder(m_leftFrontEncoder)};
+      FunctionalTrivialEncoder::wrapEncoder(m_leftFrontEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
-      FunctionalTrivialEncoder::forRevEncoder(m_rightFrontEncoder)};
+      FunctionalTrivialEncoder::wrapEncoder(m_rightFrontEncoder)};
 
   frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
   std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};

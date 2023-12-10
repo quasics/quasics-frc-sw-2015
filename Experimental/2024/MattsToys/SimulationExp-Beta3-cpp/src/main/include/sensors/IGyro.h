@@ -7,7 +7,16 @@
 
 #include <functional>
 
+/**
+ * A convenient wrapper, representing basic functionality of any
+ * gyro/single-axis ALU.
+ *
+ * This is required because WPILib is deprecating their definition of a common
+ * <code>Gyro</code> base class, and thus there's no common base class that can
+ * be used to manipulate different kinds of Gyros/ALUs in a consistent fashion.
+ */
 class IGyro {
+  // Convenient type alises.
  public:
   using angle_t = double;  // units::degree_t
   using rate_t = double;   // units::degrees_per_second_t
@@ -15,6 +24,7 @@ class IGyro {
  public:
   virtual ~IGyro() = default;
 
+  /** Calibrates the gyro/ALU. */
   virtual void calibrate() = 0;
 
   /** Returns the heading of the robot in degrees. */
@@ -26,15 +36,27 @@ class IGyro {
   /** Returns the heading of the robot as a Rotation2d. */
   virtual frc::Rotation2d getRotation2d() = 0;
 
+  /** Resets the gyro to 0. */
   virtual void reset() = 0;
 
+  // Helper functions, making it easy to get IGyros.
+ public:
+  /** @return a stubbed version of an IGyro as a simple placeholder. */
   static inline IGyro& getNullGyro();
 
+  /** @return an IGyro wrapped around an <code>AnalogGyro</code>. */
   static inline std::unique_ptr<IGyro> wrapGyro(frc::AnalogGyro& g);
+
+  /** @return an IGyro wrapped around an <code>ADXRS450_Gyro</code>. */
   static inline std::unique_ptr<IGyro> wrapGyro(frc::ADXRS450_Gyro& g);
 };
 
+/**
+ * Defines an IGyro subclass that uses std::function objects to encapsulate the
+ * underyling behaviors.
+ */
 class FunctionalGyro : public IGyro {
+  // Convenient type aliases.
  public:
   using Runnable = std::function<void()>;
   using AngleSupplier = std::function<angle_t()>;

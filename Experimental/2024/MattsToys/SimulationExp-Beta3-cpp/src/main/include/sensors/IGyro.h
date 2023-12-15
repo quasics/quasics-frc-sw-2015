@@ -5,6 +5,7 @@
 #include <frc/geometry/Rotation2d.h>
 #include <units/angle.h>
 
+#include <ctre/phoenix6/Pigeon2.hpp>
 #include <functional>
 
 /**
@@ -20,6 +21,7 @@ class IGyro {
  public:
   using angle_t = units::degree_t;
   using rate_t = units::degrees_per_second_t;
+  using Pigeon2 = ctre::phoenix6::hardware::Pigeon2;
 
  public:
   virtual ~IGyro() = default;
@@ -49,6 +51,9 @@ class IGyro {
 
   /** @return an IGyro wrapped around an <code>ADXRS450_Gyro</code>. */
   static inline std::unique_ptr<IGyro> wrapGyro(frc::ADXRS450_Gyro& g);
+
+  /** @return an IGyro wrapped around an <code>ADXRS450_Gyro</code>. */
+  static inline std::unique_ptr<IGyro> wrapYawGyro(Pigeon2& pigeon2);
 };
 
 /**
@@ -134,4 +139,26 @@ inline std::unique_ptr<IGyro> IGyro::wrapGyro(frc::ADXRS450_Gyro& g) {
       // WPILib docs indicate that ADXRS450_Gyro::GetRate() returns degrees/sec
       [&]() { return units::degrees_per_second_t(g.GetRate()); },
       [&]() { return g.GetRotation2d(); }, [&]() { g.Reset(); }));
+}
+
+std::unique_ptr<IGyro> IGyro::wrapYawGyro(IGyro::Pigeon2& pigeon2) {
+  return std::unique_ptr<IGyro>(new FunctionalGyro(
+      [&]() {},
+      // WPILib docs indicate that ADXRS450_Gyro::GetAngle() returns degrees
+      [&]() {
+        return angle_t(pigeon2.GetAngle()); /* GetYaw().GetValue() */
+      },
+      // WPILib docs indicate that ADXRS450_Gyro::GetRate() returns degrees/sec
+      [&]() {
+        return rate_t(pigeon2.GetRate()); /* GetAngularVelocityZ().GetValue() */
+      },
+      [&]() { return pigeon2.GetRotation2d(); },
+      // Note that this will do a reset on the Pigeon for *all* axes.  A better
+      // approach might be to use something like the "OffsetGyro" approach that
+      // I prototyped in last year's "JavaUtilityLib", so that we can reset
+      // just this *view* of the device.  (Though if someone resets the master
+      // device, we'd still be stuck with a similar problem.)
+      // TODO(mjh): Port something like the OffsetGyro into this year's
+      // examples.
+      [&]() { pigeon2.Reset(); }));
 }

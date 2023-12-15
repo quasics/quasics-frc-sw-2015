@@ -137,7 +137,7 @@ constexpr int PIDGEON_CAN_ID = 1;
 
 //Beggining The Trajectory Tutorial Stuff
 
-namespace PathWeaverConstants {
+namespace PathPlannerConstants {
 #ifdef USING_MAE_TRAJECTORY_CONSTANTS
 constexpr auto kS = 0.13895_V;
 constexpr auto kV = 1.3143 * (1_V * 1_s / 1_m);

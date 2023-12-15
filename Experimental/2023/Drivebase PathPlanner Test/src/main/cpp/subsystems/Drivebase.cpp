@@ -5,6 +5,11 @@
 #include "subsystems/Drivebase.h"
 #include <iostream>
 
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/util/ReplanningConfig.h>
+#include <frc/geometry/Pose2d.h>
+#include <frc/kinematics/ChassisSpeeds.h>
+
 #include <frc/geometry/Rotation2d.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/smartdashboard/SmartDashboard.h>

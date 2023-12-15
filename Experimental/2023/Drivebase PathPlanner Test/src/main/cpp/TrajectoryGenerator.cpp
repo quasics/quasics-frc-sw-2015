@@ -23,7 +23,7 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad, Drivebase* driv
 // Create a voltage constraint to ensure we don't accelerate too fast
   frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
       frc::SimpleMotorFeedforward<units::meters>{
-          PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
+          PathPlannerConstants::kS, PathPlannerConstants::kV, PathPlannerConstants::kA},
       kDriveKinematics, 10_V};
 
   // Set up config for trajectory
@@ -58,11 +58,11 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad, Drivebase* driv
       exampleTrajectory, [driveBase] { return driveBase->GetPose(); }, // Displaying Get Pose in Dashboard
       frc::RamseteController{kRamseteB, kRamseteZeta},
       frc::SimpleMotorFeedforward<units::meters>{
-          PathWeaverConstants::kS, PathWeaverConstants::kV, PathWeaverConstants::kA},
+          PathPlannerConstants::kS, PathPlannerConstants::kV, PathPlannerConstants::kA},
       kDriveKinematics,
       [driveBase] { return driveBase->GetWheelSpeeds(); },
-      frc2::PIDController{PathWeaverConstants::kP, 0, 0},
-      frc2::PIDController{PathWeaverConstants::kP, 0, 0},
+      frc2::PIDController{PathPlannerConstants::kP, 0, 0},
+      frc2::PIDController{PathPlannerConstants::kP, 0, 0},
       [driveBase](auto left, auto right) { driveBase->TankDriveVolts(left, right); },
       {driveBase})}; 
 

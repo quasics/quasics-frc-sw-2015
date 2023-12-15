@@ -21,6 +21,7 @@
 class RobotContainer {
  public:
   RobotContainer();
+  void AddSmartBoardTestButtons();
 
   frc2::CommandPtr GetAutonomousCommand();
 
@@ -29,7 +30,7 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
-  Drivebase m_drivebase;
+  Drivebase m_drive;
 
   void ConfigureBindings();
 };

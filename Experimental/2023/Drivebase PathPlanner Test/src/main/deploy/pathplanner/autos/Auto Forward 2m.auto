@@ -1,0 +1,24 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 2.0,
+      "y": 4.8
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "forward 2m"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null
+}

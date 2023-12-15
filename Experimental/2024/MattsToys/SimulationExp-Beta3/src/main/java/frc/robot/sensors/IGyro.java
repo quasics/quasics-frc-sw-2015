@@ -2,7 +2,7 @@ package frc.robot.sensors;
 
 import java.util.function.Supplier;
 
-import org.ejml.equation.Function;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogGyro;
@@ -70,6 +70,26 @@ public interface IGyro {
         public void reset() {
             m_resetter.run();
         }
+    }
+
+    static IGyro wrapYawGyro(Pigeon2 pigeon2) {
+        return new FunctionalGyro(
+                () -> {
+                    System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
+                },
+                () -> pigeon2.getAngle(),
+                () -> pigeon2.getRate(),
+                () -> pigeon2.getRotation2d(),
+                () -> {
+      // Note that this will do a reset on the Pigeon for *all* axes.  A better
+      // approach might be to use something like the "OffsetGyro" approach that
+      // I prototyped in last year's "JavaUtilityLib", so that we can reset
+      // just this *view* of the device.  (Though if someone resets the master
+      // device, we'd still be stuck with a similar problem.)
+      // TODO(mjh): Port something like the OffsetGyro into this year's
+      // examples.
+      pigeon2.reset();
+                });
     }
 
     static IGyro wrapAnalogGyro(AnalogGyro g) {

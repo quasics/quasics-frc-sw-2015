@@ -16,6 +16,8 @@ import frc.robot.sensors.TrivialEncoder;
 /**
  * Implementing a version of the AbstractDrivebase functionality that should
  * work with an XRP device, allowing initial prototyping/development of code.
+ * 
+ * @see https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
  */
 public class XrpDrivebase extends AbstractDrivebase {
   private static final double kGearRatio = (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
@@ -58,6 +60,13 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   // Odometry tracking, used by the base class.
   private final DifferentialDriveOdometry m_odometry;
+
+  // TODO: Wire in the ultrasonic rangefinder (analog input 2), ranging from 0V
+  // (20mm) to 5V (4000mm).
+
+  // TODO: Wire in the Line Following (Reflectance) Sensor (analog input 0 for
+  // left, 1 for right), with returned values ranging from 0V (pure white) to 5V
+  // (pure black).
 
   /** Creates a new XrpDrivebase. */
   public XrpDrivebase() {

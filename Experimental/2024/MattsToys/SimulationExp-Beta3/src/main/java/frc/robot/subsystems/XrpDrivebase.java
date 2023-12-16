@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
+/**
+ * Implementing a version of the AbstractDrivebase functionality that should
+ * work with an XRP device, allowing initial prototyping/development of code.
+ */
 public class XrpDrivebase extends AbstractDrivebase {
   private static final double kGearRatio = (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
   private static final double kCountsPerMotorShaftRev = 12.0;
@@ -41,16 +45,18 @@ public class XrpDrivebase extends AbstractDrivebase {
   private final Encoder m_leftEncoder = new Encoder(4, 5);
   private final Encoder m_rightEncoder = new Encoder(6, 7);
 
-  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
-
-  // Set up the XRPGyro
-  private final XRPGyro m_gyro = new XRPGyro();
-  private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
-
   // Set up the BuiltInAccelerometer
   private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
+  // Set up the XRPGyro
+  private final XRPGyro m_gyro = new XRPGyro();
+
+  // Set up the wrapper types used by the base class.
+  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
+
+  // Odometry tracking, used by the base class.
   private final DifferentialDriveOdometry m_odometry;
 
   /** Creates a new XrpDrivebase. */
@@ -64,6 +70,10 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(), m_leftTrivialEncoder.getPosition(),
         m_rightTrivialEncoder.getPosition());
   }
+
+  // ---------------------------------------------------------------------------
+  // Implementations of abstract functions from the base class.
+  // ---------------------------------------------------------------------------
 
   @Override
   protected DifferentialDriveOdometry getOdometry() {

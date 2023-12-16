@@ -63,6 +63,12 @@ public class XrpDrivebase extends AbstractDrivebase {
   public XrpDrivebase() {
     super(kTrackWidthMeters, kP, kI, kD, kS, kV);
 
+    // Per docs: "The right motor will spin in a backward direction when positive
+    // output is applied. Thus the corresponding motor controller needs to be
+    // inverted in robot code."
+    m_rightMotor.setInverted(true);
+    m_leftMotor.setInverted(false);
+
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);

@@ -59,7 +59,7 @@ public class RobotContainer {
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
       m_leftStick = () -> -m_controller.getLeftX();
-      m_rightStick = () -> -m_controller.getRightX();
+      m_rightStick = () -> -m_controller.getRightY();
     } else {
       // Note that we're assuming a keyboard-based controller is actually being used
       // in the simulation environment (for now), and thus we want to use axis 1&2

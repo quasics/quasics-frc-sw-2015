@@ -31,6 +31,7 @@ import frc.robot.subsystems.SimulationDrivebase;
 import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RobotContainer {
   final static int LIGHTING_PWM_PORT = 9;
@@ -48,10 +49,24 @@ public class RobotContainer {
 
   private static final boolean USE_XRP_IN_SIMULATION = false;
 
+  final Supplier<Double> m_leftStick;
+  final Supplier<Double> m_rightStick;
+
   public RobotContainer() {
     if (Robot.isReal()) {
       m_drivebase = new BrokenCanDrivebase();
+
+      // Note that we're inverting the values because Xbox controllers return
+      // negative values when we push forward.
+      m_leftStick = () -> -m_controller.getLeftX();
+      m_rightStick = () -> -m_controller.getRightX();
     } else {
+      // Note that we're assuming a keyboard-based controller is actually being used
+      // in the simulation environment (for now), and thus we want to use axis 1&2
+      // (without inversion, since it's *not* an Xbox controller).
+      m_leftStick = () -> m_controller.getRawAxis(0);
+      m_rightStick = () -> m_controller.getRawAxis(1);
+
       if (USE_XRP_IN_SIMULATION) {
         m_drivebase = new XrpDrivebase();
       } else {
@@ -63,7 +78,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_controller));
+    m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_leftStick, m_rightStick));
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
   }
 

@@ -4,15 +4,16 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.subsystems.AbstractDrivebase;
 
 public class ArcadeDrive extends Command {
-  XboxController m_controller;
-  AbstractDrivebase m_drivebase;
+  private final AbstractDrivebase m_drivebase;
+  private final Supplier<Double> m_xSupplier;
+  private final Supplier<Double> m_rotSupplier;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
@@ -20,8 +21,9 @@ public class ArcadeDrive extends Command {
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(AbstractDrivebase drivebase, XboxController controller) {
-    m_controller = controller;
+  public ArcadeDrive(AbstractDrivebase drivebase, Supplier<Double> xSupplier, Supplier<Double> rotSupplier) {
+    m_xSupplier = xSupplier;
+    m_rotSupplier = rotSupplier;
     m_drivebase = drivebase;
 
     addRequirements(drivebase);
@@ -30,15 +32,22 @@ public class ArcadeDrive extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivebase.arcadeDrive(0, 0);
+    updateSpeeds();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final boolean isSim = Robot.isSimulation();
-    final double xInput = isSim ? m_controller.getRawAxis(0) : m_controller.getLeftY();
-    final double rotInput = isSim ? m_controller.getRawAxis(1) : m_controller.getRightX();
+    updateSpeeds();
+  }
+
+  /**
+   * Actually reads the controllers, calculates the speeds we want, and tells the
+   * drive base to "make it so".
+   */
+  private void updateSpeeds() {
+    final double xInput = m_xSupplier.get();
+    final double rotInput = m_rotSupplier.get();
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
@@ -56,12 +65,6 @@ public class ArcadeDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivebase.arcadeDrive(0, 0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    m_drivebase.stop();
   }
 }

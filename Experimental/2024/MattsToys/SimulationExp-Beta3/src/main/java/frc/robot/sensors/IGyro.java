@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.xrp.XRPGyro;
 
 /**
  * As of the 2024 tools, a common "Gyro" interface is being deprecated, and the
@@ -92,7 +93,7 @@ public interface IGyro {
                 });
     }
 
-    static IGyro wrapAnalogGyro(AnalogGyro g) {
+    static IGyro wrapGyro(AnalogGyro g) {
         return new FunctionalGyro(
                 () -> {
                     g.calibrate();
@@ -100,6 +101,21 @@ public interface IGyro {
                 () -> g.getAngle(),
                 () -> g.getRate(),
                 () -> g.getRotation2d(),
+                () -> {
+                    g.reset();
+                });
+    }
+
+    static IGyro wrapYawGyro(XRPGyro g) {
+        return new FunctionalGyro(
+                () -> {
+                    System.out.println(">>> Null-op: XRPGyro doesn't calibrate.");
+                },
+                () -> g.getAngleZ(),
+                () -> g.getRateZ(),
+                () -> {
+                    return Rotation2d.fromDegrees(g.getAngleZ());
+                },
                 () -> {
                     g.reset();
                 });

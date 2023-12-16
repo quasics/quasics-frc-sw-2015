@@ -33,7 +33,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kI = 0;
   private static final double kD = 0;
 
-  // Motor gains are for example purposes only, and must be determined for your own robot.
+  // Motor gains are for example purposes only, and must be determined for your
+  // own robot.
   private static final double kS = 1;
   private static final double kV = 3;
 
@@ -50,8 +51,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final DifferentialDriveOdometry m_odometry;
 
   // Objects used in simulation mode.
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
+      0.3);
   private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
       m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidthMeters, kWheelRadiusMeters, null);
   private final Field2d m_fieldSim = new Field2d();
@@ -80,7 +81,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
     final AnalogGyro rawGyro = new AnalogGyro(0);
-    m_wrappedGyro = IGyro.wrapAnalogGyro(rawGyro);
+    m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Initial odometry; it will be updated in periodic().
     m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
@@ -115,12 +116,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoder.reset();
   }
 
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   // Implementations of abstract functions from the base class.
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   @Override
-  public void setMotorVoltages(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     m_leftGroup.setVoltage(leftVoltage);
     m_rightGroup.setVoltage(rightVoltage);
   }
@@ -145,9 +146,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     return m_wrappedGyro;
   }
 
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   // Simulation support.
-  //---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
 
   @Override
   public void resetOdometry(Pose2d pose) {

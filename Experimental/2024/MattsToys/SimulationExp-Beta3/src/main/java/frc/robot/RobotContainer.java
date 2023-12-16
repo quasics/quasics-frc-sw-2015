@@ -28,6 +28,7 @@ import frc.robot.subsystems.BrokenCanDrivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
 import frc.robot.subsystems.SimulationDrivebase;
+import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.List;
 
@@ -45,11 +46,17 @@ public class RobotContainer {
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
 
+  private static final boolean USE_XRP_IN_SIMULATION = false;
+
   public RobotContainer() {
     if (Robot.isReal()) {
       m_drivebase = new BrokenCanDrivebase();
     } else {
-      m_drivebase = new SimulationDrivebase();
+      if (USE_XRP_IN_SIMULATION) {
+        m_drivebase = new XrpDrivebase();
+      } else {
+        m_drivebase = new SimulationDrivebase();
+      }
     }
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
     configureBindings();

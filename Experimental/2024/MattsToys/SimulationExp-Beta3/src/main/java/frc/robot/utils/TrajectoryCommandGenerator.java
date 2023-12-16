@@ -81,8 +81,8 @@ public class TrajectoryCommandGenerator {
     final DifferentialDriveKinematics kDriveKinematics = drive.getKinematics();
 
     final SimpleMotorFeedforward feedForward = drive.getMotorFeedforward();
-    final DifferentialDriveVoltageConstraint voltageConstraints =
-        new DifferentialDriveVoltageConstraint(feedForward, kDriveKinematics, MAX_VOLTAGE);
+    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(feedForward,
+        kDriveKinematics, MAX_VOLTAGE);
 
     TrajectoryConfig actualTrajectoryConfig = new TrajectoryConfig(
         trajectoryConfig.getMaxVelocity(), trajectoryConfig.getMaxAcceleration());
@@ -120,6 +120,8 @@ public class TrajectoryCommandGenerator {
         System.out.println("Resetting robot odometry");
         drive.resetOdometry(trajectory.getInitialPose());
       }
-    }, drive), ramseteCommand, new InstantCommand(() -> { drive.setMotorVoltages(0, 0); }, drive));
+    }, drive), ramseteCommand, new InstantCommand(() -> {
+      drive.stop();
+    }, drive));
   }
 }

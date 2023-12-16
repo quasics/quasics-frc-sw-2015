@@ -71,6 +71,15 @@ public class XrpDrivebase extends AbstractDrivebase {
         m_rightTrivialEncoder.getPosition());
   }
 
+  /**
+   * Example of working with XRP-specific functionality.
+   * 
+   * @return acceleration along the X-axis in g-forces.
+   */
+  public double getAccelerationX() {
+    return m_accelerometer.getX();
+  }
+
   // ---------------------------------------------------------------------------
   // Implementations of abstract functions from the base class.
   // ---------------------------------------------------------------------------

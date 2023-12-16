@@ -10,6 +10,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
+/**
+ * Command allowing users to drive the robot using "arcade-drive" mechanism,
+ * with separate inputs independently controlling the forward/backward and
+ * rotational speeds. (Note that these could be coming from a single joystick's
+ * X/Y axes, for traditional arcade drive, or 2 separate joysticks for "split"
+ * arcade drive.)
+ */
 public class ArcadeDrive extends Command {
   private final AbstractDrivebase m_drivebase;
   private final Supplier<Double> m_xSupplier;

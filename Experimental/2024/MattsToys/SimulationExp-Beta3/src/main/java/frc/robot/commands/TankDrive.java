@@ -11,6 +11,10 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
+/**
+ * Command allowing users to drive the robot using "tank-drive" mechanism, with
+ * separate inputs independently controlling the left and right wheel speeds.
+ */
 public class TankDrive extends Command {
   private final AbstractDrivebase m_drivebase;
   private final Supplier<Double> m_leftSupplier;

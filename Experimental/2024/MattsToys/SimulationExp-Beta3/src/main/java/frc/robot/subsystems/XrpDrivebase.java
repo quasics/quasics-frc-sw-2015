@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -120,7 +121,10 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
-    m_leftMotor.setVoltage(leftVoltage);
-    m_rightMotor.setVoltage(rightVoltage);
+    final double leftSpeed = (leftVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED;
+    final double rightSpeed = (rightVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED;
+    System.out.println("> XrpDrive speeds: " + leftSpeed + " / " + rightSpeed);
+    m_leftMotor.set(leftSpeed);
+    m_rightMotor.set(rightSpeed);
   }
 }

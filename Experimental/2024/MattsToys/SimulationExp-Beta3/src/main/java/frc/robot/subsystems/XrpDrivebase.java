@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.xrp.XRPMotor;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.DeadbandEnforcer;
 
 /**
  * Implementing a version of the AbstractDrivebase functionality that should
@@ -119,10 +120,14 @@ public class XrpDrivebase extends AbstractDrivebase {
     return m_wrappedGyro;
   }
 
+  final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
+
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
-    final double leftSpeed = (leftVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED;
-    final double rightSpeed = (rightVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED;
+    final double leftSpeed = m_voltageDeadbandEnforcer
+        .limit((leftVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED);
+    final double rightSpeed = m_voltageDeadbandEnforcer
+        .limit((rightVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED);
     System.out.println("> XrpDrive speeds: " + leftSpeed + " / " + rightSpeed);
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);

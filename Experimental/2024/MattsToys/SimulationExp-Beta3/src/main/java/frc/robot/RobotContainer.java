@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.RainbowLighting;
+import frc.robot.commands.SpinInPlace;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.BrokenCanDrivebase;
 import frc.robot.subsystems.Lighting;
@@ -88,6 +89,24 @@ public class RobotContainer {
   }
 
   private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+
+  enum AutoMode {
+    eSpin,
+    eFollowTrajectory
+  };
+
+  private AutoMode mode = AutoMode.eSpin;
+
+  public Command getAutonomousCommand() {
+    switch (mode) {
+      case eSpin:
+        return new SpinInPlace(m_drivebase);
+      case eFollowTrajectory:
+        return generateAutoModeSCurveCommand();
+      default:
+        return new PrintCommand("*****\n***** Error: Unhandled AutoMode setting!\n*****");
+    }
+  }
 
   private Command generateFunctionalCommandForControlSystemSampleTrajectory() {
     final Trajectory t = TrajectoryGenerator.generateTrajectory(new Pose2d(2, 2, new Rotation2d()),
@@ -177,9 +196,5 @@ public class RobotContainer {
       default:
         return new PrintCommand("Unexpected value for m_autoModeTrajectorySelection!");
     }
-  }
-
-  public Command getAutonomousCommand() {
-    return generateAutoModeSCurveCommand();
   }
 }

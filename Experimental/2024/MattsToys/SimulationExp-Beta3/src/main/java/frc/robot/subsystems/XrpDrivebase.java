@@ -15,8 +15,8 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.DeadbandEnforcer;
 
 /**
- * Implementing a version of the AbstractDrivebase functionality that should
- * work with an XRP device, allowing initial prototyping/development of code.
+ * Implementing a version of the AbstractDrivebase functionality that works with
+ * an XRP device, allowing initial prototyping/development of code.
  * 
  * @see https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
  */
@@ -120,16 +120,38 @@ public class XrpDrivebase extends AbstractDrivebase {
     return m_wrappedGyro;
   }
 
+  /** Prevents us from pushing voltage/speed values too small for the motors. */
   final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
+
+  /**
+   * If true, log voltage/speed computation data to stdout.
+   * 
+   * @see #setMotorVoltagesImpl
+   */
+  final static boolean LOG_MOTOR_SETTINGS = false;
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
+    // When simulating the behavior on the XRP, setting the voltage for the motors
+    // appears not to translate into actual motor control: we need to call "set()"
+    // on them in order to make things happen. But the
+    // <code>AbstractDriveBase</code> class is assuming that it can look at the
+    // voltages in order to compute PID components. So we need to forward-calculate
+    // the expected speed, and apply both the voltage and speed settings.
+    final double inputVoltage = RobotController.getInputVoltage();
+    final double leftMPS = (leftVoltage / inputVoltage);
+    final double rightMPS = (rightVoltage / inputVoltage);
     final double leftSpeed = m_voltageDeadbandEnforcer
-        .limit((leftVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED);
+        .limit(leftMPS / AbstractDrivebase.MAX_SPEED);
     final double rightSpeed = m_voltageDeadbandEnforcer
-        .limit((rightVoltage / RobotController.getInputVoltage()) / AbstractDrivebase.MAX_SPEED);
-    System.out.println("> XrpDrive speeds: " + leftSpeed + " / " + rightSpeed);
+        .limit(rightMPS / AbstractDrivebase.MAX_SPEED);
+    if (LOG_MOTOR_SETTINGS) {
+      System.out.println("> XrpDrive - inputV: " + inputVoltage + "\tmps: " + leftMPS + " / " + rightMPS + "\tspeeds: "
+          + leftSpeed + " / " + rightSpeed);
+    }
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);
+    m_leftMotor.setVoltage(leftVoltage);
+    m_rightMotor.setVoltage(rightVoltage);
   }
 }

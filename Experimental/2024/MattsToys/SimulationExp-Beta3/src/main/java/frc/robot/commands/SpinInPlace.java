@@ -19,13 +19,13 @@ public class SpinInPlace extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drivebase.arcadeDrive(0, 1);
+    m_drivebase.arcadeDrive(0, AbstractDrivebase.MAX_ANGULAR_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivebase.arcadeDrive(0, 1);
+    m_drivebase.arcadeDrive(0, AbstractDrivebase.MAX_ANGULAR_SPEED);
   }
 
   // Called once the command ends or is interrupted.

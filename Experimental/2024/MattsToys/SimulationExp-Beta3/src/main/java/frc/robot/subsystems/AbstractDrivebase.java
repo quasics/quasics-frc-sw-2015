@@ -29,6 +29,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Most recently set voltage for left side, for use in periodic(). */
   private double m_lastLeftVoltage = 0;
+
   /** Most recently set voltage for right side, for use in periodic(). */
   private double m_lastRightVoltage = 0;
 

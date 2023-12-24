@@ -7,7 +7,7 @@ package frc.robot.sensors;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
- * Wrapper around a Gyro, allowing us to reset it "locally", without affecting
+ * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
  * the original gyro's data.
  */
 public class OffsetGyro implements IGyro {

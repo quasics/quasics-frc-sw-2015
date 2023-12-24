@@ -27,6 +27,7 @@ import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.BrokenCanDrivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
+import frc.robot.subsystems.RomiDrivebase;
 import frc.robot.subsystems.SimulationDrivebase;
 import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.TrajectoryCommandGenerator;
@@ -39,15 +40,17 @@ public class RobotContainer {
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
-      MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE =
+      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
 
   private final XboxController m_controller = new XboxController(0);
   private final LightingInterface m_lighting = new Lighting(LIGHTING_PWM_PORT, NUM_LIGHTS);
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
 
-  private static final boolean USE_XRP_IN_SIMULATION = false;
+  private enum SimulationMode { eSimulation, eXrp, eRomi }
+
+  private final SimulationMode m_simulationMode = SimulationMode.eSimulation;
 
   final Supplier<Double> m_leftStick;
   final Supplier<Double> m_rightStick;
@@ -58,19 +61,29 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_leftStick = () -> -m_controller.getLeftX();
-      m_rightStick = () -> -m_controller.getRightY();
+      m_leftStick = () -> - m_controller.getLeftX();
+      m_rightStick = () -> - m_controller.getRightY();
     } else {
       // Note that we're assuming a keyboard-based controller is actually being used
       // in the simulation environment (for now), and thus we want to use axis 1&2
       // (without inversion, since it's *not* an Xbox controller).
       m_leftStick = () -> m_controller.getRawAxis(0);
       m_rightStick = () -> m_controller.getRawAxis(1);
-
-      if (USE_XRP_IN_SIMULATION) {
-        m_drivebase = new XrpDrivebase();
-      } else {
-        m_drivebase = new SimulationDrivebase();
+      switch (m_simulationMode) {
+        case eRomi:
+          m_drivebase = new RomiDrivebase();
+          break;
+        case eXrp:
+          m_drivebase = new XrpDrivebase();
+          break;
+        case eSimulation:
+          m_drivebase = new SimulationDrivebase();
+          break;
+        default:
+          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
+              + "), falling back on pure simulator");
+          m_drivebase = new SimulationDrivebase();
+          break;
       }
     }
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
@@ -88,13 +101,13 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
+      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
-  enum AutoMode {
-    eSpin,
-    eFollowTrajectory
-  };
+  /** Defines options for auto mode. */
+  private enum AutoMode { eSpin, eFollowTrajectory }
 
+  /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eSpin;
 
   public Command getAutonomousCommand() {
@@ -115,25 +128,25 @@ public class RobotContainer {
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        () -> {
+        ()
+            -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        () -> {
+        ()
+            -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
           m_drivebase.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
         },
         // end
-        (Boolean interrupted) -> {
-          m_drivebase.stop();
-        },
+        (Boolean interrupted)
+            -> { m_drivebase.stop(); },
         // isFinished
-        () -> {
-          return false;
-        },
+        ()
+            -> { return false; },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -141,18 +154,20 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
-        m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(), /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints =
+        new DifferentialDriveVoltageConstraint(
+            m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(), /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(m_drivebase.getKinematics())
-    // // Apply the voltage constraint
-    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-    // .addConstraint(voltageConstraints)
-    // End of constraints
-    ;
+    TrajectoryConfig config =
+        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(m_drivebase.getKinematics())
+        // // Apply the voltage constraint
+        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+        // .addConstraint(voltageConstraints)
+        // End of constraints
+        ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(

@@ -73,7 +73,7 @@ public interface IGyro {
   }
 
   static IGyro wrapYawGyro(Pigeon2 pigeon2) {
-    return new FunctionalGyro(
+    return new OffsetGyro(new FunctionalGyro(
         () -> {
           System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
         },
@@ -81,22 +81,20 @@ public interface IGyro {
         () -> pigeon2.getRate(),
         () -> pigeon2.getRotation2d(),
         () -> {
-          // Note that this will do a reset on the Pigeon for *all* axes. A better
-          // approach might be to use something like the "OffsetGyro" approach that
-          // I prototyped in last year's "JavaUtilityLib", so that we can reset
-          // just this *view* of the device. (Though if someone resets the master
-          // device, we'd still be stuck with a similar problem.)
-          // TODO(mjh): Port something like the OffsetGyro into this year's
-          // examples.
-          pigeon2.reset();
-        });
+          // Note that this won't actually get invoked, because the OffsetGyro will
+          // instead just reset its offset value.
+        }));
   }
 
   static IGyro wrapGyro(AnalogGyro g) {
-    return new FunctionalGyro(() -> {
-      g.calibrate();
-    },
-        () -> g.getAngle(), () -> g.getRate(), () -> g.getRotation2d(), () -> {
+    return new FunctionalGyro(
+        () -> {
+          g.calibrate();
+        },
+        () -> g.getAngle(),
+        () -> g.getRate(),
+        () -> g.getRotation2d(),
+        () -> {
           g.reset();
         });
   }
@@ -111,7 +109,8 @@ public interface IGyro {
         () -> {
           return Rotation2d.fromDegrees(g.getAngleZ());
         }, () -> {
-          g.reset();
+          // Note that this won't actually get invoked, because the OffsetGyro will
+          // instead just reset its offset value.
         }));
   }
 
@@ -125,7 +124,8 @@ public interface IGyro {
         () -> {
           return Rotation2d.fromDegrees(g.getAngleZ());
         }, () -> {
-          g.reset();
+          // Note that this won't actually get invoked, because the OffsetGyro will
+          // instead just reset its offset value.
         }));
   }
 }

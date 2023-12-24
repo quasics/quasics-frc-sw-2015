@@ -74,14 +74,12 @@ public interface IGyro {
 
   static IGyro wrapYawGyro(Pigeon2 pigeon2) {
     return new FunctionalGyro(
-        ()
-            -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates."); },
-        ()
-            -> pigeon2.getAngle(),
-        ()
-            -> pigeon2.getRate(),
-        ()
-            -> pigeon2.getRotation2d(),
+        () -> {
+          System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
+        },
+        () -> pigeon2.getAngle(),
+        () -> pigeon2.getRate(),
+        () -> pigeon2.getRotation2d(),
         () -> {
           // Note that this will do a reset on the Pigeon for *all* axes. A better
           // approach might be to use something like the "OffsetGyro" approach that
@@ -95,30 +93,39 @@ public interface IGyro {
   }
 
   static IGyro wrapGyro(AnalogGyro g) {
-    return new FunctionalGyro(()
-                                  -> { g.calibrate(); },
-        () -> g.getAngle(), () -> g.getRate(), () -> g.getRotation2d(), () -> { g.reset(); });
+    return new FunctionalGyro(() -> {
+      g.calibrate();
+    },
+        () -> g.getAngle(), () -> g.getRate(), () -> g.getRotation2d(), () -> {
+          g.reset();
+        });
   }
 
   static IGyro wrapYawGyro(XRPGyro g) {
-    return new FunctionalGyro(
-        ()
-            -> { System.out.println(">>> Null-op: XRPGyro doesn't calibrate."); },
-        ()
-            -> g.getAngleZ(),
-        ()
-            -> g.getRateZ(),
-        () -> { return Rotation2d.fromDegrees(g.getAngleZ()); }, () -> { g.reset(); });
+    return new OffsetGyro(new FunctionalGyro(
+        () -> {
+          System.out.println(">>> Null-op: XRPGyro doesn't calibrate.");
+        },
+        () -> g.getAngleZ(),
+        () -> g.getRateZ(),
+        () -> {
+          return Rotation2d.fromDegrees(g.getAngleZ());
+        }, () -> {
+          g.reset();
+        }));
   }
 
   static IGyro wrapYawGyro(RomiGyro g) {
-    return new FunctionalGyro(
-        ()
-            -> { System.out.println(">>> Null-op: RomiGyro doesn't calibrate."); },
-        ()
-            -> g.getAngleZ(),
-        ()
-            -> g.getRateZ(),
-        () -> { return Rotation2d.fromDegrees(g.getAngleZ()); }, () -> { g.reset(); });
+    return new OffsetGyro(new FunctionalGyro(
+        () -> {
+          System.out.println(">>> Null-op: RomiGyro doesn't calibrate.");
+        },
+        () -> g.getAngleZ(),
+        () -> g.getRateZ(),
+        () -> {
+          return Rotation2d.fromDegrees(g.getAngleZ());
+        }, () -> {
+          g.reset();
+        }));
   }
 }

@@ -11,9 +11,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.DeadbandEnforcer;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
@@ -149,7 +151,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftOutput = m_leftPIDController.calculate(getLeftEncoder().getVelocity(), speeds.leftMetersPerSecond);
+    double leftOutput =
+        m_leftPIDController.calculate(getLeftEncoder().getVelocity(), speeds.leftMetersPerSecond);
     double rightOutput = m_rightPIDController.calculate(
         getRightEncoder().getVelocity(), speeds.rightMetersPerSecond);
 
@@ -161,10 +164,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * Applies the specified voltages to the motors (and remembers what was set, so
    * that we can periodically update it, as required for voltage compensation to
    * work properly).
-   * 
+   *
    * @param leftVoltage
    * @param rightVoltage
-   * 
+   *
    * @see edu.wpi.first.wpilibj.motorcontrol.MotorController#setVoltage
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
@@ -179,6 +182,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     updateOdometry();
   }
 
+  /** Prevents us from pushing voltage/speed values too small for the motors. */
+  final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
+
+  public static double convertVoltageToPercentSpeed(double volts) {
+    final double inputVoltage = RobotController.getInputVoltage();
+    final double mps = (volts / inputVoltage);
+    final double speedPercentage = m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
+    return speedPercentage;
+  }
+
   protected abstract DifferentialDriveOdometry getOdometry();
 
   protected abstract TrivialEncoder getLeftEncoder();
@@ -189,7 +202,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /**
    * Declared as public so that it can be used with RamseteCommand objects.
-   * 
+   *
    * @param leftVoltage  voltage for left-side motors
    * @param rightVoltage voltage for right-side motors
    */

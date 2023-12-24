@@ -4,12 +4,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.DeadbandEnforcer;
@@ -17,11 +17,12 @@ import frc.robot.utils.DeadbandEnforcer;
 /**
  * Implementing a version of the AbstractDrivebase functionality that works with
  * an XRP device, allowing initial prototyping/development of code.
- * 
+ *
  * @see https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
  */
 public class XrpDrivebase extends AbstractDrivebase {
-  private static final double kGearRatio = (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
+  private static final double kGearRatio =
+      (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
   private static final double kCountsPerMotorShaftRev = 12.0;
   private static final double kCountsPerRevolution = kCountsPerMotorShaftRev * kGearRatio; // 585.0
   private static final double kWheelDiameterMeters = 0.060;
@@ -55,8 +56,10 @@ public class XrpDrivebase extends AbstractDrivebase {
   private final XRPGyro m_gyro = new XRPGyro();
 
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
 
   // Odometry tracking, used by the base class.
@@ -83,13 +86,13 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
 
-    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(), m_leftTrivialEncoder.getPosition(),
-        m_rightTrivialEncoder.getPosition());
+    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
+        m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
   }
 
   /**
    * Example of working with XRP-specific functionality.
-   * 
+   *
    * @return acceleration along the X-axis in g-forces.
    */
   public double getAccelerationX() {
@@ -125,7 +128,7 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   /**
    * If true, log voltage/speed computation data to stdout.
-   * 
+   *
    * @see #setMotorVoltagesImpl
    */
   final static boolean LOG_MOTOR_SETTINGS = false;
@@ -138,16 +141,11 @@ public class XrpDrivebase extends AbstractDrivebase {
     // <code>AbstractDriveBase</code> class is assuming that it can look at the
     // voltages in order to compute PID components. So we need to forward-calculate
     // the expected speed, and apply both the voltage and speed settings.
-    final double inputVoltage = RobotController.getInputVoltage();
-    final double leftMPS = (leftVoltage / inputVoltage);
-    final double rightMPS = (rightVoltage / inputVoltage);
-    final double leftSpeed = m_voltageDeadbandEnforcer
-        .limit(leftMPS / AbstractDrivebase.MAX_SPEED);
-    final double rightSpeed = m_voltageDeadbandEnforcer
-        .limit(rightMPS / AbstractDrivebase.MAX_SPEED);
+    final double leftSpeed = convertVoltageToPercentSpeed(leftVoltage);
+    final double rightSpeed = convertVoltageToPercentSpeed(rightVoltage);
     if (LOG_MOTOR_SETTINGS) {
-      System.out.println("> XrpDrive - inputV: " + inputVoltage + "\tmps: " + leftMPS + " / " + rightMPS + "\tspeeds: "
-          + leftSpeed + " / " + rightSpeed);
+      System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " + rightVoltage
+          + "\tspeeds: " + leftSpeed + " / " + rightSpeed);
     }
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);

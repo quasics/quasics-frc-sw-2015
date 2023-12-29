@@ -17,15 +17,14 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
 public class BrokenCanDrivebase extends AbstractDrivebase {
-  // Sample PID constants.
-  private static final double kP = 8.5;
+  // Sample PID values from 2023 "ChargedUp" constants for Sally
+  private static final double kP = 0.29613;
   private static final double kI = 0;
   private static final double kD = 0;
 
-  // Motor gains are for example purposes only, and must be determined for your
-  // own robot.
-  private static final double kS = 1;
-  private static final double kV = 3;
+  // Motor gains must be determined for your own robot.
+  private static final double kS = 0.19529; // From 2023 "ChargedUp" constants for Sally
+  private static final double kV = 2.2329; // From 2023 "ChargedUp" constants for Sally
 
   // Motor IDs are based on those Quasics has used over the last couple of years.
   static final int LEFT_FRONT_CAN_ID = 1;
@@ -125,5 +124,8 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     m_leftGroup.setVoltage(leftVoltage);
     m_rightGroup.setVoltage(rightVoltage);
+
+    logValue("Left volts", leftVoltage);
+    logValue("Right volts", rightVoltage);
   }
 }

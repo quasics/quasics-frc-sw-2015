@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
@@ -34,6 +35,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Most recently set voltage for right side, for use in periodic(). */
   private double m_lastRightVoltage = 0;
+
+  private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
+
+  protected static final boolean LOG_TO_SMARTDASHBOARD = false;
 
   /**
    * Constructor.
@@ -134,6 +139,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     arcadeDrive(0, 0);
   }
 
+  void logValue(String label, double val) {
+    if (LOG_TO_SMARTDASHBOARD) {
+      SmartDashboard.putNumber(label, val);
+    }
+  }
+
   /**
    * Controls the robot using arcade drive.
    *
@@ -141,23 +152,38 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @param rot    the rotation (in radians/s)
    */
   public final void arcadeDrive(double xSpeed, double rot) {
+    logValue("xSpeed", xSpeed);
+    logValue("rotSpeed", rot);
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
   }
 
+  final static DeadbandEnforcer speedEnforcer = new DeadbandEnforcer(0.1);
+
   /** Sets speeds to the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+    logValue("leftSpeed", speeds.leftMetersPerSecond);
+    logValue("rightSpeed", speeds.rightMetersPerSecond);
+
+    var leftStabilized = speedEnforcer.limit(speeds.leftMetersPerSecond);
+    var rightStabilized = speedEnforcer.limit(speeds.rightMetersPerSecond);
+    logValue("leftStable", leftStabilized);
+    logValue("rightStable", rightStabilized);
+
     // Figure out the voltages we should need at the target speeds.
-    var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-    var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+    var leftFeedforward = m_feedforward.calculate(leftStabilized);
+    var rightFeedforward = m_feedforward.calculate(rightStabilized);
+    logValue("leftFF", leftFeedforward);
+    logValue("rightFF", rightFeedforward);
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftOutput =
-        m_leftPIDController.calculate(getLeftEncoder().getVelocity(), speeds.leftMetersPerSecond);
-    double rightOutput = m_rightPIDController.calculate(
+    double leftPidOutput = m_leftPIDController.calculate(getLeftEncoder().getVelocity(), speeds.leftMetersPerSecond);
+    double rightPidOutput = m_rightPIDController.calculate(
         getRightEncoder().getVelocity(), speeds.rightMetersPerSecond);
+    logValue("leftPid", leftPidOutput);
+    logValue("rightPid", rightPidOutput);
 
     // OK, apply those to the actual hardware.
-    setMotorVoltages(leftFeedforward + leftOutput, rightFeedforward + rightOutput);
+    setMotorVoltages(leftFeedforward + leftPidOutput, rightFeedforward + rightPidOutput);
   }
 
   /**
@@ -171,14 +197,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see edu.wpi.first.wpilibj.motorcontrol.MotorController#setVoltage
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
-    this.setMotorVoltagesImpl(leftVoltage, rightVoltage);
+    if (ENABLE_VOLTAGE_APPLICATON) {
+      this.setMotorVoltagesImpl(leftVoltage, rightVoltage);
+    }
     m_lastLeftVoltage = leftVoltage;
     m_lastRightVoltage = rightVoltage;
   }
 
   @Override
   public void periodic() {
-    setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
+    if (ENABLE_VOLTAGE_APPLICATON) {
+      setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
+    }
     updateOdometry();
   }
 

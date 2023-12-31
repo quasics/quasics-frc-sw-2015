@@ -1,7 +1,8 @@
 // Adafruit_NeoMatrix example for single NeoPixel Shield.
 // Draws a pair of eyes on an 8x32 NeoPixel matrix, shifting back and forth.
 //
-// For more info, check out https://learn.adafruit.com/adafruit-gfx-graphics-library?view=all.
+// For more info, check out https://learn.adafruit.com/adafruit-neopixel-uberguide/neomatrix-library
+// and https://learn.adafruit.com/adafruit-gfx-graphics-library?view=all.
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>

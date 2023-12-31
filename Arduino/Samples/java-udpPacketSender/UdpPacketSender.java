@@ -1,6 +1,14 @@
 import java.net.*;
 import java.io.*;
 
+/**
+ * A sample (Java) program to send UDP packets containing
+ * textual messages to a (presumably) remote program.
+ *
+ * This was originally written as a way to send test data to
+ * Ethernet-enabled Arduino applications (e.g., to control
+ * lighting code, etc.), but could be used for other purposes.
+ */
 class UdpPacketSender {
   public static void main(String [] args) throws IOException {
 	// Parameter sanitization

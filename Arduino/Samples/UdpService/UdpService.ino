@@ -57,10 +57,6 @@ static byte mac[MAC_LENGTH] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // Enable network access, and start listening for remote commands.
 bool prepareNetwork(byte mac[MAC_LENGTH], EthernetUDP& udp, int localPort) {
-#ifdef USE_RANDOM_MAC_ADDRESS
-  generateMacAddress(mac);
-#endif
-
   DEFINE_STATIC_IP_CONFIG();
 
   // Start the Ethernet connection.
@@ -93,7 +89,25 @@ void setup() {
   }
 
 #ifndef SKIP_NETWORKING
-  if (!prepareNetwork(mac, udp, kLocalPort)) {
+#ifdef USE_RANDOM_MAC_ADDRESS
+  generateMacAddress(mac);
+#endif
+  // Try connecting to the network some number of times before declaring
+  // outright failure.  This is intended to cover cases like the Ethernet
+  // cable not being plugged in right away when the Arduino is powered up,
+  // or the DHCP server not being ready right away (e.g., giving the radio
+  // on a robot a chance to power up, too), etc.
+  bool networkUnavailable = true;
+  for(int i = 0; networkUnavailable && i < kMaxTriesForNetworkConfig; ++i) {
+    if (prepareNetwork(mac, udp, kLocalPort)) {
+      networkUnavailable = false;
+    } else {
+      // Wait before trying again....
+      LOG("Network init failed...");
+      delay(100);
+    }
+  }
+  if (networkUnavailable) {
     Serial.println("Halting! (Network setup failed)");
     while (true) {
       delay(1);

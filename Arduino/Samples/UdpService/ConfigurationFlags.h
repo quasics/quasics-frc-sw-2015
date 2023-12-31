@@ -5,6 +5,11 @@
  * Compile-time configuration settings.  Muck with these CAREFULLY!!!
  */
 
+// # of times we'll try to configure the network before declaring outright
+// failure.  (Each failure will be followed by a brief pause before trying
+// again.)
+#define kMaxTriesForNetworkConfig 20
+
 // If defined, log lots of stuff to the Serial Monitor.
 #undef ENABLE_LOGGING
 

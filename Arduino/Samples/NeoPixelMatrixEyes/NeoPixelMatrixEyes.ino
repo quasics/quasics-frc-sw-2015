@@ -1,5 +1,7 @@
 // Adafruit_NeoMatrix example for single NeoPixel Shield.
-// Scrolls 'Howdy' across the matrix in a portrait (vertical) orientation.
+// Draws a pair of eyes on an 8x32 NeoPixel matrix, shifting back and forth.
+//
+// For more info, check out https://learn.adafruit.com/adafruit-gfx-graphics-library?view=all.
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
@@ -35,10 +37,7 @@
 
 
 // Example for NeoPixel Shield.  In this application we'd like to use it
-// as a 5x8 tall matrix, with the USB port positioned at the top of the
-// Arduino.  When held that way, the first pixel is at the top right, and
-// lines are arranged in columns, progressive order.  The shield uses
-// 800 KHz (v2) pixels that expect GRB color data.
+// as a 8x32 matrix.
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(32, 8, PIN,
   NEO_MATRIX_BOTTOM  + NEO_MATRIX_RIGHT +
   NEO_MATRIX_COLUMNS + NEO_MATRIX_ZIGZAG,

@@ -6,14 +6,15 @@
 
 using std::numbers::pi;
 
-constexpr auto kS = 0.25829_V;
-constexpr auto kV = 4.5623 * (1_V * 1_s / 1_m);
-constexpr auto kA = 1.608 * (1_V * 1_s * 1_s / 1_m);
-constexpr double kP = 5.1527;
+////////////////////////////////////////////////
+/// From 2023 "ChargedUp" constants for Sally
+constexpr auto kS = 0.19529_V;
+constexpr auto kV = 2.2329 * (1_V * 1_s / 1_m);
+constexpr auto kA = 0 * (1_V * 1_s * 1_s / 1_m);
+constexpr double kP = 0.29613;
 constexpr double kI = 0;
 constexpr double kD = 0;
-
-constexpr units::length::meter_t TRACK_WIDTH_METERS_GLADYS = 0.559_m;
+constexpr units::length::inch_t TRACK_WIDTH_METERS_SALLY = 22.0_in;
 
 namespace RobotPhysics {
   /** Drive base gear ratio used for Mae (2020/2021 robot). */
@@ -30,18 +31,14 @@ namespace RobotPhysics {
    * Used to isolate the gear ratio for the robot we're actually building for,
    * from the various "known values" for each of the possible robots.
    */
-  constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_GLADYS;
+  constexpr double DRIVEBASE_GEAR_RATIO = DRIVEBASE_GEAR_RATIO_SALLY;
 
   /** Wheel diameter used with all of our 2020-2023 robot drive bases. */
   constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
-
-  /** Track width for Gladys. */
-  // TODO(matthew): Confirm that this is correct.
-  constexpr units::length::inch_t TRACK_WIDTH_INCHES_GLADYS = 22.0_in;
 }  // namespace RobotPhysics
 
 RealDriveBase::RealDriveBase()
-    : IDrivebase(TRACK_WIDTH_METERS_GLADYS, kP, kI, kD, kS, kV, kA),
+    : IDrivebase(TRACK_WIDTH_METERS_SALLY, kP, kI, kD, kS, kV, kA),
       m_odometry{m_trivialGyro->getRotation2d(),
                  m_leftTrivialEncoder->getPosition(),
                  m_rightTrivialEncoder->getPosition()} {

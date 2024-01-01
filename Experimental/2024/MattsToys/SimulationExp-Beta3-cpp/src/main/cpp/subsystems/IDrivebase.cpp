@@ -3,19 +3,32 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/IDrivebase.h"
+#include "utils/DeadBandEnforcer.h"
+
+namespace {
+  // Provides a deadband control for left/right wheel speeds.
+  const DeadBandEnforcer kSpeedEnforcer{0.1};
+}
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
 
   // Make sure that the differential drive is "fed" on a regular basis.
-  setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
+  if (ENABLE_VOLTAGE_APPLICATION) {
+    setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
+  }
 }
 
-void IDrivebase::setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower) {
-  setMotorVoltagesImpl(leftPower, rightPower);
-  m_lastLeftVoltage = leftPower;
-  m_lastRightVoltage = rightPower;
+void IDrivebase::setMotorVoltages(units::volt_t leftVoltage, units::volt_t rightVoltage) {
+  logValue("leftVolts", leftVoltage.value());
+  logValue("rightVolts", rightVoltage.value());
+
+  if (ENABLE_VOLTAGE_APPLICATION) {
+    setMotorVoltagesImpl(leftVoltage, rightVoltage);
+  }
+  m_lastLeftVoltage = leftVoltage;
+  m_lastRightVoltage = rightVoltage;
 }
 
 /**
@@ -25,26 +38,31 @@ void IDrivebase::setMotorVoltages(units::volt_t leftPower, units::volt_t rightPo
  * @param speeds  desired wheel speeds for left/right side
  */
 void IDrivebase::setSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) {
+  logValue("leftSpeed", speeds.left.value());
+  logValue("rightSpeed", speeds.right.value());
+
+  // A little "deadband enforcement".
+  auto leftStabilized = kSpeedEnforcer(speeds.left.value()) * 1_mps;
+  auto rightStabilized = kSpeedEnforcer(speeds.right.value()) * 1_mps;
+  logValue("leftStable", leftStabilized.value());
+  logValue("rightStable", rightStabilized.value());
+
   // Compute the basic voltages we'd need for the desired speeds.
-  auto leftFeedforward = m_feedforward->Calculate(speeds.left);
-  auto rightFeedforward = m_feedforward->Calculate(speeds.right);
+  auto leftFeedforward = m_feedforward->Calculate(leftStabilized);
+  auto rightFeedforward = m_feedforward->Calculate(rightStabilized);
+  logValue("leftFF", leftFeedforward.value());
+  logValue("rightFF", rightFeedforward.value());
 
   // Compute a delta, based on current/historical data.
-  double leftOutput = m_leftPIDController->Calculate(
+  double leftPidOutput = m_leftPIDController->Calculate(
       getLeftEncoder().getVelocity().value(), speeds.left.value());
-  double rightOutput = m_rightPIDController->Calculate(
+  double rightPidOutput = m_rightPIDController->Calculate(
       getRightEncoder().getVelocity().value(), speeds.right.value());
+  logValue("leftPid", leftPidOutput);
+  logValue("rightPid", rightPidOutput);
 
   // Sum the values to get left/right *actual* voltages needed.
-  const auto leftVoltage = units::volt_t{leftOutput} + leftFeedforward;
-  const auto rightVoltage = units::volt_t{rightOutput} + rightFeedforward;
+  const auto leftVoltage = units::volt_t{leftPidOutput} + leftFeedforward;
+  const auto rightVoltage = units::volt_t{rightPidOutput} + rightFeedforward;
   setMotorVoltages(leftVoltage, rightVoltage);
-
-  // Optional logging of speed data to SmartDashboard.
-  if (m_logWheelSpeedData) {
-    frc::SmartDashboard::PutNumber("Left speed", speeds.left.value());
-    frc::SmartDashboard::PutNumber("Right speed", speeds.right.value());
-    frc::SmartDashboard::PutNumber("Left volts", leftVoltage.value());
-    frc::SmartDashboard::PutNumber("Right volts", rightVoltage.value());
-  }
 }

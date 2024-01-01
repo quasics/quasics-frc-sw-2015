@@ -55,6 +55,8 @@ class IDrivebase : public frc2::SubsystemBase {
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
       std::numbers::pi};
 
+  static constexpr bool ENABLE_VOLTAGE_APPLICATION = true;
+
   // Convenient type aliases, letting us just say things like "ka_unit" inside
   // this class's code, instead of having to use the whole fully-qualified name
   // every time.
@@ -158,6 +160,8 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   void arcadeDrive(units::meters_per_second_t xSpeed,
                    units::radians_per_second_t rot) {
+    logValue("xSpeed", xSpeed.value());
+    logValue("rotSpeed", rot.value());
     setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
   }
 
@@ -250,6 +254,7 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   virtual void Periodic();
 
+  // Internal helper methods.
  protected:
   /**
    * Sets the voltages for the motors on the left and right sides, and
@@ -259,6 +264,13 @@ class IDrivebase : public frc2::SubsystemBase {
    * @see #setMotorVoltagesImpl(units::volt_t, units::volt_t)
    */
   void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower);
+
+  /** Logs the specified label/value to the SmartDashboard. */
+  void logValue(std::string_view label, double val) {
+    if (m_logWheelSpeedData) {
+      frc::SmartDashboard::PutNumber(label, val);
+    }
+  }
 
   // The "hardware abstraction layer" methods.  These are functions that
   // *must* be overridden by the derived classes, providing access to the

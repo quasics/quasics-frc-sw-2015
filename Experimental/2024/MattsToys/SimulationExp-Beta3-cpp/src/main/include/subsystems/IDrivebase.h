@@ -55,6 +55,7 @@ class IDrivebase : public frc2::SubsystemBase {
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
       std::numbers::pi};
 
+  /** Used to disable actual motor control (if neeed during debugging). */
   static constexpr bool ENABLE_VOLTAGE_APPLICATION = true;
 
   // Convenient type aliases, letting us just say things like "ka_unit" inside

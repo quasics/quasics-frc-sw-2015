@@ -9,6 +9,7 @@
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/SubsystemBase.h>
 #include <frc2/command/Subsystem.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
@@ -21,24 +22,30 @@
 
 /**
  * This class provides the framework for a common interface to be used in
- * controlling a drive base (real or simulated), and is intended to be a
- * "mix-in" base class for derived types, along with the actual SubsystemBase
- * class.
+ * controlling a drive base (real or simulated).
  *
- * For example:
- * <code>
- *   class ActualDrivebase : public frc2::SubsystemBase, public IDrivebase {
- *     . . .
- *     ActualDriveBase::ActualDriveBase()
- *       : IDrivebase(<constants from SysID...>) { ... }
- *     virtual Periodic() {
- *       IDrivebase::Periodic();  // See comments below.
- *     }
- *     . . .
- *   };
- * </code>
+ * The goal is to enforce a separation (sometimes referred to as a "hardware
+ * abstraction layer") between functions that deal directly with the hardware
+ * (e.g., configuring motors, setting voltages to be passed through to them,
+ * etc.), and functions that *use* those hardware-specific pieces to get more
+ * general functionality done.
+ *
+ * For example, implementing "arcade" or "tank" drive is pretty much the same
+ * for any sort of a differential drive base when dealing with things like
+ * speed constraints and deadband evaluation, up to the point when you actually
+ * need to say, "OK, make _these_ motors run at speed X, or get sent voltage Y".
+ *
+ * In this class, we:
+ *   - Define a "contract" that must be implemented by further subclasses,
+ *     which will handle the task of configuring/interacting with the real
+ *     hardware (e.g., an FRC drive base, or an XRP "toy bot", etc.), in the
+ *     form of abstract functions (e.g., "virtual void
+ *     setMotorVoltages(double left, double right) = 0;") that hide the details
+ *     associated with any specific hardware.
+ *   - Define and implement the "hardware-agnostic" functionality that is built
+ *     using/on top of that contract (e.g., arcadeDrive(), tankDrive(), etc.).
  */
-class IDrivebase {
+class IDrivebase : public frc2::SubsystemBase {
   // Useful class constants.
  public:
   /** Maximum linear speed (@ 100% of rated speed). */
@@ -48,7 +55,9 @@ class IDrivebase {
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
       std::numbers::pi};
 
-  // Convenient type aliases.
+  // Convenient type aliases, letting us just say things like "ka_unit" inside
+  // this class's code, instead of having to use the whole fully-qualified name
+  // every time.
  public:
   using SimpleMotorFeedforward = frc::SimpleMotorFeedforward<units::meters>;
   using kv_unit = SimpleMotorFeedforward::kv_unit;
@@ -60,8 +69,10 @@ class IDrivebase {
  private:
   /** PID controller for motors on the left side of the drive base. */
   const std::unique_ptr<frc::PIDController> m_leftPIDController;
+
   /** PID controller for motors on the right side of the drive base. */
   const std::unique_ptr<frc::PIDController> m_rightPIDController;
+
   /**
    * Feed-forward control for drive motors.  (Like other resources in WPILib,
    * it is assumed that the motors on the left and the right side are consistent
@@ -69,6 +80,7 @@ class IDrivebase {
    * both sides.)
    */
   const std::unique_ptr<SimpleMotorFeedforward> m_feedforward;
+
   /**
    * Kinematics charactistics for the underlying drive base.
    */
@@ -245,19 +257,16 @@ class IDrivebase {
     m_logWheelSpeedData = tf;
   }
 
-  // Standard WPILib functions, which we're going to override.  (Note that
-  // because we're using "multiple inheritance", the derived classes will need
-  // to have at least a trivial version of these functions that explicitly
-  // invokes this version, or else the compiler will complain that it doesn't
-  // know how to deal with them.)
+  // Standard WPILib functions, which we're going to override.
  public:
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
   virtual void Periodic();
 
-  // Methods that *must* be overridden by the derived classes, providing access
-  // to the underlying hardware to support the common functionality defined
+  // The "hardware abstraction layer" methods.  These are functions that
+  // *must* be overridden by the derived classes, providing access to the
+  // underlying hardware to support the common functionality defined
   // above.
  protected:
   /** Sets the voltages for the motors on the left and right sides. */

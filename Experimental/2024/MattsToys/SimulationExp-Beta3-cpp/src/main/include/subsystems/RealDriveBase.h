@@ -13,7 +13,7 @@
 #include "Constants.h"
 #include "subsystems/IDrivebase.h"
 
-class RealDriveBase : public frc2::SubsystemBase, public IDrivebase {
+class RealDriveBase : public IDrivebase {
  public:
   RealDriveBase();
 

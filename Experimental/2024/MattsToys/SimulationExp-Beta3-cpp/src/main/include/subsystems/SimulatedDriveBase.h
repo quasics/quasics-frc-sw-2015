@@ -14,7 +14,7 @@
 
 #include "subsystems/IDrivebase.h"
 
-class SimulatedDriveBase : public frc2::SubsystemBase, public IDrivebase {
+class SimulatedDriveBase : public IDrivebase {
  public:
   SimulatedDriveBase();
 

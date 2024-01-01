@@ -236,20 +236,6 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   /**
-   * @return a reference to the underlying IDrivebase as an frc2::Subsystem
-   * object (if the underlying derived class has been appropriately derived from
-   * that type, as well as this one).
-   */
-  frc2::Subsystem& asFrcSubsystem() {
-    // Note that I need to do the "dynamic_cast" below in order to safely
-    // convert types between the custom "IDrivebase" interface that the smart
-    // pointer knows about and a "Subsystem" type that exposes the
-    // "SetDefaultCommand" method that we want to use.  (In Java, this
-    // hoop-jumping isn't needed.)
-    return dynamic_cast<frc2::Subsystem&>(*this);
-  }
-
-  /**
    * Enables/disables logging of (target) wheel speeds and voltages to the
    * SmartDashboard.
    */

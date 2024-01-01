@@ -13,7 +13,7 @@ ArcadeDriveCommand::ArcadeDriveCommand(IDrivebase& drivebase,
     : m_drivebase(drivebase),
       m_forwardSupplier(forwardSupplier),
       m_rotationSupplier(rotationSupplier) {
-  AddRequirements(&m_drivebase.asFrcSubsystem());
+  AddRequirements(&m_drivebase);
 }
 
 // Called when the command is initially scheduled.

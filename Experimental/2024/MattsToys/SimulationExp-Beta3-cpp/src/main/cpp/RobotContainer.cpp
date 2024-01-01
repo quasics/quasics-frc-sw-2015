@@ -54,7 +54,7 @@ void RobotContainer::ConfigureBindings() {
   };
   ArcadeDriveCommand arcadeDrive(*m_drivebase, forwardSupplier,
                                  rotationSupplier);
-  m_drivebase->asFrcSubsystem().SetDefaultCommand(std::move(arcadeDrive));
+  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

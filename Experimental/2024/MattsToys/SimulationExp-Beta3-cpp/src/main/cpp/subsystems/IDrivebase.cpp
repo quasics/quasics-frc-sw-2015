@@ -7,6 +7,15 @@
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
+
+  // Make sure that the differential drive is "fed" on a regular basis.
+  setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
+}
+
+void IDrivebase::setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower) {
+  setMotorVoltagesImpl(leftPower, rightPower);
+  m_lastLeftVoltage = leftPower;
+  m_lastRightVoltage = rightPower;
 }
 
 /**

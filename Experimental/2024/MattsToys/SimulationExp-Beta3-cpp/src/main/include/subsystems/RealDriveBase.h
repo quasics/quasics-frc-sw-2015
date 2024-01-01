@@ -26,7 +26,7 @@ class RealDriveBase : public IDrivebase {
 
   // Methods required by the IDrivebase class.
  protected:
-  void setMotorVoltages(units::volt_t leftPower,
+  void setMotorVoltagesImpl(units::volt_t leftPower,
                         units::volt_t rightPower) override;
 
   frc::DifferentialDriveOdometry& getOdometry() override {

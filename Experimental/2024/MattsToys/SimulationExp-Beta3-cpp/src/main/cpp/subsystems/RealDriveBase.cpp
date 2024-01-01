@@ -83,7 +83,7 @@ void RealDriveBase::configureEncoders() {
   resetEncoders();
 }
 
-void RealDriveBase::setMotorVoltages(units::volt_t leftPower,
+void RealDriveBase::setMotorVoltagesImpl(units::volt_t leftPower,
                                      units::volt_t rightPower) {
   m_leftSide.SetVoltage(leftPower);
   m_rightSide.SetVoltage(rightPower);

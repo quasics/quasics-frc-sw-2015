@@ -40,7 +40,7 @@
  *     which will handle the task of configuring/interacting with the real
  *     hardware (e.g., an FRC drive base, or an XRP "toy bot", etc.), in the
  *     form of abstract functions (e.g., "virtual void
- *     setMotorVoltages(double left, double right) = 0;") that hide the details
+ *     setMotorVoltagesImpl(double left, double right) = 0;") that hide the details
  *     associated with any specific hardware.
  *   - Define and implement the "hardware-agnostic" functionality that is built
  *     using/on top of that contract (e.g., arcadeDrive(), tankDrive(), etc.).
@@ -264,13 +264,23 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   virtual void Periodic();
 
+ protected:
+  /**
+   * Sets the voltages for the motors on the left and right sides, and
+   * "remembers" the settings, so that they can be reapplied regularly.
+   * 
+   * @see #Periodic()
+   * @see #setMotorVoltagesImpl(units::volt_t, units::volt_t)
+   */
+  void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower);
+
   // The "hardware abstraction layer" methods.  These are functions that
   // *must* be overridden by the derived classes, providing access to the
   // underlying hardware to support the common functionality defined
   // above.
  protected:
-  /** Sets the voltages for the motors on the left and right sides. */
-  virtual void setMotorVoltages(units::volt_t leftPower,
+  /** Actually sets the voltages for the motors on the left and right sides. */
+  virtual void setMotorVoltagesImpl(units::volt_t leftPower,
                                 units::volt_t rightPower) = 0;
 
   /** @return the odometry tracker for the underlying drive base. */
@@ -287,4 +297,7 @@ class IDrivebase : public frc2::SubsystemBase {
    * heading.
    */
   virtual IGyro& getGyro() = 0;
+
+ private:
+  units::volt_t m_lastLeftVoltage{0}, m_lastRightVoltage{0};
 };

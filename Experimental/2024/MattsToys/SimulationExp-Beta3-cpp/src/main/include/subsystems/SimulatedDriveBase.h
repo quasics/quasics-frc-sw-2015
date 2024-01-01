@@ -34,7 +34,7 @@ class SimulatedDriveBase : public IDrivebase {
   void SimulationPeriodic() override;
 
  protected:
-  void setMotorVoltages(units::volt_t leftPower,
+  void setMotorVoltagesImpl(units::volt_t leftPower,
                         units::volt_t rightPower) override {
     m_leftMotor.SetVoltage(leftPower);
     m_rightMotor.SetVoltage(rightPower);

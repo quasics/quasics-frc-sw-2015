@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -35,7 +35,7 @@ class SimulatedDriveBase : public IDrivebase {
 
  protected:
   void setMotorVoltagesImpl(units::volt_t leftPower,
-                        units::volt_t rightPower) override {
+                            units::volt_t rightPower) override {
     m_leftMotor.SetVoltage(leftPower);
     m_rightMotor.SetVoltage(rightPower);
   }

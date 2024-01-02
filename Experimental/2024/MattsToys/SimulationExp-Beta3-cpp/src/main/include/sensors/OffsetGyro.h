@@ -1,9 +1,17 @@
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 #pragma once
 
 #include <iostream>
 
 #include "sensors/IGyro.h"
 
+/**
+ * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
+ * the original gyro's data.
+ */
 class OffsetGyro : public IGyro {
  private:
   IGyro& m_srcGyro;

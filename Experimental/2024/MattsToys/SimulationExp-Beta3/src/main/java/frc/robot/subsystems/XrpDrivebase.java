@@ -20,8 +20,7 @@ import frc.robot.utils.DeadbandEnforcer;
  * @see https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
  */
 public class XrpDrivebase extends AbstractDrivebase {
-  private static final double kGearRatio =
-      (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
+  private static final double kGearRatio = (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
   private static final double kCountsPerMotorShaftRev = 12.0;
   private static final double kCountsPerRevolution = kCountsPerMotorShaftRev * kGearRatio; // 585.0
   private static final double kWheelDiameterMeters = 0.060;
@@ -55,10 +54,8 @@ public class XrpDrivebase extends AbstractDrivebase {
   private final XRPGyro m_gyro = new XRPGyro();
 
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
 
   // Odometry tracking, used by the base class.
@@ -81,7 +78,7 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_rightMotor.setInverted(true);
     m_leftMotor.setInverted(false);
 
-    // Use inches as unit for encoder distances
+    // Use meters as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
 

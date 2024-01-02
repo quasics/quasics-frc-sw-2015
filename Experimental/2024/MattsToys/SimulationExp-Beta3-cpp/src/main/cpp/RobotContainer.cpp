@@ -55,6 +55,11 @@ void RobotContainer::ConfigureBindings() {
   ArcadeDriveCommand arcadeDrive(*m_drivebase, forwardSupplier,
                                  rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
+
+  frc::SmartDashboard::PutData(
+      "Toggle logging", new frc2::InstantCommand([] {
+        IDrivebase::enableLogging(!IDrivebase::isLoggingEnabled());
+      }));
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

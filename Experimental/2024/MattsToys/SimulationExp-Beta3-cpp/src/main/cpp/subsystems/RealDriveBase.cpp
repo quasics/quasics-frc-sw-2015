@@ -39,9 +39,9 @@ namespace RobotPhysics {
 
 RealDriveBase::RealDriveBase()
     : IDrivebase(TRACK_WIDTH_METERS_SALLY, kP, kI, kD, kS, kV, kA),
-      m_odometry{m_trivialGyro->getRotation2d(),
-                 m_leftTrivialEncoder->getPosition(),
-                 m_rightTrivialEncoder->getPosition()} {
+      // Initial (dummy) configuration of the odometry, to be updated once the
+      // encoders are configured.
+      m_odometry{0_deg, 0_m, 0_m} {
   SetName("RealDriveBase");
 
   // * Motor inversions
@@ -50,6 +50,9 @@ RealDriveBase::RealDriveBase()
 
   // * RelativeEncoder configuration (to translate ticks to meters, etc.)
   configureEncoders();
+
+  // Update the odometry, now that the encoders have been configured.
+  updateOdometry();
 
   // Note that we aren't using a frc::DifferentialDrive object.  We're just
   // taking direct control of the two sides.

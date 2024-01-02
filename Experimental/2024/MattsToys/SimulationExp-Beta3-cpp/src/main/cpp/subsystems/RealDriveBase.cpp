@@ -44,9 +44,11 @@ RealDriveBase::RealDriveBase()
       m_odometry{0_deg, 0_m, 0_m} {
   SetName("RealDriveBase");
 
-  // * Motor inversions
-  m_leftSide.SetInverted(false);
-  m_rightSide.SetInverted(true);
+  // * Motor inversions (if needed, and the motors aren't already
+  // soft-configured).
+  //
+  //  m_leftSide.SetInverted(false);
+  // m_rightSide.SetInverted(true);
 
   // * RelativeEncoder configuration (to translate ticks to meters, etc.)
   configureEncoders();

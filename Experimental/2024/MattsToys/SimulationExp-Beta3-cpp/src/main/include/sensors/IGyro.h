@@ -144,21 +144,18 @@ inline std::unique_ptr<IGyro> IGyro::wrapGyro(frc::ADXRS450_Gyro& g) {
 std::unique_ptr<IGyro> IGyro::wrapYawGyro(IGyro::Pigeon2& pigeon2) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
       [&]() {},
-      // WPILib docs indicate that ADXRS450_Gyro::GetAngle() returns degrees
+      // CTRE docs indicate that Pigeon2::GetAngle() returns degrees
       [&]() {
         return angle_t(pigeon2.GetAngle()); /* GetYaw().GetValue() */
       },
-      // WPILib docs indicate that ADXRS450_Gyro::GetRate() returns degrees/sec
+      // CTRE docs indicate that Pigeon2::GetRate() returns degrees/sec
       [&]() {
         return rate_t(pigeon2.GetRate()); /* GetAngularVelocityZ().GetValue() */
       },
       [&]() { return pigeon2.GetRotation2d(); },
       // Note that this will do a reset on the Pigeon for *all* axes.  A better
-      // approach might be to use something like the "OffsetGyro" approach that
-      // I prototyped in last year's "JavaUtilityLib", so that we can reset
-      // just this *view* of the device.  (Though if someone resets the master
-      // device, we'd still be stuck with a similar problem.)
-      // TODO(mjh): Port something like the OffsetGyro into this year's
-      // examples.
+      // approach would be to further wrap this with an "OffsetGyro", similar to
+      // what was used in the team's 2023 code, and in the "MattsToy" code for
+      // 2024.
       [&]() { pigeon2.Reset(); }));
 }

@@ -85,16 +85,23 @@ class RealDriveBase : public IDrivebase {
   // Odometry information for the robot.
   frc::DifferentialDriveOdometry m_odometry;
 
-  // Standardized wrappers around underlying gyros/encoders.  (Needed by
+  // "Standardized" wrappers around underlying gyros/encoders.  (Needed by
   // IDrivebase class.)
+ private:
+  /** IGyro wrapper around the real gyro. */
   std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};
+
   /**
-   * OffsetGyro wrapper around the real gyro, preventing "reset" from affecting
-   * all axes.
+   * Additional OffsetGyro wrapper around the real gyro, preventing "reset" from
+   * affecting all axes.
    */
   OffsetGyro m_offsetGyro{*m_trivialGyro};
+
+  /** Wraps a TrivialEncoder interface around the left encoder. */
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_leftFrontEncoder)};
+
+  /** Wraps a TrivialEncoder interface around the right encoder. */
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_rightFrontEncoder)};
 };

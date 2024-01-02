@@ -95,6 +95,5 @@
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
-  "editor.defaultFormatter": "xaver.clang-format",
   "editor.formatOnType": true
 }

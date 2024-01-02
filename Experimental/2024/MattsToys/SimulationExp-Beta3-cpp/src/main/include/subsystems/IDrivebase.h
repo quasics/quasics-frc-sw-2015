@@ -163,7 +163,15 @@ class IDrivebase : public frc2::SubsystemBase {
                    units::radians_per_second_t rot) {
     logValue("xSpeed", xSpeed.value());
     logValue("rotSpeed", rot.value());
-    setSpeeds(m_kinematics.ToWheelSpeeds({xSpeed, 0_mps, rot}));
+
+    // Convert the requested speeds to left/right velocities.
+    frc::ChassisSpeeds speeds;
+    speeds.vx = xSpeed;
+    speeds.omega = rot;
+    const auto wheelSpeeds = m_kinematics.ToWheelSpeeds(speeds);
+
+    // Set left/right speeds.
+    setSpeeds(wheelSpeeds);
   }
 
   /** Helper method to stop the robot. */

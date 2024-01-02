@@ -40,7 +40,7 @@ void RobotContainer::ConfigureBindings() {
 
   // Set up arcade drive command as a default.
   const bool isReal = frc::RobotBase::IsReal();
-  static DeadBandEnforcer stickDeadBand(-0.01);
+  static DeadBandEnforcer stickDeadBand(0.1);
   ArcadeDriveCommand::PercentSupplier forwardSupplier =
       // Note: "=" says automatically capture (copies of) any variables
       // referenced; "this" needs to be explicitly captured.

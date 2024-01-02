@@ -9,8 +9,8 @@
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <frc2/command/SubsystemBase.h>
 #include <frc2/command/Subsystem.h>
+#include <frc2/command/SubsystemBase.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
@@ -40,8 +40,8 @@
  *     which will handle the task of configuring/interacting with the real
  *     hardware (e.g., an FRC drive base, or an XRP "toy bot", etc.), in the
  *     form of abstract functions (e.g., "virtual void
- *     setMotorVoltagesImpl(double left, double right) = 0;") that hide the details
- *     associated with any specific hardware.
+ *     setMotorVoltagesImpl(double left, double right) = 0;") that hide the
+ *     details associated with any specific hardware.
  *   - Define and implement the "hardware-agnostic" functionality that is built
  *     using/on top of that contract (e.g., arcadeDrive(), tankDrive(), etc.).
  */
@@ -91,7 +91,7 @@ class IDrivebase : public frc2::SubsystemBase {
 
  private:
   /** Iff true, enables logging wheel speeds/voltages to SmartDashboard. */
-  bool m_logWheelSpeedData = false;
+  static bool m_logWheelSpeedData;
 
  public:
   /**
@@ -240,12 +240,33 @@ class IDrivebase : public frc2::SubsystemBase {
                                 getRightEncoder().getPosition(), pose);
   }
 
+  // Functions to support logging data used for driving.
+ public:
   /**
    * Enables/disables logging of (target) wheel speeds and voltages to the
    * SmartDashboard.
+   * @see #isLoggingEnabled
    */
-  void enableLogging(bool tf) {
+  static void enableLogging(bool tf) {
     m_logWheelSpeedData = tf;
+  }
+
+  /**
+   * @return true iff logging is enabled.
+   * @see #enableLogging(bool)
+   */
+  static bool isLoggingEnabled() {
+    return m_logWheelSpeedData;
+  }
+
+  /**
+   * Logs the specified label/value to the SmartDashboard (if enabled).
+   * @see #isLoggingEnabled
+   */
+  static void logValue(std::string_view label, double val) {
+    if (m_logWheelSpeedData) {
+      frc::SmartDashboard::PutNumber(label, val);
+    }
   }
 
   // Standard WPILib functions, which we're going to override.
@@ -260,18 +281,11 @@ class IDrivebase : public frc2::SubsystemBase {
   /**
    * Sets the voltages for the motors on the left and right sides, and
    * "remembers" the settings, so that they can be reapplied regularly.
-   * 
+   *
    * @see #Periodic()
    * @see #setMotorVoltagesImpl(units::volt_t, units::volt_t)
    */
   void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower);
-
-  /** Logs the specified label/value to the SmartDashboard. */
-  void logValue(std::string_view label, double val) {
-    if (m_logWheelSpeedData) {
-      frc::SmartDashboard::PutNumber(label, val);
-    }
-  }
 
   // The "hardware abstraction layer" methods.  These are functions that
   // *must* be overridden by the derived classes, providing access to the
@@ -280,7 +294,7 @@ class IDrivebase : public frc2::SubsystemBase {
  protected:
   /** Actually sets the voltages for the motors on the left and right sides. */
   virtual void setMotorVoltagesImpl(units::volt_t leftPower,
-                                units::volt_t rightPower) = 0;
+                                    units::volt_t rightPower) = 0;
 
   /** @return the odometry tracker for the underlying drive base. */
   virtual frc::DifferentialDriveOdometry& getOdometry() = 0;

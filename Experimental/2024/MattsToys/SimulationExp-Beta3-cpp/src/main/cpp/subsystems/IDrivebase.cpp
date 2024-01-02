@@ -3,12 +3,15 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "subsystems/IDrivebase.h"
+
 #include "utils/DeadBandEnforcer.h"
 
 namespace {
   // Provides a deadband control for left/right wheel speeds.
   const DeadBandEnforcer kSpeedEnforcer{0.1};
-}
+}  // namespace
+
+bool IDrivebase::m_logWheelSpeedData{false};
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
@@ -20,7 +23,8 @@ void IDrivebase::Periodic() {
   }
 }
 
-void IDrivebase::setMotorVoltages(units::volt_t leftVoltage, units::volt_t rightVoltage) {
+void IDrivebase::setMotorVoltages(units::volt_t leftVoltage,
+                                  units::volt_t rightVoltage) {
   logValue("leftVolts", leftVoltage.value());
   logValue("rightVolts", rightVoltage.value());
 

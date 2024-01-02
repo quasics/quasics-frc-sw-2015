@@ -8,6 +8,9 @@
 
 frc2::CommandPtr autos::ExampleAuto(IDrivebase* subsystem) {
   return frc2::cmd::Sequence(
+      // Not a very interesting command, but it at least tells a subsystem to do
+      // something.
       frc2::InstantCommand([subsystem]() { subsystem->stop(); }).ToPtr(),
+      // Another trivial command.
       frc2::PrintCommand("Trivial operation....").ToPtr());
 }

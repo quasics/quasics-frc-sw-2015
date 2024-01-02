@@ -47,7 +47,7 @@ RealDriveBase::RealDriveBase()
   // * Motor inversions (if needed, and the motors aren't already
   // soft-configured).
   //
-  //  m_leftSide.SetInverted(false);
+  // m_leftSide.SetInverted(false);
   // m_rightSide.SetInverted(true);
 
   // * RelativeEncoder configuration (to translate ticks to meters, etc.)

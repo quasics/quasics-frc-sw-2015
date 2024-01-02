@@ -11,6 +11,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
+#include "sensors/OffsetGyro.h"
 #include "subsystems/IDrivebase.h"
 
 class RealDriveBase : public IDrivebase {
@@ -27,7 +28,7 @@ class RealDriveBase : public IDrivebase {
   // Methods required by the IDrivebase class.
  protected:
   void setMotorVoltagesImpl(units::volt_t leftPower,
-                        units::volt_t rightPower) override;
+                            units::volt_t rightPower) override;
 
   frc::DifferentialDriveOdometry& getOdometry() override {
     return m_odometry;
@@ -42,7 +43,7 @@ class RealDriveBase : public IDrivebase {
   }
 
   IGyro& getGyro() override {
-    return *m_trivialGyro;
+    return m_offsetGyro;
   }
 
   // Internal helper functions.
@@ -87,6 +88,11 @@ class RealDriveBase : public IDrivebase {
   // Standardized wrappers around underlying gyros/encoders.  (Needed by
   // IDrivebase class.)
   std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};
+  /**
+   * OffsetGyro wrapper around the real gyro, preventing "reset" from affecting
+   * all axes.
+   */
+  OffsetGyro m_offsetGyro{*m_trivialGyro};
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_leftFrontEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{

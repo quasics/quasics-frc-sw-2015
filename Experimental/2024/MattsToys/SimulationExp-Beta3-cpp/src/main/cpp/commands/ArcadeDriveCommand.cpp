@@ -4,7 +4,6 @@
 
 #include "commands/ArcadeDriveCommand.h"
 
-#include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 ArcadeDriveCommand::ArcadeDriveCommand(IDrivebase& drivebase,
@@ -31,13 +30,7 @@ void ArcadeDriveCommand::End(bool interrupted) {
   m_drivebase.stop();
 }
 
-// Returns true when the command should end.
-bool ArcadeDriveCommand::IsFinished() {
-  return false;
-}
-
 void ArcadeDriveCommand::updateSpeeds() {
-  const bool isReal = frc::RobotBase::IsReal();
   const double leftStickValue = m_forwardSupplier();
   const double rightStickValue = m_rotationSupplier();
 

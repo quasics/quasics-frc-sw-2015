@@ -45,7 +45,7 @@ void RobotContainer::ConfigureBindings() {
       // Note: "=" says automatically capture (copies of) any variables
       // referenced; "this" needs to be explicitly captured.
       [=, this]() {
-        return stickDeadBand(isReal ? m_controller.GetLeftX()
+        return stickDeadBand(isReal ? m_controller.GetLeftY()
                                     : m_controller.GetRawAxis(0));
       };
   ArcadeDriveCommand::PercentSupplier rotationSupplier = [=, this]() {

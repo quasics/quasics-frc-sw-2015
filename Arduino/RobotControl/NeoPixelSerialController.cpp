@@ -1,16 +1,17 @@
 #include "NeoPixelSerialController.h"
 
+#define SERIAL_PORT Serial  // or Serial1 on a Mega
+
 NeoPixelSerialController::NeoPixelSerialController (uint32_t pin, float loopSeconds, uint8_t brightness, uint32_t stripLength, neoPixelType type) {
   strip = new NeoPixelController (pin, loopSeconds, brightness, stripLength, type);
-  Serial1.begin(115200);
-
+  SERIAL_PORT.begin(115200);
 }
 
 void NeoPixelSerialController::NeoPixelSerialProcess () {
-  if (Serial1.available() > 0) {
+  if (SERIAL_PORT.available() > 0) {
     String serialIn = "";
-    while (Serial1.available() > 0) {
-      char c = char(Serial1.read());
+    while (SERIAL_PORT.available() > 0) {
+      char c = char(SERIAL_PORT.read());
       if (c != ';' && c != '\n' && c != '\r') {
         serialIn += c;
       } else {

@@ -4,6 +4,7 @@
 
 #include "subsystems/RealDriveBase.h"
 
+using IdleMode = rev::CANSparkMax::IdleMode;
 using std::numbers::pi;
 
 ////////////////////////////////////////////////
@@ -44,11 +45,8 @@ RealDriveBase::RealDriveBase()
       m_odometry{0_deg, 0_m, 0_m} {
   SetName("RealDriveBase");
 
-  // * Motor inversions (if needed, and the motors aren't already
-  // soft-configured).
-  //
-  // m_leftSide.SetInverted(false);
-  // m_rightSide.SetInverted(true);
+  // * Motor configuration
+  configureMotors();
 
   // * RelativeEncoder configuration (to translate ticks to meters, etc.)
   configureEncoders();
@@ -58,6 +56,21 @@ RealDriveBase::RealDriveBase()
 
   // Note that we aren't using a frc::DifferentialDrive object.  We're just
   // taking direct control of the two sides.
+}
+
+void RealDriveBase::configureMotors() {
+  // * Motor inversions (if needed, and the motors aren't already
+  // soft-configured).
+  //
+  // m_leftSide.SetInverted(false);
+  // m_rightSide.SetInverted(true);
+
+  // Tell the motors to brake if they're not being told how fast to go (e.g.,
+  // when the robot is disabled, or not being driven in auto mode).
+  m_leftFront.SetIdleMode(IdleMode::kBrake);
+  m_leftBack.SetIdleMode(IdleMode::kBrake);
+  m_rightFront.SetIdleMode(IdleMode::kBrake);
+  m_rightBack.SetIdleMode(IdleMode::kBrake);
 }
 
 void RealDriveBase::configureEncoders() {

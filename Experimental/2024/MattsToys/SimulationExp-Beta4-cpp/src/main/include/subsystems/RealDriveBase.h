@@ -48,6 +48,7 @@ class RealDriveBase : public IDrivebase {
 
   // Internal helper functions.
  private:
+  void configureMotors();
   void configureEncoders();
 
   void resetEncoders() {

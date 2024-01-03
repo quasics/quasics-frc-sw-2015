@@ -1,6 +1,6 @@
 #include "NeoPixelController.h"
 
-// #define USE_NEOPIXEL_RING
+#define USE_NEOPIXEL_RING
 
 const uint32_t pin = 6;
 const uint8_t brightness = 255;
@@ -8,7 +8,7 @@ const float loopLength = 1.5;
 
 #ifdef USE_NEOPIXEL_RING
 // Assuming that we're pointing at a medium-sized ring, like Matt's.
-const uint32_t stripLength = 16;
+const uint32_t stripLength = 24;
 const neoPixelType stripType = NEOPIXEL_RING_TYPE;
 #else
 // Assuming that we're pointing at the lighting on Dante.

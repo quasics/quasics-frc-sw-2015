@@ -70,18 +70,12 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
     ////////////////////////////////////////
     // Configure the motors.
 
-    // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
-    m_rightGroup.setInverted(true);
+    // * Motor inversions (if needed, and the motors aren't already
+    // soft-configured).
+    // m_rightGroup.setInverted(true);
 
-    // Tell the motors to brake if they're not being told how fast to go (e.g., when
-    // the robot is
-    // disabled, or not being driven in auto mode).
-    m_leftFront.setIdleMode(IdleMode.kBrake);
-    m_leftRear.setIdleMode(IdleMode.kBrake);
-    m_rightFront.setIdleMode(IdleMode.kBrake);
-    m_rightRear.setIdleMode(IdleMode.kBrake);
+    // Set initial coast/brake mode.
+    enableCoastingMode(false);
 
     ////////////////////////////////////////
     // Configure the encoders.
@@ -102,6 +96,20 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
 
     m_leftEncoder.setPosition(0);
     m_rightEncoder.setPosition(0);
+  }
+
+  /**
+   * Tell the motors to coast (or brake) if they're not being told how fast to
+   * go (e.g., when the robot is disabled, or not being driven in auto mode).
+   * 
+   * @param tf iff true, configure for coast mode; otherwise, for braking
+   */
+  void enableCoastingMode(boolean tf) {
+    final var mode = (tf ? IdleMode.kCoast : IdleMode.kBrake);
+    m_leftFront.setIdleMode(mode);
+    m_leftRear.setIdleMode(mode);
+    m_rightFront.setIdleMode(mode);
+    m_rightRear.setIdleMode(mode);
   }
 
   protected DifferentialDriveOdometry getOdometry() {

@@ -21,7 +21,7 @@ import frc.robot.sensors.TrivialEncoder;
  * that Quasics has employed for the last few years (Spark MAX motors at known
  * CAN addresses).
  */
-public class BrokenCanDrivebase extends AbstractDrivebase {
+public class RealDrivebase extends AbstractDrivebase {
   // Sample PID values from 2023 "ChargedUp" constants for Sally
   private static final double kP = 0.29613;
   private static final double kI = 0;
@@ -67,7 +67,7 @@ public class BrokenCanDrivebase extends AbstractDrivebase {
       m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
   /** Creates a new Drivebase. */
-  public BrokenCanDrivebase() {
+  public RealDrivebase() {
     super(TRACK_WIDTH_METERS, kP, kI, kD, kS, kV);
 
     super.setName(getClass().getSimpleName());

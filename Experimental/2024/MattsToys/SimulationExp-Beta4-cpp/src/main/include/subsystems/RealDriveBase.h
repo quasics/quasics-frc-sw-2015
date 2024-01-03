@@ -14,6 +14,11 @@
 #include "sensors/OffsetGyro.h"
 #include "subsystems/IDrivebase.h"
 
+/**
+ * Drive base subsystem for actual FRC hardware, using the motor configuration
+ * that Quasics has employed for the last few years (Spark MAX motors at known
+ * CAN addresses).
+ */
 class RealDriveBase : public IDrivebase {
  public:
   RealDriveBase();

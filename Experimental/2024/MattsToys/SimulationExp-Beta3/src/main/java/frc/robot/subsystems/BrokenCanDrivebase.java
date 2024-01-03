@@ -16,6 +16,11 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
+/**
+ * Drive base subsystem for actual FRC hardware, using the motor configuration
+ * that Quasics has employed for the last few years (Spark MAX motors at known
+ * CAN addresses).
+ */
 public class BrokenCanDrivebase extends AbstractDrivebase {
   // Sample PID values from 2023 "ChargedUp" constants for Sally
   private static final double kP = 0.29613;

@@ -19,11 +19,12 @@ class RealDriveBase : public IDrivebase {
   RealDriveBase();
 
   /**
-   * Will be called periodically whenever the CommandScheduler runs.
+   * Tell the motors to coast (or brake) if they're not being told how fast to
+   * go (e.g., when the robot is disabled, or not being driven in auto mode).
+   *
+   * @param tf iff true, configure for coast mode; otherwise, for braking
    */
-  void Periodic() override {
-    IDrivebase::Periodic();
-  }
+  void enableCoastingMode(bool tf);
 
   // Methods required by the IDrivebase class.
  protected:

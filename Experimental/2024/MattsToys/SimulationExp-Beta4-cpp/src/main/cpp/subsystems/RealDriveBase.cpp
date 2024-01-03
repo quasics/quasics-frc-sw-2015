@@ -58,6 +58,14 @@ RealDriveBase::RealDriveBase()
   // taking direct control of the two sides.
 }
 
+void RealDriveBase::enableCoastingMode(bool tf) {
+  const auto mode = (tf ? IdleMode::kCoast : IdleMode::kBrake);
+  m_leftFront.SetIdleMode(mode);
+  m_leftBack.SetIdleMode(mode);
+  m_rightFront.SetIdleMode(mode);
+  m_rightBack.SetIdleMode(mode);
+}
+
 void RealDriveBase::configureMotors() {
   // * Motor inversions (if needed, and the motors aren't already
   // soft-configured).
@@ -65,12 +73,8 @@ void RealDriveBase::configureMotors() {
   // m_leftSide.SetInverted(false);
   // m_rightSide.SetInverted(true);
 
-  // Tell the motors to brake if they're not being told how fast to go (e.g.,
-  // when the robot is disabled, or not being driven in auto mode).
-  m_leftFront.SetIdleMode(IdleMode::kBrake);
-  m_leftBack.SetIdleMode(IdleMode::kBrake);
-  m_rightFront.SetIdleMode(IdleMode::kBrake);
-  m_rightBack.SetIdleMode(IdleMode::kBrake);
+  // Configure initial coast/brake mode
+  enableCoastingMode(false);
 }
 
 void RealDriveBase::configureEncoders() {

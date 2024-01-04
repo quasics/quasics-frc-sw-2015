@@ -20,16 +20,41 @@ import frc.robot.sensors.TrivialEncoder;
  * Drive base subsystem for actual FRC hardware, using the motor configuration
  * that Quasics has employed for the last few years (Spark MAX motors at known
  * CAN addresses).
+ *
+ * @todo Add sample solution for using robot characteristics (PID/motor gain values, track width,
+ *       etc.) that are specific to a given robot.  (For example, Sally is just a drive base and is
+ *       thus much lighter than the robots we generally put on the field, which means that the kS/kV
+ *       values for her tend to be smaller.)
  */
 public class RealDrivebase extends AbstractDrivebase {
-  // Sample PID values from 2023 "ChargedUp" constants for Sally
-  private static final double kP = 0.29613;
-  private static final double kI = 0;
-  private static final double kD = 0;
+  // Sample PID/motor gain values from 2023 "ChargedUp" constants for Sally
+  private enum RobotCharacteristics {
+    Sally(
+        /* Track Width (m) */
+        0.381 * 2,
+        /* PID */
+        0.29613, 0.0, 0.0,
+        /* Gains */
+        0.19529, 2.2329, 0.0);
 
-  // Motor gains must be determined for your own robot.
-  private static final double kS = 0.19529; // From 2023 "ChargedUp" constants for Sally
-  private static final double kV = 2.2329; // From 2023 "ChargedUp" constants for Sally
+    RobotCharacteristics(
+        double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
+      this.kP = kP;
+      this.kI = kI;
+      this.kD = kD;
+      this.kS = kS;
+      this.kV = kV;
+      this.kA = kA;
+      this.kTrackWidthMeters = trackWidthMeters;
+    }
+    final double kTrackWidthMeters;
+    final double kP;
+    final double kI;
+    final double kD;
+    final double kS;
+    final double kV;
+    final double kA;
+  }
 
   // Motor IDs are based on those Quasics has used over the last couple of years.
   static final int LEFT_FRONT_CAN_ID = 1;
@@ -42,7 +67,8 @@ public class RealDrivebase extends AbstractDrivebase {
   static final double GLADYS_GEAR_RATIO = 8.45;
   static final double TRACK_WIDTH_METERS = 0.381 * 2;
   static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
-  static final double DISTANCE_SCALING_FACTOR_FOR_GEARING = WHEEL_CIRCUMFERENCE_METERS / GLADYS_GEAR_RATIO;
+  static final double DISTANCE_SCALING_FACTOR_FOR_GEARING =
+      WHEEL_CIRCUMFERENCE_METERS / GLADYS_GEAR_RATIO;
   static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
   // Hardware control/sensing.
@@ -54,8 +80,10 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
-  private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftRear, m_leftFront);
-  private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightRear, m_rightFront);
+  private final MotorControllerGroup m_leftGroup =
+      new MotorControllerGroup(m_leftRear, m_leftFront);
+  private final MotorControllerGroup m_rightGroup =
+      new MotorControllerGroup(m_rightRear, m_rightFront);
 
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
@@ -63,12 +91,24 @@ public class RealDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
-  private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-      m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
+  private final DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
+          m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
-  /** Creates a new Drivebase. */
   public RealDrivebase() {
-    super(TRACK_WIDTH_METERS, kP, kI, kD, kS, kV);
+    this(RobotCharacteristics.Sally);
+  }
+
+  public RealDrivebase(RobotCharacteristics robot) {
+    this(robot.kTrackWidthMeters, robot.kP, robot.kI, robot.kD, robot.kS, robot.kV, robot.kA);
+  }
+
+  /**
+   * Creates a new Drivebase.
+   */
+  public RealDrivebase(
+      double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
+    super(trackWidthMeters, kP, kI, kD, kS, kV, kA);
 
     super.setName(getClass().getSimpleName());
 
@@ -106,7 +146,7 @@ public class RealDrivebase extends AbstractDrivebase {
   /**
    * Tell the motors to coast (or brake) if they're not being told how fast to
    * go (e.g., when the robot is disabled, or not being driven in auto mode).
-   * 
+   *
    * @param tf iff true, configure for coast mode; otherwise, for braking
    */
   void enableCoastingMode(boolean tf) {

@@ -33,13 +33,37 @@ public class RealDrivebase extends AbstractDrivebase {
     // Characteristics from 2023 "ChargedUp" constants for Sally
     Sally(
         /* Track Width (m) */
-        0.381 * 2,
+        0.381 * 2, // TODO: Confirm this
         /* Gear ratio */
         8.45,
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        0.19529, 2.2329, 0.0);
+        0.19529, 2.2329, 0.0),
+    // Characteristics from 2023 "ChargedUp" code constants for Gladys
+    Gladys(
+        /* Track Width (m) */
+        0.5588 /* 22in */, // TODO: Confirm this
+        /* Gear ratio */
+        8.45,
+        /* PID */
+        0.29613, 0, 0,
+        /* Gains */
+        0.25829, 4.5623, 1.608),
+    // Characteristics from 2023 "ChargedUp" code constants for Mae
+    Mae(
+        /* Track Width (m) */
+        0.5588 /* 22in */, // TODO: Confirm this
+        /* Gear ratio */
+        8.45,
+        /* PID */
+        0.001379, 0, 0, // TODO: Confirm this, since it seems *really* low
+        /* Gains
+         *
+         * TODO: Confirm these, since they're very different from 2022 values.  (Though we also
+         * changed the hardware significantly post-season.)
+         */
+        0.13895, 1.3143, 0.1935);
 
     RobotCharacteristics(double trackWidthMeters, double gearRatio, double kP, double kI, double kD,
         double kS, double kV, double kA) {

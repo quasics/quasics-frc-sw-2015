@@ -73,9 +73,14 @@ public class RobotContainer {
   private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
       AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
+  /*
+   * Constructor.
+   *
+   * @todo Add sample solution for selecting which (real) drive base we're actually working on.
+   */
   public RobotContainer() {
     if (Robot.isReal()) {
-      m_drivebase = new RealDrivebase();
+      m_drivebase = new RealDrivebase(RealDrivebase.RobotCharacteristics.Sally);
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.

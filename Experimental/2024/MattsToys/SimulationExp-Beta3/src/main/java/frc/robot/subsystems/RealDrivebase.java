@@ -20,34 +20,41 @@ import frc.robot.sensors.TrivialEncoder;
  * Drive base subsystem for actual FRC hardware, using the motor configuration
  * that Quasics has employed for the last few years (Spark MAX motors at known
  * CAN addresses).
- *
- * @todo Add sample solution for using robot characteristics (PID/motor gain values, track width,
- *       etc.) that are specific to a given robot.  (For example, Sally is just a drive base and is
- *       thus much lighter than the robots we generally put on the field, which means that the kS/kV
- *       values for her tend to be smaller.)
  */
 public class RealDrivebase extends AbstractDrivebase {
-  // Sample PID/motor gain values from 2023 "ChargedUp" constants for Sally
-  private enum RobotCharacteristics {
+  /**
+   * Enum class used to represent the physical characteristics (e.g., PID/motor gain values, track
+   * width, etc.) that are specific to a given robot.
+   *
+   * For example, Sally is just a drive base and is thus much lighter than the robots we generally
+   * put on the field, which means that the kS/kV values for her tend to be smaller.
+   */
+  public enum RobotCharacteristics {
+    // Characteristics from 2023 "ChargedUp" constants for Sally
     Sally(
         /* Track Width (m) */
         0.381 * 2,
+        /* Gear ratio */
+        8.45,
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
         0.19529, 2.2329, 0.0);
 
-    RobotCharacteristics(
-        double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
+    RobotCharacteristics(double trackWidthMeters, double gearRatio, double kP, double kI, double kD,
+        double kS, double kV, double kA) {
+      this.kTrackWidthMeters = trackWidthMeters;
+      this.gearRatio = gearRatio;
       this.kP = kP;
       this.kI = kI;
       this.kD = kD;
       this.kS = kS;
       this.kV = kV;
       this.kA = kA;
-      this.kTrackWidthMeters = trackWidthMeters;
     }
+
     final double kTrackWidthMeters;
+    final double gearRatio;
     final double kP;
     final double kI;
     final double kD;
@@ -62,14 +69,9 @@ public class RealDrivebase extends AbstractDrivebase {
   static final int RIGHT_FRONT_CAN_ID = 3;
   static final int RIGHT_REAR_CAN_ID = 4;
 
-  // The robot's physical characteristics (and directly derived values).
+  // Common physical characteristics for Quasics' robots (and directly derived values).
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
-  static final double GLADYS_GEAR_RATIO = 8.45;
-  static final double TRACK_WIDTH_METERS = 0.381 * 2;
   static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
-  static final double DISTANCE_SCALING_FACTOR_FOR_GEARING =
-      WHEEL_CIRCUMFERENCE_METERS / GLADYS_GEAR_RATIO;
-  static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
   // Hardware control/sensing.
   private final AnalogGyro m_gyro = new AnalogGyro(0);
@@ -95,19 +97,21 @@ public class RealDrivebase extends AbstractDrivebase {
       new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
           m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
-  public RealDrivebase() {
-    this(RobotCharacteristics.Sally);
-  }
-
+  /**
+   * Preferred constructor.
+   *
+   * @param robot specifies the robot-specific characteristics of the actual device to be driven
+   */
   public RealDrivebase(RobotCharacteristics robot) {
-    this(robot.kTrackWidthMeters, robot.kP, robot.kI, robot.kD, robot.kS, robot.kV, robot.kA);
+    this(robot.name(), robot.kTrackWidthMeters, robot.gearRatio, robot.kP, robot.kI, robot.kD,
+        robot.kS, robot.kV, robot.kA);
   }
 
   /**
-   * Creates a new Drivebase.
+   * Detailed constructor.
    */
-  public RealDrivebase(
-      double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
+  private RealDrivebase(String name, double trackWidthMeters, double gearRatio, double kP,
+      double kI, double kD, double kS, double kV, double kA) {
     super(trackWidthMeters, kP, kI, kD, kS, kV, kA);
 
     super.setName(getClass().getSimpleName());
@@ -124,20 +128,21 @@ public class RealDrivebase extends AbstractDrivebase {
 
     ////////////////////////////////////////
     // Configure the encoders.
-
+    System.out.println("Configuring drivebase for " + name);
     System.out.println("Wheel circumference (m): " + WHEEL_CIRCUMFERENCE_METERS);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-    System.out.println("Using gear ratio: " + GLADYS_GEAR_RATIO);
-    System.out.println(
-        "Adjustment for gearing (m/rotation): " + DISTANCE_SCALING_FACTOR_FOR_GEARING);
-    System.out.println("Velocity adj.: " + VELOCITY_SCALING_FACTOR);
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / gearRatio;
+    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+    System.out.println("Using gear ratio: " + gearRatio);
+    System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
+    System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-    m_leftEncoder.setPositionConversionFactor(DISTANCE_SCALING_FACTOR_FOR_GEARING);
-    m_rightEncoder.setPositionConversionFactor(DISTANCE_SCALING_FACTOR_FOR_GEARING);
+    m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
+    m_rightEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
 
-    m_leftEncoder.setVelocityConversionFactor(VELOCITY_SCALING_FACTOR);
-    m_rightEncoder.setVelocityConversionFactor(VELOCITY_SCALING_FACTOR);
+    m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
+    m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
 
     m_leftEncoder.setPosition(0);
     m_rightEncoder.setPosition(0);

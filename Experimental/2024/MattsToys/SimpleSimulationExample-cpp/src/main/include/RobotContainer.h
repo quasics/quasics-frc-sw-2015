@@ -27,6 +27,7 @@ class RobotContainer {
 
  private:
   void allocateDriveBase();
+  void setUpTankDrive();
 
  private:
   frc::Joystick m_controller{0};

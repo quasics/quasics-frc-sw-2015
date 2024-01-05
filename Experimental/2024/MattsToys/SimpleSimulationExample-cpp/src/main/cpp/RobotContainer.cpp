@@ -25,12 +25,19 @@ RobotContainer::RobotContainer() {
   // Allocate any subsystems that aren't directly embedded in this object.
   allocateDriveBase();
 
+  // Bind default commands to the subsystems.
+  setUpTankDrive();
+}
+
+void RobotContainer::setUpTankDrive() {
   // Figure out the joystick axes to be used to control driving.  (This assumes
   // that we're using the keyboard controls to simulate a joystick under the
   // simulator, or else a Logitech controller for a real robot.)
   int leftDriveJoystickAxis, rightDriveJoystickAxis;
   if (frc::RobotBase::IsSimulation()) {
-    // On the keyboard, axis 0 is the "A"/"D" keys, and axis 1 is "W"/"S"
+    // On the keyboard:
+    // * axis 0 is the "A" (negative)/"D" (positive) keys
+    // * axis 1 is the "W" (negative)/"S" (positive) keys
     leftDriveJoystickAxis = 0;
     rightDriveJoystickAxis = 1;
   } else {

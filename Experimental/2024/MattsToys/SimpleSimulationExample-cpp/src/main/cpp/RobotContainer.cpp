@@ -41,9 +41,8 @@ void RobotContainer::setUpTankDrive() {
     leftDriveJoystickAxis = 0;
     rightDriveJoystickAxis = 1;
   } else {
-    // TODO: Figure out the raw axes to be used with a real controller.
-    leftDriveJoystickAxis = 0;
-    rightDriveJoystickAxis = 1;
+    leftDriveJoystickAxis = OperatorConstants::LogitechGamePad::LeftYAxis;
+    rightDriveJoystickAxis = OperatorConstants::LogitechGamePad::RightYAxis;
   }
 
   // Create the TankDrive command (reading from the controller's joysticks), and

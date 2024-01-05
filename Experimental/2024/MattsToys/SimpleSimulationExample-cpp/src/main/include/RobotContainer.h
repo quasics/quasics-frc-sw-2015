@@ -26,7 +26,13 @@ class RobotContainer {
   frc2::CommandPtr GetAutonomousCommand();
 
  private:
+  /**
+   * Creates the drive base object for the hardware (real or otherwise) that
+   * we're actually "talking to".
+   */
   void allocateDriveBase();
+
+  /** Sets up tank drive as the default command for our drive base. */
   void setUpTankDrive();
 
  private:
@@ -35,5 +41,7 @@ class RobotContainer {
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
 
+  // We'll allocate our drive base with "new", so that we can pick the "flavor"
+  // that we need for what we're trying to talk to.
   std::unique_ptr<AbstractDriveBase> m_drivebase;
 };

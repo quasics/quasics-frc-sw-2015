@@ -12,6 +12,14 @@
 #include "commands/TankDrive.h"
 #include "subsystems/RealDriveBase.h"
 #include "subsystems/SimulatedDriveBase.h"
+#include "subsystems/XrpDriveBase.h"
+
+/**
+ * Iff true, we'll talk to an XRP device while running in the simulator.
+ * Otherwise, we'll assuming that we're running *fully* in the simulator, with
+ * no actual "robot" hardware being involved.
+ */
+constexpr bool USE_XRP_UNDER_SIMULATION = false;
 
 RobotContainer::RobotContainer() {
   // Figure out the joystick axes to be used to control driving, and
@@ -21,7 +29,11 @@ RobotContainer::RobotContainer() {
     leftDriveJoystickAxis = 0;  // On the keyboard, this is the "A" and "D" keys
     rightDriveJoystickAxis =
         1;  // On the keyboard, this is the "W" and "S" keys
-    m_drivebase.reset(new SimulatedDriveBase);
+    if (USE_XRP_UNDER_SIMULATION) {
+      m_drivebase.reset(new XrpDriveBase);
+    } else {
+      m_drivebase.reset(new SimulatedDriveBase);
+    }
   } else {
     // TODO: Figure out the raw axes to be used with a real controller.
     leftDriveJoystickAxis = 0;

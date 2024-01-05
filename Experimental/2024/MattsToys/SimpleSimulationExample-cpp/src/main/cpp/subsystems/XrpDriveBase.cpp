@@ -5,6 +5,8 @@
 #include "subsystems/XrpDriveBase.h"
 
 XrpDriveBase::XrpDriveBase() {
+  SetName("XrpDriveBase");
+
   // Per docs: "The right motor will spin in a backward direction when positive
   // output is applied. Thus the corresponding motor controller needs to be
   // inverted in robot code."

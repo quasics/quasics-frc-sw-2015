@@ -10,6 +10,8 @@
 #include <numbers>
 
 SimulatedDriveBase::SimulatedDriveBase() {
+  SetName("SimulatedDriveBase");
+
   m_gyro.Reset();
 
   // We need to invert one side of the drivetrain so that positive voltages

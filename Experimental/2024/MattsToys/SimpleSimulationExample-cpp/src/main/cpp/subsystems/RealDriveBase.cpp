@@ -5,6 +5,7 @@
 #include "subsystems/RealDriveBase.h"
 
 RealDriveBase::RealDriveBase() {
+  SetName("RealDriveBase");
   // This is where we'd do any necessary motor configuration (e.g., setting some
   // as "inverted", etc.).
 }

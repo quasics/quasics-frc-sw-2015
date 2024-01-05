@@ -45,3 +45,12 @@ namespace OperatorConstants {
     constexpr int RightStickPress = 10;
   }  // namespace LogitechGamePad
 }  // namespace OperatorConstants
+
+namespace MotorIds {
+  namespace SparkMax {
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
+    constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
+    constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+  }  // namespace SparkMax
+}  // namespace MotorIds

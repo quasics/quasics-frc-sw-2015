@@ -7,5 +7,6 @@
 RealDriveBase::RealDriveBase() = default;
 
 void RealDriveBase::setMotorSpeeds(double leftPercent, double rightPercent) {
-  // TODO: Write code to work with the real motors
+  m_leftSide.Set(leftPercent);
+  m_rightSide.Set(rightPercent);
 }

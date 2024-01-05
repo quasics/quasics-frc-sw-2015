@@ -4,7 +4,10 @@
 
 #include "subsystems/RealDriveBase.h"
 
-RealDriveBase::RealDriveBase() = default;
+RealDriveBase::RealDriveBase() {
+  // This is where we'd do any necessary motor configuration (e.g., setting some
+  // as "inverted", etc.).
+}
 
 void RealDriveBase::setMotorSpeeds(double leftPercent, double rightPercent) {
   m_leftSide.Set(leftPercent);

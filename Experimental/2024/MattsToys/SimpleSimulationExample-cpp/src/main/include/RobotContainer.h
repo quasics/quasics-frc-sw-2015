@@ -26,6 +26,9 @@ class RobotContainer {
   frc2::CommandPtr GetAutonomousCommand();
 
  private:
+  void allocateDriveBase();
+
+ private:
   frc::Joystick m_controller{0};
 
   // The robot's subsystems are defined here...

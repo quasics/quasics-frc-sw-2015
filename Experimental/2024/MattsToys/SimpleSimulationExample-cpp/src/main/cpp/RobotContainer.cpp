@@ -22,23 +22,21 @@
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 
 RobotContainer::RobotContainer() {
-  // Figure out the joystick axes to be used to control driving, and
-  // create the right kind of drivebase (simulated/real).
+  // Allocate any subsystems that aren't directly embedded in this object.
+  allocateDriveBase();
+
+  // Figure out the joystick axes to be used to control driving.  (This assumes
+  // that we're using the keyboard controls to simulate a joystick under the
+  // simulator, or else a Logitech controller for a real robot.)
   int leftDriveJoystickAxis, rightDriveJoystickAxis;
   if (frc::RobotBase::IsSimulation()) {
-    leftDriveJoystickAxis = 0;  // On the keyboard, this is the "A" and "D" keys
-    rightDriveJoystickAxis =
-        1;  // On the keyboard, this is the "W" and "S" keys
-    if (USE_XRP_UNDER_SIMULATION) {
-      m_drivebase.reset(new XrpDriveBase);
-    } else {
-      m_drivebase.reset(new SimulatedDriveBase);
-    }
+    // On the keyboard, axis 0 is the "A"/"D" keys, and axis 1 is "W"/"S"
+    leftDriveJoystickAxis = 0;
+    rightDriveJoystickAxis = 1;
   } else {
     // TODO: Figure out the raw axes to be used with a real controller.
     leftDriveJoystickAxis = 0;
     rightDriveJoystickAxis = 1;
-    m_drivebase.reset(new RealDriveBase);
   }
 
   // Create the TankDrive command (reading from the controller's joysticks), and
@@ -51,6 +49,22 @@ RobotContainer::RobotContainer() {
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   m_drivebase->SetDefaultCommand(std::move(tankDrive));
+}
+
+void RobotContainer::allocateDriveBase() {
+  if (frc::RobotBase::IsReal()) {
+    // OK, we're running on a "big bot".
+    m_drivebase.reset(new RealDriveBase);
+  } else {
+    // OK, we're running under simulation.  However, this could either mean that
+    // we're talking to an XRP "little bot", or doing *pure* (GUI-based)
+    // simulation on a PC of some sort.
+    if (USE_XRP_UNDER_SIMULATION) {
+      m_drivebase.reset(new XrpDriveBase);
+    } else {
+      m_drivebase.reset(new SimulatedDriveBase);
+    }
+  }
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

@@ -1,7 +1,22 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-enum Placement_t : int { eCenter = 0, eNearLeft = 1, eLeft = 2, eFarLeft = 3, eNearRight = 4, eRight = 5, eFarRight = 6 };
+#define PUPIL_TOP_AT_CENTER 3
+#define MATRIX_TOP 0
+#define MATRIX_BOTTOM 7
+
+#define LEFT_EYE_X  0
+#define RIGHT_EYE_X 24
+
+enum PupilPlacement_t : int { eCenter = 0, eNearLeft = 1, eLeft = 2, eFarLeft = 3, eNearRight = 4, eRight = 5, eFarRight = 6 };
+
+enum LidHeight_t : int {
+  eOpen = MATRIX_TOP,
+  eHigh = (MATRIX_TOP + PUPIL_TOP_AT_CENTER) / 2,
+  eMiddle = PUPIL_TOP_AT_CENTER,
+  eLow = (PUPIL_TOP_AT_CENTER + MATRIX_BOTTOM) / 2,
+  eClosed = MATRIX_BOTTOM
+};
 
 // Color definitions
 #define BLACK    0x0000

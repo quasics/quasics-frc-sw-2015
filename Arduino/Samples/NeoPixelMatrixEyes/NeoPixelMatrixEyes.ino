@@ -54,68 +54,164 @@ void setup() {
   matrix.setTextColor(colors[0]);
 }
 
-void howdy() {
-  static int x    = matrix.width();
-  static int pass = 0;
+void howdy(uint16_t color) {
+  static const int kWidth = matrix.width();
+  int x    = kWidth;
+  int pass = 0;
 
-  matrix.fillScreen(0);
-  matrix.setCursor(x, 0);
-  matrix.print(F("Howdy"));
-  if(--x < -36) {
-    x = matrix.width();
-    if(++pass >= 3) pass = 0;
-    matrix.setTextColor(colors[pass]);
+  matrix.setTextColor(color);
+
+  for(int i = 0; i < kWidth + 30; ++i) {
+    matrix.fillScreen(0);
+    matrix.setCursor(x, 0);
+    matrix.print(F("Howdy"));
+    if(--x < -36) {
+      x = matrix.width();
+      if(++pass >= 3) pass = 0;
+      matrix.setTextColor(colors[pass]);
+    }
+    matrix.show();
+    delay(100);
   }
-  matrix.show();
-  delay(100);
+  matrix.fillScreen(0);
 }
 
-#define PUPIL_TOP_AT_CENTER 3
+uint16_t getPupilTop() {
+  return PUPIL_TOP_AT_CENTER;
+}
 
-// Assumes an 8x8 eye
-void drawEye(const int x, const uint16_t color, Placement_t p) {
+uint16_t getEyeWidthBounds(const int x, const int16_t atY, int16_t&x1, int16_t&x2) {
+  if (atY == 0 || atY == 7) {
+    x1 = x+2;
+    x2 = x+5;
+  }
+  else if (atY == 1 || atY == 6) {
+    x1 = x+1;
+    x2 = x+6;
+  }
+  else {
+    x1 = x;
+    x2 = x + 7;
+  }
+}
+
+void drawEyeOutline(const int x, const uint16_t color) {
   matrix.fillRect(x, 0, 8, 8, BLACK);
 
   // Framing "circle"
   matrix.drawLine(x+2, 0, x+5, 0, color);
-  matrix.drawLine(x+2, 7, x+5, 7, color);
-  matrix.drawLine(x, 2, x, 5, color);
-  matrix.drawLine(x+7, 2, x+7, 5, color);
   matrix.drawPixel(x+1, 1, color);
   matrix.drawPixel(x+6, 1, color);
+  matrix.drawLine(x, 2, x, 5, color);
+  matrix.drawLine(x+7, 2, x+7, 5, color);
   matrix.drawPixel(x+1, 6, color);
+  matrix.drawLine(x+2, 7, x+5, 7, color);
   matrix.drawPixel(x+6, 6, color);
+}
 
+void drawPupil(const int x, const uint16_t color, PupilPlacement_t p) {
+  const uint16_t kPupilTop = getPupilTop();
   switch(p) {
     case eCenter:
-      matrix.drawRect(x+3, PUPIL_TOP_AT_CENTER, 2, 2, color);
+      matrix.drawRect(x+3, kPupilTop, 2, 2, color);
       break;
     case eNearLeft:
-      matrix.drawRect(x+2, PUPIL_TOP_AT_CENTER, 2, 2, color);
+      matrix.drawRect(x+2, kPupilTop, 2, 2, color);
       break;
     case eLeft:
-      matrix.drawRect(x+1, PUPIL_TOP_AT_CENTER, 2, 2, color);
+      matrix.drawRect(x+1, kPupilTop, 2, 2, color);
       break;
     case eFarLeft:
-      matrix.drawRect(x+1, PUPIL_TOP_AT_CENTER, 1, 2, color);
+      matrix.drawRect(x+1, kPupilTop, 1, 2, color);
       break;
     case eNearRight:
-      matrix.drawRect(x+4, PUPIL_TOP_AT_CENTER, 2, 2, color);
+      matrix.drawRect(x+4, kPupilTop, 2, 2, color);
       break;
     case eRight:
-      matrix.drawRect(x+5, PUPIL_TOP_AT_CENTER, 2, 2, color);
+      matrix.drawRect(x+5, kPupilTop, 2, 2, color);
       break;
     case eFarRight:
-      matrix.drawRect(x+6, PUPIL_TOP_AT_CENTER, 1, 2, color);
+      matrix.drawRect(x+6, kPupilTop, 1, 2, color);
       break;
   }
 }
 
-void drawEyes(uint16_t color, Placement_t p) {
-  drawEye(0, color, p);
-  drawEye(24, color, p);
+// Assumes an 8x8 eye
+void drawEye(const int x, const uint16_t color, PupilPlacement_t p) {
+  drawEyeOutline(x, color);
+  drawPupil(x, color, p);
+}
+
+void drawEyes(uint16_t color, PupilPlacement_t p) {
+  drawEye(LEFT_EYE_X, color, p);
+  drawEye(RIGHT_EYE_X, color, p);
   matrix.show();
   delay(100);
+}
+
+void drawBlinkingEye(uint16_t x, uint16_t color, PupilPlacement_t p, LidHeight_t lidHeight) {
+  const uint16_t kPupilTop = getPupilTop();
+  if (lidHeight == eOpen) {
+    drawEye(x, color, p);
+  } else {
+    drawEyeOutline(x, color);
+    drawPupil(x, color, p);
+    int16_t x1, x2;
+    for(int16_t y = 1; y <= int16_t(lidHeight); ++y) {
+      getEyeWidthBounds(x, y, x1, x2);
+      matrix.drawLine(x1, y, x2, y, color);
+    }
+  }
+}
+
+void drawBlinkingEyes(uint16_t color, PupilPlacement_t p, LidHeight_t lidHeight) {
+  drawBlinkingEye(LEFT_EYE_X, color, p, lidHeight);
+  drawBlinkingEye(RIGHT_EYE_X, color, p, lidHeight);
+  matrix.show();
+}
+
+void drawWinkingEyes(bool winkLeft, uint16_t color, PupilPlacement_t p, LidHeight_t lidHeight) {
+  drawBlinkingEye(winkLeft ? LEFT_EYE_X : RIGHT_EYE_X, color, p, lidHeight);
+  drawEye(!winkLeft ? LEFT_EYE_X : RIGHT_EYE_X, color, p);
+  matrix.show();
+}
+
+void blinkingEyes(uint16_t color) {
+  drawBlinkingEyes(color, eCenter, eOpen);
+  delay(2000);
+  drawBlinkingEyes(color, eCenter, eHigh);
+  delay(250);
+  drawBlinkingEyes(color, eCenter, eMiddle);
+  delay(250);
+  drawBlinkingEyes(color, eCenter, eLow);
+  delay(250);
+  drawBlinkingEyes(color, eCenter, eClosed);
+  delay(500);
+  drawBlinkingEyes(color, eCenter, eLow);
+  delay(250);
+  drawBlinkingEyes(color, eCenter, eMiddle);
+  delay(250);
+  drawBlinkingEyes(color, eCenter, eHigh);
+  delay(250);
+}
+
+void winkingEyes(bool winkLeft, uint16_t color) {
+  drawWinkingEyes(winkLeft, color, eCenter, eOpen);
+  delay(2000);
+  drawWinkingEyes(winkLeft, color, eCenter, eHigh);
+  delay(250);
+  drawWinkingEyes(winkLeft, color, eCenter, eMiddle);
+  delay(250);
+  drawWinkingEyes(winkLeft, color, eCenter, eLow);
+  delay(250);
+  drawWinkingEyes(winkLeft, color, eCenter, eClosed);
+  delay(500);
+  drawWinkingEyes(winkLeft, color, eCenter, eLow);
+  delay(250);
+  drawWinkingEyes(winkLeft, color, eCenter, eMiddle);
+  delay(250);
+  drawWinkingEyes(winkLeft, color, eCenter, eHigh);
+  delay(250);
 }
 
 void shiftyEyes(uint16_t color) {
@@ -139,6 +235,9 @@ void shiftyEyes(uint16_t color) {
 }
 
 void loop() {
-  // howdy();
+  howdy(GREEN);
+  shiftyEyes(GREEN);
+  // blinkingEyes(GREEN);
+  winkingEyes(true, GREEN);
   shiftyEyes(GREEN);
 }

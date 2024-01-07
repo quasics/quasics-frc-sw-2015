@@ -55,7 +55,7 @@ public class RobotContainer {
   private enum SimulationMode { eSimulation, eXrp, eRomi }
 
   /** Currently-configured option when running under the simulator. */
-  private final SimulationMode m_simulationMode = SimulationMode.eRomi;
+  private final SimulationMode m_simulationMode = SimulationMode.eXrp;
 
   /** Defines options for auto mode. */
   private enum AutoMode { eSpin, eFollowTrajectory }

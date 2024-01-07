@@ -10,6 +10,10 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
+#ifdef ENABLE_CTRE
+#include <ctre/phoenix6/Pigeon2.hpp>
+#endif
+
 #include "Constants.h"
 #include "PreprocessorConfig.h"
 #include "sensors/OffsetGyro.h"
@@ -21,6 +25,10 @@
  * CAN addresses).
  */
 class RealDriveBase : public IDrivebase {
+#ifdef ENABLE_CTRE
+  using Pigeon2 = ctre::phoenix6::hardware::Pigeon2;
+#endif
+
  public:
   RealDriveBase();
 
@@ -92,7 +100,14 @@ class RealDriveBase : public IDrivebase {
   frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 
   // Gyro.
+  //
+  // TODO: Enable using a Pigeon2, once the updated CTRE libraries are
+  // available.
+#ifdef ENABLE_CTRE
+  Pigeon2 m_realGyro;
+#else
   frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
+#endif
 
   // Odometry information for the robot.
   frc::DifferentialDriveOdometry m_odometry;

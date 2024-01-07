@@ -19,7 +19,7 @@
  * Otherwise, we'll assuming that we're running *fully* in the simulator, with
  * no actual "robot" hardware being involved.
  */
-constexpr bool USE_XRP_UNDER_SIMULATION = false;
+constexpr bool USE_XRP_UNDER_SIMULATION = true;
 
 RobotContainer::RobotContainer() {
   // Allocate any subsystems that aren't directly embedded in this object.

@@ -4,13 +4,19 @@
 
 #pragma once
 
+#include "PreprocessorConfig.h"
+
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/AnalogGyro.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/xrp/XRPGyro.h>
 #include <units/angle.h>
+#include <units/angular_velocity.h>
 
-#include <ctre/phoenix6/Pigeon2.hpp>
+#ifdef ENABLE_CTRE
+  #include <ctre/phoenix6/Pigeon2.hpp>
+#endif
+
 #include <functional>
 
 /**
@@ -26,7 +32,9 @@ class IGyro {
  public:
   using angle_t = units::degree_t;
   using rate_t = units::degrees_per_second_t;
+#ifdef ENABLE_CTRE
   using Pigeon2 = ctre::phoenix6::hardware::Pigeon2;
+#endif
 
  public:
   virtual ~IGyro() = default;
@@ -57,8 +65,10 @@ class IGyro {
   /** @return an IGyro wrapped around an <code>ADXRS450_Gyro</code>. */
   static inline std::unique_ptr<IGyro> wrapGyro(frc::ADXRS450_Gyro& g);
 
+#ifdef ENABLE_CTRE
   /** @return an IGyro wrapped around an <code>Pigeon2</code>. */
   static inline std::unique_ptr<IGyro> wrapYawGyro(Pigeon2& pigeon2);
+#endif
 
   /** @return an IGyro wrapped around an <code>XRPGyro</code>. */
   static inline std::unique_ptr<IGyro> wrapYawGyro(frc::XRPGyro& xrpGyro);
@@ -149,6 +159,7 @@ inline std::unique_ptr<IGyro> IGyro::wrapGyro(frc::ADXRS450_Gyro& g) {
       [&]() { return g.GetRotation2d(); }, [&]() { g.Reset(); }));
 }
 
+#ifdef ENABLE_CTRE
 std::unique_ptr<IGyro> IGyro::wrapYawGyro(IGyro::Pigeon2& pigeon2) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
       [&]() {},
@@ -167,15 +178,16 @@ std::unique_ptr<IGyro> IGyro::wrapYawGyro(IGyro::Pigeon2& pigeon2) {
       // 2024.
       [&]() { pigeon2.Reset(); }));
 }
+#endif
 
 std::unique_ptr<IGyro> IGyro::wrapYawGyro(frc::XRPGyro& xrpGyro) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
       [&]() {},
-      // CTRE docs indicate that Pigeon2::GetAngle() returns degrees
+      // CTRE docs indicate that XRPGyro::GetAngle() returns degrees
       [&]() {
         return angle_t(xrpGyro.GetAngle()); /* GetYaw().GetValue() */
       },
-      // CTRE docs indicate that Pigeon2::GetRate() returns degrees/sec
+      // CTRE docs indicate that XRPGyro::GetRate() returns degrees/sec
       [&]() {
         return rate_t(xrpGyro.GetRate()); /* GetAngularVelocityZ().GetValue() */
       },

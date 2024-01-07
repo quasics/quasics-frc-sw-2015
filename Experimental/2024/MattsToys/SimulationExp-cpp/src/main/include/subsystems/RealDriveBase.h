@@ -11,6 +11,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
+#include "PreprocessorConfig.h"
 #include "sensors/OffsetGyro.h"
 #include "subsystems/IDrivebase.h"
 
@@ -77,10 +78,14 @@ class RealDriveBase : public IDrivebase {
                                rev::CANSparkMax::MotorType::kBrushless};
 
   // Encoders for each of the motors.
-  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
-  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
-  rev::SparkMaxRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
-  rev::SparkMaxRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
+  rev::SparkRelativeEncoder m_leftFrontEncoder =
+      m_leftFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_rightFrontEncoder =
+      m_rightFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_leftBackEncoder =
+      m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_rightBackEncoder =
+      m_rightBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
 
   // Motor controller groups, pairing sets on left/right.
   frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};

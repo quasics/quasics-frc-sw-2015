@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "PreprocessorConfig.h"
-
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/AnalogGyro.h>
 #include <frc/geometry/Rotation2d.h>
@@ -13,8 +11,10 @@
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 
+#include "PreprocessorConfig.h"
+
 #ifdef ENABLE_CTRE
-  #include <ctre/phoenix6/Pigeon2.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
 #endif
 
 #include <functional>
@@ -66,8 +66,17 @@ class IGyro {
   static inline std::unique_ptr<IGyro> wrapGyro(frc::ADXRS450_Gyro& g);
 
 #ifdef ENABLE_CTRE
-  /** @return an IGyro wrapped around an <code>Pigeon2</code>. */
+  /**
+   * @return an IGyro wrapped around the "yaw" axis for an <code>Pigeon2</code>.
+   */
   static inline std::unique_ptr<IGyro> wrapYawGyro(Pigeon2& pigeon2);
+
+  /**
+   * @return an IGyro wrapped around the "yaw" axis for an <code>Pigeon2</code>.
+   */
+  static inline std::unique_ptr<IGyro> wrapGyro(Pigeon2& pigeon2) {
+    return wrapYawGyro(pigeon2);
+  }
 #endif
 
   /** @return an IGyro wrapped around an <code>XRPGyro</code>. */

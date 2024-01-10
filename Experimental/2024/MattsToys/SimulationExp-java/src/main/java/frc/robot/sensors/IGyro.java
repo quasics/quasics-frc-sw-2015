@@ -81,9 +81,15 @@ public interface IGyro {
         () -> pigeon2.getRate(),
         () -> pigeon2.getRotation2d(),
         () -> {
-          // Note that this won't actually get invoked, because the OffsetGyro will
-          // instead just reset its offset value.
+          // Note that this will reset *all* axes for the Pigeon2. May want
+          // to wrap further in an OffsetGyro.
+          pigeon2.reset();
         }));
+  }
+
+  /* Convenient overload. */
+  static IGyro wrapGyro(Pigeon2 g) {
+    return wrapYawGyro(g);
   }
 
   static IGyro wrapGyro(AnalogGyro g) {

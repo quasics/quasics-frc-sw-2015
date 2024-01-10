@@ -4,15 +4,17 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import frc.robot.sensors.IGyro;
+import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 
@@ -23,11 +25,14 @@ import frc.robot.sensors.TrivialEncoder;
  */
 public class RealDrivebase extends AbstractDrivebase {
   /**
-   * Enum class used to represent the physical characteristics (e.g., PID/motor gain values, track
+   * Enum class used to represent the physical characteristics (e.g., PID/motor
+   * gain values, track
    * width, etc.) that are specific to a given robot.
    *
-   * For example, Sally is just a drive base and is thus much lighter than the robots we generally
-   * put on the field, which means that the kS/kV values for her tend to be smaller.
+   * For example, Sally is just a drive base and is thus much lighter than the
+   * robots we generally
+   * put on the field, which means that the kS/kV values for her tend to be
+   * smaller.
    */
   public enum RobotCharacteristics {
     // Characteristics from 2023 "ChargedUp" constants for Sally
@@ -58,9 +63,11 @@ public class RealDrivebase extends AbstractDrivebase {
         8.45,
         /* PID */
         0.001379, 0, 0, // TODO: Confirm this, since it seems *really* low
-        /* Gains
+        /*
+         * Gains
          *
-         * TODO: Confirm these, since they're very different from 2022 values.  (Though we also
+         * TODO: Confirm these, since they're very different from 2022 values. (Though
+         * we also
          * changed the hardware significantly post-season.)
          */
         0.13895, 1.3143, 0.1935);
@@ -93,23 +100,26 @@ public class RealDrivebase extends AbstractDrivebase {
   static final int RIGHT_FRONT_CAN_ID = 3;
   static final int RIGHT_REAR_CAN_ID = 4;
 
-  // Common physical characteristics for Quasics' robots (and directly derived values).
+  static final int PIGEON2_CAN_ID = 1;
+
+  // Common physical characteristics for Quasics' robots (and directly derived
+  // values).
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
   static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
 
   // Hardware control/sensing.
-  private final AnalogGyro m_gyro = new AnalogGyro(0);
-  private final IGyro m_wrappedGyro = IGyro.wrapGyro(m_gyro);
+  //
+  private final Pigeon2 m_gyro = new Pigeon2(PIGEON2_CAN_ID);
+  private final IGyro m_iGyro = IGyro.wrapGyro(m_gyro);
+  private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
 
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightRear = new CANSparkMax(RIGHT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
-  private final MotorControllerGroup m_leftGroup =
-      new MotorControllerGroup(m_leftRear, m_leftFront);
-  private final MotorControllerGroup m_rightGroup =
-      new MotorControllerGroup(m_rightRear, m_rightFront);
+  private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftRear, m_leftFront);
+  private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightRear, m_rightFront);
 
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
@@ -117,14 +127,14 @@ public class RealDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
-  private final DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-          m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
+  private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_offsetGyro.getRotation2d(),
+      m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
 
   /**
    * Preferred constructor.
    *
-   * @param robot specifies the robot-specific characteristics of the actual device to be driven
+   * @param robot specifies the robot-specific characteristics of the actual
+   *              device to be driven
    */
   public RealDrivebase(RobotCharacteristics robot) {
     this(robot.name(), robot.kTrackWidthMeters, robot.gearRatio, robot.kP, robot.kI, robot.kD,
@@ -199,7 +209,7 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected IGyro getGyro() {
-    return m_wrappedGyro;
+    return m_offsetGyro;
   }
 
   @Override

@@ -31,3 +31,7 @@ namespace MotorIds {
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
   }  // namespace SparkMax
 }  // namespace MotorIds
+
+namespace OtherCanIds {
+  constexpr int PIGEON2_CAN_ID = 1;
+}

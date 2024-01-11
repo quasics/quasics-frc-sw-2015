@@ -39,7 +39,7 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureBindings() {
   // Configure your trigger bindings here
-
+  // test comment
   // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 }
 

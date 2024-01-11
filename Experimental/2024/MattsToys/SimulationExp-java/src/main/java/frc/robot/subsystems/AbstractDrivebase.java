@@ -309,8 +309,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
                     m_velocity.mut_replace(getRightEncoder().getVelocity(), MetersPerSecond));
           },
           // Tell SysId to make generated commands require this subsystem, suffix test
-          // state in
-          // WPILog with this subsystem's name ("drive")
+          // state in WPILog with this subsystem's name ("drive")
           this));
 
   /**

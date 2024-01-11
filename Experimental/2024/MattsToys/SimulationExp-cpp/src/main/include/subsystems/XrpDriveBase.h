@@ -42,6 +42,13 @@ class XrpDriveBase : public IDrivebase {
     return *m_iGyro;
   }
 
+  double getLeftSpeedPercentage() override {
+    return m_leftXrpMotor.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightXrpMotor.Get();
+  }
+
  private:
   frc::XRPMotor m_leftXrpMotor{0};
   frc::XRPMotor m_rightXrpMotor{1};

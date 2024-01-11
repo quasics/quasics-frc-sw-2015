@@ -61,6 +61,13 @@ class RealDriveBase : public IDrivebase {
     return m_offsetGyro;
   }
 
+  double getLeftSpeedPercentage() override {
+    return m_leftFront.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightFront.Get();
+  }
+
   // Internal helper functions.
  private:
   void configureMotors();

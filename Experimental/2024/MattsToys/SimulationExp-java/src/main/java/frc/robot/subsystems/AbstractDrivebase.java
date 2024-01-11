@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,9 +16,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.DeadbandEnforcer;
@@ -222,6 +233,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speedPercentage;
   }
 
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Hardware abstraction layer definition
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
   protected abstract DifferentialDriveOdometry getOdometry();
 
   protected abstract TrivialEncoder getLeftEncoder();
@@ -230,6 +247,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected abstract IGyro getGyro();
 
+  protected abstract double getLeftSpeedPercentage();
+
+  protected abstract double getRightSpeedPercentage();
+
   /**
    * Declared as public so that it can be used with RamseteCommand objects.
    *
@@ -237,4 +258,59 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @param rightVoltage voltage for right-side motors
    */
   protected abstract void setMotorVoltagesImpl(double leftVoltage, double rightVoltage);
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // SysId (profiling) support
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // Mutable holder for unit-safe linear distance values, persisted to avoid
+  // reallocation.
+  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid
+  // reallocation.
+  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+  // Create a new SysId routine for characterizing the drive.
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          // Tell SysId how to plumb the driving voltage to the motors.
+          (Measure<Voltage> volts) -> {
+            final double rawVolts = volts.in(Volts);
+            setMotorVoltagesImpl(rawVolts, rawVolts);
+          },
+          // Tell SysId how to record a frame of data for each motor on the mechanism
+          // being
+          // characterized.
+          log -> {
+            // Record a frame for the left motors. Since these share an encoder, we consider
+            // the entire group to be one motor.
+            log.motor("drive-left")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        getLeftSpeedPercentage() * RobotController.getBatteryVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(getLeftEncoder().getPosition(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(getLeftEncoder().getVelocity(), MetersPerSecond));
+            // Record a frame for the right motors. Since these share an encoder, we
+            // consider
+            // the entire group to be one motor.
+            log.motor("drive-right")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        getRightSpeedPercentage() * RobotController.getBatteryVoltage(), Volts))
+                .linearPosition(m_distance.mut_replace(getRightEncoder().getPosition(), Meters))
+                .linearVelocity(
+                    m_velocity.mut_replace(getRightEncoder().getVelocity(), MetersPerSecond));
+          },
+          // Tell SysId to make generated commands require this subsystem, suffix test
+          // state in
+          // WPILog with this subsystem's name ("drive")
+          this));
+
 }

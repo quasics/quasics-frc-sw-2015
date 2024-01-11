@@ -148,4 +148,12 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
   }
+
+  protected double getLeftSpeedPercentage() {
+    return m_leftMotor.get();
+  }
+
+  protected double getRightSpeedPercentage() {
+    return m_rightMotor.get();
+  }
 }

@@ -43,10 +43,8 @@ public class RomiDrivebase extends AbstractDrivebase {
   private final DifferentialDriveOdometry m_odometry;
 
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
 
   /** Creates a new RomiDrivebase. */
@@ -105,5 +103,13 @@ public class RomiDrivebase extends AbstractDrivebase {
     m_rightMotor.set(rightSpeed);
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
+  }
+
+  protected double getLeftSpeedPercentage() {
+    return m_leftMotor.get();
+  }
+
+  protected double getRightSpeedPercentage() {
+    return m_rightMotor.get();
   }
 }

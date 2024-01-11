@@ -299,8 +299,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
                 .linearVelocity(
                     m_velocity.mut_replace(getLeftEncoder().getVelocity(), MetersPerSecond));
             // Record a frame for the right motors. Since these share an encoder, we
-            // consider
-            // the entire group to be one motor.
+            // consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(
                     m_appliedVoltage.mut_replace(
@@ -314,10 +313,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           // WPILog with this subsystem's name ("drive")
           this));
 
+  /**
+   * @return a Command for use in running quasistatic profiling in the
+   *         specified direction.
+   */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }
 
+  /**
+   * @return a Command for use in running dynamic profiling in the
+   *         specified direction.
+   */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }

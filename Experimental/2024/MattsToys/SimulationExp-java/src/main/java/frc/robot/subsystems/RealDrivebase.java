@@ -212,6 +212,14 @@ public class RealDrivebase extends AbstractDrivebase {
     return m_offsetGyro;
   }
 
+  protected double getLeftSpeedPercentage() {
+    return m_leftRear.get();
+  }
+
+  protected double getRightSpeedPercentage() {
+    return m_rightRear.get();
+  }
+
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     m_leftGroup.setVoltage(leftVoltage);

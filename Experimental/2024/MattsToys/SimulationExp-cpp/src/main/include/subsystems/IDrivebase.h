@@ -12,6 +12,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Subsystem.h>
 #include <frc2/command/SubsystemBase.h>
+#include <frc2/command/sysid/SysIdRoutine.h>
 #include <units/angular_velocity.h>
 #include <units/velocity.h>
 #include <units/voltage.h>
@@ -286,6 +287,59 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   virtual void Periodic();
 
+  // Supporting SysId profiling
+ private:
+  using SysIdRoutine = frc2::sysid::SysIdRoutine;
+  using SysIdConfig = frc2::sysid::Config;
+  using SysIdMechanism = frc2::sysid::Mechanism;
+
+  SysIdRoutine m_sysIdRoutine{
+      // Default config
+      SysIdConfig{/*rampRate (1v/s)*/ {},
+                  /*stepVoltage (7v)*/ {},
+                  /*timeout (10sec)*/ {},
+                  /*recordState (use WPILib logging)*/ {}},
+      // Underlying "mechanism" for handling SysId profile data generation.
+      SysIdMechanism{[this](units::volt_t volts) {
+                       // OK, send it out to the motors!
+                       this->setMotorVoltagesImpl(volts, volts);
+                     },
+                     [this](frc::sysid::SysIdRoutineLog* log) {
+                       // Record frames for the left- and right-side motors.  If
+                       // we have more than one motor on a side for some
+                       // subclass, we'll assume that it's providing us with an
+                       // appropriate value (e.g., either based on an exemplar,
+                       // an average, etc.).
+                       log->Motor("drive-left")
+                           .voltage(getLeftSpeedPercentage() *
+                                    frc::RobotController::GetBatteryVoltage())
+                           .position(getLeftEncoder().getPosition())
+                           .velocity(getLeftEncoder().getVelocity());
+                       log->Motor("drive-right")
+                           .voltage(getRightSpeedPercentage() *
+                                    frc::RobotController::GetBatteryVoltage())
+                           .position(getRightEncoder().getPosition())
+                           .velocity(getRightEncoder().getVelocity());
+                     },
+                     this}};
+
+ public:
+  /**
+   * @return a CommandPtr for use in running quasistatic profiling in the
+   * specified direction.
+   */
+  frc2::CommandPtr sysIdQuasistatic(frc2::sysid::Direction direction) {
+    return m_sysIdRoutine.Quasistatic(direction);
+  }
+
+  /**
+   * @return a CommandPtr for use in running dynamic profiling in the
+   * specified direction.
+   */
+  frc2::CommandPtr sysIdDynamic(frc2::sysid::Direction direction) {
+    return m_sysIdRoutine.Dynamic(direction);
+  }
+
   // Internal helper methods.
  protected:
   /**
@@ -328,6 +382,18 @@ class IDrivebase : public frc2::SubsystemBase {
    * heading.
    */
   virtual IGyro& getGyro() = 0;
+
+  /**
+   * @return the most recent "power %" setting for the left-side motor(s)
+   * (possibly back-calculated from voltages)
+   */
+  virtual double getLeftSpeedPercentage() = 0;
+
+  /**
+   * @return the most recent "power %" setting for the right-side motor(s)
+   * (possibly back-calculated from voltages)
+   */
+  virtual double getRightSpeedPercentage() = 0;
 
  private:
   units::volt_t m_lastLeftVoltage{0}, m_lastRightVoltage{0};

@@ -4,6 +4,7 @@
 
 #include "RobotContainer.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/FunctionalCommand.h>
 
@@ -60,6 +61,20 @@ void RobotContainer::ConfigureBindings() {
       "Toggle logging", new frc2::InstantCommand([] {
         IDrivebase::enableLogging(!IDrivebase::isLoggingEnabled());
       }));
+
+  // Commands for SysId profiling.
+  static frc2::CommandPtr quasistaticFwd =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kForward);
+  static frc2::CommandPtr quasistaticRev =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kReverse);
+  static frc2::CommandPtr dynamicFwd =
+      m_drivebase->sysIdDynamic(frc2::sysid::kForward);
+  static frc2::CommandPtr dynamicRev =
+      m_drivebase->sysIdDynamic(frc2::sysid::kReverse);
+  frc::SmartDashboard::PutData("Quasistatic Fwd", quasistaticFwd.get());
+  frc::SmartDashboard::PutData("Quasistatic Rev", quasistaticRev.get());
+  frc::SmartDashboard::PutData("Dynamic Fwd", dynamicFwd.get());
+  frc::SmartDashboard::PutData("Dynamic Rev", dynamicRev.get());
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

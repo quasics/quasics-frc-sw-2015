@@ -16,10 +16,12 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
@@ -40,8 +42,8 @@ public class RobotContainer {
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE =
-      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
+      MAX_AUTO_ACCELERATION_MPSS);
 
   private final XboxController m_controller = new XboxController(0);
   private final LightingInterface m_lighting = new Lighting(LIGHTING_PWM_PORT, NUM_LIGHTS);
@@ -52,13 +54,17 @@ public class RobotContainer {
   final Supplier<Double> m_arcadeDriveRotationStick;
 
   /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode { eSimulation, eXrp, eRomi }
+  private enum SimulationMode {
+    eSimulation, eXrp, eRomi
+  }
 
   /** Currently-configured option when running under the simulator. */
   private final SimulationMode m_simulationMode = SimulationMode.eXrp;
 
   /** Defines options for auto mode. */
-  private enum AutoMode { eSpin, eFollowTrajectory }
+  private enum AutoMode {
+    eSpin, eFollowTrajectory
+  }
 
   /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eSpin;
@@ -70,13 +76,13 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
-      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
   /*
    * Constructor.
    *
-   * @todo Add sample solution for selecting which (real) drive base we're actually working on.
+   * @todo Add sample solution for selecting which (real) drive base we're
+   * actually working on.
    */
   public RobotContainer() {
     if (Robot.isReal()) {
@@ -84,8 +90,8 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> - m_controller.getLeftX();
-      m_arcadeDriveRotationStick = () -> - m_controller.getRightY();
+      m_arcadeDriveForwardStick = () -> -m_controller.getLeftX();
+      m_arcadeDriveRotationStick = () -> -m_controller.getRightY();
     } else {
       // Note that we're assuming a keyboard-based controller is actually being used
       // in the simulation environment (for now), and thus we want to use axis 1&2
@@ -117,6 +123,13 @@ public class RobotContainer {
     m_drivebase.setDefaultCommand(
         new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+
+    // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
+    // complete routine should run each of these once.
+    SmartDashboard.putData("Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command getAutonomousCommand() {
@@ -137,25 +150,25 @@ public class RobotContainer {
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        ()
-            -> {
+        () -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        ()
-            -> {
+        () -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
           m_drivebase.arcadeDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
         },
         // end
-        (Boolean interrupted)
-            -> { m_drivebase.stop(); },
+        (Boolean interrupted) -> {
+          m_drivebase.stop();
+        },
         // isFinished
-        ()
-            -> { return false; },
+        () -> {
+          return false;
+        },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -163,20 +176,18 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints =
-        new DifferentialDriveVoltageConstraint(
-            m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(), /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
+        m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(), /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(m_drivebase.getKinematics())
-        // // Apply the voltage constraint
-        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-        // .addConstraint(voltageConstraints)
-        // End of constraints
-        ;
+    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(m_drivebase.getKinematics())
+    // // Apply the voltage constraint
+    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+    // .addConstraint(voltageConstraints)
+    // End of constraints
+    ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(

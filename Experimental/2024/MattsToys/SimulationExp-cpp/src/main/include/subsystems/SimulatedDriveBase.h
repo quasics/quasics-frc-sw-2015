@@ -56,6 +56,13 @@ class SimulatedDriveBase : public IDrivebase {
     return *m_iGyro;
   }
 
+  double getLeftSpeedPercentage() override {
+    return m_leftMotor.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightMotor.Get();
+  }
+
  private:
   static constexpr units::meter_t kTrackWidth = 0.381_m * 2;
   static constexpr double kWheelRadius = 0.0508;  // meters

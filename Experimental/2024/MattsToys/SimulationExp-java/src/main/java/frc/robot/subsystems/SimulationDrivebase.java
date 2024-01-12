@@ -27,16 +27,15 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kWheelRadiusMeters = 0.0508;
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
-  // Sample PID constants.
-  private static final double kP = 8.5; // (left) 1.3195
+  // PID constants obtained via SysId logging analysis.
+  private static final double kP = 1.3195; // Sample was 8.5
   private static final double kI = 0;
-  private static final double kD = 0; // (left) 0.0
+  private static final double kD = 0;
 
-  // Motor gains are for example purposes only, and must be determined for your
-  // own robot.
-  private static final double kS = 1; // (left) 0.013809
-  private static final double kV = 3; // (left) 1.9805
-  private static final double kA = 0; // (left) 0.19208
+  // Motor gains obtained via SysId logging analysis.
+  private static final double kS = 0.013809; // Sample was 1
+  private static final double kV = 1.9805; // Sample was 3
+  private static final double kA = 0.19208; // Sample was 0
 
   private final Encoder m_leftEncoder;
   private final Encoder m_rightEncoder;
@@ -65,7 +64,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   /** Subsystem constructor. */
   public SimulationDrivebase() {
-    super(kTrackWidthMeters, kP, kI, kD, kS, kV);
+    super(kTrackWidthMeters, kP, kI, kD, kS, kV, kA);
 
     super.setName(getClass().getSimpleName());
 

@@ -4,7 +4,20 @@
 
 #include "subsystems/Intake.h"
 
-Intake::Intake() = default;
+#include <iostream>
+
+IntakeRoller::IntakeRoller() {
+  SetName("IntakeRoller");
+}
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {}
+void IntakeRoller::Periodic() {
+}
+
+void IntakeRoller::SetRollerSpeed(double percentSpeed) {
+  m_floorRollerPickupMotor.Set(-percentSpeed);
+}
+
+void IntakeRoller::Stop() {
+  m_floorRollerPickupMotor.Set(0);
+}

@@ -62,10 +62,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final EncoderSim m_rightEncoderSim;
 
   // Hardware allocation
-  final PWMSparkMax leftLeader = new PWMSparkMax(1);
-  final PWMSparkMax leftFollower = new PWMSparkMax(2);
-  final PWMSparkMax rightLeader = new PWMSparkMax(3);
-  final PWMSparkMax rightFollower = new PWMSparkMax(4);
+  final PWMSparkMax m_leftLeader = new PWMSparkMax(1);
+  final PWMSparkMax m_leftFollower = new PWMSparkMax(2);
+  final PWMSparkMax m_rightLeader = new PWMSparkMax(3);
+  final PWMSparkMax m_rightFollower = new PWMSparkMax(4);
 
   /** Subsystem constructor. */
   public SimulationDrivebase() {
@@ -73,8 +73,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     super.setName(getClass().getSimpleName());
 
-    m_leftGroup = new MotorControllerGroup(leftLeader, leftFollower);
-    m_rightGroup = new MotorControllerGroup(rightLeader, rightFollower);
+    m_leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
+    m_rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
 
     m_leftEncoder = new Encoder(0, 1);
     m_rightEncoder = new Encoder(2, 3);
@@ -191,10 +191,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   protected double getLeftSpeedPercentage() {
-    return leftLeader.get();
+    return m_leftLeader.get();
   }
 
   protected double getRightSpeedPercentage() {
-    return rightLeader.get();
+    return m_rightLeader.get();
   }
 }

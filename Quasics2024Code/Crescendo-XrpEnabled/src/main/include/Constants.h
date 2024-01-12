@@ -28,6 +28,7 @@ namespace MotorIds {
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
+    constexpr int INTAKE_DEPLOYMENT_MOTOR = 1;
   }  // namespace SparkMax
 
   namespace VictorSPX {
@@ -40,3 +41,8 @@ namespace MotorSpeeds {
 
   constexpr double RETRACTION_SPEED = -1.00;
 }  // namespace MotorSpeeds
+
+namespace DigitalInput {
+  constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 1;
+  constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;
+}  // namespace DigitalInput

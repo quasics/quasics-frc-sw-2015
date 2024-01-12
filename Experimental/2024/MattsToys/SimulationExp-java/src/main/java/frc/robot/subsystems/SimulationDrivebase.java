@@ -68,9 +68,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     super.setName(getClass().getSimpleName());
 
-    m_leftLeader.addFollower(m_leftFollower);
-    m_rightLeader.addFollower(m_rightFollower);
-
     m_leftEncoder = new Encoder(0, 1);
     m_rightEncoder = new Encoder(2, 3);
     m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
@@ -94,6 +91,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   private void configureDriveMotorsAndSensors() {
+    // Set up leader/follower relationships.
+    m_leftLeader.addFollower(m_leftFollower);
+    m_rightLeader.addFollower(m_rightFollower);
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.

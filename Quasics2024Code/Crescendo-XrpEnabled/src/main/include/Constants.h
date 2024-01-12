@@ -30,3 +30,9 @@ namespace MotorIds {
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
   }  // namespace SparkMax
 }  // namespace MotorIds
+
+namespace MotorSpeeds {
+  constexpr double EXTENSION_SPEED = 1.00;
+
+  constexpr double RETRACTION_SPEED = -1.00;
+}

@@ -2,12 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-// 2 motors for the shooting in the speaker
+#include "subsystems/ShooterAngleAdjustment.h"
 
-#include "subsystems/Intake.h"
-
-Intake::Intake() = default;
+ShooterAngleAdjustment::ShooterAngleAdjustment() = default;
 
 // This method will be called once per scheduler run
-void Intake::Periodic() {
-}
+void ShooterAngleAdjustment::Periodic() {}

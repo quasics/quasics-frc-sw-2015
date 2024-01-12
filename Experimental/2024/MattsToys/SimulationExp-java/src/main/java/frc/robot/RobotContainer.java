@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,11 +64,11 @@ public class RobotContainer {
 
   /** Defines options for auto mode. */
   private enum AutoMode {
-    eSpin, eFollowTrajectory
+    eDoNothing, eSpin, eFollowTrajectory
   }
 
   /** The currently-configured autonomous mode. */
-  private AutoMode mode = AutoMode.eSpin;
+  private AutoMode mode = AutoMode.eDoNothing;
 
   /** Defines options for building sample trajectory commands. */
   private enum AutoModeTrajectorySelection {
@@ -117,6 +118,8 @@ public class RobotContainer {
     }
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
     configureBindings();
+
+    System.err.println("Writing logs to: " + DataLogManager.getLogDir());
   }
 
   private void configureBindings() {
@@ -134,6 +137,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     switch (mode) {
+      case eDoNothing:
+        return new PrintCommand("*** Auto mode: doing nothing, as instructed....");
       case eSpin:
         return new SpinInPlace(m_drivebase);
       case eFollowTrajectory:

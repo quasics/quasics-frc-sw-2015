@@ -20,12 +20,32 @@
 #include <functional>
 
 /**
- * A convenient wrapper, representing basic functionality of any
- * gyro/single-axis ALU.
+ * This defines a "wrapper" type that can be used to let any arbitrary "Gyro" or
+ * ALU object be used in a common way, even if they don't share a common base
+ * class.
  *
- * This is required because WPILib is deprecating their definition of a common
- * <code>Gyro</code> base class, and thus there's no common base class that can
- * be used to manipulate different kinds of Gyros/ALUs in a consistent fashion.
+ * As context:
+ * <ul>
+ * <li>Prior to the 2024 WPI tools, there was a common "Gyro" interface that
+ * many gyros/ALUs implemented. This allowed them to be used
+ * semi-interchangeably by code (e.g., if you're writing code that will run on
+ * robots that might not always have the same kind of ALU installed, such as a
+ * Pigeon2 over CAN on one drive base and an ADI ALU connected via SPI on
+ * another). This interface wasn't implemented for all ALUs, but it was
+ * reasonably common.</li>
+ * <li>As a part of the updates for the 2024 WPI tools, this common interface
+ * was deprecated, and the various classes for gyros/IMUs in the WPILib (and
+ * from other sources) are now all left without a common base type. This means
+ * that it's *much* harder to write one piece of code that will work with
+ * multiple ALUs, which is a real problem.</li>
+ * </ul>
+ *
+ * So, I'm putting in my own "wrapper" interface, which can be used to adapt any
+ * arbitrary gyro/ALU to a common type, along with some functionality to help
+ * encapsulate various "real" gyro classes with the wrapper.
+ *
+ * @see https://refactoring.guru/design-patterns/decorator
+ * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
 class IGyro {
   // Convenient type alises.
@@ -85,7 +105,7 @@ class IGyro {
 
 /**
  * Defines an IGyro subclass that uses std::function objects to encapsulate the
- * underyling behaviors.
+ * underlying behaviors.
  */
 class FunctionalGyro : public IGyro {
   // Convenient type aliases.

@@ -8,15 +8,35 @@ import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import java.util.function.Supplier;
 
 /**
- * As of the 2024 tools, a common "Gyro" interface is being deprecated, and the
- * various classes for gyros/IMUs are now all left without a common base type
- * (which sucks, if you want to write code that can swap different hardware
- * in/out).
+ * This defines a "wrapper" type that can be used to let any arbitrary "Gyro" or
+ * ALU object be used in a common way, even if they don't share a common base
+ * class.
+ * 
+ * As context:
+ * <ul>
+ * <li>Prior to the 2024 WPI tools, there was a common "Gyro" interface that
+ * many gyros/ALUs implemented. This allowed them to be used
+ * semi-interchangeably by code (e.g., if you're writing code that will run on
+ * robots that might not always have the same kind of ALU installed, such as a
+ * Pigeon2 over CAN on one drive base and an ADI ALU connected via SPI on
+ * another). This interface wasn't implemented for all ALUs, but it was
+ * reasonably common.</li>
+ * <li>As a part of the updates for the 2024 WPI tools, this common interface
+ * was deprecated, and the various classes for gyros/IMUs in the WPILib (and
+ * from other sources) are now all left without a common base type. This means
+ * that it's *much* harder to write one piece of code that will work with
+ * multiple ALUs, which is a real problem.</li>
+ * </ul>
  *
- * So, I'm putting in my own wrapper interface, along with some functionality to
- * help encapsulate various "real" gyro classes with the wrapper.
+ * So, I'm putting in my own "wrapper" interface, which can be used to adapt any
+ * arbitrary gyro/ALU to a common type, along with some functionality to help
+ * encapsulate various "real" gyro classes with the wrapper.
+ * 
+ * @see https://refactoring.guru/design-patterns/decorator
+ * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
 public interface IGyro {
+  /** Tells the gyro to perform any calibration processing (e.g., on power-up). */
   void calibrate();
 
   /** Returns the heading of the robot in degrees. */
@@ -28,8 +48,16 @@ public interface IGyro {
   /** Returns the heading of the robot as a Rotation2d. */
   Rotation2d getRotation2d();
 
+  /**
+   * Tells the gyro to reset its data, making the current heading the new "0"
+   * value.
+   */
   void reset();
 
+  /**
+   * A helper class that implements IGyro, and makes it easier to wrap arbitrary
+   * types within this interface.
+   */
   public class FunctionalGyro implements IGyro {
     private final Runnable m_calibrator;
     private final Supplier<Double> m_angleSupplier;
@@ -37,6 +65,10 @@ public interface IGyro {
     private final Supplier<Rotation2d> m_rotationSupplier;
     private final Runnable m_resetter;
 
+    /**
+     * Constructor, accepting an input function for each of the supported
+     * operations.
+     */
     FunctionalGyro(Runnable calibrator, Supplier<Double> angleSupplier,
         Supplier<Double> rateSupplier, Supplier<Rotation2d> rotationSupplier, Runnable resetter) {
       m_calibrator = calibrator;
@@ -72,6 +104,7 @@ public interface IGyro {
     }
   }
 
+  /** Helper function to wrap the Pigeon2 type from CTRE. */
   static IGyro wrapYawGyro(Pigeon2 pigeon2) {
     return new OffsetGyro(new FunctionalGyro(
         () -> {
@@ -92,6 +125,7 @@ public interface IGyro {
     return wrapYawGyro(g);
   }
 
+  /** Helper function to wrap the AnalogGyro type from WPILib. */
   static IGyro wrapGyro(AnalogGyro g) {
     return new FunctionalGyro(
         () -> {
@@ -105,6 +139,7 @@ public interface IGyro {
         });
   }
 
+  /** Helper function to wrap the XRPGyro type from WPILib. */
   static IGyro wrapYawGyro(XRPGyro g) {
     return new OffsetGyro(new FunctionalGyro(
         () -> {
@@ -120,6 +155,7 @@ public interface IGyro {
         }));
   }
 
+  /** Helper function to wrap the RomiGyro type from WPILib. */
   static IGyro wrapYawGyro(RomiGyro g) {
     return new OffsetGyro(new FunctionalGyro(
         () -> {

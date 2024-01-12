@@ -29,10 +29,14 @@ namespace MotorIds {
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
   }  // namespace SparkMax
+
+  namespace VictorSPX {
+    constexpr int INTAKE_MOTOR_ROLLER_ID = 1;
+  }
 }  // namespace MotorIds
 
 namespace MotorSpeeds {
   constexpr double EXTENSION_SPEED = 1.00;
 
   constexpr double RETRACTION_SPEED = -1.00;
-}
+}  // namespace MotorSpeeds

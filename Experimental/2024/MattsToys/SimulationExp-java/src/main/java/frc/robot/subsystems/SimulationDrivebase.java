@@ -13,7 +13,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -38,9 +37,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kS = 1; // (left) 0.013809
   private static final double kV = 3; // (left) 1.9805
   private static final double kA = 0; // (left) 0.19208
-
-  private final MotorControllerGroup m_leftGroup;
-  private final MotorControllerGroup m_rightGroup;
 
   private final Encoder m_leftEncoder;
   private final Encoder m_rightEncoder;
@@ -73,8 +69,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     super.setName(getClass().getSimpleName());
 
-    m_leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
-    m_rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
+    m_leftLeader.addFollower(m_leftFollower);
+    m_rightLeader.addFollower(m_rightFollower);
 
     m_leftEncoder = new Encoder(0, 1);
     m_rightEncoder = new Encoder(2, 3);
@@ -102,7 +98,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    m_rightGroup.setInverted(true);
+    m_rightLeader.setInverted(true);
 
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
@@ -123,8 +119,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
-    m_leftGroup.setVoltage(leftVoltage);
-    m_rightGroup.setVoltage(rightVoltage);
+    m_leftLeader.setVoltage(leftVoltage);
+    m_rightLeader.setVoltage(rightVoltage);
   }
 
   @Override
@@ -179,8 +175,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_leftGroup.get() * RobotController.getInputVoltage(),
-        m_rightGroup.get() * RobotController.getInputVoltage());
+    m_drivetrainSimulator.setInputs(m_leftLeader.get() * RobotController.getInputVoltage(),
+        m_rightLeader.get() * RobotController.getInputVoltage());
     m_drivetrainSimulator.update(0.02);
 
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());

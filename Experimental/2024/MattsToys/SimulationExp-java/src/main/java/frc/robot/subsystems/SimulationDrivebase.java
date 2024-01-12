@@ -29,14 +29,15 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   // Sample PID constants.
-  private static final double kP = 8.5;
+  private static final double kP = 8.5; // (left) 1.3195
   private static final double kI = 0;
-  private static final double kD = 0;
+  private static final double kD = 0; // (left) 0.0
 
   // Motor gains are for example purposes only, and must be determined for your
   // own robot.
-  private static final double kS = 1;
-  private static final double kV = 3;
+  private static final double kS = 1; // (left) 0.013809
+  private static final double kV = 3; // (left) 1.9805
+  private static final double kA = 0; // (left) 0.19208
 
   private final MotorControllerGroup m_leftGroup;
   private final MotorControllerGroup m_rightGroup;

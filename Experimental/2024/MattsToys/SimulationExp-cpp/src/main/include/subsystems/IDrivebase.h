@@ -179,7 +179,7 @@ class IDrivebase : public frc2::SubsystemBase {
 
   /** Helper method to stop the robot. */
   void stop() {
-    arcadeDrive(0_mps, 0_rad_per_s);
+    setSpeedsImpl(0_mps, 0_mps, false);
   }
 
   /** @return the kinematics data for the drive base. */
@@ -351,6 +351,10 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower);
 
+  void setSpeedsImpl(const units::meters_per_second_t leftSpeed,
+                     const units::meters_per_second_t rightSpeed,
+                     bool applyPid);
+
   static double convertVoltageToPercentSpeed(units::volt_t volts) {
     const double inputVoltage = frc::RobotController::GetInputVoltage();
     const double mps = (volts.value() / inputVoltage);
@@ -396,6 +400,5 @@ class IDrivebase : public frc2::SubsystemBase {
   virtual double getRightSpeedPercentage() = 0;
 
  private:
-  units::volt_t m_lastLeftVoltage{0}, m_lastRightVoltage{0};
   static DeadBandEnforcer m_voltageDeadbandEnforcer;
 };

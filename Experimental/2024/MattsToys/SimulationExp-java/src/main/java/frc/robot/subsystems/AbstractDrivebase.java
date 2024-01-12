@@ -42,12 +42,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final SimpleMotorFeedforward m_feedforward;
   private final DifferentialDriveKinematics m_kinematics;
 
-  /** Most recently set voltage for left side, for use in periodic(). */
-  private double m_lastLeftVoltage = 0;
-
-  /** Most recently set voltage for right side, for use in periodic(). */
-  private double m_lastRightVoltage = 0;
-
   private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
 
   protected static final boolean LOG_TO_SMARTDASHBOARD = false;
@@ -148,7 +142,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public final void stop() {
-    arcadeDrive(0, 0);
+    setSpeedsImpl(0, 0, false);
   }
 
   void logValue(String label, double val) {
@@ -173,11 +167,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Sets speeds to the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    logValue("leftSpeed", speeds.leftMetersPerSecond);
-    logValue("rightSpeed", speeds.rightMetersPerSecond);
+    setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond, true);
+  }
 
-    var leftStabilized = speedEnforcer.limit(speeds.leftMetersPerSecond);
-    var rightStabilized = speedEnforcer.limit(speeds.rightMetersPerSecond);
+  /** Sets speeds to the drivetrain motors. */
+  public final void setSpeedsImpl(double leftMetersPerSecond, double rightMetersPerSecond, boolean includePid) {
+    logValue("leftSpeed", leftMetersPerSecond);
+    logValue("rightSpeed", rightMetersPerSecond);
+
+    var leftStabilized = speedEnforcer.limit(leftMetersPerSecond);
+    var rightStabilized = speedEnforcer.limit(rightMetersPerSecond);
     logValue("leftStable", leftStabilized);
     logValue("rightStable", rightStabilized);
 
@@ -188,9 +187,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     logValue("rightFF", rightFeedforward);
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftPidOutput = m_leftPIDController.calculate(getLeftEncoder().getVelocity(), speeds.leftMetersPerSecond);
-    double rightPidOutput = m_rightPIDController.calculate(
-        getRightEncoder().getVelocity(), speeds.rightMetersPerSecond);
+    double leftPidOutput = includePid ? m_leftPIDController.calculate(getLeftEncoder().getVelocity(), leftStabilized)
+        : 0;
+    double rightPidOutput = includePid ? m_rightPIDController.calculate(
+        getRightEncoder().getVelocity(), rightStabilized) : 0;
     logValue("leftPid", leftPidOutput);
     logValue("rightPid", rightPidOutput);
 
@@ -212,15 +212,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     if (ENABLE_VOLTAGE_APPLICATON) {
       this.setMotorVoltagesImpl(leftVoltage, rightVoltage);
     }
-    m_lastLeftVoltage = leftVoltage;
-    m_lastRightVoltage = rightVoltage;
   }
 
   @Override
   public void periodic() {
-    if (ENABLE_VOLTAGE_APPLICATON) {
-      setMotorVoltagesImpl(m_lastLeftVoltage, m_lastRightVoltage);
-    }
     updateOdometry();
   }
 

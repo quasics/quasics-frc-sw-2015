@@ -4,7 +4,13 @@
 
 #include "subsystems/RealDrivebase.h"
 
-RealDrivebase::RealDrivebase() = default;
+RealDrivebase::RealDrivebase() {
+  SetName("RealDrivebase");
+  // This is where we'd do any necessary motor configuration (e.g., setting some
+  // as "inverted", etc.).
+}
 
-// This method will be called once per scheduler run
-void RealDrivebase::Periodic() {}
+void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {
+  m_leftSide.Set(leftPercent);
+  m_rightSide.Set(rightPercent);
+}

@@ -31,9 +31,13 @@ class IDrivebase : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
- private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-};
+  void tankDrive(double leftInputPercent, double rightInputPercent);
 
-// this is a test
+  void stop() {
+    tankDrive(0, 0);
+  }
+
+  // Hardware abstraction layer
+ protected:
+  virtual void setMotorSpeeds(double leftPercent, double rightPercent) = 0;
+};

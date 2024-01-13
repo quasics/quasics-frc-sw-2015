@@ -56,6 +56,8 @@ namespace MotorIds {
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
     constexpr int INTAKE_DEPLOYMENT_MOTOR = 1;
+    constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 1;
+    constexpr int REAR_ROLLER_ID = 1;
   }  // namespace SparkMax
 
   namespace VictorSPX {

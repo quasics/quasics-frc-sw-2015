@@ -20,7 +20,7 @@ void IntakeDeployment::SetMotorSpeed(double percentSpeed) {
 void IntakeDeployment::Stop() {
   m_intakeDeployment.StopMotor();
 }
-/*
+
 void IntakeDeployment::ResetEncoders() {
   m_DeploymentEncoder.SetPosition(0);
 }
@@ -32,7 +32,7 @@ double IntakeDeployment::GetPosition() {
 double IntakeDeployment::GetVelocity() {
   return m_DeploymentEncoder.GetVelocity();
 }
-*/
+
 void IntakeDeployment::EnableBraking(bool value) {
   rev::CANSparkMax::IdleMode mode;
   if (value) {

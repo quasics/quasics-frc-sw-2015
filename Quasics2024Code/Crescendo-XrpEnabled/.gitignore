@@ -1,6 +1,11 @@
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
+### Mr Healy stuff ###
+.tracecompass
+imgui.ini
+networktables.ini
+
 ### C++ ###
 # Prerequisites
 *.d

@@ -47,11 +47,11 @@ class IntakeDeployment : public frc2::SubsystemBase {
       rev::CANSparkMax::MotorType::kBrushless};
   // Encoders, to keep track of where the relative motion of the deployment
   // mechanism.
-  // rev::SparkMaxRelativeEncoder m_DeploymentEncoder =
-  //    m_intakeDeployment.GetEncoder();
+  rev::SparkRelativeEncoder m_DeploymentEncoder = m_intakeDeployment.GetEncoder(
+      rev::SparkRelativeEncoder::Type::kHallSensor);
 
-  // std::unique_ptr<TrivialEncoder> m_trivialEncoder{
-  //     TrivialEncoder::wrapEncoder(m_DeploymentEncoder)};
+  std::unique_ptr<TrivialEncoder> m_trivialEncoder{
+      TrivialEncoder::wrapEncoder(m_DeploymentEncoder)};
 
   frc::DigitalInput m_ExtendIntakeLimitSwitch{
       DigitalInput::INTAKE_EXTEND_LIMIT_SWITCH_ID};

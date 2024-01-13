@@ -1,0 +1,9 @@
+For demo mode (1 Logitech controller, bottom switch in "D" mode):
+* Left/Right Joystick: Tank drive
+* A button: Run conveyor backward (push ball backward)
+* B button: Run conveyor foreward (push ball into shooter)
+* Left shoulder: Raise shooter at high position
+* Right shoulder: Raise shooter at low position
+* X button: Run shooter at full speed
+* Y button: Run shooter at low speed
+

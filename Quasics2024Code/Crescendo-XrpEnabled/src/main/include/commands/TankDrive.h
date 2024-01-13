@@ -7,6 +7,8 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/IDrivebase.h"
+
 /**
  * An example command.
  *
@@ -14,10 +16,13 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class TankDrive
-    : public frc2::CommandHelper<frc2::Command, TankDrive> {
+class TankDrive : public frc2::CommandHelper<frc2::Command, TankDrive> {
  public:
-  TankDrive();
+  typedef std::function<double()> PercentSupplier;
+
+ public:
+  TankDrive(IDrivebase& driveBase, PercentSupplier leftSupplier,
+            PercentSupplier rightSupplier);
 
   void Initialize() override;
 
@@ -25,5 +30,11 @@ class TankDrive
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
+ private:
+  void updateSpeed();
+
+ private:
+  IDrivebase& m_driveBase;
+  PercentSupplier m_leftSupplier;
+  PercentSupplier m_rightSupplier;
 };

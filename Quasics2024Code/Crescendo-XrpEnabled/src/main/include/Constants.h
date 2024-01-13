@@ -46,3 +46,10 @@ namespace DigitalInput {
   constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 1;
   constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;
 }  // namespace DigitalInput
+
+/* namespace LightingValues {
+  constexpr int PORT_NUMBER = fill in;
+  constexpr int STRIP_PIXEL_COUNT = fill in;
+  constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
+} */
+// namespace LightingValues

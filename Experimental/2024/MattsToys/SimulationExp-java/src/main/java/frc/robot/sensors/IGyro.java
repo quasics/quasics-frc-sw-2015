@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * </ul>
  *
  * So, I'm defining my own (minimal) "wrapper" interface, which can be used to
- * adapt any arbitrary gyro/ALU to a common type, along with some functionas to
+ * adapt any arbitrary gyro/ALU to a common type, along with some functions to
  * help encapsulate specific examples "real" gyro classes with the wrapper.
  *
  * @see https://refactoring.guru/design-patterns/decorator

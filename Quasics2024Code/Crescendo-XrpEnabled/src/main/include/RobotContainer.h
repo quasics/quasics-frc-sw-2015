@@ -4,11 +4,13 @@
 
 #pragma once
 
+#include <frc/Joystick.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.h"
 #include "subsystems/ExampleSubsystem.h"
+#include "subsystems/IDrivebase.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -25,11 +27,15 @@ class RobotContainer {
 
  private:
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc2::CommandXboxController m_driverController{
-      OperatorConstants::kDriverControllerPort};
+  frc::Joystick m_driverController{OperatorConstants::kDriverControllerPort};
 
+  void allocateDriveBase();
+
+  void setUpTankDrive();
   // The robot's subsystems are defined here...
   ExampleSubsystem m_subsystem;
 
-  void ConfigureBindings();
+  std::unique_ptr<IDrivebase> m_drivebase;
+
+  // void ConfigureBindings();
 };

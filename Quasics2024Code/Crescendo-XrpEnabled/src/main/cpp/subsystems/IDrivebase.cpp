@@ -7,4 +7,17 @@
 IDrivebase::IDrivebase() = default;
 
 // This method will be called once per scheduler run
-void IDrivebase::Periodic() {}
+void IDrivebase::Periodic() {
+}
+
+void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
+  // Make sure that speeds are limited to a range of -1 to +1
+  double leftPercent = std::max(std::min(1.0, leftInputPercent), -1.0);
+  double rightPercent = std::max(std::min(1.0, rightInputPercent), -1.0);
+
+  // Other adjustments could happen here (e.g., turbo/turtle mode, or deadband,
+  // etc.)
+
+  // Apply the speeds to the motors!
+  setMotorSpeeds(leftPercent, rightPercent);
+}

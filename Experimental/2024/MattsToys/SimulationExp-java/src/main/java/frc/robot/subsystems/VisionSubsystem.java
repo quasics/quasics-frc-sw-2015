@@ -55,13 +55,7 @@ public class VisionSubsystem extends SubsystemBase {
   private PhotonCameraSim cameraSim;
   private VisionSystemSim visionSim;
 
-  public void
-  setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
-    m_poseEstimatorFunction =
-        consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
-  }
-
-  /** Creates a new VisionSubsystem. */
+  /** Constructor. */
   public VisionSubsystem() {
     // Set up the vision pose estimator
     photonEstimator = new PhotonPoseEstimator(
@@ -102,11 +96,22 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets a function that we should invoke whenever we have new pose data from
+   * our estimator.
+   * @param consumer
+   */
+  public void
+  setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
+    m_poseEstimatorFunction =
+        consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
+  }
+
   public PhotonPipelineResult getLatestResult() {
     return camera.getLatestResult();
   }
 
-  Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
+  private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
   private double m_lastEstTimestamp = 0;
 
   /**
@@ -156,6 +161,9 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateEstimatedGlobalPose();
+
+    // Update anyone else (e.g., the drive base) that would like to know where
+    // the vision data suggests that the robot might be located.
     if (m_lastEstimatedPose.isPresent()) {
       m_poseEstimatorFunction.apply(
           m_lastEstimatedPose.get().estimatedPose.toPose2d(),

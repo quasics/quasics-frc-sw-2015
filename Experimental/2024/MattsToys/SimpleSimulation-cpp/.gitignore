@@ -181,3 +181,6 @@ ctre_sim/
 networktables.json
 simgui-ds.json
 simgui.json
+imgui.ini
+simgui-window.json
+networktables.ini

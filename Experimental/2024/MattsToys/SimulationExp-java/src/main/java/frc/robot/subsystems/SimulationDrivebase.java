@@ -34,8 +34,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   // Motor gains obtained via SysId logging analysis.
   private static final double kS = 0.013809; // Sample was 1
-  private static final double kV = 1.9805; // Sample was 3
-  private static final double kA = 0.19208; // Sample was 0
+  private static final double kV = 1.9805;   // Sample was 3
+  private static final double kA = 0.19208;  // Sample was 0
 
   private final Encoder m_leftEncoder;
   private final Encoder m_rightEncoder;
@@ -47,10 +47,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final DifferentialDriveOdometry m_odometry;
 
   // Objects used in simulation mode.
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
-      0.3);
-  private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
-      m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidthMeters, kWheelRadiusMeters, null);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  private final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
+                                    kTrackWidthMeters, kWheelRadiusMeters,
+                                    null);
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
   private final EncoderSim m_leftEncoderSim;
@@ -77,8 +79,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Initial odometry; it will be updated in periodic().
-    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-        m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
+    m_odometry = new DifferentialDriveOdometry(
+        m_wrappedGyro.getRotation2d(), m_leftTrivialEncoder.getPosition(),
+        m_rightTrivialEncoder.getPosition());
 
     // Finish configuring the hardware.
     configureDriveMotorsAndSensors();
@@ -103,10 +106,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    m_leftEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadiusMeters / kEncoderResolutionTicksPerRevolution);
-    m_rightEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadiusMeters / kEncoderResolutionTicksPerRevolution);
+    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters /
+                                      kEncoderResolutionTicksPerRevolution);
+    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters /
+                                       kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();
@@ -166,7 +169,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_fieldSim.setRobotPose(pose);
   }
 
-  /** Update our simulation. This should be run every robot loop in simulation. */
+  /**
+   * Update our simulation. This should be run every robot loop in simulation.
+   */
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
@@ -175,22 +180,22 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_leftLeader.get() * RobotController.getInputVoltage(),
+    m_drivetrainSimulator.setInputs(
+        m_leftLeader.get() * RobotController.getInputVoltage(),
         m_rightLeader.get() * RobotController.getInputVoltage());
     m_drivetrainSimulator.update(0.02);
 
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
-    m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-    m_rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
-    m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    m_leftEncoderSim.setRate(
+        m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistance(
+        m_drivetrainSimulator.getRightPositionMeters());
+    m_rightEncoderSim.setRate(
+        m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
   }
 
-  protected double getLeftSpeedPercentage() {
-    return m_leftLeader.get();
-  }
+  protected double getLeftSpeedPercentage() { return m_leftLeader.get(); }
 
-  protected double getRightSpeedPercentage() {
-    return m_rightLeader.get();
-  }
+  protected double getRightSpeedPercentage() { return m_rightLeader.get(); }
 }

@@ -61,6 +61,13 @@ class RealDriveBase : public IDrivebase {
     return m_offsetGyro;
   }
 
+  double getLeftSpeedPercentage() override {
+    return m_leftFront.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightFront.Get();
+  }
+
   // Internal helper functions.
  private:
   void configureMotors();
@@ -104,7 +111,7 @@ class RealDriveBase : public IDrivebase {
   // TODO: Enable using a Pigeon2, once the updated CTRE libraries are
   // available.
 #ifdef ENABLE_CTRE
-  Pigeon2 m_realGyro;
+  Pigeon2 m_realGyro{OtherCanIds::PIGEON2_CAN_ID};
 #else
   frc::ADXRS450_Gyro m_realGyro{frc::SPI::Port::kOnboardCS0};
 #endif

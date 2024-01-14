@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "PreprocessorConfig.h"
-
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/AnalogGyro.h>
 #include <frc/geometry/Rotation2d.h>
@@ -13,20 +11,55 @@
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 
+#include "PreprocessorConfig.h"
+
 #ifdef ENABLE_CTRE
-  #include <ctre/phoenix6/Pigeon2.hpp>
+#include <ctre/phoenix6/Pigeon2.hpp>
 #endif
 
 #include <functional>
 
+// clang-format off
 /**
- * A convenient wrapper, representing basic functionality of any
- * gyro/single-axis ALU.
+ * This defines a "wrapper" type that can be used to let any arbitrary "Gyro" or
+ * ALU object be used in a common way, even if they don't share a common base
+ * class.  (This wrapper provides a pretty basic view of gyros/ALUs, but that's
+ * the point; I'm just looking for a way to use all kinds of an ALU as though
+ * there are a common/single kind of object.)
  *
- * This is required because WPILib is deprecating their definition of a common
- * <code>Gyro</code> base class, and thus there's no common base class that can
- * be used to manipulate different kinds of Gyros/ALUs in a consistent fashion.
+ * As context:
+ * <ul>
+ *   <li>
+ *     Prior to the 2024 WPI tools, there was a common "Gyro" interface that
+ *     many gyros/ALUs implemented. This allowed them to be used
+ *     semi-interchangeably by code (e.g., if you're writing code that will
+ *     run on robots that might not always have the same kind of ALU installed,
+ *     such as a Pigeon2 over CAN on one drive base and an ADI ALU connected via
+ *     SPI on another). This interface wasn't supported by all ALUs, but it was
+ *     at least reasonably common.
+ *   </li>
+ *   <li>
+ *     As a part of the updates for the 2024 WPI tools, this common interface
+ *     was "deprecated" (meanining that it's going away in the future), and
+ *     the WPI team removed its use immediately from the various classes for
+ *     gyros/IMUs in the WPILib. (And other folks providing vendordeps for
+ *     specific hardware are generally following suit.)
+ *   </li>
+ *   <li>
+ *     These means gthat we are now effectively left without a common base type,
+ *     which means that it's *much* harder to write one piece of code that will
+ *     work with multiple ALUs, which is a real problem.
+ *   </li>
+ * </ul>
+ *
+ * So, I'm defining my own (minimal) "wrapper" interface, which can be used to
+ * adapt any arbitrary gyro/ALU to a common type, along with some functions to
+ * help encapsulate specific examples "real" gyro classes with the wrapper.
+ *
+ * @see https://refactoring.guru/design-patterns/decorator
+ * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
+// clang-format on
 class IGyro {
   // Convenient type alises.
  public:
@@ -36,10 +69,14 @@ class IGyro {
   using Pigeon2 = ctre::phoenix6::hardware::Pigeon2;
 #endif
 
+  // Basic functions that any Gyro/ALU can generally support.
  public:
   virtual ~IGyro() = default;
 
-  /** Calibrates the gyro/ALU. */
+  /**
+   * Calibrates the gyro/ALU.  (Will be a "no-op" for some hardware that
+   * auto-calibrates, such as the Pigeon2.)
+   */
   virtual void calibrate() = 0;
 
   /** Returns the heading of the robot in degrees. */
@@ -54,11 +91,9 @@ class IGyro {
   /** Resets the gyro to 0. */
   virtual void reset() = 0;
 
-  // Helper functions, making it easy to get IGyros.
+  // Helper functions, making it easy to wrap specific gyros/ALUs inside of
+  // IGyro objects.
  public:
-  /** @return a stubbed version of an IGyro as a simple placeholder. */
-  static inline IGyro& getNullGyro();
-
   /** @return an IGyro wrapped around an <code>AnalogGyro</code>. */
   static inline std::unique_ptr<IGyro> wrapGyro(frc::AnalogGyro& g);
 
@@ -66,17 +101,35 @@ class IGyro {
   static inline std::unique_ptr<IGyro> wrapGyro(frc::ADXRS450_Gyro& g);
 
 #ifdef ENABLE_CTRE
-  /** @return an IGyro wrapped around an <code>Pigeon2</code>. */
+  /**
+   * @return an IGyro wrapped around the "yaw" axis for an <code>Pigeon2</code>.
+   */
   static inline std::unique_ptr<IGyro> wrapYawGyro(Pigeon2& pigeon2);
+
+  /**
+   * @return an IGyro wrapped around the "yaw" axis for an <code>Pigeon2</code>.
+   */
+  static inline std::unique_ptr<IGyro> wrapGyro(Pigeon2& pigeon2) {
+    return wrapYawGyro(pigeon2);
+  }
 #endif
 
   /** @return an IGyro wrapped around an <code>XRPGyro</code>. */
   static inline std::unique_ptr<IGyro> wrapYawGyro(frc::XRPGyro& xrpGyro);
+
+  // Other generators
+ public:
+  /**
+   * @return a stubbed version of an IGyro as a simple placeholder.  This will
+   * always return 0s for any value function, but at least gives you something
+   * that can be "plugged into" code as a placeholder.
+   */
+  static inline IGyro& getNullGyro();
 };
 
 /**
- * Defines an IGyro subclass that uses std::function objects to encapsulate the
- * underyling behaviors.
+ * Defines an IGyro subclass that uses std::function objects to encapsulate each
+ * of the underlying behaviors.
  */
 class FunctionalGyro : public IGyro {
   // Convenient type aliases.

@@ -51,10 +51,6 @@ public class VisionSubsystem extends SubsystemBase {
       NULL_ESTIMATOR_FUNCTION;
   final PhotonCamera camera = new PhotonCamera(CAMERA_NAME);
 
-  // Simulation
-  private PhotonCameraSim cameraSim;
-  private VisionSystemSim visionSim;
-
   /** Constructor. */
   public VisionSubsystem() {
     // Set up the vision pose estimator
@@ -65,34 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // ----- Simulation
     if (Robot.isSimulation()) {
-      // Create the vision system simulation which handles cameras and targets
-      // on the field.
-      visionSim = new VisionSystemSim("main");
-
-      // Add all the AprilTags inside the tag layout as visible targets to this
-      // simulated field.
-      visionSim.addAprilTags(kTagLayout);
-
-      // Create simulated camera properties. These can be set to mimic your
-      // actual camera.
-      var cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-      cameraProp.setCalibError(0.35, 0.10);
-      cameraProp.setFPS(15);
-      cameraProp.setAvgLatencyMs(50);
-      cameraProp.setLatencyStdDevMs(15);
-
-      // Create a PhotonCameraSim which will update the linked PhotonCamera's
-      // values with visible targets.
-      cameraSim = new PhotonCameraSim(camera, cameraProp);
-
-      // Add the simulated camera to view the targets on this simulated field.
-      visionSim.addCamera(cameraSim, kRobotToCam);
-
-      // Draw a wireframe of the visual field on the raw video stream.  (This
-      // will significantly increase loop times, so this should be false if
-      // we're not using the raw video.)
-      cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);
+      setupSimulationSupport();
     }
   }
 
@@ -113,6 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
   private double m_lastEstTimestamp = 0;
+  private boolean m_estimateRecentlyUpdated = false;
 
   /**
    * Returns the latest estimated robot pose on the field from vision data. This
@@ -124,18 +94,51 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * The latest estimated robot pose on the field from vision data. This may be
-   * empty. This should only be called once per loop.
+   * empty. This should only be called once per loop, and will be invoked from
+   * our <code>periodic()</code> method.
    *
-   * @return An {@link EstimatedRobotPose} with an estimated pose, estimate
-   *     timestamp, and targets used for estimation.
+   * @see #periodic()
    */
   private void updateEstimatedGlobalPose() {
     m_lastEstimatedPose = photonEstimator.update();
 
     final double latestTimestamp =
         camera.getLatestResult().getTimestampSeconds();
-    final boolean haveNewResult =
+    m_estimateRecentlyUpdated =
         Math.abs(latestTimestamp - m_lastEstTimestamp) > 1e-5;
+
+    if (m_estimateRecentlyUpdated) {
+      m_lastEstTimestamp = latestTimestamp;
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Overridden Subsystem behavior
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void periodic() {
+    updateEstimatedGlobalPose();
+
+    // Update anyone else (e.g., the drive base) that would like to know where
+    // the vision data suggests that the robot might be located.
+    if (m_lastEstimatedPose.isPresent()) {
+      var estimate = m_lastEstimatedPose.get();
+      m_poseEstimatorFunction.apply(estimate.estimatedPose.toPose2d(),
+                                    estimate.timestampSeconds);
+    }
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    var possiblePose = SimulationSupport.getSimulatedPose();
+    if (possiblePose.isPresent()) {
+      // Update the simulator data to reflect where the robot thinks it's
+      // located.
+      visionSim.update(possiblePose.get());
+    }
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.
@@ -148,38 +151,55 @@ public class VisionSubsystem extends SubsystemBase {
                  .setPose(est.estimatedPose.toPose2d()),
           // If we have nothing in m_lastEstimatedPose, do this
           () -> {
-            if (haveNewResult)
+            if (m_estimateRecentlyUpdated)
               getSimDebugField().getObject("VisionEstimation").setPoses();
           });
     }
-
-    if (haveNewResult) {
-      m_lastEstTimestamp = latestTimestamp;
-    }
   }
 
-  @Override
-  public void periodic() {
-    updateEstimatedGlobalPose();
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Custom simulation support
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
-    // Update anyone else (e.g., the drive base) that would like to know where
-    // the vision data suggests that the robot might be located.
-    if (m_lastEstimatedPose.isPresent()) {
-      m_poseEstimatorFunction.apply(
-          m_lastEstimatedPose.get().estimatedPose.toPose2d(),
-          m_lastEstTimestamp);
+  // Simulation data
+  private PhotonCameraSim cameraSim;
+  private VisionSystemSim visionSim;
+
+  private void setupSimulationSupport() {
+    if (Robot.isReal()) {
+      return;
     }
-  }
+    // Create the vision system simulation which handles cameras and targets
+    // on the field.
+    visionSim = new VisionSystemSim("main");
 
-  @Override
-  public void simulationPeriodic() {
-    var possiblePose = SimulationSupport.getSimulatedPose();
-    if (possiblePose.isPresent()) {
-      visionSim.update(possiblePose.get());
-    }
-  }
+    // Add all the AprilTags inside the tag layout as visible targets to this
+    // simulated field.
+    visionSim.addAprilTags(kTagLayout);
 
-  // ----- Simulation
+    // Create simulated camera properties. These can be set to mimic your
+    // actual camera.
+    var cameraProp = new SimCameraProperties();
+    cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+    cameraProp.setCalibError(0.35, 0.10);
+    cameraProp.setFPS(15);
+    cameraProp.setAvgLatencyMs(50);
+    cameraProp.setLatencyStdDevMs(15);
+
+    // Create a PhotonCameraSim which will update the linked PhotonCamera's
+    // values with visible targets.
+    cameraSim = new PhotonCameraSim(camera, cameraProp);
+
+    // Add the simulated camera to view the targets on this simulated field.
+    visionSim.addCamera(cameraSim, kRobotToCam);
+
+    // Draw a wireframe of the visual field on the raw video stream.  (This
+    // will significantly increase loop times, so this should be false if
+    // we're not using the raw video.)
+    cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);
+  }
 
   /** Reset pose history of the robot in the vision system simulation. */
   public void resetSimPose(Pose2d pose) {

@@ -27,28 +27,35 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+/**
+ * A simple vision-processing subsystem, based on PhotonVision.
+ *
+ * This includes simulator support, as well as some initial code to enable the
+ * integration of vision-based pose estimation (using AprilTags for pose
+ * estimates) into the robot's planning.
+ */
 public class VisionSubsystem extends SubsystemBase {
+  // TODO: Move this into a robot-specific setting.
   final String CAMERA_NAME = "photonvision";
-  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = false;
 
-  // Cam mounted facing forward, half a meter forward of center, half a meter up
-  // from center.
+  // TODO: Move this into a robot-specific setting.  The current values are for
+  // a camera mounted facing forward, half a meter forward of center, half a
+  // meter up from center.
+  /** Camera mounting information, relative to the robot's centerpoint. */
   public static final Transform3d kRobotToCam = new Transform3d(
       new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+
+  /**
+   * If true, include wireframe rendering on raw video during simulation. (Note
+   * that this will slow things down.)
+   */
+  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = false;
 
   // The layout of the AprilTags on the field
   public static final AprilTagFieldLayout kTagLayout =
       AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 
   private final PhotonPoseEstimator photonEstimator;
-
-  final BiFunction<Pose2d, Double, Void> NULL_ESTIMATOR_FUNCTION = (P, D) -> {
-    // poseEstimator.addVisionMeasurement(P, D);
-    return null;
-  };
-
-  BiFunction<Pose2d, Double, Void> m_poseEstimatorFunction =
-      NULL_ESTIMATOR_FUNCTION;
   final PhotonCamera camera = new PhotonCamera(CAMERA_NAME);
 
   /** Constructor. */
@@ -65,19 +72,39 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  /** @return the latest result data from the camera. */
+  public PhotonPipelineResult getLatestResult() {
+    return camera.getLatestResult();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Pose estimation support
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /** A trivial (null-op) consumer of the pose data. */
+  final public BiFunction<Pose2d, Double, Void> NULL_ESTIMATOR_FUNCTION =
+      (P, D) -> {
+    // poseEstimator.addVisionMeasurement(P, D);
+    return null;
+  };
+
+  /**
+   * The function to be invoked whenever we have new pose data from the
+   * estimator.
+   */
+  BiFunction<Pose2d, Double, Void> m_poseEstimatorFunction =
+      NULL_ESTIMATOR_FUNCTION;
+
   /**
    * Sets a function that we should invoke whenever we have new pose data from
    * our estimator.
-   * @param consumer
    */
   public void
   setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
     m_poseEstimatorFunction =
         consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
-  }
-
-  public PhotonPipelineResult getLatestResult() {
-    return camera.getLatestResult();
   }
 
   private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();

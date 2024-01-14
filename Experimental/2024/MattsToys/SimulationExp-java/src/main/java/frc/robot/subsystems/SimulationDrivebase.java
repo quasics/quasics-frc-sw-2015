@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.SimulationSupport;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private static final double kTrackWidthMeters = 0.381 * 2;
@@ -193,6 +194,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setRate(
         m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+
+    // Publish the data for any that need it.
+    SimulationSupport.setSimulatedPose(m_drivetrainSimulator.getPose());
   }
 
   protected double getLeftSpeedPercentage() { return m_leftLeader.get(); }

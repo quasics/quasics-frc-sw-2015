@@ -120,10 +120,11 @@ public class RobotContainer {
     }
 
     m_vision = new VisionSubsystem();
-    // TODO: Set things up to pass vision-based posed estimation into the drive
-    // base, once I've modified it to use DifferentialDrivePoseEstimator, rather
-    // than the Odometry class.
-    m_vision.setPoseEstimatorConsumer(null);
+    m_vision.setPoseEstimatorConsumer(
+        (Pose2d pose, Double timestampSeconds) -> {
+          m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
+          return null;
+        });
 
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
 

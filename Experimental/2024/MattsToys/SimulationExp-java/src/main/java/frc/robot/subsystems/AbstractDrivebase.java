@@ -9,9 +9,12 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -41,6 +44,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final PIDController m_rightPIDController;
   private final SimpleMotorFeedforward m_feedforward;
   private final DifferentialDriveKinematics m_kinematics;
+  private final DifferentialDrivePoseEstimator m_poseEstimator;
 
   private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
 
@@ -64,8 +68,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
-  public AbstractDrivebase(
-      double trackWidthMeters, double kP, double kI, double kD, double kS, double kV) {
+  public AbstractDrivebase(double trackWidthMeters, double kP, double kI,
+                           double kD, double kS, double kV) {
     this(trackWidthMeters, kP, kI, kD, kS, kV, 0);
   }
 
@@ -88,62 +92,85 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
-  public AbstractDrivebase(
-      double trackWidthMeters, double kP, double kI, double kD, double kS, double kV, double kA) {
+  public AbstractDrivebase(double trackWidthMeters, double kP, double kI,
+                           double kD, double kS, double kV, double kA) {
     m_leftPIDController = new PIDController(kP, kI, kD);
     m_rightPIDController = new PIDController(kP, kI, kD);
     m_feedforward = new SimpleMotorFeedforward(kS, kV, kA);
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
+    m_poseEstimator = new DifferentialDrivePoseEstimator(
+        m_kinematics, new Rotation2d(), /*leftDistanceMeters*/ 0,
+        /*rightDistanceMeters*/ 0, /*initialPostMeters*/ new Pose2d());
   }
 
-  public DifferentialDriveKinematics getKinematics() {
-    return m_kinematics;
-  }
+  public DifferentialDriveKinematics getKinematics() { return m_kinematics; }
 
-  public SimpleMotorFeedforward getMotorFeedforward() {
-    return m_feedforward;
-  }
+  public SimpleMotorFeedforward getMotorFeedforward() { return m_feedforward; }
 
-  public double getKP() {
-    return m_leftPIDController.getP();
-  }
+  public double getKP() { return m_leftPIDController.getP(); }
 
-  public double getKI() {
-    return m_leftPIDController.getI();
-  }
+  public double getKI() { return m_leftPIDController.getI(); }
 
-  public double getKD() {
-    return m_leftPIDController.getD();
-  }
+  public double getKD() { return m_leftPIDController.getD(); }
 
   /** @return current wheel speeds (in m/s) */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(
-        getLeftEncoder().getVelocity(), getRightEncoder().getVelocity());
+    return new DifferentialDriveWheelSpeeds(getLeftEncoder().getVelocity(),
+                                            getRightEncoder().getVelocity());
   }
 
   /** Update the robot's odometry. */
   public void updateOdometry() {
-    getOdometry().update(
-        getGyro().getRotation2d(), getLeftEncoder().getPosition(), getRightEncoder().getPosition());
+    final Rotation2d rotation = getGyro().getRotation2d();
+    final double leftDistanceMeters = getLeftEncoder().getPosition();
+    final double rightDistanceMeters = getRightEncoder().getPosition();
+    getOdometry().update(rotation, leftDistanceMeters, rightDistanceMeters);
+    m_poseEstimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
   }
 
-  /** Check the current robot pose. */
-  public Pose2d getPose() {
-    return getOdometry().getPoseMeters();
+  /** Get the current robot pose, based on odometery. */
+  public Pose2d getPose() { return getOdometry().getPoseMeters(); }
+
+  /**
+   * Get the current estimated robot pose, based on odometery, plus any vision
+   * updates.
+   */
+  public Pose2d getEstimatedPose() {
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /** Resets robot odometry. */
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder().reset();
     getRightEncoder().reset();
-    getOdometry().resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition(),
-        getRightEncoder().getPosition(), pose);
+    getOdometry().resetPosition(getGyro().getRotation2d(), 0, 0, pose);
+    m_poseEstimator.resetPosition(getGyro().getRotation2d(), 0, 0, pose);
   }
 
-  public final void stop() {
-    setSpeedsImpl(0, 0, false);
+  public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
+    /**
+     * TODO: Update code to make it more robust w.r.t. bad vision data.
+     *
+     * From the docs: "To promote stability of the pose estimate and make it
+     * robust to bad vision data, we recommend only adding vision measurements
+     * that are already within one meter or so of the current pose estimate."
+     *
+     * Another option is to downgrade the assumed reliability of the
+     * measurement, based on the distance. (See
+     * https://www.chiefdelphi.com/t/photonvision-swerveposeestimator-produces-wrong-pose/430906/6)
+     */
+    // Figure out how far we think we are
+    Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
+    var transform = currentEstimate.minus(pose);
+    final double distance = Math.sqrt(transform.getX() * transform.getX() +
+                                      transform.getY() * transform.getY());
+
+    m_poseEstimator.addVisionMeasurement(
+        pose, timestampSeconds,
+        VecBuilder.fill(distance / 2, distance / 2, 100));
   }
+
+  public final void stop() { setSpeedsImpl(0, 0, false); }
 
   void logValue(String label, double val) {
     if (LOG_TO_SMARTDASHBOARD) {
@@ -167,11 +194,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Sets speeds to the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond, true);
+    setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond,
+                  true);
   }
 
   /** Sets speeds to the drivetrain motors. */
-  public final void setSpeedsImpl(double leftMetersPerSecond, double rightMetersPerSecond, boolean includePid) {
+  public final void setSpeedsImpl(double leftMetersPerSecond,
+                                  double rightMetersPerSecond,
+                                  boolean includePid) {
     logValue("leftSpeed", leftMetersPerSecond);
     logValue("rightSpeed", rightMetersPerSecond);
 
@@ -187,21 +217,26 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     logValue("rightFF", rightFeedforward);
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftPidOutput = includePid ? m_leftPIDController.calculate(getLeftEncoder().getVelocity(), leftStabilized)
-        : 0;
-    double rightPidOutput = includePid ? m_rightPIDController.calculate(
-        getRightEncoder().getVelocity(), rightStabilized) : 0;
+    double leftPidOutput =
+        includePid ? m_leftPIDController.calculate(
+                         getLeftEncoder().getVelocity(), leftStabilized)
+                   : 0;
+    double rightPidOutput =
+        includePid ? m_rightPIDController.calculate(
+                         getRightEncoder().getVelocity(), rightStabilized)
+                   : 0;
     logValue("leftPid", leftPidOutput);
     logValue("rightPid", rightPidOutput);
 
     // OK, apply those to the actual hardware.
-    setMotorVoltages(leftFeedforward + leftPidOutput, rightFeedforward + rightPidOutput);
+    setMotorVoltages(leftFeedforward + leftPidOutput,
+                     rightFeedforward + rightPidOutput);
   }
 
   /**
-   * Applies the specified voltages to the motors (and remembers what was set, so
-   * that we can periodically update it, as required for voltage compensation to
-   * work properly).
+   * Applies the specified voltages to the motors (and remembers what was set,
+   * so that we can periodically update it, as required for voltage compensation
+   * to work properly).
    *
    * @param leftVoltage
    * @param rightVoltage
@@ -220,12 +255,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */
-  final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
+  final static DeadbandEnforcer m_voltageDeadbandEnforcer =
+      new DeadbandEnforcer(-0.001);
 
   public static double convertVoltageToPercentSpeed(double volts) {
     final double inputVoltage = RobotController.getInputVoltage();
     final double mps = (volts / inputVoltage);
-    final double speedPercentage = m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
+    final double speedPercentage =
+        m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
     return speedPercentage;
   }
 
@@ -253,7 +290,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @param leftVoltage  voltage for left-side motors
    * @param rightVoltage voltage for right-side motors
    */
-  protected abstract void setMotorVoltagesImpl(double leftVoltage, double rightVoltage);
+  protected abstract void setMotorVoltagesImpl(double leftVoltage,
+                                               double rightVoltage);
 
   /////////////////////////////////////////////////////////////////////////////////
   //
@@ -261,50 +299,58 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   //
   /////////////////////////////////////////////////////////////////////////////////
 
-  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  // Mutable holder for unit-safe voltage values, persisted to avoid
+  // reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   // Mutable holder for unit-safe linear distance values, persisted to avoid
   // reallocation.
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   // Mutable holder for unit-safe linear velocity values, persisted to avoid
   // reallocation.
-  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  private final MutableMeasure<Velocity<Distance>> m_velocity =
+      mutable(MetersPerSecond.of(0));
 
   // Create a new SysId routine for characterizing the drive.
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+      // Empty config defaults to 1 volt/second ramp rate and 7 volt step
+      // voltage.
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
           // Tell SysId how to plumb the driving voltage to the motors.
-          (Measure<Voltage> volts) -> {
+          (Measure<Voltage> volts)
+              -> {
             final double rawVolts = volts.in(Volts);
             setMotorVoltagesImpl(rawVolts, rawVolts);
           },
-          // Tell SysId how to record a frame of data for each motor on the mechanism
-          // being
-          // characterized.
-          log -> {
-            // Record a frame for the left motors. Since these share an encoder, we consider
-            // the entire group to be one motor.
+          // Tell SysId how to record a frame of data for each motor on the
+          // mechanism being characterized.
+          log
+          -> {
+            // Record a frame for the left motors. Since these share an encoder,
+            // we consider the entire group to be one motor.
             log.motor("drive-left")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        getLeftSpeedPercentage() * RobotController.getBatteryVoltage(), Volts))
-                .linearPosition(m_distance.mut_replace(getLeftEncoder().getPosition(), Meters))
-                .linearVelocity(
-                    m_velocity.mut_replace(getLeftEncoder().getVelocity(), MetersPerSecond));
-            // Record a frame for the right motors. Since these share an encoder, we
-            // consider the entire group to be one motor.
+                .voltage(m_appliedVoltage.mut_replace(
+                    getLeftSpeedPercentage() *
+                        RobotController.getBatteryVoltage(),
+                    Volts))
+                .linearPosition(m_distance.mut_replace(
+                    getLeftEncoder().getPosition(), Meters))
+                .linearVelocity(m_velocity.mut_replace(
+                    getLeftEncoder().getVelocity(), MetersPerSecond));
+            // Record a frame for the right motors. Since these share an
+            // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        getRightSpeedPercentage() * RobotController.getBatteryVoltage(), Volts))
-                .linearPosition(m_distance.mut_replace(getRightEncoder().getPosition(), Meters))
-                .linearVelocity(
-                    m_velocity.mut_replace(getRightEncoder().getVelocity(), MetersPerSecond));
+                .voltage(m_appliedVoltage.mut_replace(
+                    getRightSpeedPercentage() *
+                        RobotController.getBatteryVoltage(),
+                    Volts))
+                .linearPosition(m_distance.mut_replace(
+                    getRightEncoder().getPosition(), Meters))
+                .linearVelocity(m_velocity.mut_replace(
+                    getRightEncoder().getVelocity(), MetersPerSecond));
           },
-          // Tell SysId to make generated commands require this subsystem, suffix test
-          // state in WPILog with this subsystem's name ("drive")
+          // Tell SysId to make generated commands require this subsystem,
+          // suffix test state in WPILog with this subsystem's name ("drive")
           this));
 
   /**

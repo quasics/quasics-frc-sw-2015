@@ -168,6 +168,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     m_fieldSim.setRobotPose(pose);
+    m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
   }
 
   /**

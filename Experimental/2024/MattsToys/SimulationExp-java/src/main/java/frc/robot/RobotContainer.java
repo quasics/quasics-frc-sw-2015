@@ -38,6 +38,9 @@ import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * TODO: Add support for identifying initial field location (at start of match).
+ */
 public class RobotContainer {
   final static int LIGHTING_PWM_PORT = 9;
   final static int NUM_LIGHTS = 40;

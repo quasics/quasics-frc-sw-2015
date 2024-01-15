@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
@@ -39,12 +38,11 @@ public class RomiDrivebase extends AbstractDrivebase {
   // Set up the RomiGyro
   private final RomiGyro m_gyro = new RomiGyro();
 
-  // Odometry tracking, used by the base class.
-  private final DifferentialDriveOdometry m_odometry;
-
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
 
   /** Creates a new RomiDrivebase. */
@@ -57,16 +55,10 @@ public class RomiDrivebase extends AbstractDrivebase {
     m_rightMotor.setInverted(true);
 
     // Use inches as unit for encoder distances
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-
-    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-        m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
-  }
-
-  @Override
-  protected DifferentialDriveOdometry getOdometry() {
-    return m_odometry;
+    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
+                                      kCountsPerRevolution);
+    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
+                                       kCountsPerRevolution);
   }
 
   @Override
@@ -96,8 +88,9 @@ public class RomiDrivebase extends AbstractDrivebase {
     final double leftSpeed = convertVoltageToPercentSpeed(leftVoltage);
     final double rightSpeed = convertVoltageToPercentSpeed(rightVoltage);
     if (LOG_MOTOR_SETTINGS) {
-      System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " + rightVoltage
-          + "\tspeeds: " + leftSpeed + " / " + rightSpeed);
+      System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " +
+                         rightVoltage + "\tspeeds: " + leftSpeed + " / " +
+                         rightSpeed);
     }
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);
@@ -105,11 +98,7 @@ public class RomiDrivebase extends AbstractDrivebase {
     m_rightMotor.setVoltage(rightVoltage);
   }
 
-  protected double getLeftSpeedPercentage() {
-    return m_leftMotor.get();
-  }
+  protected double getLeftSpeedPercentage() { return m_leftMotor.get(); }
 
-  protected double getRightSpeedPercentage() {
-    return m_rightMotor.get();
-  }
+  protected double getRightSpeedPercentage() { return m_rightMotor.get(); }
 }

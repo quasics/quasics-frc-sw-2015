@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -45,8 +44,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private final IGyro m_wrappedGyro;
 
-  private final DifferentialDriveOdometry m_odometry;
-
   // Objects used in simulation mode.
   private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
       LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
@@ -78,11 +75,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
-
-    // Initial odometry; it will be updated in periodic().
-    m_odometry = new DifferentialDriveOdometry(
-        m_wrappedGyro.getRotation2d(), m_leftTrivialEncoder.getPosition(),
-        m_rightTrivialEncoder.getPosition());
 
     // Finish configuring the hardware.
     configureDriveMotorsAndSensors();
@@ -125,11 +117,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     m_leftLeader.setVoltage(leftVoltage);
     m_rightLeader.setVoltage(rightVoltage);
-  }
-
-  @Override
-  protected DifferentialDriveOdometry getOdometry() {
-    return m_odometry;
   }
 
   @Override

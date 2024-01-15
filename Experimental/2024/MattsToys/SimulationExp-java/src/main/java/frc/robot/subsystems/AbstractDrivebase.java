@@ -103,6 +103,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         /*rightDistanceMeters*/ 0, /*initialPostMeters*/ new Pose2d());
   }
 
+  /** Odometry for the robot, purely calculated from encoders/gyro. */
+  final DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+
+  protected final DifferentialDriveOdometry getOdometry() { return m_odometry; }
+
   public DifferentialDriveKinematics getKinematics() { return m_kinematics; }
 
   public SimpleMotorFeedforward getMotorFeedforward() { return m_feedforward; }
@@ -139,7 +145,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_poseEstimator.getEstimatedPosition();
   }
 
-  /** Resets robot odometry. */
+  /**
+   * Resets robot odometry (e.g., if we know that we've been placed at a
+   * specific position/angle on the field, such as at the start of a match).
+   */
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder().reset();
     getRightEncoder().reset();
@@ -271,8 +280,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // Hardware abstraction layer definition
   //
   /////////////////////////////////////////////////////////////////////////////////
-
-  protected abstract DifferentialDriveOdometry getOdometry();
 
   protected abstract TrivialEncoder getLeftEncoder();
 

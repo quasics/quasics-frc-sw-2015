@@ -9,7 +9,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
@@ -122,11 +121,6 @@ public class RealDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_rightTrivialEncoder =
       new SparkMaxEncoderWrapper(m_rightEncoder);
 
-  private final DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(m_offsetGyro.getRotation2d(),
-                                    m_leftTrivialEncoder.getPosition(),
-                                    m_rightTrivialEncoder.getPosition());
-
   /**
    * Preferred constructor.
    *
@@ -196,8 +190,6 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightFront.setIdleMode(mode);
     m_rightRear.setIdleMode(mode);
   }
-
-  protected DifferentialDriveOdometry getOdometry() { return m_odometry; }
 
   protected TrivialEncoder getLeftEncoder() { return m_leftTrivialEncoder; }
 

@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
@@ -17,12 +16,15 @@ import frc.robot.utils.DeadbandEnforcer;
  * Implementing a version of the AbstractDrivebase functionality that works with
  * an XRP device, allowing initial prototyping/development of code.
  *
- * @see https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
+ * @see
+ *     https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
  */
 public class XrpDrivebase extends AbstractDrivebase {
-  private static final double kGearRatio = (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
+  private static final double kGearRatio =
+      (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0); // 48.75:1
   private static final double kCountsPerMotorShaftRev = 12.0;
-  private static final double kCountsPerRevolution = kCountsPerMotorShaftRev * kGearRatio; // 585.0
+  private static final double kCountsPerRevolution =
+      kCountsPerMotorShaftRev * kGearRatio; // 585.0
   private static final double kWheelDiameterMeters = 0.060;
 
   // Sample PID constants.
@@ -48,18 +50,18 @@ public class XrpDrivebase extends AbstractDrivebase {
   private final Encoder m_rightEncoder = new Encoder(6, 7);
 
   // Set up the BuiltInAccelerometer
-  private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
+  private final BuiltInAccelerometer m_accelerometer =
+      new BuiltInAccelerometer();
 
   // Set up the XRPGyro
   private final XRPGyro m_gyro = new XRPGyro();
 
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
-
-  // Odometry tracking, used by the base class.
-  private final DifferentialDriveOdometry m_odometry;
 
   // TODO: Wire in the ultrasonic rangefinder (analog input 2), ranging from 0V
   // (20mm) to 5V (4000mm).
@@ -72,18 +74,17 @@ public class XrpDrivebase extends AbstractDrivebase {
   public XrpDrivebase() {
     super(kTrackWidthMeters, kP, kI, kD, kS, kV);
 
-    // Per docs: "The right motor will spin in a backward direction when positive
-    // output is applied. Thus the corresponding motor controller needs to be
-    // inverted in robot code."
+    // Per docs: "The right motor will spin in a backward direction when
+    // positive output is applied. Thus the corresponding motor controller needs
+    // to be inverted in robot code."
     m_rightMotor.setInverted(true);
     m_leftMotor.setInverted(false);
 
     // Use meters as unit for encoder distances
-    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) / kCountsPerRevolution);
-
-    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-        m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition());
+    m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
+                                      kCountsPerRevolution);
+    m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
+                                       kCountsPerRevolution);
   }
 
   /**
@@ -91,18 +92,11 @@ public class XrpDrivebase extends AbstractDrivebase {
    *
    * @return acceleration along the X-axis in g-forces.
    */
-  public double getAccelerationX() {
-    return m_accelerometer.getX();
-  }
+  public double getAccelerationX() { return m_accelerometer.getX(); }
 
   // ---------------------------------------------------------------------------
   // Implementations of abstract functions from the base class.
   // ---------------------------------------------------------------------------
-
-  @Override
-  protected DifferentialDriveOdometry getOdometry() {
-    return m_odometry;
-  }
 
   @Override
   protected TrivialEncoder getLeftEncoder() {
@@ -120,7 +114,8 @@ public class XrpDrivebase extends AbstractDrivebase {
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */
-  final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
+  final static DeadbandEnforcer m_voltageDeadbandEnforcer =
+      new DeadbandEnforcer(-0.001);
 
   /**
    * If true, log voltage/speed computation data to stdout.
@@ -131,17 +126,19 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
-    // When simulating the behavior on the XRP, setting the voltage for the motors
-    // appears not to translate into actual motor control: we need to call "set()"
-    // on them in order to make things happen. But the
+    // When simulating the behavior on the XRP, setting the voltage for the
+    // motors appears not to translate into actual motor control: we need to
+    // call "set()" on them in order to make things happen. But the
     // <code>AbstractDriveBase</code> class is assuming that it can look at the
-    // voltages in order to compute PID components. So we need to forward-calculate
-    // the expected speed, and apply both the voltage and speed settings.
+    // voltages in order to compute PID components. So we need to
+    // forward-calculate the expected speed, and apply both the voltage and
+    // speed settings.
     final double leftSpeed = convertVoltageToPercentSpeed(leftVoltage);
     final double rightSpeed = convertVoltageToPercentSpeed(rightVoltage);
     if (LOG_MOTOR_SETTINGS) {
-      System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " + rightVoltage
-          + "\tspeeds: " + leftSpeed + " / " + rightSpeed);
+      System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " +
+                         rightVoltage + "\tspeeds: " + leftSpeed + " / " +
+                         rightSpeed);
     }
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);
@@ -149,11 +146,7 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_rightMotor.setVoltage(rightVoltage);
   }
 
-  protected double getLeftSpeedPercentage() {
-    return m_leftMotor.get();
-  }
+  protected double getLeftSpeedPercentage() { return m_leftMotor.get(); }
 
-  protected double getRightSpeedPercentage() {
-    return m_rightMotor.get();
-  }
+  protected double getRightSpeedPercentage() { return m_rightMotor.get(); }
 }

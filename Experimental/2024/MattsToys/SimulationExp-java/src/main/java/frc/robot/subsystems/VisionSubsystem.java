@@ -37,7 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
   // TODO: Move this into a robot-specific setting.
   final String CAMERA_NAME = "photonvision";
 
-  // TODO: Move this into a robot-specific setting.  The current values are for
+  // TODO: Move this into a robot-specific setting. The current values are for
   // a camera mounted facing forward, half a meter forward of center, half a
   // meter up from center.
   /** Camera mounting information, relative to the robot's centerpoint. */
@@ -51,8 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
   final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = false;
 
   // The layout of the AprilTags on the field
-  public static final AprilTagFieldLayout kTagLayout =
-      AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+  public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 
   private final PhotonPoseEstimator photonEstimator;
   final PhotonCamera camera = new PhotonCamera(CAMERA_NAME);
@@ -83,8 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
   /////////////////////////////////////////////////////////////////////////////////
 
   /** A trivial (null-op) consumer of the pose data. */
-  final public BiFunction<Pose2d, Double, Void> NULL_ESTIMATOR_FUNCTION =
-      (P, D) -> {
+  final public BiFunction<Pose2d, Double, Void> NULL_ESTIMATOR_FUNCTION = (P, D) -> {
     // poseEstimator.addVisionMeasurement(P, D);
     return null;
   };
@@ -93,17 +91,14 @@ public class VisionSubsystem extends SubsystemBase {
    * The function to be invoked whenever we have new pose data from the
    * estimator.
    */
-  BiFunction<Pose2d, Double, Void> m_poseEstimatorFunction =
-      NULL_ESTIMATOR_FUNCTION;
+  BiFunction<Pose2d, Double, Void> m_poseEstimatorFunction = NULL_ESTIMATOR_FUNCTION;
 
   /**
    * Sets a function that we should invoke whenever we have new pose data from
    * our estimator.
    */
-  public void
-  setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
-    m_poseEstimatorFunction =
-        consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
+  public void setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
+    m_poseEstimatorFunction = consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
   }
 
   private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
@@ -128,10 +123,8 @@ public class VisionSubsystem extends SubsystemBase {
   private void updateEstimatedGlobalPose() {
     m_lastEstimatedPose = photonEstimator.update();
 
-    final double latestTimestamp =
-        camera.getLatestResult().getTimestampSeconds();
-    m_estimateRecentlyUpdated =
-        Math.abs(latestTimestamp - m_lastEstTimestamp) > 1e-5;
+    final double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
+    m_estimateRecentlyUpdated = Math.abs(latestTimestamp - m_lastEstTimestamp) > 1e-5;
 
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = latestTimestamp;
@@ -153,7 +146,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (m_lastEstimatedPose.isPresent()) {
       var estimate = m_lastEstimatedPose.get();
       m_poseEstimatorFunction.apply(estimate.estimatedPose.toPose2d(),
-                                    estimate.timestampSeconds);
+          estimate.timestampSeconds);
     }
   }
 
@@ -171,10 +164,9 @@ public class VisionSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       m_lastEstimatedPose.ifPresentOrElse(
           // Do this with the data in m_lastEstimatedPose (if it has some)
-          est
-          -> getSimDebugField()
-                 .getObject("VisionEstimation")
-                 .setPose(est.estimatedPose.toPose2d()),
+          est -> getSimDebugField()
+              .getObject("VisionEstimation")
+              .setPose(est.estimatedPose.toPose2d()),
           // If we have nothing in m_lastEstimatedPose, do this
           () -> {
             if (m_estimateRecentlyUpdated)
@@ -221,7 +213,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Add the simulated camera to view the targets on this simulated field.
     visionSim.addCamera(cameraSim, kRobotToCam);
 
-    // Draw a wireframe of the visual field on the raw video stream.  (This
+    // Draw a wireframe of the visual field on the raw video stream. (This
     // will significantly increase loop times, so this should be false if
     // we're not using the raw video.)
     cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);

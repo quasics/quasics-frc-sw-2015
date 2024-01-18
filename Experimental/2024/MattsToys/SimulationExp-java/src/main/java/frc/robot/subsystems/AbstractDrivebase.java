@@ -286,8 +286,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public static double convertVoltageToPercentSpeed(double volts) {
     final double inputVoltage = RobotController.getInputVoltage();
-    final double mps = (volts / inputVoltage);
-    final double speedPercentage = m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED.in(MetersPerSecond));
+    final double percentMaxVoltage = (volts / inputVoltage);
+    final double speedPercentage = m_voltageDeadbandEnforcer.limit(
+        // Use the % of max voltage
+        percentMaxVoltage
+    // Note: originally used - m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
+    );
     return speedPercentage;
   }
 

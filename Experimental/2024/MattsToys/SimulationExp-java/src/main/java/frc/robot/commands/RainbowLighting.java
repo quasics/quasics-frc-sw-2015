@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -18,14 +18,17 @@ public class RainbowLighting extends Command {
   static final int MAX_HUE = 180;
 
   /**
-   * Used to store an "offset" used to translate a physical LED's position to an effective position
-   * around the range of hues. This is reset in initialize(), and then updated every time that
+   * Used to store an "offset" used to translate a physical LED's position to an
+   * effective position
+   * around the range of hues. This is reset in initialize(), and then updated
+   * every time that
    * execute() is called, in order to advance the rainbow a step.
    */
   int offset = 0;
 
   /**
-   * How long (in seconds) the colors will remain set on each LED, before advancing to the next step
+   * How long (in seconds) the colors will remain set on each LED, before
+   * advancing to the next step
    * along the color wheel.
    */
   final double secondsBeforeAdvancing;
@@ -43,9 +46,11 @@ public class RainbowLighting extends Command {
   /**
    * Creates a new RainbowLightingCommand.
    *
-   * @param subsystem the lighting subsystem being controlled by the command
-   * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain a given color
-   *     before "advancing" to the next stage
+   * @param subsystem              the lighting subsystem being controlled by the
+   *                               command
+   * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain
+   *                               a given color
+   *                               before "advancing" to the next stage
    */
   public RainbowLighting(LightingInterface subsystem, double secondsBeforeAdvancing) {
     this(subsystem, secondsBeforeAdvancing, 0);
@@ -54,11 +59,15 @@ public class RainbowLighting extends Command {
   /**
    * Creates a new RainbowLighting command.
    *
-   * @param subsystem the lighting subsystem being controlled by the command
-   * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain a given color
-   *     before "advancing" to the next stage. (Normalized to a minimum of 0.)
-   * @param extraGapBetweenColors any extra "distance" along the color wheel to be used between
-   *     adjacent LEDs. (Normalized to a minimum of 0.)
+   * @param subsystem              the lighting subsystem being controlled by the
+   *                               command
+   * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain
+   *                               a given color
+   *                               before "advancing" to the next stage.
+   *                               (Normalized to a minimum of 0.)
+   * @param extraGapBetweenColors  any extra "distance" along the color wheel to
+   *                               be used between
+   *                               adjacent LEDs. (Normalized to a minimum of 0.)
    */
   public RainbowLighting(
       LightingInterface subsystem, double secondsBeforeAdvancing, int extraGapBetweenColors) {

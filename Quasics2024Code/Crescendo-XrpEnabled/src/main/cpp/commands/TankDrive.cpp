@@ -9,7 +9,6 @@ TankDrive::TankDrive(IDrivebase& driveBase, PercentSupplier leftSupplier,
     : m_driveBase(driveBase),
       m_leftSupplier(leftSupplier),
       m_rightSupplier(rightSupplier) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&m_driveBase);
 }
 

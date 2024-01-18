@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -9,7 +9,10 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** An example subsystem for controlling an LED strip for custom lighting on the robot. */
+/**
+ * An example subsystem for controlling an LED strip for custom lighting on the
+ * robot.
+ */
 public class Lighting extends SubsystemBase implements LightingInterface {
   /** The raw interface to the addressable LED strip connected to the Rio. */
   private final AddressableLED m_led;
@@ -20,7 +23,7 @@ public class Lighting extends SubsystemBase implements LightingInterface {
   /**
    * Constructor.
    *
-   * @param pwmPort PWM port to which the LED strip is connected
+   * @param pwmPort   PWM port to which the LED strip is connected
    * @param numLights number of (logical) lights on the LED strip
    */
   public Lighting(int pwmPort, int numLights) {
@@ -49,7 +52,9 @@ public class Lighting extends SubsystemBase implements LightingInterface {
     // On start-up, turn every other pixel on (white).
     final var white = StockColor.White.toWpiColor();
     final var black = StockColor.Black.toWpiColor();
-    SetStripColor((int position) -> { return (position % 2 == 0) ? white : black; });
+    SetStripColor((int position) -> {
+      return (position % 2 == 0) ? white : black;
+    });
 
     // Start up the LED handling.
     m_led.start();
@@ -61,7 +66,8 @@ public class Lighting extends SubsystemBase implements LightingInterface {
   }
 
   /**
-   * Sets the color for each LED in the strip, using the specified function to generate the values
+   * Sets the color for each LED in the strip, using the specified function to
+   * generate the values
    * for each position.
    *
    * @param function Function generating the color for each LED

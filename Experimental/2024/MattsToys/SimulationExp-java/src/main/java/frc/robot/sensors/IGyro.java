@@ -1,3 +1,7 @@
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.sensors;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -68,6 +72,9 @@ public interface IGyro {
   /**
    * A helper class that implements IGyro, and makes it easier to wrap arbitrary
    * types within this interface.
+   * 
+   * TODO: (Units) Update the suppliers for angle/rate to provide typesafe
+   * Unit-aware values (similar to those in the C++ example).
    */
   public class FunctionalGyro implements IGyro {
     private final Runnable m_calibrator;

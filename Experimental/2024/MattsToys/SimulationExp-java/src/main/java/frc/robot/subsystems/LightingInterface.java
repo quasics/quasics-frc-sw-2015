@@ -1,3 +1,7 @@
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.util.Color;
@@ -7,18 +11,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public interface LightingInterface {
   /** Interface to use in populating the data for each LED on the strip. */
   public interface ColorSupplier {
-    /** Returns the color to be used for the LED at a given position on the strip. */
+    /**
+     * Returns the color to be used for the LED at a given position on the strip.
+     */
     public Color getColorForLed(int position);
   }
 
   /**
    * Primary (most flexible) mechanism for controlling the lights on the robot.
    *
-   * @param function used to generate the color for each position on the set of lights.
+   * @param function used to generate the color for each position on the set of
+   *                 lights.
    */
   public void SetStripColor(ColorSupplier function);
 
-  /** Convenience type, used to provide (named) values for different LED colors. */
+  /**
+   * Convenience type, used to provide (named) values for different LED colors.
+   */
   public enum StockColor {
     Green(0, 255, 0),
     Red(255, 0, 0),
@@ -42,10 +51,12 @@ public interface LightingInterface {
     }
 
     /**
-     * Converts the stock color to the representation used by WPILib, scaled to the specified
+     * Converts the stock color to the representation used by WPILib, scaled to the
+     * specified
      * intensity (brightness).
      *
-     * @param intensityPercent intensity to which the color should be scaled (0.0-1.0)
+     * @param intensityPercent intensity to which the color should be scaled
+     *                         (0.0-1.0)
      */
     public Color toWpiColor(double intensityPercent) {
       return new Color(
@@ -54,7 +65,8 @@ public interface LightingInterface {
   }
 
   /**
-   * Convenience function: sets all contolled lights to a solid color from the stock set.
+   * Convenience function: sets all contolled lights to a solid color from the
+   * stock set.
    *
    * @param color the color to make all of the lights in the strip
    */
@@ -63,23 +75,26 @@ public interface LightingInterface {
   }
 
   /**
-   * Convenience function: sets all contolled lights to a solid color from the stock set, scaled to
+   * Convenience function: sets all contolled lights to a solid color from the
+   * stock set, scaled to
    * the specified % intensity.
    *
-   * @param color the color to make all of the lights in the strip
-   * @param intensityPercent intensity to which the color should be scaled (0.0-1.0)
+   * @param color            the color to make all of the lights in the strip
+   * @param intensityPercent intensity to which the color should be scaled
+   *                         (0.0-1.0)
    */
   public default void SetStripColor(StockColor color, double intensityPercent) {
     SetStripColor(color.toWpiColor(intensityPercent));
   }
 
   /**
-   * Convenience function: sets all controlled lights to a solid color, specified as an RGB tripet
+   * Convenience function: sets all controlled lights to a solid color, specified
+   * as an RGB tripet
    * of values (each [0..255]).
    *
-   * @param red red component (0-255)
+   * @param red   red component (0-255)
    * @param green green component (0-255)
-   * @param blue blue component (0-255)
+   * @param blue  blue component (0-255)
    */
   public default void SetStripColor(int red, int green, int blue) {
     // Note: WPI expects color component values to be percentages in the range
@@ -92,7 +107,9 @@ public interface LightingInterface {
   /**
    * Convenience function: sets all controlled lights to a solid color.
    *
-   * <p>Note: unlike with various other APIs, the component values for WPI's version of color
+   * <p>
+   * Note: unlike with various other APIs, the component values for WPI's version
+   * of color
    * specification are all as percentages (0.0-1.0).
    *
    * @param color the color to make all of the lights in the strip
@@ -108,7 +125,8 @@ public interface LightingInterface {
   }
 
   /**
-   * Trivial implementation of the interface, for use on robots that don't support lighting (but
+   * Trivial implementation of the interface, for use on robots that don't support
+   * lighting (but
    * want to have a subsystem available for convenience/common code).
    */
   public static final class MockLighting extends SubsystemBase implements LightingInterface {

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -39,10 +39,8 @@ public class RomiDrivebase extends AbstractDrivebase {
   private final RomiGyro m_gyro = new RomiGyro();
 
   // Set up the wrapper types used by the base class.
-  private final TrivialEncoder m_leftTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
 
   /** Creates a new RomiDrivebase. */
@@ -56,9 +54,9 @@ public class RomiDrivebase extends AbstractDrivebase {
 
     // Use inches as unit for encoder distances
     m_leftEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
-                                      kCountsPerRevolution);
+        kCountsPerRevolution);
     m_rightEncoder.setDistancePerPulse((Math.PI * kWheelDiameterMeters) /
-                                       kCountsPerRevolution);
+        kCountsPerRevolution);
   }
 
   @Override
@@ -89,8 +87,8 @@ public class RomiDrivebase extends AbstractDrivebase {
     final double rightSpeed = convertVoltageToPercentSpeed(rightVoltage);
     if (LOG_MOTOR_SETTINGS) {
       System.out.println("> XrpDrive - voltages: " + leftVoltage + " / " +
-                         rightVoltage + "\tspeeds: " + leftSpeed + " / " +
-                         rightSpeed);
+          rightVoltage + "\tspeeds: " + leftSpeed + " / " +
+          rightSpeed);
     }
     m_leftMotor.set(leftSpeed);
     m_rightMotor.set(rightSpeed);
@@ -98,7 +96,11 @@ public class RomiDrivebase extends AbstractDrivebase {
     m_rightMotor.setVoltage(rightVoltage);
   }
 
-  protected double getLeftSpeedPercentage() { return m_leftMotor.get(); }
+  protected double getLeftSpeedPercentage() {
+    return m_leftMotor.get();
+  }
 
-  protected double getRightSpeedPercentage() { return m_rightMotor.get(); }
+  protected double getRightSpeedPercentage() {
+    return m_rightMotor.get();
+  }
 }

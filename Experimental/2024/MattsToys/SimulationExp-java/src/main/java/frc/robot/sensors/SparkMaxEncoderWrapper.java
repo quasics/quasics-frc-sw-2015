@@ -1,10 +1,17 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.sensors;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 
 /**
  * Convenience wrapper, allowing a CANSparkMax's RelativeEncoder to be used as a
@@ -24,13 +31,13 @@ public class SparkMaxEncoderWrapper implements TrivialEncoder {
   }
 
   @Override
-  public double getPosition() {
-    return encoder.getPosition();
+  public Measure<Distance> getPosition() {
+    return Meters.of(encoder.getPosition());
   }
 
   @Override
-  public double getVelocity() {
-    return encoder.getVelocity();
+  public Measure<Velocity<Distance>> getVelocity() {
+    return MetersPerSecond.of(encoder.getVelocity());
   }
 
   @Override

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -34,8 +34,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   // Motor gains obtained via SysId logging analysis.
   private static final double kS = 0.013809; // Sample was 1
-  private static final double kV = 1.9805;   // Sample was 3
-  private static final double kA = 0.19208;  // Sample was 0
+  private static final double kV = 1.9805; // Sample was 3
+  private static final double kA = 0.19208; // Sample was 0
 
   private final Encoder m_leftEncoder;
   private final Encoder m_rightEncoder;
@@ -45,12 +45,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final IGyro m_wrappedGyro;
 
   // Objects used in simulation mode.
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
-  private final DifferentialDrivetrainSim m_drivetrainSimulator =
-      new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
-                                    kTrackWidthMeters, kWheelRadiusMeters,
-                                    null);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
+      0.3);
+  private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+      DCMotor.getCIM(2), 8,
+      kTrackWidthMeters, kWheelRadiusMeters,
+      null);
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
   private final EncoderSim m_leftEncoderSim;
@@ -100,9 +100,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
     m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters /
-                                      kEncoderResolutionTicksPerRevolution);
+        kEncoderResolutionTicksPerRevolution);
     m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters /
-                                       kEncoderResolutionTicksPerRevolution);
+        kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();
@@ -187,7 +187,11 @@ public class SimulationDrivebase extends AbstractDrivebase {
     SimulationSupport.setSimulatedPose(m_drivetrainSimulator.getPose());
   }
 
-  protected double getLeftSpeedPercentage() { return m_leftLeader.get(); }
+  protected double getLeftSpeedPercentage() {
+    return m_leftLeader.get();
+  }
 
-  protected double getRightSpeedPercentage() { return m_rightLeader.get(); }
+  protected double getRightSpeedPercentage() {
+    return m_rightLeader.get();
+  }
 }

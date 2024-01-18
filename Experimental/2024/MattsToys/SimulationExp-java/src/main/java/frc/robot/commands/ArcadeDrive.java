@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,6 +7,10 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
@@ -58,13 +62,13 @@ public class ArcadeDrive extends Command {
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    double xSpeed = -m_speedLimiter.calculate(xInput) * AbstractDrivebase.MAX_SPEED;
+    Measure<Velocity<Distance>> xSpeed = AbstractDrivebase.MAX_SPEED.times(-m_speedLimiter.calculate(xInput));
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW is positive in
     // mathematics). Xbox controllers return positive values when you pull to
     // the right by default.
-    double rot = -m_rotLimiter.calculate(rotInput) * AbstractDrivebase.MAX_ANGULAR_SPEED;
+    Measure<Velocity<Angle>> rot = AbstractDrivebase.MAX_ANGULAR_SPEED.times(-m_rotLimiter.calculate(rotInput));
 
     m_drivebase.arcadeDrive(xSpeed, rot);
   }

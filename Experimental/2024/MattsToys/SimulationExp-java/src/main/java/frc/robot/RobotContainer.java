@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, FIRST, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -255,8 +257,9 @@ public class RobotContainer {
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds =
               ramsete.calculate(m_drivebase.getPose(), reference);
-          m_drivebase.arcadeDrive(speeds.vxMetersPerSecond,
-                                  speeds.omegaRadiansPerSecond);
+          m_drivebase.arcadeDrive(
+              MetersPerSecond.of(speeds.vxMetersPerSecond),
+              RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
         (Boolean interrupted)

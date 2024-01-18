@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -8,6 +8,8 @@ import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.VecBuilder;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -36,10 +39,12 @@ import frc.robot.utils.DeadbandEnforcer;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
-  public static final double MAX_SPEED = 3.0;
+  public static final Measure<Velocity<Distance>> MAX_SPEED =
+      MetersPerSecond.of(3.0);
 
   /** Maximum rotational speed is 1/2 rotation per second. */
-  public static final double MAX_ANGULAR_SPEED = Math.PI;
+  public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED =
+      RadiansPerSecond.of(Math.PI);
 
   private final PIDController m_leftPIDController;
   private final PIDController m_rightPIDController;
@@ -144,10 +149,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /** Update the robot's odometry. */
   public void updateOdometry() {
     final Rotation2d rotation = getGyro().getRotation2d();
-    final double leftDistanceMeters = getLeftEncoder().getPosition();
-    final double rightDistanceMeters = getRightEncoder().getPosition();
-    getOdometry().update(rotation, leftDistanceMeters, rightDistanceMeters);
-    m_poseEstimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
+    final Measure<Distance> leftDistanceMeters = getLeftEncoder().getPosition();
+    final Measure<Distance> rightDistanceMeters =
+        getRightEncoder().getPosition();
+    getOdometry().update(rotation, leftDistanceMeters.in(Meters),
+                         rightDistanceMeters.in(Meters));
+    m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
+                           rightDistanceMeters.in(Meters));
   }
 
   /** Get the current robot pose, based on odometery. */
@@ -203,16 +211,20 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     }
   }
 
+  static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
+
   /**
    * Controls the robot using arcade drive.
    *
    * @param xSpeed the speed for the x axis (in m/s)
    * @param rot    the rotation (in radians/s)
    */
-  public final void arcadeDrive(double xSpeed, double rot) {
-    logValue("xSpeed", xSpeed);
-    logValue("rotSpeed", rot);
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
+  public final void arcadeDrive(Measure<Velocity<Distance>> xSpeed,
+                                Measure<Velocity<Angle>> rot) {
+    logValue("xSpeed", xSpeed.in(MetersPerSecond));
+    logValue("rotSpeed", rot.in(RadiansPerSecond));
+    setSpeeds(
+        m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
   final static DeadbandEnforcer speedEnforcer = new DeadbandEnforcer(0.1);
@@ -244,11 +256,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     // Figure out the deltas, based on our current speed vs. the target speeds.
     double leftPidOutput =
         includePid ? m_leftPIDController.calculate(
-                         getLeftEncoder().getVelocity(), leftStabilized)
+                         getLeftEncoder().getVelocity().in(MetersPerSecond),
+                         leftStabilized)
                    : 0;
     double rightPidOutput =
         includePid ? m_rightPIDController.calculate(
-                         getRightEncoder().getVelocity(), rightStabilized)
+                         getRightEncoder().getVelocity().in(MetersPerSecond),
+                         rightStabilized)
                    : 0;
     logValue("leftPid", leftPidOutput);
     logValue("rightPid", rightPidOutput);
@@ -285,9 +299,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public static double convertVoltageToPercentSpeed(double volts) {
     final double inputVoltage = RobotController.getInputVoltage();
-    final double mps = (volts / inputVoltage);
-    final double speedPercentage =
-        m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
+    final double percentMaxVoltage = (volts / inputVoltage);
+    final double speedPercentage = m_voltageDeadbandEnforcer.limit(
+        // Use the % of max voltage
+        percentMaxVoltage
+        // Note: originally used - m_voltageDeadbandEnforcer.limit(mps /
+        // MAX_SPEED);
+    );
     return speedPercentage;
   }
 
@@ -325,13 +343,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // Mutable holder for unit-safe voltage values, persisted to avoid
   // reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  // Mutable holder for unit-safe linear distance values, persisted to avoid
-  // reallocation.
-  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid
-  // reallocation.
-  private final MutableMeasure<Velocity<Distance>> m_velocity =
-      mutable(MetersPerSecond.of(0));
 
   // Create a new SysId routine for characterizing the drive.
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
@@ -356,10 +367,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
                     getLeftSpeedPercentage() *
                         RobotController.getBatteryVoltage(),
                     Volts))
-                .linearPosition(m_distance.mut_replace(
-                    getLeftEncoder().getPosition(), Meters))
-                .linearVelocity(m_velocity.mut_replace(
-                    getLeftEncoder().getVelocity(), MetersPerSecond));
+                .linearPosition(getLeftEncoder().getPosition())
+                .linearVelocity(getLeftEncoder().getVelocity());
             // Record a frame for the right motors. Since these share an
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
@@ -367,10 +376,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
                     getRightSpeedPercentage() *
                         RobotController.getBatteryVoltage(),
                     Volts))
-                .linearPosition(m_distance.mut_replace(
-                    getRightEncoder().getPosition(), Meters))
-                .linearVelocity(m_velocity.mut_replace(
-                    getRightEncoder().getVelocity(), MetersPerSecond));
+                .linearPosition(getRightEncoder().getPosition())
+                .linearVelocity(getRightEncoder().getVelocity());
           },
           // Tell SysId to make generated commands require this subsystem,
           // suffix test state in WPILog with this subsystem's name ("drive")

@@ -35,6 +35,10 @@ import frc.robot.subsystems.SimulationDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.TrajectoryCommandGenerator;
+
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -188,8 +192,8 @@ public class RobotContainer {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
-          m_drivebase.arcadeDrive(speeds.vxMetersPerSecond,
-              speeds.omegaRadiansPerSecond);
+          m_drivebase.arcadeDrive(MetersPerSecond.of(speeds.vxMetersPerSecond),
+              RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
         (Boolean interrupted) -> {

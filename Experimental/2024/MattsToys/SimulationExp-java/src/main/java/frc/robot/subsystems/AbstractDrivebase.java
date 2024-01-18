@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.VecBuilder;
@@ -19,9 +21,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,12 +38,10 @@ import frc.robot.utils.DeadbandEnforcer;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
-  // TODO: (Units) Convert MAX_SPEED to typesafe/Unit-based value.
-  public static final double MAX_SPEED = 3.0;
+  public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
 
   /** Maximum rotational speed is 1/2 rotation per second. */
-  // TODO: (Units) Convert MAX_ANGULAR_SPEED to typesafe/Unit-based value.
-  public static final double MAX_ANGULAR_SPEED = Math.PI;
+  public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
   private final PIDController m_leftPIDController;
   private final PIDController m_rightPIDController;
@@ -203,16 +205,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     }
   }
 
+  static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
+
   /**
    * Controls the robot using arcade drive.
    *
    * @param xSpeed the speed for the x axis (in m/s)
    * @param rot    the rotation (in radians/s)
    */
-  public final void arcadeDrive(double xSpeed, double rot) {
-    logValue("xSpeed", xSpeed);
-    logValue("rotSpeed", rot);
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
+  public final void arcadeDrive(Measure<Velocity<Distance>> xSpeed, Measure<Velocity<Angle>> rot) {
+    logValue("xSpeed", xSpeed.in(MetersPerSecond));
+    logValue("rotSpeed", rot.in(RadiansPerSecond));
+    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
   final static DeadbandEnforcer speedEnforcer = new DeadbandEnforcer(0.1);
@@ -283,7 +287,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public static double convertVoltageToPercentSpeed(double volts) {
     final double inputVoltage = RobotController.getInputVoltage();
     final double mps = (volts / inputVoltage);
-    final double speedPercentage = m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED);
+    final double speedPercentage = m_voltageDeadbandEnforcer.limit(mps / MAX_SPEED.in(MetersPerSecond));
     return speedPercentage;
   }
 

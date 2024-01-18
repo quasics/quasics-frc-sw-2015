@@ -4,11 +4,17 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
 public class SpinInPlace extends Command {
   final private AbstractDrivebase m_drivebase;
+  final private static Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
 
   /** Creates a new SpinInPlace. */
   public SpinInPlace(AbstractDrivebase drivebase) {
@@ -16,16 +22,10 @@ public class SpinInPlace extends Command {
     addRequirements(m_drivebase);
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_drivebase.arcadeDrive(0, AbstractDrivebase.MAX_ANGULAR_SPEED);
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivebase.arcadeDrive(0, AbstractDrivebase.MAX_ANGULAR_SPEED);
+    m_drivebase.arcadeDrive(ZERO_MPS, AbstractDrivebase.MAX_ANGULAR_SPEED);
   }
 
   // Called once the command ends or is interrupted.

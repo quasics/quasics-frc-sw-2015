@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.DeadbandEnforcer;
 
 /**
  * Implementing a version of the AbstractDrivebase functionality that works with
@@ -109,9 +108,6 @@ public class XrpDrivebase extends AbstractDrivebase {
   protected IGyro getGyro() {
     return m_wrappedGyro;
   }
-
-  /** Prevents us from pushing voltage/speed values too small for the motors. */
-  final static DeadbandEnforcer m_voltageDeadbandEnforcer = new DeadbandEnforcer(-0.001);
 
   /**
    * If true, log voltage/speed computation data to stdout.

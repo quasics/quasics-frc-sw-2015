@@ -10,7 +10,6 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
-#include "sensors/TrivialEncoder.h"
 
 class IntakeDeployment : public frc2::SubsystemBase {
  public:
@@ -50,9 +49,6 @@ class IntakeDeployment : public frc2::SubsystemBase {
   rev::SparkMaxRelativeEncoder m_DeploymentEncoder =
       m_intakeDeployment.GetEncoder(
           rev::SparkRelativeEncoder::Type::kHallSensor);
-
-  std::unique_ptr<TrivialEncoder> m_trivialEncoder{
-      TrivialEncoder::wrapEncoder(m_DeploymentEncoder)};
 
   frc::DigitalInput m_ExtendIntakeLimitSwitch{
       DigitalInput::INTAKE_EXTEND_LIMIT_SWITCH_ID};

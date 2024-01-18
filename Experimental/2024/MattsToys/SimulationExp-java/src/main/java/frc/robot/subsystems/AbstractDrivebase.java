@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -45,6 +46,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final SimpleMotorFeedforward m_feedforward;
   private final DifferentialDriveKinematics m_kinematics;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
+
+  private final Measure<Distance> m_driveBaseLengthWithBumpers;
+  private final Measure<Distance> m_driveBaseWidthWithBumpers;
 
   private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
 
@@ -101,6 +105,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), /*leftDistanceMeters*/ 0,
         /*rightDistanceMeters*/ 0, /*initialPostMeters*/ new Pose2d());
+
+    // TODO: Move drive base dimensions into new data from the subclasses
+    m_driveBaseLengthWithBumpers = Inches.of(29);
+    m_driveBaseWidthWithBumpers = Inches.of(26);
+  }
+
+  public Measure<Distance> getLengthIncludingBumpers() {
+    return m_driveBaseLengthWithBumpers;
+  }
+
+  public Measure<Distance> getWidthIncludingBumpers() {
+    return m_driveBaseWidthWithBumpers;
   }
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */

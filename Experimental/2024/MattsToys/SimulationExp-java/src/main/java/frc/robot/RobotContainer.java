@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,12 +17,18 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -36,6 +45,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 /**
@@ -82,6 +93,54 @@ public class RobotContainer {
   private static final AutoModeTrajectorySelection
       m_autoModeTrajectorySelection =
           AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+
+  Pose2d computeInitialPoseForDriversStation(Alliance alliance,
+                                             int driversStation) {
+    // Assume we're always facing *out* from the driver's station (for now),
+    // and are right in front of it.
+    Measure<Angle> initialAngle;
+    Measure<Distance> xPos = Meters.of(0), yPos = Meters.of(0);
+    Measure<Distance> halfLength =
+        m_drivebase.getLengthIncludingBumpers().divide(2);
+    if (alliance == Alliance.Blue) {
+      initialAngle = Degrees.of(0);
+      xPos = Meters.of(1.088).plus(halfLength);
+      if (driversStation == 1) {
+        yPos = Meters.of(2.265);
+      } else if (driversStation == 2) {
+        yPos = Meters.of(3.981);
+      } else {
+        yPos = Meters.of(7.255);
+      }
+    } else {
+      initialAngle = Degrees.of(180);
+      xPos = Meters.of(16.542).minus(halfLength);
+      if (driversStation == 1) {
+        yPos = Meters.of(2.265);
+      } else if (driversStation == 2) {
+        yPos = Meters.of(3.981);
+      } else {
+        yPos = Meters.of(7.255);
+      }
+    }
+    return new Pose2d(new Translation2d(xPos, yPos),
+                      new Rotation2d(initialAngle));
+  }
+
+  void resetPositionFromAllianceSelection() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isEmpty()) {
+      alliance = Optional.of(Alliance.Blue);
+    }
+    var location = DriverStation.getLocation();
+    if (location.isEmpty()) {
+      location = OptionalInt.of(1);
+    }
+
+    m_drivebase.resetOdometry(computeInitialPoseForDriversStation(
+        alliance.get(), location.getAsInt()));
+    m_vision.resetSimPose(m_drivebase.getPose());
+  }
 
   /*
    * Constructor.
@@ -131,6 +190,7 @@ public class RobotContainer {
 
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
 
+    resetPositionFromAllianceSelection();
     configureBindings();
 
     System.err.println("Writing logs to: " + DataLogManager.getLogDir());
@@ -153,6 +213,11 @@ public class RobotContainer {
                                               SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("Dynamic Rev", m_drivebase.sysIdDynamic(
                                               SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData(
+        "Reset position",
+        new InstantCommand(
+            () -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
   }
 
   public Command getAutonomousCommand() {

@@ -4,7 +4,14 @@
 
 package frc.robot.sensors;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 
 /**
  * Convenience wrapper, allowing a CANSparkMax's RelativeEncoder to be used as a
@@ -24,13 +31,13 @@ public class SparkMaxEncoderWrapper implements TrivialEncoder {
   }
 
   @Override
-  public double getPosition() {
-    return encoder.getPosition();
+  public Measure<Distance> getPosition() {
+    return Meters.of(encoder.getPosition());
   }
 
   @Override
-  public double getVelocity() {
-    return encoder.getVelocity();
+  public Measure<Velocity<Distance>> getVelocity() {
+    return MetersPerSecond.of(encoder.getVelocity());
   }
 
   @Override

@@ -4,6 +4,12 @@
 
 package frc.robot.sensors;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -44,19 +50,16 @@ import edu.wpi.first.wpilibj.Encoder;
  * adapt any arbitrary encoder class/object to a common type, along with some
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
- *
- * TODO: Update the suppliers for position/velocity to provide typesafe
- * Unit-aware values (similar to those in the C++ example).
  * 
  * @see https://refactoring.guru/design-patterns/decorator
  * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
 public interface TrivialEncoder {
   /** Returns the distance recorded by the encoder (in meters). */
-  double getPosition();
+  Measure<Distance> getPosition();
 
   /** Returns the current speed reported by the encoder (in meters/sec). */
-  double getVelocity();
+  Measure<Velocity<Distance>> getVelocity();
 
   /** Resets the encoder's distance. */
   void reset();
@@ -69,13 +72,13 @@ public interface TrivialEncoder {
 
     return new TrivialEncoder() {
       @Override
-      public double getPosition() {
-        return encoder.getDistance();
+      public Measure<Distance> getPosition() {
+        return Meters.of(encoder.getDistance());
       }
 
       @Override
-      public double getVelocity() {
-        return encoder.getRate();
+      public Measure<Velocity<Distance>> getVelocity() {
+        return MetersPerSecond.of(encoder.getRate());
       }
 
       @Override

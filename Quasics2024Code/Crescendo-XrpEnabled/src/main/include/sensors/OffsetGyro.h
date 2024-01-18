@@ -8,29 +8,31 @@
 
 #include "sensors/IGyro.h"
 
+// clang-format off
 /**
  * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
  * the original gyro's data.
  *
  * I foresee this as being useful under at least two different circumstances:
  * <ol>
- * <li>
- * When we're wrapping a multi-axis gyro/ALU inside of the single-axis "IGyro"
- * interface, and want to be able to support resetting data for that axis under
- * some circumstances, without impacting the others.
- * </li>
- * <li>
- * When we're performing some temporally-scoped set of operations (e.g., while a
- * command is running) and want to have an easy reference point (i.e., 0)
- * without affecting the overall use of a gyro/ALU. For example, the gyro might
- * be used on a continuous basis to maintain data for odometry/pose estimation,
- * and thus resetting the actual gyro would "break" that processing. However, we
- * might want to simplify the handling of a command like "turn N degrees" by
- * allowing the code to use 0 as a reference point (and this class would be able
- * to support that).
- * </li>
+ *   <li>
+ *     When we're wrapping a multi-axis gyro/ALU inside of the single-axis "IGyro"
+ *     interface, and want to be able to support resetting data for that axis under
+ *     some circumstances, without impacting the others.
+ *   </li>
+ *   <li>
+ *     When we're performing some temporally-scoped set of operations (e.g., while a
+ *     command is running) and want to have an easy reference point (i.e., 0)
+ *     without affecting the overall use of a gyro/ALU. For example, the gyro might
+ *     be used on a continuous basis to maintain data for odometry/pose estimation,
+ *     and thus resetting the actual gyro would "break" that processing. However, we
+ *     might want to simplify the handling of a command like "turn N degrees" by
+ *     allowing the code to use 0 as a reference point (and this class would be able
+ *     to support that).
+ *   </li>
  * </ol>
  */
+// clang-format on
 class OffsetGyro : public IGyro {
  private:
   IGyro& m_srcGyro;

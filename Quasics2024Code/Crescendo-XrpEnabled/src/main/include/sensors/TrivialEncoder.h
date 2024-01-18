@@ -9,15 +9,50 @@
 #include <units/length.h>
 #include <units/velocity.h>
 
+// clang-format off
 /**
- * A convenient wrapper, representing basic functionality of any
- * encoder.
+ * This defines a "wrapper" type that can be used so that any arbitrary type of
+ * object representing an encoder may be used in a common way, even if they
+ * don't share a common base class. (This wrapper provides a pretty basic view
+ * of encoders, but that's the point; I'm just looking for a way to use all
+ * kinds of an encoder as though there are a common/single kind of object.)
  *
- * This is required because REV doesn't use the WPILib core <code>Encoder</code>
- * class as the base type for the encoders that are available for the SparkMax,
- * and thus I had to create a wrapper type that could be used to access any
- * arbitrary encoder in a consistent fashion.
+ * As context:
+ * <ul>
+ *   <li>
+ *     The WPILib framework provides a basic "Encoder" class, but the constructors
+ *     (and implementation) assume that a specific type of electrical/signalling
+ *     interface will be used to communicate with it.
+ *   </li>
+ *   <li>
+ *     Other types of encoders (e.g., for the REV SparkMax controllers) provide
+ *     similar functionality, but don't have a common base class (which would allow
+ *     them to be used as a "drop-in" alternative via pointers or references), and
+ *     also often don't even use the same function names or parameter/return types
+ *     (which further restricts their drop-in use via other mechanisms, such as
+ *     templates in C++ or Java "generics").
+ *   </li>
+ *   <li>
+ *     However, they're *all* doing the same basic thing: keeping track of the data
+ *     for a motor/wheel (distance, velocity/rate, acceleration, etc.).
+ *   </li>
+ *   <li>
+ *     An additional concern is that the WPILib team is taking active steps to move
+ *     some other kinds of classes *further* away from having a common type (see the
+ *     comments on the IGyro class), which would suggest that this state of affairs
+ *     is unlikely to change for the better anytime soon.
+ *   </li>
+ * </ul>
+ *
+ * So, I'm defining my own (minimal) "wrapper" interface, which can be used to
+ * adapt any arbitrary encoder class/object to a common type, along with some
+ * functions to help encapsulate specific examples "real" encoder classes with
+ * the wrapper.
+ *
+ * @see https://refactoring.guru/design-patterns/decorator
+ * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
+// clang-format on
 class TrivialEncoder {
  public:
   virtual ~TrivialEncoder() = default;

@@ -71,6 +71,7 @@ class IGyro {
 
   // Basic functions that any Gyro/ALU can generally support.
  public:
+  /** Virtual destructor (needed in any base class). */
   virtual ~IGyro() = default;
 
   /**

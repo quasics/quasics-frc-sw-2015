@@ -47,6 +47,7 @@ class OffsetGyro : public IGyro {
   OffsetGyro(IGyro& srcGyro) : m_srcGyro(srcGyro) {
   }
 
+  /** (Trivial) destructor. */
   virtual ~OffsetGyro() = default;
 
   void calibrate() override {

@@ -72,6 +72,9 @@ public interface IGyro {
   /**
    * A helper class that implements IGyro, and makes it easier to wrap arbitrary
    * types within this interface.
+   * 
+   * TODO: Update the suppliers for angle/rate to provide typesafe Unit-aware
+   * values (similar to those in the C++ example).
    */
   public class FunctionalGyro implements IGyro {
     private final Runnable m_calibrator;

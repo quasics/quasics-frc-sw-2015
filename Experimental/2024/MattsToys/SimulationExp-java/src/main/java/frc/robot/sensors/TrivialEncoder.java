@@ -45,6 +45,9 @@ import edu.wpi.first.wpilibj.Encoder;
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
  *
+ * TODO: Update the suppliers for position/velocity to provide typesafe
+ * Unit-aware values (similar to those in the C++ example).
+ * 
  * @see https://refactoring.guru/design-patterns/decorator
  * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */

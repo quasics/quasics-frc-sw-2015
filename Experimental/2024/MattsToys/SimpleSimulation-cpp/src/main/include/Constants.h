@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "PreprocessorConfig.h"
+
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants.  This should not be used for any other
@@ -48,9 +50,9 @@ namespace OperatorConstants {
 
 namespace MotorIds {
   namespace SparkMax {
-    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
     constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
-    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
   }  // namespace SparkMax
 }  // namespace MotorIds

@@ -21,7 +21,13 @@ import frc.robot.sensors.TrivialEncoder;
  * CAN addresses).
  */
 public class RealDrivebase extends AbstractDrivebase {
-  final static boolean USE_LEADER_FOLLOWER = false;
+  public enum MotorConfigModel {
+    NoLeader, RearMotorsLeading, FrontMotorsLeading
+  }
+
+  final static MotorConfigModel kMotorConfigModel = MotorConfigModel.RearMotorsLeading;
+  final static boolean USE_LEADER_FOLLOWER = true;
+  final static boolean BACK_MOTORS_ARE_LEADERS = false;
 
   /**
    * Enum class used to represent the physical characteristics (e.g., PID/motor
@@ -102,13 +108,19 @@ public class RealDrivebase extends AbstractDrivebase {
   private final IGyro m_iGyro = IGyro.wrapGyro(m_gyro);
   private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
 
-  // Leaders
+  // Motors
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightRear = new CANSparkMax(RIGHT_REAR_CAN_ID, MotorType.kBrushless);
-
-  // Followers
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
+
+  // Leaders (only valid if kMotorConfigModel is not NoLeader)
+  final CANSparkMax m_leftLeader = (kMotorConfigModel == MotorConfigModel.NoLeader)
+      ? null
+      : (kMotorConfigModel == MotorConfigModel.RearMotorsLeading) ? m_leftRear : m_leftFront;
+  final CANSparkMax m_rightLeader = (kMotorConfigModel == MotorConfigModel.NoLeader)
+      ? null
+      : (kMotorConfigModel == MotorConfigModel.RearMotorsLeading) ? m_rightRear : m_rightFront;
 
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
@@ -139,6 +151,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
     ////////////////////////////////////////
     // Configure the motors.
+    System.err.println("*** Note: Configuring motors as " + kMotorConfigModel);
 
     // * Motor inversions (if needed, and the motors aren't already
     // soft-configured).
@@ -179,9 +192,12 @@ public class RealDrivebase extends AbstractDrivebase {
    */
   void enableCoastingMode(boolean tf) {
     final var mode = (tf ? IdleMode.kCoast : IdleMode.kBrake);
-    m_leftFront.setIdleMode(mode);
-    m_leftRear.setIdleMode(mode);
-    if (!USE_LEADER_FOLLOWER) {
+    if (m_leftLeader != null && m_rightLeader != null) {
+      m_leftLeader.setIdleMode(mode);
+      m_rightLeader.setIdleMode(mode);
+    } else {
+      m_leftFront.setIdleMode(mode);
+      m_leftRear.setIdleMode(mode);
       m_rightFront.setIdleMode(mode);
       m_rightRear.setIdleMode(mode);
     }
@@ -200,23 +216,26 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected double getLeftSpeedPercentage() {
-    return m_leftRear.get();
+    return (m_leftLeader != null ? m_leftLeader : m_leftRear).get();
   }
 
   protected double getRightSpeedPercentage() {
-    return m_rightRear.get();
+    return (m_rightLeader != null ? m_rightLeader : m_rightRear).get();
   }
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     // TODO: Remove one pair, once CAN motors are configured for lead/follow on
     // drive bases.
-    if (!USE_LEADER_FOLLOWER) {
+    if (m_leftLeader != null && m_rightLeader != null) {
+      m_leftLeader.setVoltage(leftVoltage);
+      m_rightLeader.setVoltage(rightVoltage);
+    } else {
       m_leftFront.setVoltage(leftVoltage);
       m_rightFront.setVoltage(rightVoltage);
+      m_leftRear.setVoltage(leftVoltage);
+      m_rightRear.setVoltage(rightVoltage);
     }
-    m_leftRear.setVoltage(leftVoltage);
-    m_rightRear.setVoltage(rightVoltage);
 
     logValue("Left volts", leftVoltage);
     logValue("Right volts", rightVoltage);

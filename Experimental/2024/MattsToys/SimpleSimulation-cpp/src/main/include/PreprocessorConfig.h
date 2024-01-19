@@ -1,0 +1,4 @@
+#pragma once
+
+#undef ENABLE_MOTOR_CONTROLLER_GROUPS
+#define BACK_MOTORS_ARE_LEADERS

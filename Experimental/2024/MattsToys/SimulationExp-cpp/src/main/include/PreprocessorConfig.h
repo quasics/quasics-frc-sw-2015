@@ -1,5 +1,8 @@
 #pragma once
 
+#define ENABLE_DRIVE_BASE_LEAD_FOLLOW
+#define BACK_MOTORS_ARE_LEADERS
+
 // DEFINE this symbol to enable using the CTRE Pigeon2 (or other CTRE devices).
 // UNDEFINE it to turn off CTRE use (e.g., if they haven't released the
 // vendordeps yet).

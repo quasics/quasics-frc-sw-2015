@@ -60,18 +60,23 @@ RealDriveBase::RealDriveBase()
 
 void RealDriveBase::enableCoastingMode(bool tf) {
   const auto mode = (tf ? IdleMode::kCoast : IdleMode::kBrake);
+#if defined(ENABLE_DRIVE_BASE_LEAD_FOLLOW)
+  m_leftLeader.SetIdleMode(mode);
+  m_rightLeader.SetIdleMode(mode);
+#else
   m_leftFront.SetIdleMode(mode);
   m_leftBack.SetIdleMode(mode);
   m_rightFront.SetIdleMode(mode);
   m_rightBack.SetIdleMode(mode);
+#endif
 }
 
 void RealDriveBase::configureMotors() {
   // * Motor inversions (if needed, and the motors aren't already
   // soft-configured).
   //
-  // m_leftSide.SetInverted(false);
-  // m_rightSide.SetInverted(true);
+  // m_leftLeader.SetInverted(false);
+  // m_rightLeader.SetInverted(true);
 
   // Configure initial coast/brake mode
   enableCoastingMode(false);
@@ -107,6 +112,13 @@ void RealDriveBase::configureEncoders() {
 
 void RealDriveBase::setMotorVoltagesImpl(units::volt_t leftPower,
                                          units::volt_t rightPower) {
-  m_leftSide.SetVoltage(leftPower);
-  m_rightSide.SetVoltage(rightPower);
+#if defined(ENABLE_DRIVE_BASE_LEAD_FOLLOW)
+  m_leftLeader.SetVoltage(leftPower);
+  m_rightLeader.SetVoltage(rightPower);
+#else
+  m_leftBack.SetVoltage(leftPower);
+  m_rightBack.SetVoltage(rightPower);
+  m_leftFront.SetVoltage(leftPower);
+  m_rightFront.SetVoltage(rightPower);
+#endif
 }

@@ -6,7 +6,6 @@
 
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/drive/DifferentialDrive.h>
-#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
@@ -92,6 +91,16 @@ class RealDriveBase : public IDrivebase {
   rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
 
+#if defined(ENABLE_DRIVE_BASE_LEAD_FOLLOW)
+#if defined(BACK_MOTORS_ARE_LEADERS)
+  rev::CANSparkMax& m_leftLeader = m_leftBack;
+  rev::CANSparkMax& m_rightLeader = m_rightBack;
+#else
+  frc::MotorController& m_leftLeader = m_leftFront;
+  frc::MotorController& m_rightLeader = m_rightFront;
+#endif
+#endif
+
   // Encoders for each of the motors.
   rev::SparkRelativeEncoder m_leftFrontEncoder =
       m_leftFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
@@ -101,10 +110,6 @@ class RealDriveBase : public IDrivebase {
       m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
   rev::SparkRelativeEncoder m_rightBackEncoder =
       m_rightBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-
-  // Motor controller groups, pairing sets on left/right.
-  frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};
-  frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 
   // Gyro.
   //

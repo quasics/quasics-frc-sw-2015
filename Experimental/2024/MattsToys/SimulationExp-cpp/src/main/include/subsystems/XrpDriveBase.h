@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "PreprocessorConfig.h"
+
+#ifdef ENABLE_XRP
 #include <frc/xrp/XRPGyro.h>
 #include <frc/xrp/XRPMotor.h>
 
@@ -65,3 +68,4 @@ class XrpDriveBase : public IDrivebase {
       TrivialEncoder::wrapEncoder(m_rightXrpEncoder)};
   std::unique_ptr<IGyro> m_iGyro{IGyro::wrapYawGyro(m_xrpGyro)};
 };
+#endif  // ENABLE_XRP

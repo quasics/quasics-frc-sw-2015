@@ -7,7 +7,6 @@
 #include <frc/ADXRS450_Gyro.h>
 #include <frc/AnalogGyro.h>
 #include <frc/geometry/Rotation2d.h>
-#include <frc/xrp/XRPGyro.h>
 #include <units/angle.h>
 #include <units/angular_velocity.h>
 
@@ -15,6 +14,10 @@
 
 #ifdef ENABLE_CTRE
 #include <ctre/phoenix6/Pigeon2.hpp>
+#endif
+
+#ifdef ENABLE_XRP
+#include <frc/xrp/XRPGyro.h>
 #endif
 
 #include <functional>
@@ -115,8 +118,10 @@ class IGyro {
   }
 #endif
 
+#ifdef ENABLE_XRP
   /** @return an IGyro wrapped around an <code>XRPGyro</code>. */
   static inline std::unique_ptr<IGyro> wrapYawGyro(frc::XRPGyro& xrpGyro);
+#endif
 
   // Other generators
  public:
@@ -234,6 +239,7 @@ std::unique_ptr<IGyro> IGyro::wrapYawGyro(IGyro::Pigeon2& pigeon2) {
 }
 #endif
 
+#ifdef ENABLE_XRP
 std::unique_ptr<IGyro> IGyro::wrapYawGyro(frc::XRPGyro& xrpGyro) {
   return std::unique_ptr<IGyro>(new FunctionalGyro(
       [&]() {},
@@ -252,3 +258,4 @@ std::unique_ptr<IGyro> IGyro::wrapYawGyro(frc::XRPGyro& xrpGyro) {
       // 2024.
       [&]() { xrpGyro.Reset(); }));
 }
+#endif

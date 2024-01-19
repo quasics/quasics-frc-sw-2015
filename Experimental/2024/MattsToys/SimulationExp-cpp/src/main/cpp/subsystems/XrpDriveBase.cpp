@@ -6,6 +6,8 @@
 
 #include "utils/DeadBandEnforcer.h"
 
+#ifdef ENABLE_XRP
+
 namespace {
   constexpr double kGearRatio =
       (30.0 / 14.0) * (28.0 / 16.0) * (36.0 / 9.0) * (26.0 / 8.0);  // 48.75:1
@@ -54,3 +56,5 @@ void XrpDriveBase::setMotorVoltagesImpl(units::volt_t leftPower,
   m_leftXrpMotor.SetVoltage(leftPower);
   m_rightXrpMotor.SetVoltage(rightPower);
 }
+
+#endif  // ENABLE_XRP

@@ -19,6 +19,7 @@ RobotContainer::RobotContainer() {
     // Configure real drive base
     m_drivebase.reset(new RealDriveBase);
   } else {
+    // TODO: Enable switching between "pure simulation" and XRP "little bot".
     // Configure simulation drive base
     m_drivebase.reset(new SimulatedDriveBase);
   }

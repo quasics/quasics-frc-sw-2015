@@ -21,15 +21,15 @@ import frc.robot.sensors.TrivialEncoder;
  * CAN addresses).
  */
 public class RealDrivebase extends AbstractDrivebase {
+  final static boolean USE_LEADER_FOLLOWER = false;
+
   /**
    * Enum class used to represent the physical characteristics (e.g., PID/motor
-   * gain values, track
-   * width, etc.) that are specific to a given robot.
+   * gain values, track width, etc.) that are specific to a given robot.
    *
    * For example, Sally is just a drive base and is thus much lighter than the
-   * robots we generally
-   * put on the field, which means that the kS/kV values for her tend to be
-   * smaller.
+   * robots we generally put on the field, which means that the kS/kV values for
+   * her tend to be smaller.
    */
   public enum RobotCharacteristics {
     // Characteristics from 2023 "ChargedUp" constants for Sally
@@ -102,8 +102,11 @@ public class RealDrivebase extends AbstractDrivebase {
   private final IGyro m_iGyro = IGyro.wrapGyro(m_gyro);
   private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
 
+  // Leaders
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightRear = new CANSparkMax(RIGHT_REAR_CAN_ID, MotorType.kBrushless);
+
+  // Followers
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
@@ -178,8 +181,10 @@ public class RealDrivebase extends AbstractDrivebase {
     final var mode = (tf ? IdleMode.kCoast : IdleMode.kBrake);
     m_leftFront.setIdleMode(mode);
     m_leftRear.setIdleMode(mode);
-    m_rightFront.setIdleMode(mode);
-    m_rightRear.setIdleMode(mode);
+    if (!USE_LEADER_FOLLOWER) {
+      m_rightFront.setIdleMode(mode);
+      m_rightRear.setIdleMode(mode);
+    }
   }
 
   protected TrivialEncoder getLeftEncoder() {
@@ -206,8 +211,10 @@ public class RealDrivebase extends AbstractDrivebase {
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
     // TODO: Remove one pair, once CAN motors are configured for lead/follow on
     // drive bases.
-    m_leftFront.setVoltage(leftVoltage);
-    m_rightFront.setVoltage(rightVoltage);
+    if (!USE_LEADER_FOLLOWER) {
+      m_leftFront.setVoltage(leftVoltage);
+      m_rightFront.setVoltage(rightVoltage);
+    }
     m_leftRear.setVoltage(leftVoltage);
     m_rightRear.setVoltage(rightVoltage);
 

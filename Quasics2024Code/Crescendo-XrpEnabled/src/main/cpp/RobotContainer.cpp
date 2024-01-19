@@ -8,7 +8,6 @@
 #include <frc2/command/button/Trigger.h>
 
 #include "commands/Autos.h"
-#include "commands/ExampleCommand.h"
 #include "commands/TankDrive.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
@@ -83,5 +82,5 @@ void RobotContainer::allocateDriveBase() {
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return autos::ExampleAuto(&m_subsystem);
+  return autos::ExampleAuto(m_drivebase.get());
 }

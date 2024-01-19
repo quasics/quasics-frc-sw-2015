@@ -9,7 +9,6 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "Constants.h"
-#include "subsystems/ExampleSubsystem.h"
 #include "subsystems/IDrivebase.h"
 
 /**
@@ -32,9 +31,8 @@ class RobotContainer {
   void allocateDriveBase();
 
   void setUpTankDrive();
-  // The robot's subsystems are defined here...
-  ExampleSubsystem m_subsystem;
 
+  // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
 
   // void ConfigureBindings();

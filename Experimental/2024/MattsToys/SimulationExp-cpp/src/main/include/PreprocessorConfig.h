@@ -11,9 +11,14 @@
 // Targeting the RoboRio
 #undef ENABLE_XRP
 #elif defined(__APPLE__)
-// Targeting MacOS
+// Targeting MacOS (for emulation/unit testing)
+#define ENABLE_XRP
+#elif defined(_WIN32)
+// Targeting Windows (for emulation/unit testing)
 #define ENABLE_XRP
 #else
-// (*shrug*) Assume Windows....
+// (*shrug*) Assume Windows (for emulation/unit testing), but we could also use
+// the lists at
+// https://github.com/cpredef/predef/blob/master/OperatingSystems.md
 #define ENABLE_XRP
 #endif

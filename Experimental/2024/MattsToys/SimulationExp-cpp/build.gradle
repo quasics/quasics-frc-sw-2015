@@ -4,8 +4,12 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2024.1.1"
 }
 
-// Simulation configuration (e.g. environment variables).
+// Set to true to run simulation in debug mode
+wpi.cpp.debugSimulation = false
+
+// Default enable simgui
 wpi.sim.addGui().defaultEnabled = true
+// Enable DS but not by default
 wpi.sim.addDriverstation()
 
 //Sets the XRP Client Host
@@ -27,8 +31,10 @@ model {
                 }
             }
 
+            // Enable run tasks for this component
             wpi.cpp.enableExternalTasks(it)
 
+            // Enable simulation for this component
             wpi.sim.enable(it)
 
             // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
@@ -47,6 +53,7 @@ model {
                 }
             }
 
+            // Enable run tasks for this component
             wpi.cpp.enableExternalTasks(it)
 
             wpi.cpp.vendor.cpp(it)

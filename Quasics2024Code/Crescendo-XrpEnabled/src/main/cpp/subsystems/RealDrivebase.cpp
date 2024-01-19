@@ -11,6 +11,6 @@ RealDrivebase::RealDrivebase() {
 }
 
 void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {
-  m_leftSide.Set(leftPercent);
-  m_rightSide.Set(rightPercent);
+  m_leftBack.Set(leftPercent);
+  m_rightBack.Set(rightPercent);
 }

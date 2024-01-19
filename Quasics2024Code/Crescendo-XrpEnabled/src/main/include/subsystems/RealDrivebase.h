@@ -22,16 +22,20 @@ class RealDrivebase : public IDrivebase {
  private:
   // TODO: Add the real motors (e.g., CANSparkMax, etc.) and "wire them in"
   // Drive base motors.
-  rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
-                               rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
-                                rev::CANSparkMax::MotorType::kBrushless};
+  // rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
+  // rev::CANSparkMax::MotorType::kBrushless
+  // };
+  // rev::CANSparkMax
+  // m_rightFront{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
+  // rev::CANSparkMax::MotorType::kBrushless
+  // };
+
   rev::CANSparkMax m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
                               rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
                                rev::CANSparkMax::MotorType::kBrushless};
 
   // Motor controller groups, pairing sets on left/right.
-  frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};
-  frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
+  // frc::MotorControllerGroup m_leftSide{m_leftFront, m_leftBack};
+  // frc::MotorControllerGroup m_rightSide{m_rightFront, m_rightBack};
 };

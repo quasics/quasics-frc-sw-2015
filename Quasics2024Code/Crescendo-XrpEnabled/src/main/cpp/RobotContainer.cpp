@@ -55,10 +55,10 @@ void RobotContainer::setUpTankDrive() {
   // Create the TankDrive command (reading from the controller's joysticks), and
   // set it as the default command for the drive base.
   TankDrive::PercentSupplier leftSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(leftDriveJoystickAxis);
+    return m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
   };
   TankDrive::PercentSupplier rightSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(rightDriveJoystickAxis);
+    return m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   m_drivebase->SetDefaultCommand(std::move(tankDrive));

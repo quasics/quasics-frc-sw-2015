@@ -8,6 +8,8 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
+#include <list>
+
 #include "Constants.h"
 #include "subsystems/IDrivebase.h"
 
@@ -25,6 +27,8 @@ class RobotContainer {
   frc2::CommandPtr GetAutonomousCommand();
 
  private:
+  void AddTestButtonsOnSmartDashboard();
+  void AddButtonToSmartDashboardTestingRetainedCommands();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   frc::Joystick m_driverController{OperatorConstants::kDriverControllerPort};
 
@@ -34,6 +38,12 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
+
+  // These are commands generated "on the fly" by functions like
+  // GetCommandForTrajectory(), which we're attaching to things like buttons on
+  // the smart dashboard, and thus need to outlive the function where they were
+  // created.
+  std::list<frc2::CommandPtr> retainedCommands;
 
   // void ConfigureBindings();
 };

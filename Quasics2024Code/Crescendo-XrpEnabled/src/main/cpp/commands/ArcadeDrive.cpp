@@ -4,8 +4,13 @@
 
 #include "commands/ArcadeDrive.h"
 
-ArcadeDrive::ArcadeDrive() {
+ArcadeDrive::ArcadeDrive(/*IDrivebase& drivebase, PercentSupplier forwardSupplier,
+                         PercentSupplier rotationSupplier*/)
+    /*: m_drivebase(drivebase),
+      m_forwardSupplier(forwardSupplier),
+      m_rotationSupplier(rotationSupplier)*/ {
   // Use addRequirements() here to declare subsystem dependencies.
+  /*AddRequirements(&m_drivebase);*/
 }
 
 // Called when the command is initially scheduled.
@@ -20,7 +25,7 @@ void ArcadeDrive::Execute() {
 void ArcadeDrive::End(bool interrupted) {
 }
 
-// Returns true when the command should end.
-bool ArcadeDrive::IsFinished() {
-  return false;
+void ArcadeDrive::updateSpeeds() {
+  /*const double forwardVal = m_forwardSupplier();
+  const double rotationVal = m_rotationSupplier();*/
 }

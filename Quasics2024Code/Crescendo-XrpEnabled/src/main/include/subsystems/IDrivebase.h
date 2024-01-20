@@ -17,6 +17,8 @@ class IDrivebase : public frc2::SubsystemBase {
 
   void tankDrive(double leftInputPercent, double rightInputPercent);
 
+  void arcadeDrive(double forwardInputPercent, double rotationInputPercent);
+
   void stop() {
     tankDrive(0, 0);
   }

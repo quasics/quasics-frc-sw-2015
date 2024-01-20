@@ -3,6 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
+#include <units/angular_velocity.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -82,3 +85,9 @@ namespace DigitalInput {
   constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
 } */
 // namespace LightingValues
+
+namespace RobotConstants {
+  /*static constexpr units::meters_per_second_t MAX_SPEED{3.0};
+  static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
+      std::numbers::pi};*/
+}  // namespace RobotConstants

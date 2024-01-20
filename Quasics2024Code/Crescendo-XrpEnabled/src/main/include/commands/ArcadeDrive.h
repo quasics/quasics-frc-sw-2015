@@ -7,6 +7,8 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/IDrivebase.h"
+
 /**
  * An example command.
  *
@@ -16,7 +18,10 @@
  */
 class ArcadeDrive : public frc2::CommandHelper<frc2::Command, ArcadeDrive> {
  public:
-  ArcadeDrive();
+  typedef std::function<double()> PercentSupplier;
+
+  ArcadeDrive(/*IDrivebase& drivebase, PercentSupplier forwardSupplier,
+              PercentSupplier rotationSupplier*/);
 
   void Initialize() override;
 
@@ -24,5 +29,9 @@ class ArcadeDrive : public frc2::CommandHelper<frc2::Command, ArcadeDrive> {
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
+ private:
+  /*IDrivebase& m_drivebase;
+  PercentSupplier m_rotationSupplier;
+  PercentSupplier m_forwardSupplier;*/
+  void updateSpeeds();
 };

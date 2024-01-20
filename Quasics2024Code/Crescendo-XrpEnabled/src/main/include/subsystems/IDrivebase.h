@@ -12,6 +12,7 @@
 #include <units/voltage.h>
 
 #include "Constants.h"
+#include "sensors/IGyro.h"
 #include "sensors/TrivialEncoder.h"
 
 class IDrivebase : public frc2::SubsystemBase {
@@ -53,6 +54,12 @@ class IDrivebase : public frc2::SubsystemBase {
     return {getLeftEncoder().getVelocity(), getRightEncoder().getVelocity()};
   }
 
+  void updateOdometry() {
+    getOdometry().Update(getGyro().getRotation2d(),
+                         getLeftEncoder().getPosition(),
+                         getRightEncoder().getPosition());
+  }
+
   virtual void tankDriveVolts(units::volt_t left, units::volt_t right) = 0;
 
  private:
@@ -61,6 +68,7 @@ class IDrivebase : public frc2::SubsystemBase {
   // Hardware abstraction layer
  protected:
   virtual frc::DifferentialDriveOdometry& getOdometry() = 0;
+  virtual IGyro& getGyro() = 0;
 
   virtual void setMotorSpeeds(double leftPercent, double rightPercent) = 0;
 

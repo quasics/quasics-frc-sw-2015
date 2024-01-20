@@ -7,8 +7,8 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/IDrivebase.h"
 #include "Constants.h"
+#include "subsystems/IDrivebase.h"
 
 /**
  * An example command.
@@ -32,7 +32,8 @@ class ArcadeDrive : public frc2::CommandHelper<frc2::Command, ArcadeDrive> {
 
  private:
   IDrivebase& m_drivebase;
-  PercentSupplier m_rotationSupplier;
   PercentSupplier m_forwardSupplier;
+  PercentSupplier m_rotationSupplier;
+
   void updateSpeeds();
 };

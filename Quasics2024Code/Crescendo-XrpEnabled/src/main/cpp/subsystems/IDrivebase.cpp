@@ -8,6 +8,7 @@ IDrivebase::IDrivebase() = default;
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
+  updateOdometry();
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {

@@ -105,6 +105,10 @@ namespace DigitalInput {
   constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;
 }  // namespace DigitalInput
 
+namespace SensorIds {
+  constexpr int PIGEON_CAN_ID = 1;
+}
+
 /* namespace LightingValues {
   constexpr int PORT_NUMBER = fill in;
   constexpr int STRIP_PIXEL_COUNT = fill in;

@@ -36,6 +36,8 @@ class RobotContainer {
 
   void setUpTankDrive();
 
+  void setUpArcadeDrive();
+
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
 

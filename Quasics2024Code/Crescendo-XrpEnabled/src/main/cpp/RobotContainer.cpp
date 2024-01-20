@@ -9,6 +9,7 @@
 #include <frc2/command/button/Trigger.h>
 
 #include "TrajectoryGenerator.h"
+#include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/TankDrive.h"
 #include "subsystems/RealDrivebase.h"
@@ -65,6 +66,26 @@ void RobotContainer::setUpTankDrive() {
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   m_drivebase->SetDefaultCommand(std::move(tankDrive));
+}
+
+void RobotContainer::setUpArcadeDrive() {
+  int leftDriveJoystickAxis, rightDriveJoystickAxis;
+  if (frc::RobotBase::IsSimulation()) {
+    leftDriveJoystickAxis = 0;
+    rightDriveJoystickAxis = 1;
+  } else {
+    leftDriveJoystickAxis = OperatorConstants::LogitechGamePad::LeftYAxis;
+    rightDriveJoystickAxis = OperatorConstants::LogitechGamePad::RightXAxis;
+  }
+
+  ArcadeDrive::PercentSupplier forwardSupplier = [=, this]() {
+    return m_driverController.GetRawAxis(leftDriveJoystickAxis);
+  };
+  ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
+    return m_driverController.GetRawAxis(rightDriveJoystickAxis);
+  };
+  ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
+  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
 void RobotContainer::allocateDriveBase() {

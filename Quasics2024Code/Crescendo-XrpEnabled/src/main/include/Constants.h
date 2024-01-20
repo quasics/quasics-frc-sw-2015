@@ -9,6 +9,8 @@
 #include <units/time.h>
 #include <units/voltage.h>
 
+#include <numbers>
+
 #include "ConditionalCompileFlags.h"
 #pragma once
 
@@ -121,7 +123,7 @@ constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
 constexpr auto kRamseteZeta = 0.7 / 1_rad;
 
 namespace RobotConstants {
-  /*static constexpr units::meters_per_second_t MAX_SPEED{3.0};
+  static constexpr units::meters_per_second_t MAX_SPEED{3.0};
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
-      std::numbers::pi};*/
+      std::numbers::pi};
 }  // namespace RobotConstants

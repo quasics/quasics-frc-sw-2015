@@ -59,7 +59,7 @@ public class RobotContainer {
   final static int LIGHTING_PWM_PORT = 9;
   final static int NUM_LIGHTS = 40;
 
-  final static boolean ENABLE_VISION_SUBSYSTEM = false;
+  final static boolean ENABLE_VISION_SUBSYSTEM = true;
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;

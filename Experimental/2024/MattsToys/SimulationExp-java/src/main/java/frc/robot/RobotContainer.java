@@ -72,8 +72,8 @@ public class RobotContainer {
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
 
-  final Supplier<Double> m_arcadeDriveForwardStick;
-  final Supplier<Double> m_arcadeDriveRotationStick;
+  Supplier<Double> m_arcadeDriveForwardStick;
+  Supplier<Double> m_arcadeDriveRotationStick;
 
   /** Options for the behavior when running under the simulator. */
   private enum SimulationMode {
@@ -156,8 +156,21 @@ public class RobotContainer {
    * actually working on.
    */
   public RobotContainer() {
+    m_drivebase = setupDriveBase();
+    m_vision = maybeSetupVisionSubsystem();
+    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
+
+    resetPositionFromAllianceSelection();
+
+    configureBindings();
+
+    System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+  }
+
+  private AbstractDrivebase setupDriveBase() {
+    AbstractDrivebase drivebase = null;
     if (Robot.isReal()) {
-      m_drivebase = new RealDrivebase(RealDrivebase.RobotCharacteristics.Sally);
+      drivebase = new RealDrivebase(RealDrivebase.RobotCharacteristics.Sally);
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
@@ -171,40 +184,47 @@ public class RobotContainer {
       m_arcadeDriveRotationStick = () -> m_controller.getRawAxis(1);
       switch (m_simulationMode) {
         case eRomi:
-          m_drivebase = new RomiDrivebase();
+          drivebase = new RomiDrivebase();
           break;
         case eXrp:
-          m_drivebase = new XrpDrivebase();
+          drivebase = new XrpDrivebase();
           break;
         case eSimulation:
-          m_drivebase = new SimulationDrivebase();
+          drivebase = new SimulationDrivebase();
           break;
         default:
           System.err.println("**** WARNING: Unrecognized simulation mode (" +
               m_simulationMode +
               "), falling back on pure simulator");
-          m_drivebase = new SimulationDrivebase();
+          drivebase = new SimulationDrivebase();
           break;
       }
     }
+    return drivebase;
+  }
 
+  private VisionSubsystem maybeSetupVisionSubsystem() {
+    VisionSubsystem vision = null;
     if (ENABLE_VISION_SUBSYSTEM) {
-      m_vision = new VisionSubsystem();
-      m_vision.setPoseEstimatorConsumer(
+      try {
+        vision = new VisionSubsystem();
+      } catch (Exception e) {
+        System.err.println("*** Failed to set up vision subsystem!");
+        e.printStackTrace();
+      }
+    } else {
+      System.err.println(">>> Note: Vision subsystem is DISABLED.");
+    }
+
+    if (vision != null) {
+      vision.setPoseEstimatorConsumer(
           (Pose2d pose, Double timestampSeconds) -> {
             m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
             return null;
           });
-    } else {
-      m_vision = null;
     }
 
-    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
-
-    resetPositionFromAllianceSelection();
-    configureBindings();
-
-    System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+    return vision;
   }
 
   private void configureBindings() {

@@ -52,7 +52,7 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
       config);*/
 
   fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-  deployDirectory = deployDirectory / "paths" / fileToLoad.c_str();
+  deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
   frc::Trajectory exampleTrajectory =
       frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
 

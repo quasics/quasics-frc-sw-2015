@@ -14,3 +14,8 @@ void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {
   m_leftBack.Set(leftPercent);
   m_rightBack.Set(rightPercent);
 }
+
+void RealDrivebase::tankDriveVolts(units::volt_t left, units::volt_t right) {
+  m_leftBack.SetVoltage(left);
+  m_rightBack.SetVoltage(right);
+}

@@ -8,3 +8,6 @@
 // UNDEFINE it to turn off CTRE use (e.g., if they haven't released the
 // vendordeps yet).
 #define ENABLE_CTRE
+
+#undef USING_MAE
+#define USING_SALLY

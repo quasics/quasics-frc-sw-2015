@@ -1,7 +1,17 @@
 // Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+#include <frc/kinematics/DifferentialDriveKinematics.h>
+#include <units/acceleration.h>
+#include <units/angle.h>
+#include <units/dimensionless.h>
+#include <units/length.h>
+#include <units/time.h>
+#include <units/voltage.h>
 
+#include <numbers>
+
+#include "ConditionalCompileFlags.h"
 #pragma once
 
 /**
@@ -47,6 +57,25 @@ namespace OperatorConstants {
 
 }  // namespace OperatorConstants
 
+namespace PathWeaverConstants {
+#ifdef USING_MAE
+  constexpr auto kS = 0.13895_V;
+  constexpr auto kV = 1.3143 * (1_V * 1_s / 1_m);
+  constexpr auto kA = 0.1935 * (1_V * 1_s * 1_s / 1_m);
+  constexpr double kP = 0.001379;
+  constexpr double kI = 0;
+  constexpr double kD = 0;
+#endif
+#ifdef USING_SALLY
+  constexpr auto kS = 0.19529_V;
+  constexpr auto kV = 2.2329 * (1_V * 1_s / 1_m);
+  constexpr auto kA = 0.36638 * (1_V * 1_s * 1_s / 1_m);
+  constexpr double kP = 0.29613;
+  constexpr double kI = 0;
+  constexpr double kD = 0;
+#endif
+}  // namespace PathWeaverConstants
+
 namespace MotorIds {
   namespace SparkMax {
     constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
@@ -82,3 +111,19 @@ namespace DigitalInput {
   constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
 } */
 // namespace LightingValues
+
+constexpr units::length::meter_t TRACK_WIDTH_METERS_SALLY = 0.5588_m;
+const frc::DifferentialDriveKinematics kDriveKinematics(
+    TRACK_WIDTH_METERS_SALLY);
+
+constexpr auto kMaxSpeed = 3_mps;
+constexpr auto kMaxAcceleration = 1_mps_sq;
+
+constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
+constexpr auto kRamseteZeta = 0.7 / 1_rad;
+
+namespace RobotConstants {
+  static constexpr units::meters_per_second_t MAX_SPEED{3.0};
+  static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
+      std::numbers::pi};
+}  // namespace RobotConstants

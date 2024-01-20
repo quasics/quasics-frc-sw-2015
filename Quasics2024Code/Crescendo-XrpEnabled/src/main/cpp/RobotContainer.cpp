@@ -5,8 +5,11 @@
 #include "RobotContainer.h"
 
 #include <frc/RobotBase.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/button/Trigger.h>
 
+#include "TrajectoryGenerator.h"
+#include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/TankDrive.h"
 #include "subsystems/RealDrivebase.h"
@@ -19,6 +22,7 @@ RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   allocateDriveBase();
   setUpTankDrive();
+  AddTestButtonsOnSmartDashboard();
   // Configure the button bindings
   // ConfigureBindings();
 }
@@ -64,6 +68,26 @@ void RobotContainer::setUpTankDrive() {
   m_drivebase->SetDefaultCommand(std::move(tankDrive));
 }
 
+void RobotContainer::setUpArcadeDrive() {
+  int leftDriveJoystickAxis, rightDriveJoystickAxis;
+  if (frc::RobotBase::IsSimulation()) {
+    leftDriveJoystickAxis = 0;
+    rightDriveJoystickAxis = 1;
+  } else {
+    leftDriveJoystickAxis = OperatorConstants::LogitechGamePad::LeftYAxis;
+    rightDriveJoystickAxis = OperatorConstants::LogitechGamePad::RightXAxis;
+  }
+
+  ArcadeDrive::PercentSupplier forwardSupplier = [=, this]() {
+    return m_driverController.GetRawAxis(leftDriveJoystickAxis);
+  };
+  ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
+    return m_driverController.GetRawAxis(rightDriveJoystickAxis);
+  };
+  ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
+  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
+}
+
 void RobotContainer::allocateDriveBase() {
   if (frc::RobotBase::IsReal()) {
     // OK, we're running on a "big bot".
@@ -83,4 +107,20 @@ void RobotContainer::allocateDriveBase() {
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   return autos::ExampleAuto(m_drivebase.get());
+}
+
+void RobotContainer::AddTestButtonsOnSmartDashboard() {
+  // TODO: Remove this once it's been verified.
+  AddButtonToSmartDashboardTestingRetainedCommands();
+
+  retainedCommands.push_back(
+      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get()));
+  frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
+}
+
+// TODO: Remove this once it's been verified.
+void RobotContainer::AddButtonToSmartDashboardTestingRetainedCommands() {
+  retainedCommands.push_back(frc2::PrintCommand("I did something").ToPtr());
+  frc::SmartDashboard::PutData("test retained cmds",
+                               retainedCommands.rbegin()->get());
 }

@@ -4,16 +4,13 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import edu.wpi.first.wpilibj.xrp.XRPMotor;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 /**
  * Implementing a version of the AbstractDrivebase functionality that works with
@@ -27,18 +24,6 @@ public class XrpDrivebase extends AbstractDrivebase {
   private static final double kCountsPerMotorShaftRev = 12.0;
   private static final double kCountsPerRevolution = kCountsPerMotorShaftRev * kGearRatio; // 585.0
   private static final double kWheelDiameterMeters = 0.060;
-
-  // Sample PID constants.
-  private static final double kP = 8.5;
-  private static final double kI = 0;
-  private static final double kD = 0;
-
-  // Motor gains are for example purposes only, and must be determined for your
-  // own robot.
-  private static final Measure<Voltage> kS = Volts.of(1);
-  private static final double kV = 3;
-
-  private static final double kTrackWidthMeters = 0.155;
 
   // The XRP has the left and right motors set to
   // channels 0 and 1 respectively
@@ -70,7 +55,7 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   /** Creates a new XrpDrivebase. */
   public XrpDrivebase() {
-    super(kTrackWidthMeters, kP, kI, kD, kS, kV);
+    super(RobotSettings.Robot.Xrp);
 
     // Per docs: "The right motor will spin in a backward direction when
     // positive output is applied. Thus the corresponding motor controller needs

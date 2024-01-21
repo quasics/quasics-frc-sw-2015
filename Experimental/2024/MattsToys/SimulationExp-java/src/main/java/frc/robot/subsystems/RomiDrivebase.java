@@ -4,30 +4,16 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volts;
-
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 public class RomiDrivebase extends AbstractDrivebase {
-  private static final double kTrackWidthMeters = 0.141; // 5.55 in
   private static final double kCountsPerRevolution = 1440.0;
   private static final double kWheelDiameterMeters = 0.070; // 2.75591 in
-
-  // Sample PID constants.
-  private static final double kP = 8.5;
-  private static final double kI = 0;
-  private static final double kD = 0;
-
-  // Motor gains are for example purposes only, and must be determined for your
-  // own robot.
-  private static final Measure<Voltage> kS = Volts.of(1);
-  private static final double kV = 3;
 
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
@@ -49,7 +35,7 @@ public class RomiDrivebase extends AbstractDrivebase {
 
   /** Creates a new RomiDrivebase. */
   public RomiDrivebase() {
-    super(kTrackWidthMeters, kP, kI, kD, kS, kV);
+    super(RobotSettings.Robot.Romi);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's

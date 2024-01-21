@@ -10,8 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -67,19 +65,7 @@ public class RealDrivebase extends AbstractDrivebase {
    *              device to be driven
    */
   public RealDrivebase(RobotSettings.Robot robot) {
-    this(robot, robot.trackWidthMeters, robot.gearRatio,
-        robot.kP, robot.kI, robot.kD,
-        robot.kS, robot.kV, robot.kA);
-  }
-
-  /**
-   * Detailed constructor.
-   */
-  private RealDrivebase(
-      RobotSettings.Robot robot, double trackWidthMeters, double gearRatio,
-      double kP, double kI, double kD,
-      Measure<Voltage> kS, double kV, double kA) {
-    super(trackWidthMeters, kP, kI, kD, kS, kV, kA);
+    super(robot);
 
     super.setName(getClass().getSimpleName());
 
@@ -117,9 +103,9 @@ public class RealDrivebase extends AbstractDrivebase {
         WHEEL_CIRCUMFERENCE_METERS);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / gearRatio;
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / robot.gearRatio;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-    System.out.println("Using gear ratio: " + gearRatio);
+    System.out.println("Using gear ratio: " + robot.gearRatio);
     System.out.println("Adjustment for gearing (m/rotation): " +
         distanceScalingFactorForGearing);
     System.out.println("Velocity adj.: " + velocityScalingFactor);

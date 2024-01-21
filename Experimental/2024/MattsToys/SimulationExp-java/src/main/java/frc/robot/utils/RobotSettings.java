@@ -4,6 +4,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Velocity;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
@@ -35,29 +36,57 @@ public interface RobotSettings {
     Simulator(
         MotorConfigModel.NoLeader,
         /* Track Width (m) */
-        0.381 * 2,
+        Meters.of(0.381 * 2),
         /* Gear ratio */
         1.0,
         /* PID */
         1.3195, 0.0, 0.0, // WPI sample used 8.5, 0, 0
         /* Gains (WPI sample\ used 1, 3, 0) */
-        Volts.of(0.013809), 1.9805, 0.19208,
-        "photonvision", 9,
-        40),
+        Volts.of(0.013809), VoltsPerMeterPerSecond.of(1.9805), VoltsPerMeterPerSecondSquared.of(0.19208),
+        // Vision
+        "photonvision",
+        // Lighting
+        9, 40),
     // Xrp(MotorConfigModel.NoLeader, null, 9, 40),
-    // Romi(MotorConfigModel.NoLeader, null, 9, 40);
+    Xrp(
+        MotorConfigModel.NoLeader,
+        /* Track Width (m) */
+        Meters.of(0.155),
+        /* Gear ratio */
+        1.0,
+        /* PID */
+        8.5, 0.0, 0.0, // TODO: Profile the XRP
+        /* Gains */
+        Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
+        "",
+        9, 40),
+    Romi(
+        // Motor config model
+        MotorConfigModel.NoLeader,
+        // Track width
+        Meters.of(0.141), // 5.55 in
+        // Gear ratio
+        1,
+        // PID
+        8.5, 0, 0,
+        // Gains
+        Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
+        // Vision data
+        "",
+        // Lighting data
+        9, 40),
     Sally(
         /* Track Width (m) */
-        0.381 * 2, // TODO: Confirm track width for Sally
+        Meters.of(0.381 * 2), // TODO: Confirm track width for Sally
         /* Gear ratio */
         8.45,
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        Volts.of(0.19529), 2.2329, 0.0),
+        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0)),
     Mae(
         /* Track Width (m) */
-        0.5588 /* 22in */, // TODO: Confirm track width for Mae
+        Meters.of(0.5588) /* 22in */, // TODO: Confirm track width for Mae
         /* Gear ratio */
         8.45,
         /* PID */
@@ -69,27 +98,25 @@ public interface RobotSettings {
          * values. (Though we also changed the hardware significantly
          * post-season.)
          */
-        Volts.of(0.13895), 1.3143, 0.1935),
+        Volts.of(0.13895), VoltsPerMeterPerSecond.of(1.3143), VoltsPerMeterPerSecondSquared.of(0.1935)),
     // Margaret()
     ;
 
     ////////////////////////////////////////////////////////
     // Drive base data
     public final MotorConfigModel motorConfigModel;
-    public final double trackWidthMeters;
+    public final Measure<Distance> trackWidthMeters;
     public final double gearRatio;
 
     // PID obtained from SysId profiling
     public final double kP;
     public final double kI;
     public final double kD;
-    // TODO: Add unit typing for gains data from SysId profiling.
+
     // Gains obtained from SysId profiling
     public final Measure<Voltage> kS;
-    // public final Per<Voltage, Velocity<Distance>> kV;
-    // public final Per<Voltage, Velocity<Velocity<Distance>>> kA;
-    public final double kV;
-    public final double kA;
+    public final Measure<Per<Voltage, Velocity<Distance>>> kV;
+    public final Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA;
 
     ////////////////////////////////////////////////////////
     // Vision subsystem data
@@ -103,16 +130,18 @@ public interface RobotSettings {
     public final int numLights;
 
     private Robot(
-        double trackWidthMeters, double gearRatio,
+        Measure<Distance> trackWidthMeters, double gearRatio,
         double kP, double kI, double kD,
-        Measure<Voltage> kS, double kV, double kA) {
+        Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
+        Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA) {
       this(MotorConfigModel.NoLeader, trackWidthMeters, gearRatio, kP, kI, kD, kS, kV, kA, "photonvision",
           DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS);
     }
 
-    private Robot(MotorConfigModel motorConfigModel, double trackWidthMeters, double gearRatio, double kP,
+    private Robot(MotorConfigModel motorConfigModel, Measure<Distance> trackWidthMeters, double gearRatio, double kP,
         double kI, double kD,
-        Measure<Voltage> kS, double kV, double kA,
+        Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
+        Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA,
         String cameraName, int lightingPort, int numLights) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;

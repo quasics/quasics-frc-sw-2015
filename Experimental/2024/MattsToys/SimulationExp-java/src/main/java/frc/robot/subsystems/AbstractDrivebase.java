@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -25,6 +27,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
@@ -35,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.RobotSettings;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
@@ -58,25 +62,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /**
    * Constructor.
-   *
-   * @param trackWidthMeters track width (from SysID using the "Drivetrain
-   *                         (Angular)" test)
-   * @param kP               kP value for PID control of motors
-   * @param kI               kI value for PID control of motors
-   * @param kD               kD value for PID control of motors
-   * @param kS               voltage needed to overcome the drive motors' static
-   *                         friction
-   * @param kV               voltage scaling value used to hold at a given
-   *                         velocity
-   *
-   * @see
-   *      https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#the-permanent-magnet-dc-motor-feedforward-equation
-   * @see
-   *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
+   * 
+   * @param robot specifies what robot we're trying to build (and its settings)
    */
-  public AbstractDrivebase(double trackWidthMeters, double kP, double kI,
-      double kD, Measure<Voltage> kS, double kV) {
-    this(trackWidthMeters, kP, kI, kD, kS, kV, 0);
+  public AbstractDrivebase(RobotSettings.Robot robot) {
+    this(robot.trackWidthMeters, robot.kP, robot.kI, robot.kD, robot.kS, robot.kV, robot.kA);
+    super.setName(robot.name());
   }
 
   /**
@@ -98,13 +89,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
-  public AbstractDrivebase(
-      double trackWidthMeters,
+  protected AbstractDrivebase(
+      Measure<Distance> trackWidthMeters,
       double kP, double kI, double kD,
-      Measure<Voltage> kS, double kV, double kA) {
+      Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
+      Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA) {
     m_leftPIDController = new PIDController(kP, kI, kD);
     m_rightPIDController = new PIDController(kP, kI, kD);
-    m_feedforward = new SimpleMotorFeedforward(kS.in(Volts), kV, kA);
+    m_feedforward = new SimpleMotorFeedforward(kS.in(Volts), kV.in(VoltsPerMeterPerSecond),
+        kA.in(VoltsPerMeterPerSecondSquared));
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), /* leftDistanceMeters */ 0,

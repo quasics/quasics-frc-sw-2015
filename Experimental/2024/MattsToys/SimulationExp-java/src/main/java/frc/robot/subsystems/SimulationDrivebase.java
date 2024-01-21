@@ -55,7 +55,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   /** Subsystem constructor. */
   public SimulationDrivebase(RobotSettings.Robot robot) {
-    super(robot.trackWidthMeters, robot.kP, robot.kI, robot.kD, robot.kS, robot.kV, robot.kA);
+    super(RobotSettings.Robot.Simulator);
     super.setName(getClass().getSimpleName());
 
     m_leftEncoder = new Encoder(0, 1);
@@ -72,7 +72,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // Set up simulation
     m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
         DCMotor.getCIM(2), 8,
-        robot.trackWidthMeters, kWheelRadius.in(Meters),
+        robot.trackWidthMeters.in(Meters), kWheelRadius.in(Meters),
         null);
     m_gyroSim = new AnalogGyroSim(rawGyro);
     m_leftEncoderSim = new EncoderSim(m_leftEncoder);

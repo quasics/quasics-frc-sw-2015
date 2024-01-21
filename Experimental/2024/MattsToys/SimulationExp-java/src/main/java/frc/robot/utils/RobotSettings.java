@@ -129,6 +129,19 @@ public interface RobotSettings {
     public final int lightingPwmPort;
     public final int numLights;
 
+    /**
+     * Constructor. (Uses "no leader" for drive base motor model, and default
+     * port/length for LEDs.)
+     * 
+     * @param trackWidthMeters track width
+     * @param gearRatio        gear ration
+     * @param kP               kP for the robot (from SysId profiling)
+     * @param kI               kI for the robot (from SysId profiling)
+     * @param kD               kD for the robot (from SysId profiling)
+     * @param kS               kS for the robot (from SysId profiling)
+     * @param kV               kV for the robot (from SysId profiling)
+     * @param kA               kA for the robot (from SysId profiling)
+     */
     private Robot(
         Measure<Distance> trackWidthMeters, double gearRatio,
         double kP, double kI, double kD,
@@ -138,6 +151,22 @@ public interface RobotSettings {
           DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS);
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param motorConfigModel drive base motor configuration model
+     * @param trackWidthMeters track width
+     * @param gearRatio        gear ration
+     * @param kP               kP for the robot (from SysId profiling)
+     * @param kI               kI for the robot (from SysId profiling)
+     * @param kD               kD for the robot (from SysId profiling)
+     * @param kS               kS for the robot (from SysId profiling)
+     * @param kV               kV for the robot (from SysId profiling)
+     * @param kA               kA for the robot (from SysId profiling)
+     * @param cameraName       name for the camera in PhotonVision
+     * @param lightingPort     PWM port for the LED strip
+     * @param numLights        # of pixels on the LED strip
+     */
     private Robot(MotorConfigModel motorConfigModel, Measure<Distance> trackWidthMeters, double gearRatio, double kP,
         double kI, double kD,
         Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,

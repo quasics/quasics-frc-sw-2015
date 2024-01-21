@@ -75,7 +75,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
   public AbstractDrivebase(double trackWidthMeters, double kP, double kI,
-      double kD, double kS, double kV) {
+      double kD, Measure<Voltage> kS, double kV) {
     this(trackWidthMeters, kP, kI, kD, kS, kV, 0);
   }
 
@@ -98,11 +98,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
-  public AbstractDrivebase(double trackWidthMeters, double kP, double kI,
-      double kD, double kS, double kV, double kA) {
+  public AbstractDrivebase(
+      double trackWidthMeters,
+      double kP, double kI, double kD,
+      Measure<Voltage> kS, double kV, double kA) {
     m_leftPIDController = new PIDController(kP, kI, kD);
     m_rightPIDController = new PIDController(kP, kI, kD);
-    m_feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+    m_feedforward = new SimpleMotorFeedforward(kS.in(Volts), kV, kA);
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), /* leftDistanceMeters */ 0,

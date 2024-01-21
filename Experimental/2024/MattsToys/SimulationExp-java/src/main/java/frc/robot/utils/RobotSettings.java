@@ -1,5 +1,16 @@
 package frc.robot.utils;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Per;
+import edu.wpi.first.units.Velocity;
+
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
+
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Voltage;
+
 /**
  * Defines bot-specific configuration data for every one of Quasics' supported
  * instances in 2024.
@@ -26,11 +37,11 @@ public interface RobotSettings {
         /* Track Width (m) */
         0.381 * 2,
         /* Gear ratio */
-        1,
+        1.0,
         /* PID */
-        1.3195, 0, 0, // WPI sample used 8.5, 0, 0
-        /* Gains */
-        0.013809, 1.9805, 0.19208, // WPI sample used 1, 3, 0
+        1.3195, 0.0, 0.0, // WPI sample used 8.5, 0, 0
+        /* Gains (WPI sample\ used 1, 3, 0) */
+        Volts.of(0.013809), 1.9805, 0.19208,
         "photonvision", 9,
         40),
     // Xrp(MotorConfigModel.NoLeader, null, 9, 40),
@@ -43,14 +54,14 @@ public interface RobotSettings {
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        0.19529, 2.2329, 0.0),
+        Volts.of(0.19529), 2.2329, 0.0),
     Mae(
         /* Track Width (m) */
         0.5588 /* 22in */, // TODO: Confirm track width for Mae
         /* Gear ratio */
         8.45,
         /* PID */
-        0.001379, 0, 0, // TODO: Confirm kP for Mae, since it seems *really* low
+        0.001379, 0.0, 0.0, // TODO: Confirm kP for Mae, since it seems *really* low
         /*
          * Gains
          *
@@ -58,7 +69,7 @@ public interface RobotSettings {
          * values. (Though we also changed the hardware significantly
          * post-season.)
          */
-        0.13895, 1.3143, 0.1935),
+        Volts.of(0.13895), 1.3143, 0.1935),
     // Margaret()
     ;
 
@@ -68,13 +79,15 @@ public interface RobotSettings {
     public final double trackWidthMeters;
     public final double gearRatio;
 
-    // TODO: Add unit typing for data from SysId profiling.
     // PID obtained from SysId profiling
     public final double kP;
     public final double kI;
     public final double kD;
+    // TODO: Add unit typing for gains data from SysId profiling.
     // Gains obtained from SysId profiling
-    public final double kS;
+    public final Measure<Voltage> kS;
+    // public final Per<Voltage, Velocity<Distance>> kV;
+    // public final Per<Voltage, Velocity<Velocity<Distance>>> kA;
     public final double kV;
     public final double kA;
 
@@ -89,16 +102,18 @@ public interface RobotSettings {
     public final int lightingPwmPort;
     public final int numLights;
 
-    private Robot(double trackWidthMeters, double gearRatio, double kP,
-        double kI, double kD, double kS, double kV,
-        double kA) {
+    private Robot(
+        double trackWidthMeters, double gearRatio,
+        double kP, double kI, double kD,
+        Measure<Voltage> kS, double kV, double kA) {
       this(MotorConfigModel.NoLeader, trackWidthMeters, gearRatio, kP, kI, kD, kS, kV, kA, "photonvision",
           DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS);
     }
 
     private Robot(MotorConfigModel motorConfigModel, double trackWidthMeters, double gearRatio, double kP,
-        double kI, double kD, double kS, double kV,
-        double kA, String cameraName, int lightingPort, int numLights) {
+        double kI, double kD,
+        Measure<Voltage> kS, double kV, double kA,
+        String cameraName, int lightingPort, int numLights) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;
       this.gearRatio = gearRatio;

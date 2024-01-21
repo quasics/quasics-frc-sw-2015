@@ -10,6 +10,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -76,7 +78,7 @@ public class RealDrivebase extends AbstractDrivebase {
   private RealDrivebase(
       RobotSettings.Robot robot, double trackWidthMeters, double gearRatio,
       double kP, double kI, double kD,
-      double kS, double kV, double kA) {
+      Measure<Voltage> kS, double kV, double kA) {
     super(trackWidthMeters, kP, kI, kD, kS, kV, kA);
 
     super.setName(getClass().getSimpleName());

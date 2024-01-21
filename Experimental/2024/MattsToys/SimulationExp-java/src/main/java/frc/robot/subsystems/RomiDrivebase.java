@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
@@ -22,7 +26,7 @@ public class RomiDrivebase extends AbstractDrivebase {
 
   // Motor gains are for example purposes only, and must be determined for your
   // own robot.
-  private static final double kS = 1;
+  private static final Measure<Voltage> kS = Volts.of(1);
   private static final double kV = 3;
 
   // The Romi has the left and right motors set to

@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
@@ -31,7 +35,7 @@ public class XrpDrivebase extends AbstractDrivebase {
 
   // Motor gains are for example purposes only, and must be determined for your
   // own robot.
-  private static final double kS = 1;
+  private static final Measure<Voltage> kS = Volts.of(1);
   private static final double kV = 3;
 
   private static final double kTrackWidthMeters = 0.155;

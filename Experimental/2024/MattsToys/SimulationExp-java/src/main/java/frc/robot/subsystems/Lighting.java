@@ -21,8 +21,13 @@ public class Lighting extends SubsystemBase implements LightingInterface {
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
 
-  public Lighting(RobotSettings settings) {
-    this(settings.lightingPwmPort, settings.numLights);
+  /**
+   * Constructs a lighting subsystem for the specified robot.
+   * 
+   * @param robot the robot being targeted
+   */
+  public Lighting(RobotSettings.Robot robot) {
+    this(robot.lightingPwmPort, robot.numLights);
   }
 
   /**

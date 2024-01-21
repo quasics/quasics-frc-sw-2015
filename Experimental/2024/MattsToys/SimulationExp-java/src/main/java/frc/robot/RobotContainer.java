@@ -64,7 +64,7 @@ public class RobotContainer {
   static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
       MAX_AUTO_ACCELERATION_MPSS);
 
-  private final RobotSettings m_selectedRobot = RobotSettings.Simulator;
+  private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
 
   private final XboxController m_controller = new XboxController(0);
   private final LightingInterface m_lighting = new Lighting(m_selectedRobot);

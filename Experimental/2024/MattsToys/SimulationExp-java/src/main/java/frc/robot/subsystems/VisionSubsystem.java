@@ -55,8 +55,8 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera m_camera;
 
   /** Constructor. */
-  public VisionSubsystem(RobotSettings robotSettings) {
-    this(robotSettings.cameraName);
+  public VisionSubsystem(RobotSettings.Robot robot) {
+    this(robot.cameraName);
   }
 
   private VisionSubsystem(String cameraName) {

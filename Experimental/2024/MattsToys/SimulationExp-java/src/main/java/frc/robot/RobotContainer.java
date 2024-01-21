@@ -170,7 +170,7 @@ public class RobotContainer {
   private AbstractDrivebase setupDriveBase() {
     AbstractDrivebase drivebase = null;
     if (Robot.isReal()) {
-      drivebase = new RealDrivebase(RealDrivebase.RobotCharacteristics.Sally);
+      drivebase = new RealDrivebase(m_selectedRobot);
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
@@ -190,13 +190,13 @@ public class RobotContainer {
           drivebase = new XrpDrivebase();
           break;
         case eSimulation:
-          drivebase = new SimulationDrivebase();
+          drivebase = new SimulationDrivebase(m_selectedRobot);
           break;
         default:
           System.err.println("**** WARNING: Unrecognized simulation mode (" +
               m_simulationMode +
               "), falling back on pure simulator");
-          drivebase = new SimulationDrivebase();
+          drivebase = new SimulationDrivebase(m_selectedRobot);
           break;
       }
     }

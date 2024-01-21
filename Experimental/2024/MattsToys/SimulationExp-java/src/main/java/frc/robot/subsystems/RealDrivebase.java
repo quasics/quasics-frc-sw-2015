@@ -14,6 +14,7 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 /**
  * Drive base subsystem for actual FRC hardware, using the motor configuration
@@ -21,73 +22,6 @@ import frc.robot.sensors.TrivialEncoder;
  * CAN addresses).
  */
 public class RealDrivebase extends AbstractDrivebase {
-  public enum MotorConfigModel {
-    NoLeader, RearMotorsLeading, FrontMotorsLeading
-  }
-
-  final static MotorConfigModel kMotorConfigModel = MotorConfigModel.RearMotorsLeading;
-  final static boolean USE_LEADER_FOLLOWER = true;
-  final static boolean BACK_MOTORS_ARE_LEADERS = false;
-
-  /**
-   * Enum class used to represent the physical characteristics (e.g., PID/motor
-   * gain values, track width, etc.) that are specific to a given robot.
-   *
-   * For example, Sally is just a drive base and is thus much lighter than the
-   * robots we generally put on the field, which means that the kS/kV values for
-   * her tend to be smaller.
-   */
-  public enum RobotCharacteristics {
-    // Characteristics from 2023 "ChargedUp" constants for Sally
-    Sally(
-        /* Track Width (m) */
-        0.381 * 2, // TODO: Confirm track width for Sally
-        /* Gear ratio */
-        8.45,
-        /* PID */
-        0.29613, 0.0, 0.0,
-        /* Gains */
-        0.19529, 2.2329, 0.0),
-    // Characteristics from 2023 "ChargedUp" code constants for Mae
-    Mae(
-        /* Track Width (m) */
-        0.5588 /* 22in */, // TODO: Confirm track width for Mae
-        /* Gear ratio */
-        8.45,
-        /* PID */
-        0.001379, 0, 0, // TODO: Confirm kP for Mae, since it seems *really* low
-        /*
-         * Gains
-         *
-         * TODO: Confirm Gains for Mae, since they're very different from 2022
-         * values. (Though we also changed the hardware significantly
-         * post-season.)
-         */
-        0.13895, 1.3143, 0.1935);
-
-    RobotCharacteristics(double trackWidthMeters, double gearRatio, double kP,
-        double kI, double kD, double kS, double kV,
-        double kA) {
-      this.kTrackWidthMeters = trackWidthMeters;
-      this.gearRatio = gearRatio;
-      this.kP = kP;
-      this.kI = kI;
-      this.kD = kD;
-      this.kS = kS;
-      this.kV = kV;
-      this.kA = kA;
-    }
-
-    final double kTrackWidthMeters;
-    final double gearRatio;
-    final double kP;
-    final double kI;
-    final double kD;
-    final double kS;
-    final double kV;
-    final double kA;
-  }
-
   // Motor IDs are based on those Quasics has used over the last couple of
   // years.
   static final int LEFT_FRONT_CAN_ID = 1;
@@ -115,12 +49,8 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
   // Leaders (only valid if kMotorConfigModel is not NoLeader)
-  final CANSparkMax m_leftLeader = (kMotorConfigModel == MotorConfigModel.NoLeader)
-      ? null
-      : (kMotorConfigModel == MotorConfigModel.RearMotorsLeading) ? m_leftRear : m_leftFront;
-  final CANSparkMax m_rightLeader = (kMotorConfigModel == MotorConfigModel.NoLeader)
-      ? null
-      : (kMotorConfigModel == MotorConfigModel.RearMotorsLeading) ? m_rightRear : m_rightFront;
+  final CANSparkMax m_leftLeader;
+  final CANSparkMax m_rightLeader;
 
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
@@ -134,24 +64,42 @@ public class RealDrivebase extends AbstractDrivebase {
    * @param robot specifies the robot-specific characteristics of the actual
    *              device to be driven
    */
-  public RealDrivebase(RobotCharacteristics robot) {
-    this(robot.name(), robot.kTrackWidthMeters, robot.gearRatio, robot.kP,
-        robot.kI, robot.kD, robot.kS, robot.kV, robot.kA);
+  public RealDrivebase(RobotSettings.Robot robot) {
+    this(robot, robot.trackWidthMeters, robot.gearRatio,
+        robot.kP, robot.kI, robot.kD,
+        robot.kS, robot.kV, robot.kA);
   }
 
   /**
    * Detailed constructor.
    */
-  private RealDrivebase(String name, double trackWidthMeters, double gearRatio,
-      double kP, double kI, double kD, double kS, double kV,
-      double kA) {
+  private RealDrivebase(
+      RobotSettings.Robot robot, double trackWidthMeters, double gearRatio,
+      double kP, double kI, double kD,
+      double kS, double kV, double kA) {
     super(trackWidthMeters, kP, kI, kD, kS, kV, kA);
 
     super.setName(getClass().getSimpleName());
 
+    switch (robot.motorConfigModel) {
+      case RearMotorsLeading:
+        m_leftLeader = m_leftRear;
+        m_rightLeader = m_rightRear;
+        break;
+      case FrontMotorsLeading:
+        m_leftLeader = m_leftFront;
+        m_rightLeader = m_rightFront;
+        break;
+      case NoLeader:
+      default:
+        m_leftLeader = null;
+        m_rightLeader = null;
+        break;
+    }
+
     ////////////////////////////////////////
     // Configure the motors.
-    System.err.println("*** Note: Configuring motors as " + kMotorConfigModel);
+    System.err.println("*** Note: Configuring motors as " + robot.motorConfigModel);
 
     // * Motor inversions (if needed, and the motors aren't already
     // soft-configured).
@@ -162,7 +110,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
     ////////////////////////////////////////
     // Configure the encoders.
-    System.out.println("Configuring drivebase for " + name);
+    System.out.println("Configuring drivebase for " + robot.name());
     System.out.println("Wheel circumference (m): " +
         WHEEL_CIRCUMFERENCE_METERS);
 

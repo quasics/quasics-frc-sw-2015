@@ -1,5 +1,9 @@
 package frc.robot.utils;
 
+/**
+ * Defines bot-specific configuration data for every one of Quasics' supported
+ * instances in 2024.
+ */
 public enum RobotSettings {
     /*
      * Supported values

@@ -17,8 +17,16 @@ import edu.wpi.first.units.Voltage;
  * instances in 2024.
  */
 public interface RobotSettings {
+  /**
+   * Possible motor control configurations for the drive base.
+   */
   public enum MotorConfigModel {
-    NoLeader, RearMotorsLeading, FrontMotorsLeading
+    /** No leader: each motor must be driven separately. */
+    NoLeader,
+    /** Rear motors are configured to be used as the leader (via CAN). */
+    RearMotorsLeading,
+    /** Front motors are configured to be used as the leader (via CAN). */
+    FrontMotorsLeading
   }
 
   /**

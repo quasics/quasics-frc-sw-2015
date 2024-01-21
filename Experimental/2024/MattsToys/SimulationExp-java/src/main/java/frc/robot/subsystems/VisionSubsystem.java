@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SimulationSupport;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -34,9 +35,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
  * estimates) into the robot's planning.
  */
 public class VisionSubsystem extends SubsystemBase {
-  // TODO: Move this into a robot-specific setting.
-  final String CAMERA_NAME = "photonvision";
-
   // TODO: Move this into a robot-specific setting. The current values are for
   // a camera mounted facing forward, half a meter forward of center, half a
   // meter up from center.
@@ -53,16 +51,28 @@ public class VisionSubsystem extends SubsystemBase {
   // The layout of the AprilTags on the field
   public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 
-  private final PhotonPoseEstimator photonEstimator;
-  final PhotonCamera camera = new PhotonCamera(CAMERA_NAME);
+  private final PhotonPoseEstimator m_photonEstimator;
+  private final PhotonCamera m_camera;
 
   /** Constructor. */
-  public VisionSubsystem() {
+  public VisionSubsystem(RobotSettings robotSettings) {
+    this(robotSettings.cameraName);
+  }
+
+  private VisionSubsystem(String cameraName) {
+    if (cameraName == null || cameraName.isEmpty()) {
+      m_camera = null;
+      m_photonEstimator = null;
+      return;
+    }
+
+    m_camera = new PhotonCamera(cameraName);
+
     // Set up the vision pose estimator
-    photonEstimator = new PhotonPoseEstimator(
-        kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera,
+    m_photonEstimator = new PhotonPoseEstimator(
+        kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera,
         kRobotToCam);
-    photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    m_photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -72,7 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** @return the latest result data from the camera. */
   public PhotonPipelineResult getLatestResult() {
-    return camera.getLatestResult();
+    return m_camera.getLatestResult();
   }
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -114,16 +124,21 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * The latest estimated robot pose on the field from vision data. This may be
+   * The latest estimated robot pose on the field from vision data, which may be
    * empty. This should only be called once per loop, and will be invoked from
    * our <code>periodic()</code> method.
    *
    * @see #periodic()
    */
   private void updateEstimatedGlobalPose() {
-    m_lastEstimatedPose = photonEstimator.update();
+    if (m_camera == null) {
+      // No camera? Nothing to do.
+      return;
+    }
 
-    final double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
+    m_lastEstimatedPose = m_photonEstimator.update();
+
+    final double latestTimestamp = m_camera.getLatestResult().getTimestampSeconds();
     m_estimateRecentlyUpdated = Math.abs(latestTimestamp - m_lastEstTimestamp) > 1e-5;
 
     if (m_estimateRecentlyUpdated) {
@@ -208,7 +223,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Create a PhotonCameraSim which will update the linked PhotonCamera's
     // values with visible targets.
-    cameraSim = new PhotonCameraSim(camera, cameraProp);
+    cameraSim = new PhotonCameraSim(m_camera, cameraProp);
 
     // Add the simulated camera to view the targets on this simulated field.
     visionSim.addCamera(cameraSim, kRobotToCam);

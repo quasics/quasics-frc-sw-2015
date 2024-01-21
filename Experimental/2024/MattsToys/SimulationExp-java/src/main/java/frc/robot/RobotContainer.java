@@ -46,6 +46,7 @@ import frc.robot.subsystems.RomiDrivebase;
 import frc.robot.subsystems.SimulationDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.XrpDrivebase;
+import frc.robot.utils.RobotSettings;
 import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +57,6 @@ import java.util.function.Supplier;
  * TODO: Add support for identifying initial field location (at start of match).
  */
 public class RobotContainer {
-  final static int LIGHTING_PWM_PORT = 9;
-  final static int NUM_LIGHTS = 40;
-
   final static boolean ENABLE_VISION_SUBSYSTEM = true;
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
@@ -66,8 +64,10 @@ public class RobotContainer {
   static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
       MAX_AUTO_ACCELERATION_MPSS);
 
+  private final RobotSettings m_selectedRobot = RobotSettings.Simulator;
+
   private final XboxController m_controller = new XboxController(0);
-  private final LightingInterface m_lighting = new Lighting(LIGHTING_PWM_PORT, NUM_LIGHTS);
+  private final LightingInterface m_lighting = new Lighting(m_selectedRobot);
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
@@ -207,7 +207,7 @@ public class RobotContainer {
     VisionSubsystem vision = null;
     if (ENABLE_VISION_SUBSYSTEM) {
       try {
-        vision = new VisionSubsystem();
+        vision = new VisionSubsystem(m_selectedRobot);
       } catch (Exception e) {
         System.err.println("*** Failed to set up vision subsystem!");
         e.printStackTrace();

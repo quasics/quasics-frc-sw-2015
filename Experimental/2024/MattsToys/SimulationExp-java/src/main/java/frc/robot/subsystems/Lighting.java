@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.RobotSettings;
 
 /**
  * An example subsystem for controlling an LED strip for custom lighting on the
@@ -20,13 +21,17 @@ public class Lighting extends SubsystemBase implements LightingInterface {
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
 
+  public Lighting(RobotSettings settings) {
+    this(settings.lightingPwmPort, settings.numLights);
+  }
+
   /**
    * Constructor.
    *
    * @param pwmPort   PWM port to which the LED strip is connected
    * @param numLights number of (logical) lights on the LED strip
    */
-  public Lighting(int pwmPort, int numLights) {
+  private Lighting(int pwmPort, int numLights) {
     System.err.println("Setting up lighting: port=" + pwmPort + ", length=" + numLights);
 
     // Sanity-check inputs.

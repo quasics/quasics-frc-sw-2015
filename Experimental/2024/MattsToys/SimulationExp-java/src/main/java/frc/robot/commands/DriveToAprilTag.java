@@ -28,6 +28,10 @@ public class DriveToAprilTag extends Command {
   final AbstractDrivebase m_drivebase;
   final int m_tagId;
   final double m_tagHeightMeters;
+  /**
+   * Distance that the *camera* should be from the target (not the center of the
+   * robot).
+   */
   final double m_targetDistanceMeters;
   final double m_cameraHeightMeters;
   final double m_cameraPitchRadians;
@@ -48,7 +52,9 @@ public class DriveToAprilTag extends Command {
     this.m_targetDistanceMeters = targetDistance.in(Meters);
 
     this.m_cameraHeightMeters = robot.robotToCameraTransform.getZ();
-    this.m_cameraPitchRadians = robot.robotToCameraTransform.getRotation().getX();
+    // Negate the pitch, since we're translating from camera-relative back to
+    // robot-relative values.
+    this.m_cameraPitchRadians = -robot.robotToCameraTransform.getRotation().getY();
 
     m_forwardController = new PIDController(robot.kP, robot.kI, robot.kD);
     m_turnController = new PIDController(robot.kP, robot.kI, robot.kD);
@@ -82,22 +88,26 @@ public class DriveToAprilTag extends Command {
     }
 
     final double rangeInMeters = getDistanceToTargetInMeters(matchedTarget.get());
+    final double yaw = matchedTarget.get().getYaw();
 
     // We can see it: drive towards it. (Bearing in mind, of course, that we've only
     // *just* seen it, and so our line-up may not be *great*.)
 
     // Use this range as the measurement we give to the PID controller.
     // -1.0 required to ensure positive PID controller effort _increases_ range
-    final double forwardSpeed = -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
+    final double forwardSpeed = -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters)
+        * AbstractDrivebase.MAX_SPEED.in(MetersPerSecond);
 
     // Also calculate angular power
     // -1.0 required to ensure positive PID controller effort _increases_ yaw
     final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
 
-    System.err.println("*** Forward: " + forwardSpeed + "\tRotate: " + rotationSpeed);
+    System.err
+        .println("*** Range: " + rangeInMeters + "\tYaw: " + yaw + "\tForward: " + forwardSpeed + "\tRotate: "
+            + rotationSpeed);
 
     // TODO: Finish implementing driving towards the target (matchedTarget.get()).
-    m_drivebase.arcadeDrive(MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
+    m_drivebase.arcadeDrive(MetersPerSecond.of(forwardSpeed / 2), DegreesPerSecond.of(rotationSpeed));
   }
 
   private double getDistanceToTargetInMeters(PhotonTrackedTarget target) {
@@ -119,6 +129,11 @@ public class DriveToAprilTag extends Command {
   public boolean isFinished() {
     Optional<PhotonTrackedTarget> matchedTarget = m_vision.getMatchedTarget(m_tagId);
     if (matchedTarget.isEmpty()) {
+      return false;
+    }
+
+    // More than 3 degrees off?
+    if (Math.abs(matchedTarget.get().getYaw()) > 3) {
       return false;
     }
 

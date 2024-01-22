@@ -24,6 +24,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * A simple vision-processing subsystem, based on PhotonVision.
@@ -79,6 +80,20 @@ public class VisionSubsystem extends SubsystemBase {
   /** @return the latest result data from the camera. */
   public PhotonPipelineResult getLatestResult() {
     return m_camera.getLatestResult();
+  }
+
+  public Optional<PhotonTrackedTarget> getMatchedTarget(int tagId) {
+    final var latestResult = getLatestResult();
+    if (!latestResult.hasTargets()) {
+      return Optional.empty();
+    }
+
+    for (var t : latestResult.getTargets()) {
+      if (t.getFiducialId() == tagId) {
+        return Optional.of(t);
+      }
+    }
+    return Optional.empty();
   }
 
   /////////////////////////////////////////////////////////////////////////////////

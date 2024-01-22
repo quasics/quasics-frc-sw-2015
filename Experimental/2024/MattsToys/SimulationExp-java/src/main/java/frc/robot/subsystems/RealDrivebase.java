@@ -161,8 +161,6 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
-    // TODO: Remove one pair, once CAN motors are configured for lead/follow on
-    // drive bases.
     if (m_leftLeader != null && m_rightLeader != null) {
       m_leftLeader.setVoltage(leftVoltage);
       m_rightLeader.setVoltage(rightVoltage);

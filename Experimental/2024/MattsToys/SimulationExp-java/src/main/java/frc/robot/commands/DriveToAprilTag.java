@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -80,10 +81,23 @@ public class DriveToAprilTag extends Command {
       return;
     }
 
+    final double rangeInMeters = getDistanceToTargetInMeters(matchedTarget.get());
+
     // We can see it: drive towards it. (Bearing in mind, of course, that we've only
     // *just* seen it, and so our line-up may not be *great*.)
+
+    // Use this range as the measurement we give to the PID controller.
+    // -1.0 required to ensure positive PID controller effort _increases_ range
+    final double forwardSpeed = -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
+
+    // Also calculate angular power
+    // -1.0 required to ensure positive PID controller effort _increases_ yaw
+    final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
+
+    System.err.println("*** Forward: " + forwardSpeed + "\tRotate: " + rotationSpeed);
+
     // TODO: Finish implementing driving towards the target (matchedTarget.get()).
-    m_drivebase.stop();
+    m_drivebase.arcadeDrive(MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
   }
 
   private double getDistanceToTargetInMeters(PhotonTrackedTarget target) {

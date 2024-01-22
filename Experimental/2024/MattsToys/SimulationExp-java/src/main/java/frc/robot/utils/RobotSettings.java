@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Voltage;
 
@@ -59,7 +60,9 @@ public interface RobotSettings {
         Volts.of(0.013809), VoltsPerMeterPerSecond.of(1.9805), VoltsPerMeterPerSecondSquared.of(0.19208),
         // Vision
         "photonvision",
-        new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
+        new Transform3d(
+            new Translation3d(0.5, 0.0, 0.5),
+            new Rotation3d(0, Units.degreesToRadians(-30), 0)),
         // Lighting
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Xrp(

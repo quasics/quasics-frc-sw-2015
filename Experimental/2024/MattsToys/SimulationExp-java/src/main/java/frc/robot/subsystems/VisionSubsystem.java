@@ -8,9 +8,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -35,13 +33,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
  * estimates) into the robot's planning.
  */
 public class VisionSubsystem extends SubsystemBase {
-  // TODO: Move this into a robot-specific setting. The current values are for
-  // a camera mounted facing forward, half a meter forward of center, half a
-  // meter up from center.
-  /** Camera mounting information, relative to the robot's centerpoint. */
-  public static final Transform3d kRobotToCam = new Transform3d(
-      new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
-
   /**
    * If true, include wireframe rendering on raw video during simulation. (Note
    * that this will slow things down.)
@@ -54,19 +45,24 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonPoseEstimator m_photonEstimator;
   private final PhotonCamera m_camera;
 
+  /** Camera mounting information, relative to the robot's centerpoint. */
+  private final Transform3d kRobotToCam;
+
   /** Constructor. */
   public VisionSubsystem(RobotSettings.Robot robot) {
-    this(robot.cameraName);
+    this(robot.cameraName, robot.robotToCameraTransform);
   }
 
-  private VisionSubsystem(String cameraName) {
+  private VisionSubsystem(String cameraName, Transform3d robotToCamera) {
     if (cameraName == null || cameraName.isEmpty()) {
       m_camera = null;
+      kRobotToCam = null;
       m_photonEstimator = null;
       return;
     }
 
     m_camera = new PhotonCamera(cameraName);
+    kRobotToCam = robotToCamera;
 
     // Set up the vision pose estimator
     m_photonEstimator = new PhotonPoseEstimator(

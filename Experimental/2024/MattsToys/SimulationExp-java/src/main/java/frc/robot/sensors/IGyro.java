@@ -6,9 +6,16 @@ package frc.robot.sensors;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.romi.RomiGyro;
 import edu.wpi.first.wpilibj.xrp.XRPGyro;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import java.util.function.Supplier;
 
 /**
@@ -55,10 +62,10 @@ public interface IGyro {
   void calibrate();
 
   /** Returns the heading of the robot in degrees. */
-  double getAngle();
+  Measure<Angle> getAngle();
 
   /** Returns the rate of rotation of the gyro. */
-  double getRate();
+  Measure<Velocity<Angle>> getRate();
 
   /** Returns the heading of the robot as a Rotation2d. */
   Rotation2d getRotation2d();
@@ -72,14 +79,11 @@ public interface IGyro {
   /**
    * A helper class that implements IGyro, and makes it easier to wrap arbitrary
    * types within this interface.
-   * 
-   * TODO: (Units) Update the suppliers for angle/rate to provide typesafe
-   * Unit-aware values (similar to those in the C++ example).
    */
   public class FunctionalGyro implements IGyro {
     private final Runnable m_calibrator;
-    private final Supplier<Double> m_angleSupplier;
-    private final Supplier<Double> m_rateSupplier;
+    private final Supplier<Measure<Angle>> m_angleSupplier;
+    private final Supplier<Measure<Velocity<Angle>>> m_rateSupplier;
     private final Supplier<Rotation2d> m_rotationSupplier;
     private final Runnable m_resetter;
 
@@ -87,8 +91,8 @@ public interface IGyro {
      * Constructor, accepting an input function for each of the supported
      * operations.
      */
-    FunctionalGyro(Runnable calibrator, Supplier<Double> angleSupplier,
-        Supplier<Double> rateSupplier, Supplier<Rotation2d> rotationSupplier, Runnable resetter) {
+    FunctionalGyro(Runnable calibrator, Supplier<Measure<Angle>> angleSupplier,
+        Supplier<Measure<Velocity<Angle>>> rateSupplier, Supplier<Rotation2d> rotationSupplier, Runnable resetter) {
       m_calibrator = calibrator;
       m_angleSupplier = angleSupplier;
       m_rateSupplier = rateSupplier;
@@ -102,12 +106,12 @@ public interface IGyro {
     }
 
     @Override
-    public double getAngle() {
+    public Measure<Angle> getAngle() {
       return m_angleSupplier.get();
     }
 
     @Override
-    public double getRate() {
+    public Measure<Velocity<Angle>> getRate() {
       return m_rateSupplier.get();
     }
 
@@ -128,8 +132,8 @@ public interface IGyro {
         () -> {
           System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
         },
-        () -> pigeon2.getAngle(),
-        () -> pigeon2.getRate(),
+        () -> Degrees.of(pigeon2.getAngle()),
+        () -> DegreesPerSecond.of(pigeon2.getRate()),
         () -> pigeon2.getRotation2d(),
         () -> {
           // Note that this will reset *all* axes for the Pigeon2. May want
@@ -149,8 +153,8 @@ public interface IGyro {
         () -> {
           g.calibrate();
         },
-        () -> g.getAngle(),
-        () -> g.getRate(),
+        () -> Degrees.of(g.getAngle()),
+        () -> DegreesPerSecond.of(g.getRate()),
         () -> g.getRotation2d(),
         () -> {
           g.reset();
@@ -163,8 +167,8 @@ public interface IGyro {
         () -> {
           System.out.println(">>> Null-op: XRPGyro doesn't calibrate.");
         },
-        () -> g.getAngleZ(),
-        () -> g.getRateZ(),
+        () -> Degrees.of(g.getAngleZ()),
+        () -> DegreesPerSecond.of(g.getRateZ()),
         () -> {
           return Rotation2d.fromDegrees(g.getAngleZ());
         }, () -> {
@@ -179,8 +183,8 @@ public interface IGyro {
         () -> {
           System.out.println(">>> Null-op: RomiGyro doesn't calibrate.");
         },
-        () -> g.getAngleZ(),
-        () -> g.getRateZ(),
+        () -> Degrees.of(g.getAngleZ()),
+        () -> DegreesPerSecond.of(g.getRateZ()),
         () -> {
           return Rotation2d.fromDegrees(g.getAngleZ());
         }, () -> {

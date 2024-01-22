@@ -4,7 +4,12 @@
 
 package frc.robot.sensors;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 
 /**
  * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
@@ -34,7 +39,7 @@ public class OffsetGyro implements IGyro {
   private final IGyro m_sourceGyro;
 
   /** Used by "reset()" to establish a new baseline for the angle. */
-  private double m_calibrationOffset = 0;
+  private Measure<Angle> m_calibrationOffset = Degrees.of(0);
 
   /**
    * Constructs an OffsetGyro, wrapped around a source Gyro.
@@ -57,17 +62,17 @@ public class OffsetGyro implements IGyro {
   }
 
   @Override
-  public double getAngle() {
-    return m_sourceGyro.getAngle() - m_calibrationOffset;
+  public Measure<Angle> getAngle() {
+    return m_sourceGyro.getAngle().minus(m_calibrationOffset);
   }
 
   @Override
-  public double getRate() {
+  public Measure<Velocity<Angle>> getRate() {
     return m_sourceGyro.getRate();
   }
 
   @Override
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees((getAngle()));
+    return new Rotation2d((getAngle()));
   }
 }

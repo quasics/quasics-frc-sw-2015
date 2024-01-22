@@ -9,6 +9,9 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Voltage;
 
@@ -17,6 +20,9 @@ import edu.wpi.first.units.Voltage;
  * instances in 2024.
  */
 public interface RobotSettings {
+  final int DEFAULT_LIGHTING_PWM_PORT = 9;
+  final int DEFAULT_NUM_LIGHTS = 9;
+
   /**
    * Possible motor control configurations for the drive base.
    */
@@ -53,9 +59,9 @@ public interface RobotSettings {
         Volts.of(0.013809), VoltsPerMeterPerSecond.of(1.9805), VoltsPerMeterPerSecondSquared.of(0.19208),
         // Vision
         "photonvision",
+        new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0)),
         // Lighting
-        9, 40),
-    // Xrp(MotorConfigModel.NoLeader, null, 9, 40),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Xrp(
         MotorConfigModel.NoLeader,
         /* Track Width (m) */
@@ -67,7 +73,8 @@ public interface RobotSettings {
         /* Gains */
         Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
         "",
-        9, 40),
+        new Transform3d(),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Romi(
         // Motor config model
         MotorConfigModel.NoLeader,
@@ -81,9 +88,12 @@ public interface RobotSettings {
         Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
         // Vision data
         "",
+        new Transform3d(),
         // Lighting data
-        9, 40),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Sally(
+        // Motor config model
+        MotorConfigModel.RearMotorsLeading,
         /* Track Width (m) */
         Meters.of(0.381 * 2), // TODO: Confirm track width for Sally
         /* Gear ratio */
@@ -91,8 +101,15 @@ public interface RobotSettings {
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0)),
+        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0),
+        // Vision data
+        "",
+        new Transform3d(), // TODO: Add robot-to-camera transform for Sally
+        // Lighting data
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Mae(
+        // Motor config model
+        MotorConfigModel.RearMotorsLeading,
         /* Track Width (m) */
         Meters.of(0.5588) /* 22in */, // TODO: Confirm track width for Mae
         /* Gear ratio */
@@ -106,7 +123,12 @@ public interface RobotSettings {
          * values. (Though we also changed the hardware significantly
          * post-season.)
          */
-        Volts.of(0.13895), VoltsPerMeterPerSecond.of(1.3143), VoltsPerMeterPerSecondSquared.of(0.1935)),
+        Volts.of(0.13895), VoltsPerMeterPerSecond.of(1.3143), VoltsPerMeterPerSecondSquared.of(0.1935),
+        // Vision data
+        "",
+        new Transform3d(), // TODO: Add robot-to-camera transform for Mae
+        // Lighting data
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     // Margaret()
     ;
 
@@ -129,35 +151,12 @@ public interface RobotSettings {
     ////////////////////////////////////////////////////////
     // Vision subsystem data
     public final String cameraName;
+    public final Transform3d robotToCameraTransform;
 
     ////////////////////////////////////////////////////////
     // Lighting subsystem data
-    private static final int DEFAULT_LIGHTING_PWM_PORT = 9;
-    private static final int DEFAULT_NUM_LIGHTS = 9;
     public final int lightingPwmPort;
     public final int numLights;
-
-    /**
-     * Constructor. (Uses "no leader" for drive base motor model, and default
-     * port/length for LEDs.)
-     * 
-     * @param trackWidthMeters track width
-     * @param gearRatio        gear ration
-     * @param kP               kP for the robot (from SysId profiling)
-     * @param kI               kI for the robot (from SysId profiling)
-     * @param kD               kD for the robot (from SysId profiling)
-     * @param kS               kS for the robot (from SysId profiling)
-     * @param kV               kV for the robot (from SysId profiling)
-     * @param kA               kA for the robot (from SysId profiling)
-     */
-    private Robot(
-        Measure<Distance> trackWidthMeters, double gearRatio,
-        double kP, double kI, double kD,
-        Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
-        Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA) {
-      this(MotorConfigModel.NoLeader, trackWidthMeters, gearRatio, kP, kI, kD, kS, kV, kA, "photonvision",
-          DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS);
-    }
 
     /**
      * Constructor.
@@ -172,6 +171,8 @@ public interface RobotSettings {
      * @param kV               kV for the robot (from SysId profiling)
      * @param kA               kA for the robot (from SysId profiling)
      * @param cameraName       name for the camera in PhotonVision
+     * @param robotToCamera    3D transform from the robot's pose on the field to
+     *                         the camera's
      * @param lightingPort     PWM port for the LED strip
      * @param numLights        # of pixels on the LED strip
      */
@@ -179,7 +180,7 @@ public interface RobotSettings {
         double kI, double kD,
         Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
         Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA,
-        String cameraName, int lightingPort, int numLights) {
+        String cameraName, Transform3d robotToCamera, int lightingPort, int numLights) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;
       this.gearRatio = gearRatio;
@@ -190,6 +191,7 @@ public interface RobotSettings {
       this.kV = kV;
       this.kA = kA;
       this.cameraName = cameraName;
+      this.robotToCameraTransform = robotToCamera;
       this.numLights = numLights;
       this.lightingPwmPort = lightingPort;
     }

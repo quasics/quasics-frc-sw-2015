@@ -237,6 +237,21 @@ public abstract class AbstractDrivebase extends SubsystemBase {
       Measure<Velocity<Angle>> rot) {
     logValue("xSpeed", xSpeed.in(MetersPerSecond));
     logValue("rotSpeed", rot.in(RadiansPerSecond));
+
+    // Cap requested speeds to the maxima.
+    if (xSpeed.gt(MAX_SPEED)) {
+      xSpeed = MAX_SPEED;
+    } else if (xSpeed.lt(MAX_SPEED.negate())) {
+      xSpeed = MAX_SPEED.negate();
+    }
+    if (rot.gt(MAX_ANGULAR_SPEED)) {
+      rot = MAX_ANGULAR_SPEED;
+    } else if (rot.lt(MAX_ANGULAR_SPEED.negate())) {
+      rot = MAX_ANGULAR_SPEED.negate();
+    }
+    logValue("xSpeed (capped)", xSpeed.in(MetersPerSecond));
+    logValue("rotSpeed (capped)", rot.in(RadiansPerSecond));
+
     setSpeeds(
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }

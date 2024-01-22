@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.DriveToAprilTag;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
 import frc.robot.subsystems.AbstractDrivebase;
@@ -163,6 +164,10 @@ public class RobotContainer {
     resetPositionFromAllianceSelection();
 
     configureBindings();
+
+    // Tags 9&10 are on the Blue Source wall
+    SmartDashboard.putData("Target 13", new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
+        Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
 
     System.err.println("Writing logs to: " + DataLogManager.getLogDir());
   }

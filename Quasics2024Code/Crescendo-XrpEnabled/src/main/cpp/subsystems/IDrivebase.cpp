@@ -4,11 +4,20 @@
 
 #include "subsystems/IDrivebase.h"
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 IDrivebase::IDrivebase() = default;
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
+
+  frc::Pose2d pose = getPose();
+  frc::SmartDashboard::PutNumber("x", pose.X().value());
+
+  frc::SmartDashboard::PutNumber("y", pose.Y().value());
+
+  frc::SmartDashboard::PutNumber("angle", pose.Rotation().Degrees().value());
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {

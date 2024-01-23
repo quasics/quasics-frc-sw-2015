@@ -111,9 +111,6 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
-  // TODO: Remove this once it's been verified.
-  AddButtonToSmartDashboardTestingRetainedCommands();
-
   // This is needed because we cannot just input a command ptr onto the FRC
   // Smart Dashboard bc it will be deleted and some values that it had would be
   // still needed. So one thing sais that it needs it, but there is no real data
@@ -125,12 +122,5 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   retainedCommands.push_back(
       GetCommandForTrajectory("curvetest.wpilib.json", m_drivebase.get()));
   frc::SmartDashboard::PutData("curve test path",
-                               retainedCommands.rbegin()->get());
-}
-
-// TODO: Remove this once it's been verified.
-void RobotContainer::AddButtonToSmartDashboardTestingRetainedCommands() {
-  retainedCommands.push_back(frc2::PrintCommand("I did something").ToPtr());
-  frc::SmartDashboard::PutData("test retained cmds",
                                retainedCommands.rbegin()->get());
 }

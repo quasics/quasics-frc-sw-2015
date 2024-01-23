@@ -10,7 +10,7 @@ ArcadeDrive::ArcadeDrive(IDrivebase& drivebase, PercentSupplier forwardSupplier,
       m_forwardSupplier(forwardSupplier),
       m_rotationSupplier(rotationSupplier) {
   // Use addRequirements() here to declare subsystem dependencies.
-  /*AddRequirements(&m_drivebase);*/
+  AddRequirements(&m_drivebase);
 }
 
 // Called when the command is initially scheduled.

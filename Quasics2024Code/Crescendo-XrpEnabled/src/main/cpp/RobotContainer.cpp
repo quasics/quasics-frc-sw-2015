@@ -21,7 +21,8 @@ constexpr bool USE_XRP_UNDER_SIMULATION = false;
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   allocateDriveBase();
-  setUpTankDrive();
+  // setUpTankDrive();
+  setUpArcadeDrive();
   AddTestButtonsOnSmartDashboard();
   // Configure the button bindings
   // ConfigureBindings();
@@ -65,7 +66,7 @@ void RobotContainer::setUpTankDrive() {
     return m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
-  m_drivebase->SetDefaultCommand(std::move(tankDrive));
+  // m_drivebase->SetDefaultCommand(std::move(tankDrive));
 }
 
 void RobotContainer::setUpArcadeDrive() {

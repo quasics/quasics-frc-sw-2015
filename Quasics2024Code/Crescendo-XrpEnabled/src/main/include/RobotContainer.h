@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
@@ -53,4 +54,9 @@ class RobotContainer {
   // void ConfigureBindings();
 
   const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
+
+  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
+  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
 };

@@ -63,13 +63,17 @@ void RobotContainer::setUpTankDrive() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    double joystickAfterScaling =
+        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
   };
   TankDrive::PercentSupplier rightSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    double joystickAfterScaling =
+        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   // m_drivebase->SetDefaultCommand(std::move(tankDrive));
@@ -89,7 +93,9 @@ void RobotContainer::setUpArcadeDrive() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    double joystickAfterScaling =
+        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();

@@ -137,3 +137,9 @@ namespace RobotConstants {
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
       std::numbers::pi};
 }  // namespace RobotConstants
+
+using RateLimit = units::unit_t<
+    units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+
+/** Limit on robot acceleration. */
+constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;

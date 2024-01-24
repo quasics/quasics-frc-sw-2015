@@ -88,12 +88,11 @@ public class VisionSubsystem extends SubsystemBase {
       return Optional.empty();
     }
 
-    for (var t : latestResult.getTargets()) {
-      if (t.getFiducialId() == tagId) {
-        return Optional.of(t);
-      }
-    }
-    return Optional.empty();
+    return latestResult.getTargets()
+        .stream() // Generates a (lazy-evaluated) stream of tracked targets to be considered
+        .filter(t -> t.getFiducialId() == tagId) // Filters the stream to those matching our target ID
+        .findFirst() // Limits evaluation to just the 1st match
+    ;
   }
 
   /////////////////////////////////////////////////////////////////////////////////

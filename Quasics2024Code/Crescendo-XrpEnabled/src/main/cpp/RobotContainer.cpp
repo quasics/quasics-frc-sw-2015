@@ -60,14 +60,16 @@ void RobotContainer::setUpTankDrive() {
   // Create the TankDrive command (reading from the controller's joysticks), and
   // set it as the default command for the drive base.
   TankDrive::PercentSupplier leftSupplier = [=, this]() {
+    const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage);
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   TankDrive::PercentSupplier rightSupplier = [=, this]() {
+    const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage);
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   // m_drivebase->SetDefaultCommand(std::move(tankDrive));
@@ -84,17 +86,34 @@ void RobotContainer::setUpArcadeDrive() {
   }
 
   ArcadeDrive::PercentSupplier forwardSupplier = [=, this]() {
+    const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage);
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
+    const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage);
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
+}
+
+double RobotContainer::GetDriveSpeedScalingFactor() {
+  const bool isTurbo = m_driverController.GetRawButton(
+      OperatorConstants::LogitechGamePad::RightShoulder);
+  const bool isTurtle = m_driverController.GetRawButton(
+      OperatorConstants::LogitechGamePad::LeftShoulder);
+
+  if (isTurbo) {
+    return RobotSpeedScaling::TURBO_MODE_SPEED_SCALING;
+  } else if (isTurtle) {
+    return RobotSpeedScaling::TURTLE_MODE_SPEED_SCALING;
+  } else {
+    return RobotSpeedScaling::NORMAL_MODE_SPEED_SCALING;
+  }
 }
 
 void RobotContainer::allocateDriveBase() {

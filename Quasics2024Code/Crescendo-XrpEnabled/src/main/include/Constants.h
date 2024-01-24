@@ -100,6 +100,12 @@ namespace MotorSpeeds {
   constexpr double RETRACTION_SPEED = -1.00;
 }  // namespace MotorSpeeds
 
+namespace RobotSpeedScaling {
+  constexpr double TURBO_MODE_SPEED_SCALING = 0.90;
+  constexpr double NORMAL_MODE_SPEED_SCALING = 0.60;
+  constexpr double TURTLE_MODE_SPEED_SCALING = 0.30;
+}  // namespace RobotSpeedScaling
+
 namespace DigitalInput {
   constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 1;
   constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;

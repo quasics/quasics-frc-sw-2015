@@ -39,6 +39,8 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+  double GetDriveSpeedScalingFactor();
+
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
 

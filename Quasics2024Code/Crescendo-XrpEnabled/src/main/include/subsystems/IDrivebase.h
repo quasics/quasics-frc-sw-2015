@@ -47,7 +47,9 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void ResetOdometry(frc::Pose2d pose) {
-    getOdometry().ResetPosition(0_deg, 0_m, 0_m, pose);
+    getOdometry().ResetPosition(getGyro().getRotation2d(), 0_m, 0_m, pose);
+    getLeftEncoder().reset();
+    getRightEncoder().reset();
   }
 
   frc::DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -55,7 +57,7 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void updateOdometry() {
-    getOdometry().Update(getGyro().getRotation2d(),
+    getOdometry().Update(getGyro().getRotation2d().Degrees(),
                          getLeftEncoder().getPosition(),
                          getRightEncoder().getPosition());
   }

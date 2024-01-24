@@ -42,6 +42,13 @@ class RealDrivebase : public IDrivebase {
   }
 
  private:
+  void configureEncoders();
+
+  void resetEncoders() {
+    m_leftBackEncoder.SetPosition(0);
+    m_rightBackEncoder.SetPosition(0);
+  }
+
   rev::CANSparkMax m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
                               rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,

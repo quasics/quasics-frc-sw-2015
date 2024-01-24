@@ -24,6 +24,11 @@
  * they are needed.
  */
 
+namespace RobotPhysics {
+  constexpr double DRIVEBASE_GEAR_RATIO = 8.45;  // TODO: add mae gear ratio
+  constexpr units::length::inch_t WHEEL_DIAMETER = 6.0_in;
+}  // namespace RobotPhysics
+
 namespace OperatorConstants {
 
   inline constexpr int kDriverControllerPort = 0;

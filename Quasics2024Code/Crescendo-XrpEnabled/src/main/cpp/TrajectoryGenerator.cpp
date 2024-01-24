@@ -38,23 +38,25 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
 
   // An example trajectory to follow.  All units in meters.
 
-  /*auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
       // Start at the origin facing the +X direction
       frc::Pose2d{0_m, 0_m, 0_deg},
       // Pass through these two interior waypoints, making an 's' curve path
       {
-        //frc::Translation2d{1_m, 0_m},
-        //frc::Translation2d{-1_m, 1_m}
+          // frc::Translation2d{1_m, 0_m},
+          // frc::Translation2d{-1_m, 1_m}
       },
       // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{5_m, 0_m, 0_deg},
+      frc::Pose2d{3_m, 0_m, 0_deg},
       // Pass the config
-      config);*/
+      config);
+  /*
 
-  fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-  deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
-  frc::Trajectory exampleTrajectory =
-      frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
+frc::Trajectory exampleTrajectory =
+    frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+    */
 
   frc2::CommandPtr ramseteCommand{frc2::RamseteCommand(
       exampleTrajectory,
@@ -74,9 +76,7 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
       {driveBase})};
 
   // Reset odometry to the starting pose of the trajectory.
-  driveBase->ResetOdometry(
-      exampleTrajectory
-          .InitialPose());  // maybe here is the fundamental issue?????
+  driveBase->ResetOdometry(exampleTrajectory.InitialPose());
 
   return std::move(ramseteCommand)
       .BeforeStarting(frc2::cmd::RunOnce(

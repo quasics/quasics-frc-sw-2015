@@ -13,11 +13,11 @@ void IDrivebase::Periodic() {
   updateOdometry();
 
   frc::Pose2d pose = getPose();
-  frc::SmartDashboard::PutNumber("x", pose.X().value());
+  frc::SmartDashboard::PutNumber("x", double(pose.X()));
 
-  frc::SmartDashboard::PutNumber("y", pose.Y().value());
+  frc::SmartDashboard::PutNumber("y", double(pose.Y()));
 
-  frc::SmartDashboard::PutNumber("angle", pose.Rotation().Degrees().value());
+  frc::SmartDashboard::PutNumber("angle", double(pose.Rotation().Degrees()));
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {

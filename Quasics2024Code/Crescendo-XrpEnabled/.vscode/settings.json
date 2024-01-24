@@ -19,5 +19,12 @@
   "editor.defaultFormatter": "ms-vscode.cpptools",
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "editor.formatOnType": true
+  "editor.formatOnType": true,
+  "files.associations": {
+    "any": "cpp",
+    "future": "cpp",
+    "memory": "cpp",
+    "optional": "cpp",
+    "random": "cpp"
+  }
 }

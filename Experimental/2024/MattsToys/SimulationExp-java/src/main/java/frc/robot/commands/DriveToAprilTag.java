@@ -40,6 +40,10 @@ public class DriveToAprilTag extends Command {
   final PIDController m_forwardController;
   final PIDController m_turnController;
 
+  // PID constants should be tuned per robot
+  static final double P_GAIN = 0.2;
+  static final double D_GAIN = 0.0;
+
   /** Creates a new DriveToAprilTag. */
   public DriveToAprilTag(RobotSettings.Robot robot, VisionSubsystem vision, AbstractDrivebase drivebase, int tagId,
       Measure<Distance> tagHeight,
@@ -56,8 +60,8 @@ public class DriveToAprilTag extends Command {
     // robot-relative values.
     this.m_cameraPitchRadians = -robot.robotToCameraTransform.getRotation().getY();
 
-    m_forwardController = new PIDController(robot.kP, robot.kI, robot.kD);
-    m_turnController = new PIDController(robot.kP, robot.kI, robot.kD);
+    m_forwardController = new PIDController(P_GAIN, 0, D_GAIN);
+    m_turnController = new PIDController(P_GAIN, 0, D_GAIN);
 
     addRequirements(m_vision, m_drivebase);
   }
@@ -107,7 +111,7 @@ public class DriveToAprilTag extends Command {
             + rotationSpeed);
 
     // TODO: Finish implementing driving towards the target (matchedTarget.get()).
-    m_drivebase.arcadeDrive(MetersPerSecond.of(forwardSpeed / 2), DegreesPerSecond.of(rotationSpeed));
+    m_drivebase.arcadeDrive(MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
   }
 
   private double getDistanceToTargetInMeters(PhotonTrackedTarget target) {

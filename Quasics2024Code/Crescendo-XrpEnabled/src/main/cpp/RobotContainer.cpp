@@ -60,10 +60,14 @@ void RobotContainer::setUpTankDrive() {
   // Create the TankDrive command (reading from the controller's joysticks), and
   // set it as the default command for the drive base.
   TankDrive::PercentSupplier leftSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+    double joystickPercentage =
+        m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage);
   };
   TankDrive::PercentSupplier rightSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+    double joystickPercentage =
+        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage);
   };
   TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
   // m_drivebase->SetDefaultCommand(std::move(tankDrive));
@@ -80,10 +84,14 @@ void RobotContainer::setUpArcadeDrive() {
   }
 
   ArcadeDrive::PercentSupplier forwardSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(leftDriveJoystickAxis);
+    double joystickPercentage =
+        m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage);
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
-    return m_driverController.GetRawAxis(rightDriveJoystickAxis);
+    double joystickPercentage =
+        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage);
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));

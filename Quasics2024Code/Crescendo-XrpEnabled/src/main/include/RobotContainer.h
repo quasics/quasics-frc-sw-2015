@@ -12,6 +12,7 @@
 
 #include "Constants.h"
 #include "subsystems/IDrivebase.h"
+#include "utils/DeadBandEnforcer.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -48,4 +49,6 @@ class RobotContainer {
   std::list<frc2::CommandPtr> retainedCommands;
 
   // void ConfigureBindings();
+
+  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
 };

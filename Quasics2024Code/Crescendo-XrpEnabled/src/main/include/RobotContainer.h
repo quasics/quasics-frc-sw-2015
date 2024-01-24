@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/Joystick.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
@@ -12,6 +13,7 @@
 
 #include "Constants.h"
 #include "subsystems/IDrivebase.h"
+#include "utils/DeadBandEnforcer.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -38,6 +40,8 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+  double GetDriveSpeedScalingFactor();
+
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
 
@@ -48,4 +52,11 @@ class RobotContainer {
   std::list<frc2::CommandPtr> retainedCommands;
 
   // void ConfigureBindings();
+
+  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
+
+  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
+  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
 };

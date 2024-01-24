@@ -100,6 +100,12 @@ namespace MotorSpeeds {
   constexpr double RETRACTION_SPEED = -1.00;
 }  // namespace MotorSpeeds
 
+namespace RobotSpeedScaling {
+  constexpr double TURBO_MODE_SPEED_SCALING = 0.90;
+  constexpr double NORMAL_MODE_SPEED_SCALING = 0.60;
+  constexpr double TURTLE_MODE_SPEED_SCALING = 0.30;
+}  // namespace RobotSpeedScaling
+
 namespace DigitalInput {
   constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 1;
   constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;
@@ -131,3 +137,9 @@ namespace RobotConstants {
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
       std::numbers::pi};
 }  // namespace RobotConstants
+
+using RateLimit = units::unit_t<
+    units::compound_unit<units::scalar, units::inverse<units::seconds>>>;
+
+/** Limit on robot acceleration. */
+constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;

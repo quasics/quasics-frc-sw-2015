@@ -51,6 +51,11 @@ class IDrivebase : public frc2::SubsystemBase {
     ResetEncoders();
   }
 
+  void ResetOdometry(frc::Rotation2d& gyroAngle, units::meter_t leftDistance,
+                     units::meter_t rightDistance, frc::Pose2d& pose) {
+    getOdometry().ResetPosition(gyroAngle, leftDistance, rightDistance, pose);
+  }
+
   void ResetEncoders() {
     getLeftEncoder().reset();
     getRightEncoder().reset();

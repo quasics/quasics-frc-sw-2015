@@ -126,16 +126,19 @@ void RobotContainer::allocateDriveBase() {
   if (frc::RobotBase::IsReal()) {
     // OK, we're running on a "big bot".
     m_drivebase.reset(new RealDrivebase);
-  } /* else {
-    // OK, we're running under simulation.  However, this could either mean that
-    // we're talking to an XRP "little bot", or doing *pure* (GUI-based)
-    // simulation on a PC of some sort.
-    if (USE_XRP_UNDER_SIMULATION) {
-      m_drivebase.reset(new XRPDrivebase);
-    } else {
-      m_drivebase.reset(new SimulatedDrivebase);
-    }
-  } */
+  } else {
+    m_drivebase.reset(new SimulatedDrivebase);
+
+    // // OK, we're running under simulation.  However, this could either mean
+    // that
+    // // we're talking to an XRP "little bot", or doing *pure* (GUI-based)
+    // // simulation on a PC of some sort.
+    // if (USE_XRP_UNDER_SIMULATION) {
+    //   m_drivebase.reset(new XRPDrivebase);
+    // } else {
+    //   m_drivebase.reset(new SimulatedDrivebase);
+    // }
+  }
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

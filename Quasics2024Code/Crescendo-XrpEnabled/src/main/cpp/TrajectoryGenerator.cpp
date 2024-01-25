@@ -76,7 +76,7 @@ frc::Trajectory exampleTrajectory =
       {driveBase})};
 
   // Reset odometry to the starting pose of the trajectory.
-  driveBase->ResetOdometry(exampleTrajectory.InitialPose());
+  // driveBase->ResetOdometry(exampleTrajectory.InitialPose());
 
   return std::move(ramseteCommand)
       .BeforeStarting(frc2::cmd::RunOnce(

@@ -108,24 +108,43 @@ public class SimulationDrivebase extends AbstractDrivebase {
   // ---------------------------------------------------------------------------
 
   @Override
-  protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
     m_leftLeader.setVoltage(leftVoltage);
     m_rightLeader.setVoltage(rightVoltage);
+
+    logValue("Left volts", leftVoltage);
+    logValue("Right volts", rightVoltage);
   }
 
   @Override
-  protected TrivialEncoder getLeftEncoder() {
+  protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }
 
   @Override
-  protected TrivialEncoder getRightEncoder() {
+  protected TrivialEncoder getRightEncoder_HAL() {
     return m_rightTrivialEncoder;
   }
 
   @Override
-  protected IGyro getGyro() {
+  protected IGyro getGyro_HAL() {
     return m_wrappedGyro;
+  }
+
+  protected double getLeftSpeedPercentage_HAL() {
+    return m_leftLeader.get();
+  }
+
+  protected double getRightSpeedPercentage_HAL() {
+    return m_rightLeader.get();
+  }
+
+  protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
+    m_leftLeader.setVoltage(leftPercent);
+    m_rightLeader.setVoltage(rightPercent);
+
+    logValue("Left volts", leftPercent);
+    logValue("Right volts", rightPercent);
   }
 
   // ---------------------------------------------------------------------------
@@ -179,13 +198,5 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     // Publish the data for any that need it.
     SimulationSupport.setSimulatedPose(m_drivetrainSimulator.getPose());
-  }
-
-  protected double getLeftSpeedPercentage() {
-    return m_leftLeader.get();
-  }
-
-  protected double getRightSpeedPercentage() {
-    return m_rightLeader.get();
   }
 }

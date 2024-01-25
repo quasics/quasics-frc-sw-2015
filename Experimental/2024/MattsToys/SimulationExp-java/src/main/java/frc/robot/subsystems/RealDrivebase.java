@@ -139,28 +139,43 @@ public class RealDrivebase extends AbstractDrivebase {
     }
   }
 
-  protected TrivialEncoder getLeftEncoder() {
+  protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }
 
-  protected TrivialEncoder getRightEncoder() {
+  protected TrivialEncoder getRightEncoder_HAL() {
     return m_rightTrivialEncoder;
   }
 
-  protected IGyro getGyro() {
+  protected IGyro getGyro_HAL() {
     return m_offsetGyro;
   }
 
-  protected double getLeftSpeedPercentage() {
+  protected double getLeftSpeedPercentage_HAL() {
     return (m_leftLeader != null ? m_leftLeader : m_leftRear).get();
   }
 
-  protected double getRightSpeedPercentage() {
+  protected double getRightSpeedPercentage_HAL() {
     return (m_rightLeader != null ? m_rightLeader : m_rightRear).get();
   }
 
+  protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
+    if (m_leftLeader != null && m_rightLeader != null) {
+      m_leftLeader.set(leftPercent);
+      m_rightLeader.set(rightPercent);
+    } else {
+      m_leftFront.set(leftPercent);
+      m_rightFront.set(rightPercent);
+      m_leftRear.set(leftPercent);
+      m_rightRear.set(rightPercent);
+    }
+
+    logValue("Left percent", leftPercent);
+    logValue("Right percent", rightPercent);
+  }
+
   @Override
-  protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
     if (m_leftLeader != null && m_rightLeader != null) {
       m_leftLeader.setVoltage(leftVoltage);
       m_rightLeader.setVoltage(rightVoltage);

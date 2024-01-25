@@ -31,6 +31,8 @@ import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -117,11 +119,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public Measure<Distance> getLeftDistance() {
-    return getLeftEncoder().getPosition();
+    return getLeftEncoder_HAL().getPosition();
   }
 
   public Measure<Distance> getRightDistance() {
-    return getRightEncoder().getPosition();
+    return getRightEncoder_HAL().getPosition();
   }
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
@@ -153,15 +155,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** @return current wheel speeds (in m/s) */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftEncoder().getVelocity(),
-        getRightEncoder().getVelocity());
+    return new DifferentialDriveWheelSpeeds(getLeftEncoder_HAL().getVelocity(),
+        getRightEncoder_HAL().getVelocity());
   }
 
   /** Update the robot's odometry. */
   public void updateOdometry() {
-    final Rotation2d rotation = getGyro().getRotation2d();
-    final Measure<Distance> leftDistanceMeters = getLeftEncoder().getPosition();
-    final Measure<Distance> rightDistanceMeters = getRightEncoder().getPosition();
+    final Rotation2d rotation = getGyro_HAL().getRotation2d();
+    final Measure<Distance> leftDistanceMeters = getLeftEncoder_HAL().getPosition();
+    final Measure<Distance> rightDistanceMeters = getRightEncoder_HAL().getPosition();
     getOdometry().update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
     m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
@@ -186,10 +188,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * specific position/angle on the field, such as at the start of a match).
    */
   public void resetOdometry(Pose2d pose) {
-    getLeftEncoder().reset();
-    getRightEncoder().reset();
-    getOdometry().resetPosition(getGyro().getRotation2d(), 0, 0, pose);
-    m_poseEstimator.resetPosition(getGyro().getRotation2d(), 0, 0, pose);
+    getLeftEncoder_HAL().reset();
+    getRightEncoder_HAL().reset();
+    getOdometry().resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
+    m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
@@ -284,11 +286,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
     double leftPidOutput = includePid ? m_leftPIDController.calculate(
-        getLeftEncoder().getVelocity().in(MetersPerSecond),
+        getLeftEncoder_HAL().getVelocity().in(MetersPerSecond),
         leftStabilized)
         : 0;
     double rightPidOutput = includePid ? m_rightPIDController.calculate(
-        getRightEncoder().getVelocity().in(MetersPerSecond),
+        getRightEncoder_HAL().getVelocity().in(MetersPerSecond),
         rightStabilized)
         : 0;
     logValue("leftPid", leftPidOutput);
@@ -311,7 +313,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
     if (ENABLE_VOLTAGE_APPLICATON) {
-      this.setMotorVoltagesImpl(leftVoltage, rightVoltage);
+      this.setMotorVoltages_HAL(leftVoltage, rightVoltage);
     }
   }
 
@@ -335,29 +337,46 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speedPercentage;
   }
 
+  // TODO: Consider adjusting this max output to prevent running @ 100%.
+  private static double TANK_DRIVE_PERCENT_MAX_OUTPUT = 1.0;
+
+  // TODO: Think about replacing "double" with something type-safe. (Using
+  // Measure<Dimensionless> won't work unless I change the function name.)
+  public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
+    // TODO: Apply deadbands (and look at MathUtil.applyDeadband, which I just
+    // saw...)
+    WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(xSpeed, rotationSpeed, squareInputs);
+
+    double adjustedLeftPercent = speeds.left * TANK_DRIVE_PERCENT_MAX_OUTPUT;
+    double adjustedRightPercent = speeds.right * TANK_DRIVE_PERCENT_MAX_OUTPUT;
+    tankDrivePercent_HAL(adjustedLeftPercent, adjustedRightPercent);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Hardware abstraction layer definition
   //
   /////////////////////////////////////////////////////////////////////////////////
 
-  protected abstract TrivialEncoder getLeftEncoder();
+  protected abstract TrivialEncoder getLeftEncoder_HAL();
 
-  protected abstract TrivialEncoder getRightEncoder();
+  protected abstract TrivialEncoder getRightEncoder_HAL();
 
-  protected abstract IGyro getGyro();
+  protected abstract IGyro getGyro_HAL();
 
-  protected abstract double getLeftSpeedPercentage();
+  protected abstract double getLeftSpeedPercentage_HAL();
 
-  protected abstract double getRightSpeedPercentage();
+  protected abstract double getRightSpeedPercentage_HAL();
+
+  protected abstract void tankDrivePercent_HAL(double leftPercent, double rightPercent);
 
   /**
-   * Declared as public so that it can be used with RamseteCommand objects.
-   *
+   * Directly sets voltages for left/right motors.
+   * 
    * @param leftVoltage  voltage for left-side motors
    * @param rightVoltage voltage for right-side motors
    */
-  protected abstract void setMotorVoltagesImpl(double leftVoltage,
+  protected abstract void setMotorVoltages_HAL(double leftVoltage,
       double rightVoltage);
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -379,7 +398,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           // Tell SysId how to plumb the driving voltage to the motors.
           (Measure<Voltage> volts) -> {
             final double rawVolts = volts.in(Volts);
-            setMotorVoltagesImpl(rawVolts, rawVolts);
+            setMotorVoltages_HAL(rawVolts, rawVolts);
           },
           // Tell SysId how to record a frame of data for each motor on the
           // mechanism being characterized.
@@ -388,20 +407,20 @@ public abstract class AbstractDrivebase extends SubsystemBase {
             // we consider the entire group to be one motor.
             log.motor("drive-left")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getLeftSpeedPercentage() *
+                    getLeftSpeedPercentage_HAL() *
                         RobotController.getBatteryVoltage(),
                     Volts))
-                .linearPosition(getLeftEncoder().getPosition())
-                .linearVelocity(getLeftEncoder().getVelocity());
+                .linearPosition(getLeftEncoder_HAL().getPosition())
+                .linearVelocity(getLeftEncoder_HAL().getVelocity());
             // Record a frame for the right motors. Since these share an
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getRightSpeedPercentage() *
+                    getRightSpeedPercentage_HAL() *
                         RobotController.getBatteryVoltage(),
                     Volts))
-                .linearPosition(getRightEncoder().getPosition())
-                .linearVelocity(getRightEncoder().getVelocity());
+                .linearPosition(getRightEncoder_HAL().getPosition())
+                .linearVelocity(getRightEncoder_HAL().getVelocity());
           },
           // Tell SysId to make generated commands require this subsystem,
           // suffix test state in WPILog with this subsystem's name ("drive")

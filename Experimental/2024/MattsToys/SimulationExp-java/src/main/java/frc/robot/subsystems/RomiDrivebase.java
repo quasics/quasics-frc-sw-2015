@@ -50,17 +50,17 @@ public class RomiDrivebase extends AbstractDrivebase {
   }
 
   @Override
-  protected TrivialEncoder getLeftEncoder() {
+  protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }
 
   @Override
-  protected TrivialEncoder getRightEncoder() {
+  protected TrivialEncoder getRightEncoder_HAL() {
     return m_rightTrivialEncoder;
   }
 
   @Override
-  protected IGyro getGyro() {
+  protected IGyro getGyro_HAL() {
     return m_wrappedGyro;
   }
 
@@ -72,7 +72,7 @@ public class RomiDrivebase extends AbstractDrivebase {
   final static boolean LOG_MOTOR_SETTINGS = false;
 
   @Override
-  protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
     final double leftSpeed = convertVoltageToPercentSpeed(leftVoltage);
     final double rightSpeed = convertVoltageToPercentSpeed(rightVoltage);
     if (LOG_MOTOR_SETTINGS) {
@@ -84,13 +84,24 @@ public class RomiDrivebase extends AbstractDrivebase {
     m_rightMotor.set(rightSpeed);
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
+
+    logValue("Left volts", leftVoltage);
+    logValue("Right volts", rightVoltage);
   }
 
-  protected double getLeftSpeedPercentage() {
+  protected double getLeftSpeedPercentage_HAL() {
     return m_leftMotor.get();
   }
 
-  protected double getRightSpeedPercentage() {
+  protected double getRightSpeedPercentage_HAL() {
     return m_rightMotor.get();
+  }
+
+  protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
+    m_leftMotor.set(leftPercent);
+    m_rightMotor.set(rightPercent);
+
+    logValue("Left percent", leftPercent);
+    logValue("Right percent", rightPercent);
   }
 }

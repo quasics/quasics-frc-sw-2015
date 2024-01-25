@@ -84,17 +84,17 @@ public class XrpDrivebase extends AbstractDrivebase {
   // ---------------------------------------------------------------------------
 
   @Override
-  protected TrivialEncoder getLeftEncoder() {
+  protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }
 
   @Override
-  protected TrivialEncoder getRightEncoder() {
+  protected TrivialEncoder getRightEncoder_HAL() {
     return m_rightTrivialEncoder;
   }
 
   @Override
-  protected IGyro getGyro() {
+  protected IGyro getGyro_HAL() {
     return m_wrappedGyro;
   }
 
@@ -106,7 +106,7 @@ public class XrpDrivebase extends AbstractDrivebase {
   final static boolean LOG_MOTOR_SETTINGS = false;
 
   @Override
-  protected void setMotorVoltagesImpl(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
     // When simulating the behavior on the XRP, setting the voltage for the
     // motors appears not to translate into actual motor control: we need to
     // call "set()" on them in order to make things happen. But the
@@ -125,13 +125,24 @@ public class XrpDrivebase extends AbstractDrivebase {
     m_rightMotor.set(rightSpeed);
     m_leftMotor.setVoltage(leftVoltage);
     m_rightMotor.setVoltage(rightVoltage);
+
+    logValue("Left volts", leftVoltage);
+    logValue("Right volts", rightVoltage);
   }
 
-  protected double getLeftSpeedPercentage() {
+  protected double getLeftSpeedPercentage_HAL() {
     return m_leftMotor.get();
   }
 
-  protected double getRightSpeedPercentage() {
+  protected double getRightSpeedPercentage_HAL() {
     return m_rightMotor.get();
+  }
+
+  protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
+    m_leftMotor.setVoltage(leftPercent);
+    m_rightMotor.setVoltage(rightPercent);
+
+    logValue("Left volts", leftPercent);
+    logValue("Right volts", rightPercent);
   }
 }

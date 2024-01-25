@@ -6,7 +6,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-IDrivebase::IDrivebase() = default;
+IDrivebase::IDrivebase(){};
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {

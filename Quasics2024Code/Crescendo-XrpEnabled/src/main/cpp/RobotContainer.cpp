@@ -148,6 +148,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // Smart Dashboard bc it will be deleted and some values that it had would be
   // still needed. So one thing sais that it needs it, but there is no real data
   // behind it.  This allows us to make this data storage more permanent.
+  frc::SmartDashboard::PutData(
+      "reset encoders",
+      new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+  frc::SmartDashboard::PutData("reset odometry",
+                               new frc2::InstantCommand([this]() {
+                                 m_drivebase->ResetOdometry(frc::Pose2d());
+                               }));
+
   retainedCommands.push_back(
       GetCommandForTrajectory("test.wpilib.json", m_drivebase.get()));
   frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());

@@ -48,6 +48,10 @@ class IDrivebase : public frc2::SubsystemBase {
 
   void ResetOdometry(frc::Pose2d pose) {
     getOdometry().ResetPosition(getGyro().getRotation2d(), 0_m, 0_m, pose);
+    ResetEncoders();
+  }
+
+  void ResetEncoders() {
     getLeftEncoder().reset();
     getRightEncoder().reset();
   }
@@ -64,12 +68,13 @@ class IDrivebase : public frc2::SubsystemBase {
 
   virtual void tankDriveVolts(units::volt_t left, units::volt_t right) = 0;
 
+  virtual frc::DifferentialDriveOdometry& getOdometry() = 0;
+
  private:
   const frc::DifferentialDriveKinematics m_kinematics{0.558_m};
 
   // Hardware abstraction layer
  protected:
-  virtual frc::DifferentialDriveOdometry& getOdometry() = 0;
   virtual IGyro& getGyro() = 0;
 
   virtual void setMotorSpeeds(double leftPercent, double rightPercent) = 0;

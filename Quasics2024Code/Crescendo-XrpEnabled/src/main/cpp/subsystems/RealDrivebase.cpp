@@ -9,7 +9,7 @@ RealDrivebase::RealDrivebase() {
   // This is where we'd do any necessary motor configuration (e.g., setting some
   // as "inverted", etc.).
   configureEncoders();
-  ResetOdometry(frc::Pose2d());
+  resetOdometry(frc::Pose2d());
 }
 
 void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {

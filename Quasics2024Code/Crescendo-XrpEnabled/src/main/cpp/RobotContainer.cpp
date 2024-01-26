@@ -157,15 +157,15 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
   frc::SmartDashboard::PutData("reset odometry",
                                new frc2::InstantCommand([this]() {
-                                 m_drivebase->ResetOdometry(frc::Pose2d());
+                                 m_drivebase->resetOdometry(frc::Pose2d());
                                }));
 
   retainedCommands.push_back(
-      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get()));
+      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
   frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
 
-  retainedCommands.push_back(
-      GetCommandForTrajectory("curvetest.wpilib.json", m_drivebase.get()));
+  retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
+                                                     m_drivebase.get(), false));
   frc::SmartDashboard::PutData("curve test path",
                                retainedCommands.rbegin()->get());
 }

@@ -80,7 +80,6 @@ class Climber : public frc2::SubsystemBase {
                                  rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
                                   rev::CANSparkMax::MotorType::kBrushless};
-  frc::MotorControllerGroup m_climbers{m_climberLeft, m_climberRight};
 
   // WILL EXSIST LATER HOPEFULLY
 

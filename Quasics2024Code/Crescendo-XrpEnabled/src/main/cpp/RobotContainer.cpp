@@ -6,11 +6,16 @@
 
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 
 #include "TrajectoryGenerator.h"
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
+#include "commands/MoveClimbers.h"
+#include "commands/PivotIntake.h"
+#include "commands/RunIntake.h"
+#include "commands/RunShooter.h"
 #include "commands/TankDrive.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
@@ -167,4 +172,47 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                                      m_drivebase.get(), false));
   frc::SmartDashboard::PutData("curve test path",
                                retainedCommands.rbegin()->get());
+}
+
+void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                                      frc2::Command* command) {
+  frc2::JoystickButton(&m_driverController, logitechButtonId)
+      .WhileTrue(command);
+}
+
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    int buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
+}
+
+void RobotContainer::ConfigureDriverControllerButtonBindings() {
+  static MoveClimbers extendClimbers(&m_climber, true);
+  static MoveClimbers retractClimbers(&m_climber, false);
+  static RunIntake intakeNote(&m_intakeRoller, 0.5, true);
+  static RunIntake dropNote(&m_intakeRoller, 0.5, false);
+
+  RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
+                                   &extendClimbers);
+  RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::AButton,
+                                   &retractClimbers);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorConstants::LogitechGamePad::LeftShoulder, &dropNote);
+  RunCommandWhenDriverButtonIsHeld(
+      OperatorConstants::LogitechGamePad::RightShoulder, &intakeNote);
+}
+
+void RobotContainer::ConfigureOperatorControllerButtonBindings() {
+  static PivotIntake extendIntake(&m_intakeDeployment, 0.5, true);
+  static PivotIntake retractIntake(&m_intakeDeployment, 0.5, false);
+  static RunShooter shootNote(&m_shooter, 0.5, true);
+  static RunShooter retractNote(&m_shooter, -0.5, true);
+
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
+                                     &extendIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &retractIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     &shootNote);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+                                     &retractNote);
 }

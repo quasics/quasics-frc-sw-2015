@@ -12,7 +12,11 @@
 #include <list>
 
 #include "Constants.h"
+#include "subsystems/Climber.h"
 #include "subsystems/IDrivebase.h"
+#include "subsystems/IntakeDeployment.h"
+#include "subsystems/IntakeRoller.h"
+#include "subsystems/Shooter.h"
 #include "utils/DeadBandEnforcer.h"
 
 /**
@@ -28,11 +32,16 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
+  void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                        frc2::Command* command);
+
+  void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command* command);
+
  private:
   void AddTestButtonsOnSmartDashboard();
+
   void AddButtonToSmartDashboardTestingRetainedCommands();
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  frc::Joystick m_driverController{OperatorConstants::kDriverControllerPort};
 
   void allocateDriveBase();
 
@@ -42,8 +51,19 @@ class RobotContainer {
 
   double GetDriveSpeedScalingFactor();
 
+  void ConfigureDriverControllerButtonBindings();
+
+  void ConfigureOperatorControllerButtonBindings();
+
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
+  Shooter m_shooter;
+  Climber m_climber;
+  IntakeDeployment m_intakeDeployment;
+  IntakeRoller m_intakeRoller;
+
+  frc::Joystick m_driverController{0};
+  frc::XboxController m_operatorController{1};
 
   // These are commands generated "on the fly" by functions like
   // GetCommandForTrajectory(), which we're attaching to things like buttons on

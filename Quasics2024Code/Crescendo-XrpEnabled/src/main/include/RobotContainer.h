@@ -12,7 +12,11 @@
 #include <list>
 
 #include "Constants.h"
+#include "subsystems/Climber.h"
 #include "subsystems/IDrivebase.h"
+#include "subsystems/IntakeDeployment.h"
+#include "subsystems/IntakeRoller.h"
+#include "subsystems/Shooter.h"
 #include "utils/DeadBandEnforcer.h"
 
 /**
@@ -53,6 +57,10 @@ class RobotContainer {
 
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
+  Shooter m_shooter;
+  Climber m_climber;
+  IntakeDeployment m_intakeDeployment;
+  IntakeRoller m_intakeRoller;
 
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};

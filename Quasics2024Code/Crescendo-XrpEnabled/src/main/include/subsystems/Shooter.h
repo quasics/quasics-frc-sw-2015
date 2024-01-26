@@ -21,12 +21,10 @@ class Shooter : public frc2::SubsystemBase {
    * to +1.0).
    */
   void SetFlywheelSpeed(double percentSpeed);
-  void SetRollerSpeed(double speed);
 
   /** Convenience method to stop the shooter. */
   void Stop() {
     SetFlywheelSpeed(0);
-    SetRollerSpeed(0);
   };
 
   // Standard functions for subsystems.
@@ -38,8 +36,7 @@ class Shooter : public frc2::SubsystemBase {
 
   // Data members.
  private:
-  rev::CANSparkMax m_flyWheel{MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_ID,
-                              rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rearRoller{MotorIds::SparkMax::REAR_ROLLER_ID,
-                                rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_flyWheel{
+      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
+      rev::CANSparkMax::MotorType::kBrushless};
 };

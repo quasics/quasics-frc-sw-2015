@@ -11,12 +11,14 @@ Climber::Climber() {
 }
 
 void Climber::StartExtending() {
-  m_climbers.Set(MotorSpeeds::EXTENSION_SPEED);
+  m_climberLeft.Set(MotorSpeeds::EXTENSION_SPEED);
+  m_climberRight.Set(MotorSpeeds::EXTENSION_SPEED);
   m_currentStatus = Movement::eUp;
 }
 
 void Climber::StartRetracting() {
-  m_climbers.Set(MotorSpeeds::RETRACTION_SPEED);
+  m_climberLeft.Set(MotorSpeeds::RETRACTION_SPEED);
+  m_climberRight.Set(MotorSpeeds::RETRACTION_SPEED);
   m_currentStatus = Movement::eDown;
 }
 
@@ -41,7 +43,8 @@ void Climber::RetractOneClimber(bool isLeft) {
 }
 
 void Climber::Stop() {
-  m_climbers.StopMotor();
+  m_climberLeft.StopMotor();
+  m_climberRight.StopMotor();
   m_currentStatus = Movement::eStopped;
 }
 

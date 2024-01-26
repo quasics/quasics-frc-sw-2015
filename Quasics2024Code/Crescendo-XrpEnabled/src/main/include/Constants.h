@@ -31,8 +31,6 @@ namespace RobotPhysics {
 
 namespace OperatorConstants {
 
-  inline constexpr int kDriverControllerPort = 0;
-
   namespace LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
@@ -89,14 +87,11 @@ namespace MotorIds {
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
-    constexpr int INTAKE_DEPLOYMENT_MOTOR = 1;
-    constexpr int SHOOTER_FLYWHEEL_MOTOR_ID = 1;
-    constexpr int REAR_ROLLER_ID = 1;
+    constexpr int INTAKE_DEPLOYMENT_MOTOR = 7;
+    constexpr int INTAKE_MOTOR = 8;
+    constexpr int SHOOTER_FLYWHEEL_MOTOR_LEADER_ID = 9;
   }  // namespace SparkMax
 
-  namespace VictorSPX {
-    constexpr int INTAKE_MOTOR_ROLLER_ID = 1;
-  }
 }  // namespace MotorIds
 
 namespace MotorSpeeds {

@@ -6,6 +6,7 @@
 
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 
 #include "TrajectoryGenerator.h"
@@ -167,4 +168,21 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       GetCommandForTrajectory("curvetest.wpilib.json", m_drivebase.get()));
   frc::SmartDashboard::PutData("curve test path",
                                retainedCommands.rbegin()->get());
+}
+
+void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
+                                                      frc2::Command* command) {
+  frc2::JoystickButton(&m_driverController, logitechButtonId)
+      .WhileTrue(command);
+}
+
+void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
+    int buttonId, frc2::Command* command) {
+  frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
+}
+
+void RobotContainer::ConfigureDriverControllerButtonBindings() {
+}
+
+void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 }

@@ -19,8 +19,7 @@
 #include "subsystems/IDrivebase.h"
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
-                                         IDrivebase* driveBase,
-                                         bool reversed = false) {
+                                         IDrivebase* driveBase, bool reversed) {
   // Create a voltage constraint to ensure we don't accelerate too fast
   frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
       frc::SimpleMotorFeedforward<units::meters>{PathWeaverConstants::kS,

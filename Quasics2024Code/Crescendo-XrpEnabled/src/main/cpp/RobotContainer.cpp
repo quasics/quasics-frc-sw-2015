@@ -160,11 +160,11 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                }));
 
   retainedCommands.push_back(
-      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get()));
+      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
   frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
 
-  retainedCommands.push_back(
-      GetCommandForTrajectory("curvetest.wpilib.json", m_drivebase.get()));
+  retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
+                                                     m_drivebase.get(), false));
   frc::SmartDashboard::PutData("curve test path",
                                retainedCommands.rbegin()->get());
 }

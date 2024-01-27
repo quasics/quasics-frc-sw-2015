@@ -17,6 +17,7 @@ void MoveClimbers::Initialize() {
   } else {
     m_climber->StartRetracting();
   }
+  m_climber->EnableBraking(true);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -26,14 +27,27 @@ void MoveClimbers::Execute() {
   } else {
     m_climber->StartRetracting();
   }
+  m_climber->EnableBraking(true);
 }
 
 // Called once the command ends or is interrupted.
 void MoveClimbers::End(bool interrupted) {
   m_climber->Stop();
+  m_climber->EnableBraking(true);
 }
 
 // Returns true when the command should end.
 bool MoveClimbers::IsFinished() {
+  if (m_extending) {
+    if (m_climber->IsFullyExtended()) {
+      return true;
+    }
+    return false;
+  } else {
+    if (m_climber->IsFullyRetracted()) {
+      return true;
+    }
+    return false;
+  }
   return false;
 }

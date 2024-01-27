@@ -18,6 +18,12 @@ void IDrivebase::Periodic() {
   frc::SmartDashboard::PutNumber("y", double(pose.Y()));
 
   frc::SmartDashboard::PutNumber("angle", double(pose.Rotation().Degrees()));
+
+  frc::SmartDashboard::PutNumber("left Encoder meters",
+                                 double(getLeftEncoder().getPosition()));
+
+  frc::SmartDashboard::PutNumber("right Encoder meters",
+                                 double(getRightEncoder().getPosition()));
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {

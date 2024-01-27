@@ -161,10 +161,15 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
-  frc::SmartDashboard::PutData("reset odometry",
+
+  frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
                                }));
+
+  frc::SmartDashboard::PutData(
+      "reset Odometry(via command) to (3,6)",
+      new SetRobotOdometry(m_drivebase.get(), frc::Pose2d(3_m, 6_m, 0_rad)));
 
   retainedCommands.push_back(testPathSequence());
   frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());

@@ -32,13 +32,17 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * This includes simulator support, as well as some initial code to enable the
  * integration of vision-based pose estimation (using AprilTags for pose
  * estimates) into the robot's planning.
+ * 
+ * When running under simulation, the raw camera stream (showing the robot's
+ * simulated "forward view") will be available at http://localhost:1181, and the
+ * processed stream is at http://localhost:1182.
  */
 public class VisionSubsystem extends SubsystemBase {
   /**
    * If true, include wireframe rendering on raw video during simulation. (Note
    * that this will slow things down.)
    */
-  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = false;
+  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = true;
 
   // The layout of the AprilTags on the field
   public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();

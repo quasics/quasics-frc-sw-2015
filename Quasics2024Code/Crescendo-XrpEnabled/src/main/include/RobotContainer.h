@@ -11,7 +11,9 @@
 
 #include <list>
 
+#include "ConditionalCompileFlags.h"
 #include "Constants.h"
+#include "commands/SetRobotOdometry.h"
 #include "subsystems/Climber.h"
 #include "subsystems/IDrivebase.h"
 #include "subsystems/IntakeDeployment.h"
@@ -49,18 +51,24 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+  frc2::CommandPtr testPathSequence();
+
   double GetDriveSpeedScalingFactor();
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   void ConfigureDriverControllerButtonBindings();
 
   void ConfigureOperatorControllerButtonBindings();
+#endif
 
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
+#endif
 
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};

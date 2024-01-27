@@ -6,6 +6,7 @@
 
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
 
@@ -16,6 +17,7 @@
 #include "commands/PivotIntake.h"
 #include "commands/RunIntake.h"
 #include "commands/RunShooter.h"
+#include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
@@ -164,9 +166,13 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
                                }));
 
+  retainedCommands.push_back(testPathSequence());
+  frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
+
   retainedCommands.push_back(
       GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
-  frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
+  frc::SmartDashboard::PutData("test path sequence",
+                               retainedCommands.rbegin()->get());
 
   retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
                                                      m_drivebase.get(), false));
@@ -184,7 +190,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command* command) {
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
   static MoveClimbers extendClimbers(&m_climber, true);
   static MoveClimbers retractClimbers(&m_climber, false);
@@ -215,4 +221,24 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &shootNote);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &retractNote);
+}
+#endif
+
+frc2::CommandPtr RobotContainer::testPathSequence() {
+  std::vector<frc2::CommandPtr> commands;
+  frc::Pose2d pose;
+  pose = GetTrajectoryInitialPose("test0.wpilib.json");
+  commands.push_back(std::move(
+      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
+  commands.push_back(std::move(frc2::CommandPtr(
+      GetCommandForTrajectory("test0.wpilib.json", m_drivebase.get(), false))));
+  pose = GetTrajectoryInitialPose("test1.wpilib.json");
+  commands.push_back(std::move(
+      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
+  commands.push_back(std::move(frc2::CommandPtr(
+      GetCommandForTrajectory("test1.wpilib.json", m_drivebase.get(), false))));
+
+  return frc2::SequentialCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
 }

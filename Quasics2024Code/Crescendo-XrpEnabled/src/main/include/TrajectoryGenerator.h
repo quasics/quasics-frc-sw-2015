@@ -8,3 +8,4 @@
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
                                          IDrivebase* driveBase, bool reversed);
+frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad);

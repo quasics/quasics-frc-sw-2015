@@ -19,13 +19,13 @@
 class SetRobotOdometry
     : public frc2::CommandHelper<frc2::Command, SetRobotOdometry> {
  public:
-  SetRobotOdometry(IDrivebase& driveBase, frc::Pose2d pose);
+  SetRobotOdometry(IDrivebase* driveBase, frc::Pose2d pose);
 
   void Initialize() override;
 
   bool IsFinished() override;
 
  private:
-  IDrivebase& m_driveBase;
+  IDrivebase* m_driveBase;
   frc::Pose2d m_pose;
 };

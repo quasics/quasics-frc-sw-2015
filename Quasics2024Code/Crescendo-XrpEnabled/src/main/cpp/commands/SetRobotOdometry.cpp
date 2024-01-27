@@ -4,15 +4,15 @@
 
 #include "commands/SetRobotOdometry.h"
 
-SetRobotOdometry::SetRobotOdometry(IDrivebase& driveBase, frc::Pose2d pose)
+SetRobotOdometry::SetRobotOdometry(IDrivebase *driveBase, frc::Pose2d pose)
     : m_driveBase(driveBase), m_pose(pose) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(&m_driveBase);
+  AddRequirements(m_driveBase);
 }
 
 // Called when the command is initially scheduled.
 void SetRobotOdometry::Initialize() {
-  m_driveBase.resetOdometry(m_pose);
+  m_driveBase->resetOdometry(m_pose);
 }
 
 // Returns true when the command should end.

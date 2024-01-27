@@ -1,7 +1,7 @@
 [
 {
 "acceleration": -0.9999999999999996,
-"curvature": null,
+"curvature": 0,
 "pose": {
 "rotation": {
 "radians": 0.0

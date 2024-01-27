@@ -35,7 +35,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * 
  * When running under simulation, the raw camera stream (showing the robot's
  * simulated "forward view") will be available at http://localhost:1181, and the
- * processed stream is at http://localhost:1182.
+ * processed stream is at http://localhost:1182. They can also be found in the
+ * CameraServer tab of Shuffleboard, like a normal camera stream.
  */
 public class VisionSubsystem extends SubsystemBase {
   /**

@@ -6,6 +6,7 @@
 
 #include <frc/Joystick.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
@@ -51,6 +52,11 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+ private:
+  // AUTOS
+
+  void AddTeamAndStationSelectorToSmartDashboard();
+  void AddRobotSequenceSelectorToSmartDashboard();
   frc2::CommandPtr testPathSequence();
   frc2::CommandPtr backwardForwardTest();
   frc2::CommandPtr backwardTest();
@@ -89,4 +95,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
   frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
       DRIVER_JOYSTICK_RATE_LIMIT};
+
+  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_RobotSequenceAutonomousOptions;
 };

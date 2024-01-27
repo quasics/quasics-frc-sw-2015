@@ -143,3 +143,18 @@ using RateLimit = units::unit_t<
 
 /** Limit on robot acceleration. */
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
+
+namespace AutonomousTeamAndStationPositions {
+  constexpr auto Blue1 = "Blue 1";
+  constexpr auto Blue2 = "Blue 2";
+  constexpr auto Blue3 = "Blue 3";
+  constexpr auto Red1 = "Red 1";
+  constexpr auto Red2 = "Red 2";
+  constexpr auto Red3 = "Red 3";
+}  // namespace AutonomousTeamAndStationPositions
+
+namespace AutonomousSelectedOperation {
+  const auto DoNothing = "Do nothing";
+  const auto ScoreTwiceGTFO = "ScoreTwiceGTFO";
+  const auto ScoreThreeGTFO = "ScoreThreeGTFO";
+}

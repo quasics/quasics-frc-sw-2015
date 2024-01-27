@@ -194,13 +194,13 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
-                                                      frc2::Command* command) {
+                                                      frc2::Command *command) {
   frc2::JoystickButton(&m_driverController, logitechButtonId)
       .WhileTrue(command);
 }
 
 void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
-    int buttonId, frc2::Command* command) {
+    int buttonId, frc2::Command *command) {
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
@@ -286,4 +286,73 @@ frc2::CommandPtr RobotContainer::backwardTest() {
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
       .ToPtr();
+}
+
+// AUTO Setup Stuff
+
+frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
+  if (text.empty()) {
+    text = name;
+  }
+  frc2::Command *cmd = new frc2::PrintCommand(text);
+  cmd->SetName(name);
+  return cmd;
+}
+
+void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
+                               std::string name, std::string text = "") {
+  selector.AddOption(name, BuildNamedPrintCommand(name, text));
+}
+
+void AddingNamedPositionsToSelectorWithLoop(
+    frc::SendableChooser<frc2::Command *> &selector) {
+  const std::list<std::tuple<std::string, std::string>>
+      nonDefaultTeamsAndPositionsList{
+          {AutonomousTeamAndStationPositions::Blue2, "Blue 2"},
+          {AutonomousTeamAndStationPositions::Blue3, "Blue 3"},
+          {AutonomousTeamAndStationPositions::Red1, "Red 1"},
+          {AutonomousTeamAndStationPositions::Red2, "Red 2"},
+          {AutonomousTeamAndStationPositions::Red3, "Red 3"},
+      };
+
+  for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
+    AddNamedCommandToSelector(selector, name, text);
+  }
+}
+
+void AddingNamedAutonomousSequencesToSelectorWithLoop(
+    frc::SendableChooser<frc2::Command *> &selector) {
+  const std::list<std::tuple<std::string, std::string>>
+      nonDefaultAutonomousSequenceList{
+          {AutonomousSelectedOperation::ScoreTwiceGTFO, "ScoreTwiceGTFO"},
+          {AutonomousSelectedOperation::ScoreThreeGTFO, "ScoreThreeGTFO"}};
+
+  for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
+    AddNamedCommandToSelector(selector, name, text);
+  }
+}
+
+void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
+  m_TeamAndStationAutonomousOptions.SetDefaultOption(
+      AutonomousTeamAndStationPositions::Blue1,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue1,
+                             "Blue 1"));
+
+  AddingNamedPositionsToSelectorWithLoop(m_TeamAndStationAutonomousOptions);
+
+  frc::SmartDashboard::PutData("Team and Station Auto Selector",
+                               &m_TeamAndStationAutonomousOptions);
+}
+
+void RobotContainer::AddRobotSequenceSelectorToSmartDashboard() {
+  m_RobotSequenceAutonomousOptions.SetDefaultOption(
+      AutonomousSelectedOperation::DoNothing,
+      BuildNamedPrintCommand(AutonomousSelectedOperation::DoNothing,
+                             "Do nothing"));
+
+  AddingNamedAutonomousSequencesToSelectorWithLoop(
+      m_RobotSequenceAutonomousOptions);
+
+  frc::SmartDashboard::PutData("Robot Sequence Auto Selector",
+                               &m_RobotSequenceAutonomousOptions);
 }

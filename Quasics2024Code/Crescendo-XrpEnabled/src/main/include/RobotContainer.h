@@ -52,6 +52,7 @@ class RobotContainer {
   void setUpArcadeDrive();
 
   frc2::CommandPtr testPathSequence();
+  frc2::CommandPtr backwardForwardTest();
 
   double GetDriveSpeedScalingFactor();
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY

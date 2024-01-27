@@ -247,3 +247,22 @@ frc2::CommandPtr RobotContainer::testPathSequence() {
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
       .ToPtr();
 }
+
+frc2::CommandPtr RobotContainer::backwardForwardTest() {
+  std::vector<frc2::CommandPtr> commands;
+  frc::Pose2d pose;
+  pose = GetTrajectoryInitialPose("backward.wpilib.json");
+  commands.push_back(std::move(
+      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
+  commands.push_back(std::move(frc2::CommandPtr(GetCommandForTrajectory(
+      "backward.wpilib.json", m_drivebase.get(), true))));
+  pose = GetTrajectoryInitialPose("forward.wpilib.json");
+  commands.push_back(std::move(
+      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
+  commands.push_back(std::move(frc2::CommandPtr(GetCommandForTrajectory(
+      "forward.wpilib.json", m_drivebase.get(), false))));
+
+  return frc2::SequentialCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}

@@ -53,6 +53,7 @@ class RobotContainer {
 
   frc2::CommandPtr testPathSequence();
   frc2::CommandPtr backwardForwardTest();
+  frc2::CommandPtr backwardTest();
 
   double GetDriveSpeedScalingFactor();
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY

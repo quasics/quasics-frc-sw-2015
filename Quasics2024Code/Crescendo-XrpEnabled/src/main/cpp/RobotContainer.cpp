@@ -175,14 +175,22 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData("test path sequence",
                                retainedCommands.rbegin()->get());
 
-  retainedCommands.push_back(
-      GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
-  frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
-
-  retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
-                                                     m_drivebase.get(), false));
-  frc::SmartDashboard::PutData("curve test path",
+  retainedCommands.push_back(backwardForwardTest());
+  frc::SmartDashboard::PutData("backward forward sequence",
                                retainedCommands.rbegin()->get());
+
+  retainedCommands.push_back(backwardTest());
+  frc::SmartDashboard::PutData("backward test",
+                               retainedCommands.rbegin()->get());
+  /*
+    retainedCommands.push_back(
+        GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
+    frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
+
+    retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
+                                                       m_drivebase.get(),
+    false)); frc::SmartDashboard::PutData("curve test path",
+                                 retainedCommands.rbegin()->get());*/
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -236,12 +244,12 @@ frc2::CommandPtr RobotContainer::testPathSequence() {
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test0.wpilib.json", m_drivebase.get(), false))));
+      GetCommandForTrajectory("test0.wpilib.json", m_drivebase.get()))));
   pose = GetTrajectoryInitialPose("test1.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test1.wpilib.json", m_drivebase.get(), false))));
+      GetCommandForTrajectory("test1.wpilib.json", m_drivebase.get()))));
 
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -254,14 +262,27 @@ frc2::CommandPtr RobotContainer::backwardForwardTest() {
   pose = GetTrajectoryInitialPose("backward.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(GetCommandForTrajectory(
-      "backward.wpilib.json", m_drivebase.get(), true))));
+  commands.push_back(std::move(frc2::CommandPtr(
+      GetCommandForTrajectory("backward.wpilib.json", m_drivebase.get()))));
   pose = GetTrajectoryInitialPose("forward.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(GetCommandForTrajectory(
-      "forward.wpilib.json", m_drivebase.get(), false))));
+  commands.push_back(std::move(frc2::CommandPtr(
+      GetCommandForTrajectory("forward.wpilib.json", m_drivebase.get()))));
 
+  return frc2::SequentialCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}
+
+frc2::CommandPtr RobotContainer::backwardTest() {
+  std::vector<frc2::CommandPtr> commands;
+  frc::Pose2d pose;
+  pose = GetTrajectoryInitialPose("backward2.wpilib.json");
+  commands.push_back(std::move(
+      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
+  commands.push_back(std::move(frc2::CommandPtr(
+      GetCommandForTrajectory("backward2.wpilib.json", m_drivebase.get()))));
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
       .ToPtr();

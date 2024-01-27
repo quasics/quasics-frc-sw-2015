@@ -75,15 +75,35 @@ frc::SmartDashboard::PutString(
     "Right Climber Limit Switch",
     bottomLimitSwitchRightClimber.Get() ? "open" : "closed");
     */
+
+  frc::SmartDashboard::PutNumber("Left Revolutions", getLeftRevolutions());
+  frc::SmartDashboard::PutNumber("Right Revolutions", getRightRevolutions());
 }
 
 bool Climber::IsFullyExtended() {
+  if (getLeftRevolutions() > 4 && getRightRevolutions() > 4) {
+    return true;
+  }
   return false;
-  // return topLimitSwitch.Get();
 }
 
 bool Climber::IsFullyRetracted() {
+  if (getLeftRevolutions() <= 0 && getRightRevolutions() <= 0) {
+    return true;
+  }
   return false;
-  // return !bottomLimitSwitchLeftClimber.Get() ||
-  //        !bottomLimitSwitchRightClimber.Get();
+}
+
+double Climber::getLeftRevolutions() {
+  // counts per rev is 42 therefore I divide by 42
+  return m_leftEncoder.GetPosition() / 42;
+}
+double Climber::getRightRevolutions() {
+  // counts per rev is 42 therefore I divide by 42
+  return m_rightEncoder.GetPosition() / 42;
+}
+
+void Climber::resetRevolutions() {
+  m_leftEncoder.SetPosition(0);
+  m_rightEncoder.SetPosition(0);
 }

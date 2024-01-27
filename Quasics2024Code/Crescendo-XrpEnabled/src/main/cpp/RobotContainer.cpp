@@ -158,9 +158,18 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // Smart Dashboard bc it will be deleted and some values that it had would be
   // still needed. So one thing sais that it needs it, but there is no real data
   // behind it.  This allows us to make this data storage more permanent.
+
+  frc::SmartDashboard::PutData("Extend Climbers",
+                               new MoveClimbers(&m_climber, true));
+  frc::SmartDashboard::PutData("Retract Climbers",
+                               new MoveClimbers(&m_climber, false));
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+
+  frc::SmartDashboard::PutData(
+      "reset Climber Revolutions:",
+      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
 
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
@@ -240,16 +249,16 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 frc2::CommandPtr RobotContainer::testPathSequence() {
   std::vector<frc2::CommandPtr> commands;
   frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("test0.wpilib.json");
+  pose = GetTrajectoryInitialPose("blue2tonote2.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test0.wpilib.json", m_drivebase.get()))));
-  pose = GetTrajectoryInitialPose("test1.wpilib.json");
+      GetCommandForTrajectory("blue2tonote2.wpilib.json", m_drivebase.get()))));
+  pose = GetTrajectoryInitialPose("note2toblue2.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test1.wpilib.json", m_drivebase.get()))));
+      GetCommandForTrajectory("note2toblue2.wpilib.json", m_drivebase.get()))));
 
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))

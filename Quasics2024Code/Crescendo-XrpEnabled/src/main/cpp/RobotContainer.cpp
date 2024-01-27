@@ -240,16 +240,16 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 frc2::CommandPtr RobotContainer::testPathSequence() {
   std::vector<frc2::CommandPtr> commands;
   frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("test0.wpilib.json");
+  pose = GetTrajectoryInitialPose("blue2tonote2.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test0.wpilib.json", m_drivebase.get()))));
-  pose = GetTrajectoryInitialPose("test1.wpilib.json");
+      GetCommandForTrajectory("blue2tonote2.wpilib.json", m_drivebase.get()))));
+  pose = GetTrajectoryInitialPose("note2toblue2.wpilib.json");
   commands.push_back(std::move(
       frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
   commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("test1.wpilib.json", m_drivebase.get()))));
+      GetCommandForTrajectory("note2toblue2.wpilib.json", m_drivebase.get()))));
 
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))

@@ -7,4 +7,5 @@
 #include "subsystems/IDrivebase.h"
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
-                                         IDrivebase* driveBase, bool reversed);
+                                         IDrivebase* driveBase);
+frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad);

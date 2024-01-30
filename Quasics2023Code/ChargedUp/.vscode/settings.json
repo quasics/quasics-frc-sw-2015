@@ -99,7 +99,15 @@
     "xstring": "cpp",
     "xtr1common": "cpp",
     "xutility": "cpp",
-    "cassert": "cpp"
+    "cassert": "cpp",
+    "format": "cpp",
+    "charconv": "cpp",
+    "locale": "cpp",
+    "xlocbuf": "cpp",
+    "xlocmes": "cpp",
+    "xlocmon": "cpp",
+    "xloctime": "cpp",
+    "xtree": "cpp"
   },
   "editor.formatOnSave": true,
   "C_Cpp.clang_format_fallbackStyle": "Google"

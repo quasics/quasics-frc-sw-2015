@@ -6,12 +6,15 @@
 
 #include <frc/Joystick.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include <list>
 
+#include "ConditionalCompileFlags.h"
 #include "Constants.h"
+#include "commands/SetRobotOdometry.h"
 #include "subsystems/Climber.h"
 #include "subsystems/IDrivebase.h"
 #include "subsystems/IntakeDeployment.h"
@@ -49,18 +52,31 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+ private:
+  // AUTOS
+
+  void AddTeamAndStationSelectorToSmartDashboard();
+  void AddRobotSequenceSelectorToSmartDashboard();
+  frc2::CommandPtr testPathSequence();
+  frc2::CommandPtr backwardForwardTest();
+  frc2::CommandPtr backwardTest();
+
   double GetDriveSpeedScalingFactor();
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   void ConfigureDriverControllerButtonBindings();
 
   void ConfigureOperatorControllerButtonBindings();
+#endif
 
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
+#endif
 
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};
@@ -79,4 +95,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
   frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
       DRIVER_JOYSTICK_RATE_LIMIT};
+
+  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_RobotSequenceAutonomousOptions;
 };

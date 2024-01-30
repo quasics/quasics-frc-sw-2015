@@ -10,6 +10,7 @@
 #include <rev/CANSparkMax.h>
 
 #include "Constants.h"
+#include "sensors/TrivialEncoder.h"
 
 class Climber : public frc2::SubsystemBase {
  public:
@@ -64,6 +65,11 @@ class Climber : public frc2::SubsystemBase {
    */
   bool IsFullyRetracted();
 
+  double getLeftRevolutions();
+  double getRightRevolutions();
+
+  void resetRevolutions();
+
   /** Returns the climber's current status (operation). */
   Movement GetCurrentStatus();
 
@@ -80,6 +86,18 @@ class Climber : public frc2::SubsystemBase {
                                  rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
                                   rev::CANSparkMax::MotorType::kBrushless};
+
+  rev::SparkRelativeEncoder m_leftEncoder =
+      m_climberLeft.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_rightEncoder =
+      m_climberRight.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+
+  /*
+   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
+       TrivialEncoder::wrapEncoder(m_leftEncoder)};
+
+   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
+       TrivialEncoder::wrapEncoder(m_rightEncoder)};*/
 
   // WILL EXSIST LATER HOPEFULLY
 

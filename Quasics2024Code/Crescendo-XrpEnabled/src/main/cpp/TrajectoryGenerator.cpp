@@ -19,7 +19,7 @@
 #include "subsystems/IDrivebase.h"
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
-                                         IDrivebase* driveBase, bool reversed) {
+                                         IDrivebase* driveBase) {
   // Create a voltage constraint to ensure we don't accelerate too fast
   frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
       frc::SimpleMotorFeedforward<units::meters>{PathWeaverConstants::kS,
@@ -34,7 +34,7 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
   // Apply the voltage constraint
   config.AddConstraint(autoVoltageConstraint);
 
-  config.SetReversed(reversed);
+  // config.SetReversed(reversed);
 
   // An example trajectory to follow.  All units in meters.
   /*
@@ -56,13 +56,13 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
   deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
   frc::Trajectory exampleTrajectory =
       frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-
-  frc::Transform2d transform =
-      driveBase->getOdometry().GetPose() - exampleTrajectory.InitialPose();
-  frc::Trajectory newTrajectory = exampleTrajectory.TransformBy(transform);
-
+  /*
+    frc::Transform2d transform =
+        driveBase->getOdometry().GetPose() - exampleTrajectory.InitialPose();
+    frc::Trajectory newTrajectory = exampleTrajectory.TransformBy(transform);
+  */
   frc2::CommandPtr ramseteCommand{frc2::RamseteCommand(
-      newTrajectory,
+      exampleTrajectory,
       [driveBase] {
         return driveBase->getPose();
       },  // Displaying Get Pose in Dashboard
@@ -84,4 +84,12 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
       // Because Mr. Healy is professionally paranoid....
       .AndThen(frc2::cmd::RunOnce(
           [driveBase] { driveBase->tankDriveVolts(0_V, 0_V); }, {}));
+}
+
+frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad) {
+  fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+  deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
+  frc::Trajectory exampleTrajectory =
+      frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  return exampleTrajectory.InitialPose();
 }

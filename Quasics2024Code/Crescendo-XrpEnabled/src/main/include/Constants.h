@@ -86,7 +86,7 @@ namespace MotorIds {
     constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
-    constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;
+    constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;  // is inverted
     constexpr int INTAKE_DEPLOYMENT_MOTOR = 7;
     constexpr int INTAKE_MOTOR = 8;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_LEADER_ID = 9;
@@ -143,3 +143,18 @@ using RateLimit = units::unit_t<
 
 /** Limit on robot acceleration. */
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
+
+namespace AutonomousTeamAndStationPositions {
+  constexpr auto Blue1 = "Blue 1";
+  constexpr auto Blue2 = "Blue 2";
+  constexpr auto Blue3 = "Blue 3";
+  constexpr auto Red1 = "Red 1";
+  constexpr auto Red2 = "Red 2";
+  constexpr auto Red3 = "Red 3";
+}  // namespace AutonomousTeamAndStationPositions
+
+namespace AutonomousSelectedOperation {
+  const auto DoNothing = "Do nothing";
+  const auto ScoreTwiceGTFO = "ScoreTwiceGTFO";
+  const auto ScoreThreeGTFO = "ScoreThreeGTFO";
+}

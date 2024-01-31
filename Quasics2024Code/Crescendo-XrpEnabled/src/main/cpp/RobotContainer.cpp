@@ -197,6 +197,11 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                new MoveClimbers(&m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(&m_climber, false));
+
+  frc::SmartDashboard::PutData("Shoot Note",
+                               new RunShooter(&m_shooter, 0.25, true));
+  frc::SmartDashboard::PutData("Retract Note",
+                               new RunShooter(&m_shooter, 0.25, false));
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));

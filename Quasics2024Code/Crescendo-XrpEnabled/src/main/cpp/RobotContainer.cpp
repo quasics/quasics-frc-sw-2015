@@ -68,22 +68,40 @@ void RobotContainer::setUpTankDrive() {
   // set it as the default command for the drive base.
   TankDrive::PercentSupplier leftSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
-    double joystickPercentage =
-        m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    double joystickAfterScaling =
-        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+
+    if (m_configSettings.normalDriveEngaged) {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+    } else {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(rightDriveJoystickAxis);
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+    }
   };
   TankDrive::PercentSupplier rightSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
-    double joystickPercentage =
-        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-    double joystickAfterScaling =
-        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
+
+    if (m_configSettings.normalDriveEngaged) {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
+    } else {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(leftDriveJoystickAxis);
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
+    }
+    TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
+    // m_drivebase->SetDefaultCommand(std::move(tankDrive));
   };
-  TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
-  // m_drivebase->SetDefaultCommand(std::move(tankDrive));
 }
 
 void RobotContainer::setUpArcadeDrive() {
@@ -98,20 +116,36 @@ void RobotContainer::setUpArcadeDrive() {
 
   ArcadeDrive::PercentSupplier forwardSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
-    double joystickPercentage =
-        m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
-    double joystickAfterScaling =
-        m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+
+    if (m_configSettings.normalDriveEngaged) {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+    } else {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(leftDriveJoystickAxis);
+      double joystickAfterScaling =
+          m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+      return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
+    }
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
-    double joystickPercentage =
-        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+
+    if (m_configSettings.normalDriveEngaged) {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+      return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    } else {
+      double joystickPercentage =
+          m_driverController.GetRawAxis(rightDriveJoystickAxis);
+      return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    };
+    ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
+    m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
   };
-  ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
-  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
@@ -155,14 +189,19 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC
-  // Smart Dashboard bc it will be deleted and some values that it had would be
-  // still needed. So one thing sais that it needs it, but there is no real data
-  // behind it.  This allows us to make this data storage more permanent.
+  // Smart Dashboard bc it will be deleted and some values that it had would
+  // be still needed. So one thing sais that it needs it, but there is no real
+  // data behind it.  This allows us to make this data storage more permanent.
 
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(&m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(&m_climber, false));
+
+  frc::SmartDashboard::PutData("Shoot Note",
+                               new RunShooter(&m_shooter, 0.25, true));
+  frc::SmartDashboard::PutData("Retract Note",
+                               new RunShooter(&m_shooter, 0.25, false));
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
@@ -193,8 +232,9 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                retainedCommands.rbegin()->get());
   /*
     retainedCommands.push_back(
-        GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(), false));
-    frc::SmartDashboard::PutData("test path", retainedCommands.rbegin()->get());
+        GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(),
+    false)); frc::SmartDashboard::PutData("test path",
+    retainedCommands.rbegin()->get());
 
     retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
                                                        m_drivebase.get(),

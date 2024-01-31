@@ -13,6 +13,7 @@
 #include <list>
 
 #include "ConditionalCompileFlags.h"
+#include "ConfigSettings.h"
 #include "Constants.h"
 #include "commands/SetRobotOdometry.h"
 #include "subsystems/Climber.h"
@@ -53,6 +54,10 @@ class RobotContainer {
   void setUpArcadeDrive();
 
  private:
+  enum class DriveMode { eNormal, eSwitched };
+  void setDriveMode(DriveMode mode);
+
+ private:
   // AUTOS
 
   void AddTeamAndStationSelectorToSmartDashboard();
@@ -77,6 +82,8 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
 #endif
+
+  ConfigSettings m_configSettings;
 
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};

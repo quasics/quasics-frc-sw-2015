@@ -6,9 +6,58 @@
 
 #include <frc2/command/Commands.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
 
-frc2::CommandPtr autos::ExampleAuto(IDrivebase* subsystem) {
-  return frc2::InstantCommand([subsystem]() {}, {subsystem}).ToPtr();
-  // THIS IS A TEST
-  // more test
-}
+#include "Constants.h"
+#include "TrajectoryGenerator.h"
+#include "commands/SetRobotOdometry.h"
+
+namespace AutonomousCommands {
+
+  /*frc2::Command *backwardTest(IDrivebase &drivebase) {
+    std::vector<frc2::CommandPtr> commands;
+    frc::Pose2d pose;
+    pose = GetTrajectoryInitialPose("backward.wpilib.json");
+    commands.push_back(std::move(
+        frc2::CommandPtr(SetRobotOdometry(drivebase, pose).ToPtr())));
+    commands.push_back(std::move(frc2::CommandPtr(
+        GetCommandForTrajectory("backward.wpilib.json", drivebase.get()))));
+    return frc2::SequentialCommandGroup(
+               frc2::CommandPtr::UnwrapVector(std::move(commands)))
+        .ToPtr();
+  }*/
+  namespace Helpers {
+    frc2::CommandPtr backwardTest(std::unique_ptr<IDrivebase> drivebase) {
+      std::vector<frc2::CommandPtr> commands;
+      frc::Pose2d pose;
+      pose = GetTrajectoryInitialPose("backward.wpilib.json");
+      commands.push_back(std::move(
+          frc2::CommandPtr(SetRobotOdometry(drivebase.get(), pose).ToPtr())));
+      commands.push_back(std::move(frc2::CommandPtr(
+          GetCommandForTrajectory("backward.wpilib.json", drivebase.get()))));
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+  }  // namespace Helpers
+
+  /*
+  frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
+                                      IntakeDeployment *intakeDeployment,
+                                      IntakeRoller *intakeRoller,
+                                      std::string operationName,
+                                      std::string teamAndPosName) {
+    using namespace Helpers;
+
+    if (operationName == AutonomousSelectedOperation::DoNothing) {
+      static frc2::PrintCommand doNothing("Doing nothing, as instructed");
+      return &doNothing;
+    } else if (operationName == AutonomousSelectedOperation::ScoreTwiceGTFO) {
+
+    }
+      static frc2::PrintCommand fallThroughCaseCommand(
+          "*** Error: don't know what to do, based on "
+          "selections!");
+      return &fallThroughCaseCommand;  // CHANGE THIS
+    }*/
+}  // namespace AutonomousCommands

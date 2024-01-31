@@ -54,6 +54,10 @@ class RobotContainer {
   void setUpArcadeDrive();
 
  private:
+  enum class DriveMode { eNormal, eSwitched };
+  void setDriveMode(DriveMode mode);
+
+ private:
   // AUTOS
 
   void AddTeamAndStationSelectorToSmartDashboard();

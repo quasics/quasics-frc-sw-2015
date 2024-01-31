@@ -148,6 +148,10 @@ void RobotContainer::setUpArcadeDrive() {
   };
 }
 
+void RobotContainer::setDriveMode(DriveMode mode) {
+  m_configSettings.normalDriveEngaged = (mode == DriveMode::eNormal);
+}
+
 double RobotContainer::GetDriveSpeedScalingFactor() {
   const bool isTurbo = m_driverController.GetRawButton(
       OperatorConstants::LogitechGamePad::RightShoulder);
@@ -240,6 +244,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                                        m_drivebase.get(),
     false)); frc::SmartDashboard::PutData("curve test path",
                                  retainedCommands.rbegin()->get());*/
+
+  frc::SmartDashboard::PutData(
+      "Switch Drive", new frc2::InstantCommand(
+                          [this]() { setDriveMode(DriveMode::eSwitched); }));
+
+  frc::SmartDashboard::PutData(
+      "Normal Drive",
+      new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,

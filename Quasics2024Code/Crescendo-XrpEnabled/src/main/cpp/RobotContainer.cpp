@@ -188,7 +188,7 @@ void RobotContainer::allocateDriveBase() {
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return autos::ExampleAuto(m_drivebase.get());
+  return AutonomousCommands::Helpers::backwardTest(std::move(m_drivebase));
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {

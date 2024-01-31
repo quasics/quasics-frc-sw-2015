@@ -6,11 +6,17 @@
 
 #include <frc2/command/CommandPtr.h>
 
+#include <string>
+
 #include "subsystems/IDrivebase.h"
 
-namespace autos {
-  /**
-   * Example static factory for an autonomous command.
-   */
-  frc2::CommandPtr ExampleAuto(IDrivebase* subsystem);
-}  // namespace autos
+namespace AutonomousCommands {
+  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
+                                        std::string operationName,
+                                        std::string teamAndPosName);
+
+  namespace Helpers {
+    frc2::CommandPtr backwardTest(std::unique_ptr<IDrivebase> drivebase);
+
+  }  // namespace Helpers
+}  // namespace AutonomousCommands

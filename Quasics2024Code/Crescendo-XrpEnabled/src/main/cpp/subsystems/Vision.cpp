@@ -4,8 +4,15 @@
 
 #include "subsystems/Vision.h"
 
-Vision::Vision() = default;
+Vision::Vision() {
+  SetName("Vision");
+}
 
 // This method will be called once per scheduler run
 void Vision::Periodic() {
+}
+
+bool Vision::AprilTagTargetFound(int TargetID) {
+  photon::PhotonPipelineResult ID = camera.GetLatestResult();
+  return false;
 }

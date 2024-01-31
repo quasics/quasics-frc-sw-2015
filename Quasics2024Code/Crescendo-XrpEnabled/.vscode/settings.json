@@ -118,6 +118,7 @@
     "filesystem": "cpp",
     "queue": "cpp",
     "stack": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "*.inc": "cpp"
   }
 }

@@ -4,7 +4,7 @@
 
 #include "commands/SetRobotOdometry.h"
 
-SetRobotOdometry::SetRobotOdometry(IDrivebase *driveBase, frc::Pose2d pose)
+SetRobotOdometry::SetRobotOdometry(IDrivebase* driveBase, frc::Pose2d pose)
     : m_driveBase(driveBase), m_pose(pose) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(m_driveBase);

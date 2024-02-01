@@ -27,37 +27,36 @@ namespace AutonomousCommands {
         .ToPtr();
   }*/
   namespace Helpers {
-    frc2::CommandPtr backwardTest(std::unique_ptr<IDrivebase> drivebase) {
+
+    frc2::CommandPtr backwardTest(IDrivebase &drivebase) {
       std::vector<frc2::CommandPtr> commands;
       frc::Pose2d pose;
       pose = GetTrajectoryInitialPose("backward.wpilib.json");
-      commands.push_back(std::move(
-          frc2::CommandPtr(SetRobotOdometry(drivebase.get(), pose).ToPtr())));
+      commands.push_back(
+          std::move(frc2::CommandPtr(SetRobotOdometry(drivebase, pose))));
       commands.push_back(std::move(frc2::CommandPtr(
-          GetCommandForTrajectory("backward.wpilib.json", drivebase.get()))));
+          GetCommandForTrajectory("backward.wpilib.json", drivebase))));
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
     }
+
   }  // namespace Helpers
 
-  /*
-  frc2::Command *GetAutonomousCommand(Drivebase *drivebase,
-                                      IntakeDeployment *intakeDeployment,
-                                      IntakeRoller *intakeRoller,
-                                      std::string operationName,
-                                      std::string teamAndPosName) {
+  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
+                                        std::string operationName,
+                                        std::string teamAndPosName) {
     using namespace Helpers;
 
     if (operationName == AutonomousSelectedOperation::DoNothing) {
-      static frc2::PrintCommand doNothing("Doing nothing, as instructed");
-      return &doNothing;
+      frc2::PrintCommand doNothing("Doing nothing, as instructed");
+      return std::move(doNothing).ToPtr();
     } else if (operationName == AutonomousSelectedOperation::ScoreTwiceGTFO) {
-
+      return backwardTest(drivebase);
     }
-      static frc2::PrintCommand fallThroughCaseCommand(
-          "*** Error: don't know what to do, based on "
-          "selections!");
-      return &fallThroughCaseCommand;  // CHANGE THIS
-    }*/
+    static frc2::PrintCommand fallThroughCaseCommand(
+        "*** Error: don't know what to do, based on "
+        "selections!");
+    return std::move(fallThroughCaseCommand).ToPtr();
+  }
 }  // namespace AutonomousCommands

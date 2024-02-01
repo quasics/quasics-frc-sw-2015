@@ -146,7 +146,10 @@ public class RobotContainer {
     m_drivebase.resetOdometry(computeInitialPoseForDriversStation(
         alliance.get(), location.getAsInt()));
     if (m_vision != null) {
-      m_vision.resetSimPose(m_drivebase.getPose());
+      var pose = m_drivebase.getPose();
+      m_vision.updateReferencePose(pose);
+      m_vision.updateLastPose(pose);
+      m_vision.resetSimPose(pose);
     }
   }
 

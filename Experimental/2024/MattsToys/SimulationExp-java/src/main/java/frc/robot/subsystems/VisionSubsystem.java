@@ -224,9 +224,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * The latest estimated robot pose on the field from vision data, which may be
-   * empty. This should only be called once per loop, and will be invoked from
-   * our <code>periodic()</code> method.
+   * Updates/caches the latest estimated robot pose on the field from vision data,
+   * which may be empty. This should only be called once per loop, and will be
+   * invoked from our <code>periodic()</code> method.
    *
    * @see #periodic()
    */
@@ -244,6 +244,26 @@ public class VisionSubsystem extends SubsystemBase {
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = latestTimestamp;
     }
+  }
+
+  /**
+   * Updates the pose that will be used as a basis for reference when the
+   * CrossCheckWithReferencePose mode is selected.
+   * 
+   * @param pose the reference pose to set
+   */
+  public void updateReferencePose(Pose2d pose) {
+    m_photonEstimator.setReferencePose(pose);
+  }
+
+  /**
+   * Updates the pose that will be used as a basis for reference when the
+   * AssumeMinimumMovement mode is selected.
+   * 
+   * @param pose the reference pose to set
+   */
+  public void updateLastPose(Pose2d pose) {
+    m_photonEstimator.setLastPose(pose);
   }
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -302,10 +322,18 @@ public class VisionSubsystem extends SubsystemBase {
    */
   final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = true;
 
-  // Simulation data
+  /** Used to simulate raw PhotonCamera data. */
   private PhotonCameraSim cameraSim;
+
+  /**
+   * Simulated vision system (i.e., some coprocessor running PhotonVision and
+   * publishing camera streams, etc.).
+   */
   private VisionSystemSim visionSim;
 
+  /**
+   * Sets up the simulation support. (What the name says on the tin.... :-)
+   */
   private void setupSimulationSupport() {
     if (Robot.isReal()) {
       return;
@@ -334,9 +362,9 @@ public class VisionSubsystem extends SubsystemBase {
     // Add the simulated camera to view the targets on this simulated field.
     visionSim.addCamera(cameraSim, kRobotToCam);
 
-    // Draw a wireframe of the visual field on the raw video stream. (This
-    // will significantly increase loop times, so this should be false if
-    // we're not using the raw video.)
+    // Configures whether or not we should draw a wireframe of the visual field on
+    // the raw video stream. (This will significantly increase loop times, so this
+    // should be false if we're not using the raw video.)
     cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);
 
     System.out.println(
@@ -344,6 +372,7 @@ public class VisionSubsystem extends SubsystemBase {
             + "Vision simulator is configured.  URLs are:\n"
             + "* http://localhost:1181 (raw stream)\n"
             + "* http://localhost:1182 (processed stream)\n"
+            + "Wireframe rendering is " + (ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO ? "" : "not") + "enabled\n"
             + "-------------------------------------------------");
   }
 

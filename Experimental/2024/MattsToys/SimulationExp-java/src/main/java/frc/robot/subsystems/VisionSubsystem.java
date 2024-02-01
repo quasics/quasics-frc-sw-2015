@@ -105,6 +105,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   private final PhotonPoseEstimator m_photonEstimator;
 
+  /** How is PhotonVision configured to track our position? */
   private final EstimationMode m_estimationMode;
 
   /** Camera mounting information, relative to the robot's centerpoint. */

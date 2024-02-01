@@ -13,7 +13,34 @@ const frc::AddressableLED::LEDData Lighting::GREEN{0, 255, 0};
 const frc::AddressableLED::LEDData Lighting::BLUE{0, 0, 255};
 const frc::AddressableLED::LEDData Lighting::RED{255, 0, 0};
 
-Lighting::Lighting() = default;
+Lighting::Lighting() {
+  SetName("Lighting");
+
+  /* m_led.SetLength(LightingValues::PIXEL_NUMBER);
+  setAllToColor(GREEN);
+  m_led.Start(); */
+}
+
+/* void Lighting::SetDefaultLighting() {
+  setAllToColor(GREEN);
+} */
+
+// when called, it sets all lights on lighting strip to selected rgb value or
+// stock color
+/* void::Lighting::setAllToColor(int r, int g, int b) {
+  for (int i = 0; i < LightingValues::PIXEL_NUMBER; i++) {
+    m_ledBuffer[i].SetRGB(r, g, b);
+  }
+  m_led.SetData(m_ledBuffer);
+} */
+
+/* void Lighting::SetLightColors(
+  std::function<frc::AddressableLED::LEDData(int)> colorFunction) {
+  for (int i = 0; i < LightingValues::PIXEL_NUMBER; ++i) {
+    m_ledBuffer[i] = colorFunction(i);
+  }
+  m_led.SetData(m_ledBuffer);
+  } */
 
 // This method will be called once per scheduler run
 void Lighting::Periodic() {

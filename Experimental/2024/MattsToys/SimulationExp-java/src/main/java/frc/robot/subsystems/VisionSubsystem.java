@@ -40,46 +40,126 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  */
 public class VisionSubsystem extends SubsystemBase {
   /**
-   * If true, include wireframe rendering on raw video during simulation. (Note
-   * that this will slow things down.)
+   * A private enum (for local naming/documentation in this example), to use in
+   * controlling how pose estimation should be handled when only one target can be
+   * seen. In such cases, there may be a couple of possible poses that can be
+   * calculated, due to ambiguity in the vision data, so the options are largely
+   * focused on how to come up with a single answer in this case.
    */
-  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = true;
+  public enum EstimationMode {
+    /**
+     * Given multiple possible poses, use the one that's closest to the
+     * last-calculated pose.
+     */
+    AssumeMinimumMovement(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE),
+    /** Take a weighted average of all possible poses. */
+    UseAverageOfEstimatedPoses(PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS),
+    /** Choose the pose with the lowest ambiguity ("single best guess"). */
+    MinimalAmbiguity(PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY),
+    /**
+     * Take the estimate that most closely matches the known height of the camera.
+     * (Obviously, this won't necessarily work if we're climbing, etc.)
+     */
+    CrossCheckWithCameraHeight(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_CAMERA_HEIGHT),
+    /**
+     * Cross-check with the last-provided reference pose (e.g., something taken
+     * *back* from the drive base). (Obviously, this will only work well if we're
+     * feeding information back-and-forth between the estimation in the drive base
+     * and the estimates from the camera data.)
+     */
+    CrossCheckWithReferencePose(PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
 
-  // The layout of the AprilTags on the field
+    EstimationMode(PhotonPoseEstimator.PoseStrategy strategy) {
+      m_strategy = strategy;
+    }
+
+    final PhotonPoseEstimator.PoseStrategy m_strategy;
+  }
+
+  /**
+   * The default mode for what to do in a multi-tag environment (like Crescendo)
+   * when only one tag can be seen.
+   */
+  private static EstimationMode DEFAULT_ESTIMATION_MODE = EstimationMode.AssumeMinimumMovement;
+
+  /**
+   * Link to the camera data stream from PhotonVision, used to pull in tracking
+   * data.
+   */
+  private final PhotonCamera m_camera;
+
+  /**
+   * The layout of the AprilTags on the field. This is used for the pose
+   * estimation (as well as in the simulator, when it's rendering the tag).
+   */
   public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 
+  /**
+   * Pose estimator from PhotonVision. Note that (per docs) the estimated poses
+   * can have a lot of uncertainty/error baked into them when you are further away
+   * from the targets.
+   */
   private final PhotonPoseEstimator m_photonEstimator;
-  private final PhotonCamera m_camera;
+
+  private final EstimationMode m_estimationMode;
 
   /** Camera mounting information, relative to the robot's centerpoint. */
   private final Transform3d kRobotToCam;
 
   /** Constructor. */
   public VisionSubsystem(RobotSettings.Robot robot) {
-    this(robot.cameraName, robot.robotToCameraTransform);
+    this(robot, DEFAULT_ESTIMATION_MODE);
   }
 
-  private VisionSubsystem(String cameraName, Transform3d robotToCamera) {
+  /** Constructor. */
+  public VisionSubsystem(RobotSettings.Robot robot, EstimationMode mode) {
+    this(robot.cameraName, robot.robotToCameraTransform, mode);
+  }
+
+  /**
+   * Root constructor, to which all of the others delegate the real work.
+   * 
+   * @param cameraName    name under which the camera is publishing its data
+   * @param robotToCamera camera mounting transformation (used to convert
+   *                      robot-centered poses to camera-centered)
+   * @param mode          how we should handle pose estimation (when only 1 target
+   *                      is seen)
+   */
+  private VisionSubsystem(String cameraName, Transform3d robotToCamera, EstimationMode mode) {
     if (cameraName == null || cameraName.isEmpty()) {
+      // OK: this robot has no camera on it, so setup is basically trivial.
       m_camera = null;
       kRobotToCam = null;
       m_photonEstimator = null;
+      m_estimationMode = mode;
       return;
     }
 
+    //
+    // Core setup
     m_camera = new PhotonCamera(cameraName);
     kRobotToCam = robotToCamera;
+    m_estimationMode = mode;
 
+    //
     // Set up the vision pose estimator
     m_photonEstimator = new PhotonPoseEstimator(
         kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera,
         kRobotToCam);
-    m_photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-    // ----- Simulation
+    // Configure what to do in a multi-tag environment (like Crescendo) when only
+    // one tag can be seen.
+    m_photonEstimator.setMultiTagFallbackStrategy(m_estimationMode.m_strategy);
+
+    //
+    // ----- Simulation support
     if (Robot.isSimulation()) {
       setupSimulationSupport();
     }
+  }
+
+  public EstimationMode getEstimationMode() {
+    return m_estimationMode;
   }
 
   /** @return the latest result data from the camera. */
@@ -210,6 +290,12 @@ public class VisionSubsystem extends SubsystemBase {
   // Custom simulation support
   //
   /////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * If true, include wireframe rendering on raw video during simulation. (Note
+   * that this will slow things down.)
+   */
+  final boolean ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO = true;
 
   // Simulation data
   private PhotonCameraSim cameraSim;

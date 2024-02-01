@@ -104,9 +104,9 @@ void RobotContainer::setUpTankDrive() {
           m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
       return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
     }
-    TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
-    // m_drivebase->SetDefaultCommand(std::move(tankDrive));
   };
+  TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
+  m_drivebase->SetDefaultCommand(std::move(tankDrive));
 }
 
 void RobotContainer::setUpArcadeDrive() {
@@ -147,10 +147,10 @@ void RobotContainer::setUpArcadeDrive() {
       double joystickPercentage =
           m_driverController.GetRawAxis(rightDriveJoystickAxis);
       return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    };
-    ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
-    m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
+    }
   };
+  ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
+  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
 void RobotContainer::setDriveMode(DriveMode mode) {
@@ -220,6 +220,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // data behind it.  This allows us to make this data storage more permanent.
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(&m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
@@ -229,6 +230,10 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                new RunShooter(&m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(&m_shooter, 0.25, false));
+#endif
+  frc::SmartDashboard::PutData(
+      "reset Climber Revolutions:",
+      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
 #endif
   frc::SmartDashboard::PutData(
       "reset encoders",

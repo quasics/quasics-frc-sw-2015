@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -56,6 +56,14 @@ class Vision : public frc2::SubsystemBase {
                        frc::Rotation3d(0_rad, 0_rad, 0_rad));
 
   photon::PhotonPoseEstimator estimator = photon::PhotonPoseEstimator(
-      aprilTags, photon::CLOSEST_TO_REFERENCE_POSE,
-      photon::PhotonCamera("USB_Camera"), robotToCam);
+      aprilTags,
+      // TODO: Josh, I think that CLOSEST_TO_REFERENCE_POSE is only going to
+      // work well for you if you're updating the reference pose on a regular
+      // basis (e.g., if you're feeding the data from the drive base's estimates
+      // back into the vision system on a regular basis).  I would strongly
+      // suggest using one of the other options: please talk to me about
+      // choices.  (And try testing some of them out under simulation, once you
+      // have that in place.)
+      photon::CLOSEST_TO_REFERENCE_POSE, photon::PhotonCamera("USB_Camera"),
+      robotToCam);
 };

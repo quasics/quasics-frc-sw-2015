@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -14,29 +14,39 @@ void Vision::Periodic() {
 
 bool Vision::AprilTagTargetIdentified(int IDWantedTarget) {
   photon::PhotonPipelineResult ID = camera.GetLatestResult();
-  if (ID.HasTargets()) {
-    std::span<const photon::PhotonTrackedTarget> targets = ID.GetTargets();
-    for (const photon::PhotonTrackedTarget target : targets) {
-      int targetID = target.GetFiducialId();
-      if (targetID == IDWantedTarget) {
-        return true;
-      }
+  if (!ID.HasTargets()) {
+    // Didn't see anything.
+    return false;
+  }
+
+  std::span<const photon::PhotonTrackedTarget> targets = ID.GetTargets();
+  for (const photon::PhotonTrackedTarget target : targets) {
+    if (target.GetFiducialId() == IDWantedTarget) {
+      // Found it!
+      return true;
     }
   }
+
+  // Couldn't find it.
   return false;
 }
 
 std::optional<photon::PhotonTrackedTarget> Vision::GetIdentifiedAprilTarget(
     int IDWantedTarget) {
   photon::PhotonPipelineResult result = camera.GetLatestResult();
-  if (result.HasTargets()) {
-    for (const photon::PhotonTrackedTarget& target : result.GetTargets()) {
-      int targetID = target.GetFiducialId();
-      if (targetID == IDWantedTarget) {
-        return target;
-      }
+  if (!result.HasTargets()) {
+    // Didn't see anything.
+    return std::nullopt;
+  }
+
+  for (const photon::PhotonTrackedTarget& target : result.GetTargets()) {
+    if (target.GetFiducialId() == IDWantedTarget) {
+      // Found it!
+      return target;
     }
   }
+
+  // Couldn't find it.
   return std::nullopt;
 }
 
@@ -63,6 +73,8 @@ bool Vision::CalculateDistanceAndAnglesToTarger(int IDWantedTarget,
 
 std::optional<photon::EstimatedRobotPose> Vision::UpdateFieldPosition(
     frc::Pose2d estimatedPose) {
+  // TODO: Josh, this isn't going to do what you think, unless you've configured
+  // the pose estimator to use
   estimator.SetReferencePose(frc::Pose3d(estimatedPose));
   return estimator.Update();
 };

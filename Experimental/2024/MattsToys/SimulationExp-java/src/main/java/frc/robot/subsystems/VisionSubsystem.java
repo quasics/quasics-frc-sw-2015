@@ -338,6 +338,13 @@ public class VisionSubsystem extends SubsystemBase {
     // will significantly increase loop times, so this should be false if
     // we're not using the raw video.)
     cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);
+
+    System.out.println(
+        "-------------------------------------------------\n"
+            + "Vision simulator is configured.  URLs are:\n"
+            + "* http://localhost:1181 (raw stream)\n"
+            + "* http://localhost:1182 (processed stream)\n"
+            + "-------------------------------------------------");
   }
 
   /** Reset pose history of the robot in the vision system simulation. */

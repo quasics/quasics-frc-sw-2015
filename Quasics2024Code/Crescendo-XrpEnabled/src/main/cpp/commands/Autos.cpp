@@ -27,6 +27,33 @@ namespace AutonomousCommands {
         .ToPtr();
   }*/
   namespace Helpers {
+    frc2::CommandPtr blue1aAmp1AmpGo(IDrivebase &drivebase) {
+      std::vector<frc2::CommandPtr> commands;
+      frc::Pose2d pose;
+      pose = GetTrajectoryInitialPose("blue1atoamp.wpilib.json");
+      commands.push_back(
+          std::move(frc2::CommandPtr(SetRobotOdometry(drivebase, pose))));
+      commands.push_back(std::move(frc2::CommandPtr(
+          GetCommandForTrajectory("blue1atoamp.wpilib.json", drivebase))));
+      pose = GetTrajectoryInitialPose("blueamptonote1.wpilib.json");
+      commands.push_back(
+          std::move(frc2::CommandPtr(SetRobotOdometry(drivebase, pose))));
+      commands.push_back(std::move(frc2::CommandPtr(
+          GetCommandForTrajectory("blueamptonote1.wpilib.json", drivebase))));
+      pose = GetTrajectoryInitialPose("bluenote1toamp.wpilib.json");
+      commands.push_back(
+          std::move(frc2::CommandPtr(SetRobotOdometry(drivebase, pose))));
+      commands.push_back(std::move(frc2::CommandPtr(
+          GetCommandForTrajectory("bluenote1toamp.wpilib.json", drivebase))));
+      pose = GetTrajectoryInitialPose("blueampleave.wpilib.json");
+      commands.push_back(
+          std::move(frc2::CommandPtr(SetRobotOdometry(drivebase, pose))));
+      commands.push_back(std::move(frc2::CommandPtr(
+          GetCommandForTrajectory("blueampleave.wpilib.json", drivebase))));
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
 
     frc2::CommandPtr backwardTest(IDrivebase &drivebase) {
       std::vector<frc2::CommandPtr> commands;
@@ -52,7 +79,7 @@ namespace AutonomousCommands {
       frc2::PrintCommand doNothing("Doing nothing, as instructed");
       return std::move(doNothing).ToPtr();
     } else if (operationName == AutonomousSelectedOperation::ScoreTwiceGTFO) {
-      return backwardTest(drivebase);
+      return blue1aAmp1AmpGo(drivebase);
     }
     static frc2::PrintCommand fallThroughCaseCommand(
         "*** Error: don't know what to do, based on "

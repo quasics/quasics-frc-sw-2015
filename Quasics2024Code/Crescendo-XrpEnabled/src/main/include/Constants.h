@@ -107,8 +107,8 @@ namespace RobotSpeedScaling {
 }  // namespace RobotSpeedScaling
 
 namespace DigitalInput {
-  constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 1;
-  constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 2;
+  constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 8;
+  constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 9;
 }  // namespace DigitalInput
 
 namespace SensorIds {

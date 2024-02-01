@@ -45,6 +45,10 @@ public class VisionSubsystem extends SubsystemBase {
    * seen. In such cases, there may be a couple of possible poses that can be
    * calculated, due to ambiguity in the vision data, so the options are largely
    * focused on how to come up with a single answer in this case.
+   * 
+   * Note that in "production code", I likely wouldn't bother defining one enum
+   * that simply maps to another; I'd just use the enum from PhotonVision. (But
+   * providing a venue for additional documentation is helpful in sample code.)
    */
   public enum EstimationMode {
     /**

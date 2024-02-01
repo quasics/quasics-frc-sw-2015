@@ -7,7 +7,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/IDrivebase.h"
+#include "subsystems/Lighting.h"
 
 /**
  * An example command.
@@ -16,16 +16,18 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class SetRobotOdometry
-    : public frc2::CommandHelper<frc2::Command, SetRobotOdometry> {
+class SetLightsToColor
+    : public frc2::CommandHelper<frc2::Command, SetLightsToColor> {
  public:
-  SetRobotOdometry(IDrivebase &driveBase, frc::Pose2d pose);
+  SetLightsToColor(Lighting* lighting, int r, int g, int b);
 
-  void Initialize() override;
+  void Execute() override;
 
   bool IsFinished() override;
 
  private:
-  IDrivebase &m_driveBase;
-  frc::Pose2d m_pose;
+  Lighting* m_lighting;
+  int m_r;
+  int m_g;
+  int m_b;
 };

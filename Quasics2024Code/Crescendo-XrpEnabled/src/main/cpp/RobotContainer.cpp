@@ -31,8 +31,13 @@ RobotContainer::RobotContainer() {
   // setUpTankDrive();
   setUpArcadeDrive();
   AddTestButtonsOnSmartDashboard();
-  // Configure the button bindings
-  // ConfigureBindings();
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+
+  ConfigureDriverControllerButtonBindings();
+  ConfigureOperatorControllerButtonBindings();
+#endif
+  AddTeamAndStationSelectorToSmartDashboard();
+  AddRobotSequenceSelectorToSmartDashboard();
 }
 
 /*void RobotContainer::ConfigureBindings() {
@@ -99,9 +104,9 @@ void RobotContainer::setUpTankDrive() {
           m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
       return m_rightSlewRateLimiter.Calculate(joystickAfterScaling);
     }
-    TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
-    // m_drivebase->SetDefaultCommand(std::move(tankDrive));
   };
+  TankDrive tankDrive(*m_drivebase, leftSupplier, rightSupplier);
+  m_drivebase->SetDefaultCommand(std::move(tankDrive));
 }
 
 void RobotContainer::setUpArcadeDrive() {
@@ -142,10 +147,10 @@ void RobotContainer::setUpArcadeDrive() {
       double joystickPercentage =
           m_driverController.GetRawAxis(rightDriveJoystickAxis);
       return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    };
-    ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
-    m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
+    }
   };
+  ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
+  m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
 void RobotContainer::setDriveMode(DriveMode mode) {
@@ -188,7 +193,24 @@ void RobotContainer::allocateDriveBase() {
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
-  return AutonomousCommands::Helpers::backwardTest(std::move(m_drivebase));
+  frc2::Command *selectedOperation =
+      m_RobotSequenceAutonomousOptions.GetSelected();
+  frc2::Command *teamAndPosCmd =
+      m_TeamAndStationAutonomousOptions.GetSelected();
+  if (selectedOperation == nullptr || teamAndPosCmd == nullptr) {
+    // This shouldn't happen if things were set up right.  But it did.  So they
+    // weren't. We'll bail out, but at least return a valid pointer that will
+    // tell us something went wrong when it's run.
+    static frc2::PrintCommand somethingIsScrewyCommand(
+        "Selection error: can't decide what to do");
+    return std::move(somethingIsScrewyCommand).ToPtr();
+  }
+
+  std::string operationName = selectedOperation->GetName();
+  std::string teamAndPosName = teamAndPosCmd->GetName();
+
+  return AutonomousCommands::GetAutonomousCommand(*m_drivebase, operationName,
+                                                  teamAndPosName);
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
@@ -196,7 +218,9 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // Smart Dashboard bc it will be deleted and some values that it had would
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(&m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
@@ -206,14 +230,20 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                new RunShooter(&m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(&m_shooter, 0.25, false));
+#endif
+  frc::SmartDashboard::PutData(
+      "reset Climber Revolutions:",
+      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
+#endif
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-
+#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -221,27 +251,16 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "reset Odometry(via command) to (3,6)",
-      new SetRobotOdometry(m_drivebase.get(), frc::Pose2d(3_m, 6_m, 0_rad)));
+      new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
 
-  retainedCommands.push_back(testPathSequence());
-  frc::SmartDashboard::PutData("test path sequence",
-                               retainedCommands.rbegin()->get());
-
-  retainedCommands.push_back(backwardForwardTest());
-  frc::SmartDashboard::PutData("backward forward sequence",
-                               retainedCommands.rbegin()->get());
-
-  retainedCommands.push_back(backwardTest());
-  frc::SmartDashboard::PutData("backward test",
-                               retainedCommands.rbegin()->get());
   /*
     retainedCommands.push_back(
-        GetCommandForTrajectory("test.wpilib.json", m_drivebase.get(),
+        GetCommandForTrajectory("test.wpilib.json", *m_drivebase,
     false)); frc::SmartDashboard::PutData("test path",
     retainedCommands.rbegin()->get());
 
     retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
-                                                       m_drivebase.get(),
+                                                       *m_drivebase,
     false)); frc::SmartDashboard::PutData("curve test path",
                                  retainedCommands.rbegin()->get());*/
 
@@ -297,57 +316,6 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &retractNote);
 }
 #endif
-
-frc2::CommandPtr RobotContainer::testPathSequence() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("blue2tonote2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("blue2tonote2.wpilib.json", m_drivebase.get()))));
-  pose = GetTrajectoryInitialPose("note2toblue2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("note2toblue2.wpilib.json", m_drivebase.get()))));
-
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
-
-frc2::CommandPtr RobotContainer::backwardForwardTest() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("backward.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("backward.wpilib.json", m_drivebase.get()))));
-  pose = GetTrajectoryInitialPose("forward.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("forward.wpilib.json", m_drivebase.get()))));
-
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
-
-frc2::CommandPtr RobotContainer::backwardTest() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("backward2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(m_drivebase.get(), pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("backward2.wpilib.json", m_drivebase.get()))));
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
 
 // AUTO Setup Stuff
 

@@ -16,7 +16,8 @@ namespace AutonomousCommands {
                                         std::string teamAndPosName);
 
   namespace Helpers {
-    frc2::CommandPtr backwardTest(std::unique_ptr<IDrivebase> drivebase);
+    frc2::CommandPtr backwardTest(IDrivebase &drivebase);
+    frc2::CommandPtr blue1aAmp1AmpGo(IDrivebase &drivebase);
 
   }  // namespace Helpers
 }  // namespace AutonomousCommands

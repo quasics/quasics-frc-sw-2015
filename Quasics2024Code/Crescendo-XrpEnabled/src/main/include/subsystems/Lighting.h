@@ -5,6 +5,7 @@
 #pragma once
 
 #include <frc/AddressableLED.h>
+#include <frc/util/Color.h>
 #include <frc2/command/SubsystemBase.h>
 // #include <frcUserProgram/util/Color.h>
 
@@ -22,16 +23,17 @@ class Lighting : public frc2::SubsystemBase {
    * @param g green component, in the range 0..255
    * @param b blue component, in the range 0..255
    */
-  /* void SetAllToColor(int r, int g, int b);
+  /* void setAllToColor(int r, int g, int b);
 
-   void SetAllToColor(const frc::AddressableLED::LedData(int) > colorFunction);
+  void setAllToColor(const frc::AddressableLED::LedData(int)> colorFunction);
 
-   void SetLightColors(
-       std::function<frc::AddressableLED::LedData(int)> colorFunction);
+  void setLightColors(
+      std::function<frc::AddressableLED::LedData(int)> colorFunction);
+  * /
 
-   /* static int GetNumberOfLEDs() {
-     return LightingValues::PIXEL_NUMBER;
-   } */
+      /* static int GetNumberOfLEDs() {
+        return LightingValues::PIXEL_NUMBER;
+      } */
   // uncomment when data of lighting strip is present
 
   /**

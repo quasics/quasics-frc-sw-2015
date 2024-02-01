@@ -36,8 +36,8 @@ RobotContainer::RobotContainer() {
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
 #endif
-  // Configure the button bindings
-  // ConfigureBindings();
+  AddTeamAndStationSelectorToSmartDashboard();
+  AddRobotSequenceSelectorToSmartDashboard();
 }
 
 /*void RobotContainer::ConfigureBindings() {

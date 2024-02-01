@@ -31,8 +31,11 @@ RobotContainer::RobotContainer() {
   // setUpTankDrive();
   setUpArcadeDrive();
   AddTestButtonsOnSmartDashboard();
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
+#endif
   // Configure the button bindings
   // ConfigureBindings();
 }
@@ -215,6 +218,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // Smart Dashboard bc it will be deleted and some values that it had would
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(&m_climber, true));
@@ -225,14 +229,16 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                new RunShooter(&m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(&m_shooter, 0.25, false));
+#endif
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-
+#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -242,17 +248,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       "reset Odometry(via command) to (3,6)",
       new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
 
-  retainedCommands.push_back(testPathSequence());
-  frc::SmartDashboard::PutData("test path sequence",
-                               retainedCommands.rbegin()->get());
-
-  retainedCommands.push_back(backwardForwardTest());
-  frc::SmartDashboard::PutData("backward forward sequence",
-                               retainedCommands.rbegin()->get());
-
-  retainedCommands.push_back(backwardTest());
-  frc::SmartDashboard::PutData("backward test",
-                               retainedCommands.rbegin()->get());
   /*
     retainedCommands.push_back(
         GetCommandForTrajectory("test.wpilib.json", *m_drivebase,
@@ -316,57 +311,6 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &retractNote);
 }
 #endif
-
-frc2::CommandPtr RobotContainer::testPathSequence() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("blue2tonote2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(*m_drivebase, pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("blue2tonote2.wpilib.json", *m_drivebase))));
-  pose = GetTrajectoryInitialPose("note2toblue2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(*m_drivebase, pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("note2toblue2.wpilib.json", *m_drivebase))));
-
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
-
-frc2::CommandPtr RobotContainer::backwardForwardTest() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("backward.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(*m_drivebase, pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("backward.wpilib.json", *m_drivebase))));
-  pose = GetTrajectoryInitialPose("forward.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(*m_drivebase, pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("forward.wpilib.json", *m_drivebase))));
-
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
-
-frc2::CommandPtr RobotContainer::backwardTest() {
-  std::vector<frc2::CommandPtr> commands;
-  frc::Pose2d pose;
-  pose = GetTrajectoryInitialPose("backward2.wpilib.json");
-  commands.push_back(std::move(
-      frc2::CommandPtr(SetRobotOdometry(*m_drivebase, pose).ToPtr())));
-  commands.push_back(std::move(frc2::CommandPtr(
-      GetCommandForTrajectory("backward2.wpilib.json", *m_drivebase))));
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}
 
 // AUTO Setup Stuff
 

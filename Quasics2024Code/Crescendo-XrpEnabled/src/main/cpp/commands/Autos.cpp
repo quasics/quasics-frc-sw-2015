@@ -57,6 +57,6 @@ namespace AutonomousCommands {
     static frc2::PrintCommand fallThroughCaseCommand(
         "*** Error: don't know what to do, based on "
         "selections!");
-    return std::move(fallThroughCaseCommand).ToPtr();  // CHANGE THIS
+    return std::move(fallThroughCaseCommand).ToPtr();
   }
 }  // namespace AutonomousCommands

@@ -15,6 +15,7 @@
 #include <frc/system/plant/LinearSystemId.h>
 #include <frc2/command/SubsystemBase.h>
 
+#include "Constants.h"
 #include "subsystems/IDrivebase.h"
 
 class SimulatedDrivebase : public IDrivebase {
@@ -56,11 +57,13 @@ class SimulatedDrivebase : public IDrivebase {
   static constexpr int kEncoderResolution = 4096;
 
   // Note that we'll simply simulate 1 motor on each side.
-  frc::PWMSparkMax m_leftMotor{1};
-  frc::PWMSparkMax m_rightMotor{3};
+  frc::PWMSparkMax m_leftMotor{PWMPorts::SIMULATED_LEFT_MOTOR_PORT};
+  frc::PWMSparkMax m_rightMotor{PWMPorts::SIMULATED_RIGHT_MOTOR_PORT};
 
-  frc::Encoder m_leftEncoder{0, 1};
-  frc::Encoder m_rightEncoder{2, 3};
+  frc::Encoder m_leftEncoder{DigitalInput::SIMULATED_LEFT_ENCODER_A_PORT,
+                             DigitalInput::SIMULATED_LEFT_ENCODER_B_PORT};
+  frc::Encoder m_rightEncoder{DigitalInput::SIMULATED_RIGHT_ENCODER_A_PORT,
+                              DigitalInput::SIMULATED_RIGHT_ENCODER_B_PORT};
 
   /** Wraps a TrivialEncoder interface around the left encoder. */
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{

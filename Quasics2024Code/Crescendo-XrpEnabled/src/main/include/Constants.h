@@ -106,10 +106,23 @@ namespace RobotSpeedScaling {
   constexpr double TURTLE_MODE_SPEED_SCALING = 0.30;
 }  // namespace RobotSpeedScaling
 
+// DIO ports 0-9 are on-board, 10-25 are on the MXP port.
 namespace DigitalInput {
   constexpr int INTAKE_EXTEND_LIMIT_SWITCH_ID = 8;
   constexpr int INTAKE_RETRACT_LIMIT_SWITCH_ID = 9;
+
+  constexpr int SIMULATED_LEFT_ENCODER_A_PORT = 10;
+  constexpr int SIMULATED_LEFT_ENCODER_B_PORT = 11;
+  constexpr int SIMULATED_RIGHT_ENCODER_A_PORT = 12;
+  constexpr int SIMULATED_RIGHT_ENCODER_B_PORT = 13;
 }  // namespace DigitalInput
+
+// PWM ports 0-9 are on-board, 10-19 are on the MXP port.
+namespace PWMPorts {
+  constexpr int LIGHTING_PORT = 1;
+  constexpr int SIMULATED_LEFT_MOTOR_PORT = 18;
+  constexpr int SIMULATED_RIGHT_MOTOR_PORT = 19;
+}  // namespace PWMPorts
 
 namespace SensorIds {
   constexpr int PIGEON_CAN_ID = 1;

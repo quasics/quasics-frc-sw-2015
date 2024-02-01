@@ -7,7 +7,6 @@
 #include <frc/AddressableLED.h>
 #include <frc/util/Color.h>
 #include <frc2/command/SubsystemBase.h>
-// #include <frcUserProgram/util/Color.h>
 
 #include "Constants.h"
 
@@ -57,9 +56,8 @@ class Lighting : public frc2::SubsystemBase {
   // static const frc::AddressableLED::LEDData PURPLE;
 
  private:
-  /* frc::AddressableLED m_led{LightingValues::PORT_NUMBER};
+  // frc::AddressableLED m_led{PWMPorts::LIGHTING_PORT};
 
-  std::array<frc::AddressableLED::LEDData, LightingValues::PIXEL_NUMBER>
-      m_ledBuffer;
-      */
+  //   std::array<frc::AddressableLED::LEDData, LightingValues::PIXEL_NUMBER>
+  //       m_ledBuffer;
 };

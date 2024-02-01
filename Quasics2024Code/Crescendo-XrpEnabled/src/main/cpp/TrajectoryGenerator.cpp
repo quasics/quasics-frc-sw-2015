@@ -19,7 +19,7 @@
 #include "subsystems/IDrivebase.h"
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
-                                         IDrivebase* driveBase) {
+                                         IDrivebase &drivebase) {
   // Create a voltage constraint to ensure we don't accelerate too fast
   frc::DifferentialDriveVoltageConstraint autoVoltageConstraint{
       frc::SimpleMotorFeedforward<units::meters>{PathWeaverConstants::kS,
@@ -58,32 +58,32 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
       frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
   /*
     frc::Transform2d transform =
-        driveBase->getOdometry().GetPose() - exampleTrajectory.InitialPose();
+        drivebase->getOdometry().GetPose() - exampleTrajectory.InitialPose();
     frc::Trajectory newTrajectory = exampleTrajectory.TransformBy(transform);
   */
   frc2::CommandPtr ramseteCommand{frc2::RamseteCommand(
       exampleTrajectory,
-      [driveBase] {
-        return driveBase->getPose();
+      [&drivebase] {
+        return drivebase.getPose();
       },  // Displaying Get Pose in Dashboard
       frc::RamseteController{kRamseteB, kRamseteZeta},
       frc::SimpleMotorFeedforward<units::meters>{PathWeaverConstants::kS,
                                                  PathWeaverConstants::kV,
                                                  PathWeaverConstants::kA},
-      kDriveKinematics, [driveBase] { return driveBase->getWheelSpeeds(); },
+      kDriveKinematics, [&drivebase] { return drivebase.getWheelSpeeds(); },
       frc::PIDController{PathWeaverConstants::kP, 0, 0},
       frc::PIDController{PathWeaverConstants::kP, 0, 0},
-      [driveBase](auto left, auto right) {
-        driveBase->tankDriveVolts(left, right);
+      [&drivebase](auto left, auto right) {
+        drivebase.tankDriveVolts(left, right);
       },
-      {driveBase})};
+      {&drivebase})};
 
   return std::move(ramseteCommand)
       .BeforeStarting(frc2::cmd::RunOnce(
-          [driveBase] { driveBase->tankDriveVolts(0_V, 0_V); }, {}))
+          [&drivebase] { drivebase.tankDriveVolts(0_V, 0_V); }, {}))
       // Because Mr. Healy is professionally paranoid....
       .AndThen(frc2::cmd::RunOnce(
-          [driveBase] { driveBase->tankDriveVolts(0_V, 0_V); }, {}));
+          [&drivebase] { drivebase.tankDriveVolts(0_V, 0_V); }, {}));
 }
 
 frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad) {

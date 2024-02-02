@@ -158,15 +158,28 @@ using RateLimit = units::unit_t<
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
 namespace AutonomousTeamAndStationPositions {
-  constexpr auto inFrontOfAmp = "In front of amp";      // 1A
-  constexpr auto leftOfSpeaker = "Left of speaker";      // 1B
+  constexpr auto inFrontOfAmp = "In front of amp";          // 1A
+  constexpr auto leftOfSpeaker = "Left of speaker";         // 1B
   constexpr auto inFrontOfSpeaker = "In front of speaker";  // 2
-  constexpr auto rightOfSpeaker = "Right of speaker";      // 3A
-  constexpr auto farField = "Far field";             // 3B
+  constexpr auto rightOfSpeaker = "Right of speaker";       // 3A
+  constexpr auto farField = "Far field";                    // 3B
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSelectedOperation {
-  const auto DoNothing = "Do nothing";
-  const auto ScoreTwiceGTFO = "ScoreTwiceGTFO";
-  const auto ScoreThreeGTFO = "ScoreThreeGTFO";
+  const auto doNothing = "Do nothing";
+  const auto GTFO = "GTFO";
+  const auto score1 = "Score 1 piece";
+  const auto score1GTFO = "Score 1 piece, GTFO";
+  const auto score2 = "Score 2 piece";
+  const auto score2GTFO = "Score 2 piece, GTFO";
+  const auto Score3 = "Score 3 piece";
+  const auto score3GTFO = "Score 3 piece, GTFO";
 }  // namespace AutonomousSelectedOperation
+
+namespace AutonomousScoreDestinations {
+  const auto none = "None";
+  const auto amp = "Amp";
+  const auto leftOfSpeaker = "Left of speaker";
+  const auto inFrontOfSpeaker = "In front of speaker";
+  const auto rightOfSpeaker = "Right of speaker";
+}  // namespace AutonomousScoreDestinations

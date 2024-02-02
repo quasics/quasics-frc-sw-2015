@@ -66,15 +66,19 @@ namespace AutonomousCommands {
 
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
                                         std::string operationName,
-                                        std::string teamAndPosName) {
-    using namespace Helpers;
+                                        std::string teamAndPosName,
+                                        std::string score2Dest,
+                                        std::string score3Dest) {
+    /* TODO: Implement this
+using namespace Helpers;
 
-    if (operationName == AutonomousSelectedOperation::DoNothing) {
-      frc2::PrintCommand doNothing("Doing nothing, as instructed");
-      return std::move(doNothing).ToPtr();
-    } else if (operationName == AutonomousSelectedOperation::ScoreTwiceGTFO) {
-      return blue1aAmp1AmpGo(drivebase);
-    }
+if (operationName == AutonomousSelectedOperation::doNothing) {
+frc2::PrintCommand doNothing("Doing nothing, as instructed");
+return std::move(doNothing).ToPtr();
+} else if (operationName == AutonomousSelectedOperation::ScoreTwiceGTFO) {
+return blue1aAmp1AmpGo(drivebase);
+}
+*/
     static frc2::PrintCommand fallThroughCaseCommand(
         "*** Error: don't know what to do, based on "
         "selections!");

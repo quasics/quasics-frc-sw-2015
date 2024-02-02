@@ -158,16 +158,15 @@ using RateLimit = units::unit_t<
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
 namespace AutonomousTeamAndStationPositions {
-  constexpr auto Blue1 = "Blue 1";
-  constexpr auto Blue2 = "Blue 2";
-  constexpr auto Blue3 = "Blue 3";
-  constexpr auto Red1 = "Red 1";
-  constexpr auto Red2 = "Red 2";
-  constexpr auto Red3 = "Red 3";
+  constexpr auto inFrontOfAmp = "In front of amp";      // 1A
+  constexpr auto leftOfSpeaker = "Left of speaker";      // 1B
+  constexpr auto inFrontOfSpeaker = "In front of speaker";  // 2
+  constexpr auto rightOfSpeaker = "Right of speaker";      // 3A
+  constexpr auto farField = "Far field";             // 3B
 }  // namespace AutonomousTeamAndStationPositions
 
 namespace AutonomousSelectedOperation {
   const auto DoNothing = "Do nothing";
   const auto ScoreTwiceGTFO = "ScoreTwiceGTFO";
   const auto ScoreThreeGTFO = "ScoreThreeGTFO";
-}
+}  // namespace AutonomousSelectedOperation

@@ -337,11 +337,10 @@ void AddingNamedPositionsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
-          {AutonomousTeamAndStationPositions::Blue2, "Blue 2"},
-          {AutonomousTeamAndStationPositions::Blue3, "Blue 3"},
-          {AutonomousTeamAndStationPositions::Red1, "Red 1"},
-          {AutonomousTeamAndStationPositions::Red2, "Red 2"},
-          {AutonomousTeamAndStationPositions::Red3, "Red 3"},
+          {AutonomousTeamAndStationPositions::leftOfSpeaker, "Blue 2"},
+          {AutonomousTeamAndStationPositions::inFrontOfSpeaker, "Blue 3"},
+          {AutonomousTeamAndStationPositions::rightOfSpeaker, "Red 1"},
+          {AutonomousTeamAndStationPositions::farField, "Red 2"},
       };
 
   for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
@@ -363,8 +362,8 @@ void AddingNamedAutonomousSequencesToSelectorWithLoop(
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
-      AutonomousTeamAndStationPositions::Blue1,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::Blue1,
+      AutonomousTeamAndStationPositions::inFrontOfAmp,
+      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::inFrontOfAmp,
                              "Blue 1"));
 
   AddingNamedPositionsToSelectorWithLoop(m_TeamAndStationAutonomousOptions);

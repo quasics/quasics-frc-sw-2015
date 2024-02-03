@@ -60,7 +60,7 @@ public interface RobotSettings {
         // Vision
         "photonvision",
         new Transform3d(
-            new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, Units.degreesToRadians(-25), 0)),
+            new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, Units.degreesToRadians(-30), 0)),
         // Lighting
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Xrp(MotorConfigModel.NoLeader,

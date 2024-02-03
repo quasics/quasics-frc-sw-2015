@@ -164,7 +164,7 @@ public class RobotContainer {
     configureBindings();
 
     // Tags 9&10 are on the Blue Source wall
-    SmartDashboard.putData("Target 13",
+    SmartDashboard.putData("Target 10",
         new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
             Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
 

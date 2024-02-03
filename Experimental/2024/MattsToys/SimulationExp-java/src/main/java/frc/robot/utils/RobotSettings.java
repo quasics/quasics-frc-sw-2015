@@ -1,9 +1,5 @@
 package frc.robot.utils;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Per;
-import edu.wpi.first.units.Velocity;
-
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
@@ -14,6 +10,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Per;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 
 /**
@@ -48,8 +47,7 @@ public interface RobotSettings {
     /*
      * Supported values
      */
-    Simulator(
-        MotorConfigModel.NoLeader,
+    Simulator(MotorConfigModel.NoLeader,
         /* Track Width (m) */
         Meters.of(0.381 * 2),
         /* Gear ratio */
@@ -57,16 +55,15 @@ public interface RobotSettings {
         /* PID */
         1.3195, 0.0, 0.0, // WPI sample used 8.5, 0, 0
         /* Gains (WPI sample\ used 1, 3, 0) */
-        Volts.of(0.013809), VoltsPerMeterPerSecond.of(1.9805), VoltsPerMeterPerSecondSquared.of(0.19208),
+        Volts.of(0.013809), VoltsPerMeterPerSecond.of(1.9805),
+        VoltsPerMeterPerSecondSquared.of(0.19208),
         // Vision
         "photonvision",
         new Transform3d(
-            new Translation3d(0.5, 0.0, 0.5),
-            new Rotation3d(0, Units.degreesToRadians(-20), 0)),
+            new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, Units.degreesToRadians(-25), 0)),
         // Lighting
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
-    Xrp(
-        MotorConfigModel.NoLeader,
+    Xrp(MotorConfigModel.NoLeader,
         /* Track Width (m) */
         Meters.of(0.155),
         /* Gear ratio */
@@ -74,10 +71,8 @@ public interface RobotSettings {
         /* PID */
         8.5, 0.0, 0.0, // TODO: Profile the XRP
         /* Gains */
-        Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
-        "",
-        new Transform3d(),
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0), "",
+        new Transform3d(), DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Romi(
         // Motor config model
         MotorConfigModel.NoLeader,
@@ -90,8 +85,7 @@ public interface RobotSettings {
         // Gains
         Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0),
         // Vision data
-        "",
-        new Transform3d(),
+        "", new Transform3d(),
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Sally(
@@ -126,7 +120,8 @@ public interface RobotSettings {
          * values. (Though we also changed the hardware significantly
          * post-season.)
          */
-        Volts.of(0.13895), VoltsPerMeterPerSecond.of(1.3143), VoltsPerMeterPerSecondSquared.of(0.1935),
+        Volts.of(0.13895), VoltsPerMeterPerSecond.of(1.3143),
+        VoltsPerMeterPerSecondSquared.of(0.1935),
         // Vision data
         "",
         new Transform3d(), // TODO: Add robot-to-camera transform for Mae
@@ -163,7 +158,7 @@ public interface RobotSettings {
 
     /**
      * Constructor.
-     * 
+     *
      * @param motorConfigModel drive base motor configuration model
      * @param trackWidthMeters track width
      * @param gearRatio        gear ration
@@ -179,11 +174,11 @@ public interface RobotSettings {
      * @param lightingPort     PWM port for the LED strip
      * @param numLights        # of pixels on the LED strip
      */
-    private Robot(MotorConfigModel motorConfigModel, Measure<Distance> trackWidthMeters, double gearRatio, double kP,
-        double kI, double kD,
-        Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
-        Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA,
-        String cameraName, Transform3d robotToCamera, int lightingPort, int numLights) {
+    private Robot(MotorConfigModel motorConfigModel, Measure<Distance> trackWidthMeters,
+        double gearRatio, double kP, double kI, double kD, Measure<Voltage> kS,
+        Measure<Per<Voltage, Velocity<Distance>>> kV,
+        Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA, String cameraName,
+        Transform3d robotToCamera, int lightingPort, int numLights) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;
       this.gearRatio = gearRatio;

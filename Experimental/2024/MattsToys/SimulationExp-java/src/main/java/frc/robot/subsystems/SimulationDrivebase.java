@@ -60,8 +60,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     m_leftEncoder = new Encoder(0, 1);
     m_rightEncoder = new Encoder(2, 3);
-    m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-    m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
@@ -78,6 +76,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_leftEncoderSim = new EncoderSim(m_leftEncoder);
     m_rightEncoderSim = new EncoderSim(m_rightEncoder);
     SmartDashboard.putData("Field", m_fieldSim);
+
+    m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+    m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
   }
 
   private void configureDriveMotorsAndSensors() {

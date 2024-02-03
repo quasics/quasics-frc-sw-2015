@@ -214,8 +214,8 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string score3DestName = score3Dest->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, m_shooter, operationName, teamAndPosName, score2DestName,
-      score3DestName);
+      *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
+      operationName, teamAndPosName, score2DestName, score3DestName);
 }
 #endif
 #ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
@@ -373,14 +373,14 @@ void AddingNamedStartingPositionsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
-          {AutonomousTeamAndStationPositions::leftOfSpeaker,
-           AutonomousTeamAndStationPositions::leftOfSpeaker},
-          {AutonomousTeamAndStationPositions::inFrontOfSpeaker,
-           AutonomousTeamAndStationPositions::inFrontOfSpeaker},
-          {AutonomousTeamAndStationPositions::rightOfSpeaker,
-           AutonomousTeamAndStationPositions::rightOfSpeaker},
-          {AutonomousTeamAndStationPositions::farField,
-           AutonomousTeamAndStationPositions::farField},
+          {AutonomousStartingPositions::leftOfSpeaker,
+           AutonomousStartingPositions::leftOfSpeaker},
+          {AutonomousStartingPositions::inFrontOfSpeaker,
+           AutonomousStartingPositions::inFrontOfSpeaker},
+          {AutonomousStartingPositions::rightOfSpeaker,
+           AutonomousStartingPositions::rightOfSpeaker},
+          {AutonomousStartingPositions::farField,
+           AutonomousStartingPositions::farField},
       };
 
   for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
@@ -441,8 +441,8 @@ void RobotContainer::AddAutoSelectionsToSmartDashboard() {
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
-      AutonomousTeamAndStationPositions::inFrontOfAmp,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::inFrontOfAmp));
+      AutonomousStartingPositions::inFrontOfAmp,
+      BuildNamedPrintCommand(AutonomousStartingPositions::inFrontOfAmp));
 
   AddingNamedStartingPositionsToSelectorWithLoop(
       m_TeamAndStationAutonomousOptions);

@@ -9,11 +9,14 @@
 #include <string>
 
 #include "subsystems/IDrivebase.h"
+#include "subsystems/IntakeDeployment.h"
+#include "subsystems/IntakeRoller.h"
 #include "subsystems/Shooter.h"
 
 namespace AutonomousCommands {
-  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
-                                        Shooter &m_shooter,
+  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase, Shooter &shooter,
+                                        IntakeDeployment &intakeDeployment,
+                                        IntakeRoller &intakeRoller,
                                         std::string operationName,
                                         std::string teamAndPosName,
                                         std::string score2Dest,

@@ -370,8 +370,8 @@ void AddingNamedOverallOperationsToSelectorWithLoop(
            AutonomousSelectedOperation::score2},
           {AutonomousSelectedOperation::score2GTFO,
            AutonomousSelectedOperation::score2GTFO},
-          {AutonomousSelectedOperation::Score3,
-           AutonomousSelectedOperation::Score3},
+          {AutonomousSelectedOperation::score3,
+           AutonomousSelectedOperation::score3},
           {AutonomousSelectedOperation::score3GTFO,
            AutonomousSelectedOperation::score3GTFO},
       };

@@ -62,8 +62,8 @@ public class RobotContainer {
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
-      MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE =
+      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
 
   private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
 
@@ -77,17 +77,13 @@ public class RobotContainer {
   Supplier<Double> m_arcadeDriveRotationStick;
 
   /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode {
-    eSimulation, eXrp, eRomi
-  }
+  private enum SimulationMode { eSimulation, eXrp, eRomi }
 
   /** Currently-configured option when running under the simulator. */
   private final SimulationMode m_simulationMode = SimulationMode.eSimulation;
 
   /** Defines options for auto mode. */
-  private enum AutoMode {
-    eDoNothing, eSpin, eFollowTrajectory
-  }
+  private enum AutoMode { eDoNothing, eSpin, eFollowTrajectory }
 
   /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eDoNothing;
@@ -99,10 +95,10 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
+      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
-  Pose2d computeInitialPoseForDriversStation(Alliance alliance,
-      int driversStation) {
+  Pose2d computeInitialPoseForDriversStation(Alliance alliance, int driversStation) {
     // Assume we're always facing *out* from the driver's station (for now),
     // and are right in front of it.
     Measure<Angle> initialAngle;
@@ -129,8 +125,7 @@ public class RobotContainer {
         yPos = Meters.of(7.255);
       }
     }
-    return new Pose2d(new Translation2d(xPos, yPos),
-        new Rotation2d(initialAngle));
+    return new Pose2d(new Translation2d(xPos, yPos), new Rotation2d(initialAngle));
   }
 
   void resetPositionFromAllianceSelection() {
@@ -143,8 +138,8 @@ public class RobotContainer {
       location = OptionalInt.of(1);
     }
 
-    m_drivebase.resetOdometry(computeInitialPoseForDriversStation(
-        alliance.get(), location.getAsInt()));
+    m_drivebase.resetOdometry(
+        computeInitialPoseForDriversStation(alliance.get(), location.getAsInt()));
     if (m_vision != null) {
       var pose = m_drivebase.getPose();
       m_vision.updateReferencePose(pose);
@@ -169,8 +164,9 @@ public class RobotContainer {
     configureBindings();
 
     // Tags 9&10 are on the Blue Source wall
-    SmartDashboard.putData("Target 13", new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
-        Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
+    SmartDashboard.putData("Target 13",
+        new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
+            Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
 
     System.err.println("Writing logs to: " + DataLogManager.getLogDir());
   }
@@ -182,8 +178,8 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> -m_controller.getLeftX();
-      m_arcadeDriveRotationStick = () -> -m_controller.getRightY();
+      m_arcadeDriveForwardStick = () -> - m_controller.getLeftX();
+      m_arcadeDriveRotationStick = () -> - m_controller.getRightY();
     } else {
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
@@ -201,9 +197,8 @@ public class RobotContainer {
           drivebase = new SimulationDrivebase(m_selectedRobot);
           break;
         default:
-          System.err.println("**** WARNING: Unrecognized simulation mode (" +
-              m_simulationMode +
-              "), falling back on pure simulator");
+          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
+              + "), falling back on pure simulator");
           drivebase = new SimulationDrivebase(m_selectedRobot);
           break;
       }
@@ -225,88 +220,80 @@ public class RobotContainer {
     }
 
     if (vision != null) {
-      vision.setPoseEstimatorConsumer(
-          (Pose2d pose, Double timestampSeconds) -> {
-            m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
-            return null;
-          });
+      vision.setPoseEstimatorConsumer((Pose2d pose, Double timestampSeconds) -> {
+        m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
+        return null;
+      });
     }
 
     return vision;
   }
 
   private void configureBindings() {
-    m_drivebase.setDefaultCommand(new ArcadeDrive(
-        m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
 
     // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
     // complete routine should run each of these once.
     SmartDashboard.putData(
-        "Quasistatic Fwd",
-        m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        "Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData(
-        "Quasistatic Rev",
-        m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Dynamic Fwd", m_drivebase.sysIdDynamic(
-        SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Dynamic Rev", m_drivebase.sysIdDynamic(
-        SysIdRoutine.Direction.kReverse));
+        "Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     if (ENABLE_VISION_SUBSYSTEM) {
-      SmartDashboard.putData(
-          "Reset position",
-          new InstantCommand(
-              () -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
+      SmartDashboard.putData("Reset position",
+          new InstantCommand(() -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
     }
 
-    SmartDashboard.putData("Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
+    SmartDashboard.putData(
+        "Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
   }
 
   public Command getAutonomousCommand() {
     switch (mode) {
       case eDoNothing:
-        return new PrintCommand(
-            "*** Auto mode: doing nothing, as instructed....");
+        return new PrintCommand("*** Auto mode: doing nothing, as instructed....");
       case eSpin:
         return new SpinInPlace(m_drivebase);
       case eFollowTrajectory:
         return generateAutoModeSCurveCommand();
       default:
-        return new PrintCommand(
-            "*****\n***** Error: Unhandled AutoMode setting!\n*****");
+        return new PrintCommand("*****\n***** Error: Unhandled AutoMode setting!\n*****");
     }
   }
 
   private Command generateFunctionalCommandForControlSystemSampleTrajectory() {
-    final Trajectory t = TrajectoryGenerator.generateTrajectory(
-        new Pose2d(2, 2, new Rotation2d()), List.of(),
-        new Pose2d(6, 4, new Rotation2d()), new TrajectoryConfig(2, 2));
+    final Trajectory t = TrajectoryGenerator.generateTrajectory(new Pose2d(2, 2, new Rotation2d()),
+        List.of(), new Pose2d(6, 4, new Rotation2d()), new TrajectoryConfig(2, 2));
     final RamseteController ramsete = new RamseteController();
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        () -> {
+        ()
+            -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        () -> {
+        ()
+            -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
-          m_drivebase.arcadeDrive(
-              MetersPerSecond.of(speeds.vxMetersPerSecond),
+          m_drivebase.arcadeDrive(MetersPerSecond.of(speeds.vxMetersPerSecond),
               RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
-        (Boolean interrupted) -> {
-          m_drivebase.stop();
-        },
+        (Boolean interrupted)
+            -> { m_drivebase.stop(); },
         // isFinished
-        () -> {
-          return false;
-        },
+        ()
+            -> { return false; },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -314,19 +301,21 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
-        m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(),
-        /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints =
+        new DifferentialDriveVoltageConstraint(m_drivebase.getMotorFeedforward(),
+            m_drivebase.getKinematics(),
+            /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(m_drivebase.getKinematics())
-    // // Apply the voltage constraint
-    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-    // .addConstraint(voltageConstraints)
-    // End of constraints
-    ;
+    TrajectoryConfig config =
+        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(m_drivebase.getKinematics())
+        // // Apply the voltage constraint
+        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+        // .addConstraint(voltageConstraints)
+        // End of constraints
+        ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
@@ -339,12 +328,10 @@ public class RobotContainer {
         // Pass config
         config);
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
-        exampleTrajectory, m_drivebase::getPose, new RamseteController(2, 0.7),
-        m_drivebase.getMotorFeedforward(), m_drivebase.getKinematics(),
-        m_drivebase::getWheelSpeeds,
-        new PIDController(m_drivebase.getKP(), 0, 0),
-        new PIDController(m_drivebase.getKP(), 0, 0),
+    RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, m_drivebase::getPose,
+        new RamseteController(2, 0.7), m_drivebase.getMotorFeedforward(),
+        m_drivebase.getKinematics(), m_drivebase::getWheelSpeeds,
+        new PIDController(m_drivebase.getKP(), 0, 0), new PIDController(m_drivebase.getKP(), 0, 0),
         // RamseteCommand passes volts to the callback
         m_drivebase::setMotorVoltages, m_drivebase);
 
@@ -362,8 +349,7 @@ public class RobotContainer {
       case eControlSystemExampleRamseteCommand:
         return generateRamseteCommandForControlSystemSampleTrajectory();
       case eTrajectoryCommandGeneratorExample:
-        return m_trajectoryCommandGenerator.generateCommand(
-            AUTO_SPEED_PROFILE,
+        return m_trajectoryCommandGenerator.generateCommand(AUTO_SPEED_PROFILE,
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
@@ -371,8 +357,7 @@ public class RobotContainer {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(3, 0, new Rotation2d(0)), false);
       default:
-        return new PrintCommand(
-            "Unexpected value for m_autoModeTrajectorySelection!");
+        return new PrintCommand("Unexpected value for m_autoModeTrajectorySelection!");
     }
   }
 }

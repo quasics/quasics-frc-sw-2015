@@ -157,13 +157,13 @@ using RateLimit = units::unit_t<
 /** Limit on robot acceleration. */
 constexpr RateLimit DRIVER_JOYSTICK_RATE_LIMIT = 1 / 1_s;
 
-namespace AutonomousTeamAndStationPositions {
+namespace AutonomousStartingPositions {
   constexpr auto inFrontOfAmp = "In front of amp";          // 1A
   constexpr auto leftOfSpeaker = "Left of speaker";         // 1B
   constexpr auto inFrontOfSpeaker = "In front of speaker";  // 2
   constexpr auto rightOfSpeaker = "Right of speaker";       // 3A
   constexpr auto farField = "Far field";                    // 3B
-}  // namespace AutonomousTeamAndStationPositions
+}  // namespace AutonomousStartingPositions
 
 namespace AutonomousSelectedOperation {
   const auto doNothing = "Do nothing";
@@ -183,3 +183,18 @@ namespace AutonomousScoreDestinations {
   const auto inFrontOfSpeaker = "In front of speaker";
   const auto rightOfSpeaker = "Right of speaker";
 }  // namespace AutonomousScoreDestinations
+
+namespace ShooterSpeeds {
+  const double amp = 0.5;
+  const double speaker = 1.0;
+}  // namespace ShooterSpeeds
+
+namespace IntakeSpeeds {
+  const double intakeDeploymentSpeed = 0.5;
+  const double intakeRollerSpeed = 0.5;
+  const double feedingSpeed = 0.5;
+}  // namespace IntakeSpeeds
+
+namespace AutonomousTimes {
+  const units::second_t waitTimeAfterShooting = 0.1_s;
+}

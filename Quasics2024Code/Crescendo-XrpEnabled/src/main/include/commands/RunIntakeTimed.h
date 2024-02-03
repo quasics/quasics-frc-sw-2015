@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -16,9 +17,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
+class RunIntakeTimed
+    : public frc2::CommandHelper<frc2::Command, RunIntakeTimed> {
  public:
-  RunIntake(IntakeRoller &intake, double intakeSpeed, bool takingIn);
+  RunIntakeTimed(IntakeRoller &intake, double intakeSpeed, units::second_t time,
+                 bool takingIn);
 
   void Initialize() override;
 
@@ -31,5 +34,7 @@ class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
  private:
   IntakeRoller &m_intake;
   const double m_intakeSpeed;
+  const units::second_t m_time;
+  frc::Timer m_stopWatch;
   const bool m_takingIn;
 };

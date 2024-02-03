@@ -18,7 +18,7 @@
  */
 class RunShooter : public frc2::CommandHelper<frc2::Command, RunShooter> {
  public:
-  RunShooter(Shooter* shooter, double shooterSpeed, bool shooting);
+  RunShooter(Shooter& shooter, double shooterSpeed, bool shooting);
 
   void Initialize() override;
 
@@ -29,7 +29,7 @@ class RunShooter : public frc2::CommandHelper<frc2::Command, RunShooter> {
   bool IsFinished() override;
 
  private:
-  Shooter* m_shooter;
+  Shooter& m_shooter;
   const double m_shooterSpeed;
   const bool m_shooting;
 };

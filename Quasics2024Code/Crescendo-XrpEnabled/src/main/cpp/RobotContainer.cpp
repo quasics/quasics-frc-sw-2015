@@ -19,6 +19,7 @@
 #include "commands/RunShooter.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
+#include "commands/TimedMovementTest.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
@@ -190,7 +191,7 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
@@ -214,9 +215,17 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string score3DestName = score3Dest->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, operationName, teamAndPosName, score2DestName,
-      score3DestName);
+      *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
+      operationName, teamAndPosName, score2DestName, score3DestName);
 }
+#endif
+#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+  static frc2::PrintCommand message(
+      "Autonomous commands cannot be run without full robot functionality");
+  return std::move(message).ToPtr();
+}
+#endif
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC
@@ -224,29 +233,22 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
-                               new MoveClimbers(&m_climber, true));
+                               new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
-                               new MoveClimbers(&m_climber, false));
+                               new MoveClimbers(m_climber, false));
 
   frc::SmartDashboard::PutData("Shoot Note",
-                               new RunShooter(&m_shooter, 0.25, true));
+                               new RunShooter(m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
-                               new RunShooter(&m_shooter, 0.25, false));
-#endif
+                               new RunShooter(m_shooter, 0.25, false));
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-  frc::SmartDashboard::PutData(
-      "reset Climber Revolutions:",
-      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -296,6 +298,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT FORWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT BACKWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -310,10 +320,10 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 }
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
-  static MoveClimbers extendClimbers(&m_climber, true);
-  static MoveClimbers retractClimbers(&m_climber, false);
-  static RunIntake intakeNote(&m_intakeRoller, 0.5, true);
-  static RunIntake dropNote(&m_intakeRoller, 0.5, false);
+  static MoveClimbers extendClimbers(m_climber, true);
+  static MoveClimbers retractClimbers(m_climber, false);
+  static RunIntake intakeNote(m_intakeRoller, 0.5, true);
+  static RunIntake dropNote(m_intakeRoller, 0.5, false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);
@@ -326,10 +336,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 }
 
 void RobotContainer::ConfigureOperatorControllerButtonBindings() {
-  static PivotIntake extendIntake(&m_intakeDeployment, 0.5, true);
-  static PivotIntake retractIntake(&m_intakeDeployment, 0.5, false);
-  static RunShooter shootNote(&m_shooter, 0.5, true);
-  static RunShooter retractNote(&m_shooter, -0.5, true);
+  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
+  static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
+  static RunShooter shootNote(m_shooter, 0.5, true);
+  static RunShooter retractNote(m_shooter, -0.5, true);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
@@ -362,14 +372,14 @@ void AddingNamedStartingPositionsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
-          {AutonomousTeamAndStationPositions::leftOfSpeaker,
-           AutonomousTeamAndStationPositions::leftOfSpeaker},
-          {AutonomousTeamAndStationPositions::inFrontOfSpeaker,
-           AutonomousTeamAndStationPositions::inFrontOfSpeaker},
-          {AutonomousTeamAndStationPositions::rightOfSpeaker,
-           AutonomousTeamAndStationPositions::rightOfSpeaker},
-          {AutonomousTeamAndStationPositions::farField,
-           AutonomousTeamAndStationPositions::farField},
+          {AutonomousStartingPositions::leftOfSpeaker,
+           AutonomousStartingPositions::leftOfSpeaker},
+          {AutonomousStartingPositions::inFrontOfSpeaker,
+           AutonomousStartingPositions::inFrontOfSpeaker},
+          {AutonomousStartingPositions::rightOfSpeaker,
+           AutonomousStartingPositions::rightOfSpeaker},
+          {AutonomousStartingPositions::farField,
+           AutonomousStartingPositions::farField},
       };
 
   for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
@@ -430,8 +440,8 @@ void RobotContainer::AddAutoSelectionsToSmartDashboard() {
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
   m_TeamAndStationAutonomousOptions.SetDefaultOption(
-      AutonomousTeamAndStationPositions::inFrontOfAmp,
-      BuildNamedPrintCommand(AutonomousTeamAndStationPositions::inFrontOfAmp));
+      AutonomousStartingPositions::inFrontOfAmp,
+      BuildNamedPrintCommand(AutonomousStartingPositions::inFrontOfAmp));
 
   AddingNamedStartingPositionsToSelectorWithLoop(
       m_TeamAndStationAutonomousOptions);

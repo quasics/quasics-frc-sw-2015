@@ -27,6 +27,12 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   double GetVelocity();
 
+  double GetRevolutions();
+
+  bool ExtendedByRevolutions();
+
+  bool RetractedByRevolutions();
+
   void EnableBraking(bool value);
 
   bool IsIntakeDeployed();

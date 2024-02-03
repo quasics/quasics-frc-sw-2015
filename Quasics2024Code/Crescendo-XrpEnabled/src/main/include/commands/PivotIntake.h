@@ -18,7 +18,7 @@
  */
 class PivotIntake : public frc2::CommandHelper<frc2::Command, PivotIntake> {
  public:
-  PivotIntake(IntakeDeployment* IntakeDeployment, double speed, bool extend);
+  PivotIntake(IntakeDeployment &IntakeDeployment, double speed, bool extend);
 
   void Initialize() override;
 
@@ -29,7 +29,7 @@ class PivotIntake : public frc2::CommandHelper<frc2::Command, PivotIntake> {
   bool IsFinished() override;
 
  private:
-  IntakeDeployment* m_intakeDeployment;
+  IntakeDeployment &m_intakeDeployment;
   const double m_intakeDeploymentSpeed;
   const bool m_extending;
 };

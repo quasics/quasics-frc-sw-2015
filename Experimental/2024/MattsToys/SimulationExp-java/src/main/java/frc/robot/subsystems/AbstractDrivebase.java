@@ -56,6 +56,19 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum rotational speed is 1/2 rotation per second. */
   public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
+  final static DeadbandEnforcer wheelSpeedsDeadband = new DeadbandEnforcer(0.1);
+
+  final static DeadbandEnforcer drivePercentageDeadband = new DeadbandEnforcer(0.05);
+
+  private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
+
+  protected static final boolean LOG_TO_SMARTDASHBOARD = false;
+
+  protected static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
+
+  // TODO: Consider adjusting this max output to prevent running @ 100%.
+  private static double MOTORS_PERCENT_MAX_OUTPUT = 1.0;
+
   private final PIDController m_leftPIDController;
   private final PIDController m_rightPIDController;
   private final SimpleMotorFeedforward m_feedforward;
@@ -64,10 +77,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   private final Measure<Distance> m_driveBaseLengthWithBumpers;
   private final Measure<Distance> m_driveBaseWidthWithBumpers;
-
-  private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
-
-  protected static final boolean LOG_TO_SMARTDASHBOARD = false;
 
   /**
    * Constructor.
@@ -243,8 +252,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     }
   }
 
-  static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
-
   /**
    * Controls the robot using arcade drive.
    *
@@ -274,23 +281,21 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
-  final static DeadbandEnforcer speedEnforcer = new DeadbandEnforcer(0.1);
-
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond,
         true);
   }
 
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeedsImpl(double leftMetersPerSecond,
       double rightMetersPerSecond,
       boolean includePid) {
     logValue("leftSpeed", leftMetersPerSecond);
     logValue("rightSpeed", rightMetersPerSecond);
 
-    var leftStabilized = speedEnforcer.limit(leftMetersPerSecond);
-    var rightStabilized = speedEnforcer.limit(rightMetersPerSecond);
+    var leftStabilized = wheelSpeedsDeadband.limit(leftMetersPerSecond);
+    var rightStabilized = wheelSpeedsDeadband.limit(rightMetersPerSecond);
     logValue("leftStable", leftStabilized);
     logValue("rightStable", rightStabilized);
 
@@ -322,9 +327,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * so that we can periodically update it, as required for voltage compensation
    * to work properly).
    *
-   * @param leftVoltage
-   * @param rightVoltage
-   *
    * @see edu.wpi.first.wpilibj.motorcontrol.MotorController#setVoltage
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
@@ -353,18 +355,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speedPercentage;
   }
 
-  // TODO: Consider adjusting this max output to prevent running @ 100%.
-  private static double TANK_DRIVE_PERCENT_MAX_OUTPUT = 1.0;
-
   // TODO: Think about replacing "double" with something type-safe. (Using
   // Measure<Dimensionless> won't work unless I change the function name.)
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
-    // TODO: Apply deadbands (and look at MathUtil.applyDeadband, which I just
-    // saw...)
     WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(xSpeed, rotationSpeed, squareInputs);
 
-    double adjustedLeftPercent = speeds.left * TANK_DRIVE_PERCENT_MAX_OUTPUT;
-    double adjustedRightPercent = speeds.right * TANK_DRIVE_PERCENT_MAX_OUTPUT;
+    double adjustedLeftPercent = drivePercentageDeadband.limit(speeds.left * MOTORS_PERCENT_MAX_OUTPUT);
+    double adjustedRightPercent = drivePercentageDeadband.limit(speeds.right * MOTORS_PERCENT_MAX_OUTPUT);
     tankDrivePercent_HAL(adjustedLeftPercent, adjustedRightPercent);
   }
 

@@ -361,8 +361,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // TODO: Think about replacing "double" with something type-safe. (Using
   // Measure<Dimensionless> won't work unless I change the function name.)
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
-    // TODO: Apply deadbands (and look at MathUtil.applyDeadband, which I just
-    // saw...)
     WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(xSpeed, rotationSpeed, squareInputs);
 
     double adjustedLeftPercent = drivePercentageDeadband.limit(speeds.left * MOTORS_PERCENT_MAX_OUTPUT);

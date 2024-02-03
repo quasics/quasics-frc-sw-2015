@@ -190,7 +190,7 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
@@ -217,6 +217,14 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       *m_drivebase, m_shooter, operationName, teamAndPosName, score2DestName,
       score3DestName);
 }
+#endif
+#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+  static frc2::PrintCommand message(
+      "Autonomous commands cannot be run without full robot functionality");
+  return std::move(message).ToPtr();
+}
+#endif
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC

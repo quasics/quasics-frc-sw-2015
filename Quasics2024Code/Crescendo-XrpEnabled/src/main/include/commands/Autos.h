@@ -9,9 +9,11 @@
 #include <string>
 
 #include "subsystems/IDrivebase.h"
+#include "subsystems/Shooter.h"
 
 namespace AutonomousCommands {
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
+                                        Shooter &m_shooter,
                                         std::string operationName,
                                         std::string teamAndPosName,
                                         std::string score2Dest,
@@ -20,6 +22,8 @@ namespace AutonomousCommands {
   namespace Helpers {
     frc2::CommandPtr backwardTest(IDrivebase &drivebase);
     frc2::CommandPtr blue1aAmp1AmpGo(IDrivebase &drivebase);
+    frc2::CommandPtr resetOdometryToStartingPosition(IDrivebase &drivebase,
+                                                     std::string position);
 
   }  // namespace Helpers
 }  // namespace AutonomousCommands

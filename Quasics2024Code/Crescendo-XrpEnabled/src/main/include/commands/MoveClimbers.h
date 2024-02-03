@@ -18,7 +18,7 @@
  */
 class MoveClimbers : public frc2::CommandHelper<frc2::Command, MoveClimbers> {
  public:
-  MoveClimbers(Climber* climber, bool extending);
+  MoveClimbers(Climber &climber, bool extending);
 
   void Initialize() override;
 
@@ -29,6 +29,6 @@ class MoveClimbers : public frc2::CommandHelper<frc2::Command, MoveClimbers> {
   bool IsFinished() override;
 
  private:
-  Climber* m_climber;
+  Climber &m_climber;
   const bool m_extending;
 };

@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/IntakeRoller.h"
+#include "subsystems/IntakeDeployment.h"
 
 /**
  * An example command.
@@ -16,9 +17,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
+class PivotIntakeAuto
+    : public frc2::CommandHelper<frc2::Command, PivotIntakeAuto> {
  public:
-  RunIntake(IntakeRoller &intake, double intakeSpeed, bool takingIn);
+  PivotIntakeAuto(IntakeDeployment& IntakeDeployment, double speed,
+                  bool extend);
 
   void Initialize() override;
 
@@ -29,7 +32,7 @@ class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
   bool IsFinished() override;
 
  private:
-  IntakeRoller &m_intake;
-  const double m_intakeSpeed;
-  const bool m_takingIn;
+  IntakeDeployment& m_intakeDeployment;
+  const double m_intakeDeploymentSpeed;
+  const bool m_extending;
 };

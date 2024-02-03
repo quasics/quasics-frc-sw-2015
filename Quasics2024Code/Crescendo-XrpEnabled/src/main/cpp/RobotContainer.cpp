@@ -19,6 +19,7 @@
 #include "commands/RunShooter.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
+#include "commands/TimedMovementTest.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
@@ -189,7 +190,7 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
@@ -213,9 +214,17 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string score3DestName = score3Dest->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, operationName, teamAndPosName, score2DestName,
+      *m_drivebase, m_shooter, operationName, teamAndPosName, score2DestName,
       score3DestName);
 }
+#endif
+#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
+  static frc2::PrintCommand message(
+      "Autonomous commands cannot be run without full robot functionality");
+  return std::move(message).ToPtr();
+}
+#endif
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC
@@ -224,17 +233,15 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // data behind it.  This allows us to make this data storage more permanent.
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
-                               new MoveClimbers(&m_climber, true));
+                               new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
-                               new MoveClimbers(&m_climber, false));
+                               new MoveClimbers(m_climber, false));
 
   frc::SmartDashboard::PutData("Shoot Note",
-                               new RunShooter(&m_shooter, 0.25, true));
+                               new RunShooter(m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
-                               new RunShooter(&m_shooter, 0.25, false));
-#endif
+                               new RunShooter(m_shooter, 0.25, false));
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
@@ -242,12 +249,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-  frc::SmartDashboard::PutData(
-      "reset Climber Revolutions:",
-      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -256,6 +258,28 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Odometry(via command) to (3,6)",
       new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
+#ifdef ENABLE_INTAKE_TESTING
+  frc::SmartDashboard::PutData("Run Intake 50%",
+                               new RunIntake(&m_intakeRoller, 0.5, true));
+  frc::SmartDashboard::PutData("Run Intake 60%",
+                               new RunIntake(&m_intakeRoller, 0.6, true));
+  frc::SmartDashboard::PutData("Run Intake 70%",
+                               new RunIntake(&m_intakeRoller, 0.7, true));
+  frc::SmartDashboard::PutData("Run Intake 80%",
+                               new RunIntake(&m_intakeRoller, 0.8, true));
+  frc::SmartDashboard::PutData("Retract Intake 50%",
+                               new RunIntake(&m_intakeRoller, 0.5, false));
+  frc::SmartDashboard::PutData("Deploy Intake 30%",
+                               new PivotIntake(&m_intakeDeployment, 0.3, true));
+  frc::SmartDashboard::PutData("Deploy Intake 50%",
+                               new PivotIntake(&m_intakeDeployment, 0.5, true));
+  frc::SmartDashboard::PutData("Deploy Intake 60%",
+                               new PivotIntake(&m_intakeDeployment, 0.6, true));
+  frc::SmartDashboard::PutData("Deploy Intake 70%",
+                               new PivotIntake(&m_intakeDeployment, 0.7, true));
+  frc::SmartDashboard::PutData(
+      "Retract Intake 50%", new PivotIntake(&m_intakeDeployment, 0.5, false));
+#endif
 
   /*
     retainedCommands.push_back(
@@ -275,6 +299,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT FORWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT BACKWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -289,10 +321,10 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 }
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
-  static MoveClimbers extendClimbers(&m_climber, true);
-  static MoveClimbers retractClimbers(&m_climber, false);
-  static RunIntake intakeNote(&m_intakeRoller, 0.5, true);
-  static RunIntake dropNote(&m_intakeRoller, 0.5, false);
+  static MoveClimbers extendClimbers(m_climber, true);
+  static MoveClimbers retractClimbers(m_climber, false);
+  static RunIntake intakeNote(m_intakeRoller, 0.5, true);
+  static RunIntake dropNote(m_intakeRoller, 0.5, false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);
@@ -305,10 +337,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 }
 
 void RobotContainer::ConfigureOperatorControllerButtonBindings() {
-  static PivotIntake extendIntake(&m_intakeDeployment, 0.5, true);
-  static PivotIntake retractIntake(&m_intakeDeployment, 0.5, false);
-  static RunShooter shootNote(&m_shooter, 0.5, true);
-  static RunShooter retractNote(&m_shooter, -0.5, true);
+  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
+  static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
+  static RunShooter shootNote(m_shooter, 0.5, true);
+  static RunShooter retractNote(m_shooter, -0.5, true);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);

@@ -172,7 +172,7 @@ namespace AutonomousSelectedOperation {
   const auto score1GTFO = "Score 1 piece, GTFO";
   const auto score2 = "Score 2 piece";
   const auto score2GTFO = "Score 2 piece, GTFO";
-  const auto Score3 = "Score 3 piece";
+  const auto score3 = "Score 3 piece";
   const auto score3GTFO = "Score 3 piece, GTFO";
 }  // namespace AutonomousSelectedOperation
 

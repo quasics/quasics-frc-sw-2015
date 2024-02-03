@@ -42,6 +42,13 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotSettings;
 
+/**
+ * Defines an abstract base class for common "drivebase functionality", allowing
+ * hardware-specific functionality to be isolated behind a Hardware Access Layer
+ * (HAL). This makes it easier to switch between running on a "big bot", vs.
+ * running on a "little bot" like an XRP, vs. running purely within the
+ * simulator.
+ */
 public abstract class AbstractDrivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
@@ -205,6 +212,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
      * Another option is to downgrade the assumed reliability of the
      * measurement, based on the distance. (See
      * https://www.chiefdelphi.com/t/photonvision-swerveposeestimator-produces-wrong-pose/430906/6)
+     * 
+     * Some possible considerations from the CD thread:
+     * * It is much more reliable if you only calculate poses when you see more than
+     * one tag (hence SolvePnP)
+     * * Vision poses are much more accurate if the cameras are not perpendicular to
+     * the tags (the more angle the better, to a certain extent)
+     * * Using the distance from the tag as standard deviations helps to trust data
+     * closer to the tag - we use poseEstimator.addVisionMeasurement(pose,
+     * timestamp, VecBuilder.fill(distance / 2, distance / 2, 100));
      */
     // Figure out how far we think we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();

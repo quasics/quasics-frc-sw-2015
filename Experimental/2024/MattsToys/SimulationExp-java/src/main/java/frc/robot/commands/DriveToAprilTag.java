@@ -27,7 +27,9 @@ public class DriveToAprilTag extends Command {
   final int m_tagId;
   final double m_tagHeightMeters;
 
-  enum Stage { Locating, Driving }
+  enum Stage {
+    Locating, Driving
+  }
 
   Stage m_currentStage = Stage.Locating;
 
@@ -110,31 +112,27 @@ public class DriveToAprilTag extends Command {
 
         // Use this range as the measurement we give to the PID controller.
         // -1.0 required to ensure positive PID controller effort _increases_ range
-        final double forwardCalculation =
-            -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
-        final double forwardSpeed =
-            forwardCalculation * AbstractDrivebase.MAX_SPEED.in(MetersPerSecond);
+        final double forwardCalculation = -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
 
         // Also calculate angular power
         // -1.0 required to ensure positive PID controller effort _increases_ yaw
         final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
 
         System.err.println("*** Range: " + rangeInMeters + "\tYaw: " + yaw + "\tForwardCalc: "
-            + forwardCalculation + "\tForward: " + forwardSpeed + "\tRotate: " + rotationSpeed);
+            + forwardCalculation + "\tRotate: " + rotationSpeed);
 
-        if (true) {
-          m_drivebase.arcadeDrive(forwardCalculation, rotationSpeed, false);
-        } else {
-          m_drivebase.arcadeDrive(
-              MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
-        }
+        m_drivebase.arcadeDrive(forwardCalculation, rotationSpeed, false);
       } else {
-        // We lost sight of it, either because we drove incorrectly, or because the camera just
-        // can't track it at this point.  We *could* return to the "Locating" stage, but instead
-        // we'll just hold here, on the assumption that if we can't see it anymore, spinning in
+        // We lost sight of it, either because we drove incorrectly, or because the
+        // camera just
+        // can't track it at this point. We *could* return to the "Locating" stage, but
+        // instead
+        // we'll just hold here, on the assumption that if we can't see it anymore,
+        // spinning in
         // circles isn't likely to bring it back into view.
         //
-        // TODO: Decide if we want to do something different when we lose sight of the target.
+        // TODO: Decide if we want to do something different when we lose sight of the
+        // target.
         System.err.println("Can't see the target");
         m_drivebase.stop();
       }

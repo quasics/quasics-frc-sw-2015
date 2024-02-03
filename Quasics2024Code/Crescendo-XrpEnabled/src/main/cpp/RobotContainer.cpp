@@ -22,6 +22,7 @@
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
+#include "utils/SimulationSupport.h"
 
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 
@@ -222,7 +223,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // Smart Dashboard bc it will be deleted and some values that it had would
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
@@ -238,7 +238,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-#endif
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));

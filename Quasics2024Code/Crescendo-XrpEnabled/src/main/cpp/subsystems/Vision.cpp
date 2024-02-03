@@ -9,7 +9,47 @@ Vision::Vision() {
 }
 
 // This method will be called once per scheduler run
+void Vision::updateEstimatedGlobalPose() {
+  if (camera.GetCameraName() == NULL) {
+    return;
+  }
+
+  m_lastEstimatedPose = estimator.Update();
+
+  units::second_t latestTimestamp = camera.GetLatestResult().GetTimestamp();
+  m_estimateRecentlyUpdated =
+      std::abs(latestTimestamp.value() - m_lastEstTimestamp.value()) > 1e-5;
+
+  if (m_estimateRecentlyUpdated) {
+    m_lastEstTimestamp = latestTimestamp;
+  }
+}
+
+std::optional<photon::EstimatedRobotPose> Vision::getLastEstimatedPose() {
+  return m_lastEstimatedPose;
+}
+
 void Vision::Periodic() {
+  updateEstimatedGlobalPose();
+}
+
+void Vision::SimulationPeriodic() {
+  auto possiblePose = SimulationSupport::getSimulatedPose();
+  if (possiblePose.has_value()) {
+    visionSim.Update(possiblePose.value());
+  }
+
+  /*if (Robot::IsSimulation()) {
+    if(m_lastEstimatedPose.has_value()){
+      getSimDebugField()
+          .GetObject("VisionEstimation")
+          .SetPose(est.estimatedPose.toPose2d());
+    }
+    else {
+      if(m_estimateRecentlyUpdated)
+        getSimDebugField().GetObject("VisionEstimation").setPose();
+    }
+  }*/
 }
 
 bool Vision::AprilTagTargetIdentified(int IDWantedTarget) {
@@ -77,4 +117,35 @@ std::optional<photon::EstimatedRobotPose> Vision::UpdateFieldPosition(
   // the pose estimator to use
   estimator.SetReferencePose(frc::Pose3d(estimatedPose));
   return estimator.Update();
-};
+}
+
+void Vision::setupSimulationSupport() {
+  if (Robot::IsReal()) {
+    return;
+  }
+
+  visionSim.AddAprilTags(aprilTags);
+
+  photon::SimCameraProperties cameraProp;
+  cameraProp.SetCalibration(960, 720, 90_deg);
+  cameraProp.SetCalibError(0.35, 0.10);
+  cameraProp.SetFPS(units::frequency::hertz_t(15));
+  cameraProp.SetAvgLatency(50_ms);
+  cameraProp.SetLatencyStdDev(15_ms);
+
+  cameraSim.reset(new photon::PhotonCameraSim(&camera, cameraProp));
+
+  visionSim.AddCamera(cameraSim.get(), robotToCam);
+
+  cameraSim->EnableDrawWireframe(true);
+}
+
+void Vision::resetSimPose(frc::Pose2d pose) {
+  if (Robot::IsSimulation()) {
+    visionSim.ResetRobotPose(pose);
+  }
+}
+
+frc::Field2d& Vision::getSimDebugField() {
+  return visionSim.GetDebugField();
+}

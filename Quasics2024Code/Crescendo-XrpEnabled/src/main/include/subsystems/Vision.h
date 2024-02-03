@@ -5,16 +5,26 @@
 #pragma once
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
+#include <frc/apriltag/AprilTagFields.h>
 #include <frc/geometry/Translation3d.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <photon/PhotonCamera.h>
 #include <photon/PhotonPoseEstimator.h>
 #include <photon/PhotonUtils.h>
+#include <photon/simulation/PhotonCameraSim.h>
+#include <photon/simulation/SimCameraProperties.h>
+#include <photon/simulation/VisionSystemSim.h>
+#include <units/frequency.h>
+#include <units/time.h>
 
+#include <cmath>
 #include <map>
 #include <optional>
 
 #include "Constants.h"
+#include "Robot.h"
+#include "utils/SimulationSupport.h"
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -40,16 +50,23 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
+  void SimulationPeriodic();
+
+  frc::Field2d& getSimDebugField();
+
+  std::optional<photon::EstimatedRobotPose> getLastEstimatedPose();
+
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+
   photon::PhotonCamera camera{"USB_Camera"};
 
-  std::vector<frc::AprilTag> tags = {
-      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};
+  /*std::vector<frc::AprilTag> tags = {
+      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};*/
 
   frc::AprilTagFieldLayout aprilTags =
-      frc::AprilTagFieldLayout(tags, 54_ft, 27_ft);
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
 
   frc::Transform3d robotToCam =
       frc::Transform3d(frc::Translation3d(0.3048_m, 0_m, 0.0_m),
@@ -64,6 +81,21 @@ class Vision : public frc2::SubsystemBase {
       // suggest using one of the other options: please talk to me about
       // choices.  (And try testing some of them out under simulation, once you
       // have that in place.)
-      photon::CLOSEST_TO_REFERENCE_POSE, photon::PhotonCamera("USB_Camera"),
-      robotToCam);
+      photon::LOWEST_AMBIGUITY, photon::PhotonCamera("USB_Camera"), robotToCam);
+
+  std::unique_ptr<photon::PhotonCameraSim> cameraSim;
+
+  photon::VisionSystemSim visionSim = photon::VisionSystemSim("main");
+
+  void setupSimulationSupport();
+
+  void resetSimPose(frc::Pose2d pose);
+
+  void updateEstimatedGlobalPose();
+
+  std::optional<photon::EstimatedRobotPose> m_lastEstimatedPose = std::nullopt;
+
+  units::second_t m_lastEstTimestamp = 0_s;
+
+  bool m_estimateRecentlyUpdated = false;
 };

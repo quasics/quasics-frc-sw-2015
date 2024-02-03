@@ -44,8 +44,10 @@ public class DriveToAprilTag extends Command {
   final PIDController m_turnController;
 
   // PID constants should be tuned per robot
-  static final double P_GAIN = 0.2;
-  static final double D_GAIN = 0.0;
+  static final double FORWARD_P_GAIN = 1.5;
+  static final double FORWARD_D_GAIN = 0.0;
+  static final double ROTATE_P_GAIN = 0.05;
+  static final double ROTATE_D_GAIN = 0.0;
 
   /** Creates a new DriveToAprilTag. */
   public DriveToAprilTag(RobotSettings.Robot robot, VisionSubsystem vision,
@@ -63,8 +65,8 @@ public class DriveToAprilTag extends Command {
     // robot-relative values.
     this.m_cameraPitchRadians = -robot.robotToCameraTransform.getRotation().getY();
 
-    m_forwardController = new PIDController(P_GAIN, 0, D_GAIN);
-    m_turnController = new PIDController(P_GAIN, 0, D_GAIN);
+    m_forwardController = new PIDController(FORWARD_P_GAIN, 0, FORWARD_D_GAIN);
+    m_turnController = new PIDController(ROTATE_P_GAIN, 0, ROTATE_D_GAIN);
 
     addRequirements(m_vision, m_drivebase);
   }
@@ -108,19 +110,24 @@ public class DriveToAprilTag extends Command {
 
         // Use this range as the measurement we give to the PID controller.
         // -1.0 required to ensure positive PID controller effort _increases_ range
+        final double forwardCalculation =
+            -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
         final double forwardSpeed =
-            -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters)
-            * AbstractDrivebase.MAX_SPEED.in(MetersPerSecond);
+            forwardCalculation * AbstractDrivebase.MAX_SPEED.in(MetersPerSecond);
 
         // Also calculate angular power
         // -1.0 required to ensure positive PID controller effort _increases_ yaw
         final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
 
-        System.err.println("*** Range: " + rangeInMeters + "\tYaw: " + yaw
-            + "\tForward: " + forwardSpeed + "\tRotate: " + rotationSpeed);
+        System.err.println("*** Range: " + rangeInMeters + "\tYaw: " + yaw + "\tForwardCalc: "
+            + forwardCalculation + "\tForward: " + forwardSpeed + "\tRotate: " + rotationSpeed);
 
-        m_drivebase.arcadeDrive(
-            MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
+        if (true) {
+          m_drivebase.arcadeDrive(forwardCalculation, rotationSpeed, false);
+        } else {
+          m_drivebase.arcadeDrive(
+              MetersPerSecond.of(forwardSpeed), DegreesPerSecond.of(rotationSpeed));
+        }
       } else {
         // We lost sight of it, either because we drove incorrectly, or because the camera just
         // can't track it at this point.  We *could* return to the "Locating" stage, but instead
@@ -128,6 +135,7 @@ public class DriveToAprilTag extends Command {
         // circles isn't likely to bring it back into view.
         //
         // TODO: Decide if we want to do something different when we lose sight of the target.
+        System.err.println("Can't see the target");
         m_drivebase.stop();
       }
     }
@@ -144,6 +152,9 @@ public class DriveToAprilTag extends Command {
     m_drivebase.stop();
   }
 
+  static final double ACCEPTABLE_ERROR_ROTATION_DEGREES = 3;
+  static final double ACCEPTABLE_ERROR_DISTANCE_METERS = 0.05;
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
@@ -153,11 +164,20 @@ public class DriveToAprilTag extends Command {
     }
 
     // More than 3 degrees off?
-    if (Math.abs(matchedTarget.get().getYaw()) > 3) {
+    final double deltaAngle = matchedTarget.get().getYaw();
+    if (Math.abs(deltaAngle) > ACCEPTABLE_ERROR_ROTATION_DEGREES) {
       return false;
     }
 
     final double currentDistanceInMeters = getDistanceToTargetInMeters(matchedTarget.get());
-    return (currentDistanceInMeters <= m_targetDistanceMeters);
+    final double deltaDistance = currentDistanceInMeters - m_targetDistanceMeters;
+    if (Math.abs(deltaDistance) > ACCEPTABLE_ERROR_DISTANCE_METERS) {
+      return false;
+    }
+
+    // Close enough!
+    System.out.println(
+        "OK, errors of " + deltaAngle + " degrees/" + deltaDistance + " meters are good enough.");
+    return true;
   }
 }

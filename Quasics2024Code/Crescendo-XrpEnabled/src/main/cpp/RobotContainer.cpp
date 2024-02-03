@@ -256,6 +256,28 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Odometry(via command) to (3,6)",
       new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
+#ifdef ENABLE_INTAKE_TESTING
+  frc::SmartDashboard::PutData("Run Intake 50%",
+                               new RunIntake(&m_intakeRoller, 0.5, true));
+  frc::SmartDashboard::PutData("Run Intake 60%",
+                               new RunIntake(&m_intakeRoller, 0.6, true));
+  frc::SmartDashboard::PutData("Run Intake 70%",
+                               new RunIntake(&m_intakeRoller, 0.7, true));
+  frc::SmartDashboard::PutData("Run Intake 80%",
+                               new RunIntake(&m_intakeRoller, 0.8, true));
+  frc::SmartDashboard::PutData("Retract Intake 50%",
+                               new RunIntake(&m_intakeRoller, 0.5, false));
+  frc::SmartDashboard::PutData("Deploy Intake 30%",
+                               new PivotIntake(&m_intakeDeployment, 0.3, true));
+  frc::SmartDashboard::PutData("Deploy Intake 50%",
+                               new PivotIntake(&m_intakeDeployment, 0.5, true));
+  frc::SmartDashboard::PutData("Deploy Intake 60%",
+                               new PivotIntake(&m_intakeDeployment, 0.6, true));
+  frc::SmartDashboard::PutData("Deploy Intake 70%",
+                               new PivotIntake(&m_intakeDeployment, 0.7, true));
+  frc::SmartDashboard::PutData(
+      "Retract Intake 50%", new PivotIntake(&m_intakeDeployment, 0.5, false));
+#endif
 
   /*
     retainedCommands.push_back(

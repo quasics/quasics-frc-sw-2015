@@ -50,6 +50,27 @@ bool IntakeDeployment::IsIntakeDeployed() {
 bool IntakeDeployment::IsIntakeRetracted() {
   return !m_RetractIntakeLimitSwitch.Get();
 }
+
+double IntakeDeployment::GetRevolutions() {
+  return m_DeploymentEncoder.GetPosition() / 42;
+}
+
+bool IntakeDeployment::ExtendedByRevolutions() {
+  // ARBITRARY NUMBER PLEASE SWITCH
+  if (GetRevolutions() > 100) {
+    return true;
+  }
+  return false;
+}
+
+bool IntakeDeployment::RetractedByRevolutions() {
+  // ARBITRARY NUMBER PLEASE SWITCH
+  if (GetRevolutions() < 0) {
+    return true;
+  }
+  return false;
+}
+
 void IntakeDeployment::Periodic() {
   frc::SmartDashboard::PutString(
       "Retract limit switch",

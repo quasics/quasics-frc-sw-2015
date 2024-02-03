@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
@@ -47,7 +46,7 @@ public class DriveToAprilTag extends Command {
 
   // PID constants should be tuned per robot
   static final double FORWARD_P_GAIN = 1.5;
-  static final double FORWARD_D_GAIN = 0.0;
+  static final double FORWARD_D_GAIN = 0.2;
   static final double ROTATE_P_GAIN = 0.05;
   static final double ROTATE_D_GAIN = 0.0;
 
@@ -87,6 +86,10 @@ public class DriveToAprilTag extends Command {
     update();
   }
 
+  private String getLogPrefix() {
+    return String.format("%s(tag:%d, distance:%.3f):", getClass().getSimpleName(), m_tagId, m_targetDistanceMeters);
+  }
+
   private void update() {
     final Optional<PhotonTrackedTarget> matchedTarget = m_vision.getMatchedTarget(m_tagId);
     if (m_currentStage == Stage.Locating) {
@@ -120,9 +123,9 @@ public class DriveToAprilTag extends Command {
         // Also calculate angular power
         // -1.0 required to ensure positive PID controller effort _increases_ yaw
         final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
-
-        System.err.println("*** Range: " + rangeInMeters + "\tYaw: " + yaw + "\tForwardCalc: "
-            + forwardCalculation + "\tRotate: " + rotationSpeed);
+        System.out.println(
+            String.format("> %s Range: %.3f, Yaw: %.3f, ForwardCalc: %.2f, Rotate: %.2f",
+                getLogPrefix(), rangeInMeters, yaw, forwardCalculation, rotationSpeed));
 
         m_drivebase.arcadeDrive(forwardCalculation, rotationSpeed, false);
       } else {
@@ -187,7 +190,9 @@ public class DriveToAprilTag extends Command {
     }
 
     // Close enough!
-    System.out.println("OK, errors of " + deltaAngle + " degrees/" + deltaDistance + " meters are good enough.");
+    System.out.println(
+        String.format("> %s OK, errors of %.4f meters/%.4f degrees are good enough",
+            getLogPrefix(), deltaDistance, deltaAngle));
     return true;
   }
 }

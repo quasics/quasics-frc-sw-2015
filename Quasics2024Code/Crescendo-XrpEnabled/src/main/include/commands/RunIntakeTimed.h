@@ -20,7 +20,7 @@
 class RunIntakeTimed
     : public frc2::CommandHelper<frc2::Command, RunIntakeTimed> {
  public:
-  RunIntakeTimed(IntakeRoller* intake, double intakeSpeed, units::second_t time,
+  RunIntakeTimed(IntakeRoller &intake, double intakeSpeed, units::second_t time,
                  bool takingIn);
 
   void Initialize() override;
@@ -32,7 +32,7 @@ class RunIntakeTimed
   bool IsFinished() override;
 
  private:
-  IntakeRoller* m_intake;
+  IntakeRoller &m_intake;
   const double m_intakeSpeed;
   const units::second_t m_time;
   frc::Timer m_stopWatch;

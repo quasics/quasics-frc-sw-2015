@@ -4,31 +4,31 @@
 
 #include "commands/RunIntakeTimed.h"
 
-RunIntakeTimed::RunIntakeTimed(IntakeRoller* intake, double intakeSpeed,
+RunIntakeTimed::RunIntakeTimed(IntakeRoller &intake, double intakeSpeed,
                                units::second_t time, bool takingIn)
     : m_intake(intake),
       m_intakeSpeed(takingIn ? -std::abs(intakeSpeed) : std::abs(intakeSpeed)),
       m_time(time),
       m_takingIn(takingIn) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(m_intake);
+  AddRequirements(&m_intake);
 }
 
 // Called when the command is initially scheduled.
 void RunIntakeTimed::Initialize() {
   m_stopWatch.Reset();
   m_stopWatch.Start();
-  m_intake->SetRollerSpeed(m_intakeSpeed);
+  m_intake.SetRollerSpeed(m_intakeSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RunIntakeTimed::Execute() {
-  m_intake->SetRollerSpeed(m_intakeSpeed);
+  m_intake.SetRollerSpeed(m_intakeSpeed);
 }
 
 // Called once the command ends or is interrupted.
 void RunIntakeTimed::End(bool interrupted) {
-  m_intake->Stop();
+  m_intake.Stop();
 }
 
 // Returns true when the command should end.

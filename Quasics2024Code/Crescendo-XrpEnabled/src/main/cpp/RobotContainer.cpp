@@ -214,7 +214,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string score3DestName = score3Dest->GetName();
 
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, operationName, teamAndPosName, score2DestName,
+      *m_drivebase, m_shooter, operationName, teamAndPosName, score2DestName,
       score3DestName);
 }
 
@@ -226,14 +226,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   frc::SmartDashboard::PutData("Extend Climbers",
-                               new MoveClimbers(&m_climber, true));
+                               new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
-                               new MoveClimbers(&m_climber, false));
+                               new MoveClimbers(m_climber, false));
 
   frc::SmartDashboard::PutData("Shoot Note",
-                               new RunShooter(&m_shooter, 0.25, true));
+                               new RunShooter(m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
-                               new RunShooter(&m_shooter, 0.25, false));
+                               new RunShooter(m_shooter, 0.25, false));
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
@@ -313,10 +313,10 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 }
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
-  static MoveClimbers extendClimbers(&m_climber, true);
-  static MoveClimbers retractClimbers(&m_climber, false);
-  static RunIntake intakeNote(&m_intakeRoller, 0.5, true);
-  static RunIntake dropNote(&m_intakeRoller, 0.5, false);
+  static MoveClimbers extendClimbers(m_climber, true);
+  static MoveClimbers retractClimbers(m_climber, false);
+  static RunIntake intakeNote(m_intakeRoller, 0.5, true);
+  static RunIntake dropNote(m_intakeRoller, 0.5, false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);
@@ -329,10 +329,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 }
 
 void RobotContainer::ConfigureOperatorControllerButtonBindings() {
-  static PivotIntake extendIntake(&m_intakeDeployment, 0.5, true);
-  static PivotIntake retractIntake(&m_intakeDeployment, 0.5, false);
-  static RunShooter shootNote(&m_shooter, 0.5, true);
-  static RunShooter retractNote(&m_shooter, -0.5, true);
+  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
+  static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
+  static RunShooter shootNote(m_shooter, 0.5, true);
+  static RunShooter retractNote(m_shooter, -0.5, true);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);

@@ -18,7 +18,7 @@
  */
 class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
  public:
-  RunIntake(IntakeRoller* intake, double intakeSpeed, bool takingIn);
+  RunIntake(IntakeRoller &intake, double intakeSpeed, bool takingIn);
 
   void Initialize() override;
 
@@ -29,7 +29,7 @@ class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
   bool IsFinished() override;
 
  private:
-  IntakeRoller* m_intake;
+  IntakeRoller &m_intake;
   const double m_intakeSpeed;
   const bool m_takingIn;
 };

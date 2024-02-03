@@ -183,3 +183,8 @@ namespace AutonomousScoreDestinations {
   const auto inFrontOfSpeaker = "In front of speaker";
   const auto rightOfSpeaker = "Right of speaker";
 }  // namespace AutonomousScoreDestinations
+
+namespace ShootingSpeeds {
+  const double amp = 0.5;
+  const double speaker = 1.0;
+}

@@ -20,7 +20,7 @@
 class RunShooterTimed
     : public frc2::CommandHelper<frc2::Command, RunShooterTimed> {
  public:
-  RunShooterTimed(Shooter* shooter, double shooterSpeed, units::second_t time,
+  RunShooterTimed(Shooter &shooter, double shooterSpeed, units::second_t time,
                   bool shooting);
 
   void Initialize() override;
@@ -32,7 +32,7 @@ class RunShooterTimed
   bool IsFinished() override;
 
  private:
-  Shooter* m_shooter;
+  Shooter &m_shooter;
   const double m_shooterSpeed;
   const units::second_t m_time;
   frc::Timer m_stopWatch;

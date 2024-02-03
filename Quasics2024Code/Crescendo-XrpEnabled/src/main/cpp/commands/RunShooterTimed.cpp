@@ -4,7 +4,7 @@
 
 #include "commands/RunShooterTimed.h"
 
-RunShooterTimed::RunShooterTimed(Shooter* shooter, double shooterSpeed,
+RunShooterTimed::RunShooterTimed(Shooter &shooter, double shooterSpeed,
                                  units::second_t time, bool shooting)
     : m_shooter(shooter),
       m_shooterSpeed(shooting ? std::abs(shooterSpeed)
@@ -12,24 +12,24 @@ RunShooterTimed::RunShooterTimed(Shooter* shooter, double shooterSpeed,
       m_time(time),
       m_shooting(shooting) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(m_shooter);
+  AddRequirements(&m_shooter);
 }
 
 // Called when the command is initially scheduled.
 void RunShooterTimed::Initialize() {
   m_stopWatch.Reset();
   m_stopWatch.Start();
-  m_shooter->SetFlywheelSpeed(m_shooterSpeed);
+  m_shooter.SetFlywheelSpeed(m_shooterSpeed);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void RunShooterTimed::Execute() {
-  m_shooter->SetFlywheelSpeed(m_shooterSpeed);
+  m_shooter.SetFlywheelSpeed(m_shooterSpeed);
 }
 
 // Called once the command ends or is interrupted.
 void RunShooterTimed::End(bool interrupted) {
-  m_shooter->Stop();
+  m_shooter.Stop();
 }
 
 // Returns true when the command should end.

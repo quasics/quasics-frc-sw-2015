@@ -77,6 +77,7 @@ public class DriveToAprilTag extends Command {
   @Override
   public void initialize() {
     m_currentStage = Stage.Locating;
+    m_failedSightingsWhileDriving = 0;
     update();
   }
 
@@ -104,6 +105,8 @@ public class DriveToAprilTag extends Command {
 
     if (m_currentStage == Stage.Driving) {
       if (matchedTarget.isPresent()) {
+        m_failedSightingsWhileDriving = 0;
+
         final double rangeInMeters = getDistanceToTargetInMeters(matchedTarget.get());
         final double yaw = matchedTarget.get().getYaw();
 
@@ -124,16 +127,14 @@ public class DriveToAprilTag extends Command {
         m_drivebase.arcadeDrive(forwardCalculation, rotationSpeed, false);
       } else {
         // We lost sight of it, either because we drove incorrectly, or because the
-        // camera just
-        // can't track it at this point. We *could* return to the "Locating" stage, but
-        // instead
-        // we'll just hold here, on the assumption that if we can't see it anymore,
-        // spinning in
-        // circles isn't likely to bring it back into view.
+        // camera just can't track it at this point. We *could* return to the "Locating"
+        // stage, but instead we'll just hold here, on the assumption that if we can't
+        // see it anymore, spinning in circles isn't likely to bring it back into view.
         //
         // TODO: Decide if we want to do something different when we lose sight of the
         // target.
         System.err.println("Can't see the target");
+        ++m_failedSightingsWhileDriving;
         m_drivebase.stop();
       }
     }
@@ -153,29 +154,40 @@ public class DriveToAprilTag extends Command {
   static final double ACCEPTABLE_ERROR_ROTATION_DEGREES = 3;
   static final double ACCEPTABLE_ERROR_DISTANCE_METERS = 0.05;
 
+  private int m_failedSightingsWhileDriving = 0;
+  static final int MAX_FAILED_SIGHTINGS_WHILE_DRIVING = 5;
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // Target in sight?
     Optional<PhotonTrackedTarget> matchedTarget = m_vision.getMatchedTarget(m_tagId);
     if (matchedTarget.isEmpty()) {
+      if (m_currentStage == Stage.Driving
+          && (m_failedSightingsWhileDriving <= MAX_FAILED_SIGHTINGS_WHILE_DRIVING)) {
+        System.err.println("*** Warning: lost sight of the target for too long, giving up....");
+        return true;
+      }
+      // OK, hope we spot it again.
       return false;
     }
 
-    // More than 3 degrees off?
+    // More than N degrees off?
     final double deltaAngle = matchedTarget.get().getYaw();
     if (Math.abs(deltaAngle) > ACCEPTABLE_ERROR_ROTATION_DEGREES) {
       return false;
     }
 
+    // More than acceptable distance away?
     final double currentDistanceInMeters = getDistanceToTargetInMeters(matchedTarget.get());
-    final double deltaDistance = currentDistanceInMeters - m_targetDistanceMeters;
+    final double deltaDistance = currentDistanceInMeters
+        - m_targetDistanceMeters;
     if (Math.abs(deltaDistance) > ACCEPTABLE_ERROR_DISTANCE_METERS) {
       return false;
     }
 
     // Close enough!
-    System.out.println(
-        "OK, errors of " + deltaAngle + " degrees/" + deltaDistance + " meters are good enough.");
+    System.out.println("OK, errors of " + deltaAngle + " degrees/" + deltaDistance + " meters are good enough.");
     return true;
   }
 }

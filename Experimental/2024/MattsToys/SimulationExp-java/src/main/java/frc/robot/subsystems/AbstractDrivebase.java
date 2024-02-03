@@ -327,9 +327,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * so that we can periodically update it, as required for voltage compensation
    * to work properly).
    *
-   * @param leftVoltage
-   * @param rightVoltage
-   *
    * @see edu.wpi.first.wpilibj.motorcontrol.MotorController#setVoltage
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {

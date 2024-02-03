@@ -281,13 +281,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond,
         true);
   }
 
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeedsImpl(double leftMetersPerSecond,
       double rightMetersPerSecond,
       boolean includePid) {

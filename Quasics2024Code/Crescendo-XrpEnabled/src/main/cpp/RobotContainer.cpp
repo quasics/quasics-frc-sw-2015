@@ -19,6 +19,7 @@
 #include "commands/RunShooter.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
+#include "commands/TimedMovementTest.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
@@ -224,7 +225,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // data behind it.  This allows us to make this data storage more permanent.
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(&m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
@@ -234,7 +234,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                new RunShooter(&m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(&m_shooter, 0.25, false));
-#endif
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
@@ -242,12 +241,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-  frc::SmartDashboard::PutData(
-      "reset Climber Revolutions:",
-      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -297,6 +291,14 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT FORWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
+
+  frc::SmartDashboard::PutData(
+      "GUN THE ROBOT BACKWARD!!!",
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,

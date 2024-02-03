@@ -60,8 +60,10 @@ class RobotContainer {
  private:
   // AUTOS
 
+  void AddAutoSelectionsToSmartDashboard();
   void AddTeamAndStationSelectorToSmartDashboard();
-  void AddRobotSequenceSelectorToSmartDashboard();
+  void AddRobotOverallOperationToSmartDashboard();
+  void AddScoreDestinationsToSmartDashboard();
 
   double GetDriveSpeedScalingFactor();
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
@@ -101,5 +103,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
   frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
-  frc::SendableChooser<frc2::Command*> m_RobotSequenceAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_Score2DestAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_Score3DestAutonomousOptions;
 };

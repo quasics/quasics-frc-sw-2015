@@ -13,7 +13,9 @@
 namespace AutonomousCommands {
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
                                         std::string operationName,
-                                        std::string teamAndPosName);
+                                        std::string teamAndPosName,
+                                        std::string score2Dest,
+                                        std::string score3Dest);
 
   namespace Helpers {
     frc2::CommandPtr backwardTest(IDrivebase &drivebase);

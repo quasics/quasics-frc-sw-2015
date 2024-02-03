@@ -281,13 +281,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond,
         true);
   }
 
-  /** Sets speeds to the drivetrain motors. */
+  /** Sets speeds for the drivetrain motors. */
   public final void setSpeedsImpl(double leftMetersPerSecond,
       double rightMetersPerSecond,
       boolean includePid) {
@@ -327,9 +327,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * so that we can periodically update it, as required for voltage compensation
    * to work properly).
    *
-   * @param leftVoltage
-   * @param rightVoltage
-   *
    * @see edu.wpi.first.wpilibj.motorcontrol.MotorController#setVoltage
    */
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
@@ -361,8 +358,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // TODO: Think about replacing "double" with something type-safe. (Using
   // Measure<Dimensionless> won't work unless I change the function name.)
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
-    // TODO: Apply deadbands (and look at MathUtil.applyDeadband, which I just
-    // saw...)
     WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(xSpeed, rotationSpeed, squareInputs);
 
     double adjustedLeftPercent = drivePercentageDeadband.limit(speeds.left * MOTORS_PERCENT_MAX_OUTPUT);

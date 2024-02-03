@@ -11,6 +11,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 
 /**
  * This defines a "wrapper" type that can be used so that any arbitrary type of
@@ -84,6 +85,34 @@ public interface TrivialEncoder {
       @Override
       public void reset() {
         encoder.reset();
+      }
+    };
+  }
+
+  /** Creates a TrivialEncoder wrapper around a stock WPILib Encoder object. */
+  public static TrivialEncoder forWpiLibEncoder(final Encoder encoder, final EncoderSim encoderSim) {
+    if (encoder == null) {
+      throw new IllegalArgumentException("Null Encoder");
+    }
+    if (encoderSim == null) {
+      throw new IllegalArgumentException("Null EncoderSim");
+    }
+
+    return new TrivialEncoder() {
+      @Override
+      public Measure<Distance> getPosition() {
+        return Meters.of(encoder.getDistance());
+      }
+
+      @Override
+      public Measure<Velocity<Distance>> getVelocity() {
+        return MetersPerSecond.of(encoder.getRate());
+      }
+
+      @Override
+      public void reset() {
+        encoder.reset();
+        encoderSim.resetData();
       }
     };
   }

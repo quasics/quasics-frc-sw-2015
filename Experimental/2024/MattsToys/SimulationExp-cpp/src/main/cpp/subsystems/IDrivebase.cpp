@@ -7,6 +7,7 @@
 #include "utils/DeadBandEnforcer.h"
 
 DeadBandEnforcer IDrivebase::m_voltageDeadbandEnforcer(-0.001);
+IDrivebase* IDrivebase::g_drivebaseSingleton = nullptr;
 
 namespace {
   // Provides a deadband control for left/right wheel speeds.

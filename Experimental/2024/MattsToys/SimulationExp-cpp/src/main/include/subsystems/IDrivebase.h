@@ -18,6 +18,7 @@
 #include <units/voltage.h>
 
 #include <numbers>
+#include <stdexcept>
 
 #include "sensors/IGyro.h"
 #include "sensors/TrivialEncoder.h"
@@ -144,13 +145,36 @@ class IDrivebase : public frc2::SubsystemBase {
         m_feedforward(
             new frc::SimpleMotorFeedforward<units::meters>(kS, kV, kA)),
         m_kinematics(trackWidth) {
+    // To paraphrase Connor and Duncan MacLeod, "There should be only one!"
+    if (g_drivebaseSingleton != nullptr) {
+      throw std::logic_error("Drivebase is supposed to be a singleton");
+    }
+    g_drivebaseSingleton = this;
+  }
+
+  /**
+   * Convenience function to get access to the singleton drivebase.  This should
+   * only be used to access data (e.g., current position), and not to manipulate
+   * the drive base from commands (since that won't allow for subsystem
+   * dependencies).
+   */
+  static IDrivebase& GetDrivebase() {
+    if (g_drivebaseSingleton == nullptr) {
+      throw std::logic_error("Drivebase isn't set up yet");
+    }
+    return *g_drivebaseSingleton;
   }
 
   /**
    * Destructor.  (Must be present and virtual in order for derived classes to
    * be cleaned up correctly.)
    */
-  virtual ~IDrivebase() = default;
+  virtual ~IDrivebase() {
+    if (g_drivebaseSingleton == this) {
+      // Clear the pointer to singleton
+      g_drivebaseSingleton = nullptr;
+    }
+  }
 
   /**
    * Basic arcade drive control.
@@ -401,4 +425,6 @@ class IDrivebase : public frc2::SubsystemBase {
 
  private:
   static DeadBandEnforcer m_voltageDeadbandEnforcer;
+
+  static IDrivebase* g_drivebaseSingleton;
 };

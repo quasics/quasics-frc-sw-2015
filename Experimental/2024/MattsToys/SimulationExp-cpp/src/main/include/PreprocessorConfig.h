@@ -2,6 +2,8 @@
 
 #define ENABLE_DRIVE_BASE_LEAD_FOLLOW
 #define BACK_MOTORS_ARE_LEADERS
+
+// See bug filed at https://github.com/PhotonVision/photonvision/issues/1222.
 #define LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
 
 // DEFINE this symbol to enable using the CTRE Pigeon2 (or other CTRE devices).

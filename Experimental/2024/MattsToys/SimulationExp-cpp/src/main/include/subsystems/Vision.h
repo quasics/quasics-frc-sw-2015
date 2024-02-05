@@ -72,13 +72,13 @@ class Vision : public frc2::SubsystemBase {
       // subsystem.)
       std::move(photon::PhotonCamera{m_cameraName}), kRobotToCam};
 
-  // std::shared_ptr<photon::PhotonCamera> m_camera =
-  //     m_photonEstimator.GetCamera();
+  std::shared_ptr<photon::PhotonCamera> m_camera =
+      m_photonEstimator.GetCamera();
 
-  // photon::PhotonCameraSim m_cameraSim{m_camera.get(), m_simCameraProperties};
-  // photon::VisionSystemSim m_visionSim{m_cameraName};
+  photon::PhotonCameraSim m_cameraSim{m_camera.get(), m_simCameraProperties};
+  photon::VisionSystemSim m_visionSim{m_cameraName};
 
-  // std::optional<photon::EstimatedRobotPose> m_lastEstimatedPose{};
-  // units::time::second_t m_lastEstTimestamp{};
-  // bool m_estimatedPoseRecentlyUpdated = false;
+  std::optional<photon::EstimatedRobotPose> m_lastEstimatedPose{};
+  units::time::second_t m_lastEstTimestamp{};
+  bool m_estimatedPoseRecentlyUpdated = false;
 };

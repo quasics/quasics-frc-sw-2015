@@ -26,5 +26,12 @@ class RobotContainer {
 
   Lighting m_lighting{LedConstants::LED_PWM_PORT, LedConstants::LED_STRIP_SIZE};
   std::unique_ptr<IDrivebase> m_drivebase;
+#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
+  // TODO: Clean this up, as the vision subclass will be leaked on
+  // shutdown/restart. This is due to a crash bug someplace in the PhotonCamera
+  // cleanup.
+  Vision& m_vision = *(new Vision);
+#else
   Vision m_vision;
+#endif
 };

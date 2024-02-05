@@ -10,6 +10,7 @@
 #include "Constants.h"
 #include "subsystems/IDrivebase.h"
 #include "subsystems/Lighting.h"
+#include "subsystems/Vision.h"
 
 class RobotContainer {
  public:
@@ -25,4 +26,5 @@ class RobotContainer {
 
   Lighting m_lighting{LedConstants::LED_PWM_PORT, LedConstants::LED_STRIP_SIZE};
   std::unique_ptr<IDrivebase> m_drivebase;
+  Vision m_vision;
 };

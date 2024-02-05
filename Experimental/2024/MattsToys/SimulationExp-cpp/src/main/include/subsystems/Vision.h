@@ -72,10 +72,15 @@ class Vision : public frc2::SubsystemBase {
       // subsystem.)
       std::move(photon::PhotonCamera{m_cameraName}), kRobotToCam};
 
+  // Pose estimator holds the camera; get back a shared pointer to let us
+  // set up the PhotonCameraSim.
   std::shared_ptr<photon::PhotonCamera> m_camera =
       m_photonEstimator.GetCamera();
 
+  // Handles camera simulation.
   photon::PhotonCameraSim m_cameraSim{m_camera.get(), m_simCameraProperties};
+
+  // Handles overall vision system simulation.
   photon::VisionSystemSim m_visionSim{m_cameraName};
 
   std::optional<photon::EstimatedRobotPose> m_lastEstimatedPose{};

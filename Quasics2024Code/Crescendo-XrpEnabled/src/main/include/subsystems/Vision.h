@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+/*
 #pragma once
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
@@ -63,7 +63,7 @@ class Vision : public frc2::SubsystemBase {
   photon::PhotonCamera camera{"USB_Camera"};
 
   /*std::vector<frc::AprilTag> tags = {
-      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};*/
+      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};
 
   frc::AprilTagFieldLayout aprilTags =
       frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
@@ -99,3 +99,4 @@ class Vision : public frc2::SubsystemBase {
 
   bool m_estimateRecentlyUpdated = false;
 };
+*/

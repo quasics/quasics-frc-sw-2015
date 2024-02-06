@@ -33,11 +33,9 @@ RobotContainer::RobotContainer() {
   // setUpTankDrive();
   setUpArcadeDrive();
   AddTestButtonsOnSmartDashboard();
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
-#endif
   AddAutoSelectionsToSmartDashboard();
 }
 
@@ -191,7 +189,6 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
@@ -210,29 +207,19 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   }
 
   std::string operationName = selectedOperation->GetName();
-  std::string teamAndPosName = teamAndPosCmd->GetName();
+  std::string position = teamAndPosCmd->GetName();
   std::string score2DestName = score2Dest->GetName();
   std::string score3DestName = score3Dest->GetName();
-
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
-      operationName, teamAndPosName, score2DestName, score3DestName);
+      operationName, position, score2DestName, score3DestName);
 }
-#endif
-#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  static frc2::PrintCommand message(
-      "Autonomous commands cannot be run without full robot functionality");
-  return std::move(message).ToPtr();
-}
-#endif
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC
   // Smart Dashboard bc it will be deleted and some values that it had would
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
-
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
@@ -245,6 +232,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
+
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
@@ -318,7 +306,6 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command *command) {
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
@@ -350,7 +337,6 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &retractNote);
 }
-#endif
 
 // AUTO Setup Stuff
 

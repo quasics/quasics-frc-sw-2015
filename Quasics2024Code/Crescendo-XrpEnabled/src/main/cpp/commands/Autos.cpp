@@ -217,6 +217,7 @@ namespace AutonomousCommands {
                                           IntakeDeployment &intakeDeployment,
                                           IntakeRoller &intakeRoller) {
       std::vector<frc2::CommandPtr> commands;
+
       commands.push_back(intakeWhileDriving(drivebase, intakeDeployment,
                                             intakeRoller,
                                             "blue3atonote3.wpilib.json"));
@@ -367,6 +368,52 @@ namespace AutonomousCommands {
     } else if (operationName == AutonomousSelectedOperation::score2GTFO) {
       commands.push_back(score2GTFO(drivebase, shooter, intakeDeployment,
                                     intakeRoller, position, score2Dest));
+    } else if (operationName == AutonomousSelectedOperation::score3) {
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+    } else if (operationName == AutonomousSelectedOperation::score3GTFO) {
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+    } else {
+      static frc2::PrintCommand fallThroughCaseCommand(
+          "*** Error: don't know what to do, based on "
+          "selections!");
+      return std::move(fallThroughCaseCommand).ToPtr();
+    }
+
+    return frc2::SequentialCommandGroup(
+               frc2::CommandPtr::UnwrapVector(std::move(commands)))
+        .ToPtr();
+  }
+
+  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
+                                        std::string operationName,
+                                        std::string position,
+                                        std::string score2Dest,
+                                        std::string score3Dest) {
+    using namespace Helpers;
+    std::vector<frc2::CommandPtr> commands;
+    commands.push_back(resetOdometryToStartingPosition(drivebase, position));
+
+    if (operationName == AutonomousSelectedOperation::doNothing) {
+      frc2::PrintCommand doNothing("Doing nothing, as instructed");
+      commands.push_back(std::move(doNothing).ToPtr());
+    } else if (operationName == AutonomousSelectedOperation::GTFO) {
+      commands.push_back(GTFO(drivebase, position));
+    } else if (operationName == AutonomousSelectedOperation::score1) {
+      frc2::PrintCommand notImplemented(
+          "Not implemented");  // not doing, only uses shooter for most
+                               // positions
+      commands.push_back(std::move(notImplemented).ToPtr());
+    } else if (operationName == AutonomousSelectedOperation::score1GTFO) {
+      frc2::PrintCommand notImplemented("Not implemented");  // same as GTFO
+      commands.push_back(std::move(notImplemented).ToPtr());
+    } else if (operationName == AutonomousSelectedOperation::score2) {
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+    } else if (operationName == AutonomousSelectedOperation::score2GTFO) {
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
     } else if (operationName == AutonomousSelectedOperation::score3) {
       frc2::PrintCommand notImplemented("Not implemented");
       commands.push_back(std::move(notImplemented).ToPtr());

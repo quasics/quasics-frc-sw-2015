@@ -66,22 +66,18 @@ class RobotContainer {
   void AddScoreDestinationsToSmartDashboard();
 
   double GetDriveSpeedScalingFactor();
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   void ConfigureDriverControllerButtonBindings();
 
   void ConfigureOperatorControllerButtonBindings();
-#endif
 
   // The robot's subsystems are defined here...
   std::unique_ptr<IDrivebase> m_drivebase;
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
+
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
-#endif
-
   ConfigSettings m_configSettings;
 
   frc::Joystick m_driverController{0};

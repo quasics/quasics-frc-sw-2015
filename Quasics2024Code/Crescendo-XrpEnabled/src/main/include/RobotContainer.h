@@ -87,7 +87,24 @@ class RobotContainer {
 
   // Data members of the class (subsystems, persistent commands, etc.)
  private:
+  ConfigSettings m_configSettings;
+  frc::Joystick m_driverController{0};
+  frc::XboxController m_operatorController{1};
+
+  // These are commands generated "on the fly" by functions like
+  // GetCommandForTrajectory(), which we're attaching to things like buttons on
+  // the smart dashboard, and thus need to outlive the function where they were
+  // created.
+  std::list<frc2::CommandPtr> retainedCommands;
+
   std::unique_ptr<IDrivebase> m_drivebase;
+
+  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
+
+  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
+  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
 
 #ifdef ENABLE_VISION_SUBSYSTEM
   Vision m_vision;
@@ -99,23 +116,6 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
-
-  ConfigSettings m_configSettings;
-  frc::Joystick m_driverController{0};
-  frc::XboxController m_operatorController{1};
-
-  // These are commands generated "on the fly" by functions like
-  // GetCommandForTrajectory(), which we're attaching to things like buttons on
-  // the smart dashboard, and thus need to outlive the function where they were
-  // created.
-  std::list<frc2::CommandPtr> retainedCommands;
-
-  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
-
-  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
-      DRIVER_JOYSTICK_RATE_LIMIT};
-  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
-      DRIVER_JOYSTICK_RATE_LIMIT};
 
   frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;

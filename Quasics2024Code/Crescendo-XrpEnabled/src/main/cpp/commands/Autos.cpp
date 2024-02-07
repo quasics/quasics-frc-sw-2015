@@ -187,7 +187,11 @@ namespace AutonomousCommands {
 #else
     frc2::CommandPtr score1Command(IDrivebase &drivebase,
                                    std::string position) {
-      frc2::PrintCommand doNothing("Can't shoot from far field!");
+      if (position == AutonomousStartingPositions::inFrontOfAmp) {
+        std::vector<frc2::CommandPtr> commands;
+        return GetCommandForTrajectory("blue1atoamp.wpilib.json", drivebase);
+      }
+      frc2::PrintCommand doNothing("cant do anything");
       return std::move(doNothing).ToPtr();
     }
 #endif
@@ -258,7 +262,7 @@ namespace AutonomousCommands {
                                             intakeRoller,
                                             "blue3atonote3.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, shooter, intakeDeployment, "bluenote3ato3a.wpilib.json",
+          drivebase, shooter, intakeDeployment, "bluenote3to3a.wpilib.json",
           false));
       commands.push_back(
           runShooterWhileFeedingNote(shooter, intakeRoller, false));
@@ -274,7 +278,7 @@ namespace AutonomousCommands {
       commands.push_back(
           GetCommandForTrajectory("blue3atonote3.wpilib.json", drivebase));
       commands.push_back(
-          GetCommandForTrajectory("bluenote3ato3a.wpilib.json", drivebase));
+          GetCommandForTrajectory("bluenote3to3a.wpilib.json", drivebase));
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
@@ -323,7 +327,7 @@ namespace AutonomousCommands {
 
       if (score2Dest == AutonomousScoreDestinations::leftOfSpeaker) {
         commands.push_back(
-            GetCommandForTrajectory("blue1btonote1.wpilib.json", drivebase));
+            GetCommandForTrajectory("bluenote1to1b.wpilib.json", drivebase));
       } else if (score2Dest == AutonomousScoreDestinations::amp) {
         commands.push_back(
             GetCommandForTrajectory("bluenote1toamp.wpilib.json", drivebase));

@@ -119,5 +119,6 @@
     "stack": "cpp",
     "xtree": "cpp",
     "*.inc": "cpp"
-  }
+  },
+  "editor.tabSize": 2
 }

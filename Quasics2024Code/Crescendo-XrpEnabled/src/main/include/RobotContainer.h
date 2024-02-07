@@ -53,6 +53,10 @@ class RobotContainer {
 
   void setUpArcadeDrive();
 
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+  void ConfigureDriverControllerButtonBindings();
+  void ConfigureOperatorControllerButtonBindings();
+#endif
  private:
   enum class DriveMode { eNormal, eSwitched };
   void setDriveMode(DriveMode mode);
@@ -66,16 +70,12 @@ class RobotContainer {
   void AddScoreDestinationsToSmartDashboard();
 
   double GetDriveSpeedScalingFactor();
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-  void ConfigureDriverControllerButtonBindings();
-
-  void ConfigureOperatorControllerButtonBindings();
-#endif
-  // The robot's subsystems are defined here...
+  // Data members of the class (subsystems, persistent commands, etc.)
+ private:
   std::unique_ptr<IDrivebase> m_drivebase;
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
@@ -91,8 +91,6 @@ class RobotContainer {
   // the smart dashboard, and thus need to outlive the function where they were
   // created.
   std::list<frc2::CommandPtr> retainedCommands;
-
-  // void ConfigureBindings();
 
   const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
 

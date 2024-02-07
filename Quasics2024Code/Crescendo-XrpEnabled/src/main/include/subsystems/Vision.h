@@ -1,7 +1,6 @@
 // Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-/*
 #pragma once
 
 #include <frc/apriltag/AprilTagFieldLayout.h>
@@ -24,7 +23,6 @@
 
 #include "Constants.h"
 #include "Robot.h"
-#include "utils/SimulationSupport.h"
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -62,15 +60,12 @@ class Vision : public frc2::SubsystemBase {
 
   photon::PhotonCamera camera{"USB_Camera"};
 
-  /*std::vector<frc::AprilTag> tags = {
-      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};
+  frc::AprilTagFieldLayout aprilTags{
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
 
-  frc::AprilTagFieldLayout aprilTags =
-      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
-
-  frc::Transform3d robotToCam =
-      frc::Transform3d(frc::Translation3d(0.3048_m, 0_m, 0.0_m),
-                       frc::Rotation3d(0_rad, 0_rad, 0_rad));
+  // TODO: Replace this with an appropriate value for Margaret.
+  frc::Transform3d robotToCam{frc::Translation3d(0.3048_m, 0_m, 0.0_m),
+                              frc::Rotation3d(0_rad, 0_rad, 0_rad)};
 
   photon::PhotonPoseEstimator estimator = photon::PhotonPoseEstimator(
       aprilTags,
@@ -85,7 +80,7 @@ class Vision : public frc2::SubsystemBase {
 
   std::unique_ptr<photon::PhotonCameraSim> cameraSim;
 
-  photon::VisionSystemSim visionSim = photon::VisionSystemSim("main");
+  photon::VisionSystemSim visionSim{"main"};
 
   void setupSimulationSupport();
 
@@ -99,4 +94,3 @@ class Vision : public frc2::SubsystemBase {
 
   bool m_estimateRecentlyUpdated = false;
 };
-*/

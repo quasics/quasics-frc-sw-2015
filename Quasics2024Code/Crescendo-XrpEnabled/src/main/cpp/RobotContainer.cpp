@@ -203,6 +203,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string position = teamAndPosCmd->GetName();
   std::string score2DestName = score2Dest->GetName();
   std::string score3DestName = score3Dest->GetName();
+
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
@@ -232,6 +233,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
 #endif
+
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
@@ -277,7 +279,8 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
     retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
                                                        *m_drivebase,
     false)); frc::SmartDashboard::PutData("curve test path",
-                                 retainedCommands.rbegin()->get());*/
+                                 retainedCommands.rbegin()->get());
+  */
 
   frc::SmartDashboard::PutData(
       "Switch Drive", new frc2::InstantCommand(
@@ -359,7 +362,7 @@ void RobotContainer::AddNamedCommandToSelector(
   selector.AddOption(name, BuildNamedPrintCommand(name, text));
 }
 
-void RobotContainer::AddingNamedStartingPositionsToSelectorWithLoop(
+void RobotContainer::AddingNamedStartingPositionsToSelector(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
@@ -378,7 +381,7 @@ void RobotContainer::AddingNamedStartingPositionsToSelectorWithLoop(
   }
 }
 
-void RobotContainer::AddingNamedOverallOperationsToSelectorWithLoop(
+void RobotContainer::AddingNamedOverallOperationsToSelector(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultAutonomousSequenceList{
@@ -403,7 +406,7 @@ void RobotContainer::AddingNamedOverallOperationsToSelectorWithLoop(
   }
 }
 
-void RobotContainer::AddingNamedScoreDestinationsToSelectorWithLoop(
+void RobotContainer::AddingNamedScoreDestinationsToSelector(
     frc::SendableChooser<frc2::Command *> &selector1,
     frc::SendableChooser<frc2::Command *> &selector2) {
   const std::list<std::tuple<std::string, std::string>>
@@ -434,8 +437,7 @@ void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
       AutonomousStartingPositions::inFrontOfAmp,
       BuildNamedPrintCommand(AutonomousStartingPositions::inFrontOfAmp));
 
-  AddingNamedStartingPositionsToSelectorWithLoop(
-      m_TeamAndStationAutonomousOptions);
+  AddingNamedStartingPositionsToSelector(m_TeamAndStationAutonomousOptions);
 
   frc::SmartDashboard::PutData("Team and Station Auto Selector",
                                &m_TeamAndStationAutonomousOptions);
@@ -446,7 +448,7 @@ void RobotContainer::AddRobotOverallOperationToSmartDashboard() {
       AutonomousSelectedOperation::doNothing,
       BuildNamedPrintCommand(AutonomousSelectedOperation::doNothing));
 
-  AddingNamedOverallOperationsToSelectorWithLoop(m_OverallAutonomousOptions);
+  AddingNamedOverallOperationsToSelector(m_OverallAutonomousOptions);
 
   frc::SmartDashboard::PutData("Robot Overall Auto Selector",
                                &m_OverallAutonomousOptions);
@@ -458,8 +460,8 @@ void RobotContainer::AddScoreDestinationsToSmartDashboard() {
   m_Score3DestAutonomousOptions.SetDefaultOption(
       "Not Selected", BuildNamedPrintCommand("Not Selected"));
 
-  AddingNamedScoreDestinationsToSelectorWithLoop(m_Score2DestAutonomousOptions,
-                                                 m_Score3DestAutonomousOptions);
+  AddingNamedScoreDestinationsToSelector(m_Score2DestAutonomousOptions,
+                                         m_Score3DestAutonomousOptions);
 
   frc::SmartDashboard::PutData("Robot Score 2 Destination",
                                &m_Score2DestAutonomousOptions);

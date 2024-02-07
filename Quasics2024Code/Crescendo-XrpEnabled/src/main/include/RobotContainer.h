@@ -60,11 +60,11 @@ class RobotContainer {
   static void AddNamedCommandToSelector(
       frc::SendableChooser<frc2::Command*>& selector, std::string name,
       std::string text = "");
-  static void AddingNamedStartingPositionsToSelectorWithLoop(
+  static void AddingNamedStartingPositionsToSelector(
       frc::SendableChooser<frc2::Command*>& selector);
-  static void AddingNamedOverallOperationsToSelectorWithLoop(
+  static void AddingNamedOverallOperationsToSelector(
       frc::SendableChooser<frc2::Command*>& selector);
-  static void AddingNamedScoreDestinationsToSelectorWithLoop(
+  static void AddingNamedScoreDestinationsToSelector(
       frc::SendableChooser<frc2::Command*>& selector1,
       frc::SendableChooser<frc2::Command*>& selector2);
 

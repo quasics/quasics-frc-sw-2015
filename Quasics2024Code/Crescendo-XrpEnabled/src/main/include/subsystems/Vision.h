@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 #pragma once
 
+#include <frc/RobotBase.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
 #include <frc/apriltag/AprilTagFields.h>
 #include <frc/geometry/Translation3d.h>
@@ -22,7 +23,6 @@
 #include <optional>
 
 #include "Constants.h"
-#include "Robot.h"
 
 class Vision : public frc2::SubsystemBase {
  public:

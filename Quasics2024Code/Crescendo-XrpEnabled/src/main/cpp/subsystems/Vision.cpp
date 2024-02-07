@@ -40,7 +40,7 @@ void Vision::SimulationPeriodic() {
     visionSim.Update(possiblePose.value());
   }
 
-  if (Robot::IsSimulation()) {
+  if (frc::RobotBase::IsSimulation()) {
     if (m_lastEstimatedPose.has_value()) {
       getSimDebugField()
           .GetObject("VisionEstimation")
@@ -121,7 +121,7 @@ std::optional<photon::EstimatedRobotPose> Vision::UpdateFieldPosition(
 }
 
 void Vision::setupSimulationSupport() {
-  if (Robot::IsReal()) {
+  if (frc::RobotBase::IsReal()) {
     return;
   }
 
@@ -142,7 +142,7 @@ void Vision::setupSimulationSupport() {
 }
 
 void Vision::resetSimPose(frc::Pose2d pose) {
-  if (Robot::IsSimulation()) {
+  if (frc::RobotBase::IsSimulation()) {
     visionSim.ResetRobotPose(pose);
   }
 }

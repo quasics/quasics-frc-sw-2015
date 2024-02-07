@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-/*
+
 #include "subsystems/Vision.h"
 
 Vision::Vision() {
@@ -34,22 +34,23 @@ void Vision::Periodic() {
 }
 
 void Vision::SimulationPeriodic() {
+  /*
   auto possiblePose = SimulationSupport::getSimulatedPose();
   if (possiblePose.has_value()) {
     visionSim.Update(possiblePose.value());
   }
 
-  /*if (Robot::IsSimulation()) {
-    if(m_lastEstimatedPose.has_value()){
+  if (Robot::IsSimulation()) {
+    if (m_lastEstimatedPose.has_value()) {
       getSimDebugField()
           .GetObject("VisionEstimation")
           .SetPose(est.estimatedPose.toPose2d());
-    }
-    else {
-      if(m_estimateRecentlyUpdated)
+    } else {
+      if (m_estimateRecentlyUpdated)
         getSimDebugField().GetObject("VisionEstimation").setPose();
     }
   }
+  */
 }
 
 bool Vision::AprilTagTargetIdentified(int IDWantedTarget) {
@@ -149,4 +150,3 @@ void Vision::resetSimPose(frc::Pose2d pose) {
 frc::Field2d& Vision::getSimDebugField() {
   return visionSim.GetDebugField();
 }
-*/

@@ -26,33 +26,25 @@
 // #include "utils/SimulationSupport.h"
 
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
+constexpr bool USE_ARCADE_DRIVE = true;
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   allocateDriveBase();
-  // setUpTankDrive();
-  setUpArcadeDrive();
-  AddTestButtonsOnSmartDashboard();
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
+  if (USE_ARCADE_DRIVE) {
+    setUpArcadeDrive();
+  } else {
+    setUpTankDrive();
+  }
+  AddTestButtonsOnSmartDashboard();
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
 #endif
   AddAutoSelectionsToSmartDashboard();
 }
-
-/*void RobotContainer::ConfigureBindings() {
-  // Configure your trigger bindings here
-
-  // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-  frc2::Trigger([this] {
-    return m_subsystem.ExampleCondition();
-  }).OnTrue(ExampleCommand(&m_subsystem).ToPtr());
-
-  // Schedule `ExampleMethodCommand` when the Xbox controller's B button is
-  // pressed, cancelling on release.
-  m_driverController.B().WhileTrue(m_subsystem.ExampleMethodCommand());
-} */
 
 void RobotContainer::setUpTankDrive() {
   // Figure out the joystick axes to be used to control driving.  (This assumes
@@ -228,7 +220,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
@@ -254,6 +245,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Odometry(via command) to (3,6)",
       new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
+
 #ifdef ENABLE_INTAKE_TESTING
   frc::SmartDashboard::PutData("Run Intake 50%",
                                new RunIntake(&m_intakeRoller, 0.5, true));
@@ -315,8 +307,8 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
     int buttonId, frc2::Command *command) {
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);

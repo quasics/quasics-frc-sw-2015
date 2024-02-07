@@ -194,7 +194,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
     // This shouldn't happen if things were set up right.  But it did.  So they
     // weren't. We'll bail out, but at least return a valid pointer that will
     // tell us something went wrong when it's run.
-    static frc2::PrintCommand somethingIsScrewyCommand(
+    frc2::PrintCommand somethingIsScrewyCommand(
         "Selection error: can't decide what to do");
     return std::move(somethingIsScrewyCommand).ToPtr();
   }

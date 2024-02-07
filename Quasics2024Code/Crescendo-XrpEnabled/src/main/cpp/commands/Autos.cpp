@@ -498,6 +498,20 @@ namespace AutonomousCommands {
 
 #endif
 
+  frc2::CommandPtr testPath(IDrivebase &drivebase) {
+    std::vector<frc2::CommandPtr> commands;
+
+    commands.push_back(
+        GetCommandForTrajectory("blue2tonote2.wpilib.json", drivebase));
+
+    commands.push_back(
+        GetCommandForTrajectory("bluenote2to2.wpilib.json", drivebase));
+
+    return frc2::SequentialCommandGroup(
+               frc2::CommandPtr::UnwrapVector(std::move(commands)))
+        .ToPtr();
+  }
+
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase, Shooter &shooter,
                                         IntakeDeployment &intakeDeployment,
@@ -543,6 +557,7 @@ namespace AutonomousCommands {
         .ToPtr();
   }
 #else
+
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
                                         std::string operationName,
                                         std::string position,

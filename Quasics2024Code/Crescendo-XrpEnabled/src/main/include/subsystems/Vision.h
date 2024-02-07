@@ -57,20 +57,13 @@ class Vision : public frc2::SubsystemBase {
   std::optional<photon::EstimatedRobotPose> getLastEstimatedPose();
 
  private:
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
-
   photon::PhotonCamera camera{"USB_Camera"};
 
-  /*std::vector<frc::AprilTag> tags = {
-      {1, frc::Pose3d(0_in, 0_in, 17_in, frc::Rotation3d())}};*/
+  frc::AprilTagFieldLayout aprilTags{
+      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
 
-  frc::AprilTagFieldLayout aprilTags =
-      frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo);
-
-  frc::Transform3d robotToCam =
-      frc::Transform3d(frc::Translation3d(0.3048_m, 0_m, 0.0_m),
-                       frc::Rotation3d(0_rad, 0_rad, 0_rad));
+  frc::Transform3d robotToCam{frc::Translation3d(0.3048_m, 0_m, 0.0_m),
+                              frc::Rotation3d(0_rad, 0_rad, 0_rad)};
 
   photon::PhotonPoseEstimator estimator = photon::PhotonPoseEstimator(
       aprilTags,
@@ -85,7 +78,7 @@ class Vision : public frc2::SubsystemBase {
 
   std::unique_ptr<photon::PhotonCameraSim> cameraSim;
 
-  photon::VisionSystemSim visionSim = photon::VisionSystemSim("main");
+  photon::VisionSystemSim visionSim{"main"};
 
   void setupSimulationSupport();
 

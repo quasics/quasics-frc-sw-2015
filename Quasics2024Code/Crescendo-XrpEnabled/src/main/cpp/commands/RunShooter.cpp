@@ -10,9 +10,9 @@ RunShooter::RunShooter(Shooter &shooter, double shooterSpeed, bool shooting)
                               : -std::abs(shooterSpeed)),
       m_shooting(shooting) {
   // Use addRequirements() here to declare subsystem dependencies.
-#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  return;
-#endif
+  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    return;
+  #endif*/
   AddRequirements(&m_shooter);
 }
 

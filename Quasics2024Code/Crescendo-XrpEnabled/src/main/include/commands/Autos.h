@@ -14,6 +14,7 @@
 #include "subsystems/Shooter.h"
 
 namespace AutonomousCommands {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase, Shooter &shooter,
                                         IntakeDeployment &intakeDeployment,
                                         IntakeRoller &intakeRoller,
@@ -21,6 +22,13 @@ namespace AutonomousCommands {
                                         std::string teamAndPosName,
                                         std::string score2Dest,
                                         std::string score3Dest);
+#else
+  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
+                                        std::string operationName,
+                                        std::string teamAndPosName,
+                                        std::string score2Dest,
+                                        std::string score3Dest);
+#endif
 
   namespace Helpers {
     frc2::CommandPtr backwardTest(IDrivebase &drivebase);

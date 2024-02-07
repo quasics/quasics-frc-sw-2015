@@ -11,9 +11,9 @@ RunIntakeTimed::RunIntakeTimed(IntakeRoller &intake, double intakeSpeed,
       m_time(time),
       m_takingIn(takingIn) {
   // Use addRequirements() here to declare subsystem dependencies.
-#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  return;
-#endif
+  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    return;
+  #endif*/
   AddRequirements(&m_intake);
 }
 

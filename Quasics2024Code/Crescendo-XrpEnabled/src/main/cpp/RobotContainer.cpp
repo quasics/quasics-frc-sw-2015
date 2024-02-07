@@ -308,8 +308,8 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
   static RunIntake intakeNote(m_intakeRoller, 0.5, true);
@@ -323,9 +323,11 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
       OperatorConstants::LogitechGamePad::LeftShoulder, &dropNote);
   RunCommandWhenDriverButtonIsHeld(
       OperatorConstants::LogitechGamePad::RightShoulder, &intakeNote);
+#endif
 }
 
 void RobotContainer::ConfigureOperatorControllerButtonBindings() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
   static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
   static RunShooter shootNote(m_shooter, 0.5, true);
@@ -339,11 +341,11 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &shootNote);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      &retractNote);
-}
 #endif
-// AUTO Setup Stuff
+}
 
-frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
+frc2::Command *RobotContainer::BuildNamedPrintCommand(std::string name,
+                                                      std::string text) {
   if (text.empty()) {
     text = name;
   }
@@ -352,12 +354,13 @@ frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {
   return cmd;
 }
 
-void AddNamedCommandToSelector(frc::SendableChooser<frc2::Command *> &selector,
-                               std::string name, std::string text = "") {
+void RobotContainer::AddNamedCommandToSelector(
+    frc::SendableChooser<frc2::Command *> &selector, std::string name,
+    std::string text) {
   selector.AddOption(name, BuildNamedPrintCommand(name, text));
 }
 
-void AddingNamedStartingPositionsToSelectorWithLoop(
+void RobotContainer::AddingNamedStartingPositionsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultTeamsAndPositionsList{
@@ -376,7 +379,7 @@ void AddingNamedStartingPositionsToSelectorWithLoop(
   }
 }
 
-void AddingNamedOverallOperationsToSelectorWithLoop(
+void RobotContainer::AddingNamedOverallOperationsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector) {
   const std::list<std::tuple<std::string, std::string>>
       nonDefaultAutonomousSequenceList{
@@ -401,7 +404,7 @@ void AddingNamedOverallOperationsToSelectorWithLoop(
   }
 }
 
-void AddingNamedScoreDestinationsToSelectorWithLoop(
+void RobotContainer::AddingNamedScoreDestinationsToSelectorWithLoop(
     frc::SendableChooser<frc2::Command *> &selector1,
     frc::SendableChooser<frc2::Command *> &selector2) {
   const std::list<std::tuple<std::string, std::string>>

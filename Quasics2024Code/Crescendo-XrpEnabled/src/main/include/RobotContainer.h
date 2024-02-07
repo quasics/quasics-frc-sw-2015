@@ -21,6 +21,7 @@
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
 #include "subsystems/Shooter.h"
+#include "subsystems/Vision.h"
 #include "utils/DeadBandEnforcer.h"
 
 /**
@@ -36,51 +37,68 @@ class RobotContainer {
 
   frc2::CommandPtr GetAutonomousCommand();
 
+  // Configuration/set-up support functions.
+ private:
+  void allocateDriveBase();
+  void setUpTankDrive();
+  void setUpArcadeDrive();
+
+  // Functions to bind commands to the driver/operator controllers.
+ private:
   void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                         frc2::Command* command);
 
   void RunCommandWhenOperatorButtonIsHeld(int buttonId, frc2::Command* command);
 
- private:
-  void AddTestButtonsOnSmartDashboard();
-
-  void AddButtonToSmartDashboardTestingRetainedCommands();
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-
-  void allocateDriveBase();
-
-  void setUpTankDrive();
-
-  void setUpArcadeDrive();
-
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   void ConfigureDriverControllerButtonBindings();
   void ConfigureOperatorControllerButtonBindings();
-#endif
+
+  // Functions to set up Smart Dashboard (auto mode, etc.).
+ private:
+  static frc2::Command* BuildNamedPrintCommand(std::string name,
+                                               std::string text = "");
+  static void AddNamedCommandToSelector(
+      frc::SendableChooser<frc2::Command*>& selector, std::string name,
+      std::string text = "");
+  static void AddingNamedStartingPositionsToSelectorWithLoop(
+      frc::SendableChooser<frc2::Command*>& selector);
+  static void AddingNamedOverallOperationsToSelectorWithLoop(
+      frc::SendableChooser<frc2::Command*>& selector);
+  static void AddingNamedScoreDestinationsToSelectorWithLoop(
+      frc::SendableChooser<frc2::Command*>& selector1,
+      frc::SendableChooser<frc2::Command*>& selector2);
+
+  void AddTestButtonsOnSmartDashboard();
+  void AddButtonToSmartDashboardTestingRetainedCommands();
+
+  // Driving support functions
  private:
   enum class DriveMode { eNormal, eSwitched };
   void setDriveMode(DriveMode mode);
+  double GetDriveSpeedScalingFactor();
 
+  // Auto mode functions
  private:
   // AUTOS
-
   void AddAutoSelectionsToSmartDashboard();
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
   void AddScoreDestinationsToSmartDashboard();
 
-  double GetDriveSpeedScalingFactor();
-
   // Data members of the class (subsystems, persistent commands, etc.)
  private:
   std::unique_ptr<IDrivebase> m_drivebase;
+
+#ifdef ENABLE_VISION_SUBSYSTEM
+  Vision m_vision;
+#endif  // ENABLE_VISION_SUBSYSTEM
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
-#endif
+#endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   ConfigSettings m_configSettings;
   frc::Joystick m_driverController{0};

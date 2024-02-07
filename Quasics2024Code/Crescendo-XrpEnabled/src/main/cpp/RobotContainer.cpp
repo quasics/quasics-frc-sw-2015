@@ -23,7 +23,6 @@
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
-// #include "utils/SimulationSupport.h"
 
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 constexpr bool USE_ARCADE_DRIVE = true;
@@ -31,18 +30,16 @@ constexpr bool USE_ARCADE_DRIVE = true;
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   allocateDriveBase();
-
   if (USE_ARCADE_DRIVE) {
     setUpArcadeDrive();
   } else {
     setUpTankDrive();
   }
-  AddTestButtonsOnSmartDashboard();
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
-#endif
+
+  AddTestButtonsOnSmartDashboard();
   AddAutoSelectionsToSmartDashboard();
 }
 
@@ -172,10 +169,12 @@ void RobotContainer::allocateDriveBase() {
   } else {
     m_drivebase.reset(new SimulatedDrivebase);
 
-    // // OK, we're running under simulation.  However, this could either mean
-    // that
-    // // we're talking to an XRP "little bot", or doing *pure* (GUI-based)
-    // // simulation on a PC of some sort.
+    // TODO: (Rylie) Add support for handling either "pure simulation" or "XRP
+    // use".
+    //
+    // OK, we're running under simulation.  However, this could either mean
+    // that we're talking to an XRP "little bot", or doing *pure* (GUI-based)
+    // simulation on a PC of some sort.
     // if (USE_XRP_UNDER_SIMULATION) {
     //   m_drivebase.reset(new XRPDrivebase);
     // } else {
@@ -183,8 +182,8 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
+
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
   frc2::Command *teamAndPosCmd =
       m_TeamAndStationAutonomousOptions.GetSelected();

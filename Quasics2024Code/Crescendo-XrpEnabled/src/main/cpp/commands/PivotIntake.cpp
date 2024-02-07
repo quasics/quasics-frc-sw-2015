@@ -10,6 +10,9 @@ PivotIntake::PivotIntake(IntakeDeployment &IntakeDeployment, double speed,
       m_intakeDeploymentSpeed(extend ? std::abs(speed) : -std::abs(speed)),
       m_extending(extend) {
   // Use addRequirements() here to declare subsystem dependencies.
+  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    return;
+  #endif*/
   AddRequirements(&m_intakeDeployment);
   SetName("PivotIntake");
 }

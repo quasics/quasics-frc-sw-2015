@@ -3,10 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/MoveClimbers.h"
-
 MoveClimbers::MoveClimbers(Climber &climber, bool extending)
     : m_climber(climber), m_extending(extending) {
   // Use addRequirements() here to declare subsystem dependencies.
+  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    return;
+  #endif*/
   AddRequirements(&m_climber);
 }
 

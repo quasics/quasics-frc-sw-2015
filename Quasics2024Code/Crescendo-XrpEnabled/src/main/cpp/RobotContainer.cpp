@@ -23,7 +23,7 @@
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
-#include "utils/SimulationSupport.h"
+// #include "utils/SimulationSupport.h"
 
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 
@@ -191,7 +191,6 @@ void RobotContainer::allocateDriveBase() {
     // }
   }
 }
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   // An example command will be run in autonomous
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
@@ -210,28 +209,25 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   }
 
   std::string operationName = selectedOperation->GetName();
-  std::string teamAndPosName = teamAndPosCmd->GetName();
+  std::string position = teamAndPosCmd->GetName();
   std::string score2DestName = score2Dest->GetName();
   std::string score3DestName = score3Dest->GetName();
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
-      operationName, teamAndPosName, score2DestName, score3DestName);
-}
+      operationName, position, score2DestName, score3DestName);
+#else
+  return AutonomousCommands::GetAutonomousCommand(
+      *m_drivebase, operationName, position, score2DestName, score3DestName);
 #endif
-#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  static frc2::PrintCommand message(
-      "Autonomous commands cannot be run without full robot functionality");
-  return std::move(message).ToPtr();
 }
-#endif
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
   // This is needed because we cannot just input a command ptr onto the FRC
   // Smart Dashboard bc it will be deleted and some values that it had would
   // be still needed. So one thing sais that it needs it, but there is no real
   // data behind it.  This allows us to make this data storage more permanent.
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(m_climber, true));
@@ -245,6 +241,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
+#endif
   frc::SmartDashboard::PutData(
       "reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
@@ -319,6 +316,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
   frc2::JoystickButton(&m_operatorController, buttonId).WhileTrue(command);
 }
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
@@ -351,7 +349,6 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
                                      &retractNote);
 }
 #endif
-
 // AUTO Setup Stuff
 
 frc2::Command *BuildNamedPrintCommand(std::string name, std::string text = "") {

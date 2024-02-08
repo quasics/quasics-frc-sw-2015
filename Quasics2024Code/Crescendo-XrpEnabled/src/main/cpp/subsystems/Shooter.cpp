@@ -15,3 +15,13 @@ void Shooter::SetFlywheelSpeed(double percentSpeed) {
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
 }
+
+void Shooter::ExtendLinearActuators() {
+  m_leftPositionServo.Set(1.00);
+  m_rightPositionServo.Set(1.00);
+}
+
+void Shooter::RetractLinearActuators() {
+  m_leftPositionServo.Set(0.00);
+  m_rightPositionServo.Set(0.00);
+}

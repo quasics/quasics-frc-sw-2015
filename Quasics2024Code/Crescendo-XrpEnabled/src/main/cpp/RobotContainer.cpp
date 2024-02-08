@@ -14,6 +14,7 @@
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/MoveClimbers.h"
+#include "commands/MoveLinearActuators.h"
 #include "commands/PivotIntake.h"
 #include "commands/RunIntake.h"
 #include "commands/RunShooter.h"
@@ -297,6 +298,12 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "GUN THE ROBOT BACKWARD!!!",
       new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
+
+  frc::SmartDashboard::PutData("Extend Actuator",
+                               new MoveLinearActuators(m_shooter, true));
+
+  frc::SmartDashboard::PutData("Retract Actuator",
+                               new MoveLinearActuators(m_shooter, false));
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,

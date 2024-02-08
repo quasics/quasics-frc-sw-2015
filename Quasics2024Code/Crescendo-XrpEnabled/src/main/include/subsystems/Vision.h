@@ -8,6 +8,7 @@
 #include <frc/apriltag/AprilTagFields.h>
 #include <frc/geometry/Translation3d.h>
 #include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/FieldObject2d.h>
 #include <frc2/command/SubsystemBase.h>
 #include <photon/PhotonCamera.h>
 #include <photon/PhotonPoseEstimator.h>
@@ -23,6 +24,7 @@
 #include <optional>
 
 #include "Constants.h"
+#include "utils/SimulationSupport.h"
 
 class Vision : public frc2::SubsystemBase {
  public:
@@ -57,9 +59,6 @@ class Vision : public frc2::SubsystemBase {
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-
-  photon::PhotonCamera camera{"USB_Camera"};
-
   frc::AprilTagFieldLayout aprilTags{
       frc::LoadAprilTagLayoutField(frc::AprilTagField::k2024Crescendo)};
 
@@ -77,6 +76,10 @@ class Vision : public frc2::SubsystemBase {
       // choices.  (And try testing some of them out under simulation, once you
       // have that in place.)
       photon::LOWEST_AMBIGUITY, photon::PhotonCamera("USB_Camera"), robotToCam);
+
+  // Pose estimator holds the camera; get back a shared pointer to let us
+  // set up the PhotonCameraSim.
+  std::shared_ptr<photon::PhotonCamera> m_camera = estimator.GetCamera();
 
   std::unique_ptr<photon::PhotonCameraSim> cameraSim;
 

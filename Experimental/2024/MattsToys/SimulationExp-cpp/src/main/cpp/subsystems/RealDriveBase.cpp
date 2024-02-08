@@ -110,7 +110,7 @@ void RealDriveBase::configureEncoders() {
   resetEncoders();
 }
 
-void RealDriveBase::setMotorVoltagesImpl(units::volt_t leftPower,
+void RealDriveBase::setMotorVoltages_HAL(units::volt_t leftPower,
                                          units::volt_t rightPower) {
 #if defined(ENABLE_DRIVE_BASE_LEAD_FOLLOW)
   m_leftLeader.SetVoltage(leftPower);

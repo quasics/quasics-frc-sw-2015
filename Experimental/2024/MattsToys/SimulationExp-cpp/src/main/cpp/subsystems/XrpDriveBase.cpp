@@ -49,7 +49,7 @@ XrpDriveBase::XrpDriveBase()
   updateOdometry();
 }
 
-void XrpDriveBase::setMotorVoltagesImpl(units::volt_t leftPower,
+void XrpDriveBase::setMotorVoltages_HAL(units::volt_t leftPower,
                                         units::volt_t rightPower) {
   m_leftXrpMotor.Set(convertVoltageToPercentSpeed(leftPower));
   m_rightXrpMotor.Set(convertVoltageToPercentSpeed(rightPower));

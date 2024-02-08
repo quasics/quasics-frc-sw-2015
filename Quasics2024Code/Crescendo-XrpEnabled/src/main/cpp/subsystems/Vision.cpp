@@ -10,13 +10,13 @@ Vision::Vision() {
 
 // This method will be called once per scheduler run
 void Vision::updateEstimatedGlobalPose() {
-  if (camera.GetCameraName() == NULL) {
+  if (m_camera->GetCameraName().empty()) {
     return;
   }
 
   m_lastEstimatedPose = estimator.Update();
 
-  units::second_t latestTimestamp = camera.GetLatestResult().GetTimestamp();
+  units::second_t latestTimestamp = m_camera->GetLatestResult().GetTimestamp();
   m_estimateRecentlyUpdated =
       std::abs(latestTimestamp.value() - m_lastEstTimestamp.value()) > 1e-5;
 
@@ -29,12 +29,15 @@ std::optional<photon::EstimatedRobotPose> Vision::getLastEstimatedPose() {
   return m_lastEstimatedPose;
 }
 
+frc::Field2d& Vision::getSimDebugField() {
+  return visionSim.GetDebugField();
+}
+
 void Vision::Periodic() {
   updateEstimatedGlobalPose();
 }
 
 void Vision::SimulationPeriodic() {
-  /*
   auto possiblePose = SimulationSupport::getSimulatedPose();
   if (possiblePose.has_value()) {
     visionSim.Update(possiblePose.value());
@@ -44,17 +47,16 @@ void Vision::SimulationPeriodic() {
     if (m_lastEstimatedPose.has_value()) {
       getSimDebugField()
           .GetObject("VisionEstimation")
-          .SetPose(est.estimatedPose.toPose2d());
+          ->SetPose(m_lastEstimatedPose.value().estimatedPose.ToPose2d());
     } else {
       if (m_estimateRecentlyUpdated)
-        getSimDebugField().GetObject("VisionEstimation").setPose();
+        getSimDebugField().GetObject("VisionEstimation")->SetPoses({});
     }
   }
-  */
 }
 
 bool Vision::AprilTagTargetIdentified(int IDWantedTarget) {
-  photon::PhotonPipelineResult ID = camera.GetLatestResult();
+  photon::PhotonPipelineResult ID = m_camera->GetLatestResult();
   if (!ID.HasTargets()) {
     // Didn't see anything.
     return false;
@@ -74,7 +76,7 @@ bool Vision::AprilTagTargetIdentified(int IDWantedTarget) {
 
 std::optional<photon::PhotonTrackedTarget> Vision::GetIdentifiedAprilTarget(
     int IDWantedTarget) {
-  photon::PhotonPipelineResult result = camera.GetLatestResult();
+  photon::PhotonPipelineResult result = m_camera->GetLatestResult();
   if (!result.HasTargets()) {
     // Didn't see anything.
     return std::nullopt;
@@ -134,7 +136,7 @@ void Vision::setupSimulationSupport() {
   cameraProp.SetAvgLatency(50_ms);
   cameraProp.SetLatencyStdDev(15_ms);
 
-  cameraSim.reset(new photon::PhotonCameraSim(&camera, cameraProp));
+  cameraSim.reset(new photon::PhotonCameraSim(m_camera.get(), cameraProp));
 
   visionSim.AddCamera(cameraSim.get(), robotToCam);
 
@@ -145,8 +147,4 @@ void Vision::resetSimPose(frc::Pose2d pose) {
   if (frc::RobotBase::IsSimulation()) {
     visionSim.ResetRobotPose(pose);
   }
-}
-
-frc::Field2d& Vision::getSimDebugField() {
-  return visionSim.GetDebugField();
 }

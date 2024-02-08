@@ -34,32 +34,32 @@ class SimulatedDriveBase : public IDrivebase {
   void SimulationPeriodic() override;
 
  protected:
-  void setMotorVoltagesImpl(units::volt_t leftPower,
+  void setMotorVoltages_HAL(units::volt_t leftPower,
                             units::volt_t rightPower) override {
     m_leftMotor.SetVoltage(leftPower);
     m_rightMotor.SetVoltage(rightPower);
   }
 
-  frc::DifferentialDriveOdometry& getOdometry() override {
+  frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
   }
 
-  TrivialEncoder& getLeftEncoder() override {
+  TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }
 
-  TrivialEncoder& getRightEncoder() override {
+  TrivialEncoder& getRightEncoder_HAL() override {
     return *m_rightTrivialEncoder;
   }
 
-  IGyro& getGyro() override {
+  IGyro& getGyro_HAL() override {
     return *m_iGyro;
   }
 
-  double getLeftSpeedPercentage() override {
+  double getLeftSpeedPercentage_HAL() override {
     return m_leftMotor.Get();
   }
-  double getRightSpeedPercentage() override {
+  double getRightSpeedPercentage_HAL() override {
     return m_rightMotor.Get();
   }
 

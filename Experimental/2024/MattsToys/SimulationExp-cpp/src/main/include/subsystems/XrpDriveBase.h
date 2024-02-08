@@ -19,21 +19,21 @@ class XrpDriveBase : public IDrivebase {
   XrpDriveBase();
 
  protected:
-  void setMotorVoltagesImpl(units::volt_t leftPower,
+  void setMotorVoltages_HAL(units::volt_t leftPower,
                             units::volt_t rightPower) override;
 
   /** @return the odometry tracker for the underlying drive base. */
-  frc::DifferentialDriveOdometry& getOdometry() override {
+  frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
   }
 
   /** @return reference to a TrivialEncoder for the left side of the robot. */
-  TrivialEncoder& getLeftEncoder() override {
+  TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }
 
   /** @return reference to a TrivialEncoder for the right side of the robot. */
-  TrivialEncoder& getRightEncoder() override {
+  TrivialEncoder& getRightEncoder_HAL() override {
     return *m_rightTrivialEncoder;
   }
 
@@ -41,14 +41,14 @@ class XrpDriveBase : public IDrivebase {
    * @return reference to an IGyro that can be used to determine the robot's
    * heading.
    */
-  IGyro& getGyro() override {
+  IGyro& getGyro_HAL() override {
     return *m_iGyro;
   }
 
-  double getLeftSpeedPercentage() override {
+  double getLeftSpeedPercentage_HAL() override {
     return m_leftXrpMotor.Get();
   }
-  double getRightSpeedPercentage() override {
+  double getRightSpeedPercentage_HAL() override {
     return m_rightXrpMotor.Get();
   }
 

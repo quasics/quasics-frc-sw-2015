@@ -41,29 +41,29 @@ class RealDriveBase : public IDrivebase {
 
   // Methods required by the IDrivebase class.
  protected:
-  void setMotorVoltagesImpl(units::volt_t leftPower,
+  void setMotorVoltages_HAL(units::volt_t leftPower,
                             units::volt_t rightPower) override;
 
-  frc::DifferentialDriveOdometry& getOdometry() override {
+  frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
   }
 
-  TrivialEncoder& getLeftEncoder() override {
+  TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }
 
-  TrivialEncoder& getRightEncoder() override {
+  TrivialEncoder& getRightEncoder_HAL() override {
     return *m_rightTrivialEncoder;
   }
 
-  IGyro& getGyro() override {
+  IGyro& getGyro_HAL() override {
     return m_offsetGyro;
   }
 
-  double getLeftSpeedPercentage() override {
+  double getLeftSpeedPercentage_HAL() override {
     return m_leftFront.Get();
   }
-  double getRightSpeedPercentage() override {
+  double getRightSpeedPercentage_HAL() override {
     return m_rightFront.Get();
   }
 

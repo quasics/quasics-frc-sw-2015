@@ -44,7 +44,7 @@
  *     which will handle the task of configuring/interacting with the real
  *     hardware (e.g., an FRC drive base, or an XRP "toy bot", etc.), in the
  *     form of abstract functions (e.g., "virtual void
- *     setMotorVoltagesImpl(double left, double right) = 0;") that hide the
+ *     setMotorVoltages_HAL(double left, double right) = 0;") that hide the
  *     details associated with any specific hardware.
  *   - Define and implement the "hardware-agnostic" functionality that is built
  *     using/on top of that contract (e.g., arcadeDrive(), tankDrive(), etc.).
@@ -250,29 +250,30 @@ class IDrivebase : public frc2::SubsystemBase {
 
   /** @return current wheel speeds (in m/s) */
   frc::DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return frc::DifferentialDriveWheelSpeeds{getLeftEncoder().getVelocity(),
-                                             getRightEncoder().getVelocity()};
+    return frc::DifferentialDriveWheelSpeeds{
+        getLeftEncoder_HAL().getVelocity(),
+        getRightEncoder_HAL().getVelocity()};
   }
 
   /** Update the robot's odometry. */
   void updateOdometry() {
-    getOdometry().Update(getGyro().getRotation2d(),
-                         getLeftEncoder().getPosition(),
-                         getRightEncoder().getPosition());
+    getOdometry_HAL().Update(getGyro_HAL().getRotation2d(),
+                             getLeftEncoder_HAL().getPosition(),
+                             getRightEncoder_HAL().getPosition());
   }
 
   /** Check the current robot pose. */
   frc::Pose2d getPose() {
-    return getOdometry().GetPose();
+    return getOdometry_HAL().GetPose();
   }
 
   /** Resets robot odometry. */
   virtual void resetOdometry(frc::Pose2d pose) {
-    getLeftEncoder().reset();
-    getRightEncoder().reset();
-    getOdometry().ResetPosition(getGyro().getRotation2d(),
-                                getLeftEncoder().getPosition(),
-                                getRightEncoder().getPosition(), pose);
+    getLeftEncoder_HAL().reset();
+    getRightEncoder_HAL().reset();
+    getOdometry_HAL().ResetPosition(getGyro_HAL().getRotation2d(),
+                                    getLeftEncoder_HAL().getPosition(),
+                                    getRightEncoder_HAL().getPosition(), pose);
   }
 
   // Functions to support logging data used for driving.
@@ -318,34 +319,49 @@ class IDrivebase : public frc2::SubsystemBase {
   using SysIdMechanism = frc2::sysid::Mechanism;
 
   SysIdRoutine m_sysIdRoutine{
-      // Default config
-      SysIdConfig{/*rampRate (1v/s)*/ {},
-                  /*stepVoltage (7v)*/ {},
-                  /*timeout (10sec)*/ {},
-                  /*recordState (use WPILib logging)*/ {}},
-      // Underlying "mechanism" for handling SysId profile data generation.
-      SysIdMechanism{[this](units::volt_t volts) {
-                       // OK, send it out to the motors!
-                       this->setMotorVoltagesImpl(volts, volts);
-                     },
-                     [this](frc::sysid::SysIdRoutineLog* log) {
-                       // Record frames for the left- and right-side motors.  If
-                       // we have more than one motor on a side for some
-                       // subclass, we'll assume that it's providing us with an
-                       // appropriate value (e.g., either based on an exemplar,
-                       // an average, etc.).
-                       log->Motor("drive-left")
-                           .voltage(getLeftSpeedPercentage() *
-                                    frc::RobotController::GetBatteryVoltage())
-                           .position(getLeftEncoder().getPosition())
-                           .velocity(getLeftEncoder().getVelocity());
-                       log->Motor("drive-right")
-                           .voltage(getRightSpeedPercentage() *
-                                    frc::RobotController::GetBatteryVoltage())
-                           .position(getRightEncoder().getPosition())
-                           .velocity(getRightEncoder().getVelocity());
-                     },
-                     this}};
+      // Tell it to use the default configurations for setting up the tests.
+      SysIdConfig{
+          /*rampRate (defaults to 1v/s)*/ {},
+          /*stepVoltage (defaults to 7v)*/ {},
+          /*timeout (defaults to 10sec)*/ {},
+          /*recordState (defaults to using "stock" WPILib logging)*/ {}},
+
+      // Provide the necessar "mechanisms" for handling SysId profile data
+      // generation.
+      SysIdMechanism{
+          // This is a function (written as a lamba) to use in
+          // controlling the motors directly, by means of adjusting
+          // the voltages sent to them.
+          [this](units::volt_t volts) {
+            this->setMotorVoltages_HAL(volts, volts);
+          },
+          // This is a function for recording data "frames" (i.e.,
+          // snapshots of the current state, such as during the power
+          // ramp-up process) for the left- and right-side motors. If
+          // we have more than one motor on a side for some
+          // subclass, we'll assume that the sublcass providing us with an
+          // appropriate value (e.g., either based on one motor from that side,
+          // or an average across the motors, etc.).
+          [this](frc::sysid::SysIdRoutineLog* log) {
+            // Give the provided "log" object information about the status of
+            // the left-side motor(s).
+            log->Motor("drive-left")
+                .voltage(getLeftSpeedPercentage_HAL() *
+                         frc::RobotController::GetBatteryVoltage())
+                .position(getLeftEncoder_HAL().getPosition())
+                .velocity(getLeftEncoder_HAL().getVelocity());
+            // Give the provided "log" object information about the status of
+            // the right-side motor(s).
+            log->Motor("drive-right")
+                .voltage(getRightSpeedPercentage_HAL() *
+                         frc::RobotController::GetBatteryVoltage())
+                .position(getRightEncoder_HAL().getPosition())
+                .velocity(getRightEncoder_HAL().getVelocity());
+          },
+          // The subsystem being profiled (i.e., a pointer to the drive base),
+          // so that the commands being generated can specify a dependency on
+          // it.
+          this}};
 
  public:
   /**
@@ -371,7 +387,7 @@ class IDrivebase : public frc2::SubsystemBase {
    * "remembers" the settings, so that they can be reapplied regularly.
    *
    * @see #Periodic()
-   * @see #setMotorVoltagesImpl(units::volt_t, units::volt_t)
+   * @see #setMotorVoltages_HAL(units::volt_t, units::volt_t)
    */
   void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower);
 
@@ -393,35 +409,35 @@ class IDrivebase : public frc2::SubsystemBase {
   // above.
  protected:
   /** Actually sets the voltages for the motors on the left and right sides. */
-  virtual void setMotorVoltagesImpl(units::volt_t leftPower,
+  virtual void setMotorVoltages_HAL(units::volt_t leftPower,
                                     units::volt_t rightPower) = 0;
 
   /** @return the odometry tracker for the underlying drive base. */
-  virtual frc::DifferentialDriveOdometry& getOdometry() = 0;
+  virtual frc::DifferentialDriveOdometry& getOdometry_HAL() = 0;
 
   /** @return reference to a TrivialEncoder for the left side of the robot. */
-  virtual TrivialEncoder& getLeftEncoder() = 0;
+  virtual TrivialEncoder& getLeftEncoder_HAL() = 0;
 
   /** @return reference to a TrivialEncoder for the right side of the robot. */
-  virtual TrivialEncoder& getRightEncoder() = 0;
+  virtual TrivialEncoder& getRightEncoder_HAL() = 0;
 
   /**
    * @return reference to an IGyro that can be used to determine the robot's
    * heading.
    */
-  virtual IGyro& getGyro() = 0;
+  virtual IGyro& getGyro_HAL() = 0;
 
   /**
    * @return the most recent "power %" setting for the left-side motor(s)
    * (possibly back-calculated from voltages)
    */
-  virtual double getLeftSpeedPercentage() = 0;
+  virtual double getLeftSpeedPercentage_HAL() = 0;
 
   /**
    * @return the most recent "power %" setting for the right-side motor(s)
    * (possibly back-calculated from voltages)
    */
-  virtual double getRightSpeedPercentage() = 0;
+  virtual double getRightSpeedPercentage_HAL() = 0;
 
  private:
   static DeadBandEnforcer m_voltageDeadbandEnforcer;

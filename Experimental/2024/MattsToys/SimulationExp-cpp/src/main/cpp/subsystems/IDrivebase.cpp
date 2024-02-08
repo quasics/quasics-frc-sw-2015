@@ -27,7 +27,7 @@ void IDrivebase::setMotorVoltages(units::volt_t leftVoltage,
   logValue("rightVolts", rightVoltage.value());
 
   if (ENABLE_VOLTAGE_APPLICATION) {
-    setMotorVoltagesImpl(leftVoltage, rightVoltage);
+    setMotorVoltages_HAL(leftVoltage, rightVoltage);
   }
 }
 
@@ -60,13 +60,14 @@ void IDrivebase::setSpeedsImpl(const units::meters_per_second_t leftSpeed,
   logValue("rightFF", rightFeedforward.value());
 
   // Compute a delta, based on current/historical data.
-  double leftPidOutput = applyPid ? m_leftPIDController->Calculate(
-                                        getLeftEncoder().getVelocity().value(),
-                                        leftStabilized.value())
-                                  : 0;
+  double leftPidOutput = applyPid
+                             ? m_leftPIDController->Calculate(
+                                   getLeftEncoder_HAL().getVelocity().value(),
+                                   leftStabilized.value())
+                             : 0;
   double rightPidOutput = applyPid
                               ? m_rightPIDController->Calculate(
-                                    getRightEncoder().getVelocity().value(),
+                                    getRightEncoder_HAL().getVelocity().value(),
                                     rightStabilized.value())
                               : 0;
   logValue("leftPid", leftPidOutput);

@@ -48,6 +48,9 @@
  *     details associated with any specific hardware.
  *   - Define and implement the "hardware-agnostic" functionality that is built
  *     using/on top of that contract (e.g., arcadeDrive(), tankDrive(), etc.).
+ *
+ * TODO: Move the odometry setup and direct usage into this class, rather than
+ * pushing it down to the derived classes.
  */
 class IDrivebase : public frc2::SubsystemBase {
   // Useful class constants.

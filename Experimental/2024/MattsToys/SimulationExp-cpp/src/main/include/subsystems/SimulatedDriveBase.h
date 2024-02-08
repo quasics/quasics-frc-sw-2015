@@ -33,6 +33,8 @@ class SimulatedDriveBase : public IDrivebase {
 
   void SimulationPeriodic() override;
 
+  // Hardware abstraction layer (HAL) functions required for the IDrivebase
+  // interface.  (All should be documented in the base class.)
  protected:
   void setMotorVoltages_HAL(units::volt_t leftPower,
                             units::volt_t rightPower) override {
@@ -79,13 +81,17 @@ class SimulatedDriveBase : public IDrivebase {
 
   frc::DifferentialDriveOdometry m_odometry;
 
+  // "Standardized" wrappers around underlying gyros/encoders.  (Needed by
+  // IDrivebase class.)
+ private:
   std::unique_ptr<IGyro> m_iGyro{IGyro::wrapGyro(m_gyro)};
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_leftEncoder)};
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_rightEncoder)};
 
-  // Simulation classes help us simulate our robot
+  // WPILib stuff to help us simulate a drive base on a normal desktop/laptop.
+ private:
   frc::sim::AnalogGyroSim m_gyroSim{m_gyro};
   frc::sim::EncoderSim m_leftEncoderSim{m_leftEncoder};
   frc::sim::EncoderSim m_rightEncoderSim{m_rightEncoder};

@@ -39,7 +39,8 @@ class RealDriveBase : public IDrivebase {
    */
   void enableCoastingMode(bool tf);
 
-  // Methods required by the IDrivebase class.
+  // Hardware abstraction layer (HAL) functions required for the IDrivebase
+  // interface.  (All should be documented in the base class.)
  protected:
   void setMotorVoltages_HAL(units::volt_t leftPower,
                             units::volt_t rightPower) override;
@@ -79,7 +80,8 @@ class RealDriveBase : public IDrivebase {
     m_rightBackEncoder.SetPosition(0);
   }
 
-  // Data members.
+  // Data members.  (Mostly, the motors and sensors on the robot, and the
+  // "generifying" wrappers for them that are needed by IDrivebase.
  private:
   // Drive base motors.
   rev::CANSparkMax m_leftFront{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
@@ -112,9 +114,6 @@ class RealDriveBase : public IDrivebase {
       m_rightBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
 
   // Gyro.
-  //
-  // TODO: Enable using a Pigeon2, once the updated CTRE libraries are
-  // available.
 #ifdef ENABLE_CTRE
   Pigeon2 m_realGyro{OtherCanIds::PIGEON2_CAN_ID};
 #else

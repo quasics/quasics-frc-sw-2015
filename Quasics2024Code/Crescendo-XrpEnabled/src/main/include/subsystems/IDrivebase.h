@@ -132,6 +132,11 @@ class IDrivebase : public frc2::SubsystemBase {
     return speedPercentage;
   }
 
+  static units::volt_t convertPercentSpeedToVoltage(double percentSpeed) {
+    const double referenceVoltage = frc::RobotController::GetInputVoltage();
+    return (referenceVoltage * percentSpeed) * 1_V;
+  }
+
   // Hardware abstraction layer functions.
   //
   // Note that these should *never* be called directly by code from outside an

@@ -6,6 +6,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+DeadBandEnforcer IDrivebase::m_voltageDeadbandEnforcer(-0.001);
+
 IDrivebase::IDrivebase(){};
 
 // This method will be called once per scheduler run

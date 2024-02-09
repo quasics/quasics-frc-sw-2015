@@ -248,7 +248,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "reset encoders",
-      new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+      new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));
 
   frc::SmartDashboard::PutData("coast intake",
                                new frc2::InstantCommand([this]() {

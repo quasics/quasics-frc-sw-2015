@@ -37,8 +37,8 @@ class IDrivebase : public frc2::SubsystemBase {
     speeds.omega = rSpeed;
     const auto wheelSpeeds = m_kinematics.ToWheelSpeeds(speeds);
 
-    setMotorSpeeds(wheelSpeeds.left / RobotConstants::MAX_SPEED,
-                   wheelSpeeds.right / RobotConstants::MAX_SPEED);
+    setMotorSpeeds_HAL(wheelSpeeds.left / RobotConstants::MAX_SPEED,
+                       wheelSpeeds.right / RobotConstants::MAX_SPEED);
   }
 
   frc2::CommandPtr sysIdQuasistatic(frc2::sysid::Direction direction);
@@ -53,9 +53,9 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void resetOdometry(frc::Pose2d pose) {
-    getOdometry().ResetPosition(getGyro().getRotation2d(),
-                                getLeftEncoder().getPosition(),
-                                getRightEncoder().getPosition(), pose);
+    getOdometry().ResetPosition(getGyro_HAL().getRotation2d(),
+                                getLeftEncoder_HAL().getPosition(),
+                                getRightEncoder_HAL().getPosition(), pose);
     // ResetEncoders();
   }
 
@@ -65,18 +65,19 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void ResetEncoders() {
-    getLeftEncoder().reset();
-    getRightEncoder().reset();
+    getLeftEncoder_HAL().reset();
+    getRightEncoder_HAL().reset();
   }
 
   frc::DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return {getLeftEncoder().getVelocity(), getRightEncoder().getVelocity()};
+    return {getLeftEncoder_HAL().getVelocity(),
+            getRightEncoder_HAL().getVelocity()};
   }
 
   void updateOdometry() {
-    getOdometry().Update(getGyro().getRotation2d().Degrees(),
-                         getLeftEncoder().getPosition(),
-                         getRightEncoder().getPosition());
+    getOdometry().Update(getGyro_HAL().getRotation2d().Degrees(),
+                         getLeftEncoder_HAL().getPosition(),
+                         getRightEncoder_HAL().getPosition());
   }
 
   virtual void tankDriveVolts(units::volt_t left, units::volt_t right) = 0;
@@ -97,15 +98,15 @@ class IDrivebase : public frc2::SubsystemBase {
           },
           [this](frc::sysid::SysIdRoutineLog* log) {
             log->Motor("drive-left")
-                .voltage(getLeftSpeedPercentage() *
+                .voltage(getLeftSpeedPercentage_HAL() *
                          frc::RobotController::GetBatteryVoltage())
-                .position(getLeftEncoder().getPosition())
-                .velocity(getLeftEncoder().getVelocity());
+                .position(getLeftEncoder_HAL().getPosition())
+                .velocity(getLeftEncoder_HAL().getVelocity());
             log->Motor("drive-right")
-                .voltage(getRightSpeedPercentage() *
+                .voltage(getRightSpeedPercentage_HAL() *
                          frc::RobotController::GetBatteryVoltage())
-                .position(getRightEncoder().getPosition())
-                .velocity(getRightEncoder().getVelocity());
+                .position(getRightEncoder_HAL().getPosition())
+                .velocity(getRightEncoder_HAL().getVelocity());
           },
           this}};
 
@@ -122,15 +123,15 @@ class IDrivebase : public frc2::SubsystemBase {
 
   // Hardware abstraction layer
  protected:
-  virtual IGyro& getGyro() = 0;
+  virtual IGyro& getGyro_HAL() = 0;
 
-  virtual void setMotorSpeeds(double leftPercent, double rightPercent) = 0;
+  virtual void setMotorSpeeds_HAL(double leftPercent, double rightPercent) = 0;
 
-  virtual double getLeftSpeedPercentage() = 0;
-  virtual double getRightSpeedPercentage() = 0;
+  virtual double getLeftSpeedPercentage_HAL() = 0;
+  virtual double getRightSpeedPercentage_HAL() = 0;
 
-  virtual TrivialEncoder& getLeftEncoder() = 0;
-  virtual TrivialEncoder& getRightEncoder() = 0;
+  virtual TrivialEncoder& getLeftEncoder_HAL() = 0;
+  virtual TrivialEncoder& getRightEncoder_HAL() = 0;
 
  private:
   static DeadBandEnforcer m_voltageDeadbandEnforcer;

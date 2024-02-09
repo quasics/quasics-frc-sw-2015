@@ -58,7 +58,7 @@ void SimulatedDrivebase::SimulationPeriodic() {
   SimulationSupport::setSimulatedPose(m_drivetrainSimulator.GetPose());
 }
 
-void SimulatedDrivebase::setMotorSpeeds(double leftPercent,
+void SimulatedDrivebase::setMotorSpeeds_HAL(double leftPercent,
                                         double rightPercent) {
   m_leftMotor.Set(leftPercent);
   m_rightMotor.Set(rightPercent);

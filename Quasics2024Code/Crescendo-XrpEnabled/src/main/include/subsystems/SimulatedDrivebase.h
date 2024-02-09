@@ -24,7 +24,7 @@ class SimulatedDrivebase : public IDrivebase {
 
   // Hardware abstraction layer
  protected:
-  void setMotorSpeeds(double leftPercent, double rightPercent) override;
+  void setMotorSpeeds_HAL(double leftPercent, double rightPercent) override;
 
   void tankDriveVolts(units::volt_t left, units::volt_t right) override;
 
@@ -37,18 +37,18 @@ class SimulatedDrivebase : public IDrivebase {
    * Will be called periodically whenever the CommandScheduler runs.
    */
 
-  TrivialEncoder& getLeftEncoder() override {
+  TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }
 
-  TrivialEncoder& getRightEncoder() override {
+  TrivialEncoder& getRightEncoder_HAL() override {
     return *m_rightTrivialEncoder;
   }
 
-  double getLeftSpeedPercentage() override {
+  double getLeftSpeedPercentage_HAL() override {
     return m_leftMotor.Get();
   }
-  double getRightSpeedPercentage() override {
+  double getRightSpeedPercentage_HAL() override {
     return m_rightMotor.Get();
   }
 
@@ -56,7 +56,7 @@ class SimulatedDrivebase : public IDrivebase {
     return m_odometry;
   }
 
-  IGyro& getGyro() override {
+  IGyro& getGyro_HAL() override {
     return *m_trivialGyro;
   }
 

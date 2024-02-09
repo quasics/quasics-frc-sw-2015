@@ -12,7 +12,8 @@ RealDrivebase::RealDrivebase() {
   resetOdometry(frc::Pose2d());
 }
 
-void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {
+void RealDrivebase::setMotorSpeeds_HAL(double leftPercent,
+                                       double rightPercent) {
   m_leftBack.Set(leftPercent);
   m_rightBack.Set(rightPercent);
 }

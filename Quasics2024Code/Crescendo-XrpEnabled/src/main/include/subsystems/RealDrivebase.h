@@ -21,29 +21,29 @@ class RealDrivebase : public IDrivebase {
 
   // Hardware abstraction layer
  protected:
-  void setMotorSpeeds(double leftPercent, double rightPercent) override;
+  void setMotorSpeeds_HAL(double leftPercent, double rightPercent) override;
 
   void tankDriveVolts(units::volt_t left, units::volt_t right) override;
 
   void setMotorVoltages(units::volt_t leftPower,
                         units::volt_t rightPower) override;
 
-  IGyro& getGyro() override {
+  IGyro& getGyro_HAL() override {
     return m_offsetGyro;
   }
 
-  TrivialEncoder& getLeftEncoder() override {
+  TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }
 
-  TrivialEncoder& getRightEncoder() override {
+  TrivialEncoder& getRightEncoder_HAL() override {
     return *m_rightTrivialEncoder;
   }
 
-  double getLeftSpeedPercentage() override {
+  double getLeftSpeedPercentage_HAL() override {
     return m_leftBack.Get();
   }
-  double getRightSpeedPercentage() override {
+  double getRightSpeedPercentage_HAL() override {
     return m_rightBack.Get();
   }
 

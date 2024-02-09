@@ -20,10 +20,10 @@ void IDrivebase::Periodic() {
   frc::SmartDashboard::PutNumber("angle", double(pose.Rotation().Degrees()));
 
   frc::SmartDashboard::PutNumber("left Encoder meters",
-                                 double(getLeftEncoder().getPosition()));
+                                 double(getLeftEncoder_HAL().getPosition()));
 
   frc::SmartDashboard::PutNumber("right Encoder meters",
-                                 double(getRightEncoder().getPosition()));
+                                 double(getRightEncoder_HAL().getPosition()));
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
@@ -35,7 +35,7 @@ void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
   // etc.)
 
   // Apply the speeds to the motors!
-  setMotorSpeeds(leftPercent, rightPercent);
+  setMotorSpeeds_HAL(leftPercent, rightPercent);
 }
 
 frc2::CommandPtr IDrivebase::sysIdQuasistatic(

@@ -53,13 +53,13 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void resetOdometry(frc::Pose2d pose) {
-    getOdometry_HAL().ResetPosition(getGyro_HAL().getRotation2d(),
-                                    getLeftEncoder_HAL().getPosition(),
-                                    getRightEncoder_HAL().getPosition(), pose);
+    resetOdometry(getGyro_HAL().getRotation2d(),
+                  getLeftEncoder_HAL().getPosition(),
+                  getRightEncoder_HAL().getPosition(), pose);
     // resetEncoders();
   }
 
-  void resetOdometry(frc::Rotation2d& gyroAngle, units::meter_t leftDistance,
+  void resetOdometry(frc::Rotation2d gyroAngle, units::meter_t leftDistance,
                      units::meter_t rightDistance, frc::Pose2d& pose) {
     getOdometry_HAL().ResetPosition(gyroAngle, leftDistance, rightDistance,
                                     pose);

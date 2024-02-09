@@ -51,6 +51,9 @@ class Shooter : public frc2::SubsystemBase {
   rev::CANSparkMax m_flyWheel{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_flyWheelTwo{
+      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
+      rev::CANSparkMax::MotorType::kBrushless};
 
   frc::Servo m_leftPositionServo{PWMPorts::LEFT_SERVO};
 

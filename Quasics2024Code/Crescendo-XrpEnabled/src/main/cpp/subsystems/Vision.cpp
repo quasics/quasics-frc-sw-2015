@@ -4,8 +4,11 @@
 
 #include "subsystems/Vision.h"
 
+#include <iostream>
+
 Vision::Vision() {
   SetName("Vision");
+  setupSimulationSupport();
 }
 
 // This method will be called once per scheduler run
@@ -39,6 +42,7 @@ void Vision::Periodic() {
 
 void Vision::SimulationPeriodic() {
   auto possiblePose = SimulationSupport::getSimulatedPose();
+
   if (possiblePose.has_value()) {
     visionSim.Update(possiblePose.value());
   }
@@ -112,6 +116,22 @@ bool Vision::CalculateDistanceAndAnglesToTarger(int IDWantedTarget,
   pitchTarget = pitchToTarget;
   yawTarget = yawToTarget;
   return true;
+}
+
+void Vision::RotateToAprilTarget(int TargetID, IDrivebase* driveBase) {
+  /*auto possibleTarget = GetIdentifiedAprilTarget(TargetID);
+  if(!possibleTarget.has_value()){
+    return;
+  }
+  auto target = possibleTarget.value();
+  while(target.GetYaw() > 5 || target.GetYaw() < -5){
+    if(target.GetYaw() > 0){
+      driveBase->tankDrive(.3, -.3);
+    }
+    else{
+      driveBase->tankDrive(-.3, .3);
+    }
+  }*/
 }
 
 std::optional<photon::EstimatedRobotPose> Vision::UpdateFieldPosition(

@@ -9,6 +9,8 @@
 
 #include <numbers>
 
+#include "utils/SimulationSupport.h"
+
 SimulatedDrivebase::SimulatedDrivebase() {
   SetName("SimulatedDrivebase");
 
@@ -52,6 +54,8 @@ void SimulatedDrivebase::SimulationPeriodic() {
       m_drivetrainSimulator.GetRightPosition().value());
   m_rightEncoderSim.SetRate(m_drivetrainSimulator.GetRightVelocity().value());
   m_gyroSim.SetAngle(-m_drivetrainSimulator.GetHeading().Degrees().value());
+
+  SimulationSupport::setSimulatedPose(m_drivetrainSimulator.GetPose());
 }
 
 void SimulatedDrivebase::setMotorSpeeds(double leftPercent,

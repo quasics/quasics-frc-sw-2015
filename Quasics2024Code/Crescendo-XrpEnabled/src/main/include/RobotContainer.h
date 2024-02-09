@@ -107,8 +107,12 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
 #ifdef ENABLE_VISION_SUBSYSTEM
+#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
+#else
+  Vision* m_vision;
+#endif
 #endif  // ENABLE_VISION_SUBSYSTEM
 
   Shooter m_shooter;

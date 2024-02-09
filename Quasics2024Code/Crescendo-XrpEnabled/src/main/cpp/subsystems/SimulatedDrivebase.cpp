@@ -64,7 +64,7 @@ void SimulatedDrivebase::setMotorSpeeds_HAL(double leftPercent,
   m_rightMotor.Set(rightPercent);
 }
 
-void SimulatedDrivebase::tankDriveVolts(units::volt_t left,
+void SimulatedDrivebase::tankDriveVolts_HAL(units::volt_t left,
                                         units::volt_t right) {
   m_leftMotor.SetVoltage(left);
   m_rightMotor.SetVoltage(right);

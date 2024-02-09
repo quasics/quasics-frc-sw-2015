@@ -43,7 +43,7 @@ void RealDrivebase::configureEncoders() {
   resetEncoders();
 }
 
-void RealDrivebase::tankDriveVolts(units::volt_t left, units::volt_t right) {
+void RealDrivebase::tankDriveVolts_HAL(units::volt_t left, units::volt_t right) {
   m_leftBack.SetVoltage(left);
   m_rightBack.SetVoltage(right);
 }

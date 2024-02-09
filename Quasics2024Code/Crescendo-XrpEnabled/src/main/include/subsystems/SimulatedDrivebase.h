@@ -26,7 +26,7 @@ class SimulatedDrivebase : public IDrivebase {
  protected:
   void setMotorSpeeds_HAL(double leftPercent, double rightPercent) override;
 
-  void tankDriveVolts(units::volt_t left, units::volt_t right) override;
+  void tankDriveVolts_HAL(units::volt_t left, units::volt_t right) override;
 
   void setMotorVoltages(units::volt_t leftPower,
                         units::volt_t rightPower) override {
@@ -52,7 +52,7 @@ class SimulatedDrivebase : public IDrivebase {
     return m_rightMotor.Get();
   }
 
-  frc::DifferentialDriveOdometry& getOdometry() override {
+  frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
   }
 

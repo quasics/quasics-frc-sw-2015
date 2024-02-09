@@ -53,6 +53,7 @@ class IDrivebase : public frc2::SubsystemBase {
   }
 
   void resetOdometry(frc::Pose2d pose) {
+    // Pass through to the more complicated version.
     resetOdometry(getGyro_HAL().getRotation2d(),
                   getLeftEncoder_HAL().getPosition(),
                   getRightEncoder_HAL().getPosition(), pose);

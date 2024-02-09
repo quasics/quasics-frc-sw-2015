@@ -8,6 +8,8 @@
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/ParallelRaceGroup.h>
+#include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include <list>
@@ -85,6 +87,10 @@ class RobotContainer {
   void AddRobotOverallOperationToSmartDashboard();
   void AddScoreDestinationsToSmartDashboard();
 
+ private:
+  frc2::ParallelRaceGroup* ShootingSequence();
+  frc2::SequentialCommandGroup* IntakeDelay();
+
   // Data members of the class (subsystems, persistent commands, etc.)
  private:
   ConfigSettings m_configSettings;
@@ -107,8 +113,12 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
 #ifdef ENABLE_VISION_SUBSYSTEM
+#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
+#else
+  Vision* m_vision;
+#endif
 #endif  // ENABLE_VISION_SUBSYSTEM
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY

@@ -72,11 +72,13 @@ bool IntakeDeployment::RetractedByRevolutions() {
 }
 
 void IntakeDeployment::Periodic() {
-  frc::SmartDashboard::PutString(
-      "Retract limit switch",
-      m_RetractIntakeLimitSwitch.Get() ? "open" : "closed");
+  /* frc::SmartDashboard::PutString(
+       "Retract limit switch",
+       m_RetractIntakeLimitSwitch.Get() ? "open" : "closed");
 
-  frc::SmartDashboard::PutString(
-      "Extend limit switch",
-      m_ExtendIntakeLimitSwitch.Get() ? "open" : "closed");
+   frc::SmartDashboard::PutString(
+       "Extend limit switch",
+       m_ExtendIntakeLimitSwitch.Get() ? "open" : "closed");*/
+
+  frc::SmartDashboard::PutNumber("Deployment Revolutions", GetRevolutions());
 }

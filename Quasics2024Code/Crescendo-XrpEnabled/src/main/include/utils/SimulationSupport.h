@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
+#include <frc/RobotBase.h>
 #include <frc/geometry/Pose2d.h>
 
 #include <optional>
@@ -15,11 +16,11 @@ class SimulationSupport {
     return simulatedPose;
   }
 
-  /*static void setSimulatedPose(frc::Pose2d pose) {
-    if() {
-      simulatedPose =
+  static void setSimulatedPose(frc::Pose2d pose) {
+    if (frc::RobotBase::IsSimulation()) {
+      simulatedPose = pose;
     }
-  }*/
+  }
 
  private:
   static std::optional<frc::Pose2d> simulatedPose;

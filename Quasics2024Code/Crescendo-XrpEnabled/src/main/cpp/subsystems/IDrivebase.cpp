@@ -37,3 +37,12 @@ void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
   // Apply the speeds to the motors!
   setMotorSpeeds(leftPercent, rightPercent);
 }
+
+frc2::CommandPtr IDrivebase::sysIdQuasistatic(
+    frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr IDrivebase::sysIdDynamic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Dynamic(direction);
+}

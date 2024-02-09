@@ -27,6 +27,12 @@ class SimulatedDrivebase : public IDrivebase {
   void setMotorSpeeds(double leftPercent, double rightPercent) override;
 
   void tankDriveVolts(units::volt_t left, units::volt_t right) override;
+
+  void setMotorVoltages(units::volt_t leftPower,
+                        units::volt_t rightPower) override {
+    m_leftMotor.SetVoltage(leftPower);
+    m_rightMotor.SetVoltage(rightPower);
+  }
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
@@ -37,6 +43,13 @@ class SimulatedDrivebase : public IDrivebase {
 
   TrivialEncoder& getRightEncoder() override {
     return *m_rightTrivialEncoder;
+  }
+
+  double getLeftSpeedPercentage() override {
+    return m_leftMotor.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightMotor.Get();
   }
 
   frc::DifferentialDriveOdometry& getOdometry() override {

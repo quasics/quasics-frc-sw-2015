@@ -46,3 +46,9 @@ void RealDrivebase::tankDriveVolts(units::volt_t left, units::volt_t right) {
   m_leftBack.SetVoltage(left);
   m_rightBack.SetVoltage(right);
 }
+
+void RealDrivebase::setMotorVoltages(units::volt_t leftPower,
+                                     units::volt_t rightPower) {
+  m_leftBack.SetVoltage(leftPower);
+  m_rightBack.SetVoltage(rightPower);
+}

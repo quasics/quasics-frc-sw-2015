@@ -4,12 +4,15 @@
 
 #include "RobotContainer.h"
 
+#include <frc/DataLogManager.h>
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+
+#include <iostream>
 
 #include "TrajectoryGenerator.h"
 #include "commands/ArcadeDrive.h"
@@ -46,6 +49,9 @@ RobotContainer::RobotContainer() {
 
   AddTestButtonsOnSmartDashboard();
   AddAutoSelectionsToSmartDashboard();
+
+  std::cout << "Log files being written to: "
+            << frc::DataLogManager::GetLogDir() << std::endl;
 }
 
 void RobotContainer::setUpTankDrive() {
@@ -318,6 +324,20 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
+
+  // SysId Commands
+  static frc2::CommandPtr quasistaticForward =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kForward);
+  static frc2::CommandPtr quasistaticReverse =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kReverse);
+  static frc2::CommandPtr dynamicForward =
+      m_drivebase->sysIdDynamic(frc2::sysid::kForward);
+  static frc2::CommandPtr dynamicReverse =
+      m_drivebase->sysIdDynamic(frc2::sysid::kReverse);
+  frc::SmartDashboard::PutData("Quasistatic Forward", quasistaticForward.get());
+  frc::SmartDashboard::PutData("Quasistatic Reverse", quasistaticReverse.get());
+  frc::SmartDashboard::PutData("Dynamic Forward", dynamicForward.get());
+  frc::SmartDashboard::PutData("Dynamic Reverse", dynamicReverse.get());
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,

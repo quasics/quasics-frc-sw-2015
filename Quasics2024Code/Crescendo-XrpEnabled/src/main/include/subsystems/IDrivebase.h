@@ -107,7 +107,7 @@ class IDrivebase : public frc2::SubsystemBase {
           [this](units::volt_t volts) {
             // set voltage speed here to left and right
             // motors
-            this->setMotorVoltages(volts, volts);
+            this->setMotorVoltages_HAL(volts, volts);
           },
           [this](frc::sysid::SysIdRoutineLog* log) {
             log->Motor("drive-left")
@@ -142,8 +142,10 @@ class IDrivebase : public frc2::SubsystemBase {
   // @see https://stackify.com/oop-concept-abstraction/
   // @see https://stackify.com/oop-concept-for-beginners-what-is-encapsulation/
  protected:
-  virtual void setMotorVoltages(units::volt_t leftPower,
-                                units::volt_t rightPower) = 0;
+  // TODO: (Riley) Why are there two equivalent functions (setMotorVoltages_HAL
+  // and tankDriveVolts_HAL)?
+  virtual void setMotorVoltages_HAL(units::volt_t leftPower,
+                                    units::volt_t rightPower) = 0;
   virtual void tankDriveVolts_HAL(units::volt_t left, units::volt_t right) = 0;
   virtual frc::DifferentialDriveOdometry& getOdometry_HAL() = 0;
   virtual IGyro& getGyro_HAL() = 0;

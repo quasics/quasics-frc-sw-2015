@@ -28,7 +28,7 @@ class SimulatedDrivebase : public IDrivebase {
 
   void tankDriveVolts_HAL(units::volt_t left, units::volt_t right) override;
 
-  void setMotorVoltages(units::volt_t leftPower,
+  void setMotorVoltages_HAL(units::volt_t leftPower,
                         units::volt_t rightPower) override {
     m_leftMotor.SetVoltage(leftPower);
     m_rightMotor.SetVoltage(rightPower);

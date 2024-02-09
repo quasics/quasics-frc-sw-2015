@@ -51,7 +51,7 @@ RobotContainer::RobotContainer() {
   AddTestButtonsOnSmartDashboard();
   AddAutoSelectionsToSmartDashboard();
 
-  std::cout << "Log files being written to: "
+  std::cerr << "Log files being written to: "
             << frc::DataLogManager::GetLogDir() << std::endl;
 }
 

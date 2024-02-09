@@ -25,6 +25,9 @@ class RealDrivebase : public IDrivebase {
 
   void tankDriveVolts(units::volt_t left, units::volt_t right) override;
 
+  void setMotorVoltages(units::volt_t leftPower,
+                        units::volt_t rightPower) override;
+
   IGyro& getGyro() override {
     return m_offsetGyro;
   }
@@ -35,6 +38,13 @@ class RealDrivebase : public IDrivebase {
 
   TrivialEncoder& getRightEncoder() override {
     return *m_rightTrivialEncoder;
+  }
+
+  double getLeftSpeedPercentage() override {
+    return m_leftBack.Get();
+  }
+  double getRightSpeedPercentage() override {
+    return m_rightBack.Get();
   }
 
   frc::DifferentialDriveOdometry& getOdometry() override {

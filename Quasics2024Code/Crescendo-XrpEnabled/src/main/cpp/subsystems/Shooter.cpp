@@ -10,8 +10,8 @@ Shooter::Shooter() {
 
 void Shooter::SetFlywheelSpeed(double percentSpeed) {
   m_flyWheel.Set(percentSpeed);
+  m_flyWheelTwo.Set(-percentSpeed);
 }
-
 // This method will be called once per scheduler run
 void Shooter::Periodic() {
 }

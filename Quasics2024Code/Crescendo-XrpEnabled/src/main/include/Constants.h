@@ -90,6 +90,8 @@ namespace MotorIds {
     constexpr int INTAKE_DEPLOYMENT_MOTOR = 7;
     constexpr int INTAKE_MOTOR = 8;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_LEADER_ID = 9;
+    constexpr int SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID = 10;
+
   }  // namespace SparkMax
 
 }  // namespace MotorIds

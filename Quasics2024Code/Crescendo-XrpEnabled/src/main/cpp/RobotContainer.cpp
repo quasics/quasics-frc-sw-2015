@@ -179,19 +179,19 @@ void RobotContainer::allocateDriveBase() {
     // OK, we're running on a "big bot".
     m_drivebase.reset(new RealDrivebase);
   } else {
-    m_drivebase.reset(new SimulatedDrivebase);
-
-    // TODO: (Rylie) Add support for handling either "pure simulation" or "XRP
-    // use".
-    //
+#ifdef ENABLE_XRP
     // OK, we're running under simulation.  However, this could either mean
     // that we're talking to an XRP "little bot", or doing *pure* (GUI-based)
     // simulation on a PC of some sort.
-    // if (USE_XRP_UNDER_SIMULATION) {
-    //   m_drivebase.reset(new XRPDrivebase);
-    // } else {
-    //   m_drivebase.reset(new SimulatedDrivebase);
-    // }
+    if (USE_XRP_UNDER_SIMULATION) {
+      m_drivebase.reset(new XRPDrivebase);
+    } else {
+      m_drivebase.reset(new SimulatedDrivebase);
+    }
+#else
+    // XRP isn't enabled, so we'll just go with the pure simulator.
+    m_drivebase.reset(new SimulatedDrivebase);
+#endif
   }
 }
 

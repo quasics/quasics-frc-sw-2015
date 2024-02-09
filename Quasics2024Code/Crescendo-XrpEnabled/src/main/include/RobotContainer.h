@@ -111,7 +111,6 @@ class RobotContainer {
   Vision* m_vision{new Vision};
 #endif  // ENABLE_VISION_SUBSYSTEM
 
-  Shooter m_shooter;
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;

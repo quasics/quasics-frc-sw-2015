@@ -176,6 +176,7 @@ namespace AutonomousSelectedOperation {
   const auto score2GTFO = "Score 2 piece, GTFO";
   const auto score3 = "Score 3 piece";
   const auto score3GTFO = "Score 3 piece, GTFO";
+  const auto score4 = "Score 4 piece";
 }  // namespace AutonomousSelectedOperation
 
 namespace AutonomousScoreDestinations {
@@ -200,3 +201,15 @@ namespace IntakeSpeeds {
 namespace AutonomousTimes {
   const units::second_t waitTimeAfterShooting = 0.1_s;
 }
+
+namespace PIDTurningConstants {
+  /*
+  constexpr auto kP = 0.02;
+  constexpr auto kI = 0.03;
+  constexpr auto kD = 0;*/
+
+  constexpr auto kP = 0.02;
+  constexpr auto kI = 0.005;
+  constexpr auto kD = 0;
+
+}  // namespace PIDTurningConstants

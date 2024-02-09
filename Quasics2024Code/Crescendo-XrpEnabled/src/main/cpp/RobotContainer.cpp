@@ -18,6 +18,7 @@
 #include "commands/Autos.h"
 #include "commands/MoveClimbers.h"
 #include "commands/MoveLinearActuators.h"
+#include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
 #include "commands/RunIntake.h"
 #include "commands/RunShooter.h"
@@ -305,12 +306,16 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       "GUN THE ROBOT BACKWARD!!!",
       new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
 
+  frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
+                               new PIDRotate(*m_drivebase, 90_deg));
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Actuator",
                                new MoveLinearActuators(m_shooter, true));
 
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
-
+#endif
   // SysId Commands
   static frc2::CommandPtr quasistaticForward =
       m_drivebase->sysIdQuasistatic(frc2::sysid::kForward);
@@ -426,6 +431,8 @@ void RobotContainer::AddingNamedOverallOperationsToSelector(
            AutonomousSelectedOperation::score3},
           {AutonomousSelectedOperation::score3GTFO,
            AutonomousSelectedOperation::score3GTFO},
+          {AutonomousSelectedOperation::score4,
+           AutonomousSelectedOperation::score4},
       };
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {

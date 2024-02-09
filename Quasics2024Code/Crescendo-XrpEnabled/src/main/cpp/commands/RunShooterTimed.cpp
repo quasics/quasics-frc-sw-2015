@@ -11,9 +11,6 @@ RunShooterTimed::RunShooterTimed(Shooter &shooter, double shooterSpeed,
                               : -std::abs(shooterSpeed)),
       m_time(time),
       m_shooting(shooting) {
-  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-    return;
-  #endif*/
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&m_shooter);
 }

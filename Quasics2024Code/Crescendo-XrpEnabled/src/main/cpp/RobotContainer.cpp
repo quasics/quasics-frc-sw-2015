@@ -36,6 +36,29 @@
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 constexpr bool USE_ARCADE_DRIVE = true;
 
+namespace {
+  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
+      Shooter *shooter, IntakeRoller *intakeRoller, double speed) {
+    frc2::SequentialCommandGroup *shootSequence = nullptr;
+    // "Shooty boy"
+    {
+      std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
+      intakeCommands.push_back(std::make_unique<Wait>(0.75_s));
+      intakeCommands.push_back(
+          std::make_unique<RunIntakeTimed>(*intakeRoller, .5, 1.25_s, false));
+      shootSequence =
+          new frc2::SequentialCommandGroup(std::move(intakeCommands));
+    }
+
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::make_unique<RunShooterTimed>(*shooter, speed, 2_s, true));
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(shootSequence)));
+    return new frc2::ParallelRaceGroup(std::move(commands));
+  }
+}  // namespace
+
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
   allocateDriveBase();
@@ -50,6 +73,7 @@ RobotContainer::RobotContainer() {
 
   AddTestButtonsOnSmartDashboard();
   AddAutoSelectionsToSmartDashboard();
+  AddShooterTestButtonsToDashboard();
 
   std::cerr << "Log files being written to: "
             << frc::DataLogManager::GetLogDir() << std::endl;
@@ -224,6 +248,17 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, operationName, position, score2DestName, score3DestName);
 #endif
+}
+
+void RobotContainer::AddShooterTestButtonsToDashboard() {
+  for (double d = 5.5; d <= 10; d += 0.5) {
+    std::ostringstream sout;
+    sout << "Shoot @ " << d << "%";
+    auto *cmd = BuildSimpleShooterSpeedTestCommand(&m_shooter, &m_intakeRoller,
+                                                   d / 100.0);
+
+    frc::SmartDashboard::PutData(sout.str(), cmd);
+  }
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {

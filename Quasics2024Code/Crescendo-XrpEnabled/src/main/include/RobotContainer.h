@@ -86,6 +86,7 @@ class RobotContainer {
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
   void AddScoreDestinationsToSmartDashboard();
+  void AddShooterTestButtonsToDashboard();
 
  private:
   frc2::ParallelRaceGroup* ShootingSequence(bool amp);

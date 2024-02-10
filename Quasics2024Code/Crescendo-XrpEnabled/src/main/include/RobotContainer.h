@@ -71,7 +71,13 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector2);
 
   void AddTestButtonsOnSmartDashboard();
+  void AddShooterSpeedTestButtonsToDashboard();
   void AddShooterTestButtonsToDashboard();
+  void AddIntakeTestButtonsToDashboard();
+  void AddActuatorTestButtonsToDashboard();
+  void AddSysIdButtonsToDashboard();
+  void AddDriveTestButtonsToDashboard();
+  void AddClimberTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();

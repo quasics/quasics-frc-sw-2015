@@ -55,6 +55,9 @@ class Shooter : public frc2::SubsystemBase {
   rev::CANSparkMax m_flyWheel{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
+
+  // TODO: (Matthew) If it's a follower, why do you need to talk to it?  (In
+  // other words, we shouldn't need this 2nd object.)
   rev::CANSparkMax m_flyWheelTwo{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
       rev::CANSparkMax::MotorType::kBrushless};

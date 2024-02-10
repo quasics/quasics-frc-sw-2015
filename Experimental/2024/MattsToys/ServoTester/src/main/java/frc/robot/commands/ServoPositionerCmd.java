@@ -39,7 +39,6 @@ public class ServoPositionerCmd extends Command {
   }
 
   private void update() {
-    double value = Math.min(Math.max(0.0, m_positionSupplier.get()), 1.0);
-    m_host.setServoPosition(value);
+    m_host.setServoPosition(m_positionSupplier.get());
   }
 }

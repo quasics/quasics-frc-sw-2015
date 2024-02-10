@@ -385,7 +385,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
   // static RunShooter shootNote(m_shooter, 0.5, true);
   static RunShooter shootNote(m_shooter, 1.00, true);
-  static frc2::ParallelRaceGroup *shootSequence = ShootingSequence();
+  static frc2::ParallelRaceGroup *shootSequence = ShootingSequence(false);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
@@ -396,7 +396,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &shootNote);
+                                     shootSequence);
 #endif
 }
 
@@ -526,10 +526,11 @@ void RobotContainer::AddScoreDestinationsToSmartDashboard() {
 }
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-frc2::ParallelRaceGroup *RobotContainer::ShootingSequence() {
+frc2::ParallelRaceGroup *RobotContainer::ShootingSequence(bool amp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<RunShooterTimed>(m_shooter, 1.00, 2_s, true));
+  commands.push_back(std::make_unique<RunShooterTimed>(
+      m_shooter, (amp ? ShooterSpeeds::amp : ShooterSpeeds::speaker), 2_s,
+      true));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeDelay())));
 
   return new frc2::ParallelRaceGroup(std::move(commands));

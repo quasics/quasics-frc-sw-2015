@@ -82,6 +82,12 @@ class IDrivebase : public frc2::SubsystemBase {
                              getRightEncoder_HAL().getPosition());
   }
 
+  units::degree_t getYaw() {
+    // getPose() angle returned is between -180 and 180. This function gets the
+    // raw gyro angle without wrapping it aroud those values
+    return getGyro_HAL().getRotation2d().Degrees();
+  }
+
   // This is a direct pass-through, because HAL functions should *never* be used
   // directly by external code.
   void tankDriveVolts(units::volt_t left, units::volt_t right) {

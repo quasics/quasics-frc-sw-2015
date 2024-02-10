@@ -20,6 +20,7 @@ void IDrivebase::Periodic() {
   frc::SmartDashboard::PutNumber("y", double(pose.Y()));
 
   frc::SmartDashboard::PutNumber("angle", double(pose.Rotation().Degrees()));
+  frc::SmartDashboard::PutNumber("raw angle", getYaw().value());
 
   frc::SmartDashboard::PutNumber("left Encoder meters",
                                  double(getLeftEncoder_HAL().getPosition()));

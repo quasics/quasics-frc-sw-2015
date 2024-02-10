@@ -88,7 +88,7 @@ class RobotContainer {
   void AddScoreDestinationsToSmartDashboard();
 
  private:
-  frc2::ParallelRaceGroup* ShootingSequence();
+  frc2::ParallelRaceGroup* ShootingSequence(bool amp);
   frc2::SequentialCommandGroup* IntakeDelay();
 
   // Data members of the class (subsystems, persistent commands, etc.)

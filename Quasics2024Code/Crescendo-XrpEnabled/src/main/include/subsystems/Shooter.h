@@ -47,6 +47,7 @@ class Shooter : public frc2::SubsystemBase {
   bool IsFullyRetracted();
 
  private:
+  /** Configures a Servo object to be used with an AndyMark L16 actuator. */
   static void ConfigureAndyMarkL16(frc::Servo& servo);
 
   // Data members.

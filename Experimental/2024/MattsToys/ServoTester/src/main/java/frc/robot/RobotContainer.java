@@ -12,7 +12,7 @@ import frc.robot.subsystems.ServoHost;
 
 public class RobotContainer {
   ServoHost m_servoHost = new ServoHost();
-  XboxController m_controller = new XboxController(0);
+  XboxController m_controller = new XboxController(1);
 
   public RobotContainer() {
     configureBindings();

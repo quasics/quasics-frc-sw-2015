@@ -74,16 +74,16 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
       frc::PIDController{PathWeaverConstants::kP, 0, 0},
       frc::PIDController{PathWeaverConstants::kP, 0, 0},
       [&drivebase](auto left, auto right) {
-        drivebase.tankDriveVolts(left, right);
+        drivebase.setMotorVoltages(left, right);
       },
       {&drivebase})};
 
   return std::move(ramseteCommand)
       .BeforeStarting(frc2::cmd::RunOnce(
-          [&drivebase] { drivebase.tankDriveVolts(0_V, 0_V); }, {}))
+          [&drivebase] { drivebase.setMotorVoltages(0_V, 0_V); }, {}))
       // Because Mr. Healy is professionally paranoid....
       .AndThen(frc2::cmd::RunOnce(
-          [&drivebase] { drivebase.tankDriveVolts(0_V, 0_V); }, {}));
+          [&drivebase] { drivebase.setMotorVoltages(0_V, 0_V); }, {}));
 }
 
 frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad) {

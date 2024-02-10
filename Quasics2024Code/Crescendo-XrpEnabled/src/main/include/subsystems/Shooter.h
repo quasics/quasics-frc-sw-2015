@@ -12,6 +12,9 @@
 
 /**
  * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
+ *
+ * Note that the servos are assumed to be an AndyMark Linear Servo Actuator
+ * L16-R 140 mm Stroke 35:1 6v, and need to be configured appropriately.
  */
 class Shooter : public frc2::SubsystemBase {
  public:
@@ -39,12 +42,8 @@ class Shooter : public frc2::SubsystemBase {
 
   bool IsFullyRetracted();
 
-  // Standard functions for subsystems.
- public:
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic() override;
+ private:
+  static void ConfigureAndyMarkL16(frc::Servo& servo);
 
   // Data members.
  private:
@@ -56,6 +55,5 @@ class Shooter : public frc2::SubsystemBase {
       rev::CANSparkMax::MotorType::kBrushless};
 
   frc::Servo m_leftPositionServo{PWMPorts::LEFT_SERVO};
-
   frc::Servo m_rightPositionServo{PWMPorts::RIGHT_SERVO};
 };

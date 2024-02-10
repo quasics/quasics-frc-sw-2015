@@ -71,7 +71,13 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector2);
 
   void AddTestButtonsOnSmartDashboard();
-  void AddButtonToSmartDashboardTestingRetainedCommands();
+  void AddShooterTestButtonsToDashboard();
+
+  // AUTOS
+  void AddAutoSelectionsToSmartDashboard();
+  void AddTeamAndStationSelectorToSmartDashboard();
+  void AddRobotOverallOperationToSmartDashboard();
+  void AddScoreDestinationsToSmartDashboard();
 
   // Driving support functions
  private:
@@ -80,14 +86,6 @@ class RobotContainer {
   double GetDriveSpeedScalingFactor();
 
   // Auto mode functions
- private:
-  // AUTOS
-  void AddAutoSelectionsToSmartDashboard();
-  void AddTeamAndStationSelectorToSmartDashboard();
-  void AddRobotOverallOperationToSmartDashboard();
-  void AddScoreDestinationsToSmartDashboard();
-  void AddShooterTestButtonsToDashboard();
-
  private:
   frc2::ParallelRaceGroup* ShootingSequence(bool amp);
   frc2::SequentialCommandGroup* IntakeDelay();

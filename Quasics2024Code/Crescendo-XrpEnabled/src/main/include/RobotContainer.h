@@ -106,7 +106,7 @@ class RobotContainer {
 
   std::unique_ptr<IDrivebase> m_drivebase;
 
-  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.03};
+  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.04};
 
   frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
       DRIVER_JOYSTICK_RATE_LIMIT};

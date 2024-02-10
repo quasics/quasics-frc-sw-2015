@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ServoHost extends SubsystemBase {
   static final int SERVO_PWM_ID = 3;
-  static final double FULLY_OPEN = +1.0;
-  static final double FULLY_CLOSED = -1.0;
+  public static final double FULLY_OPEN = +1.0;
+  public static final double FULLY_CLOSED = -1.0;
 
   /**
    * Assumed to be an AndyMark Linear Servo Actuator L16-R 140 mm Stroke 35:1 6v.
@@ -32,8 +32,16 @@ public class ServoHost extends SubsystemBase {
         1200, // deadbandMin (per docs): 1.2 msec
         1000 // min (per docs): 1.0 msec
     );
-    m_servo.setSpeed(1.0); // to open
-    m_servo.setSpeed(-1.0); // to close
+
+    fullyRetract();
+  }
+
+  public void fullyRetract() {
+    m_servo.setSpeed(FULLY_CLOSED);
+  }
+
+  public void fullyExtend() {
+    m_servo.setSpeed(FULLY_OPEN);
   }
 
   /**

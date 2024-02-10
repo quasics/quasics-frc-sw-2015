@@ -38,8 +38,12 @@ class Shooter : public frc2::SubsystemBase {
 
   void RetractLinearActuators();
 
+  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
+  // get a linker error.
   bool IsFullyExtended();
 
+  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
+  // get a linker error.
   bool IsFullyRetracted();
 
  private:

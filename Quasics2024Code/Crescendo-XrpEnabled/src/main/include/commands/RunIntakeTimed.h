@@ -20,8 +20,8 @@
 class RunIntakeTimed
     : public frc2::CommandHelper<frc2::Command, RunIntakeTimed> {
  public:
-  RunIntakeTimed(IntakeRoller &intake, double intakeSpeed, units::second_t time,
-                 bool takingIn);
+  RunIntakeTimed(IntakeRoller &intake, double intakeSpeed,
+                 units::second_t timeToRunIntake, bool takingIn);
 
   void Initialize() override;
 

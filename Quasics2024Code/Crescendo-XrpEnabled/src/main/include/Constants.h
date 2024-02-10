@@ -91,6 +91,7 @@ namespace MotorIds {
     constexpr int INTAKE_MOTOR = 8;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_LEADER_ID = 9;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID = 10;
+
   }  // namespace SparkMax
 
 }  // namespace MotorIds
@@ -121,6 +122,8 @@ namespace DigitalInput {
 // PWM ports 0-9 are on-board, 10-19 are on the MXP port.
 namespace PWMPorts {
   constexpr int LIGHTING_PORT = 1;
+  constexpr int LEFT_SERVO = 3;
+  constexpr int RIGHT_SERVO = 4;
   constexpr int SIMULATED_LEFT_MOTOR_PORT = 18;
   constexpr int SIMULATED_RIGHT_MOTOR_PORT = 19;
 }  // namespace PWMPorts
@@ -175,6 +178,7 @@ namespace AutonomousSelectedOperation {
   const auto score2GTFO = "Score 2 piece, GTFO";
   const auto score3 = "Score 3 piece";
   const auto score3GTFO = "Score 3 piece, GTFO";
+  const auto score4 = "Score 4 piece";
 }  // namespace AutonomousSelectedOperation
 
 namespace AutonomousScoreDestinations {
@@ -199,3 +203,15 @@ namespace IntakeSpeeds {
 namespace AutonomousTimes {
   const units::second_t waitTimeAfterShooting = 0.1_s;
 }
+
+namespace PIDTurningConstants {
+  /*
+  constexpr auto kP = 0.02;
+  constexpr auto kI = 0.03;
+  constexpr auto kD = 0;*/
+
+  constexpr auto kP = 0.02;
+  constexpr auto kI = 0.005;
+  constexpr auto kD = 0;
+
+}  // namespace PIDTurningConstants

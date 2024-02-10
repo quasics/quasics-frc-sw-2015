@@ -4,22 +4,31 @@
 
 #include "RobotContainer.h"
 
+#include <frc/DataLogManager.h>
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc2/command/button/Trigger.h>
+
+#include <iostream>
 
 #include "TrajectoryGenerator.h"
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/MoveClimbers.h"
+#include "commands/MoveLinearActuators.h"
+#include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
 #include "commands/RunIntake.h"
+#include "commands/RunIntakeTimed.h"
 #include "commands/RunShooter.h"
+#include "commands/RunShooterTimed.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
 #include "commands/TimedMovementTest.h"
+#include "commands/Wait.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
 #include "subsystems/XRPDrivebase.h"
@@ -41,6 +50,9 @@ RobotContainer::RobotContainer() {
 
   AddTestButtonsOnSmartDashboard();
   AddAutoSelectionsToSmartDashboard();
+
+  std::cerr << "Log files being written to: "
+            << frc::DataLogManager::GetLogDir() << std::endl;
 }
 
 void RobotContainer::setUpTankDrive() {
@@ -167,19 +179,19 @@ void RobotContainer::allocateDriveBase() {
     // OK, we're running on a "big bot".
     m_drivebase.reset(new RealDrivebase);
   } else {
-    m_drivebase.reset(new SimulatedDrivebase);
-
-    // TODO: (Rylie) Add support for handling either "pure simulation" or "XRP
-    // use".
-    //
+#ifdef ENABLE_XRP
     // OK, we're running under simulation.  However, this could either mean
     // that we're talking to an XRP "little bot", or doing *pure* (GUI-based)
     // simulation on a PC of some sort.
-    // if (USE_XRP_UNDER_SIMULATION) {
-    //   m_drivebase.reset(new XRPDrivebase);
-    // } else {
-    //   m_drivebase.reset(new SimulatedDrivebase);
-    // }
+    if (USE_XRP_UNDER_SIMULATION) {
+      m_drivebase.reset(new XRPDrivebase);
+    } else {
+      m_drivebase.reset(new SimulatedDrivebase);
+    }
+#else
+    // XRP isn't enabled, so we'll just go with the pure simulator.
+    m_drivebase.reset(new SimulatedDrivebase);
+#endif
   }
 }
 
@@ -236,8 +248,18 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 
   frc::SmartDashboard::PutData(
       "reset encoders",
-      new frc2::InstantCommand([this]() { m_drivebase->ResetEncoders(); }));
+      new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+  frc::SmartDashboard::PutData("coast intake",
+                               new frc2::InstantCommand([this]() {
+                                 m_intakeDeployment.EnableBraking(false);
+                               }));
 
+  frc::SmartDashboard::PutData("Reset Deployment Encoder",
+                               new frc2::InstantCommand([this]() {
+                                 m_intakeDeployment.ResetEncoders();
+                               }));
+#endif
   frc::SmartDashboard::PutData("reset odometry directly",
                                new frc2::InstantCommand([this]() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
@@ -289,19 +311,43 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Enable Coast",
                                new frc2::InstantCommand([this]() {
                                  m_intakeDeployment.EnableBraking(false);
                                }));
-
-  frc::SmartDashboard::PutData(
+#endif
+  /*frc::SmartDashboard::PutData(
       "GUN THE ROBOT FORWARD!!!",
       new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
 
   frc::SmartDashboard::PutData(
       "GUN THE ROBOT BACKWARD!!!",
-      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));
+      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));*/
+
+  frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
+                               new PIDRotate(*m_drivebase, 90_deg));
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+  frc::SmartDashboard::PutData("Extend Actuator",
+                               new MoveLinearActuators(m_shooter, true));
+
+  frc::SmartDashboard::PutData("Retract Actuator",
+                               new MoveLinearActuators(m_shooter, false));
+#endif
+  // SysId Commands
+  static frc2::CommandPtr quasistaticForward =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kForward);
+  static frc2::CommandPtr quasistaticReverse =
+      m_drivebase->sysIdQuasistatic(frc2::sysid::kReverse);
+  static frc2::CommandPtr dynamicForward =
+      m_drivebase->sysIdDynamic(frc2::sysid::kForward);
+  static frc2::CommandPtr dynamicReverse =
+      m_drivebase->sysIdDynamic(frc2::sysid::kReverse);
+  frc::SmartDashboard::PutData("Quasistatic Forward", quasistaticForward.get());
+  frc::SmartDashboard::PutData("Quasistatic Reverse", quasistaticReverse.get());
+  frc::SmartDashboard::PutData("Dynamic Forward", dynamicForward.get());
+  frc::SmartDashboard::PutData("Dynamic Reverse", dynamicReverse.get());
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -337,17 +383,20 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
   static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
-  static RunShooter shootNote(m_shooter, 0.5, true);
-  static RunShooter retractNote(m_shooter, -0.5, true);
+  // static RunShooter shootNote(m_shooter, 0.5, true);
+  static RunShooter shootNote(m_shooter, 1.00, true);
+  static frc2::ParallelRaceGroup *shootSequence = ShootingSequence();
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
                                      &retractIntake);
+  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     &shootNote);*/
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
-                                     &shootNote);
+                                     shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &retractNote);
+                                     &shootNote);
 #endif
 }
 
@@ -404,6 +453,8 @@ void RobotContainer::AddingNamedOverallOperationsToSelector(
            AutonomousSelectedOperation::score3},
           {AutonomousSelectedOperation::score3GTFO,
            AutonomousSelectedOperation::score3GTFO},
+          {AutonomousSelectedOperation::score4,
+           AutonomousSelectedOperation::score4},
       };
 
   for (auto &[name, text] : nonDefaultAutonomousSequenceList) {
@@ -473,3 +524,25 @@ void RobotContainer::AddScoreDestinationsToSmartDashboard() {
   frc::SmartDashboard::PutData("Robot Score 3 Destination",
                                &m_Score3DestAutonomousOptions);
 }
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+frc2::ParallelRaceGroup *RobotContainer::ShootingSequence() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<RunShooterTimed>(m_shooter, 1.00, 2_s, true));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeDelay())));
+
+  return new frc2::ParallelRaceGroup(std::move(commands));
+}
+
+frc2::SequentialCommandGroup *RobotContainer::IntakeDelay() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<TimedMovementTest>(*m_drivebase, .25, .1_s, true));
+  commands.push_back(std::make_unique<Wait>(0.65_s));
+  commands.push_back(
+      std::make_unique<RunIntakeTimed>(m_intakeRoller, .5, 1.25_s, false));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
+}
+#endif

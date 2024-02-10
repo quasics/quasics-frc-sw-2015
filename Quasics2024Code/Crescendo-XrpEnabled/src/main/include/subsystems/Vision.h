@@ -24,6 +24,7 @@
 #include <optional>
 
 #include "Constants.h"
+#include "IDrivebase.h"
 #include "utils/SimulationSupport.h"
 
 class Vision : public frc2::SubsystemBase {
@@ -42,6 +43,8 @@ class Vision : public frc2::SubsystemBase {
                                           units::meter_t& distance,
                                           units::degree_t& pitchTarget,
                                           units::degree_t& yawTarget);
+
+  void RotateToAprilTarget(int TargetID, IDrivebase* driveBase);
 
   frc::Translation3d GetTargetPlacement(int targetID);
 

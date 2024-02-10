@@ -12,7 +12,8 @@ RealDrivebase::RealDrivebase() {
   resetOdometry(frc::Pose2d());
 }
 
-void RealDrivebase::setMotorSpeeds(double leftPercent, double rightPercent) {
+void RealDrivebase::setMotorSpeeds_HAL(double leftPercent,
+                                       double rightPercent) {
   m_leftBack.Set(leftPercent);
   m_rightBack.Set(rightPercent);
 }
@@ -42,7 +43,13 @@ void RealDrivebase::configureEncoders() {
   resetEncoders();
 }
 
-void RealDrivebase::tankDriveVolts(units::volt_t left, units::volt_t right) {
+void RealDrivebase::tankDriveVolts_HAL(units::volt_t left, units::volt_t right) {
   m_leftBack.SetVoltage(left);
   m_rightBack.SetVoltage(right);
+}
+
+void RealDrivebase::setMotorVoltages_HAL(units::volt_t leftPower,
+                                     units::volt_t rightPower) {
+  m_leftBack.SetVoltage(leftPower);
+  m_rightBack.SetVoltage(rightPower);
 }

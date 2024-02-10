@@ -9,9 +9,6 @@ RunIntake::RunIntake(IntakeRoller &intake, double intakeSpeed, bool takingIn)
       m_intakeSpeed(takingIn ? -std::abs(intakeSpeed) : std::abs(intakeSpeed)),
       m_takingIn(takingIn) {
   // Use addRequirements() here to declare subsystem dependencies.
-  /*#ifndef ENABLE_FULL_ROBOT_FUNCTIONALITY
-    return;
-  #endif*/
   AddRequirements(&m_intake);
 }
 

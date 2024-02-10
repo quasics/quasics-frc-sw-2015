@@ -6,6 +6,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+DeadBandEnforcer IDrivebase::m_voltageDeadbandEnforcer(-0.001);
+
 IDrivebase::IDrivebase(){};
 
 // This method will be called once per scheduler run
@@ -20,10 +22,10 @@ void IDrivebase::Periodic() {
   frc::SmartDashboard::PutNumber("angle", double(pose.Rotation().Degrees()));
 
   frc::SmartDashboard::PutNumber("left Encoder meters",
-                                 double(getLeftEncoder().getPosition()));
+                                 double(getLeftEncoder_HAL().getPosition()));
 
   frc::SmartDashboard::PutNumber("right Encoder meters",
-                                 double(getRightEncoder().getPosition()));
+                                 double(getRightEncoder_HAL().getPosition()));
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
@@ -35,5 +37,14 @@ void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
   // etc.)
 
   // Apply the speeds to the motors!
-  setMotorSpeeds(leftPercent, rightPercent);
+  setMotorSpeeds_HAL(leftPercent, rightPercent);
+}
+
+frc2::CommandPtr IDrivebase::sysIdQuasistatic(
+    frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Quasistatic(direction);
+}
+
+frc2::CommandPtr IDrivebase::sysIdDynamic(frc2::sysid::Direction direction) {
+  return m_sysIdRoutine.Dynamic(direction);
 }

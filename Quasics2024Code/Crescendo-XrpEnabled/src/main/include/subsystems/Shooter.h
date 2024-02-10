@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
@@ -13,6 +14,9 @@
  * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
  */
 class Shooter : public frc2::SubsystemBase {
+ public:
+  static constexpr double POSITION_DELTA = 0.05;
+
  public:
   Shooter();
 
@@ -27,6 +31,14 @@ class Shooter : public frc2::SubsystemBase {
     SetFlywheelSpeed(0);
   };
 
+  void ExtendLinearActuators();
+
+  void RetractLinearActuators();
+
+  bool IsFullyExtended();
+
+  bool IsFullyRetracted();
+
   // Standard functions for subsystems.
  public:
   /**
@@ -39,7 +51,11 @@ class Shooter : public frc2::SubsystemBase {
   rev::CANSparkMax m_flyWheel{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_secondflyWheel{
+  rev::CANSparkMax m_flyWheelTwo{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
+
+  frc::Servo m_leftPositionServo{PWMPorts::LEFT_SERVO};
+
+  frc::Servo m_rightPositionServo{PWMPorts::RIGHT_SERVO};
 };

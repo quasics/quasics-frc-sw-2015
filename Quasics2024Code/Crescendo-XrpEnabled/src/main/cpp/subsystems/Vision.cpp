@@ -118,22 +118,6 @@ bool Vision::CalculateDistanceAndAnglesToTarger(int IDWantedTarget,
   return true;
 }
 
-void Vision::RotateToAprilTarget(int TargetID, IDrivebase* driveBase) {
-  /*auto possibleTarget = GetIdentifiedAprilTarget(TargetID);
-  if(!possibleTarget.has_value()){
-    return;
-  }
-  auto target = possibleTarget.value();
-  while(target.GetYaw() > 5 || target.GetYaw() < -5){
-    if(target.GetYaw() > 0){
-      driveBase->tankDrive(.3, -.3);
-    }
-    else{
-      driveBase->tankDrive(-.3, .3);
-    }
-  }*/
-}
-
 std::optional<photon::EstimatedRobotPose> Vision::UpdateFieldPosition(
     frc::Pose2d estimatedPose) {
   // TODO: Josh, this isn't going to do what you think, unless you've configured

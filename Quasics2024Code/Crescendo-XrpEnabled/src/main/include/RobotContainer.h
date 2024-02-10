@@ -112,14 +112,14 @@ class RobotContainer {
   frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
       DRIVER_JOYSTICK_RATE_LIMIT};
 
-#ifdef ENABLE_VISION_SUBSYSTEM
-#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
+#ifdef ENABLE_VISION_TESTING
+#ifdef LEAK_VISION_WORKAROUND
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
 #else
   Vision* m_vision;
 #endif
-#endif  // ENABLE_VISION_SUBSYSTEM
+#endif  // ENABLE_VISION_TESTING
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;

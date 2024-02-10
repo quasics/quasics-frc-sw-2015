@@ -21,6 +21,7 @@
 #include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
+#include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
 #include "commands/RunShooter.h"
@@ -348,6 +349,12 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData("Quasistatic Reverse", quasistaticReverse.get());
   frc::SmartDashboard::PutData("Dynamic Forward", dynamicForward.get());
   frc::SmartDashboard::PutData("Dynamic Reverse", dynamicReverse.get());
+
+#ifdef ENABLE_VISION_TESTING
+  frc::SmartDashboard::PutData(
+      "Rotate to blue speaker",
+      new RotateToAprilTarget(*m_drivebase, *m_vision, 6));
+#endif
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,

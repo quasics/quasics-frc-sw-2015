@@ -294,6 +294,17 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 }
 
 namespace {
+  frc2::SequentialCommandGroup *BuildSequenceToHandNoteToShooterAfterDelay(
+      IntakeRoller &intakeRoller, units::second_t delay = 0.75_s,
+      double intakeSpeed = .5, units::second_t timeToRunIntake = 1.25_s) {
+    std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
+    intakeCommands.push_back(std::make_unique<Wait>(delay));
+    intakeCommands.push_back(std::make_unique<RunIntakeTimed>(
+        intakeRoller, intakeSpeed, timeToRunIntake,
+        /*takingIn*/ false));
+    return new frc2::SequentialCommandGroup(std::move(intakeCommands));
+  }
+
   /**
    * Builds a simple command group to run shooter at a given speed (and pushing
    * a note out of the intake into the shooter after a short delay for it to
@@ -306,22 +317,16 @@ namespace {
    */
   frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
       Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
-    frc2::SequentialCommandGroup *shootSequence = nullptr;
-    // "Shooty boy"
-    {
-      std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
-      intakeCommands.push_back(std::make_unique<Wait>(0.75_s));
-      intakeCommands.push_back(
-          std::make_unique<RunIntakeTimed>(intakeRoller, .5, 1.25_s, false));
-      shootSequence =
-          new frc2::SequentialCommandGroup(std::move(intakeCommands));
-    }
-
     std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    // Run the shooter for 2sec @ the target speed...
     commands.push_back(
         std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
-    commands.push_back(
-        std::move(std::unique_ptr<frc2::Command>(shootSequence)));
+
+    // ...and hand off the note to it after a short delay (to come up to speed).
+    commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+        BuildSequenceToHandNoteToShooterAfterDelay(intakeRoller))));
+
     return new frc2::ParallelRaceGroup(std::move(commands));
   }
 }  // namespace

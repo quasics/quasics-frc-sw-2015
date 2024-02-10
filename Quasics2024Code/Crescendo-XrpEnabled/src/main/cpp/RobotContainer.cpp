@@ -36,39 +36,6 @@
 constexpr bool USE_XRP_UNDER_SIMULATION = false;
 constexpr bool USE_ARCADE_DRIVE = true;
 
-namespace {
-  /**
-   * Builds a simple command group to run shooter at a given speed (and pushing
-   * a note out of the intake into the shooter after a short delay for it to
-   * come up to speed).  This is intended to help "dial in" the approximate
-   * speed at which we want the shooter to be running for a given target point.
-   *
-   * @param shooter  the shooter
-   * @param intakeRoller the intake
-   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
-   */
-  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
-      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
-    frc2::SequentialCommandGroup *shootSequence = nullptr;
-    // "Shooty boy"
-    {
-      std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
-      intakeCommands.push_back(std::make_unique<Wait>(0.75_s));
-      intakeCommands.push_back(
-          std::make_unique<RunIntakeTimed>(intakeRoller, .5, 1.25_s, false));
-      shootSequence =
-          new frc2::SequentialCommandGroup(std::move(intakeCommands));
-    }
-
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-    commands.push_back(
-        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
-    commands.push_back(
-        std::move(std::unique_ptr<frc2::Command>(shootSequence)));
-    return new frc2::ParallelRaceGroup(std::move(commands));
-  }
-}  // namespace
-
 RobotContainer::RobotContainer() {
   allocateDriveBase();
   if (USE_ARCADE_DRIVE) {
@@ -325,6 +292,39 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       *m_drivebase, operationName, position, score2DestName, score3DestName);
 #endif
 }
+
+namespace {
+  /**
+   * Builds a simple command group to run shooter at a given speed (and pushing
+   * a note out of the intake into the shooter after a short delay for it to
+   * come up to speed).  This is intended to help "dial in" the approximate
+   * speed at which we want the shooter to be running for a given target point.
+   *
+   * @param shooter  the shooter
+   * @param intakeRoller the intake
+   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
+   */
+  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
+      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
+    frc2::SequentialCommandGroup *shootSequence = nullptr;
+    // "Shooty boy"
+    {
+      std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
+      intakeCommands.push_back(std::make_unique<Wait>(0.75_s));
+      intakeCommands.push_back(
+          std::make_unique<RunIntakeTimed>(intakeRoller, .5, 1.25_s, false));
+      shootSequence =
+          new frc2::SequentialCommandGroup(std::move(intakeCommands));
+    }
+
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+    commands.push_back(
+        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
+    commands.push_back(
+        std::move(std::unique_ptr<frc2::Command>(shootSequence)));
+    return new frc2::ParallelRaceGroup(std::move(commands));
+  }
+}  // namespace
 
 void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
   for (double d = 5.5; d <= 10; d += 0.5) {

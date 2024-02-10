@@ -290,6 +290,11 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
 
+  frc::SmartDashboard::PutData("Enable Coast",
+                               new frc2::InstantCommand([this]() {
+                                 m_intakeDeployment.EnableBraking(false);
+                               }));
+
   frc::SmartDashboard::PutData(
       "GUN THE ROBOT FORWARD!!!",
       new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
@@ -314,8 +319,8 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
-  static RunIntake intakeNote(m_intakeRoller, 0.5, true);
-  static RunIntake dropNote(m_intakeRoller, 0.5, false);
+  static RunIntake intakeNote(m_intakeRoller, 1.00, true);
+  static RunIntake dropNote(m_intakeRoller, 1.00, false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);

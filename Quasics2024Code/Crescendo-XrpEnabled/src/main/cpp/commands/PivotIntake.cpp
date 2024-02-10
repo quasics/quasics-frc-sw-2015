@@ -20,7 +20,7 @@ PivotIntake::PivotIntake(IntakeDeployment &IntakeDeployment, double speed,
 // Called when the command is initially scheduled.
 void PivotIntake::Initialize() {
   m_intakeDeployment.SetMotorSpeed(m_intakeDeploymentSpeed);
-  m_intakeDeployment.EnableBraking(true);
+  m_intakeDeployment.EnableBraking(false);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -31,7 +31,7 @@ void PivotIntake::Execute() {
 // Called once the command ends or is interrupted.
 void PivotIntake::End(bool interrupted) {
   m_intakeDeployment.Stop();
-  m_intakeDeployment.EnableBraking(true);
+  m_intakeDeployment.EnableBraking(false);
 }
 
 // Returns true when the command should end.

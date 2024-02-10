@@ -140,6 +140,7 @@ namespace SensorIds {
 // namespace LightingValues
 
 constexpr units::length::meter_t TRACK_WIDTH_METERS_SALLY = 0.5588_m;
+constexpr units::length::meter_t TRACK_WIDTH_METERS_MARGARET = 0.5588_m;
 const frc::DifferentialDriveKinematics kDriveKinematics(
     TRACK_WIDTH_METERS_SALLY);
 

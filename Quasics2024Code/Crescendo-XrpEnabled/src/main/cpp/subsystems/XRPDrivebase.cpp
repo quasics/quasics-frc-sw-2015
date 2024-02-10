@@ -19,10 +19,6 @@ void XRPDrivebase::setMotorVoltages_HAL(units::volt_t leftPower,
   m_rightXrpMotor.SetVoltage(rightPower);
 }
 
-void XRPDrivebase::tankDriveVolts_HAL(units::volt_t left, units::volt_t right) {
-  setMotorVoltages_HAL(left, right);
-}
-
 void XRPDrivebase::setMotorSpeeds_HAL(double leftPercent, double rightPercent) {
   m_leftXrpMotor.SetVoltage(convertPercentSpeedToVoltage(leftPercent));
   m_rightXrpMotor.SetVoltage(convertPercentSpeedToVoltage(rightPercent));

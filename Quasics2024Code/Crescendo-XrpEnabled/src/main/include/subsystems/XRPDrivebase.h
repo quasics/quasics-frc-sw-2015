@@ -22,8 +22,6 @@ class XRPDrivebase : public IDrivebase {
  protected:
   virtual void setMotorVoltages_HAL(units::volt_t leftPower,
                                     units::volt_t rightPower) override;
-  virtual void tankDriveVolts_HAL(units::volt_t left,
-                                  units::volt_t right) override;
   virtual frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
   }

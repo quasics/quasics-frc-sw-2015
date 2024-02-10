@@ -85,31 +85,23 @@ class RobotContainer {
   void setDriveMode(DriveMode mode);
   double GetDriveSpeedScalingFactor();
 
-  // Auto mode functions
+  // Building auto mode functions
  private:
   frc2::ParallelRaceGroup* ShootingSequence(bool amp);
   frc2::SequentialCommandGroup* IntakeDelay();
 
   // Data members of the class (subsystems, persistent commands, etc.)
  private:
-  ConfigSettings m_configSettings;
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};
-
-  // These are commands generated "on the fly" by functions like
-  // GetCommandForTrajectory(), which we're attaching to things like buttons on
-  // the smart dashboard, and thus need to outlive the function where they were
-  // created.
-  std::list<frc2::CommandPtr> retainedCommands;
-
   std::unique_ptr<IDrivebase> m_drivebase;
 
-  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.04};
-
-  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
-      DRIVER_JOYSTICK_RATE_LIMIT};
-  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
-      DRIVER_JOYSTICK_RATE_LIMIT};
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+  Shooter m_shooter;
+  Climber m_climber;
+  IntakeDeployment m_intakeDeployment;
+  IntakeRoller m_intakeRoller;
+#endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_VISION_SUBSYSTEM
 #ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
@@ -120,13 +112,16 @@ class RobotContainer {
 #endif
 #endif  // ENABLE_VISION_SUBSYSTEM
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  Shooter m_shooter;
-  Climber m_climber;
-  IntakeDeployment m_intakeDeployment;
-  IntakeRoller m_intakeRoller;
-#endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
+  ConfigSettings m_configSettings;
 
+  // "Rate governors" for the drive base.
+  const DeadBandEnforcer m_joystickDeadbandEnforcer{0.04};
+  frc::SlewRateLimiter<units::scalar> m_leftSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
+  frc::SlewRateLimiter<units::scalar> m_rightSlewRateLimiter{
+      DRIVER_JOYSTICK_RATE_LIMIT};
+
+  // Choosers for configuring behavior in auto mode.
   frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score2DestAutonomousOptions;

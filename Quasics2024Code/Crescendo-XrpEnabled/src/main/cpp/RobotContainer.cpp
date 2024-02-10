@@ -340,18 +340,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
       "Retract Intake 50%", new PivotIntake(&m_intakeDeployment, 0.5, false));
 #endif
 
-  /*
-    retainedCommands.push_back(
-        GetCommandForTrajectory("test.wpilib.json", *m_drivebase,
-    false)); frc::SmartDashboard::PutData("test path",
-    retainedCommands.rbegin()->get());
-
-    retainedCommands.push_back(GetCommandForTrajectory("curvetest.wpilib.json",
-                                                       *m_drivebase,
-    false)); frc::SmartDashboard::PutData("curve test path",
-                                 retainedCommands.rbegin()->get());
-  */
-
   frc::SmartDashboard::PutData(
       "Switch Drive", new frc2::InstantCommand(
                           [this]() { setDriveMode(DriveMode::eSwitched); }));
@@ -365,13 +353,6 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
                                  m_intakeDeployment.EnableBraking(false);
                                }));
 #endif
-  /*frc::SmartDashboard::PutData(
-      "GUN THE ROBOT FORWARD!!!",
-      new TimedMovementTest(*m_drivebase, 1.00, 5_s, true));
-
-  frc::SmartDashboard::PutData(
-      "GUN THE ROBOT BACKWARD!!!",
-      new TimedMovementTest(*m_drivebase, 1.00, 5_s, false));*/
 
   frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
                                new PIDRotate(*m_drivebase, 90_deg));
@@ -383,6 +364,7 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
 #endif
+
   // SysId Commands
   static frc2::CommandPtr quasistaticForward =
       m_drivebase->sysIdQuasistatic(frc2::sysid::kForward);

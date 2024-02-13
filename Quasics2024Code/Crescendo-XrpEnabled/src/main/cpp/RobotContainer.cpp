@@ -7,6 +7,7 @@
 #include <frc/DataLogManager.h>
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
@@ -386,6 +387,37 @@ void RobotContainer::AddActuatorTestButtonsToDashboard() {
 
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
+
+  frc::SmartDashboard::PutData("Shoot in amp then run actuator after time",
+                               new frc2::InstantCommand([this]() {
+                                 ShootInAmpThenRunActuatorAfterTime(1_s);
+                               }));
+}
+
+frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+
+  commands.push_back(std::move(*BuildSimpleShooterSpeedTestCommand(
+                                   m_shooter, m_intakeRoller, 0.08))
+                         .ToPtr());
+  commands.push_back(ExtendThenRetractActuatorsAfterTime(time));
+
+  return frc2::ParallelCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}
+
+frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+  commands.push_back(frc2::CommandPtr(Wait(time)));
+  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, true)));
+  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, false)));
+
+  return frc2::SequentialCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
 }
 
 void RobotContainer::AddClimberTestButtonsToDashboard() {

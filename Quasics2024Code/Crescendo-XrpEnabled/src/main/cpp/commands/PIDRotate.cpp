@@ -7,11 +7,12 @@
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/WidgetType.h>
 #include <frc2/command/PIDCommand.h>
+#include <units/math.h>
 
 #include <iostream>
 
 PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
-    : m_drivebase(drivebase), m_angle(angle) {
+    : m_drivebase(drivebase), m_targetAngle(angle) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&drivebase);
 
@@ -61,13 +62,9 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
 void PIDRotate::Initialize() {
   m_feedForward = true;
   m_activatePID = false;
-  m_startingAngle = m_drivebase.getPose().Rotation().Degrees();
   m_currentAngle = 0_deg;  // Overwritten in FeedForward()
-  m_feedForward = true;
-  m_activatePID = false;
-  m_rotationCorrection = 0;
-  m_speed = 0.5;
-  m_subtraction = 0;
+  m_rotationCorrection = 0_deg_per_s;
+  m_speed = 30_deg_per_s;
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   double p = kP_entry->GetDouble(0.0);
@@ -103,51 +100,46 @@ void PIDRotate::Execute() {
 #else
 
   FeedForward();
-  // NEEDS TO BE TESTED
 
-  if (m_angle >= 0_deg) {
-    if (((m_startingAngle + m_angle - m_currentAngle).value() < 1) &&
-        m_feedForward == true) {
-      std::cout << "Turning off the feedforward" << std::endl;
-      m_feedForward = false;
-    }
-  } else {
-    if (((m_startingAngle + m_angle - m_currentAngle).value() > -1) &&
-        m_feedForward == true) {
-      std::cout << "Turning off the feedforward" << std::endl;
-      m_feedForward = false;
-    }
+  while (m_currentAngle + 180_deg < m_targetAngle) {
+    m_targetAngle -= 360_deg;
   }
+  while (m_currentAngle - 180_deg > m_targetAngle) {
+    m_targetAngle += 360_deg;
+  }
+  std::cout << "m_targetAngle: " << m_targetAngle.value()
+            << ", m_currentAngle: " << m_currentAngle.value() << std::endl;
+
+  // NEEDS TO BE TESTED
+  /*
+    if (m_angle >= 0_deg) {
+      if (((m_angle - m_currentAngle).value() < 1) && m_feedForward == true) {
+        std::cout << "Turning off the feedforward" << std::endl;
+        m_feedForward = false;
+      }
+    } else {
+      if (((m_angle - m_currentAngle).value() > -1) && m_feedForward == true) {
+        std::cout << "Turning off the feedforward" << std::endl;
+        m_feedForward = false;
+      }
+    }*/
   /*
     if ((std::abs((startingAngle + m_angle - m_currentAngle).value()) < 1) &&
         m_feedForward == true) {
       // std::cout << "Turning off the feedforward" << std::endl;
       m_feedForward = false;
     }*/
-  if (!m_feedForward) {
-    m_rotationCorrection = m_pid.Calculate(
-        m_currentAngle.value(), m_startingAngle.value() + m_angle.value());
-    std::cout << "Sending PID correction Power: " << m_rotationCorrection
-              << "Angle Away"
-              << std::abs((m_startingAngle + m_angle - m_currentAngle).value())
-              << std::endl;
+  m_rotationCorrection =
+      PIDTurningConstants::PID_multiplier *
+      (m_pid.Calculate(m_currentAngle.value(), m_targetAngle.value()));
+  std::cout << "Sending PID correction Power: " << m_rotationCorrection.value()
+            << "Angle Away"
+            << std::abs((m_targetAngle - m_currentAngle).value()) << std::endl;
 
-    /*
-    if (m_rotationCorrection >= 0) {
-      m_drivebase.arcadeDrive(0_mps, m_rotationCorrection + 0.2);
-    } else {
-      m_drivebase.arcadeDrive(0_mps, m_rotationCorrection - 0.2);
-    }
-
-
-    */
-    if (m_rotationCorrection >= 0) {
-      m_drivebase.arcadeDrive(
-          0_mps, units::degrees_per_second_t(m_rotationCorrection + 0.15));
-    } else {
-      m_drivebase.arcadeDrive(
-          0_mps, units::degrees_per_second_t(m_rotationCorrection - 0.15));
-    }
+  if (m_rotationCorrection >= 0_deg_per_s) {
+    m_drivebase.arcadeDrive(0_mps, m_rotationCorrection + 50_deg_per_s);
+  } else {
+    m_drivebase.arcadeDrive(0_mps, m_rotationCorrection - 50_deg_per_s);
   }
 
 #endif
@@ -169,13 +161,12 @@ bool PIDRotate::IsFinished() {
 #else
   // if the current condition and the correction speed is less than 0.2
 
-  if ((std::abs((m_startingAngle + m_angle - m_currentAngle).value()) < 1) &&
-      ((std::abs(m_rotationCorrection) < 0.3) &&
-       (std::abs((m_drivebase.getWheelSpeeds().left.value())) < 0.05 &&
-        std::abs(m_drivebase.getWheelSpeeds().right.value()) < 0.05))) {
-    std::cout << "Finished: StartingValue: " << m_startingAngle.value()
-              << "requested angle: " << m_angle.value() << "m_currentAngle"
-              << m_currentAngle.value() << std::endl;
+  if (units::math::abs(m_targetAngle - m_currentAngle) < 1_deg &&
+      units::math::abs(m_rotationCorrection) < 0.8_deg_per_s &&
+      units::math::abs(m_drivebase.getWheelSpeeds().left) < 0.05_mps &&
+      units::math::abs(m_drivebase.getWheelSpeeds().right) < 0.05_mps) {
+    std::cout << "requested angle: " << m_targetAngle.value()
+              << "m_currentAngle" << m_currentAngle.value() << std::endl;
     return true;
   }
   return false;
@@ -183,7 +174,7 @@ bool PIDRotate::IsFinished() {
 }
 
 void PIDRotate::FeedForward() {
-  m_startingAngle = m_drivebase.getPose().Rotation().Degrees();
+  m_currentAngle = m_drivebase.getYaw();
 
   /*if (m_feedForward) {
     if (m_angle > 0_deg) {
@@ -194,21 +185,13 @@ void PIDRotate::FeedForward() {
       m_drivebase.arcadeDrive(0_mps, -0.5);
     }
   }
-*/
-  if (m_feedForward) {
-    if (std::abs((m_startingAngle + m_angle - m_currentAngle).value()) < 45 &&
-        (std::abs(m_speed) > 0.3)) {
-      m_subtraction = std::abs(m_speed) - 0.3;
-      std::cout << "Invoking subtraction." << std::endl;
-    }
-    if (m_angle > 0_deg) {
-      std::cout << "New Speed: " << (m_speed - m_subtraction) << std::endl;
-      m_drivebase.arcadeDrive(
-          0_mps, units::degrees_per_second_t(m_speed - m_subtraction));
-    } else {
-      std::cout << "New Speed: " << (m_speed + m_subtraction) << std::endl;
-      m_drivebase.arcadeDrive(
-          0_mps, units::degrees_per_second_t(-m_speed + m_subtraction));
-    }
-  }
+/*
+/
+  if (m_angle > 0_deg) {
+    std::cout << "New Speed: " << (m_speed) << std::endl;
+    m_drivebase.arcadeDrive(0_mps, units::degrees_per_second_t(m_speed));
+  } else {
+    std::cout << "New Speed: " << (m_speed) << std::endl;
+    m_drivebase.arcadeDrive(0_mps, units::degrees_per_second_t(-m_speed));
+  }*/
 }

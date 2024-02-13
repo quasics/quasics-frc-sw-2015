@@ -59,13 +59,7 @@ void SimulatedDrivebase::SimulationPeriodic() {
 }
 
 void SimulatedDrivebase::setMotorSpeeds_HAL(double leftPercent,
-                                        double rightPercent) {
+                                            double rightPercent) {
   m_leftMotor.Set(leftPercent);
   m_rightMotor.Set(rightPercent);
-}
-
-void SimulatedDrivebase::tankDriveVolts_HAL(units::volt_t left,
-                                        units::volt_t right) {
-  m_leftMotor.SetVoltage(left);
-  m_rightMotor.SetVoltage(right);
 }

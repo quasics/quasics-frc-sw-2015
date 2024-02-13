@@ -37,14 +37,12 @@ class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
 
  private:
   IDrivebase& m_drivebase;
-  const units::degree_t m_angle;
-  units::degree_t m_startingAngle = 0_deg;
+  units::degree_t m_targetAngle;
   units::degree_t m_currentAngle = 0_deg;
   bool m_feedForward = true;
   bool m_activatePID = false;
-  double m_rotationCorrection = 0;
-  double m_speed = 0.5;
-  double m_subtraction = 0;
+  units::degrees_per_second_t m_rotationCorrection = 0_deg_per_s;
+  units::degrees_per_second_t m_speed = 30_deg_per_s;
 
   static constexpr double ANGLE_TOLERANCE = 1.0;
   static constexpr double VELOCITY_TOLERANCE = 0.0;

@@ -82,10 +82,16 @@ class IDrivebase : public frc2::SubsystemBase {
                              getRightEncoder_HAL().getPosition());
   }
 
+  units::degree_t getYaw() {
+    // getPose() angle returned is between -180 and 180. This function gets the
+    // raw gyro angle without wrapping it aroud those values
+    return getGyro_HAL().getRotation2d().Degrees();
+  }
+
   // This is a direct pass-through, because HAL functions should *never* be used
   // directly by external code.
-  void tankDriveVolts(units::volt_t left, units::volt_t right) {
-    tankDriveVolts_HAL(left, right);
+  void setMotorVoltages(units::volt_t leftPower, units::volt_t rightPower) {
+    setMotorVoltages_HAL(leftPower, rightPower);
   }
 
   // This is a direct pass-through, because HAL functions should *never* be used
@@ -147,11 +153,8 @@ class IDrivebase : public frc2::SubsystemBase {
   // @see https://stackify.com/oop-concept-abstraction/
   // @see https://stackify.com/oop-concept-for-beginners-what-is-encapsulation/
  protected:
-  // TODO: (Riley) Why are there two equivalent functions (setMotorVoltages_HAL
-  // and tankDriveVolts_HAL)?
   virtual void setMotorVoltages_HAL(units::volt_t leftPower,
                                     units::volt_t rightPower) = 0;
-  virtual void tankDriveVolts_HAL(units::volt_t left, units::volt_t right) = 0;
   virtual frc::DifferentialDriveOdometry& getOdometry_HAL() = 0;
   virtual IGyro& getGyro_HAL() = 0;
 
@@ -169,7 +172,6 @@ class IDrivebase : public frc2::SubsystemBase {
   // Margaret. (And you should also figure out how we can make sure that it's
   // not going to be a problem if we switch to a drive base with a different
   // size (like Mae or Sally) for testing.)
-  // TODO: (Rylie) Turn the value for the track width below into a named
-  // constant in Constants.h.
-  const frc::DifferentialDriveKinematics m_kinematics{0.558_m};
+  const frc::DifferentialDriveKinematics m_kinematics{
+      TRACK_WIDTH_METERS_MARGARET};
 };

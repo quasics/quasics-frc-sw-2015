@@ -11,7 +11,7 @@
 
 #include "subsystems/IDrivebase.h"
 
-#define USE_DYNAMIC_DATA_FROM_DASHBOARD
+#undef USE_DYNAMIC_DATA_FROM_DASHBOARD
 
 /**
  * An example command.

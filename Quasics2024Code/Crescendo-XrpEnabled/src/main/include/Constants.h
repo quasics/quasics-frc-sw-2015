@@ -211,9 +211,9 @@ namespace PIDTurningConstants {
   constexpr auto kI = 0.03;
   constexpr auto kD = 0;*/
 
-  constexpr auto kP = 0.02;
-  constexpr auto kI = 0.0;  // 0.005
-  constexpr auto kD = 0;
+  constexpr auto kP = 0.05;
+  constexpr auto kI = 0;  // 0.005
+  constexpr auto kD = 0.01;
   constexpr units::degrees_per_second_t PID_multiplier = 50_deg_per_s;
 
 }  // namespace PIDTurningConstants

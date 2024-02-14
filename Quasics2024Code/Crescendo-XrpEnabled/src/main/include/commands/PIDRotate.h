@@ -11,7 +11,7 @@
 
 #include "subsystems/IDrivebase.h"
 
-#undef USE_DYNAMIC_DATA_FROM_DASHBOARD
+#define USE_DYNAMIC_DATA_FROM_DASHBOARD
 
 /**
  * An example command.
@@ -48,14 +48,11 @@ class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
   static constexpr double VELOCITY_TOLERANCE = 0.0;
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
-  std::unique_ptr<frc2::PIDController> dynamicPid;
   nt::GenericEntry* kP_entry = nullptr;
   nt::GenericEntry* kI_entry = nullptr;
   nt::GenericEntry* kD_entry = nullptr;
   nt::GenericEntry* angle_entry = nullptr;
-  double angle = 0;
-#else
+#endif
   frc::PIDController m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
                            PIDTurningConstants::kD};
-#endif
 };

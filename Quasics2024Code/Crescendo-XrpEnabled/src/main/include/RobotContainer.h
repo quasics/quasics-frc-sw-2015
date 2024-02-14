@@ -71,15 +71,18 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector2);
 
   void AddTestButtonsOnSmartDashboard();
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   void AddShooterSpeedTestButtonsToDashboard();
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
   frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
   frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+
+  void AddClimberTestButtonsToDashboard();
+#endif
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
-  void AddClimberTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();

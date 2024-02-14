@@ -30,7 +30,7 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
 
   kI_entry =
       frc::Shuffleboard::GetTab("Tuning Rotation")
-          .Add("Turn kI", 0.005)
+          .Add("Turn kI", 0)
           .WithWidget(
               frc::BuiltInWidgets::kNumberSlider)  // specify the widget here
           .WithProperties({// specify widget properties here
@@ -48,7 +48,7 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
           .GetEntry();
   angle_entry =
       frc::Shuffleboard::GetTab("Angle Measure")
-          .Add("Turn kD", 0.0)
+          .Add("Angle measure", 0.0)
           .WithWidget(
               frc::BuiltInWidgets::kNumberSlider)  // specify the widget here
           .WithProperties({// specify widget properties here
@@ -62,51 +62,27 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
 void PIDRotate::Initialize() {
   m_feedForward = true;
   m_activatePID = false;
-  m_currentAngle = 0_deg;  // Overwritten in FeedForward()
+  m_currentAngle = 0_deg;
   m_rotationCorrection = 0_deg_per_s;
   m_speed = 30_deg_per_s;
-
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
   double p = kP_entry->GetDouble(0.0);
   double i = kI_entry->GetDouble(0.0);
   double d = kD_entry->GetDouble(0.0);
-  angle = angle_entry->GetDouble(0.0);
+  m_targetAngle = units::degree_t(angle_entry->GetDouble(0.0));
   std::cerr << "Using PID values: (" << p << "," << i << "," << d << ")\n";
-  std::cerr << "Turning Angle " << angle;
-  dynamicPid.reset(new frc2::PIDController(p, i, d));
-#else
+  std::cerr << "Turning Angle " << m_targetAngle.value() << std::endl;
+  m_pid = frc::PIDController(p, i, d);
+#endif
   m_pid.Reset();
   m_pid.SetTolerance(ANGLE_TOLERANCE, VELOCITY_TOLERANCE);
-#endif
-  FeedForward();
+  m_pid.EnableContinuousInput(-180, 180);
+  m_currentAngle = m_drivebase.getPose().Rotation().Degrees();
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PIDRotate::Execute() {
-#ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
-  FeedForward();
-  if (std::abs(m_startingAngle.value() + angle - m_currentAngle.value()) < 10) {
-    m_feedForward = false;
-  }
-  if (!m_feedForward) {
-    m_rotationCorrection =
-        (dynamicPid == nullptr)
-            ? 0.0
-            : dynamicPid->Calculate(m_currentAngle.value(),
-                                    m_startingAngle.value() + angle);
-  }
-  m_drivebase.arcadeDrive(0_mps, m_rotationCorrection);
-
-#else
-
-  FeedForward();
-
-  while (m_currentAngle + 180_deg < m_targetAngle) {
-    m_targetAngle -= 360_deg;
-  }
-  while (m_currentAngle - 180_deg > m_targetAngle) {
-    m_targetAngle += 360_deg;
-  }
+  m_currentAngle = m_drivebase.getPose().Rotation().Degrees();
   std::cout << "m_targetAngle: " << m_targetAngle.value()
             << ", m_currentAngle: " << m_currentAngle.value() << std::endl;
 
@@ -141,8 +117,6 @@ void PIDRotate::Execute() {
   } else {
     m_drivebase.arcadeDrive(0_mps, m_rotationCorrection - 50_deg_per_s);
   }
-
-#endif
 }
 
 // Called once the command ends or is interrupted.
@@ -152,31 +126,21 @@ void PIDRotate::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool PIDRotate::IsFinished() {
-#ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD
-  if (std::abs((m_startingAngle.value() + angle - m_currentAngle.value())) <
-      1) {
-    return true;
-  }
-  return false;
-#else
   // if the current condition and the correction speed is less than 0.2
 
   if (units::math::abs(m_targetAngle - m_currentAngle) < 1_deg &&
-      units::math::abs(m_rotationCorrection) < 0.8_deg_per_s &&
-      units::math::abs(m_drivebase.getWheelSpeeds().left) < 0.05_mps &&
-      units::math::abs(m_drivebase.getWheelSpeeds().right) < 0.05_mps) {
+      units::math::abs(m_drivebase.getWheelSpeeds().left) < 0.3_mps &&
+      units::math::abs(m_drivebase.getWheelSpeeds().right) < 0.3_mps) {
     std::cout << "requested angle: " << m_targetAngle.value()
               << "m_currentAngle" << m_currentAngle.value() << std::endl;
     return true;
   }
   return false;
-#endif
 }
-
+/*
 void PIDRotate::FeedForward() {
-  m_currentAngle = m_drivebase.getYaw();
 
-  /*if (m_feedForward) {
+  if (m_feedForward) {
     if (m_angle > 0_deg) {
       std::cout << "sending power for turning left" << std::endl;
       m_drivebase.arcadeDrive(0_mps, 0.5);
@@ -185,7 +149,7 @@ void PIDRotate::FeedForward() {
       m_drivebase.arcadeDrive(0_mps, -0.5);
     }
   }
-/*
+
 /
   if (m_angle > 0_deg) {
     std::cout << "New Speed: " << (m_speed) << std::endl;
@@ -193,5 +157,5 @@ void PIDRotate::FeedForward() {
   } else {
     std::cout << "New Speed: " << (m_speed) << std::endl;
     m_drivebase.arcadeDrive(0_mps, units::degrees_per_second_t(-m_speed));
-  }*/
-}
+  }
+}*/

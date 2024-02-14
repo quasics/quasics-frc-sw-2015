@@ -57,14 +57,14 @@ RobotContainer::RobotContainer() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   AddClimberTestButtonsToDashboard();
   AddActuatorTestButtonsToDashboard();
-#endif
-
-  AddAutoSelectionsToSmartDashboard();
   AddShooterTestButtonsToDashboard();
-
 #ifdef ENABLE_SHOOTER_SPEED_TESTS
   AddShooterSpeedTestButtonsToDashboard();
 #endif
+
+#endif
+
+  AddAutoSelectionsToSmartDashboard();
 
   AddSysIdButtonsToDashboard();
   AddDriveTestButtonsToDashboard();
@@ -331,7 +331,7 @@ namespace {
     return new frc2::ParallelRaceGroup(std::move(commands));
   }
 }  // namespace
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
   for (double d = 5.5; d <= 10; d += 0.5) {
     std::ostringstream sout;
@@ -426,7 +426,7 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(m_climber, false));
 }
-
+#endif
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData(

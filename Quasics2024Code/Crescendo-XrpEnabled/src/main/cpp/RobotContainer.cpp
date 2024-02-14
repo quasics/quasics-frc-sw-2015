@@ -7,6 +7,7 @@
 #include <frc/DataLogManager.h>
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
@@ -333,7 +334,6 @@ namespace {
 }  // namespace
 
 void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   for (double d = 5.5; d <= 10; d += 0.5) {
     std::ostringstream sout;
     sout << "Shoot @ " << d << "%";
@@ -342,20 +342,16 @@ void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
 
     frc::SmartDashboard::PutData(sout.str(), cmd);
   }
-#endif
 }
 
 void RobotContainer::AddShooterTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Shoot Note",
                                new RunShooter(m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(m_shooter, 0.25, false));
-#endif
 }
 
 void RobotContainer::AddIntakeTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Run Intake 50%",
                                new RunIntake(m_intakeRoller, 0.5, true));
   frc::SmartDashboard::PutData("Run Intake 60%",
@@ -384,26 +380,52 @@ void RobotContainer::AddIntakeTestButtonsToDashboard() {
                                new frc2::InstantCommand([this]() {
                                  m_intakeDeployment.ResetEncoders();
                                }));
-#endif
 }
 
 void RobotContainer::AddActuatorTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Actuator",
                                new MoveLinearActuators(m_shooter, true));
 
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
-#endif
+
+  frc::SmartDashboard::PutData("Shoot in amp then run actuator after time",
+                               new frc2::InstantCommand([this]() {
+                                 ShootInAmpThenRunActuatorAfterTime(1_s);
+                               }));
+}
+
+frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+
+  commands.push_back(std::move(*BuildSimpleShooterSpeedTestCommand(
+                                   m_shooter, m_intakeRoller, 0.08))
+                         .ToPtr());
+  commands.push_back(ExtendThenRetractActuatorsAfterTime(time));
+
+  return frc2::ParallelCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}
+
+frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+  commands.push_back(frc2::CommandPtr(Wait(time)));
+  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, true)));
+  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, false)));
+
+  return frc2::SequentialCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
 }
 
 void RobotContainer::AddClimberTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(m_climber, false));
-#endif
 }
 
 void RobotContainer::AddVisionTestButtonsToDashboard() {
@@ -415,11 +437,9 @@ void RobotContainer::AddVisionTestButtonsToDashboard() {
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData(
       "Reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-#endif
 
   frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
                                new PIDRotate(*m_drivebase, 90_deg));

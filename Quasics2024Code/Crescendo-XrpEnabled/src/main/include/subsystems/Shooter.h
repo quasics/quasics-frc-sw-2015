@@ -38,11 +38,16 @@ class Shooter : public frc2::SubsystemBase {
 
   void RetractLinearActuators();
 
+  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
+  // get a linker error.
   bool IsFullyExtended();
 
+  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
+  // get a linker error.
   bool IsFullyRetracted();
 
  private:
+  /** Configures a Servo object to be used with an AndyMark L16 actuator. */
   static void ConfigureAndyMarkL16(frc::Servo& servo);
 
   // Data members.
@@ -50,6 +55,9 @@ class Shooter : public frc2::SubsystemBase {
   rev::CANSparkMax m_flyWheel{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
       rev::CANSparkMax::MotorType::kBrushless};
+
+  // TODO: (Matthew) If it's a follower, why do you need to talk to it?  (In
+  // other words, we shouldn't need this 2nd object.)
   rev::CANSparkMax m_flyWheelTwo{
       MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
       rev::CANSparkMax::MotorType::kBrushless};

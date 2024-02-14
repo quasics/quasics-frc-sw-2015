@@ -78,6 +78,7 @@ class RobotContainer {
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddClimberTestButtonsToDashboard();
+  void AddVisionTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();

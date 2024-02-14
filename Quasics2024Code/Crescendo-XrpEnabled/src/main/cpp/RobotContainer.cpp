@@ -21,6 +21,7 @@
 #include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
+#include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
 #include "commands/RunShooter.h"
@@ -332,6 +333,7 @@ namespace {
 }  // namespace
 
 void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   for (double d = 5.5; d <= 10; d += 0.5) {
     std::ostringstream sout;
     sout << "Shoot @ " << d << "%";
@@ -340,16 +342,20 @@ void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
 
     frc::SmartDashboard::PutData(sout.str(), cmd);
   }
+#endif
 }
 
 void RobotContainer::AddShooterTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Shoot Note",
                                new RunShooter(m_shooter, 0.25, true));
   frc::SmartDashboard::PutData("Retract Note",
                                new RunShooter(m_shooter, 0.25, false));
+#endif
 }
 
 void RobotContainer::AddIntakeTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Run Intake 50%",
                                new RunIntake(m_intakeRoller, 0.5, true));
   frc::SmartDashboard::PutData("Run Intake 60%",
@@ -378,21 +384,34 @@ void RobotContainer::AddIntakeTestButtonsToDashboard() {
                                new frc2::InstantCommand([this]() {
                                  m_intakeDeployment.ResetEncoders();
                                }));
+#endif
 }
 
 void RobotContainer::AddActuatorTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Actuator",
                                new MoveLinearActuators(m_shooter, true));
 
   frc::SmartDashboard::PutData("Retract Actuator",
                                new MoveLinearActuators(m_shooter, false));
+#endif
 }
 
 void RobotContainer::AddClimberTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Extend Climbers",
                                new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(m_climber, false));
+#endif
+}
+
+void RobotContainer::AddVisionTestButtonsToDashboard() {
+#ifdef ENABLE_VISION_TESTING
+  frc::SmartDashboard::PutData(
+      "Rotate to blue speaker",
+      new RotateToAprilTarget(*m_drivebase, *m_vision, 6));
+#endif
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {

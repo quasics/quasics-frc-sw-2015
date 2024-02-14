@@ -65,6 +65,10 @@ RobotContainer::RobotContainer() {
 
 #endif
 
+#ifdef ENABLE_VISION_TESTING
+  AddVisionTestButtonsToDashboard();
+#endif
+
   AddAutoSelectionsToSmartDashboard();
 
   AddAutoSelectionsToSmartDashboard();

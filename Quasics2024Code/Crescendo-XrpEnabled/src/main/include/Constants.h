@@ -133,7 +133,7 @@ namespace SensorIds {
 }
 
 /* namespace LightingValues {
-  constexpr int PORT_NUMBER = fill in;
+  constexpr int PORT_NUMBER = 1;
   constexpr int STRIP_PIXEL_COUNT = fill in;
   constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
 } */

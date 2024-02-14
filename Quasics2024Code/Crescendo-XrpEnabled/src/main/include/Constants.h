@@ -153,7 +153,7 @@ constexpr auto kRamseteZeta = 0.7 / 1_rad;
 namespace RobotConstants {
   static constexpr units::meters_per_second_t MAX_SPEED{3.0};
   static constexpr units::radians_per_second_t MAX_ANGULAR_SPEED{
-      std::numbers::pi};
+      2 * std::numbers::pi};
 }  // namespace RobotConstants
 
 using RateLimit = units::unit_t<

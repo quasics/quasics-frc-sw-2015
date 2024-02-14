@@ -187,15 +187,9 @@ void RobotContainer::setUpArcadeDrive() {
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
 
-    if (m_configSettings.normalDriveEngaged) {
-      double joystickPercentage =
-          m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
-      return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    } else {
-      double joystickPercentage =
-          m_driverController.GetRawAxis(rightDriveJoystickAxis);
-      return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
-    }
+    double joystickPercentage =
+        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
@@ -213,6 +207,7 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 }
 
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
+  // TODO: bind switch drive to B button
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);

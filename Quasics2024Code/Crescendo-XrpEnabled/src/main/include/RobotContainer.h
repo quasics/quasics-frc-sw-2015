@@ -83,6 +83,7 @@ class RobotContainer {
 #endif
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
+  void AddVisionTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();
@@ -114,14 +115,14 @@ class RobotContainer {
   IntakeRoller m_intakeRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-#ifdef ENABLE_VISION_SUBSYSTEM
-#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
+#ifdef ENABLE_VISION_TESTING
+#ifdef LEAK_VISION_WORKAROUND
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
 #else
   Vision* m_vision;
 #endif
-#endif  // ENABLE_VISION_SUBSYSTEM
+#endif  // ENABLE_VISION_TESTING
 
   ConfigSettings m_configSettings;
 

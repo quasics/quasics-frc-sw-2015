@@ -22,6 +22,7 @@
 #include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
+#include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
 #include "commands/RunShooter.h"
@@ -63,6 +64,8 @@ RobotContainer::RobotContainer() {
 #endif
 
 #endif
+
+  AddAutoSelectionsToSmartDashboard();
 
   AddAutoSelectionsToSmartDashboard();
 
@@ -427,6 +430,14 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
                                new MoveClimbers(m_climber, false));
 }
 #endif
+void RobotContainer::AddVisionTestButtonsToDashboard() {
+#ifdef ENABLE_VISION_TESTING
+  frc::SmartDashboard::PutData(
+      "Rotate to blue speaker",
+      new RotateToAprilTarget(*m_drivebase, *m_vision, 6));
+#endif
+}
+
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData(

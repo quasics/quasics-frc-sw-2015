@@ -44,8 +44,6 @@ class Vision : public frc2::SubsystemBase {
                                           units::degree_t& pitchTarget,
                                           units::degree_t& yawTarget);
 
-  void RotateToAprilTarget(int TargetID, IDrivebase* driveBase);
-
   frc::Translation3d GetTargetPlacement(int targetID);
 
   std::optional<photon::EstimatedRobotPose> UpdateFieldPosition(

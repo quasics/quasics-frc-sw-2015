@@ -75,9 +75,12 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
+  frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
+  frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddClimberTestButtonsToDashboard();
+  void AddVisionTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();
@@ -109,14 +112,14 @@ class RobotContainer {
   IntakeRoller m_intakeRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-#ifdef ENABLE_VISION_SUBSYSTEM
-#ifdef LEAK_VISION_TO_WORK_AROUND_CLEANUP_BUG
+#ifdef ENABLE_VISION_TESTING
+#ifdef LEAK_VISION_WORKAROUND
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
 #else
   Vision* m_vision;
 #endif
-#endif  // ENABLE_VISION_SUBSYSTEM
+#endif  // ENABLE_VISION_TESTING
 
   ConfigSettings m_configSettings;
 

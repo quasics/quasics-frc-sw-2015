@@ -195,6 +195,11 @@ void RobotContainer::setUpArcadeDrive() {
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
+void RobotContainer::RunCommandWhenDriverButtonIsPressed(
+    int logitechButtonId, frc2::Command *command) {
+  frc2::JoystickButton(&m_driverController, logitechButtonId).OnTrue(command);
+}
+
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
                                                       frc2::Command *command) {
   frc2::JoystickButton(&m_driverController, logitechButtonId)
@@ -207,7 +212,12 @@ void RobotContainer::RunCommandWhenOperatorButtonIsHeld(
 }
 
 void RobotContainer::ConfigureDriverControllerButtonBindings() {
-  // TODO: bind switch drive to B button
+  RunCommandWhenDriverButtonIsPressed(
+      OperatorConstants::LogitechGamePad::BButton,
+      new frc2::InstantCommand([this]() {
+        m_configSettings.normalDriveEngaged =
+            !m_configSettings.normalDriveEngaged;
+      }));
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);

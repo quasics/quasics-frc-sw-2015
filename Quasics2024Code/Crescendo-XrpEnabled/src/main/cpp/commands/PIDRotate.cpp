@@ -60,7 +60,6 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
 
 // Called when the command is initially scheduled.
 void PIDRotate::Initialize() {
-  m_feedForward = true;
   m_activatePID = false;
   m_currentAngle = 0_deg;
   m_rotationCorrection = 0_deg_per_s;
@@ -86,25 +85,6 @@ void PIDRotate::Execute() {
   std::cout << "m_targetAngle: " << m_targetAngle.value()
             << ", m_currentAngle: " << m_currentAngle.value() << std::endl;
 
-  // NEEDS TO BE TESTED
-  /*
-    if (m_angle >= 0_deg) {
-      if (((m_angle - m_currentAngle).value() < 1) && m_feedForward == true) {
-        std::cout << "Turning off the feedforward" << std::endl;
-        m_feedForward = false;
-      }
-    } else {
-      if (((m_angle - m_currentAngle).value() > -1) && m_feedForward == true) {
-        std::cout << "Turning off the feedforward" << std::endl;
-        m_feedForward = false;
-      }
-    }*/
-  /*
-    if ((std::abs((startingAngle + m_angle - m_currentAngle).value()) < 1) &&
-        m_feedForward == true) {
-      // std::cout << "Turning off the feedforward" << std::endl;
-      m_feedForward = false;
-    }*/
   m_rotationCorrection =
       PIDTurningConstants::PID_multiplier *
       (m_pid.Calculate(m_currentAngle.value(), m_targetAngle.value()));
@@ -137,25 +117,3 @@ bool PIDRotate::IsFinished() {
   }
   return false;
 }
-/*
-void PIDRotate::FeedForward() {
-
-  if (m_feedForward) {
-    if (m_angle > 0_deg) {
-      std::cout << "sending power for turning left" << std::endl;
-      m_drivebase.arcadeDrive(0_mps, 0.5);
-    } else {
-      std::cout << "sending power for turning right" << std::endl;
-      m_drivebase.arcadeDrive(0_mps, -0.5);
-    }
-  }
-
-/
-  if (m_angle > 0_deg) {
-    std::cout << "New Speed: " << (m_speed) << std::endl;
-    m_drivebase.arcadeDrive(0_mps, units::degrees_per_second_t(m_speed));
-  } else {
-    std::cout << "New Speed: " << (m_speed) << std::endl;
-    m_drivebase.arcadeDrive(0_mps, units::degrees_per_second_t(-m_speed));
-  }
-}*/

@@ -16,7 +16,7 @@ public class ServoHost extends SubsystemBase {
    * Assumed to be an AndyMark Linear Servo Actuator L16-R 140 mm Stroke 35:1 6v.
    * 
    * @see https://www.andymark.com/products/actuator-l16-r-140mm-stroke-35-1-6v
-   * @see http://tinyurl.com/45t2ffyc
+   * @see http://tinyurl.com/4wx92e8w
    * @see https://www.chiefdelphi.com/t/anyone-have-servo-example-code/155951/9
    */
   final Servo m_servo = new Servo(SERVO_PWM_ID);

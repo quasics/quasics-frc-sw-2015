@@ -10,6 +10,8 @@
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
+#include <iostream>
+
 #include "Constants.h"
 #include "TrajectoryGenerator.h"
 #include "commands/PivotIntakeAuto.h"
@@ -22,7 +24,8 @@ namespace AutonomousCommands {
 
   namespace Helpers {
     frc2::CommandPtr resetOdometryToStartingPosition(IDrivebase &drivebase,
-                                                     std::string position) {
+                                                     std::string position,
+                                                     bool isBlue) {
       frc::Pose2d startingPose;
       if (position == AutonomousStartingPositions::inFrontOfAmp)
         startingPose = GetTrajectoryInitialPose("blue1ago.wpilib.json");
@@ -142,7 +145,8 @@ namespace AutonomousCommands {
           .ToPtr();
     }
 
-    frc2::CommandPtr GTFO(IDrivebase &drivebase, std::string position) {
+    frc2::CommandPtr GTFO(IDrivebase &drivebase, std::string position,
+                          bool isBlue) {
       std::string path;
       if (position == AutonomousStartingPositions::inFrontOfAmp)
         path = "blue1ago.wpilib.json";
@@ -163,7 +167,7 @@ namespace AutonomousCommands {
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
     frc2::CommandPtr score1Command(IDrivebase &drivebase, Shooter &shooter,
-                                   std::string position) {
+                                   std::string position, bool isBlue) {
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
         std::vector<frc2::CommandPtr> commands;
         commands.push_back(
@@ -185,8 +189,8 @@ namespace AutonomousCommands {
       }
     }
 #else
-    frc2::CommandPtr score1Command(IDrivebase &drivebase,
-                                   std::string position) {
+    frc2::CommandPtr score1Command(IDrivebase &drivebase, std::string position,
+                                   bool isBlue) {
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
         std::vector<frc2::CommandPtr> commands;
 
@@ -204,17 +208,18 @@ namespace AutonomousCommands {
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
     frc2::CommandPtr score1GTFO(IDrivebase &drivebase, Shooter &shooter,
-                                std::string position) {
+                                std::string position, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score1Command(drivebase, shooter, position));
-      commands.push_back(GTFO(drivebase, position));
+      commands.push_back(score1Command(drivebase, shooter, position, isBlue));
+      commands.push_back(GTFO(drivebase, position, isBlue));
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
     }
 
 #else
-    frc2::CommandPtr score1GTFO(IDrivebase &drivebase, std::string position) {
+    frc2::CommandPtr score1GTFO(IDrivebase &drivebase, std::string position,
+                                bool isBlue) {
       frc2::PrintCommand doNothing("Can't shoot from far field!");
       return std::move(doNothing).ToPtr();
     }
@@ -225,7 +230,8 @@ namespace AutonomousCommands {
     frc2::CommandPtr score2InFrontOfSpeaker(IDrivebase &drivebase,
                                             Shooter &shooter,
                                             IntakeDeployment &intakeDeployment,
-                                            IntakeRoller &intakeRoller) {
+                                            IntakeRoller &intakeRoller,
+                                            bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(intakeWhileDriving(drivebase, intakeDeployment,
                                             intakeRoller,
@@ -242,7 +248,8 @@ namespace AutonomousCommands {
 
 #else
 
-    frc2::CommandPtr score2InFrontOfSpeaker(IDrivebase &drivebase) {
+    frc2::CommandPtr score2InFrontOfSpeaker(IDrivebase &drivebase,
+                                            bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -261,7 +268,8 @@ namespace AutonomousCommands {
     frc2::CommandPtr score2RightOfSpeaker(IDrivebase &drivebase,
                                           Shooter &shooter,
                                           IntakeDeployment &intakeDeployment,
-                                          IntakeRoller &intakeRoller) {
+                                          IntakeRoller &intakeRoller,
+                                          bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(intakeWhileDriving(drivebase, intakeDeployment,
@@ -278,7 +286,7 @@ namespace AutonomousCommands {
     }
 
 #else
-    frc2::CommandPtr score2RightOfSpeaker(IDrivebase &drivebase) {
+    frc2::CommandPtr score2RightOfSpeaker(IDrivebase &drivebase, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -296,7 +304,7 @@ namespace AutonomousCommands {
                                          Shooter &shooter,
                                          IntakeDeployment &intakeDeployment,
                                          IntakeRoller &intakeRoller,
-                                         std::string score2Dest) {
+                                         std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(intakeWhileDriving(drivebase, intakeDeployment,
                                             intakeRoller,
@@ -325,7 +333,7 @@ namespace AutonomousCommands {
 
 #else
     frc2::CommandPtr score2LeftOfSpeaker(IDrivebase &drivebase,
-                                         std::string score2Dest) {
+                                         std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -352,7 +360,7 @@ namespace AutonomousCommands {
     frc2::CommandPtr score2InFrontOfAmp(IDrivebase &drivebase, Shooter &shooter,
                                         IntakeDeployment &intakeDeployment,
                                         IntakeRoller &intakeRoller,
-                                        std::string score2Dest) {
+                                        std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(intakeWhileDriving(drivebase, intakeDeployment,
                                             intakeRoller,
@@ -381,7 +389,7 @@ namespace AutonomousCommands {
 
 #else
     frc2::CommandPtr score2InFrontOfAmp(IDrivebase &drivebase,
-                                        std::string score2Dest) {
+                                        std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -410,24 +418,26 @@ namespace AutonomousCommands {
     frc2::CommandPtr score2Command(IDrivebase &drivebase, Shooter &shooter,
                                    IntakeDeployment &intakeDeployment,
                                    IntakeRoller &intakeRoller,
-                                   std::string position,
-                                   std::string score2Dest) {
+                                   std::string position, std::string score2Dest,
+                                   bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score1Command(drivebase, shooter, position));
+      commands.push_back(score1Command(drivebase, shooter, position, isBlue));
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
-        commands.push_back(score2InFrontOfAmp(
-            drivebase, shooter, intakeDeployment, intakeRoller, score2Dest));
+        commands.push_back(score2InFrontOfAmp(drivebase, shooter,
+                                              intakeDeployment, intakeRoller,
+                                              score2Dest, isBlue));
 
       } else if (position == AutonomousStartingPositions::leftOfSpeaker) {
-        commands.push_back(score2LeftOfSpeaker(
-            drivebase, shooter, intakeDeployment, intakeRoller, score2Dest));
+        commands.push_back(score2LeftOfSpeaker(drivebase, shooter,
+                                               intakeDeployment, intakeRoller,
+                                               score2Dest, isBlue));
 
       } else if (position == AutonomousStartingPositions::inFrontOfSpeaker) {
         commands.push_back(score2InFrontOfSpeaker(
-            drivebase, shooter, intakeDeployment, intakeRoller));
+            drivebase, shooter, intakeDeployment, intakeRoller, isBlue));
       } else if (position == AutonomousStartingPositions::rightOfSpeaker) {
         commands.push_back(score2RightOfSpeaker(
-            drivebase, shooter, intakeDeployment, intakeRoller));
+            drivebase, shooter, intakeDeployment, intakeRoller, isBlue));
       } else if (position == AutonomousStartingPositions::farField) {
         frc2::PrintCommand doNothing("Can't shoot from far field!");
         commands.push_back(std::move(doNothing).ToPtr());
@@ -439,19 +449,19 @@ namespace AutonomousCommands {
 
 #else
     frc2::CommandPtr score2Command(IDrivebase &drivebase, std::string position,
-                                   std::string score2Dest) {
+                                   std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score1Command(drivebase, position));
+      commands.push_back(score1Command(drivebase, position, isBlue));
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
-        commands.push_back(score2InFrontOfAmp(drivebase, score2Dest));
+        commands.push_back(score2InFrontOfAmp(drivebase, score2Dest, isBlue));
 
       } else if (position == AutonomousStartingPositions::leftOfSpeaker) {
-        commands.push_back(score2LeftOfSpeaker(drivebase, score2Dest));
+        commands.push_back(score2LeftOfSpeaker(drivebase, score2Dest, isBlue));
 
       } else if (position == AutonomousStartingPositions::inFrontOfSpeaker) {
-        commands.push_back(score2InFrontOfSpeaker(drivebase));
+        commands.push_back(score2InFrontOfSpeaker(drivebase, isBlue));
       } else if (position == AutonomousStartingPositions::rightOfSpeaker) {
-        commands.push_back(score2RightOfSpeaker(drivebase));
+        commands.push_back(score2RightOfSpeaker(drivebase, isBlue));
       } else if (position == AutonomousStartingPositions::farField) {
         frc2::PrintCommand doNothing("Can't shoot from far field!");
         commands.push_back(std::move(doNothing).ToPtr());
@@ -466,15 +476,17 @@ namespace AutonomousCommands {
     frc2::CommandPtr score2GTFO(IDrivebase &drivebase, Shooter &shooter,
                                 IntakeDeployment &intakeDeployment,
                                 IntakeRoller &intakeRoller,
-                                std::string position, std::string score2Dest) {
+                                std::string position, std::string score2Dest,
+                                bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(score2Command(drivebase, shooter, intakeDeployment,
-                                       intakeRoller, position, score2Dest));
+                                       intakeRoller, position, score2Dest,
+                                       isBlue));
       if (position == AutonomousStartingPositions::rightOfSpeaker ||
           position == AutonomousStartingPositions::inFrontOfSpeaker) {
-        commands.push_back(GTFO(drivebase, position));
+        commands.push_back(GTFO(drivebase, position, isBlue));
       } else {
-        commands.push_back(GTFO(drivebase, score2Dest));
+        commands.push_back(GTFO(drivebase, score2Dest, isBlue));
       }
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -483,15 +495,16 @@ namespace AutonomousCommands {
 
 #else
     frc2::CommandPtr score2GTFO(IDrivebase &drivebase, std::string position,
-                                std::string score2Dest) {
+                                std::string score2Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
-      commands.push_back(score2Command(drivebase, position, score2Dest));
+      commands.push_back(
+          score2Command(drivebase, position, score2Dest, isBlue));
       if (position == AutonomousStartingPositions::rightOfSpeaker ||
           position == AutonomousStartingPositions::inFrontOfSpeaker) {
-        commands.push_back(GTFO(drivebase, position));
+        commands.push_back(GTFO(drivebase, position, isBlue));
       } else {
-        commands.push_back(GTFO(drivebase, score2Dest));
+        commands.push_back(GTFO(drivebase, score2Dest, isBlue));
       }
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -501,14 +514,12 @@ namespace AutonomousCommands {
 #endif
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-    frc2::CommandPtr score3Command(IDrivebase &drivebase, Shooter &shooter,
-                                   IntakeDeployment &intakeDeployment,
-                                   IntakeRoller &intakeRoller,
-                                   std::string position, std::string score2Dest,
-                                   std::string score3Dest) {
+    frc2::CommandPtr score3InFrontOfAmp(IDrivebase &drivebase, Shooter &shooter,
+                                        IntakeDeployment &intakeDeployment,
+                                        IntakeRoller &intakeRoller,
+                                        std::string score3Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score2Command(drivebase, shooter, intakeDeployment,
-                                       intakeRoller, position, score2Dest));
+
       frc2::PrintCommand notImplemented("Not implemented");
       commands.push_back(std::move(notImplemented).ToPtr());
 
@@ -518,24 +529,172 @@ namespace AutonomousCommands {
     }
 
 #else
-    frc2::CommandPtr score3Command(IDrivebase &drivebase, std::string position,
-                                   std::string score2Dest,
-                                   std::string score3Dest) {
+    frc2::CommandPtr score3InFrontOfAmp(IDrivebase &drivebase,
+                                        std::string score3Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score2Command(drivebase, position, score2Dest));
-      if (position != AutonomousStartingPositions::inFrontOfAmp ||
-          score2Dest != AutonomousScoreDestinations::amp ||
-          score3Dest != AutonomousScoreDestinations::leftOfSpeaker) {
-        return frc2::SequentialCommandGroup(
-                   frc2::CommandPtr::UnwrapVector(std::move(commands)))
-            .ToPtr();
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+#endif
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    frc2::CommandPtr score3LeftOfSpeaker(IDrivebase &drivebase,
+                                         Shooter &shooter,
+                                         IntakeDeployment &intakeDeployment,
+                                         IntakeRoller &intakeRoller,
+                                         std::string score3Dest, bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+
+#else
+    frc2::CommandPtr score3LeftOfSpeaker(IDrivebase &drivebase,
+                                         std::string score3Dest, bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+#endif
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    frc2::CommandPtr score3InFrontOfSpeaker(IDrivebase &drivebase,
+                                            Shooter &shooter,
+                                            IntakeDeployment &intakeDeployment,
+                                            IntakeRoller &intakeRoller,
+                                            std::string score3Dest,
+                                            bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+
+#else
+    frc2::CommandPtr score3InFrontOfSpeaker(IDrivebase &drivebase,
+                                            std::string score3Dest,
+                                            bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+#endif
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    frc2::CommandPtr score3RightOfSpeaker(IDrivebase &drivebase,
+                                          Shooter &shooter,
+                                          IntakeDeployment &intakeDeployment,
+                                          IntakeRoller &intakeRoller,
+                                          std::string score3Dest, bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+
+#else
+    frc2::CommandPtr score3RightOfSpeaker(IDrivebase &drivebase,
+                                          std::string score3Dest, bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+
+      frc2::PrintCommand notImplemented("Not implemented");
+      commands.push_back(std::move(notImplemented).ToPtr());
+
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+#endif
+
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+    frc2::CommandPtr score3Command(IDrivebase &drivebase, Shooter &shooter,
+                                   IntakeDeployment &intakeDeployment,
+                                   IntakeRoller &intakeRoller,
+                                   std::string score2Dest,
+                                   std::string score3Dest, std::string position,
+                                   bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
+      commands.push_back(score2Command(drivebase, shooter, intakeDeployment,
+                                       intakeRoller, position, score2Dest,
+                                       isBlue));
+      if (position == AutonomousStartingPositions::inFrontOfAmp) {
+        commands.push_back(score3InFrontOfAmp(drivebase, shooter,
+                                              intakeDeployment, intakeRoller,
+                                              score3Dest, isBlue));
+
+      } else if (position == AutonomousStartingPositions::leftOfSpeaker) {
+        commands.push_back(score3LeftOfSpeaker(drivebase, shooter,
+                                               intakeDeployment, intakeRoller,
+                                               score3Dest, isBlue));
+
+      } else if (position == AutonomousStartingPositions::inFrontOfSpeaker) {
+        commands.push_back(
+            score3InFrontOfSpeaker(drivebase, shooter, intakeDeployment,
+                                   intakeRoller, score3Dest, isBlue));
+      } else if (position == AutonomousStartingPositions::rightOfSpeaker) {
+        commands.push_back(score3RightOfSpeaker(drivebase, shooter,
+                                                intakeDeployment, intakeRoller,
+                                                score3Dest, isBlue));
+      } else if (position == AutonomousStartingPositions::farField) {
+        frc2::PrintCommand doNothing("Can't shoot from far field!");
+        commands.push_back(std::move(doNothing).ToPtr());
       }
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
 
+#else
+    frc2::CommandPtr score3Command(IDrivebase &drivebase,
+                                   std::string score2Dest,
+                                   std::string score3Dest, std::string position,
+                                   bool isBlue) {
+      std::vector<frc2::CommandPtr> commands;
       commands.push_back(
-          GetCommandForTrajectory("blueamptonote4.wpilib.json", drivebase));
-      commands.push_back(
-          GetCommandForTrajectory("bluenote4to1b.wpilib.json", drivebase));
+          score2Command(drivebase, position, score2Dest, isBlue));
+      if (position == AutonomousStartingPositions::inFrontOfAmp) {
+        commands.push_back(score3InFrontOfAmp(drivebase, score3Dest, isBlue));
 
+      } else if (position == AutonomousStartingPositions::leftOfSpeaker) {
+        commands.push_back(score3LeftOfSpeaker(drivebase, score3Dest, isBlue));
+
+      } else if (position == AutonomousStartingPositions::inFrontOfSpeaker) {
+        commands.push_back(
+            score3InFrontOfSpeaker(drivebase, score3Dest, isBlue));
+      } else if (position == AutonomousStartingPositions::rightOfSpeaker) {
+        commands.push_back(score3RightOfSpeaker(drivebase, score3Dest, isBlue));
+      } else if (position == AutonomousStartingPositions::farField) {
+        frc2::PrintCommand doNothing("Can't shoot from far field!");
+        commands.push_back(std::move(doNothing).ToPtr());
+      }
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
@@ -547,7 +706,7 @@ namespace AutonomousCommands {
                                    IntakeDeployment &intakeDeployment,
                                    IntakeRoller &intakeRoller,
                                    std::string position, std::string score2Dest,
-                                   std::string score3Dest) {
+                                   std::string score3Dest, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       if (position != AutonomousStartingPositions::inFrontOfSpeaker) {
         return frc2::SequentialCommandGroup(
@@ -579,9 +738,12 @@ namespace AutonomousCommands {
 #else
     frc2::CommandPtr score4Command(IDrivebase &drivebase, std::string position,
                                    std::string score2Dest,
-                                   std::string score3Dest) {
+                                   std::string score3Dest, bool isBlue) {
+      std::string path;
+      std::string color = (isBlue ? "blue" : "red");
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(score2Command(drivebase, position, score2Dest));
+      commands.push_back(
+          score2Command(drivebase, position, score2Dest, isBlue));
 
       if (position != AutonomousStartingPositions::inFrontOfSpeaker) {
         return frc2::SequentialCommandGroup(
@@ -590,13 +752,13 @@ namespace AutonomousCommands {
       }
 
       commands.push_back(
-          GetCommandForTrajectory("blue2tonote1.wpilib.json", drivebase));
+          GetCommandForTrajectory(color + "2tonote1.wpilib.json", drivebase));
       commands.push_back(
-          GetCommandForTrajectory("bluenote1to2.wpilib.json", drivebase));
+          GetCommandForTrajectory(color + "note1to2.wpilib.json", drivebase));
       commands.push_back(
-          GetCommandForTrajectory("blue2tonote3.wpilib.json", drivebase));
+          GetCommandForTrajectory(color + "2tonote3.wpilib.json", drivebase));
       commands.push_back(
-          GetCommandForTrajectory("bluenote3to2.wpilib.json", drivebase));
+          GetCommandForTrajectory(color + "note3to2.wpilib.json", drivebase));
 
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -613,37 +775,40 @@ namespace AutonomousCommands {
                                         std::string operationName,
                                         std::string position,
                                         std::string score2Dest,
-                                        std::string score3Dest) {
+                                        std::string score3Dest, bool isBlue) {
     using namespace Helpers;
     std::vector<frc2::CommandPtr> commands;
-    commands.push_back(resetOdometryToStartingPosition(drivebase, position));
+    commands.push_back(
+        resetOdometryToStartingPosition(drivebase, position, isBlue));
 
     if (operationName == AutonomousSelectedOperation::doNothing) {
       frc2::PrintCommand doNothing("Doing nothing, as instructed");
       commands.push_back(std::move(doNothing).ToPtr());
     } else if (operationName == AutonomousSelectedOperation::GTFO) {
-      commands.push_back(GTFO(drivebase, position));
+      commands.push_back(GTFO(drivebase, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score1) {
-      commands.push_back(score1Command(drivebase, shooter, position));
+      commands.push_back(score1Command(drivebase, shooter, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score1GTFO) {
-      commands.push_back(score1GTFO(drivebase, shooter, position));
+      commands.push_back(score1GTFO(drivebase, shooter, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score2) {
       commands.push_back(score2Command(drivebase, shooter, intakeDeployment,
-                                       intakeRoller, position, score2Dest));
+                                       intakeRoller, position, score2Dest,
+                                       isBlue));
     } else if (operationName == AutonomousSelectedOperation::score2GTFO) {
       commands.push_back(score2GTFO(drivebase, shooter, intakeDeployment,
-                                    intakeRoller, position, score2Dest));
+                                    intakeRoller, position, score2Dest,
+                                    isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3) {
       commands.push_back(score3Command(drivebase, shooter, intakeDeployment,
                                        intakeRoller, position, score2Dest,
-                                       score3Dest));
+                                       score3Dest, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3GTFO) {
       frc2::PrintCommand notImplemented("Not implemented");
       commands.push_back(std::move(notImplemented).ToPtr());
     } else if (operationName == AutonomousSelectedOperation::score4) {
       commands.push_back(score4Command(drivebase, shooter, intakeDeployment,
                                        intakeRoller, position, score2Dest,
-                                       score3Dest));
+                                       score3Dest, isBlue));
     } else {
       static frc2::PrintCommand fallThroughCaseCommand(
           "*** Error: don't know what to do, based on "
@@ -661,33 +826,35 @@ namespace AutonomousCommands {
                                         std::string operationName,
                                         std::string position,
                                         std::string score2Dest,
-                                        std::string score3Dest) {
+                                        std::string score3Dest, bool isBlue) {
     using namespace Helpers;
     std::vector<frc2::CommandPtr> commands;
-    commands.push_back(resetOdometryToStartingPosition(drivebase, position));
+    commands.push_back(
+        resetOdometryToStartingPosition(drivebase, position, isBlue));
 
     if (operationName == AutonomousSelectedOperation::doNothing) {
       frc2::PrintCommand doNothing("Doing nothing, as instructed");
       commands.push_back(std::move(doNothing).ToPtr());
     } else if (operationName == AutonomousSelectedOperation::GTFO) {
-      commands.push_back(GTFO(drivebase, position));
+      commands.push_back(GTFO(drivebase, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score1) {
-      commands.push_back(score1Command(drivebase, position));
+      commands.push_back(score1Command(drivebase, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score1GTFO) {
-      commands.push_back(score1GTFO(drivebase, position));
+      commands.push_back(score1GTFO(drivebase, position, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score2) {
-      commands.push_back(score2Command(drivebase, position, score2Dest));
+      commands.push_back(
+          score2Command(drivebase, position, score2Dest, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score2GTFO) {
-      commands.push_back(score2GTFO(drivebase, position, score2Dest));
+      commands.push_back(score2GTFO(drivebase, position, score2Dest, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3) {
       commands.push_back(
-          score3Command(drivebase, position, score2Dest, score3Dest));
+          score3Command(drivebase, position, score2Dest, score3Dest, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3GTFO) {
       frc2::PrintCommand notImplemented("Not implemented");
       commands.push_back(std::move(notImplemented).ToPtr());
     } else if (operationName == AutonomousSelectedOperation::score4) {
       commands.push_back(
-          score4Command(drivebase, position, score2Dest, score3Dest));
+          score4Command(drivebase, position, score2Dest, score3Dest, isBlue));
     } else {
       static frc2::PrintCommand fallThroughCaseCommand(
           "*** Error: don't know what to do, based on "

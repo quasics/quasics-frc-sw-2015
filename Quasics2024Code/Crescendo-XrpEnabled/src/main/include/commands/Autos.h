@@ -21,20 +21,14 @@ namespace AutonomousCommands {
                                         std::string operationName,
                                         std::string teamAndPosName,
                                         std::string score2Dest,
-                                        std::string score3Dest);
+                                        std::string score3Dest, bool isBlue);
 #else
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
                                         std::string operationName,
                                         std::string teamAndPosName,
                                         std::string score2Dest,
-                                        std::string score3Dest);
+                                        std::string score3Dest, bool isBlue);
 #endif
 
-  namespace Helpers {
-    frc2::CommandPtr backwardTest(IDrivebase &drivebase);
-    frc2::CommandPtr blue1aAmp1AmpGo(IDrivebase &drivebase);
-    frc2::CommandPtr resetOdometryToStartingPosition(IDrivebase &drivebase,
-                                                     std::string position);
-
-  }  // namespace Helpers
+  namespace Helpers {}  // namespace Helpers
 }  // namespace AutonomousCommands

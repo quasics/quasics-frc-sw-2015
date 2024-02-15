@@ -11,7 +11,7 @@
 
 #include "subsystems/IDrivebase.h"
 
-#define USE_DYNAMIC_DATA_FROM_DASHBOARD
+#undef USE_DYNAMIC_DATA_FROM_DASHBOARD
 
 /**
  * An example command.
@@ -33,13 +33,9 @@ class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
   bool IsFinished() override;
 
  private:
-  void FeedForward();
-
- private:
   IDrivebase& m_drivebase;
   units::degree_t m_targetAngle;
   units::degree_t m_currentAngle = 0_deg;
-  bool m_feedForward = true;
   bool m_activatePID = false;
   units::degrees_per_second_t m_rotationCorrection = 0_deg_per_s;
   units::degrees_per_second_t m_speed = 30_deg_per_s;

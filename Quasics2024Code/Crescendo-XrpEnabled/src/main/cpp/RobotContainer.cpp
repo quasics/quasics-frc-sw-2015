@@ -5,6 +5,7 @@
 #include "RobotContainer.h"
 
 #include <frc/DataLogManager.h>
+#include <frc/DriverStation.h>
 #include <frc/RobotBase.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/ParallelCommandGroup.h>
@@ -295,14 +296,20 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   std::string position = teamAndPosCmd->GetName();
   std::string score2DestName = score2Dest->GetName();
   std::string score3DestName = score3Dest->GetName();
+  const frc::DriverStation::Alliance alliance =
+      frc::DriverStation::GetAlliance().value_or(
+          frc::DriverStation::Alliance::kBlue);
+  const bool isBlue = alliance == frc::DriverStation::Alliance::kBlue;
+  // std::cout << "isBlue: " << isBlue << std::endl;
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
-      operationName, position, score2DestName, score3DestName);
+      operationName, position, score2DestName, score3DestName, isBlue);
 #else
-  return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, operationName, position, score2DestName, score3DestName);
+  return AutonomousCommands::GetAutonomousCommand(*m_drivebase, operationName,
+                                                  position, score2DestName,
+                                                  score3DestName, isBlue);
 #endif
 }
 

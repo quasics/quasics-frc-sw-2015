@@ -220,8 +220,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
-    System.err.println("---- Integrating vision ----");
-
     /**
      * TODO: Update code to make it more robust w.r.t. bad vision data.
      *

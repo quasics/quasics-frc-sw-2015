@@ -66,12 +66,21 @@ public class RobotContainer {
   static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
       MAX_AUTO_ACCELERATION_MPSS);
 
-  // TODO: Update to allow different options in simulator/real modes (for easier
-  // deployment to "big bots").
-  private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
+  /** Options for the behavior when running under the simulator. */
+  private enum SimulationMode {
+    eSimulation, eXrp, eRomi
+  }
+
+  /** Defines options for auto mode. */
+  private enum AutoMode {
+    eDoNothing, eSpin, eFollowTrajectory
+  }
+
+  /** Default configuration when running in "isReal" mode. */
+  private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Margaret;
 
   private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final LightingInterface m_lighting = new Lighting(m_selectedRobot);
+  private final LightingInterface m_lighting = new Lighting(getRobotSettings());
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
@@ -79,18 +88,8 @@ public class RobotContainer {
   Supplier<Double> m_arcadeDriveForwardStick;
   Supplier<Double> m_arcadeDriveRotationStick;
 
-  /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode {
-    eSimulation, eXrp, eRomi
-  }
-
   /** Currently-configured option when running under the simulator. */
-  private final SimulationMode m_simulationMode = SimulationMode.eSimulation;
-
-  /** Defines options for auto mode. */
-  private enum AutoMode {
-    eDoNothing, eSpin, eFollowTrajectory
-  }
+  private static final SimulationMode m_simulationMode = SimulationMode.eSimulation;
 
   /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eDoNothing;
@@ -103,6 +102,127 @@ public class RobotContainer {
   }
 
   private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+
+  public static RobotSettings.Robot getRobotSettings() {
+    if (RobotBase.isReal()) {
+      return SETTINGS_FOR_REAL_MODE;
+    }
+
+    switch (m_simulationMode) {
+      case eRomi:
+        return RobotSettings.Robot.Romi;
+      case eXrp:
+        return RobotSettings.Robot.Xrp;
+
+      case eSimulation:
+      default:
+        return RobotSettings.Robot.Simulator;
+    }
+  }
+
+  /*
+   * Constructor.
+   *
+   * @todo Add sample solution for selecting which (real) drive base we're
+   * actually working on.
+   */
+  public RobotContainer() {
+    m_drivebase = setupDriveBase();
+    m_vision = maybeSetupVisionSubsystem();
+    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
+
+    resetPositionFromAllianceSelection();
+
+    configureBindings();
+
+    // Tags 9&10 are on the Blue Source wall
+    SmartDashboard.putData("Target 10",
+        new DriveToAprilTag(getRobotSettings(), m_vision, m_drivebase, 10,
+            Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
+
+    if (RobotBase.isSimulation()) {
+      System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+    } else {
+      System.err.println("Logs should be written to: ~lvuser/logs directory");
+    }
+  }
+
+  private AbstractDrivebase setupDriveBase() {
+    AbstractDrivebase drivebase = null;
+    if (Robot.isReal()) {
+      drivebase = new RealDrivebase(getRobotSettings());
+
+      // Note that we're inverting the values because Xbox controllers return
+      // negative values when we push forward.
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+    } else {
+      // Note that we're assuming a keyboard-based controller is actually being
+      // used in the simulation environment (for now), and thus we want to use
+      // axis 1&2.
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
+      System.out.println("Simulator configured for " + m_simulationMode + " mode");
+      switch (m_simulationMode) {
+        case eRomi:
+          drivebase = new RomiDrivebase();
+          break;
+        case eXrp:
+          drivebase = new XrpDrivebase();
+          break;
+        case eSimulation:
+          drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
+          break;
+        default:
+          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
+              + "), falling back on pure simulator");
+          drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
+          break;
+      }
+    }
+    return drivebase;
+  }
+
+  private VisionSubsystem maybeSetupVisionSubsystem() {
+    VisionSubsystem vision = null;
+    if (ENABLE_VISION_SUBSYSTEM) {
+      try {
+        vision = new VisionSubsystem(getRobotSettings());
+      } catch (Exception e) {
+        System.err.println("*** Failed to set up vision subsystem!");
+        e.printStackTrace();
+      }
+    } else {
+      System.err.println(">>> Note: Vision subsystem is DISABLED.");
+    }
+
+    return vision;
+  }
+
+  private void configureBindings() {
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
+    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+
+    // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
+    // complete routine should run each of these once.
+    SmartDashboard.putData(
+        "Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    if (ENABLE_VISION_SUBSYSTEM) {
+      SmartDashboard.putData("Reset position",
+          new InstantCommand(() -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
+    }
+
+    SmartDashboard.putData(
+        "Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
+  }
 
   Pose2d computeInitialPoseForDriversStation(Alliance alliance, int driversStation) {
     // Assume we're always facing *out* from the driver's station (for now),
@@ -152,109 +272,6 @@ public class RobotContainer {
       m_vision.updateLastPose(pose);
       m_vision.resetSimPose(pose);
     }
-  }
-
-  /*
-   * Constructor.
-   *
-   * @todo Add sample solution for selecting which (real) drive base we're
-   * actually working on.
-   */
-  public RobotContainer() {
-    m_drivebase = setupDriveBase();
-    m_vision = maybeSetupVisionSubsystem();
-    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
-
-    resetPositionFromAllianceSelection();
-
-    configureBindings();
-
-    // Tags 9&10 are on the Blue Source wall
-    SmartDashboard.putData("Target 10",
-        new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
-            Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
-
-    if (RobotBase.isSimulation()) {
-      System.err.println("Writing logs to: " + DataLogManager.getLogDir());
-    } else {
-      System.err.println("Logs should be written to: ~lvuser/logs directory");
-    }
-  }
-
-  private AbstractDrivebase setupDriveBase() {
-    AbstractDrivebase drivebase = null;
-    if (Robot.isReal()) {
-      drivebase = new RealDrivebase(m_selectedRobot);
-
-      // Note that we're inverting the values because Xbox controllers return
-      // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
-    } else {
-      // Note that we're assuming a keyboard-based controller is actually being
-      // used in the simulation environment (for now), and thus we want to use
-      // axis 1&2.
-      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
-      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
-      switch (m_simulationMode) {
-        case eRomi:
-          drivebase = new RomiDrivebase();
-          break;
-        case eXrp:
-          drivebase = new XrpDrivebase();
-          break;
-        case eSimulation:
-          drivebase = new SimulationDrivebase(m_selectedRobot);
-          break;
-        default:
-          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
-              + "), falling back on pure simulator");
-          drivebase = new SimulationDrivebase(m_selectedRobot);
-          break;
-      }
-    }
-    return drivebase;
-  }
-
-  private VisionSubsystem maybeSetupVisionSubsystem() {
-    VisionSubsystem vision = null;
-    if (ENABLE_VISION_SUBSYSTEM) {
-      try {
-        vision = new VisionSubsystem(m_selectedRobot);
-      } catch (Exception e) {
-        System.err.println("*** Failed to set up vision subsystem!");
-        e.printStackTrace();
-      }
-    } else {
-      System.err.println(">>> Note: Vision subsystem is DISABLED.");
-    }
-
-    return vision;
-  }
-
-  private void configureBindings() {
-    m_drivebase.setDefaultCommand(
-        new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
-
-    // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
-    // complete routine should run each of these once.
-    SmartDashboard.putData(
-        "Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData(
-        "Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    if (ENABLE_VISION_SUBSYSTEM) {
-      SmartDashboard.putData("Reset position",
-          new InstantCommand(() -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
-    }
-
-    SmartDashboard.putData(
-        "Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
   }
 
   public Command getAutonomousCommand() {

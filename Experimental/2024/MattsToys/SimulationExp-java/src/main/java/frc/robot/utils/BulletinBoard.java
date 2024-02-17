@@ -19,7 +19,7 @@ public class BulletinBoard {
     return Optional.of(values.get(key));
   }
 
-  public static synchronized Optional<Object> getValue(String key, Class type) {
+  public static synchronized Optional<Object> getValue(String key, Class<?> type) {
     if (!values.containsKey(key)) {
       return Optional.empty();
     }

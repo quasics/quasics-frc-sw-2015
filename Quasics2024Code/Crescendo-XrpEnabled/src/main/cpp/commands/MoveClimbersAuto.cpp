@@ -12,15 +12,33 @@ MoveClimbersAuto::MoveClimbersAuto(Climber& climber, bool extending)
 
 // Called when the command is initially scheduled.
 void MoveClimbersAuto::Initialize() {
+  double leftRevolutions = m_climber.getLeftRevolutions();
+  double rightRevolutions = m_climber.getRightRevolutions();
+  if (leftRevolutions > -5) {
+    // the bool is asking if its the left climber we want
+    m_climber.ExtendOneClimber(true);
+  }
+  if (rightRevolutions > -5) {
+    m_climber.ExtendOneClimber(false);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void MoveClimbersAuto::Execute() {
   double leftRevolutions = m_climber.getLeftRevolutions();
+  double rightRevolutions = m_climber.getRightRevolutions();
+  if (leftRevolutions > -5) {
+    // the bool is asking if its the left climber we want
+    m_climber.ExtendOneClimber(true);
+  }
+  if (rightRevolutions > -5) {
+    m_climber.ExtendOneClimber(false);
+  }
 }
 
 // Called once the command ends or is interrupted.
 void MoveClimbersAuto::End(bool interrupted) {
+  m_climber.Stop();
 }
 
 // Returns true when the command should end.

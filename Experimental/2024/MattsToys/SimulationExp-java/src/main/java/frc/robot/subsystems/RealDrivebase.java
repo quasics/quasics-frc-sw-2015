@@ -134,6 +134,9 @@ public class RealDrivebase extends AbstractDrivebase {
     // TODO: Add checks for [sticky] faults (referencing CANSparkBase.FaultID).
     // CANSparkBase.FaultID foo;
     // m_leftFront.getStickyFault(CANSparkBase.FaultID.kBrownout)
+    //
+    // See
+    // https://codedocs.revrobotics.com/java/com/revrobotics/cansparkbase.faultid
   }
 
   /**

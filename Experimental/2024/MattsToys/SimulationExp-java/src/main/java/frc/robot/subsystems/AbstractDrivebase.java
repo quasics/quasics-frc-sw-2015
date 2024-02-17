@@ -58,7 +58,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * to the BulletinBoard.
    */
   public static final String BULLETIN_BOARD_POSE_KEY = "Drivebase.Pose";
-  public static final String BULLETIN_BOARD_INTEGRATED_POSE_KEY = "Drivebase.IntegratedPose";
 
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
@@ -84,7 +83,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final SimpleMotorFeedforward m_feedforward;
   private final DifferentialDriveKinematics m_kinematics;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
-  private final DifferentialDrivePoseEstimator m_integratedPoseEstimator;
 
   private final Measure<Distance> m_driveBaseLengthWithBumpers;
   private final Measure<Distance> m_driveBaseWidthWithBumpers;
@@ -129,9 +127,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         kA.in(VoltsPerMeterPerSecondSquared));
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
     m_poseEstimator = new DifferentialDrivePoseEstimator(
-        m_kinematics, new Rotation2d(), /* leftDistanceMeters */ 0,
-        /* rightDistanceMeters */ 0, /* initialPostMeters */ new Pose2d());
-    m_integratedPoseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics, new Rotation2d(), /* leftDistanceMeters */ 0,
         /* rightDistanceMeters */ 0, /* initialPostMeters */ new Pose2d());
 
@@ -198,8 +193,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         rightDistanceMeters.in(Meters));
     m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
-    m_integratedPoseEstimator.update(rotation, leftDistanceMeters.in(Meters),
-        rightDistanceMeters.in(Meters));
   }
 
   /** Get the current robot pose, based on odometery. */
@@ -208,32 +201,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   /**
-   * Get the current estimated robot pose, based solely on odometery.
-   */
-  public Pose2d getEstimatedPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
-
-  /**
    * Get the current estimated robot pose, based on odometery, plus any vision
    * updates.
    */
-  public Pose2d getEstimatedPoseIntegrated() {
-    return m_integratedPoseEstimator.getEstimatedPosition();
-  }
-
-  /**
-   * Resets the integrated position estimate to match the data solely from the
-   * odometry.
-   * 
-   * Note that this is provided merely for testing purposes (at present), since
-   * the estimated position can drift *widely* from the actual position (if the
-   * vision tracking is off), and this gives me a chance to "reset to baseline".
-   */
-  public void resetIntegratedPoseEstimator() {
-    m_integratedPoseEstimator.resetPosition(getGyro_HAL().getRotation2d(), getLeftDistance().in(Meters),
-        getRightDistance().in(Meters),
-        m_poseEstimator.getEstimatedPosition());
+  public Pose2d getEstimatedPose() {
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -245,7 +217,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     getRightEncoder_HAL().reset();
     getOdometry().resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
-    m_integratedPoseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
@@ -279,7 +250,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
     // Add in the vision-based estimate, using the distance as a "trust-scaling"
     // factor.
-    m_integratedPoseEstimator.addVisionMeasurement(
+    m_poseEstimator.addVisionMeasurement(
         pose, timestampSeconds,
         VecBuilder.fill(distance / 2, distance / 2, 100));
   }
@@ -390,9 +361,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           .ifPresent(timestampObject -> integrateVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
     });
 
-    // Publish our estimates of position
-    BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, m_poseEstimator.getEstimatedPosition());
-    BulletinBoard.updateValue(BULLETIN_BOARD_INTEGRATED_POSE_KEY, m_integratedPoseEstimator.getEstimatedPosition());
+    // Publish our estimated position
+    BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, getEstimatedPose());
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */

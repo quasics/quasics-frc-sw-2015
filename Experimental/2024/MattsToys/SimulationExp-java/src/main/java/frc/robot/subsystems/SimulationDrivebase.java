@@ -191,10 +191,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
     m_leftEncoderSim.setRate(
         m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+
     m_rightEncoderSim.setDistance(
         m_drivetrainSimulator.getRightPositionMeters());
     m_rightEncoderSim.setRate(
         m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Publish the data for any that need it.

@@ -15,9 +15,20 @@ public class BulletinBoard {
   public static synchronized Optional<Object> getValue(String key) {
     if (!values.containsKey(key)) {
       return Optional.empty();
-    } else {
-      return Optional.of(values.get(key));
     }
+    return Optional.of(values.get(key));
+  }
+
+  public static synchronized Optional<Object> getValue(String key, Class type) {
+    if (!values.containsKey(key)) {
+      return Optional.empty();
+    }
+
+    Object o = values.get(key);
+    if (type != null && !type.isInstance(o)) {
+      return Optional.empty();
+    }
+    return Optional.of(values.get(key));
   }
 
   public static synchronized void clearValue(String key) {

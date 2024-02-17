@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
-import frc.robot.utils.SimulationSupport;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -285,9 +284,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Update the simulator data to reflect where the robot thinks it's located.
-    // (Note that this will reflect data from the drive base's direct estimation
-    // *and* integrated data from this subsystem.)
+    // Update the simulator data to reflect where the robot thinks it's located,
+    // *without* factoring in vision data.
     Optional<Object> possiblePose = BulletinBoard.getValue(AbstractDrivebase.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
     possiblePose.ifPresent(poseObject -> {
       visionSim.update((Pose2d) poseObject);
@@ -295,18 +293,30 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.
+    var field = getSimDebugField();
     if (Robot.isSimulation()) {
       m_lastEstimatedPose.ifPresentOrElse(
           // Do this with the data in m_lastEstimatedPose (if it has some)
-          est -> getSimDebugField()
-              .getObject("VisionEstimation")
-              .setPose(est.estimatedPose.toPose2d()),
+          est -> {
+            field.getObject("VisionEstimation")
+                .setPose(est.estimatedPose.toPose2d());
+          },
           // If we have nothing in m_lastEstimatedPose, do this
           () -> {
             if (m_estimateRecentlyUpdated)
-              getSimDebugField().getObject("VisionEstimation").setPoses();
+              field.getObject("VisionEstimation").setPoses();
           });
     }
+
+    // Update the simulator to reflect the integrated position estimate, based on
+    // both odometry and vision data.
+    BulletinBoard.getValue(AbstractDrivebase.BULLETIN_BOARD_INTEGRATED_POSE_KEY, Pose2d.class).ifPresentOrElse(
+        poseObject -> {
+          field.getObject("IntegratedPosition")
+              .setPose((Pose2d) poseObject);
+        }, () -> {
+          field.getObject("IntegratedPosition").setPoses();
+        });
   }
 
   /////////////////////////////////////////////////////////////////////////////////

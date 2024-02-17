@@ -282,8 +282,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  boolean USE_BULLETIN_BOARD = true;
-
   @Override
   public void simulationPeriodic() {
     var field = getSimDebugField();
@@ -291,10 +289,12 @@ public class VisionSubsystem extends SubsystemBase {
       return;
     }
 
-    // Update the vision simulator data to reflect where the simulation of the robot
-    // thinks it's located.
-    var optionalPoseObject = BulletinBoard.getValue(SimulationDrivebase.SIMULATED_POSITION_KEY_ID, Pose2d.class);
-    optionalPoseObject.ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
+    // Update the simulator data to reflect where the robot thinks it's located,
+    // *without* factoring in vision data.
+    Optional<Object> possiblePose = BulletinBoard.getValue(AbstractDrivebase.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
+    possiblePose.ifPresent(poseObject -> {
+      visionSim.update((Pose2d) poseObject);
+    });
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.

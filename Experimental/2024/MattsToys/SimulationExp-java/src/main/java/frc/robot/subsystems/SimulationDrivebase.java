@@ -24,12 +24,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  public static final String SIMULATED_POSITION_KEY_ID = "SimDriveBase.SimPos";
-
   private static final Measure<Distance> kWheelRadius = Meters.of(0.0508);
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
@@ -51,7 +48,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   // Hardware allocation
   final PWMSparkMax m_leftLeader = new PWMSparkMax(1);
+  final PWMSparkMax m_leftFollower = new PWMSparkMax(2);
   final PWMSparkMax m_rightLeader = new PWMSparkMax(3);
+  final PWMSparkMax m_rightFollower = new PWMSparkMax(4);
 
   /** Subsystem constructor. */
   public SimulationDrivebase(RobotSettings.Robot robot) {
@@ -82,6 +81,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   private void configureDriveMotorsAndSensors() {
+    // Set up leader/follower relationships.
+    m_leftLeader.addFollower(m_leftFollower);
+    m_rightLeader.addFollower(m_rightFollower);
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
@@ -194,9 +197,5 @@ public class SimulationDrivebase extends AbstractDrivebase {
         m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
-
-    // Publish the data for any that need it.
-    var pose = m_drivetrainSimulator.getPose();
-    BulletinBoard.updateValue(SIMULATED_POSITION_KEY_ID, pose);
   }
 }

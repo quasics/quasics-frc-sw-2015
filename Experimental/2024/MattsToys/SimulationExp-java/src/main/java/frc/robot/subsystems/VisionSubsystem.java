@@ -285,13 +285,12 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Update the simulator data to reflect where the robot thinks it's located.
-    // (Note that this will reflect data from the drive base's direct estimation
-    // *and* integrated data from this subsystem.)
-    Optional<Object> possiblePose = BulletinBoard.getValue(AbstractDrivebase.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
-    possiblePose.ifPresent(poseObject -> {
-      visionSim.update((Pose2d) poseObject);
-    });
+    var possiblePose = SimulationSupport.getSimulatedPose();
+    if (possiblePose.isPresent()) {
+      // Update the simulator data to reflect where the robot thinks it's
+      // located.
+      visionSim.update(possiblePose.get());
+    }
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.

@@ -313,54 +313,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 #endif
 }
 
-namespace {
-  frc2::SequentialCommandGroup *BuildSequenceToHandNoteToShooterAfterDelay(
-      IntakeRoller &intakeRoller, units::second_t delay = 0.75_s,
-      double intakeSpeed = .5, units::second_t timeToRunIntake = 1.25_s) {
-    std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
-    intakeCommands.push_back(std::make_unique<Wait>(delay));
-    intakeCommands.push_back(std::make_unique<RunIntakeTimed>(
-        intakeRoller, intakeSpeed, timeToRunIntake,
-        /*takingIn*/ false));
-    return new frc2::SequentialCommandGroup(std::move(intakeCommands));
-  }
-
-  /**
-   * Builds a simple command group to run shooter at a given speed (and pushing
-   * a note out of the intake into the shooter after a short delay for it to
-   * come up to speed).  This is intended to help "dial in" the approximate
-   * speed at which we want the shooter to be running for a given target point.
-   *
-   * @param shooter  the shooter
-   * @param intakeRoller the intake
-   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
-   */
-  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
-      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-
-    // Run the shooter for 2sec @ the target speed...
-    commands.push_back(
-        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
-
-    // ...and hand off the note to it after a short delay (to come up to speed).
-    commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-        BuildSequenceToHandNoteToShooterAfterDelay(intakeRoller))));
-
-    return new frc2::ParallelRaceGroup(std::move(commands));
-  }
-}  // namespace
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
-  for (double d = 5.5; d <= 10; d += 0.5) {
-    std::ostringstream sout;
-    sout << "Shoot @ " << d << "%";
-    auto *cmd = BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller,
-                                                   d / 100.0);
-
-    frc::SmartDashboard::PutData(sout.str(), cmd);
-  }
-}
 
 void RobotContainer::AddShooterTestButtonsToDashboard() {
   frc::SmartDashboard::PutData("Shoot Note",
@@ -401,16 +354,65 @@ void RobotContainer::AddIntakeTestButtonsToDashboard() {
 }
 
 void RobotContainer::AddActuatorTestButtonsToDashboard() {
-  frc::SmartDashboard::PutData("Extend Actuator",
-                               new MoveLinearActuators(m_shooter, true));
+  frc::SmartDashboard::PutData(
+      "Extend Actuator", new MoveLinearActuators(m_linearActuators, true));
 
-  frc::SmartDashboard::PutData("Retract Actuator",
-                               new MoveLinearActuators(m_shooter, false));
+  frc::SmartDashboard::PutData(
+      "Retract Actuator", new MoveLinearActuators(m_linearActuators, false));
 
   frc::SmartDashboard::PutData("Shoot in amp then run actuator after time",
                                new frc2::InstantCommand([this]() {
                                  ShootInAmpThenRunActuatorAfterTime(1_s);
                                }));
+}
+
+namespace {
+  frc2::SequentialCommandGroup *BuildSequenceToHandNoteToShooterAfterDelay(
+      IntakeRoller &intakeRoller, units::second_t delay = 0.75_s,
+      double intakeSpeed = .5, units::second_t timeToRunIntake = 1.25_s) {
+    std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
+    intakeCommands.push_back(std::make_unique<Wait>(delay));
+    intakeCommands.push_back(std::make_unique<RunIntakeTimed>(
+        intakeRoller, intakeSpeed, timeToRunIntake,
+        /*takingIn*/ false));
+    return new frc2::SequentialCommandGroup(std::move(intakeCommands));
+  }
+
+  /**
+   * Builds a simple command group to run shooter at a given speed (and pushing
+   * a note out of the intake into the shooter after a short delay for it to
+   * come up to speed).  This is intended to help "dial in" the approximate
+   * speed at which we want the shooter to be running for a given target point.
+   *
+   * @param shooter  the shooter
+   * @param intakeRoller the intake
+   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
+   */
+  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
+      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    // Run the shooter for 2sec @ the target speed...
+    commands.push_back(
+        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
+
+    // ...and hand off the note to it after a short delay (to come up to speed).
+    commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+        BuildSequenceToHandNoteToShooterAfterDelay(intakeRoller))));
+
+    return new frc2::ParallelRaceGroup(std::move(commands));
+  }
+}  // namespace
+
+void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
+  for (double d = 5.5; d <= 10; d += 0.5) {
+    std::ostringstream sout;
+    sout << "Shoot @ " << d << "%";
+    auto *cmd = BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller,
+                                                   d / 100.0);
+
+    frc::SmartDashboard::PutData(sout.str(), cmd);
+  }
 }
 
 frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
@@ -431,8 +433,10 @@ frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
     units::second_t time) {
   std::vector<frc2::CommandPtr> commands;
   commands.push_back(frc2::CommandPtr(Wait(time)));
-  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, true)));
-  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, false)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
 
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -641,9 +645,7 @@ frc2::ParallelRaceGroup *RobotContainer::ShootingSequence(bool amp) {
 
 frc2::SequentialCommandGroup *RobotContainer::IntakeDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<TimedMovementTest>(*m_drivebase, .25, .1_s, true));
-  commands.push_back(std::make_unique<Wait>(0.65_s));
+  commands.push_back(std::make_unique<Wait>(0.75_s));
   commands.push_back(
       std::make_unique<RunIntakeTimed>(m_intakeRoller, .5, 1.25_s, false));
 

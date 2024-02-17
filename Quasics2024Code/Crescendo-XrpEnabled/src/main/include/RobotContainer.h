@@ -22,6 +22,7 @@
 #include "subsystems/IDrivebase.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
+#include "subsystems/LinearActuators.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
 #include "utils/DeadBandEnforcer.h"
@@ -115,6 +116,7 @@ class RobotContainer {
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
+  LinearActuators m_linearActuators;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_VISION_TESTING

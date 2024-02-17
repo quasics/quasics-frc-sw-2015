@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -29,6 +30,7 @@ class PivotIntake : public frc2::CommandHelper<frc2::Command, PivotIntake> {
   bool IsFinished() override;
 
  private:
+  frc::SlewRateLimiter<units::scalar> m_intakeSlewRateLimiter{1 / 1_s};
   IntakeDeployment &m_intakeDeployment;
   const double m_intakeDeploymentSpeed;
   const bool m_extending;

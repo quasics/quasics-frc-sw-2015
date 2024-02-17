@@ -55,9 +55,16 @@ import frc.robot.utils.RobotSettings;
 public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * The key that will be used in posting the estimated pose (as a Pose2d object)
-   * to the BulletinBoard.
+   * to the BulletinBoard. This is based solely on the encoders and gryo.
    */
-  public static final String BULLETIN_BOARD_POSE_KEY = "Drivebase.Pose";
+  public static final String BULLETIN_BOARD_ODOMETRY_POSE_KEY = "Drivebase.OdomPose";
+
+  /**
+   * The key that will be used in posting the estimated pose (as a Pose2d object)
+   * to the BulletinBoard. This represents integrated odometry and (if available)
+   * vision estimates.
+   */
+  public static final String BULLETIN_BOARD_ESTIMATED_POSE_KEY = "Drivebase.EstPose";
 
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
@@ -152,7 +159,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -189,7 +197,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     final Rotation2d rotation = getGyro_HAL().getRotation2d();
     final Measure<Distance> leftDistanceMeters = getLeftEncoder_HAL().getPosition();
     final Measure<Distance> rightDistanceMeters = getRightEncoder_HAL().getPosition();
-    getOdometry().update(rotation, leftDistanceMeters.in(Meters),
+    m_odometry.update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
     m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
@@ -197,7 +205,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Get the current robot pose, based on odometery. */
   public Pose2d getPose() {
-    return getOdometry().getPoseMeters();
+    return m_odometry.getPoseMeters();
   }
 
   /**
@@ -215,13 +223,21 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder_HAL().reset();
     getRightEncoder_HAL().reset();
-    getOdometry().resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
+    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
-  public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
-    System.err.println("---- Integrating vision ----");
+  private enum IntegrationModel {
+    eDistanceScaling,
+    eDistanceSquaredScaling,
+    eMinimumDistance,
+    eMinimumDistanceAndScaling,
+    eMinimumDistanceAndSquaredScaling
+  }
 
+  IntegrationModel INTEGRATION_MODEL = IntegrationModel.eMinimumDistanceAndSquaredScaling;
+
+  public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
     /**
      * TODO: Update code to make it more robust w.r.t. bad vision data.
      *
@@ -245,14 +261,50 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     // Figure out how far we *think* we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
     var transform = currentEstimate.minus(pose);
-    final double distance = Math.sqrt(transform.getX() * transform.getX() +
-        transform.getY() * transform.getY());
+    final double distanceFromCurrentPosition = Math
+        .sqrt(transform.getX() * transform.getX() + transform.getY() * transform.getY());
 
-    // Add in the vision-based estimate, using the distance as a "trust-scaling"
-    // factor.
-    m_poseEstimator.addVisionMeasurement(
-        pose, timestampSeconds,
-        VecBuilder.fill(distance / 2, distance / 2, 100));
+    switch (INTEGRATION_MODEL) {
+      case eDistanceScaling:
+        // Add in the vision-based estimate, using the distance as a "trust-scaling"
+        // factor.
+        m_poseEstimator.addVisionMeasurement(
+            pose, timestampSeconds,
+            VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
+        break;
+
+      case eDistanceSquaredScaling:
+        m_poseEstimator.addVisionMeasurement(
+            pose, timestampSeconds,
+            VecBuilder.fill(distanceFromCurrentPosition * distanceFromCurrentPosition,
+                distanceFromCurrentPosition * distanceFromCurrentPosition, 100));
+        break;
+
+      case eMinimumDistanceAndSquaredScaling:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
+              VecBuilder.fill(distanceFromCurrentPosition * distanceFromCurrentPosition,
+                  distanceFromCurrentPosition * distanceFromCurrentPosition, 100));
+        }
+        break;
+
+      case eMinimumDistanceAndScaling:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
+              VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
+        }
+        break;
+
+      case eMinimumDistance:
+      default:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds);
+        }
+        break;
+    }
   }
 
   public final void stop() {
@@ -362,7 +414,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     });
 
     // Publish our estimated position
-    BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, getEstimatedPose());
+    BulletinBoard.updateValue(BULLETIN_BOARD_ODOMETRY_POSE_KEY, m_odometry.getPoseMeters());
+    BulletinBoard.updateValue(BULLETIN_BOARD_ESTIMATED_POSE_KEY, getEstimatedPose());
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */

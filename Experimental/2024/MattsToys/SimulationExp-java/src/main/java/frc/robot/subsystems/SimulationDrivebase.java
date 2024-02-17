@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
-import frc.robot.utils.SimulationSupport;
 
 public class SimulationDrivebase extends AbstractDrivebase {
+  public static final String SIMULATOR_POSE_KEY = "SimDrive.SimPose";
+
   private static final Measure<Distance> kWheelRadius = Meters.of(0.0508);
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
@@ -191,13 +193,15 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
     m_leftEncoderSim.setRate(
         m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+
     m_rightEncoderSim.setDistance(
         m_drivetrainSimulator.getRightPositionMeters());
     m_rightEncoderSim.setRate(
         m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Publish the data for any that need it.
-    SimulationSupport.setSimulatedPose(m_drivetrainSimulator.getPose());
+    BulletinBoard.updateValue(SIMULATOR_POSE_KEY, m_drivetrainSimulator.getPose());
   }
 }

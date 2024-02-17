@@ -112,7 +112,7 @@ public interface TrivialEncoder {
       @Override
       public void reset() {
         encoder.reset();
-        encoderSim.resetData();
+        encoderSim.setCount(0);
       }
     };
   }

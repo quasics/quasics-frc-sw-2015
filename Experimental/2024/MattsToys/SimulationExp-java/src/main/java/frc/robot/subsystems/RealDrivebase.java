@@ -48,7 +48,8 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
-  // Leaders (only valid if kMotorConfigModel is not NoLeader)
+  // Leaders (only valid if motorConfigModel in RobotSettings passed to ctor is
+  // not NoLeader)
   final CANSparkMax m_leftLeader;
   final CANSparkMax m_rightLeader;
 

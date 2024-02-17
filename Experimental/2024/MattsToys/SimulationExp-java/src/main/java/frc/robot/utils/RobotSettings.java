@@ -92,7 +92,8 @@ public interface RobotSettings {
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
         /* Track Width (m) */
-        Meters.of(0.381 * 2), // TODO: Confirm track width for Sally
+        Meters.of(
+            0.5588), // TODO: Confirm track width for Sally
         /* Gear ratio */
         8.45,
         /* PID */
@@ -102,6 +103,23 @@ public interface RobotSettings {
         // Vision data
         "",
         new Transform3d(), // TODO: Add robot-to-camera transform for Sally
+        // Lighting data
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+    Margaret(
+        // Motor config model
+        MotorConfigModel.RearMotorsLeading,
+        /* Track Width (m) */
+        Meters.of(
+            0.5588), // TODO: Confirm track width for Margaret
+        /* Gear ratio */
+        8.45,
+        /* PID */
+        0.29613, 0.0, 0.0,
+        /* Gains */
+        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0),
+        // Vision data
+        "",
+        new Transform3d(), // TODO: Add robot-to-camera transform for Margaret
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
     Mae(

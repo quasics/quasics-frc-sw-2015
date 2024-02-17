@@ -38,9 +38,9 @@ public class RealDrivebase extends AbstractDrivebase {
 
   // Hardware control/sensing.
   //
-  private final Pigeon2 m_gyro = new Pigeon2(PIGEON2_CAN_ID);
-  private final IGyro m_iGyro = IGyro.wrapGyro(m_gyro);
-  private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
+
+  // Gyro
+  private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
   // Motors
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
@@ -52,9 +52,13 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_leftLeader;
   final CANSparkMax m_rightLeader;
 
+  // Encoders
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
 
+  // "Genericized" wrappers for base class
+  private final IGyro m_iGyro = IGyro.wrapGyro(m_rawGyro);
+  private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 

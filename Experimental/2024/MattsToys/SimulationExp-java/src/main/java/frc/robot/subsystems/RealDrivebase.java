@@ -120,15 +120,19 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightEncoder.setPosition(0);
   }
 
+  protected boolean configuredWithLeaders() {
+    return (m_leftLeader != null) && (m_rightLeader != null);
+  }
+
   /**
    * Tell the motors to coast (or brake) if they're not being told how fast to
    * go (e.g., when the robot is disabled, or not being driven in auto mode).
    *
    * @param tf iff true, configure for coast mode; otherwise, for braking
    */
-  void enableCoastingMode(boolean tf) {
+  public void enableCoastingMode(boolean tf) {
     final var mode = (tf ? IdleMode.kCoast : IdleMode.kBrake);
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.setIdleMode(mode);
       m_rightLeader.setIdleMode(mode);
     } else {
@@ -160,7 +164,7 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.set(leftPercent);
       m_rightLeader.set(rightPercent);
     } else {
@@ -176,7 +180,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.setVoltage(leftVoltage);
       m_rightLeader.setVoltage(rightVoltage);
     } else {

@@ -218,7 +218,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * Get the current estimated robot pose, based on odometery, plus any vision
    * updates.
    */
-  public Pose2d getIntegratedEstimatedPose() {
+  public Pose2d getEstimatedPoseIntegrated() {
     return m_integratedPoseEstimator.getEstimatedPosition();
   }
 
@@ -249,6 +249,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
+    System.err.println("---- Integrating vision ----");
+
     /**
      * TODO: Update code to make it more robust w.r.t. bad vision data.
      *

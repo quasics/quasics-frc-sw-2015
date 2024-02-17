@@ -227,13 +227,6 @@ public class RobotContainer {
       System.err.println(">>> Note: Vision subsystem is DISABLED.");
     }
 
-    if (vision != null) {
-      vision.setPoseEstimatorConsumer((Pose2d pose, Double timestampSeconds) -> {
-        m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
-        return null;
-      });
-    }
-
     return vision;
   }
 

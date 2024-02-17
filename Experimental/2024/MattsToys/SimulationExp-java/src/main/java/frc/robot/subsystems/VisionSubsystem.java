@@ -12,10 +12,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SimulationSupport;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -39,6 +39,17 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * CameraServer tab of Shuffleboard, like a normal camera stream.
  */
 public class VisionSubsystem extends SubsystemBase {
+  /**
+   * The key that will be used in posting the estimated pose (as a Pose2d object)
+   * to the BulletinBoard.
+   */
+  public static final String BULLETIN_BOARD_POSE_KEY = "Vision.Pose";
+  /**
+   * The key that will be used in posting the timestamp (as a Double) for the
+   * estimated pose to the BulletinBoard.
+   */
+  public static final String BULLETIN_BOARD_TIMESTAMP_KEY = "Vision.Timestamp";
+
   /**
    * A private enum (for local naming/documentation in this example), to use in
    * controlling how pose estimation should be handled when only one target can be
@@ -191,26 +202,6 @@ public class VisionSubsystem extends SubsystemBase {
   //
   /////////////////////////////////////////////////////////////////////////////////
 
-  /** A trivial (null-op) consumer of the pose data. */
-  final public BiFunction<Pose2d, Double, Void> NULL_ESTIMATOR_FUNCTION = (P, D) -> {
-    // poseEstimator.addVisionMeasurement(P, D);
-    return null;
-  };
-
-  /**
-   * The function to be invoked whenever we have new pose data from the
-   * estimator.
-   */
-  BiFunction<Pose2d, Double, Void> m_poseEstimatorFunction = NULL_ESTIMATOR_FUNCTION;
-
-  /**
-   * Sets a function that we should invoke whenever we have new pose data from
-   * our estimator.
-   */
-  public void setPoseEstimatorConsumer(BiFunction<Pose2d, Double, Void> consumer) {
-    m_poseEstimatorFunction = consumer != null ? consumer : NULL_ESTIMATOR_FUNCTION;
-  }
-
   private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
   private double m_lastEstTimestamp = 0;
   private boolean m_estimateRecentlyUpdated = false;
@@ -284,8 +275,11 @@ public class VisionSubsystem extends SubsystemBase {
     // the vision data suggests that the robot might be located.
     if (m_lastEstimatedPose.isPresent()) {
       var estimate = m_lastEstimatedPose.get();
-      m_poseEstimatorFunction.apply(estimate.estimatedPose.toPose2d(),
-          estimate.timestampSeconds);
+      BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, estimate.estimatedPose.toPose2d());
+      BulletinBoard.updateValue(BULLETIN_BOARD_TIMESTAMP_KEY, estimate.timestampSeconds);
+    } else {
+      BulletinBoard.clearValue(BULLETIN_BOARD_POSE_KEY);
+      BulletinBoard.clearValue(BULLETIN_BOARD_TIMESTAMP_KEY);
     }
   }
 

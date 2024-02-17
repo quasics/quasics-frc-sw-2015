@@ -13,6 +13,8 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -39,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotSettings;
 
@@ -340,6 +343,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
+
+    // If an estimated position has been posted by the vision subsystem, integrate
+    // it into our estimate.
+    Optional<Object> optionalPose = BulletinBoard.getValue(VisionSubsystem.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
+    Optional<Object> optionalTimestamp = BulletinBoard.getValue(VisionSubsystem.BULLETIN_BOARD_TIMESTAMP_KEY,
+        Double.class);
+    if (optionalPose.isPresent() && optionalTimestamp.isPresent()) {
+      integrateVisionMeasurement((Pose2d) optionalPose.get(), (Double) optionalTimestamp.get());
+    }
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */

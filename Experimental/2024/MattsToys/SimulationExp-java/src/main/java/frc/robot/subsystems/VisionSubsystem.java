@@ -376,14 +376,14 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** Reset pose history of the robot in the vision system simulation. */
   public void resetSimPose(Pose2d pose) {
-    if (Robot.isSimulation()) {
+    if (visionSim != null) {
       visionSim.resetRobotPose(pose);
     }
   }
 
   /** A Field2d for visualizing our robot and objects on the field. */
   public Field2d getSimDebugField() {
-    if (!Robot.isSimulation())
+    if (visionSim == null)
       return null;
     return visionSim.getDebugField();
   }

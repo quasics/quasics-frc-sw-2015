@@ -219,6 +219,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
+  private enum IntegrationModel {
+    eDistanceScaling,
+    eDistanceSquaredScaling,
+    eMinimumDistance,
+    eMinimumDistanceAndScaling,
+    eMinimumDistanceAndSquaredScaling
+  }
+
+  IntegrationModel INTEGRATION_MODEL = IntegrationModel.eMinimumDistanceAndSquaredScaling;
+
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
     /**
      * TODO: Update code to make it more robust w.r.t. bad vision data.
@@ -243,14 +253,50 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     // Figure out how far we *think* we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
     var transform = currentEstimate.minus(pose);
-    final double distance = Math.sqrt(transform.getX() * transform.getX() +
-        transform.getY() * transform.getY());
+    final double distanceFromCurrentPosition = Math
+        .sqrt(transform.getX() * transform.getX() + transform.getY() * transform.getY());
 
-    // Add in the vision-based estimate, using the distance as a "trust-scaling"
-    // factor.
-    m_poseEstimator.addVisionMeasurement(
-        pose, timestampSeconds,
-        VecBuilder.fill(distance / 2, distance / 2, 100));
+    switch (INTEGRATION_MODEL) {
+      case eDistanceScaling:
+        // Add in the vision-based estimate, using the distance as a "trust-scaling"
+        // factor.
+        m_poseEstimator.addVisionMeasurement(
+            pose, timestampSeconds,
+            VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
+        break;
+
+      case eDistanceSquaredScaling:
+        m_poseEstimator.addVisionMeasurement(
+            pose, timestampSeconds,
+            VecBuilder.fill(distanceFromCurrentPosition * distanceFromCurrentPosition,
+                distanceFromCurrentPosition * distanceFromCurrentPosition, 100));
+        break;
+
+      case eMinimumDistanceAndSquaredScaling:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
+              VecBuilder.fill(distanceFromCurrentPosition * distanceFromCurrentPosition,
+                  distanceFromCurrentPosition * distanceFromCurrentPosition, 100));
+        }
+        break;
+
+      case eMinimumDistanceAndScaling:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
+              VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
+        }
+        break;
+
+      case eMinimumDistance:
+      default:
+        // Only integrate the distance if it's within a meter of our current estimate.
+        if (distanceFromCurrentPosition <= 1.0) {
+          m_poseEstimator.addVisionMeasurement(pose, timestampSeconds);
+        }
+        break;
+    }
   }
 
   public final void stop() {

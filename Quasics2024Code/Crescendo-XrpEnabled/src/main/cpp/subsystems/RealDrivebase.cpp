@@ -4,6 +4,8 @@
 
 #include "subsystems/RealDrivebase.h"
 
+#include <numbers>
+
 RealDrivebase::RealDrivebase() {
   SetName("RealDrivebase");
   // This is where we'd do any necessary motor configuration (e.g., setting some
@@ -19,9 +21,9 @@ void RealDrivebase::setMotorSpeeds_HAL(double leftPercent,
 }
 
 void RealDrivebase::configureEncoders() {
-  double pi = 3.141592;
   // Calculate wheel circumference (distance travelled per wheel revolution).
-  const units::meter_t wheelCircumference = RobotPhysics::WHEEL_DIAMETER * pi;
+  const units::meter_t wheelCircumference =
+      RobotPhysics::WHEEL_DIAMETER * std::numbers::pi;
 
   // Compute distance traveled per rotation of the motor.
   const units::meter_t gearingConversion =

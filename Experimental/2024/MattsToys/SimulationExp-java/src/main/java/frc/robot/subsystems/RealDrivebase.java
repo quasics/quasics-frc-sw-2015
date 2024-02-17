@@ -38,9 +38,9 @@ public class RealDrivebase extends AbstractDrivebase {
 
   // Hardware control/sensing.
   //
-  private final Pigeon2 m_gyro = new Pigeon2(PIGEON2_CAN_ID);
-  private final IGyro m_iGyro = IGyro.wrapGyro(m_gyro);
-  private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
+
+  // Gyro
+  private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
   // Motors
   final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
@@ -48,13 +48,18 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
-  // Leaders (only valid if kMotorConfigModel is not NoLeader)
+  // Leaders (only valid if motorConfigModel in RobotSettings passed to ctor is
+  // not NoLeader)
   final CANSparkMax m_leftLeader;
   final CANSparkMax m_rightLeader;
 
+  // Encoders
   private final RelativeEncoder m_leftEncoder = m_leftRear.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightRear.getEncoder();
 
+  // "Genericized" wrappers for base class
+  private final IGyro m_iGyro = IGyro.wrapGyro(m_rawGyro);
+  private final IGyro m_offsetGyro = new OffsetGyro(m_iGyro);
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
@@ -120,15 +125,19 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightEncoder.setPosition(0);
   }
 
+  protected boolean configuredWithLeaders() {
+    return (m_leftLeader != null) && (m_rightLeader != null);
+  }
+
   /**
    * Tell the motors to coast (or brake) if they're not being told how fast to
    * go (e.g., when the robot is disabled, or not being driven in auto mode).
    *
    * @param tf iff true, configure for coast mode; otherwise, for braking
    */
-  void enableCoastingMode(boolean tf) {
+  public void enableCoastingMode(boolean tf) {
     final var mode = (tf ? IdleMode.kCoast : IdleMode.kBrake);
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.setIdleMode(mode);
       m_rightLeader.setIdleMode(mode);
     } else {
@@ -160,7 +169,7 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.set(leftPercent);
       m_rightLeader.set(rightPercent);
     } else {
@@ -176,7 +185,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
-    if (m_leftLeader != null && m_rightLeader != null) {
+    if (configuredWithLeaders()) {
       m_leftLeader.setVoltage(leftVoltage);
       m_rightLeader.setVoltage(rightVoltage);
     } else {

@@ -13,6 +13,8 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -39,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotSettings;
 
@@ -50,6 +53,12 @@ import frc.robot.utils.RobotSettings;
  * simulator.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
+  /**
+   * The key that will be used in posting the estimated pose (as a Pose2d object)
+   * to the BulletinBoard.
+   */
+  public static final String BULLETIN_BOARD_POSE_KEY = "Drivebase.Pose";
+
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
 
@@ -211,6 +220,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
+    System.err.println("---- Integrating vision ----");
+
     /**
      * TODO: Update code to make it more robust w.r.t. bad vision data.
      *
@@ -231,12 +242,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
      * closer to the tag - we use poseEstimator.addVisionMeasurement(pose,
      * timestamp, VecBuilder.fill(distance / 2, distance / 2, 100));
      */
-    // Figure out how far we think we are
+    // Figure out how far we *think* we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
     var transform = currentEstimate.minus(pose);
     final double distance = Math.sqrt(transform.getX() * transform.getX() +
         transform.getY() * transform.getY());
 
+    // Add in the vision-based estimate, using the distance as a "trust-scaling"
+    // factor.
     m_poseEstimator.addVisionMeasurement(
         pose, timestampSeconds,
         VecBuilder.fill(distance / 2, distance / 2, 100));
@@ -338,6 +351,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
+
+    // If an estimated position has been posted by the vision subsystem, integrate
+    // it into our estimate.
+    Optional<Object> optionalPose = BulletinBoard.getValue(VisionSubsystem.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
+    optionalPose.ifPresent(poseObject -> {
+      BulletinBoard.getValue(VisionSubsystem.BULLETIN_BOARD_TIMESTAMP_KEY,
+          Double.class)
+          .ifPresent(timestampObject -> integrateVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+    });
+
+    // Publish our estimated position
+    BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, getEstimatedPose());
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */

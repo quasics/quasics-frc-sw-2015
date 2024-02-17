@@ -357,11 +357,11 @@ void RobotContainer::AddIntakeTestButtonsToDashboard() {
 }
 
 void RobotContainer::AddActuatorTestButtonsToDashboard() {
-  frc::SmartDashboard::PutData("Extend Actuator",
-                               new MoveLinearActuators(m_shooter, true));
+  frc::SmartDashboard::PutData(
+      "Extend Actuator", new MoveLinearActuators(m_linearActuators, true));
 
-  frc::SmartDashboard::PutData("Retract Actuator",
-                               new MoveLinearActuators(m_shooter, false));
+  frc::SmartDashboard::PutData(
+      "Retract Actuator", new MoveLinearActuators(m_linearActuators, false));
 
   frc::SmartDashboard::PutData("Shoot in amp then run actuator after time",
                                new frc2::InstantCommand([this]() {
@@ -436,8 +436,10 @@ frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
     units::second_t time) {
   std::vector<frc2::CommandPtr> commands;
   commands.push_back(frc2::CommandPtr(Wait(time)));
-  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, true)));
-  commands.push_back(frc2::CommandPtr(MoveLinearActuators(m_shooter, false)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
 
   return frc2::SequentialCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))

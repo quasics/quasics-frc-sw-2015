@@ -24,9 +24,10 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -62,12 +63,12 @@ public class RobotContainer {
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE =
-      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
+      MAX_AUTO_ACCELERATION_MPSS);
 
   private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
 
-  private final XboxController m_controller = new XboxController(0);
+  private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
   private final LightingInterface m_lighting = new Lighting(m_selectedRobot);
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
@@ -77,13 +78,17 @@ public class RobotContainer {
   Supplier<Double> m_arcadeDriveRotationStick;
 
   /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode { eSimulation, eXrp, eRomi }
+  private enum SimulationMode {
+    eSimulation, eXrp, eRomi
+  }
 
   /** Currently-configured option when running under the simulator. */
   private final SimulationMode m_simulationMode = SimulationMode.eSimulation;
 
   /** Defines options for auto mode. */
-  private enum AutoMode { eDoNothing, eSpin, eFollowTrajectory }
+  private enum AutoMode {
+    eDoNothing, eSpin, eFollowTrajectory
+  }
 
   /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eDoNothing;
@@ -95,8 +100,7 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
-      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
   Pose2d computeInitialPoseForDriversStation(Alliance alliance, int driversStation) {
     // Assume we're always facing *out* from the driver's station (for now),
@@ -168,7 +172,11 @@ public class RobotContainer {
         new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
             Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
 
-    System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+    if (RobotBase.isSimulation()) {
+      System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+    } else {
+      System.err.println("Logs should be written to: ~lvuser/logs directory");
+    }
   }
 
   private AbstractDrivebase setupDriveBase() {
@@ -178,14 +186,14 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> - m_controller.getLeftX();
-      m_arcadeDriveRotationStick = () -> - m_controller.getRightY();
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
     } else {
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
-      // axis 1&2 (without inversion, since it's *not* an Xbox controller).
-      m_arcadeDriveForwardStick = () -> m_controller.getRawAxis(0);
-      m_arcadeDriveRotationStick = () -> m_controller.getRawAxis(1);
+      // axis 1&2.
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
       switch (m_simulationMode) {
         case eRomi:
           drivebase = new RomiDrivebase();
@@ -217,13 +225,6 @@ public class RobotContainer {
       }
     } else {
       System.err.println(">>> Note: Vision subsystem is DISABLED.");
-    }
-
-    if (vision != null) {
-      vision.setPoseEstimatorConsumer((Pose2d pose, Double timestampSeconds) -> {
-        m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
-        return null;
-      });
     }
 
     return vision;
@@ -274,14 +275,12 @@ public class RobotContainer {
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        ()
-            -> {
+        () -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        ()
-            -> {
+        () -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
@@ -289,11 +288,13 @@ public class RobotContainer {
               RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
-        (Boolean interrupted)
-            -> { m_drivebase.stop(); },
+        (Boolean interrupted) -> {
+          m_drivebase.stop();
+        },
         // isFinished
-        ()
-            -> { return false; },
+        () -> {
+          return false;
+        },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -301,21 +302,20 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints =
-        new DifferentialDriveVoltageConstraint(m_drivebase.getMotorFeedforward(),
-            m_drivebase.getKinematics(),
-            /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
+        m_drivebase.getMotorFeedforward(),
+        m_drivebase.getKinematics(),
+        /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(m_drivebase.getKinematics())
-        // // Apply the voltage constraint
-        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-        // .addConstraint(voltageConstraints)
-        // End of constraints
-        ;
+    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(m_drivebase.getKinematics())
+    // // Apply the voltage constraint
+    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+    // .addConstraint(voltageConstraints)
+    // End of constraints
+    ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(

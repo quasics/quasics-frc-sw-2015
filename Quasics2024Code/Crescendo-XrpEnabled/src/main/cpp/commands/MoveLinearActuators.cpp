@@ -4,18 +4,19 @@
 
 #include "commands/MoveLinearActuators.h"
 
-MoveLinearActuators::MoveLinearActuators(Shooter& shooter, bool extending)
-    : m_shooter(shooter), m_extending(extending) {
+MoveLinearActuators::MoveLinearActuators(LinearActuators& linearActuators,
+                                         bool extending)
+    : m_linearActuators(linearActuators), m_extending(extending) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(&m_shooter);
+  AddRequirements(&m_linearActuators);
 }
 
 // Called when the command is initially scheduled.
 void MoveLinearActuators::Initialize() {
   if (m_extending) {
-    m_shooter.ExtendLinearActuators();
+    m_linearActuators.ExtendLinearActuators();
   } else {
-    m_shooter.RetractLinearActuators();
+    m_linearActuators.RetractLinearActuators();
   }
 }
 

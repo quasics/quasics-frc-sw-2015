@@ -26,7 +26,6 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
-import frc.robot.utils.SimulationSupport;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   public static final String SIMULATOR_POSE_KEY = "SimDrive.SimPose";
@@ -203,8 +202,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Publish the data for any that need it.
-    var simulatedPose = m_drivetrainSimulator.getPose();
-    SimulationSupport.setSimulatedPose(simulatedPose);
-    BulletinBoard.updateValue(SIMULATOR_POSE_KEY, simulatedPose);
+    BulletinBoard.updateValue(SIMULATOR_POSE_KEY, m_drivetrainSimulator.getPose());
   }
 }

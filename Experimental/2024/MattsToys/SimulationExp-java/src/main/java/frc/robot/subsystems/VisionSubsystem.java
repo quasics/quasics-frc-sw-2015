@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotSettings;
-import frc.robot.utils.SimulationSupport;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -283,17 +282,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  boolean USE_BULLETIN_BOARD = true;
-
   @Override
   public void simulationPeriodic() {
-    if (USE_BULLETIN_BOARD) {
-      BulletinBoard.getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
-          .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
-    } else {
-      Optional<Pose2d> possiblePose = SimulationSupport.getSimulatedPose();
-      possiblePose.ifPresent(p -> visionSim.update(p));
-    }
+    BulletinBoard.getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
+        .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.

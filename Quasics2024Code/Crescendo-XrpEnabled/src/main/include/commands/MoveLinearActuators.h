@@ -7,7 +7,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/Shooter.h"
+#include "subsystems/LinearActuators.h"
 
 /**
  * An example command.
@@ -19,7 +19,7 @@
 class MoveLinearActuators
     : public frc2::CommandHelper<frc2::Command, MoveLinearActuators> {
  public:
-  MoveLinearActuators(Shooter& shooter, bool exetending);
+  MoveLinearActuators(LinearActuators& LinearActuators, bool exetending);
 
   void Initialize() override;
 
@@ -30,6 +30,6 @@ class MoveLinearActuators
   bool IsFinished() override;
 
  private:
-  Shooter& m_shooter;
+  LinearActuators& m_linearActuators;
   bool m_extending;
 };

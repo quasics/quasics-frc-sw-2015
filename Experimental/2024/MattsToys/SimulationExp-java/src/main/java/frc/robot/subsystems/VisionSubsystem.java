@@ -285,12 +285,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    var possiblePose = SimulationSupport.getSimulatedPose();
-    if (possiblePose.isPresent()) {
-      // Update the simulator data to reflect where the robot thinks it's
-      // located.
-      visionSim.update(possiblePose.get());
-    }
+    Optional<Pose2d> possiblePose = SimulationSupport.getSimulatedPose();
+    possiblePose.ifPresent(p -> visionSim.update(p));
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.

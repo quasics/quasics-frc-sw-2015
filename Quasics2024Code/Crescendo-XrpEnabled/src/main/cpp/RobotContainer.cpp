@@ -641,9 +641,7 @@ frc2::ParallelRaceGroup *RobotContainer::ShootingSequence(bool amp) {
 
 frc2::SequentialCommandGroup *RobotContainer::IntakeDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
-  commands.push_back(
-      std::make_unique<TimedMovementTest>(*m_drivebase, .25, .1_s, true));
-  commands.push_back(std::make_unique<Wait>(0.65_s));
+  commands.push_back(std::make_unique<Wait>(0.75_s));
   commands.push_back(
       std::make_unique<RunIntakeTimed>(m_intakeRoller, .5, 1.25_s, false));
 

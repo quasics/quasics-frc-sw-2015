@@ -191,7 +191,7 @@ namespace AutonomousScoreDestinations {
 }  // namespace AutonomousScoreDestinations
 
 namespace ShooterSpeeds {
-  const double amp = 0.5;
+  const double amp = 0.08;
   const double speaker = 1.0;
 }  // namespace ShooterSpeeds
 

@@ -283,10 +283,17 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  boolean USE_BULLETIN_BOARD = true;
+
   @Override
   public void simulationPeriodic() {
-    Optional<Pose2d> possiblePose = SimulationSupport.getSimulatedPose();
-    possiblePose.ifPresent(p -> visionSim.update(p));
+    if (USE_BULLETIN_BOARD) {
+      BulletinBoard.getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
+          .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
+    } else {
+      Optional<Pose2d> possiblePose = SimulationSupport.getSimulatedPose();
+      possiblePose.ifPresent(p -> visionSim.update(p));
+    }
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.

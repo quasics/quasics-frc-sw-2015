@@ -284,6 +284,11 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    var field = getSimDebugField();
+    if (visionSim == null || field == null) {
+      return;
+    }
+
     // Update the simulator data to reflect where the robot thinks it's located,
     // *without* factoring in vision data.
     Optional<Object> possiblePose = BulletinBoard.getValue(AbstractDrivebase.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
@@ -293,7 +298,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Update the simulator to reflect where the estimated pose suggests that we
     // are located.
-    var field = getSimDebugField();
     if (Robot.isSimulation()) {
       m_lastEstimatedPose.ifPresentOrElse(
           // Do this with the data in m_lastEstimatedPose (if it has some)
@@ -387,14 +391,14 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** Reset pose history of the robot in the vision system simulation. */
   public void resetSimPose(Pose2d pose) {
-    if (Robot.isSimulation()) {
+    if (Robot.isSimulation() && visionSim != null) {
       visionSim.resetRobotPose(pose);
     }
   }
 
   /** A Field2d for visualizing our robot and objects on the field. */
   public Field2d getSimDebugField() {
-    if (!Robot.isSimulation())
+    if (!Robot.isSimulation() || visionSim == null)
       return null;
     return visionSim.getDebugField();
   }

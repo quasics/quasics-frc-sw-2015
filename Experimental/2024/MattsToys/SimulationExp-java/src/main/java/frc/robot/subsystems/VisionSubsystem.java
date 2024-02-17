@@ -253,7 +253,9 @@ public class VisionSubsystem extends SubsystemBase {
    * @param pose the reference pose to set
    */
   public void updateReferencePose(Pose2d pose) {
-    m_photonEstimator.setReferencePose(pose);
+    if (m_photonEstimator != null) {
+      m_photonEstimator.setReferencePose(pose);
+    }
   }
 
   /**
@@ -263,7 +265,9 @@ public class VisionSubsystem extends SubsystemBase {
    * @param pose the reference pose to set
    */
   public void updateLastPose(Pose2d pose) {
-    m_photonEstimator.setLastPose(pose);
+    if (m_photonEstimator != null) {
+      m_photonEstimator.setLastPose(pose);
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////

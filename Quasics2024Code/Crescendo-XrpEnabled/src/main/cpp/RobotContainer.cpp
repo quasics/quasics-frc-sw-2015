@@ -23,6 +23,7 @@
 #include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
+#include "commands/PivotIntakeAuto.h"
 #include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
@@ -173,13 +174,13 @@ void RobotContainer::setUpArcadeDrive() {
 
     if (m_configSettings.normalDriveEngaged) {
       double joystickPercentage =
-          m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
+          m_driverController.GetRawAxis(leftDriveJoystickAxis);
       double joystickAfterScaling =
           m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
       return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
     } else {
       double joystickPercentage =
-          m_driverController.GetRawAxis(leftDriveJoystickAxis);
+          m_driverController.GetRawAxis(leftDriveJoystickAxis) * -1;
       double joystickAfterScaling =
           m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
       return m_leftSlewRateLimiter.Calculate(joystickAfterScaling);
@@ -189,7 +190,7 @@ void RobotContainer::setUpArcadeDrive() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
 
     double joystickPercentage =
-        m_driverController.GetRawAxis(rightDriveJoystickAxis) * -1;
+        m_driverController.GetRawAxis(rightDriveJoystickAxis);
     return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
@@ -253,7 +254,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     shootSequence);
+                                     &shootNote);
 #endif
 }
 
@@ -262,6 +263,8 @@ void RobotContainer::setDriveMode(DriveMode mode) {
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
+  return RobotSpeedScaling::NORMAL_MODE_SPEED_SCALING;
+  // LOOK ITO THIS
   const bool isTurbo = m_driverController.GetRawButton(
       OperatorConstants::LogitechGamePad::RightShoulder);
   const bool isTurtle = m_driverController.GetRawButton(
@@ -468,6 +471,11 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 }
 
 void RobotContainer::AddDriveTestButtonsToDashboard() {
+  frc::SmartDashboard::PutData(
+      "Extend Intake Auto", new PivotIntakeAuto(m_intakeDeployment, .5, true));
+  frc::SmartDashboard::PutData(
+      "Retract Intake Auto",
+      new PivotIntakeAuto(m_intakeDeployment, .5, false));
   frc::SmartDashboard::PutData(
       "Reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));

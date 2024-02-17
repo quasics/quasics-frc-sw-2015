@@ -152,7 +152,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -189,7 +190,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     final Rotation2d rotation = getGyro_HAL().getRotation2d();
     final Measure<Distance> leftDistanceMeters = getLeftEncoder_HAL().getPosition();
     final Measure<Distance> rightDistanceMeters = getRightEncoder_HAL().getPosition();
-    getOdometry().update(rotation, leftDistanceMeters.in(Meters),
+    m_odometry.update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
     m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
         rightDistanceMeters.in(Meters));
@@ -197,7 +198,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** Get the current robot pose, based on odometery. */
   public Pose2d getPose() {
-    return getOdometry().getPoseMeters();
+    return m_odometry.getPoseMeters();
   }
 
   /**
@@ -215,7 +216,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder_HAL().reset();
     getRightEncoder_HAL().reset();
-    getOdometry().resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
+    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 

@@ -66,6 +66,8 @@ public class RobotContainer {
   static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
       MAX_AUTO_ACCELERATION_MPSS);
 
+  // TODO: Update to allow different options in simulator/real modes (for easier
+  // deployment to "big bots").
   private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
 
   private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);

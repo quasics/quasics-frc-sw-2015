@@ -231,12 +231,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
      * closer to the tag - we use poseEstimator.addVisionMeasurement(pose,
      * timestamp, VecBuilder.fill(distance / 2, distance / 2, 100));
      */
-    // Figure out how far we think we are
+    // Figure out how far we *think* we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
     var transform = currentEstimate.minus(pose);
     final double distance = Math.sqrt(transform.getX() * transform.getX() +
         transform.getY() * transform.getY());
 
+    // Add in the vision-based estimate, using the distance as a "trust-scaling"
+    // factor.
     m_poseEstimator.addVisionMeasurement(
         pose, timestampSeconds,
         VecBuilder.fill(distance / 2, distance / 2, 100));

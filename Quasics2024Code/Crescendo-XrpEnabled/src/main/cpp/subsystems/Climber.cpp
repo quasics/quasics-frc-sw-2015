@@ -81,7 +81,7 @@ frc::SmartDashboard::PutString(
 }
 
 bool Climber::IsFullyExtended() {
-  if (getLeftRevolutions() > 4 && getRightRevolutions() > 4) {
+  if (getLeftRevolutions() > 6 && getRightRevolutions() > 6) {
     return true;
   }
   return false;

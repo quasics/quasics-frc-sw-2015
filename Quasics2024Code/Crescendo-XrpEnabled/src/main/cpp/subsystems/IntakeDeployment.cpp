@@ -57,7 +57,7 @@ double IntakeDeployment::GetRevolutions() {
 
 bool IntakeDeployment::ExtendedByRevolutions() {
   // ARBITRARY NUMBER PLEASE SWITCH
-  if (GetRevolutions() > 100) {
+  if (GetRevolutions() > 1.0) {
     return true;
   }
   return false;

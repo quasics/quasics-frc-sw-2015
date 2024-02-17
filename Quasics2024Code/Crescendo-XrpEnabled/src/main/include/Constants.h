@@ -46,9 +46,9 @@ namespace OperatorConstants {
     constexpr int RightYAxis = 3;
 
     // Buttons
-    constexpr int AButton = 1;
-    constexpr int BButton = 2;
-    constexpr int XButton = 3;
+    constexpr int XButton = 1;
+    constexpr int AButton = 2;
+    constexpr int BButton = 3;
     constexpr int YButton = 4;
     constexpr int LeftShoulder = 5;
     constexpr int RightShoulder = 6;
@@ -97,9 +97,9 @@ namespace MotorIds {
 }  // namespace MotorIds
 
 namespace MotorSpeeds {
-  constexpr double EXTENSION_SPEED = 1.00;
+  constexpr double EXTENSION_SPEED = -1.00;
 
-  constexpr double RETRACTION_SPEED = -1.00;
+  constexpr double RETRACTION_SPEED = 1.00;
 }  // namespace MotorSpeeds
 
 namespace RobotSpeedScaling {

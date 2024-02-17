@@ -4,6 +4,8 @@
 
 #include "commands/PivotIntakeAuto.h"
 
+#include <iostream>
+
 PivotIntakeAuto::PivotIntakeAuto(IntakeDeployment& IntakeDeployment,
                                  double speed, bool extend)
     : m_intakeDeployment(IntakeDeployment),
@@ -15,19 +17,28 @@ PivotIntakeAuto::PivotIntakeAuto(IntakeDeployment& IntakeDeployment,
 
 // Called when the command is initially scheduled.
 void PivotIntakeAuto::Initialize() {
-  m_intakeDeployment.SetMotorSpeed(m_intakeDeploymentSpeed);
-  m_intakeDeployment.EnableBraking(true);
+  if (m_extending) {
+    m_intakeDeployment.ResetEncoders();
+  }
+
+  m_intakeSlewRateLimiter.Reset(0);
+  double speed = m_intakeSlewRateLimiter.Calculate(m_intakeDeploymentSpeed);
+  std::cout << "Speed sending: " << speed << std::endl;
+  m_intakeDeployment.SetMotorSpeed(speed);
+  m_intakeDeployment.EnableBraking(false);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PivotIntakeAuto::Execute() {
-  m_intakeDeployment.SetMotorSpeed(m_intakeDeploymentSpeed);
+  double speed = m_intakeSlewRateLimiter.Calculate(m_intakeDeploymentSpeed);
+  std::cout << "Speed sending: " << speed << std::endl;
+  m_intakeDeployment.SetMotorSpeed(speed);
 }
 
 // Called once the command ends or is interrupted.
 void PivotIntakeAuto::End(bool interrupted) {
   m_intakeDeployment.Stop();
-  m_intakeDeployment.EnableBraking(true);
+  m_intakeDeployment.EnableBraking(false);
 }
 
 // Returns true when the command should end.

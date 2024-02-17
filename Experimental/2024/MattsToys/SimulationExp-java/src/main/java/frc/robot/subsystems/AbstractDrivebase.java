@@ -55,9 +55,16 @@ import frc.robot.utils.RobotSettings;
 public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * The key that will be used in posting the estimated pose (as a Pose2d object)
-   * to the BulletinBoard.
+   * to the BulletinBoard. This is based solely on the encoders and gryo.
    */
-  public static final String BULLETIN_BOARD_POSE_KEY = "Drivebase.Pose";
+  public static final String BULLETIN_BOARD_ODOMETRY_POSE_KEY = "Drivebase.OdomPose";
+
+  /**
+   * The key that will be used in posting the estimated pose (as a Pose2d object)
+   * to the BulletinBoard. This represents integrated odometry and (if available)
+   * vision estimates.
+   */
+  public static final String BULLETIN_BOARD_ESTIMATED_POSE_KEY = "Drivebase.EstPose";
 
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
@@ -407,7 +414,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     });
 
     // Publish our estimated position
-    BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, getEstimatedPose());
+    BulletinBoard.updateValue(BULLETIN_BOARD_ODOMETRY_POSE_KEY, m_odometry.getPoseMeters());
+    BulletinBoard.updateValue(BULLETIN_BOARD_ESTIMATED_POSE_KEY, getEstimatedPose());
   }
 
   /** Prevents us from pushing voltage/speed values too small for the motors. */

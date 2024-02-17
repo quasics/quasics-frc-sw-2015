@@ -8,6 +8,7 @@
 
 Climber::Climber() {
   SetName("Climber");
+  // NOTE WHEN I GO UP THE REVOLUTIONS ARE GOING INTO NEGATIVES
 }
 
 void Climber::StartExtending() {
@@ -81,14 +82,14 @@ frc::SmartDashboard::PutString(
 }
 
 bool Climber::IsFullyExtended() {
-  if (getLeftRevolutions() > 6 && getRightRevolutions() > 6) {
+  if (getLeftRevolutions() < -6 && getRightRevolutions() < -6) {
     return true;
   }
   return false;
 }
 
 bool Climber::IsFullyRetracted() {
-  if (getLeftRevolutions() <= 0 && getRightRevolutions() <= 0) {
+  if (getLeftRevolutions() >= 0 && getRightRevolutions() >= 0) {
     return true;
   }
   return false;

@@ -11,7 +11,6 @@ MoveClimbers::MoveClimbers(Climber &climber, bool extending)
 
 // Called when the command is initially scheduled.
 void MoveClimbers::Initialize() {
-  m_climber.resetRevolutions();
   if (m_extending) {
     m_climber.StartExtending();
   } else {

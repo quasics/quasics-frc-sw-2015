@@ -32,6 +32,7 @@
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
 #include "commands/TimedMovementTest.h"
+#include "commands/TriggerBasedIntaking.h"
 #include "commands/Wait.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
@@ -188,18 +189,25 @@ void RobotContainer::setUpArcadeDrive() {
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
-
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis);
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor;
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor * -1;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
+void RobotContainer::SetDefaultIntakeCommand() {
+  /*TriggerBasedIntaking triggerBasedIntakeCommand(m_intakeRoller,
+                                                 &m_driverController);
+  m_intakeRoller.SetDefaultCommand(std::move(triggerBasedIntakeCommand));*/
+}
+
 void RobotContainer::RunCommandWhenDriverButtonIsPressed(
     int logitechButtonId, frc2::Command *command) {
-  frc2::JoystickButton(&m_driverController, logitechButtonId).OnTrue(command);
+  frc2::JoystickButton(&m_driverController, logitechButtonId)
+      .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
+      .OnTrue(command);
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -220,6 +228,7 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
         m_configSettings.normalDriveEngaged =
             !m_configSettings.normalDriveEngaged;
       }));
+
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
@@ -231,9 +240,9 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::AButton,
                                    &retractClimbers);
   RunCommandWhenDriverButtonIsHeld(
-      OperatorConstants::LogitechGamePad::LeftShoulder, &dropNote);
+      OperatorConstants::LogitechGamePad::LeftTrigger, &dropNote);
   RunCommandWhenDriverButtonIsHeld(
-      OperatorConstants::LogitechGamePad::RightShoulder, &intakeNote);
+      OperatorConstants::LogitechGamePad::RightTrigger, &intakeNote);
 #endif
 }
 
@@ -263,7 +272,6 @@ void RobotContainer::setDriveMode(DriveMode mode) {
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
-  return RobotSpeedScaling::NORMAL_MODE_SPEED_SCALING;
   // LOOK ITO THIS
   const bool isTurbo = m_driverController.GetRawButton(
       OperatorConstants::LogitechGamePad::RightShoulder);

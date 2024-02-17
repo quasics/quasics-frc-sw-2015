@@ -52,10 +52,12 @@ namespace OperatorConstants {
     constexpr int YButton = 4;
     constexpr int LeftShoulder = 5;
     constexpr int RightShoulder = 6;
-    constexpr int BackButton = 7;
-    constexpr int StartButton = 8;
-    constexpr int LeftStickPress = 9;
-    constexpr int RightStickPress = 10;
+    constexpr int LeftTrigger = 7;
+    constexpr int RightTrigger = 8;
+    constexpr int BackButton = 9;
+    constexpr int StartButton = 10;
+    constexpr int LeftStickPress = 11;
+    constexpr int RightStickPress = 12;
   }  // namespace LogitechGamePad
 
 }  // namespace OperatorConstants

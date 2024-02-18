@@ -32,9 +32,6 @@
  *
  * @see https://isocpp.org/wiki/faq/const-correctness
  * @see https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern
- *
- * TODO: Add unit tests
- * (https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html)
  */
 class BulletinBoard {
  public:

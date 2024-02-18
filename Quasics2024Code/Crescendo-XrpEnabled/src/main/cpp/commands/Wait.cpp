@@ -15,8 +15,5 @@ void Wait::Initialize() {
 
 // Returns true when the command should end.
 bool Wait::IsFinished() {
-  if (m_stopWatch.HasElapsed(m_time)) {
-    return true;
-  }
-  return false;
+  return m_stopWatch.HasElapsed(m_time);
 }

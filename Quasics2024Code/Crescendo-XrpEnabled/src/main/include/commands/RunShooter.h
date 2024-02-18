@@ -26,8 +26,6 @@ class RunShooter : public frc2::CommandHelper<frc2::Command, RunShooter> {
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
  private:
   Shooter& m_shooter;
   const double m_shooterSpeed;

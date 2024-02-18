@@ -36,8 +36,3 @@ void PivotIntake::End(bool interrupted) {
   m_intakeDeployment.Stop();
   m_intakeDeployment.EnableBraking(false);
 }
-
-// Returns true when the command should end.
-bool PivotIntake::IsFinished() {
-  return false;
-}

@@ -26,8 +26,6 @@ class RunIntake : public frc2::CommandHelper<frc2::Command, RunIntake> {
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
  private:
   IntakeRoller &m_intake;
   const double m_intakeSpeed;

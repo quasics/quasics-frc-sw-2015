@@ -26,8 +26,3 @@ void RunShooter::Execute() {
 void RunShooter::End(bool interrupted) {
   m_shooter.Stop();
 }
-
-// Returns true when the command should end.
-bool RunShooter::IsFinished() {
-  return false;
-}

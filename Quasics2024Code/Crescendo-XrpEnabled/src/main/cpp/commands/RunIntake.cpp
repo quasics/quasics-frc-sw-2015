@@ -25,8 +25,3 @@ void RunIntake::Execute() {
 void RunIntake::End(bool interrupted) {
   m_intake.Stop();
 }
-
-// Returns true when the command should end.
-bool RunIntake::IsFinished() {
-  return false;
-}

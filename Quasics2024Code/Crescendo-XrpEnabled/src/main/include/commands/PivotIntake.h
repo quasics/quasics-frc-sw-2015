@@ -28,8 +28,6 @@ class PivotIntake : public frc2::CommandHelper<frc2::Command, PivotIntake> {
 
   void End(bool interrupted) override;
 
-  bool IsFinished() override;
-
  private:
   frc::SlewRateLimiter<units::scalar> m_intakeSlewRateLimiter{1 / 1_s};
   IntakeDeployment &m_intakeDeployment;

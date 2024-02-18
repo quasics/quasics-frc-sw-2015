@@ -18,8 +18,3 @@ void MoveLinearActuators::Initialize() {
     m_linearActuators.RetractLinearActuators();
   }
 }
-
-// Returns true when the command should end.
-bool MoveLinearActuators::IsFinished() {
-  return false;
-}

@@ -23,8 +23,6 @@ class MoveLinearActuators
 
   void Initialize() override;
 
-  bool IsFinished() override;
-
  private:
   LinearActuators& m_linearActuators;
   bool m_extending;

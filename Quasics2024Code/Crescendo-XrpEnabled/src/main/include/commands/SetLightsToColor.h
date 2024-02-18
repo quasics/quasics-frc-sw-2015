@@ -23,11 +23,9 @@ class SetLightsToColor
 
   void Execute() override;
 
-  bool IsFinished() override;
-
  private:
   Lighting* m_lighting;
-  int m_r;
-  int m_g;
-  int m_b;
+  const int m_r;
+  const int m_g;
+  const int m_b;
 };

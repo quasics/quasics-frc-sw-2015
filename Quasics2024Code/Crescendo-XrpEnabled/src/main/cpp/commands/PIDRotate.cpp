@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -18,7 +18,6 @@ PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
       m_targetAngle(angle),
       m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
             PIDTurningConstants::kD} {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&drivebase);
 
 #ifdef USE_DYNAMIC_DATA_FROM_DASHBOARD

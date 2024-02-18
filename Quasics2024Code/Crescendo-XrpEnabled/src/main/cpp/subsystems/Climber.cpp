@@ -6,7 +6,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Climber::Climber() {
+#include "Constants.h"
+
+Climber::Climber()
+    : m_climberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
+                    rev::CANSparkMax::MotorType::kBrushless},
+      m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
+                     rev::CANSparkMax::MotorType::kBrushless}
+
+{
   SetName("Climber");
   // NOTE WHEN I GO UP THE REVOLUTIONS ARE GOING INTO NEGATIVES
 }

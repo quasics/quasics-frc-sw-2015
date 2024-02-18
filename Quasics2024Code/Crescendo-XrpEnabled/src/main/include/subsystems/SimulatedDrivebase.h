@@ -15,7 +15,6 @@
 #include <frc/system/plant/LinearSystemId.h>
 #include <frc2/command/SubsystemBase.h>
 
-#include "Constants.h"
 #include "subsystems/IDrivebase.h"
 
 class SimulatedDrivebase : public IDrivebase {
@@ -68,13 +67,11 @@ class SimulatedDrivebase : public IDrivebase {
   static constexpr int kEncoderResolution = 4096;
 
   // Note that we'll simply simulate 1 motor on each side.
-  frc::PWMSparkMax m_leftMotor{PWMPorts::SIMULATED_LEFT_MOTOR_PORT};
-  frc::PWMSparkMax m_rightMotor{PWMPorts::SIMULATED_RIGHT_MOTOR_PORT};
+  frc::PWMSparkMax m_leftMotor;
+  frc::PWMSparkMax m_rightMotor;
 
-  frc::Encoder m_leftEncoder{DigitalInput::SIMULATED_LEFT_ENCODER_A_PORT,
-                             DigitalInput::SIMULATED_LEFT_ENCODER_B_PORT};
-  frc::Encoder m_rightEncoder{DigitalInput::SIMULATED_RIGHT_ENCODER_A_PORT,
-                              DigitalInput::SIMULATED_RIGHT_ENCODER_B_PORT};
+  frc::Encoder m_leftEncoder;
+  frc::Encoder m_rightEncoder;
 
   /** Wraps a TrivialEncoder interface around the left encoder. */
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
@@ -89,6 +86,7 @@ class SimulatedDrivebase : public IDrivebase {
 
   frc::DifferentialDriveOdometry m_odometry{0_deg, 0_m, 0_m};
 
+  // Simulation app stuff
  private:
   frc::sim::AnalogGyroSim m_gyroSim{m_gyro};
   frc::sim::EncoderSim m_leftEncoderSim{m_leftEncoder};

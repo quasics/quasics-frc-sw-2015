@@ -11,8 +11,13 @@
 
 #include <iostream>
 
+#include "Constants.h"
+
 PIDRotate::PIDRotate(IDrivebase &drivebase, units::degree_t angle)
-    : m_drivebase(drivebase), m_targetAngle(angle) {
+    : m_drivebase(drivebase),
+      m_targetAngle(angle),
+      m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
+            PIDTurningConstants::kD} {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&drivebase);
 

@@ -22,17 +22,18 @@ class Lighting : public frc2::SubsystemBase {
    * @param g green component, in the range 0..255
    * @param b blue component, in the range 0..255
    */
-  /* void setAllToColor(int r, int g, int b);
+  /*
+  void setAllToColor(int r, int g, int b);
 
   void setAllToColor(const frc::AddressableLED::LedData(int)> colorFunction);
 
   void setLightColors(
       std::function<frc::AddressableLED::LedData(int)> colorFunction);
-  * /
 
-      /* static int GetNumberOfLEDs() {
-        return LightingValues::PIXEL_NUMBER;
-      } */
+  */
+
+  static int GetNumberOfLEDs();
+
   // uncomment when data of lighting strip is present
 
   /**
@@ -57,7 +58,6 @@ class Lighting : public frc2::SubsystemBase {
 
  private:
   // frc::AddressableLED m_led{PWMPorts::LIGHTING_PORT};
-
   //   std::array<frc::AddressableLED::LEDData, LightingValues::PIXEL_NUMBER>
   //       m_ledBuffer;
 };

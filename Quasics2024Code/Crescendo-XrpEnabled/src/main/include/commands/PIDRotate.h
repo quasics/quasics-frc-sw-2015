@@ -49,6 +49,5 @@ class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
   nt::GenericEntry* kD_entry = nullptr;
   nt::GenericEntry* angle_entry = nullptr;
 #endif
-  frc::PIDController m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
-                           PIDTurningConstants::kD};
+  frc::PIDController m_pid;
 };

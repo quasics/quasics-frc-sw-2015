@@ -33,7 +33,8 @@ class PivotIntakeAuto
   bool IsFinished() override;
 
  private:
-  frc::SlewRateLimiter<units::scalar> m_intakeSlewRateLimiter{1 / 1_s};
+  frc::SlewRateLimiter<units::dimensionless::scalar> m_intakeSlewRateLimiter{
+      1 / 1_s};
   IntakeDeployment& m_intakeDeployment;
   const double m_intakeDeploymentSpeed;
   const bool m_extending;

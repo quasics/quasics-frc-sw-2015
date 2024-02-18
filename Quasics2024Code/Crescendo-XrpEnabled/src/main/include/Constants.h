@@ -134,12 +134,11 @@ namespace SensorIds {
   constexpr int PIGEON_CAN_ID = 1;
 }
 
-/* namespace LightingValues {
+namespace LightingValues {
   constexpr int PORT_NUMBER = 1;
-  constexpr int STRIP_PIXEL_COUNT = fill in;
+  constexpr int STRIP_PIXEL_COUNT = 40;
   constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
-} */
-// namespace LightingValues
+}  // namespace LightingValues
 
 constexpr units::length::meter_t TRACK_WIDTH_METERS_SALLY = 0.5588_m;
 constexpr units::length::meter_t TRACK_WIDTH_METERS_MARGARET = 0.5588_m;

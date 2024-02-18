@@ -7,6 +7,7 @@
 #include <frc/filter/SlewRateLimiter.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
+#include <units/dimensionless.h>
 
 #include "subsystems/IntakeDeployment.h"
 

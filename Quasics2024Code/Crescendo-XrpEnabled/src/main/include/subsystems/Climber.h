@@ -9,9 +9,6 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-#include "Constants.h"
-#include "sensors/TrivialEncoder.h"
-
 class Climber : public frc2::SubsystemBase {
  public:
   /** Indicates the current operation the climber is performing. */
@@ -82,22 +79,13 @@ class Climber : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  rev::CANSparkMax m_climberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
-                                 rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
-                                  rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_climberLeft;
+  rev::CANSparkMax m_climberRight;
 
   rev::SparkRelativeEncoder m_leftEncoder =
       m_climberLeft.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
   rev::SparkRelativeEncoder m_rightEncoder =
       m_climberRight.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-
-  /*
-   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
-       TrivialEncoder::wrapEncoder(m_leftEncoder)};
-
-   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
-       TrivialEncoder::wrapEncoder(m_rightEncoder)};*/
 
   // WILL EXSIST LATER HOPEFULLY
 

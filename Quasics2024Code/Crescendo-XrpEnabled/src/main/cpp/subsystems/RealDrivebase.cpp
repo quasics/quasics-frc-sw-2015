@@ -6,7 +6,14 @@
 
 #include <numbers>
 
-RealDrivebase::RealDrivebase() {
+#include "Constants.h"
+
+RealDrivebase::RealDrivebase()
+    : m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
+                 rev::CANSparkMax::MotorType::kBrushless},
+      m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
+                  rev::CANSparkMax::MotorType::kBrushless},
+      m_realGyro{SensorIds::PIGEON_CAN_ID} {
   SetName("RealDrivebase");
   // This is where we'd do any necessary motor configuration (e.g., setting some
   // as "inverted", etc.).

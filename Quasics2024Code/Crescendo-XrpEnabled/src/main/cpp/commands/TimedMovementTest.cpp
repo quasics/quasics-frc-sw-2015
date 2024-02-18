@@ -32,8 +32,5 @@ void TimedMovementTest::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TimedMovementTest::IsFinished() {
-  if (m_stopWatch.HasElapsed(m_time)) {
-    return true;
-  }
-  return false;
+  return m_stopWatch.HasElapsed(m_time);
 }

@@ -4,4 +4,4 @@
 
 #include "utils/BulletinBoard.h"
 
-std::unordered_map<std::string, BulletinBoard::Value> BulletinBoard::dataSet;
+BulletinBoard BulletinBoard::gCommon;

@@ -15,7 +15,7 @@ DirectionalLighting::DirectionalLighting(Lighting& lighting)
 // Called repeatedly when this Command is scheduled to run
 void DirectionalLighting::Execute() {
   const std::optional<std::string> directionOptional =
-      BulletinBoard::getValue<std::string>(
+      BulletinBoard::common().getValue<std::string>(
           IDrivebase::BULLETIN_BOARD_DIRECTION_KEY);
   if (!directionOptional.has_value()) {
     m_lighting.setSolidStripColor(Lighting::ORANGE);

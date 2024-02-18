@@ -33,24 +33,24 @@ void IDrivebase::Periodic() {
 
   // Samples of "posting" information about a subsystem's status, for use by
   // other system components (i.e., commands or other subsystems).
-  BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
-                             getOdometry_HAL().GetPose());
+  BulletinBoard::common().updateValue(BULLETIN_BOARD_POSE_KEY,
+                                      getOdometry_HAL().GetPose());
 
   double leftSpeed = velocityDirectionChecker(getLeftSpeedPercentage_HAL());
   double rightSpeed = velocityDirectionChecker(getRightSpeedPercentage_HAL());
   if (leftSpeed > 0 && rightSpeed > 0) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
-                               BULLETIN_BOARD_DIRECTION_FORWARD_VALUE);
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_FORWARD_VALUE);
   } else if (leftSpeed < 0 && rightSpeed < 0) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
-                               BULLETIN_BOARD_DIRECTION_REVERSE_VALUE);
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_REVERSE_VALUE);
   } else if ((leftSpeed < 0 && rightSpeed > 0) ||
              (leftSpeed > 0 && rightSpeed < 0)) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
-                               BULLETIN_BOARD_DIRECTION_TURNING_VALUE);
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_TURNING_VALUE);
   } else {
-    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
-                               BULLETIN_BOARD_DIRECTION_STOPPED_VALUE);
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_STOPPED_VALUE);
   }
 }
 

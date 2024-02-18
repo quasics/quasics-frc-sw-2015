@@ -52,15 +52,22 @@ class BulletinBoard {
   typedef std::variant<std::string, frc::Pose2d> Value;
 
  public:
-  static void updateValueForKey(const std::string& key, const Value& value) {
+  static BulletinBoard& common() {
+    return gCommon;
+  }
+
+  BulletinBoard() {
+  }
+
+  void updateValueForKey(const std::string& key, const Value& value) {
     dataSet[key] = value;
   }
 
-  static void clearValue(const std::string& key) {
+  void clearValue(const std::string& key) {
     dataSet.erase(key);
   }
 
-  static std::optional<Value> getValue(const std::string& key) {
+  std::optional<Value> getValue(const std::string& key) {
     const auto iter = dataSet.find(key);
     if (iter == dataSet.end()) {
       return std::nullopt;
@@ -70,7 +77,7 @@ class BulletinBoard {
   }
 
   template <typename T>
-  static std::optional<T> getValue(const std::string& key) {
+  std::optional<T> getValue(const std::string& key) {
     const auto iter = dataSet.find(key);
     if (iter == dataSet.end()) {
       return std::nullopt;
@@ -83,18 +90,16 @@ class BulletinBoard {
   }
 
   template <typename T>
-  static std::optional<T> getValue(const std::string_view& key) {
+  std::optional<T> getValue(const std::string_view& key) {
     return getValue<T>(std::string(key));
   }
 
   template <typename T>
-  static void updateValue(std::string_view key, const T& value);
+  void updateValue(std::string_view key, const T& value);
 
  private:
-  static std::unordered_map<std::string, Value> dataSet;
-
- private:
-  BulletinBoard() = delete;
+  std::unordered_map<std::string, Value> dataSet;
+  static BulletinBoard gCommon;
 };
 
 template <typename T>

@@ -50,7 +50,7 @@ class BulletinBoard {
   typedef std::variant<std::string, frc::Pose2d> Value;
 
  public:
-  static void updateValue(const std::string& key, const Value& value) {
+  static void updateValueForKey(std::string_view key, const Value& value) {
     dataSet.emplace(key, value);
   }
 
@@ -73,7 +73,7 @@ class BulletinBoard {
     if (iter == dataSet.end()) {
       return std::nullopt;
     }
-    if (std::holds_alternative<T>(iter->second)) {
+    if (!std::holds_alternative<T>(iter->second)) {
       return std::nullopt;
     }
 
@@ -97,11 +97,11 @@ class BulletinBoard {
 
 template <typename T>
 inline void BulletinBoard::updateValue(std::string_view key, const T& value) {
-  updateValue(key, Value(value));
+  updateValueForKey(key, Value(value));
 }
 
 template <>
 inline void BulletinBoard::updateValue(std::string_view key,
                                        const std::string_view& value) {
-  updateValue(key, Value(std::string(value)));
+  updateValueForKey(key, Value(std::string(value)));
 }

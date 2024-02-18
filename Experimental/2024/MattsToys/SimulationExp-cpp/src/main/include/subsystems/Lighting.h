@@ -16,6 +16,10 @@ class Lighting : public frc2::SubsystemBase {
   static const frc::AddressableLED::LEDData GREEN;
   static const frc::AddressableLED::LEDData RED;
   static const frc::AddressableLED::LEDData BLUE;
+  static const frc::AddressableLED::LEDData YELLOW;
+  static const frc::AddressableLED::LEDData ORANGE;
+  static const frc::AddressableLED::LEDData CYAN;
+  static const frc::AddressableLED::LEDData MAGENTA;
 
  public:
   Lighting(int pwmPort, int size) : m_ledBuffer(size, GREEN), m_led(pwmPort) {

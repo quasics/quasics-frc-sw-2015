@@ -35,6 +35,7 @@ void IDrivebase::Periodic() {
   // other system components (i.e., commands or other subsystems).
   BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
                              getOdometry_HAL().GetPose());
+
   double leftSpeed = velocityDirectionChecker(getLeftSpeedPercentage_HAL());
   double rightSpeed = velocityDirectionChecker(getRightSpeedPercentage_HAL());
   if (leftSpeed > 0 && rightSpeed > 0) {

@@ -4,6 +4,8 @@
 
 #include "commands/ArcadeDrive.h"
 
+#include "Constants.h"
+
 ArcadeDrive::ArcadeDrive(IDrivebase& drivebase, PercentSupplier forwardSupplier,
                          PercentSupplier rotationSupplier)
     : m_drivebase(drivebase),

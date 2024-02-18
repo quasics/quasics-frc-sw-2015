@@ -81,6 +81,11 @@ class BulletinBoard {
   }
 
   template <typename T>
+  static std::optional<T> getValue(const std::string_view& key) {
+    return getValue<T>(std::string(key));
+  }
+
+  template <typename T>
   static void updateValue(std::string_view key, const T& value);
 
  private:

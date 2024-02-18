@@ -38,17 +38,17 @@ void IDrivebase::Periodic() {
   double leftSpeed = velocityDirectionChecker(getLeftSpeedPercentage_HAL());
   double rightSpeed = velocityDirectionChecker(getRightSpeedPercentage_HAL());
   if (leftSpeed > 0 && rightSpeed > 0) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
+    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
                                BULLETIN_BOARD_DIRECTION_FORWARD_VALUE);
   } else if (leftSpeed < 0 && rightSpeed < 0) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
+    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
                                BULLETIN_BOARD_DIRECTION_REVERSE_VALUE);
   } else if ((leftSpeed < 0 && rightSpeed > 0) ||
              (leftSpeed > 0 && rightSpeed < 0)) {
-    BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
+    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
                                BULLETIN_BOARD_DIRECTION_TURNING_VALUE);
   } else {
-    BulletinBoard::updateValue(BULLETIN_BOARD_POSE_KEY,
+    BulletinBoard::updateValue(BULLETIN_BOARD_DIRECTION_KEY,
                                BULLETIN_BOARD_DIRECTION_STOPPED_VALUE);
   }
 }

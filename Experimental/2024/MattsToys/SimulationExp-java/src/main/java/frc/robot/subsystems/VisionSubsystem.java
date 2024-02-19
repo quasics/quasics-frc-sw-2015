@@ -274,17 +274,18 @@ public class VisionSubsystem extends SubsystemBase {
     // the vision data suggests that the robot might be located.
     if (m_lastEstimatedPose.isPresent()) {
       var estimate = m_lastEstimatedPose.get();
-      BulletinBoard.updateValue(BULLETIN_BOARD_POSE_KEY, estimate.estimatedPose.toPose2d());
-      BulletinBoard.updateValue(BULLETIN_BOARD_TIMESTAMP_KEY, estimate.timestampSeconds);
+      BulletinBoard.common.updateValue(BULLETIN_BOARD_POSE_KEY, estimate.estimatedPose.toPose2d());
+      BulletinBoard.common.updateValue(BULLETIN_BOARD_TIMESTAMP_KEY, estimate.timestampSeconds);
     } else {
-      BulletinBoard.clearValue(BULLETIN_BOARD_POSE_KEY);
-      BulletinBoard.clearValue(BULLETIN_BOARD_TIMESTAMP_KEY);
+      BulletinBoard.common.clearValue(BULLETIN_BOARD_POSE_KEY);
+      BulletinBoard.common.clearValue(BULLETIN_BOARD_TIMESTAMP_KEY);
     }
   }
 
   @Override
   public void simulationPeriodic() {
-    BulletinBoard.getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
+    BulletinBoard.common
+        .getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
         .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
 
     // Update the simulator to reflect where the estimated pose suggests that we

@@ -1,3 +1,7 @@
+// See discussions of unit testing in:
+// * https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html
+// * https://google.github.io/googletest/
+
 #include <hal/HAL.h>
 
 #include "gtest/gtest.h"

@@ -13,3 +13,6 @@ const frc::AddressableLED::LEDData Lighting::YELLOW{255, 255, 0};
 const frc::AddressableLED::LEDData Lighting::ORANGE{255, 165, 0};
 const frc::AddressableLED::LEDData Lighting::CYAN{0, 255, 255};
 const frc::AddressableLED::LEDData Lighting::MAGENTA{255, 0, 255};
+const frc::AddressableLED::LEDData Lighting::PINK{255, 96, 208};
+const frc::AddressableLED::LEDData Lighting::PURPLE{160, 32, 255};
+const frc::AddressableLED::LEDData Lighting::YELLOW_GREEN{96, 255, 128};

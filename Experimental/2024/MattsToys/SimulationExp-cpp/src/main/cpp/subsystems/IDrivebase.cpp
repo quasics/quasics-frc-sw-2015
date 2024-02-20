@@ -4,10 +4,21 @@
 
 #include "subsystems/IDrivebase.h"
 
+#include "utils/BulletinBoard.h"
 #include "utils/DeadBandEnforcer.h"
 
 DeadBandEnforcer IDrivebase::m_voltageDeadbandEnforcer(-0.001);
 IDrivebase* IDrivebase::g_drivebaseSingleton = nullptr;
+const std::string_view IDrivebase::BULLETIN_BOARD_POSE_KEY{"Drive.Pose"};
+const std::string_view IDrivebase::BULLETIN_BOARD_DIRECTION_KEY{"Drive.Dir"};
+const std::string_view IDrivebase::BULLETIN_BOARD_DIRECTION_FORWARD_VALUE{"F"};
+const std::string_view IDrivebase::BULLETIN_BOARD_DIRECTION_REVERSE_VALUE{"R"};
+const std::string_view IDrivebase::BULLETIN_BOARD_DIRECTION_TURNING_VALUE{"T"};
+const std::string_view IDrivebase::BULLETIN_BOARD_DIRECTION_STOPPED_VALUE{"S"};
+
+namespace {
+  const DeadBandEnforcer velocityDirectionChecker(0.04);
+}
 
 namespace {
   // Provides a deadband control for left/right wheel speeds.
@@ -19,6 +30,28 @@ bool IDrivebase::m_logWheelSpeedData{false};
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
+
+  // Samples of "posting" information about a subsystem's status, for use by
+  // other system components (i.e., commands or other subsystems).
+  BulletinBoard::common().updateValue(BULLETIN_BOARD_POSE_KEY,
+                                      getOdometry_HAL().GetPose());
+
+  double leftSpeed = velocityDirectionChecker(getLeftSpeedPercentage_HAL());
+  double rightSpeed = velocityDirectionChecker(getRightSpeedPercentage_HAL());
+  if (leftSpeed > 0 && rightSpeed > 0) {
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_FORWARD_VALUE);
+  } else if (leftSpeed < 0 && rightSpeed < 0) {
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_REVERSE_VALUE);
+  } else if ((leftSpeed < 0 && rightSpeed > 0) ||
+             (leftSpeed > 0 && rightSpeed < 0)) {
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_TURNING_VALUE);
+  } else {
+    BulletinBoard::common().updateValue(BULLETIN_BOARD_DIRECTION_KEY,
+                                        BULLETIN_BOARD_DIRECTION_STOPPED_VALUE);
+  }
 }
 
 void IDrivebase::setMotorVoltages(units::volt_t leftVoltage,

@@ -15,6 +15,19 @@ import frc.robot.utils.RobotSettings;
 /**
  * Implementing a version of the AbstractDrivebase functionality that works with
  * an XRP device, allowing initial prototyping/development of code.
+ * 
+ * Possible future enhancements:
+ * <ul>
+ * <li>
+ * Wire in the ultrasonic rangefinder (analog input 2), ranging from 0V (20mm)
+ * to 5V (4000mm).
+ * </li>
+ * <li>
+ * Wire in the line following (reflectance) Sensor (analog input 0 for left, 1
+ * for right), with returned values ranging from 0V (pure white) to 5V (pure
+ * black).
+ * </li>
+ * </ul>
  *
  * @see
  *      https://docs.wpilib.org/en/latest/docs/xrp-robot/getting-to-know-xrp.html
@@ -45,13 +58,6 @@ public class XrpDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
   private final IGyro m_wrappedGyro = IGyro.wrapYawGyro(m_gyro);
-
-  // TODO: Wire in the ultrasonic rangefinder (analog input 2), ranging from 0V
-  // (20mm) to 5V (4000mm).
-
-  // TODO: Wire in the Line Following (Reflectance) Sensor (analog input 0 for
-  // left, 1 for right), with returned values ranging from 0V (pure white) to 5V
-  // (pure black).
 
   /** Creates a new XrpDrivebase. */
   public XrpDrivebase() {

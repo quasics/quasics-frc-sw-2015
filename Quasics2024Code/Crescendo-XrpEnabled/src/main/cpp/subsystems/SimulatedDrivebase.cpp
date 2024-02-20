@@ -9,9 +9,16 @@
 
 #include <numbers>
 
+#include "Constants.h"
 #include "utils/SimulationSupport.h"
 
-SimulatedDrivebase::SimulatedDrivebase() {
+SimulatedDrivebase::SimulatedDrivebase()
+    : m_leftMotor{PWMPorts::SIMULATED_LEFT_MOTOR_PORT},
+      m_rightMotor{PWMPorts::SIMULATED_RIGHT_MOTOR_PORT},
+      m_leftEncoder{DigitalInput::SIMULATED_LEFT_ENCODER_A_PORT,
+                    DigitalInput::SIMULATED_LEFT_ENCODER_B_PORT},
+      m_rightEncoder{DigitalInput::SIMULATED_RIGHT_ENCODER_A_PORT,
+                     DigitalInput::SIMULATED_RIGHT_ENCODER_B_PORT} {
   SetName("SimulatedDrivebase");
 
   m_gyro.Reset();

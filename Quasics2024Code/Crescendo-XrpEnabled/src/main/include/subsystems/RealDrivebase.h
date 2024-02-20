@@ -10,8 +10,6 @@
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 
-#include "Constants.h"
-#include "sensors/IGyro.h"
 #include "sensors/OffsetGyro.h"
 #include "subsystems/IDrivebase.h"
 
@@ -57,10 +55,8 @@ class RealDrivebase : public IDrivebase {
     m_rightBackEncoder.SetPosition(0);
   }
 
-  rev::CANSparkMax m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
-                              rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
-                               rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_leftBack;
+  rev::CANSparkMax m_rightBack;
 
   rev::SparkRelativeEncoder m_leftBackEncoder =
       m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
@@ -75,7 +71,7 @@ class RealDrivebase : public IDrivebase {
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_rightBackEncoder)};
 
-  ctre::phoenix6::hardware::Pigeon2 m_realGyro{SensorIds::PIGEON_CAN_ID};
+  ctre::phoenix6::hardware::Pigeon2 m_realGyro;
 
   std::unique_ptr<IGyro> m_trivialGyro{IGyro::wrapGyro(m_realGyro)};
 

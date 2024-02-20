@@ -8,8 +8,6 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-#include "Constants.h"
-
 /**
  * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
  *
@@ -41,6 +39,6 @@ class LinearActuators : public frc2::SubsystemBase {
 
   // Data members.
  private:
-  frc::Servo m_leftPositionServo{PWMPorts::LEFT_SERVO};
-  frc::Servo m_rightPositionServo{PWMPorts::RIGHT_SERVO};
+  frc::Servo m_leftPositionServo;
+  frc::Servo m_rightPositionServo;
 };

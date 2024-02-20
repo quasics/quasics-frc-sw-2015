@@ -6,6 +6,8 @@
 
 #include <units/time.h>
 
+#include "Constants.h"
+
 /**
  * Configures the bounds for an AndyMark L16 linear actuator, per their docs.
  *
@@ -24,7 +26,9 @@ void LinearActuators::ConfigureAndyMarkL16(frc::Servo& servo) {
   );
 }
 
-LinearActuators::LinearActuators() {
+LinearActuators::LinearActuators()
+    : m_leftPositionServo{PWMPorts::LEFT_SERVO},
+      m_rightPositionServo{PWMPorts::RIGHT_SERVO} {
   SetName("LinearActuators");
   ConfigureAndyMarkL16(m_leftPositionServo);
   ConfigureAndyMarkL16(m_rightPositionServo);

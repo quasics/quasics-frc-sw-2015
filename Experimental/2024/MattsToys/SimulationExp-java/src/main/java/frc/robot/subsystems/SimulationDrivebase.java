@@ -202,6 +202,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Publish the data for any that need it.
-    BulletinBoard.updateValue(SIMULATOR_POSE_KEY, m_drivetrainSimulator.getPose());
+    BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY, m_drivetrainSimulator.getPose());
   }
 }

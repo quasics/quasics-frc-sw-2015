@@ -6,9 +6,17 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include "Constants.h"
+
 DeadBandEnforcer IDrivebase::m_voltageDeadbandEnforcer(-0.001);
 
-IDrivebase::IDrivebase(){};
+IDrivebase::IDrivebase()
+    :  // TODO: (Rylie) Please confirm that this is the actual track width for
+       // Margaret. (And you should also figure out how we can make sure that
+       // it's not going to be a problem if we switch to a drive base with a
+       // different size (like Mae or Sally) for testing.)
+      m_kinematics{TRACK_WIDTH_METERS_MARGARET} {
+}
 
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
@@ -48,4 +56,23 @@ frc2::CommandPtr IDrivebase::sysIdQuasistatic(
 
 frc2::CommandPtr IDrivebase::sysIdDynamic(frc2::sysid::Direction direction) {
   return m_sysIdRoutine.Dynamic(direction);
+}
+
+void IDrivebase::arcadeDrive(units::meters_per_second_t fSpeed,
+                             units::radians_per_second_t rSpeed) {
+  frc::ChassisSpeeds speeds;
+  speeds.vx = fSpeed;
+  speeds.omega = rSpeed;
+  const auto wheelSpeeds = m_kinematics.ToWheelSpeeds(speeds);
+
+  setMotorSpeeds_HAL(wheelSpeeds.left / RobotConstants::MAX_SPEED,
+                     wheelSpeeds.right / RobotConstants::MAX_SPEED);
+}
+
+double IDrivebase::convertVoltageToPercentSpeed(units::volt_t volts) {
+  const double voltageInput = frc::RobotController::GetInputVoltage();
+  const double metersPerSec = (volts.value() / voltageInput);
+  const double speedPercentage = m_voltageDeadbandEnforcer(
+      metersPerSec / RobotConstants::MAX_SPEED.value());
+  return speedPercentage;
 }

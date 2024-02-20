@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -33,7 +33,8 @@ class PivotIntakeAuto
   bool IsFinished() override;
 
  private:
-  frc::SlewRateLimiter<units::scalar> m_intakeSlewRateLimiter{1 / 1_s};
+  frc::SlewRateLimiter<units::dimensionless::scalar> m_intakeSlewRateLimiter{
+      1 / 1_s};
   IntakeDeployment& m_intakeDeployment;
   const double m_intakeDeploymentSpeed;
   const bool m_extending;

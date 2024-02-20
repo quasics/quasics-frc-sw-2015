@@ -8,7 +8,13 @@
 
 #include <iostream>
 
-IntakeDeployment::IntakeDeployment() {
+#include "Constants.h"
+
+IntakeDeployment::IntakeDeployment()
+    : m_intakeDeployment{MotorIds::SparkMax::INTAKE_DEPLOYMENT_MOTOR,
+                         rev::CANSparkMax::MotorType::kBrushless},
+      m_ExtendIntakeLimitSwitch{DigitalInput::INTAKE_EXTEND_LIMIT_SWITCH_ID},
+      m_RetractIntakeLimitSwitch{DigitalInput::INTAKE_RETRACT_LIMIT_SWITCH_ID} {
   SetName("IntakeDeployment");
 }
 

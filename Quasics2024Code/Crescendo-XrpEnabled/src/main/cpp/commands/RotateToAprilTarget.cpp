@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -12,21 +12,23 @@
 #include <cmath>
 #include <iostream>
 
-// This uses a copy of the PID Rotate command
-// TODO: Talk to Mr. Healy about a better way to use the PIDRotate command in
-// this command
+#include "Constants.h"
 
+// This uses a copy of the PID Rotate command
+// TODO: Talk to Mr. Healy about a better way to share code between the
+// PIDRotate command and this one.
 RotateToAprilTarget::RotateToAprilTarget(IDrivebase& drivebase, Vision& vision,
                                          int ID)
-    : m_drivebase(drivebase), m_ID(ID), m_vision(vision) {
+    : m_drivebase(drivebase),
+      m_ID(ID),
+      m_vision(vision),
+      m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
+            PIDTurningConstants::kD} {
   AddRequirements({&m_drivebase, &m_vision});
 }
 
 // Called when the command is initially scheduled.
 void RotateToAprilTarget::Initialize() {
-  m_activatePID = false;
-  m_rotationCorrection = 0_deg_per_s;
-  m_speed = 1_deg_per_s;
   m_pid.Reset();
   m_pid.SetTolerance(ANGLE_TOLERANCE, VELOCITY_TOLERANCE);
   m_pid.EnableContinuousInput(-180, 180);
@@ -39,13 +41,14 @@ void RotateToAprilTarget::Execute() {
     return;
   }
   auto target = possibleTarget.value();
-  m_rotationCorrection = PIDTurningConstants::PID_multiplier *
-                         (m_pid.Calculate(-target.GetYaw(), 0));
+  units::degrees_per_second_t rotationCorrection =
+      PIDTurningConstants::PID_multiplier *
+      (m_pid.Calculate(-target.GetYaw(), 0));
 
-  if (m_rotationCorrection >= 0_deg_per_s) {
-    m_drivebase.arcadeDrive(0_mps, m_rotationCorrection + 2_deg_per_s);
+  if (rotationCorrection >= 0_deg_per_s) {
+    m_drivebase.arcadeDrive(0_mps, rotationCorrection + 2_deg_per_s);
   } else {
-    m_drivebase.arcadeDrive(0_mps, m_rotationCorrection - 2_deg_per_s);
+    m_drivebase.arcadeDrive(0_mps, rotationCorrection - 2_deg_per_s);
   }
 }
 

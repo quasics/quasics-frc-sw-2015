@@ -1,4 +1,4 @@
-// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,7 +7,7 @@
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/LinearActuators.h"
+#include "subsystems/Lighting.h"
 
 /**
  * An example command.
@@ -16,14 +16,15 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class MoveLinearActuators
-    : public frc2::CommandHelper<frc2::Command, MoveLinearActuators> {
+class DirectionalLighting
+    : public frc2::CommandHelper<frc2::Command, DirectionalLighting> {
  public:
-  MoveLinearActuators(LinearActuators& LinearActuators, bool exetending);
+  DirectionalLighting(Lighting& lighting);
 
-  void Initialize() override;
+  void Execute() override;
+
+  void End(bool interrupted) override;
 
  private:
-  LinearActuators& m_linearActuators;
-  bool m_extending;
+  Lighting& m_lighting;
 };

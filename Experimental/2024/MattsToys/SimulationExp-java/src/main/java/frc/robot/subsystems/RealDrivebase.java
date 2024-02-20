@@ -129,6 +129,16 @@ public class RealDrivebase extends AbstractDrivebase {
     return (m_leftLeader != null) && (m_rightLeader != null);
   }
 
+  public void periodic() {
+    super.periodic();
+    // TODO: Add checks for [sticky] faults (referencing CANSparkBase.FaultID).
+    // CANSparkBase.FaultID foo;
+    // m_leftFront.getStickyFault(CANSparkBase.FaultID.kBrownout)
+    //
+    // See
+    // https://codedocs.revrobotics.com/java/com/revrobotics/cansparkbase.faultid
+  }
+
   /**
    * Tell the motors to coast (or brake) if they're not being told how fast to
    * go (e.g., when the robot is disabled, or not being driven in auto mode).

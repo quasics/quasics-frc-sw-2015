@@ -4,7 +4,9 @@
 
 #include "subsystems/ShooterAngleAdjustment.h"
 
-ShooterAngleAdjustment::ShooterAngleAdjustment() = default;
+ShooterAngleAdjustment::ShooterAngleAdjustment() {
+  SetName("ShooterAngleAdjustment");
+}
 
 // This method will be called once per scheduler run
 void ShooterAngleAdjustment::Periodic() {

@@ -8,8 +8,6 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-#include "Constants.h"
-
 /**
  * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
  *
@@ -37,13 +35,9 @@ class Shooter : public frc2::SubsystemBase {
  private:
   // Data members.
  private:
-  rev::CANSparkMax m_flyWheel{
-      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
-      rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_flyWheel;
 
   // TODO: (Matthew) If it's a follower, why do you need to talk to it?  (In
   // other words, we shouldn't need this 2nd object.)
-  rev::CANSparkMax m_flyWheelTwo{
-      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
-      rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_flyWheelTwo;
 };

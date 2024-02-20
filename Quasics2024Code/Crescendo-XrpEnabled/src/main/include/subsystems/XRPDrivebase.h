@@ -11,8 +11,6 @@
 #include <frc/xrp/XRPGyro.h>
 #include <frc/xrp/XRPMotor.h>
 
-#include "sensors/IGyro.h"
-#include "sensors/TrivialEncoder.h"
 #include "subsystems/IDrivebase.h"
 
 class XRPDrivebase : public IDrivebase {

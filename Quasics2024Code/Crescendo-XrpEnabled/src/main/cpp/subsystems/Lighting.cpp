@@ -42,6 +42,10 @@ Lighting::Lighting() {
   m_led.SetData(m_ledBuffer);
   } */
 
+int Lighting::GetNumberOfLEDs() {
+  return LightingValues::PIXEL_NUMBER;
+}
+
 // This method will be called once per scheduler run
 void Lighting::Periodic() {
 }

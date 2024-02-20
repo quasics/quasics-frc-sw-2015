@@ -6,7 +6,13 @@
 
 #include <units/time.h>
 
-Shooter::Shooter() {
+#include "Constants.h"
+
+Shooter::Shooter()
+    : m_flyWheel{MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
+                 rev::CANSparkMax::MotorType::kBrushless},
+      m_flyWheelTwo{MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
+                    rev::CANSparkMax::MotorType::kBrushless} {
   SetName("Shooter");
 }
 

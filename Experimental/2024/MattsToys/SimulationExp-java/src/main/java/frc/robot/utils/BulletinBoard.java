@@ -10,16 +10,18 @@ import java.util.Optional;
 
 /** Add your docs here. */
 public class BulletinBoard {
-  private static Map<String, Object> values = new HashMap<String, Object>();
+  public static final BulletinBoard common = new BulletinBoard();
 
-  public static synchronized Optional<Object> getValue(String key) {
+  private Map<String, Object> values = new HashMap<String, Object>();
+
+  public synchronized Optional<Object> getValue(String key) {
     if (!values.containsKey(key)) {
       return Optional.empty();
     }
     return Optional.of(values.get(key));
   }
 
-  public static synchronized Optional<Object> getValue(String key, Class<?> type) {
+  public synchronized Optional<Object> getValue(String key, Class<?> type) {
     if (!values.containsKey(key)) {
       return Optional.empty();
     }
@@ -31,11 +33,11 @@ public class BulletinBoard {
     return Optional.of(values.get(key));
   }
 
-  public static synchronized void clearValue(String key) {
+  public synchronized void clearValue(String key) {
     values.remove(key);
   }
 
-  public static synchronized void updateValue(String key, Object value) {
+  public synchronized void updateValue(String key, Object value) {
     values.put(key, value);
   }
 }

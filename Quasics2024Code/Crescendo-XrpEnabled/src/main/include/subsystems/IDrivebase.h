@@ -13,7 +13,6 @@
 #include <units/velocity.h>
 #include <units/voltage.h>
 
-#include "Constants.h"
 #include "sensors/IGyro.h"
 #include "sensors/TrivialEncoder.h"
 #include "utils/DeadBandEnforcer.h"
@@ -31,15 +30,7 @@ class IDrivebase : public frc2::SubsystemBase {
 
  public:
   void arcadeDrive(units::meters_per_second_t fSpeed,
-                   units::radians_per_second_t rSpeed) {
-    frc::ChassisSpeeds speeds;
-    speeds.vx = fSpeed;
-    speeds.omega = rSpeed;
-    const auto wheelSpeeds = m_kinematics.ToWheelSpeeds(speeds);
-
-    setMotorSpeeds_HAL(wheelSpeeds.left / RobotConstants::MAX_SPEED,
-                       wheelSpeeds.right / RobotConstants::MAX_SPEED);
-  }
+                   units::radians_per_second_t rSpeed);
 
   frc2::CommandPtr sysIdQuasistatic(frc2::sysid::Direction direction);
   frc2::CommandPtr sysIdDynamic(frc2::sysid::Direction direction);
@@ -130,13 +121,7 @@ class IDrivebase : public frc2::SubsystemBase {
           this}};
 
  protected:
-  static double convertVoltageToPercentSpeed(units::volt_t volts) {
-    const double voltageInput = frc::RobotController::GetInputVoltage();
-    const double metersPerSec = (volts.value() / voltageInput);
-    const double speedPercentage = m_voltageDeadbandEnforcer(
-        metersPerSec / RobotConstants::MAX_SPEED.value());
-    return speedPercentage;
-  }
+  static double convertVoltageToPercentSpeed(units::volt_t volts);
 
   static units::volt_t convertPercentSpeedToVoltage(double percentSpeed) {
     const double referenceVoltage = frc::RobotController::GetInputVoltage();
@@ -168,10 +153,5 @@ class IDrivebase : public frc2::SubsystemBase {
 
  private:
   static DeadBandEnforcer m_voltageDeadbandEnforcer;
-  // TODO: (Rylie) Please confirm that this is the actual track width for
-  // Margaret. (And you should also figure out how we can make sure that it's
-  // not going to be a problem if we switch to a drive base with a different
-  // size (like Mae or Sally) for testing.)
-  const frc::DifferentialDriveKinematics m_kinematics{
-      TRACK_WIDTH_METERS_MARGARET};
+  const frc::DifferentialDriveKinematics m_kinematics;
 };

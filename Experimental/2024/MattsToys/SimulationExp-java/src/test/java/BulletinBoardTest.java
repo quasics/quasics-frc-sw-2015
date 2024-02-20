@@ -1,5 +1,6 @@
 // See discussions of unit testing in:
 // * https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/unit-testing.html
+// * https://www.tutorialspoint.com/junit/index.htm
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -39,13 +40,13 @@ public class BulletinBoardTest {
 
   @Test
   void successfulRetrievalAfterInsertion() {
-    final String key1 = "key1";
-    final String key2 = "key2";
+    final String stringKey = "key1";
+    final String poseKey = "key2";
     final String uninsertedKey = "uninserted";
 
-    board.updateValue(key1, "1");
+    board.updateValue(stringKey, "1");
     board.updateValue(
-        key2,
+        poseKey,
         new Pose2d(
             Meters.of(1),
             Meters.of(1),
@@ -53,13 +54,13 @@ public class BulletinBoardTest {
 
     assertEquals(
         Optional.of("1"),
-        board.getValue(key1));
+        board.getValue(stringKey));
     assertEquals(
         Optional.of("1"),
-        board.getValue(key1, String.class));
+        board.getValue(stringKey, String.class));
     assertEquals(
         Optional.empty(),
-        board.getValue(key1, Pose2d.class));
+        board.getValue(stringKey, Pose2d.class));
 
     assertEquals(
         Optional.of(
@@ -67,17 +68,17 @@ public class BulletinBoardTest {
                 Meters.of(1),
                 Meters.of(1),
                 new Rotation2d(Degrees.of(1)))),
-        board.getValue(key2));
+        board.getValue(poseKey));
     assertEquals(
         Optional.of(
             new Pose2d(
                 Meters.of(1),
                 Meters.of(1),
                 new Rotation2d(Degrees.of(1)))),
-        board.getValue(key2, Pose2d.class));
+        board.getValue(poseKey, Pose2d.class));
     assertEquals(
         Optional.empty(),
-        board.getValue(key2, String.class));
+        board.getValue(poseKey, String.class));
 
     // Putting something onto the board doesn't impact uninserted keys, right?
     assertEquals(

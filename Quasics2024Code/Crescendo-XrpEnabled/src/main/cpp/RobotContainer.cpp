@@ -481,11 +481,13 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
 }
 
 void RobotContainer::AddDriveTestButtonsToDashboard() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData(
       "Extend Intake Auto", new PivotIntakeAuto(m_intakeDeployment, .5, true));
   frc::SmartDashboard::PutData(
       "Retract Intake Auto",
       new PivotIntakeAuto(m_intakeDeployment, .5, false));
+#endif
   frc::SmartDashboard::PutData(
       "Reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));

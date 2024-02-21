@@ -206,7 +206,7 @@ void RobotContainer::SetDefaultIntakeCommand() {
 void RobotContainer::RunCommandWhenDriverButtonIsPressed(
     int logitechButtonId, frc2::Command *command) {
   frc2::JoystickButton(&m_driverController, logitechButtonId)
-      .Debounce(100_ms, frc::Debouncer::DebounceType::kBoth)
+      .Debounce(50_ms, frc::Debouncer::DebounceType::kBoth)
       .OnTrue(command);
 }
 
@@ -487,8 +487,8 @@ void RobotContainer::AddDriveTestButtonsToDashboard() {
   frc::SmartDashboard::PutData(
       "Retract Intake Auto",
       new PivotIntakeAuto(m_intakeDeployment, .5, false));
-#endif
-  frc::SmartDashboard::PutData(
+
+#endif  frc::SmartDashboard::PutData(
       "Reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));
 

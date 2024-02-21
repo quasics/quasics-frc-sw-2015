@@ -4,36 +4,43 @@
 
 package frc.robot.subsystems;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import java.util.List;
+import java.util.LinkedList;
 
+/**
+ * Will drive one (or more) motors for testing purposes.
+ */
 public class SingleMotor extends SubsystemBase {
-  // Left motors
-  CANSparkMax m_motor1 = new CANSparkMax(1, MotorType.kBrushless);
-  CANSparkMax m_motor2 = new CANSparkMax(2, MotorType.kBrushless);
-  
-  // Right motors
-  CANSparkMax m_motor3 = new CANSparkMax(3, MotorType.kBrushless);
-  CANSparkMax m_motor4 = new CANSparkMax(4, MotorType.kBrushless);
+  // Motor set
+  List<CANSparkMax> m_motors = new LinkedList<CANSparkMax>();
 
-  //CANSparkMax m_motor5 = new CANSparkMax(5, MotorType.kBrushless);
-  // CANSparkMax m_motor6 = new CANSparkMax(6, MotorType.kBrushless);
-  /** Creates a new SingleMotor. */
-  public SingleMotor() {}
+  /** Creates a new SingleMotor subsystem. */
+  public SingleMotor() {
+    // Left motors
+    m_motors.add(new CANSparkMax(1, MotorType.kBrushless));
+    m_motors.add(new CANSparkMax(2, MotorType.kBrushless));
 
-  public void setPower(double percent) {
-    m_motor1.set(percent);
-    m_motor2.set(percent);
-    //m_motor5.set(-percent);
-    // m_motor6.set(-percent);
-    m_motor3.set(percent);
-    m_motor4.set(percent);
+    // Right motors
+    m_motors.add(new CANSparkMax(3, MotorType.kBrushless));
+    m_motors.add(new CANSparkMax(4, MotorType.kBrushless));
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  /**
+   * Sets power for the motor(s).
+   * 
+   * @param percent % power, in the range [-1.0, +1.0]
+   */
+  public void setPower(double percent) {
+    percent = min(1.0, max(-1.0, percent));
+    for (var motor : m_motors) {
+      motor.set(percent);
+    }
   }
 }

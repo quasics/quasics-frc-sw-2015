@@ -284,6 +284,11 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    if (visionSim == null) {
+      // In case there is no camera....
+      return;
+    }
+
     BulletinBoard.common
         .getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
         .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));

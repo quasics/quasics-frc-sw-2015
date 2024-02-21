@@ -18,7 +18,7 @@ import java.util.LinkedList;
  * Will drive one (or more) motors for testing purposes.
  */
 public class SingleMotor extends SubsystemBase {
-  // Motor set
+  // Motor set: anything added to this list gets controlled.
   List<CANSparkMax> m_motors = new LinkedList<CANSparkMax>();
 
   /** Creates a new SingleMotor subsystem. */

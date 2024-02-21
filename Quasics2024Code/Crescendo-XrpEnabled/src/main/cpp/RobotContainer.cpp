@@ -488,8 +488,7 @@ void RobotContainer::AddDriveTestButtonsToDashboard() {
       "Retract Intake Auto",
       new PivotIntakeAuto(m_intakeDeployment, .5, false));
 
-#endif
-  frc::SmartDashboard::PutData(
+#endif  frc::SmartDashboard::PutData(
       "Reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));
 

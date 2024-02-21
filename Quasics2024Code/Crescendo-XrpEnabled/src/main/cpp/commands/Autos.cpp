@@ -71,6 +71,23 @@ namespace AutonomousCommands {
           .ToPtr();
     }
 
+    frc2::CommandPtr ShootingSequenceWithoutWait(
+        IntakeDeployment &intakeDeployment, IntakeRoller &intakeRoller,
+        Shooter &shooter, bool amp) {
+      std::vector<frc2::CommandPtr> commands;
+      // this command is the same as ShootingSequence, but will not wait to run
+      // the shooter. Assumes the shooter has already been running before
+      // calling this command
+      commands.push_back(frc2::CommandPtr(RunShooterTimed(
+          shooter, (amp ? ShooterSpeeds::amp : ShooterSpeeds::speaker), 1.25_s,
+          true)));
+      commands.push_back(
+          frc2::CommandPtr(RunIntakeTimed(intakeRoller, .5, 1.25_s, false)));
+      return frc2::ParallelRaceGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+
     frc2::CommandPtr extendThenRunIntake(IntakeDeployment &intakeDeployment,
                                          IntakeRoller &intakeRoller) {
       std::vector<frc2::CommandPtr> commands;

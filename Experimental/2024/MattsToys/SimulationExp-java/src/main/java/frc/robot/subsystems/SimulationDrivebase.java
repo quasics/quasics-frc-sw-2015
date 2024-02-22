@@ -204,4 +204,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // Publish the data for any that need it.
     BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY, m_drivetrainSimulator.getPose());
   }
+
+  protected double getLeftVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_leftLeader.get());
+  }
+
+  protected double getRightVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_rightLeader.get());
+  }
 }

@@ -434,6 +434,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speedPercentage;
   }
 
+  // Only for use in simulator-based runs....
+  protected static double convertPercentSpeedToVoltage(double percentSpeed) {
+    return percentSpeed * RobotController.getBatteryVoltage();
+  }
+
   // TODO: Think about replacing "double" with something type-safe. (Using
   // Measure<Dimensionless> won't work unless I change the function name.)
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
@@ -459,6 +464,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   protected abstract double getLeftSpeedPercentage_HAL();
 
   protected abstract double getRightSpeedPercentage_HAL();
+
+  protected abstract double getLeftVoltage_HAL();
+
+  protected abstract double getRightVoltage_HAL();
 
   protected abstract void tankDrivePercent_HAL(double leftPercent, double rightPercent);
 
@@ -495,12 +504,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           // Tell SysId how to record a frame of data for each motor on the
           // mechanism being characterized.
           log -> {
+            final var leftVolts = getLeftVoltage_HAL();
+            final var rightVolts = getRightVoltage_HAL();
+            System.err.println("Logging volts: left=" + leftVolts + ", right=" + rightVolts);
+
             // Record a frame for the left motors. Since these share an encoder,
             // we consider the entire group to be one motor.
             log.motor("drive-left")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getLeftSpeedPercentage_HAL() *
-                        RobotController.getBatteryVoltage(),
+                    leftVolts,
                     Volts))
                 .linearPosition(getLeftEncoder_HAL().getPosition())
                 .linearVelocity(getLeftEncoder_HAL().getVelocity());
@@ -508,8 +520,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getRightSpeedPercentage_HAL() *
-                        RobotController.getBatteryVoltage(),
+                    rightVolts,
                     Volts))
                 .linearPosition(getRightEncoder_HAL().getPosition())
                 .linearVelocity(getRightEncoder_HAL().getVelocity());

@@ -104,4 +104,12 @@ public class RomiDrivebase extends AbstractDrivebase {
     logValue("Left percent", leftPercent);
     logValue("Right percent", rightPercent);
   }
+
+  protected double getLeftVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_leftMotor.get());
+  }
+
+  protected double getRightVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_rightMotor.get());
+  }
 }

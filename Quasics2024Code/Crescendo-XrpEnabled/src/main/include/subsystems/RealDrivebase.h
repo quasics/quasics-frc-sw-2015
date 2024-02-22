@@ -57,6 +57,8 @@ class RealDrivebase : public IDrivebase {
 
   rev::CANSparkMax m_leftBack;
   rev::CANSparkMax m_rightBack;
+  rev::CANSparkMax m_leftBackFollower;
+  rev::CANSparkMax m_rightBackFollower;
 
   rev::SparkRelativeEncoder m_leftBackEncoder =
       m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);

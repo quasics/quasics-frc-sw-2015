@@ -497,7 +497,7 @@ void RobotContainer::AddDriveTestButtonsToDashboard() {
                                  m_drivebase->resetOdometry(frc::Pose2d());
                                }));
 
-  frc::SmartDashboard::PutData(
+    frc::SmartDashboard::PutData(
       "Reset Odometry(via command) to (3,6)",
       new SetRobotOdometry(*m_drivebase, frc::Pose2d(3_m, 6_m, 0_rad)));
 

@@ -504,29 +504,26 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           // Tell SysId how to record a frame of data for each motor on the
           // mechanism being characterized.
           log -> {
-            final var leftVolts = getLeftVoltage_HAL();
-            final var rightVolts = getRightVoltage_HAL();
-            System.err.println("Logging volts: left=" + leftVolts + ", right=" + rightVolts);
+            var leftEncoder = getLeftEncoder_HAL();
+            var rightEncoder = getRightEncoder_HAL();
 
             // Record a frame for the left motors. Since these share an encoder,
             // we consider the entire group to be one motor.
             log.motor("drive-left")
                 .voltage(m_appliedVoltage.mut_replace(
-                    leftVolts,
-                    Volts))
-                .linearPosition(getLeftEncoder_HAL().getPosition())
-                .linearVelocity(getLeftEncoder_HAL().getVelocity());
+                    getLeftVoltage_HAL(), Volts))
+                .linearPosition(leftEncoder.getPosition())
+                .linearVelocity(leftEncoder.getVelocity());
             // Record a frame for the right motors. Since these share an
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(m_appliedVoltage.mut_replace(
-                    rightVolts,
-                    Volts))
-                .linearPosition(getRightEncoder_HAL().getPosition())
-                .linearVelocity(getRightEncoder_HAL().getVelocity());
+                    getRightVoltage_HAL(), Volts))
+                .linearPosition(rightEncoder.getPosition())
+                .linearVelocity(rightEncoder.getVelocity());
           },
           // Tell SysId to make generated commands require this subsystem,
-          // suffix test state in WPILog with this subsystem's name ("drive")
+          // suffix test state in WPILog with this subsystem's name (e.g., "drive")
           this));
 
   /**

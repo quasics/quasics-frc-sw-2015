@@ -180,13 +180,11 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected double getLeftVoltage_HAL() {
-    return (m_leftLeader != null ? m_leftLeader : m_leftRear).get() *
-        RobotController.getBatteryVoltage();
+    return (m_leftLeader != null ? m_leftLeader : m_leftRear).getBusVoltage();
   }
 
   protected double getRightVoltage_HAL() {
-    return (m_rightLeader != null ? m_rightLeader : m_rightRear).get() *
-        RobotController.getBatteryVoltage();
+    return (m_rightLeader != null ? m_rightLeader : m_rightRear).getBusVoltage();
   }
 
   protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {

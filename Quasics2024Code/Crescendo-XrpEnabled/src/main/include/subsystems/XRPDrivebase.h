@@ -37,6 +37,14 @@ class XRPDrivebase : public IDrivebase {
     return m_rightXrpMotor.Get();
   }
 
+  virtual units::volt_t getLeftVoltage_HAL() override {
+    return m_leftXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
+  }
+
+  virtual units::volt_t getRightVoltage_HAL() override {
+    return m_rightXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
+  }
+
   virtual TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
   }

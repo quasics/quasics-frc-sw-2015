@@ -45,8 +45,17 @@ class SimulatedDrivebase : public IDrivebase {
   double getLeftSpeedPercentage_HAL() override {
     return m_leftMotor.Get();
   }
+
   double getRightSpeedPercentage_HAL() override {
     return m_rightMotor.Get();
+  }
+
+  virtual units::volt_t getLeftVoltage_HAL() override {
+    return m_leftMotor.Get() * frc::RobotController::GetBatteryVoltage();
+  }
+
+  virtual units::volt_t getRightVoltage_HAL() override {
+    return m_rightMotor.Get() * frc::RobotController::GetBatteryVoltage();
   }
 
   frc::DifferentialDriveOdometry& getOdometry_HAL() override {

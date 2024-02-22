@@ -13,13 +13,7 @@
 
 #undef USE_DYNAMIC_DATA_FROM_DASHBOARD
 
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+// TODO: (CODE_REVIEW) Add comments.
 class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
  public:
   PIDRotate(IDrivebase& drivebase, units::degree_t angle);

@@ -11,13 +11,7 @@
 
 #include "subsystems/IntakeDeployment.h"
 
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending Command
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+// TODO: (CODE_REVIEW) Add comments.
 class PivotIntakeAuto
     : public frc2::CommandHelper<frc2::Command, PivotIntakeAuto> {
  public:

@@ -7,6 +7,7 @@
 #include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+#include <units/voltage.h>
 
 #include <ctre/phoenix6/Pigeon2.hpp>
 
@@ -39,8 +40,17 @@ class RealDrivebase : public IDrivebase {
   double getLeftSpeedPercentage_HAL() override {
     return m_leftBack.Get();
   }
+
   double getRightSpeedPercentage_HAL() override {
     return m_rightBack.Get();
+  }
+
+  virtual units::volt_t getLeftVoltage_HAL() override {
+    return m_leftBack.GetBusVoltage() * 1.0_V;
+  }
+
+  virtual units::volt_t getRightVoltage_HAL() override {
+    return m_rightBack.GetBusVoltage() * 1.0_V;
   }
 
   frc::DifferentialDriveOdometry& getOdometry_HAL() override {

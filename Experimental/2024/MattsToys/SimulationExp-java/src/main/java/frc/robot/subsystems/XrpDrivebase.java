@@ -151,4 +151,12 @@ public class XrpDrivebase extends AbstractDrivebase {
     logValue("Left volts", leftPercent);
     logValue("Right volts", rightPercent);
   }
+
+  protected double getLeftVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_leftMotor.get());
+  }
+
+  protected double getRightVoltage_HAL() {
+    return convertPercentSpeedToVoltage(m_rightMotor.get());
+  }
 }

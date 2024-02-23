@@ -108,13 +108,11 @@ class IDrivebase : public frc2::SubsystemBase {
           },
           [this](frc::sysid::SysIdRoutineLog* log) {
             log->Motor("drive-left")
-                .voltage(getLeftSpeedPercentage_HAL() *
-                         frc::RobotController::GetBatteryVoltage())
+                .voltage(getLeftVoltage_HAL())
                 .position(getLeftEncoder_HAL().getPosition())
                 .velocity(getLeftEncoder_HAL().getVelocity());
             log->Motor("drive-right")
-                .voltage(getRightSpeedPercentage_HAL() *
-                         frc::RobotController::GetBatteryVoltage())
+                .voltage(getLeftVoltage_HAL())
                 .position(getRightEncoder_HAL().getPosition())
                 .velocity(getRightEncoder_HAL().getVelocity());
           },
@@ -147,6 +145,9 @@ class IDrivebase : public frc2::SubsystemBase {
 
   virtual double getLeftSpeedPercentage_HAL() = 0;
   virtual double getRightSpeedPercentage_HAL() = 0;
+
+  virtual units::volt_t getLeftVoltage_HAL() = 0;
+  virtual units::volt_t getRightVoltage_HAL() = 0;
 
   virtual TrivialEncoder& getLeftEncoder_HAL() = 0;
   virtual TrivialEncoder& getRightEncoder_HAL() = 0;

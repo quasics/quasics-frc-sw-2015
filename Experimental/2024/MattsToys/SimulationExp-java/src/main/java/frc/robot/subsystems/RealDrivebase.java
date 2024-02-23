@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -176,6 +177,14 @@ public class RealDrivebase extends AbstractDrivebase {
 
   protected double getRightSpeedPercentage_HAL() {
     return (m_rightLeader != null ? m_rightLeader : m_rightRear).get();
+  }
+
+  protected double getLeftVoltage_HAL() {
+    return (m_leftLeader != null ? m_leftLeader : m_leftRear).getBusVoltage();
+  }
+
+  protected double getRightVoltage_HAL() {
+    return (m_rightLeader != null ? m_rightLeader : m_rightRear).getBusVoltage();
   }
 
   protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {

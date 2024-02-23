@@ -13,7 +13,10 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
+import java.text.DecimalFormat;
 import java.util.Optional;
+
+import javax.swing.text.AbstractDocument.LeafElement;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -404,6 +407,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public void periodic() {
     updateOdometry();
 
+    // Log velocity and position data (if enabled).
+    logValue("L-Pos", getLeftEncoder_HAL().getPosition().baseUnitMagnitude());
+    logValue("L-Vel", getLeftEncoder_HAL().getVelocity().baseUnitMagnitude());
+    logValue("R-Pos", getRightEncoder_HAL().getPosition().baseUnitMagnitude());
+    logValue("R-Vel", getRightEncoder_HAL().getVelocity().baseUnitMagnitude());
+
     // If an estimated position has been posted by the vision subsystem, integrate
     // it into our estimate.
     Optional<Object> optionalPose = BulletinBoard.common.getValue(VisionSubsystem.BULLETIN_BOARD_POSE_KEY,
@@ -434,6 +443,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speedPercentage;
   }
 
+  // Only for use in simulator-based runs....
+  protected static double convertPercentSpeedToVoltage(double percentSpeed) {
+    return percentSpeed * RobotController.getBatteryVoltage();
+  }
+
   // TODO: Think about replacing "double" with something type-safe. (Using
   // Measure<Dimensionless> won't work unless I change the function name.)
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
@@ -460,6 +474,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected abstract double getRightSpeedPercentage_HAL();
 
+  protected abstract double getLeftVoltage_HAL();
+
+  protected abstract double getRightVoltage_HAL();
+
   protected abstract void tankDrivePercent_HAL(double leftPercent, double rightPercent);
 
   /**
@@ -481,6 +499,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
 
+  private static final boolean DUMP_SYSID_TO_CONSOLE = true;
+
   // Create a new SysId routine for characterizing the drive.
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       // Empty config defaults to 1 volt/second ramp rate and 7 volt step
@@ -495,27 +515,41 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           // Tell SysId how to record a frame of data for each motor on the
           // mechanism being characterized.
           log -> {
+            final var leftEncoder = getLeftEncoder_HAL();
+            final var rightEncoder = getRightEncoder_HAL();
+            final var leftVoltage = getLeftVoltage_HAL();
+            final var rightVoltage = getRightVoltage_HAL();
+
+            if (DUMP_SYSID_TO_CONSOLE) {
+              System.err.println(
+                  "Logging "
+                      + "left="
+                      + String.format("%,.3f", leftVoltage) + "V, "
+                      + String.format("%,.3f", leftEncoder.getPosition().baseUnitMagnitude()) + "m, "
+                      + String.format("%,.3f", leftEncoder.getVelocity().baseUnitMagnitude()) + "m/s   "
+                      + "right="
+                      + String.format("%,.3f", rightVoltage) + "V, "
+                      + String.format("%,.3f", rightEncoder.getPosition().baseUnitMagnitude()) + "m, "
+                      + String.format("%,.3f", rightEncoder.getVelocity().baseUnitMagnitude()) + "m/s");
+            }
+
             // Record a frame for the left motors. Since these share an encoder,
             // we consider the entire group to be one motor.
             log.motor("drive-left")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getLeftSpeedPercentage_HAL() *
-                        RobotController.getBatteryVoltage(),
-                    Volts))
-                .linearPosition(getLeftEncoder_HAL().getPosition())
-                .linearVelocity(getLeftEncoder_HAL().getVelocity());
+                    leftVoltage, Volts))
+                .linearPosition(leftEncoder.getPosition())
+                .linearVelocity(leftEncoder.getVelocity());
             // Record a frame for the right motors. Since these share an
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
                 .voltage(m_appliedVoltage.mut_replace(
-                    getRightSpeedPercentage_HAL() *
-                        RobotController.getBatteryVoltage(),
-                    Volts))
-                .linearPosition(getRightEncoder_HAL().getPosition())
-                .linearVelocity(getRightEncoder_HAL().getVelocity());
+                    rightVoltage, Volts))
+                .linearPosition(rightEncoder.getPosition())
+                .linearVelocity(rightEncoder.getVelocity());
           },
           // Tell SysId to make generated commands require this subsystem,
-          // suffix test state in WPILog with this subsystem's name ("drive")
+          // suffix test state in WPILog with this subsystem's name (e.g., "drive")
           this));
 
   /**

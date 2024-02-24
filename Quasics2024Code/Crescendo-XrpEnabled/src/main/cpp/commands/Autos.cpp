@@ -139,7 +139,7 @@ namespace AutonomousCommands {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(GetCommandForTrajectory(pathName, drivebase));
       commands.push_back(extendThenRunIntake(intakeDeployment, intakeRoller));
-      return frc2::ParallelCommandGroup(
+      return frc2::ParallelRaceGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
     }

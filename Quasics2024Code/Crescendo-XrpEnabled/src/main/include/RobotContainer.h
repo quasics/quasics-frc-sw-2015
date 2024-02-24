@@ -48,7 +48,7 @@ class RobotContainer {
 
   // Functions to bind commands to the driver/operator controllers.
  private:
-  void SetDefaultIntakeCommand();
+  void SetDefaultShooterCommand();
 
   void RunCommandWhenDriverButtonIsPressed(int logitechButtonId,
                                            frc2::Command* command);

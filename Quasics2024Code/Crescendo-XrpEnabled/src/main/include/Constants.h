@@ -133,8 +133,8 @@ namespace DigitalInput {
 // PWM ports 0-9 are on-board, 10-19 are on the MXP port.
 namespace PWMPorts {
   constexpr int LIGHTING_PORT = 1;
-  constexpr int LEFT_SERVO = 3;
-  constexpr int RIGHT_SERVO = 4;
+  constexpr int LEFT_SERVO = 5;
+  constexpr int RIGHT_SERVO = 6;
   constexpr int SIMULATED_LEFT_MOTOR_PORT = 18;
   constexpr int SIMULATED_RIGHT_MOTOR_PORT = 19;
 }  // namespace PWMPorts

@@ -20,6 +20,7 @@
 #include "commands/ArcadeDrive.h"
 #include "commands/Autos.h"
 #include "commands/MoveClimbers.h"
+#include "commands/MoveClimbersAuto.h"
 #include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
 #include "commands/PivotIntake.h"
@@ -33,6 +34,7 @@
 #include "commands/TankDrive.h"
 #include "commands/TimedMovementTest.h"
 #include "commands/TriggerBasedIntaking.h"
+#include "commands/TriggerBasedShooting.h"
 #include "commands/Wait.h"
 #include "subsystems/RealDrivebase.h"
 #include "subsystems/SimulatedDrivebase.h"
@@ -53,6 +55,8 @@ RobotContainer::RobotContainer() {
   ConfigureOperatorControllerButtonBindings();
 
   AddTestButtonsOnSmartDashboard();
+
+  SetDefaultShooterCommand();
 
 #ifdef ENABLE_INTAKE_TESTING
   AddIntakeTestButtonsToDashboard();
@@ -191,13 +195,18 @@ void RobotContainer::setUpArcadeDrive() {
     const double scalingFactor = GetDriveSpeedScalingFactor();
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis);
-    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor * -1;
+    return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor * -1 *
+           0.75;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
 }
 
-void RobotContainer::SetDefaultIntakeCommand() {
+void RobotContainer::SetDefaultShooterCommand() {
+  TriggerBasedShooting triggerBasedShooterCommand(m_shooter,
+                                                  &m_operatorController);
+
+  m_shooter.SetDefaultCommand(std::move(triggerBasedShooterCommand));
   /*TriggerBasedIntaking triggerBasedIntakeCommand(m_intakeRoller,
                                                  &m_driverController);
   m_intakeRoller.SetDefaultCommand(std::move(triggerBasedIntakeCommand));*/
@@ -232,8 +241,8 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   static MoveClimbers extendClimbers(m_climber, true);
   static MoveClimbers retractClimbers(m_climber, false);
-  static RunIntake intakeNote(m_intakeRoller, 1.00, true);
-  static RunIntake dropNote(m_intakeRoller, 1.00, false);
+  static RunIntake intakeNote(m_intakeRoller, 0.75, true);
+  static RunIntake dropNote(m_intakeRoller, 0.75, false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);
@@ -487,6 +496,8 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
                                new MoveClimbers(m_climber, true));
   frc::SmartDashboard::PutData("Retract Climbers",
                                new MoveClimbers(m_climber, false));
+  frc::SmartDashboard::PutData("Auto Extend Climbers",
+                               new MoveClimbersAuto(m_climber, true));
 }
 #endif
 void RobotContainer::AddVisionTestButtonsToDashboard() {

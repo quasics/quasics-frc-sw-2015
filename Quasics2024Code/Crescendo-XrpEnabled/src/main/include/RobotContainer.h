@@ -81,8 +81,13 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
-  frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
-  frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
+      units::second_t time);
+  // adjusting the version for button binding
+  // frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
+  // frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::SequentialCommandGroup* ExtendThenRetractActuatorsAfterTime(
+      units::second_t time);
 
   void AddClimberTestButtonsToDashboard();
 #endif

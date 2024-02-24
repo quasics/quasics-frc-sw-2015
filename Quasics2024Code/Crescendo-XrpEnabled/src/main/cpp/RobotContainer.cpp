@@ -252,6 +252,8 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
   // static RunShooter shootNote(m_shooter, 0.5, true);
   static RunShooter shootNote(m_shooter, 1.00, true);
+  static frc2::ParallelRaceGroup *ampSequence =
+      ShootInAmpThenRunActuatorAfterTime(1_s);
   static frc2::ParallelRaceGroup *shootSequence = ShootingSequence(false);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
@@ -263,7 +265,7 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     &shootNote);
+                                     ampSequence);
 #endif
 }
 
@@ -424,7 +426,7 @@ void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
     frc::SmartDashboard::PutData(sout.str(), cmd);
   }
 }
-
+/*altenative method below. Doing it this way so I can bind stuff
 frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
     units::second_t time) {
   std::vector<frc2::CommandPtr> commands;
@@ -437,20 +439,47 @@ frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
   return frc2::ParallelCommandGroup(
              frc2::CommandPtr::UnwrapVector(std::move(commands)))
       .ToPtr();
+}*/
+
+frc2::ParallelRaceGroup *RobotContainer::ShootInAmpThenRunActuatorAfterTime(
+    units::second_t time) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller, 0.08))));
+  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+      ExtendThenRetractActuatorsAfterTime(time))));
+
+  return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
-frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
-    units::second_t time) {
-  std::vector<frc2::CommandPtr> commands;
-  commands.push_back(frc2::CommandPtr(Wait(time)));
-  commands.push_back(
-      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
-  commands.push_back(
-      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
+// Making an alternative method for button binding purposes
 
-  return frc2::SequentialCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
+/*
+  frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
+      units::second_t time) {
+    std::vector<frc2::CommandPtr> commands;
+    commands.push_back(frc2::CommandPtr(Wait(time)));
+    commands.push_back(
+        frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
+    commands.push_back(
+        frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
+
+    return frc2::SequentialCommandGroup(
+               frc2::CommandPtr::UnwrapVector(std::move(commands)))
+        .ToPtr();
+  }*/
+
+frc2::SequentialCommandGroup *
+RobotContainer::ExtendThenRetractActuatorsAfterTime(units::second_t time) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(std::make_unique<Wait>(time));
+  commands.push_back(
+      std::make_unique<MoveLinearActuators>(m_linearActuators, true));
+  commands.push_back(
+      std::make_unique<MoveLinearActuators>(m_linearActuators, false));
+
+  return new frc2::SequentialCommandGroup(std::move(commands));
 }
 
 void RobotContainer::AddClimberTestButtonsToDashboard() {

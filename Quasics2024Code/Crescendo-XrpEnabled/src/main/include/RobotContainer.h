@@ -71,7 +71,7 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector);
   static void AddingNamedOverallOperationsToSelector(
       frc::SendableChooser<frc2::Command*>& selector);
-  static void AddingNamedScoreDestinationsToSelector(
+  static void AddingNamedScoreOptionsToSelector(
       frc::SendableChooser<frc2::Command*>& selector1,
       frc::SendableChooser<frc2::Command*>& selector2);
 
@@ -94,7 +94,7 @@ class RobotContainer {
   void AddAutoSelectionsToSmartDashboard();
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
-  void AddScoreDestinationsToSmartDashboard();
+  void AddScoreOptionsToSmartDashboard();
 
   // Driving support functions
  private:
@@ -140,7 +140,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
   // Choosers for configuring behavior in auto mode.
-  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_PositionAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score2DestAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score3DestAutonomousOptions;

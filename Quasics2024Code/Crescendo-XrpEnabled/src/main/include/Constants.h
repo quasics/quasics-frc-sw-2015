@@ -183,13 +183,24 @@ namespace AutonomousSelectedOperation {
   const auto score4 = "Score 4 piece";
 }  // namespace AutonomousSelectedOperation
 
-namespace AutonomousScoreDestinations {
+namespace AutonomousScore2Options {
   const auto none = "None";
   const auto amp = "Amp";
   const auto leftOfSpeaker = "Left of speaker";
   const auto inFrontOfSpeaker = "In front of speaker";
+  const auto rightOfSpeakerAllianceNote = "Right of speaker (alliance note)";
+  const auto rightOfSpeakerCenterNote = "Right of speaker (center note)";
+}  // namespace AutonomousScore2Options
+
+namespace AutonomousScore3Options {
+  const auto none = "None";
+  const auto amp = "Amp";
+  const auto leftOfSpeaker = "Left of speaker";
+  const auto inFrontOfSpeakerAmpNote = "In front of speaker (amp note)";
+  const auto inFrontOfSpeakerStageNote = "In front of speaker (stage note)";
+  const auto inFrontOfSpeakerCenterNote = "In front of speaker (center note)";
   const auto rightOfSpeaker = "Right of speaker";
-}  // namespace AutonomousScoreDestinations
+}  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {
   const double amp = 0.08;

@@ -67,6 +67,8 @@ class Climber : public frc2::SubsystemBase {
 
   void resetRevolutions();
 
+  void setRevolutions();
+
   /** Returns the climber's current status (operation). */
   Movement GetCurrentStatus();
 

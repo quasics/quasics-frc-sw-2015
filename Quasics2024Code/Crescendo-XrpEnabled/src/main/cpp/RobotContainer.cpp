@@ -196,7 +196,7 @@ void RobotContainer::setUpArcadeDrive() {
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis);
     return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor * -1 *
-           0.75;
+           0.5;
   };
   ArcadeDrive arcadeDrive(*m_drivebase, forwardSupplier, rotationSupplier);
   m_drivebase->SetDefaultCommand(std::move(arcadeDrive));
@@ -239,8 +239,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
       }));
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  static MoveClimbers extendClimbers(m_climber, true);
-  static MoveClimbers retractClimbers(m_climber, false);
+  // static MoveClimbers extendClimbers(m_climber, true);
+  // static MoveClimbers retractClimbers(m_climber, false);
+  static MoveClimbersAuto extendClimbers(m_climber, true);
+  static MoveClimbersAuto retractClimbers(m_climber, false);
   static RunIntake intakeNote(m_intakeRoller, 0.75, true);
   static RunIntake dropNote(m_intakeRoller, 0.75, false);
 
@@ -385,6 +387,9 @@ void RobotContainer::AddActuatorTestButtonsToDashboard() {
                                new frc2::InstantCommand([this]() {
                                  ShootInAmpThenRunActuatorAfterTime(1_s);
                                }));
+
+  frc::SmartDashboard::PutData("Extend then retract linear actuator after time",
+                               ExtendThenRetractActuatorsAfterTime(.75_s));
 }
 
 namespace {
@@ -515,6 +520,9 @@ void RobotContainer::AddTestButtonsOnSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Reset Climber Revolutions:",
       new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
+  frc::SmartDashboard::PutData(
+      "Set Climber Revolutions -5:",
+      new frc2::InstantCommand([this]() { m_climber.setRevolutions(); }));
 #endif
 
   frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",

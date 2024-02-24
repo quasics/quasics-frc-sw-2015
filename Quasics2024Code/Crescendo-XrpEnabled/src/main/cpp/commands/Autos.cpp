@@ -114,7 +114,7 @@ namespace AutonomousCommands {
       // used within a ParallelRaceGroup
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(std::move(frc2::CommandPtr(PivotIntakeAuto(
-          intakeDeployment, IntakeSpeeds::intakeDeploymentSpeed, true))));
+          intakeDeployment, IntakeSpeeds::intakeDeploymentSpeed, false))));
       commands.push_back(std::move(frc2::CommandPtr(Wait(100_s))));
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))

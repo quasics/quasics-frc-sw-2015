@@ -90,7 +90,7 @@ frc::SmartDashboard::PutString(
 }
 
 bool Climber::IsFullyExtended() {
-  if (getLeftRevolutions() < -5 && getRightRevolutions() < -5) {
+  if (getLeftRevolutions() < -3 && getRightRevolutions() < -3) {
     return true;
   }
   return false;
@@ -115,4 +115,9 @@ double Climber::getRightRevolutions() {
 void Climber::resetRevolutions() {
   m_leftEncoder.SetPosition(0);
   m_rightEncoder.SetPosition(0);
+}
+
+void Climber::setRevolutions() {
+  m_leftEncoder.SetPosition(-126);
+  m_rightEncoder.SetPosition(-126);
 }

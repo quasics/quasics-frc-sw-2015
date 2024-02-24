@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
@@ -17,7 +18,10 @@ class MoveLinearActuators
 
   void Initialize() override;
 
+  bool IsFinished() override;
+
  private:
   LinearActuators& m_linearActuators;
   bool m_extending;
+  frc::Timer m_stopWatch;
 };

@@ -498,6 +498,8 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
                                new MoveClimbers(m_climber, false));
   frc::SmartDashboard::PutData("Auto Extend Climbers",
                                new MoveClimbersAuto(m_climber, true));
+  frc::SmartDashboard::PutData("Auto Retract Climbers",
+                               new MoveClimbersAuto(m_climber, false));
 }
 #endif
 void RobotContainer::AddVisionTestButtonsToDashboard() {

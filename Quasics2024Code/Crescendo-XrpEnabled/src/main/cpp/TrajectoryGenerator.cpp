@@ -89,7 +89,15 @@ frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
 frc::Pose2d GetTrajectoryInitialPose(std::string fileToLoad) {
   fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
   deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
-  frc::Trajectory exampleTrajectory =
+  frc::Trajectory trajectory =
       frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
-  return exampleTrajectory.InitialPose();
+  return trajectory.InitialPose();
+}
+
+frc::Pose2d GetTrajectoryFinalPose(std::string fileToLoad) {
+  fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
+  deployDirectory = deployDirectory / "output" / fileToLoad.c_str();
+  frc::Trajectory trajectory =
+      frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string());
+  return trajectory.States().back().pose;
 }

@@ -289,12 +289,11 @@ double RobotContainer::GetDriveSpeedScalingFactor() {
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   frc2::Command *selectedOperation = m_OverallAutonomousOptions.GetSelected();
-  frc2::Command *teamAndPosCmd =
-      m_TeamAndStationAutonomousOptions.GetSelected();
+  frc2::Command *position = m_PositionAutonomousOptions.GetSelected();
   frc2::Command *score2Dest = m_Score2DestAutonomousOptions.GetSelected();
   frc2::Command *score3Dest = m_Score3DestAutonomousOptions.GetSelected();
 
-  if (selectedOperation == nullptr || teamAndPosCmd == nullptr) {
+  if (selectedOperation == nullptr || position == nullptr) {
     // This shouldn't happen if things were set up right.  But it did.  So they
     // weren't. We'll bail out, but at least return a valid pointer that will
     // tell us something went wrong when it's run.
@@ -304,7 +303,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   }
 
   std::string operationName = selectedOperation->GetName();
-  std::string position = teamAndPosCmd->GetName();
+  std::string positionName = position->GetName();
   std::string score2DestName = score2Dest->GetName();
   std::string score3DestName = score3Dest->GetName();
   const frc::DriverStation::Alliance alliance =
@@ -316,10 +315,10 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
       *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
-      operationName, position, score2DestName, score3DestName, isBlue);
+      operationName, positionName, score2DestName, score3DestName, isBlue);
 #else
   return AutonomousCommands::GetAutonomousCommand(*m_drivebase, operationName,
-                                                  position, score2DestName,
+                                                  positionName, score2DestName,
                                                   score3DestName, isBlue);
 #endif
 }
@@ -589,41 +588,57 @@ void RobotContainer::AddingNamedOverallOperationsToSelector(
   }
 }
 
-void RobotContainer::AddingNamedScoreDestinationsToSelector(
-    frc::SendableChooser<frc2::Command *> &selector1,
-    frc::SendableChooser<frc2::Command *> &selector2) {
-  const std::list<std::tuple<std::string, std::string>>
-      nonDefaultTeamsAndPositionsList{
-          {AutonomousScoreDestinations::amp, AutonomousScoreDestinations::amp},
-          {AutonomousScoreDestinations::leftOfSpeaker,
-           AutonomousScoreDestinations::leftOfSpeaker},
-          {AutonomousScoreDestinations::inFrontOfSpeaker,
-           AutonomousScoreDestinations::inFrontOfSpeaker},
-          {AutonomousScoreDestinations::rightOfSpeaker,
-           AutonomousScoreDestinations::rightOfSpeaker},
-      };
+void RobotContainer::AddingNamedScoreOptionsToSelector(
+    frc::SendableChooser<frc2::Command *> &score2Selector,
+    frc::SendableChooser<frc2::Command *> &score3Selector) {
+  const std::list<std::tuple<std::string, std::string>> score2Options{
+      {AutonomousScore2Options::amp, AutonomousScore2Options::amp},
+      {AutonomousScore2Options::leftOfSpeaker,
+       AutonomousScore2Options::leftOfSpeaker},
+      {AutonomousScore2Options::inFrontOfSpeaker,
+       AutonomousScore2Options::inFrontOfSpeaker},
+      {AutonomousScore2Options::rightOfSpeakerAllianceNote,
+       AutonomousScore2Options::rightOfSpeakerAllianceNote},
+      {AutonomousScore2Options::rightOfSpeakerCenterNote,
+       AutonomousScore2Options::rightOfSpeakerCenterNote}};
 
-  for (auto &[name, text] : nonDefaultTeamsAndPositionsList) {
-    AddNamedCommandToSelector(selector1, name, text);
-    AddNamedCommandToSelector(selector2, name, text);
+  const std::list<std::tuple<std::string, std::string>> score3Options{
+      {AutonomousScore3Options::amp, AutonomousScore3Options::amp},
+      {AutonomousScore3Options::leftOfSpeaker,
+       AutonomousScore3Options::leftOfSpeaker},
+      {AutonomousScore3Options::inFrontOfSpeakerAmpNote,
+       AutonomousScore3Options::inFrontOfSpeakerAmpNote},
+      {AutonomousScore3Options::inFrontOfSpeakerCenterNote,
+       AutonomousScore3Options::inFrontOfSpeakerCenterNote},
+      {AutonomousScore3Options::inFrontOfSpeakerStageNote,
+       AutonomousScore3Options::inFrontOfSpeakerStageNote},
+      {AutonomousScore3Options::rightOfSpeaker,
+       AutonomousScore3Options::rightOfSpeaker}};
+
+  for (auto &[name, text] : score2Options) {
+    AddNamedCommandToSelector(score2Selector, name, text);
+  }
+
+  for (auto &[name, text] : score3Options) {
+    AddNamedCommandToSelector(score3Selector, name, text);
   }
 }
 
 void RobotContainer::AddAutoSelectionsToSmartDashboard() {
   AddTeamAndStationSelectorToSmartDashboard();
   AddRobotOverallOperationToSmartDashboard();
-  AddScoreDestinationsToSmartDashboard();
+  AddScoreOptionsToSmartDashboard();
 }
 
 void RobotContainer::AddTeamAndStationSelectorToSmartDashboard() {
-  m_TeamAndStationAutonomousOptions.SetDefaultOption(
+  m_PositionAutonomousOptions.SetDefaultOption(
       AutonomousStartingPositions::inFrontOfAmp,
       BuildNamedPrintCommand(AutonomousStartingPositions::inFrontOfAmp));
 
-  AddingNamedStartingPositionsToSelector(m_TeamAndStationAutonomousOptions);
+  AddingNamedStartingPositionsToSelector(m_PositionAutonomousOptions);
 
   frc::SmartDashboard::PutData("Team and Station Auto Selector",
-                               &m_TeamAndStationAutonomousOptions);
+                               &m_PositionAutonomousOptions);
 }
 
 void RobotContainer::AddRobotOverallOperationToSmartDashboard() {
@@ -637,18 +652,18 @@ void RobotContainer::AddRobotOverallOperationToSmartDashboard() {
                                &m_OverallAutonomousOptions);
 }
 
-void RobotContainer::AddScoreDestinationsToSmartDashboard() {
+void RobotContainer::AddScoreOptionsToSmartDashboard() {
   m_Score2DestAutonomousOptions.SetDefaultOption(
       "Not Selected", BuildNamedPrintCommand("Not Selected"));
   m_Score3DestAutonomousOptions.SetDefaultOption(
       "Not Selected", BuildNamedPrintCommand("Not Selected"));
 
-  AddingNamedScoreDestinationsToSelector(m_Score2DestAutonomousOptions,
-                                         m_Score3DestAutonomousOptions);
+  AddingNamedScoreOptionsToSelector(m_Score2DestAutonomousOptions,
+                                    m_Score3DestAutonomousOptions);
 
-  frc::SmartDashboard::PutData("Robot Score 2 Destination",
+  frc::SmartDashboard::PutData("Robot Score 2 Option",
                                &m_Score2DestAutonomousOptions);
-  frc::SmartDashboard::PutData("Robot Score 3 Destination",
+  frc::SmartDashboard::PutData("Robot Score 3 Option",
                                &m_Score3DestAutonomousOptions);
 }
 

@@ -22,11 +22,11 @@ void MoveClimbersAuto::Initialize() {
       m_climber.ExtendOneClimber(false);
     }
   } else {
-    if (leftRevolutions < 0) {
+    if (leftRevolutions <= 0) {
       // the bool is asking if its the left climber we want
       m_climber.RetractOneClimber(true);
     }
-    if (rightRevolutions < 0) {
+    if (rightRevolutions <= 0) {
       m_climber.RetractOneClimber(false);
     }
   }
@@ -45,11 +45,11 @@ void MoveClimbersAuto::Execute() {
       m_climber.ExtendOneClimber(false);
     }
   } else {
-    if (leftRevolutions < 0) {
+    if (leftRevolutions <= 0) {
       // the bool is asking if its the left climber we want
       m_climber.RetractOneClimber(true);
     }
-    if (rightRevolutions < 0) {
+    if (rightRevolutions <= 0) {
       m_climber.RetractOneClimber(false);
     }
   }

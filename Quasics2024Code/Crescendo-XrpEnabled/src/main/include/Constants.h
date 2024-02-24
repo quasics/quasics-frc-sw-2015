@@ -79,6 +79,15 @@ namespace PathWeaverConstants {
   constexpr double kI = 0;
   constexpr double kD = 0;
 #endif
+
+#ifdef USING_MARGARET
+  constexpr auto kS = 0.1084_V;
+  constexpr auto kV = 1.0288 * (1_V * 1_s / 1_m);
+  constexpr auto kA = 0.18486 * (1_V * 1_s * 1_s / 1_m);
+  constexpr double kP = 0.60159;
+  constexpr double kI = 0;
+  constexpr double kD = 0;
+#endif
 }  // namespace PathWeaverConstants
 
 namespace MotorIds {
@@ -124,8 +133,8 @@ namespace DigitalInput {
 // PWM ports 0-9 are on-board, 10-19 are on the MXP port.
 namespace PWMPorts {
   constexpr int LIGHTING_PORT = 1;
-  constexpr int LEFT_SERVO = 3;
-  constexpr int RIGHT_SERVO = 4;
+  constexpr int LEFT_SERVO = 6;
+  constexpr int RIGHT_SERVO = 3;
   constexpr int SIMULATED_LEFT_MOTOR_PORT = 18;
   constexpr int SIMULATED_RIGHT_MOTOR_PORT = 19;
 }  // namespace PWMPorts
@@ -183,13 +192,24 @@ namespace AutonomousSelectedOperation {
   const auto score4 = "Score 4 piece";
 }  // namespace AutonomousSelectedOperation
 
-namespace AutonomousScoreDestinations {
+namespace AutonomousScore2Options {
   const auto none = "None";
   const auto amp = "Amp";
   const auto leftOfSpeaker = "Left of speaker";
   const auto inFrontOfSpeaker = "In front of speaker";
+  const auto rightOfSpeakerAllianceNote = "Right of speaker (alliance note)";
+  const auto rightOfSpeakerCenterNote = "Right of speaker (center note)";
+}  // namespace AutonomousScore2Options
+
+namespace AutonomousScore3Options {
+  const auto none = "None";
+  const auto amp = "Amp";
+  const auto leftOfSpeaker = "Left of speaker";
+  const auto inFrontOfSpeakerAmpNote = "In front of speaker (amp note)";
+  const auto inFrontOfSpeakerStageNote = "In front of speaker (stage note)";
+  const auto inFrontOfSpeakerCenterNote = "In front of speaker (center note)";
   const auto rightOfSpeaker = "Right of speaker";
-}  // namespace AutonomousScoreDestinations
+}  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {
   const double amp = 0.08;

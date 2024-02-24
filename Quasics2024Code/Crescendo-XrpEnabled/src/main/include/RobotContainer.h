@@ -48,7 +48,7 @@ class RobotContainer {
 
   // Functions to bind commands to the driver/operator controllers.
  private:
-  void SetDefaultIntakeCommand();
+  void SetDefaultShooterCommand();
 
   void RunCommandWhenDriverButtonIsPressed(int logitechButtonId,
                                            frc2::Command* command);
@@ -71,7 +71,7 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector);
   static void AddingNamedOverallOperationsToSelector(
       frc::SendableChooser<frc2::Command*>& selector);
-  static void AddingNamedScoreDestinationsToSelector(
+  static void AddingNamedScoreOptionsToSelector(
       frc::SendableChooser<frc2::Command*>& selector1,
       frc::SendableChooser<frc2::Command*>& selector2);
 
@@ -81,8 +81,13 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
-  frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
-  frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
+      units::second_t time);
+  // adjusting the version for button binding
+  // frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
+  // frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::SequentialCommandGroup* ExtendThenRetractActuatorsAfterTime(
+      units::second_t time);
 
   void AddClimberTestButtonsToDashboard();
 #endif
@@ -94,7 +99,7 @@ class RobotContainer {
   void AddAutoSelectionsToSmartDashboard();
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
-  void AddScoreDestinationsToSmartDashboard();
+  void AddScoreOptionsToSmartDashboard();
 
   // Driving support functions
  private:
@@ -140,7 +145,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
   // Choosers for configuring behavior in auto mode.
-  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_PositionAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score2DestAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score3DestAutonomousOptions;

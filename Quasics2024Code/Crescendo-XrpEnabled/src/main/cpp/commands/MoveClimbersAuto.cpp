@@ -13,12 +13,22 @@ MoveClimbersAuto::MoveClimbersAuto(Climber& climber, bool extending)
 void MoveClimbersAuto::Initialize() {
   double leftRevolutions = m_climber.getLeftRevolutions();
   double rightRevolutions = m_climber.getRightRevolutions();
-  if (leftRevolutions > -5) {
-    // the bool is asking if its the left climber we want
-    m_climber.ExtendOneClimber(true);
-  }
-  if (rightRevolutions > -5) {
-    m_climber.ExtendOneClimber(false);
+  if (m_extending) {
+    if (leftRevolutions > -5) {
+      // the bool is asking if its the left climber we want
+      m_climber.ExtendOneClimber(true);
+    }
+    if (rightRevolutions > -5) {
+      m_climber.ExtendOneClimber(false);
+    }
+  } else {
+    if (leftRevolutions <= 0) {
+      // the bool is asking if its the left climber we want
+      m_climber.RetractOneClimber(true);
+    }
+    if (rightRevolutions <= 0) {
+      m_climber.RetractOneClimber(false);
+    }
   }
 }
 
@@ -26,12 +36,22 @@ void MoveClimbersAuto::Initialize() {
 void MoveClimbersAuto::Execute() {
   double leftRevolutions = m_climber.getLeftRevolutions();
   double rightRevolutions = m_climber.getRightRevolutions();
-  if (leftRevolutions > -5) {
-    // the bool is asking if its the left climber we want
-    m_climber.ExtendOneClimber(true);
-  }
-  if (rightRevolutions > -5) {
-    m_climber.ExtendOneClimber(false);
+  if (m_extending) {
+    if (leftRevolutions > -5) {
+      // the bool is asking if its the left climber we want
+      m_climber.ExtendOneClimber(true);
+    }
+    if (rightRevolutions > -5) {
+      m_climber.ExtendOneClimber(false);
+    }
+  } else {
+    if (leftRevolutions <= 0) {
+      // the bool is asking if its the left climber we want
+      m_climber.RetractOneClimber(true);
+    }
+    if (rightRevolutions <= 0) {
+      m_climber.RetractOneClimber(false);
+    }
   }
 }
 

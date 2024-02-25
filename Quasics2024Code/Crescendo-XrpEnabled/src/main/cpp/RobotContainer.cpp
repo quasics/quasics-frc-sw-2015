@@ -723,8 +723,7 @@ void RobotContainer::AddScoreOptionsToSmartDashboard() {
 frc2::ParallelRaceGroup *RobotContainer::ShootingSequence(bool amp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<RunShooterTimed>(
-      m_shooter, (amp ? ShooterSpeeds::amp : ShooterSpeeds::speaker), 2_s,
-      true));
+      m_shooter, (amp ? ShooterSpeeds::amp : 1.00), 2_s, true));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeDelay())));
 
   return new frc2::ParallelRaceGroup(std::move(commands));

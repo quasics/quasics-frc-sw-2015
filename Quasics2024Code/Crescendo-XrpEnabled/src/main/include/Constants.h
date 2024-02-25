@@ -81,10 +81,9 @@ namespace PathWeaverConstants {
 #endif
 
 #ifdef USING_MARGARET
-  // the lst 2 were multiplied by 2
   constexpr auto kS = 0.1084_V;  // kept same
-  constexpr auto kV = 2.0576 * (1_V * 1_s / 1_m);
-  constexpr auto kA = 0.36972 * (1_V * 1_s * 1_s / 1_m);
+  constexpr auto kV = 1.0288 * (1_V * 1_s / 1_m);
+  constexpr auto kA = 0.18486 * (1_V * 1_s * 1_s / 1_m);
   constexpr double kP = 0.60159;  // kept same
   constexpr double kI = 0;
   constexpr double kD = 0;
@@ -221,7 +220,7 @@ namespace ShooterSpeeds {
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {
-  const double intakeDeploymentSpeed = 0.5;
+  const double intakeDeploymentSpeed = 0.9;
   const double intakeRollerSpeed = 0.5;
   const double feedingSpeed = 0.5;
 }  // namespace IntakeSpeeds

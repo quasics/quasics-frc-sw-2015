@@ -221,7 +221,7 @@ namespace ShooterSpeeds {
 
 namespace IntakeSpeeds {
   const double intakeDeploymentSpeed = 0.9;
-  const double intakeRollerSpeed = 0.5;
+  const double intakeRollerSpeed = 0.75;
   const double feedingSpeed = 0.5;
 }  // namespace IntakeSpeeds
 

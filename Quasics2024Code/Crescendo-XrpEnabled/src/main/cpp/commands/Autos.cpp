@@ -7,6 +7,7 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/SequentialCommandGroup.h>
 
@@ -104,14 +105,14 @@ namespace AutonomousCommands {
           .ToPtr();
     }
 
-    frc2::CommandPtr extendThenRunIntake(IntakeDeployment &intakeDeployment,
-                                         IntakeRoller &intakeRoller) {
+    frc2::CommandPtr extendAndRunIntake(IntakeDeployment &intakeDeployment,
+                                        IntakeRoller &intakeRoller) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(std::move(frc2::CommandPtr(PivotIntakeAuto(
           intakeDeployment, IntakeSpeeds::intakeDeploymentSpeed, true))));
       commands.push_back(std::move(frc2::CommandPtr(
           RunIntake(intakeRoller, IntakeSpeeds::intakeRollerSpeed, true))));
-      return frc2::SequentialCommandGroup(
+      return frc2::ParallelCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
     }
@@ -141,12 +142,12 @@ namespace AutonomousCommands {
           .ToPtr();
     }
 
-    frc2::CommandPtr extendThenRunIntakeWhileDriving(
+    frc2::CommandPtr extendAndRunIntakeWhileDriving(
         IDrivebase &drivebase, IntakeDeployment &intakeDeployment,
         IntakeRoller &intakeRoller, std::string pathName) {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(GetCommandForTrajectory(pathName, drivebase));
-      commands.push_back(extendThenRunIntake(intakeDeployment, intakeRoller));
+      commands.push_back(extendAndRunIntake(intakeDeployment, intakeRoller));
       return frc2::ParallelRaceGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
           .ToPtr();
@@ -317,7 +318,7 @@ namespace AutonomousCommands {
       std::string color = (isBlue ? "blue" : "red");
 
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote2.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -361,7 +362,7 @@ namespace AutonomousCommands {
 
       std::vector<frc2::CommandPtr> commands;
       if (score2Option == AutonomousScore2Options::rightOfSpeakerAllianceNote) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "3atonote3.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -371,7 +372,7 @@ namespace AutonomousCommands {
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       } else if (score2Option ==
                  AutonomousScore2Options::rightOfSpeakerCenterNote) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "3atonote8.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -420,7 +421,7 @@ namespace AutonomousCommands {
       std::string color = (isBlue ? "blue" : "red");
 
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "1btonote1.wpilib.json"));
       if (score2Option == AutonomousScore2Options::leftOfSpeaker) {
@@ -482,7 +483,7 @@ namespace AutonomousCommands {
       std::string color = (isBlue ? "blue" : "red");
 
       std::vector<frc2::CommandPtr> commands;
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "amptonote1.wpilib.json"));
       if (score2Option == AutonomousScore2Options::leftOfSpeaker) {
@@ -656,7 +657,7 @@ namespace AutonomousCommands {
           score2Command(drivebase, intakeDeployment, intakeRoller, shooter,
                         AutonomousStartingPositions::leftOfSpeaker,
                         AutonomousScore2Options::leftOfSpeaker, isBlue));
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "1btonote4.wpilib.json"));
 
@@ -728,7 +729,7 @@ namespace AutonomousCommands {
                         AutonomousScore2Options::inFrontOfSpeaker, isBlue));
 
       if (score3Option == AutonomousScore3Options::amp) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote1.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -741,7 +742,7 @@ namespace AutonomousCommands {
 
       else if (score3Option ==
                AutonomousScore3Options::inFrontOfSpeakerAmpNote) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote1.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -753,7 +754,7 @@ namespace AutonomousCommands {
 
       else if (score3Option ==
                AutonomousScore3Options::inFrontOfSpeakerCenterNote) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote6.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -765,7 +766,7 @@ namespace AutonomousCommands {
 
       else if (score3Option ==
                AutonomousScore3Options::inFrontOfSpeakerStageNote) {
-        commands.push_back(extendThenRunIntakeWhileDriving(
+        commands.push_back(extendAndRunIntakeWhileDriving(
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote3.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -843,7 +844,7 @@ namespace AutonomousCommands {
           drivebase, intakeDeployment, intakeRoller, shooter,
           AutonomousStartingPositions::rightOfSpeaker,
           AutonomousScore2Options::rightOfSpeakerAllianceNote, isBlue));
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "3atonote8.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -1047,7 +1048,7 @@ namespace AutonomousCommands {
             .ToPtr();
       }
 
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote1.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
@@ -1055,7 +1056,7 @@ namespace AutonomousCommands {
           false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
-      commands.push_back(extendThenRunIntakeWhileDriving(
+      commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote1.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(

@@ -220,12 +220,13 @@ namespace ShooterSpeeds {
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {
-  const double intakeDeploymentSpeed = 0.9;
+  const double intakeDeploymentSpeed = 0.75;
   const double intakeRollerSpeed = 0.75;
   const double feedingSpeed = 0.5;
 }  // namespace IntakeSpeeds
 
 namespace AutonomousTimes {
+
   const units::second_t waitTimeAfterShooting = 0.1_s;
 }
 

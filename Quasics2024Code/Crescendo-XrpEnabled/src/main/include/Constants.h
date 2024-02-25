@@ -195,21 +195,24 @@ namespace AutonomousSelectedOperation {
 
 namespace AutonomousScore2Options {
   const auto none = "None";
-  const auto amp = "Amp";
-  const auto leftOfSpeaker = "Left of speaker";
-  const auto inFrontOfSpeaker = "In front of speaker";
-  const auto rightOfSpeakerAllianceNote = "Right of speaker (alliance note)";
-  const auto rightOfSpeakerCenterNote = "Right of speaker (center note)";
+  const auto amp = "Score in amp";
+  const auto leftOfSpeaker = "Score left of speaker";
+  const auto inFrontOfSpeaker = "Score in front of speaker";
+  const auto rightOfSpeakerAllianceNote =
+      "Score right of speaker (alliance note)";
+  const auto rightOfSpeakerCenterNote = "Score right of speaker (center note)";
 }  // namespace AutonomousScore2Options
 
 namespace AutonomousScore3Options {
   const auto none = "None";
-  const auto amp = "Amp";
-  const auto leftOfSpeaker = "Left of speaker";
-  const auto inFrontOfSpeakerAmpNote = "In front of speaker (amp note)";
-  const auto inFrontOfSpeakerStageNote = "In front of speaker (stage note)";
-  const auto inFrontOfSpeakerCenterNote = "In front of speaker (center note)";
-  const auto rightOfSpeaker = "Right of speaker";
+  const auto amp = "Score in amp";
+  const auto leftOfSpeaker = "Score left of speaker";
+  const auto inFrontOfSpeakerAmpNote = "Score in front of speaker (amp note)";
+  const auto inFrontOfSpeakerStageNote =
+      "Score in front of speaker (stage note)";
+  const auto inFrontOfSpeakerCenterNote =
+      "Score in front of speaker (center note)";
+  const auto rightOfSpeaker = "Score right of speaker";
 }  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {

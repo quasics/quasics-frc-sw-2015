@@ -203,10 +203,12 @@ void RobotContainer::setUpArcadeDrive() {
 }
 
 void RobotContainer::SetDefaultShooterCommand() {
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   TriggerBasedShooting triggerBasedShooterCommand(m_shooter,
                                                   &m_operatorController);
 
   m_shooter.SetDefaultCommand(std::move(triggerBasedShooterCommand));
+#endif
   /*TriggerBasedIntaking triggerBasedIntakeCommand(m_intakeRoller,
                                                  &m_driverController);
   m_intakeRoller.SetDefaultCommand(std::move(triggerBasedIntakeCommand));*/
@@ -327,7 +329,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, m_shooter, m_intakeDeployment, m_intakeRoller,
+      *m_drivebase, m_intakeDeployment, m_intakeRoller, m_shooter,
       operationName, positionName, score2DestName, score3DestName, isBlue);
 #else
   return AutonomousCommands::GetAutonomousCommand(*m_drivebase, operationName,

@@ -81,10 +81,12 @@ namespace PathWeaverConstants {
 #endif
 
 #ifdef USING_MARGARET
-  constexpr auto kS = 0.1084_V;  // kept same
+  // constexpr auto kS = 0.1084_V;  // THIS IS MARGARETS PLEASE USE
+  constexpr auto kS = 0.19529_V;
   constexpr auto kV = 1.0288 * (1_V * 1_s / 1_m);
   constexpr auto kA = 0.18486 * (1_V * 1_s * 1_s / 1_m);
-  constexpr double kP = 0.60159;  // kept same
+  constexpr double kP = 0.60159;  // THIS IS MARGERTS PLEASE USE
+  // constexpr auto kP = 2;
   constexpr double kI = 0;
   constexpr double kD = 0;
 #endif
@@ -216,7 +218,7 @@ namespace AutonomousScore3Options {
 
 namespace ShooterSpeeds {
   const double amp = 0.08;
-  const double speaker = .80;
+  const double speaker = 1.00;
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {

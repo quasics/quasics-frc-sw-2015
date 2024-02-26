@@ -720,7 +720,7 @@ namespace AutonomousCommands {
                                             std::string score3Option,
                                             bool isBlue) {
       std::string color = (isBlue ? "blue" : "red");
-
+      std::cerr << "Running score3 in front of speaker!" << std::endl;
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -887,6 +887,7 @@ namespace AutonomousCommands {
                                    std::string score3Option,
                                    std::string position, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
+      std::cerr << "Running score 3 command!" << std::endl;
       // does not run score2Command here. score2Command is called within the
       // command for each position
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
@@ -1058,9 +1059,9 @@ namespace AutonomousCommands {
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
       commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
-          color + "2tonote1.wpilib.json"));
+          color + "2tonote3.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, intakeDeployment, shooter, color + "note1to2.wpilib.json",
+          drivebase, intakeDeployment, shooter, color + "note3to2.wpilib.json",
           false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));

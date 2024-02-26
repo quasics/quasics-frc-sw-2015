@@ -325,7 +325,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
       frc::DriverStation::GetAlliance().value_or(
           frc::DriverStation::Alliance::kBlue);
   const bool isBlue = alliance == frc::DriverStation::Alliance::kBlue;
-  // std::cout << "isBlue: " << isBlue << std::endl;
+  std::cerr << "Operation name: " << operationName << std::endl;
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(

@@ -884,8 +884,8 @@ namespace AutonomousCommands {
     frc2::CommandPtr score3Command(IDrivebase &drivebase,
                                    IntakeDeployment &intakeDeployment,
                                    IntakeRoller &intakeRoller, Shooter &shooter,
-                                   std::string score3Option,
-                                   std::string position, bool isBlue) {
+                                   std::string position,
+                                   std::string score3Option, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       // does not run score2Command here. score2Command is called within the
       // command for each position
@@ -918,9 +918,8 @@ namespace AutonomousCommands {
     }
 
 #else
-    frc2::CommandPtr score3Command(IDrivebase &drivebase,
-                                   std::string score3Option,
-                                   std::string position, bool isBlue) {
+    frc2::CommandPtr score3Command(IDrivebase &drivebase, std::string position,
+                                   std::string score3Option, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
       // DOES NOT RUN score2Command HERE
       if (position == AutonomousStartingPositions::inFrontOfAmp) {
@@ -952,13 +951,13 @@ namespace AutonomousCommands {
     frc2::CommandPtr score3GTFO(IDrivebase &drivebase,
                                 IntakeDeployment &intakeDeployment,
                                 IntakeRoller &intakeRoller, Shooter &shooter,
-                                std::string score3Option, std::string position,
+                                std::string position, std::string score3Option,
                                 bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(score3Command(drivebase, intakeDeployment,
-                                       intakeRoller, shooter, score3Option,
-                                       position, isBlue));
+                                       intakeRoller, shooter, position,
+                                       score3Option, isBlue));
 
       if (score3Option == AutonomousScore3Options::amp) {
         commands.push_back(
@@ -991,8 +990,8 @@ namespace AutonomousCommands {
     }
 
 #else
-    frc2::CommandPtr score3GTFO(IDrivebase &drivebase, std::string score3Option,
-                                std::string position, bool isBlue) {
+    frc2::CommandPtr score3GTFO(IDrivebase &drivebase, std::string position,
+                                std::string score3Option, bool isBlue) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(
@@ -1181,9 +1180,9 @@ namespace AutonomousCommands {
       commands.push_back(score2GTFO(drivebase, position, score2Option, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3) {
       commands.push_back(
-          score3Command(drivebase, score3Option, position, isBlue));
+          score3Command(drivebase, position, score3Option, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score3GTFO) {
-      commands.push_back(score3GTFO(drivebase, score3Option, position, isBlue));
+      commands.push_back(score3GTFO(drivebase, position, score3Option, isBlue));
     } else if (operationName == AutonomousSelectedOperation::score4) {
       commands.push_back(score4Command(drivebase, position, isBlue));
     } else {

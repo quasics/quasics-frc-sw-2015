@@ -63,7 +63,7 @@ namespace AutonomousCommands {
       std::vector<frc2::CommandPtr> commands;
       commands.push_back(frc2::CommandPtr(Wait(0.75_s)));
       commands.push_back(
-          frc2::CommandPtr(RunIntakeTimed(intakeRoller, .5, 1.25_s, false)));
+          frc2::CommandPtr(RunIntakeTimed(intakeRoller, .5, 0.75_s, false)));
 
       return frc2::SequentialCommandGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))

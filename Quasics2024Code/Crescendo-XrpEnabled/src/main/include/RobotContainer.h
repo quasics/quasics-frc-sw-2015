@@ -100,6 +100,7 @@ class RobotContainer {
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
   void AddScoreOptionsToSmartDashboard();
+  void AddCompetitionButtonsToSmartDashboard();
 
   // Driving support functions
  private:

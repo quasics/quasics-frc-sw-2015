@@ -38,3 +38,5 @@
 // https://github.com/cpredef/predef/blob/master/OperatingSystems.md
 #define ENABLE_XRP
 #endif
+
+#define ENABLE_COMPETITION_ROBOT

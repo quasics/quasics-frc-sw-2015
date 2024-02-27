@@ -57,7 +57,7 @@ RobotContainer::RobotContainer() {
   AddTestButtonsOnSmartDashboard();
 
   SetDefaultShooterCommand();
-
+#ifndef ENABLE_COMPETITION_ROBOT
 #ifdef ENABLE_INTAKE_TESTING
   AddIntakeTestButtonsToDashboard();
 #endif
@@ -71,17 +71,18 @@ RobotContainer::RobotContainer() {
 #endif
 
 #endif
+  AddDriveTestButtonsToDashboard();
+  AddSysIdButtonsToDashboard();
 
 #ifdef ENABLE_VISION_TESTING
   AddVisionTestButtonsToDashboard();
 #endif
+#endif
+#ifdef ENABLE_COMPETITION_ROBOT
+  AddCompetitionButtonsToSmartDashboard();
+#endif
 
   AddAutoSelectionsToSmartDashboard();
-
-  AddAutoSelectionsToSmartDashboard();
-
-  AddSysIdButtonsToDashboard();
-  AddDriveTestButtonsToDashboard();
 
   std::cerr << "Log files being written to: "
             << frc::DataLogManager::GetLogDir() << std::endl;
@@ -338,6 +339,21 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 #endif
 }
 
+void RobotContainer::AddCompetitionButtonsToSmartDashboard() {
+  frc::SmartDashboard::PutData(
+      "Switch Drive", new frc2::InstantCommand(
+                          [this]() { setDriveMode(DriveMode::eSwitched); }));
+
+  frc::SmartDashboard::PutData(
+      "Normal Drive",
+      new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
+
+  frc::SmartDashboard::PutData("Run Shooter Reversed",
+                               new frc2::InstantCommand([this]() {
+                                 RunShooterTimed(m_shooter, 0.5, 1_s, false);
+                               }));
+}
+
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 void RobotContainer::AddShooterTestButtonsToDashboard() {
@@ -507,6 +523,12 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
                                new MoveClimbersAuto(m_climber, true));
   frc::SmartDashboard::PutData("Auto Retract Climbers",
                                new MoveClimbersAuto(m_climber, false));
+  frc::SmartDashboard::PutData(
+      "Reset Climber Revolutions:",
+      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
+  frc::SmartDashboard::PutData(
+      "Set Climber Revolutions -3:",
+      new frc2::InstantCommand([this]() { m_climber.setRevolutions(); }));
 }
 #endif
 void RobotContainer::AddVisionTestButtonsToDashboard() {
@@ -518,15 +540,6 @@ void RobotContainer::AddVisionTestButtonsToDashboard() {
 }
 
 void RobotContainer::AddTestButtonsOnSmartDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  frc::SmartDashboard::PutData(
-      "Reset Climber Revolutions:",
-      new frc2::InstantCommand([this]() { m_climber.resetRevolutions(); }));
-  frc::SmartDashboard::PutData(
-      "Set Climber Revolutions -5:",
-      new frc2::InstantCommand([this]() { m_climber.setRevolutions(); }));
-#endif
-
   frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
                                new PIDRotate(*m_drivebase, 90_deg));
 }

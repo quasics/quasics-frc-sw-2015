@@ -22,7 +22,10 @@
 #include "commands/RunShooter.h"
 #include "commands/RunShooterTimed.h"
 #include "commands/SetRobotOdometry.h"
+#include "commands/TimedMovementTest.h"
 #include "commands/Wait.h"
+
+#undef EMERGENCY_CODE
 
 namespace AutonomousCommands {
 
@@ -378,6 +381,10 @@ namespace AutonomousCommands {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
             drivebase, intakeDeployment, shooter,
             color + "note8to3a.wpilib.json", false));
+        // in testing, robot was not fully returning to the speaker despite
+        // modifying the paths. So just move forward into the speaker
+        commands.push_back(
+            frc2::CommandPtr(TimedMovementTest(drivebase, 0.5, 0.5_s, true)));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       }
@@ -1109,6 +1116,16 @@ namespace AutonomousCommands {
       bool isBlue) {
     using namespace Helpers;
     std::vector<frc2::CommandPtr> commands;
+#ifdef EMERGENCY_CODE
+    commands.push_back(
+        shootingSequence(intakeDeployment, intakeRoller, shooter, false));
+    commands.push_back(
+        frc2::CommandPtr(TimedMovementTest(drivebase, 0.4, 5_s, false)));
+
+    return frc2::SequentialCommandGroup(
+               frc2::CommandPtr::UnwrapVector(std::move(commands)))
+        .ToPtr();
+#endif
     commands.push_back(
         resetOdometryToStartingPosition(drivebase, position, isBlue));
 

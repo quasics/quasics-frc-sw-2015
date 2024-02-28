@@ -14,3 +14,7 @@ void PivotScorer::SetScorerSpeed(double percentSpeed) {
   m_scorer.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
                percentSpeed);
 }
+
+void PivotScorer::Stop() {
+  SetScorerSpeed(0);
+}

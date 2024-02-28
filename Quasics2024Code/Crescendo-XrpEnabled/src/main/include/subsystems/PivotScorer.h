@@ -14,6 +14,7 @@ class PivotScorer : public frc2::SubsystemBase {
   PivotScorer();
 
   void SetScorerSpeed(double percentSpeed);
+  void Stop();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

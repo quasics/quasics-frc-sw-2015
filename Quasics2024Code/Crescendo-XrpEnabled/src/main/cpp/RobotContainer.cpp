@@ -54,10 +54,10 @@ RobotContainer::RobotContainer() {
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
 
-  AddTestButtonsOnSmartDashboard();
-
   SetDefaultShooterCommand();
 #ifndef ENABLE_COMPETITION_ROBOT
+  AddTestButtonsOnSmartDashboard();
+
 #ifdef ENABLE_INTAKE_TESTING
   AddIntakeTestButtonsToDashboard();
 #endif
@@ -347,11 +347,12 @@ void RobotContainer::AddCompetitionButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Normal Drive",
       new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
-
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Run Shooter Reversed",
                                new frc2::InstantCommand([this]() {
                                  RunShooterTimed(m_shooter, 0.5, 1_s, false);
                                }));
+#endif
 }
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY

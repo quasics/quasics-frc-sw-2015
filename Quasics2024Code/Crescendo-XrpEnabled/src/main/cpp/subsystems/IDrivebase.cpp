@@ -21,7 +21,7 @@ IDrivebase::IDrivebase()
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
-
+#ifndef ENABLE_COMPETITION_ROBOT
   frc::Pose2d pose = getPose();
   frc::SmartDashboard::PutNumber("x", double(pose.X()));
 
@@ -35,6 +35,7 @@ void IDrivebase::Periodic() {
 
   frc::SmartDashboard::PutNumber("right Encoder meters",
                                  double(getRightEncoder_HAL().getPosition()));
+#endif
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {

@@ -23,6 +23,7 @@
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
 #include "subsystems/LinearActuators.h"
+#include "subsystems/PivotScorer.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
 #include "utils/DeadBandEnforcer.h"
@@ -94,6 +95,7 @@ class RobotContainer {
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddVisionTestButtonsToDashboard();
+  void AddScorerTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();
@@ -125,6 +127,7 @@ class RobotContainer {
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
   LinearActuators m_linearActuators;
+  PivotScorer m_pivotScorer;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_VISION_TESTING

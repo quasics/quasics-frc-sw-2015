@@ -108,8 +108,7 @@ namespace MotorIds {
   }  // namespace SparkMax
 
   namespace VictorSPX {
-    constexpr int LEFT_SCORER_ID = 1;
-    constexpr int RIGHT_SCORER_ID = 2;
+    constexpr int SCORER_ID = 1;
   }  // namespace VictorSPX
 
 }  // namespace MotorIds

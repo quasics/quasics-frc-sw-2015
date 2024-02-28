@@ -77,6 +77,7 @@ RobotContainer::RobotContainer() {
 #ifdef ENABLE_VISION_TESTING
   AddVisionTestButtonsToDashboard();
 #endif
+  AddScorerTestButtonsToDashboard();
 #endif
 #ifdef ENABLE_COMPETITION_ROBOT
   AddCompetitionButtonsToSmartDashboard();
@@ -408,6 +409,24 @@ void RobotContainer::AddActuatorTestButtonsToDashboard() {
 
   frc::SmartDashboard::PutData("Extend then retract linear actuator after time",
                                ExtendThenRetractActuatorsAfterTime(.75_s));
+}
+
+void RobotContainer::AddScorerTestButtonsToDashboard() {
+  frc::SmartDashboard::PutData(
+      "Run scorers 50%", new frc2::InstantCommand(
+                             [this]() { m_pivotScorer.SetScorerSpeed(0.50); }));
+  frc::SmartDashboard::PutData("Run scorers 100%",
+                               new frc2::InstantCommand([this]() {
+                                 m_pivotScorer.SetScorerSpeed(1.00);
+                               }));
+  frc::SmartDashboard::PutData("Run scorers -50%",
+                               new frc2::InstantCommand([this]() {
+                                 m_pivotScorer.SetScorerSpeed(-0.50);
+                               }));
+  frc::SmartDashboard::PutData("Run scorers -100%",
+                               new frc2::InstantCommand([this]() {
+                                 m_pivotScorer.SetScorerSpeed(-1.00);
+                               }));
 }
 
 namespace {

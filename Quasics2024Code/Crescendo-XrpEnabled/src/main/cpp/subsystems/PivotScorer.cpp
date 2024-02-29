@@ -11,10 +11,10 @@ void PivotScorer::Periodic() {
 }
 
 void PivotScorer::SetScorerSpeed(double percentSpeed) {
-  m_leftScorer.Set(
-      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      percentSpeed);
-  m_rightScorer.Set(
-      ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
-      percentSpeed);
+  m_scorer.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput,
+               percentSpeed);
+}
+
+void PivotScorer::Stop() {
+  SetScorerSpeed(0);
 }

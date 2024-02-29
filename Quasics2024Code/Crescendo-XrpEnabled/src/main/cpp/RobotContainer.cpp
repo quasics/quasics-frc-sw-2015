@@ -28,6 +28,7 @@
 #include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
+#include "commands/RunScorerTimed.h"
 #include "commands/RunShooter.h"
 #include "commands/RunShooterTimed.h"
 #include "commands/SetRobotOdometry.h"
@@ -414,20 +415,10 @@ void RobotContainer::AddActuatorTestButtonsToDashboard() {
 
 void RobotContainer::AddScorerTestButtonsToDashboard() {
   frc::SmartDashboard::PutData(
-      "Run scorers 50%", new frc2::InstantCommand(
-                             [this]() { m_pivotScorer.SetScorerSpeed(0.50); }));
-  frc::SmartDashboard::PutData("Run scorers 100%",
-                               new frc2::InstantCommand([this]() {
-                                 m_pivotScorer.SetScorerSpeed(1.00);
-                               }));
-  frc::SmartDashboard::PutData("Run scorers -50%",
-                               new frc2::InstantCommand([this]() {
-                                 m_pivotScorer.SetScorerSpeed(-0.50);
-                               }));
-  frc::SmartDashboard::PutData("Run scorers -100%",
-                               new frc2::InstantCommand([this]() {
-                                 m_pivotScorer.SetScorerSpeed(-1.00);
-                               }));
+      "Run scorers 50 up", new RunScorerTimed(m_pivotScorer, 0.50, 1_s, true));
+  frc::SmartDashboard::PutData(
+      "Run scorers 50 down",
+      new RunScorerTimed(m_pivotScorer, 0.50, 1_s, false));
 }
 
 namespace {

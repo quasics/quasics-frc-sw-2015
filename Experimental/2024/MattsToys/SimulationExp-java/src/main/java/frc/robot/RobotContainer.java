@@ -54,6 +54,8 @@ import frc.robot.subsystems.drivebase.XrpDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.TrajectoryCommandGenerator;
+import frc.robot.utils.RobotSettings.ClimberType;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -137,7 +139,7 @@ public class RobotContainer {
     m_drivebase = setupDriveBase();
     m_vision = maybeSetupVisionSubsystem();
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
-    if (getRobotSettings().hasClimber) {
+    if (getRobotSettings().climberType == ClimberType.Real) {
       m_climber = new RealClimber();
     } else {
       m_climber = null;

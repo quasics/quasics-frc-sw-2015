@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.climber;
 
-import static frc.robot.Constants.CanBusIds;
+import static frc.robot.Constants.CanBusIds.SparkMax;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -26,8 +26,8 @@ public class RealClimber extends AbstractClimber {
     Stopped, Extending, Retracting
   }
 
-  final CANSparkMax m_leftClimber = new CANSparkMax(CanBusIds.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightClimber = new CANSparkMax(CanBusIds.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_leftClimber = new CANSparkMax(SparkMax.LEFT_CLIMBER_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightClimber = new CANSparkMax(SparkMax.RIGHT_CLIMBER_CAN_ID, MotorType.kBrushless);
 
   final RelativeEncoder m_leftEncoder = m_leftClimber.getEncoder();
   final RelativeEncoder m_rightEncoder = m_rightClimber.getEncoder();

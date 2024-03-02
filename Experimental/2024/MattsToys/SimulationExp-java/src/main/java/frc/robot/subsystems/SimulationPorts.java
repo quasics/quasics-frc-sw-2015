@@ -9,6 +9,8 @@ public interface SimulationPorts {
   public final int LEFT_CLIMBER_PWM_ID = 5;
   public final int RIGHT_CLIMBER_PWM_ID = 6;
 
+  public final int SHOOTER_MOTOR_PWM_ID = 7;
+
   public final int LEFT_DRIVE_ENCODER_PORT_A = 0;
   public final int LEFT_DRIVE_ENCODER_PORT_B = 1;
   public final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
@@ -18,4 +20,7 @@ public interface SimulationPorts {
   public final int LEFT_CLIMBER_ENCODER_PORT_B = 5;
   public final int RIGHT_CLIMBER_ENCODER_PORT_A = 6;
   public final int RIGHT_CLIMBER_ENCODER_PORT_B = 7;
+
+  public final int SHOOTER_ENCODER_PORT_A = 8;
+  public final int SHOOTER_ENCODER_PORT_B = 9;
 }

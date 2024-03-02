@@ -5,6 +5,7 @@
 package frc.robot.subsystems.drivebase;
 
 import static edu.wpi.first.units.Units.Meters;
+import static frc.robot.subsystems.SimulationPorts.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N2;
@@ -50,18 +51,18 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private final EncoderSim m_rightEncoderSim;
 
   // Hardware allocation
-  final PWMSparkMax m_leftLeader = new PWMSparkMax(1);
-  final PWMSparkMax m_leftFollower = new PWMSparkMax(2);
-  final PWMSparkMax m_rightLeader = new PWMSparkMax(3);
-  final PWMSparkMax m_rightFollower = new PWMSparkMax(4);
+  final PWMSparkMax m_leftLeader = new PWMSparkMax(LEFT_FRONT_DRIVE_PWM_ID);
+  final PWMSparkMax m_leftFollower = new PWMSparkMax(LEFT_REAR_DRIVE_PWM_ID);
+  final PWMSparkMax m_rightLeader = new PWMSparkMax(RIGHT_FRONT_DRIVE_PWM_ID);
+  final PWMSparkMax m_rightFollower = new PWMSparkMax(RIGHT_REAR_DRIVE_PWM_ID);
 
   /** Subsystem constructor. */
   public SimulationDrivebase(RobotSettings.Robot robot) {
     super(RobotSettings.Robot.Simulator);
     super.setName(getClass().getSimpleName());
 
-    m_leftEncoder = new Encoder(0, 1);
-    m_rightEncoder = new Encoder(2, 3);
+    m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+    m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
 
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);

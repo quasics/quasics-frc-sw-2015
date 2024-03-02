@@ -120,7 +120,10 @@ public class SimulationClimber extends AbstractClimber {
   }
 
   /** Advance the simulation. */
+  @Override
   public void simulationPeriodic() {
+    super.simulationPeriodic();
+
     // In this method, we update our simulation of what our subsystem is doing.
 
     // First, we set our "inputs" (voltages).

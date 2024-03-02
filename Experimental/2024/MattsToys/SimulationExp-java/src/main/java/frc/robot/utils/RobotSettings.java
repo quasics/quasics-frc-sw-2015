@@ -35,6 +35,11 @@ public interface RobotSettings {
     FrontMotorsLeading
   }
 
+  public enum ClimberType {
+    None,
+    Real
+  }
+
   /**
    * Enum class used to represent the characteristics (e.g., camera name,
    * PID/motor gain values, track width, etc.) that are specific to a given robot.
@@ -65,7 +70,7 @@ public interface RobotSettings {
         // Lighting
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        false),
+        ClimberType.None),
     Xrp(MotorConfigModel.NoLeader,
         /* Track Width (m) */
         Meters.of(0.155),
@@ -77,7 +82,7 @@ public interface RobotSettings {
         Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0), "",
         new Transform3d(), DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        false),
+        ClimberType.None),
     Romi(
         // Motor config model
         MotorConfigModel.NoLeader,
@@ -94,7 +99,7 @@ public interface RobotSettings {
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        false),
+        ClimberType.None),
     Sally(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
@@ -113,7 +118,7 @@ public interface RobotSettings {
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        true),
+        ClimberType.None),
     Margaret(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
@@ -132,7 +137,7 @@ public interface RobotSettings {
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        false),
+        ClimberType.Real),
     Mae(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
@@ -157,7 +162,7 @@ public interface RobotSettings {
         // Lighting data
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        false);
+        ClimberType.None);
 
     ////////////////////////////////////////////////////////
     // Drive base data
@@ -187,7 +192,7 @@ public interface RobotSettings {
 
     ////////////////////////////////////////////////////////
     // Climber subsystem data
-    public final boolean hasClimber;
+    public final ClimberType climberType;
 
     /**
      * Constructor.
@@ -211,7 +216,7 @@ public interface RobotSettings {
         double gearRatio, double kP, double kI, double kD, Measure<Voltage> kS,
         Measure<Per<Voltage, Velocity<Distance>>> kV,
         Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA, String cameraName,
-        Transform3d robotToCamera, int lightingPort, int numLights, boolean hasClimber) {
+        Transform3d robotToCamera, int lightingPort, int numLights, ClimberType climberType) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;
       this.gearRatio = gearRatio;
@@ -225,7 +230,7 @@ public interface RobotSettings {
       this.robotToCameraTransform = robotToCamera;
       this.numLights = numLights;
       this.lightingPwmPort = lightingPort;
-      this.hasClimber = hasClimber;
+      this.climberType = climberType;
     }
   }
 }

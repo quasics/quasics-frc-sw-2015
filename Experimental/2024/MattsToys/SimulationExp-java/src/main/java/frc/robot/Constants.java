@@ -74,6 +74,9 @@ public class Constants {
 
       public static final int LEFT_CLIMBER_CAN_ID = 5;
       public static final int RIGHT_CLIMBER_CAN_ID = 6;
+
+      public static final int LEFT_SHOOTER_FLYWHEEL_CAN_ID = 9;
+      public static final int RIGHT_SHOOTER_FLYWHEEL_CAN_ID = 10;
     }
 
     public static final int PIGEON2_CAN_ID = 1;

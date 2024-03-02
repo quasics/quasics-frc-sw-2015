@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /**
  * Provides pretty basic control for the climber hardware, including a "safety
  * mode" that is intended to prevent them from being wound too far.
- * 
- * TODO: Test this code.
  */
 public abstract class AbstractClimber extends SubsystemBase {
   public static final double MAX_SAFE_REVOLUTIONS = 6;

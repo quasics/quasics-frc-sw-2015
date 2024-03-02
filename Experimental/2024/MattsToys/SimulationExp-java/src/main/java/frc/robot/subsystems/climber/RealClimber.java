@@ -17,6 +17,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
  */
 public class RealClimber extends AbstractClimber {
   static final int TICKS_PER_REVOLUTION = 42;
+  static final double EXTENSION_SPEED = -1.0;
+  static final double RETRACTION_SPEED = 1.0;
   static final int LEFT_CLIMBER_CAN_ID = 5;
   static final int RIGHT_CLIMBER_CAN_ID = 6;
 

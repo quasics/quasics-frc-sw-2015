@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public abstract class AbstractClimber extends SubsystemBase {
   public static final double MAX_SAFE_REVOLUTIONS = 6;
-  static final double EXTENSION_SPEED = -1.0;
-  static final double RETRACTION_SPEED = 1.0;
 
   public enum Mode {
     Stopped, Extending, Retracting
@@ -109,12 +107,14 @@ public abstract class AbstractClimber extends SubsystemBase {
   @Override
   public void periodic() {
     if (m_safetyOn) {
-      if ((m_leftMode == Mode.Extending && getLeftRevolutions_HAL() >= MAX_SAFE_REVOLUTIONS)
-          || (m_leftMode == Mode.Retracting && getLeftRevolutions_HAL() <= 0)) {
+      final double leftRevolutions = getLeftRevolutions_HAL();
+      final double rightRevolutions = getRightRevolutions_HAL();
+      if ((m_leftMode == Mode.Extending && leftRevolutions >= MAX_SAFE_REVOLUTIONS)
+          || (m_leftMode == Mode.Retracting && leftRevolutions <= 0)) {
         stopLeftClimber();
       }
-      if ((m_rightMode == Mode.Extending && getRightRevolutions_HAL() >= MAX_SAFE_REVOLUTIONS)
-          || (m_rightMode == Mode.Retracting && getRightRevolutions_HAL() <= 0)) {
+      if ((m_rightMode == Mode.Extending && rightRevolutions >= MAX_SAFE_REVOLUTIONS)
+          || (m_rightMode == Mode.Retracting && rightRevolutions <= 0)) {
         stopRightClimber();
       }
     }

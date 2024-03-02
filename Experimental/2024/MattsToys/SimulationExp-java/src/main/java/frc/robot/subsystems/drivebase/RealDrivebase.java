@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;

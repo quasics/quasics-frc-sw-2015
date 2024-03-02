@@ -37,6 +37,7 @@ public interface RobotSettings {
 
   public enum ClimberType {
     None,
+    Simulated,
     Real
   }
 
@@ -70,7 +71,7 @@ public interface RobotSettings {
         // Lighting
         DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
         // Climber data
-        ClimberType.None),
+        ClimberType.Simulated),
     Xrp(MotorConfigModel.NoLeader,
         /* Track Width (m) */
         Meters.of(0.155),

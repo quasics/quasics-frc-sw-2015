@@ -62,4 +62,9 @@ public class Constants {
     public static final int DRIVER_JOYSTICK_ID = 0;
     public static final int OPERATOR_JOYSTICK_ID = 1;
   }
+
+  public static class CanBusIds {
+    public static final int LEFT_CLIMBER_CAN_ID = 5;
+    public static final int RIGHT_CLIMBER_CAN_ID = 6;
+  }
 }

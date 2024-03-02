@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.Climber.Mode;
+import frc.robot.subsystems.climber.AbstractClimber;
+import frc.robot.subsystems.climber.AbstractClimber.Mode;
 
 /**
  * Simple command to trigger climber retraction. Will signal that it's finished
@@ -16,9 +16,9 @@ import frc.robot.subsystems.climber.Climber.Mode;
  * TODO: Test this code.
  */
 public class RetractClimbers extends Command {
-  final Climber m_climber;
+  final AbstractClimber m_climber;
 
-  public RetractClimbers(Climber climber) {
+  public RetractClimbers(AbstractClimber climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }

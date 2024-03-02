@@ -43,7 +43,7 @@ import frc.robot.commands.RetractClimbers;
 import frc.robot.commands.SetClimberSafetyMode;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.RealClimber;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
@@ -88,7 +88,7 @@ public class RobotContainer {
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
-  private final Climber m_climber;
+  private final RealClimber m_climber;
 
   Supplier<Double> m_arcadeDriveForwardStick;
   Supplier<Double> m_arcadeDriveRotationStick;
@@ -138,7 +138,7 @@ public class RobotContainer {
     m_vision = maybeSetupVisionSubsystem();
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
     if (getRobotSettings().hasClimber) {
-      m_climber = new Climber();
+      m_climber = new RealClimber();
     } else {
       m_climber = null;
     }

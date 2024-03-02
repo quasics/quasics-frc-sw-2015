@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.Climber.Mode;
+import frc.robot.subsystems.climber.AbstractClimber;
+import frc.robot.subsystems.climber.AbstractClimber.Mode;
 
 /**
  * Simple command to trigger climber extension. Will signal that it's finished
@@ -16,10 +16,10 @@ import frc.robot.subsystems.climber.Climber.Mode;
  * TODO: Test this code.
  */
 public class ExtendClimbers extends Command {
-  final Climber m_climber;
+  final AbstractClimber m_climber;
 
   /** Creates a new ExtendClimbers. */
-  public ExtendClimbers(Climber climber) {
+  public ExtendClimbers(AbstractClimber climber) {
     m_climber = climber;
     addRequirements(m_climber);
   }

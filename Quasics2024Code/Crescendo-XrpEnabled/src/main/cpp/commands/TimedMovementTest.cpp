@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -10,7 +10,6 @@ TimedMovementTest::TimedMovementTest(IDrivebase& drivebase, double speed,
       m_speed(forward ? -std::abs(speed) : std::abs(speed)),
       m_time(time),
       m_forward(forward) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&m_drivebase);
 }
 
@@ -33,8 +32,5 @@ void TimedMovementTest::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool TimedMovementTest::IsFinished() {
-  if (m_stopWatch.HasElapsed(m_time)) {
-    return true;
-  }
-  return false;
+  return m_stopWatch.HasElapsed(m_time);
 }

@@ -55,6 +55,13 @@
 class IDrivebase : public frc2::SubsystemBase {
   // Useful class constants.
  public:
+  static const std::string_view BULLETIN_BOARD_POSE_KEY;
+  static const std::string_view BULLETIN_BOARD_DIRECTION_KEY;
+  static const std::string_view BULLETIN_BOARD_DIRECTION_FORWARD_VALUE;
+  static const std::string_view BULLETIN_BOARD_DIRECTION_REVERSE_VALUE;
+  static const std::string_view BULLETIN_BOARD_DIRECTION_TURNING_VALUE;
+  static const std::string_view BULLETIN_BOARD_DIRECTION_STOPPED_VALUE;
+
   /** Maximum linear speed (@ 100% of rated speed). */
   static constexpr units::meters_per_second_t MAX_SPEED{3.0};
 

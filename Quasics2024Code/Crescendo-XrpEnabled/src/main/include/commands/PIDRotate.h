@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -13,13 +13,7 @@
 
 #undef USE_DYNAMIC_DATA_FROM_DASHBOARD
 
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending CommandBase
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+// TODO: (CODE_REVIEW) Add comments.
 class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
  public:
   PIDRotate(IDrivebase& drivebase, units::degree_t angle);
@@ -49,6 +43,5 @@ class PIDRotate : public frc2::CommandHelper<frc2::Command, PIDRotate> {
   nt::GenericEntry* kD_entry = nullptr;
   nt::GenericEntry* angle_entry = nullptr;
 #endif
-  frc::PIDController m_pid{PIDTurningConstants::kP, PIDTurningConstants::kI,
-                           PIDTurningConstants::kD};
+  frc::PIDController m_pid;
 };

@@ -8,7 +8,13 @@
 
 #include <iostream>
 
-IntakeDeployment::IntakeDeployment() {
+#include "Constants.h"
+
+IntakeDeployment::IntakeDeployment()
+    : m_intakeDeployment{MotorIds::SparkMax::INTAKE_DEPLOYMENT_MOTOR,
+                         rev::CANSparkMax::MotorType::kBrushless},
+      m_ExtendIntakeLimitSwitch{DigitalInput::INTAKE_EXTEND_LIMIT_SWITCH_ID},
+      m_RetractIntakeLimitSwitch{DigitalInput::INTAKE_RETRACT_LIMIT_SWITCH_ID} {
   SetName("IntakeDeployment");
 }
 
@@ -57,7 +63,7 @@ double IntakeDeployment::GetRevolutions() {
 
 bool IntakeDeployment::ExtendedByRevolutions() {
   // ARBITRARY NUMBER PLEASE SWITCH
-  if (GetRevolutions() > 100) {
+  if (GetRevolutions() > 1.0) {
     return true;
   }
   return false;

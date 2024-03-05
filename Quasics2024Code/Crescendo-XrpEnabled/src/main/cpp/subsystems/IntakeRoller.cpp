@@ -6,7 +6,11 @@
 
 #include <iostream>
 
-IntakeRoller::IntakeRoller() {
+#include "Constants.h"
+
+IntakeRoller::IntakeRoller()
+    : m_intake{MotorIds::SparkMax::INTAKE_MOTOR,
+               rev::CANSparkMax::MotorType::kBrushless} {
   SetName("IntakeRoller");
 }
 

@@ -1,33 +1,34 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 #include "commands/MoveLinearActuators.h"
 
-MoveLinearActuators::MoveLinearActuators(Shooter& shooter, bool extending)
-    : m_shooter(shooter), m_extending(extending) {
-  // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(&m_shooter);
+#include <iostream>
+
+MoveLinearActuators::MoveLinearActuators(LinearActuators& linearActuators,
+                                         bool extending)
+    : m_linearActuators(linearActuators), m_extending(extending) {
+  AddRequirements(&m_linearActuators);
 }
 
 // Called when the command is initially scheduled.
 void MoveLinearActuators::Initialize() {
+  m_stopWatch.Reset();
+  m_stopWatch.Start();
   if (m_extending) {
-    m_shooter.ExtendLinearActuators();
+    std::cout << "Starting to extend" << std::endl;
+    m_linearActuators.ExtendLinearActuators();
   } else {
-    m_shooter.RetractLinearActuators();
+    std::cout << "Starting to retract" << std::endl;
+    m_linearActuators.RetractLinearActuators();
   }
 }
 
-// Called repeatedly when this Command is scheduled to run
-void MoveLinearActuators::Execute() {
-}
-
-// Called once the command ends or is interrupted.
-void MoveLinearActuators::End(bool interrupted) {
-}
-
-// Returns true when the command should end.
 bool MoveLinearActuators::IsFinished() {
+  if (m_stopWatch.HasElapsed(4.3_s)) {
+    std::cout << "Finished" << std::endl;
+    return true;
+  }
   return false;
 }

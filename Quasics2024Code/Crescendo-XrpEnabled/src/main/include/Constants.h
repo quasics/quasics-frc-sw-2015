@@ -46,16 +46,18 @@ namespace OperatorConstants {
     constexpr int RightYAxis = 3;
 
     // Buttons
-    constexpr int AButton = 1;
-    constexpr int BButton = 2;
-    constexpr int XButton = 3;
+    constexpr int XButton = 1;
+    constexpr int AButton = 2;
+    constexpr int BButton = 3;
     constexpr int YButton = 4;
     constexpr int LeftShoulder = 5;
     constexpr int RightShoulder = 6;
-    constexpr int BackButton = 7;
-    constexpr int StartButton = 8;
-    constexpr int LeftStickPress = 9;
-    constexpr int RightStickPress = 10;
+    constexpr int LeftTrigger = 7;
+    constexpr int RightTrigger = 8;
+    constexpr int BackButton = 9;
+    constexpr int StartButton = 10;
+    constexpr int LeftStickPress = 11;
+    constexpr int RightStickPress = 12;
   }  // namespace LogitechGamePad
 
 }  // namespace OperatorConstants
@@ -77,14 +79,25 @@ namespace PathWeaverConstants {
   constexpr double kI = 0;
   constexpr double kD = 0;
 #endif
+
+#ifdef USING_MARGARET
+  // constexpr auto kS = 0.1084_V;  // THIS IS MARGARETS PLEASE USE
+  constexpr auto kS = 0.19529_V;
+  constexpr auto kV = 1.0288 * (1_V * 1_s / 1_m);
+  constexpr auto kA = 0.18486 * (1_V * 1_s * 1_s / 1_m);
+  constexpr double kP = 0.60159;  // THIS IS MARGERTS PLEASE USE
+  // constexpr auto kP = 2;
+  constexpr double kI = 0;
+  constexpr double kD = 0;
+#endif
 }  // namespace PathWeaverConstants
 
 namespace MotorIds {
   namespace SparkMax {
-    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;
-    constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;
-    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;
-    constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;
+    constexpr int LEFT_FRONT_DRIVE_MOTOR_ID = 1;   // follower of 2
+    constexpr int LEFT_BACK_DRIVE_MOTOR_ID = 2;    // leader
+    constexpr int RIGHT_FRONT_DRIVE_MOTOR_ID = 3;  // follower of 4
+    constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;   // leader
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;  // is inverted
     constexpr int INTAKE_DEPLOYMENT_MOTOR = 7;
@@ -94,12 +107,16 @@ namespace MotorIds {
 
   }  // namespace SparkMax
 
+  namespace VictorSPX {
+    constexpr int SCORER_ID = 1;
+  }  // namespace VictorSPX
+
 }  // namespace MotorIds
 
 namespace MotorSpeeds {
-  constexpr double EXTENSION_SPEED = 1.00;
+  constexpr double EXTENSION_SPEED = -1.00;
 
-  constexpr double RETRACTION_SPEED = -1.00;
+  constexpr double RETRACTION_SPEED = 1.00;
 }  // namespace MotorSpeeds
 
 namespace RobotSpeedScaling {
@@ -122,8 +139,8 @@ namespace DigitalInput {
 // PWM ports 0-9 are on-board, 10-19 are on the MXP port.
 namespace PWMPorts {
   constexpr int LIGHTING_PORT = 1;
-  constexpr int LEFT_SERVO = 3;
-  constexpr int RIGHT_SERVO = 4;
+  constexpr int LEFT_SERVO = 6;
+  constexpr int RIGHT_SERVO = 3;
   constexpr int SIMULATED_LEFT_MOTOR_PORT = 18;
   constexpr int SIMULATED_RIGHT_MOTOR_PORT = 19;
 }  // namespace PWMPorts
@@ -132,12 +149,11 @@ namespace SensorIds {
   constexpr int PIGEON_CAN_ID = 1;
 }
 
-/* namespace LightingValues {
+namespace LightingValues {
   constexpr int PORT_NUMBER = 1;
-  constexpr int STRIP_PIXEL_COUNT = fill in;
+  constexpr int STRIP_PIXEL_COUNT = 40;
   constexpr int PIXEL_NUMBER = STRIP_PIXEL_COUNT;
-} */
-// namespace LightingValues
+}  // namespace LightingValues
 
 constexpr units::length::meter_t TRACK_WIDTH_METERS_SALLY = 0.5588_m;
 constexpr units::length::meter_t TRACK_WIDTH_METERS_MARGARET = 0.5588_m;
@@ -182,26 +198,41 @@ namespace AutonomousSelectedOperation {
   const auto score4 = "Score 4 piece";
 }  // namespace AutonomousSelectedOperation
 
-namespace AutonomousScoreDestinations {
+namespace AutonomousScore2Options {
   const auto none = "None";
-  const auto amp = "Amp";
-  const auto leftOfSpeaker = "Left of speaker";
-  const auto inFrontOfSpeaker = "In front of speaker";
-  const auto rightOfSpeaker = "Right of speaker";
-}  // namespace AutonomousScoreDestinations
+  const auto amp = "Score in amp";
+  const auto leftOfSpeaker = "Score left of speaker";
+  const auto inFrontOfSpeaker = "Score in front of speaker";
+  const auto rightOfSpeakerAllianceNote =
+      "Score right of speaker (alliance note)";
+  const auto rightOfSpeakerCenterNote = "Score right of speaker (center note)";
+}  // namespace AutonomousScore2Options
+
+namespace AutonomousScore3Options {
+  const auto none = "None";
+  const auto amp = "Score in amp";
+  const auto leftOfSpeaker = "Score left of speaker";
+  const auto inFrontOfSpeakerAmpNote = "Score in front of speaker (amp note)";
+  const auto inFrontOfSpeakerStageNote =
+      "Score in front of speaker (stage note)";
+  const auto inFrontOfSpeakerCenterNote =
+      "Score in front of speaker (center note)";
+  const auto rightOfSpeaker = "Score right of speaker";
+}  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {
-  const double amp = 0.5;
-  const double speaker = 1.0;
+  const double amp = 0.08;
+  const double speaker = 1.00;
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {
-  const double intakeDeploymentSpeed = 0.5;
-  const double intakeRollerSpeed = 0.5;
+  const double intakeDeploymentSpeed = 0.75;
+  const double intakeRollerSpeed = 0.75;
   const double feedingSpeed = 0.5;
 }  // namespace IntakeSpeeds
 
 namespace AutonomousTimes {
+
   const units::second_t waitTimeAfterShooting = 0.1_s;
 }
 

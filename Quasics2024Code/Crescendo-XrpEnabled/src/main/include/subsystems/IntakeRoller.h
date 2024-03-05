@@ -26,8 +26,7 @@ class IntakeRoller : public frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  rev::CANSparkMax m_intake{MotorIds::SparkMax::INTAKE_MOTOR,
-                            rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_intake;
 
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.

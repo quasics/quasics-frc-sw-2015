@@ -11,8 +11,6 @@
 #include <frc/xrp/XRPGyro.h>
 #include <frc/xrp/XRPMotor.h>
 
-#include "sensors/IGyro.h"
-#include "sensors/TrivialEncoder.h"
 #include "subsystems/IDrivebase.h"
 
 class XRPDrivebase : public IDrivebase {
@@ -37,6 +35,14 @@ class XRPDrivebase : public IDrivebase {
   }
   virtual double getRightSpeedPercentage_HAL() override {
     return m_rightXrpMotor.Get();
+  }
+
+  virtual units::volt_t getLeftVoltage_HAL() override {
+    return m_leftXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
+  }
+
+  virtual units::volt_t getRightVoltage_HAL() override {
+    return m_rightXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
   }
 
   virtual TrivialEncoder& getLeftEncoder_HAL() override {

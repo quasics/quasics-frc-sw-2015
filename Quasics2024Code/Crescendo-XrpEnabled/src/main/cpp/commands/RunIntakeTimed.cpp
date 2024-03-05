@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -10,7 +10,6 @@ RunIntakeTimed::RunIntakeTimed(IntakeRoller &intake, double intakeSpeed,
       m_intakeSpeed(takingIn ? -std::abs(intakeSpeed) : std::abs(intakeSpeed)),
       m_time(time),
       m_takingIn(takingIn) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(&m_intake);
 }
 
@@ -33,8 +32,5 @@ void RunIntakeTimed::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunIntakeTimed::IsFinished() {
-  if (m_stopWatch.HasElapsed(m_time)) {
-    return true;
-  }
-  return false;
+  return m_stopWatch.HasElapsed(m_time);
 }

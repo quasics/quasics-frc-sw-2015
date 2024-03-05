@@ -24,9 +24,10 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -37,18 +38,25 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.DriveToAprilTag;
+import frc.robot.commands.ExtendClimbers;
+import frc.robot.commands.RetractClimbers;
+import frc.robot.commands.SetClimberSafetyMode;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.climber.AbstractClimber;
+import frc.robot.subsystems.climber.RealClimber;
+import frc.robot.subsystems.climber.SimulationClimber;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
-import frc.robot.subsystems.RealDrivebase;
-import frc.robot.subsystems.RomiDrivebase;
-import frc.robot.subsystems.SimulationDrivebase;
+import frc.robot.subsystems.drivebase.RealDrivebase;
+import frc.robot.subsystems.drivebase.RomiDrivebase;
+import frc.robot.subsystems.drivebase.SimulationDrivebase;
+import frc.robot.subsystems.drivebase.XrpDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.TrajectoryCommandGenerator;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -62,28 +70,34 @@ public class RobotContainer {
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE =
-      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
+      MAX_AUTO_ACCELERATION_MPSS);
 
-  private final RobotSettings.Robot m_selectedRobot = RobotSettings.Robot.Simulator;
+  /** Options for the behavior when running under the simulator. */
+  private enum SimulationMode {
+    eSimulation, eXrp, eRomi
+  }
 
-  private final XboxController m_controller = new XboxController(0);
-  private final LightingInterface m_lighting = new Lighting(m_selectedRobot);
+  /** Defines options for auto mode. */
+  private enum AutoMode {
+    eDoNothing, eSpin, eFollowTrajectory
+  }
+
+  /** Default configuration when running in "isReal" mode. */
+  private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Margaret;
+
+  private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+  private final LightingInterface m_lighting = new Lighting(getRobotSettings());
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
+  private final AbstractClimber m_climber;
 
   Supplier<Double> m_arcadeDriveForwardStick;
   Supplier<Double> m_arcadeDriveRotationStick;
 
-  /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode { eSimulation, eXrp, eRomi }
-
   /** Currently-configured option when running under the simulator. */
-  private final SimulationMode m_simulationMode = SimulationMode.eSimulation;
-
-  /** Defines options for auto mode. */
-  private enum AutoMode { eDoNothing, eSpin, eFollowTrajectory }
+  private static final SimulationMode m_simulationMode = SimulationMode.eSimulation;
 
   /** The currently-configured autonomous mode. */
   private AutoMode mode = AutoMode.eDoNothing;
@@ -95,8 +109,150 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
-      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+
+  public static RobotSettings.Robot getRobotSettings() {
+    if (RobotBase.isReal()) {
+      return SETTINGS_FOR_REAL_MODE;
+    }
+
+    switch (m_simulationMode) {
+      case eRomi:
+        return RobotSettings.Robot.Romi;
+      case eXrp:
+        return RobotSettings.Robot.Xrp;
+
+      case eSimulation:
+      default:
+        return RobotSettings.Robot.Simulator;
+    }
+  }
+
+  /*
+   * Constructor.
+   *
+   * @todo Add sample solution for selecting which (real) drive base we're
+   * actually working on.
+   */
+  public RobotContainer() {
+    ////////////////////////////////////////////////////////
+    // Subsystem setup
+    m_drivebase = setupDriveBase();
+    m_vision = maybeSetupVisionSubsystem();
+    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
+    switch (getRobotSettings().climberType) {
+      case Real:
+        m_climber = new RealClimber();
+        break;
+      case Simulated:
+        m_climber = new SimulationClimber();
+        break;
+      case None:
+      default:
+        m_climber = null;
+        break;
+    }
+
+    ////////////////////////////////////////////////////////
+    // Finish intialization
+    resetPositionFromAllianceSelection();
+
+    ////////////////////////////////////////////////////////
+    // Set up button bindings and smart dashboard buttons
+    configureBindings();
+
+    // Tags 9&10 are on the Blue Source wall
+    SmartDashboard.putData("Target 10",
+        new DriveToAprilTag(getRobotSettings(), m_vision, m_drivebase, 10,
+            Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
+
+    maybeAddClimberCommandsToDashboard();
+
+    ////////////////////////////////////////////////////////
+    // Report other information for dev support
+    if (RobotBase.isSimulation()) {
+      System.err.println("Writing logs to: " + DataLogManager.getLogDir());
+    } else {
+      System.err.println("Logs should be written to: ~lvuser/logs directory");
+    }
+  }
+
+  private AbstractDrivebase setupDriveBase() {
+    AbstractDrivebase drivebase = null;
+    if (Robot.isReal()) {
+      drivebase = new RealDrivebase(getRobotSettings());
+
+      // Note that we're inverting the values because Xbox controllers return
+      // negative values when we push forward.
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+    } else {
+      // Note that we're assuming a keyboard-based controller is actually being
+      // used in the simulation environment (for now), and thus we want to use
+      // axis 1&2.
+      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
+      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
+      System.out.println("Simulator configured for " + m_simulationMode + " mode");
+      switch (m_simulationMode) {
+        case eRomi:
+          drivebase = new RomiDrivebase();
+          break;
+        case eXrp:
+          drivebase = new XrpDrivebase();
+          break;
+        case eSimulation:
+          drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
+          break;
+        default:
+          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
+              + "), falling back on pure simulator");
+          drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
+          break;
+      }
+    }
+    return drivebase;
+  }
+
+  private VisionSubsystem maybeSetupVisionSubsystem() {
+    VisionSubsystem vision = null;
+    if (ENABLE_VISION_SUBSYSTEM) {
+      try {
+        vision = new VisionSubsystem(getRobotSettings());
+      } catch (Exception e) {
+        System.err.println("*** Failed to set up vision subsystem!");
+        e.printStackTrace();
+      }
+    } else {
+      System.err.println(">>> Note: Vision subsystem is DISABLED.");
+    }
+
+    return vision;
+  }
+
+  private void configureBindings() {
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
+    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+
+    // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
+    // complete routine should run each of these once.
+    SmartDashboard.putData(
+        "Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    if (ENABLE_VISION_SUBSYSTEM) {
+      SmartDashboard.putData("Reset position",
+          new InstantCommand(() -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
+    }
+
+    SmartDashboard.putData(
+        "Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
+  }
 
   Pose2d computeInitialPoseForDriversStation(Alliance alliance, int driversStation) {
     // Assume we're always facing *out* from the driver's station (for now),
@@ -148,112 +304,6 @@ public class RobotContainer {
     }
   }
 
-  /*
-   * Constructor.
-   *
-   * @todo Add sample solution for selecting which (real) drive base we're
-   * actually working on.
-   */
-  public RobotContainer() {
-    m_drivebase = setupDriveBase();
-    m_vision = maybeSetupVisionSubsystem();
-    m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
-
-    resetPositionFromAllianceSelection();
-
-    configureBindings();
-
-    // Tags 9&10 are on the Blue Source wall
-    SmartDashboard.putData("Target 10",
-        new DriveToAprilTag(m_selectedRobot, m_vision, m_drivebase, 10,
-            Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
-
-    System.err.println("Writing logs to: " + DataLogManager.getLogDir());
-  }
-
-  private AbstractDrivebase setupDriveBase() {
-    AbstractDrivebase drivebase = null;
-    if (Robot.isReal()) {
-      drivebase = new RealDrivebase(m_selectedRobot);
-
-      // Note that we're inverting the values because Xbox controllers return
-      // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> - m_controller.getLeftX();
-      m_arcadeDriveRotationStick = () -> - m_controller.getRightY();
-    } else {
-      // Note that we're assuming a keyboard-based controller is actually being
-      // used in the simulation environment (for now), and thus we want to use
-      // axis 1&2 (without inversion, since it's *not* an Xbox controller).
-      m_arcadeDriveForwardStick = () -> m_controller.getRawAxis(0);
-      m_arcadeDriveRotationStick = () -> m_controller.getRawAxis(1);
-      switch (m_simulationMode) {
-        case eRomi:
-          drivebase = new RomiDrivebase();
-          break;
-        case eXrp:
-          drivebase = new XrpDrivebase();
-          break;
-        case eSimulation:
-          drivebase = new SimulationDrivebase(m_selectedRobot);
-          break;
-        default:
-          System.err.println("**** WARNING: Unrecognized simulation mode (" + m_simulationMode
-              + "), falling back on pure simulator");
-          drivebase = new SimulationDrivebase(m_selectedRobot);
-          break;
-      }
-    }
-    return drivebase;
-  }
-
-  private VisionSubsystem maybeSetupVisionSubsystem() {
-    VisionSubsystem vision = null;
-    if (ENABLE_VISION_SUBSYSTEM) {
-      try {
-        vision = new VisionSubsystem(m_selectedRobot);
-      } catch (Exception e) {
-        System.err.println("*** Failed to set up vision subsystem!");
-        e.printStackTrace();
-      }
-    } else {
-      System.err.println(">>> Note: Vision subsystem is DISABLED.");
-    }
-
-    if (vision != null) {
-      vision.setPoseEstimatorConsumer((Pose2d pose, Double timestampSeconds) -> {
-        m_drivebase.integrateVisionMeasurement(pose, timestampSeconds);
-        return null;
-      });
-    }
-
-    return vision;
-  }
-
-  private void configureBindings() {
-    m_drivebase.setDefaultCommand(
-        new ArcadeDrive(m_drivebase, m_arcadeDriveForwardStick, m_arcadeDriveRotationStick));
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
-
-    // Bind full set of SysId routine tests to buttons on the SmartDashboard; a
-    // complete routine should run each of these once.
-    SmartDashboard.putData(
-        "Quasistatic Fwd", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Quasistatic Rev", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData(
-        "Dynamic Fwd", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Dynamic Rev", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    if (ENABLE_VISION_SUBSYSTEM) {
-      SmartDashboard.putData("Reset position",
-          new InstantCommand(() -> resetPositionFromAllianceSelection(), m_drivebase, m_vision));
-    }
-
-    SmartDashboard.putData(
-        "Drive 1m @ 1mps", new DriveForDistance(m_drivebase, Meters.of(1), MetersPerSecond.of(1)));
-  }
-
   public Command getAutonomousCommand() {
     switch (mode) {
       case eDoNothing:
@@ -274,14 +324,12 @@ public class RobotContainer {
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        ()
-            -> {
+        () -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        ()
-            -> {
+        () -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
@@ -289,11 +337,13 @@ public class RobotContainer {
               RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
-        (Boolean interrupted)
-            -> { m_drivebase.stop(); },
+        (Boolean interrupted) -> {
+          m_drivebase.stop();
+        },
         // isFinished
-        ()
-            -> { return false; },
+        () -> {
+          return false;
+        },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -301,21 +351,20 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints =
-        new DifferentialDriveVoltageConstraint(m_drivebase.getMotorFeedforward(),
-            m_drivebase.getKinematics(),
-            /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
+        m_drivebase.getMotorFeedforward(),
+        m_drivebase.getKinematics(),
+        /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(m_drivebase.getKinematics())
-        // // Apply the voltage constraint
-        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-        // .addConstraint(voltageConstraints)
-        // End of constraints
-        ;
+    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(m_drivebase.getKinematics())
+    // // Apply the voltage constraint
+    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+    // .addConstraint(voltageConstraints)
+    // End of constraints
+    ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
@@ -359,5 +408,16 @@ public class RobotContainer {
       default:
         return new PrintCommand("Unexpected value for m_autoModeTrajectorySelection!");
     }
+  }
+
+  private void maybeAddClimberCommandsToDashboard() {
+    if (m_climber == null) {
+      return;
+    }
+
+    SmartDashboard.putData("Extend climbers", new ExtendClimbers(m_climber));
+    SmartDashboard.putData("Retract climbers", new RetractClimbers(m_climber));
+    SmartDashboard.putData("Safe climbers", new SetClimberSafetyMode(m_climber, true));
+    SmartDashboard.putData("Unsafe climbers", new SetClimberSafetyMode(m_climber, false));
   }
 }

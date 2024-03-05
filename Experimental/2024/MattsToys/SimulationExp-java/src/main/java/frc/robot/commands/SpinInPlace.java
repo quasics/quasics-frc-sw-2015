@@ -10,7 +10,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 public class SpinInPlace extends Command {
   final private AbstractDrivebase m_drivebase;

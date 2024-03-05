@@ -20,6 +20,8 @@ class RobotContainer {
 
  private:
   void ConfigureBindings();
+  void ConfigureSimpleLightingExample();
+  void ConfigureDirectionalLighting();
 
  private:
   frc::XboxController m_controller{0};

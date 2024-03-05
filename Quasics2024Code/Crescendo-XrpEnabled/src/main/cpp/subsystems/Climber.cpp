@@ -6,8 +6,17 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Climber::Climber() {
+#include "Constants.h"
+
+Climber::Climber()
+    : m_climberLeft{MotorIds::SparkMax::LEFT_CLIMBER_MOTOR_ID,
+                    rev::CANSparkMax::MotorType::kBrushless},
+      m_climberRight{MotorIds::SparkMax::RIGHT_CLIMBER_MOTOR_ID,
+                     rev::CANSparkMax::MotorType::kBrushless}
+
+{
   SetName("Climber");
+  // NOTE WHEN I GO UP THE REVOLUTIONS ARE GOING INTO NEGATIVES
 }
 
 void Climber::StartExtending() {
@@ -81,14 +90,14 @@ frc::SmartDashboard::PutString(
 }
 
 bool Climber::IsFullyExtended() {
-  if (getLeftRevolutions() > 4 && getRightRevolutions() > 4) {
+  if (getLeftRevolutions() < -3 && getRightRevolutions() < -3) {
     return true;
   }
   return false;
 }
 
 bool Climber::IsFullyRetracted() {
-  if (getLeftRevolutions() <= 0 && getRightRevolutions() <= 0) {
+  if (getLeftRevolutions() >= 0 && getRightRevolutions() >= 0) {
     return true;
   }
   return false;
@@ -106,4 +115,9 @@ double Climber::getRightRevolutions() {
 void Climber::resetRevolutions() {
   m_leftEncoder.SetPosition(0);
   m_rightEncoder.SetPosition(0);
+}
+
+void Climber::setRevolutions() {
+  m_leftEncoder.SetPosition(-126);
+  m_rightEncoder.SetPosition(-126);
 }

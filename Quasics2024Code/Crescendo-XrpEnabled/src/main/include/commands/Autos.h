@@ -15,13 +15,11 @@
 
 namespace AutonomousCommands {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase, Shooter &shooter,
-                                        IntakeDeployment &intakeDeployment,
-                                        IntakeRoller &intakeRoller,
-                                        std::string operationName,
-                                        std::string teamAndPosName,
-                                        std::string score2Dest,
-                                        std::string score3Dest, bool isBlue);
+  frc2::CommandPtr GetAutonomousCommand(
+      IDrivebase &drivebase, IntakeDeployment &intakeDeployment,
+      IntakeRoller &intakeRoller, Shooter &shooter, std::string operationName,
+      std::string teamAndPosName, std::string score2Dest,
+      std::string score3Dest, bool isBlue);
 #else
   frc2::CommandPtr GetAutonomousCommand(IDrivebase &drivebase,
                                         std::string operationName,

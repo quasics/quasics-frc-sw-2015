@@ -22,6 +22,8 @@
 #include "subsystems/IDrivebase.h"
 #include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
+#include "subsystems/LinearActuators.h"
+#include "subsystems/PivotScorer.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/Vision.h"
 #include "utils/DeadBandEnforcer.h"
@@ -47,6 +49,8 @@ class RobotContainer {
 
   // Functions to bind commands to the driver/operator controllers.
  private:
+  void SetDefaultShooterCommand();
+
   void RunCommandWhenDriverButtonIsPressed(int logitechButtonId,
                                            frc2::Command* command);
   void RunCommandWhenDriverButtonIsHeld(int logitechButtonId,
@@ -68,7 +72,7 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector);
   static void AddingNamedOverallOperationsToSelector(
       frc::SendableChooser<frc2::Command*>& selector);
-  static void AddingNamedScoreDestinationsToSelector(
+  static void AddingNamedScoreOptionsToSelector(
       frc::SendableChooser<frc2::Command*>& selector1,
       frc::SendableChooser<frc2::Command*>& selector2);
 
@@ -78,20 +82,27 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
-  frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
-  frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
+      units::second_t time);
+  // adjusting the version for button binding
+  // frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
+  // frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
+  frc2::SequentialCommandGroup* ExtendThenRetractActuatorsAfterTime(
+      units::second_t time);
 
   void AddClimberTestButtonsToDashboard();
 #endif
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddVisionTestButtonsToDashboard();
+  void AddScorerTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();
   void AddTeamAndStationSelectorToSmartDashboard();
   void AddRobotOverallOperationToSmartDashboard();
-  void AddScoreDestinationsToSmartDashboard();
+  void AddScoreOptionsToSmartDashboard();
+  void AddCompetitionButtonsToSmartDashboard();
 
   // Driving support functions
  private:
@@ -115,6 +126,8 @@ class RobotContainer {
   Climber m_climber;
   IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
+  LinearActuators m_linearActuators;
+  PivotScorer m_pivotScorer;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_VISION_TESTING
@@ -136,7 +149,7 @@ class RobotContainer {
       DRIVER_JOYSTICK_RATE_LIMIT};
 
   // Choosers for configuring behavior in auto mode.
-  frc::SendableChooser<frc2::Command*> m_TeamAndStationAutonomousOptions;
+  frc::SendableChooser<frc2::Command*> m_PositionAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_OverallAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score2DestAutonomousOptions;
   frc::SendableChooser<frc2::Command*> m_Score3DestAutonomousOptions;

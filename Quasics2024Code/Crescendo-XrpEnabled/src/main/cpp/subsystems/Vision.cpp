@@ -6,6 +6,9 @@
 
 #include <iostream>
 
+#include "Constants.h"
+#include "utils/SimulationSupport.h"
+
 Vision::Vision() {
   SetName("Vision");
   setupSimulationSupport();

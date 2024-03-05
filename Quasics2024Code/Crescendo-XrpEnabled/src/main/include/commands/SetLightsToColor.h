@@ -9,13 +9,7 @@
 
 #include "subsystems/Lighting.h"
 
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending Command
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+// TODO: (CODE_REVIEW) Add comments.
 class SetLightsToColor
     : public frc2::CommandHelper<frc2::Command, SetLightsToColor> {
  public:
@@ -23,11 +17,9 @@ class SetLightsToColor
 
   void Execute() override;
 
-  bool IsFinished() override;
-
  private:
   Lighting* m_lighting;
-  int m_r;
-  int m_g;
-  int m_b;
+  const int m_r;
+  const int m_g;
+  const int m_b;
 };

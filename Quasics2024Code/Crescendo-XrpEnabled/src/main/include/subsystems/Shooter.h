@@ -8,8 +8,6 @@
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
-#include "Constants.h"
-
 /**
  * Cargo (ball) shooting subsystem, used to deliver cargo to the hub.
  *
@@ -34,34 +32,12 @@ class Shooter : public frc2::SubsystemBase {
     SetFlywheelSpeed(0);
   };
 
-  void ExtendLinearActuators();
-
-  void RetractLinearActuators();
-
-  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
-  // get a linker error.
-  bool IsFullyExtended();
-
-  // TODO: (Matthew) This isn't implemented yet.  If you try to use it, you'll
-  // get a linker error.
-  bool IsFullyRetracted();
-
  private:
-  /** Configures a Servo object to be used with an AndyMark L16 actuator. */
-  static void ConfigureAndyMarkL16(frc::Servo& servo);
-
   // Data members.
  private:
-  rev::CANSparkMax m_flyWheel{
-      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_LEADER_ID,
-      rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax m_flyWheel;
 
   // TODO: (Matthew) If it's a follower, why do you need to talk to it?  (In
   // other words, we shouldn't need this 2nd object.)
-  rev::CANSparkMax m_flyWheelTwo{
-      MotorIds::SparkMax::SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID,
-      rev::CANSparkMax::MotorType::kBrushless};
-
-  frc::Servo m_leftPositionServo{PWMPorts::LEFT_SERVO};
-  frc::Servo m_rightPositionServo{PWMPorts::RIGHT_SERVO};
+  rev::CANSparkMax m_flyWheelTwo;
 };

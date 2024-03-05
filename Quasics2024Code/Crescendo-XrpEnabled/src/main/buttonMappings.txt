@@ -1,0 +1,31 @@
+
+Driver controller (Logitech)
+* Left stick - Arcade Drive Movement Speed
+* Right stick - Arcade Drive Rotation Speed
+* A - Retract climbers auto (while held)
+* B - Toggle switch drive
+* X - 
+* Y - Extend climbers auto (while held)
+* Left shoulder - Turtle mode (while held)
+* Right shoulder - Turbo mode (while held)
+* Left trigger - Drop note (while held)
+* Right trigger - Intake note (while held)
+* Start - 
+* Back - 
+
+
+Operator controller (Xbox)
+* Left stick - 
+* Right stick - 
+* View button - 
+* Xbox button - 
+* Menu button - 
+* Right bumper - 
+* Left bumper - 
+* Left trigger - Just shooter (amp speed)
+* Right trigger - Just shooter (speaker speed)
+* X button - Shooting sequence for amp (while held)
+* Y button - Retract intake (while held)
+* A button - Extend intake (while held)
+* B button - Shooting sequence for speaker (while held)
+* D-pad - 

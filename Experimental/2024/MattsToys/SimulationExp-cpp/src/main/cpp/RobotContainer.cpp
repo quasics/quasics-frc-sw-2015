@@ -10,6 +10,7 @@
 
 #include "Robot.h"
 #include "commands/ArcadeDriveCommand.h"
+#include "commands/DirectionalLighting.h"
 #include "subsystems/RealDriveBase.h"
 #include "subsystems/SimulatedDriveBase.h"
 #include "utils/DeadBandEnforcer.h"
@@ -26,7 +27,7 @@ RobotContainer::RobotContainer() {
   ConfigureBindings();
 }
 
-void RobotContainer::ConfigureBindings() {
+void RobotContainer::ConfigureSimpleLightingExample() {
   frc2::FunctionalCommand lightingExample(
       // onInit
       [&]() { m_lighting.setSolidStripColor(Lighting::GREEN); },
@@ -39,6 +40,19 @@ void RobotContainer::ConfigureBindings() {
       // Requirements
       {&m_lighting});
   m_lighting.SetDefaultCommand(std::move(lightingExample));
+}
+
+void RobotContainer::ConfigureDirectionalLighting() {
+  DirectionalLighting lightingCommand(m_lighting);
+  m_lighting.SetDefaultCommand(std::move(lightingCommand));
+}
+
+void RobotContainer::ConfigureBindings() {
+#ifdef USE_SIMPLE_LIGHTING_EXAMPLE
+  ConfigureSimpleLightingExample();
+#else
+  ConfigureDirectionalLighting();
+#endif
 
   // Set up arcade drive command as a default.
   const bool isReal = frc::RobotBase::IsReal();

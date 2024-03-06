@@ -70,10 +70,8 @@ class RealDrivebase : public IDrivebase {
   rev::CANSparkMax m_leftBackFollower;
   rev::CANSparkMax m_rightBackFollower;
 
-  rev::SparkRelativeEncoder m_leftBackEncoder =
-      m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_rightBackEncoder =
-      m_rightBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
+  rev::SparkRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
 
   /** Wraps a TrivialEncoder interface around the left encoder. */
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{

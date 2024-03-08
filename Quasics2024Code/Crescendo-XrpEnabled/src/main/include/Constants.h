@@ -221,8 +221,8 @@ namespace AutonomousScore3Options {
 }  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {
-  const double amp = 0.08;
-  const double speaker = 1.00;
+  const double amp = 1.00;
+  const double speaker = 0.80;
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {

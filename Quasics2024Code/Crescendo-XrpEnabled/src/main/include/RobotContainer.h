@@ -82,6 +82,8 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
+
+  frc2::ParallelRaceGroup* intakeWhileRetracting();
   frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
       units::second_t time);
   // adjusting the version for button binding
@@ -120,6 +122,7 @@ class RobotContainer {
   frc::Joystick m_driverController{0};
   frc::XboxController m_operatorController{1};
   std::unique_ptr<IDrivebase> m_drivebase;
+  bool m_rotateFast = false;
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;

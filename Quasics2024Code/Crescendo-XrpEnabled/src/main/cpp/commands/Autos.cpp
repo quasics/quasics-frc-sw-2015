@@ -183,15 +183,27 @@ namespace AutonomousCommands {
           .ToPtr();
     }
 
+    frc2::CommandPtr intakeThenWait(IntakeRoller &intakeRoller) {
+      std::vector<frc2::CommandPtr> commands;
+      commands.push_back(
+          frc2::CommandPtr(RunIntakeTimed(intakeRoller, 0.5, 2_s, true)));
+      commands.push_back(frc2::CommandPtr(Wait(100_s)));
+      return frc2::SequentialCommandGroup(
+                 frc2::CommandPtr::UnwrapVector(std::move(commands)))
+          .ToPtr();
+    }
+
     frc2::CommandPtr retractIntakeAndRunShooterWhileDriving(
         IDrivebase &drivebase, IntakeDeployment &intakeDeployment,
-        Shooter &shooter, std::string pathName, bool amp) {
+        IntakeRoller &intakeRoller, Shooter &shooter, std::string pathName,
+        bool amp) {
       std::vector<frc2::CommandPtr> commands;
 
       commands.push_back(GetCommandForTrajectory(pathName, drivebase));
       commands.push_back(retractIntakeThenPause(intakeDeployment));
       commands.push_back(
           std::move(frc2::CommandPtr(RunShooter(shooter, 1.0, true))));
+      commands.push_back(intakeThenWait(intakeRoller));
 
       return frc2::ParallelRaceGroup(
                  frc2::CommandPtr::UnwrapVector(std::move(commands)))
@@ -325,8 +337,8 @@ namespace AutonomousCommands {
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote2.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, intakeDeployment, shooter, color + "note2to2.wpilib.json",
-          false));
+          drivebase, intakeDeployment, intakeRoller, shooter,
+          color + "note2to2.wpilib.json", false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
       return frc2::SequentialCommandGroup(
@@ -369,7 +381,7 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "3atonote3.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note3to3a.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -379,12 +391,12 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "3atonote8.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note8to3a.wpilib.json", false));
         // in testing, robot was not fully returning to the speaker despite
         // modifying the paths. So just move forward into the speaker
         commands.push_back(
-            frc2::CommandPtr(TimedMovementTest(drivebase, 0.5, 0.5_s, true)));
+            frc2::CommandPtr(TimedMovementTest(drivebase, 0.2, 0.2_s, false)));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       }
@@ -433,13 +445,13 @@ namespace AutonomousCommands {
           color + "1btonote1.wpilib.json"));
       if (score2Option == AutonomousScore2Options::leftOfSpeaker) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note1to1b.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       } else if (score2Option == AutonomousScore2Options::amp) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note1toamp.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -495,13 +507,13 @@ namespace AutonomousCommands {
           color + "amptonote1.wpilib.json"));
       if (score2Option == AutonomousScore2Options::leftOfSpeaker) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note1to1b.wpilib.json", true));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       } else if (score2Option == AutonomousScore2Options::amp) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note1toamp.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -620,8 +632,10 @@ namespace AutonomousCommands {
                                        score2Option, isBlue));
       if (position == AutonomousStartingPositions::rightOfSpeaker ||
           position == AutonomousStartingPositions::inFrontOfSpeaker) {
+        commands.push_back(frc2::CommandPtr(Wait(0.5_s)));
         commands.push_back(GTFO(drivebase, position, isBlue));
       } else {
+        commands.push_back(frc2::CommandPtr(Wait(0.5_s)));
         commands.push_back(GTFO(drivebase, score2Option, isBlue));
       }
       return frc2::SequentialCommandGroup(
@@ -670,7 +684,7 @@ namespace AutonomousCommands {
 
       if (score3Option == AutonomousScore3Options::leftOfSpeaker) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note4to1b.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -678,7 +692,7 @@ namespace AutonomousCommands {
 
       else if (score3Option == AutonomousScore3Options::amp) {
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note4toamp.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -740,7 +754,7 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote1.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note1toamp.wpilib.json", true));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, true));
@@ -753,8 +767,10 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote1.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note2to2.wpilib.json", false));
+        commands.push_back(
+            frc2::CommandPtr(TimedMovementTest(drivebase, 0.5, 0.5_s, false)));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
       }
@@ -765,7 +781,7 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote6.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note6to2.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -777,7 +793,7 @@ namespace AutonomousCommands {
             drivebase, intakeDeployment, intakeRoller,
             color + "2tonote3.wpilib.json"));
         commands.push_back(retractIntakeAndRunShooterWhileDriving(
-            drivebase, intakeDeployment, shooter,
+            drivebase, intakeDeployment, intakeRoller, shooter,
             color + "note3to2.wpilib.json", false));
         commands.push_back(
             shootingSequenceWithoutWait(intakeRoller, shooter, false));
@@ -850,13 +866,13 @@ namespace AutonomousCommands {
       commands.push_back(score2Command(
           drivebase, intakeDeployment, intakeRoller, shooter,
           AutonomousStartingPositions::rightOfSpeaker,
-          AutonomousScore2Options::rightOfSpeakerAllianceNote, isBlue));
+          AutonomousScore2Options::rightOfSpeakerCenterNote, isBlue));
       commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
-          color + "3atonote8.wpilib.json"));
+          color + "3atonote3.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, intakeDeployment, shooter, color + "note8to3a.wpilib.json",
-          false));
+          drivebase, intakeDeployment, intakeRoller, shooter,
+          color + "note3to3a.wpilib.json", false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
 
@@ -1059,16 +1075,16 @@ namespace AutonomousCommands {
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote1.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, intakeDeployment, shooter, color + "note1to2.wpilib.json",
-          false));
+          drivebase, intakeDeployment, intakeRoller, shooter,
+          color + "note1to2.wpilib.json", false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
       commands.push_back(extendAndRunIntakeWhileDriving(
           drivebase, intakeDeployment, intakeRoller,
           color + "2tonote3.wpilib.json"));
       commands.push_back(retractIntakeAndRunShooterWhileDriving(
-          drivebase, intakeDeployment, shooter, color + "note3to2.wpilib.json",
-          false));
+          drivebase, intakeDeployment, intakeRoller, shooter,
+          color + "note3to2.wpilib.json", false));
       commands.push_back(
           shootingSequenceWithoutWait(intakeRoller, shooter, false));
       return frc2::SequentialCommandGroup(

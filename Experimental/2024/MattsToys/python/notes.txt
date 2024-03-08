@@ -1,0 +1,9 @@
+* Setting up a new project: `python3 -m robotpy init`
+* After editing `pyproject.toml`: `python3 -m robotpy sync`
+* To run simulation: `python3 -m robotpy sim`
+
+Resources:
+* Docs: https://robotpy.readthedocs.io/projects/robotpy/en/stable/
+* Examples: https://github.com/robotpy/examples/tree/main
+  * Arm simulation: https://github.com/robotpy/examples/blob/main/ArmSimulation/subsytems/arm.py
+  * Elevator simulation: https://github.com/robotpy/examples/tree/main/ElevatorSimulation

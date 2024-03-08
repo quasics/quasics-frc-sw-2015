@@ -2,7 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drivebase;
+
+import static frc.robot.Constants.CanBusIds.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -10,7 +12,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -23,15 +24,6 @@ import frc.robot.utils.RobotSettings;
  * CAN addresses).
  */
 public class RealDrivebase extends AbstractDrivebase {
-  // Motor IDs are based on those Quasics has used over the last couple of
-  // years.
-  static final int LEFT_FRONT_CAN_ID = 1;
-  static final int LEFT_REAR_CAN_ID = 2;
-  static final int RIGHT_FRONT_CAN_ID = 3;
-  static final int RIGHT_REAR_CAN_ID = 4;
-
-  static final int PIGEON2_CAN_ID = 1;
-
   // Common physical characteristics for Quasics' robots (and directly derived
   // values).
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
@@ -44,10 +36,10 @@ public class RealDrivebase extends AbstractDrivebase {
   private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
   // Motors
-  final CANSparkMax m_leftRear = new CANSparkMax(LEFT_REAR_CAN_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightRear = new CANSparkMax(RIGHT_REAR_CAN_ID, MotorType.kBrushless);
-  final CANSparkMax m_leftFront = new CANSparkMax(LEFT_FRONT_CAN_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightFront = new CANSparkMax(RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_leftRear = new CANSparkMax(SparkMax.LEFT_REAR_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightRear = new CANSparkMax(SparkMax.RIGHT_REAR_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_leftFront = new CANSparkMax(SparkMax.LEFT_FRONT_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightFront = new CANSparkMax(SparkMax.RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
   // Leaders (only valid if motorConfigModel in RobotSettings passed to ctor is
   // not NoLeader)

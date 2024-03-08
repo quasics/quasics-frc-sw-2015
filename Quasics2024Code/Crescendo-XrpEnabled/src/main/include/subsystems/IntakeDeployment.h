@@ -50,8 +50,8 @@ class IntakeDeployment : public frc2::SubsystemBase {
 
   // Encoders, to keep track of where the relative motion of the deployment
   // mechanism.
-  rev::SparkRelativeEncoder m_DeploymentEncoder = m_intakeDeployment.GetEncoder(
-      rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_DeploymentEncoder =
+      m_intakeDeployment.GetEncoder();
 
   frc::DigitalInput m_ExtendIntakeLimitSwitch;
   frc::DigitalInput m_RetractIntakeLimitSwitch;

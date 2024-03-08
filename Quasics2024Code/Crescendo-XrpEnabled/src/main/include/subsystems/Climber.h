@@ -84,10 +84,8 @@ class Climber : public frc2::SubsystemBase {
   rev::CANSparkMax m_climberLeft;
   rev::CANSparkMax m_climberRight;
 
-  rev::SparkRelativeEncoder m_leftEncoder =
-      m_climberLeft.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_rightEncoder =
-      m_climberRight.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_leftEncoder = m_climberLeft.GetEncoder();
+  rev::SparkRelativeEncoder m_rightEncoder = m_climberRight.GetEncoder();
 
   // WILL EXSIST LATER HOPEFULLY
 

@@ -48,10 +48,10 @@ struct Drivebase::RevRoboticsStuff {
   rev::CANSparkMax m_rightRear{CANBusIds::SparkMaxIds::Right_Rear_Number,
                                rev::CANSparkMax::MotorType::kBrushless};
 
-  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkMaxRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_leftRearEncoder = m_leftRear.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::SparkMaxRelativeEncoder m_rightRearEncoder = m_rightRear.GetEncoder();
 #endif  // USE_SPARKS_VIA_CAN
 
   void ResetEncoders() {

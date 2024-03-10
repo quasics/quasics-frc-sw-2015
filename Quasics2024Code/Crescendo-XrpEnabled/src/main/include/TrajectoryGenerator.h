@@ -1,5 +1,6 @@
 #pragma once
 
+#include <frc/geometry/Pose2d.h>
 #include <frc2/command/Commands.h>
 
 #include <string>

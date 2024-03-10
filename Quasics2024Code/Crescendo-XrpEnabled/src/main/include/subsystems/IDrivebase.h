@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <frc/RobotController.h>
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc2/command/SubsystemBase.h>
@@ -121,10 +120,7 @@ class IDrivebase : public frc2::SubsystemBase {
  protected:
   static double convertVoltageToPercentSpeed(units::volt_t volts);
 
-  static units::volt_t convertPercentSpeedToVoltage(double percentSpeed) {
-    const double referenceVoltage = frc::RobotController::GetInputVoltage();
-    return (referenceVoltage * percentSpeed) * 1_V;
-  }
+  static units::volt_t convertPercentSpeedToVoltage(double percentSpeed);
 
   // Hardware abstraction layer functions.
   //

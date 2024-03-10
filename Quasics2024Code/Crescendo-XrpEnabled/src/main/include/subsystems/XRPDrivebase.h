@@ -8,6 +8,7 @@
 
 #ifdef ENABLE_XRP
 
+#include <frc/RobotController.h>
 #include <frc/xrp/XRPGyro.h>
 #include <frc/xrp/XRPMotor.h>
 

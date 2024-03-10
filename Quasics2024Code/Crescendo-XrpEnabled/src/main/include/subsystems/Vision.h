@@ -45,7 +45,7 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  void SimulationPeriodic();
+  void SimulationPeriodic() override;
 
   frc::Field2d& getSimDebugField();
 

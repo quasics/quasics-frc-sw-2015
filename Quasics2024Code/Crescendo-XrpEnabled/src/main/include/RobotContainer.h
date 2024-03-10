@@ -76,14 +76,14 @@ class RobotContainer {
       frc::SendableChooser<frc2::Command*>& selector1,
       frc::SendableChooser<frc2::Command*>& selector2);
 
+  // Starting here
   void AddTestButtonsOnSmartDashboard();
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   void AddShooterSpeedTestButtonsToDashboard();
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
   void AddActuatorTestButtonsToDashboard();
 
-  frc2::ParallelRaceGroup* intakeWhileRetracting();
+  frc2::ParallelRaceGroup* IntakeWhileRetracting();
   frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
       units::second_t time);
   // adjusting the version for button binding
@@ -93,7 +93,6 @@ class RobotContainer {
       units::second_t time);
 
   void AddClimberTestButtonsToDashboard();
-#endif
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddVisionTestButtonsToDashboard();
@@ -109,7 +108,7 @@ class RobotContainer {
   // Driving support functions
  private:
   enum class DriveMode { eNormal, eSwitched };
-  void setDriveMode(DriveMode mode);
+  void SetDriveMode(DriveMode mode);
   double GetDriveSpeedScalingFactor();
 
   // Building auto mode functions
@@ -133,14 +132,14 @@ class RobotContainer {
   PivotScorer m_pivotScorer;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
-#ifdef ENABLE_VISION_TESTING
+#ifdef ENABLE_VISION_SUBSYSTEM
 #ifdef LEAK_VISION_WORKAROUND
   // Intentionally leaking for now....
   Vision* m_vision{new Vision};
 #else
   Vision* m_vision;
 #endif
-#endif  // ENABLE_VISION_TESTING
+#endif  // ENABLE_VISION_SUBSYSTEM
 
   ConfigSettings m_configSettings;
 

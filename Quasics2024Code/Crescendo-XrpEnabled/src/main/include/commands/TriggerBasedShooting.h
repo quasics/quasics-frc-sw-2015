@@ -17,6 +17,8 @@
  * <p>Note that this extends CommandHelper, rather extending Command
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
+ *
+ * TODO: Add actual docs for this command....
  */
 class TriggerBasedShooting
     : public frc2::CommandHelper<frc2::Command, TriggerBasedShooting> {

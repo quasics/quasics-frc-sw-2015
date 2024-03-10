@@ -43,9 +43,11 @@ public class DriveToAprilTag extends Command {
   final PIDController m_turnController;
 
   // PID constants should be tuned per robot
-  static final double FORWARD_P_GAIN = 1.5;
-  static final double FORWARD_D_GAIN = 0.2;
+  static final double FORWARD_P_GAIN = 3.5;
+  static final double FORWARD_I_GAIN = 0.5;
+  static final double FORWARD_D_GAIN = 0.5;
   static final double ROTATE_P_GAIN = 0.05;
+  static final double ROTATE_I_GAIN = 0.0;
   static final double ROTATE_D_GAIN = 0.0;
 
   /** Creates a new DriveToAprilTag. */
@@ -64,8 +66,8 @@ public class DriveToAprilTag extends Command {
     // robot-relative values.
     this.m_cameraPitchRadians = -robot.robotToCameraTransform.getRotation().getY();
 
-    m_forwardController = new PIDController(FORWARD_P_GAIN, 0, FORWARD_D_GAIN);
-    m_turnController = new PIDController(ROTATE_P_GAIN, 0, ROTATE_D_GAIN);
+    m_forwardController = new PIDController(FORWARD_P_GAIN, FORWARD_I_GAIN, FORWARD_D_GAIN);
+    m_turnController = new PIDController(ROTATE_P_GAIN, ROTATE_I_GAIN, ROTATE_D_GAIN);
 
     addRequirements(m_vision, m_drivebase);
   }

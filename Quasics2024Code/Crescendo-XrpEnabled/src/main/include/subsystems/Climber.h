@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include <frc/DigitalInput.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+
+// #include <frc/DigitalInput.h>
 
 class Climber : public frc2::SubsystemBase {
  public:

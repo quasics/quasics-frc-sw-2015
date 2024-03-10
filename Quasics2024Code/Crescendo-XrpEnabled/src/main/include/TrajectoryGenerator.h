@@ -4,7 +4,8 @@
 
 #include <string>
 
-#include "subsystems/IDrivebase.h"
+// Forward declaration, to try to improve compile-time.
+class IDrivebase;
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
                                          IDrivebase &driveBase);

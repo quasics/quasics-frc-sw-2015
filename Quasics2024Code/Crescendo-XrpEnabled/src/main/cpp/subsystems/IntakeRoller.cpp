@@ -14,10 +14,6 @@ IntakeRoller::IntakeRoller()
   SetName("IntakeRoller");
 }
 
-// This method will be called once per scheduler run
-void IntakeRoller::Periodic() {
-}
-
 void IntakeRoller::SetRollerSpeed(double percentSpeed) {
   m_intake.Set(-percentSpeed);
 }

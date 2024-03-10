@@ -6,7 +6,6 @@
 
 #include <frc/Servo.h>
 #include <frc2/command/SubsystemBase.h>
-#include <rev/CANSparkMax.h>
 
 /**
  * Controls the linear actuators originally intended to help push the notes

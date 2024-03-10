@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 #include <units/voltage.h>

@@ -12,8 +12,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.utils.RobotSettings;
 import java.util.Optional;
 import org.photonvision.PhotonUtils;
@@ -26,9 +26,7 @@ public class DriveToAprilTag extends Command {
   final int m_tagId;
   final double m_tagHeightMeters;
 
-  enum Stage {
-    Locating, Driving
-  }
+  enum Stage { Locating, Driving }
 
   Stage m_currentStage = Stage.Locating;
 
@@ -87,7 +85,8 @@ public class DriveToAprilTag extends Command {
   }
 
   private String getLogPrefix() {
-    return String.format("%s(tag:%d, distance:%.3f):", getClass().getSimpleName(), m_tagId, m_targetDistanceMeters);
+    return String.format(
+        "%s(tag:%d, distance:%.3f):", getClass().getSimpleName(), m_tagId, m_targetDistanceMeters);
   }
 
   private void update() {
@@ -118,11 +117,11 @@ public class DriveToAprilTag extends Command {
 
         // Use this range as the measurement we give to the PID controller.
         // -1.0 required to ensure positive PID controller effort _increases_ range
-        final double forwardCalculation = -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
+        final double forwardCalculation =
+            -m_forwardController.calculate(rangeInMeters, m_targetDistanceMeters);
 
         // Also calculate angular power
-        // -1.0 required to ensure positive PID controller effort _increases_ yaw
-        final double rotationSpeed = -m_turnController.calculate(matchedTarget.get().getYaw(), 0);
+        final double rotationSpeed = m_turnController.calculate(matchedTarget.get().getYaw(), 0);
         System.out.println(
             String.format("> %s Range: %.3f, Yaw: %.3f, ForwardCalc: %.2f, Rotate: %.2f",
                 getLogPrefix(), rangeInMeters, yaw, forwardCalculation, rotationSpeed));
@@ -183,16 +182,14 @@ public class DriveToAprilTag extends Command {
 
     // More than acceptable distance away?
     final double currentDistanceInMeters = getDistanceToTargetInMeters(matchedTarget.get());
-    final double deltaDistance = currentDistanceInMeters
-        - m_targetDistanceMeters;
+    final double deltaDistance = currentDistanceInMeters - m_targetDistanceMeters;
     if (Math.abs(deltaDistance) > ACCEPTABLE_ERROR_DISTANCE_METERS) {
       return false;
     }
 
     // Close enough!
-    System.out.println(
-        String.format("> %s OK, errors of %.4f meters/%.4f degrees are good enough",
-            getLogPrefix(), deltaDistance, deltaAngle));
+    System.out.println(String.format("> %s OK, errors of %.4f meters/%.4f degrees are good enough",
+        getLogPrefix(), deltaDistance, deltaAngle));
     return true;
   }
 }

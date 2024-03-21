@@ -5,11 +5,10 @@
 #pragma once
 
 #include <frc/DigitalInput.h>
-#include <frc/filter/SlewRateLimiter.h>
-#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 
+// TODO: Document this class.
 class IntakeDeployment : public frc2::SubsystemBase {
  public:
   enum class LimitSwitch { Extended, Retracted };

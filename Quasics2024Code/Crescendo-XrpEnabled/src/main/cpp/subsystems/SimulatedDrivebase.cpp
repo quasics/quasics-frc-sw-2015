@@ -70,3 +70,11 @@ void SimulatedDrivebase::setMotorSpeeds_HAL(double leftPercent,
   m_leftMotor.Set(leftPercent);
   m_rightMotor.Set(rightPercent);
 }
+
+units::volt_t SimulatedDrivebase::getLeftVoltage_HAL() {
+  return m_leftMotor.Get() * frc::RobotController::GetBatteryVoltage();
+}
+
+units::volt_t SimulatedDrivebase::getRightVoltage_HAL() {
+  return m_rightMotor.Get() * frc::RobotController::GetBatteryVoltage();
+}

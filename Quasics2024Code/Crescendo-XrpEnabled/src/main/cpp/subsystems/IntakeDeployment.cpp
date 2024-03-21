@@ -85,6 +85,7 @@ void IntakeDeployment::Periodic() {
    frc::SmartDashboard::PutString(
        "Extend limit switch",
        m_ExtendIntakeLimitSwitch.Get() ? "open" : "closed");*/
-
+#ifndef ENABLE_COMPETITION_ROBOT
   frc::SmartDashboard::PutNumber("Deployment Revolutions", GetRevolutions());
+#endif
 }

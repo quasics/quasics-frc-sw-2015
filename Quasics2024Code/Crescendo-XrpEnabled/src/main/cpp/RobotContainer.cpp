@@ -55,10 +55,10 @@ RobotContainer::RobotContainer() {
   ConfigureDriverControllerButtonBindings();
   ConfigureOperatorControllerButtonBindings();
 
-  AddTestButtonsOnSmartDashboard();
-
   SetDefaultShooterCommand();
 #ifndef ENABLE_COMPETITION_ROBOT
+  AddTestButtonsOnSmartDashboard();
+
 #ifdef ENABLE_INTAKE_TESTING
   AddIntakeTestButtonsToDashboard();
 #endif
@@ -75,13 +75,15 @@ RobotContainer::RobotContainer() {
   AddDriveTestButtonsToDashboard();
   AddSysIdButtonsToDashboard();
 
-#ifdef ENABLE_VISION_TESTING
+#ifdef ENABLE_VISION_SUBSYSTEM
   AddVisionTestButtonsToDashboard();
 #endif
-  AddScorerTestButtonsToDashboard();
+
 #endif
 #ifdef ENABLE_COMPETITION_ROBOT
   AddCompetitionButtonsToSmartDashboard();
+  // AddClimberTestButtonsToDashboard();
+  //  AddScorerTestButtonsToDashboard();
 #endif
 
   AddAutoSelectionsToSmartDashboard();
@@ -195,7 +197,12 @@ void RobotContainer::setUpArcadeDrive() {
     }
   };
   ArcadeDrive::PercentSupplier rotationSupplier = [=, this]() {
-    const double scalingFactor = GetDriveSpeedScalingFactor();
+    double scalingFactor;
+    if (m_rotateFast) {
+      scalingFactor = 10;  // 2 to correct for 0.5 in return statement
+    } else {
+      scalingFactor = GetDriveSpeedScalingFactor();
+    }
     double joystickPercentage =
         m_driverController.GetRawAxis(rightDriveJoystickAxis);
     return m_joystickDeadbandEnforcer(joystickPercentage) * scalingFactor * -1 *
@@ -212,9 +219,11 @@ void RobotContainer::SetDefaultShooterCommand() {
 
   m_shooter.SetDefaultCommand(std::move(triggerBasedShooterCommand));
 #endif
-  /*TriggerBasedIntaking triggerBasedIntakeCommand(m_intakeRoller,
+  /*
+  TriggerBasedIntaking triggerBasedIntakeCommand(m_intakeRoller,
                                                  &m_driverController);
-  m_intakeRoller.SetDefaultCommand(std::move(triggerBasedIntakeCommand));*/
+  m_intakeRoller.SetDefaultCommand(std::move(triggerBasedIntakeCommand));
+  */
 }
 
 void RobotContainer::RunCommandWhenDriverButtonIsPressed(
@@ -243,6 +252,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
             !m_configSettings.normalDriveEngaged;
       }));
 
+  RunCommandWhenDriverButtonIsPressed(
+      OperatorConstants::LogitechGamePad::XButton,
+      new frc2::InstantCommand([this]() { m_rotateFast = !m_rotateFast; }));
+
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   // static MoveClimbers extendClimbers(m_climber, true);
   // static MoveClimbers retractClimbers(m_climber, false);
@@ -264,9 +277,10 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
 
 void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
-  static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
+  // static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
   // static RunShooter shootNote(m_shooter, 0.5, true);
+  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
+  static frc2::ParallelRaceGroup *retractIntake = IntakeWhileRetracting();
   static RunShooter shootNote(m_shooter, 1.00, true);
   static frc2::ParallelRaceGroup *ampSequence =
       ShootInAmpThenRunActuatorAfterTime(1_s);
@@ -275,22 +289,26 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
                                      &extendIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     &retractIntake);
-  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
-                                     &shootNote);*/
+                                     retractIntake);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
                                      ampSequence);
+  /*
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
+                                     &retractIntake);
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+                                     &shootNote);
+  */
 #endif
 }
 
-void RobotContainer::setDriveMode(DriveMode mode) {
+void RobotContainer::SetDriveMode(DriveMode mode) {
   m_configSettings.normalDriveEngaged = (mode == DriveMode::eNormal);
 }
 
 double RobotContainer::GetDriveSpeedScalingFactor() {
-  // LOOK ITO THIS
+  // LOOK INTO THIS
   const bool isTurbo = m_driverController.GetRawButton(
       OperatorConstants::LogitechGamePad::RightShoulder);
   const bool isTurtle = m_driverController.GetRawButton(
@@ -344,19 +362,73 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 void RobotContainer::AddCompetitionButtonsToSmartDashboard() {
   frc::SmartDashboard::PutData(
       "Switch Drive", new frc2::InstantCommand(
-                          [this]() { setDriveMode(DriveMode::eSwitched); }));
+                          [this]() { SetDriveMode(DriveMode::eSwitched); }));
 
   frc::SmartDashboard::PutData(
       "Normal Drive",
-      new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
-
+      new frc2::InstantCommand([this]() { SetDriveMode(DriveMode::eNormal); }));
+#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   frc::SmartDashboard::PutData("Run Shooter Reversed",
                                new frc2::InstantCommand([this]() {
                                  RunShooterTimed(m_shooter, 0.5, 1_s, false);
                                }));
+
+#endif
 }
 
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
+void RobotContainer::AddTestButtonsOnSmartDashboard() {
+  frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
+                               new PIDRotate(*m_drivebase, 90_deg));
+}
+
+namespace {
+  frc2::SequentialCommandGroup *BuildSequenceToHandNoteToShooterAfterDelay(
+      IntakeRoller &intakeRoller, units::second_t delay = 0.75_s,
+      double intakeSpeed = .5, units::second_t timeToRunIntake = 1.25_s) {
+    std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
+    intakeCommands.push_back(std::make_unique<Wait>(delay));
+    intakeCommands.push_back(std::make_unique<RunIntakeTimed>(
+        intakeRoller, intakeSpeed, timeToRunIntake,
+        /*takingIn*/ false));
+    return new frc2::SequentialCommandGroup(std::move(intakeCommands));
+  }
+
+  /**
+   * Builds a simple command group to run shooter at a given speed (and pushing
+   * a note out of the intake into the shooter after a short delay for it to
+   * come up to speed).  This is intended to help "dial in" the approximate
+   * speed at which we want the shooter to be running for a given target point.
+   *
+   * @param shooter  the shooter
+   * @param intakeRoller the intake
+   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
+   */
+  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
+      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
+    std::vector<std::unique_ptr<frc2::Command>> commands;
+
+    // Run the shooter for 2sec @ the target speed...
+    commands.push_back(
+        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
+
+    // ...and hand off the note to it after a short delay (to come up to speed).
+    commands.push_back(std::move(std::unique_ptr<frc2::Command>(
+        BuildSequenceToHandNoteToShooterAfterDelay(intakeRoller))));
+
+    return new frc2::ParallelRaceGroup(std::move(commands));
+  }
+}  // namespace
+
+void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
+  for (double d = 5.5; d <= 10; d += 0.5) {
+    std::ostringstream sout;
+    sout << "Shoot @ " << d << "%";
+    auto *cmd = BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller,
+                                                   d / 100.0);
+
+    frc::SmartDashboard::PutData(sout.str(), cmd);
+  }
+}
 
 void RobotContainer::AddShooterTestButtonsToDashboard() {
   frc::SmartDashboard::PutData("Shoot Note",
@@ -412,114 +484,37 @@ void RobotContainer::AddActuatorTestButtonsToDashboard() {
                                ExtendThenRetractActuatorsAfterTime(.75_s));
 }
 
-void RobotContainer::AddScorerTestButtonsToDashboard() {
-  frc::SmartDashboard::PutData(
-      "Run scorers 50 up", new RunScorerTimed(m_pivotScorer, 0.50, 1_s, true));
-  frc::SmartDashboard::PutData(
-      "Run scorers 50 down",
-      new RunScorerTimed(m_pivotScorer, 0.50, 1_s, false));
+frc2::ParallelRaceGroup *RobotContainer::IntakeWhileRetracting() {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+
+  commands.push_back(
+      std::make_unique<PivotIntake>(m_intakeDeployment, 0.5, false));
+  commands.push_back(std::make_unique<RunIntake>(m_intakeRoller, 0.4, true));
+
+  return new frc2::ParallelRaceGroup(std::move(commands));
 }
-
-namespace {
-  frc2::SequentialCommandGroup *BuildSequenceToHandNoteToShooterAfterDelay(
-      IntakeRoller &intakeRoller, units::second_t delay = 0.75_s,
-      double intakeSpeed = .5, units::second_t timeToRunIntake = 1.25_s) {
-    std::vector<std::unique_ptr<frc2::Command>> intakeCommands;
-    intakeCommands.push_back(std::make_unique<Wait>(delay));
-    intakeCommands.push_back(std::make_unique<RunIntakeTimed>(
-        intakeRoller, intakeSpeed, timeToRunIntake,
-        /*takingIn*/ false));
-    return new frc2::SequentialCommandGroup(std::move(intakeCommands));
-  }
-
-  /**
-   * Builds a simple command group to run shooter at a given speed (and pushing
-   * a note out of the intake into the shooter after a short delay for it to
-   * come up to speed).  This is intended to help "dial in" the approximate
-   * speed at which we want the shooter to be running for a given target point.
-   *
-   * @param shooter  the shooter
-   * @param intakeRoller the intake
-   * @param speed the target speed (as a % value, ranging from 0.0 to 1.0)
-   */
-  frc2::ParallelRaceGroup *BuildSimpleShooterSpeedTestCommand(
-      Shooter &shooter, IntakeRoller &intakeRoller, double speed) {
-    std::vector<std::unique_ptr<frc2::Command>> commands;
-
-    // Run the shooter for 2sec @ the target speed...
-    commands.push_back(
-        std::make_unique<RunShooterTimed>(shooter, speed, 2_s, true));
-
-    // ...and hand off the note to it after a short delay (to come up to speed).
-    commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-        BuildSequenceToHandNoteToShooterAfterDelay(intakeRoller))));
-
-    return new frc2::ParallelRaceGroup(std::move(commands));
-  }
-}  // namespace
-
-void RobotContainer::AddShooterSpeedTestButtonsToDashboard() {
-  for (double d = 5.5; d <= 10; d += 0.5) {
-    std::ostringstream sout;
-    sout << "Shoot @ " << d << "%";
-    auto *cmd = BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller,
-                                                   d / 100.0);
-
-    frc::SmartDashboard::PutData(sout.str(), cmd);
-  }
-}
-/*altenative method below. Doing it this way so I can bind stuff
-frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
-    units::second_t time) {
-  std::vector<frc2::CommandPtr> commands;
-
-  commands.push_back(std::move(*BuildSimpleShooterSpeedTestCommand(
-                                   m_shooter, m_intakeRoller, 0.08))
-                         .ToPtr());
-  commands.push_back(ExtendThenRetractActuatorsAfterTime(time));
-
-  return frc2::ParallelCommandGroup(
-             frc2::CommandPtr::UnwrapVector(std::move(commands)))
-      .ToPtr();
-}*/
 
 frc2::ParallelRaceGroup *RobotContainer::ShootInAmpThenRunActuatorAfterTime(
     units::second_t time) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller, 0.08))));
+      BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller, 0.14))));
   commands.push_back(std::move(std::unique_ptr<frc2::Command>(
       ExtendThenRetractActuatorsAfterTime(time))));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
-// Making an alternative method for button binding purposes
-
-/*
-  frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
-      units::second_t time) {
-    std::vector<frc2::CommandPtr> commands;
-    commands.push_back(frc2::CommandPtr(Wait(time)));
-    commands.push_back(
-        frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
-    commands.push_back(
-        frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
-
-    return frc2::SequentialCommandGroup(
-               frc2::CommandPtr::UnwrapVector(std::move(commands)))
-        .ToPtr();
-  }*/
-
 frc2::SequentialCommandGroup *
 RobotContainer::ExtendThenRetractActuatorsAfterTime(units::second_t time) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<Wait>(time));
   commands.push_back(
-      std::make_unique<MoveLinearActuators>(m_linearActuators, true));
+      std::make_unique<RunScorerTimed>(m_pivotScorer, 0.5, 0.25_s, true));
+  commands.push_back(std::make_unique<Wait>(5_s));
   commands.push_back(
-      std::make_unique<MoveLinearActuators>(m_linearActuators, false));
+      std::make_unique<RunScorerTimed>(m_pivotScorer, 0.5, 0.25_s, false));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
 }
@@ -540,18 +535,56 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
       "Set Climber Revolutions -3:",
       new frc2::InstantCommand([this]() { m_climber.setRevolutions(); }));
 }
-#endif
+
+void RobotContainer::AddScorerTestButtonsToDashboard() {
+  frc::SmartDashboard::PutData(
+      "Run scorers 50 up",
+      new RunScorerTimed(m_pivotScorer, 0.50, 0.5_s, true));
+  frc::SmartDashboard::PutData(
+      "Run scorers 50 down",
+      new RunScorerTimed(m_pivotScorer, 0.50, 0.5_s, false));
+}
+
+/*
+// altenative method below. Doing it this way so I can bind stuff
+frc2::CommandPtr RobotContainer::ShootInAmpThenRunActuatorAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+
+  commands.push_back(std::move(*BuildSimpleShooterSpeedTestCommand(
+                                   m_shooter, m_intakeRoller, 0.08))
+                         .ToPtr());
+  commands.push_back(ExtendThenRetractActuatorsAfterTime(time));
+
+  return frc2::ParallelCommandGroup(
+             frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}
+*/
+
+// Making an alternative method for button binding purposes
+/*
+frc2::CommandPtr RobotContainer::ExtendThenRetractActuatorsAfterTime(
+    units::second_t time) {
+  std::vector<frc2::CommandPtr> commands;
+  commands.push_back(frc2::CommandPtr(Wait(time)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, true)));
+  commands.push_back(
+      frc2::CommandPtr(MoveLinearActuators(m_linearActuators, false)));
+
+  return frc2::SequentialCommandGroup(
+              frc2::CommandPtr::UnwrapVector(std::move(commands)))
+      .ToPtr();
+}
+*/
+
 void RobotContainer::AddVisionTestButtonsToDashboard() {
-#ifdef ENABLE_VISION_TESTING
+#ifdef ENABLE_VISION_SUBSYSTEM
   frc::SmartDashboard::PutData(
       "Rotate to blue speaker",
       new RotateToAprilTarget(*m_drivebase, *m_vision, 6));
 #endif
-}
-
-void RobotContainer::AddTestButtonsOnSmartDashboard() {
-  frc::SmartDashboard::PutData("Rotate 90 degrees (UNTESTED)",
-                               new PIDRotate(*m_drivebase, 90_deg));
 }
 
 void RobotContainer::AddDriveTestButtonsToDashboard() {
@@ -579,11 +612,11 @@ void RobotContainer::AddDriveTestButtonsToDashboard() {
 
   frc::SmartDashboard::PutData(
       "Switch Drive", new frc2::InstantCommand(
-                          [this]() { setDriveMode(DriveMode::eSwitched); }));
+                          [this]() { SetDriveMode(DriveMode::eSwitched); }));
 
   frc::SmartDashboard::PutData(
       "Normal Drive",
-      new frc2::InstantCommand([this]() { setDriveMode(DriveMode::eNormal); }));
+      new frc2::InstantCommand([this]() { SetDriveMode(DriveMode::eNormal); }));
 }
 
 void RobotContainer::AddSysIdButtonsToDashboard() {

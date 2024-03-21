@@ -1,6 +1,9 @@
 // Copyright (c) 2024 Quasics, FIRST, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+
+#pragma once
+
 #include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -12,7 +15,6 @@
 #include <numbers>
 
 #include "ConditionalCompileFlags.h"
-#pragma once
 
 /**
  * The Constants header provides a convenient place for teams to hold robot-wide
@@ -221,8 +223,8 @@ namespace AutonomousScore3Options {
 }  // namespace AutonomousScore3Options
 
 namespace ShooterSpeeds {
-  const double amp = 0.08;
-  const double speaker = 1.00;
+  const double amp = 1.00;
+  const double speaker = 0.80;
 }  // namespace ShooterSpeeds
 
 namespace IntakeSpeeds {

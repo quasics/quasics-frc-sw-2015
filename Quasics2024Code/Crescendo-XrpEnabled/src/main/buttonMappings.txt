@@ -4,7 +4,7 @@ Driver controller (Logitech)
 * Right stick - Arcade Drive Rotation Speed
 * A - Retract climbers auto (while held)
 * B - Toggle switch drive
-* X - 
+* X - Toggle rotate fast
 * Y - Extend climbers auto (while held)
 * Left shoulder - Turtle mode (while held)
 * Right shoulder - Turbo mode (while held)

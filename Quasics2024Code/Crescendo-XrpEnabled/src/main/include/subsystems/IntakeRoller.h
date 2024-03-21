@@ -10,6 +10,7 @@
 
 #include "Constants.h"
 
+// TODO: Add docs for this class.
 class IntakeRoller : public frc2::SubsystemBase {
  public:
   IntakeRoller();
@@ -18,16 +19,6 @@ class IntakeRoller : public frc2::SubsystemBase {
 
   void Stop();
 
-  // Functions common to all subsystems.
- public:
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic() override;
-
  private:
   rev::CANSparkMax m_intake;
-
-  // Components (e.g. motor controllers and sensors) should generally be
-  // declared private and exposed only through public methods.
 };

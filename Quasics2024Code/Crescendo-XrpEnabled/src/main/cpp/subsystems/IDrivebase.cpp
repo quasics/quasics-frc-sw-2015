@@ -4,6 +4,7 @@
 
 #include "subsystems/IDrivebase.h"
 
+#include <frc/RobotController.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include "Constants.h"
@@ -21,7 +22,7 @@ IDrivebase::IDrivebase()
 // This method will be called once per scheduler run
 void IDrivebase::Periodic() {
   updateOdometry();
-
+#ifndef ENABLE_COMPETITION_ROBOT
   frc::Pose2d pose = getPose();
   frc::SmartDashboard::PutNumber("x", double(pose.X()));
 
@@ -35,6 +36,7 @@ void IDrivebase::Periodic() {
 
   frc::SmartDashboard::PutNumber("right Encoder meters",
                                  double(getRightEncoder_HAL().getPosition()));
+#endif
 }
 
 void IDrivebase::tankDrive(double leftInputPercent, double rightInputPercent) {
@@ -75,4 +77,9 @@ double IDrivebase::convertVoltageToPercentSpeed(units::volt_t volts) {
   const double speedPercentage = m_voltageDeadbandEnforcer(
       metersPerSec / RobotConstants::MAX_SPEED.value());
   return speedPercentage;
+}
+
+units::volt_t IDrivebase::convertPercentSpeedToVoltage(double percentSpeed) {
+  const double referenceVoltage = frc::RobotController::GetInputVoltage();
+  return (referenceVoltage * percentSpeed) * 1_V;
 }

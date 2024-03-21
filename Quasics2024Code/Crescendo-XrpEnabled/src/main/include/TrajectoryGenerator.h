@@ -1,10 +1,12 @@
 #pragma once
 
+#include <frc/geometry/Pose2d.h>
 #include <frc2/command/Commands.h>
 
 #include <string>
 
-#include "subsystems/IDrivebase.h"
+// Forward declaration, to try to improve compile-time.
+class IDrivebase;
 
 frc2::CommandPtr GetCommandForTrajectory(std::string fileToLoad,
                                          IDrivebase &driveBase);

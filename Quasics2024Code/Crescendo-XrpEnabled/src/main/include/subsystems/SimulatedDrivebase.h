@@ -5,15 +5,12 @@
 #pragma once
 
 #include <frc/AnalogGyro.h>
-#include <frc/Encoder.h>
-#include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/motorcontrol/PWMSparkMax.h>
 #include <frc/simulation/AnalogGyroSim.h>
 #include <frc/simulation/DifferentialDrivetrainSim.h>
 #include <frc/simulation/EncoderSim.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/system/plant/LinearSystemId.h>
-#include <frc2/command/SubsystemBase.h>
 
 #include "subsystems/IDrivebase.h"
 
@@ -30,9 +27,6 @@ class SimulatedDrivebase : public IDrivebase {
     m_leftMotor.SetVoltage(leftPower);
     m_rightMotor.SetVoltage(rightPower);
   }
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
 
   TrivialEncoder& getLeftEncoder_HAL() override {
     return *m_leftTrivialEncoder;
@@ -50,13 +44,9 @@ class SimulatedDrivebase : public IDrivebase {
     return m_rightMotor.Get();
   }
 
-  virtual units::volt_t getLeftVoltage_HAL() override {
-    return m_leftMotor.Get() * frc::RobotController::GetBatteryVoltage();
-  }
+  virtual units::volt_t getLeftVoltage_HAL() override;
 
-  virtual units::volt_t getRightVoltage_HAL() override {
-    return m_rightMotor.Get() * frc::RobotController::GetBatteryVoltage();
-  }
+  virtual units::volt_t getRightVoltage_HAL() override;
 
   frc::DifferentialDriveOdometry& getOdometry_HAL() override {
     return m_odometry;
@@ -86,6 +76,7 @@ class SimulatedDrivebase : public IDrivebase {
   std::unique_ptr<TrivialEncoder> m_leftTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_leftEncoder)};
 
+  /** Wraps a TrivialEncoder interface around the right encoder. */
   std::unique_ptr<TrivialEncoder> m_rightTrivialEncoder{
       TrivialEncoder::wrapEncoder(m_rightEncoder)};
 

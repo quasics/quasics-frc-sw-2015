@@ -86,6 +86,7 @@ void runningStrip(uint32_t color, uint32_t numSegments, uint32_t segmentLength, 
   // Again, prevent division by 0: assume at least 1 pixel
   const uint32_t numPixels = (strip.numPixels() > 0 ? strip.numPixels() : 1);
 
+  // Distance between the first pixel of each segment on the LED strip.
   const uint32_t offset = numPixels / numSegments;
 
   for (uint32_t start = 0; start < numPixels; ++start) {

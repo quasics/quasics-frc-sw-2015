@@ -20,7 +20,7 @@
 #define LED_PIN    6
 
 // How many NeoPixels are attached to the Arduino?
-#define LED_COUNT  40
+#define LED_COUNT  120  // 60 on each side
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -57,24 +57,30 @@ void loop() {
   runningStrip(strip.Color(0, 255, 0), 5, 50);
 }
 
+// Sets all pixels to BG color (but does not apply the changes).
+void clearStrip(uint32_t bgColor) {
+  for(uint32_t i = 0; i < strip.numPixels(); ++i) {
+    strip.setPixelColor(i, bgColor);
+  }
+}
+
+// Renders a lit sequence of <length> pixels, starting at position <start>,
+// but does not apply the changes.
+// (Note that this assumes all pixels not affected are set to BG color.)
+void lightOneSegment(uint32_t color, uint32_t start, uint32_t length) {
+  for(uint32_t i = 0; i < length; ++i) {
+    strip.setPixelColor((start+i) % strip.numPixels(), color);
+  }
+}
+
 void runningStrip(uint32_t color, uint32_t length, int wait) {
+  const uint32_t offset = strip.numPixels() / 3;
+
   for (uint32_t start = 0; start < strip.numPixels(); ++start) {
-    for(uint32_t i = 0; i < strip.numPixels(); ++i) {
-      if (start + length <= strip.numPixels()) {
-        if (i >= start && i < (start + length)) {
-          strip.setPixelColor(i, color);
-        } else {
-          strip.setPixelColor(i, 0);
-        }
-      } else {
-        uint32_t tailEnd = (start + length) % strip.numPixels();
-        if (i < tailEnd || i >= start) {
-          strip.setPixelColor(i, color);
-        } else {
-          strip.setPixelColor(i, 0);
-        }
-      }
-    }
+    clearStrip(strip.Color(0, 0, 0));
+    lightOneSegment(color, start, length);
+    lightOneSegment(color, (start + offset) % strip.numPixels(), length);
+    lightOneSegment(color, (start + offset * 2) % strip.numPixels(), length);
     strip.show();
     delay(wait);
   }

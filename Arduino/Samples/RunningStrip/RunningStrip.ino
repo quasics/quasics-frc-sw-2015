@@ -45,16 +45,15 @@ void setup() {
 #endif
   // END of Trinket-specific code.
 
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  strip.begin();            // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.show();             // Turn OFF all pixels ASAP
+  strip.setBrightness(100); // Set BRIGHTNESS to about 2/5 (max = 255)
 }
 
 
 // loop() function -- runs repeatedly as long as board is on ---------------
-
 void loop() {
-  runningStrip(strip.Color(0, 255, 0), 5, 50);
+  runningStrip(strip.Color(0, 255, 0), 3, 5, 50);
 }
 
 // Sets all pixels to BG color (but does not apply the changes).
@@ -66,6 +65,7 @@ void clearStrip(uint32_t bgColor) {
 
 // Renders a lit sequence of <length> pixels, starting at position <start>,
 // but does not apply the changes.
+//
 // (Note that this assumes all pixels not affected are set to BG color.)
 void lightOneSegment(uint32_t color, uint32_t start, uint32_t length) {
   for(uint32_t i = 0; i < length; ++i) {
@@ -73,15 +73,27 @@ void lightOneSegment(uint32_t color, uint32_t start, uint32_t length) {
   }
 }
 
-void runningStrip(uint32_t color, uint32_t length, int wait) {
-  const uint32_t offset = strip.numPixels() / 3;
+// Renders <numSegments> segments running 1 full circuit around the LED strip, with
+// <waitMsec> delay between the advancing of each block by a single pixel.
+//
+// Note that this does not validate that the arguments are reasonable. For example, if
+// segmentLength*numSegments >= the full length of the strip, then the whole strip will
+// be lit all of the time.  Similarly, using black as a background color, or using 0 for
+void runningStrip(uint32_t color, uint32_t numSegments, uint32_t segmentLength, int waitMsec) {
+  // Prevent division by 0: require at least 1 segment.
+  numSegments = (numSegments == 0 ? 1 : numSegments);
 
-  for (uint32_t start = 0; start < strip.numPixels(); ++start) {
+  // Again, prevent division by 0: assume at least 1 pixel
+  const uint32_t numPixels = (strip.numPixels() > 0 ? strip.numPixels() : 1);
+
+  const uint32_t offset = numPixels / numSegments;
+
+  for (uint32_t start = 0; start < numPixels; ++start) {
     clearStrip(strip.Color(0, 0, 0));
-    lightOneSegment(color, start, length);
-    lightOneSegment(color, (start + offset) % strip.numPixels(), length);
-    lightOneSegment(color, (start + offset * 2) % strip.numPixels(), length);
+    for (uint32_t blockNum = 0; blockNum < numSegments; ++blockNum) {
+      lightOneSegment(color, (start + offset * blockNum) % numPixels, segmentLength);
+    }
     strip.show();
-    delay(wait);
+    delay(waitMsec);
   }
 }

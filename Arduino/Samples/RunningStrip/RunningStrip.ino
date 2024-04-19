@@ -78,7 +78,8 @@ void lightOneSegment(uint32_t color, uint32_t start, uint32_t length) {
 //
 // Note that this does not validate that the arguments are reasonable. For example, if
 // segmentLength*numSegments >= the full length of the strip, then the whole strip will
-// be lit all of the time.  Similarly, using black as a background color, or using 0 for
+// be lit all of the time.  Similarly, using black as the strip color, or using 0 for
+// the segment length will result in the whole strip remaining dark all of the time.
 void runningStrip(uint32_t color, uint32_t numSegments, uint32_t segmentLength, int waitMsec) {
   // Prevent division by 0: require at least 1 segment.
   numSegments = (numSegments == 0 ? 1 : numSegments);

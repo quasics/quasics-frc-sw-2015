@@ -17,12 +17,18 @@ public class Drivebase extends SubsystemBase {
   final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
   final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
 
+
   /** Creates a new Drivebase. */
-  public Drivebase() {}
+  public Drivebase() {
+    setupSmartDashboard();
+  }
 
   @Override
   public void periodic() {
-    SmartDashboard.putData("tank drive 6V", new InstantCommand(() -> tankDriveVolts(6, 6)));
+  }
+
+  public void setupSmartDashboard() {
+      SmartDashboard.putData("tank drive 6V", new InstantCommand(() -> tankDriveVolts(6, 6)));
   }
 
   public void tankDriveVolts(double leftVoltage, double rightVoltage) {

@@ -14,6 +14,8 @@
  * <p>Note that this extends CommandHelper, rather extending CommandBase
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
+ *
+ * TODO: Add actual docs for this command....
  */
 class Wait : public frc2::CommandHelper<frc2::Command, Wait> {
  public:

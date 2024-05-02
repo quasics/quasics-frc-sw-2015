@@ -38,18 +38,25 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.DriveToAprilTag;
+import frc.robot.commands.ExtendClimbers;
+import frc.robot.commands.RetractClimbers;
+import frc.robot.commands.SetClimberSafetyMode;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.climber.AbstractClimber;
+import frc.robot.subsystems.climber.RealClimber;
+import frc.robot.subsystems.climber.SimulationClimber;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
-import frc.robot.subsystems.RealDrivebase;
-import frc.robot.subsystems.RomiDrivebase;
-import frc.robot.subsystems.SimulationDrivebase;
+import frc.robot.subsystems.drivebase.RealDrivebase;
+import frc.robot.subsystems.drivebase.RomiDrivebase;
+import frc.robot.subsystems.drivebase.SimulationDrivebase;
+import frc.robot.subsystems.drivebase.XrpDrivebase;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.XrpDrivebase;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.TrajectoryCommandGenerator;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -84,6 +91,7 @@ public class RobotContainer {
   private final AbstractDrivebase m_drivebase;
   private final TrajectoryCommandGenerator m_trajectoryCommandGenerator;
   private final VisionSubsystem m_vision;
+  private final AbstractClimber m_climber;
 
   Supplier<Double> m_arcadeDriveForwardStick;
   Supplier<Double> m_arcadeDriveRotationStick;
@@ -127,12 +135,30 @@ public class RobotContainer {
    * actually working on.
    */
   public RobotContainer() {
+    ////////////////////////////////////////////////////////
+    // Subsystem setup
     m_drivebase = setupDriveBase();
     m_vision = maybeSetupVisionSubsystem();
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
+    switch (getRobotSettings().climberType) {
+      case Real:
+        m_climber = new RealClimber();
+        break;
+      case Simulated:
+        m_climber = new SimulationClimber();
+        break;
+      case None:
+      default:
+        m_climber = null;
+        break;
+    }
 
+    ////////////////////////////////////////////////////////
+    // Finish intialization
     resetPositionFromAllianceSelection();
 
+    ////////////////////////////////////////////////////////
+    // Set up button bindings and smart dashboard buttons
     configureBindings();
 
     // Tags 9&10 are on the Blue Source wall
@@ -140,6 +166,10 @@ public class RobotContainer {
         new DriveToAprilTag(getRobotSettings(), m_vision, m_drivebase, 10,
             Constants.AprilTags.SOURCE_TAG_BOTTOM_HEIGHT, Meters.of(.5)));
 
+    maybeAddClimberCommandsToDashboard();
+
+    ////////////////////////////////////////////////////////
+    // Report other information for dev support
     if (RobotBase.isSimulation()) {
       System.err.println("Writing logs to: " + DataLogManager.getLogDir());
     } else {
@@ -378,5 +408,16 @@ public class RobotContainer {
       default:
         return new PrintCommand("Unexpected value for m_autoModeTrajectorySelection!");
     }
+  }
+
+  private void maybeAddClimberCommandsToDashboard() {
+    if (m_climber == null) {
+      return;
+    }
+
+    SmartDashboard.putData("Extend climbers", new ExtendClimbers(m_climber));
+    SmartDashboard.putData("Retract climbers", new RetractClimbers(m_climber));
+    SmartDashboard.putData("Safe climbers", new SetClimberSafetyMode(m_climber, true));
+    SmartDashboard.putData("Unsafe climbers", new SetClimberSafetyMode(m_climber, false));
   }
 }

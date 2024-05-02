@@ -3,9 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 #pragma once
 
-#include <frc/RobotBase.h>
 #include <frc/apriltag/AprilTagFieldLayout.h>
-#include <frc/apriltag/AprilTagFields.h>
 #include <frc/geometry/Translation3d.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/FieldObject2d.h>
@@ -47,7 +45,7 @@ class Vision : public frc2::SubsystemBase {
 
   void Periodic() override;
 
-  void SimulationPeriodic();
+  void SimulationPeriodic() override;
 
   frc::Field2d& getSimDebugField();
 

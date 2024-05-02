@@ -4,18 +4,13 @@
 
 #pragma once
 
+#include <frc/Timer.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
 
 #include "subsystems/LinearActuators.h"
 
-/**
- * An example command.
- *
- * <p>Note that this extends CommandHelper, rather extending Command
- * directly; this is crucially important, or else the decorator functions in
- * Command will *not* work!
- */
+// TODO: (CODE_REVIEW) Add comments.
 class MoveLinearActuators
     : public frc2::CommandHelper<frc2::Command, MoveLinearActuators> {
  public:
@@ -23,7 +18,10 @@ class MoveLinearActuators
 
   void Initialize() override;
 
+  bool IsFinished() override;
+
  private:
   LinearActuators& m_linearActuators;
   bool m_extending;
+  frc::Timer m_stopWatch;
 };

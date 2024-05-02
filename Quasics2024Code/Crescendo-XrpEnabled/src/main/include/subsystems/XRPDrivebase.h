@@ -8,6 +8,7 @@
 
 #ifdef ENABLE_XRP
 
+#include <frc/RobotController.h>
 #include <frc/xrp/XRPGyro.h>
 #include <frc/xrp/XRPMotor.h>
 
@@ -35,6 +36,14 @@ class XRPDrivebase : public IDrivebase {
   }
   virtual double getRightSpeedPercentage_HAL() override {
     return m_rightXrpMotor.Get();
+  }
+
+  virtual units::volt_t getLeftVoltage_HAL() override {
+    return m_leftXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
+  }
+
+  virtual units::volt_t getRightVoltage_HAL() override {
+    return m_rightXrpMotor.Get() * frc::RobotController::GetBatteryVoltage();
   }
 
   virtual TrivialEncoder& getLeftEncoder_HAL() override {

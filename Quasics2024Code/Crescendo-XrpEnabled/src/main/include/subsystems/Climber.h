@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <frc/DigitalInput.h>
-#include <frc/motorcontrol/MotorControllerGroup.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
+
+// #include <frc/DigitalInput.h>
 
 class Climber : public frc2::SubsystemBase {
  public:
@@ -67,6 +67,8 @@ class Climber : public frc2::SubsystemBase {
 
   void resetRevolutions();
 
+  void setRevolutions();
+
   /** Returns the climber's current status (operation). */
   Movement GetCurrentStatus();
 
@@ -82,10 +84,8 @@ class Climber : public frc2::SubsystemBase {
   rev::CANSparkMax m_climberLeft;
   rev::CANSparkMax m_climberRight;
 
-  rev::SparkRelativeEncoder m_leftEncoder =
-      m_climberLeft.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_rightEncoder =
-      m_climberRight.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_leftEncoder = m_climberLeft.GetEncoder();
+  rev::SparkRelativeEncoder m_rightEncoder = m_climberRight.GetEncoder();
 
   // WILL EXSIST LATER HOPEFULLY
 

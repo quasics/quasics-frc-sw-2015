@@ -11,6 +11,10 @@
 RealDrivebase::RealDrivebase()
     : m_leftBack{MotorIds::SparkMax::LEFT_BACK_DRIVE_MOTOR_ID,
                  rev::CANSparkMax::MotorType::kBrushless},
+      m_leftBackFollower{MotorIds::SparkMax::LEFT_FRONT_DRIVE_MOTOR_ID,
+                         rev::CANSparkMax::MotorType::kBrushless},
+      m_rightBackFollower{MotorIds::SparkMax::RIGHT_FRONT_DRIVE_MOTOR_ID,
+                          rev::CANSparkMax::MotorType::kBrushless},
       m_rightBack{MotorIds::SparkMax::RIGHT_BACK_DRIVE_MOTOR_ID,
                   rev::CANSparkMax::MotorType::kBrushless},
       m_realGyro{SensorIds::PIGEON_CAN_ID} {
@@ -24,7 +28,9 @@ RealDrivebase::RealDrivebase()
 void RealDrivebase::setMotorSpeeds_HAL(double leftPercent,
                                        double rightPercent) {
   m_leftBack.Set(leftPercent);
+  m_leftBackFollower.Set(leftPercent);
   m_rightBack.Set(rightPercent);
+  m_rightBackFollower.Set(rightPercent);
 }
 
 void RealDrivebase::configureEncoders() {
@@ -55,5 +61,7 @@ void RealDrivebase::configureEncoders() {
 void RealDrivebase::setMotorVoltages_HAL(units::volt_t leftPower,
                                          units::volt_t rightPower) {
   m_leftBack.SetVoltage(leftPower);
+  m_leftBackFollower.SetVoltage(leftPower);
   m_rightBack.SetVoltage(rightPower);
+  m_rightBackFollower.SetVoltage(rightPower);
 }

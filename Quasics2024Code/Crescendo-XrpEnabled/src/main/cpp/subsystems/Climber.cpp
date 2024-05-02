@@ -84,13 +84,14 @@ frc::SmartDashboard::PutString(
     "Right Climber Limit Switch",
     bottomLimitSwitchRightClimber.Get() ? "open" : "closed");
     */
-
+#ifndef ENABLE_COMPETITION_ROBOT
   frc::SmartDashboard::PutNumber("Left Revolutions", getLeftRevolutions());
   frc::SmartDashboard::PutNumber("Right Revolutions", getRightRevolutions());
+#endif
 }
 
 bool Climber::IsFullyExtended() {
-  if (getLeftRevolutions() < -6 && getRightRevolutions() < -6) {
+  if (getLeftRevolutions() < -3 && getRightRevolutions() < -3) {
     return true;
   }
   return false;
@@ -115,4 +116,9 @@ double Climber::getRightRevolutions() {
 void Climber::resetRevolutions() {
   m_leftEncoder.SetPosition(0);
   m_rightEncoder.SetPosition(0);
+}
+
+void Climber::setRevolutions() {
+  m_leftEncoder.SetPosition(-126);
+  m_rightEncoder.SetPosition(-126);
 }

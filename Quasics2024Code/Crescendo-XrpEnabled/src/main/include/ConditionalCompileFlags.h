@@ -10,13 +10,14 @@
 #define ENABLE_CTRE
 
 #undef USING_MAE
-#define USING_SALLY
+#undef USING_SALLY
+#define USING_MARGARET
 
 #define ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #undef ENABLE_INTAKE_TESTING
 
-#undef ENABLE_VISION_TESTING
+#undef ENABLE_VISION_SUBSYSTEM
 
 #undef LEAK_VISION_WORKAROUND
 
@@ -37,3 +38,5 @@
 // https://github.com/cpredef/predef/blob/master/OperatingSystems.md
 #define ENABLE_XRP
 #endif
+
+#define ENABLE_COMPETITION_ROBOT

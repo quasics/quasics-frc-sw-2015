@@ -104,14 +104,10 @@ class RealDriveBase : public IDrivebase {
 #endif
 
   // Encoders for each of the motors.
-  rev::SparkRelativeEncoder m_leftFrontEncoder =
-      m_leftFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_rightFrontEncoder =
-      m_rightFront.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_leftBackEncoder =
-      m_leftBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
-  rev::SparkRelativeEncoder m_rightBackEncoder =
-      m_rightBack.GetEncoder(rev::SparkRelativeEncoder::Type::kHallSensor);
+  rev::SparkRelativeEncoder m_leftFrontEncoder = m_leftFront.GetEncoder();
+  rev::SparkRelativeEncoder m_rightFrontEncoder = m_rightFront.GetEncoder();
+  rev::SparkRelativeEncoder m_leftBackEncoder = m_leftBack.GetEncoder();
+  rev::SparkRelativeEncoder m_rightBackEncoder = m_rightBack.GetEncoder();
 
   // Gyro.
 #ifdef ENABLE_CTRE

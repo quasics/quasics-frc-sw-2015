@@ -35,6 +35,12 @@ public interface RobotSettings {
     FrontMotorsLeading
   }
 
+  public enum ClimberType {
+    None,
+    Simulated,
+    Real
+  }
+
   /**
    * Enum class used to represent the characteristics (e.g., camera name,
    * PID/motor gain values, track width, etc.) that are specific to a given robot.
@@ -60,9 +66,12 @@ public interface RobotSettings {
         // Vision
         "photonvision",
         new Transform3d(
-            new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, Units.degreesToRadians(-30), 0)),
+            new Translation3d(0.5, 0.0, 0.5),
+            new Rotation3d(0, Units.degreesToRadians(-30), 0)),
         // Lighting
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.Simulated),
     Xrp(MotorConfigModel.NoLeader,
         /* Track Width (m) */
         Meters.of(0.155),
@@ -72,7 +81,9 @@ public interface RobotSettings {
         8.5, 0.0, 0.0, // TODO: Profile the XRP
         /* Gains */
         Volts.of(1), VoltsPerMeterPerSecond.of(3), VoltsPerMeterPerSecondSquared.of(0), "",
-        new Transform3d(), DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        new Transform3d(), DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.None),
     Romi(
         // Motor config model
         MotorConfigModel.NoLeader,
@@ -87,41 +98,47 @@ public interface RobotSettings {
         // Vision data
         "", new Transform3d(),
         // Lighting data
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.None),
     Sally(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
         /* Track Width (m) */
-        Meters.of(
-            0.5588), // TODO: Confirm track width for Sally
+        Meters.of(0.5588), // TODO: Confirm track width for Sally
         /* Gear ratio */
         8.45,
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0),
+        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329),
+        VoltsPerMeterPerSecondSquared.of(0.0),
         // Vision data
         "",
         new Transform3d(), // TODO: Add robot-to-camera transform for Sally
         // Lighting data
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.None),
     Margaret(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
         /* Track Width (m) */
-        Meters.of(
-            0.5588), // TODO: Confirm track width for Margaret
+        Meters.of(0.5588), // TODO: Confirm track width for Margaret
         /* Gear ratio */
         8.45,
         /* PID */
         0.29613, 0.0, 0.0,
         /* Gains */
-        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329), VoltsPerMeterPerSecondSquared.of(0.0),
+        Volts.of(0.19529), VoltsPerMeterPerSecond.of(2.2329),
+        VoltsPerMeterPerSecondSquared.of(0.0),
         // Vision data
         "",
         new Transform3d(), // TODO: Add robot-to-camera transform for Margaret
         // Lighting data
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.Real),
     Mae(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
@@ -144,9 +161,9 @@ public interface RobotSettings {
         "",
         new Transform3d(), // TODO: Add robot-to-camera transform for Mae
         // Lighting data
-        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS),
-    // Margaret()
-    ;
+        DEFAULT_LIGHTING_PWM_PORT, DEFAULT_NUM_LIGHTS,
+        // Climber data
+        ClimberType.None);
 
     ////////////////////////////////////////////////////////
     // Drive base data
@@ -174,6 +191,10 @@ public interface RobotSettings {
     public final int lightingPwmPort;
     public final int numLights;
 
+    ////////////////////////////////////////////////////////
+    // Climber subsystem data
+    public final ClimberType climberType;
+
     /**
      * Constructor.
      *
@@ -196,7 +217,7 @@ public interface RobotSettings {
         double gearRatio, double kP, double kI, double kD, Measure<Voltage> kS,
         Measure<Per<Voltage, Velocity<Distance>>> kV,
         Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA, String cameraName,
-        Transform3d robotToCamera, int lightingPort, int numLights) {
+        Transform3d robotToCamera, int lightingPort, int numLights, ClimberType climberType) {
       this.motorConfigModel = motorConfigModel;
       this.trackWidthMeters = trackWidthMeters;
       this.gearRatio = gearRatio;
@@ -210,6 +231,7 @@ public interface RobotSettings {
       this.robotToCameraTransform = robotToCamera;
       this.numLights = numLights;
       this.lightingPwmPort = lightingPort;
+      this.climberType = climberType;
     }
   }
 }

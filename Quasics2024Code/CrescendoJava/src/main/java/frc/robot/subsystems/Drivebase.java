@@ -15,7 +15,7 @@ import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class Drivebase extends SubsystemBase {
   final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.RIGHT_LEADER_ID, MotorType.kBrushless);
 
 
   /** Creates a new Drivebase. */

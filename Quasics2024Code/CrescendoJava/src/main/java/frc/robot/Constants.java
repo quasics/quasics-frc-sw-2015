@@ -40,12 +40,21 @@ public final class Constants {
     public static final int RightStickPress = 10;
   }
 
+  public static class DriveTeam {
+    public static final int DRIVER_JOYSTICK_ID = 0;
+    public static final int OPERATOR_JOYSTICK_ID = 1;
+  }
+
   public static class CanBusIds {
     public static class SparkMax {
       // Note: Drive base motor IDs are based on those Quasics has used over the last
       // couple of years.
       public static final int LEFT_LEADER_ID = 2;
       public static final int RIGHT_LEADER_ID = 4;
+
+
+      public static final int LEFT_SHOOTER_ID = 9;
+      public static final int RIGHT_SHOOTER_ID = 10;
     }
 
     public static final int PIGEON2_CAN_ID = 1;

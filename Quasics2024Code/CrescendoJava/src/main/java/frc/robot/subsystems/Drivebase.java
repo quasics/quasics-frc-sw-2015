@@ -14,13 +14,8 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
-import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
+import static edu.wpi.first.units.Units.*;
+import java.lang.Math;
 
 import frc.robot.Constants.CanBusIds.SparkMax;
 
@@ -44,12 +39,21 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setupSmartDashboard() {
-      SmartDashboard.putData("tank drive 6V", new InstantCommand(() -> tankDriveVolts(6, 6)));
+      SmartDashboard.putData("set motor 6V", new InstantCommand(() -> setVoltages(6, 6)));
   }
 
-  public void tankDriveVolts(double leftVoltage, double rightVoltage) {
+  public void setVoltages(double leftVoltage, double rightVoltage) {
     m_leftLeader.setVoltage(leftVoltage);
     m_rightLeader.setVoltage(rightVoltage);
+  }
+
+  public void setSpeeds(double leftSpeed, double rightSpeed) {
+    m_leftLeader.set(leftSpeed);
+    m_rightLeader.set(rightSpeed);
+  }
+
+  public void stop() {
+    setSpeeds(0, 0);
   }
 
 }

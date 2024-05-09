@@ -9,6 +9,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.IntakeRoller;
+
 
 
 /**
@@ -21,6 +25,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final Drivebase m_drivebase = new Drivebase();
+  private final Climbers m_climbers = new Climbers();
+  private final IntakeRoller m_intakeRollers = new IntakeRoller();
+  private final Shooter m_shooter = new Shooter();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

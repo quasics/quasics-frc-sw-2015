@@ -48,6 +48,12 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
+    // clamp speeds between -1 and 1
+    leftSpeed = leftSpeed > 0 ? leftSpeed : 0;
+    leftSpeed = leftSpeed < 1 ? leftSpeed : 1;
+    rightSpeed = rightSpeed > 0 ? rightSpeed : 0;
+    rightSpeed = rightSpeed < 1 ? rightSpeed : 1;
+
     m_leftLeader.set(leftSpeed);
     m_rightLeader.set(rightSpeed);
   }

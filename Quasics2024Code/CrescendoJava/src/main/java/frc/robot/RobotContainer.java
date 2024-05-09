@@ -5,6 +5,11 @@
 package frc.robot;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.TankDrive;
+
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,6 +34,11 @@ public class RobotContainer {
   private final IntakeRoller m_intakeRollers = new IntakeRoller();
   private final Shooter m_shooter = new Shooter();
 
+  Supplier<Double> m_tankDriveLeftStick;
+  Supplier<Double> m_tankDriveRightStick;
+
+  private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID); // CHANGE THIS
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -45,7 +55,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
+    m_tankDriveLeftStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+    m_tankDriveRightStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
+    m_drivebase.setDefaultCommand(new TankDrive(m_drivebase, m_tankDriveLeftStick, m_tankDriveRightStick));
   }
 
   /**

@@ -25,8 +25,13 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
-  public void setSpeeds(double percentSpeed){
+  public void setFlywheelSpeed(double percentSpeed){
     m_leftShooterMotor.set(percentSpeed);
     m_rightShooterMotor.set(percentSpeed);
+  }
+
+  public void stop(){
+    m_leftShooterMotor.set(0);
+    m_rightShooterMotor.set(0);
   }
 }

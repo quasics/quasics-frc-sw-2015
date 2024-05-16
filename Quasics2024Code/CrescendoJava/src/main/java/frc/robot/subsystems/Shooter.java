@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+/* 
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -17,7 +17,7 @@ public class Shooter extends SubsystemBase {
 
   final CANSparkMax m_leftShooterMotor = new CANSparkMax(SparkMax.LEFT_SHOOTER_ID, MotorType.kBrushless);
   final CANSparkMax m_rightShooterMotor = new CANSparkMax(SparkMax.RIGHT_SHOOTER_ID, MotorType.kBrushless);
-  /** Creates a new Shooter. */
+  /** Creates a new Shooter. 
   public Shooter() {}
 
   @Override
@@ -34,4 +34,4 @@ public class Shooter extends SubsystemBase {
     m_leftShooterMotor.set(0);
     m_rightShooterMotor.set(0);
   }
-}
+}*/

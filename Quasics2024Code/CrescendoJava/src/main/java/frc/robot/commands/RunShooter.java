@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-/*
+
 package frc.robot.commands;
 import frc.robot.subsystems.Shooter;
 
@@ -13,7 +13,7 @@ public class RunShooter extends Command {
   //private final boolean m_shooting;
 
 
-  /** Creates a new RunShooter. 
+  /** Creates a new RunShooter. */
   public RunShooter(Shooter shooter, double shooterSpeed, boolean shooting) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_shooter = shooter;
@@ -45,4 +45,3 @@ public class RunShooter extends Command {
     m_shooter.stop();
   }
 }
-*/

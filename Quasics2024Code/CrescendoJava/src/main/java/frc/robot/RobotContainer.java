@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.ArcadeDrive;
+
 
 import java.util.function.Supplier;
 
@@ -14,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivebase;
-//import frc.robot.subsystems.Climbers;
-//import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.IntakeRoller;
 
 
@@ -30,12 +32,16 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final Drivebase m_drivebase = new Drivebase();
-  //private final Climbers m_climbers = new Climbers();
+  private final Climbers m_climbers = new Climbers();
   private final IntakeRoller m_intakeRollers = new IntakeRoller();
-  //private final Shooter m_shooter = new Shooter();
+  private final Shooter m_shooter = new Shooter();
+
+  private final boolean ARCADE_DRIVE = true; // false for tank drive
 
   Supplier<Double> m_tankDriveLeftStick;
   Supplier<Double> m_tankDriveRightStick;
+  Supplier<Double> m_arcadeDriveLeftStick;
+  Supplier<Double> m_arcadeDriveRightStick;
 
   private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
@@ -57,8 +63,17 @@ public class RobotContainer {
   private void configureBindings() {
     m_tankDriveLeftStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
     m_tankDriveRightStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
-    m_drivebase.setDefaultCommand(new TankDrive(m_drivebase, m_tankDriveLeftStick, m_tankDriveRightStick));
+
+    m_arcadeDriveLeftStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+    m_arcadeDriveRightStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+    if (ARCADE_DRIVE) {
+      m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+    }
+    else {
+      m_drivebase.setDefaultCommand(new TankDrive(m_drivebase, m_tankDriveLeftStick, m_tankDriveRightStick));
+    }
   }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

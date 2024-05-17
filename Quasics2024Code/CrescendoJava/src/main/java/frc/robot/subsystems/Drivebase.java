@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import frc.robot.Constants;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -20,6 +24,10 @@ import java.lang.Math;
 import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class Drivebase extends SubsystemBase {
+  private final DifferentialDriveKinematics m_kinematics;
+  private static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
+
+
   final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
   final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.RIGHT_LEADER_ID, MotorType.kBrushless);
   
@@ -29,8 +37,12 @@ public class Drivebase extends SubsystemBase {
   /** Maximum rotational speed is 1/2 rotation per second. */
   public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
+  public static final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
+
+
   /** Creates a new Drivebase. */
   public Drivebase() {
+    m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
     setupSmartDashboard();
   }
 
@@ -47,6 +59,10 @@ public class Drivebase extends SubsystemBase {
     m_rightLeader.setVoltage(rightVoltage);
   }
 
+  public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+    setSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+  }
+
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     // clamp speeds between -1 and 1
     leftSpeed = leftSpeed > -1 ? leftSpeed : -1;
@@ -60,6 +76,11 @@ public class Drivebase extends SubsystemBase {
 
   public void stop() {
     setSpeeds(0, 0);
+  }
+
+  public void arcadeDrive(Measure<Velocity<Distance>> fSpeed, Measure<Velocity<Angle>> rSpeed) {
+    setSpeeds(
+        m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
   }
 
 }

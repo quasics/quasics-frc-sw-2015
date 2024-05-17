@@ -70,6 +70,8 @@ public final class Constants {
       public static final int LEFT_CLIMBER_ID = 5;
       public static final int RIGHT_CLIMBER_ID = 6;
 
+      public static final int INTAKE_MOTOR_ID = 8;
+
       public static final int LEFT_SHOOTER_ID = 9;
       public static final int RIGHT_SHOOTER_ID = 10;
     }

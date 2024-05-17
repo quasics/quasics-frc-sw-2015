@@ -4,14 +4,27 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class IntakeRoller extends SubsystemBase {
+  CANSparkMax m_intake;
+
   /** Creates a new IntakeRoller. */
-  public IntakeRoller() {}
+  public IntakeRoller() {
+    m_intake = new CANSparkMax(SparkMax.INTAKE_MOTOR_ID, MotorType.kBrushless);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void setRollerSpeed(double percentSpeed){
+    m_intake.set(-percentSpeed);
+  }
+
 }

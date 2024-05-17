@@ -11,10 +11,11 @@ import frc.robot.commands.ServoPositionerCmd;
 import frc.robot.subsystems.ServoHost;
 
 public class RobotContainer {
-  ServoHost m_servoHost = new ServoHost();
+  final ServoHost m_servoHost;
   XboxController m_controller = new XboxController(1);
 
   public RobotContainer() {
+    m_servoHost = new ServoHost();
     configureBindings();
   }
 
@@ -26,3 +27,37 @@ public class RobotContainer {
     return Commands.print("No autonomous command configured");
   }
 }
+
+/*
+ In C++, this might look roughly like:
+
+ // RobotContainer.h
+ #pragma once
+
+ // Some #includes go here.....
+
+ class RobotContainer {
+ private:
+  ServoHost m_servoHost;
+  XboxController m_controller;
+ public:
+  RobotContainer();
+
+  Command getAutonomousCommand();
+
+ private:
+  void configureBindings();
+};
+
+ // In RobotContainer.cpp
+ #include "RobotContainer.h"
+ // Other #includes.....
+
+ RobotContainer::RobotContainer() : m_controller(1) {
+  configureBindings();
+ }
+ .....
+
+
+
+ */

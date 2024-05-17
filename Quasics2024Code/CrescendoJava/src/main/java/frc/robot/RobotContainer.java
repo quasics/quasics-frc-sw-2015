@@ -13,13 +13,15 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.IntakeRoller;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 
 /**
@@ -30,6 +32,7 @@ import frc.robot.subsystems.IntakeRoller;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private boolean m_switchDrive = false;
 
   private final Drivebase m_drivebase = new Drivebase();
   private final Climbers m_climbers = new Climbers();
@@ -43,7 +46,10 @@ public class RobotContainer {
   Supplier<Double> m_arcadeDriveLeftStick;
   Supplier<Double> m_arcadeDriveRightStick;
 
-  private Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+  private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+
+  Trigger switchDriveTrigger;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -59,13 +65,50 @@ public class RobotContainer {
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
-   */
-  private void configureBindings() {
-    m_tankDriveLeftStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-    m_tankDriveRightStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
+    */
 
-    m_arcadeDriveLeftStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-    m_arcadeDriveRightStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+
+  private void configureBindings() {
+    m_tankDriveLeftStick = () -> {
+      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      if (m_switchDrive) {
+        return -axis;
+      }
+      else {
+        return axis;
+      }
+    };
+
+    m_tankDriveRightStick = () -> {
+      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
+      if (m_switchDrive) {
+        return -axis;
+      }
+      else {
+        return axis;
+      }
+    };
+
+
+    m_arcadeDriveLeftStick = () -> {
+      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      if (m_switchDrive) {
+        return -axis;
+      }
+      else {
+        return axis;
+
+      }
+    };
+
+    m_arcadeDriveRightStick = () -> {
+      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      return axis;
+    };
+
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton)).onTrue(
+      new InstantCommand(() -> m_switchDrive = !m_switchDrive));
+    
     if (ARCADE_DRIVE) {
       m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase, m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
     }

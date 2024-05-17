@@ -23,7 +23,7 @@ public class ServoHost extends SubsystemBase {
    *      "https://www.chiefdelphi.com/t/anyone-have-servo-example-code/155951/9">ChiefDelphi
    *      thread</a>
    */
-  final Servo m_servo = new Servo(SERVO_PWM_ID);
+  final private Servo m_servo = new Servo(SERVO_PWM_ID);
 
   /** Creates a new ServoHost. */
   public ServoHost() {

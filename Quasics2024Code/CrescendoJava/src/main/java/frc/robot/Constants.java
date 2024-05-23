@@ -42,16 +42,18 @@ public final class Constants {
     public static final int RightYAxis = 3;
 
     // Buttons
-    public static final int AButton = 1;
-    public static final int BButton = 2;
-    public static final int XButton = 3;
+    public static final int XButton = 1;
+    public static final int AButton = 2;
+    public static final int BButton = 3;
     public static final int YButton = 4;
     public static final int LeftShoulder = 5;
     public static final int RightShoulder = 6;
-    public static final int BackButton = 7;
-    public static final int StartButton = 8;
-    public static final int LeftStickPress = 9;
-    public static final int RightStickPress = 10;
+    public static final int LeftTrigger = 7;
+    public static final int RightTrigger = 8;
+    public static final int BackButton = 9;
+    public static final int StartButton = 10;
+    public static final int LeftStickPress = 11;
+    public static final int RightStickPress = 12;
   }
 
   public static class DriveTeam {

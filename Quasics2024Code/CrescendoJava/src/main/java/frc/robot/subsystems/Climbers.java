@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,12 @@ public class Climbers extends SubsystemBase {
   CANSparkMax m_leftClimber;
   CANSparkMax m_rightClimber;
 
+  final RelativeEncoder m_leftEncoder = m_leftClimber.getEncoder();
+  final RelativeEncoder m_rightEncoder = m_rightClimber.getEncoder();
+
+  static final double EXTENSION_SPEED = 1.0;
+  static final double RETRACTION_SPEED = -1.0;
+
 
   /** Creates a new Climbers. */
   public Climbers() {
@@ -27,28 +34,28 @@ public class Climbers extends SubsystemBase {
   }
 
   public void StartExtending(){
-    m_leftClimber.set(1.00);
-    m_rightClimber.set(1.00);
+    m_leftClimber.set(EXTENSION_SPEED);
+    m_rightClimber.set(EXTENSION_SPEED);
   }
 
   public void StartRetracting(){
-    m_leftClimber.set(-1.00);
-    m_rightClimber.set(-1.00);
+    m_leftClimber.set(RETRACTION_SPEED);
+    m_rightClimber.set(RETRACTION_SPEED);
   }
 
   public void ExtendOneClimber(boolean isLeft){
     if(isLeft){
-        m_leftClimber.set(1.00);
+        m_leftClimber.set(EXTENSION_SPEED);
     }else{
-      m_rightClimber.set(1.00);
+      m_rightClimber.set(EXTENSION_SPEED);
     }
   }
 
   public void RetractOneClimber(boolean isLeft){
     if(isLeft){
-        m_leftClimber.set(-1.00);
+        m_leftClimber.set(RETRACTION_SPEED);
     }else{
-      m_rightClimber.set(-1.00);
+      m_rightClimber.set(RETRACTION_SPEED);
     }
   }
 
@@ -66,6 +73,38 @@ public class Climbers extends SubsystemBase {
       m_leftClimber.setIdleMode(IdleMode.kCoast);
       m_rightClimber.setIdleMode(IdleMode.kCoast);
     }
+  }
+
+  public boolean IsFullyExtended(){
+    if(GetLeftRevolutions() < -3 && GetRightRevolutions() < -3){
+      return true;
+    }
+    return false;
+  }
+
+  public boolean IsFullyRetracted(){
+    if(GetLeftRevolutions() >= 0  && GetRightRevolutions() >= 0){
+      return true;
+    }
+    return false;
+  }
+
+  public double GetLeftRevolutions(){
+    return m_leftEncoder.getPosition() / 42;
+  }
+
+  public double GetRightRevolutions(){
+    return m_rightEncoder.getPosition() / 42;
+  }
+
+  public void ResetRevolutions(){
+    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+  }
+
+  public void SetRevolutions(){
+    m_leftEncoder.setPosition(-126);
+    m_rightEncoder.setPosition(-126);
   }
 
   @Override

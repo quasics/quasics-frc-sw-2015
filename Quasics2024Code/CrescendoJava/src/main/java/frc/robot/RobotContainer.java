@@ -72,20 +72,20 @@ public class RobotContainer {
     m_tankDriveLeftStick = () -> {
       double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        return -axis;
+        return -axis * getDriveSpeedScalingFactor();
       }
       else {
-        return axis;
+        return axis * getDriveSpeedScalingFactor();
       }
     };
 
     m_tankDriveRightStick = () -> {
       double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
-        return -axis;
+        return -axis * getDriveSpeedScalingFactor();
       }
       else {
-        return axis;
+        return axis * getDriveSpeedScalingFactor();
       }
     };
 
@@ -93,17 +93,17 @@ public class RobotContainer {
     m_arcadeDriveLeftStick = () -> {
       double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        return -axis;
+        return -axis * getDriveSpeedScalingFactor();
       }
       else {
-        return axis;
+        return axis * getDriveSpeedScalingFactor();
 
       }
     };
 
     m_arcadeDriveRightStick = () -> {
       double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
-      return axis;
+      return axis * getDriveSpeedScalingFactor();
     };
 
     switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton)).onTrue(
@@ -114,6 +114,19 @@ public class RobotContainer {
     }
     else {
       m_drivebase.setDefaultCommand(new TankDrive(m_drivebase, m_tankDriveLeftStick, m_tankDriveRightStick));
+    }
+  }
+
+  private double getDriveSpeedScalingFactor() {
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+
+    if (isTurbo) {
+      return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
+    } else if (isTurtle) {
+      return Constants.RobotSpeedScaling.TURTLE_MODE_SPEED_SCALING;
+    } else {
+      return Constants.RobotSpeedScaling.NORMAL_MODE_SPEED_SCALING;
     }
   }
   

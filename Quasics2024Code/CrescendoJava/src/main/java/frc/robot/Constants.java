@@ -81,4 +81,11 @@ public final class Constants {
     public static final int PIGEON2_CAN_ID = 1;
   }
 
+  public static class RobotSpeedScaling {
+    public static final double TURBO_MODE_SPEED_SCALING = 0.9;
+    public static final double TURTLE_MODE_SPEED_SCALING = 0.3;
+    public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
+
+  }
+
 }

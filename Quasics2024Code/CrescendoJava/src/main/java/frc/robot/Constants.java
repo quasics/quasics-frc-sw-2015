@@ -88,4 +88,16 @@ public final class Constants {
 
   }
 
+  public static class AutonomousSelectedOperation {
+    final String doNothing = "Do nothing";
+    final String GTFO = "GTFO";
+    final String score1 = "Score 1 piece";
+    final String score1GTFO = "Score 1 piece, GTFO";
+    final String score2 = "Score 2 piece";
+    final String score2GTFO = "Score 2 piece, GTFO";
+    final String score3 = "Score 3 piece";
+    final String score3GTFO = "Score 3 piece, GTFO";
+    final String score4 = "Score 4 piece";
+  }  // namespace AutonomousSelectedOperation
+
 }

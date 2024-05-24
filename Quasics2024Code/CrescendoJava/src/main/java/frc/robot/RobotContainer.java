@@ -22,6 +22,9 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.IntakeRoller;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+
 
 
 /**
@@ -51,10 +54,20 @@ public class RobotContainer {
 
   Trigger switchDriveTrigger;
 
+  SendableChooser m_autonomousOptions = new SendableChooser();
+
+  private final double DEADBAND_CONSTANT = 0.04;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+  }
+
+
+
+  private void addAutonomousCommandsToSmartDashboard() {
+    // TODO URGENT m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing);
   }
 
   /**
@@ -67,10 +80,15 @@ public class RobotContainer {
    * joysticks}.
     */
 
-
+  private double getDriverAxis(int controllerCode) {
+    double axis = m_driverController.getRawAxis(controllerCode);
+    // dead band enforcer
+    return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
+  }
+  
   private void configureBindings() {
     m_tankDriveLeftStick = () -> {
-      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         return -axis * getDriveSpeedScalingFactor();
       }
@@ -80,7 +98,7 @@ public class RobotContainer {
     };
 
     m_tankDriveRightStick = () -> {
-      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightYAxis);
+      double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
         return -axis * getDriveSpeedScalingFactor();
       }
@@ -91,7 +109,7 @@ public class RobotContainer {
 
 
     m_arcadeDriveLeftStick = () -> {
-      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         return -axis * getDriveSpeedScalingFactor();
       }
@@ -102,7 +120,7 @@ public class RobotContainer {
     };
 
     m_arcadeDriveRightStick = () -> {
-      double axis = -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
       return axis * getDriveSpeedScalingFactor();
     };
 
@@ -130,7 +148,7 @@ public class RobotContainer {
     }
   }
 
-  
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

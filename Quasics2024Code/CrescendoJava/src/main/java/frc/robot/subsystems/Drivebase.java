@@ -62,6 +62,7 @@ public class Drivebase extends SubsystemBase {
   /** Creates a new Drivebase. */
   public Drivebase() {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
+    resetOdometry();
     setupSmartDashboard();
   }
 
@@ -74,6 +75,7 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
     SmartDashboard.putNumber("Right distance", rightDistance);
+    SmartDashboard.putData("Reset odometry", new InstantCommand(() -> resetOdometry()));
 
   }
 

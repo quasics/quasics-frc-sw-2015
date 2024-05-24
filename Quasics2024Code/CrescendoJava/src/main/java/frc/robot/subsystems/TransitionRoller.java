@@ -10,12 +10,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMax;
 
-public class IntakeRoller extends SubsystemBase {
-  CANSparkMax m_intake;
-
-  /** Creates a new IntakeRoller. */
-  public IntakeRoller() {
-    m_intake = new CANSparkMax(SparkMax.INTAKE_MOTOR_ID, MotorType.kBrushless);
+public class TransitionRoller extends SubsystemBase {
+  CANSparkMax m_transition;
+  /** Creates a new TransitionRoller. */
+  public TransitionRoller() {
+    m_transition = new CANSparkMax(SparkMax.TRANSITION_MOTOR_ID, MotorType.kBrushless);
   }
 
   @Override
@@ -23,11 +22,11 @@ public class IntakeRoller extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void setRollerSpeed(double percentSpeed){
-    m_intake.set(-percentSpeed);
+  public void setTransitionRollerSpeed(double percentSpeed){
+    m_transition.set(-percentSpeed);
   }
 
-  public void stop(){
-    m_intake.set(0);
+  public void stop() {
+    m_transition.set(0);
   }
 }

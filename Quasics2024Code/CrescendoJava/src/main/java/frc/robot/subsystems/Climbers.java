@@ -18,9 +18,9 @@ public class Climbers extends SubsystemBase {
   CANSparkMax m_leftClimber;
   CANSparkMax m_rightClimber;
 
-  final RelativeEncoder m_leftEncoder = m_leftClimber.getEncoder();
-  final RelativeEncoder m_rightEncoder = m_rightClimber.getEncoder();
-
+  RelativeEncoder m_leftEncoder;
+  RelativeEncoder m_rightEncoder;
+  
   static final double EXTENSION_SPEED = 1.0;
   static final double RETRACTION_SPEED = -1.0;
 
@@ -30,6 +30,9 @@ public class Climbers extends SubsystemBase {
     if (!ConditionalConstants.SALLY) {
       m_leftClimber = new CANSparkMax(SparkMax.LEFT_CLIMBER_ID, MotorType.kBrushless);
       m_rightClimber = new CANSparkMax(SparkMax.RIGHT_CLIMBER_ID, MotorType.kBrushless);
+      m_leftEncoder = m_leftClimber.getEncoder();
+      m_rightEncoder = m_rightClimber.getEncoder();
+
     }
   }
 

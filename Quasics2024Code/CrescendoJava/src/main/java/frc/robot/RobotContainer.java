@@ -11,6 +11,7 @@ import frc.robot.commands.ArcadeDrive;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -20,7 +21,9 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.IntakeRoller;
+import frc.robot.subsystems.TransitionRoller;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -39,7 +42,8 @@ public class RobotContainer {
 
   private final Drivebase m_drivebase = new Drivebase();
   private final Climbers m_climbers = new Climbers();
-  private final IntakeRoller m_intakeRollers = new IntakeRoller();
+  private final IntakeRoller m_intakeRoller = new IntakeRoller();
+  private final TransitionRoller m_transitionRoller = new TransitionRoller();
   private final Shooter m_shooter = new Shooter();
 
   private final boolean ARCADE_DRIVE = true; // false for tank drive
@@ -54,7 +58,7 @@ public class RobotContainer {
 
   Trigger switchDriveTrigger;
 
-  SendableChooser m_autonomousOptions = new SendableChooser();
+  SendableChooser<String> m_autonomousOptions = new SendableChooser();
 
   private final double DEADBAND_CONSTANT = 0.04;
 
@@ -63,12 +67,16 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
+    addAutonomousCommandsToSmartDashboard();
   }
 
 
 
   private void addAutonomousCommandsToSmartDashboard() {
-    // TODO URGENT m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing);
+    m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
+    m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
+    m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.score1, Constants.AutonomousSelectedOperation.score1);
+
   }
 
   private void addButtonsToSmartDashboard() {
@@ -163,6 +171,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto();
+    String overallOperation = m_autonomousOptions.getSelected();
+    return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter, overallOperation);
   }
 }

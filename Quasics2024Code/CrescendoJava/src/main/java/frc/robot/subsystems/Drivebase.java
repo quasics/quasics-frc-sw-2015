@@ -75,7 +75,7 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
     SmartDashboard.putNumber("Right distance", rightDistance);
-    SmartDashboard.putData("Reset odometry", new InstantCommand(() -> resetOdometry()));
+
 
   }
 
@@ -92,7 +92,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setupSmartDashboard() {
-      SmartDashboard.putData("set motor 6V", new InstantCommand(() -> setVoltages(6, 6)));
+
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -125,7 +125,7 @@ public class Drivebase extends SubsystemBase {
 
   public void resetOdometry() {
     resetEncoders();
-    m_odometry.resetPosition(m_pigeon.getRotation2d(), null, null, new Pose2d());
+    m_odometry.resetPosition(m_pigeon.getRotation2d(), 0, 0, new Pose2d());
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {

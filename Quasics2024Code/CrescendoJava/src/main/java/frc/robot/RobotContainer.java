@@ -62,12 +62,18 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    addButtonsToSmartDashboard();
   }
 
 
 
   private void addAutonomousCommandsToSmartDashboard() {
     // TODO URGENT m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing);
+  }
+
+  private void addButtonsToSmartDashboard() {
+    SmartDashboard.putData("set motor 6V", new InstantCommand(() -> m_drivebase.setVoltages(6, 6)));
+    SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry()));
   }
 
   /**

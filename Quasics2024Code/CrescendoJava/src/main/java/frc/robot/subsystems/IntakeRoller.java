@@ -9,13 +9,16 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMax;
+import frc.robot.ConditionalConstants;
 
 public class IntakeRoller extends SubsystemBase {
   CANSparkMax m_intake;
 
   /** Creates a new IntakeRoller. */
   public IntakeRoller() {
-    m_intake = new CANSparkMax(SparkMax.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    if (!ConditionalConstants.SALLY) {
+      m_intake = new CANSparkMax(SparkMax.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    }
   }
 
   @Override

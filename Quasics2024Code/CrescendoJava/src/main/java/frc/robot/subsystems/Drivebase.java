@@ -64,6 +64,7 @@ public class Drivebase extends SubsystemBase {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
     resetOdometry();
     setupSmartDashboard();
+    configureEncoders();
   }
 
   @Override
@@ -75,8 +76,6 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
     SmartDashboard.putNumber("Right distance", rightDistance);
-
-
   }
 
   public double getYaw() {
@@ -114,8 +113,7 @@ public class Drivebase extends SubsystemBase {
     m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
     m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
 
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    resetEncoders();
   }
 
   public void resetEncoders() {

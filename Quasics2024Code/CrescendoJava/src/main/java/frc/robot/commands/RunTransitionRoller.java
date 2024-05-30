@@ -3,41 +3,40 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.IntakeRoller;
+import frc.robot.subsystems.TransitionRoller;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class RunIntake extends Command {
-  private final IntakeRoller m_intake;
-  private final double m_intakeSpeed;
-  // private final boolean m_takingIn;
-  /** Creates a new RunIntake. */
-  public RunIntake(IntakeRoller intake, double intakeSpeed, boolean takingIn) {
-    m_intake = intake;
-  // m_takingIn = takingIn;
-    if(takingIn){
-      m_intakeSpeed = -Math.abs(intakeSpeed);
+public class RunTransitionRoller extends Command {
+  /** Creates a new RunTransitionRoller. */
+  private final TransitionRoller m_transition;
+  private final double m_transitionSpeed;
+
+  public RunTransitionRoller(TransitionRoller transition, double transitionSpeed, boolean transitionTakingIn) {
+    m_transition = transition;
+    if(transitionTakingIn){
+      m_transitionSpeed = -Math.abs(transitionSpeed);
     } else {
-      m_intakeSpeed = Math.abs(intakeSpeed);
+      m_transitionSpeed = Math.abs(transitionSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(transition);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.setRollerSpeed(m_intakeSpeed);
+    m_transition.setTransitionRollerSpeed(m_transitionSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setRollerSpeed(m_intakeSpeed);
+    m_transition.setTransitionRollerSpeed(m_transitionSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.stop();
+    m_transition.stop();
   }
 }

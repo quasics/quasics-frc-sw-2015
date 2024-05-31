@@ -101,10 +101,10 @@ public class RobotContainer {
     return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
   }
   
-  private final SlewRateLimiter m_leftSpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_rightSpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_leftSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rightSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private void configureBindings() {
     m_tankDriveLeftStick = () -> {

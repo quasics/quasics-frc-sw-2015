@@ -37,8 +37,16 @@ public final class Autos {
     return new TimedMovementTest(drivebase, Seconds.of(2), 0.50);
   }
 
-  public static Command score1(IntakeRoller intakeRoller, TransitionRoller transitionRoller, Shooter shooter) {
+  public static Command score1(TransitionRoller transitionRoller, Shooter shooter) {
+    return ShootingSequence(transitionRoller, shooter);
+  }
 
+  public static Command ShootingSequence(TransitionRoller transitionRoller, Shooter shooter){
+    return Commands.parallel(TransitionPoint(transitionRoller), new RunShooter(shooter, .5, true));
+  }
+
+  public static Command TransitionPoint(TransitionRoller transitionRoller){
+    return Commands.sequence(new WaitCommand(2), new RunTransitionRoller(transitionRoller, .5, true));
   }
   
   public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller, TransitionRoller transitionRoller, Shooter shooter, String overallOperation) {
@@ -48,8 +56,9 @@ public final class Autos {
     } else if (overallOperation == AutonomousSelectedOperation.GTFO){
       return GTFO(drivebase);
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
-      return score1(intakeRoller, transitionRoller, shooter);
+      return score1(transitionRoller, shooter);
     }
-    return Commands.sequence(commands);
+    //return Commands.sequence(commands);
+    return new PrintCommand("???");
   }
 }

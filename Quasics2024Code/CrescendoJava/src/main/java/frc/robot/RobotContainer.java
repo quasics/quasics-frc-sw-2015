@@ -25,6 +25,7 @@ import frc.robot.subsystems.TransitionRoller;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
@@ -100,24 +101,33 @@ public class RobotContainer {
     return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
   }
   
+  private final SlewRateLimiter m_leftSpeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rightSpeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(3);
+
   private void configureBindings() {
     m_tankDriveLeftStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        return -axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis *getDriveSpeedScalingFactor();
+        return m_leftSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        return axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        return m_leftSpeedLimiter.calculate(joystickPercentage);
       }
     };
 
     m_tankDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
-        return -axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis *getDriveSpeedScalingFactor();
+        return m_rightSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        return axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        return m_rightSpeedLimiter.calculate(joystickPercentage);
       }
     };
 
@@ -125,17 +135,19 @@ public class RobotContainer {
     m_arcadeDriveLeftStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        return -axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis * getDriveSpeedScalingFactor();
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        return axis * getDriveSpeedScalingFactor();
-
+        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       }
     };
 
     m_arcadeDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      return axis * getDriveSpeedScalingFactor();
+      double joystickPercentage = axis * getDriveSpeedScalingFactor();
+      return m_rotationLimiter.calculate(joystickPercentage);
     };
 
     switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton)).onTrue(

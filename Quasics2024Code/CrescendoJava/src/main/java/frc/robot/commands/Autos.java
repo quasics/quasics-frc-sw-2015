@@ -49,7 +49,7 @@ public final class Autos {
     return Commands.sequence(new WaitCommand(2), new RunTransitionRoller(transitionRoller, .5, true));
   }
   
-  public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller, TransitionRoller transitionRoller, Shooter shooter, String overallOperation) {
+  public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller, TransitionRoller transitionRoller, Shooter shooter, String overallOperation, String positionOption, String score2Option, String score3Option) {
     //ArrayList<Command> commands = new ArrayList<Command>();
     if (overallOperation == AutonomousSelectedOperation.doNothing){
       return new PrintCommand("Doing Nothing");

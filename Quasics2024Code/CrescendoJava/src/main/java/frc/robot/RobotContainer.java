@@ -59,7 +59,11 @@ public class RobotContainer {
 
   Trigger switchDriveTrigger;
 
-  SendableChooser<String> m_autonomousOptions = new SendableChooser();
+  SendableChooser<String> m_overallOptions = new SendableChooser<String>();
+  SendableChooser<String> m_positionOptions = new SendableChooser<String>();
+  SendableChooser<String> m_score2Options = new SendableChooser<String>();
+  SendableChooser<String> m_score3Options = new SendableChooser<String>();
+
 
   private final double DEADBAND_CONSTANT = 0.04;
 
@@ -68,16 +72,56 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
-    addAutonomousCommandsToSmartDashboard();
+    addOverallSelectorToSmartDashboard();
   }
 
 
 
-  private void addAutonomousCommandsToSmartDashboard() {
-    m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
-    m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
-    m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.score1, Constants.AutonomousSelectedOperation.score1);
-    SmartDashboard.putData("Overall operation", m_autonomousOptions);
+  private void addOverallSelectorToSmartDashboard() {
+    m_overallOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score1, Constants.AutonomousSelectedOperation.score1);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score1GTFO, Constants.AutonomousSelectedOperation.score1GTFO);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score2, Constants.AutonomousSelectedOperation.score2);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score2GTFO, Constants.AutonomousSelectedOperation.score2GTFO);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score3, Constants.AutonomousSelectedOperation.score3);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score3GTFO, Constants.AutonomousSelectedOperation.score3GTFO);
+    m_overallOptions.addOption(Constants.AutonomousSelectedOperation.score4, Constants.AutonomousSelectedOperation.score4);
+
+    SmartDashboard.putData("Overall operation", m_overallOptions);
+  }
+
+  private void addAutonomousStartingPositionsToSmartDashboard() {
+    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.inFrontOfAmp, Constants.AutonomousStartingPositions.inFrontOfAmp);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.leftOfSpeaker, Constants.AutonomousStartingPositions.leftOfSpeaker);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.inFrontOfSpeaker, Constants.AutonomousStartingPositions.inFrontOfSpeaker);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.rightOfSpeaker, Constants.AutonomousStartingPositions.rightOfSpeaker);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.farField, Constants.AutonomousStartingPositions.farField);
+
+    SmartDashboard.putData("Starting position", m_positionOptions);
+  }
+
+  private void addScore2OptionsToSmartDashboard() {
+    m_score2Options.setDefaultOption(Constants.AutonomousScore2Options.none, Constants.AutonomousScore2Options.none);
+    m_score2Options.addOption(Constants.AutonomousScore2Options.amp, Constants.AutonomousScore2Options.amp);
+    m_score2Options.addOption(Constants.AutonomousScore2Options.leftOfSpeaker, Constants.AutonomousScore2Options.leftOfSpeaker);
+    m_score2Options.addOption(Constants.AutonomousScore2Options.inFrontOfSpeaker, Constants.AutonomousScore2Options.inFrontOfSpeaker);
+    m_score2Options.addOption(Constants.AutonomousScore2Options.rightOfSpeakerAllianceNote, Constants.AutonomousScore2Options.rightOfSpeakerAllianceNote);
+    m_score2Options.addOption(Constants.AutonomousScore2Options.rightOfSpeakerCenterNote, Constants.AutonomousScore2Options.rightOfSpeakerCenterNote);
+
+    SmartDashboard.putData("Score 2 option", m_score2Options);
+  }
+
+  private void addScore3OptionsToSmartDashboard() {
+    m_score3Options.setDefaultOption(Constants.AutonomousScore3Options.none, Constants.AutonomousScore3Options.none);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.amp, Constants.AutonomousScore3Options.amp);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.leftOfSpeaker, Constants.AutonomousScore3Options.leftOfSpeaker);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.inFrontOfSpeakerAmpNote, Constants.AutonomousScore3Options.inFrontOfSpeakerAmpNote);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.inFrontOfSpeakerStageNote, Constants.AutonomousScore3Options.inFrontOfSpeakerStageNote);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.inFrontOfSpeakerCenterNote, Constants.AutonomousScore3Options.inFrontOfSpeakerCenterNote);
+    m_score3Options.addOption(Constants.AutonomousScore3Options.rightOfSpeaker, Constants.AutonomousScore3Options.rightOfSpeaker);
+
+    SmartDashboard.putData("Score 3 option", m_score3Options);
   }
 
   private void addButtonsToSmartDashboard() {
@@ -183,7 +227,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    String overallOperation = m_autonomousOptions.getSelected();
-    return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter, overallOperation);
+    String overallOperation = m_overallOptions.getSelected();
+    String positionOption = m_positionOptions.getSelected();
+    String score2Option = m_score2Options.getSelected();
+    String score3Option = m_score3Options.getSelected();
+
+    return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter, overallOperation, positionOption, score2Option, score3Option);
   }
 }

@@ -88,7 +88,14 @@ public final class Constants {
     public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
 
   }
-
+  public static class AutonomousStartingPositions {
+    public static final String inFrontOfAmp = "In front of amp";          // 1A
+    public static final String leftOfSpeaker = "Left of speaker";         // 1B
+    public static final String inFrontOfSpeaker = "In front of speaker";  // 2
+    public static final String rightOfSpeaker = "Right of speaker";       // 3A
+    public static final String farField = "Far field";                    // 3B
+  }  // public static class AutonomousStartingPositions
+  
   public static class AutonomousSelectedOperation {
     public static final String doNothing = "Do nothing";
     public static final String GTFO = "GTFO";
@@ -99,6 +106,28 @@ public final class Constants {
     public static final String score3 = "Score 3 piece";
     public static final String score3GTFO = "Score 3 piece, GTFO";
     public static final String score4 = "Score 4 piece";
-  }  // namespace AutonomousSelectedOperation
+  }  // public static class AutonomousSelectedOperation
+    
+  public static class AutonomousScore2Options {
+    public static final String none = "None";
+    public static final String amp = "Score in amp";
+    public static final String leftOfSpeaker = "Score left of speaker";
+    public static final String inFrontOfSpeaker = "Score in front of speaker";
+    public static final String rightOfSpeakerAllianceNote =
+        "Score right of speaker (alliance note)";
+    public static final String rightOfSpeakerCenterNote = "Score right of speaker (center note)";
+  }  // public static class AutonomousScore2Options
+
+  public static class AutonomousScore3Options {
+    public static final String none = "None";
+    public static final String amp = "Score in amp";
+    public static final String leftOfSpeaker = "Score left of speaker";
+    public static final String inFrontOfSpeakerAmpNote = "Score in front of speaker (amp note)";
+    public static final String inFrontOfSpeakerStageNote =
+        "Score in front of speaker (stage note)";
+    public static final String inFrontOfSpeakerCenterNote =
+        "Score in front of speaker (center note)";
+    public static final String rightOfSpeaker = "Score right of speaker";
+  }  // public static class AutonomousScore3Options
 
 }

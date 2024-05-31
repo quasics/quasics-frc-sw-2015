@@ -77,7 +77,7 @@ public class RobotContainer {
     m_autonomousOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
     m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
     m_autonomousOptions.addOption(Constants.AutonomousSelectedOperation.score1, Constants.AutonomousSelectedOperation.score1);
-
+    SmartDashboard.putData("Overall operation", m_autonomousOptions);
   }
 
   private void addButtonsToSmartDashboard() {

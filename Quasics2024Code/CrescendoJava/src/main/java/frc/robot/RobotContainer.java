@@ -7,7 +7,10 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.ArcadeDrive;
-
+import frc.robot.commands.MoveClimbers;
+import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunShooter;
+import frc.robot.commands.RunTransitionRoller;
 
 import java.util.function.Supplier;
 
@@ -218,7 +221,22 @@ public class RobotContainer {
     }
   }
 
+private  Command IntakeHelperCommand(boolean takingin){
+  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .5, takingin));
+}
 
+
+
+private void ConfigureDriverButtons(){
+  Trigger ExtendClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton)).whileTrue(new MoveClimbers(m_climbers, true));
+  Trigger RetractClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton)).whileTrue(new MoveClimbers(m_climbers, false));
+  Trigger IntakeNote = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger)).whileTrue(IntakeHelperCommand(true));
+  Trigger DropNote = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger)).whileTrue(IntakeHelperCommand(false));
+}
+
+private void ConfigureOperatorButtons(){
+
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

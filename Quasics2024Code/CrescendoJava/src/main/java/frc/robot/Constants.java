@@ -10,13 +10,8 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Per;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
-import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
+import static edu.wpi.first.units.Units.*;
+import frc.robot.ConditionalConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -72,6 +67,7 @@ public final class Constants {
       public static final int LEFT_CLIMBER_ID = 5;
       public static final int RIGHT_CLIMBER_ID = 6;
 
+      public static final int AMP_MOTOR_ID = 0; // update when id is known
       public static final int TRANSITION_MOTOR_ID = 1; // update when we know port
       public static final int INTAKE_MOTOR_ID = 8;
 
@@ -129,5 +125,22 @@ public final class Constants {
         "Score in front of speaker (center note)";
     public static final String rightOfSpeaker = "Score right of speaker";
   }  // public static class AutonomousScore3Options
+  public static class PathWeaverConstantsSally {
+    public static final double kS = 0.19529;
+    public static final double kV = 2.2329;
+    public static final double kA = 0.36638;
+    public static final double kP = 0.29613;
+    public static final double kI = 0;
+    public static final double kD = 0;
+  }
+
+  public static class PathWeaverConstantsMargert { // CHARACTERIZATION?
+    public static final double kS = 0.19529;
+    public static final double kV = 1.0288;
+    public static final double kA = 0.18486;
+    public static final double kP = 0.60159;  // THIS IS MARGERTS PLEASE USE
+    public static final double kI = 0;
+    public static final double kD = 0;
+  }
 
 }

@@ -8,19 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+
+
 import frc.robot.Constants.AutonomousSelectedOperation;
 
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.Shooter;
-import edu.wpi.first.units.Measure;
 
 import frc.robot.subsystems.TransitionRoller;
-import java.util.ArrayList;
 
-import org.ejml.simple.AutomaticSimpleMatrixConvert;
 
-import frc.robot.commands.TimedMovementTest;
 import static edu.wpi.first.units.Units.Seconds;
 
 
@@ -38,15 +37,19 @@ public final class Autos {
   }
 
   public static Command score1(TransitionRoller transitionRoller, Shooter shooter) {
-    return ShootingSequence(transitionRoller, shooter);
+    return shootingSequence(transitionRoller, shooter);
   }
 
-  public static Command ShootingSequence(TransitionRoller transitionRoller, Shooter shooter){
-    return Commands.parallel(TransitionPoint(transitionRoller), new RunShooter(shooter, .5, true));
+  public static Command intakeHelperCommand(IntakeRoller intakeRoller, TransitionRoller transitionRoller) {
+    return Commands.parallel(new RunTransitionRoller(transitionRoller, 0.5, true), new RunIntake(intakeRoller, 0.5, true));
   }
 
-  public static Command TransitionPoint(TransitionRoller transitionRoller){
-    return Commands.sequence(new WaitCommand(2), new RunTransitionRoller(transitionRoller, .5, true));
+  public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter){
+    return Commands.parallel(transitionDelay(transitionRoller), new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), true));
+  }
+
+  public static Command transitionDelay(TransitionRoller transitionRoller){
+    return Commands.sequence(new WaitCommand(0.75), new TimedRunTransitionRoller(transitionRoller, .5, Seconds.of(1.25), true));
   }
   
   public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller, TransitionRoller transitionRoller, Shooter shooter, String overallOperation, String positionOption, String score2Option, String score3Option) {

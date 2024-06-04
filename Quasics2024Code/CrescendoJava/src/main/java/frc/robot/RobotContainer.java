@@ -75,6 +75,9 @@ public class RobotContainer {
     configureBindings();
     addButtonsToSmartDashboard();
     addOverallSelectorToSmartDashboard();
+    addAutonomousStartingPositionsToSmartDashboard();
+    addScore2OptionsToSmartDashboard();
+    addScore3OptionsToSmartDashboard();
   }
 
 

@@ -67,6 +67,7 @@ public final class Constants {
       public static final int LEFT_CLIMBER_ID = 5;
       public static final int RIGHT_CLIMBER_ID = 6;
 
+      public static final int AMP_MOTOR_ID = 0; // update when id is known
       public static final int TRANSITION_MOTOR_ID = 1; // update when we know port
       public static final int INTAKE_MOTOR_ID = 8;
 

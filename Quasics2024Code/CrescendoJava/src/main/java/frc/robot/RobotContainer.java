@@ -11,11 +11,16 @@ import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunTransitionRoller;
+import frc.robot.commands.TimedRunShooter;
+import frc.robot.commands.TimedRunIntake;
+import frc.robot.commands.TimedRunTransitionRoller;
+
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -31,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import static edu.wpi.first.units.Units.Seconds;
 
 
 /**
@@ -73,6 +79,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    ConfigureDriverButtons();
+    ConfigureOperatorButtons();
     addButtonsToSmartDashboard();
     addOverallSelectorToSmartDashboard();
     addAutonomousStartingPositionsToSmartDashboard();
@@ -132,6 +140,8 @@ public class RobotContainer {
   private void addButtonsToSmartDashboard() {
     SmartDashboard.putData("set motor 6V", new InstantCommand(() -> m_drivebase.setVoltages(6, 6)));
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry()));
+    SmartDashboard.putData("Transition Roller Forward", new RunTransitionRoller(m_transitionRoller, .1, true));
+    SmartDashboard.putData("Intake Roller Forward", new RunIntake(m_intakeRoller, .5, true));
   }
 
   /**
@@ -227,6 +237,14 @@ private  Command IntakeHelperCommand(boolean takingin){
   return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .5, takingin));
 }
 
+public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){
+  return Commands.parallel(transitionDelay(transitionRoller), new RunShooter(shooter, power, true));
+}
+
+public static Command transitionDelay(TransitionRoller transitionRoller){
+  return Commands.sequence(new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, true));
+}
+
 
 
 private void ConfigureDriverButtons(){
@@ -237,8 +255,12 @@ private void ConfigureDriverButtons(){
 }
 
 private void ConfigureOperatorButtons(){
-
+  Trigger SpeakerScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.75));
+  Trigger AmpScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.25));
 }
+
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

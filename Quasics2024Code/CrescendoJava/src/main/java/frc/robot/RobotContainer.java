@@ -19,6 +19,7 @@ import frc.robot.commands.TimedRunTransitionRoller;
 import java.util.function.Supplier;
 
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.TransitionRoller;
+import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -37,6 +39,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import static edu.wpi.first.units.Units.Seconds;
+import static frc.robot.Trajectorygenerator.*;
 
 
 /**
@@ -274,6 +277,9 @@ private void ConfigureOperatorButtons(){
     String score2Option = m_score2Options.getSelected();
     String score3Option = m_score3Options.getSelected();
 
-    return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter, overallOperation, positionOption, score2Option, score3Option);
+    DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    final boolean isBlue = alliance == DriverStation.Alliance.Blue;
+
+    return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter, overallOperation, positionOption, score2Option, score3Option, isBlue);
   }
 }

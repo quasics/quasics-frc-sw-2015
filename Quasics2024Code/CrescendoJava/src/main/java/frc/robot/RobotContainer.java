@@ -141,6 +141,7 @@ public class RobotContainer {
     SmartDashboard.putData("set motor 6V", new InstantCommand(() -> m_drivebase.setVoltages(6, 6)));
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry()));
     SmartDashboard.putData("Transition Roller Forward", new RunTransitionRoller(m_transitionRoller, .1, true));
+    SmartDashboard.putData("Intake Roller Forward", new RunIntake(m_intakeRoller, .5, true));
   }
 
   /**

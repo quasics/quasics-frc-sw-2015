@@ -23,6 +23,7 @@ public class Shooter extends SubsystemBase {
       if (!ConditionalConstants.SALLY) {
         m_leftShooterMotor = new CANSparkMax(SparkMax.LEFT_SHOOTER_ID, MotorType.kBrushless);
         m_rightShooterMotor = new CANSparkMax(SparkMax.RIGHT_SHOOTER_ID, MotorType.kBrushless);
+       // m_rightShooterMotor.follow(m_leftShooterMotor);
       }
 
     }

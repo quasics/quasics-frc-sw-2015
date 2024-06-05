@@ -8,13 +8,16 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class AmpScorer extends SubsystemBase {
   CANSparkMax m_ampScorer;
   /** Creates a new AmpScorer. */
   public AmpScorer() {
-    m_ampScorer = new CANSparkMax(SparkMax.AMP_MOTOR_ID, MotorType.kBrushless);
+    if (!ConditionalConstants.SALLY) {
+      m_ampScorer = new CANSparkMax(SparkMax.AMP_MOTOR_ID, MotorType.kBrushless);
+    }
   }
 
   @Override

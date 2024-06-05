@@ -8,13 +8,16 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class TransitionRoller extends SubsystemBase {
   CANSparkMax m_transition;
   /** Creates a new TransitionRoller. */
   public TransitionRoller() {
-    m_transition = new CANSparkMax(SparkMax.TRANSITION_MOTOR_ID, MotorType.kBrushless);
+    if (!ConditionalConstants.SALLY) {
+      m_transition = new CANSparkMax(SparkMax.TRANSITION_MOTOR_ID, MotorType.kBrushless);
+    }
   }
 
   @Override

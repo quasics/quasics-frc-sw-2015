@@ -237,7 +237,7 @@ public class RobotContainer {
   }
 
 private  Command IntakeHelperCommand(boolean takingin){
-  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .5, takingin));
+  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .6, takingin));
 }
 
 public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){

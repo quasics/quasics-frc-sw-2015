@@ -99,8 +99,18 @@ public class Drivebase extends SubsystemBase {
     m_rightLeader.setVoltage(rightVoltage);
   }
 
-  public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+  }
+
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
+
   }
 
   public void configureEncoders() {
@@ -124,6 +134,11 @@ public class Drivebase extends SubsystemBase {
   public void resetOdometry() {
     resetEncoders();
     m_odometry.resetPosition(m_pigeon.getRotation2d(), 0, 0, new Pose2d());
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    // untested
+    m_odometry.resetPosition(m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {

@@ -36,7 +36,9 @@ public class Drivebase extends SubsystemBase {
 
 
   final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
+  final CANSparkMax m_leftFollower = new CANSparkMax(SparkMax.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightFollower = new CANSparkMax(SparkMax.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
   
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
@@ -65,6 +67,8 @@ public class Drivebase extends SubsystemBase {
     resetOdometry();
     setupSmartDashboard();
     configureEncoders();
+    m_leftFollower.follow(m_leftLeader);
+    m_rightFollower.follow(m_rightLeader);
   }
 
   @Override

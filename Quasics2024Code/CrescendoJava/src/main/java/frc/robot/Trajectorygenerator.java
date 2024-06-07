@@ -60,7 +60,7 @@ public class Trajectorygenerator {
         final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
         final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
     
-        final Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(3.0);
+        final Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(0.5);
         final Measure<Velocity<Velocity<Distance>>> kMaxAcceleration = MetersPerSecondPerSecond.of(3.0);
 
         final double kRamseteB = 2;
@@ -99,29 +99,31 @@ public class Trajectorygenerator {
                 .setKinematics(kDriveKinematics)
                 // Apply the voltage constraint
                 .addConstraint(autoVoltageConstraint);
-        /*
+        
         // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory =
+        /* 
+        Trajectory trajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+                List.of(),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(0)),
+                new Pose2d(2, 0, new Rotation2d(0)),
                 // Pass config
                 config);
         */
+        
         String pathName = "output/" + fileToLoad + ".wpilib.json";
         Trajectory trajectory = new Trajectory();
 
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(fileToLoad);
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
         }
-
+        
         RamseteCommand ramseteCommand;
 
         if (ConditionalConstants.SALLY) {
@@ -177,7 +179,7 @@ public class Trajectorygenerator {
         Trajectory trajectory = new Trajectory();
 
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(fileToLoad);
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
@@ -191,7 +193,7 @@ public class Trajectorygenerator {
         Trajectory trajectory = new Trajectory();
 
         try {
-            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(fileToLoad);
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
             trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());

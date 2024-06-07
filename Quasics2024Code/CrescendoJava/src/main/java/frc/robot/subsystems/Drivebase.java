@@ -69,6 +69,7 @@ public class Drivebase extends SubsystemBase {
     configureEncoders();
     m_leftFollower.follow(m_leftLeader);
     m_rightFollower.follow(m_rightLeader);
+  
   }
 
   @Override
@@ -80,6 +81,12 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
     SmartDashboard.putNumber("Right distance", rightDistance);
+    Pose2d pose = getPose();
+    SmartDashboard.putNumber("X", pose.getX());
+    SmartDashboard.putNumber("Y", pose.getY());
+    SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
+
+
   }
 
   public double getYaw() {
@@ -90,8 +97,8 @@ public class Drivebase extends SubsystemBase {
     double angle = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
-
-    m_odometry.update(new Rotation2d(angle), leftDistance, rightDistance);
+    // todo: convert to radians better
+    m_odometry.update(new Rotation2d(angle / 180 * 3.141592), leftDistance, rightDistance);
   }
 
   public void setupSmartDashboard() {
@@ -137,12 +144,18 @@ public class Drivebase extends SubsystemBase {
 
   public void resetOdometry() {
     resetEncoders();
-    m_odometry.resetPosition(m_pigeon.getRotation2d(), 0, 0, new Pose2d());
+    m_pigeon.reset();
+    m_odometry.resetPosition(new Rotation2d(), 0, 0, new Pose2d());
   }
 
   public void resetOdometry(Pose2d pose) {
     // untested
-    m_odometry.resetPosition(m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    //System.out.println("ANGLE: " + pose.getRotation().getDegrees());
+    //m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
+    // ???
+    // bad function
+    m_odometry.resetPosition(pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {

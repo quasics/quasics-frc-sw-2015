@@ -18,6 +18,8 @@ import frc.robot.commands.TimedRunTransitionRoller;
 
 import java.util.function.Supplier;
 
+import javax.management.InstanceNotFoundException;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -145,9 +147,9 @@ public class RobotContainer {
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry()));
     SmartDashboard.putData("Transition Roller Forward", new RunTransitionRoller(m_transitionRoller, .1, true));
     SmartDashboard.putData("Intake Roller Forward", new RunIntake(m_intakeRoller, .5, true));
-    SmartDashboard.putData("Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
-    SmartDashboard.putData("Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));
-  }
+    SmartDashboard.putData("Enable Breaking Mode", new InstantCommand(() -> m_drivebase.enableBreakingMode(true)));
+    SmartDashboard.putData("Enable Coasting Mode", new InstantCommand(() -> m_drivebase.enableBreakingMode(false)));    SmartDashboard.putData("Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
+    SmartDashboard.putData("Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -239,7 +241,7 @@ public class RobotContainer {
   }
 
 private  Command IntakeHelperCommand(boolean takingin){
-  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .75, takingin));
+  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .6, takingin));
 }
 
 public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){

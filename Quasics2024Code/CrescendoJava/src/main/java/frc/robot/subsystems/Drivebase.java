@@ -22,6 +22,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -69,6 +70,7 @@ public class Drivebase extends SubsystemBase {
     configureEncoders();
     m_leftFollower.follow(m_leftLeader);
     m_rightFollower.follow(m_rightLeader);
+  
   }
 
   @Override
@@ -77,9 +79,22 @@ public class Drivebase extends SubsystemBase {
     double yaw = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
+    CANSparkMax.IdleMode mode = m_leftLeader.getIdleMode();
+    String drive;
+    if(mode == CANSparkMax.IdleMode.kBrake){
+      drive = "Breaking Mode";
+    } else{
+      drive = "Coasting Mode";
+    }
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
-    SmartDashboard.putNumber("Right distance", rightDistance);
+    SmartDashboard.putString("Driving Mode", drive);
+    Pose2d pose = getPose();
+    SmartDashboard.putNumber("X", pose.getX());
+    SmartDashboard.putNumber("Y", pose.getY());
+    SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
+
+
   }
 
   public double getYaw() {
@@ -90,8 +105,8 @@ public class Drivebase extends SubsystemBase {
     double angle = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
-
-    m_odometry.update(new Rotation2d(angle), leftDistance, rightDistance);
+    // todo: convert to radians better
+    m_odometry.update(new Rotation2d(angle / 180 * 3.141592), leftDistance, rightDistance);
   }
 
   public void setupSmartDashboard() {
@@ -137,12 +152,18 @@ public class Drivebase extends SubsystemBase {
 
   public void resetOdometry() {
     resetEncoders();
-    m_odometry.resetPosition(m_pigeon.getRotation2d(), 0, 0, new Pose2d());
+    m_pigeon.reset();
+    m_odometry.resetPosition(new Rotation2d(), 0, 0, new Pose2d());
   }
 
   public void resetOdometry(Pose2d pose) {
     // untested
-    m_odometry.resetPosition(m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    //System.out.println("ANGLE: " + pose.getRotation().getDegrees());
+    //m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
+    // ???
+    // bad function
+    m_odometry.resetPosition(pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
@@ -163,6 +184,19 @@ public class Drivebase extends SubsystemBase {
   public void arcadeDrive(Measure<Velocity<Distance>> fSpeed, Measure<Velocity<Angle>> rSpeed) {
     setSpeeds(
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
+  }
+
+  public void enableBreakingMode(boolean breaking){
+    CANSparkMax.IdleMode mode;
+    if(breaking){
+      mode = CANSparkMax.IdleMode.kBrake;
+    } else {
+      mode = CANSparkMax.IdleMode.kCoast;
+    }
+    m_leftLeader.setIdleMode(mode);
+    m_leftFollower.setIdleMode(mode);
+    m_rightLeader.setIdleMode(mode);
+    m_rightFollower.setIdleMode(mode);
   }
 
 }

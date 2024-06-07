@@ -22,6 +22,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -77,9 +78,16 @@ public class Drivebase extends SubsystemBase {
     double yaw = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
+    CANSparkMax.IdleMode mode = m_leftLeader.getIdleMode();
+    String drive;
+    if(mode == CANSparkMax.IdleMode.kBrake){
+      drive = "Breaking Mode";
+    } else{
+      drive = "Coasting Mode";
+    }
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
-    SmartDashboard.putNumber("Right distance", rightDistance);
+    SmartDashboard.putString("Driving Mode", drive);
   }
 
   public double getYaw() {
@@ -163,6 +171,19 @@ public class Drivebase extends SubsystemBase {
   public void arcadeDrive(Measure<Velocity<Distance>> fSpeed, Measure<Velocity<Angle>> rSpeed) {
     setSpeeds(
         m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
+  }
+
+  public void enableBreakingMode(boolean breaking){
+    CANSparkMax.IdleMode mode;
+    if(breaking){
+      mode = CANSparkMax.IdleMode.kBrake;
+    } else {
+      mode = CANSparkMax.IdleMode.kCoast;
+    }
+    m_leftLeader.setIdleMode(mode);
+    m_leftFollower.setIdleMode(mode);
+    m_rightLeader.setIdleMode(mode);
+    m_rightFollower.setIdleMode(mode);
   }
 
 }

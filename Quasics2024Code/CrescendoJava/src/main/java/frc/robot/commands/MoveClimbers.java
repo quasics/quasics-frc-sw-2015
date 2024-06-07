@@ -25,7 +25,7 @@ public class MoveClimbers extends Command {
     if(m_extending){
       m_climber.StartExtending();
     }else{
-      m_climber.StartExtending();
+      m_climber.StartRetracting();
     }
 
     m_climber.EnableBraking(true);
@@ -37,7 +37,7 @@ public class MoveClimbers extends Command {
     if(m_extending){
       m_climber.StartExtending();
     }else{
-      m_climber.StartExtending();
+      m_climber.StartRetracting();
     }
 
     m_climber.EnableBraking(true);

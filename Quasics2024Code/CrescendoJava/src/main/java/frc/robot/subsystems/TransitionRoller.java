@@ -26,7 +26,7 @@ public class TransitionRoller extends SubsystemBase {
   }
 
   public void setTransitionRollerSpeed(double percentSpeed){
-    m_transition.set(-percentSpeed);
+    m_transition.set(percentSpeed);
   }
 
   public void stop() {

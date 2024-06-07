@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
       m_leftShooterMotor.set(percentSpeed);
 
 
-      m_rightShooterMotor.set(percentSpeed);
+      m_rightShooterMotor.set(-percentSpeed);
     }
 
     public void stop(){

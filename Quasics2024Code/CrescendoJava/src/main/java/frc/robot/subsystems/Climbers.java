@@ -21,8 +21,8 @@ public class Climbers extends SubsystemBase {
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
   
-  static final double EXTENSION_SPEED = 1.0;
-  static final double RETRACTION_SPEED = -1.0;
+  static final double EXTENSION_SPEED = -1.0;
+  static final double RETRACTION_SPEED = 1.0;
 
 
   /** Creates a new Climbers. */

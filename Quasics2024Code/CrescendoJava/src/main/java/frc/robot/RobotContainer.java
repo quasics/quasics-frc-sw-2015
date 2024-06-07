@@ -145,6 +145,8 @@ public class RobotContainer {
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry()));
     SmartDashboard.putData("Transition Roller Forward", new RunTransitionRoller(m_transitionRoller, .1, true));
     SmartDashboard.putData("Intake Roller Forward", new RunIntake(m_intakeRoller, .5, true));
+    SmartDashboard.putData("Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
+    SmartDashboard.putData("Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));
   }
 
   /**
@@ -237,7 +239,7 @@ public class RobotContainer {
   }
 
 private  Command IntakeHelperCommand(boolean takingin){
-  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .6, takingin));
+  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .75, takingin));
 }
 
 public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){

@@ -119,7 +119,6 @@ import com.revrobotics.ColorSensorV3.ColorSensorMeasurementRate;
 public final class Autos {
   public static Command resetOdometryToStartingPosition(Drivebase drivebase, String position, String color) {
     Pose2d startingPose;
-
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       startingPose = GetTrajectoryInitialPose(color + "1ago");
     else if (position == AutonomousStartingPositions.leftOfSpeaker)
@@ -213,9 +212,9 @@ public final class Autos {
     if (overallOperation == AutonomousSelectedOperation.doNothing){
       return new PrintCommand("Doing Nothing");
     } else if (overallOperation == AutonomousSelectedOperation.GTFO){
-      return GTFO(drivebase, positionOption, color);
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), GTFO(drivebase, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
-      return score1(transitionRoller, shooter, color);
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color));
     }
     //return Commands.sequence(commands);
     return new PrintCommand("???");

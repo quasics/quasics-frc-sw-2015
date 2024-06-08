@@ -23,7 +23,7 @@ Operator controller (Xbox)
 * Left bumper - 
 * Left trigger - Just shooter (amp speed)
 * Right trigger - Just shooter (speaker speed)
-* X button - Shooting sequence for amp (while held)
+* X button - Shooting sequence for speaker faster (while held)
 * Y button - 
 * A button - 
 * B button - Shooting sequence for speaker (while held)

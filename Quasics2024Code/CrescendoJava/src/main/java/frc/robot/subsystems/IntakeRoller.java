@@ -27,7 +27,7 @@ public class IntakeRoller extends SubsystemBase {
   }
 
   public void setRollerSpeed(double percentSpeed){
-    m_intake.set(-percentSpeed);
+    m_intake.set(percentSpeed);
   }
 
   public void stop(){

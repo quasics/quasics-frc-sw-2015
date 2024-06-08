@@ -173,14 +173,16 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private void configureBindings() {
+    double scalingFactor = getDriveSpeedScalingFactor();
+
     m_tankDriveLeftStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        double joystickPercentage = -axis *getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis * scalingFactor;
         return m_leftSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = axis * scalingFactor;
         return m_leftSpeedLimiter.calculate(joystickPercentage);
       }
     };
@@ -188,11 +190,11 @@ public class RobotContainer {
     m_tankDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
-        double joystickPercentage = -axis *getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis *scalingFactor;
         return m_rightSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = axis * scalingFactor;
         return m_rightSpeedLimiter.calculate(joystickPercentage);
       }
     };
@@ -201,18 +203,18 @@ public class RobotContainer {
     m_arcadeDriveLeftStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        double joystickPercentage = -axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = -axis * scalingFactor;
         return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       }
       else {
-        double joystickPercentage = axis * getDriveSpeedScalingFactor();
+        double joystickPercentage = axis * scalingFactor;
         return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       }
     };
 
     m_arcadeDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      double joystickPercentage = axis * getDriveSpeedScalingFactor();
+      double joystickPercentage = axis * scalingFactor;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 

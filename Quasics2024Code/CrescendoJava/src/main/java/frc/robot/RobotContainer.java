@@ -264,6 +264,8 @@ private void ConfigureDriverButtons(){
 private void ConfigureOperatorButtons(){
   Trigger SpeakerScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.75));
   Trigger AmpScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.25));
+  Trigger SpeakerScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value)).whileTrue(new RunShooter(m_shooter, .75, false));
+  Trigger AmpScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value)).whileTrue(new RunShooter(m_shooter, .25, false));
 }
 
 

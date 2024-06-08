@@ -19,10 +19,10 @@ Operator controller (Xbox)
 * View button - 
 * Xbox button - 
 * Menu button - 
-* Right bumper - 
-* Left bumper - 
-* Left trigger - Just shooter (amp speed)
-* Right trigger - Just shooter (speaker speed)
+* Right bumper - Just shooter (speaker speed)
+* Left bumper - Just shooter (amp speed)
+* Left trigger - 
+* Right trigger -
 * X button - Shooting sequence for amp (while held)
 * Y button - 
 * A button - 

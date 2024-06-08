@@ -146,7 +146,7 @@ public final class Autos {
   public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter){
     return Commands.parallel(
       transitionDelay(transitionRoller),
-      new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), true));
+      new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), false));
   }
 
   public static Command transitionDelay(TransitionRoller transitionRoller){

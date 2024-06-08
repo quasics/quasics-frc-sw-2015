@@ -9,22 +9,21 @@ Driver controller (Logitech)
 * Right shoulder - Turbo mode (while held)
 * Left trigger - Drop note (while held)
 * Right trigger - Intake note (while held)
-* Start - 
-* Back - 
+* Start -
+* Back -
 
 
 Operator controller (Xbox)
-* Left stick - 
-* Right stick - 
-* View button - 
-* Xbox button - 
-* Menu button - 
+* Left stick -
+* Right stick -
+* View button -
+* Xbox button -
 * Right bumper - Just shooter (speaker speed)
 * Left bumper - Just shooter (amp speed)
-* Left trigger - 
-* Right trigger -
-* X button - Shooting sequence for amp (while held)
-* Y button - 
-* A button - 
-* B button - Shooting sequence for speaker (while held)
-* D-pad - 
+* Left trigger -
+* Right trigger - 
+* X button - Shooting sequence for speaker faster (while held)
+* Y button -
+* A button -
+* B button - Shooting sequence for amp (while held)
+* D-pad -

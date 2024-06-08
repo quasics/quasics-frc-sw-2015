@@ -249,7 +249,7 @@ public static Command shootingSequence(TransitionRoller transitionRoller, Shoote
 }
 
 public static Command transitionDelay(TransitionRoller transitionRoller){
-  return Commands.sequence(new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, true));
+  return Commands.sequence(new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, false));
 }
 
 

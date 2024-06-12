@@ -146,13 +146,13 @@ public final class Autos {
   public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter){
     return Commands.parallel(
       transitionDelay(transitionRoller),
-      new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), false));
+      new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), true));
   }
 
   public static Command transitionDelay(TransitionRoller transitionRoller){
     return Commands.sequence(
       new WaitCommand(0.75),
-      new TimedRunTransitionRoller(  transitionRoller, .5, Seconds.of(1.25),true));
+      new TimedRunTransitionRoller(  transitionRoller, .5, Seconds.of(1.25),false));
   }
 
   public static Command shootingSequenceWithoutWait(TransitionRoller transitionRoller, Shooter shooter) {
@@ -215,6 +215,8 @@ public final class Autos {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), GTFO(drivebase, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color));
+    } else if (overallOperation == AutonomousSelectedOperation.score1GTFO){
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(1), GTFO(drivebase, positionOption, color));
     }
     //return Commands.sequence(commands);
     return new PrintCommand("???");

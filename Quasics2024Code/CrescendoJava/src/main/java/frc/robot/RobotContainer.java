@@ -214,7 +214,7 @@ public class RobotContainer {
 
     m_arcadeDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      double joystickPercentage = axis * scalingFactor;
+      double joystickPercentage = axis * scalingFactor * .5;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
@@ -268,6 +268,8 @@ private void ConfigureOperatorButtons(){
   Trigger AmpScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.25));
   Trigger SpeakerScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value)).whileTrue(new RunShooter(m_shooter, .75, false));
   Trigger AmpScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value)).whileTrue(new RunShooter(m_shooter, .25, false));
+  Trigger TransitionForward = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value)).whileTrue(new RunTransitionRoller(m_transitionRoller, .3, false));
+  Trigger TransitionBackward = new Trigger(() ->m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(new RunTransitionRoller(m_transitionRoller, .3, true));
 }
 
 

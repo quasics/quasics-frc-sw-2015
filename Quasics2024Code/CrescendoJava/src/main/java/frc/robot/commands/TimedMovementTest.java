@@ -37,6 +37,7 @@ public class TimedMovementTest extends Command {
     m_timer.reset();
     m_timer.start();
     m_drivebase.setSpeeds(m_speed, m_speed);
+    m_drivebase.enableBreakingMode(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,6 +50,7 @@ public class TimedMovementTest extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivebase.stop();
+    m_drivebase.enableBreakingMode(false);
   }
 
   // Returns true when the command should end.

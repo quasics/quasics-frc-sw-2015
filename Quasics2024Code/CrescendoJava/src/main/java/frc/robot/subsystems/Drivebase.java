@@ -42,7 +42,7 @@ public class Drivebase extends SubsystemBase {
   final CANSparkMax m_rightFollower = new CANSparkMax(SparkMax.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
   
   /** Maximum linear speed is 3 meters per second. */
-  public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
+  public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(1);
 
   /** Maximum rotational speed is 1/2 rotation per second. */
   public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
@@ -172,6 +172,8 @@ public class Drivebase extends SubsystemBase {
     leftSpeed = leftSpeed < 1 ? leftSpeed : 1;
     rightSpeed = rightSpeed > -1 ? rightSpeed : -1;
     rightSpeed = rightSpeed < 1 ? rightSpeed : 1;
+
+    System.out.println("Left speed: " + leftSpeed + ", Right sped: " + rightSpeed);
 
     m_leftLeader.set(leftSpeed);
     m_rightLeader.set(rightSpeed);

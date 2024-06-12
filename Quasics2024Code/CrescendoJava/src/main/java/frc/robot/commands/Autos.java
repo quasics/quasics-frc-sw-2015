@@ -177,8 +177,8 @@ public final class Autos {
 
   /** Example static factory for an autonomous command. */
   public static Command GTFO(Drivebase drivebase, String position, String color) {
-    //return new TimedMovementTest(drivebase, Seconds.of(2), 0.50);
-    String path = "";
+    return new TimedMovementTest(drivebase, Seconds.of(1), 0.30);
+    /*String path = "";
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       path = color + "1ago";
     else if (position == AutonomousStartingPositions.leftOfSpeaker)
@@ -190,7 +190,7 @@ public final class Autos {
     else if (position == AutonomousStartingPositions.farField)
       path = color + "1ago";
 
-    return GetCommandForTrajectory(path, drivebase);
+    return GetCommandForTrajectory(path, drivebase);*/
   }
 
   public static Command score1(TransitionRoller transitionRoller, Shooter shooter, String color) {
@@ -216,7 +216,7 @@ public final class Autos {
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1GTFO){
-      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(1), GTFO(drivebase, positionOption, color));
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(0.5), GTFO(drivebase, positionOption, color));
     }
     //return Commands.sequence(commands);
     return new PrintCommand("???");

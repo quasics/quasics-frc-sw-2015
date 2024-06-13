@@ -31,6 +31,8 @@
 #include "commands/RunScorerTimed.h"
 #include "commands/RunShooter.h"
 #include "commands/RunShooterTimed.h"
+#include "commands/RunTransitionRoller.h"
+#include "commands/RunTransitionRollerTimed.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
 #include "commands/TimedMovementTest.h"
@@ -281,15 +283,19 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
   // static RunShooter shootNote(m_shooter, 0.5, true);
   static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
   static frc2::ParallelRaceGroup *retractIntake = IntakeWhileRetracting();
+  static RunTransitionRoller forwardTransitionRoller(m_transitionRoller, 1.00,
+                                                     true);
+  static RunTransitionRoller backwardTransitionRoller(m_transitionRoller, 1.00,
+                                                      false);
   static RunShooter shootNote(m_shooter, 1.00, true);
   static frc2::ParallelRaceGroup *ampSequence =
       ShootInAmpThenRunActuatorAfterTime(1_s);
   static frc2::ParallelRaceGroup *shootSequence = ShootingSequence(false);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &extendIntake);
+                                     &forwardTransitionRoller);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     retractIntake);
+                                     &backwardTransitionRoller);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,

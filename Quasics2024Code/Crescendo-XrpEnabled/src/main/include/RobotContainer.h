@@ -25,6 +25,7 @@
 #include "subsystems/LinearActuators.h"
 #include "subsystems/PivotScorer.h"
 #include "subsystems/Shooter.h"
+#include "subsystems/TransitionRoller.h"
 #include "subsystems/Vision.h"
 #include "utils/DeadBandEnforcer.h"
 
@@ -130,6 +131,7 @@ class RobotContainer {
   IntakeRoller m_intakeRoller;
   LinearActuators m_linearActuators;
   PivotScorer m_pivotScorer;
+  TransitionRoller m_transitionRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 
 #ifdef ENABLE_VISION_SUBSYSTEM

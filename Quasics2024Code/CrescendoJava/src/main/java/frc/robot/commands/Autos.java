@@ -143,21 +143,21 @@ public final class Autos {
       new RunIntake(intakeRoller, 0.5, true));
   }
 
-  public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter){
+  public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller){
     return Commands.parallel(
-      transitionDelay(transitionRoller),
-      new TimedRunShooter(shooter, 0.5, Seconds.of(2.0), true));
-  }
-
-  public static Command transitionDelay(TransitionRoller transitionRoller){
-    return Commands.sequence(
-      new WaitCommand(0.75),
-      secondaryHelper(  transitionRoller, .5, Seconds.of(1.25),false));
+      transitionDelay(transitionRoller, intakeRoller),
+      new TimedRunShooter(shooter, 0.75, Seconds.of(2.0), true));
   }
 
   public static Command secondaryHelper(TransitionRoller transitionRoller, IntakeRoller intakeRoller){
     return Commands.parallel(new TimedRunTransitionRoller(transitionRoller, .5, Seconds.of(2.0), false),
     new TimedRunIntake(intakeRoller, .6, Seconds.of(2.0), false));
+  }
+
+  public static Command transitionDelay(TransitionRoller transitionRoller, IntakeRoller intakeRoller){
+    return Commands.sequence(
+      new WaitCommand(0.75),
+      secondaryHelper(  transitionRoller, intakeRoller));
   }
 
   public static Command shootingSequenceWithoutWait(TransitionRoller transitionRoller, Shooter shooter) {
@@ -198,9 +198,9 @@ public final class Autos {
     return GetCommandForTrajectory(path, drivebase);*/
   }
 
-  public static Command score1(TransitionRoller transitionRoller, Shooter shooter, String color) {
+  public static Command score1(TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
     // nothing for amp right now
-    return shootingSequence(transitionRoller, shooter);
+    return shootingSequence(transitionRoller, shooter, intakeRoller);
   }
 
   
@@ -219,9 +219,9 @@ public final class Autos {
     } else if (overallOperation == AutonomousSelectedOperation.GTFO){
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), GTFO(drivebase, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
-      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color));
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, intakeRoller, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1GTFO){
-      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(1), GTFO(drivebase, positionOption, color));
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, intakeRoller, color), new WaitCommand(0.5), GTFO(drivebase, positionOption, color));
     }
     //return Commands.sequence(commands);
     return new PrintCommand("???");

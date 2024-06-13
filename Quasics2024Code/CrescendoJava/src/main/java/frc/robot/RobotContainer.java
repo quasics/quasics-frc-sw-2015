@@ -83,7 +83,7 @@ public class RobotContainer {
 
 
   private final double DEADBAND_CONSTANT = 0.04;
-  private final boolean ENABLE_CAMERA_ON_RIO = false;
+  private final boolean ENABLE_CAMERA_ON_RIO = true;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

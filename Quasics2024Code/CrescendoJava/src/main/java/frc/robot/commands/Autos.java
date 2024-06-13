@@ -152,7 +152,12 @@ public final class Autos {
   public static Command transitionDelay(TransitionRoller transitionRoller){
     return Commands.sequence(
       new WaitCommand(0.75),
-      new TimedRunTransitionRoller(  transitionRoller, .5, Seconds.of(1.25),false));
+      secondaryHelper(  transitionRoller, .5, Seconds.of(1.25),false));
+  }
+
+  public static Command secondaryHelper(TransitionRoller transitionRoller, IntakeRoller intakeRoller){
+    return Commands.parallel(new TimedRunTransitionRoller(transitionRoller, .5, Seconds.of(2.0), false),
+    new TimedRunIntake(intakeRoller, .6, Seconds.of(2.0), false));
   }
 
   public static Command shootingSequenceWithoutWait(TransitionRoller transitionRoller, Shooter shooter) {
@@ -177,8 +182,8 @@ public final class Autos {
 
   /** Example static factory for an autonomous command. */
   public static Command GTFO(Drivebase drivebase, String position, String color) {
-    //return new TimedMovementTest(drivebase, Seconds.of(1), 0.30);
-    String path = "";
+    return new TimedMovementTest(drivebase, Seconds.of(1), 0.30);
+    /*String path = "";
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       path = color + "1ago";
     else if (position == AutonomousStartingPositions.leftOfSpeaker)
@@ -190,7 +195,7 @@ public final class Autos {
     else if (position == AutonomousStartingPositions.farField)
       path = color + "1ago";
 
-    return GetCommandForTrajectory(path, drivebase);
+    return GetCommandForTrajectory(path, drivebase);*/
   }
 
   public static Command score1(TransitionRoller transitionRoller, Shooter shooter, String color) {

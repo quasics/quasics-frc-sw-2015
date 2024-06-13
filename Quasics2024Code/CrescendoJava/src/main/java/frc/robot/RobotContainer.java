@@ -36,6 +36,7 @@ import frc.robot.subsystems.TransitionRoller;
 import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -91,6 +92,7 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     addScore2OptionsToSmartDashboard();
     addScore3OptionsToSmartDashboard();
+    addSysIdButtonsToSmartDasbhoard();
   }
 
 
@@ -150,6 +152,13 @@ public class RobotContainer {
     SmartDashboard.putData("Enable Breaking Mode", new InstantCommand(() -> m_drivebase.enableBreakingMode(true)));
     SmartDashboard.putData("Enable Coasting Mode", new InstantCommand(() -> m_drivebase.enableBreakingMode(false)));    SmartDashboard.putData("Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
     SmartDashboard.putData("Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));  }
+
+  private void addSysIdButtonsToSmartDasbhoard() {
+    SmartDashboard.putData("Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

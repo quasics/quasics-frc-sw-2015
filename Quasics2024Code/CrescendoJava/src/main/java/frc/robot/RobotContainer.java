@@ -182,9 +182,9 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private void configureBindings() {
-    double scalingFactor = getDriveSpeedScalingFactor();
 
     m_tankDriveLeftStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
@@ -197,6 +197,7 @@ public class RobotContainer {
     };
 
     m_tankDriveRightStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis *scalingFactor;
@@ -210,6 +211,7 @@ public class RobotContainer {
 
 
     m_arcadeDriveLeftStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
@@ -222,6 +224,7 @@ public class RobotContainer {
     };
 
     m_arcadeDriveRightStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
       double joystickPercentage = axis * scalingFactor * .5;
       return m_rotationLimiter.calculate(joystickPercentage);

@@ -105,7 +105,6 @@ public class Drivebase extends SubsystemBase {
     double angle = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
-    // todo: convert to radians better
     m_odometry.update(new Rotation2d(angle / 180 * 3.141592), leftDistance, rightDistance);
   }
 
@@ -157,12 +156,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    // untested
-    //System.out.println("ANGLE: " + pose.getRotation().getDegrees());
-    //m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
-    // ???
-    // bad function
-    m_odometry.resetPosition(pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    m_odometry.resetPosition(m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
 
   }
 

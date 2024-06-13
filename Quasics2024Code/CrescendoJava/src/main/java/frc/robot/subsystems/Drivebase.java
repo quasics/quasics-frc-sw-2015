@@ -3,14 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import com.revrobotics.CANSparkBase.IdleMode;
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-
-import com.ctre.phoenix6.hardware.Pigeon2;
-
-import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,25 +20,23 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import static edu.wpi.first.units.Units.*;
-import java.lang.Math;
-
+import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMax;
+import java.lang.Math;
 
 public class Drivebase extends SubsystemBase {
   private final DifferentialDriveKinematics m_kinematics;
   private static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
 
-
   final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
-  final CANSparkMax m_leftFollower = new CANSparkMax(SparkMax.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final CANSparkMax m_leftFollower =
+      new CANSparkMax(SparkMax.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.RIGHT_LEADER_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightFollower = new CANSparkMax(SparkMax.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-  
+  final CANSparkMax m_rightFollower =
+      new CANSparkMax(SparkMax.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(3.0);
 
@@ -49,16 +45,15 @@ public class Drivebase extends SubsystemBase {
 
   public static final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
 
-
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
   static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
   static final double DRIVEBASE_GEAR_RATIO = 8.45;
-  
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-    new Rotation2d(), 0, 0, new Pose2d());
+
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   private final Pigeon2 m_pigeon = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
 
@@ -70,7 +65,6 @@ public class Drivebase extends SubsystemBase {
     configureEncoders();
     m_leftFollower.follow(m_leftLeader);
     m_rightFollower.follow(m_rightLeader);
-  
   }
 
   @Override
@@ -81,9 +75,9 @@ public class Drivebase extends SubsystemBase {
     double rightDistance = m_rightEncoder.getPosition();
     CANSparkMax.IdleMode mode = m_leftLeader.getIdleMode();
     String drive;
-    if(mode == CANSparkMax.IdleMode.kBrake){
+    if (mode == CANSparkMax.IdleMode.kBrake) {
       drive = "Breaking Mode";
-    } else{
+    } else {
       drive = "Coasting Mode";
     }
     SmartDashboard.putNumber("Yaw", yaw);
@@ -93,8 +87,6 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
-
-
   }
 
   public double getYaw() {
@@ -110,7 +102,6 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setupSmartDashboard() {
-
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -124,16 +115,16 @@ public class Drivebase extends SubsystemBase {
 
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
-
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
-
+    return new DifferentialDriveWheelSpeeds(
+        m_leftEncoder.getVelocity(), m_rightEncoder.getVelocity());
   }
 
   public void configureEncoders() {
-    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
+    final double distanceScalingFactorForGearing =
+        WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
@@ -158,12 +149,12 @@ public class Drivebase extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     // untested
-    //System.out.println("ANGLE: " + pose.getRotation().getDegrees());
-    //m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
+    // System.out.println("ANGLE: " + pose.getRotation().getDegrees());
+    // m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
     // ???
     // bad function
-    m_odometry.resetPosition(pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
-
+    m_odometry.resetPosition(
+        pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
@@ -182,13 +173,12 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void arcadeDrive(Measure<Velocity<Distance>> fSpeed, Measure<Velocity<Angle>> rSpeed) {
-    setSpeeds(
-        m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
+    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
   }
 
-  public void enableBreakingMode(boolean breaking){
+  public void enableBreakingMode(boolean breaking) {
     CANSparkMax.IdleMode mode;
-    if(breaking){
+    if (breaking) {
       mode = CANSparkMax.IdleMode.kBrake;
     } else {
       mode = CANSparkMax.IdleMode.kCoast;
@@ -198,5 +188,4 @@ public class Drivebase extends SubsystemBase {
     m_rightLeader.setIdleMode(mode);
     m_rightFollower.setIdleMode(mode);
   }
-
 }

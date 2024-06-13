@@ -4,14 +4,13 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivebase;
+import java.util.function.Supplier;
 
 public class ArcadeDrive extends Command {
   private final Drivebase m_drivebase;
@@ -19,14 +18,14 @@ public class ArcadeDrive extends Command {
   private final Supplier<Double> m_rotationSupplier;
 
   /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+  public ArcadeDrive(
+      Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
     m_speedSupplier = leftSupplier;
     m_rotationSupplier = rightSupplier;
     m_drivebase = drivebase;
 
     addRequirements(drivebase);
   }
-
 
   // Called when the command is initially scheduled.
   @Override

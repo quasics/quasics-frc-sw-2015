@@ -14,7 +14,11 @@ import frc.robot.commands.RunTransitionRoller;
 import frc.robot.commands.TimedRunShooter;
 import frc.robot.commands.TimedRunIntake;
 import frc.robot.commands.TimedRunTransitionRoller;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
 
 import java.util.function.Supplier;
 
@@ -79,6 +83,7 @@ public class RobotContainer {
 
 
   private final double DEADBAND_CONSTANT = 0.04;
+  private final boolean ENABLE_CAMERA_ON_RIO = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -91,9 +96,16 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     addScore2OptionsToSmartDashboard();
     addScore3OptionsToSmartDashboard();
+    maybeAddCamera();
   }
 
-
+  private void maybeAddCamera(){
+    if (ENABLE_CAMERA_ON_RIO) {
+      UsbCamera camera = CameraServer.startAutomaticCapture();
+      camera.setResolution(720, 560);
+      CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+    }
+  }
 
   private void addOverallSelectorToSmartDashboard() {
     m_overallOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
@@ -266,8 +278,8 @@ private void ConfigureDriverButtons(){
 private void ConfigureOperatorButtons(){
   Trigger SpeakerScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.75));
   Trigger AmpScoringSequence = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value)).whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.25));
-  Trigger SpeakerScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value)).whileTrue(new RunShooter(m_shooter, .75, false));
-  Trigger AmpScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value)).whileTrue(new RunShooter(m_shooter, .25, false));
+  Trigger SpeakerScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value)).whileTrue(new RunShooter(m_shooter, .75, true));
+  Trigger AmpScoring = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value)).whileTrue(new RunShooter(m_shooter, .25, true));
   Trigger TransitionForward = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value)).whileTrue(new RunTransitionRoller(m_transitionRoller, .3, false));
   Trigger TransitionBackward = new Trigger(() ->m_operatorController.getRawButton(XboxController.Button.kA.value)).whileTrue(new RunTransitionRoller(m_transitionRoller, .3, true));
 }

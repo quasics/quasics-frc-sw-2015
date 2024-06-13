@@ -14,7 +14,11 @@ import frc.robot.commands.RunTransitionRoller;
 import frc.robot.commands.TimedRunShooter;
 import frc.robot.commands.TimedRunIntake;
 import frc.robot.commands.TimedRunTransitionRoller;
-
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
 
 import java.util.function.Supplier;
 
@@ -36,7 +40,6 @@ import frc.robot.subsystems.TransitionRoller;
 import pabeles.concurrency.ConcurrencyOps.Reset;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -80,6 +83,7 @@ public class RobotContainer {
 
 
   private final double DEADBAND_CONSTANT = 0.04;
+  private final boolean ENABLE_CAMERA_ON_RIO = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -92,10 +96,16 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     addScore2OptionsToSmartDashboard();
     addScore3OptionsToSmartDashboard();
-    addSysIdButtonsToSmartDasbhoard();
+    maybeAddCamera();
   }
 
-
+  private void maybeAddCamera(){
+    if (ENABLE_CAMERA_ON_RIO) {
+      UsbCamera camera = CameraServer.startAutomaticCapture();
+      camera.setResolution(720, 560);
+      CvSource outputStream = CameraServer.putVideo("Rectangle", 640, 480);
+    }
+  }
 
   private void addOverallSelectorToSmartDashboard() {
     m_overallOptions.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing, Constants.AutonomousSelectedOperation.doNothing);
@@ -153,13 +163,6 @@ public class RobotContainer {
     SmartDashboard.putData("Enable Coasting Mode", new InstantCommand(() -> m_drivebase.enableBreakingMode(false)));    SmartDashboard.putData("Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
     SmartDashboard.putData("Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));  }
 
-  private void addSysIdButtonsToSmartDasbhoard() {
-    SmartDashboard.putData("Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -182,9 +185,9 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private void configureBindings() {
+    double scalingFactor = getDriveSpeedScalingFactor();
 
     m_tankDriveLeftStick = () -> {
-      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
@@ -197,7 +200,6 @@ public class RobotContainer {
     };
 
     m_tankDriveRightStick = () -> {
-      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis *scalingFactor;
@@ -211,7 +213,6 @@ public class RobotContainer {
 
 
     m_arcadeDriveLeftStick = () -> {
-      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
@@ -224,7 +225,6 @@ public class RobotContainer {
     };
 
     m_arcadeDriveRightStick = () -> {
-      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
       double joystickPercentage = axis * scalingFactor * .5;
       return m_rotationLimiter.calculate(joystickPercentage);
@@ -255,21 +255,17 @@ public class RobotContainer {
   }
 
 private  Command IntakeHelperCommand(boolean takingin){
-  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .35, takingin), new RunIntake(m_intakeRoller, .6, takingin));
+  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin), new RunIntake(m_intakeRoller, .6, takingin));
 }
 
-public  Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){
+public static Command shootingSequence(TransitionRoller transitionRoller, Shooter shooter, double power){
   return Commands.parallel(transitionDelay(transitionRoller), new RunShooter(shooter, power, true));
 }
 
-
-public Command transitionDelay(TransitionRoller transitionRoller){
-  return Commands.sequence(new WaitCommand(0.75), secondaryHelper());
+public static Command transitionDelay(TransitionRoller transitionRoller){
+  return Commands.sequence(new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, false));
 }
 
-public Command secondaryHelper(){
-  return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, false), new RunIntake(m_intakeRoller, .6, false));
-}
 
 
 private void ConfigureDriverButtons(){

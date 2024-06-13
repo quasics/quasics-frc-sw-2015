@@ -221,7 +221,7 @@ public final class Autos {
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1GTFO){
-      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(0.5), GTFO(drivebase, positionOption, color));
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), score1(transitionRoller, shooter, color), new WaitCommand(1), GTFO(drivebase, positionOption, color));
     }
     //return Commands.sequence(commands);
     return new PrintCommand("???");

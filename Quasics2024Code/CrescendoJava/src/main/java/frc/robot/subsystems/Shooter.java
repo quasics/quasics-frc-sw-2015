@@ -6,42 +6,38 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CanBusIds.SparkMax;
 import frc.robot.ConditionalConstants;
+import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class Shooter extends SubsystemBase {
-  //left shooter wheel is leader
-  //right shooter wheel is follower
-  //this is in case we fix it and want to go back to leader/follower instead of left right
+  // left shooter wheel is leader
+  // right shooter wheel is follower
+  // this is in case we fix it and want to go back to leader/follower instead of left right
 
-    CANSparkMax m_leftShooterMotor;
-    CANSparkMax m_rightShooterMotor;
-    /** Creates a new Shooter. */
-    public Shooter() {
-      if (!ConditionalConstants.SALLY) {
-        m_leftShooterMotor = new CANSparkMax(SparkMax.LEFT_SHOOTER_ID, MotorType.kBrushless);
-        m_rightShooterMotor = new CANSparkMax(SparkMax.RIGHT_SHOOTER_ID, MotorType.kBrushless);
-       // m_rightShooterMotor.follow(m_leftShooterMotor);
-      }
-
+  CANSparkMax m_leftShooterMotor;
+  CANSparkMax m_rightShooterMotor;
+  /** Creates a new Shooter. */
+  public Shooter() {
+    if (!ConditionalConstants.SALLY) {
+      m_leftShooterMotor = new CANSparkMax(SparkMax.LEFT_SHOOTER_ID, MotorType.kBrushless);
+      m_rightShooterMotor = new CANSparkMax(SparkMax.RIGHT_SHOOTER_ID, MotorType.kBrushless);
+      // m_rightShooterMotor.follow(m_leftShooterMotor);
     }
-    @Override
-    public void periodic() {
-      // This method will be called once per scheduler run
-    }
-    
-    public void setFlywheelSpeed(double percentSpeed){
-      m_leftShooterMotor.set(percentSpeed);
+  }
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 
+  public void setFlywheelSpeed(double percentSpeed) {
+    m_leftShooterMotor.set(percentSpeed);
 
-      m_rightShooterMotor.set(-percentSpeed);
-    }
+    m_rightShooterMotor.set(-percentSpeed);
+  }
 
-    public void stop(){
-      m_leftShooterMotor.set(0);
-      m_rightShooterMotor.set(0);
-    }
-  
+  public void stop() {
+    m_leftShooterMotor.set(0);
+    m_rightShooterMotor.set(0);
+  }
 }

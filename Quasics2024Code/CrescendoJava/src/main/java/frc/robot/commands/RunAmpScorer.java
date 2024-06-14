@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.AmpScorer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AmpScorer;
 
 public class RunAmpScorer extends Command {
   private final AmpScorer m_ampScorer;
@@ -12,7 +12,7 @@ public class RunAmpScorer extends Command {
   /** Creates a new RunAmpScorer. */
   public RunAmpScorer(AmpScorer ampScorer, double ampScorerSpeed, boolean extending) {
     m_ampScorer = ampScorer;
-    if(extending) {
+    if (extending) {
       m_ampScorerSpeed = -Math.abs(ampScorerSpeed);
     } else {
       m_ampScorerSpeed = Math.abs(ampScorerSpeed);
@@ -38,5 +38,4 @@ public class RunAmpScorer extends Command {
   public void end(boolean interrupted) {
     m_ampScorer.stop();
   }
-
 }

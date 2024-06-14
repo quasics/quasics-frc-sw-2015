@@ -3,15 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Per;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import static edu.wpi.first.units.Units.*;
-import frc.robot.ConditionalConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -65,7 +56,6 @@ public final class Constants {
       public static final int RIGHT_LEADER_ID = 4;
       public static final int RIGHT_FOLLOWER_ID = 3;
 
-
       public static final int LEFT_CLIMBER_ID = 5;
       public static final int RIGHT_CLIMBER_ID = 6;
 
@@ -84,16 +74,15 @@ public final class Constants {
     public static final double TURBO_MODE_SPEED_SCALING = 0.9;
     public static final double TURTLE_MODE_SPEED_SCALING = 0.3;
     public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
-
   }
   public static class AutonomousStartingPositions {
-    public static final String inFrontOfAmp = "In front of amp";          // 1A
-    public static final String leftOfSpeaker = "Left of speaker";         // 1B
-    public static final String inFrontOfSpeaker = "In front of speaker";  // 2
-    public static final String rightOfSpeaker = "Right of speaker";       // 3A
-    public static final String farField = "Far field";                    // 3B
-  }  // public static class AutonomousStartingPositions
-  
+    public static final String inFrontOfAmp = "In front of amp"; // 1A
+    public static final String leftOfSpeaker = "Left of speaker"; // 1B
+    public static final String inFrontOfSpeaker = "In front of speaker"; // 2
+    public static final String rightOfSpeaker = "Right of speaker"; // 3A
+    public static final String farField = "Far field"; // 3B
+  } // public static class AutonomousStartingPositions
+
   public static class AutonomousSelectedOperation {
     public static final String doNothing = "Do nothing";
     public static final String GTFO = "GTFO";
@@ -104,8 +93,8 @@ public final class Constants {
     public static final String score3 = "Score 3 piece";
     public static final String score3GTFO = "Score 3 piece, GTFO";
     public static final String score4 = "Score 4 piece";
-  }  // public static class AutonomousSelectedOperation
-    
+  } // public static class AutonomousSelectedOperation
+
   public static class AutonomousScore2Options {
     public static final String none = "None";
     public static final String amp = "Score in amp";
@@ -114,19 +103,18 @@ public final class Constants {
     public static final String rightOfSpeakerAllianceNote =
         "Score right of speaker (alliance note)";
     public static final String rightOfSpeakerCenterNote = "Score right of speaker (center note)";
-  }  // public static class AutonomousScore2Options
+  } // public static class AutonomousScore2Options
 
   public static class AutonomousScore3Options {
     public static final String none = "None";
     public static final String amp = "Score in amp";
     public static final String leftOfSpeaker = "Score left of speaker";
     public static final String inFrontOfSpeakerAmpNote = "Score in front of speaker (amp note)";
-    public static final String inFrontOfSpeakerStageNote =
-        "Score in front of speaker (stage note)";
+    public static final String inFrontOfSpeakerStageNote = "Score in front of speaker (stage note)";
     public static final String inFrontOfSpeakerCenterNote =
         "Score in front of speaker (center note)";
     public static final String rightOfSpeaker = "Score right of speaker";
-  }  // public static class AutonomousScore3Options
+  } // public static class AutonomousScore3Options
   public static class PathWeaverConstantsSally {
     public static final double kS = 0.19529;
     public static final double kV = 2.2329;
@@ -140,7 +128,7 @@ public final class Constants {
     public static final double kS = 0.19529;
     public static final double kV = 1.0288;
     public static final double kA = 0.18486;
-    public static final double kP = 0.60159;  // THIS IS MARGERTS PLEASE USE
+    public static final double kP = 0.60159; // THIS IS MARGERTS PLEASE USE
     public static final double kI = 0;
     public static final double kD = 0;
   }

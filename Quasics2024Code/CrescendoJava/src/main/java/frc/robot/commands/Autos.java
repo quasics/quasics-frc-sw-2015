@@ -182,7 +182,7 @@ public final class Autos {
 
   /** Example static factory for an autonomous command. */
   public static Command GTFO(Drivebase drivebase, String position, String color) {
-    return new TimedMovementTest(drivebase, Seconds.of(1), 0.30);
+    return new TimedMovementTest(drivebase, Seconds.of(1), -0.30);
     /*String path = "";
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       path = color + "1ago";

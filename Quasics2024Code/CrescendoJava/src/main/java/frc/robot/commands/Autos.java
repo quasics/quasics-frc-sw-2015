@@ -86,6 +86,11 @@ public final class Autos {
         GetCommandForTrajectory(pathName, drivebase), new RunShooter(shooter, 0.5, true));
   }
 
+  public static Command intakeWhileDrivingCommand(Drivebase drivebase, Shooter shooter) {
+    // untested
+    return Commands.race(new TimedMovementTest(drivebase, Seconds.of(1), -0.30));
+  }
+
   /** Example static factory for an autonomous command. */
   public static Command GTFO(Drivebase drivebase, String position, String color) {
     return new TimedMovementTest(drivebase, Seconds.of(1), -0.30);
@@ -109,6 +114,8 @@ public final class Autos {
     // nothing for amp right now
     return shootingSequence(transitionRoller, shooter, intakeRoller);
   }
+
+
 
   public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller,
       TransitionRoller transitionRoller, Shooter shooter, String overallOperation,

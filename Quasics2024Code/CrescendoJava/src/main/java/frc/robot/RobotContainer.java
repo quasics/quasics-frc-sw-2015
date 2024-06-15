@@ -231,23 +231,24 @@ public class RobotContainer {
     m_arcadeDriveLeftStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
-        double joystickPercentage = -axis * scalingFactor;
+        double joystickPercentage = axis * scalingFactor;
         return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       } else {
-        double joystickPercentage = axis * scalingFactor;
+        double joystickPercentage = -axis * scalingFactor;
         return m_arcadeSpeedLimiter.calculate(joystickPercentage);
       }
     };
 
     m_arcadeDriveRightStick = () -> {
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      double joystickPercentage = axis * scalingFactor * .5;
-      return m_rotationLimiter.calculate(joystickPercentage);
+        double joystickPercentage = axis * scalingFactor * .5;
+        return m_rotationLimiter.calculate(joystickPercentage);  
+
     };
 
     switchDriveTrigger =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
-            .onTrue(new InstantCommand(() -> m_switchDrive = !m_switchDrive));
+            .onTrue(new InstantCommand(() -> {m_switchDrive = !m_switchDrive;}));
 
     if (ARCADE_DRIVE) {
       m_drivebase.setDefaultCommand(
@@ -272,6 +273,7 @@ public class RobotContainer {
       return Constants.RobotSpeedScaling.NORMAL_MODE_SPEED_SCALING;
     }
   }
+
 
   private Command IntakeHelperCommand(boolean takingin) {
     return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin),

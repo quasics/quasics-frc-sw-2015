@@ -4,10 +4,17 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.LogitechGamePad;
+import static frc.robot.Constants.OperatorConstants.*;
+import static frc.robot.Constants.RobotSpeedScaling;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.LogitechGamePad;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivebase;
@@ -24,14 +31,44 @@ public class RobotContainer {
   private final Drivebase m_drivebase = new Drivebase();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final Joystick m_driverController = new Joystick(DRIVER_JOYSTICK_ID);
+  private final CommandXboxController m_operatorController =
+      new CommandXboxController(OPERATOR_JOYSTICK_ID);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    m_drivebase.setDefaultCommand(new ArcadeDrive(
+        m_drivebase,
+        // Forward speed supplier
+        ()
+            -> m_driverController.getRawAxis(LogitechGamePad.LeftYAxis) *
+                   getDriveSpeedScalingFactor(),
+        // Turn speed supplier
+        ()
+            -> m_driverController.getRawAxis(LogitechGamePad.RightXAxis) *
+                   getDriveSpeedScalingFactor()));
+  }
+
+  /**
+   * @return the scaling factor that should be applied to speed values read from
+   *     the driver's joysticks (for normal, turbo, and turtle modes)
+   */
+  private double getDriveSpeedScalingFactor() {
+    final boolean isTurbo = m_driverController.getRawButton(
+        Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurtle =
+        m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+
+    if (isTurbo) {
+      return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
+    } else if (isTurtle) {
+      return Constants.RobotSpeedScaling.TURTLE_MODE_SPEED_SCALING;
+    } else {
+      return Constants.RobotSpeedScaling.NORMAL_MODE_SPEED_SCALING;
+    }
   }
 
   /**
@@ -50,7 +87,8 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_operatorController.b().whileTrue(
+        m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**

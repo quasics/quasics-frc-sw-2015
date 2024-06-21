@@ -6,8 +6,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
@@ -33,7 +37,7 @@ public class Trajectorygenerator {
     final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
 
-    final Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(0.5);
+    final Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(3);
     final Measure<Velocity<Velocity<Distance>>> kMaxAcceleration = MetersPerSecondPerSecond.of(3.0);
 
     final double kRamseteB = 2;
@@ -62,17 +66,18 @@ public class Trajectorygenerator {
                                   .addConstraint(autoVoltageConstraint);
 
     // An example trajectory to follow. All units in meters.
-    /*
+    
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(),
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(2, 0, new Rotation2d(0)),
+            new Pose2d(3, 0, new Rotation2d(0)),
             // Pass config
-            config);*/
+            config);
+            /* 
 
     String pathName = "output/" + fileToLoad + ".wpilib.json";
     Trajectory trajectory = new Trajectory();
@@ -83,7 +88,7 @@ public class Trajectorygenerator {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
     }
-
+    */
     RamseteCommand ramseteCommand;
 
     if (ConditionalConstants.SALLY) {

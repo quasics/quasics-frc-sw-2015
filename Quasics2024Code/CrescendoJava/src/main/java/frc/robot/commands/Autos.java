@@ -38,8 +38,8 @@ public final class Autos {
       // ???
       startingPose = new Pose2d();
     }
-
-    return new SetRobotOdometry(drivebase, startingPose);
+    return new PrintCommand("Doing nothing");
+    //return new SetRobotOdometry(drivebase, startingPose);
   }
 
   public static Command intakeHelperCommand(
@@ -93,8 +93,7 @@ public final class Autos {
 
   /** Example static factory for an autonomous command. */
   public static Command GTFO(Drivebase drivebase, String position, String color) {
-    return new TimedMovementTest(drivebase, Seconds.of(1), -0.30);
-    /*String path = "";
+    String path = "";
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       path = color + "1ago";
     else if (position == AutonomousStartingPositions.leftOfSpeaker)
@@ -106,7 +105,7 @@ public final class Autos {
     else if (position == AutonomousStartingPositions.farField)
       path = color + "1ago";
 
-    return GetCommandForTrajectory(path, drivebase);*/
+    return GetCommandForTrajectory(path, drivebase);
   }
 
   public static Command score1(

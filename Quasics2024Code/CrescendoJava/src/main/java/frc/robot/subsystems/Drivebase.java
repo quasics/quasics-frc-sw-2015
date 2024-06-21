@@ -17,6 +17,8 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -102,6 +104,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setupSmartDashboard() {
+    SmartDashboard.putData("Reset odometry to (0, 0, 0deg)", new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(0))))));
+
+    SmartDashboard.putData("Reset odometry to (0, 0, 45deg)", new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(45))))));
+    SmartDashboard.putData("Reset odometry to (3, 0, 90deg)", new InstantCommand(() -> resetOdometry(new Pose2d(3, 0, new Rotation2d(Degrees.of(90))))));
+
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -148,13 +155,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    // untested
-    // System.out.println("ANGLE: " + pose.getRotation().getDegrees());
-    // m_pigeon.setYaw(pose.getRotation().getDegrees() + 360);
-    // ???
-    // bad function
     m_odometry.resetPosition(
-        pose.getRotation(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+        m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {

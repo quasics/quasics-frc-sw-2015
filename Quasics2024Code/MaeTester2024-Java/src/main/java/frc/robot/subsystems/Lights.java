@@ -40,7 +40,7 @@ public class Lights extends SubsystemBase {
    * Sets the strip to a single, solid color, specified as an RGB value.
    * (Each component must be in the range [0..255].)
    */
-  void setStripColor(int red, int green, int blue) {
+  public void setStripColor(int red, int green, int blue) {
     for (int i = 0; i < STRIP_LENGTH; i++) {
       m_buffer.setRGB(i, red, green, blue);
     }
@@ -51,7 +51,7 @@ public class Lights extends SubsystemBase {
    * Sets the colors for each pixel on the strip, using the specified helper
    * function to get the color at each position.
    */
-  void setStripColor(Function<Integer, Color8Bit> colorFcn) {
+  public void setStripColor(Function<Integer, Color8Bit> colorFcn) {
     for (int i = 0; i < STRIP_LENGTH; i++) {
       m_buffer.setLED(i, colorFcn.apply(i));
     }
@@ -59,8 +59,8 @@ public class Lights extends SubsystemBase {
   }
 
   /** Turns all of the pixels on the strip off. */
-  void turnStripOff() { setStripColor((Integer i) -> BLACK); }
+  public void turnStripOff() { setStripColor((Integer i) -> BLACK); }
 
   /** Returns the configured length of the LED strip. */
-  int getStripLength() { return m_buffer.getLength(); }
+  public int getStripLength() { return m_buffer.getLength(); }
 }

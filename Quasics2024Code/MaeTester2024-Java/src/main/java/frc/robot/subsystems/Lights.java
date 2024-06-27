@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -41,11 +42,14 @@ public class Lights extends SubsystemBase {
    * (Each component must be in the range [0..255].)
    */
   public void setStripColor(int red, int green, int blue) {
-    for (int i = 0; i < STRIP_LENGTH; i++) {
-      m_buffer.setRGB(i, red, green, blue);
-    }
-    m_led.setData(m_buffer);
+    setStripColor(new Color8Bit(red, green, blue));
   }
+
+  /**
+   * Sets the strip to a single, solid color, specified as an RGB value.
+   * (Each component must be in the range [0..255].)
+   */
+  public void setStripColor(Color8Bit c) { setStripColor((Integer i) -> c); }
 
   /**
    * Sets the colors for each pixel on the strip, using the specified helper

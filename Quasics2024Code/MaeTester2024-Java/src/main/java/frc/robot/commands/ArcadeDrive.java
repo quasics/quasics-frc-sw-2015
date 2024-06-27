@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivebase;
 import java.util.function.Supplier;
 
+/**
+ * Command providing support for driving the robot in "arcade drive" mode (split
+ * or otherwise).
+ */
 public class ArcadeDrive extends Command {
   private final Drivebase m_drivebase;
   private final Supplier<Double> m_powerFunction;
@@ -22,6 +26,7 @@ public class ArcadeDrive extends Command {
     addRequirements(drivebase);
   }
 
+  /** Updates the current drive settings. */
   private void updateSpeeds() {
     m_drivebase.arcadeDrive(m_powerFunction.get(), m_turnFunction.get());
   }

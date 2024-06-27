@@ -20,6 +20,14 @@ public final class Constants {
       public static final int RIGHT_FRONT = 3;
       public static final int RIGHT_REAR = 4;
     }
+    public static class VictorSPXIds {
+      public static final int ShootingMotor = 3;
+      public static final int IntakeMotor = 1;
+      public static final int ConveyorMotor = 2;
+    }
+    public static class TalonFXIds {
+      public static final int ShootingMotor = 1;
+    }
   }
 
   public static class RobotSpeedScaling {

@@ -24,6 +24,8 @@ void BreathingLights::Initialize() {
 }
 
 // Called repeatedly when this Command is scheduled to run
+// CODE_REVIEW: This is ignoring red and blue; despite having data members for
+// these, we only ever "breathe green".
 void BreathingLights::Execute() {
   if (green >= 255) {
     isIncrementing = false;

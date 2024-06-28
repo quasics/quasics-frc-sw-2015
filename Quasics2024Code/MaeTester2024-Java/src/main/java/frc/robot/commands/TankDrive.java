@@ -9,26 +9,26 @@ import frc.robot.subsystems.Drivebase;
 import java.util.function.Supplier;
 
 /**
- * Command providing support for driving the robot in "arcade drive" mode (split
- * or otherwise).
+ * Command providing support for driving the robot in "tank drive" mode.
  */
-public class ArcadeDrive extends Command {
+public class TankDrive extends Command {
   private final Drivebase m_drivebase;
-  private final Supplier<Double> m_powerFunction;
-  private final Supplier<Double> m_turnFunction;
+  private final Supplier<Double> m_leftPowerFunction;
+  private final Supplier<Double> m_rightPowerFunction;
 
-  /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(Drivebase drivebase, Supplier<Double> powerFunction,
-                     Supplier<Double> turnFunction) {
+  /** Creates a new TankDrive. */
+  public TankDrive(Drivebase drivebase, Supplier<Double> leftPowerFunction,
+                   Supplier<Double> rightPowerFunction) {
     m_drivebase = drivebase;
-    m_powerFunction = powerFunction;
-    m_turnFunction = turnFunction;
+    m_leftPowerFunction = leftPowerFunction;
+    m_rightPowerFunction = rightPowerFunction;
     addRequirements(drivebase);
   }
 
   /** Updates the current drive settings. */
   private void updateSpeeds() {
-    m_drivebase.arcadeDrive(m_powerFunction.get(), m_turnFunction.get());
+    m_drivebase.setMotorSpeed(m_leftPowerFunction.get(),
+                              m_rightPowerFunction.get());
   }
 
   // Called when the command is initially scheduled.
@@ -47,11 +47,5 @@ public class ArcadeDrive extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivebase.stop();
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }

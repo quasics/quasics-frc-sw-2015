@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveClimbers;
@@ -81,6 +82,7 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     addScore2OptionsToSmartDashboard();
     addScore3OptionsToSmartDashboard();
+    addSysIdButtonsToSmartDashboard();
     maybeAddCamera();
   }
 
@@ -180,6 +182,13 @@ public class RobotContainer {
         "Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
     SmartDashboard.putData(
         "Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));
+  }
+
+  private void addSysIdButtonsToSmartDashboard() {
+    SmartDashboard.putData("Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**

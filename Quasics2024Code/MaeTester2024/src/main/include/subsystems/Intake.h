@@ -34,7 +34,7 @@ class Intake : public frc2::SubsystemBase {
 
   // Controls what the commmands that intake (or exhaust) the balls.
   void IntakeBallOn();
-  void IntakeBallReverse();
+  void IntakeBallReverse();   // CODE_REVIEW: Defined, but not implemented?
   void IntakeBallOff();
 
   void ConveyBallOn();

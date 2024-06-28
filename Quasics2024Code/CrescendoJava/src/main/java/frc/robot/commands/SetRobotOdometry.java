@@ -14,6 +14,7 @@ public class SetRobotOdometry extends Command {
   public SetRobotOdometry(Drivebase drivebase, Pose2d pose) {
     m_drivebase = drivebase;
     m_pose = pose;
+    System.out.println(pose.toString());
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivebase);
   }

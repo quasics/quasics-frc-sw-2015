@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.print.attribute.standard.PrinterLocation;
+
 public class Trajectorygenerator {
   public static Command GetCommandForTrajectory(String fileToLoad, Drivebase drivebase) {
     final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
@@ -65,22 +67,28 @@ public class Trajectorygenerator {
                                   // Apply the voltage constraint
                                   .addConstraint(autoVoltageConstraint);
 
+    config.setReversed(true);
+
     // An example trajectory to follow. All units in meters.
-    
+    /* 
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            List.of(),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(-3, 0, new Rotation2d(0)),
             // Pass config
             config);
-            /* 
+    */
 
+
+    
+    
     String pathName = "output/" + fileToLoad + ".wpilib.json";
     Trajectory trajectory = new Trajectory();
+
 
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
@@ -88,7 +96,10 @@ public class Trajectorygenerator {
     } catch (IOException ex) {
       DriverStation.reportError("Unable to open trajectory: " + pathName, ex.getStackTrace());
     }
-    */
+
+    PrintTrajectoryStates(trajectory);
+
+
     RamseteCommand ramseteCommand;
 
     if (ConditionalConstants.SALLY) {
@@ -148,5 +159,13 @@ public class Trajectorygenerator {
 
     List<State> states = trajectory.getStates();
     return states.get(states.size() - 1).poseMeters; // last state
+  }
+
+  public static void PrintTrajectoryStates(Trajectory trajectory) {
+    List<State> states = trajectory.getStates();
+
+    for (State state : states) {
+      System.out.println(state.toString());
+    }
   }
 }

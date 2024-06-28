@@ -38,8 +38,8 @@ public final class Autos {
       // ???
       startingPose = new Pose2d();
     }
-    return new PrintCommand("Doing nothing");
-    //return new SetRobotOdometry(drivebase, startingPose);
+    //return new PrintCommand("Doing nothing");
+    return new SetRobotOdometry(drivebase, startingPose);
   }
 
   public static Command intakeHelperCommand(
@@ -97,13 +97,13 @@ public final class Autos {
     if (position == AutonomousStartingPositions.inFrontOfAmp)
       path = color + "1ago";
     else if (position == AutonomousStartingPositions.leftOfSpeaker)
-      path = color + "1ago";
+      path = color + "1bgo";
     else if (position == AutonomousStartingPositions.inFrontOfSpeaker)
-      path = color + "1ago";
+      path = color + "2go";
     else if (position == AutonomousStartingPositions.rightOfSpeaker)
-      path = color + "1ago";
+      path = color + "3ago";
     else if (position == AutonomousStartingPositions.farField)
-      path = color + "1ago";
+      path = color + "3bgo";
 
     return GetCommandForTrajectory(path, drivebase);
   }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.MutableMeasure.mutable;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -17,13 +18,18 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMax;
 import java.lang.Math;
@@ -189,5 +195,44 @@ public class Drivebase extends SubsystemBase {
     m_leftFollower.setIdleMode(mode);
     m_rightLeader.setIdleMode(mode);
     m_rightFollower.setIdleMode(mode);
+  }
+
+  public double getLeftVoltage() {
+    return m_leftLeader.getBusVoltage();
+  }
+
+  public double getRightVoltage() {
+    return m_rightLeader.getBusVoltage();
+  }
+
+  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+ 
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(), 
+    new SysIdRoutine.Mechanism((Measure<Voltage> volts) -> {
+      final double voltage = volts.in(Volts);
+      setVoltages(voltage, voltage);
+    }, log -> {
+      final var leftVoltage = getLeftVoltage();
+      final var rightVoltage = getRightVoltage();
+      log.motor("drive-left")
+      .voltage(m_appliedVoltage.mut_replace(leftVoltage, Volts))
+        .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
+      .linearVelocity(m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
+      log.motor("drive-right")
+      .voltage(m_appliedVoltage.mut_replace(rightVoltage, Volts))
+      .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
+      .linearVelocity(m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
+    },
+    this));
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 }

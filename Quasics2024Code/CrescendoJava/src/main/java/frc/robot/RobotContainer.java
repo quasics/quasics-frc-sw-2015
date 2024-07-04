@@ -69,7 +69,7 @@ public class RobotContainer {
   SendableChooser<String> m_score3Options = new SendableChooser<String>();
 
   private final double DEADBAND_CONSTANT = 0.04;
-  private final boolean ENABLE_CAMERA_ON_RIO = true;
+  private final boolean ENABLE_CAMERA_ON_RIO = false;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

@@ -73,7 +73,7 @@ public final class Constants {
   public static class RobotSpeedScaling {
     public static final double TURBO_MODE_SPEED_SCALING = 0.9;
     public static final double TURTLE_MODE_SPEED_SCALING = 0.3;
-    public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
+    public static final double NORMAL_MODE_SPEED_SCALING = 0.35;
   }
   public static class AutonomousStartingPositions {
     public static final String inFrontOfAmp = "In front of amp"; // 1A
@@ -125,10 +125,16 @@ public final class Constants {
   }
 
   public static class PathWeaverConstantsMargert { // CHARACTERIZATION?
-    public static final double kS = 0.19529;
-    public static final double kV = 1.0288;
-    public static final double kA = 0.18486;
-    public static final double kP = 0.60159; // THIS IS MARGERTS PLEASE USE
+    //public static final double kS = 0.19529;
+    //public static final double kV = 1.0288;
+    //public static final double kA = 0.18486;
+    //public static final double kP = 0.60159; // THIS IS MARGERTS PLEASE USE
+    //public static final double kI = 0;
+    //public static final double kD = 0;
+    public static final double kS = 0;
+    public static final double kV = 0.20182;
+    public static final double kA = 0.19383;
+    public static final double kP = 0.25627;
     public static final double kI = 0;
     public static final double kD = 0;
   }

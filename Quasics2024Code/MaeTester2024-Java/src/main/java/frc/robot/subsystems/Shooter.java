@@ -57,15 +57,17 @@ public class Shooter extends SubsystemBase {
   }
 
   /// Sets speed for the shooting motor (-1.0 to +1.0).
-  void SetSpeed(double speed) {
+  public void SetSpeed(double speed) {
     shootingMotor.set(-speed); // Yeet the ball
   }
 
   /// Stops the shooting motor.
-  void Stop() { shootingMotor.set(0); }
+  public void Stop() {
+    shootingMotor.set(0);
+  }
 
   /** @return servo extension as a percentage of range (0.0 - 1.0) */
-  double GetServoPosition() {
+  public double GetServoPosition() {
     var rawPos = positionServo.getSpeed();
     var percentPos = (rawPos - SERVO_RETRACTED_SPEED) / SERVO_POSITION_RANGE;
     return percentPos;
@@ -74,19 +76,19 @@ public class Shooter extends SubsystemBase {
   /**
    * @param pos   percent extension, expressed as [0.0 - 1.0]
    */
-  void SetServoPosition(double pos) {
+  public void SetServoPosition(double pos) {
     final double cappedPercent = Math.min(1.0, Math.max(pos, 0.0));
     positionServo.setSpeed(SERVO_RETRACTED_SPEED +
                            (cappedPercent * SERVO_POSITION_RANGE));
   }
 
   /** Increases shooting angle by POSITION_DELTA on the linear servo. */
-  void IncrementPosition() {
+  public void IncrementPosition() {
     SetServoPosition(GetServoPosition() + POSITION_DELTA);
   }
 
   /** Decreases shooting angle by POSITION_DELTA on the linear servo. */
-  void DecrementPosition() {
+  public void DecrementPosition() {
     SetServoPosition(GetServoPosition() - POSITION_DELTA);
   }
 }

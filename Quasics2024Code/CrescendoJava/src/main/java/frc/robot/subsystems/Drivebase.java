@@ -80,7 +80,13 @@ public class Drivebase extends SubsystemBase {
     updateOdometry();
     double yaw = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
+    double leftVelocity = m_leftEncoder.getVelocity();
     double rightDistance = m_rightEncoder.getPosition();
+    double rightVelocity = m_rightEncoder.getVelocity();
+    double leftVoltage = getLeftVoltage();
+    double rightVoltage = getRightVoltage();
+
+
     CANSparkMax.IdleMode mode = m_leftLeader.getIdleMode();
     String drive;
     if (mode == CANSparkMax.IdleMode.kBrake) {
@@ -90,6 +96,13 @@ public class Drivebase extends SubsystemBase {
     }
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
+    SmartDashboard.putNumber("Right distance", rightDistance);
+    SmartDashboard.putNumber("Left velocity", leftVelocity);
+    SmartDashboard.putNumber("Right velocity", rightVelocity);
+    SmartDashboard.putNumber("Left voltage", leftVoltage);
+    SmartDashboard.putNumber("Right voltage", rightVoltage);
+
+
     SmartDashboard.putString("Driving Mode", drive);
     Pose2d pose = getPose();
     SmartDashboard.putNumber("X", pose.getX());
@@ -209,11 +222,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public double getLeftVoltage() {
-    return m_leftLeader.getBusVoltage();
+    return m_leftLeader.getAppliedOutput();
   }
 
   public double getRightVoltage() {
-    return m_rightLeader.getBusVoltage();
+    return m_rightLeader.getAppliedOutput();
   }
 
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));

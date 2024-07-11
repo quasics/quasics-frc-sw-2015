@@ -102,9 +102,8 @@ namespace MotorIds {
     constexpr int RIGHT_BACK_DRIVE_MOTOR_ID = 4;   // leader
     constexpr int LEFT_CLIMBER_MOTOR_ID = 5;
     constexpr int RIGHT_CLIMBER_MOTOR_ID = 6;  // is inverted
-    constexpr int INTAKE_DEPLOYMENT_MOTOR = 7;
     constexpr int INTAKE_MOTOR = 8;
-    constexpr int TRANSITION_MOTOR = 0;  // update when # is determined
+    constexpr int TRANSITION_MOTOR = 7;  // update when # is determined
     constexpr int AMP_MOTOR_ID = 0;      // update when # is determined
     constexpr int SHOOTER_FLYWHEEL_MOTOR_LEADER_ID = 9;
     constexpr int SHOOTER_FLYWHEEL_MOTOR_FOLLOWER_ID = 10;
@@ -233,6 +232,7 @@ namespace IntakeSpeeds {
   const double intakeDeploymentSpeed = 0.75;
   const double intakeRollerSpeed = 0.75;
   const double feedingSpeed = 0.5;
+  const double transitionSpeed = 0.3;
 }  // namespace IntakeSpeeds
 
 namespace AutonomousTimes {

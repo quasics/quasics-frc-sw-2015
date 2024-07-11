@@ -21,16 +21,14 @@
 #include "commands/Autos.h"
 #include "commands/MoveClimbers.h"
 #include "commands/MoveClimbersAuto.h"
-#include "commands/MoveLinearActuators.h"
 #include "commands/PIDRotate.h"
-#include "commands/PivotIntake.h"
-#include "commands/PivotIntakeAuto.h"
 #include "commands/RotateToAprilTarget.h"
 #include "commands/RunIntake.h"
 #include "commands/RunIntakeTimed.h"
-#include "commands/RunScorerTimed.h"
 #include "commands/RunShooter.h"
 #include "commands/RunShooterTimed.h"
+#include "commands/RunTransitionRoller.h"
+#include "commands/RunTransitionRollerTimed.h"
 #include "commands/SetRobotOdometry.h"
 #include "commands/TankDrive.h"
 #include "commands/TimedMovementTest.h"
@@ -172,8 +170,8 @@ void RobotContainer::setUpTankDrive() {
 void RobotContainer::setUpArcadeDrive() {
   int leftDriveJoystickAxis, rightDriveJoystickAxis;
   if (frc::RobotBase::IsSimulation()) {
-    leftDriveJoystickAxis = 0;
-    rightDriveJoystickAxis = 1;
+    leftDriveJoystickAxis = 1;
+    rightDriveJoystickAxis = 2;
   } else {
     leftDriveJoystickAxis = OperatorConstants::LogitechGamePad::LeftYAxis;
     rightDriveJoystickAxis = OperatorConstants::LogitechGamePad::RightXAxis;
@@ -261,17 +259,17 @@ void RobotContainer::ConfigureDriverControllerButtonBindings() {
   // static MoveClimbers retractClimbers(m_climber, false);
   static MoveClimbersAuto extendClimbers(m_climber, true);
   static MoveClimbersAuto retractClimbers(m_climber, false);
-  static RunIntake intakeNote(m_intakeRoller, 0.75, true);
-  static RunIntake dropNote(m_intakeRoller, 0.75, false);
+  static frc2::ParallelRaceGroup *intakeNoteSequence = IntakeSequence(true);
+  static frc2::ParallelRaceGroup *dropNoteSequence = IntakeSequence(false);
 
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::YButton,
                                    &extendClimbers);
   RunCommandWhenDriverButtonIsHeld(OperatorConstants::LogitechGamePad::AButton,
                                    &retractClimbers);
   RunCommandWhenDriverButtonIsHeld(
-      OperatorConstants::LogitechGamePad::LeftTrigger, &dropNote);
+      OperatorConstants::LogitechGamePad::LeftTrigger, dropNoteSequence);
   RunCommandWhenDriverButtonIsHeld(
-      OperatorConstants::LogitechGamePad::RightTrigger, &intakeNote);
+      OperatorConstants::LogitechGamePad::RightTrigger, intakeNoteSequence);
 #endif
 }
 
@@ -279,27 +277,25 @@ void RobotContainer::ConfigureOperatorControllerButtonBindings() {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   // static PivotIntake retractIntake(m_intakeDeployment, 0.5, false);
   // static RunShooter shootNote(m_shooter, 0.5, true);
-  static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
-  static frc2::ParallelRaceGroup *retractIntake = IntakeWhileRetracting();
-  static RunShooter shootNote(m_shooter, 1.00, true);
-  static frc2::ParallelRaceGroup *ampSequence =
-      ShootInAmpThenRunActuatorAfterTime(1_s);
+  // static PivotIntake extendIntake(m_intakeDeployment, 0.5, true);
+  // static frc2::ParallelRaceGroup *retractIntake = IntakeWhileRetracting();
+  static RunShooter shootNote(m_shooter, 0.75, true);
+  static RunTransitionRoller transitionForward(m_transitionRoller, 0.3, false);
+  static RunTransitionRoller transitionReverse(m_transitionRoller, 0.3, true);
+  /*static frc2::ParallelRaceGroup *ampSequence =
+      ShootInAmpThenRunActuatorAfterTime(1_s);*/
   static frc2::ParallelRaceGroup *shootSequence = ShootingSequence(false);
 
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kA,
-                                     &extendIntake);
+                                     &transitionReverse);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     retractIntake);
+                                     &transitionForward);
   RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
                                      shootSequence);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
-                                     ampSequence);
-  /*
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kY,
-                                     &retractIntake);
-  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kB,
+  /*RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kX,
+                                     ampSequence);*/
+  RunCommandWhenOperatorButtonIsHeld(frc::XboxController::Button::kRightBumper,
                                      &shootNote);
-  */
 #endif
 }
 
@@ -350,7 +346,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
 
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   return AutonomousCommands::GetAutonomousCommand(
-      *m_drivebase, m_intakeDeployment, m_intakeRoller, m_shooter,
+      *m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter,
       operationName, positionName, score2DestName, score3DestName, isBlue);
 #else
   return AutonomousCommands::GetAutonomousCommand(*m_drivebase, operationName,
@@ -448,43 +444,9 @@ void RobotContainer::AddIntakeTestButtonsToDashboard() {
                                new RunIntake(m_intakeRoller, 0.8, true));
   frc::SmartDashboard::PutData("Retract Intake 50%",
                                new RunIntake(m_intakeRoller, 0.5, false));
-  frc::SmartDashboard::PutData("Deploy Intake 30%",
-                               new PivotIntake(m_intakeDeployment, 0.3, true));
-  frc::SmartDashboard::PutData("Deploy Intake 50%",
-                               new PivotIntake(m_intakeDeployment, 0.5, true));
-  frc::SmartDashboard::PutData("Deploy Intake 60%",
-                               new PivotIntake(m_intakeDeployment, 0.6, true));
-  frc::SmartDashboard::PutData("Deploy Intake 70%",
-                               new PivotIntake(m_intakeDeployment, 0.7, true));
-  frc::SmartDashboard::PutData("Retract Intake 50%",
-                               new PivotIntake(m_intakeDeployment, 0.5, false));
-  frc::SmartDashboard::PutData("Coast intake",
-                               new frc2::InstantCommand([this]() {
-                                 m_intakeDeployment.EnableBraking(false);
-                               }));
-  frc::SmartDashboard::PutData("Reset Deployment Encoder",
-                               new frc2::InstantCommand([this]() {
-                                 m_intakeDeployment.ResetEncoders();
-                               }));
 }
 
-void RobotContainer::AddActuatorTestButtonsToDashboard() {
-  frc::SmartDashboard::PutData(
-      "Extend Actuator", new MoveLinearActuators(m_linearActuators, true));
-
-  frc::SmartDashboard::PutData(
-      "Retract Actuator", new MoveLinearActuators(m_linearActuators, false));
-
-  frc::SmartDashboard::PutData("Shoot in amp then run actuator after time",
-                               new frc2::InstantCommand([this]() {
-                                 ShootInAmpThenRunActuatorAfterTime(1_s);
-                               }));
-
-  frc::SmartDashboard::PutData("Extend then retract linear actuator after time",
-                               ExtendThenRetractActuatorsAfterTime(.75_s));
-}
-
-frc2::ParallelRaceGroup *RobotContainer::IntakeWhileRetracting() {
+/*frc2::ParallelRaceGroup *RobotContainer::IntakeWhileRetracting() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
 
   commands.push_back(
@@ -492,21 +454,9 @@ frc2::ParallelRaceGroup *RobotContainer::IntakeWhileRetracting() {
   commands.push_back(std::make_unique<RunIntake>(m_intakeRoller, 0.4, true));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
-}
+}*/
 
-frc2::ParallelRaceGroup *RobotContainer::ShootInAmpThenRunActuatorAfterTime(
-    units::second_t time) {
-  std::vector<std::unique_ptr<frc2::Command>> commands;
-
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      BuildSimpleShooterSpeedTestCommand(m_shooter, m_intakeRoller, 0.14))));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(
-      ExtendThenRetractActuatorsAfterTime(time))));
-
-  return new frc2::ParallelRaceGroup(std::move(commands));
-}
-
-frc2::SequentialCommandGroup *
+/*frc2::SequentialCommandGroup *
 RobotContainer::ExtendThenRetractActuatorsAfterTime(units::second_t time) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<Wait>(time));
@@ -517,7 +467,7 @@ RobotContainer::ExtendThenRetractActuatorsAfterTime(units::second_t time) {
       std::make_unique<RunScorerTimed>(m_pivotScorer, 0.5, 0.25_s, false));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
-}
+}*/
 
 void RobotContainer::AddClimberTestButtonsToDashboard() {
   frc::SmartDashboard::PutData("Extend Climbers",
@@ -534,15 +484,6 @@ void RobotContainer::AddClimberTestButtonsToDashboard() {
   frc::SmartDashboard::PutData(
       "Set Climber Revolutions -3:",
       new frc2::InstantCommand([this]() { m_climber.setRevolutions(); }));
-}
-
-void RobotContainer::AddScorerTestButtonsToDashboard() {
-  frc::SmartDashboard::PutData(
-      "Run scorers 50 up",
-      new RunScorerTimed(m_pivotScorer, 0.50, 0.5_s, true));
-  frc::SmartDashboard::PutData(
-      "Run scorers 50 down",
-      new RunScorerTimed(m_pivotScorer, 0.50, 0.5_s, false));
 }
 
 /*
@@ -588,15 +529,6 @@ void RobotContainer::AddVisionTestButtonsToDashboard() {
 }
 
 void RobotContainer::AddDriveTestButtonsToDashboard() {
-#ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
-  frc::SmartDashboard::PutData(
-      "Extend Intake Auto", new PivotIntakeAuto(m_intakeDeployment, .5, true));
-  frc::SmartDashboard::PutData(
-      "Retract Intake Auto",
-      new PivotIntakeAuto(m_intakeDeployment, .5, false));
-
-#endif
-
   frc::SmartDashboard::PutData(
       "Reset encoders",
       new frc2::InstantCommand([this]() { m_drivebase->resetEncoders(); }));
@@ -779,18 +711,28 @@ void RobotContainer::AddScoreOptionsToSmartDashboard() {
 frc2::ParallelRaceGroup *RobotContainer::ShootingSequence(bool amp) {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<RunShooterTimed>(
-      m_shooter, (amp ? ShooterSpeeds::amp : 1.00), 2_s, true));
-  commands.push_back(std::move(std::unique_ptr<frc2::Command>(IntakeDelay())));
+      m_shooter, (amp ? ShooterSpeeds::amp : 0.75), 2_s, true));
+  commands.push_back(
+      std::move(std::unique_ptr<frc2::Command>(TransitionDelay())));
 
   return new frc2::ParallelRaceGroup(std::move(commands));
 }
 
-frc2::SequentialCommandGroup *RobotContainer::IntakeDelay() {
+frc2::SequentialCommandGroup *RobotContainer::TransitionDelay() {
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.push_back(std::make_unique<Wait>(0.75_s));
-  commands.push_back(
-      std::make_unique<RunIntakeTimed>(m_intakeRoller, .5, 1.25_s, false));
+  commands.push_back(std::make_unique<RunTransitionRollerTimed>(
+      m_transitionRoller, .5, 1.0_s, false));
 
   return new frc2::SequentialCommandGroup(std::move(commands));
+}
+
+frc2::ParallelRaceGroup *RobotContainer::IntakeSequence(bool takingin) {
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.push_back(
+      std::make_unique<RunIntake>(m_intakeRoller, 0.75, takingin));
+  commands.push_back(std::make_unique<RunTransitionRoller>(m_transitionRoller,
+                                                           0.3, !takingin));
+  return new frc2::ParallelRaceGroup(std::move(commands));
 }
 #endif

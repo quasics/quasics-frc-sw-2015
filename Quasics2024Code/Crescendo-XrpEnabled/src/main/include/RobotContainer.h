@@ -79,13 +79,7 @@ class RobotContainer {
   void AddShooterSpeedTestButtonsToDashboard();
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
-  void AddActuatorTestButtonsToDashboard();
 
-  // frc2::ParallelRaceGroup* IntakeWhileRetracting();
-  //  adjusting the version for button binding
-  //  frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
-  //  frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t
-  //  time);
 
   void AddClimberTestButtonsToDashboard();
   void AddSysIdButtonsToDashboard();
@@ -108,6 +102,7 @@ class RobotContainer {
   // Building auto mode functions
  private:
   frc2::ParallelRaceGroup* ShootingSequence(bool amp);
+
   frc2::SequentialCommandGroup* TransitionDelay();
   frc2::ParallelRaceGroup* IntakeSequence(bool takingIn);
 
@@ -122,6 +117,7 @@ class RobotContainer {
   Shooter m_shooter;
   Climber m_climber;
   IntakeRoller m_intakeRoller;
+  TransitionRoller m_transitionRoller;
   TransitionRoller m_transitionRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 

@@ -80,7 +80,6 @@ class RobotContainer {
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
 
-
   void AddClimberTestButtonsToDashboard();
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
@@ -117,7 +116,6 @@ class RobotContainer {
   Shooter m_shooter;
   Climber m_climber;
   IntakeRoller m_intakeRoller;
-  TransitionRoller m_transitionRoller;
   TransitionRoller m_transitionRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 

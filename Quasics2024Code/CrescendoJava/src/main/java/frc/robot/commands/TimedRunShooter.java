@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.Time;
+import static edu.wpi.first.units.Units.Seconds;
+
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import static edu.wpi.first.units.Units.Seconds;
 
 public class TimedRunShooter extends Command {
   private final Shooter m_shooter;
@@ -18,12 +19,13 @@ public class TimedRunShooter extends Command {
   private final Measure<Time> m_time;
 
   /** Creates a new TimedRunShooter. */
-  public TimedRunShooter(Shooter shooter, double shooterSpeed, Measure<Time> time, boolean shooting) {
+  public TimedRunShooter(
+      Shooter shooter, double shooterSpeed, Measure<Time> time, boolean shooting) {
     m_shooter = shooter;
     m_time = time;
-    if(shooting){
+    if (shooting) {
       m_shooterSpeed = Math.abs(shooterSpeed);
-    }else{
+    } else {
       m_shooterSpeed = -Math.abs(shooterSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.

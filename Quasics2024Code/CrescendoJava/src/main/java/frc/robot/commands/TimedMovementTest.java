@@ -4,16 +4,13 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivebase;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.units.Measure;
-
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.Distance;
-
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivebase;
 
 public class TimedMovementTest extends Command {
   /** Creates a new TimedMovementTest. */
@@ -21,7 +18,6 @@ public class TimedMovementTest extends Command {
   private final Drivebase m_drivebase;
   private final double m_speed;
   private final Measure<Time> m_time;
-
 
   public TimedMovementTest(Drivebase drivebase, Measure<Time> time, double speed) {
     m_drivebase = drivebase;
@@ -37,6 +33,7 @@ public class TimedMovementTest extends Command {
     m_timer.reset();
     m_timer.start();
     m_drivebase.setSpeeds(m_speed, m_speed);
+    m_drivebase.enableBreakingMode(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,6 +46,7 @@ public class TimedMovementTest extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivebase.stop();
+    m_drivebase.enableBreakingMode(false);
   }
 
   // Returns true when the command should end.

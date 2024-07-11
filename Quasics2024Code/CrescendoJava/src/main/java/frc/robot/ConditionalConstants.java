@@ -1,4 +1,4 @@
 package frc.robot;
 public class ConditionalConstants {
-    public static final boolean SALLY = false;
+  public static final boolean SALLY = true;
 }

@@ -4,12 +4,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.Time;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import static edu.wpi.first.units.Units.Seconds;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeRoller;
 
 public class TimedRunIntake extends Command {
@@ -18,10 +18,11 @@ public class TimedRunIntake extends Command {
   Timer m_timer = new Timer();
   private final Measure<Time> m_time;
   /** Creates a new TimedRunIntake. */
-  public TimedRunIntake(IntakeRoller intake, double intakeSpeed, Measure<Time> time, boolean takingIn) {
+  public TimedRunIntake(
+      IntakeRoller intake, double intakeSpeed, Measure<Time> time, boolean takingIn) {
     m_time = time;
     m_intake = intake;
-    if(takingIn){
+    if (takingIn) {
       m_intakeSpeed = -Math.abs(intakeSpeed);
     } else {
       m_intakeSpeed = Math.abs(intakeSpeed);

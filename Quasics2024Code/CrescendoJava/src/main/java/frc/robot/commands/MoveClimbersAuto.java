@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climbers;
 
 public class MoveClimbersAuto extends Command {
-
   private final Climbers m_climber;
   private final boolean m_extending;
 
@@ -25,15 +24,15 @@ public class MoveClimbersAuto extends Command {
   public void initialize() {
     double leftRevolutions = m_climber.GetLeftRevolutions();
     double rightRevolutions = m_climber.GetRightRevolutions();
-    if(m_extending){
+    if (m_extending) {
       m_climber.ResetRevolutions();
-    if (leftRevolutions > -3) {
-      // the bool is asking if its the left climber we want
-      m_climber.ExtendOneClimber(true);
-    }
-    if (rightRevolutions > -3) {
-      m_climber.ExtendOneClimber(false);
-    }
+      if (leftRevolutions > -3) {
+        // the bool is asking if its the left climber we want
+        m_climber.ExtendOneClimber(true);
+      }
+      if (rightRevolutions > -3) {
+        m_climber.ExtendOneClimber(false);
+      }
     } else {
       m_climber.SetRevolutions();
       if (leftRevolutions <= 0) {
@@ -43,23 +42,23 @@ public class MoveClimbersAuto extends Command {
       if (rightRevolutions <= 0) {
         m_climber.RetractOneClimber(false);
       }
+    }
   }
-}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double leftRevolutions = m_climber.GetLeftRevolutions();
     double rightRevolutions = m_climber.GetRightRevolutions();
-    if(m_extending){
+    if (m_extending) {
       m_climber.ResetRevolutions();
-    if (leftRevolutions > -3) {
-      // the bool is asking if its the left climber we want
-      m_climber.ExtendOneClimber(true);
-    }
-    if (rightRevolutions > -3) {
-      m_climber.ExtendOneClimber(false);
-    }
+      if (leftRevolutions > -3) {
+        // the bool is asking if its the left climber we want
+        m_climber.ExtendOneClimber(true);
+      }
+      if (rightRevolutions > -3) {
+        m_climber.ExtendOneClimber(false);
+      }
     } else {
       m_climber.SetRevolutions();
       if (leftRevolutions <= 0) {
@@ -69,7 +68,7 @@ public class MoveClimbersAuto extends Command {
       if (rightRevolutions <= 0) {
         m_climber.RetractOneClimber(false);
       }
-  }
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -82,14 +81,12 @@ public class MoveClimbersAuto extends Command {
   @Override
   public boolean isFinished() {
     if (m_extending) {
-      if (m_climber.GetLeftRevolutions() < -3 &&
-          m_climber.GetRightRevolutions() < -3) {
+      if (m_climber.GetLeftRevolutions() < -3 && m_climber.GetRightRevolutions() < -3) {
         return true;
       }
       return false;
     } else {
-      if (m_climber.GetLeftRevolutions() >= 0 &&
-          m_climber.GetRightRevolutions() >= 0) {
+      if (m_climber.GetLeftRevolutions() >= 0 && m_climber.GetRightRevolutions() >= 0) {
         return true;
       }
       return false;

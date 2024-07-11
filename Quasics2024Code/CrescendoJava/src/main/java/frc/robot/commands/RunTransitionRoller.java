@@ -3,17 +3,18 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.TransitionRoller;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.TransitionRoller;
 
 public class RunTransitionRoller extends Command {
   /** Creates a new RunTransitionRoller. */
   private final TransitionRoller m_transition;
   private final double m_transitionSpeed;
 
-  public RunTransitionRoller(TransitionRoller transition, double transitionSpeed, boolean transitionTakingIn) {
+  public RunTransitionRoller(
+      TransitionRoller transition, double transitionSpeed, boolean transitionTakingIn) {
     m_transition = transition;
-    if(transitionTakingIn){
+    if (transitionTakingIn) {
       m_transitionSpeed = -Math.abs(transitionSpeed);
     } else {
       m_transitionSpeed = Math.abs(transitionSpeed);

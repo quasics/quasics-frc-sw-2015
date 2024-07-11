@@ -3,16 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.Drivebase;
-
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivebase;
+import java.util.function.Supplier;
 
 public class TankDrive extends Command {
   private final Drivebase m_drivebase;
@@ -20,7 +13,8 @@ public class TankDrive extends Command {
   private final Supplier<Double> m_rightSupplier;
 
   /** Creates a new TankDrive. */
-  public TankDrive(Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+  public TankDrive(
+      Drivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
     m_leftSupplier = leftSupplier;
     m_rightSupplier = rightSupplier;
     m_drivebase = drivebase;
@@ -39,7 +33,7 @@ public class TankDrive extends Command {
   public void execute() {
     updateSpeeds();
   }
-     
+
   private void updateSpeeds() {
     final double leftInput = m_leftSupplier.get();
     final double rightInput = m_rightSupplier.get();
@@ -55,5 +49,4 @@ public class TankDrive extends Command {
   public void end(boolean interrupted) {
     m_drivebase.stop();
   }
-
 }

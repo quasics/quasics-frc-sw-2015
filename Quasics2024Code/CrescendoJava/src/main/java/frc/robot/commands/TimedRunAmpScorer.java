@@ -1,10 +1,12 @@
 package frc.robot.commands;
-import frc.robot.subsystems.AmpScorer;
-import edu.wpi.first.wpilibj2.command.Command;
+
 import static edu.wpi.first.units.Units.Seconds;
-import edu.wpi.first.units.Time;
+
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AmpScorer;
 
 public class TimedRunAmpScorer extends Command {
   private final AmpScorer m_ampScorer;
@@ -12,10 +14,11 @@ public class TimedRunAmpScorer extends Command {
   Timer m_timer = new Timer();
   private final Measure<Time> m_time;
   /** Creates a new RunAmpScorer. */
-  public TimedRunAmpScorer(AmpScorer ampScorer, double ampScorerSpeed, Measure<Time> time, boolean extending) {
+  public TimedRunAmpScorer(
+      AmpScorer ampScorer, double ampScorerSpeed, Measure<Time> time, boolean extending) {
     m_ampScorer = ampScorer;
     m_time = time;
-    if(extending) {
+    if (extending) {
       m_ampScorerSpeed = -Math.abs(ampScorerSpeed);
     } else {
       m_ampScorerSpeed = Math.abs(ampScorerSpeed);

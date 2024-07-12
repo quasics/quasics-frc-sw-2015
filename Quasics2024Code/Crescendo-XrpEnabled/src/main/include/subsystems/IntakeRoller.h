@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
 

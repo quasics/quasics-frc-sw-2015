@@ -6,12 +6,16 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ConditionalConstants;
 import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class TransitionRoller extends SubsystemBase {
   CANSparkMax m_transition;
+  public DigitalInput input = new DigitalInput(2);
 
   /** Creates a new TransitionRoller. */
   public TransitionRoller() {
@@ -22,7 +26,7 @@ public class TransitionRoller extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putString("Beam break", input.get() ? "True" : "False");
   }
 
   public void setTransitionRollerSpeed(double percentSpeed) {

@@ -20,10 +20,7 @@
 #include "commands/SetRobotOdometry.h"
 #include "subsystems/Climber.h"
 #include "subsystems/IDrivebase.h"
-#include "subsystems/IntakeDeployment.h"
 #include "subsystems/IntakeRoller.h"
-#include "subsystems/LinearActuators.h"
-#include "subsystems/PivotScorer.h"
 #include "subsystems/Shooter.h"
 #include "subsystems/TransitionRoller.h"
 #include "subsystems/Vision.h"
@@ -82,22 +79,11 @@ class RobotContainer {
   void AddShooterSpeedTestButtonsToDashboard();
   void AddShooterTestButtonsToDashboard();
   void AddIntakeTestButtonsToDashboard();
-  void AddActuatorTestButtonsToDashboard();
-
-  frc2::ParallelRaceGroup* IntakeWhileRetracting();
-  frc2::ParallelRaceGroup* ShootInAmpThenRunActuatorAfterTime(
-      units::second_t time);
-  // adjusting the version for button binding
-  // frc2::CommandPtr ShootInAmpThenRunActuatorAfterTime(units::second_t time);
-  // frc2::CommandPtr ExtendThenRetractActuatorsAfterTime(units::second_t time);
-  frc2::SequentialCommandGroup* ExtendThenRetractActuatorsAfterTime(
-      units::second_t time);
 
   void AddClimberTestButtonsToDashboard();
   void AddSysIdButtonsToDashboard();
   void AddDriveTestButtonsToDashboard();
   void AddVisionTestButtonsToDashboard();
-  void AddScorerTestButtonsToDashboard();
 
   // AUTOS
   void AddAutoSelectionsToSmartDashboard();
@@ -115,7 +101,9 @@ class RobotContainer {
   // Building auto mode functions
  private:
   frc2::ParallelRaceGroup* ShootingSequence(bool amp);
-  frc2::SequentialCommandGroup* IntakeDelay();
+
+  frc2::SequentialCommandGroup* TransitionDelay();
+  frc2::ParallelRaceGroup* IntakeSequence(bool takingIn);
 
   // Data members of the class (subsystems, persistent commands, etc.)
  private:
@@ -127,10 +115,7 @@ class RobotContainer {
 #ifdef ENABLE_FULL_ROBOT_FUNCTIONALITY
   Shooter m_shooter;
   Climber m_climber;
-  IntakeDeployment m_intakeDeployment;
   IntakeRoller m_intakeRoller;
-  LinearActuators m_linearActuators;
-  PivotScorer m_pivotScorer;
   TransitionRoller m_transitionRoller;
 #endif  // ENABLE_FULL_ROBOT_FUNCTIONALITY
 

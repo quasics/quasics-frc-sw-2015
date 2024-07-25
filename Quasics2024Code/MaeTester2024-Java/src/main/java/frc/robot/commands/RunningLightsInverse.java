@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.function.Function;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
 import edu.wpi.first.units.Measure;

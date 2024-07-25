@@ -26,6 +26,8 @@ import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunTransitionRoller;
+import frc.robot.commands.RunTransitionUntilBeamBroken;
+
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Drivebase;
@@ -291,7 +293,7 @@ public class RobotContainer {
 
 
   private Command IntakeHelperCommand(boolean takingin) {
-    return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin),
+    return Commands.parallel(new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin),
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 

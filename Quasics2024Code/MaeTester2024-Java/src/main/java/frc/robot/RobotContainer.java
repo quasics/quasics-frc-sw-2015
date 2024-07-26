@@ -110,7 +110,7 @@ public class RobotContainer {
             new RunShootingMotor(m_shooter, 1.0));
 
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.YButton))
-        .onTrue(new RunShootingMotor(m_shooter, 1.0));
+        .onTrue(new RunShootingMotor(m_shooter, 0.8));
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.AButton))
         .onTrue(new RunOnlyConveyorMotorReverse(m_intake));
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.BButton))

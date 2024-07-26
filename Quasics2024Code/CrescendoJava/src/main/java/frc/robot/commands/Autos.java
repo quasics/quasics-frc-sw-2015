@@ -19,8 +19,13 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
+import frc.robot.commands.*;
 
 public final class Autos {
+  private final static double shooterSpeed = 0.75;
+  private final static double intakeSpeed = 0.5;
+  private final static double transitionSpeed = 0.5;
+
   public static Command resetOdometryToStartingPosition(
       Drivebase drivebase, String position, String color) {
     Pose2d startingPose;
@@ -44,34 +49,27 @@ public final class Autos {
 
   public static Command intakeHelperCommand(
       IntakeRoller intakeRoller, TransitionRoller transitionRoller) {
-    return Commands.parallel(new RunTransitionRoller(transitionRoller, 0.5, true),
-        new RunIntake(intakeRoller, 0.5, true));
+    return Commands.race(new RunTransitionUntilBeamBroken(transitionRoller, transitionSpeed, true),
+        new RunIntake(intakeRoller, intakeSpeed, true));
   }
 
   public static Command shootingSequence(
-      TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller) {
-    return Commands.parallel(transitionDelay(transitionRoller, intakeRoller),
-        new TimedRunShooter(shooter, 0.75, Seconds.of(2.0), true));
-  }
-
-  public static Command secondaryHelper(
-      TransitionRoller transitionRoller, IntakeRoller intakeRoller) {
-    return Commands.parallel(
-        new TimedRunTransitionRoller(transitionRoller, .5, Seconds.of(2.0), false),
-        new TimedRunIntake(intakeRoller, .6, Seconds.of(2.0), false));
+      TransitionRoller transitionRoller, Shooter shooter) {
+    return Commands.parallel(transitionDelay(transitionRoller),
+        new TimedRunShooter(shooter, shooterSpeed, Seconds.of(2.0), true));
   }
 
   public static Command transitionDelay(
-      TransitionRoller transitionRoller, IntakeRoller intakeRoller) {
+      TransitionRoller transitionRoller) {
     return Commands.sequence(
-        new WaitCommand(0.75), secondaryHelper(transitionRoller, intakeRoller));
+        new WaitCommand(0.75), new TimedRunTransitionRoller(transitionRoller, transitionSpeed, Seconds.of(1.25), true));
   }
 
   public static Command shootingSequenceWithoutWait(
       TransitionRoller transitionRoller, Shooter shooter) {
     return Commands.parallel(
-        new TimedRunTransitionRoller(transitionRoller, .5, Seconds.of(1.25), true),
-        new TimedRunShooter(shooter, 0.5, Seconds.of(1.25), true));
+        new TimedRunTransitionRoller(transitionRoller, transitionSpeed, Seconds.of(1.25), true),
+        new TimedRunShooter(shooter, shooterSpeed, Seconds.of(1.25), true));
   }
 
   public static Command intakeWhileDriving(Drivebase drivebase, IntakeRoller intakeRoller,
@@ -83,12 +81,7 @@ public final class Autos {
   public static Command runShooterWhileDriving(
       Drivebase drivebase, Shooter shooter, String pathName) {
     return Commands.race(
-        GetCommandForTrajectory(pathName, drivebase), new RunShooter(shooter, 0.5, true));
-  }
-
-  public static Command intakeWhileDrivingCommand(Drivebase drivebase, Shooter shooter) {
-    // untested
-    return Commands.race(new TimedMovementTest(drivebase, Seconds.of(1), -0.30));
+        GetCommandForTrajectory(pathName, drivebase), new RunShooter(shooter, shooterSpeed, true));
   }
 
   /** Example static factory for an autonomous command. */
@@ -109,12 +102,27 @@ public final class Autos {
   }
 
   public static Command score1(
-      TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+      TransitionRoller transitionRoller, Shooter shooter) {
     // nothing for amp right now
-    return shootingSequence(transitionRoller, shooter, intakeRoller);
+    return shootingSequence(transitionRoller, shooter);
   }
 
+  public static Command score1GTFO(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String position, String color) {
+    return Commands.sequence(score1(transitionRoller, shooter),
+    GTFO(drivebase, position, color));
+  }
 
+  public static Command score2InFrontOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+    return Commands.sequence(
+      intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote2"),
+      runShooterWhileDriving(drivebase, shooter, color + "note2to2"),
+      shootingSequenceWithoutWait(transitionRoller, shooter)
+    );
+  }
+
+  public static Command score2(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+    return Commands.sequence(score1(transitionRoller, shooter), score2InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color));
+  }
 
   public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller,
       TransitionRoller transitionRoller, Shooter shooter, String overallOperation,
@@ -134,11 +142,11 @@ public final class Autos {
           GTFO(drivebase, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score1) {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color),
-          score1(transitionRoller, shooter, intakeRoller, color));
+          score1(transitionRoller, shooter));
     } else if (overallOperation == AutonomousSelectedOperation.score1GTFO) {
-      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color),
-          score1(transitionRoller, shooter, intakeRoller, color), new WaitCommand(0.5),
-          GTFO(drivebase, positionOption, color));
+      return score1GTFO(drivebase, transitionRoller, shooter, intakeRoller, positionOption, color);
+    } else if (overallOperation == AutonomousSelectedOperation.score2GTFO) {
+      return score2(drivebase, transitionRoller, shooter, intakeRoller, color);
     }
     // return Commands.sequence(commands);
     return new PrintCommand("???");

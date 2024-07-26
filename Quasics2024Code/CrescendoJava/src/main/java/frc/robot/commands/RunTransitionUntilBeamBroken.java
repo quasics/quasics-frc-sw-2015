@@ -18,9 +18,9 @@ public class RunTransitionUntilBeamBroken extends Command {
   public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed, boolean transitionTakingIn) {
     m_transition = transitionRoller;
     if (transitionTakingIn) {
-      m_transitionSpeed = -Math.abs(transitionSpeed);
-    } else {
       m_transitionSpeed = Math.abs(transitionSpeed);
+    } else {
+      m_transitionSpeed = -Math.abs(transitionSpeed);
     }
     m_transitionTakingIn = transitionTakingIn;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -50,6 +50,6 @@ public class RunTransitionUntilBeamBroken extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_transition.input.get();
+    return !m_transition.input.get();
   }
 }

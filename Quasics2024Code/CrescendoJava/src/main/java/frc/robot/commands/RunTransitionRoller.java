@@ -15,9 +15,9 @@ public class RunTransitionRoller extends Command {
       TransitionRoller transition, double transitionSpeed, boolean transitionTakingIn) {
     m_transition = transition;
     if (transitionTakingIn) {
-      m_transitionSpeed = -Math.abs(transitionSpeed);
-    } else {
       m_transitionSpeed = Math.abs(transitionSpeed);
+    } else {
+      m_transitionSpeed = -Math.abs(transitionSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(transition);

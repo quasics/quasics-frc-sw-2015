@@ -27,7 +27,6 @@ import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunTransitionRoller;
 import frc.robot.commands.RunTransitionUntilBeamBroken;
-
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Drivebase;
@@ -120,9 +119,7 @@ public class RobotContainer {
   }
 
   private void addAutonomousStartingPositionsToSmartDashboard() {
-    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.inFrontOfAmp,
-        Constants.AutonomousStartingPositions.inFrontOfAmp);
-    m_positionOptions.addOption(Constants.AutonomousStartingPositions.leftOfSpeaker,
+    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.leftOfSpeaker,
         Constants.AutonomousStartingPositions.leftOfSpeaker);
     m_positionOptions.addOption(Constants.AutonomousStartingPositions.inFrontOfSpeaker,
         Constants.AutonomousStartingPositions.inFrontOfSpeaker);
@@ -293,6 +290,11 @@ public class RobotContainer {
 
 
   private Command IntakeHelperCommand(boolean takingin) {
+    return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin),
+        new RunIntake(m_intakeRoller, .6, takingin));
+  }
+
+  private Command IntakeHelperCommandUntilBeamBroken(boolean takingin) {
     return Commands.parallel(new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin),
         new RunIntake(m_intakeRoller, .6, takingin));
   }
@@ -305,7 +307,7 @@ public class RobotContainer {
 
   public static Command transitionDelay(TransitionRoller transitionRoller) {
     return Commands.sequence(
-        new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, false));
+        new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, true));
   }
 
   private void ConfigureDriverButtons() {
@@ -317,7 +319,7 @@ public class RobotContainer {
             .whileTrue(new MoveClimbers(m_climbers, false));
     Trigger IntakeNote =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
-            .whileTrue(IntakeHelperCommand(true));
+            .whileTrue(IntakeHelperCommandUntilBeamBroken(true));
     Trigger DropNote =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
             .whileTrue(IntakeHelperCommand(false));

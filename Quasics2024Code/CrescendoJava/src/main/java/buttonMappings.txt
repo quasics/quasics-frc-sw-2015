@@ -7,8 +7,8 @@ Driver controller (Logitech)
 * Y - Extend climbers auto (while held)
 * Left shoulder - Turtle mode (while held)
 * Right shoulder - Turbo mode (while held)
-* Left trigger - Drop note (while held)
-* Right trigger - Intake note (while held)
+* Left trigger - Intake note (while held)
+* Right trigger - Drop note (while held)
 * Start -
 * Back -
 

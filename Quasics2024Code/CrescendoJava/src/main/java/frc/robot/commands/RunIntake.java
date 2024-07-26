@@ -15,9 +15,9 @@ public class RunIntake extends Command {
     m_intake = intake;
     // m_takingIn = takingIn;
     if (takingIn) {
-      m_intakeSpeed = -Math.abs(intakeSpeed);
-    } else {
       m_intakeSpeed = Math.abs(intakeSpeed);
+    } else {
+      m_intakeSpeed = -Math.abs(intakeSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);

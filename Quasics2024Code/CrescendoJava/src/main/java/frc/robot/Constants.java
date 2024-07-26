@@ -76,7 +76,6 @@ public final class Constants {
     public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
   }
   public static class AutonomousStartingPositions {
-    public static final String inFrontOfAmp = "In front of amp"; // 1A
     public static final String leftOfSpeaker = "Left of speaker"; // 1B
     public static final String inFrontOfSpeaker = "In front of speaker"; // 2
     public static final String rightOfSpeaker = "Right of speaker"; // 3A

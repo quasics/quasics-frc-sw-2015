@@ -44,8 +44,8 @@ public class Shooter extends SubsystemBase {
 
     // Settings per AndyMark docs for the L16 Actuator/servo; see:
     // https://www.andymark.com/products/actuator-l16-r-50mm-stroke-35-1-6v
-    positionServo.setBoundsMicroseconds(2000000, 1800000, 1500000, 1200000,
-                                        1000000);
+    positionServo.setBoundsMicroseconds(2000, 1800, 1500, 1200,
+        1000);
 
     // Make sure that the shooter starts with the servo in a known position.
     SetServoPosition(0.0);

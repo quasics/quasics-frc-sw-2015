@@ -8,6 +8,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
@@ -15,9 +16,14 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ColorLights;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.RunOnlyConveyorMotor;
+import frc.robot.commands.RunOnlyConveyorMotorReverse;
+import frc.robot.commands.RunShootingMotor;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +36,8 @@ public class RobotContainer {
   private final Drivebase m_drivebase = new Drivebase();
   private final Lights m_lights = new Lights();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Intake m_intake = new Intake();
+  private final Shooter m_shooter = new Shooter();
 
   private final Joystick m_driverController = new Joystick(DRIVER_JOYSTICK_ID);
   private final CommandXboxController m_operatorController =
@@ -91,6 +99,30 @@ public class RobotContainer {
     // cancelling on release.
     m_operatorController.b().whileTrue(
         m_exampleSubsystem.exampleMethodCommand());
+
+    new Trigger(
+        // Call this function (static or a lambda) to decide if we should
+        // trigger something or not.
+        () -> m_driverController.getRawButton(LogitechGamePad.XButton))
+        // While the function called above returns true, run the specified command.
+        .onTrue(
+            // Comand to be run while true
+            new RunShootingMotor(m_shooter, 1.0));
+
+    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.YButton))
+        .onTrue(new RunShootingMotor(m_shooter, 0.8));
+    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.AButton))
+        .onTrue(new RunOnlyConveyorMotorReverse(m_intake));
+    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.BButton))
+        .onTrue(new RunOnlyConveyorMotor(m_intake));
+    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.LeftShoulder))
+        .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(1.0)));
+    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.RightShoulder))
+        .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(0.0)));
+  }
+
+  boolean getABooleanResult() {
+    return true;
   }
 
   /**

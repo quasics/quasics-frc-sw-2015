@@ -23,9 +23,9 @@ public class TimedRunTransitionRoller extends Command {
     m_time = time;
     m_transition = transition;
     if (transitionTakingIn) {
-      m_transitionSpeed = -Math.abs(transitionSpeed);
-    } else {
       m_transitionSpeed = Math.abs(transitionSpeed);
+    } else {
+      m_transitionSpeed = -Math.abs(transitionSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(transition);

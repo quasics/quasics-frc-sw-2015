@@ -173,7 +173,6 @@ public final class Autos {
     } else {
       color = "red";
     }
-
     if (overallOperation == AutonomousSelectedOperation.doNothing) {
       return new PrintCommand("Doing Nothing");
     } else if (overallOperation == AutonomousSelectedOperation.GTFO) {
@@ -183,9 +182,11 @@ public final class Autos {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color),
           score1(transitionRoller, shooter));
     } else if (overallOperation == AutonomousSelectedOperation.score1GTFO) {
-      return score1GTFO(drivebase, transitionRoller, shooter, intakeRoller, positionOption, color);
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color),
+      score1GTFO(drivebase, transitionRoller, shooter, intakeRoller, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score2) {
-      return score2(drivebase, positionOption, transitionRoller, shooter, intakeRoller, color);
+      return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), 
+      score2(drivebase, positionOption, transitionRoller, shooter, intakeRoller, color));
     }
     // return Commands.sequence(commands);
     return new PrintCommand("???");

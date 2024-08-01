@@ -67,7 +67,7 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   final static boolean ENABLE_VISION_SUBSYSTEM = true;
-  final static boolean USE_MOCK_CLIMBER_SUBSYSTEM = true;
+  final static boolean USE_MOCK_CLIMBER_SUBSYSTEM = false;
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;

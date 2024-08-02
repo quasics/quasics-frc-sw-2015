@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.MatchPlayLighting;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
@@ -31,6 +32,7 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
 import java.util.function.Supplier;
@@ -48,6 +50,7 @@ public class RobotContainer {
   private final Drivebase m_drivebase = new Drivebase();
   private final Climbers m_climbers = new Climbers();
   private final IntakeRoller m_intakeRoller = new IntakeRoller();
+  private final Lights m_lights = new Lights();
   private final TransitionRoller m_transitionRoller = new TransitionRoller();
   private final Shooter m_shooter = new Shooter();
 
@@ -85,6 +88,8 @@ public class RobotContainer {
     addScore3OptionsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
     maybeAddCamera();
+
+    m_lights.setDefaultCommand(new MatchPlayLighting(m_lights));
   }
 
   private void maybeAddCamera() {

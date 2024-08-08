@@ -24,9 +24,9 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,24 +39,24 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.DriveToAprilTag;
 import frc.robot.commands.ExtendClimbers;
+import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.RetractClimbers;
 import frc.robot.commands.SetClimberSafetyMode;
-import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SpinInPlace;
+import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.LightingInterface;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.climber.AbstractClimber;
+import frc.robot.subsystems.climber.MockClimber;
 import frc.robot.subsystems.climber.RealClimber;
 import frc.robot.subsystems.climber.SimulationClimber;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
-import frc.robot.subsystems.Lighting;
-import frc.robot.subsystems.LightingInterface;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.RomiDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.drivebase.XrpDrivebase;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.TrajectoryCommandGenerator;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -67,21 +67,18 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   final static boolean ENABLE_VISION_SUBSYSTEM = true;
+  final static boolean USE_MOCK_CLIMBER_SUBSYSTEM = false;
 
   static final double MAX_AUTO_VELOCITY_MPS = 3;
   static final double MAX_AUTO_ACCELERATION_MPSS = 1;
-  static final TrajectoryConfig AUTO_SPEED_PROFILE = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS,
-      MAX_AUTO_ACCELERATION_MPSS);
+  static final TrajectoryConfig AUTO_SPEED_PROFILE =
+      new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS);
 
   /** Options for the behavior when running under the simulator. */
-  private enum SimulationMode {
-    eSimulation, eXrp, eRomi
-  }
+  private enum SimulationMode { eSimulation, eXrp, eRomi }
 
   /** Defines options for auto mode. */
-  private enum AutoMode {
-    eDoNothing, eSpin, eFollowTrajectory
-  }
+  private enum AutoMode { eDoNothing, eSpin, eFollowTrajectory }
 
   /** Default configuration when running in "isReal" mode. */
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Margaret;
@@ -109,7 +106,8 @@ public class RobotContainer {
     eTrajectoryCommandGeneratorExample
   }
 
-  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection = AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
+  private static final AutoModeTrajectorySelection m_autoModeTrajectorySelection =
+      AutoModeTrajectorySelection.eControlSystemExampleRamseteCommand;
 
   public static RobotSettings.Robot getRobotSettings() {
     if (RobotBase.isReal()) {
@@ -140,18 +138,7 @@ public class RobotContainer {
     m_drivebase = setupDriveBase();
     m_vision = maybeSetupVisionSubsystem();
     m_trajectoryCommandGenerator = new TrajectoryCommandGenerator(m_drivebase);
-    switch (getRobotSettings().climberType) {
-      case Real:
-        m_climber = new RealClimber();
-        break;
-      case Simulated:
-        m_climber = new SimulationClimber();
-        break;
-      case None:
-      default:
-        m_climber = null;
-        break;
-    }
+    m_climber = maybeGetClimber();
 
     ////////////////////////////////////////////////////////
     // Finish intialization
@@ -177,6 +164,22 @@ public class RobotContainer {
     }
   }
 
+  private AbstractClimber maybeGetClimber() {
+    if (USE_MOCK_CLIMBER_SUBSYSTEM) {
+      return new MockClimber();
+    }
+
+    switch (getRobotSettings().climberType) {
+      case Real:
+        return new RealClimber();
+      case Simulated:
+        return new SimulationClimber();
+      case None:
+      default:
+        return null;
+    }
+  }
+
   private AbstractDrivebase setupDriveBase() {
     AbstractDrivebase drivebase = null;
     if (Robot.isReal()) {
@@ -184,14 +187,18 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      m_arcadeDriveForwardStick = ()
+          ->
+          - m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRotationStick = ()
+          ->
+          - m_driveController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
     } else {
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 1&2.
-      m_arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
-      m_arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
+      m_arcadeDriveForwardStick = () -> - m_driveController.getRawAxis(0);
+      m_arcadeDriveRotationStick = () -> - m_driveController.getRawAxis(1);
       System.out.println("Simulator configured for " + m_simulationMode + " mode");
       switch (m_simulationMode) {
         case eRomi:
@@ -324,12 +331,14 @@ public class RobotContainer {
     final Timer timer = new Timer();
     FunctionalCommand cmd = new FunctionalCommand(
         // init()
-        () -> {
+        ()
+            -> {
           m_drivebase.resetOdometry(t.getInitialPose());
           timer.restart();
         },
         // execute
-        () -> {
+        ()
+            -> {
           double elapsed = timer.get();
           Trajectory.State reference = t.sample(elapsed);
           ChassisSpeeds speeds = ramsete.calculate(m_drivebase.getPose(), reference);
@@ -337,13 +346,11 @@ public class RobotContainer {
               RadiansPerSecond.of(speeds.omegaRadiansPerSecond));
         },
         // end
-        (Boolean interrupted) -> {
-          m_drivebase.stop();
-        },
+        (Boolean interrupted)
+            -> { m_drivebase.stop(); },
         // isFinished
-        () -> {
-          return false;
-        },
+        ()
+            -> { return false; },
         // requiremnets
         m_drivebase);
     return cmd;
@@ -351,20 +358,21 @@ public class RobotContainer {
 
   private Command generateRamseteCommandForControlSystemSampleTrajectory() {
     // Create a voltage constraint to ensure we don't accelerate too fast
-    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(
-        m_drivebase.getMotorFeedforward(),
-        m_drivebase.getKinematics(),
-        /* maxVoltage= */ 10);
+    final DifferentialDriveVoltageConstraint voltageConstraints =
+        new DifferentialDriveVoltageConstraint(m_drivebase.getMotorFeedforward(),
+            m_drivebase.getKinematics(),
+            /* maxVoltage= */ 10);
 
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(m_drivebase.getKinematics())
-    // // Apply the voltage constraint
-    // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
-    // .addConstraint(voltageConstraints)
-    // End of constraints
-    ;
+    TrajectoryConfig config =
+        new TrajectoryConfig(MAX_AUTO_VELOCITY_MPS, MAX_AUTO_ACCELERATION_MPSS)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(m_drivebase.getKinematics())
+        // // Apply the voltage constraint
+        // // NOTE: THE FAILURE SEEMS TO BE COMING FROM IN HERE!!!!
+        // .addConstraint(voltageConstraints)
+        // End of constraints
+        ;
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(

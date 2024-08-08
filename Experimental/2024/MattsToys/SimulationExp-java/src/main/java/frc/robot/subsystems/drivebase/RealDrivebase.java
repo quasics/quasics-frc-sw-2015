@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.CanBusIds.SparkMax;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.OffsetGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -39,7 +40,8 @@ public class RealDrivebase extends AbstractDrivebase {
   final CANSparkMax m_leftRear = new CANSparkMax(SparkMax.LEFT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_rightRear = new CANSparkMax(SparkMax.RIGHT_REAR_CAN_ID, MotorType.kBrushless);
   final CANSparkMax m_leftFront = new CANSparkMax(SparkMax.LEFT_FRONT_CAN_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightFront = new CANSparkMax(SparkMax.RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
+  final CANSparkMax m_rightFront =
+      new CANSparkMax(SparkMax.RIGHT_FRONT_CAN_ID, MotorType.kBrushless);
 
   // Leaders (only valid if motorConfigModel in RobotSettings passed to ctor is
   // not NoLeader)
@@ -97,15 +99,13 @@ public class RealDrivebase extends AbstractDrivebase {
     ////////////////////////////////////////
     // Configure the encoders.
     System.out.println("Configuring drivebase for " + robot.name());
-    System.out.println("Wheel circumference (m): " +
-        WHEEL_CIRCUMFERENCE_METERS);
+    System.out.println("Wheel circumference (m): " + WHEEL_CIRCUMFERENCE_METERS);
 
     // Conversion factor from units in rotations (or RPM) to meters (or m/s).
     final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / robot.gearRatio;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
     System.out.println("Using gear ratio: " + robot.gearRatio);
-    System.out.println("Adjustment for gearing (m/rotation): " +
-        distanceScalingFactorForGearing);
+    System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
     System.out.println("Velocity adj.: " + velocityScalingFactor);
 
     m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
@@ -172,11 +172,11 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   protected double getLeftVoltage_HAL() {
-    return (m_leftLeader != null ? m_leftLeader : m_leftRear).getBusVoltage();
+    return (m_leftLeader != null ? m_leftLeader : m_leftRear).getAppliedOutput();
   }
 
   protected double getRightVoltage_HAL() {
-    return (m_rightLeader != null ? m_rightLeader : m_rightRear).getBusVoltage();
+    return (m_rightLeader != null ? m_rightLeader : m_rightRear).getAppliedOutput();
   }
 
   protected void tankDrivePercent_HAL(double leftPercent, double rightPercent) {

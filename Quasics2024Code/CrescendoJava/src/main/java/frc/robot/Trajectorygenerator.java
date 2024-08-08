@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.Constants.PathWeaverConstantsMargert;
+import frc.robot.Constants.PathWeaverConstantsMargaret;
 import frc.robot.Constants.PathWeaverConstantsSally;
 import frc.robot.subsystems.Drivebase;
 import java.io.IOException;
@@ -55,8 +55,8 @@ public class Trajectorygenerator {
           kDriveKinematics, 10);
     } else { // margeaert
       autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-          new SimpleMotorFeedforward(PathWeaverConstantsMargert.kS, PathWeaverConstantsMargert.kV,
-              PathWeaverConstantsMargert.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsMargaret.kS, PathWeaverConstantsMargaret.kV,
+              PathWeaverConstantsMargaret.kA),
           kDriveKinematics, 10);
     }
 
@@ -115,11 +115,11 @@ public class Trajectorygenerator {
     } else { // margaret
       ramseteCommand = new RamseteCommand(trajectory, drivebase::getPose,
           new RamseteController(kRamseteB, kRamseteZeta),
-          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS, PathWeaverConstantsSally.kV,
-              PathWeaverConstantsSally.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsMargaret.kS, PathWeaverConstantsMargaret.kV,
+              PathWeaverConstantsMargaret.kA),
           kDriveKinematics, drivebase::getWheelSpeeds,
-          new PIDController(PathWeaverConstantsSally.kP, 0, 0),
-          new PIDController(PathWeaverConstantsSally.kP, 0, 0),
+          new PIDController(PathWeaverConstantsMargaret.kP, 0, 0),
+          new PIDController(PathWeaverConstantsMargaret.kP, 0, 0),
           // RamseteCommand passes volts to the callback
           drivebase::setVoltages, drivebase);
     }

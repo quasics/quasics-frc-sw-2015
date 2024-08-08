@@ -15,7 +15,7 @@ import frc.robot.Constants.CanBusIds.SparkMax;
 
 public class TransitionRoller extends SubsystemBase {
   CANSparkMax m_transition;
-  public DigitalInput input = new DigitalInput(1);
+  public DigitalInput input = new DigitalInput(2);
 
   /** Creates a new TransitionRoller. */
   public TransitionRoller() {

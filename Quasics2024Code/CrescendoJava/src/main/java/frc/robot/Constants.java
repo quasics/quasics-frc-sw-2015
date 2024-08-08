@@ -96,9 +96,6 @@ public final class Constants {
 
   public static class AutonomousScore2Options {
     public static final String none = "None";
-    public static final String amp = "Score in amp";
-    public static final String leftOfSpeaker = "Score left of speaker";
-    public static final String inFrontOfSpeaker = "Score in front of speaker";
     public static final String rightOfSpeakerAllianceNote =
         "Score right of speaker (alliance note)";
     public static final String rightOfSpeakerCenterNote = "Score right of speaker (center note)";

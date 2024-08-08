@@ -123,17 +123,11 @@ public final class Constants {
     public static final double kD = 0;
   }
 
-  public static class PathWeaverConstantsMargert { // CHARACTERIZATION?
-    //public static final double kS = 0.19529;
-    //public static final double kV = 1.0288;
-    //public static final double kA = 0.18486;
-    //public static final double kP = 0.60159; // THIS IS MARGERTS PLEASE USE
-    //public static final double kI = 0;
-    //public static final double kD = 0;
-    public static final double kS = 0;
-    public static final double kV = 0.20182;
-    public static final double kA = 0.19383;
-    public static final double kP = 0.25627;
+  public static class PathWeaverConstantsMargaret { // average of left and right characterizations
+    public static final double kS = (0.017001 + 0.015565)/2;
+    public static final double kV = (0.1979 + 0.19042)/2;
+    public static final double kA = (0.031501 + 0.030128)/2;
+    public static final double kP = (0.042133 + 0.041392)/2;
     public static final double kI = 0;
     public static final double kD = 0;
   }

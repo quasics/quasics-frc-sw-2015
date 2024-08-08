@@ -139,12 +139,6 @@ public class RobotContainer {
   private void addScore2OptionsToSmartDashboard() {
     m_score2Options.setDefaultOption(
         Constants.AutonomousScore2Options.none, Constants.AutonomousScore2Options.none);
-    m_score2Options.addOption(
-        Constants.AutonomousScore2Options.amp, Constants.AutonomousScore2Options.amp);
-    m_score2Options.addOption(Constants.AutonomousScore2Options.leftOfSpeaker,
-        Constants.AutonomousScore2Options.leftOfSpeaker);
-    m_score2Options.addOption(Constants.AutonomousScore2Options.inFrontOfSpeaker,
-        Constants.AutonomousScore2Options.inFrontOfSpeaker);
     m_score2Options.addOption(Constants.AutonomousScore2Options.rightOfSpeakerAllianceNote,
         Constants.AutonomousScore2Options.rightOfSpeakerAllianceNote);
     m_score2Options.addOption(Constants.AutonomousScore2Options.rightOfSpeakerCenterNote,

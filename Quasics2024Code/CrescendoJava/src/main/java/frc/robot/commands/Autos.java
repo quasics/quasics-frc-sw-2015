@@ -15,7 +15,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
+
 import frc.robot.Constants.AutonomousStartingPositions;
+import frc.robot.Constants.AutonomousScore2Options;
+import frc.robot.Constants.AutonomousScore3Options;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
@@ -111,9 +114,6 @@ public final class Autos {
   }
 
   public static Command score2InFrontOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
-      System.out.println("Calling score2 in front of speaker");
-      System.out.println(color);
-
     return Commands.sequence(
       intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote2"),
       runShooterWhileDriving(drivebase, shooter, color + "note2to2"),
@@ -129,17 +129,27 @@ public final class Autos {
     );
   }
 
-  public static Command score2RightOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
-    // DOESNT WORK
-    return Commands.sequence(
-      intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote2"),
-      runShooterWhileDriving(drivebase, shooter, color + "note2to2"),
-      shootingSequenceWithoutWait(transitionRoller, shooter)
-    );
+  public static Command score2RightOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String scoreOption, String color) {
+    if (scoreOption == AutonomousScore2Options.rightOfSpeakerAllianceNote) {
+      return Commands.sequence(
+        intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "3atonote3"),
+        runShooterWhileDriving(drivebase, shooter, color + "note3to3a"),
+        shootingSequenceWithoutWait(transitionRoller, shooter)
+      );
+    }
+    else if (scoreOption == AutonomousScore2Options.rightOfSpeakerCenterNote) {
+      return Commands.sequence(
+        intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "3atonote8"),
+        runShooterWhileDriving(drivebase, shooter, color + "note8to3a"),
+        shootingSequenceWithoutWait(transitionRoller, shooter)
+      );
+    }
+    return new PrintCommand("???");
+
   }
 
 
-  public static Command score2(Drivebase drivebase, String position, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+  public static Command score2(Drivebase drivebase, String position, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String scoreOption, String color) {
     if (position == AutonomousStartingPositions.leftOfSpeaker) {
       return Commands.sequence(
         score1(transitionRoller, shooter),
@@ -153,7 +163,7 @@ public final class Autos {
     } else if (position == AutonomousStartingPositions.rightOfSpeaker) {
       return Commands.sequence(
         score1(transitionRoller, shooter),
-        score2RightOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color)
+        score2RightOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, scoreOption, color)
       );
     } else if (position == AutonomousStartingPositions.farField) {
       // cant shoot from far field
@@ -186,7 +196,12 @@ public final class Autos {
       score1GTFO(drivebase, transitionRoller, shooter, intakeRoller, positionOption, color));
     } else if (overallOperation == AutonomousSelectedOperation.score2) {
       return Commands.sequence(resetOdometryToStartingPosition(drivebase, positionOption, color), 
-      score2(drivebase, positionOption, transitionRoller, shooter, intakeRoller, color));
+      score2(drivebase, positionOption, transitionRoller, shooter, intakeRoller, score2Option, color));
+    } else if (overallOperation == AutonomousSelectedOperation.score2GTFO) {
+      return Commands.sequence(
+      resetOdometryToStartingPosition(drivebase, positionOption, color), 
+      score2(drivebase, positionOption, transitionRoller, shooter, intakeRoller, score2Option, color),
+      GTFO(drivebase, positionOption, color));
     }
     // return Commands.sequence(commands);
     return new PrintCommand("???");

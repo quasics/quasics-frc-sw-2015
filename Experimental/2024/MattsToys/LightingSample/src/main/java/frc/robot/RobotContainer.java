@@ -5,10 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.Autos;
 import frc.robot.commands.SimpleLights;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.LightingInterface;
 
@@ -21,8 +20,6 @@ import frc.robot.subsystems.LightingInterface;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
   private final LightingInterface m_lighting = new Lighting(0, 100);
 
   /**
@@ -40,6 +37,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new PrintCommand("Look at me: I'm *autonomous*!");
   }
 }

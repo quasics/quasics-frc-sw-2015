@@ -9,6 +9,8 @@ import static frc.robot.Trajectorygenerator.*;
 
 import javax.swing.text.Position;
 
+import org.ejml.ops.SortCoupledArray_F32;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -172,6 +174,68 @@ public final class Autos {
     // default option?
     return score1(transitionRoller, shooter);
   }
+
+  public static Command score3LeftOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+    return Commands.sequence(score2LeftOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color),
+      intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "1btonote4"),
+      runShooterWhileDriving(drivebase, shooter, color + "note4to1b"),
+      shootingSequenceWithoutWait(transitionRoller, shooter)
+    );
+  }
+
+  public static Command score3InFrontOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String scoreOption, String color) {
+      if (scoreOption == AutonomousScore3Options.inFrontOfSpeakerAmpNote) {
+            return Commands.sequence(score2InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color),
+        intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote1"),
+        runShooterWhileDriving(drivebase, shooter, color + "note1to2"),
+        shootingSequenceWithoutWait(transitionRoller, shooter)
+      );
+    }
+
+    else if (scoreOption == AutonomousScore3Options.inFrontOfSpeakerCenterNote) {
+      return Commands.sequence(score2InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color),
+        intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote6"),
+        runShooterWhileDriving(drivebase, shooter, color + "note6to2"),
+        shootingSequenceWithoutWait(transitionRoller, shooter)
+      );
+    }
+
+    else if (scoreOption == AutonomousScore3Options.inFrontOfSpeakerStageNote) {
+      return Commands.sequence(score2InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color),
+        intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "2tonote3"),
+        runShooterWhileDriving(drivebase, shooter, color + "note3to2"),
+        shootingSequenceWithoutWait(transitionRoller, shooter)
+      );
+    }
+
+    // defualt
+    return score2InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color);
+  }
+
+  public static Command score3RightOfSpeaker(Drivebase drivebase, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String color) {
+    return Commands.sequence(score2RightOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, AutonomousScore2Options.rightOfSpeakerAllianceNote, color),
+      intakeWhileDriving(drivebase, intakeRoller, transitionRoller, color + "3atonote8"),
+      runShooterWhileDriving(drivebase, shooter, color + "note8to3a"),
+      shootingSequenceWithoutWait(transitionRoller, shooter)
+    );
+  }
+
+  public static Command score3(Drivebase drivebase, String position, TransitionRoller transitionRoller, Shooter shooter, IntakeRoller intakeRoller, String scoreOption, String color) {
+    if (position == AutonomousStartingPositions.leftOfSpeaker) {
+      return score3LeftOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color);
+    }
+    else if (position == AutonomousStartingPositions.inFrontOfSpeaker) {
+      return score3InFrontOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, scoreOption, color);
+    }
+    else if (position == AutonomousStartingPositions.rightOfSpeaker) {
+      return score3RightOfSpeaker(drivebase, transitionRoller, shooter, intakeRoller, color);
+    }
+    else {
+      return new PrintCommand("?");
+    }
+  }
+
+
 
   public static Command getAutonomousCommand(Drivebase drivebase, IntakeRoller intakeRoller,
       TransitionRoller transitionRoller, Shooter shooter, String overallOperation,

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants;
 
 /**
@@ -40,6 +41,7 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
+    if (!ConditionalConstants.SALLY) {
     setName("Shooter");
 
     // Settings per AndyMark docs for the L16 Actuator/servo; see:
@@ -49,6 +51,7 @@ public class Shooter extends SubsystemBase {
 
     // Make sure that the shooter starts with the servo in a known position.
     SetServoPosition(0.0);
+  }
   }
 
   @Override

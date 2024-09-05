@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants;
 import java.util.function.Function;
 
@@ -26,10 +27,12 @@ public class Lights extends SubsystemBase {
 
   /** Creates a new Lights. */
   public Lights() {
+    if (!ConditionalConstants.SALLY) {
     setSubsystem("Lights");
     m_led.setLength(m_buffer.getLength());
     turnStripOff();
     m_led.start();
+  }
   }
 
   @Override

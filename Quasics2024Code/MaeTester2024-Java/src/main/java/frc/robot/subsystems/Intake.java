@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
@@ -20,7 +21,11 @@ public class Intake extends SubsystemBase {
       new WPI_VictorSPX(Constants.CANBusIds.VictorSPXIds.ConveyorMotor);
 
   /** Creates a new Intake. */
-  public Intake() { setSubsystem("Intake"); }
+  public Intake() {
+    if (!ConditionalConstants.SALLY) {
+      setSubsystem("Intake");
+    }
+  }
 
   @Override
   public void periodic() {

@@ -32,18 +32,23 @@ public class Shooter extends SubsystemBase {
   private static final double SERVO_POSITION_RANGE =
       SERVO_EXTENDED_SPEED - SERVO_RETRACTED_SPEED;
 
+  // If Sally is enabled, disable hardware.
+  private boolean isHardwareDisabled() {
+    return ConditionalConstants.SALLY;
+  }
+
   /** Actual shooter: sending the ball out. */
-  private TalonFX shootingMotor =
-      new TalonFX(Constants.CANBusIds.TalonFXIds.ShootingMotor);
+  private TalonFX shootingMotor = null;
 
   /** Experimental: servo to adjust the shooting angle. */
   private Servo positionServo = new Servo(Constants.PwmIds.ShooterServo);
 
   /** Creates a new Shooter. */
   public Shooter() {
-    if (!ConditionalConstants.SALLY) {
     setName("Shooter");
-
+    if (isHardwareDisabled()) {
+      return;
+    }
     // Settings per AndyMark docs for the L16 Actuator/servo; see:
     // https://www.andymark.com/products/actuator-l16-r-50mm-stroke-35-1-6v
     positionServo.setBoundsMicroseconds(2000, 1800, 1500, 1200,
@@ -51,7 +56,8 @@ public class Shooter extends SubsystemBase {
 
     // Make sure that the shooter starts with the servo in a known position.
     SetServoPosition(0.0);
-  }
+
+    shootingMotor = new TalonFX(Constants.CANBusIds.TalonFXIds.ShootingMotor);
   }
 
   @Override
@@ -61,11 +67,17 @@ public class Shooter extends SubsystemBase {
 
   /// Sets speed for the shooting motor (-1.0 to +1.0).
   public void SetSpeed(double speed) {
+    if (isHardwareDisabled()) {
+      return;
+    }
     shootingMotor.set(-speed); // Yeet the ball
   }
 
   /// Stops the shooting motor.
   public void Stop() {
+    if (isHardwareDisabled()) {
+      return;
+    }
     shootingMotor.set(0);
   }
 
@@ -81,17 +93,26 @@ public class Shooter extends SubsystemBase {
    */
   public void SetServoPosition(double pos) {
     final double cappedPercent = Math.min(1.0, Math.max(pos, 0.0));
+    if (isHardwareDisabled()) {
+      return;
+    }
     positionServo.setSpeed(SERVO_RETRACTED_SPEED +
                            (cappedPercent * SERVO_POSITION_RANGE));
   }
 
   /** Increases shooting angle by POSITION_DELTA on the linear servo. */
   public void IncrementPosition() {
+    if (isHardwareDisabled()) {
+      return;
+    }
     SetServoPosition(GetServoPosition() + POSITION_DELTA);
   }
 
   /** Decreases shooting angle by POSITION_DELTA on the linear servo. */
   public void DecrementPosition() {
+    if (isHardwareDisabled()) {
+      return;
+    }
     SetServoPosition(GetServoPosition() - POSITION_DELTA);
   }
 }

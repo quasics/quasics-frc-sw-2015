@@ -23,16 +23,25 @@ public class Lights extends SubsystemBase {
   static final int STRIP_LENGTH = 45;
 
   AddressableLEDBuffer m_buffer = new AddressableLEDBuffer(STRIP_LENGTH);
-  AddressableLED m_led = new AddressableLED(Constants.PwmIds.LedControl);
+  AddressableLED m_led = null; // Only created (in ctor) if hardware is enabled
+
+  private boolean isHardwareDisabled() {
+    return ConditionalConstants.SALLY;
+  }
 
   /** Creates a new Lights. */
   public Lights() {
-    if (!ConditionalConstants.SALLY) {
     setSubsystem("Lights");
+
+    if (isHardwareDisabled()) {
+      // Simulation only: bail out before we try to use the hardware
+      return;
+    }
+
+    m_led = new AddressableLED(Constants.PwmIds.LedControl);
     m_led.setLength(m_buffer.getLength());
     turnStripOff();
     m_led.start();
-  }
   }
 
   @Override
@@ -45,6 +54,9 @@ public class Lights extends SubsystemBase {
    * (Each component must be in the range [0..255].)
    */
   public void setStripColor(int red, int green, int blue) {
+    if (isHardwareDisabled()) {
+      return;
+    }
     setStripColor(new Color8Bit(red, green, blue));
   }
 
@@ -52,13 +64,23 @@ public class Lights extends SubsystemBase {
    * Sets the strip to a single, solid color, specified as an RGB value.
    * (Each component must be in the range [0..255].)
    */
-  public void setStripColor(Color8Bit c) { setStripColor((Integer i) -> c); }
+  public void setStripColor(Color8Bit c) {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    setStripColor((Integer i) -> c);
+  }
 
   /**
    * Sets the colors for each pixel on the strip, using the specified helper
    * function to get the color at each position.
    */
   public void setStripColor(Function<Integer, Color8Bit> colorFcn) {
+    if (isHardwareDisabled()) {
+      // Simulation only: bail out before we try to use the hardware
+      return;
+    }
+
     for (int i = 0; i < STRIP_LENGTH; i++) {
       m_buffer.setLED(i, colorFcn.apply(i));
     }
@@ -66,7 +88,12 @@ public class Lights extends SubsystemBase {
   }
 
   /** Turns all of the pixels on the strip off. */
-  public void turnStripOff() { setStripColor((Integer i) -> BLACK); }
+  public void turnStripOff() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    setStripColor((Integer i) -> BLACK);
+  }
 
   /** Returns the configured length of the LED strip. */
   public int getStripLength() { return m_buffer.getLength(); }

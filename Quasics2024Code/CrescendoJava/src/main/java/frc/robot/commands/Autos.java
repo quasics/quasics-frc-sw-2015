@@ -54,7 +54,7 @@ public final class Autos {
 
   public static Command intakeHelperCommand(
       IntakeRoller intakeRoller, TransitionRoller transitionRoller) {
-    return Commands.race(new RunTransitionUntilBeamBroken(transitionRoller, transitionSpeed, true),
+    return Commands.race(new RunTransitionUntilBeamBroken(transitionRoller, transitionSpeed, true, true),
         new RunIntake(intakeRoller, intakeSpeed, true));
   }
 

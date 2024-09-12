@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ConditionalConstants;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
@@ -14,13 +15,22 @@ public class Intake extends SubsystemBase {
   public static final double MOTOR_FAST_POWER = 0.75;
   public static final double MOTOR_FULL_POWER = 1.0;
 
-  private WPI_VictorSPX m_intakeMotor =
-      new WPI_VictorSPX(Constants.CANBusIds.VictorSPXIds.IntakeMotor);
-  private WPI_VictorSPX m_conveyorMotor =
-      new WPI_VictorSPX(Constants.CANBusIds.VictorSPXIds.ConveyorMotor);
+  private WPI_VictorSPX m_intakeMotor = null;
+  private WPI_VictorSPX m_conveyorMotor = null;
+
+  private boolean isHardwareDisabled() {
+    return ConditionalConstants.SALLY;
+  }
 
   /** Creates a new Intake. */
-  public Intake() { setSubsystem("Intake"); }
+  public Intake() {
+    setSubsystem("Intake");
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_intakeMotor = new WPI_VictorSPX(Constants.CANBusIds.VictorSPXIds.IntakeMotor);
+    m_conveyorMotor = new WPI_VictorSPX(Constants.CANBusIds.VictorSPXIds.ConveyorMotor);
+  }
 
   @Override
   public void periodic() {
@@ -36,24 +46,70 @@ public class Intake extends SubsystemBase {
       m_conveyorMotor.set(MOTOR_FAST_POWER);
       m_intakeMotor.set(MOTOR_SLOW_POWER);
     } else {
+      if (isHardwareDisabled()) {
+        return;
+      }
       m_intakeMotor.set(MOTOR_OFF_POWER);
       m_conveyorMotor.set(MOTOR_OFF_POWER);
     }
   }
 
   public void intakeBallOff() {
+    if (isHardwareDisabled()) {
+      return;
+    }
     m_intakeMotor.set(MOTOR_OFF_POWER);
     m_conveyorMotor.set(MOTOR_OFF_POWER);
   }
 
-  public void conveyBallOn() { m_conveyorMotor.set(MOTOR_FULL_POWER); }
-  public void conveyBallOnSlow() { m_conveyorMotor.set(MOTOR_SLOW_POWER); }
-  public void conveyBallReverse() { m_conveyorMotor.set(-MOTOR_SLOW_POWER); }
-  public void conveyBallOff() { m_conveyorMotor.set(MOTOR_OFF_POWER); }
+  public void conveyBallOn() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_conveyorMotor.set(MOTOR_FULL_POWER);
+  }
 
-  public void onlyIntakeOn() { m_intakeMotor.set(MOTOR_FAST_POWER); }
-  public void onlyIntakeReverse() { m_intakeMotor.set(-MOTOR_FAST_POWER); }
-  public void onlyIntakeOff() { m_intakeMotor.set(MOTOR_OFF_POWER); }
+  public void conveyBallOnSlow() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_conveyorMotor.set(MOTOR_SLOW_POWER);
+  }
+
+  public void conveyBallReverse() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_conveyorMotor.set(-MOTOR_SLOW_POWER);
+  }
+
+  public void conveyBallOff() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_conveyorMotor.set(MOTOR_OFF_POWER);
+  }
+
+  public void onlyIntakeOn() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_intakeMotor.set(MOTOR_FAST_POWER);
+  }
+
+  public void onlyIntakeReverse() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_intakeMotor.set(-MOTOR_FAST_POWER);
+  }
+
+  public void onlyIntakeOff() {
+    if (isHardwareDisabled()) {
+      return;
+    }
+    m_intakeMotor.set(MOTOR_OFF_POWER);
+  }
 
   /** TODO: Implement this using beam break sensor. */
   public boolean isBallInChamber() { return false; }
@@ -67,6 +123,9 @@ public class Intake extends SubsystemBase {
   public void setBallPickupSpeed(
       double percent) { // Cap the value of percent to -1.0 to +1.0.
     double useSpeed = Math.max(-1.0, Math.min(1.0, percent));
+    if (isHardwareDisabled()) {
+      return;
+    }
     m_intakeMotor.set(useSpeed);
   }
 
@@ -81,6 +140,9 @@ public class Intake extends SubsystemBase {
   void setConveyorSpeed(
       double percent) { // Cap the value of percent to -1.0 to +1.0.
     double useSpeed = Math.max(-1.0, Math.min(1.0, percent));
+    if (isHardwareDisabled()) {
+      return;
+    }
     m_conveyorMotor.set(useSpeed);
   }
 }

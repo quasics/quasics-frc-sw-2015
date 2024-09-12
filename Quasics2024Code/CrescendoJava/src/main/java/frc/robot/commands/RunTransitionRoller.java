@@ -27,6 +27,7 @@ public class RunTransitionRoller extends Command {
   @Override
   public void initialize() {
     m_transition.setTransitionRollerSpeed(m_transitionSpeed);
+    System.out.println("Running transition roller!");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

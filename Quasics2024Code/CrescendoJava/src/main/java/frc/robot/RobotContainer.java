@@ -35,6 +35,7 @@ import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
+import frc.robot.subsystems.Vision;
 import java.util.function.Supplier;
 
 /**
@@ -54,6 +55,7 @@ public class RobotContainer {
   private final Lights m_lights = new Lights();
   private final TransitionRoller m_transitionRoller = new TransitionRoller();
   private final Shooter m_shooter = new Shooter();
+  private final Vision m_vision = new Vision();
 
   private final boolean ARCADE_DRIVE = true; // false for tank drive
 

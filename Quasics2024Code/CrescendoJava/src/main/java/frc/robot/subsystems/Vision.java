@@ -7,12 +7,17 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import java.util.List;
 
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
   
-  PhotonCamera camera = new PhotonCamera("photonvision");
+  PhotonCamera camera = new PhotonCamera("USB_Camera");
+
+  //List<AprilTag> aprilTags = new List(new AprilTag(0, null))
 
   public Vision() {
   }
@@ -21,5 +26,6 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     var result = camera.getLatestResult();
     SmartDashboard.putNumber("latency", result.getLatencyMillis());
+    SmartDashboard.putString("found target?", result.hasTargets() ? "true" : "false");
   }
 }

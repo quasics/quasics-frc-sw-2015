@@ -12,17 +12,17 @@ public class RunTransitionUntilBeamBroken extends Command {
   
   private final TransitionRoller m_transition;
   private final double m_transitionSpeed;
-  private final boolean m_transitionTakingIn;
+  private final boolean m_enableSensor;
 
   /** Creates a new RunTransitionUntilBeamBroken. */
-  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed, boolean transitionTakingIn) {
+  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed, boolean transitionTakingIn, boolean enableSensor) {
     m_transition = transitionRoller;
     if (transitionTakingIn) {
       m_transitionSpeed = Math.abs(transitionSpeed);
     } else {
       m_transitionSpeed = -Math.abs(transitionSpeed);
     }
-    m_transitionTakingIn = transitionTakingIn;
+    m_enableSensor = enableSensor;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(transitionRoller);
   }
@@ -32,6 +32,7 @@ public class RunTransitionUntilBeamBroken extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Running transition roller until beam broken!");
     m_transition.setTransitionRollerSpeed(m_transitionSpeed);
   }
 
@@ -50,6 +51,9 @@ public class RunTransitionUntilBeamBroken extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_transition.input.get();
+    if (m_enableSensor) {
+      return !m_transition.input.get();
+    }
+    return false;
   }
 }

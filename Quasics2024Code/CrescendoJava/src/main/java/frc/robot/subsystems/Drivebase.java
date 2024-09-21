@@ -49,7 +49,7 @@ public class Drivebase extends SubsystemBase {
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(1.0);
 
   /** Maximum rotational speed is 1/2 rotation per second. */
-  public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI/2);
+  public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
   public static final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
 

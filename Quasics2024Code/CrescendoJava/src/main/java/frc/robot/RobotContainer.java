@@ -35,6 +35,7 @@ import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
+import frc.robot.subsystems.Vision;
 import java.util.function.Supplier;
 
 /**
@@ -46,6 +47,7 @@ import java.util.function.Supplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = false;
+  private boolean m_enableSensors = true;
 
   private final Drivebase m_drivebase = new Drivebase();
   private final Climbers m_climbers = new Climbers();
@@ -53,6 +55,7 @@ public class RobotContainer {
   private final Lights m_lights = new Lights();
   private final TransitionRoller m_transitionRoller = new TransitionRoller();
   private final Shooter m_shooter = new Shooter();
+  private final Vision m_vision = new Vision();
 
   private final boolean ARCADE_DRIVE = true; // false for tank drive
 
@@ -66,6 +69,7 @@ public class RobotContainer {
       new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
 
   Trigger switchDriveTrigger;
+  Trigger sensorTrigger;
 
   SendableChooser<String> m_overallOptions = new SendableChooser<String>();
   SendableChooser<String> m_positionOptions = new SendableChooser<String>();
@@ -296,8 +300,9 @@ public class RobotContainer {
   }
 
   private Command IntakeHelperCommandUntilBeamBroken(boolean takingin) {
-    return Commands.parallel(new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin),
+    return Commands.parallel(new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin, m_enableSensors),
         new RunIntake(m_intakeRoller, .6, takingin));
+
   }
 
   public static Command shootingSequence(
@@ -324,6 +329,11 @@ public class RobotContainer {
     Trigger DropNote =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
             .whileTrue(IntakeHelperCommand(false));
+
+    sensorTrigger =
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
+            .onTrue(new InstantCommand(() -> {m_enableSensors = !m_enableSensors;
+              System.out.println(m_enableSensors ? "sensors enabled" : "sensors disabled");}));
   }
 
   private void ConfigureOperatorButtons() {
@@ -366,4 +376,5 @@ public class RobotContainer {
     return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter,
         overallOperation, positionOption, score2Option, score3Option, isBlue);
   }
+
 }

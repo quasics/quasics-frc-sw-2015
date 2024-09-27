@@ -9,7 +9,7 @@ Driver controller (Logitech)
 * Right shoulder - Turbo mode (while held)
 * Left trigger - Intake note (while held)
 * Right trigger - Drop note (while held)
-* Start -
+* Start - Toggle enable sensors
 * Back -
 
 

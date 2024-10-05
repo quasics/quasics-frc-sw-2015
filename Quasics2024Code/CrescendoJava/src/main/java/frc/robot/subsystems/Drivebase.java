@@ -20,6 +20,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -63,11 +64,14 @@ public class Drivebase extends SubsystemBase {
   final private DifferentialDriveOdometry m_odometry =
       new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
+  private final DifferentialDrivePoseEstimator m_estimator;
+
   private final Pigeon2 m_pigeon = new Pigeon2(Constants.CanBusIds.PIGEON2_CAN_ID);
 
   /** Creates a new Drivebase. */
   public Drivebase() {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
+    m_estimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     resetOdometry();
     setupSmartDashboard();
     configureEncoders();
@@ -94,6 +98,8 @@ public class Drivebase extends SubsystemBase {
     } else {
       drive = "Coasting Mode";
     }
+
+    /*
     SmartDashboard.putNumber("Yaw", yaw);
     SmartDashboard.putNumber("Left distance", leftDistance);
     SmartDashboard.putNumber("Right distance", rightDistance);
@@ -101,13 +107,15 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Right velocity", rightVelocity);
     SmartDashboard.putNumber("Left voltage", leftVoltage);
     SmartDashboard.putNumber("Right voltage", rightVoltage);
-
+    */
 
     SmartDashboard.putString("Driving Mode", drive);
     Pose2d pose = getPose();
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
+
+    m_estimator.update(m_odometry.getPoseMeters().getRotation(), leftDistance, rightDistance);
 
   }
 
@@ -116,11 +124,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   private void updateOdometry() {
-    double angle = getYaw();
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
-    // todo: convert to radians better
-    //m_odometry.update(new Rotation2d(angle / 180 * 3.141592), leftDistance, rightDistance);
     m_odometry.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
 
   }
@@ -143,7 +148,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_estimator.getEstimatedPosition();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {

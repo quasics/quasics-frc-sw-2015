@@ -5,20 +5,42 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonCamera;
+
+
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import java.util.List;
-
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import static edu.wpi.first.units.Units.*;
+import java.util.*;
+import java.math.*;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
   
   PhotonCamera camera = new PhotonCamera("USB_Camera");
 
-  //List<AprilTag> aprilTags = new List(new AprilTag(0, null))
+  List<AprilTag> tags = Arrays.asList(
+    new AprilTag(586, new Pose3d(Inches.of(0).in(Meters), 0, 17, new Rotation3d())),
+    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d())),
+    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d())),
+    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d()))
+  );
 
+
+  AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54, 27);
+
+  Transform3d robotToCam = new Transform3d(new Translation3d(0.3048, 0, 0), new Rotation3d());
+  PhotonPoseEstimator estimator = new PhotonPoseEstimator(aprilTags, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, robotToCam);
+  
   public Vision() {
   }
 

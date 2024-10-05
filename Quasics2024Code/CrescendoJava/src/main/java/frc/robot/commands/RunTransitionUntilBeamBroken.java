@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TransitionRoller;
 import frc.robot.commands.RunTransitionRoller;
+import java.util.function.Supplier;
+
 
 public class RunTransitionUntilBeamBroken extends Command {
   

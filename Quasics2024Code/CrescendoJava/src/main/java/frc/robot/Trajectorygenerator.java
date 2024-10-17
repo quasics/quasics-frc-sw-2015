@@ -108,11 +108,11 @@ public class Trajectorygenerator {
     } else { // margaret
       ramseteCommand = new RamseteCommand(trajectory, drivebase::getPose,
           new RamseteController(kRamseteB, kRamseteZeta),
-          new SimpleMotorFeedforward(PathWeaverConstantsMargaret.kS, PathWeaverConstantsMargaret.kV,
-              PathWeaverConstantsMargaret.kA),
+          new SimpleMotorFeedforward(PathWeaverConstantsSally.kS, PathWeaverConstantsSally.kV,
+              PathWeaverConstantsSally.kA),
           kDriveKinematics, drivebase::getWheelSpeeds,
-          new PIDController(PathWeaverConstantsMargaret.kP, 0, 0),
-          new PIDController(PathWeaverConstantsMargaret.kP, 0, 0),
+          new PIDController(PathWeaverConstantsSally.kP, 0, 0),
+          new PIDController(PathWeaverConstantsSally.kP, 0, 0),
           // RamseteCommand passes volts to the callback
           drivebase::setVoltages, drivebase);
     }

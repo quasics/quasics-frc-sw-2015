@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
   private TalonFX shootingMotor = null;
 
   /** Experimental: servo to adjust the shooting angle. */
-  private Servo positionServo = new Servo(Constants.PwmIds.ShooterServo);
+  private Servo positionServo = null;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -58,6 +58,7 @@ public class Shooter extends SubsystemBase {
     SetServoPosition(0.0);
 
     shootingMotor = new TalonFX(Constants.CANBusIds.TalonFXIds.ShootingMotor);
+    positionServo = new Servo(Constants.PwmIds.ShooterServo);
   }
 
   @Override

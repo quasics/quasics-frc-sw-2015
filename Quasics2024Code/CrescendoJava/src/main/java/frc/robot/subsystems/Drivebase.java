@@ -115,7 +115,7 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Y", pose.getY());
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
 
-    m_estimator.update(m_odometry.getPoseMeters().getRotation(), leftDistance, rightDistance);
+    m_estimator.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
 
   }
 

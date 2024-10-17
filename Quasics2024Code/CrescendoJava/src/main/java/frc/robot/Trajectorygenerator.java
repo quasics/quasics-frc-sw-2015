@@ -10,10 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.units.Distance;
@@ -30,8 +29,6 @@ import frc.robot.subsystems.Drivebase;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-
-import javax.print.attribute.standard.PrinterLocation;
 
 public class Trajectorygenerator {
   public static Command GetCommandForTrajectory(String fileToLoad, Drivebase drivebase) {
@@ -70,12 +67,13 @@ public class Trajectorygenerator {
     config.setReversed(true);
 
     // An example trajectory to follow. All units in meters.
-    /* 
+    /*
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
+            // TODO: Add the waypoints back in again.....
             List.of(),
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(-3, 0, new Rotation2d(0)),
@@ -83,12 +81,8 @@ public class Trajectorygenerator {
             config);
     */
 
-
-    
-    
     String pathName = "output/" + fileToLoad + ".wpilib.json";
     Trajectory trajectory = new Trajectory();
-
 
     try {
       Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(pathName);
@@ -98,7 +92,6 @@ public class Trajectorygenerator {
     }
 
     PrintTrajectoryStates(trajectory);
-
 
     RamseteCommand ramseteCommand;
 

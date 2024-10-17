@@ -92,7 +92,7 @@ public class RobotContainer {
     addScore3OptionsToSmartDashboard();
     addSysIdButtonsToSmartDashboard();
     maybeAddCamera();
-   
+
     m_lights.setDefaultCommand(new MatchPlayLighting(m_lights));
   }
 
@@ -184,15 +184,21 @@ public class RobotContainer {
         "Reset Revolutions", new InstantCommand(() -> m_climbers.ResetRevolutions()));
     SmartDashboard.putData(
         "Set Revolutions", new InstantCommand(() -> m_climbers.SetRevolutions()));
-    SmartDashboard.putData("Lighting red", new InstantCommand(() -> m_lights.setStripColor(255, 0, 0)));
-    SmartDashboard.putData("Lighting blue", new InstantCommand(() -> m_lights.setStripColor(0, 0, 255)));
+    SmartDashboard.putData(
+        "Lighting red", new InstantCommand(() -> m_lights.setStripColor(255, 0, 0)));
+    SmartDashboard.putData(
+        "Lighting blue", new InstantCommand(() -> m_lights.setStripColor(0, 0, 255)));
   }
 
   private void addSysIdButtonsToSmartDashboard() {
-    SmartDashboard.putData("Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
@@ -217,7 +223,6 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private void configureBindings() {
-
     m_tankDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
 
@@ -267,7 +272,7 @@ public class RobotContainer {
 
     switchDriveTrigger =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
-            .onTrue(new InstantCommand(() -> {m_switchDrive = !m_switchDrive;}));
+            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
     if (ARCADE_DRIVE) {
       m_drivebase.setDefaultCommand(
@@ -279,7 +284,7 @@ public class RobotContainer {
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo = 
+    final boolean isTurbo =
         m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
     final boolean isTurtle =
         m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
@@ -293,16 +298,15 @@ public class RobotContainer {
     }
   }
 
-
   private Command IntakeHelperCommand(boolean takingin) {
     return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin),
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 
   private Command IntakeHelperCommandUntilBeamBroken(boolean takingin) {
-    return Commands.parallel(new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin, m_enableSensors),
+    return Commands.parallel(
+        new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin, m_enableSensors),
         new RunIntake(m_intakeRoller, .6, takingin));
-
   }
 
   public static Command shootingSequence(
@@ -332,8 +336,10 @@ public class RobotContainer {
 
     sensorTrigger =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
-            .onTrue(new InstantCommand(() -> {m_enableSensors = !m_enableSensors;
-              System.out.println(m_enableSensors ? "sensors enabled" : "sensors disabled");}));
+            .onTrue(new InstantCommand(() -> {
+              m_enableSensors = !m_enableSensors;
+              System.out.println(m_enableSensors ? "sensors enabled" : "sensors disabled");
+            }));
   }
 
   private void ConfigureOperatorButtons() {
@@ -376,5 +382,4 @@ public class RobotContainer {
     return Autos.getAutonomousCommand(m_drivebase, m_intakeRoller, m_transitionRoller, m_shooter,
         overallOperation, positionOption, score2Option, score3Option, isBlue);
   }
-
 }

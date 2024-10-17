@@ -32,7 +32,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * This includes simulator support, as well as some initial code to enable the
  * integration of vision-based pose estimation (using AprilTags for pose
  * estimates) into the robot's planning.
- * 
+ *
  * When running under simulation, the raw camera stream (showing the robot's
  * simulated "forward view") will be available at http://localhost:1181, and the
  * processed stream is at http://localhost:1182. They can also be found in the
@@ -56,7 +56,7 @@ public class VisionSubsystem extends SubsystemBase {
    * seen. In such cases, there may be a couple of possible poses that can be
    * calculated, due to ambiguity in the vision data, so the options are largely
    * focused on how to come up with a single answer in this case.
-   * 
+   *
    * Note that in "production code", I likely wouldn't bother defining one enum
    * that simply maps to another; I'd just use the enum from PhotonVision. (But
    * providing a venue for additional documentation is helpful in sample code.)
@@ -107,7 +107,8 @@ public class VisionSubsystem extends SubsystemBase {
    * The layout of the AprilTags on the field. This is used for the pose
    * estimation (as well as in the simulator, when it's rendering the tag).
    */
-  public static final AprilTagFieldLayout kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+  public static final AprilTagFieldLayout kTagLayout =
+      AprilTagFields.kDefaultField.loadAprilTagLayoutField();
 
   /**
    * Pose estimator from PhotonVision. Note that (per docs) the estimated poses
@@ -134,7 +135,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * Root constructor, to which all of the others delegate the real work.
-   * 
+   *
    * @param cameraName    name under which the camera is publishing its data
    * @param robotToCamera camera mounting transformation (used to convert
    *                      robot-centered poses to camera-centered)
@@ -160,8 +161,11 @@ public class VisionSubsystem extends SubsystemBase {
     //
     // Set up the vision pose estimator
     m_photonEstimator = new PhotonPoseEstimator(
-        kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera,
-        kRobotToCam);
+        kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera, kRobotToCam);
+    // Another ctor takes 2 additional parameters, providing an estimated
+    // uncertainty to use for the odometry measurements, and an estimated
+    // uncertainty for the visual-based corrections (assumed to be less
+    // frequent).
 
     // Configure what to do in a multi-tag environment (like Crescendo) when only
     // one tag can be seen.
@@ -191,9 +195,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     return latestResult.getTargets()
         .stream() // Generates a (lazy-evaluated) stream of tracked targets to be considered
-        .filter(t -> t.getFiducialId() == tagId) // Filters the stream to those matching our target ID
+        .filter(
+            t -> t.getFiducialId() == tagId) // Filters the stream to those matching our target ID
         .findFirst() // Limits evaluation to just the 1st match
-    ;
+        ;
   }
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +245,7 @@ public class VisionSubsystem extends SubsystemBase {
   /**
    * Updates the pose that will be used as a basis for reference when the
    * CrossCheckWithReferencePose mode is selected.
-   * 
+   *
    * @param pose the reference pose to set
    */
   public void updateReferencePose(Pose2d pose) {
@@ -252,7 +257,7 @@ public class VisionSubsystem extends SubsystemBase {
   /**
    * Updates the pose that will be used as a basis for reference when the
    * AssumeMinimumMovement mode is selected.
-   * 
+   *
    * @param pose the reference pose to set
    */
   public void updateLastPose(Pose2d pose) {
@@ -290,8 +295,7 @@ public class VisionSubsystem extends SubsystemBase {
       return;
     }
 
-    BulletinBoard.common
-        .getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
+    BulletinBoard.common.getValue(SimulationDrivebase.SIMULATOR_POSE_KEY, Pose2d.class)
         .ifPresent(poseObject -> visionSim.update((Pose2d) poseObject));
 
     // Update the simulator to reflect where the estimated pose suggests that we
@@ -299,9 +303,8 @@ public class VisionSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       m_lastEstimatedPose.ifPresentOrElse(
           // Do this with the data in m_lastEstimatedPose (if it has some)
-          est -> getSimDebugField()
-              .getObject("VisionEstimation")
-              .setPose(est.estimatedPose.toPose2d()),
+          est
+          -> getSimDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()),
           // If we have nothing in m_lastEstimatedPose, do this
           () -> {
             if (m_estimateRecentlyUpdated)
@@ -367,13 +370,13 @@ public class VisionSubsystem extends SubsystemBase {
     // should be false if we're not using the raw video.)
     cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO);
 
-    System.out.println(
-        "-------------------------------------------------\n"
-            + "Vision simulator is configured.  URLs are:\n"
-            + "* http://localhost:1181 (raw stream)\n"
-            + "* http://localhost:1182 (processed stream)\n"
-            + "Wireframe rendering is " + (ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO ? "" : "not") + "enabled\n"
-            + "-------------------------------------------------");
+    System.out.println("-------------------------------------------------\n"
+        + "Vision simulator is configured.  URLs are:\n"
+        + "* http://localhost:1181 (raw stream)\n"
+        + "* http://localhost:1182 (processed stream)\n"
+        + "Wireframe rendering is " + (ENABLE_WIREFRAME_RENDERING_ON_RAW_VIDEO ? "" : "not")
+        + "enabled\n"
+        + "-------------------------------------------------");
   }
 
   /** Reset pose history of the robot in the vision system simulation. */

@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -34,6 +36,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMax;
 import java.lang.Math;
+import java.util.*;
+
+import org.photonvision.EstimatedRobotPose;
+
+import frc.robot.subsystems.Vision;
 
 public class Drivebase extends SubsystemBase {
   private final DifferentialDriveKinematics m_kinematics;
@@ -49,7 +56,7 @@ public class Drivebase extends SubsystemBase {
   /** Maximum linear speed is 3 meters per second. */
   public static final Measure<Velocity<Distance>> MAX_SPEED = MetersPerSecond.of(1.0);
 
-  /** Maximum rotational speed is 1/2 rotation per second. */
+  /** Maximum rotational speed is 1 rotation per second. */
   public static final Measure<Velocity<Angle>> MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
   public static final Measure<Distance> TRACK_WIDTH_METERS = Meters.of(0.5588);
@@ -60,6 +67,8 @@ public class Drivebase extends SubsystemBase {
   static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
   static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
   static final double DRIVEBASE_GEAR_RATIO = 8.45;
+
+  private final Vision m_vision = new Vision();
 
   final private DifferentialDriveOdometry m_odometry =
       new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
@@ -127,7 +136,17 @@ public class Drivebase extends SubsystemBase {
     double leftDistance = m_leftEncoder.getPosition();
     double rightDistance = m_rightEncoder.getPosition();
     m_odometry.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
-
+    m_estimator.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
+    m_vision.visionEstimator.setReferencePose(m_estimator.getEstimatedPosition());
+    Optional<EstimatedRobotPose> result = m_vision.visionEstimator.update();
+    if (result.isPresent()) {
+      EstimatedRobotPose pose = result.get();
+      Pose2d toPrint = pose.estimatedPose.toPose2d();
+      SmartDashboard.putNumber("returned x", toPrint.getX());
+      SmartDashboard.putNumber("returned y", toPrint.getY());
+      SmartDashboard.putNumber("returned angle", toPrint.getRotation().getDegrees());
+      m_estimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+    }
   }
 
   public void setupSmartDashboard() {
@@ -179,6 +198,7 @@ public class Drivebase extends SubsystemBase {
     resetEncoders();
     m_pigeon.reset();
     m_odometry.resetPosition(new Rotation2d(), 0, 0, new Pose2d());
+    m_estimator.resetPosition(new Rotation2d(), 0, 0, new Pose2d());
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -192,6 +212,7 @@ public class Drivebase extends SubsystemBase {
     //    rotation, m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
     m_odometry.resetPosition(
         m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    m_estimator.resetPosition(m_pigeon.getRotation2d(), 0, 0, pose);
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {

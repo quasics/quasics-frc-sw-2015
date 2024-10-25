@@ -13,8 +13,6 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -45,6 +43,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotSettings;
+import java.util.Optional;
 
 /**
  * Defines an abstract base class for common "drivebase functionality", allowing
@@ -97,7 +96,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /**
    * Constructor.
-   * 
+   *
    * @param robot specifies what robot we're trying to build (and its settings)
    */
   public AbstractDrivebase(RobotSettings.Robot robot) {
@@ -124,18 +123,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/identification-routine.html#track-width
    */
-  protected AbstractDrivebase(
-      Measure<Distance> trackWidthMeters,
-      double kP, double kI, double kD,
+  protected AbstractDrivebase(Measure<Distance> trackWidthMeters, double kP, double kI, double kD,
       Measure<Voltage> kS, Measure<Per<Voltage, Velocity<Distance>>> kV,
       Measure<Per<Voltage, Velocity<Velocity<Distance>>>> kA) {
     m_leftPIDController = new PIDController(kP, kI, kD);
     m_rightPIDController = new PIDController(kP, kI, kD);
-    m_feedforward = new SimpleMotorFeedforward(kS.in(Volts), kV.in(VoltsPerMeterPerSecond),
-        kA.in(VoltsPerMeterPerSecondSquared));
+    m_feedforward = new SimpleMotorFeedforward(
+        kS.in(Volts), kV.in(VoltsPerMeterPerSecond), kA.in(VoltsPerMeterPerSecondSquared));
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
-    m_poseEstimator = new DifferentialDrivePoseEstimator(
-        m_kinematics, new Rotation2d(), /* leftDistanceMeters */ 0,
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(),
+        /* leftDistanceMeters */ 0,
         /* rightDistanceMeters */ 0, /* initialPostMeters */ new Pose2d());
 
     // TODO: Move drive base dimensions into new data from the subclasses
@@ -160,8 +157,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -189,8 +186,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /** @return current wheel speeds (in m/s) */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftEncoder_HAL().getVelocity(),
-        getRightEncoder_HAL().getVelocity());
+    return new DifferentialDriveWheelSpeeds(
+        getLeftEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity());
   }
 
   /** Update the robot's odometry. */
@@ -198,10 +195,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     final Rotation2d rotation = getGyro_HAL().getRotation2d();
     final Measure<Distance> leftDistanceMeters = getLeftEncoder_HAL().getPosition();
     final Measure<Distance> rightDistanceMeters = getRightEncoder_HAL().getPosition();
-    m_odometry.update(rotation, leftDistanceMeters.in(Meters),
-        rightDistanceMeters.in(Meters));
-    m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
-        rightDistanceMeters.in(Meters));
+    m_odometry.update(rotation, leftDistanceMeters.in(Meters), rightDistanceMeters.in(Meters));
+    m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters), rightDistanceMeters.in(Meters));
   }
 
   /** Get the current robot pose, based on odometery. */
@@ -240,8 +235,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public void integrateVisionMeasurement(Pose2d pose, double timestampSeconds) {
     /**
-     * TODO: Update code to make it more robust w.r.t. bad vision data.
-     *
      * From the docs: "To promote stability of the pose estimate and make it
      * robust to bad vision data, we recommend only adding vision measurements
      * that are already within one meter or so of the current pose estimate."
@@ -249,7 +242,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
      * Another option is to downgrade the assumed reliability of the
      * measurement, based on the distance. (See
      * https://www.chiefdelphi.com/t/photonvision-swerveposeestimator-produces-wrong-pose/430906/6)
-     * 
+     *
      * Some possible considerations from the CD thread:
      * * It is much more reliable if you only calculate poses when you see more than
      * one tag (hence SolvePnP)
@@ -262,21 +255,20 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     // Figure out how far we *think* we are
     Pose2d currentEstimate = m_poseEstimator.getEstimatedPosition();
     var transform = currentEstimate.minus(pose);
-    final double distanceFromCurrentPosition = Math
-        .sqrt(transform.getX() * transform.getX() + transform.getY() * transform.getY());
+    final double distanceFromCurrentPosition =
+        Math.sqrt(transform.getX() * transform.getX() + transform.getY() * transform.getY());
+    logValue("Vision delta", distanceFromCurrentPosition);
 
     switch (INTEGRATION_MODEL) {
       case eDistanceScaling:
         // Add in the vision-based estimate, using the distance as a "trust-scaling"
         // factor.
-        m_poseEstimator.addVisionMeasurement(
-            pose, timestampSeconds,
+        m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
             VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
         break;
 
       case eDistanceSquaredScaling:
-        m_poseEstimator.addVisionMeasurement(
-            pose, timestampSeconds,
+        m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
             VecBuilder.fill(distanceFromCurrentPosition * distanceFromCurrentPosition,
                 distanceFromCurrentPosition * distanceFromCurrentPosition, 100));
         break;
@@ -294,7 +286,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         // Only integrate the distance if it's within a meter of our current estimate.
         if (distanceFromCurrentPosition <= 1.0) {
           m_poseEstimator.addVisionMeasurement(pose, timestampSeconds,
-              VecBuilder.fill(distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
+              VecBuilder.fill(
+                  distanceFromCurrentPosition / 2, distanceFromCurrentPosition / 2, 100));
         }
         break;
 
@@ -324,8 +317,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * @param xSpeed the speed for the x axis (in m/s)
    * @param rot    the rotation (in radians/s)
    */
-  public final void arcadeDrive(Measure<Velocity<Distance>> xSpeed,
-      Measure<Velocity<Angle>> rot) {
+  public final void arcadeDrive(Measure<Velocity<Distance>> xSpeed, Measure<Velocity<Angle>> rot) {
     logValue("xSpeed", xSpeed.in(MetersPerSecond));
     logValue("rotSpeed", rot.in(RadiansPerSecond));
 
@@ -343,20 +335,17 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     logValue("xSpeed (capped)", xSpeed.in(MetersPerSecond));
     logValue("rotSpeed (capped)", rot.in(RadiansPerSecond));
 
-    setSpeeds(
-        m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
+    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
   /** Sets speeds for the drivetrain motors. */
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond,
-        true);
+    setSpeedsImpl(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond, true);
   }
 
   /** Sets speeds for the drivetrain motors. */
-  public final void setSpeedsImpl(double leftMetersPerSecond,
-      double rightMetersPerSecond,
-      boolean includePid) {
+  public final void setSpeedsImpl(
+      double leftMetersPerSecond, double rightMetersPerSecond, boolean includePid) {
     logValue("leftSpeed", leftMetersPerSecond);
     logValue("rightSpeed", rightMetersPerSecond);
 
@@ -372,20 +361,19 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     logValue("rightFF", rightFeedforward);
 
     // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftPidOutput = includePid ? m_leftPIDController.calculate(
-        getLeftEncoder_HAL().getVelocity().in(MetersPerSecond),
-        leftStabilized)
+    double leftPidOutput = includePid
+        ? m_leftPIDController.calculate(
+              getLeftEncoder_HAL().getVelocity().in(MetersPerSecond), leftStabilized)
         : 0;
-    double rightPidOutput = includePid ? m_rightPIDController.calculate(
-        getRightEncoder_HAL().getVelocity().in(MetersPerSecond),
-        rightStabilized)
+    double rightPidOutput = includePid
+        ? m_rightPIDController.calculate(
+              getRightEncoder_HAL().getVelocity().in(MetersPerSecond), rightStabilized)
         : 0;
     logValue("leftPid", leftPidOutput);
     logValue("rightPid", rightPidOutput);
 
     // OK, apply those to the actual hardware.
-    setMotorVoltages(leftFeedforward + leftPidOutput,
-        rightFeedforward + rightPidOutput);
+    setMotorVoltages(leftFeedforward + leftPidOutput, rightFeedforward + rightPidOutput);
   }
 
   /**
@@ -413,12 +401,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
     // If an estimated position has been posted by the vision subsystem, integrate
     // it into our estimate.
-    Optional<Object> optionalPose = BulletinBoard.common.getValue(VisionSubsystem.BULLETIN_BOARD_POSE_KEY,
-        Pose2d.class);
+    Optional<Object> optionalPose =
+        BulletinBoard.common.getValue(VisionSubsystem.BULLETIN_BOARD_POSE_KEY, Pose2d.class);
     optionalPose.ifPresent(poseObject -> {
-      BulletinBoard.common.getValue(VisionSubsystem.BULLETIN_BOARD_TIMESTAMP_KEY,
-          Double.class)
-          .ifPresent(timestampObject -> integrateVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+      BulletinBoard.common.getValue(VisionSubsystem.BULLETIN_BOARD_TIMESTAMP_KEY, Double.class)
+          .ifPresent(timestampObject
+              -> integrateVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
     });
 
     // Publish our estimated position
@@ -435,8 +423,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     final double speedPercentage = m_voltageDeadbandEnforcer.limit(
         // Use the % of max voltage
         percentMaxVoltage
-    // Note: originally used - m_voltageDeadbandEnforcer.limit(mps /
-    // MAX_SPEED);
+        // Note: originally used - m_voltageDeadbandEnforcer.limit(mps /
+        // MAX_SPEED);
     );
     return speedPercentage;
   }
@@ -451,8 +439,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public void arcadeDrive(double xSpeed, double rotationSpeed, boolean squareInputs) {
     WheelSpeeds speeds = DifferentialDrive.arcadeDriveIK(xSpeed, rotationSpeed, squareInputs);
 
-    double adjustedLeftPercent = drivePercentageDeadband.limit(speeds.left * MOTORS_PERCENT_MAX_OUTPUT);
-    double adjustedRightPercent = drivePercentageDeadband.limit(speeds.right * MOTORS_PERCENT_MAX_OUTPUT);
+    double adjustedLeftPercent =
+        drivePercentageDeadband.limit(speeds.left * MOTORS_PERCENT_MAX_OUTPUT);
+    double adjustedRightPercent =
+        drivePercentageDeadband.limit(speeds.right * MOTORS_PERCENT_MAX_OUTPUT);
     tankDrivePercent_HAL(adjustedLeftPercent, adjustedRightPercent);
   }
 
@@ -480,12 +470,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   /**
    * Directly sets voltages for left/right motors.
-   * 
+   *
    * @param leftVoltage  voltage for left-side motors
    * @param rightVoltage voltage for right-side motors
    */
-  protected abstract void setMotorVoltages_HAL(double leftVoltage,
-      double rightVoltage);
+  protected abstract void setMotorVoltages_HAL(double leftVoltage, double rightVoltage);
 
   /////////////////////////////////////////////////////////////////////////////////
   //
@@ -506,43 +495,40 @@ public abstract class AbstractDrivebase extends SubsystemBase {
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
           // Tell SysId how to plumb the driving voltage to the motors.
-          (Measure<Voltage> volts) -> {
+          (Measure<Voltage> volts)
+              -> {
             final double rawVolts = volts.in(Volts);
             setMotorVoltages_HAL(rawVolts, rawVolts);
           },
           // Tell SysId how to record a frame of data for each motor on the
           // mechanism being characterized.
-          log -> {
+          log
+          -> {
             final var leftEncoder = getLeftEncoder_HAL();
             final var rightEncoder = getRightEncoder_HAL();
             final var leftVoltage = getLeftVoltage_HAL();
             final var rightVoltage = getRightVoltage_HAL();
 
             if (DUMP_SYSID_TO_CONSOLE) {
-              System.err.println(
-                  "Logging "
-                      + "left="
-                      + String.format("%,.3f", leftVoltage) + "V, "
-                      + String.format("%,.3f", leftEncoder.getPosition().baseUnitMagnitude()) + "m, "
-                      + String.format("%,.3f", leftEncoder.getVelocity().baseUnitMagnitude()) + "m/s   "
-                      + "right="
-                      + String.format("%,.3f", rightVoltage) + "V, "
-                      + String.format("%,.3f", rightEncoder.getPosition().baseUnitMagnitude()) + "m, "
-                      + String.format("%,.3f", rightEncoder.getVelocity().baseUnitMagnitude()) + "m/s");
+              System.err.println("Logging "
+                  + "left=" + String.format("%,.3f", leftVoltage) + "V, "
+                  + String.format("%,.3f", leftEncoder.getPosition().baseUnitMagnitude()) + "m, "
+                  + String.format("%,.3f", leftEncoder.getVelocity().baseUnitMagnitude()) + "m/s   "
+                  + "right=" + String.format("%,.3f", rightVoltage) + "V, "
+                  + String.format("%,.3f", rightEncoder.getPosition().baseUnitMagnitude()) + "m, "
+                  + String.format("%,.3f", rightEncoder.getVelocity().baseUnitMagnitude()) + "m/s");
             }
 
             // Record a frame for the left motors. Since these share an encoder,
             // we consider the entire group to be one motor.
             log.motor("drive-left")
-                .voltage(m_appliedVoltage.mut_replace(
-                    leftVoltage, Volts))
+                .voltage(m_appliedVoltage.mut_replace(leftVoltage, Volts))
                 .linearPosition(leftEncoder.getPosition())
                 .linearVelocity(leftEncoder.getVelocity());
             // Record a frame for the right motors. Since these share an
             // encoder, we consider the entire group to be one motor.
             log.motor("drive-right")
-                .voltage(m_appliedVoltage.mut_replace(
-                    rightVoltage, Volts))
+                .voltage(m_appliedVoltage.mut_replace(rightVoltage, Volts))
                 .linearPosition(rightEncoder.getPosition())
                 .linearVelocity(rightEncoder.getVelocity());
           },

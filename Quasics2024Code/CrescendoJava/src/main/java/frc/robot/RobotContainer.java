@@ -32,11 +32,9 @@ import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
-import frc.robot.subsystems.KrakenTest;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
-import frc.robot.subsystems.KrakenTest;
 
 import java.util.function.Supplier;
 
@@ -57,7 +55,6 @@ public class RobotContainer {
   private final Lights m_lights = new Lights();
   private final TransitionRoller m_transitionRoller = new TransitionRoller();
   private final Shooter m_shooter = new Shooter();
-  private final KrakenTest m_kraken = new KrakenTest();
 
   private final boolean ARCADE_DRIVE = true; // false for tank drive
 

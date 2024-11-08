@@ -39,7 +39,7 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54*12/39.37, 27*12/39.37);
 
   Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
-  public PhotonPoseEstimator visionEstimator = new PhotonPoseEstimator(aprilTags, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
+  public PhotonPoseEstimator visionEstimator = new PhotonPoseEstimator(aprilTags, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, robotToCam);
 
   public Vision() {
   }

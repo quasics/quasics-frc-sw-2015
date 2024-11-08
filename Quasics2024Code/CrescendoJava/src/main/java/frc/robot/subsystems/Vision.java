@@ -29,18 +29,18 @@ public class Vision extends SubsystemBase {
   PhotonCamera camera = new PhotonCamera("USB_Camera");
 
   List<AprilTag> tags = Arrays.asList(
-    new AprilTag(586, new Pose3d(Inches.of(0).in(Meters), 0, 17, new Rotation3d())),
-    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d())),
-    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d())),
-    new AprilTag(586, new Pose3d(0, 0, 17, new Rotation3d()))
+    new AprilTag(0, new Pose3d(0, 0, 19.3/39.37, new Rotation3d())),
+    new AprilTag(1, new Pose3d(0, 23.2/39.37, 18.6/39.37, new Rotation3d())),
+    new AprilTag(585, new Pose3d(-1, -1, 18.1, new Rotation3d())),
+    new AprilTag(586, new Pose3d(26.8, -1, 20.5, new Rotation3d()))
   );
 
 
-  AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54, 27);
+  AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54*12/39.37, 27*12/39.37);
 
-  Transform3d robotToCam = new Transform3d(new Translation3d(0.3048, 0, 0), new Rotation3d());
-  PhotonPoseEstimator estimator = new PhotonPoseEstimator(aprilTags, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, camera, robotToCam);
-  
+  Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
+  public PhotonPoseEstimator visionEstimator = new PhotonPoseEstimator(aprilTags, PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY, camera, robotToCam);
+
   public Vision() {
   }
 

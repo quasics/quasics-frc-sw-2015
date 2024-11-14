@@ -112,10 +112,19 @@ public final class Constants {
     public static final String rightOfSpeaker = "Score right of speaker";
   } // public static class AutonomousScore3Options
   public static class PathWeaverConstantsSally {
+    /*
     public static final double kS = 0.19529;
     public static final double kV = 2.2329;
     public static final double kA = 0.36638;
     public static final double kP = 0.29613;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    */
+
+    public static final double kS = 0;
+    public static final double kV = 0.18741;
+    public static final double kA = 0.044339;
+    public static final double kP = 0.11025;
     public static final double kI = 0;
     public static final double kD = 0;
   }

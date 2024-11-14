@@ -137,7 +137,7 @@ public class Drivebase extends SubsystemBase {
     double rightDistance = m_rightEncoder.getPosition();
     m_odometry.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
     m_estimator.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
-    m_vision.visionEstimator.setReferencePose(m_estimator.getEstimatedPosition());
+    //m_vision.visionEstimator.setReferencePose(m_estimator.getEstimatedPosition());
     Optional<EstimatedRobotPose> result = m_vision.visionEstimator.update();
     if (result.isPresent()) {
       EstimatedRobotPose pose = result.get();

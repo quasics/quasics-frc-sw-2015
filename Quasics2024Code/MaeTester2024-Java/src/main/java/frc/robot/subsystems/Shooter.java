@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
   private TalonFX shootingMotor = null;
 
   /** Experimental: servo to adjust the shooting angle. */
-  private Servo positionServo = null;
+  // private Servo positionServo = null;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -51,14 +51,14 @@ public class Shooter extends SubsystemBase {
     }
     // Settings per AndyMark docs for the L16 Actuator/servo; see:
     // https://www.andymark.com/products/actuator-l16-r-50mm-stroke-35-1-6v
-    positionServo.setBoundsMicroseconds(2000, 1800, 1500, 1200,
-        1000);
+    // positionServo.setBoundsMicroseconds(2000, 1800, 1500, 1200,
+    // 1000);
 
     // Make sure that the shooter starts with the servo in a known position.
-    SetServoPosition(0.0);
+    // SetServoPosition(0.0);
 
     shootingMotor = new TalonFX(Constants.CANBusIds.TalonFXIds.ShootingMotor);
-    positionServo = new Servo(Constants.PwmIds.ShooterServo);
+    // positionServo = new Servo(Constants.PwmIds.ShooterServo);
   }
 
   @Override
@@ -83,30 +83,34 @@ public class Shooter extends SubsystemBase {
   }
 
   /** @return servo extension as a percentage of range (0.0 - 1.0) */
-  public double GetServoPosition() {
-    var rawPos = positionServo.getSpeed();
-    var percentPos = (rawPos - SERVO_RETRACTED_SPEED) / SERVO_POSITION_RANGE;
-    return percentPos;
-  }
+  /*
+   * public double GetServoPosition() {
+   * var rawPos = positionServo.getSpeed();
+   * var percentPos = (rawPos - SERVO_RETRACTED_SPEED) / SERVO_POSITION_RANGE;
+   * return percentPos;
+   * }
+   */
 
   /**
    * @param pos   percent extension, expressed as [0.0 - 1.0]
    */
-  public void SetServoPosition(double pos) {
-    final double cappedPercent = Math.min(1.0, Math.max(pos, 0.0));
-    if (isHardwareDisabled()) {
-      return;
-    }
-    positionServo.setSpeed(SERVO_RETRACTED_SPEED +
-                           (cappedPercent * SERVO_POSITION_RANGE));
-  }
+  /*
+   * public void SetServoPosition(double pos) {
+   * final double cappedPercent = Math.min(1.0, Math.max(pos, 0.0));
+   * if (isHardwareDisabled()) {
+   * return;
+   * }
+   * positionServo.setSpeed(SERVO_RETRACTED_SPEED +
+   * (cappedPercent * SERVO_POSITION_RANGE));
+   * }
+   */
 
   /** Increases shooting angle by POSITION_DELTA on the linear servo. */
   public void IncrementPosition() {
     if (isHardwareDisabled()) {
       return;
     }
-    SetServoPosition(GetServoPosition() + POSITION_DELTA);
+    // SetServoPosition(GetServoPosition() + POSITION_DELTA);
   }
 
   /** Decreases shooting angle by POSITION_DELTA on the linear servo. */
@@ -114,6 +118,6 @@ public class Shooter extends SubsystemBase {
     if (isHardwareDisabled()) {
       return;
     }
-    SetServoPosition(GetServoPosition() - POSITION_DELTA);
+    // SetServoPosition(GetServoPosition() - POSITION_DELTA);
   }
 }

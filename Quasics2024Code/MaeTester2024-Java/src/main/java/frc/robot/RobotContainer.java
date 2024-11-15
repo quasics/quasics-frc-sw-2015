@@ -115,10 +115,12 @@ public class RobotContainer {
         .onTrue(new RunOnlyConveyorMotorReverse(m_intake));
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.BButton))
         .onTrue(new RunOnlyConveyorMotor(m_intake));
-    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.LeftShoulder))
-        .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(1.0)));
-    new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.RightShoulder))
-        .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(0.0)));
+    // new Trigger(() ->
+    // m_driverController.getRawButton(LogitechGamePad.LeftShoulder))
+    // .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(1.0)));
+    // new Trigger(() ->
+    // m_driverController.getRawButton(LogitechGamePad.RightShoulder))
+    // .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(0.0)));
   }
 
   boolean getABooleanResult() {

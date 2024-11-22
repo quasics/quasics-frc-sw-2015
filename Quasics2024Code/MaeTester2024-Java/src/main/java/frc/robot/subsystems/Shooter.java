@@ -79,7 +79,8 @@ public class Shooter extends SubsystemBase {
     if (isHardwareDisabled()) {
       return;
     }
-    shootingMotor.set(0);
+    shootingMotor.stopMotor();
+    System.out.println("stopping motor");
   }
 
   /** @return servo extension as a percentage of range (0.0 - 1.0) */

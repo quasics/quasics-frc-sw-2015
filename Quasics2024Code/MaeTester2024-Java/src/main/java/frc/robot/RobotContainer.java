@@ -93,7 +93,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+        .whileTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
@@ -105,16 +105,16 @@ public class RobotContainer {
         // trigger something or not.
         () -> m_driverController.getRawButton(LogitechGamePad.XButton))
         // While the function called above returns true, run the specified command.
-        .onTrue(
+        .whileTrue(
             // Comand to be run while true
-            new RunShootingMotor(m_shooter, 1.0));
+            new RunShootingMotor(m_shooter, .5));
 
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.YButton))
-        .onTrue(new RunShootingMotor(m_shooter, 0.8));
+        .whileTrue(new RunShootingMotor(m_shooter, 0.8));
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.AButton))
-        .onTrue(new RunOnlyConveyorMotorReverse(m_intake));
+        .whileTrue(new RunOnlyConveyorMotorReverse(m_intake));
     new Trigger(() -> m_driverController.getRawButton(LogitechGamePad.BButton))
-        .onTrue(new RunOnlyConveyorMotor(m_intake));
+        .whileTrue(new RunOnlyConveyorMotor(m_intake));
     // new Trigger(() ->
     // m_driverController.getRawButton(LogitechGamePad.LeftShoulder))
     // .onTrue(new InstantCommand(() -> m_shooter.SetServoPosition(1.0)));

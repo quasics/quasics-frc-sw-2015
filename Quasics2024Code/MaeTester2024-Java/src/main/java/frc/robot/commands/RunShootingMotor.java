@@ -21,6 +21,7 @@ public class RunShootingMotor extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Shooter power: " + m_power);
     m_shooter.SetSpeed(m_power);
   }
 

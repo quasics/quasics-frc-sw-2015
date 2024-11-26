@@ -6,10 +6,8 @@ package frc.robot.sensors;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 

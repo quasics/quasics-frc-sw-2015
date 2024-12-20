@@ -4,11 +4,18 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -21,16 +28,30 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Drivebase m_drivebase = new Drivebase();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  Supplier<Double> m_arcadeDriveLeftStick;
+  Supplier<Double> m_arcadeDriveRightStick;
+  
+  private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+
+  private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
+
+  private final double DEADBAND_CONSTANT = 0.04;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
   }
+
+  private double getDriverAxis(int controllerCode) {
+    double axis = m_driverController.getRawAxis(controllerCode);
+    // dead band enforcer
+    return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
+  }
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -42,13 +63,39 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    m_arcadeDriveLeftStick = () -> {
+      //double scalingFactor = getDriveSpeedScalingFactor();
+      double scalingFactor = 1;
+      boolean m_switchDrive = false;
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
+      if (m_switchDrive) {
+        double joystickPercentage = axis * scalingFactor;
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
+      } else {
+        double joystickPercentage = -axis * scalingFactor;
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
+      }
+    };
+
+    m_arcadeDriveRightStick = () -> {
+      //double scalingFactor = getDriveSpeedScalingFactor();
+      double scalingFactor = 1;
+
+      double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
+      double joystickPercentage = axis * scalingFactor * .5;
+      return m_rotationLimiter.calculate(joystickPercentage);
+    };
+
+    /* old code
+    switchDriveTrigger =
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
+            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+    */
+    
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_drivebase, m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+
   }
 
   /**

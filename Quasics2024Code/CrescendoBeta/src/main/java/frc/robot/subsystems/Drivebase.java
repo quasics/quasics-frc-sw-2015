@@ -4,60 +4,63 @@
 
 package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.MutableMeasure.mutable;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-
-import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.units.VoltageUnit;
+
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
-import frc.robot.Constants.CanBusIds.SparkMax;
-import java.lang.Math;
-import java.util.*;
 
-import org.photonvision.EstimatedRobotPose;
-
-import frc.robot.subsystems.Vision;
 
 public class Drivebase extends SubsystemBase {
+  private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
   private final DifferentialDriveKinematics m_kinematics;
-  private static final Measure<Velocity<Distance>> ZERO_MPS = MetersPerSecond.of(0);
 
-  final CANSparkMax m_leftLeader = new CANSparkMax(SparkMax.LEFT_LEADER_ID, MotorType.kBrushless);
-  final CANSparkMax m_leftFollower =
-      new CANSparkMax(SparkMax.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightLeader = new CANSparkMax(SparkMax.RIGHT_LEADER_ID, MotorType.kBrushless);
-  final CANSparkMax m_rightFollower =
-      new CANSparkMax(SparkMax.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
+  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
-  /** Creates a new Drivebase. */
+  final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower =
+      new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_rightFollower =
+      new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
+  final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+  
+  public static final Distance TRACK_WIDTH_METERS = Meters.of(0.5588);
+
+      /** Creates a new Drivebase. */
   public Drivebase() {
-    m_leftFollower.follow(m_leftLeader);
-    m_rightFollower.follow(m_rightLeader);
+    m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
+
+    leftFollowerConfig.follow(SparkMaxIds.LEFT_LEADER_ID);
+    rightFollowerConfig.follow(SparkMaxIds.RIGHT_LEADER_ID);
+
+    m_leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightFollower.configure(rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
+
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
@@ -74,9 +77,13 @@ public class Drivebase extends SubsystemBase {
     m_rightLeader.set(rightSpeed);
   }
 
-  public void arcadeDrive(Measure<Velocity<Distance>> fSpeed, Measure<Velocity<Angle>> rSpeed) {
+  public void arcadeDrive(LinearVelocity fSpeed, AngularVelocity rSpeed) {
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(fSpeed, ZERO_MPS, rSpeed)));
   }
 
+  
+  public void stop() {
+    setSpeeds(0, 0);
+  }
  
 }

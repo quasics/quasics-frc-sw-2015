@@ -8,11 +8,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivebase;
-import frc.robot.commands.ExampleCommand;
 
 import java.util.function.Supplier;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = false;
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Drivebase m_drivebase = new Drivebase();
 
   Supplier<Double> m_arcadeDriveLeftStick;
@@ -38,16 +35,11 @@ public class RobotContainer {
   private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
-  private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-
+  private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.04;
 
   Trigger switchDriveTrigger;
-
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,7 +48,7 @@ public class RobotContainer {
   }
 
   private double getDriverAxis(int controllerCode) {
-    double axis = m_driveController.getRawAxis(controllerCode);
+    double axis = m_driverController.getRawAxis(controllerCode);
     // dead band enforcer
     return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
   }
@@ -71,9 +63,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_arcadeDriveLeftStick = () ->{
-      //double scalingfactor = getDrivSpeedScalingFactor();
-      double scalingFactor = .5;
+    m_arcadeDriveLeftStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = axis * scalingFactor;
@@ -85,23 +76,33 @@ public class RobotContainer {
     };
 
     m_arcadeDriveRightStick = () -> {
-      //double scalingFactor = getDriveSpeedScalingFactor();
-      double scalingFactor = 1;
+      double scalingFactor = getDriveSpeedScalingFactor();
 
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
       double joystickPercentage = axis * scalingFactor * .5;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
     switchDriveTrigger =
-    new Trigger(() -> m_driveController.getRawButton(Constants.LogitechGamePad.BButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
         .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
     m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+  }
+
+  private double getDriveSpeedScalingFactor() {
+    final boolean isTurbo =
+        m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurtle =
+        m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+
+    if (isTurbo) {
+      return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
+    } else if (isTurtle) {
+      return Constants.RobotSpeedScaling.TURTLE_MODE_SPEED_SCALING;
+    } else {
+      return Constants.RobotSpeedScaling.NORMAL_MODE_SPEED_SCALING;
+    }
   }
 
   /**
@@ -111,6 +112,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return Autos.exampleAuto();
+
   }
 }

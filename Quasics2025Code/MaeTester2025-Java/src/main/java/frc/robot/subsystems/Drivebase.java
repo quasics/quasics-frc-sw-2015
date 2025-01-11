@@ -25,6 +25,8 @@ public class Drivebase extends SubsystemBase {
   static final double DRIVEBASE_GEAR_RATIO = 10.71;
   static final double TICKS_PER_REV_FOR_NEO_MOTOR = 42;
 
+  // TODO: We *really* need to replace the use of a motor controller group with
+  // CAN-based "leader/follower" configuration.
   private final MotorControllerGroup m_leftMotors;
   private final MotorControllerGroup m_rightMotors;
   private final RelativeEncoder m_leftEncoder;

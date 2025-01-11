@@ -16,6 +16,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private boolean m_switchDrive = false;
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Drivebase m_drivebase = new Drivebase();
 
@@ -39,6 +41,9 @@ public class RobotContainer {
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   private final double DEADBAND_CONSTANT = 0.04;
+
+  Trigger switchDriveTrigger;
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -69,7 +74,6 @@ public class RobotContainer {
     m_arcadeDriveLeftStick = () ->{
       //double scalingfactor = getDrivSpeedScalingFactor();
       double scalingFactor = .5;
-      boolean m_switchDrive = false;
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = axis * scalingFactor;
@@ -93,9 +97,9 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    switchDriveTrigger =
+    new Trigger(() -> m_driveController.getRawButton(Constants.LogitechGamePad.BButton))
+        .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
     m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
   }

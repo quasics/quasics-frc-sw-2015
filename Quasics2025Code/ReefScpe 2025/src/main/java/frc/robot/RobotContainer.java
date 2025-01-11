@@ -5,9 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.commands.ExampleCommand;
+
+import java.util.function.Supplier;
+
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,6 +28,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Drivebase m_drivebase = new Drivebase();
+
+  Supplier<Double> m_arcadeDriveLeftStick;
+  Supplier<Double> m_arcadeDriveRightStick;
+
+  private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
+
+  private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+
+  private final double DEADBAND_CONSTANT = 0.04;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -30,6 +48,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+  }
+
+  private double getDriverAxis(int controllerCode) {
+    double axis = m_driveController.getRawAxis(controllerCode);
+    // dead band enforcer
+    return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
   }
 
   /**
@@ -42,6 +66,29 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    m_arcadeDriveLeftStick = () ->{
+      //double scalingfactor = getDrivSpeedScalingFactor();
+      double scalingFactor = .5;
+      boolean m_switchDrive = false;
+      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
+      if (m_switchDrive) {
+        double joystickPercentage = axis * scalingFactor;
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
+      } else {
+        double joystickPercentage = -axis * scalingFactor;
+        return m_arcadeSpeedLimiter.calculate(joystickPercentage);
+      }
+    };
+
+    m_arcadeDriveRightStick = () -> {
+      //double scalingFactor = getDriveSpeedScalingFactor();
+      double scalingFactor = 1;
+
+      double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
+      double joystickPercentage = axis * scalingFactor * .5;
+      return m_rotationLimiter.calculate(joystickPercentage);
+    };
+
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -49,6 +96,8 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
   }
 
   /**

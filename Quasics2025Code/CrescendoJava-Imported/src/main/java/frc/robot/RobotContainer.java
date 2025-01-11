@@ -266,7 +266,7 @@ public class RobotContainer {
     m_arcadeDriveRightStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
 
-      double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
+      double axis = getDriverAxis(Constants.LogitechGamePad.RightXAxis);
       double joystickPercentage = axis * scalingFactor * .5;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
@@ -277,7 +277,7 @@ public class RobotContainer {
 
     if (ARCADE_DRIVE) {
       m_drivebase.setDefaultCommand(
-          new ArcadeDrive(m_drivebase, m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+          new ArcadeDrive(m_drivebase, m_arcadeDriveRightStick, m_arcadeDriveLeftStick));
     } else {
       m_drivebase.setDefaultCommand(
           new TankDrive(m_drivebase, m_tankDriveLeftStick, m_tankDriveRightStick));

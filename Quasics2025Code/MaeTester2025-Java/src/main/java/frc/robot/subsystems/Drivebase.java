@@ -6,8 +6,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.CANBusIds.SparkMax.*;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -33,10 +33,10 @@ public class Drivebase extends SubsystemBase {
 
   /** Creates a new Drivebase. */
   public Drivebase() {
-    CANSparkMax leftFront = new CANSparkMax(LEFT_FRONT, MotorType.kBrushless),
-                leftRear = new CANSparkMax(LEFT_REAR, MotorType.kBrushless),
-                rightFront = new CANSparkMax(RIGHT_FRONT, MotorType.kBrushless),
-                rightRear = new CANSparkMax(RIGHT_REAR, MotorType.kBrushless);
+    SparkMax leftFront = new SparkMax(LEFT_FRONT, MotorType.kBrushless),
+                leftRear = new SparkMax(LEFT_REAR, MotorType.kBrushless),
+                rightFront = new SparkMax(RIGHT_FRONT, MotorType.kBrushless),
+                rightRear = new SparkMax(RIGHT_REAR, MotorType.kBrushless);
     rightFront.setInverted(true);
     rightRear.setInverted(true);
     leftFront.setInverted(false);

@@ -12,11 +12,14 @@ import frc.robot.subsystems.Drivebase;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,12 +48,30 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    addButtonsToSmartDashboard();
   }
 
   private double getDriverAxis(int controllerCode) {
     double axis = m_driverController.getRawAxis(controllerCode);
     // dead band enforcer
     return (Math.abs(axis) > DEADBAND_CONSTANT) ? axis : 0;
+  }
+
+  private void addButtonsToSmartDashboard() {
+    addSysIdButtonsToSmartDashboard();
+  }
+
+    private void addSysIdButtonsToSmartDashboard() {
+      /*
+    SmartDashboard.putData(
+        "Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData(
+        "Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData(
+        "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        */
   }
 
   /**
@@ -112,7 +133,12 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto();
+
+    DriverStation.Alliance alliance =
+    DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    final boolean isBlue = alliance == DriverStation.Alliance.Blue;
+
+    return Autos.getAutonomousCommand();
 
   }
 }

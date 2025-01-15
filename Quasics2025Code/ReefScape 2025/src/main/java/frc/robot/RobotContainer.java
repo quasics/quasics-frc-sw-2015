@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,11 +45,19 @@ public class RobotContainer {
 
   Trigger switchDriveTrigger;
 
+  SendableChooser<String> m_autonomousOperations = new SendableChooser<String>();
+  SendableChooser<String> m_positionOptions = new SendableChooser<String>();
+
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
+    addOverallSelectorToSmartDashboard();
+    addAutonomousStartingPositionsToSmartDashboard();
+    ConfigureDriverButtons();
+    ConfigureOperatorButtons();
   }
 
   private double getDriverAxis(int controllerCode) {
@@ -72,6 +81,22 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
         */
+  }
+
+  private void addOverallSelectorToSmartDashboard() {
+    m_autonomousOperations.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing,
+        Constants.AutonomousSelectedOperation.doNothing);
+    m_autonomousOperations.addOption(
+        Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
+
+    SmartDashboard.putData("Overall operation", m_autonomousOperations);
+  }
+
+  private void addAutonomousStartingPositionsToSmartDashboard() {
+    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.examplePosition,
+        Constants.AutonomousStartingPositions.examplePosition);
+
+    SmartDashboard.putData("Starting position", m_positionOptions);
   }
 
   /**
@@ -111,6 +136,14 @@ public class RobotContainer {
     m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
   }
 
+  private void ConfigureDriverButtons() {
+
+  }
+
+  private void ConfigureOperatorButtons() {
+    
+  }
+
   private double getDriveSpeedScalingFactor() {
     final boolean isTurbo =
         m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
@@ -133,9 +166,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
+    String autonomousOperation = m_autonomousOperations.getSelected();
+    String positionOption = m_positionOptions.getSelected();
 
     DriverStation.Alliance alliance =
-    DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+    DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
     return Autos.getAutonomousCommand();

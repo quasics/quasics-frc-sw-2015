@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.ConditionalConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -63,6 +62,9 @@ public final class Constants {
       public static final int RIGHT_LEADER_ID = 4;
       public static final int RIGHT_FOLLOWER_ID = 3;
     }
+
+    public static final int PIGEON2_CAN_ID = 1;
+
   }
 
   public static class RobotSpeedScaling {
@@ -70,6 +72,15 @@ public final class Constants {
     public static final double TURTLE_MODE_SPEED_SCALING = 0.3;
     public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
   }
+
+  public static class AutonomousStartingPositions {
+    public static final String examplePosition = "Example position";
+  } // public static class AutonomousStartingPositions
+
+  public static class AutonomousSelectedOperation {
+    public static final String doNothing = "Do nothing";
+    public static final String GTFO = "GTFO";
+  } // public static class AutonomousSelectedOperation
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;

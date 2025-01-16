@@ -2,17 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drivebase;
 import static edu.wpi.first.units.Units.*;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -38,7 +40,11 @@ public class Drivebase extends SubsystemBase {
   final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
   final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
 
+  // change this
   public static final Distance TRACK_WIDTH_METERS = Meters.of(Constants.SallyConstants.TRACK_WIDTH);
+
+  private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
+  private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
   /** Creates a new Drivebase. */
   public Drivebase() {

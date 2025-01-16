@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -31,6 +31,15 @@ import frc.robot.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
+  // Control ports for our drive motors. (These would be specific to a given
+  // robot.)
+  public static final int LEFT_DRIVE_PWM_ID = 0;
+  public static final int RIGHT_DRIVE_PWM_ID = 1;
+  public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
+  public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
+  public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
+  public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
+
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidthMeters.baseUnitMagnitude());
 

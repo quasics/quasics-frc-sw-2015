@@ -15,26 +15,32 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
-  final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
+  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidthMeters.baseUnitMagnitude());
 
   // Hardware allocation
-  final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
-  final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
-  final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
-  final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
+  private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final AnalogGyroSim m_gyroSim;
+  private final IGyro m_wrappedGyro;
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
@@ -67,6 +73,15 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();
     m_rightEncoder.reset();
+
+    // Set up the gyro
+    final AnalogGyro rawGyro = new AnalogGyro(0);
+    m_wrappedGyro = IGyro.wrapGyro(rawGyro);
+
+    //
+    // Pure simulation support
+    //
+    m_gyroSim = new AnalogGyroSim(rawGyro);
 
     // Add the simulated field to the smart dashboard
     SmartDashboard.putData("Field", m_fieldSim);
@@ -111,7 +126,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
-    // m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+    m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Publish the data for any that need it.
     // BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY,
@@ -132,7 +147,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return Meters.of(m_rightEncoder.getDistance());
   }
 
-  // TODO: Move to interface/base class.
+  // TODO: Move to base class as a protected method. (It shouldn't be exposed as
+  // public, since we don't want client code to directly manipulate the data.)
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
   }
@@ -142,10 +158,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return m_odometry.getPoseMeters();
   }
 
-  private Rotation2d getGyroReading() {
-    // TODO: Get the gyro reading when it is available.
-    // return getGyro_HAL().getRotation2d();
-    return new Rotation2d();
+  @Override
+  public Angle getHeading() {
+    return m_wrappedGyro.getAngle();
   }
 
   /**
@@ -154,7 +169,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
    * TODO: This should be moved to a base class or interface.
    */
   public void updateOdometry() {
-    final Rotation2d rotation = getGyroReading();
+    final Rotation2d rotation = m_wrappedGyro.getRotation2d();
     final double leftDistanceMeters = m_leftEncoder.getDistance();
     final double rightDistanceMeters = m_rightEncoder.getDistance();
     m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
@@ -170,8 +185,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
 
-    m_odometry.resetPosition(getGyroReading(), 0, 0, pose);
-    // m_poseEstimator.resetPosition(getGyroReading(), 0, 0, pose);
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
+    // m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
 
     // Update the pose information in the simulator.
     m_drivetrainSimulator.setPose(pose);

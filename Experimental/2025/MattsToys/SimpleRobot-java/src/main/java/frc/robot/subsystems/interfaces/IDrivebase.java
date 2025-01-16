@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -24,6 +25,9 @@ public interface IDrivebase {
   Distance getLeftPositionMeters();
 
   Distance getRightPositionMeters();
+
+  /** @return heading of the robot (as an Angle) */
+  Angle getHeading();
 
   default Subsystem asSubsystem() {
     return (Subsystem) this;

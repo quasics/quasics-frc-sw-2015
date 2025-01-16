@@ -135,6 +135,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void setSpeed(double leftPercentage, double rightPercentage) {
+    // Clamp speeds to the range [-1.0, 1.0].
+    leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
+    rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
+
     m_left.set(leftPercentage);
     m_right.set(rightPercentage);
   }

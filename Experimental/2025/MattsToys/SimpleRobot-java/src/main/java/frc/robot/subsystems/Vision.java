@@ -50,11 +50,10 @@ public class Vision extends SubsystemBase {
   protected final PhotonCamera camera;
   protected final Transform3d robotToCamera;
 
-  // Simulation support
-
   /** Creates a new Vision. */
   public Vision() {
     setName("Vision");
+
     // final TargetModel targetModel = TargetModel.kAprilTag16h5; // or
     // TargetModel.kAprilTag36h11, starting in 2024
 

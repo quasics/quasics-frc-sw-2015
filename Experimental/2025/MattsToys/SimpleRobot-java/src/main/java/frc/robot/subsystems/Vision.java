@@ -40,14 +40,17 @@ public class Vision extends SubsystemBase {
   public static final Distance CAMERA_X = Meters.of(0.1); // meters
   public static final Distance CAMERA_Y = Meters.of(0.0); // meters
   // ...and pitched 15 degrees up, pointing straightforward and in plane with the
-  // robot.
-  public static final Angle CAMERA_PITCH = Degrees.of(-15); // pointed 15 degrees up
+  // robot,...
+  public static final Angle CAMERA_PITCH = Degrees.of(15); // pointed 15 degrees up
   public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
   public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
-
+  // ...and is named as follows.
   public static final String CAMERA_NAME = "cameraName";
 
+  /** Connection to our (single) camera. */
   protected final PhotonCamera camera;
+
+  /** Defines the conversion from the robot's position, to ours. */
   protected final Transform3d robotToCamera;
 
   /** Creates a new Vision. */
@@ -60,7 +63,10 @@ public class Vision extends SubsystemBase {
     // Set up the relative positioning of the camera.
     Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters),
         CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
-    Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians),
+    Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians),
+        // Note: The pitch is negated because we're converting to robot's frame of
+        // reference.
+        -1 * CAMERA_PITCH.in(Radians),
         CAMERA_YAW.in(Radians));
     robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 

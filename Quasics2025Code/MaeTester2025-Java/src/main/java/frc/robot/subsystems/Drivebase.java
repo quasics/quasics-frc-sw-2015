@@ -6,14 +6,16 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.CANBusIds.SparkMax.*;
 
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivebase extends SubsystemBase {
@@ -27,29 +29,33 @@ public class Drivebase extends SubsystemBase {
 
   // TODO: We *really* need to replace the use of a motor controller group with
   // CAN-based "leader/follower" configuration.
-  private final MotorControllerGroup m_leftMotors;
-  private final MotorControllerGroup m_rightMotors;
+  final SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_rightFollower = new SparkMax(RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+
+  final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
+  final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+  
   private final RelativeEncoder m_leftEncoder;
   private final RelativeEncoder m_rightEncoder;
   private final DifferentialDrive m_drive;
 
   /** Creates a new Drivebase. */
   public Drivebase() {
-    SparkMax leftFront = new SparkMax(LEFT_FRONT, MotorType.kBrushless),
-                leftRear = new SparkMax(LEFT_REAR, MotorType.kBrushless),
-                rightFront = new SparkMax(RIGHT_FRONT, MotorType.kBrushless),
-                rightRear = new SparkMax(RIGHT_REAR, MotorType.kBrushless);
-    rightFront.setInverted(true);
-    rightRear.setInverted(true);
-    leftFront.setInverted(false);
-    leftRear.setInverted(false);
+    m_rightLeader.setInverted(true);
+    m_rightFollower.setInverted(true);
 
-    m_leftEncoder = leftFront.getEncoder();
-    m_rightEncoder = rightFront.getEncoder();
+    leftFollowerConfig.follow(LEFT_LEADER_ID);
+    rightFollowerConfig.follow(RIGHT_LEADER_ID);
 
-    m_leftMotors = new MotorControllerGroup(leftFront, leftRear);
-    m_rightMotors = new MotorControllerGroup(rightFront, rightRear);
-    m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+    m_leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightFollower.configure(rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    m_leftEncoder = m_leftLeader.getEncoder();
+    m_rightEncoder = m_rightLeader.getEncoder();
+    
+    m_drive = new DifferentialDrive(m_leftLeader, m_rightLeader);
 
     configureEncoders();
   }
@@ -60,12 +66,6 @@ public class Drivebase extends SubsystemBase {
     final double distanceScalingFactorForGearing =
         WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-
-    m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-    m_rightEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-
-    m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
-    m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
 
     resetEncoders();
   }
@@ -80,25 +80,36 @@ public class Drivebase extends SubsystemBase {
     m_drive.arcadeDrive(forwardPercent, turnPercent);
   }
 
+  private double getPositionConversionFactor() {
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
+    return distanceScalingFactorForGearing;
+  }
+
+  private double getVelocityConversionFactor() {
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
+    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+    return velocityScalingFactor;
+  }
+
   public void resetEncoders() {
     m_leftEncoder.setPosition(0);
     m_rightEncoder.setPosition(0);
   }
 
   public double getLeftEncoderDistanceMeters() {
-    return m_leftEncoder.getPosition();
+    return m_leftEncoder.getPosition() * getPositionConversionFactor();
   }
   public double getRightEncoderDistanceMeters() {
-    return m_rightEncoder.getPosition();
+    return m_rightEncoder.getPosition() * getPositionConversionFactor();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity(),
-                                            m_rightEncoder.getVelocity());
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity() * getVelocityConversionFactor(),
+                                            m_rightEncoder.getVelocity() * getVelocityConversionFactor());
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_leftMotors.setVoltage(leftVolts);
-    m_rightMotors.setVoltage(rightVolts);
+    m_leftLeader.setVoltage(leftVolts);
+    m_rightLeader.setVoltage(rightVolts);
   }
 }

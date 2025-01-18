@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.drivebase.Drivebase;
 
 import java.util.function.Supplier;
@@ -33,9 +34,13 @@ public class RobotContainer {
   private boolean m_switchDrive = false;
   private final Drivebase m_drivebase = new Drivebase();
 
+  Supplier<Double> m_tankDriveLeftStick;
+  Supplier<Double> m_tankDriveRightStick;
   Supplier<Double> m_arcadeDriveLeftStick;
   Supplier<Double> m_arcadeDriveRightStick;
 
+  private final SlewRateLimiter m_leftSpeedLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rightSpeedLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_arcadeSpeedLimiter = new SlewRateLimiter(1);
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
@@ -109,6 +114,32 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    m_tankDriveLeftStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
+      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
+      // needs testing to affirm direction is correct! if wrong just switch the - signs
+      if (m_switchDrive) {
+        double joystickPercentage = -axis * scalingFactor;
+        return m_leftSpeedLimiter.calculate(joystickPercentage);
+      } else {
+        double joystickPercentage = axis * scalingFactor;
+        return m_leftSpeedLimiter.calculate(joystickPercentage);
+      }
+    };
+
+    m_tankDriveRightStick = () -> {
+      double scalingFactor = getDriveSpeedScalingFactor();
+      double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
+      // needs testing also to affirm the direction is correct & switch signs if it is wrong
+      if (m_switchDrive) {
+        double joystickPercentage = -axis * scalingFactor;
+        return m_rightSpeedLimiter.calculate(joystickPercentage);
+      } else {
+        double joystickPercentage = axis * scalingFactor;
+        return m_rightSpeedLimiter.calculate(joystickPercentage);
+      }
+    };
+    
     m_arcadeDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);

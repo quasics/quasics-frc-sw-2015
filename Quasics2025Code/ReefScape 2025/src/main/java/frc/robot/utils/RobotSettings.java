@@ -40,15 +40,20 @@ public interface RobotSettings {
             // track width in meters
             Meters.of(0.5588) /* 22 in */,
             // gear ratio
-            8.45);
+            8.45),
+
+        NewRobot(
+            MotorConfigModel.RearMotorsLeading,
+            Meters.of(0.5628),
+            0
+        );
         
         ////////////////////////////////////////////////
         // Drivebase data
         public final MotorConfigModel motorConfigModel;
         public final Distance trackWidthMeters;
         public final double gearRatio;
-        
-        
+
         
         private Robot(MotorConfigModel motorConfigModel, Distance trackWidthMeters,
         double gearRatio) {

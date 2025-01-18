@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Add your docs here. */
 public interface IDrivebase {
+  final String NAME = "Drivebase";
+  final String POSITION_KEY = NAME + ".Position";
+
   void setSpeed(double leftPercentage, double rightPercentage);
 
   // Utility method: straight forward/backward

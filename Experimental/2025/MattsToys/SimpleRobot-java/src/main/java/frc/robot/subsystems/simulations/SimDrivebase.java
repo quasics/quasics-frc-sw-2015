@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.utils.BulletinBoard;
 
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
   // Control ports for our drive motors. (These would be specific to a given
@@ -66,6 +67,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   /** Creates a new SimDrivebase. */
   public SimDrivebase() {
+    setName(NAME);
+
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
@@ -108,6 +111,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // would be in the overridden periodic function for this (simulation-specific)
     // class.
     var pose = getOdometry().getPoseMeters();
+    BulletinBoard.common.updateValue(POSITION_KEY, pose);
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     m_fieldSim.setRobotPose(pose);

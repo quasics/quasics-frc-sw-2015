@@ -9,6 +9,11 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ArmPivot;
+import frc.robot.subsystems.ArmRoller;
+import frc.robot.subsystems.Climbers;
+
 
 import java.util.function.Supplier;
 
@@ -33,6 +38,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = false;
   private final Drivebase m_drivebase = new Drivebase();
+  private final ArmPivot m_armPivot = new ArmPivot();
+  private final ArmRoller m_armRoller = new ArmRoller();
+  private final Climbers m_climbers = new Climbers();
+  private final Elevator m_elevator = new Elevator();
 
   Supplier<Double> m_tankDriveLeftStick;
   Supplier<Double> m_tankDriveRightStick;

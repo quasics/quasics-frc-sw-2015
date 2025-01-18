@@ -68,23 +68,38 @@ public class Vision extends SubsystemBase {
     camera = new PhotonCamera(CAMERA_NAME);
   }
 
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    super.periodic();
   }
 
+  /**
+   * Subclass to isolate simulation-specific code.
+   */
   public static class SimulatedVision extends Vision {
+    /**
+     * Handles the nuts and bolts of the actual simulation, including wireframe
+     * rendering.
+     */
     protected VisionSystemSim visionSim = new VisionSystemSim("main");
 
-    // The simulated camera properties
-    // https://docs.photonvision.org/en/v2025.0.0-alpha-0/docs/simulation/simulation-java.html#camera-simulation
+    /**
+     * The simulated camera properties (used to control properties like FOV,
+     * resolution, etc.). See the docs at:
+     * https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
+     * 
+     * TODO: Update cameraProp to reflect the real camera's properties.
+     */
     SimCameraProperties cameraProp = new SimCameraProperties();
+
+    /** The interface to control/inject simulated camera stuff. */
     private PhotonCameraSim cameraSim = null;
 
+    /** Constructor. */
     public SimulatedVision() {
       super();
-      // The simulated camera hardware.
-      // TODO: Update cameraProp to reflect the real camera's properties.
+
       cameraSim = new PhotonCameraSim(camera, cameraProp);
 
       try {
@@ -101,7 +116,10 @@ public class Vision extends SubsystemBase {
       // robot-to-camera transform.
       visionSim.addCamera(cameraSim, robotToCamera);
 
-      // Enable the raw and processed streams. These are enabled by default.
+      // Enable the raw and processed streams. (These are enabled by default, but I'm
+      // making it explicit here, so that we can easily turn them off if we decide
+      // that's needed.)
+      //
       // These streams follow the port order mentioned in Camera Stream Ports. For
       // example, a single simulated camera will have its raw stream at localhost:1181
       // and processed stream at localhost:1182, which can also be found in the
@@ -110,13 +128,17 @@ public class Vision extends SubsystemBase {
       cameraSim.enableProcessedStream(true);
 
       // Enable drawing a wireframe visualization of the field to the camera streams.
-      // This is extremely resource-intensive and is disabled by default.
+      //
+      // Note: This is extremely resource-intensive and is disabled by default.
       cameraSim.enableDrawWireframe(true);
     }
 
     // This method will be called once per scheduler run
     @Override
     public void simulationPeriodic() {
+      // Should be a no-op, but good practice to call the base class.
+      super.simulationPeriodic();
+
       Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSITION_KEY, Pose2d.class)
           .orElse(new Pose2d());
 

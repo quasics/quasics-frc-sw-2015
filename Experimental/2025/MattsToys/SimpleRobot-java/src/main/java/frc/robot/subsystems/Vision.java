@@ -31,6 +31,8 @@ public class Vision extends SubsystemBase {
   // The camera properties, relative to the center of the robot (and ground
   // level).
   //
+  // TODO: Update these values to reflect the real camera's properties.
+  //
   // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
   // pose (which is considered to be its center of rotation at the floor level, or
   // Z = 0)...

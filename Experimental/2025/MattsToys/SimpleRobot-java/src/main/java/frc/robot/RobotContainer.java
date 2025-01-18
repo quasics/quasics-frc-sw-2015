@@ -14,7 +14,7 @@ import frc.robot.subsystems.simulations.SimDrivebase;
 
 public class RobotContainer {
   // Subsystems
-  Vision m_vision = new Vision();
+  Vision m_vision = new Vision.SimulatedVision();
   IDrivebase m_drivebase = new SimDrivebase();
 
   public RobotContainer() {

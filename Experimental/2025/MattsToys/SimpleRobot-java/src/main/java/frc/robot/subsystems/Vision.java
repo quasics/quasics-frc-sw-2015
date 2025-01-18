@@ -24,6 +24,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.utils.BulletinBoard;
 
 public class Vision extends SubsystemBase {
   // The camera properties, relative to the center of the robot (and ground
@@ -41,12 +43,12 @@ public class Vision extends SubsystemBase {
   public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
   public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
 
-  protected VisionSystemSim visionSim = new VisionSystemSim("main");
+  public static final String CAMERA_NAME = "cameraName";
 
-  // The simulated camera properties
-  // https://docs.photonvision.org/en/v2025.0.0-alpha-0/docs/simulation/simulation-java.html#camera-simulation
-  SimCameraProperties cameraProp = new SimCameraProperties();
-  private PhotonCameraSim cameraSim = null;
+  protected final PhotonCamera camera;
+  protected final Transform3d robotToCamera;
+
+  // Simulation support
 
   /** Creates a new Vision. */
   public Vision() {
@@ -54,44 +56,15 @@ public class Vision extends SubsystemBase {
     // final TargetModel targetModel = TargetModel.kAprilTag16h5; // or
     // TargetModel.kAprilTag36h11, starting in 2024
 
-    try {
-      AprilTagFieldLayout tagLayout = AprilTagFieldLayout
-          .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-
-      visionSim.addAprilTags(tagLayout);
-    } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout.");
-      ioe.printStackTrace();
-    }
-
-    // The PhotonCamera used in the real robot code.
-    PhotonCamera camera = new PhotonCamera("cameraName");
-
-    // The simulation of this camera. Its values used in real robot code will be
-    // updated.
-    cameraSim = new PhotonCameraSim(camera, cameraProp);
-
+    // Set up the relative positioning of the camera.
     Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters),
         CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
     Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians),
         CAMERA_YAW.in(Radians));
-    Transform3d robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
+    robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 
-    // Add this camera to the vision system simulation with the given
-    // robot-to-camera transform.
-    visionSim.addCamera(cameraSim, robotToCamera);
-
-    // Enable the raw and processed streams. These are enabled by default.
-    // These streams follow the port order mentioned in Camera Stream Ports. For
-    // example, a single simulated camera will have its raw stream at localhost:1181
-    // and processed stream at localhost:1182, which can also be found in the
-    // CameraServer tab of Shuffleboard like a normal camera stream.
-    cameraSim.enableRawStream(true);
-    cameraSim.enableProcessedStream(true);
-
-    // Enable drawing a wireframe visualization of the field to the camera streams.
-    // This is extremely resource-intensive and is disabled by default.
-    cameraSim.enableDrawWireframe(true);
+    // Connect to our camera. (May be a simulation.)
+    camera = new PhotonCamera(CAMERA_NAME);
   }
 
   @Override
@@ -99,12 +72,54 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  // This method will be called once per scheduler run
-  @Override
-  public void simulationPeriodic() {
-    // TODO: Get the robot pose (e.g., from drive base).
-    Pose2d robotPoseMeters = new Pose2d();
+  public static class SimulatedVision extends Vision {
+    protected VisionSystemSim visionSim = new VisionSystemSim("main");
 
-    visionSim.update(robotPoseMeters);
+    // The simulated camera properties
+    // https://docs.photonvision.org/en/v2025.0.0-alpha-0/docs/simulation/simulation-java.html#camera-simulation
+    SimCameraProperties cameraProp = new SimCameraProperties();
+    private PhotonCameraSim cameraSim = null;
+
+    public SimulatedVision() {
+      super();
+      // The simulated camera hardware.
+      // TODO: Update cameraProp to reflect the real camera's properties.
+      cameraSim = new PhotonCameraSim(camera, cameraProp);
+
+      try {
+        AprilTagFieldLayout tagLayout = AprilTagFieldLayout
+            .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+
+        visionSim.addAprilTags(tagLayout);
+      } catch (IOException ioe) {
+        System.err.println("Warning: failed to load April Tags layout.");
+        ioe.printStackTrace();
+      }
+
+      // Add this camera to the vision system simulation with the given
+      // robot-to-camera transform.
+      visionSim.addCamera(cameraSim, robotToCamera);
+
+      // Enable the raw and processed streams. These are enabled by default.
+      // These streams follow the port order mentioned in Camera Stream Ports. For
+      // example, a single simulated camera will have its raw stream at localhost:1181
+      // and processed stream at localhost:1182, which can also be found in the
+      // CameraServer tab of Shuffleboard like a normal camera stream.
+      cameraSim.enableRawStream(true);
+      cameraSim.enableProcessedStream(true);
+
+      // Enable drawing a wireframe visualization of the field to the camera streams.
+      // This is extremely resource-intensive and is disabled by default.
+      cameraSim.enableDrawWireframe(true);
+    }
+
+    // This method will be called once per scheduler run
+    @Override
+    public void simulationPeriodic() {
+      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSITION_KEY, Pose2d.class)
+          .orElse(new Pose2d());
+
+      visionSim.update(robotPoseMeters);
+    }
   }
 }

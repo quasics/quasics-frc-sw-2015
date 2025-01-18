@@ -8,7 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.TankDrive;
-import frc.robot.subsystems.drivebase.Drivebase;
+import frc.robot.subsystems.drivebase.SimulationDrivebase;
+import frc.robot.subsystems.drivebase.RealDrivebase;
+import frc.robot.subsystems.drivebase.IDrivebase;
+import frc.robot.utils.RobotSettings;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
@@ -20,6 +23,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,11 +41,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = false;
-  private final Drivebase m_drivebase = new Drivebase();
+  private final IDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final Climbers m_climbers = new Climbers();
   private final Elevator m_elevator = new Elevator();
+
+  private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
 
   Supplier<Double> m_tankDriveLeftStick;
   Supplier<Double> m_tankDriveRightStick;
@@ -62,9 +68,19 @@ public class RobotContainer {
   SendableChooser<String> m_autonomousOperations = new SendableChooser<String>();
   SendableChooser<String> m_positionOptions = new SendableChooser<String>();
 
+  public static RobotSettings.Robot getRobotSettings() {
+    if (RobotBase.isReal()) {
+      return SETTINGS_FOR_REAL_MODE;
+    }
+    else{
+      return RobotSettings.Robot.Simulator;
+    }
+  }
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_drivebase = setupDriveBase();
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -72,6 +88,25 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
+  }
+
+  private IDrivebase setupDriveBase() {
+    IDrivebase drivebase = null;
+    if(Robot.isReal()) {
+      drivebase = new RealDrivebase(getRobotSettings());
+
+      m_arcadeDriveLeftStick = ()
+        ->
+        - m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRightStick = ()
+        ->
+        - m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+    } else{
+      m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
+      m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
+      drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
+    }
+    return drivebase;
   }
 
   private double getDriverAxis(int controllerCode) {

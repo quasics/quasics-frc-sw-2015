@@ -4,11 +4,25 @@
 
 package frc.robot.utils;
 
+import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.PerUnit;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.Velocity;
 
 /** Add your docs here. */
 public interface RobotSettings {
@@ -34,6 +48,10 @@ public interface RobotSettings {
          * TODO: add simulator, margeret, etc. robot values
          * TODO: characterization values, robot to camera, TBD other values
          */
+        Simulator(MotorConfigModel.RearMotorsLeading,
+        Meter.of(0.381*2),
+        1.0
+        ),
         Sally(
             // Motor config model
             MotorConfigModel.RearMotorsLeading,
@@ -41,12 +59,10 @@ public interface RobotSettings {
             Meters.of(0.5588) /* 22 in */,
             // gear ratio
             8.45),
-
         NewRobot(
             MotorConfigModel.RearMotorsLeading,
-            Meters.of(0.5628),
-            0
-        );
+            Meters.of(0.5628), /*22 5/32 in */
+            0);
         
         ////////////////////////////////////////////////
         // Drivebase data

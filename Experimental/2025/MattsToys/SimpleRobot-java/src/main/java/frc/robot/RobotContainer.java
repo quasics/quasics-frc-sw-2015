@@ -21,6 +21,7 @@ public class RobotContainer {
   final Vision m_vision = new Vision.SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
 
+  // Controllers
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   public RobotContainer() {

@@ -13,14 +13,15 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
+import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 
 public class RobotContainer {
   // Subsystems
-  final Vision m_vision = new Vision.SimulatedVision();
+  final IVision m_vision = new SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
 
   // Controllers

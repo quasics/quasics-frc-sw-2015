@@ -16,15 +16,11 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
-import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -204,104 +200,6 @@ public class Vision extends SubsystemBase implements IVision {
   public void updateLastPose(Pose2d pose) {
     if (m_photonEstimator != null) {
       m_photonEstimator.setLastPose(pose);
-    }
-  }
-
-  /**
-   * Subclass to isolate simulation-specific code.
-   */
-  public static class SimulatedVision extends Vision {
-    /**
-     * Handles the nuts and bolts of the actual simulation, including wireframe
-     * rendering.
-     */
-    protected VisionSystemSim m_visionSim = new VisionSystemSim("main");
-
-    /** The interface to control/inject simulated camera stuff. */
-    private PhotonCameraSim m_cameraSim = null;
-
-    /** Constructor. */
-    public SimulatedVision() {
-      super();
-
-      m_cameraSim = new PhotonCameraSim(m_camera, getCameraProperties());
-
-      if (m_tagLayout != null) {
-        m_visionSim.addAprilTags(m_tagLayout);
-      } else {
-        System.err.println("Warning: no April Tags layout loaded.");
-      }
-
-      // Add this camera to the vision system simulation with the given
-      // robot-to-camera transform.
-      m_visionSim.addCamera(m_cameraSim, m_robotToCamera);
-
-      // Enable the raw and processed streams. (These are enabled by default, but I'm
-      // making it explicit here, so that we can easily turn them off if we decide
-      // that's needed.)
-      //
-      // These streams follow the port order mentioned in Camera Stream Ports. For
-      // example, a single simulated camera will have its raw stream at localhost:1181
-      // and processed stream at localhost:1182, which can also be found in the
-      // CameraServer tab of Shuffleboard like a normal camera stream.
-      m_cameraSim.enableRawStream(true);
-      m_cameraSim.enableProcessedStream(true);
-
-      // Enable drawing a wireframe visualization of the field to the camera streams.
-      //
-      // Note: This is extremely resource-intensive and is disabled by default.
-      m_cameraSim.enableDrawWireframe(true);
-    }
-
-    /**
-     * Returns the simulated camera properties (used to control properties like FOV,
-     * resolution, etc.).
-     * 
-     * @see https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
-     */
-    private SimCameraProperties getCameraProperties() {
-      SimCameraProperties cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(
-          CAMERA_WIDTH_PX,
-          CAMERA_HEIGHT_PX,
-          Rotation2d.fromDegrees(CAMERA_FOV_DEG));
-      cameraProp.setFPS(CAMERA_FPS);
-
-      // Approximate detection noise with average and standard deviation error in
-      // pixels.
-      cameraProp.setCalibError(0.25, 0.08);
-
-      // The average and standard deviation in milliseconds of image data latency.
-      cameraProp.setAvgLatencyMs(35);
-      cameraProp.setLatencyStdDevMs(5);
-
-      return cameraProp;
-    }
-
-    // This method will be called once per scheduler run
-    @Override
-    public void simulationPeriodic() {
-      // Should be a no-op, but good practice to call the base class.
-      super.simulationPeriodic();
-
-      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(
-          IDrivebase.POSE_KEY, Pose2d.class).orElse(new Pose2d());
-
-      m_visionSim.update(robotPoseMeters);
-
-      // Update the simulator to reflect where the estimated pose suggests that we
-      // are located.
-      final var debugField = m_visionSim.getDebugField();
-      m_lastEstimatedPose.ifPresentOrElse(
-          // Do this with the data in m_lastEstimatedPose (if it has some)
-          est -> {
-            debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
-          },
-          // If we have nothing in m_lastEstimatedPose, do this
-          () -> {
-            if (m_estimateRecentlyUpdated)
-              debugField.getObject("VisionEstimation").setPoses();
-          });
     }
   }
 }

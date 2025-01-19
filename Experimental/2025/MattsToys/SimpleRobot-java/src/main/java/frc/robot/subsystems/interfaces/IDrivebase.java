@@ -20,6 +20,8 @@ public interface IDrivebase {
   final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.0);
   final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(Math.PI);
 
+  final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+
   void tankDrive(double leftPercentage, double rightPercentage);
 
   void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds);

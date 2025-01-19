@@ -45,8 +45,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
   public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
 
-  public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
-
   public static final Distance kWheelRadiusMeters = Units.Meters.of(0.0508);
   public static final Distance kRobotTrackWidthMeters = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;

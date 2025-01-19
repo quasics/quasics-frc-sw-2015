@@ -32,9 +32,10 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements IVision {
   // The camera properties, relative to the center of the robot (and ground
   // level).
   //
@@ -58,9 +59,6 @@ public class Vision extends SubsystemBase {
   public static final int CAMERA_FPS = 20; // frames per second (limited by robot loop rate)
   // ...and is named as follows.
   public static final String CAMERA_NAME = "cameraName";
-
-  public static final String VISION_POSE_KEY = "Vision.Pose";
-  public static final String VISION_TIMESTAMP_KEY = "Vision.Timestamp";
 
   /** Connection to our (single) camera. */
   protected final PhotonCamera m_camera;
@@ -168,21 +166,6 @@ public class Vision extends SubsystemBase {
       lastEstimatedPose = m_photonEstimator.update(photonPipelineResult);
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
-
-    // // Compute the robot's field-relative position exclusively from vision
-    // // measurements.
-    // Pose3d visionMeasurement3d = objectToRobotPose(m_objectInField,
-    // m_robotToCamera, m_cameraToObjectEntry);
-    //
-    // // Convert robot pose from Pose3d to Pose2d needed to apply vision
-    // // measurements.
-    // Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
-    //
-    // // Apply vision measurements. For simulation purposes only, we don't input a
-    // // latency delay -- on a real robot, this must be calculated based either on
-    // // known latency or timestamps.
-    // m_poseEstimator.addVisionMeasurement(visionMeasurement2d,
-    // Timer.getFPGATimestamp());
 
     m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp) > 1e-5;
     if (m_estimateRecentlyUpdated) {

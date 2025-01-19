@@ -101,6 +101,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void periodic() {
+    super.periodic();
+
     updateOdometry();
 
     // Update published field simulation data. We're doing this here (in the
@@ -111,11 +113,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // would be in the overridden periodic function for this (simulation-specific)
     // class.
     var pose = getOdometry().getPoseMeters();
-    BulletinBoard.common.updateValue(POSITION_KEY, pose);
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     m_fieldSim.setRobotPose(pose);
+
     // m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
+
+    // Share the current pose with other subsystems (e.g., vision).
+    BulletinBoard.common.updateValue(POSITION_KEY, pose);
   }
 
   @Override
@@ -164,8 +169,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return Meters.of(m_rightEncoder.getDistance());
   }
 
-  // TODO: Move to base class as a protected method. (It shouldn't be exposed as
-  // public, since we don't want client code to directly manipulate the data.)
+  // TODO: Move to a base class as a protected method. (It shouldn't be exposed as
+  // public, since we don't want client code to directly manipulate/change the
+  // data.)
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
   }

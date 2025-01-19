@@ -165,19 +165,18 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
     rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
 
-    m_left.set(leftPercentage);
-    m_right.set(rightPercentage);
+    setPower(leftPercentage, rightPercentage);
   }
 
   @Override
-  public void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds) {
+  public void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // Calculate the left and right wheel speeds based on the inputs.
     final var leftSpeed = wheelSpeeds.leftMetersPerSecond;
     final var rightSpeed = wheelSpeeds.rightMetersPerSecond;
 
     // Set the speeds of the left and right sides of the drivetrain.
     final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
-    tankDrive(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
+    setPower(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
   @Override
@@ -186,7 +185,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     final var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
-    tankDrive(wheelSpeeds);
+    setSpeeds(wheelSpeeds);
   }
 
   @Override
@@ -199,13 +198,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return Meters.of(m_rightEncoder.getDistance());
   }
 
-  // TODO: Move to a base class as a protected method. (It shouldn't be exposed as
-  // public, since we don't want client code to directly manipulate/change the
-  // data.)
-  protected final DifferentialDriveOdometry getOdometry() {
-    return m_odometry;
-  }
-
   /** Get the current robot pose, based on odometery. */
   @Override
   public Pose2d getPose() {
@@ -215,20 +207,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Angle getHeading() {
     return m_wrappedGyro.getAngle();
-  }
-
-  /**
-   * Update the robot's odometry.
-   * 
-   * TODO: This should be moved to a base class or interface.
-   */
-  protected void updateOdometry() {
-    final Rotation2d rotation = m_wrappedGyro.getRotation2d();
-    final double leftDistanceMeters = m_leftEncoder.getDistance();
-    final double rightDistanceMeters = m_rightEncoder.getDistance();
-    m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
-    // m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
-    // rightDistanceMeters.in(Meters));
   }
 
   /**
@@ -247,5 +225,41 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
     // m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
+  }
+
+  // TODO: Move to a base class as a protected method. (It shouldn't be exposed as
+  // public, since we don't want client code to directly manipulate/change the
+  // data.)
+  protected final DifferentialDriveOdometry getOdometry() {
+    return m_odometry;
+  }
+
+  /**
+   * Update the robot's odometry.
+   * 
+   * TODO: This should be moved to a base class or interface.
+   */
+  protected void updateOdometry() {
+    final Rotation2d rotation = m_wrappedGyro.getRotation2d();
+    final double leftDistanceMeters = m_leftEncoder.getDistance();
+    final double rightDistanceMeters = m_rightEncoder.getDistance();
+    m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
+    // m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
+    // rightDistanceMeters.in(Meters));
+  }
+
+  /**
+   * Implementation method for motor speed control.
+   * 
+   * @param leftPercentage  left motor speed (as a percentage of full speed)
+   * @param rightPercentage right motor speed (as a percentage of full speed)
+   */
+  private void setPower(double leftPercentage, double rightPercentage) {
+    // Clamp speeds to the range [-1.0, 1.0].
+    leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
+    rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
+
+    m_left.set(leftPercentage);
+    m_right.set(rightPercentage);
   }
 }

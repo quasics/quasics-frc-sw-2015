@@ -40,19 +40,19 @@ public interface IDrivebase {
   void tankDrive(double leftPercentage, double rightPercentage);
 
   /**
-   * Drive the robot using tank drive.
-   * 
-   * @param wheelSpeeds The wheel speeds to set.
-   */
-  void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds);
-
-  /**
    * Drive the robot using arcade drive.
    * 
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
    */
   void arcadeDrive(LinearVelocity speed, AngularVelocity rotation);
+
+  /**
+   * Set the wheel speeds (positive values are forward).
+   * 
+   * @param wheelSpeeds The wheel speeds to set.
+   */
+  void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /**
    * Utility method: straight forward/backward.

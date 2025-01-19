@@ -42,7 +42,7 @@ public class Vision extends SubsystemBase {
   public static final Distance CAMERA_Y = Meters.of(0.0); // meters
   // ...pitched 15 degrees up, pointing straightforward and in plane with the
   // robot,...
-  public static final Angle CAMERA_PITCH = Degrees.of(15); // pointed 15 degrees up
+  public static final Angle CAMERA_PITCH = Degrees.of(-15); // pointed 15 degrees up
   public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
   public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
   // ...with image dimensions, field of view, FPS being this...
@@ -67,10 +67,13 @@ public class Vision extends SubsystemBase {
     // TargetModel.kAprilTag36h11, starting in 2024
 
     // Set up the relative positioning of the camera.
-    Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters),
-        CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
-    Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians),
-        -1 * CAMERA_PITCH.in(Radians),
+    Translation3d robotToCameraTrl = new Translation3d(
+        CAMERA_X.in(Meters),
+        CAMERA_Y.in(Meters),
+        CAMERA_HEIGHT.in(Meters));
+    Rotation3d robotToCameraRot = new Rotation3d(
+        CAMERA_ROLL.in(Radians),
+        CAMERA_PITCH.in(Radians),
         CAMERA_YAW.in(Radians));
     robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 
@@ -142,7 +145,10 @@ public class Vision extends SubsystemBase {
      */
     private SimCameraProperties getCameraProperties() {
       SimCameraProperties cameraProp = new SimCameraProperties();
-      cameraProp.setCalibration(CAMERA_WIDTH_PX, CAMERA_HEIGHT_PX, Rotation2d.fromDegrees(CAMERA_FOV_DEG));
+      cameraProp.setCalibration(
+          CAMERA_WIDTH_PX,
+          CAMERA_HEIGHT_PX,
+          Rotation2d.fromDegrees(CAMERA_FOV_DEG));
       cameraProp.setFPS(CAMERA_FPS);
 
       // Approximate detection noise with average and standard deviation error in
@@ -162,8 +168,8 @@ public class Vision extends SubsystemBase {
       // Should be a no-op, but good practice to call the base class.
       super.simulationPeriodic();
 
-      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
-          .orElse(new Pose2d());
+      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(
+          IDrivebase.POSE_KEY, Pose2d.class).orElse(new Pose2d());
 
       visionSim.update(robotPoseMeters);
     }

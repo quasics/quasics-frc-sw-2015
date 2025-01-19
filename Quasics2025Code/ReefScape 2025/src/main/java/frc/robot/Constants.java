@@ -61,6 +61,17 @@ public final class Constants {
       public static final int LEFT_FOLLOWER_ID = 1;
       public static final int RIGHT_LEADER_ID = 4;
       public static final int RIGHT_FOLLOWER_ID = 3;
+
+      // TODO: update these
+      public static final int LEFT_CLIMBER_ID = 5; 
+      public static final int RIGHT_CLIMBER_ID = 6;
+
+      public static final int LEFT_ELEVATOR_ID = 7;
+      public static final int RIGHT_ELEVATOR_ID = 8;
+
+      public static final int ARM_PIVOT_ID = 9;
+
+      public static final int ARM_ROLLER_ID = 10;
     }
 
     public static final int PIGEON2_CAN_ID = 1;
@@ -84,5 +95,17 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static class SimulationPorts {
+    public static final int LEFT_FRONT_DRIVE_PWM_ID = 1;
+    public static final int LEFT_REAR_DRIVE_PWM_ID = 2;
+    public static final int RIGHT_FRONT_DRIVE_PWM_ID = 3;
+    public static final int RIGHT_REAR_DRIVE_PWM_ID = 4;
+    
+    public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
+    public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
+    public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
+    public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
   }
 }

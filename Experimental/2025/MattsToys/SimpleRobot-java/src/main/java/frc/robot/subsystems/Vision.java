@@ -148,8 +148,9 @@ public class Vision extends SubsystemBase implements IVision {
     // base.
     BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(
         pose -> {
-          m_photonEstimator.setReferencePose((Pose2d) pose);
-          m_photonEstimator.setLastPose((Pose2d) pose);
+          Pose2d pose2d = (Pose2d) pose;
+          updateLastPose(pose2d);
+          updateReferencePose(pose2d);
         },
         () -> System.err.println("Warning: no robot drive pose available."));
 

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
+import static frc.robot.Constants.LogitechGamePad;
 
 import java.util.function.Supplier;
 
@@ -15,6 +16,7 @@ import frc.robot.commands.DriveForDistance;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.simulations.SimDrivebase;
+import frc.robot.utils.DeadbandEnforcer;
 
 public class RobotContainer {
   // Subsystems
@@ -30,29 +32,34 @@ public class RobotContainer {
   }
 
   private void configureArcadeDrive() {
-    Supplier<Double> arcadeDriveForwardStick;
-    Supplier<Double> arcadeDriveRotationStick;
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    Supplier<Double> forwardSupplier;
+    Supplier<Double> rotationSupplier;
 
     if (Robot.isReal()) {
       // Configure the real robot.
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      arcadeDriveRotationStick = () -> -m_driveController
-          .getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      forwardSupplier = () -> -deadbandEnforcer
+          .limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer
+          .limit(m_driveController
+              .getRawAxis(LogitechGamePad.RightXAxis));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
-      arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
+      forwardSupplier = () -> deadbandEnforcer
+          .limit(m_driveController.getRawAxis(0));
+      rotationSupplier = () -> -deadbandEnforcer
+          .limit(m_driveController.getRawAxis(1));
     }
 
-    m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase, arcadeDriveForwardStick,
-        arcadeDriveRotationStick));
+    m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase, forwardSupplier,
+        rotationSupplier));
   }
 
   private void configureBindings() {

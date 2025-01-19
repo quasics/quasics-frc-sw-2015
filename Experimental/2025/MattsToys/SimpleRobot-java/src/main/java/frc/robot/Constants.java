@@ -5,6 +5,8 @@ public class Constants {
   public static class DriveTeam {
     public static final int DRIVER_JOYSTICK_ID = 0;
     public static final int OPERATOR_JOYSTICK_ID = 1;
+
+    public static final double DRIVER_DEADBAND = 0.05;
   }
 
   public static class LogitechGamePad {

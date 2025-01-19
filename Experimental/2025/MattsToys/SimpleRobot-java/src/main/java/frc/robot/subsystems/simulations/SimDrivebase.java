@@ -45,12 +45,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
   public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
 
-  public static final Distance kWheelRadiusMeters = Units.Meters.of(0.0508);
-  public static final Distance kRobotTrackWidthMeters = Units.Meters.of(0.381 * 2);
+  public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
+  public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
-      kRobotTrackWidthMeters.baseUnitMagnitude());
+      kRobotTrackWidth.in(Meters));
 
   // Hardware allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
@@ -70,7 +70,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
       DCMotor.getCIM(2), 8,
-      kRobotTrackWidthMeters.baseUnitMagnitude(), kWheelRadiusMeters.baseUnitMagnitude(), null);
+      kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
   final Field2d m_fieldSim = new Field2d();
 
   /** Creates a new SimDrivebase. */
@@ -85,9 +85,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
-    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters.baseUnitMagnitude()
+    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
         / kEncoderResolutionTicksPerRevolution);
-    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadiusMeters.baseUnitMagnitude()
+    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
         / kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
@@ -160,15 +160,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public void tankDrive(double leftPercentage, double rightPercentage) {
-    // Clamp speeds to the range [-1.0, 1.0].
-    leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
-    rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
-
-    setPower(leftPercentage, rightPercentage);
-  }
-
-  @Override
   public void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // Calculate the left and right wheel speeds based on the inputs.
     final var leftSpeed = wheelSpeeds.leftMetersPerSecond;
@@ -179,6 +170,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     setPower(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
+  // TODO: Consider moving this into a base class with access to m_kinematics.
   @Override
   public void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.

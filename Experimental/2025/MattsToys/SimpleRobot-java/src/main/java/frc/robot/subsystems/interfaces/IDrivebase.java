@@ -13,16 +13,16 @@ public interface IDrivebase {
   final String NAME = "Drivebase";
   final String POSITION_KEY = NAME + ".Position";
 
-  void setSpeed(double leftPercentage, double rightPercentage);
+  void tankDrive(double leftPercentage, double rightPercentage);
 
   // Utility method: straight forward/backward
   default void setSpeed(double percentage) {
-    setSpeed(percentage, percentage);
+    tankDrive(percentage, percentage);
   }
 
   // Utility method: stop
   default void stop() {
-    setSpeed(0, 0);
+    tankDrive(0, 0);
   }
 
   Distance getLeftPositionMeters();

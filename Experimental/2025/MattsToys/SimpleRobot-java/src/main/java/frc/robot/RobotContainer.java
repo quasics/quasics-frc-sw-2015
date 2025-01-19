@@ -46,7 +46,7 @@ public class RobotContainer {
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
-      // axis 1&2.
+      // axis 0&1 (from the "Keyboard 0" configuration).
       arcadeDriveForwardStick = () -> -m_driveController.getRawAxis(0);
       arcadeDriveRotationStick = () -> -m_driveController.getRawAxis(1);
     }

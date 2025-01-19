@@ -6,6 +6,8 @@ package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.BulletinBoard;
 
@@ -140,7 +143,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     SmartDashboard.putNumber("Y", pose.getY());
     m_fieldSim.setRobotPose(pose);
 
-    // m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
+    m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
 
     // Share the current pose with other subsystems (e.g., vision).
     BulletinBoard.common.updateValue(POSE_KEY, pose);
@@ -211,6 +214,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return m_odometry.getPoseMeters();
   }
 
+  /**
+   * Get the current estimated robot pose, based on odometery, plus any vision
+   * updates.
+   */
+  public Pose2d getEstimatedPose() {
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
   @Override
   public Angle getHeading() {
     return m_wrappedGyro.getAngle();
@@ -254,9 +265,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
     m_poseEstimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
 
-    // TODO: Update m_poseEstimator with the result from the RobotPoseEstimator
-    // every loop using:
-    // addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds).
+    // If an estimated position has been posted by the vision subsystem, integrate
+    // it into our estimate.
+    Optional<Object> optionalPose = BulletinBoard.common.getValue(Vision.VISION_POSE_KEY, Pose2d.class);
+    optionalPose.ifPresent(poseObject -> {
+      BulletinBoard.common.getValue(Vision.VISION_TIMESTAMP_KEY, Double.class)
+          .ifPresent(
+              timestampObject -> m_poseEstimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+    });
   }
 
   /**

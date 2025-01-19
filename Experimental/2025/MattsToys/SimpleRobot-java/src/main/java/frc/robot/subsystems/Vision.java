@@ -9,11 +9,17 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -53,18 +59,38 @@ public class Vision extends SubsystemBase {
   // ...and is named as follows.
   public static final String CAMERA_NAME = "cameraName";
 
+  public static final String VISION_POSE_KEY = "Vision.Pose";
+  public static final String VISION_TIMESTAMP_KEY = "Vision.Timestamp";
+
   /** Connection to our (single) camera. */
-  protected final PhotonCamera camera;
+  protected final PhotonCamera m_camera;
 
   /** Defines the conversion from the robot's position, to ours. */
-  protected final Transform3d robotToCamera;
+  protected final Transform3d m_robotToCamera;
+
+  /**
+   * Pose estimator from PhotonVision. Note that (per docs) the estimated poses
+   * can have a lot of uncertainty/error baked into them when you are further away
+   * from the targets.
+   */
+  private final PhotonPoseEstimator m_photonEstimator;
+
+  // Cached results of the last pose estimation update.
+  protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
+  protected double m_lastEstTimestamp = 0;
+  protected boolean m_estimateRecentlyUpdated = false;
+
+  /**
+   * The layout of the AprilTags on the field. This is used for the pose
+   * estimation (as well as in the simulator, when it's rendering the tag).
+   */
+  protected final AprilTagFieldLayout m_tagLayout;
+
+  private final PoseStrategy m_poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
 
   /** Creates a new Vision. */
   public Vision() {
     setName("Vision");
-
-    // final TargetModel targetModel = TargetModel.kAprilTag16h5; // or
-    // TargetModel.kAprilTag36h11, starting in 2024
 
     // Set up the relative positioning of the camera.
     Translation3d robotToCameraTrl = new Translation3d(
@@ -75,16 +101,126 @@ public class Vision extends SubsystemBase {
         CAMERA_ROLL.in(Radians),
         CAMERA_PITCH.in(Radians),
         CAMERA_YAW.in(Radians));
-    robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
+    m_robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 
     // Connect to our camera. (May be a simulation.)
-    camera = new PhotonCamera(CAMERA_NAME);
+    if (CAMERA_NAME != null && !CAMERA_NAME.isBlank()) {
+      m_camera = new PhotonCamera(CAMERA_NAME);
+    } else {
+      // Need to set a value, since it's final, unless we're prepared to abort the
+      // ctor. But we'll need to test for this elsewhere.
+      m_camera = null;
+    }
+
+    // Load the layout of the AprilTags on the field.
+    AprilTagFieldLayout tagLayout = null;
+    try {
+      tagLayout = AprilTagFieldLayout
+          .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+    } catch (IOException ioe) {
+      System.err.println("Warning: failed to load April Tags layout.");
+      ioe.printStackTrace();
+    }
+    m_tagLayout = tagLayout;
+
+    //
+    // Set up the vision pose estimator
+    m_photonEstimator = new PhotonPoseEstimator(
+        m_tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCamera);
+
+    // Configure what to do in a multi-tag environment (like Crescendo) when only
+    // one tag can be seen.
+    m_photonEstimator.setMultiTagFallbackStrategy(m_poseStrategy);
+  }
+
+  /**
+   * Updates/caches the latest estimated robot pose on the field from vision data,
+   * which may be empty. This should only be called once per loop, and will be
+   * invoked from our <code>periodic()</code> method.
+   *
+   * @see #periodic()
+   */
+  private void updateEstimatedGlobalPose() {
+    if (m_camera == null) {
+      // No camera? Nothing to do.
+      return;
+    }
+
+    // Update the vision pose estimator with the latest robot pose from the drive
+    // base.
+    BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(
+        pose -> {
+          m_photonEstimator.setReferencePose((Pose2d) pose);
+          m_photonEstimator.setLastPose((Pose2d) pose);
+        },
+        () -> System.err.println("Warning: no robot drive pose available."));
+
+    // Update the pose estimator with the latest vision measurements.
+    List<PhotonPipelineResult> results = m_camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      // No results? Nothing to do.
+      return;
+    }
+
+    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
+    double lastEstimatedTimestamp = 0;
+    for (PhotonPipelineResult photonPipelineResult : results) {
+      lastEstimatedPose = m_photonEstimator.update(photonPipelineResult);
+      lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
+    }
+
+    // // Compute the robot's field-relative position exclusively from vision
+    // // measurements.
+    // Pose3d visionMeasurement3d = objectToRobotPose(m_objectInField,
+    // m_robotToCamera, m_cameraToObjectEntry);
+    //
+    // // Convert robot pose from Pose3d to Pose2d needed to apply vision
+    // // measurements.
+    // Pose2d visionMeasurement2d = visionMeasurement3d.toPose2d();
+    //
+    // // Apply vision measurements. For simulation purposes only, we don't input a
+    // // latency delay -- on a real robot, this must be calculated based either on
+    // // known latency or timestamps.
+    // m_poseEstimator.addVisionMeasurement(visionMeasurement2d,
+    // Timer.getFPGATimestamp());
+
+    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp) > 1e-5;
+    if (m_estimateRecentlyUpdated) {
+      m_lastEstTimestamp = lastEstimatedTimestamp;
+      m_lastEstimatedPose = lastEstimatedPose;
+    }
   }
 
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
     super.periodic();
+
+    updateEstimatedGlobalPose();
+  }
+
+  /**
+   * Updates the pose that will be used as a basis for reference when the
+   * CrossCheckWithReferencePose mode is selected.
+   *
+   * @param pose the reference pose to set
+   */
+  public void updateReferencePose(Pose2d pose) {
+    if (m_photonEstimator != null) {
+      m_photonEstimator.setReferencePose(pose);
+    }
+  }
+
+  /**
+   * Updates the pose that will be used as a basis for reference when the
+   * AssumeMinimumMovement mode is selected.
+   *
+   * @param pose the reference pose to set
+   */
+  public void updateLastPose(Pose2d pose) {
+    if (m_photonEstimator != null) {
+      m_photonEstimator.setLastPose(pose);
+    }
   }
 
   /**
@@ -95,30 +231,26 @@ public class Vision extends SubsystemBase {
      * Handles the nuts and bolts of the actual simulation, including wireframe
      * rendering.
      */
-    protected VisionSystemSim visionSim = new VisionSystemSim("main");
+    protected VisionSystemSim m_visionSim = new VisionSystemSim("main");
 
     /** The interface to control/inject simulated camera stuff. */
-    private PhotonCameraSim cameraSim = null;
+    private PhotonCameraSim m_cameraSim = null;
 
     /** Constructor. */
     public SimulatedVision() {
       super();
 
-      cameraSim = new PhotonCameraSim(camera, getCameraProperties());
+      m_cameraSim = new PhotonCameraSim(m_camera, getCameraProperties());
 
-      try {
-        AprilTagFieldLayout tagLayout = AprilTagFieldLayout
-            .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-
-        visionSim.addAprilTags(tagLayout);
-      } catch (IOException ioe) {
-        System.err.println("Warning: failed to load April Tags layout.");
-        ioe.printStackTrace();
+      if (m_tagLayout != null) {
+        m_visionSim.addAprilTags(m_tagLayout);
+      } else {
+        System.err.println("Warning: no April Tags layout loaded.");
       }
 
       // Add this camera to the vision system simulation with the given
       // robot-to-camera transform.
-      visionSim.addCamera(cameraSim, robotToCamera);
+      m_visionSim.addCamera(m_cameraSim, m_robotToCamera);
 
       // Enable the raw and processed streams. (These are enabled by default, but I'm
       // making it explicit here, so that we can easily turn them off if we decide
@@ -128,13 +260,13 @@ public class Vision extends SubsystemBase {
       // example, a single simulated camera will have its raw stream at localhost:1181
       // and processed stream at localhost:1182, which can also be found in the
       // CameraServer tab of Shuffleboard like a normal camera stream.
-      cameraSim.enableRawStream(true);
-      cameraSim.enableProcessedStream(true);
+      m_cameraSim.enableRawStream(true);
+      m_cameraSim.enableProcessedStream(true);
 
       // Enable drawing a wireframe visualization of the field to the camera streams.
       //
       // Note: This is extremely resource-intensive and is disabled by default.
-      cameraSim.enableDrawWireframe(true);
+      m_cameraSim.enableDrawWireframe(true);
     }
 
     /**
@@ -171,7 +303,21 @@ public class Vision extends SubsystemBase {
       Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(
           IDrivebase.POSE_KEY, Pose2d.class).orElse(new Pose2d());
 
-      visionSim.update(robotPoseMeters);
+      m_visionSim.update(robotPoseMeters);
+
+      // Update the simulator to reflect where the estimated pose suggests that we
+      // are located.
+      final var debugField = m_visionSim.getDebugField();
+      m_lastEstimatedPose.ifPresentOrElse(
+          // Do this with the data in m_lastEstimatedPose (if it has some)
+          est -> {
+            debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
+          },
+          // If we have nothing in m_lastEstimatedPose, do this
+          () -> {
+            if (m_estimateRecentlyUpdated)
+              debugField.getObject("VisionEstimation").setPoses();
+          });
     }
   }
 }

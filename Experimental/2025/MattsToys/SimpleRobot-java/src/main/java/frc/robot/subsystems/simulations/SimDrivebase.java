@@ -36,8 +36,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
@@ -267,9 +267,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     // If an estimated position has been posted by the vision subsystem, integrate
     // it into our estimate.
-    Optional<Object> optionalPose = BulletinBoard.common.getValue(Vision.VISION_POSE_KEY, Pose2d.class);
+    Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
     optionalPose.ifPresent(poseObject -> {
-      BulletinBoard.common.getValue(Vision.VISION_TIMESTAMP_KEY, Double.class)
+      BulletinBoard.common.getValue(
+          IVision.VISION_TIMESTAMP_KEY, Double.class)
           .ifPresent(
               timestampObject -> m_poseEstimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
     });

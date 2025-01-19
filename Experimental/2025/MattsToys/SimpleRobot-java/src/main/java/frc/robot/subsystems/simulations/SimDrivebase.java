@@ -6,6 +6,8 @@ package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -64,6 +66,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
       new Pose2d());
 
+  /** Drivetrain pose estimator. */
+  private final DifferentialDrivePoseEstimator m_poseEstimator;
+
   // Objects used in simulation mode.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
@@ -97,6 +102,16 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // Set up the gyro
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
+
+    // Set up the pose estimator
+    m_poseEstimator = new DifferentialDrivePoseEstimator(
+        m_kinematics,
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        new Pose2d(),
+        VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
+        VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
     //
     // Pure simulation support
@@ -216,7 +231,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // TODO: Figure out how to align the gyro's data with the provided pose.
 
     m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
-    // m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
+    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
   }
 
   // TODO: Move to a base class as a protected method. (It shouldn't be exposed as
@@ -235,9 +250,13 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     final Rotation2d rotation = m_wrappedGyro.getRotation2d();
     final double leftDistanceMeters = m_leftEncoder.getDistance();
     final double rightDistanceMeters = m_rightEncoder.getDistance();
+
     m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
-    // m_poseEstimator.update(rotation, leftDistanceMeters.in(Meters),
-    // rightDistanceMeters.in(Meters));
+    m_poseEstimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
+
+    // TODO: Update m_poseEstimator with the result from the RobotPoseEstimator
+    // every loop using:
+    // addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds).
   }
 
   /**

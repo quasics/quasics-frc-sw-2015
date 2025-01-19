@@ -5,7 +5,6 @@
 package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.subsystems.simulations.Constants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,11 +16,11 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -48,7 +47,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
-  public static final LinearVelocity kMaxSpeedMetersPerSecond = MetersPerSecond.of(3.0);
+  public static final Distance kWheelRadiusMeters = Units.Meters.of(0.0508);
+  public static final Distance kRobotTrackWidthMeters = Units.Meters.of(0.381 * 2);
+  public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidthMeters.baseUnitMagnitude());
@@ -177,7 +178,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     final var rightSpeed = wheelSpeeds.rightMetersPerSecond;
 
     // Set the speeds of the left and right sides of the drivetrain.
-    final var maxSpeed = kMaxSpeedMetersPerSecond.in(MetersPerSecond);
+    final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
     tankDrive(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 

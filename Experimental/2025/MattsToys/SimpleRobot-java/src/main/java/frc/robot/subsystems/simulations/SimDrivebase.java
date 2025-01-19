@@ -189,10 +189,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     tankDrive(wheelSpeeds);
   }
 
+  @Override
   public Distance getLeftPositionMeters() {
     return Meters.of(m_leftEncoder.getDistance());
   }
 
+  @Override
   public Distance getRightPositionMeters() {
     return Meters.of(m_rightEncoder.getDistance());
   }
@@ -205,6 +207,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   /** Get the current robot pose, based on odometery. */
+  @Override
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
@@ -219,7 +222,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
    * 
    * TODO: This should be moved to a base class or interface.
    */
-  public void updateOdometry() {
+  protected void updateOdometry() {
     final Rotation2d rotation = m_wrappedGyro.getRotation2d();
     final double leftDistanceMeters = m_leftEncoder.getDistance();
     final double rightDistanceMeters = m_rightEncoder.getDistance();
@@ -235,11 +238,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public void resetOdometry(Pose2d pose) {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
-
-    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
-    // m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
+    m_gyroSim.setAngle(pose.getRotation().getDegrees());
 
     // Update the pose information in the simulator.
     m_drivetrainSimulator.setPose(pose);
+
+    // TODO: Figure out how to align the gyro's data with the provided pose.
+
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
+    // m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
   }
 }

@@ -5,6 +5,8 @@
 package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -21,10 +23,10 @@ public interface IDrivebase {
   final String POSE_KEY = NAME + ".Pose";
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
-  final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.5);
+  final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.25);
 
   /** Maximum rotational velocity for arcade drive. */
-  final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(Math.PI);
+  final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(.25 * Math.PI);
 
   /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
@@ -74,6 +76,9 @@ public interface IDrivebase {
 
   /** @return heading of the robot (as an Angle) */
   Angle getHeading();
+
+  /** @return heading of the robot (as a Pose2d) */
+  Pose2d getPose();
 
   /** Convert the object to a subsystem (for listing in requirements). */
   default Subsystem asSubsystem() {

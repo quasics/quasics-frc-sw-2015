@@ -20,34 +20,62 @@ public interface IDrivebase {
   /** Key used to post Pose information to BulletinBoard. */
   final String POSE_KEY = NAME + ".Pose";
 
-  final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.0);
+  /** Maximum linear velocity that we'll allow/assume in our code. */
+  final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.5);
+
+  /** Maximum rotational velocity for arcade drive. */
   final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(Math.PI);
 
+  /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
+  /**
+   * Drive the robot using tank drive (as a percentage of MAX_SPEED).
+   * 
+   * @param leftPercentage  The percentage of MAX_SPEED for the left side.
+   * @param rightPercentage The percentage of MAX_SPEED for the right side.
+   */
   void tankDrive(double leftPercentage, double rightPercentage);
 
+  /**
+   * Drive the robot using tank drive.
+   * 
+   * @param wheelSpeeds The wheel speeds to set.
+   */
   void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds);
 
+  /**
+   * Drive the robot using arcade drive.
+   * 
+   * @param speed    The linear velocity to drive at.
+   * @param rotation The angular velocity to rotate at.
+   */
   void arcadeDrive(LinearVelocity speed, AngularVelocity rotation);
 
-  // Utility method: straight forward/backward
+  /**
+   * Utility method: straight forward/backward.
+   * 
+   * @param percentage The percentage of MAX_SPEED to drive at.
+   */
   default void setSpeed(double percentage) {
     tankDrive(percentage, percentage);
   }
 
-  // Utility method: stop
+  /** Utility method: stops the robot. */
   default void stop() {
     tankDrive(0, 0);
   }
 
+  /** @return The reading from the left encoder (in meters) */
   Distance getLeftPositionMeters();
 
+  /** @return The reading from the right encoder (in meters) */
   Distance getRightPositionMeters();
 
   /** @return heading of the robot (as an Angle) */
   Angle getHeading();
 
+  /** Convert the object to a subsystem (for listing in requirements). */
   default Subsystem asSubsystem() {
     return (Subsystem) this;
   }

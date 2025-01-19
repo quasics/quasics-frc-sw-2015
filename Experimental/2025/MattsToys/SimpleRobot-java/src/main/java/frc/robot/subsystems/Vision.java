@@ -145,7 +145,7 @@ public class Vision extends SubsystemBase {
       // Should be a no-op, but good practice to call the base class.
       super.simulationPeriodic();
 
-      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSITION_KEY, Pose2d.class)
+      Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
           .orElse(new Pose2d());
 
       visionSim.update(robotPoseMeters);

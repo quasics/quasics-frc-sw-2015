@@ -14,8 +14,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Add your docs here. */
 public interface IDrivebase {
+  /** Name for the subsystem (and base for BulletinBoard keys). */
   final String NAME = "Drivebase";
-  final String POSITION_KEY = NAME + ".Position";
+
+  /** Key used to post Pose information to BulletinBoard. */
+  final String POSE_KEY = NAME + ".Pose";
 
   final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.0);
   final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(Math.PI);

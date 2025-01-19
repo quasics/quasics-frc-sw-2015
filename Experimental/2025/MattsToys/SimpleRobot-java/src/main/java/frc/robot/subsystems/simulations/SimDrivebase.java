@@ -128,7 +128,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
 
     // Share the current pose with other subsystems (e.g., vision).
-    BulletinBoard.common.updateValue(POSITION_KEY, pose);
+    BulletinBoard.common.updateValue(POSE_KEY, pose);
   }
 
   @Override

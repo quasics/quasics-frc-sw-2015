@@ -9,14 +9,19 @@ import static frc.robot.subsystems.simulations.Constants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -40,6 +45,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
   public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
   public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
+
+  public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+
+  public static final LinearVelocity kMaxSpeedMetersPerSecond = MetersPerSecond.of(3.0);
 
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidthMeters.baseUnitMagnitude());
@@ -159,6 +168,26 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     m_left.set(leftPercentage);
     m_right.set(rightPercentage);
+  }
+
+  @Override
+  public void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds) {
+    // Calculate the left and right wheel speeds based on the inputs.
+    final var leftSpeed = wheelSpeeds.leftMetersPerSecond;
+    final var rightSpeed = wheelSpeeds.rightMetersPerSecond;
+
+    // Set the speeds of the left and right sides of the drivetrain.
+    final var maxSpeed = kMaxSpeedMetersPerSecond.in(MetersPerSecond);
+    tankDrive(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
+  }
+
+  @Override
+  public void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
+    // Calculate the left and right wheel speeds based on the inputs.
+    final var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+
+    // Set the speeds of the left and right sides of the drivetrain.
+    tankDrive(wheelSpeeds);
   }
 
   public Distance getLeftPositionMeters() {

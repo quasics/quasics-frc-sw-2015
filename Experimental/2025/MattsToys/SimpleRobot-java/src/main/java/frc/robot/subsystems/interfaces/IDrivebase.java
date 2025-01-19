@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /** Add your docs here. */
@@ -14,6 +17,10 @@ public interface IDrivebase {
   final String POSITION_KEY = NAME + ".Position";
 
   void tankDrive(double leftPercentage, double rightPercentage);
+
+  void tankDrive(DifferentialDriveWheelSpeeds wheelSpeeds);
+
+  void arcadeDrive(LinearVelocity speed, AngularVelocity rotation);
 
   // Utility method: straight forward/backward
   default void setSpeed(double percentage) {

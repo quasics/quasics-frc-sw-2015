@@ -37,7 +37,9 @@ public interface IDrivebase {
    * @param leftPercentage  The percentage of MAX_SPEED for the left side.
    * @param rightPercentage The percentage of MAX_SPEED for the right side.
    */
-  void tankDrive(double leftPercentage, double rightPercentage);
+  default void tankDrive(double leftPercentage, double rightPercentage) {
+    setSpeeds(new DifferentialDriveWheelSpeeds(MAX_SPEED.times(leftPercentage), MAX_SPEED.times(rightPercentage)));
+  }
 
   /**
    * Drive the robot using arcade drive.

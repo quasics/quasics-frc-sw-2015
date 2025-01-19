@@ -18,6 +18,7 @@ import org.photonvision.simulation.VisionSystemSim;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -39,11 +40,16 @@ public class Vision extends SubsystemBase {
   public static final Distance CAMERA_HEIGHT = Meters.of(0.5); // meters
   public static final Distance CAMERA_X = Meters.of(0.1); // meters
   public static final Distance CAMERA_Y = Meters.of(0.0); // meters
-  // ...and pitched 15 degrees up, pointing straightforward and in plane with the
+  // ...pitched 15 degrees up, pointing straightforward and in plane with the
   // robot,...
   public static final Angle CAMERA_PITCH = Degrees.of(15); // pointed 15 degrees up
   public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
   public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
+  // ...with image dimensions, field of view, FPS being this...
+  public static final int CAMERA_WIDTH_PX = 960; // pixels
+  public static final int CAMERA_HEIGHT_PX = 720; // pixels
+  public static final int CAMERA_FOV_DEG = 100; // degrees
+  public static final int CAMERA_FPS = 20; // frames per second (limited by robot loop rate)
   // ...and is named as follows.
   public static final String CAMERA_NAME = "cameraName";
 
@@ -64,8 +70,6 @@ public class Vision extends SubsystemBase {
     Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters),
         CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
     Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians),
-        // Note: The pitch is negated because we're converting to robot's frame of
-        // reference.
         -1 * CAMERA_PITCH.in(Radians),
         CAMERA_YAW.in(Radians));
     robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
@@ -90,15 +94,6 @@ public class Vision extends SubsystemBase {
      */
     protected VisionSystemSim visionSim = new VisionSystemSim("main");
 
-    /**
-     * The simulated camera properties (used to control properties like FOV,
-     * resolution, etc.). See the docs at:
-     * https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
-     * 
-     * TODO: Update cameraProp to reflect the real camera's properties.
-     */
-    SimCameraProperties cameraProp = new SimCameraProperties();
-
     /** The interface to control/inject simulated camera stuff. */
     private PhotonCameraSim cameraSim = null;
 
@@ -106,7 +101,7 @@ public class Vision extends SubsystemBase {
     public SimulatedVision() {
       super();
 
-      cameraSim = new PhotonCameraSim(camera, cameraProp);
+      cameraSim = new PhotonCameraSim(camera, getCameraProperties());
 
       try {
         AprilTagFieldLayout tagLayout = AprilTagFieldLayout
@@ -137,6 +132,28 @@ public class Vision extends SubsystemBase {
       //
       // Note: This is extremely resource-intensive and is disabled by default.
       cameraSim.enableDrawWireframe(true);
+    }
+
+    /**
+     * Returns the simulated camera properties (used to control properties like FOV,
+     * resolution, etc.).
+     * 
+     * @see https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
+     */
+    private SimCameraProperties getCameraProperties() {
+      SimCameraProperties cameraProp = new SimCameraProperties();
+      cameraProp.setCalibration(CAMERA_WIDTH_PX, CAMERA_HEIGHT_PX, Rotation2d.fromDegrees(CAMERA_FOV_DEG));
+      cameraProp.setFPS(CAMERA_FPS);
+
+      // Approximate detection noise with average and standard deviation error in
+      // pixels.
+      cameraProp.setCalibError(0.25, 0.08);
+
+      // The average and standard deviation in milliseconds of image data latency.
+      cameraProp.setAvgLatencyMs(35);
+      cameraProp.setLatencyStdDevMs(5);
+
+      return cameraProp;
     }
 
     // This method will be called once per scheduler run

@@ -25,8 +25,8 @@ public class Elevator extends SubsystemBase {
   /** Crea
    * tes a new Elevator. */
   public Elevator() {
-    m_leftElevator = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
-    m_rightElevator = new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
+    m_leftElevator = new SparkMax(SparkMaxIds.LEFT_ELEVATOR_ID, MotorType.kBrushless);
+    m_rightElevator = new SparkMax(SparkMaxIds.RIGHT_ELEVATOR_ID, MotorType.kBrushless);
     m_leftEncoder = m_leftElevator.getEncoder();
     m_rightEncoder = m_rightElevator.getEncoder();
   }

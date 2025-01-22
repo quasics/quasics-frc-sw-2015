@@ -16,15 +16,15 @@ import com.revrobotics.RelativeEncoder;
 
 public class ArmPivot extends SubsystemBase {
   /** Creates a new ArmPivot. */
-
-  Encoder encoder = new Encoder(0, 1);
+  //TODO: choose actual values for this in cases of simulation vs real.
+  Encoder encoder = new Encoder(4, 5);
 
   SparkMax m_pivot;
 
   RelativeEncoder m_encoder;
 
   public ArmPivot() {
-    m_pivot = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
+    m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_encoder = m_pivot.getEncoder();
   }
 

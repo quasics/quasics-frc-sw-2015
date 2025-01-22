@@ -73,7 +73,7 @@ public class RealDrivebase extends IDrivebase {
   }
 
   @Override
-  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
+  protected void setMotorSpeeds_HAL(double leftVoltage, double rightVoltage) {
       m_leftLeader.setVoltage(leftVoltage);
       m_rightLeader.setVoltage(rightVoltage);
   }

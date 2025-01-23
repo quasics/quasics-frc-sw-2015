@@ -5,34 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.IDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
-
 import java.util.function.Supplier;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArcadeDrive extends Command {
-  private final IDrivebase m_drivebase;
-  private final Supplier<Double> m_speedSupplier;
-  private final Supplier<Double> m_rotationSupplier;
-
-  /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(
-    IDrivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
-      m_speedSupplier = leftSupplier;
-      m_rotationSupplier = rightSupplier;
-      m_drivebase = drivebase;
-
-      addRequirements(drivebase);
+public class TankDrive extends Command {
+  private final RealDrivebase m_drivebase;
+  private final Supplier<Double> m_leftSupplier;
+  private final Supplier<Double> m_rightSupplier;
+  /** Creates a new TankDrive. */
+  public TankDrive(RealDrivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+    m_drivebase = drivebase;
+    m_leftSupplier = leftSupplier;
+    m_rightSupplier = rightSupplier; 
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivebase);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  updateSpeeds();
+    updateSpeeds();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,12 +41,12 @@ public class ArcadeDrive extends Command {
   }
 
   private void updateSpeeds() {
-    final double leftInput = m_speedSupplier.get();
-    final double rightInput = m_rotationSupplier.get();
-
-    LinearVelocity forwardSpeed = RealDrivebase.MAX_SPEED.times(leftInput);
-    AngularVelocity rotationSpeed = RealDrivebase.MAX_ANGULAR_SPEED.times(rightInput);
-
-    m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
+    final double leftInput = m_leftSupplier.get();
+    final double rightInput = m_rightSupplier.get();
+    
+    double leftSpeed = leftInput;
+    double rightSpeed = rightInput;
+    // TODO: add tank drive support to IDrivebase
+   // m_drivebase.setSpeeds(leftSpeed, rightSpeed);
   }
 }

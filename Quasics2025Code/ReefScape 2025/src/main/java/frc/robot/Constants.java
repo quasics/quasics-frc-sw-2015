@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import frc.robot.ConditionalConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -62,7 +61,21 @@ public final class Constants {
       public static final int LEFT_FOLLOWER_ID = 1;
       public static final int RIGHT_LEADER_ID = 4;
       public static final int RIGHT_FOLLOWER_ID = 3;
+
+      // TODO: update these
+      public static final int LEFT_CLIMBER_ID = 5; 
+      public static final int RIGHT_CLIMBER_ID = 6;
+
+      public static final int LEFT_ELEVATOR_ID = 7;
+      public static final int RIGHT_ELEVATOR_ID = 8;
+
+      public static final int ARM_PIVOT_ID = 9;
+
+      public static final int ARM_ROLLER_ID = 10;
     }
+
+    public static final int PIGEON2_CAN_ID = 1;
+
   }
 
   public static class RobotSpeedScaling {
@@ -71,7 +84,28 @@ public final class Constants {
     public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
   }
 
+  public static class AutonomousStartingPositions {
+    public static final String examplePosition = "Example position";
+  } // public static class AutonomousStartingPositions
+
+  public static class AutonomousSelectedOperation {
+    public static final String doNothing = "Do nothing";
+    public static final String GTFO = "GTFO";
+  } // public static class AutonomousSelectedOperation
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static class SimulationPorts {
+    public static final int LEFT_FRONT_DRIVE_PWM_ID = 1;
+    public static final int LEFT_REAR_DRIVE_PWM_ID = 2;
+    public static final int RIGHT_FRONT_DRIVE_PWM_ID = 3;
+    public static final int RIGHT_REAR_DRIVE_PWM_ID = 4;
+    
+    public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
+    public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
+    public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
+    public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
   }
 }

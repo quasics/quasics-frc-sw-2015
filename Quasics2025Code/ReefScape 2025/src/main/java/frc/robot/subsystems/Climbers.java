@@ -22,8 +22,8 @@ public class Climbers extends SubsystemBase {
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
 
-  static final double EXTENSION_SPEED = -1.0;
-  static final double RETRACTION_SPEED = 1.0;
+  static final double EXTENSION_SPEED = -0.10;
+  static final double RETRACTION_SPEED = 0.10;
 
   public Climbers() {
     m_leftClimber = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);

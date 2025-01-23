@@ -1,5 +1,8 @@
 package frc.robot.subsystems.simulations;
 
+/**
+ * Defines the ports used for the simulation of the robot.
+ */
 public interface SimulationPorts {
     public final int LEFT_DRIVE_PWM_ID = 0;
     public final int RIGHT_DRIVE_PWM_ID = 1;

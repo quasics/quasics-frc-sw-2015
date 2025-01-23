@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -84,7 +84,7 @@ public class Vision extends SubsystemBase implements IVision {
 
   /** Creates a new Vision. */
   public Vision() {
-    setName("Vision");
+    setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
     Translation3d robotToCameraTrl = new Translation3d(
@@ -164,14 +164,15 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp) > 1e-5;
+    m_estimateRecentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;
     }
   }
 
-  // This method will be called once per scheduler run
+  // Note: this method will be called once per scheduler run
   @Override
   public void periodic() {
     super.periodic();
@@ -201,5 +202,20 @@ public class Vision extends SubsystemBase implements IVision {
     if (m_photonEstimator != null) {
       m_photonEstimator.setLastPose(pose);
     }
+  }
+
+  @Override
+  public Optional<EstimatedRobotPose> getLastEstimatedPose() {
+    return m_lastEstimatedPose;
+  }
+
+  @Override
+  public double getLastEstTimestamp() {
+    return m_lastEstTimestamp;
+  }
+
+  @Override
+  public boolean getEstimateRecentlyUpdated() {
+    return m_estimateRecentlyUpdated;
   }
 }

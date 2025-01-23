@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -40,6 +40,9 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 
+/**
+ * Defines a version of IDrivebase that runs under (full) simulation.
+ */
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
   // Control ports for our drive motors. (These would be specific to a given
   // robot.)
@@ -57,7 +60,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidth.in(Meters));
 
-  // Hardware allocation
+  // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
@@ -83,7 +86,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   /** Creates a new SimDrivebase. */
   public SimDrivebase() {
-    setName(NAME);
+    setName(SUBSYSTEM_NAME);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -149,6 +152,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     BulletinBoard.common.updateValue(POSE_KEY, pose);
   }
 
+  // Note: this method will be called once per scheduler run
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();

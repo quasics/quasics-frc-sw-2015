@@ -67,7 +67,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
-  // Objects used in simulation mode.
+  /////////////////////////////////////////////////////////////////////////////////////
+  // Simulated "hardware" and other simulation-specific objects.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);

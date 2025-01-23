@@ -11,11 +11,15 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.RaiseElevator;
+import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
+import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 
@@ -23,6 +27,7 @@ public class RobotContainer {
   // Subsystems
   final IVision m_vision = new SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
+  final AbstractElevator m_elevator = new SimulatedElevator();
 
   // Controllers
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
@@ -68,7 +73,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new DriveForDistance(m_drivebase, .50, Meters.of(3));
+    // Simple demo command to drive forward while raising the elevator.
+    return new ParallelCommandGroup(
+        new DriveForDistance(m_drivebase, .50, Meters.of(3)),
+        new RaiseElevator(m_elevator));
     // return Commands.print("No autonomous command configured");
   }
 }

@@ -45,8 +45,6 @@ import frc.robot.utils.BulletinBoard;
  * Defines a version of IDrivebase that runs under (full) simulation.
  */
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
-  // Control ports for our drive motors. (These would be specific to a given
-  // robot.)
   public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
   public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;

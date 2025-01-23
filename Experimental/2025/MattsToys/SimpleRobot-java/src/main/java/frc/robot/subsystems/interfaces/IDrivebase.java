@@ -59,7 +59,8 @@ public interface IDrivebase {
   void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /**
-   * Utility method: straight forward/backward.
+   * Utility method: straight forward/backward. (Effectively, tank drive with a
+   * single speed for both sides.)
    * 
    * @param percentage The percentage of MAX_SPEED to drive at.
    */

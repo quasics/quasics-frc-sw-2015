@@ -4,51 +4,86 @@
 
 package frc.robot;
 
+import frc.robot.Constants.LogitechGamePad;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.TankDrive;
+import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.SimulatedDrivebase;
+
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final AbstractDrivebase m_driveBase = new SimulatedDrivebase();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandJoystick m_driverController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final Supplier<Double> m_leftSupplier;
+  private final Supplier<Double> m_rightSupplier;
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
-    // Configure the trigger bindings
+    // Real vs. Simulation-specific configuration
+    if (Robot.isReal()) {
+      // Configuring the real robot.
+      //
+      // Note that we're inverting the values because Xbox controllers return
+      // negative values when we push forward.
+      m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
+      m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
+    } else {
+      // Configuring the simulated robot
+      //
+      // Note that we're assuming a keyboard-based controller is actually being
+      // used in the simulation environment (for now), and thus we want to use
+      // axis 0&1 (from the "Keyboard 0" configuration).
+      m_leftSupplier = () -> m_driverController.getRawAxis(0);
+      m_rightSupplier = () -> m_driverController.getRawAxis(1);
+    }
+
+    // Set default commands for subsystems.
+    Command driveCommand = new TankDrive(m_driveBase, m_leftSupplier, m_rightSupplier);
+    m_driveBase.setDefaultCommand(driveCommand);
+
+    // Configure the trigger bindings.
     configureBindings();
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * Use this method to define your trigger->command mappings.
+   * 
+   * Triggers can be created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController Xbox} and
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers, or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**

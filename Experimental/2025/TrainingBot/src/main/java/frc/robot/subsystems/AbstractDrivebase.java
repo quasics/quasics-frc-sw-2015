@@ -56,6 +56,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /////////////////////////////////////////////////////////////////////////////
   // Driving methods that can be implemented using subclasses' methods.
 
+  /**
+   * Sets the speeds for the left- and right-side motors to the same percentage
+   * (which should drive us straight forward or backward).
+   */
+  public void setSpeed(double percentage) {
+    tankDrive(percentage, percentage);
+  }
+
   /** Stops the drive base (setting motor speeds to 0). */
   public void stop() {
     tankDrive(0, 0);

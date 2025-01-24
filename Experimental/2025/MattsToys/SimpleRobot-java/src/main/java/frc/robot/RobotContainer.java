@@ -5,13 +5,13 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
-import static frc.robot.Constants.LogitechGamePad;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.RaiseElevator;
@@ -30,6 +30,11 @@ public class RobotContainer {
   final AbstractElevator m_elevator = new SimulatedElevator();
 
   // Controllers
+  //
+  // TODO: Consider using CommandJoystick class instead of Joystick. (Would let me
+  // explicitly bind specific channels for X/Y, possibly simplifying live vs
+  // simulation handling, as well as directly providing "trigger factories" for
+  // commands.)
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   public RobotContainer() {

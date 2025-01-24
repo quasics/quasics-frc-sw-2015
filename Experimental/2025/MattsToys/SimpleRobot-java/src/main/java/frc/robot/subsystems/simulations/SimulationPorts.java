@@ -9,6 +9,8 @@ public interface SimulationPorts {
 
     public final int ELEVATOR_PWM_ID = 5;
 
+    public final int GYRO_CHANNEL = 0;
+
     public final int LEFT_DRIVE_ENCODER_PORT_A = 0;
     public final int LEFT_DRIVE_ENCODER_PORT_B = 1;
     public final int RIGHT_DRIVE_ENCODER_PORT_A = 2;

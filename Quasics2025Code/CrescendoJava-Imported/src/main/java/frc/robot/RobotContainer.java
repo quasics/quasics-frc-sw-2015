@@ -306,7 +306,7 @@ public class RobotContainer {
 
   private Command IntakeHelperCommandUntilBeamBroken(boolean takingin) {
     return Commands.parallel(
-        new RunTransitionUntilBeamBroken(m_transitionRoller, .5, takingin, m_enableSensors),
+        new RunTransitionRoller(m_transitionRoller, .5, takingin),
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 

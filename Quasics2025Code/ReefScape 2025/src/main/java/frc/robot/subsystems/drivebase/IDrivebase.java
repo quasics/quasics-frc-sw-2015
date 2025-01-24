@@ -70,13 +70,13 @@ public abstract class IDrivebase extends SubsystemBase {
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
     if(xSpeed.gt(MAX_SPEED)){
       xSpeed = MAX_SPEED;
-    } else if (xSpeed.lt(MAX_SPEED.negate())){
-      xSpeed = MAX_SPEED.negate();
+    } else if (xSpeed.lt(MAX_SPEED.unaryMinus())){
+      xSpeed = MAX_SPEED.unaryMinus();
     }
     if (rot.gt(MAX_ANGULAR_SPEED)) {
       rot = MAX_ANGULAR_SPEED;
-    } else if (rot.lt(MAX_ANGULAR_SPEED.negate())) {
-      rot = MAX_ANGULAR_SPEED.negate();
+    } else if (rot.lt(MAX_ANGULAR_SPEED.unaryMinus())) {
+      rot = MAX_ANGULAR_SPEED.unaryMinus();
     }
 
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));

@@ -11,6 +11,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 
 import java.util.function.Supplier;
@@ -30,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final AbstractDrivebase m_driveBase = new SimulatedDrivebase();
+  private final AbstractDrivebase m_driveBase;
 
   private final CommandJoystick m_driverController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
 
@@ -44,14 +45,16 @@ public class RobotContainer {
     // Real vs. Simulation-specific configuration
     if (Robot.isReal()) {
       // Configuring the real robot.
-      //
+      m_driveBase = new RealDrivebase();
+
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
       m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
       m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
     } else {
       // Configuring the simulated robot
-      //
+      m_driveBase = new SimulatedDrivebase();
+
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).

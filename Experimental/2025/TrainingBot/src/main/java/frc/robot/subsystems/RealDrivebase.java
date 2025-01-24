@@ -41,7 +41,7 @@ public class RealDrivebase extends AbstractDrivebase {
     // Gyro
     private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
-    RealDrivebase() {
+    public RealDrivebase() {
         super();
 
         ////////////////////////////////////////

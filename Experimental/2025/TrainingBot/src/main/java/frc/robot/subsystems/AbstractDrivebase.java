@@ -4,12 +4,16 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -18,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * functionality related to driving/navigation.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
+
+  public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
@@ -82,6 +88,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * 
    * @see #getLeftDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
    */
   public Distance getLeftDistance() {
     return Meters.of(getLeftDistanceMeters());
@@ -96,9 +103,24 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    * 
    * @see #getRightDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
    */
   public Distance getRightDistance() {
     return Meters.of(getRightDistanceMeters());
+  }
+
+  /**
+   * Gets the robot's current heading as an "Angle" value (which automatically
+   * handles units).
+   * 
+   * @return the robot's current heading
+   * 
+   * @see #getHeadingInDegrees()
+   * @see edu.wpi.first.units.measure.Angle
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
+   */
+  public Angle getHeading() {
+    return Degrees.of(getHeadingInDegrees());
   }
 
   /////////////////////////////////////////////////////////////////////////////

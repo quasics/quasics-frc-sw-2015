@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -33,13 +36,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public abstract void tankDrive(double leftPercentage, double rightPercentage);
 
   /**
-   * @return the distance that the wheels on the left have traveled since startup.
+   * @return the distance that the wheels on the left have traveled since startup
+   *         (in meters).
    */
   public abstract double getLeftDistanceMeters();
 
   /**
    * @return the distance that the wheels on the right have traveled since
-   *         startup.
+   *         startup (in meters).
    */
   public abstract double getRightDistanceMeters();
 
@@ -60,6 +64,33 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /** @returns the robot's "pose" (for use with other WPILib functionality). */
   public Pose2d getPose2d() {
     return m_odometry.getPoseMeters();
+  }
+
+  /**
+   * Gets the distance that the robot's left wheel(s) have traveled since startup,
+   * expressed as a "Distance" value (which automatically handles units).
+   * 
+   * @return the distance that the wheels on the left have traveled since startup.
+   * 
+   * @see #getLeftDistanceMeters()
+   * @see edu.wpi.first.units.measure.Distance
+   */
+  public Distance getLeftDistance() {
+    return Meters.of(getLeftDistanceMeters());
+  }
+
+  /**
+   * Gets the distance that the robot's right wheel(s) have traveled since
+   * startup, expressed as a "Distance" value (which automatically handles units).
+   * 
+   * @return the distance that the wheels on the right have traveled since
+   *         startup.
+   * 
+   * @see #getRightDistanceMeters()
+   * @see edu.wpi.first.units.measure.Distance
+   */
+  public Distance getRightDistance() {
+    return Meters.of(getRightDistanceMeters());
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -46,4 +46,23 @@ public final class Constants {
     public static final int LeftStickPress = 9;
     public static final int RightStickPress = 10;
   }
+
+  public static class CanBusIds {
+    public static class SparkMaxIds {
+      // Note: Drive base motor IDs are based on those Quasics has used over the last
+      // couple of years.
+      public static final int LEFT_LEADER_ID = 2;
+      public static final int LEFT_FOLLOWER_ID = 1;
+      public static final int RIGHT_LEADER_ID = 4;
+      public static final int RIGHT_FOLLOWER_ID = 3;
+
+      public static final int LEFT_CLIMBER_CAN_ID = 5;
+      public static final int RIGHT_CLIMBER_CAN_ID = 6;
+
+      public static final int LEFT_SHOOTER_FLYWHEEL_CAN_ID = 9;
+      public static final int RIGHT_SHOOTER_FLYWHEEL_CAN_ID = 10;
+    }
+
+    public static final int PIGEON2_CAN_ID = 1;
+  }
 }

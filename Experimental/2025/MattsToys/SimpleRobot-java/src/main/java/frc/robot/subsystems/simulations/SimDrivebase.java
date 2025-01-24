@@ -57,7 +57,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
   private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
-  private final AnalogGyroSim m_gyroSim;
   private final IGyro m_wrappedGyro;
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
@@ -71,6 +70,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   // Simulated "hardware" and other simulation-specific objects.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  final AnalogGyroSim m_gyroSim;
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
       DCMotor.getCIM(2), 8,
@@ -99,7 +99,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_rightEncoder.reset();
 
     // Set up the gyro
-    final AnalogGyro rawGyro = new AnalogGyro(0);
+    final AnalogGyro rawGyro = new AnalogGyro(GYRO_CHANNEL);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Set up the pose estimator
@@ -127,6 +127,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     updateOdometry();
 
+    // Share the current pose with other subsystems (e.g., vision).
+    var pose = getOdometry().getPoseMeters();
+    BulletinBoard.common.updateValue(POSE_KEY, pose);
+
     // Update published field simulation data. We're doing this here (in the
     // periodic function, rather than in the simulationPeriodic function) because we
     // want to take advantage of the fact that the odometry has just been updated.
@@ -134,15 +138,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // When we move stuff into a base class, the code above would be there, and this
     // would be in the overridden periodic function for this (simulation-specific)
     // class.
-    var pose = getOdometry().getPoseMeters();
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     m_fieldSim.setRobotPose(pose);
-
     m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
-
-    // Share the current pose with other subsystems (e.g., vision).
-    BulletinBoard.common.updateValue(POSE_KEY, pose);
   }
 
   // Note: this method will be called once per scheduler run

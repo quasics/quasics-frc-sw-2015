@@ -34,7 +34,6 @@ public class TankDrive extends Command {
   private void updateSpeeds() {
     final double leftPercentage = m_leftSupplier.get();
     final double rightPercentage = m_rightSupplier.get();
-    System.out.println("Left: " + leftPercentage + " Right: " + rightPercentage);
     m_drivebase.tankDrive(leftPercentage, rightPercentage);
   }
 

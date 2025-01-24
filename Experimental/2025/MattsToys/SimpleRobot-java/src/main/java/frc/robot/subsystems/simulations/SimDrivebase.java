@@ -1,10 +1,11 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.subsystems.simulations.SimulationPorts.*;
 
 import java.util.Optional;
 
@@ -40,16 +41,10 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 
+/**
+ * Defines a version of IDrivebase that runs under (full) simulation.
+ */
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
-  // Control ports for our drive motors. (These would be specific to a given
-  // robot.)
-  public static final int LEFT_DRIVE_PWM_ID = 0;
-  public static final int RIGHT_DRIVE_PWM_ID = 1;
-  public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
-  public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
-  public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
-  public static final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
-
   public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
   public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
@@ -57,7 +52,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
       kRobotTrackWidth.in(Meters));
 
-  // Hardware allocation
+  // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
@@ -72,7 +67,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
-  // Objects used in simulation mode.
+  /////////////////////////////////////////////////////////////////////////////////////
+  // Simulated "hardware" and other simulation-specific objects.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
@@ -83,7 +79,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   /** Creates a new SimDrivebase. */
   public SimDrivebase() {
-    setName(NAME);
+    setName(SUBSYSTEM_NAME);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -149,6 +145,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     BulletinBoard.common.updateValue(POSE_KEY, pose);
   }
 
+  // Note: this method will be called once per scheduler run
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();

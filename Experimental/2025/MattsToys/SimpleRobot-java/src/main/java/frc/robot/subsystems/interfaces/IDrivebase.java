@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -14,13 +14,15 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-/** Add your docs here. */
+/**
+ * Basic interface for drive base functionality.
+ */
 public interface IDrivebase {
   /** Name for the subsystem (and base for BulletinBoard keys). */
-  final String NAME = "Drivebase";
+  final String SUBSYSTEM_NAME = "Drivebase";
 
   /** Key used to post Pose information to BulletinBoard. */
-  final String POSE_KEY = NAME + ".Pose";
+  final String POSE_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
   final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.25);
@@ -57,7 +59,8 @@ public interface IDrivebase {
   void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /**
-   * Utility method: straight forward/backward.
+   * Utility method: straight forward/backward. (Effectively, tank drive with a
+   * single speed for both sides.)
    * 
    * @param percentage The percentage of MAX_SPEED to drive at.
    */

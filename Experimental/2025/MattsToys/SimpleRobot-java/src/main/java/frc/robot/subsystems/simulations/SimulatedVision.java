@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -86,16 +86,16 @@ public class SimulatedVision extends Vision {
         return cameraProp;
     }
 
-    // This method will be called once per scheduler run
+    // Note: this method will be called once per scheduler run
     @Override
     public void simulationPeriodic() {
         // Should be a no-op, but good practice to call the base class.
         super.simulationPeriodic();
 
-        Pose2d robotPoseMeters = (Pose2d) BulletinBoard.common.getValue(
+        Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(
                 IDrivebase.POSE_KEY, Pose2d.class).orElse(new Pose2d());
 
-        m_visionSim.update(robotPoseMeters);
+        m_visionSim.update(driveBasePoseMeters);
 
         // Update the simulator to reflect where the estimated pose suggests that we
         // are located.

@@ -32,9 +32,7 @@ public class TankDrive extends Command {
   }
 
   private void updateSpeeds() {
-    final double leftPercentage = m_leftSupplier.get();
-    final double rightPercentage = m_rightSupplier.get();
-    m_drivebase.tankDrive(leftPercentage, rightPercentage);
+    m_drivebase.tankDrive(m_leftSupplier.get(), m_rightSupplier.get());
   }
 
   // Called when the command is initially scheduled.

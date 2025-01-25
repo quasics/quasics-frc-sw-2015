@@ -6,15 +6,14 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -65,8 +64,10 @@ public class RealDrivebase extends AbstractDrivebase {
         SparkMaxConfig rightConfig = getBaselineConfig();
         rightConfig.inverted(true);
 
-        m_leftLeader.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_rightLeader.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_leftLeader.configure(
+                leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_rightLeader.configure(
+                rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     private SparkMaxConfig getBaselineConfig() {
@@ -77,9 +78,7 @@ public class RealDrivebase extends AbstractDrivebase {
         config.idleMode(IdleMode.kCoast);
 
         // Adjust the encoders to report in meters and meters/sec.
-        config.encoder
-                .positionConversionFactor(
-                        distanceScalingFactor)
+        config.encoder.positionConversionFactor(distanceScalingFactor)
                 .velocityConversionFactor(velocityScalingFactor);
 
         // TODO: Enable closed-loop PID control once we have the encoders working.

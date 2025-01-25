@@ -9,67 +9,69 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class TurnCommand extends Command {
-    final private AbstractDrivebase m_drivebase;
-    final double m_rotationInDegrees;
-    final double m_speed;
-    Angle m_stopAngle;
+  final private AbstractDrivebase m_drivebase;
+  final double m_rotationInDegrees;
+  final double m_speed;
+  Angle m_stopAngle;
 
-    /**
-     * Creates a new TurnCommand.
-     * 
-     * @param drivebase         The drivebase subsystem on which this command will
-     *                          run.
-     * @param rotationInDegrees The number of degrees to rotate.
-     * @param rotationalSpeed   The speed at which to rotate (as a % of motor
-     *                          speed, -1.0 to +1.0).
-     */
-    public TurnCommand(AbstractDrivebase drivebase, double rotationInDegrees, double speed) {
-        m_drivebase = drivebase;
-        m_rotationInDegrees = rotationInDegrees;
-        m_speed = speed;
+  /**
+   * Creates a new TurnCommand.
+   *
+   * @param drivebase         The drivebase subsystem on which this command will
+   *                          run.
+   * @param rotationInDegrees The number of degrees to rotate.
+   * @param rotationalSpeed   The speed at which to rotate (as a % of motor
+   *                          speed, -1.0 to +1.0).
+   */
+  public TurnCommand(AbstractDrivebase drivebase, double rotationInDegrees, double speed) {
+    m_drivebase = drivebase;
+    m_rotationInDegrees = rotationInDegrees;
+    m_speed = speed;
 
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(m_drivebase);
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_drivebase);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    // Figure out when to stop (before we start moving).
+    Angle startingDirection = m_drivebase.getHeading();
+    Angle rotationAngle = Units.Degrees.of(m_rotationInDegrees);
+    m_stopAngle = startingDirection.plus(rotationAngle);
+
+    // With a tank drive, you can rotate by driving the left and right sides in
+    // opposite directions. If the speeds are the same magnitude, the robot will
+    // rotate in place. (The sign of the speed determines the direction of the
+    // turn.)
+    //
+    // With a robot that has "arcade drive", you can just set the speed of the
+    // rotation, and the forward speed to 0, for the same results.
+    m_drivebase.tankDrive(m_speed, -m_speed);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    m_drivebase.stop();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    if (m_drivebase.getHeading().isEquivalent(m_stopAngle)) {
+      return true;
+    } else {
+      return false;
     }
-
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        // Figure out when to stop (before we start moving).
-        Angle startingDirection = m_drivebase.getHeading();
-        Angle rotationAngle = Units.Degrees.of(m_rotationInDegrees);
-        m_stopAngle = startingDirection.plus(rotationAngle);
-
-        // With a tank drive, you can rotate by driving the left and right sides in
-        // opposite directions. If the speeds are the same magnitude, the robot will
-        // rotate in place. (The sign of the speed determines the direction of the
-        // turn.)
-        //
-        // With a robot that has "arcade drive", you can just set the speed of the
-        // rotation, and the forward speed to 0, for the same results.
-        m_drivebase.tankDrive(m_speed, -m_speed);
-    }
-
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-    }
-
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-        m_drivebase.stop();
-    }
-
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        if (m_drivebase.getHeading().isEquivalent(m_stopAngle)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+  }
 }

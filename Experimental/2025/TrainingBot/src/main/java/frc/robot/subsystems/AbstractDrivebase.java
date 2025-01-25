@@ -22,15 +22,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * functionality related to driving/navigation.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
+  public static final String NAME = "Drivebase";
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
-    setName("Drivebase");
+    setName(NAME);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -51,6 +52,16 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    *         startup (in meters).
    */
   public abstract double getRightDistanceMeters();
+
+  /**
+   * @return the robot's current left velocity, in meters per second.
+   */
+  public abstract double getLeftVelocityMetersPerSecond();
+
+  /**
+   * @return the robot's current right velocity, in meters per second.
+   */
+  public abstract double getRightVelocityMetersPerSecond();
 
   /**
    * @return the robot's current heading in degrees, relative to the direction on
@@ -106,6 +117,22 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    */
   public Distance getRightDistance() {
     return Meters.of(getRightDistanceMeters());
+  }
+
+  /**
+   * @return the robot's current left velocity, expressed as a "LinearVelocity"
+   *         value.
+   */
+  public LinearVelocity getLeftVelocity() {
+    return MetersPerSecond.of(getLeftVelocityMetersPerSecond());
+  }
+
+  /**
+   * @return the robot's current right velocity, expressed as a "LinearVelocity"
+   *         value.
+   */
+  public LinearVelocity getRightVelocity() {
+    return MetersPerSecond.of(getRightVelocityMetersPerSecond());
   }
 
   /**

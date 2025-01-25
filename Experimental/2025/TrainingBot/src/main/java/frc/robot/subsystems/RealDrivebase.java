@@ -95,12 +95,14 @@ public class RealDrivebase extends AbstractDrivebase {
         return m_rightEncoder.getPosition();
     }
 
-    public LinearVelocity getLeftVelocityMetersPerSecond() {
-        return MetersPerSecond.of(m_leftEncoder.getVelocity());
+    @Override
+    public double getLeftVelocityMetersPerSecond() {
+        return m_leftEncoder.getVelocity();
     }
 
-    public LinearVelocity getRightVelocityMetersPerSecond() {
-        return MetersPerSecond.of(m_rightEncoder.getVelocity());
+    @Override
+    public double getRightVelocityMetersPerSecond() {
+        return m_rightEncoder.getVelocity();
     }
 
     @Override

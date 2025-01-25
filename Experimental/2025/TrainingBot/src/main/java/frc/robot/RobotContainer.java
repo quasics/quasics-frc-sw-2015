@@ -15,6 +15,8 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -89,6 +91,9 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(() -> m_driverController.getHID().getRawButton(1))
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Example of pushing a button on the SmartDashboard to run a command.
+    SmartDashboard.putData("1m @ 30%", new DriveForDistance(m_driveBase, 0.30, Meters.of(1)));
   }
 
   /**

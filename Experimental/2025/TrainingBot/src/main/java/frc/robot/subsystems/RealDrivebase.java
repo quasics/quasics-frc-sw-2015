@@ -11,13 +11,10 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealDrivebase extends AbstractDrivebase {
@@ -52,14 +49,7 @@ public class RealDrivebase extends AbstractDrivebase {
         ////////////////////////////////////////
         // Configure the encoders.
         System.out.println("Wheel circumference (m): " + WHEEL_CIRCUMFERENCE.in(Meters));
-
-        // Conversion factor from units in rotations (or RPM) to meters (or m/s).
-        final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
-        final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
         System.out.println("Using gear ratio: " + GEAR_RATIO);
-        System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
-        System.out.println("Velocity adj.: " + velocityScalingFactor);
-
         SparkMaxConfig leftConfig = getBaselineConfig();
         SparkMaxConfig rightConfig = getBaselineConfig();
         rightConfig.inverted(true);
@@ -71,10 +61,10 @@ public class RealDrivebase extends AbstractDrivebase {
     }
 
     private SparkMaxConfig getBaselineConfig() {
-        SparkMaxConfig config = new SparkMaxConfig();
         final double distanceScalingFactor = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
         final double velocityScalingFactor = distanceScalingFactor / 60;
 
+        SparkMaxConfig config = new SparkMaxConfig();
         config.idleMode(IdleMode.kCoast);
 
         // Adjust the encoders to report in meters and meters/sec.

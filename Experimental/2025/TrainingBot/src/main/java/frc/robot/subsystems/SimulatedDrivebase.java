@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -35,10 +36,8 @@ public class SimulatedDrivebase extends AbstractDrivebase {
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
-  private final Encoder m_leftEncoder =
-      new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
-  private final Encoder m_rightEncoder =
-      new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final AnalogGyro m_gyro = new AnalogGyro(GYRO_CHANNEL);
 
   /////////////////////////////////////////////////////////////////////////////////////
@@ -46,11 +45,11 @@ public class SimulatedDrivebase extends AbstractDrivebase {
   private final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   private final AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
-  private final DifferentialDrivetrainSim m_drivetrainSimulator =
-      new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
-          kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
+      0.3);
+  private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+      DCMotor.getCIM(2), 8,
+      kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
   private final Field2d m_fieldSim = new Field2d();
 
   public SimulatedDrivebase() {
@@ -68,10 +67,10 @@ public class SimulatedDrivebase extends AbstractDrivebase {
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
-    m_leftEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
-    m_rightEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
+        / kEncoderResolutionTicksPerRevolution);
+    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
+        / kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();
@@ -105,17 +104,6 @@ public class SimulatedDrivebase extends AbstractDrivebase {
     return m_rightEncoder.getDistance();
   }
 
-  @Override
-  public double getLeftVelocityMetersPerSecond() {
-    return m_leftEncoder.getRate();
-  }
-
-  @Override
-  public double getRightVelocityMetersPerSecond() {
-    return m_rightEncoder.getRate();
-  }
-
-  @Override
   public double getHeadingInDegrees() {
     return m_gyro.getAngle();
   }

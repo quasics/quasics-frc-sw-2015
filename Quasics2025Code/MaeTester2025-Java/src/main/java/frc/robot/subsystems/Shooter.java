@@ -29,7 +29,8 @@ public class Shooter extends SubsystemBase {
   //      yourActuator.setSpeed(-1.0);  // to close
   private static final double SERVO_RETRACTED_SPEED = -1.0;
   private static final double SERVO_EXTENDED_SPEED = +1.0;
-  private static final double SERVO_POSITION_RANGE = SERVO_EXTENDED_SPEED - SERVO_RETRACTED_SPEED;
+  private static final double SERVO_POSITION_RANGE =
+      SERVO_EXTENDED_SPEED - SERVO_RETRACTED_SPEED;
 
   // If Sally is enabled, disable hardware.
   private boolean isHardwareDisabled() {

@@ -5,106 +5,88 @@ import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealDrivebase extends AbstractDrivebase {
-  // Common physical characteristics for Quasics' robots (and directly derived
-  // values).
-  static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
-  static final Distance WHEEL_CIRCUMFERENCE = ANDYMARK_6IN_PLACTION_DIAMETER.times(Math.PI);
-  static final double GEAR_RATIO = 8.45;
-
-  ////////////////////////////////////////
-  // Hardware control/sensing.
-  //
-
-  // Motors
-  final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
-  // final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID,
-  // MotorType.kBrushless);
-  // final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID,
-  // MotorType.kBrushless);
-
-  // Encoders
-  private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
-  private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
-
-  // Gyro
-  private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
-
-  public RealDrivebase() {
-    super();
+    // Common physical characteristics for Quasics' robots (and directly derived
+    // values).
+    static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
+    static final Distance WHEEL_CIRCUMFERENCE = ANDYMARK_6IN_PLACTION_DIAMETER.times(Math.PI);
+    static final double GEAR_RATIO = 8.45;
+    static final double DISTANCE_SCALING_FACTOR_FOR_GEARING = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
+    static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
     ////////////////////////////////////////
-    // Configure the encoders.
-    System.out.println("Wheel circumference (m): " + WHEEL_CIRCUMFERENCE.in(Meters));
-    System.out.println("Using gear ratio: " + GEAR_RATIO);
-    SparkMaxConfig leftConfig = getBaselineConfig();
-    SparkMaxConfig rightConfig = getBaselineConfig();
-    rightConfig.inverted(true);
+    // Hardware control/sensing.
+    //
 
-    m_leftLeader.configure(
-        leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightLeader.configure(
-        rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
+    // Motors
+    final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
+    final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+    // final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID,
+    // MotorType.kBrushless);
+    // final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID,
+    // MotorType.kBrushless);
 
-  private SparkMaxConfig getBaselineConfig() {
-    final double distanceScalingFactor = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
-    final double velocityScalingFactor = distanceScalingFactor / 60;
+    // Encoders
+    private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
+    private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kCoast);
+    // Gyro
+    private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
-    // Adjust the encoders to report in meters and meters/sec.
-    config.encoder.positionConversionFactor(distanceScalingFactor)
-        .velocityConversionFactor(velocityScalingFactor);
+    public RealDrivebase() {
+        super();
 
-    // TODO: Enable closed-loop PID control once we have the encoders working.
-    // config.closedLoop
-    // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    // .pid(1.0, 0.0, 0.0);
+        ////////////////////////////////////////
+        // Configure the encoders.
+        System.out.println("Wheel circumference (m): " + WHEEL_CIRCUMFERENCE.in(Meters));
 
-    return config;
-  }
+        // Conversion factor from units in rotations (or RPM) to meters (or m/s).
+        final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
+        final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+        System.out.println("Using gear ratio: " + GEAR_RATIO);
+        System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
+        System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-  @Override
-  public void tankDrive(double leftPercentage, double rightPercentage) {
-    m_leftLeader.set(leftPercentage);
-    m_rightLeader.set(rightPercentage);
-  }
+        // TODO: Set the conversion factors on the encoders, once REV fixes the bug in
+        // RelativeEncoder. (They appear to have accidentally removed the functions,
+        // though they're still in the documentation. Matt filed a bug report:
+        // https://github.com/REVrobotics/REV-Software-Binaries/issues/17.)
+        //
+        // For now, we'll apply the scaling factors in the methods that use the
+        // encoders.
+        //
+        // m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
+        // m_rightEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
+        // m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
+        // m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
+    }
 
-  @Override
-  public double getLeftDistanceMeters() {
-    return m_leftEncoder.getPosition();
-  }
+    @Override
+    public void tankDrive(double leftPercentage, double rightPercentage) {
+        m_leftLeader.set(leftPercentage);
+        m_rightLeader.set(rightPercentage);
+    }
 
-  @Override
-  public double getRightDistanceMeters() {
-    return m_rightEncoder.getPosition();
-  }
+    @Override
+    public double getLeftDistanceMeters() {
+        return m_leftEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+    }
 
-  @Override
-  public double getLeftVelocityMetersPerSecond() {
-    return m_leftEncoder.getVelocity();
-  }
+    @Override
+    public double getRightDistanceMeters() {
+        return m_rightEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+    }
 
-  @Override
-  public double getRightVelocityMetersPerSecond() {
-    return m_rightEncoder.getVelocity();
-  }
-
-  @Override
-  public double getHeadingInDegrees() {
-    return m_rawGyro.getAngle();
-  }
+    @Override
+    public double getHeadingInDegrees() {
+        return m_rawGyro.getAngle();
+    }
 }

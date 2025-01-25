@@ -28,8 +28,8 @@ public class SimulatedElevator extends AbstractElevator {
   // This gearbox represents a gearbox containing 4 Vex 775pro motors.
   private final DCMotor m_gearing = DCMotor.getNEO(1);
 
-  private final Encoder m_encoder =
-      new Encoder(SimulationPorts.ELEVATOR_ENCODER_PORT_A, SimulationPorts.ELEVATOR_ENCODER_PORT_B);
+  private final Encoder m_encoder = new Encoder(SimulationPorts.ELEVATOR_ENCODER_PORT_A,
+      SimulationPorts.ELEVATOR_ENCODER_PORT_B);
   private final PWMSparkMax m_motor = new PWMSparkMax(SimulationPorts.ELEVATOR_PWM_ID);
 
   // Mechanism2d visualization of the hardware (for rendering in
@@ -47,8 +47,8 @@ public class SimulatedElevator extends AbstractElevator {
   // hardware. (But for now, this will at least give us something we can use.)
   private static final double kGearing = 10.0;
   private static final Distance kDrumRadius = Units.Inches.of(1);
-  private static final double kEncoderMetersPerPulse =
-      2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
+  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters)
+      / 4096;
   private static final double kCarriageMass = 1.0; // kg
   private static final double kMinHeightMeters = -1.0; // arbitrary: should be < min desired
   private static final double kMaxHeightMeters = 8; // arbitrary: should be > max desired
@@ -57,9 +57,9 @@ public class SimulatedElevator extends AbstractElevator {
 
   // Simulation classes help us simulate what's going on, optionally including
   // gravity.
-  private final ElevatorSim m_sim =
-      new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
-          kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
+  private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass,
+      kDrumRadius.in(Units.Meters), kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY,
+      kHeightMetersAtStart);
 
   /** Creates a new SimulatedElevator. */
   public SimulatedElevator() {
@@ -70,8 +70,8 @@ public class SimulatedElevator extends AbstractElevator {
 
     // Simulation rendering setup.
     Mechanism2d rootMech2d = new Mechanism2d(9, 10);
-    m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
-                   .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
+    m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0).append(
+        new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
 
     // Publish Mechanism2d to SmartDashboard.
     // To show the visualization, select Network Tables -> SmartDashboard
@@ -114,7 +114,8 @@ public class SimulatedElevator extends AbstractElevator {
         // Note: this should really be updated in conjunction with the simulated drive
         // base (and anything else we're "powering", such as a simulated shooter, as
         // well).
-        BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
+        BatterySim.calculateDefaultBatteryLoadedVoltage(
+            m_sim.getCurrentDrawAmps()));
   }
 
   @Override

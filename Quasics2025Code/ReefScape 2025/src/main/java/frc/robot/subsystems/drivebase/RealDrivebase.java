@@ -4,14 +4,22 @@
 
 package frc.robot.subsystems.drivebase;
 import static edu.wpi.first.units.Units.*;
+import frc.robot.Constants;
+import frc.robot.Constants.CanBusIds;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.OffsetGyro;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -20,16 +28,10 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.CanBusIds;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.OffsetGyro;
-import frc.robot.sensors.SparkMaxEncoderWrapper;
-import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.RobotSettings;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class RealDrivebase extends IDrivebase {
+
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
@@ -38,7 +40,8 @@ public class RealDrivebase extends IDrivebase {
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
 
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower =
+    new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightFollower =
       new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
@@ -56,6 +59,7 @@ public class RealDrivebase extends IDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
+
   /** Creates a new Drivebase. */
   public RealDrivebase(RobotSettings.Robot robot) {
     super(robot);
@@ -69,15 +73,9 @@ public class RealDrivebase extends IDrivebase {
   }
 
   @Override
-  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
-    m_leftLeader.set(leftVoltage);
-    m_rightLeader.set(rightVoltage);
-  }
-
-  @Override
-  protected void setSpeeds_HAL(double leftSpeed, double rightSpeed) {
-    m_leftLeader.set(leftSpeed);
-    m_rightLeader.set(rightSpeed);
+  protected void setMotorSpeeds_HAL(double leftVoltage, double rightVoltage) {
+      m_leftLeader.set(leftVoltage);
+      m_rightLeader.set(rightVoltage);
   }
 
   protected TrivialEncoder getLeftEncoder_HAL() {

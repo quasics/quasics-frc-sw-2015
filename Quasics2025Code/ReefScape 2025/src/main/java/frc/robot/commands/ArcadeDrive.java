@@ -4,16 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.IDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
-import java.util.function.Supplier;
 
-/* You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
- */
+import java.util.function.Supplier;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArcadeDrive extends Command {
   private final IDrivebase m_drivebase;
   private final Supplier<Double> m_speedSupplier;
@@ -21,19 +20,19 @@ public class ArcadeDrive extends Command {
 
   /** Creates a new ArcadeDrive. */
   public ArcadeDrive(
-      IDrivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
-    m_speedSupplier = leftSupplier;
-    m_rotationSupplier = rightSupplier;
-    m_drivebase = drivebase;
+    IDrivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
+      m_speedSupplier = leftSupplier;
+      m_rotationSupplier = rightSupplier;
+      m_drivebase = drivebase;
 
-    addRequirements(drivebase);
+      addRequirements(drivebase);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    updateSpeeds();
+  updateSpeeds();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

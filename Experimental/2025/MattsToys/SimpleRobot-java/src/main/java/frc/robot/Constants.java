@@ -5,6 +5,7 @@
 package frc.robot;
 
 public class Constants {
+
   public static class DriveTeam {
     public static final int DRIVER_JOYSTICK_ID = 0;
     public static final int OPERATOR_JOYSTICK_ID = 1;
@@ -38,4 +39,5 @@ public class Constants {
     public static final int LeftStickPress = 9;
     public static final int RightStickPress = 10;
   }
+
 }

@@ -4,18 +4,19 @@
 
 package frc.robot.commands;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
-import java.util.Optional;
 
 public class MatchPlayLighting extends Command {
   final Lights m_lights;
   /** Creates a new MatchPlayLighting. */
   public MatchPlayLighting(Lights lights) {
     m_lights = lights;
-
+   
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(lights);
   }
@@ -30,7 +31,7 @@ public class MatchPlayLighting extends Command {
   @Override
   public void execute() {
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
+    if(alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
         m_lights.setStripColor(255, 0, 0);
       }

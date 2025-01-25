@@ -6,54 +6,59 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.subsystems.Vision;
 import java.lang.Math;
 import java.util.*;
+
 import org.photonvision.EstimatedRobotPose;
+
+import frc.robot.subsystems.Vision;
 
 public class Drivebase extends SubsystemBase {
   private final DifferentialDriveKinematics m_kinematics;
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_leftFollower =
+      new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightFollower =
       new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
@@ -93,8 +98,7 @@ public class Drivebase extends SubsystemBase {
   /** Creates a new Drivebase. */
   public Drivebase() {
     m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH_METERS);
-    m_estimator =
-        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+    m_estimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     resetOdometry();
     setupSmartDashboard();
     configureEncoders();
@@ -102,14 +106,11 @@ public class Drivebase extends SubsystemBase {
     m_leftFollowerConfig.follow(SparkMaxIds.LEFT_LEADER_ID);
     m_rightFollowerConfig.follow(SparkMaxIds.RIGHT_LEADER_ID);
 
-    m_leftFollower.configure(
-        m_leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightFollower.configure(
-        m_rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftLeader.configure(
-        m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightLeader.configure(
-        m_rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftFollower.configure(m_leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightFollower.configure(m_rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftLeader.configure(m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightLeader.configure(m_rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
   }
 
   @Override
@@ -139,6 +140,7 @@ public class Drivebase extends SubsystemBase {
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
 
     m_estimator.update(m_pigeon.getRotation2d(), leftDistance, rightDistance);
+
   }
 
   public double getYaw() {
@@ -159,19 +161,17 @@ public class Drivebase extends SubsystemBase {
       SmartDashboard.putNumber("returned y", toPrint.getY());
       SmartDashboard.putNumber("returned angle", toPrint.getRotation().getDegrees());
       m_estimator.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
-
+    
     }
     */
   }
 
   public void setupSmartDashboard() {
-    SmartDashboard.putData("Reset odometry to (0, 0, 0deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(0))))));
+    SmartDashboard.putData("Reset odometry to (0, 0, 0deg)", new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(0))))));
 
-    SmartDashboard.putData("Reset odometry to (0, 0, 45deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(45))))));
-    SmartDashboard.putData("Reset odometry to (3, 0, 90deg)",
-        new InstantCommand(() -> resetOdometry(new Pose2d(3, 0, new Rotation2d(Degrees.of(90))))));
+    SmartDashboard.putData("Reset odometry to (0, 0, 45deg)", new InstantCommand(() -> resetOdometry(new Pose2d(0, 0, new Rotation2d(Degrees.of(45))))));
+    SmartDashboard.putData("Reset odometry to (3, 0, 90deg)", new InstantCommand(() -> resetOdometry(new Pose2d(3, 0, new Rotation2d(Degrees.of(90))))));
+
   }
 
   public void setVoltages(double leftVoltage, double rightVoltage) {
@@ -222,15 +222,14 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    var rotation = new Rotation2d(getYaw() * Math.PI / 180);
-    /*
+    var rotation = new Rotation2d(getYaw() * Math.PI/180);
+    /* 
     var left = m_leftEncoder.getPosition();
     var right = m_rightEncoder.getPosition();
-    System.out.println("Rotation: " + rotation.toString() + ", left: " + left + ", right: " + right
-    + ", pose: " + pose.toString());
+    System.out.println("Rotation: " + rotation.toString() + ", left: " + left + ", right: " + right + ", pose: " + pose.toString());
     */
-    // m_odometry.resetPosition(
-    //     rotation, m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
+    //m_odometry.resetPosition(
+    //    rotation, m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
     m_odometry.resetPosition(
         m_pigeon.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(), pose);
     m_estimator.resetPosition(m_pigeon.getRotation2d(), 0, 0, pose);
@@ -279,9 +278,9 @@ public class Drivebase extends SubsystemBase {
   private final MutVoltage m_appliedVoltage = mutable(Volts.of(0));
   private final MutDistance m_distance = mutable(Meters.of(0));
   private final MutLinearVelocity m_velocity = mutable(MetersPerSecond.of(0));
-
+ 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-    new SysIdRoutine.Config(),
+    new SysIdRoutine.Config(), 
     new SysIdRoutine.Mechanism((Voltage volts) -> {
       final double voltage = volts.in(Volts);
       setVoltages(voltage, voltage);

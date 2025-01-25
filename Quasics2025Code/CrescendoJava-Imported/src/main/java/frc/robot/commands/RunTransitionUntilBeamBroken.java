@@ -5,18 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.RunTransitionRoller;
 import frc.robot.subsystems.TransitionRoller;
+import frc.robot.commands.RunTransitionRoller;
 import java.util.function.Supplier;
 
+
 public class RunTransitionUntilBeamBroken extends Command {
+  
   private final TransitionRoller m_transition;
   private final double m_transitionSpeed;
   private final boolean m_enableSensor;
 
   /** Creates a new RunTransitionUntilBeamBroken. */
-  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed,
-      boolean transitionTakingIn, boolean enableSensor) {
+  public RunTransitionUntilBeamBroken(TransitionRoller transitionRoller, double transitionSpeed, boolean transitionTakingIn, boolean enableSensor) {
     m_transition = transitionRoller;
     if (transitionTakingIn) {
       m_transitionSpeed = Math.abs(transitionSpeed);
@@ -27,6 +28,8 @@ public class RunTransitionUntilBeamBroken extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(transitionRoller);
   }
+
+  
 
   // Called when the command is initially scheduled.
   @Override

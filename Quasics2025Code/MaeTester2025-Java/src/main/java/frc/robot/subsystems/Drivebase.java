@@ -6,12 +6,12 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.CANBusIds.SparkMax.*;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -19,8 +19,11 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivebase extends SubsystemBase {
-  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS = Units.inchesToMeters(6.0);
-  static final double WHEEL_CIRCUMFERENCE_METERS = Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
+
+  static final double ANDYMARK_6IN_PLACTION_DIAMETER_METERS =
+      Units.inchesToMeters(6.0);
+  static final double WHEEL_CIRCUMFERENCE_METERS =
+      Math.PI * ANDYMARK_6IN_PLACTION_DIAMETER_METERS;
   static final double DRIVEBASE_GEAR_RATIO = 10.71;
   static final double TICKS_PER_REV_FOR_NEO_MOTOR = 42;
 
@@ -33,7 +36,7 @@ public class Drivebase extends SubsystemBase {
 
   final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
   final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
-
+  
   private final RelativeEncoder m_leftEncoder;
   private final RelativeEncoder m_rightEncoder;
   private final DifferentialDrive m_drive;
@@ -46,14 +49,12 @@ public class Drivebase extends SubsystemBase {
     leftFollowerConfig.follow(LEFT_LEADER_ID);
     rightFollowerConfig.follow(RIGHT_LEADER_ID);
 
-    m_leftFollower.configure(
-        leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightFollower.configure(
-        rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightFollower.configure(rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_leftEncoder = m_leftLeader.getEncoder();
     m_rightEncoder = m_rightLeader.getEncoder();
-
+    
     m_drive = new DifferentialDrive(m_leftLeader, m_rightLeader);
 
     configureEncoders();
@@ -69,9 +70,7 @@ public class Drivebase extends SubsystemBase {
     resetEncoders();
   }
 
-  public void stop() {
-    m_drive.tankDrive(0, 0);
-  }
+  public void stop() { m_drive.tankDrive(0, 0); }
 
   public void setMotorSpeed(double leftPercent, double rightPercent) {
     m_drive.tankDrive(leftPercent, rightPercent);
@@ -82,14 +81,12 @@ public class Drivebase extends SubsystemBase {
   }
 
   private double getPositionConversionFactor() {
-    final double distanceScalingFactorForGearing =
-        WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
     return distanceScalingFactorForGearing;
   }
 
   private double getVelocityConversionFactor() {
-    final double distanceScalingFactorForGearing =
-        WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
     return velocityScalingFactor;
   }
@@ -107,9 +104,8 @@ public class Drivebase extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(
-        m_leftEncoder.getVelocity() * getVelocityConversionFactor(),
-        m_rightEncoder.getVelocity() * getVelocityConversionFactor());
+    return new DifferentialDriveWheelSpeeds(m_leftEncoder.getVelocity() * getVelocityConversionFactor(),
+                                            m_rightEncoder.getVelocity() * getVelocityConversionFactor());
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {

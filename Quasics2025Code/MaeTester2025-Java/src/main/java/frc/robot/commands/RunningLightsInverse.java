@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.function.Function;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Lights;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Lights;
-import java.util.function.Function;
 
 public class RunningLightsInverse extends Command {
   Timer m_timer = new Timer();
@@ -55,13 +56,13 @@ public class RunningLightsInverse extends Command {
       return;
     }
 
-    final int pulseStartPosition =
-        (m_lastPos - 1 + m_lights.getStripLength()) % m_lights.getStripLength();
+    final int pulseStartPosition = (m_lastPos - 1 + m_lights.getStripLength()) % m_lights.getStripLength();
     final int pulseEndPosition = (m_lastPos + 1 + m_pulseSize) % m_lights.getStripLength();
     m_lights.setStripColor(position -> {
       if (pulseStartPosition <= pulseEndPosition) {
         // Simple case: turning on lights from [startPos,endPos)
-        if (position >= pulseStartPosition && position < (pulseStartPosition + this.m_pulseSize)) {
+        if (position >= pulseStartPosition &&
+            position < (pulseStartPosition + this.m_pulseSize)) {
           return this.m_color;
         }
       } else {
@@ -78,6 +79,7 @@ public class RunningLightsInverse extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
   }
 
   // Returns true when the command should end.

@@ -96,7 +96,5 @@ public class Lights extends SubsystemBase {
   }
 
   /** Returns the configured length of the LED strip. */
-  public int getStripLength() {
-    return m_buffer.getLength();
-  }
+  public int getStripLength() { return m_buffer.getLength(); }
 }

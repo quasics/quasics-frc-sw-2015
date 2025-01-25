@@ -8,6 +8,16 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,14 +30,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 public class Vision extends SubsystemBase implements IVision {
   // The camera properties, relative to the center of the robot (and ground
@@ -85,10 +87,14 @@ public class Vision extends SubsystemBase implements IVision {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
-    Translation3d robotToCameraTrl =
-        new Translation3d(CAMERA_X.in(Meters), CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
-    Rotation3d robotToCameraRot =
-        new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians), CAMERA_YAW.in(Radians));
+    Translation3d robotToCameraTrl = new Translation3d(
+        CAMERA_X.in(Meters),
+        CAMERA_Y.in(Meters),
+        CAMERA_HEIGHT.in(Meters));
+    Rotation3d robotToCameraRot = new Rotation3d(
+        CAMERA_ROLL.in(Radians),
+        CAMERA_PITCH.in(Radians),
+        CAMERA_YAW.in(Radians));
     m_robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 
     // Connect to our camera. (May be a simulation.)
@@ -103,8 +109,8 @@ public class Vision extends SubsystemBase implements IVision {
     // Load the layout of the AprilTags on the field.
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout =
-          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      tagLayout = AprilTagFieldLayout
+          .loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
     } catch (IOException ioe) {
       System.err.println("Warning: failed to load April Tags layout.");
       ioe.printStackTrace();
@@ -136,11 +142,13 @@ public class Vision extends SubsystemBase implements IVision {
 
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(pose -> {
-      Pose2d pose2d = (Pose2d) pose;
-      updateLastPose(pose2d);
-      updateReferencePose(pose2d);
-    }, () -> System.err.println("Warning: no robot drive pose available."));
+    BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(
+        pose -> {
+          Pose2d pose2d = (Pose2d) pose;
+          updateLastPose(pose2d);
+          updateReferencePose(pose2d);
+        },
+        () -> System.err.println("Warning: no robot drive pose available."));
 
     // Update the pose estimator with the latest vision measurements.
     List<PhotonPipelineResult> results = m_camera.getAllUnreadResults();
@@ -156,8 +164,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
-        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

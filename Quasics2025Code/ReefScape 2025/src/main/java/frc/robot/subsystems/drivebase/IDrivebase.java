@@ -89,7 +89,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public void setMotorSpeeds(double leftSpeed, double rightSpeed){
     // feeder command into the HAL (hardware access layer) for left and right voltages
     if (ENABLE_VOLTAGE_APPLICATON){
-      this.setMotorSpeeds_HAL(leftSpeed, rightSpeed);
+      this.setSpeeds_HAL(leftSpeed, rightSpeed);
     }
   }
 
@@ -145,7 +145,8 @@ public abstract class IDrivebase extends SubsystemBase {
 
   protected abstract IGyro getGyro_HAL();
 
-  protected abstract void setMotorSpeeds_HAL(double leftSpeeds, double rightSpeeds);
+  protected abstract void setMotorVoltages_HAL(double leftSpeeds, double rightSpeeds);
+  protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);  
 
 
 }

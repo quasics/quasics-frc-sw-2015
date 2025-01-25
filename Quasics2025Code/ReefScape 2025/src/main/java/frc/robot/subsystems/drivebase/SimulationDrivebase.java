@@ -115,7 +115,7 @@ public class SimulationDrivebase extends IDrivebase {
   }
 
   @Override
-  protected void setMotorSpeeds_HAL(double leftVoltage, double rightVoltage) {
+  protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
     m_leftLeader.setVoltage(leftVoltage);
     m_rightLeader.setVoltage(rightVoltage);
   }
@@ -126,7 +126,8 @@ public class SimulationDrivebase extends IDrivebase {
     m_rightLeader.set(rightSpeed);
   }
 
-  @Override\  protected TrivialEncoder getLeftEncoder_HAL() {
+  @Override
+  protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }
 

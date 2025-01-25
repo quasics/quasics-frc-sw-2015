@@ -2,15 +2,23 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealDrivebase extends AbstractDrivebase {
@@ -19,8 +27,6 @@ public class RealDrivebase extends AbstractDrivebase {
     static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
     static final Distance WHEEL_CIRCUMFERENCE = ANDYMARK_6IN_PLACTION_DIAMETER.times(Math.PI);
     static final double GEAR_RATIO = 8.45;
-    static final double DISTANCE_SCALING_FACTOR_FOR_GEARING = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
-    static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
     ////////////////////////////////////////
     // Hardware control/sensing.
@@ -55,18 +61,33 @@ public class RealDrivebase extends AbstractDrivebase {
         System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
         System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-        // TODO: Set the conversion factors on the encoders, once REV fixes the bug in
-        // RelativeEncoder. (They appear to have accidentally removed the functions,
-        // though they're still in the documentation. Matt filed a bug report:
-        // https://github.com/REVrobotics/REV-Software-Binaries/issues/17.)
-        //
-        // For now, we'll apply the scaling factors in the methods that use the
-        // encoders.
-        //
-        // m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-        // m_rightEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-        // m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
-        // m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
+        SparkMaxConfig leftConfig = getBaselineConfig();
+        SparkMaxConfig rightConfig = getBaselineConfig();
+        rightConfig.inverted(true);
+
+        m_leftLeader.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_rightLeader.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    private SparkMaxConfig getBaselineConfig() {
+        SparkMaxConfig config = new SparkMaxConfig();
+        final double distanceScalingFactor = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
+        final double velocityScalingFactor = distanceScalingFactor / 60;
+
+        config.idleMode(IdleMode.kCoast);
+
+        // Adjust the encoders to report in meters and meters/sec.
+        config.encoder
+                .positionConversionFactor(
+                        distanceScalingFactor)
+                .velocityConversionFactor(velocityScalingFactor);
+
+        // TODO: Enable closed-loop PID control once we have the encoders working.
+        // config.closedLoop
+        // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        // .pid(1.0, 0.0, 0.0);
+
+        return config;
     }
 
     @Override
@@ -77,12 +98,20 @@ public class RealDrivebase extends AbstractDrivebase {
 
     @Override
     public double getLeftDistanceMeters() {
-        return m_leftEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+        return m_leftEncoder.getPosition();
     }
 
     @Override
     public double getRightDistanceMeters() {
-        return m_rightEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+        return m_rightEncoder.getPosition();
+    }
+
+    public LinearVelocity getLeftVelocityMetersPerSecond() {
+        return MetersPerSecond.of(m_leftEncoder.getVelocity());
+    }
+
+    public LinearVelocity getRightVelocityMetersPerSecond() {
+        return MetersPerSecond.of(m_rightEncoder.getVelocity());
     }
 
     @Override

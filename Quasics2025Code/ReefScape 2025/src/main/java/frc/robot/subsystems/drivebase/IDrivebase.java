@@ -27,6 +27,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public abstract class IDrivebase extends SubsystemBase {
 
@@ -109,13 +110,17 @@ public abstract class IDrivebase extends SubsystemBase {
           : 0; 
 
       // Applies to motors
-      setMotorVoltages(leftMetersPerSecond, rightMetersPerSecond);
+      setSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
   public void setMotorVoltages(double leftVoltage, double rightVoltage){
     if (ENABLE_VOLTAGE_APPLICATON){
       this.setMotorVoltages_HAL(leftVoltage, rightVoltage);
     }
+  }
+
+  public void setSpeeds(double leftSpeed, double rightSpeed){
+    this.setSpeeds(leftSpeed, rightSpeed);
   }
 
   public Distance getLengthIncludingBumpers() {
@@ -160,6 +165,12 @@ public abstract class IDrivebase extends SubsystemBase {
   public void periodic() {
     updateOdometry();
     // This method will be called once per scheduler run
+    Pose2d pose = getPose();
+    SmartDashboard.putNumber("X", pose.getX());
+    SmartDashboard.putNumber("Y", pose.getY());
+    SmartDashboard.putNumber("Pose angle", pose.getRotation().getDegrees());
+
+
   }
 
   protected abstract TrivialEncoder getLeftEncoder_HAL();
@@ -168,6 +179,7 @@ public abstract class IDrivebase extends SubsystemBase {
   protected abstract IGyro getGyro_HAL();
 
   protected abstract void setMotorVoltages_HAL(double leftVoltage, double rightVoltage);
+  protected abstract void setSpeeds_HAL(double leftSpeed, double rightSpeed);
 
 
 }

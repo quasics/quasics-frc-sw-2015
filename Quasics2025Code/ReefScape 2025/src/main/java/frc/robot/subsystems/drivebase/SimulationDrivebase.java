@@ -111,6 +111,12 @@ public class SimulationDrivebase extends IDrivebase {
   }
 
   @Override
+  protected void setSpeeds_HAL(double leftSpeed, double rightSpeed) {
+    m_leftLeader.setVoltage(leftSpeed);
+    m_rightLeader.setVoltage(rightSpeed);
+  }
+
+  @Override
   protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }

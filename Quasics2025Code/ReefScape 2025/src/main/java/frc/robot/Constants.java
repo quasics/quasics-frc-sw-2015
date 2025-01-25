@@ -98,10 +98,10 @@ public final class Constants {
   }
 
   public static class SimulationPorts {
-    public static final int LEFT_FRONT_DRIVE_PWM_ID = 1;
-    public static final int LEFT_REAR_DRIVE_PWM_ID = 2;
-    public static final int RIGHT_FRONT_DRIVE_PWM_ID = 3;
-    public static final int RIGHT_REAR_DRIVE_PWM_ID = 4;
+    public static final int LEFT_FRONT_DRIVE_PWM_ID = 2;
+    public static final int LEFT_REAR_DRIVE_PWM_ID = 1;
+    public static final int RIGHT_FRONT_DRIVE_PWM_ID = 4;
+    public static final int RIGHT_REAR_DRIVE_PWM_ID = 3;
     
     public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
     public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;

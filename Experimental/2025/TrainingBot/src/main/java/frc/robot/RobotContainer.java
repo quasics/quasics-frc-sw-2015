@@ -37,7 +37,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final AbstractDrivebase m_driveBase;
 
-  private final CommandJoystick m_driverController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
+  private final CommandJoystick m_driverController = new CommandJoystick(1);
 
   private final Supplier<Double> m_leftSupplier;
   private final Supplier<Double> m_rightSupplier;
@@ -89,7 +89,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
+    new Trigger(() -> m_driverController.getHID().getRawButton(1))
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Example of pushing a button on the SmartDashboard to run a command.

@@ -26,8 +26,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {

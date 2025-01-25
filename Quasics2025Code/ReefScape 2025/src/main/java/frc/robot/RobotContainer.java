@@ -17,6 +17,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Vision;
 
 
 import java.util.function.Supplier;
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final ArmRoller m_armRoller = new ArmRoller();
   private final Climbers m_climbers = new Climbers();
   private final Elevator m_elevator = new Elevator();
+  private final Vision m_vision = new Vision();
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
 

@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -134,5 +135,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     final double leftDistanceMeters = getLeftDistanceMeters();
     final double rightDistanceMeters = getRightDistanceMeters();
     m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
+
+    SmartDashboard.putNumber("distance", leftDistanceMeters);
+    SmartDashboard.putNumber("angle", getHeadingInDegrees());
   }
 }

@@ -4,23 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.Autos;
-import frc.robot.commands.TankDrive;
-import frc.robot.subsystems.drivebase.SimulationDrivebase;
-import frc.robot.subsystems.drivebase.RealDrivebase;
-import frc.robot.subsystems.drivebase.IDrivebase;
-import frc.robot.utils.RobotSettings;
-import frc.robot.commands.MoveClimbers;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ArmPivot;
-import frc.robot.subsystems.ArmRoller;
-import frc.robot.subsystems.Climbers;
-
-
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,6 +15,20 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.Autos;
+import frc.robot.commands.MoveClimbers;
+import frc.robot.commands.TankDrive;
+import frc.robot.subsystems.ArmPivot;
+import frc.robot.subsystems.ArmRoller;
+import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.drivebase.IDrivebase;
+import frc.robot.subsystems.drivebase.RealDrivebase;
+import frc.robot.subsystems.drivebase.SimulationDrivebase;
+import frc.robot.utils.RobotSettings;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -61,7 +58,8 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_operatorController =
+      new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.04;
 
   Trigger switchDriveTrigger;
@@ -72,12 +70,10 @@ public class RobotContainer {
   public static RobotSettings.Robot getRobotSettings() {
     if (RobotBase.isReal()) {
       return SETTINGS_FOR_REAL_MODE;
-    }
-    else{
+    } else {
       return RobotSettings.Robot.Simulator;
     }
   }
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -93,16 +89,16 @@ public class RobotContainer {
 
   private IDrivebase setupDriveBase() {
     IDrivebase drivebase = null;
-    if(Robot.isReal()) {
+    if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
       m_arcadeDriveLeftStick = ()
-        ->
-        - m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+          ->
+          - m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
       m_arcadeDriveRightStick = ()
-        ->
-        - m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
-    } else{
+          ->
+          - m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+    } else {
       m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
       m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
       drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
@@ -120,17 +116,17 @@ public class RobotContainer {
     addSysIdButtonsToSmartDashboard();
   }
 
-    private void addSysIdButtonsToSmartDashboard() {
-      /*
-    SmartDashboard.putData(
-        "Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData(
-        "Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData(
-        "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        */
+  private void addSysIdButtonsToSmartDashboard() {
+    /*
+  SmartDashboard.putData(
+      "Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  SmartDashboard.putData(
+      "Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+  SmartDashboard.putData(
+      "Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  SmartDashboard.putData(
+      "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      */
   }
 
   private void addOverallSelectorToSmartDashboard() {
@@ -184,7 +180,7 @@ public class RobotContainer {
         return m_rightSpeedLimiter.calculate(joystickPercentage);
       }
     };
-    
+
     m_arcadeDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
@@ -206,10 +202,11 @@ public class RobotContainer {
     };
 
     switchDriveTrigger =
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
-        .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
+            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
-    m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
   }
 
   private void ConfigureDriverButtons() {
@@ -222,7 +219,6 @@ public class RobotContainer {
   }
 
   private void ConfigureOperatorButtons() {
-    
   }
 
   private double getDriveSpeedScalingFactor() {
@@ -251,10 +247,9 @@ public class RobotContainer {
     String positionOption = m_positionOptions.getSelected();
 
     DriverStation.Alliance alliance =
-    DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is blue
+        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
     return Autos.getAutonomousCommand();
-
   }
 }

@@ -7,12 +7,10 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Elevator extends SubsystemBase {
-
   SparkMax m_leftElevator;
   SparkMax m_rightElevator; // should these be leader follower?
 
@@ -21,9 +19,11 @@ public class Elevator extends SubsystemBase {
 
   static final double EXTENSION_SPEED = -1.0;
   static final double RETRACTION_SPEED = 1.0;
-  
-  /** Crea
-   * tes a new Elevator. */
+
+  /**
+   * Crea
+   * tes a new Elevator.
+   */
   public Elevator() {
     m_leftElevator = new SparkMax(SparkMaxIds.LEFT_ELEVATOR_ID, MotorType.kBrushless);
     m_rightElevator = new SparkMax(SparkMaxIds.RIGHT_ELEVATOR_ID, MotorType.kBrushless);
@@ -31,7 +31,6 @@ public class Elevator extends SubsystemBase {
     m_rightEncoder = m_rightElevator.getEncoder();
   }
 
-  
   public void StartExtending() {
     m_leftElevator.set(EXTENSION_SPEED);
     m_rightElevator.set(EXTENSION_SPEED);

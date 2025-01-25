@@ -7,7 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climbers;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class MoveClimbers extends Command {
   private final Climbers m_climber;
   private final boolean m_extending;
@@ -28,7 +30,6 @@ public class MoveClimbers extends Command {
     } else {
       m_climber.StartRetracting();
     }
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,7 +40,6 @@ public class MoveClimbers extends Command {
     } else {
       m_climber.StartRetracting();
     }
-
   }
 
   // Called once the command ends or is interrupted.

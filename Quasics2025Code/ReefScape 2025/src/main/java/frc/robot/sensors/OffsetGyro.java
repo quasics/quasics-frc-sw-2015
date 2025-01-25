@@ -7,15 +7,15 @@ package frc.robot.sensors;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Velocity;
 
 /**
  * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
  * the original gyro's data.
- * 
+ *
  * I foresee this as being useful under at least two different circumstances:
  * <ol>
  * <li>

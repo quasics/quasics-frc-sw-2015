@@ -4,19 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import edu.wpi.first.wpilibj.Encoder;
-
-import com.revrobotics.RelativeEncoder;
-
 
 public class ArmPivot extends SubsystemBase {
   /** Creates a new ArmPivot. */
-  //TODO: choose actual values for this in cases of simulation vs real.
+  // TODO: choose actual values for this in cases of simulation vs real.
   Encoder encoder = new Encoder(4, 5);
 
   SparkMax m_pivot;

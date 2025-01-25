@@ -9,11 +9,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.RobotSettings;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,12 +23,16 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 public abstract class IDrivebase extends SubsystemBase {
-
   // Max linear speed is 3 meters per second
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.0);
-  
+
   // Max rotational speed is 1/2 rotations per second
   public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
 
@@ -43,7 +42,6 @@ public abstract class IDrivebase extends SubsystemBase {
 
   private final DifferentialDriveKinematics m_kinematics;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
-  
 
   private final Distance m_driveBaseLengthWithBumpers;
   private final Distance m_driveBaseWidthWithBumpers;
@@ -56,10 +54,9 @@ public abstract class IDrivebase extends SubsystemBase {
 
   protected IDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
-    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(),
-     0, 
-     0, new Pose2d());
-   
+    m_poseEstimator =
+        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
     m_driveBaseWidthWithBumpers = Inches.of(26);
@@ -69,9 +66,9 @@ public abstract class IDrivebase extends SubsystemBase {
     setSpeedsImpl(0, 0, false);
   }
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
-    if(xSpeed.gt(MAX_SPEED)){
+    if (xSpeed.gt(MAX_SPEED)) {
       xSpeed = MAX_SPEED;
-    } else if (xSpeed.lt(MAX_SPEED.unaryMinus())){
+    } else if (xSpeed.lt(MAX_SPEED.unaryMinus())) {
       xSpeed = MAX_SPEED.unaryMinus();
     }
     if (rot.gt(MAX_ANGULAR_SPEED)) {
@@ -88,38 +85,33 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public final void setSpeedsImpl(
-    double leftMetersPerSecond, double rightMetersPerSecond, boolean includePID
-  ) {
+      double leftMetersPerSecond, double rightMetersPerSecond, boolean includePID) {
     /* TODO: get characterization values for new robot
      to make stabilization and deadband values*/
-    
-      //uses to be created deadband enforcer
-      var leftStabilized = 0;
-      var rightStablizied = 0;
 
-      //uses to be finished feed forward (requires characterization values)
-      var leftFeedforward = leftStabilized;
-      var rightFeedforward = rightStablizied;
+    // uses to be created deadband enforcer
+    var leftStabilized = 0;
+    var rightStablizied = 0;
 
-      //uses to be finished PID values
-      double leftPIDOutput = includePID
-          ? 0
-          : 0;
-      double rightPIDOutput = includePID
-          ? 0
-          : 0; 
+    // uses to be finished feed forward (requires characterization values)
+    var leftFeedforward = leftStabilized;
+    var rightFeedforward = rightStablizied;
 
-      // Applies to motors
-      setSpeeds(leftMetersPerSecond, rightMetersPerSecond);
+    // uses to be finished PID values
+    double leftPIDOutput = includePID ? 0 : 0;
+    double rightPIDOutput = includePID ? 0 : 0;
+
+    // Applies to motors
+    setSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
-  public void setMotorVoltages(double leftVoltage, double rightVoltage){
-    if (ENABLE_VOLTAGE_APPLICATON){
+  public void setMotorVoltages(double leftVoltage, double rightVoltage) {
+    if (ENABLE_VOLTAGE_APPLICATON) {
       this.setMotorVoltages_HAL(leftVoltage, rightVoltage);
     }
   }
 
-  public void setSpeeds(double leftSpeed, double rightSpeed){
+  public void setSpeeds(double leftSpeed, double rightSpeed) {
     this.setSpeeds(leftSpeed, rightSpeed);
   }
 
@@ -132,7 +124,7 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   final private DifferentialDriveOdometry m_odometry =
-     new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -157,7 +149,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder_HAL().reset();
     getRightEncoder_HAL().reset();
-    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0,0, pose);
+    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
@@ -169,8 +161,6 @@ public abstract class IDrivebase extends SubsystemBase {
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
     SmartDashboard.putNumber("Pose angle", pose.getRotation().getDegrees());
-
-
   }
 
   protected abstract TrivialEncoder getLeftEncoder_HAL();
@@ -180,6 +170,4 @@ public abstract class IDrivebase extends SubsystemBase {
 
   protected abstract void setMotorVoltages_HAL(double leftVoltage, double rightVoltage);
   protected abstract void setSpeeds_HAL(double leftSpeed, double rightSpeed);
-
-
 }

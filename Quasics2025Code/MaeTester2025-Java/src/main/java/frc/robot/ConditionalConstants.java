@@ -6,5 +6,5 @@ package frc.robot;
 
 /** Add your docs here. */
 public class ConditionalConstants {
-    public static final boolean SALLY = false;
+  public static final boolean SALLY = false;
 }

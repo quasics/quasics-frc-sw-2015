@@ -112,7 +112,9 @@ public class Intake extends SubsystemBase {
   }
 
   /** TODO: Implement this using beam break sensor. */
-  public boolean isBallInChamber() { return false; }
+  public boolean isBallInChamber() {
+    return false;
+  }
 
   /**
    * Sets the speed for the ball pick-up mechanism.
@@ -120,8 +122,7 @@ public class Intake extends SubsystemBase {
    *           a value from 1.0 (full forward) to -1.0 (full reverse); 0 ==
    *           stop.
    */
-  public void setBallPickupSpeed(
-      double percent) { // Cap the value of percent to -1.0 to +1.0.
+  public void setBallPickupSpeed(double percent) { // Cap the value of percent to -1.0 to +1.0.
     double useSpeed = Math.max(-1.0, Math.min(1.0, percent));
     if (isHardwareDisabled()) {
       return;
@@ -137,8 +138,7 @@ public class Intake extends SubsystemBase {
    *           a value from 1.0 (full forward) to -1.0 (full reverse); 0 ==
    *           stop.
    */
-  void setConveyorSpeed(
-      double percent) { // Cap the value of percent to -1.0 to +1.0.
+  void setConveyorSpeed(double percent) { // Cap the value of percent to -1.0 to +1.0.
     double useSpeed = Math.max(-1.0, Math.min(1.0, percent));
     if (isHardwareDisabled()) {
       return;

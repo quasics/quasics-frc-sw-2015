@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems.drivebase;
 
-import frc.robot.Constants;
-import frc.robot.Constants.SimulationPorts;
-
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,12 +21,13 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.SimulationPorts;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
 public class SimulationDrivebase extends IDrivebase {
-
   private static final Distance kWheelRadius = Meters.of(0.0508);
   private static final int kEncoderResolutionTicksPerRevoltion = -4096;
 
@@ -40,8 +38,8 @@ public class SimulationDrivebase extends IDrivebase {
 
   private final IGyro m_wrappedGyro;
 
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
-      0.3);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   private final DifferentialDrivetrainSim m_drivetrainSim;
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
@@ -58,17 +56,18 @@ public class SimulationDrivebase extends IDrivebase {
     super(RobotSettings.Robot.Simulator);
     super.setName(getClass().getSimpleName());
 
-    m_leftEncoder = new Encoder(SimulationPorts.LEFT_DRIVE_ENCODER_PORT_A, SimulationPorts.LEFT_DRIVE_ENCODER_PORT_B);
-    m_rightEncoder = new Encoder(SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_A, SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_B);
+    m_leftEncoder = new Encoder(
+        SimulationPorts.LEFT_DRIVE_ENCODER_PORT_A, SimulationPorts.LEFT_DRIVE_ENCODER_PORT_B);
+    m_rightEncoder = new Encoder(
+        SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_A, SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_B);
 
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     configureDriveMotorsAndSensors();
 
-    m_drivetrainSim = new DifferentialDrivetrainSim(m_drivetrainSystem, 
-    DCMotor.getCIM(2), 8
-    , robot.trackWidthMeters.in(Meters), kWheelRadius.in(Meters), null);
+    m_drivetrainSim = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
+        robot.trackWidthMeters.in(Meters), kWheelRadius.in(Meters), null);
     m_gyroSim = new AnalogGyroSim(rawGyro);
     m_leftEncoderSim = new EncoderSim(m_leftEncoder);
     m_rightEncoderSim = new EncoderSim(m_rightEncoder);
@@ -83,8 +82,6 @@ public class SimulationDrivebase extends IDrivebase {
     m_rightLeader.addFollower(m_rightFollower);
 
     m_rightLeader.setInverted(true);
-
-
   }
 
   @Override
@@ -135,5 +132,4 @@ public class SimulationDrivebase extends IDrivebase {
   public void simulationPeriodic() {
     super.simulationPeriodic();
   }
-
 }

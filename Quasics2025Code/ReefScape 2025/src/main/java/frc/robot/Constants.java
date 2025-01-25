@@ -13,12 +13,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 
-// 
+//
 
 public final class Constants {
   public static class SallyConstants {
     public static final double TRACK_WIDTH = 0.5588;
-  } 
+  }
   public static class LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
@@ -63,7 +63,7 @@ public final class Constants {
       public static final int RIGHT_FOLLOWER_ID = 3;
 
       // TODO: update these
-      public static final int LEFT_CLIMBER_ID = 5; 
+      public static final int LEFT_CLIMBER_ID = 5;
       public static final int RIGHT_CLIMBER_ID = 6;
 
       public static final int LEFT_ELEVATOR_ID = 7;
@@ -75,7 +75,6 @@ public final class Constants {
     }
 
     public static final int PIGEON2_CAN_ID = 1;
-
   }
 
   public static class RobotSpeedScaling {
@@ -102,7 +101,7 @@ public final class Constants {
     public static final int LEFT_REAR_DRIVE_PWM_ID = 1;
     public static final int RIGHT_FRONT_DRIVE_PWM_ID = 4;
     public static final int RIGHT_REAR_DRIVE_PWM_ID = 3;
-    
+
     public static final int LEFT_DRIVE_ENCODER_PORT_A = 0;
     public static final int LEFT_DRIVE_ENCODER_PORT_B = 1;
     public static final int RIGHT_DRIVE_ENCODER_PORT_A = 2;

@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * Command factories API instead."
  *
  * @see
- *     https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ *      https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class TankDrive extends Command {
   private final AbstractDrivebase m_drivebase;

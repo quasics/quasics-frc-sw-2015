@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.AbstractDrivebase;
@@ -14,8 +15,11 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -87,6 +91,9 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Example of pushing a button on the SmartDashboard to run a command.
+    SmartDashboard.putData("1m @ 30%", new DriveForDistance(m_driveBase, 0.30, Meters.of(1)));
   }
 
   /**

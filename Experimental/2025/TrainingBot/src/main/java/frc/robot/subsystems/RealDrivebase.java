@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -14,7 +13,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealDrivebase extends AbstractDrivebase {

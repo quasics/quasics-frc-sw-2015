@@ -8,19 +8,17 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmRoller extends SubsystemBase {
   /** Creates a new ArmRoller. */
   
-  SparkMax m_roller;
-
-  RelativeEncoder m_encoder;
+  TalonFX m_kraken = new TalonFX(0);
 
   public ArmRoller() {
-    m_roller = new SparkMax(SparkMaxIds.ARM_ROLLER_ID, MotorType.kBrushless);
-    m_encoder = m_roller.getEncoder();
+    
   }
   
   @Override

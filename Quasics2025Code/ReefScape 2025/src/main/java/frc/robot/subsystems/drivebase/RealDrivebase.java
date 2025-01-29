@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -74,6 +74,12 @@ public class RealDrivebase extends IDrivebase {
 
   @Override
   protected void setMotorVoltages_HAL(double leftVoltage, double rightVoltage) {
+      m_leftLeader.setVoltage(leftVoltage);
+      m_rightLeader.setVoltage(rightVoltage);
+  }
+
+  @Override
+  protected void setSpeeds_HAL(double leftVoltage, double rightVoltage) {
       m_leftLeader.set(leftVoltage);
       m_rightLeader.set(rightVoltage);
   }

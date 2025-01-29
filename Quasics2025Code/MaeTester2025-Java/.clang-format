@@ -1,0 +1,22 @@
+# Sets up default formatting for code files in this project.
+#
+# For a tool to generate a customized configuration, see https://zed0.co.uk/clang-format-configurator/
+# For list of options, see https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
+# Base on Google's style guidelines
+BasedOnStyle: Google
+
+# Indent anything in a "namespace" definition
+NamespaceIndentation: All
+
+# Allow function calls to say "foo()", rather than "foo( )".
+SpaceInEmptyParentheses: 'false'
+
+# Don't pad the contents of parens (e.g., use "(6 + 4)" instead of "( 6 + 4 )").
+SpacesInParentheses: 'false'
+
+# Always use spaces for tabs, rather than native tabs (makes rendering consistent).
+UseTab: Never
+
+# Allow really short functions to go on a single line (e.g., "int f() { return 0; }").
+AllowShortFunctionsOnASingleLine: 'false'

@@ -8,6 +8,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
+import static edu.wpi.first.units.Units.*;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurnCommand extends Command {
@@ -49,7 +50,11 @@ public class TurnCommand extends Command {
         //
         // With a robot that has "arcade drive", you can just set the speed of the
         // rotation, and the forward speed to 0, for the same results.
-        m_drivebase.tankDrive(m_speed, -m_speed);
+        if (m_rotationInDegrees > 0) {
+            m_drivebase.tankDrive(m_speed, -m_speed);
+        } else {
+            m_drivebase.tankDrive(-m_speed, m_speed);
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -66,10 +71,20 @@ public class TurnCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if (m_drivebase.getHeading().isEquivalent(m_stopAngle)) {
-            return true;
+        System.out.println("Rotation in degrees: " + m_rotationInDegrees);
+        System.out.println("Stop angle: " + m_stopAngle.in(Degrees));
+        if (m_rotationInDegrees > 0) {
+            if (m_drivebase.getHeading().gte(m_stopAngle)) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            if (m_drivebase.getHeading().lte(m_stopAngle)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

@@ -7,7 +7,10 @@ import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -34,6 +37,9 @@ public class RealDrivebase extends AbstractDrivebase {
     // final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID,
     // MotorType.kBrushless);
 
+    final SparkMaxConfig m_leftConfig = new SparkMaxConfig();
+    final SparkMaxConfig m_rightConfig = new SparkMaxConfig();
+
     // Encoders
     private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
     private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
@@ -55,18 +61,16 @@ public class RealDrivebase extends AbstractDrivebase {
         System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
         System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-        // TODO: Set the conversion factors on the encoders, once REV fixes the bug in
-        // RelativeEncoder. (They appear to have accidentally removed the functions,
-        // though they're still in the documentation. Matt filed a bug report:
-        // https://github.com/REVrobotics/REV-Software-Binaries/issues/17.)
-        //
-        // For now, we'll apply the scaling factors in the methods that use the
-        // encoders.
-        //
-        // m_leftEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-        // m_rightEncoder.setPositionConversionFactor(distanceScalingFactorForGearing);
-        // m_leftEncoder.setVelocityConversionFactor(velocityScalingFactor);
-        // m_rightEncoder.setVelocityConversionFactor(velocityScalingFactor);
+        m_leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+        m_leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+        m_rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+        m_rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+
+        m_rightConfig.inverted(true);
+
+        m_leftLeader.configure(m_leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_rightLeader.configure(m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }
 
     @Override
@@ -77,12 +81,12 @@ public class RealDrivebase extends AbstractDrivebase {
 
     @Override
     public double getLeftDistanceMeters() {
-        return m_leftEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+        return m_leftEncoder.getPosition();
     }
 
     @Override
     public double getRightDistanceMeters() {
-        return m_rightEncoder.getPosition() * DISTANCE_SCALING_FACTOR_FOR_GEARING;
+        return m_rightEncoder.getPosition();
     }
 
     @Override

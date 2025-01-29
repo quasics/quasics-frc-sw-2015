@@ -7,16 +7,22 @@ package frc.robot;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.TurnCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
+import static edu.wpi.first.units.Units.Meters;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -33,7 +39,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final AbstractDrivebase m_driveBase;
 
-  private final CommandJoystick m_driverController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
+  private final CommandJoystick m_driverController = new CommandJoystick(0);
 
   private final Supplier<Double> m_leftSupplier;
   private final Supplier<Double> m_rightSupplier;
@@ -70,6 +76,26 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public static Command moveForwardThenBackward(
+      AbstractDrivebase drivebase) {
+    return Commands.sequence(
+        new DriveForDistance(drivebase, 0.30, 1),
+        new DriveForDistance(drivebase, 0.30, -1));
+  }
+
+  public static Command squarePart(
+      AbstractDrivebase drivebase) {
+    return Commands.sequence(
+        new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 75, 0.1),
+        new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 75, 0.1),
+        new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 75, 0.1),
+        new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 75, 0.1));
+  }
+
   /**
    * Use this method to define your trigger->command mappings.
    * 
@@ -85,8 +111,17 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
+    new Trigger(() -> m_driverController.getHID().getRawButton(1))
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Example of pushing a button on the SmartDashboard to run a command.
+    SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
+    SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
+    SmartDashboard.putData("90 degrees @ 30%", new TurnCommand(m_driveBase, 90, 0.30));
+    SmartDashboard.putData("-90 degrees @ 30%", new TurnCommand(m_driveBase, -90, 0.30));
+
+    SmartDashboard.putData("Move forward then backward", moveForwardThenBackward(m_driveBase));
+    SmartDashboard.putData("Square??", squarePart(m_driveBase));
   }
 
   /**

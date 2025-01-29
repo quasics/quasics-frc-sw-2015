@@ -9,6 +9,10 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
@@ -27,6 +31,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public abstract class IDrivebase extends SubsystemBase {
 
@@ -47,10 +52,44 @@ public abstract class IDrivebase extends SubsystemBase {
   private final Distance m_driveBaseLengthWithBumpers;
   private final Distance m_driveBaseWidthWithBumpers;
 
+  RobotConfig config;
+
+
   /** Creates a new IDrivebase. */
   public IDrivebase(RobotSettings.Robot robot) {
     this(robot.trackWidthMeters);
     super.setName(robot.name());
+
+    try{
+      config = RobotConfig.fromGUISettings();
+
+          // Configure AutoBuilder last
+    AutoBuilder.configure(
+      this::getPose, // Robot pose supplier
+      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      (speeds, feedforwards) -> setSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+      new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+      config, // The robot configuration
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this // Reference to this subsystem to set requirements
+);
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+
   }
 
   protected IDrivebase(Distance trackWidthMeters) {
@@ -62,6 +101,11 @@ public abstract class IDrivebase extends SubsystemBase {
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
     m_driveBaseWidthWithBumpers = Inches.of(26);
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
+        getRightEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
   }
 
   public final void stop() {
@@ -80,6 +124,10 @@ public abstract class IDrivebase extends SubsystemBase {
     }
 
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
+  }
+
+  public final void setSpeeds(ChassisSpeeds chassisSpeeds) {
+    setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
   }
 
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {

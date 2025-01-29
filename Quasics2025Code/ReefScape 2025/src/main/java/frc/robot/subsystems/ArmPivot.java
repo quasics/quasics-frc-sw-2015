@@ -6,12 +6,16 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.AbsoluteEncoder;
 
 
 public class ArmPivot extends SubsystemBase {
@@ -21,15 +25,27 @@ public class ArmPivot extends SubsystemBase {
 
   SparkMax m_pivot;
 
+  AbsoluteEncoder m_throughBoreEncoder;
   RelativeEncoder m_encoder;
 
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
+    m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
     m_encoder = m_pivot.getEncoder();
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Encoder Position", m_encoder.getPosition());
+  }
+
+  public void setArmPivotSpeed(double percentSpeed) {
+    m_pivot.set(percentSpeed);
+  }
+
+  public void stop() {
+    m_pivot.set(0);
   }
 }

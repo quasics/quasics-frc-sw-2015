@@ -13,6 +13,7 @@ import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.IDrivebase;
 import frc.robot.utils.RobotSettings;
 import frc.robot.commands.MoveClimbers;
+import frc.robot.commands.RunKraken;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
@@ -215,12 +216,19 @@ public class RobotContainer {
   }
 
   private void ConfigureDriverButtons() {
-    Trigger ExtendClimber =
+    Trigger extendClimber =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
             .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger RetractClimber =
+    Trigger retractClimber =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
             .whileTrue(new MoveClimbers(m_climbers, false));
+
+    Trigger intake =
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftStickPress))
+            .whileTrue(new RunKraken(m_armRoller, true));
+    Trigger extake =
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
+            .whileTrue(new RunKraken(m_armRoller, false));
   }
 
   private void ConfigureOperatorButtons() {

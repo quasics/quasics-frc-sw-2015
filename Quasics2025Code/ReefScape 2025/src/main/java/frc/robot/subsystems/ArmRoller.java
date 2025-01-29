@@ -9,16 +9,26 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmRoller extends SubsystemBase {
   /** Creates a new ArmRoller. */
   
-  TalonFX m_kraken = new TalonFX(0);
+  TalonFX m_kraken;
 
   public ArmRoller() {
-    
+    m_kraken = new TalonFX(0);
+    m_kraken.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+  public void setSpeed(double speed) {
+    m_kraken.set(speed);
+  }
+
+  public void stop() {
+    m_kraken.set(0);
   }
   
   @Override

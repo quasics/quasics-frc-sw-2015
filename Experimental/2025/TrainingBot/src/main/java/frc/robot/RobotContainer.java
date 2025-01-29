@@ -87,13 +87,13 @@ public class RobotContainer {
       AbstractDrivebase drivebase) {
     return Commands.sequence(
         new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 75, 0.1),
+        new TurnCommand(drivebase, 74, 0.1),
         new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 75, 0.1),
+        new TurnCommand(drivebase, 74, 0.1),
         new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 75, 0.1),
+        new TurnCommand(drivebase, 74, 0.1),
         new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 75, 0.1));
+        new TurnCommand(drivebase, 74, 0.1));
   }
 
   /**

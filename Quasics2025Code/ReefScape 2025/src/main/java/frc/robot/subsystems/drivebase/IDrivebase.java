@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
@@ -32,6 +33,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public abstract class IDrivebase extends SubsystemBase {
 
@@ -78,9 +80,9 @@ public abstract class IDrivebase extends SubsystemBase {
 
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
+          return alliance.get() == DriverStation.Alliance.Blue;
         }
-        return false;
+        return true;
       },
       this // Reference to this subsystem to set requirements
 );
@@ -184,6 +186,13 @@ public abstract class IDrivebase extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Pose2d pose = getPose();
+
+    SmartDashboard.putNumber("X", pose.getX());
+    SmartDashboard.putNumber("Y", pose.getY());
+
+    SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
+
     updateOdometry();
     // This method will be called once per scheduler run
   }

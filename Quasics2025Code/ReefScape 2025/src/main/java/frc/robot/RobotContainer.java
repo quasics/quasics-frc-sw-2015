@@ -18,6 +18,7 @@ import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
+import edu.wpi.first.math.geometry.Pose2d;
 
 
 import java.util.function.Supplier;
@@ -120,6 +121,11 @@ public class RobotContainer {
 
   private void addButtonsToSmartDashboard() {
     addSysIdButtonsToSmartDashboard();
+    addTestButtonsToSmartDashboard();
+  }
+
+  private void addTestButtonsToSmartDashboard() {
+    SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
   }
 
     private void addSysIdButtonsToSmartDashboard() {

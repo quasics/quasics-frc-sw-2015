@@ -185,6 +185,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     getLeftEncoder_HAL().reset();
     getRightEncoder_HAL().reset();
+    getGyro_HAL().reset();
     m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0,0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }

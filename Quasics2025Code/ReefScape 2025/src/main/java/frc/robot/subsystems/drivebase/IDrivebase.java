@@ -134,7 +134,7 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    setMotorSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+    setSpeeds_HAL(speeds);
   }
 
   public void setSpeeds(double percentage) {
@@ -212,7 +212,8 @@ public abstract class IDrivebase extends SubsystemBase {
   protected abstract IGyro getGyro_HAL();
 
   protected abstract void setMotorVoltages_HAL(double leftSpeeds, double rightSpeeds);
-  protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);  
+  protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);
+  protected abstract void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds);
 
   public Distance getLeftDistance() {
     return Meters.of(getLeftDistanceMeters());

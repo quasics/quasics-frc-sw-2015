@@ -10,6 +10,7 @@ import frc.robot.Constants.SimulationPorts;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -54,6 +55,8 @@ public class SimulationDrivebase extends IDrivebase {
   final PWMSparkMax m_rightLeader = new PWMSparkMax(SimulationPorts.RIGHT_FRONT_DRIVE_PWM_ID);
   final PWMSparkMax m_rightFollower = new PWMSparkMax(SimulationPorts.RIGHT_REAR_DRIVE_PWM_ID);
 
+  private final double distancePerPulse;
+
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase(RobotSettings.Robot robot) {
     super(RobotSettings.Robot.Simulator);
@@ -81,10 +84,13 @@ public class SimulationDrivebase extends IDrivebase {
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
+
+    distancePerPulse = 2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution;
+
     m_leftEncoder.setDistancePerPulse(
-      2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+      distancePerPulse);
     m_rightEncoder.setDistancePerPulse(
-      2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+      distancePerPulse);
 
       
     // Make sure our encoders are zeroed out on startup.
@@ -124,6 +130,13 @@ public class SimulationDrivebase extends IDrivebase {
   protected void setSpeeds_HAL(double leftSpeed, double rightSpeed) {
     m_leftLeader.set(leftSpeed);
     m_rightLeader.set(rightSpeed);
+  }
+
+  @Override
+  protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
+    double leftPercent = speeds.leftMetersPerSecond / (2 * Math.PI * kWheelRadius.in(Meters)) / -kEncoderResolutionTicksPerRevolution * 8 * 60;
+    double rightPercent = speeds.rightMetersPerSecond / (2 * Math.PI * kWheelRadius.in(Meters)) / -kEncoderResolutionTicksPerRevolution * 8 * 60;
+    setSpeeds(leftPercent, rightPercent);
   }
 
   @Override

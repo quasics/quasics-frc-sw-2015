@@ -85,6 +85,11 @@ public class RealDrivebase extends IDrivebase {
       m_rightLeader.set(rightVoltage);
   }
 
+  @Override
+  protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
+    
+  }
+
   protected TrivialEncoder getLeftEncoder_HAL() {
     return m_leftTrivialEncoder;
   }

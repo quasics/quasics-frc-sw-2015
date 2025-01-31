@@ -106,6 +106,7 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
+    System.out.println(getRightEncoder_HAL().getVelocity());
     return m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
         getRightEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
   }
@@ -134,6 +135,10 @@ public abstract class IDrivebase extends SubsystemBase {
 
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setMotorSpeeds(speeds.leftMetersPerSecond, speeds.rightMetersPerSecond);
+  }
+
+  public void setSpeeds(double percentage) {
+    setMotorSpeeds(percentage, percentage); 
   }
 
   public void setMotorSpeeds(double leftSpeed, double rightSpeed){
@@ -200,10 +205,20 @@ public abstract class IDrivebase extends SubsystemBase {
   protected abstract TrivialEncoder getLeftEncoder_HAL();
   protected abstract TrivialEncoder getRightEncoder_HAL();
 
+  public abstract double getLeftDistanceMeters();
+  public abstract double getRightDistanceMeters();
+
   protected abstract IGyro getGyro_HAL();
 
   protected abstract void setMotorVoltages_HAL(double leftSpeeds, double rightSpeeds);
   protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);  
 
+  public Distance getLeftDistance() {
+    return Meters.of(getLeftDistanceMeters());
+  }
+
+  public Distance getRightDistance(){
+    return Meters.of(getRightDistanceMeters());
+  }
 
 }

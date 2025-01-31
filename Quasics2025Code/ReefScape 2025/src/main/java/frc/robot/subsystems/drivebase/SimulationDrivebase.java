@@ -141,6 +141,16 @@ public class SimulationDrivebase extends IDrivebase {
     return m_wrappedGyro;
   }
 
+  @Override
+  public double getLeftDistanceMeters() {
+    return m_leftEncoder.getDistance();
+  }
+
+  @Override
+  public double getRightDistanceMeters() {
+    return m_rightEncoder.getDistance();
+  }
+
 
   @Override
   public void periodic() {

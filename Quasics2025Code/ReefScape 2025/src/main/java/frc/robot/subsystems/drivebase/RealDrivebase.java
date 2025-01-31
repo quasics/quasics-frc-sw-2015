@@ -95,4 +95,14 @@ public class RealDrivebase extends IDrivebase {
   protected IGyro getGyro_HAL() {
     return m_offsetGyro;
   }
+
+  @Override
+  public double getLeftDistanceMeters() {
+    return m_leftEncoder.getPosition();
+  }
+
+  @Override
+  public double getRightDistanceMeters() {
+    return m_rightEncoder.getPosition();
+  }
 }

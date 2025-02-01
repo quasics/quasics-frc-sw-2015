@@ -34,9 +34,6 @@ public class RealDrivebase extends IDrivebase {
 
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
-  public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
-  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
-
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
 
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
@@ -90,15 +87,18 @@ public class RealDrivebase extends IDrivebase {
   }
 
   @Override
-  protected void setSpeeds_HAL(double leftVoltage, double rightVoltage) {
-      m_leftLeader.set(leftVoltage);
-      m_rightLeader.set(rightVoltage);
+  protected void setSpeeds_HAL(double leftSpeed, double rightSpeed) {
+    
+    System.out.println(leftSpeed + " " + rightSpeed);
+      m_leftLeader.set(leftSpeed);
+      m_rightLeader.set(rightSpeed);
+      m_rightFollower.set(rightSpeed);
   }
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
-    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
+    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / NEO_FREE_SPEED * GEAR_RATIO * 60;
+    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / NEO_FREE_SPEED * GEAR_RATIO * 60;
     setSpeeds(leftPercent, rightPercent);
   }
 

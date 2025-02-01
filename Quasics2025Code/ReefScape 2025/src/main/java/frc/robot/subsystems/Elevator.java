@@ -14,13 +14,13 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 public class Elevator extends SubsystemBase {
 
   SparkMax m_leftElevator;
-  SparkMax m_rightElevator; // should these be leader follower?
+  SparkMax m_rightElevator;
 
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
 
-  static final double EXTENSION_SPEED = -1.0;
-  static final double RETRACTION_SPEED = 1.0;
+  static final double EXTENSION_SPEED = 0.2;
+  static final double RETRACTION_SPEED = -0.2;
   
   /** Crea
    * tes a new Elevator. */
@@ -33,13 +33,18 @@ public class Elevator extends SubsystemBase {
 
   
   public void StartExtending() {
-    m_leftElevator.set(EXTENSION_SPEED);
+    m_leftElevator.set(-EXTENSION_SPEED);
     m_rightElevator.set(EXTENSION_SPEED);
   }
 
   public void StartRetracting() {
-    m_leftElevator.set(RETRACTION_SPEED);
+    m_leftElevator.set(-RETRACTION_SPEED);
     m_rightElevator.set(RETRACTION_SPEED);
+  }
+
+  public void stop() {
+    m_leftElevator.set(0);
+    m_rightElevator.set(0);
   }
 
   @Override

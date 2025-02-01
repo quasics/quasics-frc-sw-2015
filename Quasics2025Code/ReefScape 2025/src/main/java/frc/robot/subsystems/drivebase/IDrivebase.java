@@ -106,7 +106,6 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    System.out.println(getRightEncoder_HAL().getVelocity());
     return m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
         getRightEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
   }

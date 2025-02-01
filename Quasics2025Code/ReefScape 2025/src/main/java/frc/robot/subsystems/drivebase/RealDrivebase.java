@@ -45,11 +45,13 @@ public class RealDrivebase extends IDrivebase {
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightFollower =
       new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-  final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
-  final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+  final SparkMaxConfig m_leftLeaderConfig = new SparkMaxConfig();
+  final SparkMaxConfig m_rightLeaderConfig = new SparkMaxConfig();
 
   // change this
   public static final Distance TRACK_WIDTH_METERS = Meters.of(Constants.SallyConstants.TRACK_WIDTH);
+  public static final Distance WHEEL_CIRCUMFERENCE = Inches.of(6 * Math.PI);
+  public static final double GEAR_RATIO = 8.45;
 
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
@@ -65,6 +67,14 @@ public class RealDrivebase extends IDrivebase {
     super(robot);
 
     super.setName(getClass().getSimpleName());
+
+    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
+    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
+
+    m_leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    m_leftLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    m_rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
   }
 
   @Override
@@ -87,7 +97,9 @@ public class RealDrivebase extends IDrivebase {
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    
+    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
+    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
+    setSpeeds(leftPercent, rightPercent);
   }
 
   protected TrivialEncoder getLeftEncoder_HAL() {

@@ -14,12 +14,14 @@ import frc.robot.subsystems.drivebase.IDrivebase;
 import frc.robot.utils.RobotSettings;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunKraken;
+import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 
 import java.util.function.Supplier;
@@ -221,6 +223,12 @@ public class RobotContainer {
     m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
   }
 
+  private Command intakeThenExtake() {
+    return Commands.sequence(new RunKrakenForTime(m_armRoller, true, 0.2),
+    new RunKraken(m_armRoller, false)
+    );
+  }
+
   private void ConfigureDriverButtons() {
     Trigger extendClimber =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
@@ -230,10 +238,10 @@ public class RobotContainer {
             .whileTrue(new MoveClimbers(m_climbers, false));
 
     Trigger intake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftStickPress))
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
             .whileTrue(new RunKraken(m_armRoller, true));
     Trigger extake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
             .whileTrue(new RunKraken(m_armRoller, false));
   }
 

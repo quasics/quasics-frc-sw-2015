@@ -51,8 +51,8 @@ public class ArcadeDrive extends Command {
     final double leftInput = m_speedSupplier.get();
     final double rightInput = m_rotationSupplier.get();
 
-    LinearVelocity forwardSpeed = RealDrivebase.MAX_SPEED.times(leftInput);
-    AngularVelocity rotationSpeed = RealDrivebase.MAX_ANGULAR_SPEED.times(rightInput);
+    LinearVelocity forwardSpeed = IDrivebase.MAX_SPEED.times(leftInput);
+    AngularVelocity rotationSpeed = IDrivebase.MAX_ANGULAR_SPEED.times(rightInput);
 
     m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
   }

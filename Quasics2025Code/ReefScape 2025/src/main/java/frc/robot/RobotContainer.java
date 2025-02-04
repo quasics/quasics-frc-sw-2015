@@ -15,6 +15,7 @@ import frc.robot.utils.RobotSettings;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
+import frc.robot.commands.RunElevator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -68,7 +70,7 @@ public class RobotContainer {
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
   private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
-  private final double DEADBAND_CONSTANT = 0.04;
+  private final double DEADBAND_CONSTANT = 0.08;
 
   Trigger switchDriveTrigger;
 
@@ -212,7 +214,7 @@ public class RobotContainer {
       double scalingFactor = getDriveSpeedScalingFactor();
 
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      double joystickPercentage = axis * scalingFactor * .5;
+      double joystickPercentage = axis * scalingFactor;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
@@ -225,6 +227,7 @@ public class RobotContainer {
 
   private Command intakeThenExtake() {
     return Commands.sequence(new RunKrakenForTime(m_armRoller, true, 0.2),
+    new WaitCommand(0.1),
     new RunKraken(m_armRoller, false)
     );
   }
@@ -238,11 +241,15 @@ public class RobotContainer {
             .whileTrue(new MoveClimbers(m_climbers, false));
 
     Trigger intake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftStickPress))
             .whileTrue(new RunKraken(m_armRoller, true));
     Trigger extake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
-            .whileTrue(new RunKraken(m_armRoller, false));
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
+            .whileTrue(intakeThenExtake());
+
+    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, true));
+    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, false));
+
   }
 
   private void ConfigureOperatorButtons() {

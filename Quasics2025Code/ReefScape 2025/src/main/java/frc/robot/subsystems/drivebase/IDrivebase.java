@@ -191,6 +191,10 @@ public abstract class IDrivebase extends SubsystemBase {
 
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
 
+    SmartDashboard.putNumber("Left velocity", getLeftEncoder_HAL().getVelocity().in(MetersPerSecond));
+    SmartDashboard.putNumber("Right velocity", getRightEncoder_HAL().getVelocity().in(MetersPerSecond));
+
+
     updateOdometry();
     // This method will be called once per scheduler run
   }

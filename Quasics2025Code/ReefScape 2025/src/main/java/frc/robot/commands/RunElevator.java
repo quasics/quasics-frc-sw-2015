@@ -3,41 +3,49 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.subsystems.ArmRoller;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class RunKraken extends Command {
-  ArmRoller m_ArmRoller;
-  double INTAKE_SPEED = -0.3;
-  double EXTAKE_SPEED = 1;
-  boolean m_intake;
+public class RunElevator extends Command {
+  private final Elevator m_elevator;
+  private final boolean m_extending;
 
-  /** Creates a new RunKraken. */
-  public RunKraken(ArmRoller armRoller, boolean intake) {
+  /** Creates a new RunElevator. */
+  public RunElevator(Elevator elevator, boolean extending) {
+    m_extending = extending;
+    m_elevator = elevator;
     // Use addRequirements() here to declare subsystem dependencies.
-    m_ArmRoller = armRoller;
-    m_intake = intake;
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);
+    if (m_extending) {
+      m_elevator.StartExtending();
+    } else {
+      m_elevator.StartRetracting();
+    }
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);  }
+    if (m_extending) {
+      m_elevator.StartExtending();
+    } else {
+      m_elevator.StartRetracting();
+    }
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_ArmRoller.stop();
+    m_elevator.stop();
   }
 
   // Returns true when the command should end.

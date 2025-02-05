@@ -5,8 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.IDrivebase;
-import frc.robot.subsystems.drivebase.RealDrivebase;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 import java.util.function.Supplier;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -14,31 +13,29 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArcadeDrive extends Command {
-  private final IDrivebase m_drivebase;
+  private final AbstractDrivebase m_drivebase;
   private final Supplier<Double> m_speedSupplier;
-  private final Supplier<Double> m_rotationSupplier;
+  private final Supplier<Double> m_rotSupplier;
 
-  /** Creates a new ArcadeDrive. */
   public ArcadeDrive(
-    IDrivebase drivebase, Supplier<Double> leftSupplier, Supplier<Double> rightSupplier) {
-      m_speedSupplier = leftSupplier;
-      m_rotationSupplier = rightSupplier;
-      m_drivebase = drivebase;
+    AbstractDrivebase drivebase, Supplier<Double> speedSupplier, Supplier<Double> rotSupplier) {
+    m_drivebase = drivebase;
+    m_speedSupplier = speedSupplier;
+    m_rotSupplier = rotSupplier;
 
-      addRequirements(drivebase);
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivebase);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  updateSpeeds();
+    updateSpeed();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    updateSpeeds();
+    updateSpeed();
   }
 
   // Called once the command ends or is interrupted.
@@ -47,12 +44,12 @@ public class ArcadeDrive extends Command {
     m_drivebase.stop();
   }
 
-  private void updateSpeeds() {
-    final double leftInput = m_speedSupplier.get();
-    final double rightInput = m_rotationSupplier.get();
+  private void updateSpeed() {
+    final double left = m_speedSupplier.get();
+    final double right = m_rotSupplier.get();
 
-    LinearVelocity forwardSpeed = IDrivebase.MAX_SPEED.times(leftInput);
-    AngularVelocity rotationSpeed = IDrivebase.MAX_ANGULAR_SPEED.times(rightInput);
+    LinearVelocity forwardSpeed = AbstractDrivebase.MAX_SPEED.times(left);
+    AngularVelocity rotationSpeed = AbstractDrivebase.MAX_ANGULAR_SPEED.times(right);
 
     m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
   }

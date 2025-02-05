@@ -14,8 +14,10 @@ import frc.robot.utils.RobotSettings;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -32,6 +34,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class RealDrivebase extends IDrivebase {
 
+  private static final double  kV = 473;
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
@@ -45,7 +48,6 @@ public class RealDrivebase extends IDrivebase {
   final SparkMaxConfig m_leftLeaderConfig = new SparkMaxConfig();
   final SparkMaxConfig m_rightLeaderConfig = new SparkMaxConfig();
 
-  // change this
   public static final Distance TRACK_WIDTH_METERS = Meters.of(Constants.SallyConstants.TRACK_WIDTH);
   public static final Distance WHEEL_CIRCUMFERENCE = Inches.of(6 * Math.PI);
   public static final double GEAR_RATIO = 8.45;
@@ -58,6 +60,8 @@ public class RealDrivebase extends IDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
+  private final SparkClosedLoopController  m_leftPID = m_leftLeader.getClosedLoopController();
+  private final SparkClosedLoopController  m_rightPID = m_rightLeader.getClosedLoopController();
 
   /** Creates a new Drivebase. */
   public RealDrivebase(RobotSettings.Robot robot) {
@@ -72,6 +76,13 @@ public class RealDrivebase extends IDrivebase {
     m_leftLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
     m_rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+
+    m_leftLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.1);
+    m_rightLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.1);
+
+    m_leftLeader.configure(m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightLeader.configure(m_rightLeaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
   }
 
   @Override
@@ -89,17 +100,18 @@ public class RealDrivebase extends IDrivebase {
   @Override
   protected void setSpeeds_HAL(double leftSpeed, double rightSpeed) {
     
-    System.out.println(leftSpeed + " " + rightSpeed);
+    // System.out.println(leftSpeed + " " + rightSpeed);
       m_leftLeader.set(leftSpeed);
       m_rightLeader.set(rightSpeed);
-      m_rightFollower.set(rightSpeed);
+
   }
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
-    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5767 * GEAR_RATIO * 60;
-    setSpeeds(leftPercent, rightPercent);
+
+    System.out.println(speeds);
+    m_leftPID.setReference(speeds.leftMetersPerSecond, ControlType.kVelocity);
+    m_rightPID.setReference(speeds.rightMetersPerSecond, ControlType.kVelocity);
   }
 
   protected TrivialEncoder getLeftEncoder_HAL() {

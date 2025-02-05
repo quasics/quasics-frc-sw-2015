@@ -4,11 +4,17 @@
 
 package frc.robot.subsystems.drivebase;
 
-
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 
 public class RealDrivebase extends AbstractDrivebase {
   /** Creates a new RealDrivebase. */
   public RealDrivebase() {}
+
+  @Override
+  protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
+      // TODO Auto-generated method stub
+      
+  }
 
   @Override
   public void periodic() {

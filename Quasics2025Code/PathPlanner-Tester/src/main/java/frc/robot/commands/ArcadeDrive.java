@@ -50,5 +50,7 @@ public class ArcadeDrive extends Command {
 
     LinearVelocity forwardSpeed = AbstractDrivebase.MAX_SPEED.times(left);
     AngularVelocity rotationSpeed = AbstractDrivebase.MAX_ANGULAR_SPEED.times(right);
+
+    m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
   }
 }

@@ -97,8 +97,8 @@ public class RealDrivebase extends IDrivebase {
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / NEO_FREE_SPEED * GEAR_RATIO * 60;
-    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / NEO_FREE_SPEED * GEAR_RATIO * 60;
+    double leftPercent = speeds.leftMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5676 * GEAR_RATIO * 60;
+    double rightPercent = speeds.rightMetersPerSecond / (WHEEL_CIRCUMFERENCE.in(Meters)) / 5767 * GEAR_RATIO * 60;
     setSpeeds(leftPercent, rightPercent);
   }
 

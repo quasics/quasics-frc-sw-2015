@@ -214,7 +214,7 @@ public class RobotContainer {
       double scalingFactor = getDriveSpeedScalingFactor();
 
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
-      double joystickPercentage = axis * scalingFactor * .5;
+      double joystickPercentage = axis * scalingFactor;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
@@ -245,7 +245,7 @@ public class RobotContainer {
             .whileTrue(new RunKraken(m_armRoller, true));
     Trigger extake =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
-            .whileTrue(new RunKraken(m_armRoller, false));
+            .whileTrue(intakeThenExtake());
 
     Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, true));
     Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, false));

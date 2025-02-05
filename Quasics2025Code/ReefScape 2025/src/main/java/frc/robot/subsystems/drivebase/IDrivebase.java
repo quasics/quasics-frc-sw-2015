@@ -38,10 +38,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public abstract class IDrivebase extends SubsystemBase {
 
   // Max linear speed is 3 meters per second
-  public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
+  public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
   
   // Max rotational speed is 1/2 rotations per second
-  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(Math.PI);
+  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(5);
+
+  protected static final double NEO_FREE_SPEED = 5676;
 
   private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
 
@@ -111,19 +113,10 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public final void stop() {
-    setMotorSpeeds(0, 0);
+    setSpeeds(0, 0);
   }
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
-    if(xSpeed.gt(MAX_SPEED)){
-      xSpeed = MAX_SPEED;
-    } else if (xSpeed.lt(MAX_SPEED.unaryMinus())){
-      xSpeed = MAX_SPEED.unaryMinus();
-    }
-    if (rot.gt(MAX_ANGULAR_SPEED)) {
-      rot = MAX_ANGULAR_SPEED;
-    } else if (rot.lt(MAX_ANGULAR_SPEED.unaryMinus())) {
-      rot = MAX_ANGULAR_SPEED.unaryMinus();
-    }
+    
 
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
@@ -137,13 +130,13 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public void setSpeeds(double percentage) {
-    setMotorSpeeds(percentage, percentage); 
+    setSpeeds(percentage, percentage); 
   }
 
-  public void setMotorSpeeds(double leftSpeed, double rightSpeed){
+  public void setMotorVoltages(double leftVoltage, double rightVoltage){
     // feeder command into the HAL (hardware access layer) for left and right voltages
-    if (ENABLE_VOLTAGE_APPLICATON){
-      this.setSpeeds_HAL(leftSpeed, rightSpeed);
+    if (ENABLE_VOLTAGE_APPLICATON){ // what the hell is ENABLE_VOLTAGE_APPLICATION??
+      this.setSpeeds_HAL(leftVoltage, rightVoltage);
     }
   }
 

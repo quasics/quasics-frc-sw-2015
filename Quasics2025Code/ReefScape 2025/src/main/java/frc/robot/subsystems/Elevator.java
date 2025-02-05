@@ -20,8 +20,7 @@ public class Elevator extends SubsystemBase {
   RelativeEncoder m_rightEncoder;
 
   static final double EXTENSION_SPEED = 0.2;
-  static final double RETRACTION_SPEED = -0.2;
-  
+  static final double RETRACTION_SPEED = -0.2;  
   /** Crea
    * tes a new Elevator. */
   public Elevator() {

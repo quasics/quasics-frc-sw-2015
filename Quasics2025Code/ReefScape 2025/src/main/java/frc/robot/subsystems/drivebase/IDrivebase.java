@@ -41,7 +41,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
   
   // Max rotational speed is 1/2 rotations per second
-  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(5);
+  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(8.42);
 
   protected static final double NEO_FREE_SPEED = 5676;
 
@@ -108,8 +108,10 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    return m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
-        getRightEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
+    ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
+        getLeftEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
+    //System.out.println(speeds);
+    return speeds;
   }
 
   public final void stop() {
@@ -194,6 +196,7 @@ public abstract class IDrivebase extends SubsystemBase {
     SmartDashboard.putNumber("Left velocity", getLeftEncoder_HAL().getVelocity().in(MetersPerSecond));
     SmartDashboard.putNumber("Right velocity", getRightEncoder_HAL().getVelocity().in(MetersPerSecond));
 
+    getRobotRelativeSpeeds();
 
     updateOdometry();
     // This method will be called once per scheduler run

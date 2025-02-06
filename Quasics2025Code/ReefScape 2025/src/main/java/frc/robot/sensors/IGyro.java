@@ -186,11 +186,11 @@ public interface IGyro {
                                 -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
                                 },
              ()
-                 -> Degrees.of(pigeon2.getAngle()),
+                 -> Degrees.of(-pigeon2.getAngle()),
              ()
-                 -> DegreesPerSecond.of(pigeon2.getRate()),
+                 -> DegreesPerSecond.of(-pigeon2.getRate()),
              ()
-                 -> pigeon2.getRotation2d(),
+                 -> pigeon2.getRotation2d().unaryMinus(),
              () -> {
                // Note that this will reset *all* axes for the Pigeon2. May want
                // to wrap further in an OffsetGyro.

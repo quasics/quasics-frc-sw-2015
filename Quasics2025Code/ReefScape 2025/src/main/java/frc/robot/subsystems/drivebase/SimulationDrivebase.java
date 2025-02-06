@@ -134,8 +134,8 @@ public class SimulationDrivebase extends IDrivebase {
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    double leftPercent = speeds.leftMetersPerSecond / (2 * Math.PI * kWheelRadius.in(Meters)) / -kEncoderResolutionTicksPerRevolution * 8 * 60;
-    double rightPercent = speeds.rightMetersPerSecond / (2 * Math.PI * kWheelRadius.in(Meters)) / -kEncoderResolutionTicksPerRevolution * 8 * 60;
+    double leftPercent = speeds.leftMetersPerSecond / 6.06;
+    double rightPercent = speeds.rightMetersPerSecond / 6.06;
     setSpeeds(leftPercent, rightPercent);
   }
 

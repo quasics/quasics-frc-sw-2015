@@ -53,7 +53,7 @@ public class ArmPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Through Bore Encoder Position", m_throughBoreEncoder.getPosition());
+    SmartDashboard.putNumber("Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
   }
 
   public double getPivotPosition() {

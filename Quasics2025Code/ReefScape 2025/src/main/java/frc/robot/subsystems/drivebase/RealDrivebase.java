@@ -110,7 +110,6 @@ public class RealDrivebase extends IDrivebase {
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
 
-    System.out.println(speeds);
     m_leftPID.setReference(speeds.leftMetersPerSecond, ControlType.kVelocity);
     m_rightPID.setReference(speeds.rightMetersPerSecond, ControlType.kVelocity);
   }

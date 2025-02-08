@@ -47,8 +47,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void resetEncoders() {
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    m_encoder.setPosition(0);
   }
 
   @Override

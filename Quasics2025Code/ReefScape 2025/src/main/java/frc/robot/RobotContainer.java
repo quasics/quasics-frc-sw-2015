@@ -134,10 +134,11 @@ public class RobotContainer {
 
     SmartDashboard.putData("Arm Pivot Up", m_armPivot.setArmPivotUp());
     SmartDashboard.putData("Arm Pivot Down", m_armPivot.setArmPivotDown());
-=======
+
     SmartDashboard.putData("Arm Pivot 0", m_armPivot.setArmPivotUp());
-    SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown    SmartDashboard.putData("Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
->>>>>>> e9d2da604d72be697871b6299f1ab238f58f7ede
+    SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown());
+    
+    SmartDashboard.putData("Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
   }
 
     private void addSysIdButtonsToSmartDashboard() {

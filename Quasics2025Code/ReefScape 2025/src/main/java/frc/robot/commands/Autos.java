@@ -13,6 +13,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public final class Autos {
   /** Example static factory for an autonomous command. */
   public static Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return new PathPlannerAuto("Basic test");
   }
 }

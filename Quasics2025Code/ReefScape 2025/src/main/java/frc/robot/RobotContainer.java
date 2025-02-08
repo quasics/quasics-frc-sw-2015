@@ -131,8 +131,6 @@ public class RobotContainer {
 
   private void addTestButtonsToSmartDashboard() {
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
-    SmartDashboard.putData("Arm Pivot 0", m_armPivot.setArmPivotUp());
-    SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown());
   }
 
     private void addSysIdButtonsToSmartDashboard() {
@@ -249,8 +247,8 @@ public class RobotContainer {
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
             .whileTrue(intakeThenExtake());
 
-    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, true));
-    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, false));
+    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, 0.2));
+    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, -0.2));
 
   }
 

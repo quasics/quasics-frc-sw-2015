@@ -6,48 +6,52 @@ package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Elevator extends SubsystemBase {
 
-  SparkMax m_leftElevator;
-  SparkMax m_rightElevator;
+  SparkMax m_follower;
+  SparkMax m_leader;
 
-  RelativeEncoder m_leftEncoder;
-  RelativeEncoder m_rightEncoder;
+  SparkMaxConfig m_followerConfig = new SparkMaxConfig();
+  SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
 
-  static final double EXTENSION_SPEED = 0.2;
-  static final double RETRACTION_SPEED = -0.2;  
+  RelativeEncoder m_encoder;
+
   /** Crea
    * tes a new Elevator. */
   public Elevator() {
-    m_leftElevator = new SparkMax(SparkMaxIds.LEFT_ELEVATOR_ID, MotorType.kBrushless);
-    m_rightElevator = new SparkMax(SparkMaxIds.RIGHT_ELEVATOR_ID, MotorType.kBrushless);
-    m_leftEncoder = m_leftElevator.getEncoder();
-    m_rightEncoder = m_rightElevator.getEncoder();
+    m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
+    m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
+    m_encoder = m_leader.getEncoder();
+
+    //m_followerConfig.follow(m_leader, true);
+    //m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   
-  public void StartExtending() {
-    m_leftElevator.set(-EXTENSION_SPEED);
-    m_rightElevator.set(EXTENSION_SPEED);
-  }
-
-  public void StartRetracting() {
-    m_leftElevator.set(-RETRACTION_SPEED);
-    m_rightElevator.set(RETRACTION_SPEED);
+  public void setSpeed(double percentSpeed) {
+    m_leader.set(percentSpeed);
+    m_follower.set(-percentSpeed);
   }
 
   public void stop() {
-    m_leftElevator.set(0);
-    m_rightElevator.set(0);
+    m_leader.set(0);
+    m_follower.set(0);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("elevator encoder position", m_encoder.getPosition());
+    SmartDashboard.putNumber("elevator encoder velocity", m_encoder.getVelocity());
+
   }
 }

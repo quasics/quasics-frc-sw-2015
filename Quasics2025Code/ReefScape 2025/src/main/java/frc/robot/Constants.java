@@ -66,8 +66,8 @@ public final class Constants {
       public static final int LEFT_CLIMBER_ID = 5; 
       public static final int RIGHT_CLIMBER_ID = 6;
 
-      public static final int LEFT_ELEVATOR_ID = 7;
-      public static final int RIGHT_ELEVATOR_ID = 8;
+      public static final int FOLLOWER_ELEVATOR_ID = 7;
+      public static final int LEADER_ELEVATOR_ID = 8;
 
       public static final int ARM_PIVOT_ID = 9;
 

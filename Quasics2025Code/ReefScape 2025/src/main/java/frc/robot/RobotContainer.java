@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveForTime;
 import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
@@ -16,14 +17,18 @@ import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
 import frc.robot.commands.RunElevator;
+import frc.robot.commands.MoveArmPivot;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.function.Supplier;
 
@@ -137,8 +142,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("Arm Pivot 0", m_armPivot.setArmPivotUp());
     SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown());
-    
+     
     SmartDashboard.putData("Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
+
+    //SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase, Seconds.of(3), new ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0), RadiansPerSecond.of(0))));
   }
 
     private void addSysIdButtonsToSmartDashboard() {
@@ -231,32 +238,37 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
     m_drivebase.setDefaultCommand(new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
+    //m_armRoller.setDefaultCommand(new RunKraken(m_armRoller, -0.1));
   }
 
   private Command intakeThenExtake() {
     return Commands.sequence(new RunKrakenForTime(m_armRoller, true, 0.2),
     new WaitCommand(0.1),
-    new RunKraken(m_armRoller, false)
+    new RunKraken(m_armRoller, 1.0)
     );
   }
 
   private void ConfigureDriverButtons() {
-    Trigger extendClimber =
+    /*Trigger extendClimber =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
             .whileTrue(new MoveClimbers(m_climbers, true));
     Trigger retractClimber =
         new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-            .whileTrue(new MoveClimbers(m_climbers, false));
+            .whileTrue(new MoveClimbers(m_climbers, false));*/
 
     Trigger intake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftStickPress))
-            .whileTrue(new RunKraken(m_armRoller, true));
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+            .whileTrue(new RunKraken(m_armRoller, -0.3));
     Trigger extake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightStickPress))
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
             .whileTrue(intakeThenExtake());
 
-    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, 0.2));
-    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, -0.2));
+    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton)).whileTrue(new RunElevator(m_elevator, 0.2)); // DOWN
+    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton)).whileTrue(new RunElevator(m_elevator, -0.2)); // UP
+
+    Trigger extendArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton)).whileTrue(new MoveArmPivot(m_armPivot, 0.2, true)); // DOWN
+    Trigger retractArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton)).whileTrue(new MoveArmPivot(m_armPivot, 0.2, false)); // UP
+    
 
   }
 

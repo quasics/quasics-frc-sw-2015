@@ -11,6 +11,8 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volt;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
@@ -95,7 +97,7 @@ public class SimulationDrivebase extends IDrivebase {
     //configureDriveMotorsAndSensors();
 
     m_drivetrainSim = new DifferentialDrivetrainSim(m_drivetrainSystem, 
-    DCMotor.getCIM(2), 8
+    DCMotor.getCIM(2), GEAR_RATIO
     , robot.trackWidthMeters.in(Meters), kWheelRadius.in(Meters), null);
     m_gyroSim = new AnalogGyroSim(rawGyro);
     /*m_leftEncoderSim = new EncoderSim(m_leftEncoder);
@@ -218,7 +220,8 @@ public class SimulationDrivebase extends IDrivebase {
     // Simulated clock ticks forward
     m_drivetrainSim.update(0.02);
 
-    m_leftLeaderSparkSim.iterate(Units.radiansPerSecondToRotationsPerMinute(m_drivetrainSim.getLeftVelocityMetersPerSecond()), GEAR_RATIO, NEO_FREE_SPEED);
+    m_leftLeaderSparkSim.iterate(m_drivetrainSim.getLeftVelocityMetersPerSecond()/(Math.PI*kWheelRadius.in(Meters))/6.06, 12, 0.02);
+    m_rightLeaderSparkSim.iterate(m_drivetrainSim.getRightVelocityMetersPerSecond()/(Math.PI*kWheelRadius.in(Meters))/6.06, 12, 0.02);
 
     
     // Update the encoders and gyro, based on what the drive train simulation says

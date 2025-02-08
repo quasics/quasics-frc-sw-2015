@@ -81,6 +81,8 @@ public class RealDrivebase extends IDrivebase {
     m_leftLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.18);
     m_rightLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.18);
 
+    m_rightLeaderConfig.inverted(true);
+
     m_leftLeader.configure(m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightLeader.configure(m_rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 

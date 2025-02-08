@@ -10,29 +10,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RunKraken extends Command {
   ArmRoller m_ArmRoller;
-  double INTAKE_SPEED = -0.3;
-  double EXTAKE_SPEED = 1;
-  boolean m_intake;
+  double m_speed;
 
   /** Creates a new RunKraken. */
-  public RunKraken(ArmRoller armRoller, boolean intake) {
+  public RunKraken(ArmRoller armRoller, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_ArmRoller = armRoller;
-    m_intake = intake;
+    m_speed = speed;
+
+    addRequirements(armRoller);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);
+    m_ArmRoller.setSpeed(m_speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);  }
+    m_ArmRoller.setSpeed(m_speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

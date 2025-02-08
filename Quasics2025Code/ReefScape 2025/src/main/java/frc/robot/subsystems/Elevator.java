@@ -10,8 +10,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -48,10 +46,14 @@ public class Elevator extends SubsystemBase {
     m_follower.set(0);
   }
 
+  public void resetEncoders() {
+    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("elevator encoder position", m_encoder.getPosition());
     SmartDashboard.putNumber("elevator encoder velocity", m_encoder.getVelocity());
-
   }
 }

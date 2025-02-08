@@ -131,6 +131,7 @@ public class RobotContainer {
 
   private void addTestButtonsToSmartDashboard() {
     SmartDashboard.putData("Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
+    SmartDashboard.putData("Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
   }
 
     private void addSysIdButtonsToSmartDashboard() {

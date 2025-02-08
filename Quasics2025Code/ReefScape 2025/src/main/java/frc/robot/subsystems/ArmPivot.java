@@ -8,8 +8,9 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
-
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,7 +20,6 @@ import frc.robot.Constants.DesiredEncoderValues;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 
 import com.revrobotics.RelativeEncoder;
@@ -33,9 +33,7 @@ public class ArmPivot extends SubsystemBase {
 
   SparkMax m_pivot;
   SparkClosedLoopController m_armPIDController;
-  PIDController m_pid;
   SparkMaxConfig m_config;
-
   AbsoluteEncoder m_throughBoreEncoder;
   RelativeEncoder m_encoder;
   ArmFeedforward m_feedForward;
@@ -47,7 +45,7 @@ public class ArmPivot extends SubsystemBase {
     m_armPIDController = m_pivot.getClosedLoopController();
     m_config = new SparkMaxConfig();
     m_config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder).pid(1.0, 0.0, 0.0);
-    // m_feedForward = new ArmFeedforward(kS, kG, kV);
+    m_feedForward = new ArmFeedforward(0, 0, 0);
   }
 
   @Override
@@ -60,9 +58,11 @@ public class ArmPivot extends SubsystemBase {
     return m_throughBoreEncoder.getPosition();
   }
 
-  public void setPosition(double position) {
-    m_armPIDController.setReference(position, SparkMax.ControlType.kPosition);
-  }
+  /* public void setPosition(double position) {
+    // calculate voltage FF
+    double voltageFF = m_feedForward.calculate(positionRadians, 0.0); // placeholder values *THIS NEEDS CHANGED*
+    m_armPIDController.setReference(position, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
+  } */
 
   public void setArmPivotSpeed(double percentSpeed) {
     m_pivot.set(percentSpeed);
@@ -71,7 +71,7 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotUp() {
     return this.startEnd(
       ()-> {
-        while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm0) {
+        while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm90) { 
           setArmPivotSpeed(-0.25);
         }
       }, 
@@ -83,7 +83,7 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotDown() {
     return this.startEnd(
       ()-> {
-        while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm90) {
+        while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm0) {
           setArmPivotSpeed(.25); // check value and change as needed
         }
       }, 

@@ -99,7 +99,7 @@ public final class Constants {
 
   public static class DesiredEncoderValues {
     public static final double arm0 = 0; // needs testing
-    public static final double arm90 = 0.25; // needs updated once the value can be tested
+    public static final double arm90 = 0.75; // needs updated once the value can be tested
   }
 
   public static class SimulationPorts {

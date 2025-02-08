@@ -14,9 +14,13 @@ public class MoveArmPivot extends Command {
   private final boolean m_deploying;
   /** Creates a new MoveArmPivot. */
   public MoveArmPivot(ArmPivot pivot, double pivotSpeed, boolean deploying) {
-    m_pivotSpeed = pivotSpeed;
     m_pivot = pivot;
     m_deploying = deploying;
+    if (m_deploying) {
+      m_pivotSpeed = Math.abs(pivotSpeed);
+    } else {
+      m_pivotSpeed = -Math.abs(pivotSpeed);
+    }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
   }
@@ -24,11 +28,7 @@ public class MoveArmPivot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_deploying) {
-      
-    } else {
-
-    }
+    m_pivot.setArmPivotSpeed(m_pivotSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

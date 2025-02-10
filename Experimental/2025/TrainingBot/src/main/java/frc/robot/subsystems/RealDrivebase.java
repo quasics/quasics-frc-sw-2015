@@ -11,13 +11,12 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 /**
- * Defines an implementation of the drivebase subsystem that uses real hardware, based on
- * Quasics' standard drivebase configuration.
+ * Defines an implementation of the drivebase subsystem that uses real hardware,
+ * based on Quasics' standard drivebase configuration.
  */
 public class RealDrivebase extends AbstractDrivebase {
   ////////////////////////////////////////////////////////////////////////////////
@@ -26,8 +25,7 @@ public class RealDrivebase extends AbstractDrivebase {
   static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
   static final Distance WHEEL_CIRCUMFERENCE = ANDYMARK_6IN_PLACTION_DIAMETER.times(Math.PI);
   static final double GEAR_RATIO = 8.45;
-  static final double DISTANCE_SCALING_FACTOR_FOR_GEARING =
-      WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
+  static final double DISTANCE_SCALING_FACTOR_FOR_GEARING = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
   static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
   ////////////////////////////////////////////////////////////////////////////////

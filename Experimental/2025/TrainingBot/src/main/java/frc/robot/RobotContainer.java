@@ -9,18 +9,15 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.commands.DriveForDistance;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
 import java.util.function.Supplier;
@@ -34,7 +31,6 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final AbstractDrivebase m_driveBase;
 
   private final CommandJoystick m_driverController = new CommandJoystick(0);
@@ -53,8 +49,8 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_leftSupplier = () -> - m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
-      m_rightSupplier = () -> - m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
+      m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
+      m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
     } else {
       // Configuring the simulated robot
       m_driveBase = new SimulatedDrivebase();
@@ -103,7 +99,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(() -> m_driverController.getHID().getRawButton(1))
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+        .onTrue(new PrintCommand("Driver button 1 pressed"));
 
     // Example of pushing a button on the SmartDashboard to run a command.
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
@@ -122,6 +118,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new PrintCommand("Do something autonomously....");
   }
 }

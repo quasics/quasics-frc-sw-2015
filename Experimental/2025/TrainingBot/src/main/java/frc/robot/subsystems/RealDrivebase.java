@@ -95,6 +95,8 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   public double getHeadingInDegrees() {
-    return m_rawGyro.getAngle();
+    // Negate since getAngle() historically provided clockwise-positive, and Pigeon
+    // is counter-clockwise-positive.
+    return -m_rawGyro.getRotation2d().getDegrees();
   }
 }

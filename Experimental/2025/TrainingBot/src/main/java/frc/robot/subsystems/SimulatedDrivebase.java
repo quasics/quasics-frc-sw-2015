@@ -1,3 +1,7 @@
+// Copyright (c) Matthew Healy, Quasics Robotics, and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
@@ -17,6 +21,9 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * An implementation of the drivebase subsystem that uses simulated hardware.
+ */
 public class SimulatedDrivebase extends AbstractDrivebase {
   public final int LEFT_DRIVE_PWM_ID = 0;
   public final int RIGHT_DRIVE_PWM_ID = 1;

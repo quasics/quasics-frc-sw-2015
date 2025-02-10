@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) Matthew Healy, Quasics Robotics, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -26,8 +26,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {

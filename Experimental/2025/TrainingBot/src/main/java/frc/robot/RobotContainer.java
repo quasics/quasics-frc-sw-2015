@@ -4,28 +4,26 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveForDistance;
-import frc.robot.commands.TurnCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-
-import static edu.wpi.first.units.Units.Meters;
-
 import java.util.function.Supplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -55,8 +53,8 @@ public class RobotContainer {
 
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      m_leftSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
-      m_rightSupplier = () -> -m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
+      m_leftSupplier = () -> - m_driverController.getRawAxis(LogitechGamePad.LeftYAxis);
+      m_rightSupplier = () -> - m_driverController.getRawAxis(LogitechGamePad.RightYAxis);
     } else {
       // Configuring the simulated robot
       m_driveBase = new SimulatedDrivebase();
@@ -76,29 +74,22 @@ public class RobotContainer {
     configureBindings();
   }
 
-  public static Command moveForwardThenBackward(
-      AbstractDrivebase drivebase) {
+  public static Command moveForwardThenBackward(AbstractDrivebase drivebase) {
     return Commands.sequence(
-        new DriveForDistance(drivebase, 0.30, 1),
-        new DriveForDistance(drivebase, 0.30, -1));
+        new DriveForDistance(drivebase, 0.30, 1), new DriveForDistance(drivebase, 0.30, -1));
   }
 
-  public static Command squarePart(
-      AbstractDrivebase drivebase) {
-    return Commands.sequence(
-        new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1),
-        new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1),
-        new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1),
-        new DriveForDistance(drivebase, 0.3, 1),
+  public static Command squarePart(AbstractDrivebase drivebase) {
+    return Commands.sequence(new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
+        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
         new TurnCommand(drivebase, 74, 0.1));
   }
 
   /**
    * Use this method to define your trigger->command mappings.
-   * 
+   *
    * Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
    * an arbitrary predicate, or via the named factories in {@link

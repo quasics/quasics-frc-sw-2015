@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * This class provides a simple means for "publishing" data from a given
  * component, for use in other places that are otherwise "disconnected".
- * 
+ *
  * For example, a vision subsystem might compute an approximate position of the
  * robot (based on camera information) that can be used by the drive base to
  * improve its calculation of the robot's pose. Similarly, the vision subsystem
@@ -20,7 +20,7 @@ import java.util.Optional;
  * than one subsystem having to "know about" another (and thus providing direct
  * cyclic dependencies), they can simply post updates to this shared location
  * for client access.
- * 
+ *
  * Another alternative might be a more formal "pub/sub" (publish/subscribe)
  * pattern, including notifications on changes, but that feels like overkill for
  * my current needs, and this would still require at least some degree of direct
@@ -28,10 +28,10 @@ import java.util.Optional;
  * using the "Observer" pattern, etc., and the standard Java "Observable" type
  * is also a concrete class (rather than an adaptable interface), which makes it
  * hard to use trivially with WPILib subsystems.
- * 
+ *
  * @see https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern
  * @see https://en.wikipedia.org/wiki/Observer_pattern
- * 
+ *
  */
 public class BulletinBoard {
   /**

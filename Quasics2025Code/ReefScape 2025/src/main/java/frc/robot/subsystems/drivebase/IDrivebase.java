@@ -12,13 +12,6 @@ import static edu.wpi.first.units.Units.Volts;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.RobotSettings;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,12 +27,17 @@ import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.RobotSettings;
 
 public abstract class IDrivebase extends SubsystemBase {
-
   // Max linear speed is 3 meters per second
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
-  
+
   // Max rotational speed is 1/2 rotations per second
   public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(8.42);
 
@@ -51,57 +49,57 @@ public abstract class IDrivebase extends SubsystemBase {
 
   private final DifferentialDriveKinematics m_kinematics;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
-  
 
   private final Distance m_driveBaseLengthWithBumpers;
   private final Distance m_driveBaseWidthWithBumpers;
 
   RobotConfig config;
 
-
   /** Creates a new IDrivebase. */
   public IDrivebase(RobotSettings.Robot robot) {
     this(robot.trackWidthMeters);
     super.setName(robot.name());
 
-    try{
+    try {
       config = RobotConfig.fromGUISettings();
 
-          // Configure AutoBuilder last
-    AutoBuilder.configure(
-      this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      (speeds, feedforwards) -> setSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-      new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
-      config, // The robot configuration
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+      // Configure AutoBuilder last
+      AutoBuilder.configure(this::getPose, // Robot pose supplier
+          this::resetOdometry, // Method to reset odometry (will be called if your auto has a
+                               // starting pose)
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speeds, feedforwards)
+              -> setSpeeds(
+                  speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+                           // Also optionally outputs individual module feedforwards
+          new PPLTVController(0.02), // PPLTVController is the built in path following controller
+                                     // for differential drive trains
+          config, // The robot configuration
+          ()
+              -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Blue;
-        }
-        return true;
-      },
-      this // Reference to this subsystem to set requirements
-);
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Blue;
+            }
+            return true;
+          },
+          this // Reference to this subsystem to set requirements
+      );
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
-
-
   }
 
   protected IDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
-    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(),
-     0, 
-     0, new Pose2d());
-   
+    m_poseEstimator =
+        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
     m_driveBaseWidthWithBumpers = Inches.of(26);
@@ -110,7 +108,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
     ChassisSpeeds speeds = m_kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(
         getLeftEncoder_HAL().getVelocity(), getRightEncoder_HAL().getVelocity()));
-    //System.out.println(speeds);
+    // System.out.println(speeds);
     return speeds;
   }
 
@@ -118,8 +116,6 @@ public abstract class IDrivebase extends SubsystemBase {
     setSpeeds(0, 0);
   }
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
-    
-
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
@@ -132,12 +128,12 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public void setSpeeds(double percentage) {
-    setSpeeds(percentage, percentage); 
+    setSpeeds(percentage, percentage);
   }
 
-  public void setMotorVoltages(double leftVoltage, double rightVoltage){
+  public void setMotorVoltages(double leftVoltage, double rightVoltage) {
     // feeder command into the HAL (hardware access layer) for left and right voltages
-    if (ENABLE_VOLTAGE_APPLICATON){ // what the hell is ENABLE_VOLTAGE_APPLICATION??
+    if (ENABLE_VOLTAGE_APPLICATON) { // what the hell is ENABLE_VOLTAGE_APPLICATION??
       this.setSpeeds_HAL(leftVoltage, rightVoltage);
     }
   }
@@ -154,7 +150,7 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   final private DifferentialDriveOdometry m_odometry =
-     new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -180,7 +176,7 @@ public abstract class IDrivebase extends SubsystemBase {
     getLeftEncoder_HAL().reset();
     getRightEncoder_HAL().reset();
     getGyro_HAL().reset();
-    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0,0, pose);
+    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
     m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
   }
 
@@ -193,8 +189,10 @@ public abstract class IDrivebase extends SubsystemBase {
 
     SmartDashboard.putNumber("Angle", pose.getRotation().getDegrees());
 
-    SmartDashboard.putNumber("Left velocity", getLeftEncoder_HAL().getVelocity().in(MetersPerSecond));
-    SmartDashboard.putNumber("Right velocity", getRightEncoder_HAL().getVelocity().in(MetersPerSecond));
+    SmartDashboard.putNumber(
+        "Left velocity", getLeftEncoder_HAL().getVelocity().in(MetersPerSecond));
+    SmartDashboard.putNumber(
+        "Right velocity", getRightEncoder_HAL().getVelocity().in(MetersPerSecond));
 
     getRobotRelativeSpeeds();
 
@@ -218,8 +216,7 @@ public abstract class IDrivebase extends SubsystemBase {
     return Meters.of(getLeftDistanceMeters());
   }
 
-  public Distance getRightDistance(){
+  public Distance getRightDistance() {
     return Meters.of(getRightDistanceMeters());
   }
-
 }

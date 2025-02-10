@@ -12,8 +12,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-      // TODO Auto-generated method stub
-      
+    // TODO Auto-generated method stub
   }
 
   @Override

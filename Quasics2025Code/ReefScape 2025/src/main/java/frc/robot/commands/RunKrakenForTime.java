@@ -4,12 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmRoller;
-import edu.wpi.first.wpilibj.Timer;
 
-
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class RunKrakenForTime extends Command {
   ArmRoller m_ArmRoller;
   double INTAKE_SPEED = -0.3;
@@ -31,16 +32,20 @@ public class RunKrakenForTime extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);
+    if (m_intake)
+      m_ArmRoller.setSpeed(INTAKE_SPEED);
+    else
+      m_ArmRoller.setSpeed(EXTAKE_SPEED);
     m_timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake) m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else m_ArmRoller.setSpeed(EXTAKE_SPEED);  
+    if (m_intake)
+      m_ArmRoller.setSpeed(INTAKE_SPEED);
+    else
+      m_ArmRoller.setSpeed(EXTAKE_SPEED);
   }
 
   // Called once the command ends or is interrupted.
@@ -52,7 +57,8 @@ public class RunKrakenForTime extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_timer.hasElapsed(m_stopTime)) return true;
+    if (m_timer.hasElapsed(m_stopTime))
+      return true;
     return false;
   }
 }

@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.IDrivebase;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class DriveForTime extends Command {
   /** Creates a new DriveForTime. */
 
@@ -39,7 +41,7 @@ public class DriveForTime extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   updateSpeeds();
+    updateSpeeds();
   }
 
   // Called once the command ends or is interrupted.
@@ -48,7 +50,7 @@ public class DriveForTime extends Command {
     m_drivebase.stop();
   }
 
-  final void updateSpeeds(){
+  final void updateSpeeds() {
     m_drivebase.setSpeeds(m_chassis);
   }
 }

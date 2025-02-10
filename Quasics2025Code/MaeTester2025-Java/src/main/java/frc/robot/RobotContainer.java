@@ -48,16 +48,15 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    m_drivebase.setDefaultCommand(new ArcadeDrive(
-        m_drivebase,
+    m_drivebase.setDefaultCommand(new ArcadeDrive(m_drivebase,
         // Forward speed supplier
         ()
-            -> m_driverController.getRawAxis(LogitechGamePad.LeftYAxis) *
-                   getDriveSpeedScalingFactor(),
+            -> m_driverController.getRawAxis(LogitechGamePad.LeftYAxis)
+            * getDriveSpeedScalingFactor(),
         // Turn speed supplier
         ()
-            -> m_driverController.getRawAxis(LogitechGamePad.RightXAxis) *
-                   getDriveSpeedScalingFactor()));
+            -> m_driverController.getRawAxis(LogitechGamePad.RightXAxis)
+            * getDriveSpeedScalingFactor()));
 
     m_lights.setDefaultCommand(new ColorLights(m_lights, Lights.GREEN));
   }
@@ -67,8 +66,8 @@ public class RobotContainer {
    *     the driver's joysticks (for normal, turbo, and turtle modes)
    */
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo = m_driverController.getRawButton(
-        Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurbo =
+        m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
     final boolean isTurtle =
         m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
 
@@ -97,8 +96,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_operatorController.b().whileTrue(
-        m_exampleSubsystem.exampleMethodCommand());
+    m_operatorController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     new Trigger(
         // Call this function (static or a lambda) to decide if we should

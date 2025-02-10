@@ -5,20 +5,18 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Elevator extends SubsystemBase {
-
   SparkMax m_follower;
   SparkMax m_leader;
 
@@ -28,11 +26,12 @@ public class Elevator extends SubsystemBase {
 
   RelativeEncoder m_encoder;
 
-  //private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
+  // private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
 
-
-  /** Crea
-   * tes a new Elevator. */
+  /**
+   * Crea
+   * tes a new Elevator.
+   */
   public Elevator() {
     m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
     m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
@@ -44,12 +43,12 @@ public class Elevator extends SubsystemBase {
     m_leader.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_follower.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_leader.configure(m_leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+    m_leader.configure(
+        m_leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_follower.configure(
+        m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  
   public void setSpeed(double percentSpeed) {
     m_leader.set(percentSpeed);
     m_follower.set(-percentSpeed);

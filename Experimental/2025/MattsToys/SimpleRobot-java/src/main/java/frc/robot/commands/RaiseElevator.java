@@ -9,7 +9,8 @@ import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.AbstractElevator.Mode;
 
 /*
- * TODO: consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ * TODO: consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RaiseElevator extends Command {
   final AbstractElevator m_elevator;

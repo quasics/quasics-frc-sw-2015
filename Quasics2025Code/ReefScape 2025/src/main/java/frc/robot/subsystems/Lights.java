@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
   /** Creates a new Lighting. */
-  public Lights() {}
+  public Lights() {
+  }
 
   @Override
   public void periodic() {

@@ -4,31 +4,27 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import frc.robot.Constants;
-import frc.robot.Constants.DesiredEncoderValues;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.ArmFeedforward;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.AbsoluteEncoder;
-
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.Constants.DesiredEncoderValues;
 
 public class ArmPivot extends SubsystemBase {
   /** Creates a new ArmPivot. */
-  //TODO: choose actual values for this in cases of simulation vs real.
+  // TODO: choose actual values for this in cases of simulation vs real.
   Encoder encoder = new Encoder(4, 5);
 
   SparkMax m_pivot;
@@ -51,7 +47,8 @@ public class ArmPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putNumber(
+        "Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
   }
 
   public double getPivotPosition() {
@@ -60,8 +57,9 @@ public class ArmPivot extends SubsystemBase {
 
   /* public void setPosition(double position) {
     // calculate voltage FF
-    double voltageFF = m_feedForward.calculate(positionRadians, 0.0); // placeholder values *THIS NEEDS CHANGED*
-    m_armPIDController.setReference(position, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
+    double voltageFF = m_feedForward.calculate(positionRadians, 0.0); // placeholder values *THIS
+  NEEDS CHANGED* m_armPIDController.setReference(position, SparkMax.ControlType.kPosition,
+  ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
   } */
 
   public void setArmPivotSpeed(double percentSpeed) {
@@ -70,26 +68,24 @@ public class ArmPivot extends SubsystemBase {
 
   public Command setArmPivotUp() {
     return this.startEnd(
-      ()-> {
-        while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm90) { 
-          setArmPivotSpeed(-0.25);
-        }
-      }, 
-      ()-> {
-        stop();
-      });
+        ()
+            -> {
+          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm90) {
+            setArmPivotSpeed(-0.25);
+          }
+        },
+        () -> { stop(); });
   }
 
   public Command setArmPivotDown() {
     return this.startEnd(
-      ()-> {
-        while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm0) {
-          setArmPivotSpeed(.25); // check value and change as needed
-        }
-      }, 
-      ()-> { 
-        stop();
-      });
+        ()
+            -> {
+          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm0) {
+            setArmPivotSpeed(.25); // check value and change as needed
+          }
+        },
+        () -> { stop(); });
   }
 
   public void stop() {

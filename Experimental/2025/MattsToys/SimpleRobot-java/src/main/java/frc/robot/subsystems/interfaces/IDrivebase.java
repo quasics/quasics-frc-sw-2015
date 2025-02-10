@@ -35,17 +35,18 @@ public interface IDrivebase {
 
   /**
    * Drive the robot using tank drive (as a percentage of MAX_SPEED).
-   * 
+   *
    * @param leftPercentage  The percentage of MAX_SPEED for the left side.
    * @param rightPercentage The percentage of MAX_SPEED for the right side.
    */
   default void tankDrive(double leftPercentage, double rightPercentage) {
-    setSpeeds(new DifferentialDriveWheelSpeeds(MAX_SPEED.times(leftPercentage), MAX_SPEED.times(rightPercentage)));
+    setSpeeds(new DifferentialDriveWheelSpeeds(
+        MAX_SPEED.times(leftPercentage), MAX_SPEED.times(rightPercentage)));
   }
 
   /**
    * Drive the robot using arcade drive.
-   * 
+   *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
    */
@@ -53,7 +54,7 @@ public interface IDrivebase {
 
   /**
    * Set the wheel speeds (positive values are forward).
-   * 
+   *
    * @param wheelSpeeds The wheel speeds to set.
    */
   void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds);
@@ -61,7 +62,7 @@ public interface IDrivebase {
   /**
    * Utility method: straight forward/backward. (Effectively, tank drive with a
    * single speed for both sides.)
-   * 
+   *
    * @param percentage The percentage of MAX_SPEED to drive at.
    */
   default void setSpeed(double percentage) {

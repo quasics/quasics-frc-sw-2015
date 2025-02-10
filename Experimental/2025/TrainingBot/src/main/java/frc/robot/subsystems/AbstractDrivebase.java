@@ -23,12 +23,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * functionality related to driving/navigation.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
-
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
@@ -84,9 +83,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the distance that the robot's left wheel(s) have traveled since startup,
    * expressed as a "Distance" value (which automatically handles units).
-   * 
+   *
    * @return the distance that the wheels on the left have traveled since startup.
-   * 
+   *
    * @see #getLeftDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
@@ -98,10 +97,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the distance that the robot's right wheel(s) have traveled since
    * startup, expressed as a "Distance" value (which automatically handles units).
-   * 
+   *
    * @return the distance that the wheels on the right have traveled since
    *         startup.
-   * 
+   *
    * @see #getRightDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
@@ -113,9 +112,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the robot's current heading as an "Angle" value (which automatically
    * handles units).
-   * 
+   *
    * @return the robot's current heading
-   * 
+   *
    * @see #getHeadingInDegrees()
    * @see edu.wpi.first.units.measure.Angle
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html

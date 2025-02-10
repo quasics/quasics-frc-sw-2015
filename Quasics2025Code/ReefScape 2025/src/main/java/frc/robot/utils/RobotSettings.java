@@ -21,63 +21,53 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Per;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 
 /** Add your docs here. */
 public interface RobotSettings {
+  /**
+   * Different possible configerations for motors on the drivebase.
+   */
+  public enum MotorConfigModel {
+    // No leader: Every motor needs driven seperately
+    NoLeader,
+    // Rear motors are configured as leader (with CAN)
+    RearMotorsLeading,
+    // front motors are configured as leader (with CAN)
+    FrontMotorsLeading,
+  }
 
+  /**
+   * Enum class represents characteristics (track width,
+   * motor configuration, etc.) specific to a given robot
+   */
+  public enum Robot {
     /**
-     * Different possible configerations for motors on the drivebase.
+     * TODO: add simulator, margeret, etc. robot values
+     * TODO: characterization values, robot to camera, TBD other values
      */
-    public enum MotorConfigModel {
-        //No leader: Every motor needs driven seperately
-        NoLeader,
-        // Rear motors are configured as leader (with CAN)
-        RearMotorsLeading,
-        // front motors are configured as leader (with CAN)
-        FrontMotorsLeading,
+    Simulator(MotorConfigModel.RearMotorsLeading, Meter.of(0.381 * 2), 1.0),
+    Sally(
+        // Motor config model
+        MotorConfigModel.RearMotorsLeading,
+        // track width in meters
+        Meters.of(0.5588) /* 22 in */,
+        // gear ratio
+        8.45),
+    NewRobot(MotorConfigModel.RearMotorsLeading, Meters.of(0.5628), /*22 5/32 in */
+        0);
+
+    ////////////////////////////////////////////////
+    // Drivebase data
+    public final MotorConfigModel motorConfigModel;
+    public final Distance trackWidthMeters;
+    public final double gearRatio;
+
+    private Robot(MotorConfigModel motorConfigModel, Distance trackWidthMeters, double gearRatio) {
+      this.motorConfigModel = motorConfigModel;
+      this.trackWidthMeters = trackWidthMeters;
+      this.gearRatio = gearRatio;
     }
-
-    /**
-     * Enum class represents characteristics (track width,
-     * motor configuration, etc.) specific to a given robot
-     */
-    public enum Robot {
-        /**
-         * TODO: add simulator, margeret, etc. robot values
-         * TODO: characterization values, robot to camera, TBD other values
-         */
-        Simulator(MotorConfigModel.RearMotorsLeading,
-        Meter.of(0.381*2),
-        1.0
-        ),
-        Sally(
-            // Motor config model
-            MotorConfigModel.RearMotorsLeading,
-            // track width in meters
-            Meters.of(0.5588) /* 22 in */,
-            // gear ratio
-            8.45),
-        NewRobot(
-            MotorConfigModel.RearMotorsLeading,
-            Meters.of(0.5628), /*22 5/32 in */
-            0);
-        
-        ////////////////////////////////////////////////
-        // Drivebase data
-        public final MotorConfigModel motorConfigModel;
-        public final Distance trackWidthMeters;
-        public final double gearRatio;
-
-        
-        private Robot(MotorConfigModel motorConfigModel, Distance trackWidthMeters,
-        double gearRatio) {
-            this.motorConfigModel = motorConfigModel;
-            this.trackWidthMeters = trackWidthMeters;
-            this.gearRatio = gearRatio;
-        }
-    }
-
-
+  }
 }

@@ -15,7 +15,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
+/**
+ * Defines an implementation of the drivebase subsystem that uses real hardware, based on
+ * Quasics' standard drivebase configuration.
+ */
 public class RealDrivebase extends AbstractDrivebase {
+  ////////////////////////////////////////////////////////////////////////////////
   // Common physical characteristics for Quasics' robots (and directly derived
   // values).
   static final Distance ANDYMARK_6IN_PLACTION_DIAMETER = Inches.of(6.0);
@@ -25,7 +30,7 @@ public class RealDrivebase extends AbstractDrivebase {
       WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
   static final double VELOCITY_SCALING_FACTOR = DISTANCE_SCALING_FACTOR_FOR_GEARING / 60;
 
-  ////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
   // Hardware control/sensing.
   //
 

@@ -40,16 +40,16 @@ public class RealDrivebase extends AbstractDrivebase {
   // final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID,
   // MotorType.kBrushless);
 
-  final SparkMaxConfig m_leftConfig = new SparkMaxConfig();
-  final SparkMaxConfig m_rightConfig = new SparkMaxConfig();
-
   // Encoders
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
-  // Gyro
+  /** The gyro/ALU that we're using for direction identification. */
   private final Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
 
+  /**
+   * Constructor.
+   */
   public RealDrivebase() {
     super();
 
@@ -64,17 +64,20 @@ public class RealDrivebase extends AbstractDrivebase {
     System.out.println("Adjustment for gearing (m/rotation): " + distanceScalingFactorForGearing);
     System.out.println("Velocity adj.: " + velocityScalingFactor);
 
-    m_leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-    m_rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    final SparkMaxConfig leftConfig = new SparkMaxConfig();
+    final SparkMaxConfig rightConfig = new SparkMaxConfig();
 
-    m_rightConfig.inverted(true);
+    leftConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    leftConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    rightConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
+    rightConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+
+    rightConfig.inverted(true);
 
     m_leftLeader.configure(
-        m_leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightLeader.configure(
-        m_rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

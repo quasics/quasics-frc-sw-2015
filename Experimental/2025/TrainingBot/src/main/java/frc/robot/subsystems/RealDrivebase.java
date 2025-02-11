@@ -36,13 +36,10 @@ public class RealDrivebase extends AbstractDrivebase {
   // Hardware control/sensing.
   //
 
-  // Motors
+  // Motors (we only need to control the leaders; the followers will... well,
+  // follow them).
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
-  // final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID,
-  // MotorType.kBrushless);
-  // final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID,
-  // MotorType.kBrushless);
 
   // Encoders
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();

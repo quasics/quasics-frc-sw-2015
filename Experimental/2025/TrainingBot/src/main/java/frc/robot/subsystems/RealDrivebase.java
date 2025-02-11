@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.Constants.CanBusIds.PIGEON2_CAN_ID;
+import static frc.robot.Constants.CanBusIds.SparkMaxIds.LEFT_LEADER_ID;
+import static frc.robot.Constants.CanBusIds.SparkMaxIds.RIGHT_LEADER_ID;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
@@ -16,7 +18,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 /**
  * Defines an implementation of the drivebase subsystem that uses real hardware,
@@ -38,8 +39,8 @@ public class RealDrivebase extends AbstractDrivebase {
 
   // Motors (we only need to control the leaders; the followers will... well,
   // follow them).
-  final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
 
   // Encoders
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();

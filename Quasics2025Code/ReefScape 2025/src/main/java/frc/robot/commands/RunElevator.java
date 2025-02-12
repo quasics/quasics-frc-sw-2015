@@ -5,20 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.elevator.RealElevator;
+import frc.robot.subsystems.elevator.AbstractElevator;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RunElevator extends Command {
-  private final RealElevator m_elevator;
+  private final AbstractElevator m_elevator;
   private final double m_percentSpeed;
 
   /** Creates a new RunElevator. */
-  public RunElevator(RealElevator elevator, double percentSpeed) {
+  public RunElevator(AbstractElevator elevator, double percentSpeed) {
     m_elevator = elevator;
     m_percentSpeed = percentSpeed;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
 

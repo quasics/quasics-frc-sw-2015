@@ -49,8 +49,8 @@ public class RobotContainer {
   private final IDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
-  private final Climbers m_climbers = new Climbers();
   private final Elevator m_elevator = new Elevator();
+  private final Climbers m_climbers = new Climbers();
   private final Vision m_vision = new Vision();
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
@@ -264,19 +264,20 @@ public class RobotContainer {
      * .whileTrue(new MoveClimbers(m_climbers, false));
      */
 
-    Trigger intake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+    // Register the triggers for various buttons on the controllers.
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    Trigger extake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
         .whileTrue(intakeThenExtake());
 
-    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
         .whileTrue(new RunElevator(m_elevator, 0.2)); // DOWN
-    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
         .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
 
-    Trigger extendArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true)); // DOWN
-    Trigger retractArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false)); // UP
   }
 

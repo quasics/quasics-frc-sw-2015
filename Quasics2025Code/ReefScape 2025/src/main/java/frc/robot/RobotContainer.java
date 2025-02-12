@@ -4,12 +4,8 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -21,17 +17,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
-import frc.robot.commands.DriveForTime;
 import frc.robot.commands.MoveArmPivot;
-import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
-import frc.robot.commands.TankDrive;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
@@ -44,9 +35,12 @@ import frc.robot.utils.RobotSettings;
 import java.util.function.Supplier;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -72,8 +66,7 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController =
-      new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
   Trigger switchDriveTrigger;
@@ -89,7 +82,9 @@ public class RobotContainer {
     }
   }
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     m_drivebase = setupDriveBase();
     // Configure the trigger bindings
@@ -106,15 +101,11 @@ public class RobotContainer {
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
-      m_arcadeDriveLeftStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      m_arcadeDriveRightStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
     } else {
-      m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
-      m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(0);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(1);
       drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
     }
     return drivebase;
@@ -144,21 +135,27 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
-    // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase, Seconds.of(3), new
-    // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0), RadiansPerSecond.of(0))));
+    // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
+    // Seconds.of(3), new
+    // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
+    // RadiansPerSecond.of(0))));
   }
 
   private void addSysIdButtonsToSmartDashboard() {
     /*
-  SmartDashboard.putData(
-      "Quasistatic Forward", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-  SmartDashboard.putData(
-      "Quasistatic Reverse", m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-  SmartDashboard.putData(
-      "Dynamic Forward", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
-  SmartDashboard.putData(
-      "Dynamic Reverse", m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-      */
+     * SmartDashboard.putData(
+     * "Quasistatic Forward",
+     * m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+     * SmartDashboard.putData(
+     * "Quasistatic Reverse",
+     * m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+     * SmartDashboard.putData(
+     * "Dynamic Forward",
+     * m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kForward));
+     * SmartDashboard.putData(
+     * "Dynamic Reverse",
+     * m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+     */
   }
 
   private void addOverallSelectorToSmartDashboard() {
@@ -178,19 +175,25 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link
+   * CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
     m_tankDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
-      // needs testing to affirm direction is correct! if wrong just switch the - signs
+      // needs testing to affirm direction is correct! if wrong just switch the -
+      // signs
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
         return m_leftSpeedLimiter.calculate(joystickPercentage);
@@ -203,7 +206,8 @@ public class RobotContainer {
     m_tankDriveRightStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
       double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
-      // needs testing also to affirm the direction is correct & switch signs if it is wrong
+      // needs testing also to affirm the direction is correct & switch signs if it is
+      // wrong
       if (m_switchDrive) {
         double joystickPercentage = -axis * scalingFactor;
         return m_rightSpeedLimiter.calculate(joystickPercentage);
@@ -233,9 +237,10 @@ public class RobotContainer {
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    switchDriveTrigger =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
-            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
+        .onTrue(new InstantCommand(() -> {
+          m_switchDrive = !m_switchDrive;
+        }));
 
     m_drivebase.setDefaultCommand(
         new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
@@ -248,43 +253,39 @@ public class RobotContainer {
   }
 
   private void ConfigureDriverButtons() {
-    /*Trigger extendClimber =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-            .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-            .whileTrue(new MoveClimbers(m_climbers, false));*/
+    /*
+     * Trigger extendClimber =
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+     * .whileTrue(new MoveClimbers(m_climbers, true));
+     * Trigger retractClimber =
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+     * .whileTrue(new MoveClimbers(m_climbers, false));
+     */
 
-    Trigger intake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
-            .whileTrue(new RunKraken(m_armRoller, -0.3));
-    Trigger extake =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
-            .whileTrue(intakeThenExtake());
+    Trigger intake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+        .whileTrue(new RunKraken(m_armRoller, -0.3));
+    Trigger extake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+        .whileTrue(intakeThenExtake());
 
-    Trigger extendElevator =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
-            .whileTrue(new RunElevator(m_elevator, 0.2)); // DOWN
-    Trigger retractElevator =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
-            .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
+    Trigger extendElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
+        .whileTrue(new RunElevator(m_elevator, 0.2)); // DOWN
+    Trigger retractElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
+        .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
 
-    Trigger extendArm =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-            .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true)); // DOWN
-    Trigger retractArm =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-            .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false)); // UP
+    Trigger extendArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true)); // DOWN
+    Trigger retractArm = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false)); // UP
   }
 
   private void ConfigureOperatorButtons() {
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo =
-        m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
-    final boolean isTurtle =
-        m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
@@ -305,8 +306,8 @@ public class RobotContainer {
     String autonomousOperation = m_autonomousOperations.getSelected();
     String positionOption = m_positionOptions.getSelected();
 
-    DriverStation.Alliance alliance =
-        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is blue
+    DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is
+                                                                                                       // blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
     return Autos.getAutonomousCommand();

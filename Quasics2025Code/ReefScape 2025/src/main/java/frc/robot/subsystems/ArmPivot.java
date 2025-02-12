@@ -6,9 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -20,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.Constants.DesiredEncoderValues;
 
 public class ArmPivot extends SubsystemBase {
   /** Creates a new ArmPivot. */
@@ -55,12 +52,16 @@ public class ArmPivot extends SubsystemBase {
     return m_throughBoreEncoder.getPosition();
   }
 
-  /* public void setPosition(double position) {
-    // calculate voltage FF
-    double voltageFF = m_feedForward.calculate(positionRadians, 0.0); // placeholder values *THIS
-  NEEDS CHANGED* m_armPIDController.setReference(position, SparkMax.ControlType.kPosition,
-  ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
-  } */
+  /*
+   * public void setPosition(double position) {
+   * // calculate voltage FF
+   * double voltageFF = m_feedForward.calculate(positionRadians, 0.0); //
+   * placeholder values *THIS
+   * NEEDS CHANGED* m_armPIDController.setReference(position,
+   * SparkMax.ControlType.kPosition,
+   * ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
+   * }
+   */
 
   public void setArmPivotSpeed(double percentSpeed) {
     m_pivot.set(percentSpeed);
@@ -68,24 +69,26 @@ public class ArmPivot extends SubsystemBase {
 
   public Command setArmPivotUp() {
     return this.startEnd(
-        ()
-            -> {
+        () -> {
           while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm90) {
             setArmPivotSpeed(-0.25);
           }
         },
-        () -> { stop(); });
+        () -> {
+          stop();
+        });
   }
 
   public Command setArmPivotDown() {
     return this.startEnd(
-        ()
-            -> {
+        () -> {
           while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm0) {
             setArmPivotSpeed(.25); // check value and change as needed
           }
         },
-        () -> { stop(); });
+        () -> {
+          stop();
+        });
   }
 
   public void stop() {

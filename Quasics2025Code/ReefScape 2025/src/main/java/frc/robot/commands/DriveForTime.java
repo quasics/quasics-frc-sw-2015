@@ -7,7 +7,6 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;

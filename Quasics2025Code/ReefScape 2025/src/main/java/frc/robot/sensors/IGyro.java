@@ -11,12 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import frc.robot.sensors.OffsetGyro;
 import java.util.function.Supplier;
-
-// import com.ctre.phoenix6.hardware.Pigeon2;
-// import edu.wpi.first.wpilibj.romi.RomiGyro;
-// import edu.wpi.first.wpilibj.xrp.XRPGyro;
 
 /**
  * This defines a "wrapper" type that can be used to let any arbitrary "Gyro" or
@@ -141,54 +136,16 @@ public interface IGyro {
 
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
-  /*
-    // Helper function to wrap the XRPGyro type from WPILib.
-     static IGyro wrapYawGyro(XRPGyro g) {
-       return new OffsetGyro(new FunctionalGyro(
-           ()
-               -> { System.out.println(">>> Null-op: XRPGyro doesn't calibrate."); },
-           ()
-               -> Degrees.of(g.getAngleZ()),
-           ()
-               -> DegreesPerSecond.of(g.getRateZ()),
-           ()
-               -> { return Rotation2d.fromDegrees(g.getAngleZ()); },
-           ()
-               -> {
-                   // Note that this won't actually get invoked, because the OffsetGyro will
-                   // instead just reset its offset value.
-               }));
-     }
 
-     // Helper function to wrap the RomiGyro type from WPILib.
-     static IGyro wrapYawGyro(RomiGyro g) {
-       return new OffsetGyro(new FunctionalGyro(
-           ()
-               -> { System.out.println(">>> Null-op: RomiGyro doesn't calibrate."); },
-           ()
-               -> Degrees.of(g.getAngleZ()),
-           ()
-               -> DegreesPerSecond.of(g.getRateZ()),
-           ()
-               -> { return Rotation2d.fromDegrees(g.getAngleZ()); },
-           ()
-               -> {
-                   // Note that this won't actually get invoked, because the OffsetGyro will
-                   // instead just reset its offset value.
-               }));
-     }
-    */
   // Helper function to wrap the Pigeon2 type from CTRE.
   static IGyro wrapYawGyro(Pigeon2 pigeon2) {
     return new OffsetGyro(
-        new FunctionalGyro(()
-                               -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates."); },
-            ()
-                -> Degrees.of(-pigeon2.getAngle()),
-            ()
-                -> DegreesPerSecond.of(-pigeon2.getRate()),
-            ()
-                -> pigeon2.getRotation2d().unaryMinus(),
+        new FunctionalGyro(() -> {
+          System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
+        },
+            () -> Degrees.of(-pigeon2.getAngle()),
+            () -> DegreesPerSecond.of(-pigeon2.getRate()),
+            () -> pigeon2.getRotation2d().unaryMinus(),
             () -> {
               // Note that this will reset *all* axes for the Pigeon2. May want
               // to wrap further in an OffsetGyro.

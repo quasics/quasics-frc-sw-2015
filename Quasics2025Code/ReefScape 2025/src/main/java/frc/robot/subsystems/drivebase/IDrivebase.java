@@ -3,11 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.drivebase;
+
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
@@ -19,17 +19,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.MutVoltage;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
@@ -68,16 +63,15 @@ public abstract class IDrivebase extends SubsystemBase {
           this::resetOdometry, // Method to reset odometry (will be called if your auto has a
                                // starting pose)
           this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards)
-              -> setSpeeds(
-                  speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
-                           // Also optionally outputs individual module feedforwards
+          (speeds, feedforwards) -> setSpeeds(
+              speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+                       // Also optionally outputs individual module feedforwards
           new PPLTVController(0.02), // PPLTVController is the built in path following controller
                                      // for differential drive trains
           config, // The robot configuration
-          ()
-              -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
@@ -97,8 +91,7 @@ public abstract class IDrivebase extends SubsystemBase {
 
   protected IDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
-    m_poseEstimator =
-        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
 
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
@@ -115,6 +108,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public final void stop() {
     setSpeeds(0, 0);
   }
+
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
     setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
@@ -132,7 +126,8 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
-    // feeder command into the HAL (hardware access layer) for left and right voltages
+    // feeder command into the HAL (hardware access layer) for left and right
+    // voltages
     if (ENABLE_VOLTAGE_APPLICATON) { // what the hell is ENABLE_VOLTAGE_APPLICATION??
       this.setSpeeds_HAL(leftVoltage, rightVoltage);
     }
@@ -141,6 +136,7 @@ public abstract class IDrivebase extends SubsystemBase {
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     this.setSpeeds_HAL(leftSpeed, rightSpeed);
   }
+
   public Distance getLengthIncludingBumpers() {
     return m_driveBaseLengthWithBumpers;
   }
@@ -149,8 +145,8 @@ public abstract class IDrivebase extends SubsystemBase {
     return m_driveBaseWidthWithBumpers;
   }
 
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
@@ -201,15 +197,19 @@ public abstract class IDrivebase extends SubsystemBase {
   }
 
   protected abstract TrivialEncoder getLeftEncoder_HAL();
+
   protected abstract TrivialEncoder getRightEncoder_HAL();
 
   public abstract double getLeftDistanceMeters();
+
   public abstract double getRightDistanceMeters();
 
   protected abstract IGyro getGyro_HAL();
 
   protected abstract void setMotorVoltages_HAL(double leftSpeeds, double rightSpeeds);
+
   protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);
+
   protected abstract void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds);
 
   public Distance getLeftDistance() {

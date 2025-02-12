@@ -6,17 +6,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class ArmRoller extends SubsystemBase {
-  /** Creates a new ArmRoller. */
-
   TalonFX m_kraken;
 
+  /** Creates a new ArmRoller. */
   public ArmRoller() {
     m_kraken = new TalonFX(0);
     m_kraken.setNeutralMode(NeutralModeValue.Brake);

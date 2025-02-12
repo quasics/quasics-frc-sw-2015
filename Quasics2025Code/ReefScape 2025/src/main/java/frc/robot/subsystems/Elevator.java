@@ -41,8 +41,7 @@ public class Elevator extends SubsystemBase {
   // m_leader.getClosedLoopController();
 
   /**
-   * Crea
-   * tes a new Elevator.
+   * Creates a new Elevator.
    */
   public Elevator() {
     m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);

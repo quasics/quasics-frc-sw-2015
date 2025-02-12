@@ -10,11 +10,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
-public class RealElevator extends SubsystemBase {
+public class RealElevator extends AbstractElevator {
   SparkMax m_leader;
   // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
   // you shouldn't need to talk to the follower at all. (It will just, well,
@@ -58,6 +56,7 @@ public class RealElevator extends SubsystemBase {
         m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  @Override
   public void setSpeed(double percentSpeed) {
     m_leader.set(percentSpeed);
 
@@ -75,7 +74,7 @@ public class RealElevator extends SubsystemBase {
    * }
    */
 
-  // CODE_REVIEW: This isn't being used, so it should be removed.
+  @Override
   public void setVoltage(double voltage) {
     m_leader.setVoltage(voltage);
     // CODE_REVIEW: Same as setSpeed(). If you're setting the follower to the
@@ -83,25 +82,23 @@ public class RealElevator extends SubsystemBase {
     m_leader.setVoltage(-voltage);
   }
 
+  @Override
   public void stop() {
     setSpeed(0);
   }
 
+  @Override
   public void resetEncoders() {
     m_encoder.setPosition(0);
   }
 
+  @Override
   public double getPosition() {
     return m_encoder.getPosition();
   }
 
+  @Override
   public double getVelocity() {
     return m_encoder.getVelocity();
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("elevator encoder position", getPosition());
-    SmartDashboard.putNumber("elevator encoder velocity", getVelocity());
   }
 }

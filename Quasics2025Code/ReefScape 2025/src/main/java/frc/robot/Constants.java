@@ -5,11 +5,15 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 
@@ -19,6 +23,7 @@ public final class Constants {
   public static class SallyConstants {
     public static final double TRACK_WIDTH = 0.5588;
   }
+
   public static class LogitechGamePad {
     // Axes - Used with the "getRawAxis()" function to access the data for the
     // individual sticks on the controller (e.g., for "tank drive" coding).
@@ -97,8 +102,8 @@ public final class Constants {
   }
 
   public static class DesiredEncoderValues {
-    public static final double arm0 = 0; // needs testing
-    public static final double arm90 = 0.75; // needs updated once the value can be tested
+    public static final double arm0 = 0; // TODO: needs testing
+    public static final double arm90 = 0.75; // TODO: needs updated once the value can be tested
   }
 
   public static class SimulationPorts {

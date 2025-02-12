@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.IDrivebase;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
@@ -18,11 +18,11 @@ import frc.robot.subsystems.drivebase.IDrivebase;
 public class DriveForTime extends Command {
   /** Creates a new DriveForTime. */
 
-  final IDrivebase m_drivebase;
+  final AbstractDrivebase m_drivebase;
   final Time m_seconds;
   final ChassisSpeeds m_chassis;
 
-  public DriveForTime(IDrivebase drivebase, Time seconds, ChassisSpeeds chassis) {
+  public DriveForTime(AbstractDrivebase drivebase, Time seconds, ChassisSpeeds chassis) {
     m_drivebase = drivebase;
     m_seconds = seconds;
     m_chassis = chassis;

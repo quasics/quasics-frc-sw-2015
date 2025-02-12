@@ -32,7 +32,7 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
-public class SimulationDrivebase extends IDrivebase {
+public class SimulationDrivebase extends AbstractDrivebase {
   private static final Distance kWheelRadius = Meters.of(0.0508);
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 

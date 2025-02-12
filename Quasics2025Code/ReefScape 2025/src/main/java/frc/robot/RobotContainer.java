@@ -27,7 +27,7 @@ import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.drivebase.IDrivebase;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.elevator.RealElevator;
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = false;
-  private final IDrivebase m_drivebase;
+  private final AbstractDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final RealElevator m_elevator = new RealElevator();
@@ -96,8 +96,8 @@ public class RobotContainer {
     ConfigureOperatorButtons();
   }
 
-  private IDrivebase setupDriveBase() {
-    IDrivebase drivebase = null;
+  private AbstractDrivebase setupDriveBase() {
+    AbstractDrivebase drivebase = null;
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 

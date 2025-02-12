@@ -27,7 +27,7 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
-public class RealDrivebase extends IDrivebase {
+public class RealDrivebase extends AbstractDrivebase {
   private static final double kV = 473;
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 

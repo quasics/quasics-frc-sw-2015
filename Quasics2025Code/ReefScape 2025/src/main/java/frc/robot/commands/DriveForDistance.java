@@ -8,14 +8,14 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.IDrivebase;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class DriveForDistance extends Command {
   /** The subsystem we're using to drive. */
-  final IDrivebase m_drivebase;
+  final AbstractDrivebase m_drivebase;
 
   /** How fast we should be moving. */
   final double m_percentSpeed;
@@ -37,7 +37,7 @@ public class DriveForDistance extends Command {
    *                     (-1.0 to +1.0)
    * @param meters       The distance to drive, in meters.
    */
-  public DriveForDistance(IDrivebase drivebase, double percentSpeed, double meters) {
+  public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, double meters) {
     this(drivebase, percentSpeed, Meters.of(meters));
   }
 
@@ -53,7 +53,7 @@ public class DriveForDistance extends Command {
    *                     (-1.0 to +1.0)
    * @param distance     The distance to drive.
    */
-  public DriveForDistance(IDrivebase drivebase, double percentSpeed, Distance distance) {
+  public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, Distance distance) {
     m_drivebase = drivebase;
     m_percentSpeed = (distance.baseUnitMagnitude() > 0 ? 1 : -1) * Math.abs(percentSpeed);
     m_distance = distance;

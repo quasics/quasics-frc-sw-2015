@@ -29,7 +29,7 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
-public abstract class IDrivebase extends SubsystemBase {
+public abstract class AbstractDrivebase extends SubsystemBase {
   // Max linear speed is 3 meters per second
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
 
@@ -51,7 +51,7 @@ public abstract class IDrivebase extends SubsystemBase {
   RobotConfig config;
 
   /** Creates a new IDrivebase. */
-  public IDrivebase(RobotSettings.Robot robot) {
+  public AbstractDrivebase(RobotSettings.Robot robot) {
     this(robot.trackWidthMeters);
     super.setName(robot.name());
 
@@ -89,7 +89,7 @@ public abstract class IDrivebase extends SubsystemBase {
     }
   }
 
-  protected IDrivebase(Distance trackWidthMeters) {
+  protected AbstractDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
 

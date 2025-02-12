@@ -20,24 +20,44 @@ import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class ArmPivot extends SubsystemBase {
-  /** Creates a new ArmPivot. */
   // TODO: choose actual values for this in cases of simulation vs real.
   Encoder encoder = new Encoder(4, 5);
 
   SparkMax m_pivot;
   SparkClosedLoopController m_armPIDController;
+
+  // CODE_REVIEW: This is only used in the constructor, so it should be local
+  // there. This will make the code easier to read/maintain.
   SparkMaxConfig m_config;
+
   AbsoluteEncoder m_throughBoreEncoder;
+
+  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
+  // should be removed, in order to make the code easier to read/maintain.
   RelativeEncoder m_encoder;
+
   ArmFeedforward m_feedForward;
 
+  /** Creates a new ArmPivot. */
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
     m_encoder = m_pivot.getEncoder();
     m_armPIDController = m_pivot.getClosedLoopController();
+
+    // CODE_REVIEW: You're setting up a configuration here, but not applying it to
+    // the motor. Is this intentional? (I'm guessing not.)
+    //
+    // CODE_REVIEW: Do you know that these are reasonable PID values, or are they
+    // just initial guesses? If they're just guesses, then you should probably add a
+    // "TODO" comment to remind yourself to tune them later.
     m_config = new SparkMaxConfig();
     m_config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder).pid(1.0, 0.0, 0.0);
+
+    // CODE_REVIEW: I'm guessing that these aren't actually the values you want to
+    // use for kS, kV, and kA. (If they are, then you should probably add a comment
+    // explaining why you're using these values; otherwise, you should probably add
+    // a "TODO" comment to make sure that you come back to fill in "real" values.)
     m_feedForward = new ArmFeedforward(0, 0, 0);
   }
 
@@ -52,6 +72,9 @@ public class ArmPivot extends SubsystemBase {
     return m_throughBoreEncoder.getPosition();
   }
 
+  // CODE_REVIEW: If this code isn't needed, then it should be removed. If it's
+  // intended for later use, then it should be documented accordingly to help
+  // folks understand that.
   /*
    * public void setPosition(double position) {
    * // calculate voltage FF

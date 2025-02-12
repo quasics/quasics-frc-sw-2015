@@ -17,16 +17,28 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Elevator extends SubsystemBase {
-  SparkMax m_follower;
   SparkMax m_leader;
+  // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
+  // you shouldn't need to talk to the follower at all. (It will just, well,
+  // "follow the leader".) In this case, you should probably only set up the
+  // leader motor as a member of the class, and (if you need to) just set up the
+  // the follower in the constructor via a local variable. This will make the code
+  // easier to read.
+  //
+  // On the other hand, if you *aren't* configuring them in leader/follower mode,
+  // then you should probably avoid using variable names that imply that you are.
+  SparkMax m_follower;
 
+  // CODE_REVIEW: These are only used in the constructor, so they should be local
+  // variables there. This will make the code easier to read/maintain.
   SparkMaxConfig m_config = new SparkMaxConfig();
   SparkMaxConfig m_followerConfig = new SparkMaxConfig();
   SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
 
   RelativeEncoder m_encoder;
 
-  // private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
+  // private final SparkClosedLoopController m_pid =
+  // m_leader.getClosedLoopController();
 
   /**
    * Crea
@@ -51,21 +63,31 @@ public class Elevator extends SubsystemBase {
 
   public void setSpeed(double percentSpeed) {
     m_leader.set(percentSpeed);
+
+    // CODE_REVIEW: OK. You're setting the follower to the negative of the leader.
+    // That implies that this motor is inverted vs. the other one (which is
+    // perfectly fine, and reasonably expected). So why not just set the follower to
+    // inverted when you configure it in the constructor, so that you can use a
+    // consistent value for the speeds?
     m_follower.set(-percentSpeed);
   }
 
-  /*public void setReference(double reference) {
-    m_pid.setReference(reference, ControlType.kPosition);
-  }*/
+  /*
+   * public void setReference(double reference) {
+   * m_pid.setReference(reference, ControlType.kPosition);
+   * }
+   */
 
   public void setVoltage(double voltage) {
     m_leader.setVoltage(voltage);
+
+    // CODE_REVIEW: Same as above. If you're setting the follower to the negative of
+    // the leader, then do you instead want to configure it as inverted, instead?
     m_leader.setVoltage(-voltage);
   }
 
   public void stop() {
-    m_leader.set(0);
-    m_follower.set(0);
+    setSpeed(0);
   }
 
   public void resetEncoders() {

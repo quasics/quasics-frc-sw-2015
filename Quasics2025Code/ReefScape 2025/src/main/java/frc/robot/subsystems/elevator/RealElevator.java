@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
-public class Elevator extends SubsystemBase {
+public class RealElevator extends SubsystemBase {
   SparkMax m_leader;
   // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
   // you shouldn't need to talk to the follower at all. (It will just, well,
@@ -41,7 +41,7 @@ public class Elevator extends SubsystemBase {
   /**
    * Creates a new Elevator.
    */
-  public Elevator() {
+  public RealElevator() {
     m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
     m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
     m_encoder = m_leader.getEncoder();

@@ -143,8 +143,11 @@ public interface IGyro {
         new FunctionalGyro(() -> {
           System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
         },
-            () -> Degrees.of(-pigeon2.getAngle()),
-            () -> DegreesPerSecond.of(-pigeon2.getRate()),
+            // Per docs, "getAngle()" (CW+) has been replaced by "getYaw()" (CCW+).
+            () -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
+            // Per docs, "getRate()" (CW+) has been replaced by "getAngularVelocityZWorld()"
+            // (CCW+).
+            () -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
             () -> pigeon2.getRotation2d().unaryMinus(),
             () -> {
               // Note that this will reset *all* axes for the Pigeon2. May want

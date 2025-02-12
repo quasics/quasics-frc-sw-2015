@@ -29,7 +29,7 @@ public interface RobotSettings {
    */
   public enum Robot {
     /**
-     * TODO: add simulator, margeret, etc. robot values
+     * TODO: add simulator, Margaret, etc. robot values
      * TODO: characterization values, robot to camera, TBD other values
      */
     Simulator(MotorConfigModel.RearMotorsLeading, Meter.of(0.381 * 2), 1.0),

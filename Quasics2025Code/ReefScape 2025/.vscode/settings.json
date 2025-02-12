@@ -56,5 +56,7 @@
     "edu.wpi.first.math.proto.*",
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
-  ]
+  ],
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true
 }

@@ -78,11 +78,11 @@ public class Elevator extends SubsystemBase {
    * }
    */
 
+  // CODE_REVIEW: This isn't being used, so it should be removed.
   public void setVoltage(double voltage) {
     m_leader.setVoltage(voltage);
-
-    // CODE_REVIEW: Same as above. If you're setting the follower to the negative of
-    // the leader, then do you instead want to configure it as inverted, instead?
+    // CODE_REVIEW: Same as setSpeed(). If you're setting the follower to the
+    // negative of the leader, then do you instead want to configure it as inverted?
     m_leader.setVoltage(-voltage);
   }
 

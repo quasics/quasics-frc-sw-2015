@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Climbers extends SubsystemBase {
-  /** Creates a new Climbers. */
   SparkMax m_leftClimber;
   SparkMax m_rightClimber;
 
@@ -27,6 +26,7 @@ public class Climbers extends SubsystemBase {
   static final double EXTENSION_SPEED = -0.10;
   static final double RETRACTION_SPEED = 0.10;
 
+  /** Creates a new Climbers. */
   public Climbers() {
     m_leftClimber = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
     m_rightClimber = new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
@@ -42,12 +42,12 @@ public class Climbers extends SubsystemBase {
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void StartExtending() {
+  public void startExtending() {
     m_leftClimber.set(EXTENSION_SPEED);
     m_rightClimber.set(EXTENSION_SPEED);
   }
 
-  public void StartRetracting() {
+  public void startRetracting() {
     m_leftClimber.set(RETRACTION_SPEED);
     m_rightClimber.set(RETRACTION_SPEED);
   }

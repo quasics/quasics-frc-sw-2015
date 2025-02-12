@@ -26,9 +26,9 @@ public class MoveClimbers extends Command {
   @Override
   public void initialize() {
     if (m_extending) {
-      m_climber.StartExtending();
+      m_climber.startExtending();
     } else {
-      m_climber.StartRetracting();
+      m_climber.startRetracting();
     }
   }
 
@@ -36,9 +36,9 @@ public class MoveClimbers extends Command {
   @Override
   public void execute() {
     if (m_extending) {
-      m_climber.StartExtending();
+      m_climber.startExtending();
     } else {
-      m_climber.StartRetracting();
+      m_climber.startRetracting();
     }
   }
 

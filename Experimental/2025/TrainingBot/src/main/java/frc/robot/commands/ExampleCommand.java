@@ -4,10 +4,14 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ExampleSubsystem;
 
-/** An example command that uses an example subsystem. */
+/**
+ * An example command that uses an example subsystem.
+ * 
+ * Note: left in place as an example.
+ */
 public class ExampleCommand extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final ExampleSubsystem m_subsystem;

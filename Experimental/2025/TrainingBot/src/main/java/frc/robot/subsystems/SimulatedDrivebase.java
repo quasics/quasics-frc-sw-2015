@@ -1,8 +1,11 @@
+// Copyright (c) Matthew Healy, Quasics Robotics, and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -18,6 +21,9 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/**
+ * An implementation of the drivebase subsystem that uses simulated hardware.
+ */
 public class SimulatedDrivebase extends AbstractDrivebase {
   public final int LEFT_DRIVE_PWM_ID = 0;
   public final int RIGHT_DRIVE_PWM_ID = 1;
@@ -67,10 +73,10 @@ public class SimulatedDrivebase extends AbstractDrivebase {
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
-    m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
-        / kEncoderResolutionTicksPerRevolution);
-    m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius.in(Meters)
-        / kEncoderResolutionTicksPerRevolution);
+    m_leftEncoder.setDistancePerPulse(
+        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+    m_rightEncoder.setDistancePerPulse(
+        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();

@@ -7,16 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmPivot;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class MoveArmPivot extends Command {
   private final ArmPivot m_pivot;
   private final double m_pivotSpeed;
   private final boolean m_deploying;
   /** Creates a new MoveArmPivot. */
   public MoveArmPivot(ArmPivot pivot, double pivotSpeed, boolean deploying) {
-    m_pivotSpeed = pivotSpeed;
     m_pivot = pivot;
     m_deploying = deploying;
+    if (m_deploying) {
+      m_pivotSpeed = Math.abs(pivotSpeed);
+    } else {
+      m_pivotSpeed = -Math.abs(pivotSpeed);
+    }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
   }
@@ -24,11 +30,7 @@ public class MoveArmPivot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_deploying) {
-      
-    } else {
-
-    }
+    m_pivot.setArmPivotSpeed(m_pivotSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) Matthew Healy, Quasics Robotics, and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * functionality related to driving/navigation.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
-
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
@@ -84,9 +83,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the distance that the robot's left wheel(s) have traveled since startup,
    * expressed as a "Distance" value (which automatically handles units).
-   * 
+   *
    * @return the distance that the wheels on the left have traveled since startup.
-   * 
+   *
    * @see #getLeftDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
@@ -98,10 +97,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the distance that the robot's right wheel(s) have traveled since
    * startup, expressed as a "Distance" value (which automatically handles units).
-   * 
+   *
    * @return the distance that the wheels on the right have traveled since
    *         startup.
-   * 
+   *
    * @see #getRightDistanceMeters()
    * @see edu.wpi.first.units.measure.Distance
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html
@@ -113,9 +112,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Gets the robot's current heading as an "Angle" value (which automatically
    * handles units).
-   * 
+   *
    * @return the robot's current heading
-   * 
+   *
    * @see #getHeadingInDegrees()
    * @see edu.wpi.first.units.measure.Angle
    * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-units.html

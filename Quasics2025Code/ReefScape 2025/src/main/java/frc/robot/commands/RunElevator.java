@@ -7,15 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class RunElevator extends Command {
   private final Elevator m_elevator;
-  private final boolean m_extending;
+  private final double m_percentSpeed;
 
   /** Creates a new RunElevator. */
-  public RunElevator(Elevator elevator, boolean extending) {
-    m_extending = extending;
+  public RunElevator(Elevator elevator, double percentSpeed) {
     m_elevator = elevator;
+    m_percentSpeed = percentSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
@@ -23,23 +25,13 @@ public class RunElevator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_extending) {
-      m_elevator.StartExtending();
-    } else {
-      m_elevator.StartRetracting();
-    }
-
+    m_elevator.setSpeed(m_percentSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_extending) {
-      m_elevator.StartExtending();
-    } else {
-      m_elevator.StartRetracting();
-    }
-
+    m_elevator.setSpeed(m_percentSpeed);
   }
 
   // Called once the command ends or is interrupted.

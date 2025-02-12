@@ -4,18 +4,17 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class ArmRoller extends SubsystemBase {
   /** Creates a new ArmRoller. */
-  
+
   TalonFX m_kraken;
 
   public ArmRoller() {
@@ -30,7 +29,7 @@ public class ArmRoller extends SubsystemBase {
   public void stop() {
     m_kraken.set(0);
   }
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

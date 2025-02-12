@@ -15,8 +15,12 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -27,13 +31,6 @@ import frc.robot.Constants.PathWeaverConstantsMargaret;
 import frc.robot.Constants.PathWeaverConstantsSally;
 import frc.robot.subsystems.Drivebase;
 import java.io.IOException;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Velocity;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.LinearAcceleration;
-
 import java.nio.file.Path;
 import java.util.List;
 

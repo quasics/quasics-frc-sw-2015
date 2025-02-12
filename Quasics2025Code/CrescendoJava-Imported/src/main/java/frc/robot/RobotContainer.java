@@ -35,7 +35,6 @@ import frc.robot.subsystems.IntakeRoller;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TransitionRoller;
-
 import java.util.function.Supplier;
 
 /**
@@ -305,8 +304,7 @@ public class RobotContainer {
   }
 
   private Command IntakeHelperCommandUntilBeamBroken(boolean takingin) {
-    return Commands.parallel(
-        new RunTransitionRoller(m_transitionRoller, .5, takingin),
+    return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, takingin),
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 

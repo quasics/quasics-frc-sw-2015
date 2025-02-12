@@ -5,18 +5,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
-
-
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Climbers extends SubsystemBase {
   /** Creates a new Climbers. */
@@ -34,15 +31,16 @@ public class Climbers extends SubsystemBase {
   public Climbers() {
     m_leftClimber = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
     m_rightClimber = new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
-    
+
     m_leftEncoder = m_leftClimber.getEncoder();
     m_rightEncoder = m_rightClimber.getEncoder();
 
     m_config.idleMode(SparkBaseConfig.IdleMode.kBrake);
 
-    m_leftClimber.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightClimber.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+    m_leftClimber.configure(
+        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightClimber.configure(
+        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void StartExtending() {
@@ -59,7 +57,6 @@ public class Climbers extends SubsystemBase {
     m_leftClimber.stopMotor();
     m_rightClimber.stopMotor();
   }
-
 
   @Override
   public void periodic() {

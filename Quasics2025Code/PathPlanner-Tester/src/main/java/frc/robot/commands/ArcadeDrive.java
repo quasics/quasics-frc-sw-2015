@@ -4,21 +4,23 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivebase.AbstractDrivebase;
-
-import java.util.function.Supplier;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
+import java.util.function.Supplier;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class ArcadeDrive extends Command {
   private final AbstractDrivebase m_drivebase;
   private final Supplier<Double> m_speedSupplier;
   private final Supplier<Double> m_rotSupplier;
 
-  public ArcadeDrive(
-    AbstractDrivebase drivebase, Supplier<Double> speedSupplier, Supplier<Double> rotSupplier) {
+  public ArcadeDrive(AbstractDrivebase drivebase,
+                     Supplier<Double> speedSupplier,
+                     Supplier<Double> rotSupplier) {
     m_drivebase = drivebase;
     m_speedSupplier = speedSupplier;
     m_rotSupplier = rotSupplier;
@@ -49,7 +51,8 @@ public class ArcadeDrive extends Command {
     final double right = m_rotSupplier.get();
 
     LinearVelocity forwardSpeed = AbstractDrivebase.MAX_SPEED.times(left);
-    AngularVelocity rotationSpeed = AbstractDrivebase.MAX_ANGULAR_SPEED.times(right);
+    AngularVelocity rotationSpeed =
+        AbstractDrivebase.MAX_ANGULAR_SPEED.times(right);
 
     m_drivebase.arcadeDrive(forwardSpeed, rotationSpeed);
   }

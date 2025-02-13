@@ -274,22 +274,18 @@ public class RobotContainer {
   }
 
   private void ConfigureOperatorButtons() {
-    //Elevator controls
-    Trigger RaiseElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-          .whileTrue(new RunElevator(m_elevator, -0.2));//UP
-    Trigger LowerElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-          .whileTrue(new RunElevator(m_elevator, 0.2));//DOWN
-    
-    //Arm Pivot Controls
-    Trigger PivotUp = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));//UP
-    Trigger PivotDown =
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));//DOWN
-    
+    // Elevator controls
+    Trigger RaiseElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new RunElevator(m_elevator, -0.2));// UP
+    Trigger LowerElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
+
+    // Arm Pivot Controls
+    Trigger PivotUp = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));// UP
+    Trigger PivotDown = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));// DOWN
+
   }
 
   private double getDriveSpeedScalingFactor() {

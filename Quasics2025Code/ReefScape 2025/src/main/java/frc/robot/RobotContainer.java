@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -270,19 +271,25 @@ public class RobotContainer {
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
         .whileTrue(intakeThenExtake());
-
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BackButton))
-        .whileTrue(new RunElevator(m_elevator, 0.2)); // DOWN
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.StartButton))
-        .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
-
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true)); // DOWN
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false)); // UP
   }
 
   private void ConfigureOperatorButtons() {
+    //Elevator controls
+    Trigger RaiseElevator = 
+          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+          .whileTrue(new RunElevator(m_elevator, -0.2));//UP
+    Trigger LowerElevator = 
+          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+          .whileTrue(new RunElevator(m_elevator, 0.2));//DOWN
+    
+    //Arm Pivot Controls
+    Trigger PivotUp = 
+          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));//UP
+    Trigger PivotDown =
+          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));//DOWN
+    
   }
 
   private double getDriveSpeedScalingFactor() {

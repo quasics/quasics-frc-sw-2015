@@ -15,16 +15,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Climbers extends SubsystemBase {
-  SparkMax m_leftClimber;
-  SparkMax m_rightClimber;
+  private SparkMax m_leftClimber;
+  private SparkMax m_rightClimber;
 
-  RelativeEncoder m_leftEncoder;
-  RelativeEncoder m_rightEncoder;
+  // CODE_REVIEW: You're not doing anything with these encoders. Are you planning
+  // to use them later?
+  private RelativeEncoder m_leftEncoder;
+  private RelativeEncoder m_rightEncoder;
 
-  final SparkMaxConfig m_config = new SparkMaxConfig();
+  private final SparkMaxConfig m_config = new SparkMaxConfig();
 
-  static final double EXTENSION_SPEED = -0.10;
-  static final double RETRACTION_SPEED = 0.10;
+  private static final double EXTENSION_SPEED = -0.10;
+  private static final double RETRACTION_SPEED = 0.10;
 
   /** Creates a new Climbers. */
   public Climbers() {

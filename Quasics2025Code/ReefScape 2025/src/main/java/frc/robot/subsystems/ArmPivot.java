@@ -21,22 +21,26 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class ArmPivot extends SubsystemBase {
   // TODO: choose actual values for this in cases of simulation vs real.
-  Encoder encoder = new Encoder(4, 5);
+  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
+  // should be removed, in order to make the code easier to read/maintain.
+  private Encoder encoder = new Encoder(4, 5);
 
-  SparkMax m_pivot;
-  SparkClosedLoopController m_armPIDController;
+  private SparkMax m_pivot;
+  private SparkClosedLoopController m_armPIDController;
 
   // CODE_REVIEW: This is only used in the constructor, so it should be local
   // there. This will make the code easier to read/maintain.
-  SparkMaxConfig m_config;
+  private SparkMaxConfig m_config;
 
-  AbsoluteEncoder m_throughBoreEncoder;
+  private AbsoluteEncoder m_throughBoreEncoder;
 
   // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
   // should be removed, in order to make the code easier to read/maintain.
-  RelativeEncoder m_encoder;
+  private RelativeEncoder m_encoder;
 
-  ArmFeedforward m_feedForward;
+  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
+  // should be removed, in order to make the code easier to read/maintain.
+  private ArmFeedforward m_feedForward;
 
   /** Creates a new ArmPivot. */
   public ArmPivot() {

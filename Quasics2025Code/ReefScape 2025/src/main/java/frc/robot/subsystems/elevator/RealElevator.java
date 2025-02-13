@@ -13,7 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealElevator extends AbstractElevator {
-  SparkMax m_leader;
+  private SparkMax m_leader;
   // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
   // you shouldn't need to talk to the follower at all. (It will just, well,
   // "follow the leader".) In this case, you should probably only set up the
@@ -23,15 +23,15 @@ public class RealElevator extends AbstractElevator {
   //
   // On the other hand, if you *aren't* configuring them in leader/follower mode,
   // then you should probably avoid using variable names that imply that you are.
-  SparkMax m_follower;
+  private SparkMax m_follower;
 
   // CODE_REVIEW: These are only used in the constructor, so they should be local
   // variables there. This will make the code easier to read/maintain.
-  SparkMaxConfig m_config = new SparkMaxConfig();
-  SparkMaxConfig m_followerConfig = new SparkMaxConfig();
-  SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
+  private SparkMaxConfig m_config = new SparkMaxConfig();
+  private SparkMaxConfig m_followerConfig = new SparkMaxConfig();
+  private SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
 
-  RelativeEncoder m_encoder;
+  private RelativeEncoder m_encoder;
 
   // private final SparkClosedLoopController m_pid =
   // m_leader.getClosedLoopController();

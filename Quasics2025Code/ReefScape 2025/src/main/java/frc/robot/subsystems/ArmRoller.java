@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmRoller extends SubsystemBase {
-  TalonFX m_kraken;
+  private TalonFX m_kraken;
 
   /** Creates a new ArmRoller. */
   public ArmRoller() {

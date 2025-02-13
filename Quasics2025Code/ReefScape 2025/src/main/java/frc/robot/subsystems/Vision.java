@@ -15,20 +15,22 @@ import java.util.*;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
+// CODE_REVIEW: Nothing is happening in this subsystem. Are you planning to make changes to add functionality?
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
 
-  PhotonCamera camera = new PhotonCamera("USB_Camera");
+  private PhotonCamera camera = new PhotonCamera("USB_Camera");
 
-  List<AprilTag> tags = Arrays.asList(new AprilTag(0, new Pose3d(0, 0, 19.3 / 39.37, new Rotation3d())),
+  private List<AprilTag> tags = Arrays.asList(new AprilTag(0, new Pose3d(0, 0, 19.3 / 39.37, new Rotation3d())),
       new AprilTag(1, new Pose3d(0, 23.2 / 39.37, 18.6 / 39.37, new Rotation3d())),
       new AprilTag(585, new Pose3d(-1, -1, 18.1, new Rotation3d())),
       new AprilTag(586, new Pose3d(26.8, -1, 20.5, new Rotation3d())));
 
-  AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54 * 12 / 39.37, 27 * 12 / 39.37);
+  private AprilTagFieldLayout aprilTags = new AprilTagFieldLayout(tags, 54 * 12 / 39.37, 27 * 12 / 39.37);
 
-  Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
-  public PhotonPoseEstimator visionEstimator = new PhotonPoseEstimator(
+  private Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
+
+  private PhotonPoseEstimator visionEstimator = new PhotonPoseEstimator(
       aprilTags, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
 
   public Vision() {

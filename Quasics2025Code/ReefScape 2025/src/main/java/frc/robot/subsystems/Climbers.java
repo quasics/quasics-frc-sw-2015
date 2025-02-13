@@ -11,6 +11,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
@@ -42,6 +44,8 @@ public class Climbers extends SubsystemBase {
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightClimber.configure(
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    SmartDashboard.putNumber("Climber Current", m_leftClimber.getOutputCurrent());
   }
 
   public void startExtending() {
@@ -62,5 +66,6 @@ public class Climbers extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 }

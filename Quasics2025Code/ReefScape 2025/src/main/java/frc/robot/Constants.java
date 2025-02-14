@@ -106,6 +106,15 @@ public final class Constants {
     public static final double arm90 = 0.75; // TODO: needs updated once the value can be tested
   }
 
+  public static class ArmPIDConstants {
+    public static final double kS = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
+
   public static class SimulationPorts {
     public static final int LEFT_FRONT_DRIVE_PWM_ID = 1;
     public static final int LEFT_REAR_DRIVE_PWM_ID = 2;

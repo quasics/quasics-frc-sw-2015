@@ -5,64 +5,43 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.Constants.ArmPIDConstants;
 
 public class ArmPivot extends SubsystemBase {
-  // TODO: choose actual values for this in cases of simulation vs real.
-  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
-  // should be removed, in order to make the code easier to read/maintain.
-  private Encoder encoder = new Encoder(4, 5);
-
   private SparkMax m_pivot;
-  private SparkClosedLoopController m_armPIDController;
+  private PIDController m_armPIDController;
 
   // CODE_REVIEW: This is only used in the constructor, so it should be local
   // there. This will make the code easier to read/maintain.
-  private SparkMaxConfig m_config;
 
   private AbsoluteEncoder m_throughBoreEncoder;
 
   // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
   // should be removed, in order to make the code easier to read/maintain.
-  private RelativeEncoder m_encoder;
-
-  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
-  // should be removed, in order to make the code easier to read/maintain.
   private ArmFeedforward m_feedForward;
+  private double angleSetpointRadians;
 
   /** Creates a new ArmPivot. */
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
-    m_encoder = m_pivot.getEncoder();
-    m_armPIDController = m_pivot.getClosedLoopController();
+    m_armPIDController = new PIDController(ArmPIDConstants.kP, ArmPIDConstants.kI, ArmPIDConstants.kD); // TODO:
+                                                                                                        // constants
+                                                                                                        // need tuned
+                                                                                                        // (0, 0, 0) as
+                                                                                                        // of now
 
-    // CODE_REVIEW: You're setting up a configuration here, but not applying it to
-    // the motor. Is this intentional? (I'm guessing not.)
-    //
-    // CODE_REVIEW: Do you know that these are reasonable PID values, or are they
-    // just initial guesses? If they're just guesses, then you should probably add a
-    // "TODO" comment to remind yourself to tune them later.
-    m_config = new SparkMaxConfig();
-    m_config.closedLoop.feedbackSensor(FeedbackSensor.kAbsoluteEncoder).pid(1.0, 0.0, 0.0);
-
-    // CODE_REVIEW: I'm guessing that these aren't actually the values you want to
-    // use for kS, kV, and kA. (If they are, then you should probably add a comment
-    // explaining why you're using these values; otherwise, you should probably add
-    // a "TODO" comment to make sure that you come back to fill in "real" values.)
-    m_feedForward = new ArmFeedforward(0, 0, 0);
+    m_feedForward = new ArmFeedforward(ArmPIDConstants.kS, ArmPIDConstants.kG, ArmPIDConstants.kV); // TODO: values
+                                                                                                    // require tuning
   }
 
   @Override
@@ -70,25 +49,34 @@ public class ArmPivot extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber(
         "Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
+    SmartDashboard.putData("PID Controller", m_armPIDController);
+  }
+
+  public double getPivotAngleRadians() {
+    double currentAngleRadians = m_throughBoreEncoder.getPosition() * 360 / 2048 * Math.PI * 180; // TODO: test for
+                                                                                                  // accuracy
+    return currentAngleRadians;
+  }
+
+  public PIDController getPivotPIDController() {
+    return m_armPIDController;
+  }
+
+  public void rotateArm(double velocity) {
+    double pidOutput = m_armPIDController.calculate(getPivotAngleRadians(), angleSetpointRadians);
+    double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
+        velocity);
+    double output = feedForwardOutput + pidOutput;
+    m_pivot.set(output);
+  }
+
+  public void setAngleSetpointRadians(double angleSetpoint) {
+    this.angleSetpointRadians = angleSetpoint;
   }
 
   public double getPivotPosition() {
     return m_throughBoreEncoder.getPosition();
   }
-
-  // CODE_REVIEW: If this code isn't needed, then it should be removed. If it's
-  // intended for later use, then it should be documented accordingly to help
-  // folks understand that.
-  /*
-   * public void setPosition(double position) {
-   * // calculate voltage FF
-   * double voltageFF = m_feedForward.calculate(positionRadians, 0.0); //
-   * placeholder values *THIS
-   * NEEDS CHANGED* m_armPIDController.setReference(position,
-   * SparkMax.ControlType.kPosition,
-   * ClosedLoopSlot.kSlot0, voltageFF, ArbFFUnits.kVoltage);
-   * }
-   */
 
   public void setArmPivotSpeed(double percentSpeed) {
     m_pivot.set(percentSpeed);

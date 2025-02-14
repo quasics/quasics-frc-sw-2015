@@ -10,6 +10,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealElevator extends AbstractElevator {
@@ -24,6 +27,8 @@ public class RealElevator extends AbstractElevator {
   // On the other hand, if you *aren't* configuring them in leader/follower mode,
   // then you should probably avoid using variable names that imply that you are.
   private SparkMax m_follower;
+
+  DigitalInput m_limitSwitch = new DigitalInput(0);
 
   // CODE_REVIEW: These are only used in the constructor, so they should be local
   // variables there. This will make the code easier to read/maintain.
@@ -100,5 +105,11 @@ public class RealElevator extends AbstractElevator {
   @Override
   public double getVelocity() {
     return m_encoder.getVelocity();
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+    SmartDashboard.putBoolean("Limit switch", m_limitSwitch.get());
   }
 }

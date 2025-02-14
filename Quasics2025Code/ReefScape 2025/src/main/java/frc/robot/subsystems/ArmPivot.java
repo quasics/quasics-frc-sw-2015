@@ -53,8 +53,8 @@ public class ArmPivot extends SubsystemBase {
   }
 
   public double getPivotAngleRadians() {
-    double currentAngleRadians = m_throughBoreEncoder.getPosition() * 360 / 2048 * Math.PI * 180; // TODO: test for
-                                                                                                  // accuracy
+    // *360 (degrees) / 2048 (cycles per revolution) * pi / 180 (convert to radians)
+    double currentAngleRadians = m_throughBoreEncoder.getPosition() * 360 / 2048 * Math.PI / 180; // TODO: test
     return currentAngleRadians;
   }
 

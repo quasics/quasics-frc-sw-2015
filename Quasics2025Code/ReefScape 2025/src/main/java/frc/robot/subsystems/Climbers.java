@@ -18,54 +18,44 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class Climbers extends SubsystemBase {
   private SparkMax m_leftClimber;
-  private SparkMax m_rightClimber;
 
   // CODE_REVIEW: You're not doing anything with these encoders. Are you planning
   // to use them later?
   private RelativeEncoder m_leftEncoder;
-  private RelativeEncoder m_rightEncoder;
 
   private final SparkMaxConfig m_config = new SparkMaxConfig();
-
-  private static final double EXTENSION_SPEED = -0.10;
-  private static final double RETRACTION_SPEED = 0.10;
 
   /** Creates a new Climbers. */
   public Climbers() {
     m_leftClimber = new SparkMax(SparkMaxIds.LEFT_CLIMBER_ID, MotorType.kBrushless);
-    m_rightClimber = new SparkMax(SparkMaxIds.RIGHT_CLIMBER_ID, MotorType.kBrushless);
 
     m_leftEncoder = m_leftClimber.getEncoder();
-    m_rightEncoder = m_rightClimber.getEncoder();
 
     m_config.idleMode(SparkBaseConfig.IdleMode.kBrake);
 
     m_leftClimber.configure(
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightClimber.configure(
-        m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    SmartDashboard.putNumber("Climber Current", m_leftClimber.getOutputCurrent());
   }
 
-  public void startExtending() {
+  // negative speed = extension
+  public void startExtending(double EXTENSION_SPEED) {
     m_leftClimber.set(EXTENSION_SPEED);
-    m_rightClimber.set(EXTENSION_SPEED);
   }
 
-  public void startRetracting() {
+  // positive speed = retraction
+  public void startRetracting(double RETRACTION_SPEED) {
     m_leftClimber.set(RETRACTION_SPEED);
-    m_rightClimber.set(RETRACTION_SPEED);
   }
 
   public void stop() {
     m_leftClimber.stopMotor();
-    m_rightClimber.stopMotor();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Climber Current", m_leftClimber.getOutputCurrent());
 
   }
 }

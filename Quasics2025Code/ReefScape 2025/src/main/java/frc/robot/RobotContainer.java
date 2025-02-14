@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
@@ -136,6 +137,17 @@ public class RobotContainer {
 
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
+
+    SmartDashboard.putData("Extend Climber 25% ",
+        new MoveClimbersForTime(m_climbers, true, 0.25, .5));
+    SmartDashboard.putData("Extend Climber 50% ",
+        new MoveClimbersForTime(m_climbers, true, 0.5, .25));
+    SmartDashboard.putData("Extend Climber 5% ",
+        new MoveClimbersForTime(m_climbers, false, 0.5, 1));
+    SmartDashboard.putData("Extend Climber 10% ",
+        new MoveClimbersForTime(m_climbers, false, .10, 1));
+    SmartDashboard.putData("Retract Climber 10% ",
+        new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new

@@ -138,6 +138,11 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
+    SmartDashboard.putData(
+        "Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
+    SmartDashboard.putData(
+        "Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
+
     SmartDashboard.putData("Extend Climber 25% ",
         new MoveClimbersForTime(m_climbers, true, 0.25, .5));
     SmartDashboard.putData("Extend Climber 50% ",

@@ -28,7 +28,8 @@ public class RealElevator extends AbstractElevator {
   // then you should probably avoid using variable names that imply that you are.
   private SparkMax m_follower;
 
-  DigitalInput m_limitSwitch = new DigitalInput(0);
+  DigitalInput m_limitSwitchUp = new DigitalInput(0);
+  DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
   // CODE_REVIEW: These are only used in the constructor, so they should be local
   // variables there. This will make the code easier to read/maintain.
@@ -110,6 +111,16 @@ public class RealElevator extends AbstractElevator {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putBoolean("Limit switch", m_limitSwitch.get());
+
+    SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
+    if (m_limitSwitchUp.get() == true && getVelocity() < 0) {
+      stop();
+    }
+
+    SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
+    if (m_limitSwitchDown.get() == true && getVelocity() > 0) {
+      stop();
+    }
+
   }
 }

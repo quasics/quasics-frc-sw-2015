@@ -137,6 +137,11 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
+    SmartDashboard.putData(
+        "Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
+    SmartDashboard.putData(
+        "Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
+
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new
     // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
@@ -274,22 +279,18 @@ public class RobotContainer {
   }
 
   private void ConfigureOperatorButtons() {
-    //Elevator controls
-    Trigger RaiseElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-          .whileTrue(new RunElevator(m_elevator, -0.2));//UP
-    Trigger LowerElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-          .whileTrue(new RunElevator(m_elevator, 0.2));//DOWN
-    
-    //Arm Pivot Controls
-    Trigger PivotUp = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));//UP
-    Trigger PivotDown =
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));//DOWN
-    
+    // Elevator controls
+    Trigger RaiseElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new RunElevator(m_elevator, -0.2));// UP
+    Trigger LowerElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
+
+    // Arm Pivot Controls
+    Trigger PivotUp = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));// UP
+    Trigger PivotDown = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));// DOWN
+
   }
 
   private double getDriveSpeedScalingFactor() {

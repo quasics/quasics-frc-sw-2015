@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
@@ -136,6 +137,22 @@ public class RobotContainer {
 
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
+
+    SmartDashboard.putData(
+        "Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
+    SmartDashboard.putData(
+        "Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
+
+    SmartDashboard.putData("Extend Climber 25% ",
+        new MoveClimbersForTime(m_climbers, true, 0.25, .5));
+    SmartDashboard.putData("Extend Climber 50% ",
+        new MoveClimbersForTime(m_climbers, true, 0.5, .25));
+    SmartDashboard.putData("Extend Climber 5% ",
+        new MoveClimbersForTime(m_climbers, false, 0.5, 1));
+    SmartDashboard.putData("Extend Climber 10% ",
+        new MoveClimbersForTime(m_climbers, false, .10, 1));
+    SmartDashboard.putData("Retract Climber 10% ",
+        new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new
@@ -274,22 +291,18 @@ public class RobotContainer {
   }
 
   private void ConfigureOperatorButtons() {
-    //Elevator controls
-    Trigger RaiseElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-          .whileTrue(new RunElevator(m_elevator, -0.2));//UP
-    Trigger LowerElevator = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-          .whileTrue(new RunElevator(m_elevator, 0.2));//DOWN
-    
-    //Arm Pivot Controls
-    Trigger PivotUp = 
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));//UP
-    Trigger PivotDown =
-          new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
-          .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));//DOWN
-    
+    // Elevator controls
+    Trigger RaiseElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new RunElevator(m_elevator, -0.2));// UP
+    Trigger LowerElevator = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
+
+    // Arm Pivot Controls
+    Trigger PivotUp = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));// UP
+    Trigger PivotDown = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));// DOWN
+
   }
 
   private double getDriveSpeedScalingFactor() {

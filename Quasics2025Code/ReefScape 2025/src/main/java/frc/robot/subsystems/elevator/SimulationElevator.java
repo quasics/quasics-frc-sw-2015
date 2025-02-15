@@ -104,10 +104,7 @@ public class SimulationElevator extends AbstractElevator {
     return 0;
   }
 
-  public void periodic() {
-    super.periodic();
-
-    // TODO: Emulating PID control for now. Real PID control can be added later.
+  private void updateTargetedSpeed() {
     if (m_targetPosition != TargetPosition.kDontCare) {
       final double targetValue = translateTargetPositionToValue(m_targetPosition);
       final double error = targetValue - m_encoder.getDistance();
@@ -118,6 +115,15 @@ public class SimulationElevator extends AbstractElevator {
         speed = 0;
       }
       m_motor.set(speed);
+    }
+  }
+
+  public void periodic() {
+    super.periodic();
+
+    // TODO: Emulating PID control for now. Real PID control can be added later.
+    if (m_targetPosition != TargetPosition.kDontCare) {
+      updateTargetedSpeed();
     }
 
     // Update the visualization of the climber positions.
@@ -166,6 +172,12 @@ public class SimulationElevator extends AbstractElevator {
   @Override
   public void setSpeed(double percentSpeed) {
     m_motor.set(percentSpeed);
+
+    // Client code is presumably directly controlling the elevator, so we won't try
+    // to use PID to drive to a given set point. (If we don't do this, then the PID
+    // logic in "periodic()" is going to immediately override the speed, if a target
+    // position has previously been set.)
+    m_targetPosition = TargetPosition.kDontCare;
   }
 
   @Override

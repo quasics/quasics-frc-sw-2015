@@ -7,7 +7,6 @@ package frc.robot.subsystems.elevator;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;
@@ -25,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SimulationElevator extends AbstractElevator {
   static final double EXTENSION_SPEED = +1.0;
   static final double RETRACTION_SPEED = -1.0;
-  static final double MAX_DESIRED_HEIGHT = 8.0;
+  static final double MAX_DESIRED_HEIGHT = 2.0;
   static final double MIN_DESIRED_HEIGHT = 0.0;
   static final double ACCEPTABLE_ERROR = 0.1;
 
@@ -104,18 +103,26 @@ public class SimulationElevator extends AbstractElevator {
     return 0;
   }
 
+  private void updateTargetedSpeed() {
+    if (m_targetPosition != TargetPosition.kDontCare) {
+      final double targetValue = translateTargetPositionToValue(m_targetPosition);
+      final double error = targetValue - m_encoder.getDistance();
+      final double percentError = error / (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT); // Complete hack
+      final double errorScaling = 1.0;
+      double speed = Math.min(Math.max(percentError * errorScaling, -1.0), 1.0);
+      if (ACCEPTABLE_ERROR > Math.abs(error)) {
+        speed = 0;
+      }
+      m_motor.set(speed);
+    }
+  }
+
   public void periodic() {
     super.periodic();
 
     // TODO: Emulating PID control for now. Real PID control can be added later.
     if (m_targetPosition != TargetPosition.kDontCare) {
-      final double targetValue = translateTargetPositionToValue(m_targetPosition);
-      final double error = targetValue - m_encoder.getDistance();
-      double speed = error * 0.1;
-      if (ACCEPTABLE_ERROR < Math.abs(error)) {
-        speed = 0;
-      }
-      m_motor.set(speed);
+      updateTargetedSpeed();
     }
 
     // Update the visualization of the climber positions.
@@ -136,7 +143,10 @@ public class SimulationElevator extends AbstractElevator {
     // In this method, we update our simulation of what our subsystem is doing.
 
     // First, we set our "inputs" (voltages).
-    m_sim.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    final double speed = m_motorSim.getSpeed();
+    final double batteryVoltage = RobotController.getBatteryVoltage();
+    final double desiredVoltage = speed * batteryVoltage;
+    m_sim.setInput(desiredVoltage);
 
     // Next, we update the simulation. The standard loop time is 20ms.
     m_sim.update(0.020);
@@ -153,35 +163,48 @@ public class SimulationElevator extends AbstractElevator {
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
   }
 
+  @Override
   public void setTargetPosition(TargetPosition position) {
-    // TODO: Implement this method
+    m_targetPosition = position;
   }
 
+  @Override
   public void setSpeed(double percentSpeed) {
     m_motor.set(percentSpeed);
+
+    // Client code is presumably directly controlling the elevator, so we won't try
+    // to use PID to drive to a given set point. (If we don't do this, then the PID
+    // logic in "periodic()" is going to immediately override the speed, if a target
+    // position has previously been set.)
+    m_targetPosition = TargetPosition.kDontCare;
   }
 
-  // CODE_REVIEW: This isn't being used, so it should probably be removed.
-  public void setVoltage(double voltage) {
-    // TODO: Implement this method
-  }
-
+  @Override
   public void stop() {
     m_motor.set(0);
   }
 
+  @Override
   public void resetEncoders() {
     m_encoder.reset();
   }
 
+  @Override
   public double getPosition() {
     return m_encoder.getDistance();
   }
 
+  @Override
   public double getVelocity() {
     return m_encoder.getRate();
   }
 
+  @Override
+  public void setVoltage(double voltage) {
+    // TODO: Implement this method
+  }
+
+  @Override
   public SparkClosedLoopController getPIDController() {
     // TODO: Implement this method
     return null;

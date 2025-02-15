@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.RaiseElevator;
 import frc.robot.subsystems.AbstractElevator;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimulatedElevator;
+import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import java.util.function.Supplier;
@@ -27,6 +29,7 @@ public class RobotContainer {
   final IVision m_vision = new SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
   final AbstractElevator m_elevator = new SimulatedElevator();
+  final SimulatedSingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers
   //
@@ -39,11 +42,12 @@ public class RobotContainer {
   public RobotContainer() {
     configureArcadeDrive();
     configureBindings();
+
+    m_arm.setDefaultCommand(new ArmWaveCommand(m_arm));
   }
 
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer =
-        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -52,12 +56,8 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
-      rotationSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
+      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -65,7 +65,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(

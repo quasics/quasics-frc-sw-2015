@@ -10,11 +10,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class AbstractElevator extends SubsystemBase {
+
+  public enum TargetPosition {
+    kBottom,
+    kL1,
+    kL2,
+  }
+
   /** Creates a new AbstractElevator. */
   public AbstractElevator() {
   }
 
   public abstract void setSpeed(double percentSpeed);
+
+  public abstract void setTargetPosition(TargetPosition position);
 
   // CODE_REVIEW: This isn't being used, so it should probably be removed.
   public abstract void setVoltage(double voltage);

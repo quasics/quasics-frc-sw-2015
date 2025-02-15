@@ -119,6 +119,10 @@ public class SimulationElevator extends AbstractElevator {
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
   }
 
+  public void setTargetPosition(TargetPosition position) {
+    // TODO: Implement this method
+  }
+
   public void setSpeed(double percentSpeed) {
     // TODO: Implement this method
   }

@@ -120,4 +120,22 @@ public class RealElevator extends AbstractElevator {
     }
 
   }
+
+  protected double getRotationsForPosition(TargetPosition position) {
+    switch (position) {
+      case kBottom:
+        return 0;
+      case kL1:
+        return 1;
+      case kL2:
+        return 2;
+    }
+
+    System.err.println("**** Invalid/unexpected target position: " + position);
+    return 0;
+  }
+
+  public void setTargetPosition(TargetPosition position) {
+    m_pid.setReference(getRotationsForPosition(position), ControlType.kPosition);
+  }
 }

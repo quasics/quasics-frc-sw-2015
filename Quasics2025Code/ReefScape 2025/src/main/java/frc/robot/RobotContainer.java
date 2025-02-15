@@ -35,6 +35,7 @@ import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;
 import frc.robot.subsystems.elevator.RealElevator;
+import frc.robot.subsystems.elevator.SimulationElevator;
 import frc.robot.utils.RobotSettings;
 import java.util.function.Supplier;
 
@@ -53,7 +54,7 @@ public class RobotContainer {
   private final AbstractDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
-  private final AbstractElevator m_elevator = new RealElevator();
+  private final AbstractElevator m_elevator;
   private final Climbers m_climbers = new Climbers();
   private final Vision m_vision = new Vision();
 
@@ -91,6 +92,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_drivebase = setupDriveBase();
+    m_elevator = setupElevator();
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -98,6 +100,16 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
+  }
+
+  private AbstractElevator setupElevator() {
+    AbstractElevator elevator = null;
+    if (Robot.isReal()) {
+      elevator = new RealElevator();
+    } else {
+      elevator = new SimulationElevator();
+    }
+    return elevator;
   }
 
   private AbstractDrivebase setupDriveBase() {
@@ -273,24 +285,20 @@ public class RobotContainer {
   }
 
   private void ConfigureDriverButtons() {
-    
-    Trigger extendClimber =
-    new Trigger(() ->
-    m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-    .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber =
-    new Trigger(() ->
-    m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-    .whileTrue(new MoveClimbers(m_climbers, false));
-    
+
+    Trigger extendClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+        .whileTrue(new MoveClimbers(m_climbers, true));
+    Trigger retractClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+        .whileTrue(new MoveClimbers(m_climbers, false));
 
     // Register the triggers for various buttons on the controllers.
     Trigger RunIntake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    //Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
-        //.whileTrue(null); //TODO periodic intaking
+    // Trigger IntakePulse = new Trigger(() ->
+    // m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+    // .whileTrue(null); //TODO periodic intaking
 
-        // Elevator controls
+    // Elevator controls
     Trigger RaiseElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new RunElevator(m_elevator, -0.2));// UP
     Trigger LowerElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))

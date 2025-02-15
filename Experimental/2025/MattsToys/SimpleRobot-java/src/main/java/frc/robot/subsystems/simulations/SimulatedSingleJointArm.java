@@ -53,7 +53,10 @@ public class SimulatedSingleJointArm extends SubsystemBase {
   public SimulatedSingleJointArm() {
 
     var config = new SparkMaxConfig();
-    config.closedLoop.pid(1, 0, 0);
+    config.closedLoop
+        .p(6)
+        .i(0)
+        .d(0);
     // the sparksim figures out your gear ratio based on the ratio between
     // positionconversionfactor and velocityconversionfactor
     config.encoder.positionConversionFactor(2 * Math.PI / gearing);

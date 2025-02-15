@@ -26,10 +26,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 // Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
-  ////////////////////////////////////////////////////////////////////////////////////
-  // "Normal" data members
-  ////////////////////////////////////////////////////////////////////////////////////
-
   /** Motor controller running the arm. */
   private SparkMax m_motorController = new SparkMax(0, MotorType.kBrushless);
 
@@ -55,10 +51,6 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   /** Smart Dashboard UI component showing the arm's position. */
   private final MechanismLigament2d crankMech2d;
 
-  ////////////////////////////////////////////////////////////////////////////////////
-  // Method definitions
-  ////////////////////////////////////////////////////////////////////////////////////
-
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
     // Configure the motor.
@@ -67,12 +59,14 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
         .p(6)
         .i(0)
         .d(0);
+
     // Note: the SparkSim derives the gear ratio based on the ratio between
     // positionconversionfactor and velocityconversionfactor. As a result,
     // we need to make sure that these are set in order for the simulation
     // to work correctly.
     config.encoder.positionConversionFactor(2 * Math.PI / GEARING);
     config.encoder.velocityConversionFactor(2 * Math.PI / (60 * GEARING));
+
     m_motorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // By default, hold the arm in our starting position
@@ -81,15 +75,26 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     //
     // Configure simulation support
     //
+    configureSimulation();
+    crankMech2d = configureSmartDashboardWidgets();
+  }
+
+  /** Configures simulation objects. */
+  private void configureSimulation() {
     sparkSim.setPosition(STARTING_ANGLE_RADIANS);
     sparkSim.enable();
+  }
 
+  /** @#return the ligament for the arm on the smart dashboard. */
+  private MechanismLigament2d configureSmartDashboardWidgets() {
     Mechanism2d armMech2d = new Mechanism2d(60, 60);
     MechanismRoot2d root = armMech2d.getRoot("root", 40, 10);
     var baseMech2d = root.append(new MechanismLigament2d("frame", -20, 0));
-    crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, armSim.getAngleRads()));
+    var crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, armSim.getAngleRads()));
     baseMech2d.setColor(new Color8Bit(200, 200, 200));
     SmartDashboard.putData("Arm", armMech2d);
+
+    return crankMech2d;
   }
 
   /**

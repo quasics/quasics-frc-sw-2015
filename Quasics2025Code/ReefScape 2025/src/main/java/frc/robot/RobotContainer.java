@@ -23,6 +23,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
+import frc.robot.commands.MoveElevatorToTargetPosition;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
@@ -166,6 +167,15 @@ public class RobotContainer {
         new MoveClimbersForTime(m_climbers, false, .10, 1));
     SmartDashboard.putData("Retract Climber 10% ",
         new MoveClimbersForTime(m_climbers, true, 0.10, .5));
+
+    SmartDashboard.putData("Elevator to L2",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
+    SmartDashboard.putData("Elevator to L1",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
+    SmartDashboard.putData("Elevator to bottom",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
+    SmartDashboard.putData("Elevator to DC",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
 
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new

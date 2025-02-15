@@ -11,10 +11,17 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
 
 public class SimulationDrivebase extends AbstractDrivebase {
 
   private final Field2d m_fieldSim = new Field2d();
+
+  private final IGyro m_wrappedGyro;
+
+  private final TrivialEncoder m_leftTrivialEncoder;
+  private final TrivialEncoder m_rightTrivialEncoder;
 
   final SparkMax m_leftLeader =
       new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
@@ -29,6 +36,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
     SmartDashboard.putData("field", m_fieldSim);
   }
+
+
 
   @Override
   public void periodic() {

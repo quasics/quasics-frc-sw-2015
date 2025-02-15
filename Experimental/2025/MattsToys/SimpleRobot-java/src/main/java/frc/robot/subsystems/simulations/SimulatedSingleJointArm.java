@@ -5,7 +5,7 @@
 package frc.robot.subsystems.simulations;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
+// import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -23,6 +23,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
+// Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
 public class SimulatedSingleJointArm extends SubsystemBase {
   public static final double minimumAngleRadians = Math.toRadians(80);
   public static final double maximumAngleRadians = Math.toRadians(190);
@@ -92,6 +93,10 @@ public class SimulatedSingleJointArm extends SubsystemBase {
     armSim.setInput(0, appliedOutput * voltsIn);
     final double timeIncrement = 0.020;
     armSim.update(timeIncrement);
+
+    // Per original example: if we don't do this, the angle is off by a little
+    sparkSim.setPosition(armSim.getAngleRads());
+
     var armVelocity = armSim.getVelocityRadPerSec();
     sparkSim.iterate(armVelocity, voltsIn, timeIncrement);
 

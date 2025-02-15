@@ -6,10 +6,28 @@ package frc.robot.commands;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutonomousSelectedOperation;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
+import static edu.wpi.first.units.Units.*;
+
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
+
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static Command getAutonomousCommand() {
-    return new PathPlannerAuto("Basic test");
+  public static Command getAutonomousCommand(AbstractDrivebase drivebase, String operation, String position,
+      boolean isBlue) {
+    // return new PathPlannerAuto("Basic test");
+    if (operation == AutonomousSelectedOperation.doNothing) {
+      return new PrintCommand("Doing nothing!");
+    }
+    if (operation == AutonomousSelectedOperation.GTFO) {
+      return new DriveForDistance(drivebase, 0.30, Meters.of(3));
+    }
+
+    return new PrintCommand("Doing nothing because no operation?");
+
   }
 }

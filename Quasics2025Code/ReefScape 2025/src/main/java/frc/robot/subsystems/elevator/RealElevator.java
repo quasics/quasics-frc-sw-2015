@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealElevator extends AbstractElevator {
-  private SparkMax m_leader;
+  private SparkMax m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
   // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
   // you shouldn't need to talk to the follower at all. (It will just, well,
   // "follow the leader".) In this case, you should probably only set up the
@@ -28,7 +28,7 @@ public class RealElevator extends AbstractElevator {
   //
   // On the other hand, if you *aren't* configuring them in leader/follower mode,
   // then you should probably avoid using variable names that imply that you are.
-  private SparkMax m_follower;
+  private SparkMax m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
 
   DigitalInput m_limitSwitchUp = new DigitalInput(0);
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
@@ -47,8 +47,6 @@ public class RealElevator extends AbstractElevator {
    * Creates a new Elevator.
    */
   public RealElevator() {
-    m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
-    m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
     m_encoder = m_leader.getEncoder();
 
     m_followerConfig.inverted(false);

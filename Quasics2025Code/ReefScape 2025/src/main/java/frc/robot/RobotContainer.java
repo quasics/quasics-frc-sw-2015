@@ -332,6 +332,6 @@ public class RobotContainer {
                                                                                                        // blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
-    return Autos.getAutonomousCommand();
+    return Autos.getAutonomousCommand(m_drivebase, autonomousOperation, positionOption, isBlue);
   }
 }

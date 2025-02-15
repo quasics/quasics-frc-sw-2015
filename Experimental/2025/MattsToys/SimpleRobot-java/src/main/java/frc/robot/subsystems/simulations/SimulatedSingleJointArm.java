@@ -25,50 +25,79 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 // Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
 public class SimulatedSingleJointArm extends SubsystemBase {
-  public static final double minimumAngleRadians = Math.toRadians(80);
-  public static final double maximumAngleRadians = Math.toRadians(190);
-  private static final double gearing = 5 * 5 * 3 * 4.44; // Arbitrary
-  private static final double armLengthMeters = 1.0; // Arbitrary
-  private static final double armMassKg = 4.0; // Arbitrary
-  private static final double startingAngleRadians = (maximumAngleRadians - minimumAngleRadians) / 2
-      + minimumAngleRadians;
-  private static final boolean simulateGravity = true;
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Values defining the arm's characteristics/physics
+  ////////////////////////////////////////////////////////////////////////////////////
 
-  private SparkMax sparkMotor = new SparkMax(0, MotorType.kBrushless);
-  private double reference = 0;
+  public static final double MAX_ANGLE_RADIANS = Math.toRadians(80);
+  public static final double MIN_ANGLE_RADIANS = Math.toRadians(190);
+  private static final double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for simulated physics to
+                                                          // work)
+  private static final double ARM_LENGTH_METERS = 1.0; // Arbitrary
+  private static final double ARM_MASS_KG = 4.0; // Arbitrary
+  private static final double STARTING_ANGLE_RADIANS = (MIN_ANGLE_RADIANS - MAX_ANGLE_RADIANS) / 2
+      + MAX_ANGLE_RADIANS;
+  private static final boolean SIMULATE_GRAVITY = true;
 
-  // Simulation support
+  ////////////////////////////////////////////////////////////////////////////////////
+  // "Normal" data members
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  /** Motor controller running the arm. */
+  private SparkMax m_motorController = new SparkMax(0, MotorType.kBrushless);
+
+  /** Reference/target position for arm. (Saved for logging purposes.) */
+  private double m_referencePosition = 0;
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Simulation support objects
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  /** Motor being driven by the controller. */
   private DCMotor armPlant = DCMotor.getNEO(1);
+
+  /** Simulation engine for the arm. */
   private SingleJointedArmSim armSim = new SingleJointedArmSim(
-      armPlant, gearing,
-      SingleJointedArmSim.estimateMOI(armLengthMeters, armMassKg), armLengthMeters, minimumAngleRadians,
-      maximumAngleRadians, simulateGravity, startingAngleRadians);
-  private SparkMaxSim sparkSim = new SparkMaxSim(sparkMotor, armPlant);
-  private Mechanism2d armMech2d = new Mechanism2d(60, 60);
+      armPlant, GEARING,
+      SingleJointedArmSim.estimateMOI(ARM_LENGTH_METERS, ARM_MASS_KG), ARM_LENGTH_METERS, MAX_ANGLE_RADIANS,
+      MIN_ANGLE_RADIANS, SIMULATE_GRAVITY, STARTING_ANGLE_RADIANS);
+
+  /** Simulation driver for the motor controller. */
+  private SparkMaxSim sparkSim = new SparkMaxSim(m_motorController, armPlant);
+
+  /** Smart Dashboard UI component showing the arm's position. */
   private final MechanismLigament2d crankMech2d;
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Method definitions
+  ////////////////////////////////////////////////////////////////////////////////////
 
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
-
+    // Configure the motor.
     var config = new SparkMaxConfig();
     config.closedLoop
         .p(6)
         .i(0)
         .d(0);
-    // the sparksim figures out your gear ratio based on the ratio between
-    // positionconversionfactor and velocityconversionfactor
-    config.encoder.positionConversionFactor(2 * Math.PI / gearing);
-    config.encoder.velocityConversionFactor(2 * Math.PI / (60 * gearing));
-    sparkMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Note: the SparkSim derives the gear ratio based on the ratio between
+    // positionconversionfactor and velocityconversionfactor. As a result,
+    // we need to make sure that these are set in order for the simulation
+    // to work correctly.
+    config.encoder.positionConversionFactor(2 * Math.PI / GEARING);
+    config.encoder.velocityConversionFactor(2 * Math.PI / (60 * GEARING));
+    m_motorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    setTargetPosition(startingAngleRadians);
+    // By default, hold the arm in our starting position
+    setTargetPositionInRadians(STARTING_ANGLE_RADIANS);
 
     //
     // Configure simulation support
     //
-    sparkSim.setPosition(startingAngleRadians);
+    sparkSim.setPosition(STARTING_ANGLE_RADIANS);
     sparkSim.enable();
 
+    Mechanism2d armMech2d = new Mechanism2d(60, 60);
     MechanismRoot2d root = armMech2d.getRoot("root", 40, 10);
     var baseMech2d = root.append(new MechanismLigament2d("frame", -20, 0));
     crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, armSim.getAngleRads()));
@@ -76,26 +105,33 @@ public class SimulatedSingleJointArm extends SubsystemBase {
     SmartDashboard.putData("Arm", armMech2d);
   }
 
-  public void setTargetPosition(double targetPosition) {
-    reference = targetPosition;
-    sparkMotor.getClosedLoopController().setReference(targetPosition, SparkBase.ControlType.kPosition);
+  /**
+   * Sets the target position (angle) for the arm.
+   * 
+   * @param targetPosition target arm position (in radians)
+   */
+  public void setTargetPositionInRadians(double targetPosition) {
+    m_referencePosition = targetPosition;
+    m_motorController.getClosedLoopController().setReference(targetPosition, SparkBase.ControlType.kPosition);
   }
 
+  /** Determines if debugging output is produced under simulation. */
   final static boolean NOISY = false;
 
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
 
+    // Compute the changes to the simulated hardware.
     final double preAngle = armSim.getAngleRads();
-
     var appliedOutput = sparkSim.getAppliedOutput();
     var voltsIn = RoboRioSim.getVInVoltage();
     armSim.setInput(0, appliedOutput * voltsIn);
     final double timeIncrement = 0.020;
     armSim.update(timeIncrement);
 
-    // Per original example: if we don't do this, the angle is off by a little
+    // Per original example, if we don't do this, the rendered angle is off a
+    // little bit.
     sparkSim.setPosition(armSim.getAngleRads());
 
     var armVelocity = armSim.getVelocityRadPerSec();
@@ -109,13 +145,13 @@ public class SimulatedSingleJointArm extends SubsystemBase {
     // currentDraw));
 
     final double postAngle = armSim.getAngleRads();
+    crankMech2d.setAngle(Math.toDegrees(postAngle));
 
     if (NOISY) {
-      System.out.println("Target: " + reference +
+      System.out.println("Target: " + m_referencePosition +
           ", vel: " + armVelocity +
           ", pre angle: " + preAngle +
           ", post angle: " + postAngle);
     }
-    crankMech2d.setAngle(Math.toDegrees(postAngle));
   }
 }

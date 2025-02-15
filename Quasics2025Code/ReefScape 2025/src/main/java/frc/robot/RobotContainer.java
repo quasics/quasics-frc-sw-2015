@@ -296,34 +296,34 @@ public class RobotContainer {
 
   private void ConfigureDriverButtons() {
 
-    Trigger extendClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
         .whileTrue(new MoveClimbers(m_climbers, false));
 
     // Register the triggers for various buttons on the controllers.
-    Trigger RunIntake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     // Trigger IntakePulse = new Trigger(() ->
     // m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
     // .whileTrue(null); //TODO periodic intaking
 
     // Elevator controls
-    Trigger RaiseElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new RunElevator(m_elevator, -0.2));// UP
-    Trigger LowerElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
   }
 
   private void ConfigureOperatorButtons() {
     // Shooting
-    Trigger ShootAlgae = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());
 
     // Arm Pivot Controls
-    Trigger PivotUp = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));// UP
-    Trigger PivotDown = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));// DOWN
 
   }

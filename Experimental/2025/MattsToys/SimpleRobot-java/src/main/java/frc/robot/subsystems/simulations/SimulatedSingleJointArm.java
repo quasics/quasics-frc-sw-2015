@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase;
@@ -24,21 +25,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 // Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
-public class SimulatedSingleJointArm extends SubsystemBase {
-  ////////////////////////////////////////////////////////////////////////////////////
-  // Values defining the arm's characteristics/physics
-  ////////////////////////////////////////////////////////////////////////////////////
-
-  public static final double MAX_ANGLE_RADIANS = Math.toRadians(80);
-  public static final double MIN_ANGLE_RADIANS = Math.toRadians(190);
-  private static final double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for simulated physics to
-                                                          // work)
-  private static final double ARM_LENGTH_METERS = 1.0; // Arbitrary
-  private static final double ARM_MASS_KG = 4.0; // Arbitrary
-  private static final double STARTING_ANGLE_RADIANS = (MIN_ANGLE_RADIANS - MAX_ANGLE_RADIANS) / 2
-      + MAX_ANGLE_RADIANS;
-  private static final boolean SIMULATE_GRAVITY = true;
-
+public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
   ////////////////////////////////////////////////////////////////////////////////////
   // "Normal" data members
   ////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +97,7 @@ public class SimulatedSingleJointArm extends SubsystemBase {
    * 
    * @param targetPosition target arm position (in radians)
    */
+  @Override
   public void setTargetPositionInRadians(double targetPosition) {
     m_referencePosition = targetPosition;
     m_motorController.getClosedLoopController().setReference(targetPosition, SparkBase.ControlType.kPosition);

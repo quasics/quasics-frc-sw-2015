@@ -5,11 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * Sample command to wave the arm continuously between two positions.
+ */
 public class ArmWaveCommand extends Command {
-  private final SimulatedSingleJointArm arm;
+  private final ISingleJointArm arm;
   private int counter;
   /**
    * How fast the command should spend on a full transition from one extreme to
@@ -19,10 +21,10 @@ public class ArmWaveCommand extends Command {
   private final int CYCLE_TIME_IN_ITERATIONS = (CYCLE_TIME_IN_SECONDS * 50);
 
   /** Creates a new ArmWaveCommand. */
-  public ArmWaveCommand(SimulatedSingleJointArm arm) {
+  public ArmWaveCommand(ISingleJointArm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
-    addRequirements(arm);
+    addRequirements(arm.asSubsystem());
   }
 
   // Called when the command is initially scheduled.
@@ -40,12 +42,12 @@ public class ArmWaveCommand extends Command {
       if (NOISY) {
         System.out.println("Setting to upright");
       }
-      arm.setTargetPositionInRadians(Math.toRadians(90));
+      arm.setTargetPositionInRadians(Math.toRadians(ISingleJointArm.ARM_UP_ANGLE_RADIANS));
     } else if (counter % CYCLE_TIME_IN_ITERATIONS == 0) {
       if (NOISY) {
         System.out.println("Setting to flat");
       }
-      arm.setTargetPositionInRadians(Math.toRadians(180));
+      arm.setTargetPositionInRadians(Math.toRadians(ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
     }
 
     // Increment counter for next pass

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public abstract class AbstractElevator extends SubsystemBase {
 
   public enum TargetPosition {
+    kDontCare,
     kBottom,
     kL1,
     kL2,

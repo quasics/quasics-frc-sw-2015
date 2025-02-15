@@ -25,6 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SimulationElevator extends AbstractElevator {
   static final double EXTENSION_SPEED = +1.0;
   static final double RETRACTION_SPEED = -1.0;
+  static final double MAX_DESIRED_HEIGHT = 8.0;
+  static final double MIN_DESIRED_HEIGHT = 0.0;
+  static final double ACCEPTABLE_ERROR = 0.1;
+
   static public final int ELEVATOR_PWM_ID = 5;
   static public final int ELEVATOR_ENCODER_PORT_A = 4;
   static public final int ELEVATOR_ENCODER_PORT_B = 5;
@@ -53,8 +57,8 @@ public class SimulationElevator extends AbstractElevator {
   private static final Distance kDrumRadius = Units.Inches.of(1);
   private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
-  private static final double kMinHeightMeters = -1.0; // arbitrary: should be < min desired
-  private static final double kMaxHeightMeters = 8; // arbitrary: should be > max desired
+  private static final double kMinHeightMeters = MIN_DESIRED_HEIGHT - 1; // arbitrary: should be < min desired
+  private static final double kMaxHeightMeters = MAX_DESIRED_HEIGHT + 1; // arbitrary: should be > max desired
   private static final boolean ENABLE_GRAVITY = true;
   private static final double kHeightMetersAtStart = 0;
 
@@ -62,6 +66,8 @@ public class SimulationElevator extends AbstractElevator {
   // gravity.
   private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
       kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
+
+  private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
   /** Creates a new SimulationElevator. */
   public SimulationElevator() {
@@ -81,8 +87,36 @@ public class SimulationElevator extends AbstractElevator {
     SmartDashboard.putData("Elevator Sim", rootMech2d);
   }
 
+  protected double translateTargetPositionToValue(TargetPosition position) {
+    switch (position) {
+      case kDontCare:
+        return m_encoder.getDistance();
+      // Actual values start here.
+      case kBottom:
+        return MIN_DESIRED_HEIGHT;
+      case kL1:
+        return (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT) / 2;
+      case kL2:
+        return MAX_DESIRED_HEIGHT;
+    }
+
+    System.err.println("**** Invalid/unexpected target position: " + position);
+    return 0;
+  }
+
   public void periodic() {
     super.periodic();
+
+    // TODO: Emulating PID control for now. Real PID control can be added later.
+    if (m_targetPosition != TargetPosition.kDontCare) {
+      final double targetValue = translateTargetPositionToValue(m_targetPosition);
+      final double error = targetValue - m_encoder.getDistance();
+      double speed = error * 0.1;
+      if (ACCEPTABLE_ERROR < Math.abs(error)) {
+        speed = 0;
+      }
+      m_motor.set(speed);
+    }
 
     // Update the visualization of the climber positions.
     //
@@ -124,7 +158,7 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   public void setSpeed(double percentSpeed) {
-    // TODO: Implement this method
+    m_motor.set(percentSpeed);
   }
 
   // CODE_REVIEW: This isn't being used, so it should probably be removed.
@@ -137,46 +171,19 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   public void resetEncoders() {
-    // TODO: Implement this method
+    m_encoder.reset();
   }
 
   public double getPosition() {
-    // TODO: Implement this method
-    return 0;
+    return m_encoder.getDistance();
   }
 
   public double getVelocity() {
-    // TODO: Implement this method
-    return 0;
+    return m_encoder.getRate();
   }
 
   public SparkClosedLoopController getPIDController() {
     // TODO: Implement this method
     return null;
   }
-
-  // @Override
-  // protected void resetEncoder_impl() {
-  // m_encoder.reset();
-  // }
-
-  // @Override
-  // protected double getRevolutions_impl() {
-  // return m_encoder.getDistance();
-  // }
-
-  // @Override
-  // protected void stop_impl() {
-  // m_motor.set(0);
-  // }
-
-  // @Override
-  // protected void extend_impl() {
-  // m_motor.set(EXTENSION_SPEED);
-  // }
-
-  // @Override
-  // protected void retract_impl() {
-  // m_motor.set(RETRACTION_SPEED);
-  // }
 }

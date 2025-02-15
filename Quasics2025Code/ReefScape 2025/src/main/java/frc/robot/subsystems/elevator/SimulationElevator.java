@@ -181,11 +181,6 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   @Override
-  public void setVoltage(double voltage) {
-    // TODO: Implement this method
-  }
-
-  @Override
   public void stop() {
     m_motor.set(0);
   }
@@ -203,6 +198,11 @@ public class SimulationElevator extends AbstractElevator {
   @Override
   public double getVelocity() {
     return m_encoder.getRate();
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    // TODO: Implement this method
   }
 
   @Override

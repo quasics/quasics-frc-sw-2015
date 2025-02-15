@@ -9,7 +9,19 @@ import javax.lang.model.util.AbstractElementVisitor14;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.AbstractElevator;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * Tells the elevator (to use PID-based control) to move to a specified height.
+ * 
+ * Note that this is a "set it and done" sort of command, since *all* the
+ * command needs to do is to configure the target position for the elevator.
+ * Once that's been done, the PID logic on the elevator (or a simulated version
+ * of it, at least) should continue driving the elevator subsystem to the
+ * specified position.
+ * 
+ * Note also, however, that if there's some other command configured as the
+ * default on the elevator (e.g., something that reads a joystick control for
+ * height, etc.), then that could conflict with this approach.
+ */
 public class MoveElevatorToTargetPosition extends Command {
   final private AbstractElevator m_elevator;
   final private AbstractElevator.TargetPosition m_targetPosition;
@@ -29,15 +41,9 @@ public class MoveElevatorToTargetPosition extends Command {
     m_elevator.setTargetPosition(m_targetPosition);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_elevator.stop();
-  }
-
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_elevator.getVelocity() == 0;
+    // See class comments.
+    return true;
   }
 }

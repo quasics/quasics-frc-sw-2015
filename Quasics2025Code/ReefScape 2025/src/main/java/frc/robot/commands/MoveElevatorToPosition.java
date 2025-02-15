@@ -20,6 +20,15 @@ public class MoveElevatorToPosition extends Command {
   double ALLOWED_VELOCITY_ERROR = 0;
 
   /** Creates a new MoveElevatorToPosition. */
+  // CODE_REVIEW: Suggestions for improvement: instead of passing in the number of
+  // rotations, specify the target position in terms of an enumeration that is
+  // independent of the actual hardware. (See the "TargetPosition" enum I've added
+  // to AbstractElevator, and the "getRotationsForPosition()" method I've added to
+  // RealElevator.)
+  //
+  // This will make it easier to swap out the hardware in the future, change
+  // physical values, or to run the same code on different hardware (e.g., in
+  // simulation).
   public MoveElevatorToPosition(AbstractElevator elevator, double rotations) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_elevator = elevator;

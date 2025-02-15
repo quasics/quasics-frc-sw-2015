@@ -10,6 +10,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,8 +41,7 @@ public class RealElevator extends AbstractElevator {
 
   private RelativeEncoder m_encoder;
 
-  // private final SparkClosedLoopController m_pid =
-  // m_leader.getClosedLoopController();
+  private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
 
   /**
    * Creates a new Elevator.
@@ -74,11 +75,9 @@ public class RealElevator extends AbstractElevator {
     m_follower.set(-percentSpeed);
   }
 
-  /*
-   * public void setReference(double reference) {
-   * m_pid.setReference(reference, ControlType.kPosition);
-   * }
-   */
+  public SparkClosedLoopController getPIDController() {
+    return m_pid;
+  }
 
   @Override
   public void setVoltage(double voltage) {

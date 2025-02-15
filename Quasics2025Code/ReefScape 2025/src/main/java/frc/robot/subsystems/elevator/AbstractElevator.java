@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.elevator;
 
+import com.revrobotics.spark.SparkClosedLoopController;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,6 +26,8 @@ public abstract class AbstractElevator extends SubsystemBase {
   public abstract double getPosition();
 
   public abstract double getVelocity();
+
+  public abstract SparkClosedLoopController getPIDController();
 
   @Override
   public void periodic() {

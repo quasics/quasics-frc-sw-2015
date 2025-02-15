@@ -7,15 +7,18 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveForDistance;
+import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.RaiseElevator;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimulatedElevator;
@@ -29,7 +32,7 @@ public class RobotContainer {
   final IVision m_vision = new SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
   final AbstractElevator m_elevator = new SimulatedElevator();
-  final SimulatedSingleJointArm m_arm = new SimulatedSingleJointArm();
+  final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers
   //
@@ -43,7 +46,9 @@ public class RobotContainer {
     configureArcadeDrive();
     configureBindings();
 
-    m_arm.setDefaultCommand(new ArmWaveCommand(m_arm));
+    SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
+    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
+    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
   }
 
   private void configureArcadeDrive() {

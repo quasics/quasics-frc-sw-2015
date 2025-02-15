@@ -36,6 +36,11 @@ public class MoveElevatorToPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // CODE_REVIEW: In theory, you should be able to call this just once (in
+    // initialize()), and then that should "stick". The only reason you would need
+    // to call this repeatedly in execute() would be if the reference point were
+    // changing (e.g., if you're using this to control speed, and that was linked to
+    // a driver control or something).
     SparkClosedLoopController pid = m_elevator.getPIDController();
     pid.setReference(m_targetRotations, ControlType.kPosition);
   }

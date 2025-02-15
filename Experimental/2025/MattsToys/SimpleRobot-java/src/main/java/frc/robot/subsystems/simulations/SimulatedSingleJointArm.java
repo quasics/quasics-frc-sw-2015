@@ -43,9 +43,7 @@ public class SimulatedSingleJointArm extends SubsystemBase {
       armPlant, gearing,
       SingleJointedArmSim.estimateMOI(armLengthMeters, armMassKg), armLengthMeters, minimumAngleRadians,
       maximumAngleRadians, simulateGravity, startingAngleRadians);
-
   private SparkMaxSim sparkSim = new SparkMaxSim(sparkMotor, armPlant);
-
   private Mechanism2d armMech2d = new Mechanism2d(60, 60);
   private final MechanismLigament2d crankMech2d;
 
@@ -62,12 +60,12 @@ public class SimulatedSingleJointArm extends SubsystemBase {
     config.encoder.positionConversionFactor(2 * Math.PI / gearing);
     config.encoder.velocityConversionFactor(2 * Math.PI / (60 * gearing));
     sparkMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     setTargetPosition(startingAngleRadians);
 
-    // self.test_spark.configure(self.test_spark_config,
-    // SparkMax.ResetMode.kResetSafeParameters,
-    // persistMode=SparkMax.PersistMode.kPersistParameters)
-
+    //
+    // Configure simulation support
+    //
     sparkSim.setPosition(startingAngleRadians);
     sparkSim.enable();
 

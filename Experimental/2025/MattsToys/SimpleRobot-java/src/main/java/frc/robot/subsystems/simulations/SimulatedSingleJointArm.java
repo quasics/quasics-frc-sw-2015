@@ -26,6 +26,11 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 // Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
+  final double MAX_ANGLE_RADIANS = Math.toRadians(80);
+  final double MIN_ANGLE_RADIANS = Math.toRadians(190);
+  final double STARTING_ANGLE_RADIANS = (MIN_ANGLE_RADIANS - MAX_ANGLE_RADIANS) / 2 + MAX_ANGLE_RADIANS;
+  final boolean SIMULATE_GRAVITY = true;
+
   /** Motor controller running the arm. */
   private SparkMax m_motorController = new SparkMax(0, MotorType.kBrushless);
 

@@ -16,7 +16,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setSpeed(double percentSpeed);
 
-  // CODE_REVIEW: This isn't being used, so it should be removed.
+  // CODE_REVIEW: This isn't being used, so it should probably be removed.
   public abstract void setVoltage(double voltage);
 
   public abstract void stop();

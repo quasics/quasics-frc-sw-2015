@@ -24,7 +24,8 @@ public class MoveElevatorToPosition extends Command {
   // rotations, specify the target position in terms of an enumeration that is
   // independent of the actual hardware. (See the "TargetPosition" enum I've added
   // to AbstractElevator, and the "getRotationsForPosition()" method I've added to
-  // RealElevator.)
+  // RealElevator, and a version of this command in MoveElevatorToTargetPosiiton
+  // that uses this functionality and the assumption of underlying PID control.)
   //
   // This will make it easier to swap out the hardware in the future, change
   // physical values, or to run the same code on different hardware (e.g., in

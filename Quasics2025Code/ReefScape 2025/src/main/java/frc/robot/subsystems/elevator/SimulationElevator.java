@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SimulationElevator extends AbstractElevator {
   static final double EXTENSION_SPEED = +1.0;
   static final double RETRACTION_SPEED = -1.0;
-  static final double MAX_DESIRED_HEIGHT = 8.0;
+  static final double MAX_DESIRED_HEIGHT = 2.0;
   static final double MIN_DESIRED_HEIGHT = 0.0;
   static final double ACCEPTABLE_ERROR = 0.1;
 
@@ -111,8 +111,10 @@ public class SimulationElevator extends AbstractElevator {
     if (m_targetPosition != TargetPosition.kDontCare) {
       final double targetValue = translateTargetPositionToValue(m_targetPosition);
       final double error = targetValue - m_encoder.getDistance();
-      double speed = error * 0.1;
-      if (ACCEPTABLE_ERROR < Math.abs(error)) {
+      final double percentError = error / (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT); // Complete hack
+      final double errorScaling = 1.0;
+      double speed = Math.min(Math.max(percentError * errorScaling, -1.0), 1.0);
+      if (ACCEPTABLE_ERROR > Math.abs(error)) {
         speed = 0;
       }
       m_motor.set(speed);
@@ -136,7 +138,10 @@ public class SimulationElevator extends AbstractElevator {
     // In this method, we update our simulation of what our subsystem is doing.
 
     // First, we set our "inputs" (voltages).
-    m_sim.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    final double speed = m_motorSim.getSpeed();
+    final double batteryVoltage = RobotController.getBatteryVoltage();
+    final double desiredVoltage = speed * batteryVoltage;
+    m_sim.setInput(desiredVoltage);
 
     // Next, we update the simulation. The standard loop time is 20ms.
     m_sim.update(0.020);
@@ -153,35 +158,42 @@ public class SimulationElevator extends AbstractElevator {
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
   }
 
+  @Override
   public void setTargetPosition(TargetPosition position) {
-    // TODO: Implement this method
+    m_targetPosition = position;
   }
 
+  @Override
   public void setSpeed(double percentSpeed) {
     m_motor.set(percentSpeed);
   }
 
-  // CODE_REVIEW: This isn't being used, so it should probably be removed.
+  @Override
   public void setVoltage(double voltage) {
     // TODO: Implement this method
   }
 
+  @Override
   public void stop() {
     m_motor.set(0);
   }
 
+  @Override
   public void resetEncoders() {
     m_encoder.reset();
   }
 
+  @Override
   public double getPosition() {
     return m_encoder.getDistance();
   }
 
+  @Override
   public double getVelocity() {
     return m_encoder.getRate();
   }
 
+  @Override
   public SparkClosedLoopController getPIDController() {
     // TODO: Implement this method
     return null;

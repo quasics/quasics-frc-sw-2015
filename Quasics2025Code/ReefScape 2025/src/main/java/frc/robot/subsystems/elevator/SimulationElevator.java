@@ -7,7 +7,6 @@ package frc.robot.subsystems.elevator;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Encoder;

@@ -36,6 +36,7 @@ import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;
 import frc.robot.subsystems.elevator.RealElevator;
+import frc.robot.subsystems.elevator.SimulationElevator;
 import frc.robot.utils.RobotSettings;
 import java.util.function.Supplier;
 
@@ -54,7 +55,7 @@ public class RobotContainer {
   private final AbstractDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
-  private final AbstractElevator m_elevator = new RealElevator();
+  private final AbstractElevator m_elevator;
   private final Climbers m_climbers = new Climbers();
   private final Vision m_vision = new Vision();
 
@@ -92,6 +93,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_drivebase = setupDriveBase();
+    m_elevator = setupElevator();
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -99,6 +101,16 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
+  }
+
+  private AbstractElevator setupElevator() {
+    AbstractElevator elevator = null;
+    if (Robot.isReal()) {
+      elevator = new RealElevator();
+    } else {
+      elevator = new SimulationElevator();
+    }
+    return elevator;
   }
 
   private AbstractDrivebase setupDriveBase() {

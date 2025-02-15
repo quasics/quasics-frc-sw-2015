@@ -123,6 +123,9 @@ public class RealElevator extends AbstractElevator {
 
   protected double getRotationsForPosition(TargetPosition position) {
     switch (position) {
+      case kDontCare:
+        return m_encoder.getPosition();
+      // TODO: Define actual values for all cases other than "don't care".
       case kBottom:
         return 0;
       case kL1:

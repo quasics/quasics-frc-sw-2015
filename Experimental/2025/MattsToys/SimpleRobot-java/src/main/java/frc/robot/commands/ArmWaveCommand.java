@@ -25,16 +25,24 @@ public class ArmWaveCommand extends Command {
     counter = 0;
   }
 
+  static final boolean NOISY = true;
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ++counter;
-    if (counter % 400 > 200) {
-      System.out.println("Setting to upright");
+    if (counter % 400 == 200) {
+      if (NOISY) {
+        System.out.println("Setting to upright");
+      }
       arm.setTargetPosition(Math.toRadians(90));
-    } else {
-      System.out.println("Setting to flat");
+    } else if (counter % 400 == 0) {
+      if (NOISY) {
+        System.out.println("Setting to flat");
+      }
       arm.setTargetPosition(Math.toRadians(180));
     }
+
+    // Increment counter for next pass
+    ++counter;
   }
 }

@@ -11,6 +11,12 @@ import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 public class ArmWaveCommand extends Command {
   private final SimulatedSingleJointArm arm;
   private int counter;
+  /**
+   * How fast the command should spend on a full transition from one extreme to
+   * the other and back.
+   */
+  private final int CYCLE_TIME_IN_SECONDS = 4;
+  private final int CYCLE_TIME_IN_ITERATIONS = (CYCLE_TIME_IN_SECONDS * 50);
 
   /** Creates a new ArmWaveCommand. */
   public ArmWaveCommand(SimulatedSingleJointArm arm) {
@@ -25,17 +31,17 @@ public class ArmWaveCommand extends Command {
     counter = 0;
   }
 
-  static final boolean NOISY = true;
+  static final boolean NOISY = false;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (counter % 400 == 200) {
+    if (counter % CYCLE_TIME_IN_ITERATIONS == CYCLE_TIME_IN_ITERATIONS / 2) {
       if (NOISY) {
         System.out.println("Setting to upright");
       }
       arm.setTargetPositionInRadians(Math.toRadians(90));
-    } else if (counter % 400 == 0) {
+    } else if (counter % CYCLE_TIME_IN_ITERATIONS == 0) {
       if (NOISY) {
         System.out.println("Setting to flat");
       }

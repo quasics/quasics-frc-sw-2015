@@ -32,7 +32,7 @@ public class MoveArmPivotToPosition extends Command {
   public void execute() {
     PIDController pidController = m_pivot.getPivotPIDController();
     pidController.setSetpoint(m_angle);
-    m_pivot.rotateArm(pidController.calculate(m_pivot.getPivotAngleRadians()));
+    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngleRadians()));
   }
 
   // Called once the command ends or is interrupted.

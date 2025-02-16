@@ -20,13 +20,8 @@ public class ArmPivot extends SubsystemBase {
   private SparkMax m_pivot;
   private PIDController m_armPIDController;
 
-  // CODE_REVIEW: This is only used in the constructor, so it should be local
-  // there. This will make the code easier to read/maintain.
-
   private AbsoluteEncoder m_throughBoreEncoder;
 
-  // CODE_REVIEW: This isn't being used at all. Do you need it? If not, then it
-  // should be removed, in order to make the code easier to read/maintain.
   private ArmFeedforward m_feedForward;
   private double angleSetpointRadians;
 
@@ -34,19 +29,12 @@ public class ArmPivot extends SubsystemBase {
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
-    m_armPIDController = new PIDController(ArmPIDConstants.kP, ArmPIDConstants.kI, ArmPIDConstants.kD); // TODO:
-                                                                                                        // constants
-                                                                                                        // need tuned
-                                                                                                        // (0, 0, 0) as
-                                                                                                        // of now
-
-    m_feedForward = new ArmFeedforward(ArmPIDConstants.kS, ArmPIDConstants.kG, ArmPIDConstants.kV); // TODO: values
-                                                                                                    // require tuning
+    m_armPIDController = new PIDController(ArmPIDConstants.kP, ArmPIDConstants.kI, ArmPIDConstants.kD);
+    m_feedForward = new ArmFeedforward(ArmPIDConstants.kS, ArmPIDConstants.kG, ArmPIDConstants.kV);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     SmartDashboard.putNumber(
         "Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
     SmartDashboard.putData("PID Controller", m_armPIDController);
@@ -58,11 +46,25 @@ public class ArmPivot extends SubsystemBase {
     return currentAngleRadians;
   }
 
+  // CODE_REVIEW: Don't expose the PID controller to clients; this should be
+  // something managed by the subsystem (i.e., the client establishes the
+  // setpoint/target value, and then the subsystem is responsible for driving to
+  // that, such as via the periodic() function).
+  //
+  // As an example, take a look at the SimulationElevator class.
   public PIDController getPivotPIDController() {
     return m_armPIDController;
   }
 
-  public void rotateArm(double velocity) {
+  // CODE_REVIEW: You may want to consider invoking this from the periodic()
+  // function, so that your commands can set the target position and then just let
+  // it "automatically" move to that position.
+  //
+  // If you also want to be able to support manual control, you would also need to
+  // establish appropriate flags, or some other way of indicating a "don't care"
+  // state. (For an example, you may want to take a look at the handling of
+  // AbstractElevator.TargetPosition.kDontCare.)
+  public void driveArmToSetpoint(double velocity) {
     double pidOutput = m_armPIDController.calculate(getPivotAngleRadians(), angleSetpointRadians);
     double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
         velocity);
@@ -85,7 +87,7 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotUp() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.arm90) {
+          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.ARM_UP) {
             setArmPivotSpeed(-0.25);
           }
         },
@@ -97,7 +99,7 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotDown() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.arm0) {
+          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.ARM_DOWN) {
             setArmPivotSpeed(.25); // check value and change as needed
           }
         },

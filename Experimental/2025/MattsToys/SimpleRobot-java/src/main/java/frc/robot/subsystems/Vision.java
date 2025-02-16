@@ -80,15 +80,25 @@ public class Vision extends SubsystemBase implements IVision {
 
   private final PoseStrategy m_poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
 
+  private static final boolean USE_REEFSCAPE_LAYOUT = true;
+  private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
+
+  private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
+      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
+          ? AprilTagFields.k2025ReefscapeAndyMark
+          : AprilTagFields.k2025ReefscapeWelded)
+      : AprilTagFields.k2024Crescendo // Fall back on last year's game
+  ;
+
   /** Creates a new Vision. */
   public Vision() {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
-    Translation3d robotToCameraTrl =
-        new Translation3d(CAMERA_X.in(Meters), CAMERA_Y.in(Meters), CAMERA_HEIGHT.in(Meters));
-    Rotation3d robotToCameraRot =
-        new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians), CAMERA_YAW.in(Radians));
+    Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters), CAMERA_Y.in(Meters),
+        CAMERA_HEIGHT.in(Meters));
+    Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians),
+        CAMERA_YAW.in(Radians));
     m_robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
 
     // Connect to our camera. (May be a simulation.)
@@ -103,10 +113,9 @@ public class Vision extends SubsystemBase implements IVision {
     // Load the layout of the AprilTags on the field.
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout =
-          AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
     } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout.");
+      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
     m_tagLayout = tagLayout;
@@ -156,8 +165,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
-        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

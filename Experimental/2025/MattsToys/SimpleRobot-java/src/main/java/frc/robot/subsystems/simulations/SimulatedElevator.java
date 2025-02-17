@@ -138,4 +138,9 @@ public class SimulatedElevator extends AbstractElevator {
   protected void retract_impl() {
     m_motor.set(RETRACTION_SPEED);
   }
+
+  @Override
+  public void setTargetPosition(TargetPosition targetPosition) {
+
+  }
 }

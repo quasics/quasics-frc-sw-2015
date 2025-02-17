@@ -31,6 +31,14 @@ public abstract class AbstractElevator extends SubsystemBase {
   public static final String NAME = "Elevator";
   public static final double MAX_SAFE_REVOLUTIONS = 6;
 
+  public enum TargetPosition {
+    kDontCare,
+    kBottom,
+    kTop,
+    kL1,
+    kL2
+  }
+
   public enum Mode {
     Stopped, Extending, Retracting
   }
@@ -103,4 +111,6 @@ public abstract class AbstractElevator extends SubsystemBase {
   protected abstract void extend_impl();
 
   protected abstract void retract_impl();
+
+  public abstract void setTargetPosition(TargetPosition targetPosition);
 }

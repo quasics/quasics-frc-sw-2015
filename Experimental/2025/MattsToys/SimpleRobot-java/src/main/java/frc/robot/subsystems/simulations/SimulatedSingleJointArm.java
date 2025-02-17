@@ -58,6 +58,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
+    setName(SUBSYSTEM_NAME);
+
     // Configure the motor.
     var config = new SparkMaxConfig();
     config.closedLoop

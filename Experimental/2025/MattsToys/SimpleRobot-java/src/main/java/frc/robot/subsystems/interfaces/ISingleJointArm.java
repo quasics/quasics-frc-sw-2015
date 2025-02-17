@@ -16,5 +16,7 @@ public interface ISingleJointArm extends ISubsystem {
   final double ARM_LENGTH_METERS = 1.0; // Arbitrary
   final double ARM_MASS_KG = 4.0; // Arbitrary
 
-  public void setTargetPositionInRadians(double targetPosition);
+  String SUBSYSTEM_NAME = "Arm";
+
+  void setTargetPositionInRadians(double targetPosition);
 }

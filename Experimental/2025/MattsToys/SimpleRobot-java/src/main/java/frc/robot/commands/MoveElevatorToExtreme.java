@@ -17,12 +17,14 @@ public class MoveElevatorToExtreme extends Command {
   final AbstractElevator m_elevator;
   final boolean m_fullyExtend;
 
+  /** Convenience class. */
   public static final class RetractElevator extends MoveElevatorToExtreme {
     public RetractElevator(AbstractElevator elevator) {
       super(elevator, false);
     }
   }
 
+  /** Convenience class. */
   public static final class RaiseElevator extends MoveElevatorToExtreme {
     public RaiseElevator(AbstractElevator elevator) {
       super(elevator, true);

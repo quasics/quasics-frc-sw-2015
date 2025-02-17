@@ -29,7 +29,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public abstract class AbstractElevator extends SubsystemBase {
   public static final String NAME = "Elevator";
-  public static final double MAX_SAFE_REVOLUTIONS = 6;
+  public static final double MAX_SAFE_HEIGHT = 2.5;
+  public static final double MIN_SAFE_HEIGHT = 0.0;
 
   public enum TargetPosition {
     kDontCare,
@@ -70,7 +71,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   public boolean extend() {
-    if (m_safetyOn && getRevolutions_impl() >= MAX_SAFE_REVOLUTIONS) {
+    if (m_safetyOn && getRevolutions_impl() >= MAX_SAFE_HEIGHT) {
       stop();
       return false;
     }
@@ -95,7 +96,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   public void periodic() {
     if (m_safetyOn) {
       final double revolutions = getRevolutions_impl();
-      if ((m_mode == Mode.Extending && revolutions >= MAX_SAFE_REVOLUTIONS)
+      if ((m_mode == Mode.Extending && revolutions >= MAX_SAFE_HEIGHT)
           || (m_mode == Mode.Retracting && revolutions <= 0)) {
         stop();
       }

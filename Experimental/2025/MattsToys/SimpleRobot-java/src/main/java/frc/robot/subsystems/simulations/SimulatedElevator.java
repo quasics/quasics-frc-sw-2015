@@ -4,6 +4,14 @@
 
 package frc.robot.subsystems.simulations;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -27,9 +35,8 @@ public class SimulatedElevator extends AbstractElevator {
   // This gearbox represents a gearbox containing 4 Vex 775pro motors.
   private final DCMotor m_gearing = DCMotor.getNEO(1);
 
-  private final Encoder m_encoder = new Encoder(SimulationPorts.ELEVATOR_ENCODER_PORT_A,
-      SimulationPorts.ELEVATOR_ENCODER_PORT_B);
-  private final PWMSparkMax m_motor = new PWMSparkMax(SimulationPorts.ELEVATOR_PWM_ID);
+  private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
+  private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Mechanism2d visualization of the hardware (for rendering in
   // SmartDashboard, or the simulator).
@@ -38,9 +45,11 @@ public class SimulatedElevator extends AbstractElevator {
   //////////////////////////////////////////////////////////////////////////////
   // Simulation support data/objects
 
+  /** Motor being driven by the controller. */
+  private DCMotor elevatorPlant = DCMotor.getNEO(1);
+
   // Simulation motors/encoders
-  private final PWMSim m_motorSim = new PWMSim(m_motor);
-  private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
+  private final SparkMaxSim m_motorSim = new SparkMaxSim(m_motor, elevatorPlant);
 
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
@@ -60,10 +69,18 @@ public class SimulatedElevator extends AbstractElevator {
 
   /** Creates a new SimulatedElevator. */
   public SimulatedElevator() {
-    // Encoder setup (so that simulation can drive actual values; without this,
-    // we'll keep getting 0 distance/height, regardless of
-    // direction/speed/duration).
-    m_encoder.setDistancePerPulse(kEncoderMetersPerPulse);
+
+    // Configure the motor.
+    var config = new SparkMaxConfig();
+    config.closedLoop
+        .p(6)
+        .i(0)
+        .d(0);
+
+    config.encoder.positionConversionFactor(kEncoderMetersPerPulse);
+    config.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
+
+    m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // Simulation rendering setup.
     Mechanism2d rootMech2d = new Mechanism2d(9, 10);
@@ -86,7 +103,7 @@ public class SimulatedElevator extends AbstractElevator {
     // that this same thing could be done to provide a rendering of the data for a
     // *real* elevator within the SmartDashboard at a match (e.g., as an aid to the
     // drive team).
-    m_mech2d.setLength(m_encoder.getDistance());
+    m_mech2d.setLength(m_encoder.getPosition());
   }
 
   /** Advance the simulation. */
@@ -96,16 +113,22 @@ public class SimulatedElevator extends AbstractElevator {
 
     // In this method, we update our simulation of what our subsystem is doing.
 
-    // First, we set our "inputs" (voltages).
-    m_sim.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    // First we set out "inputs" (voltages).
+    final double initialPosition = m_sim.getPositionMeters();
+    var appliedOutput = m_motorSim.getAppliedOutput();
+    var voltsIn = RoboRioSim.getVInVoltage();
+    m_sim.setInput(0, appliedOutput * voltsIn);
 
     // Next, we update the simulation. The standard loop time is 20ms.
-    m_sim.update(0.020);
+    final double timeIncrement = 0.020;
+    m_sim.update(timeIncrement);
 
-    // Now, we can set our simulated encoder's readings and simulated battery
-    // voltage.
-    final double leftPos = m_sim.getPositionMeters();
-    m_encoderSim.setDistance(leftPos);
+    // Per original example, if we don't do this, the rendered angle is off a
+    // little bit.
+    m_motorSim.setPosition(m_sim.getPositionMeters());
+
+    var motorSpeed = m_sim.getVelocityMetersPerSecond();
+    m_motorSim.iterate(motorSpeed, voltsIn, timeIncrement);
 
     RoboRioSim.setVInVoltage(
         // Note: this should really be updated in conjunction with the simulated drive
@@ -116,12 +139,12 @@ public class SimulatedElevator extends AbstractElevator {
 
   @Override
   protected void resetEncoder_impl() {
-    m_encoder.reset();
+    m_encoder.setPosition(0);
   }
 
   @Override
   protected double getRevolutions_impl() {
-    return m_encoder.getDistance();
+    return m_encoder.getPosition();
   }
 
   @Override

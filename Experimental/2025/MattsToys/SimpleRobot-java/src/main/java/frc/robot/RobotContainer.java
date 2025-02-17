@@ -15,7 +15,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.MoveArmToAngle;
-import frc.robot.commands.RaiseElevator;
+import frc.robot.commands.MoveElevatorToExtreme;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
@@ -84,7 +84,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Simple demo command to drive forward while raising the elevator.
     return new ParallelCommandGroup(
-        new DriveForDistance(m_drivebase, .50, Meters.of(3)), new RaiseElevator(m_elevator));
+        new DriveForDistance(m_drivebase, .50, Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
     // return Commands.print("No autonomous command configured");
   }
 }

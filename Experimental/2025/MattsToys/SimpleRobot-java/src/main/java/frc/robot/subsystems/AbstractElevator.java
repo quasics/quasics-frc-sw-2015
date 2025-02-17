@@ -10,6 +10,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Provides pretty basic control for a single-mechanism "elevator" that can be
  * raised/lowered, including a "safety mode" that is intended to prevent it from
  * being wound too far.
+ * 
+ * Note that this is an example of using an "abstract" class as the base for one
+ * or more derived types, where the base (a) implements the general
+ * functionality and (b) defines the hardware-specific pieces that the derived
+ * classes then fill in.
  */
 public abstract class AbstractElevator extends SubsystemBase {
   public static final String NAME = "Elevator";
@@ -21,7 +26,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   protected Mode m_mode = Mode.Stopped;
 
-  boolean m_safetyOn = true;
+  private boolean m_safetyOn = true;
 
   /** Creates a new abstract elevator. */
   public AbstractElevator() {

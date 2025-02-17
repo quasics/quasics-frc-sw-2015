@@ -123,10 +123,11 @@ public class SimulatedElevator extends AbstractElevator {
     final double timeIncrement = 0.020;
     m_sim.update(timeIncrement);
 
-    // Per original example, if we don't do this, the rendered angle is off a
+    // Per original example, if we don't do this, the rendered value is off a
     // little bit.
     m_motorSim.setPosition(m_sim.getPositionMeters());
 
+    // Update the motor's idea of how it is moving.
     var motorSpeed = m_sim.getVelocityMetersPerSecond();
     m_motorSim.iterate(motorSpeed, voltsIn, timeIncrement);
 

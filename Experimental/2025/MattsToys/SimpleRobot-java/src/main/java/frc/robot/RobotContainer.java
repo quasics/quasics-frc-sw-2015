@@ -16,6 +16,7 @@ import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToExtreme;
+import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
@@ -46,9 +47,18 @@ public class RobotContainer {
     configureArcadeDrive();
     configureBindings();
 
-    SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
-    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
-    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
+    SmartDashboard.putData(
+        "Wave arm",
+        new ArmWaveCommand(m_arm));
+    SmartDashboard.putData(
+        "Arm out",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
+    SmartDashboard.putData(
+        "Arm up",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
+    SmartDashboard.putData(
+        "Raise elevator",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top));
   }
 
   private void configureArcadeDrive() {

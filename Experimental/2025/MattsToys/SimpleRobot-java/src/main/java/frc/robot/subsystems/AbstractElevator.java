@@ -20,11 +20,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Possible improvements would include:
  * <ul>
  * <li>Limit switches for safety controls at top and bottom</li>
+ * <li>Limit switches for external detection at L1, L2</li>
  * <li>Assuming that there were (good) hard stops on the elevator, monitoring
- * the
- * velocity of the motor to detect when we run up against them</li>
- * <li>Supporting "known positions" for the elevator, to allow client code to
- * drive to a predefined height</li>
+ * the velocity of the motor to detect when we run up against them</li>
  * </ul>
  */
 public abstract class AbstractElevator extends SubsystemBase {
@@ -32,20 +30,35 @@ public abstract class AbstractElevator extends SubsystemBase {
   public static final double MAX_SAFE_HEIGHT = 2.5;
   public static final double MIN_SAFE_HEIGHT = 0.0;
 
+  /** Supported target positions for the elevator. */
   public enum TargetPosition {
-    kDontCare,
-    kBottom,
-    kTop,
-    kL1,
-    kL2
+    /** No target set (manual control). */
+    DontCare,
+    Bottom,
+    Top,
+    L1,
+    L2
   }
 
+  /** Operational modes for the elevator. */
   public enum Mode {
-    Stopped, Extending, Retracting
+    /** Stopped (under manual control). */
+    Stopped,
+    /** Extending (under manual control). */
+    Extending,
+    /** Retracting (under manual control). */
+    Retracting,
+    /** Moving to (or at) a specified target position. */
+    Targeted
   }
 
+  /** Current operational mode. */
   protected Mode m_mode = Mode.Stopped;
 
+  /** Current target position for PID-based control (if any). */
+  protected TargetPosition m_target = TargetPosition.DontCare;
+
+  /** If true, safety constraints are enabled during manual control. */
   private boolean m_safetyOn = true;
 
   /** Creates a new abstract elevator. */
@@ -71,7 +84,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   public boolean extend() {
-    if (m_safetyOn && getRevolutions_impl() >= MAX_SAFE_HEIGHT) {
+    if (m_safetyOn && getHeight_impl() >= MAX_SAFE_HEIGHT) {
       stop();
       return false;
     }
@@ -82,7 +95,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   public boolean retract() {
-    if (m_safetyOn && getRevolutions_impl() <= 0) {
+    if (m_safetyOn && getHeight_impl() <= 0) {
       stop();
       return false;
     }
@@ -94,24 +107,56 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (m_safetyOn) {
-      final double revolutions = getRevolutions_impl();
-      if ((m_mode == Mode.Extending && revolutions >= MAX_SAFE_HEIGHT)
-          || (m_mode == Mode.Retracting && revolutions <= 0)) {
-        stop();
+    if (m_mode == Mode.Targeted && m_target != TargetPosition.DontCare) {
+      // OK, we've got a target to move towards.
+      updateMotor_impl();
+    } else {
+      // We're under manual control.
+      if (m_safetyOn) {
+        // Check to see if we've exceeded our safety limits.
+        final double currentHeight = getHeight_impl();
+        if ((m_mode == Mode.Extending && currentHeight >= MAX_SAFE_HEIGHT)
+            || (m_mode == Mode.Retracting && currentHeight <= 0)) {
+          stop();
+        }
       }
     }
   }
 
+  /**
+   * Establishes a target position that we want to move towards (e.g., via PID).
+   * 
+   * @param targetPosition the desired elevator position
+   */
+  public void setTargetPosition(TargetPosition targetPosition) {
+    // OK: stop any manual control that's in progresss.
+    stop();
+
+    m_mode = Mode.Targeted;
+    m_target = targetPosition;
+  }
+
+  /**
+   * Handles motor adjustments (e.g., via PID) when a target position has been
+   * set.
+   * 
+   * @see #periodic()
+   * @see #setTargetPosition(TargetPosition)
+   */
+  protected abstract void updateMotor_impl();
+
+  /** Resets the underlying encoder on the elevator. */
   protected abstract void resetEncoder_impl();
 
-  protected abstract double getRevolutions_impl();
+  /** Returns the current elevator height (in meters). */
+  protected abstract double getHeight_impl();
 
+  /** Stops the actual motor on the elevator. */
   protected abstract void stop_impl();
 
+  /** Starts (actually) extending the elevator. */
   protected abstract void extend_impl();
 
+  /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
-
-  public abstract void setTargetPosition(TargetPosition targetPosition);
 }

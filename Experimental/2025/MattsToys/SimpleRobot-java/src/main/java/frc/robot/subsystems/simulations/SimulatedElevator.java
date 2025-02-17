@@ -12,20 +12,17 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.PWMSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.AbstractElevator;
 
 public class SimulatedElevator extends AbstractElevator {
@@ -38,12 +35,31 @@ public class SimulatedElevator extends AbstractElevator {
   private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
+  // Note: arbitrary values; we'd want to define something real.
+  private final PIDController m_pid = new PIDController(6, 0, 0);
+  // TODO: Add feedforward definition
+
   // Mechanism2d visualization of the hardware (for rendering in
   // SmartDashboard, or the simulator).
   private final MechanismLigament2d m_mech2d;
 
+  private final static Color8Bit NO_SETPOINT = new Color8Bit(255, 165, 0);
+  private final static Color8Bit AT_SETPOINT = new Color8Bit(0, 255, 0);
+  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit(255, 0, 0);
+
   //////////////////////////////////////////////////////////////////////////////
   // Simulation support data/objects
+
+  // TODO: Update these constants to better emulate the real behavior of the
+  // hardware. (But for now, this will at least give us something we can use.)
+  private static final double kGearing = 80.0; // Arbitrary (but needs to be enough for the simulated physics to work)
+  private static final Distance kDrumRadius = Units.Inches.of(1);
+  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
+  private static final double kCarriageMass = 1.0; // kg
+  private static final double kMinHeightMeters = -0.5; // arbitrary: should be < min desired
+  private static final double kMaxHeightMeters = MAX_SAFE_HEIGHT + 0.5; // arbitrary: should be > max desired
+  private static final boolean ENABLE_GRAVITY = true;
+  private static final double kHeightMetersAtStart = 0;
 
   /** Motor being driven by the controller. */
   private DCMotor elevatorPlant = DCMotor.getNEO(1);
@@ -51,39 +67,24 @@ public class SimulatedElevator extends AbstractElevator {
   // Simulation motors/encoders
   private final SparkMaxSim m_motorSim = new SparkMaxSim(m_motor, elevatorPlant);
 
-  // TODO: Update these constants to better emulate the real behavior of the
-  // hardware. (But for now, this will at least give us something we can use.)
-  private static final double kGearing = 10.0;
-  private static final Distance kDrumRadius = Units.Inches.of(1);
-  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
-  private static final double kCarriageMass = 1.0; // kg
-  private static final double kMinHeightMeters = -1.0; // arbitrary: should be < min desired
-  private static final double kMaxHeightMeters = 8; // arbitrary: should be > max desired
-  private static final boolean ENABLE_GRAVITY = true;
-  private static final double kHeightMetersAtStart = 0;
-
-  // Simulation classes help us simulate what's going on, optionally including
-  // gravity.
+  // Physics simulation control.
   private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
       kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
 
   /** Creates a new SimulatedElevator. */
   public SimulatedElevator() {
-
     // Configure the motor.
     var config = new SparkMaxConfig();
-    config.closedLoop
-        .p(6)
-        .i(0)
-        .d(0);
-
     config.encoder.positionConversionFactor(kEncoderMetersPerPulse);
     config.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
-
     m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    m_pid.setTolerance(0.01); // within 1cm is fine
+
+    m_motorSim.setPosition(0);
+
     // Simulation rendering setup.
-    Mechanism2d rootMech2d = new Mechanism2d(9, 10);
+    Mechanism2d rootMech2d = new Mechanism2d(9, MAX_SAFE_HEIGHT * 1.15 /* Leave a little room at the top */);
     m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
         .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
 
@@ -91,6 +92,26 @@ public class SimulatedElevator extends AbstractElevator {
     // To show the visualization, select Network Tables -> SmartDashboard
     // -> Elevator Sim
     SmartDashboard.putData("Elevator Sim", rootMech2d);
+  }
+
+  @Override
+  protected void updateMotor_impl() {
+    final boolean noisy = true;
+
+    final double setpoint = getPositionForTarget(m_target);
+    final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint);
+    final double feedForward = 0.0;
+
+    final double output = pidOutput + feedForward;
+    m_motor.set(output);
+
+    if (noisy) {
+      System.out.println(
+          "PID -> pos: " + m_encoder.getPosition() +
+              ", set: " + setpoint +
+              ", output: " + output +
+              ", at setpoint: " + m_pid.atSetpoint());
+    }
   }
 
   public void periodic() {
@@ -104,17 +125,26 @@ public class SimulatedElevator extends AbstractElevator {
     // *real* elevator within the SmartDashboard at a match (e.g., as an aid to the
     // drive team).
     m_mech2d.setLength(m_encoder.getPosition());
+    if (m_target == TargetPosition.DontCare) {
+      m_mech2d.setColor(NO_SETPOINT);
+    } else if (m_pid.atSetpoint()) {
+      m_mech2d.setColor(AT_SETPOINT);
+    } else {
+      m_mech2d.setColor(NOT_AT_SETPOINT);
+    }
   }
 
   /** Advance the simulation. */
   @Override
   public void simulationPeriodic() {
+    final boolean noisy = false;
+
     super.simulationPeriodic();
 
     // In this method, we update our simulation of what our subsystem is doing.
 
     // First we set out "inputs" (voltages).
-    final double initialPosition = m_sim.getPositionMeters();
+    final double initialPos = m_encoder.getPosition();
     var appliedOutput = m_motorSim.getAppliedOutput();
     var voltsIn = RoboRioSim.getVInVoltage();
     m_sim.setInput(0, appliedOutput * voltsIn);
@@ -131,6 +161,13 @@ public class SimulatedElevator extends AbstractElevator {
     var motorSpeed = m_sim.getVelocityMetersPerSecond();
     m_motorSim.iterate(motorSpeed, voltsIn, timeIncrement);
 
+    if (noisy) {
+      System.out.println(
+          "Sim --> initial: " + initialPos +
+              ", post: " + m_sim.getPositionMeters() +
+              ", speed: " + motorSpeed);
+    }
+
     RoboRioSim.setVInVoltage(
         // Note: this should really be updated in conjunction with the simulated drive
         // base (and anything else we're "powering", such as a simulated shooter, as
@@ -144,7 +181,7 @@ public class SimulatedElevator extends AbstractElevator {
   }
 
   @Override
-  protected double getRevolutions_impl() {
+  protected double getHeight_impl() {
     return m_encoder.getPosition();
   }
 
@@ -163,8 +200,33 @@ public class SimulatedElevator extends AbstractElevator {
     m_motor.set(RETRACTION_SPEED);
   }
 
+  protected double getPositionForTarget(TargetPosition targetPosition) {
+    switch (targetPosition) {
+      case DontCare:
+        // Wherever we are right now is fine, thanks.
+        return m_encoder.getPosition();
+
+      case Bottom:
+        return 0;
+      case Top:
+        return MAX_SAFE_HEIGHT;
+
+      case L1:
+        return MAX_SAFE_HEIGHT * (1.0 / 3.0);
+      case L2:
+        return MAX_SAFE_HEIGHT * (2.0 / 3.0);
+    }
+
+    System.err.println("Unrecognized target position: " + targetPosition);
+    return 0;
+  }
+
   @Override
   public void setTargetPosition(TargetPosition targetPosition) {
+    if (targetPosition != m_target) {
+      m_pid.reset();
+    }
 
+    super.setTargetPosition(targetPosition);
   }
 }

@@ -32,31 +32,10 @@ import frc.robot.subsystems.AbstractElevator;
  * controlling simulated hardware.
  */
 public class SimulatedElevator extends AbstractElevator {
+  /** Extension speed while running under manual control. */
   static final double EXTENSION_SPEED = +1.0;
+  /** Retraction speed while running under manual control. */
   static final double RETRACTION_SPEED = -1.0;
-
-  // This gearbox represents a gearbox containing 2 NEO motors.
-  private final DCMotor m_gearing = DCMotor.getNEO(2);
-
-  private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
-  private final RelativeEncoder m_encoder = m_motor.getEncoder();
-
-  // Note: arbitrary values; we'd want to define something real.
-  private final PIDController m_pid = new PIDController(6, 0, 0);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
-      .1 /* static gain, in V */, .15 /* gravity gain, in V */,
-      0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
-
-  // Mechanism2d visualization of the hardware (for rendering in
-  // SmartDashboard, or the simulator).
-  private final MechanismLigament2d m_mech2d;
-
-  private final static Color8Bit NO_SETPOINT = new Color8Bit(255, 165, 0);
-  private final static Color8Bit AT_SETPOINT = new Color8Bit(0, 255, 0);
-  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit(255, 0, 0);
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Simulation support data/objects
 
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
@@ -66,8 +45,46 @@ public class SimulatedElevator extends AbstractElevator {
   private static final double kCarriageMass = 1.0; // kg
   private static final double kMinHeightMeters = -0.5; // arbitrary: should be < min desired
   private static final double kMaxHeightMeters = MAX_SAFE_HEIGHT + 0.5; // arbitrary: should be > max desired
-  private static final boolean ENABLE_GRAVITY = true;
   private static final double kHeightMetersAtStart = 0;
+  private static final boolean ENABLE_GRAVITY = true;
+
+  /** This gearbox represents a gearbox containing 2 NEO motors. */
+  private final DCMotor m_gearing = DCMotor.getNEO(2);
+
+  /** Motor controller driving the elevator. */
+  private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
+
+  /** Encoder tracking the current position of the elevator. */
+  private final RelativeEncoder m_encoder = m_motor.getEncoder();
+
+  // Note: arbitrary values; we'd want to define something real.
+  private final PIDController m_pid = new PIDController(6, 0, 0);
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
+      .1 /* static gain, in V */, .15 /* gravity gain, in V */,
+      0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
+
+  /**
+   * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
+   * or the simulator).
+   */
+  private final MechanismLigament2d m_mech2d;
+
+  /** Color used to render the elevator when running under manual control. */
+  private final static Color8Bit NO_SETPOINT = new Color8Bit(255, 165, 0);
+
+  /**
+   * Color used to render the elevator when we've reached the target position .
+   */
+  private final static Color8Bit AT_SETPOINT = new Color8Bit(0, 255, 0);
+
+  /**
+   * Color used to render the elevator when we're driving towards the target
+   * position .
+   */
+  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit(255, 0, 0);
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Simulation support data/objects
 
   /** Motor being driven by the controller. */
   private DCMotor elevatorPlant = DCMotor.getNEO(1);
@@ -120,6 +137,7 @@ public class SimulatedElevator extends AbstractElevator {
     }
   }
 
+  @Override
   public void periodic() {
     super.periodic();
 
@@ -234,5 +252,14 @@ public class SimulatedElevator extends AbstractElevator {
     }
 
     super.setTargetPosition(targetPosition);
+  }
+
+  @Override
+  public boolean atTargetPosition() {
+    if (m_target == TargetPosition.DontCare) {
+      return true;
+    } else {
+      return m_pid.atSetpoint();
+    }
   }
 }

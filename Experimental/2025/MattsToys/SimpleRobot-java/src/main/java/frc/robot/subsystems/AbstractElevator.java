@@ -105,6 +105,8 @@ public abstract class AbstractElevator extends SubsystemBase {
     return true;
   }
 
+  public abstract boolean atTargetPosition();
+
   @Override
   public void periodic() {
     if (m_mode == Mode.Targeted && m_target != TargetPosition.DontCare) {

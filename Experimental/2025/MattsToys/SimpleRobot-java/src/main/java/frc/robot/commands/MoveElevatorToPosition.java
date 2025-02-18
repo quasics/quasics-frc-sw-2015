@@ -11,11 +11,19 @@ import frc.robot.subsystems.AbstractElevator;
 public class MoveElevatorToPosition extends Command {
   final private AbstractElevator m_elevator;
   final private AbstractElevator.TargetPosition m_target;
+  final private boolean m_waitForTargetReached;
 
   /** Creates a new MoveElevatorToPosition. */
   public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target) {
+    this(elevator, target, true);
+  }
+
+  /** Creates a new MoveElevatorToPosition. */
+  public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target,
+      boolean waitForTargetReached) {
     m_elevator = elevator;
     m_target = target;
+    m_waitForTargetReached = waitForTargetReached;
 
     addRequirements(elevator);
   }
@@ -26,9 +34,27 @@ public class MoveElevatorToPosition extends Command {
     m_elevator.setTargetPosition(m_target);
   }
 
-  // Returns true when the command should end.
+  @Override
+  public void end(boolean interrupted) {
+    if (interrupted) {
+      m_elevator.stop();
+    }
+  }
+
+  /**
+   * @return true when the command should end (either because we're not waiting
+   *         for the target position to be reached, or because we *have* reached
+   *         it)
+   */
   @Override
   public boolean isFinished() {
-    return true;
+    if (m_waitForTargetReached) {
+      // Waiting until the elevator gets to the target height.
+      return m_elevator.atTargetPosition();
+    } else {
+      // OK: we're just going to let the PID control in the elevator subsystem get us
+      // there.
+      return true;
+    }
   }
 }

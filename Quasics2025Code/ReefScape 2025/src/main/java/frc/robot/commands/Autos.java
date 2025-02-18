@@ -24,7 +24,7 @@ public final class Autos {
       return new PrintCommand("Doing nothing!");
     }
     if (operation == AutonomousSelectedOperation.GTFO) {
-      return new DriveForDistance(drivebase, 0.30, Meters.of(3));
+      return new DriveForDistance(drivebase, 0.20, Meters.of(2));
     }
 
     return new PrintCommand("Doing nothing because no operation?");

@@ -51,7 +51,7 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private boolean m_switchDrive = false;
+  private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
@@ -287,25 +287,28 @@ public class RobotContainer {
 
   private void ConfigureDriverButtons() {
 
-    Trigger extendClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveClimbers(m_climbers, false));
-
     // Register the triggers for various buttons on the controllers.
     Trigger RunIntake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
-        .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.5, 0.5));
+        .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
     Trigger RaiseElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.2));// UP
+        .whileTrue(new RunElevator(m_elevator, -0.4));// UP
     Trigger LowerElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.25));// DOWN
   }
 
   private void ConfigureOperatorButtons() {
+    // Arm Pivot Controls
+    Trigger extendClimber = new Trigger(
+        () -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new MoveClimbers(m_climbers, true));
+    Trigger retractClimber = new Trigger(
+        () -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new MoveClimbers(m_climbers, false));
+
     // Shooting
     Trigger ShootAlgae = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());

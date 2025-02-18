@@ -32,13 +32,18 @@ public class PulseKraken extends Command {
   @Override
   public void initialize() {
     m_timer.reset();
+    m_currentlyIntaking = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println(m_currentlyIntaking);
     if (m_currentlyIntaking)
       m_ArmRoller.setSpeed(m_speed);
+    else
+      m_ArmRoller.stop();
+
     if (m_currentlyIntaking && m_timer.hasElapsed(m_intakeTime)) {
       m_currentlyIntaking = false;
       m_timer.reset();

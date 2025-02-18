@@ -12,12 +12,11 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Basic interface for drive base functionality.
  */
-public interface IDrivebase {
+public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   final String SUBSYSTEM_NAME = "Drivebase";
 
@@ -85,9 +84,4 @@ public interface IDrivebase {
 
   /** @return heading of the robot (as a Pose2d) */
   Pose2d getPose();
-
-  /** Convert the object to a subsystem (for listing in requirements). */
-  default Subsystem asSubsystem() {
-    return (Subsystem) this;
-  }
 }

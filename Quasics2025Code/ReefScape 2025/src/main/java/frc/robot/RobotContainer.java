@@ -24,6 +24,7 @@ import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.PulseKraken;
+import frc.robot.commands.MoveElevatorToTargetPosition
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
@@ -168,6 +169,15 @@ public class RobotContainer {
     SmartDashboard.putData("Retract Climber 10% ",
         new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
+    SmartDashboard.putData("Elevator to L2",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
+    SmartDashboard.putData("Elevator to L1",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
+    SmartDashboard.putData("Elevator to bottom",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
+    SmartDashboard.putData("Elevator to DC",
+        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new
     // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
@@ -287,16 +297,19 @@ public class RobotContainer {
 
   private void ConfigureDriverButtons() {
 
-    // Register the triggers for various buttons on the controllers.
-    Trigger RunIntake = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+        .whileTrue(new MoveClimbers(m_climbers, true));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+        .whileTrue(new MoveClimbers(m_climbers, false));    // Register the triggers for various buttons on the controllers.
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
         .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
-    Trigger RaiseElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new RunElevator(m_elevator, -0.4));// UP
-    Trigger LowerElevator = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.25));// DOWN
   }
 
@@ -310,13 +323,13 @@ public class RobotContainer {
         .whileTrue(new MoveClimbers(m_climbers, false));
 
     // Shooting
-    Trigger ShootAlgae = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());
 
     // Arm Pivot Controls
-    Trigger PivotUp = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, false));// UP
-    Trigger PivotDown = new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, true));// DOWN
 
   }

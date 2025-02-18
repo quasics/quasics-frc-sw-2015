@@ -11,7 +11,7 @@ import org.photonvision.EstimatedRobotPose;
 /**
  * Basic interface for vision processing support.
  */
-public interface IVision {
+public interface IVision extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   static final String SUBSYSTEM_NAME = "Vision";
 

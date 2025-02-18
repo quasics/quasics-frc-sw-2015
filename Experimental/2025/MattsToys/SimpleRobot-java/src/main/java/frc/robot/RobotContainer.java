@@ -7,17 +7,23 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveForDistance;
-import frc.robot.commands.RaiseElevator;
+import frc.robot.commands.MoveArmToAngle;
+import frc.robot.commands.MoveElevatorToExtreme;
+import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimulatedElevator;
+import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import java.util.function.Supplier;
@@ -27,6 +33,7 @@ public class RobotContainer {
   final IVision m_vision = new SimulatedVision();
   private final IDrivebase m_drivebase = new SimDrivebase();
   final AbstractElevator m_elevator = new SimulatedElevator();
+  final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers
   //
@@ -39,11 +46,23 @@ public class RobotContainer {
   public RobotContainer() {
     configureArcadeDrive();
     configureBindings();
+
+    SmartDashboard.putData(
+        "Wave arm",
+        new ArmWaveCommand(m_arm));
+    SmartDashboard.putData(
+        "Arm out",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
+    SmartDashboard.putData(
+        "Arm up",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
+    SmartDashboard.putData(
+        "Raise elevator",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top));
   }
 
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer =
-        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -52,12 +71,8 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
-      rotationSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
+      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -65,7 +80,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -79,7 +94,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Simple demo command to drive forward while raising the elevator.
     return new ParallelCommandGroup(
-        new DriveForDistance(m_drivebase, .50, Meters.of(3)), new RaiseElevator(m_elevator));
+        new DriveForDistance(m_drivebase, .50, Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
     // return Commands.print("No autonomous command configured");
   }
 }

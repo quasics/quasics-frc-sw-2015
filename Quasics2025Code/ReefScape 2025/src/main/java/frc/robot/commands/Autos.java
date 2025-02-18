@@ -4,10 +4,8 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutonomousSelectedOperation;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 import static edu.wpi.first.units.Units.*;
 

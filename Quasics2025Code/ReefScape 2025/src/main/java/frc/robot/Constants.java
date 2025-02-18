@@ -102,11 +102,13 @@ public final class Constants {
   }
 
   public static class DesiredEncoderValues {
-    public static final double arm0 = 0; // TODO: needs testing
-    public static final double arm90 = 0.75; // TODO: needs updated once the value can be tested
+    public static final double ARM_DOWN = 0; // TODO: needs testing
+    public static final double ARM_UP = 0.75; // TODO: needs updated once the value can be tested
   }
 
   public static class ArmPIDConstants {
+    // TODO: PID/feedforward constants for the arm need to be tuned. (Using zeros
+    // right now.)
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;

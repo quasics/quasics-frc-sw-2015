@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
@@ -25,19 +27,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.AbstractElevator;
 
+/**
+ * Completes the AbstractElevator class definition for the purpose of
+ * controlling simulated hardware.
+ */
 public class SimulatedElevator extends AbstractElevator {
   static final double EXTENSION_SPEED = +1.0;
   static final double RETRACTION_SPEED = -1.0;
 
-  // This gearbox represents a gearbox containing 4 Vex 775pro motors.
-  private final DCMotor m_gearing = DCMotor.getNEO(1);
+  // This gearbox represents a gearbox containing 2 NEO motors.
+  private final DCMotor m_gearing = DCMotor.getNEO(2);
 
   private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Note: arbitrary values; we'd want to define something real.
   private final PIDController m_pid = new PIDController(6, 0, 0);
-  // TODO: Add feedforward definition
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
+      .1 /* static gain, in V */, .15 /* gravity gain, in V */,
+      0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
 
   // Mechanism2d visualization of the hardware (for rendering in
   // SmartDashboard, or the simulator).
@@ -100,17 +108,15 @@ public class SimulatedElevator extends AbstractElevator {
 
     final double setpoint = getPositionForTarget(m_target);
     final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint);
-    final double feedForward = 0.0;
+    final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
 
-    final double output = pidOutput + feedForward;
+    final double output = MathUtil.clamp(pidOutput + feedForward, -1.0, +1.0);
     m_motor.set(output);
 
     if (noisy) {
-      System.out.println(
-          "PID -> pos: " + m_encoder.getPosition() +
-              ", set: " + setpoint +
-              ", output: " + output +
-              ", at setpoint: " + m_pid.atSetpoint());
+      System.out.printf(
+          "PID -> pos: %.02f, set: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+          m_encoder.getPosition(), setpoint, pidOutput, feedForward, output, m_pid.atSetpoint());
     }
   }
 

@@ -58,7 +58,7 @@ public class SimulatedElevator extends AbstractElevator {
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Note: arbitrary values; we'd want to define something real.
-  private final PIDController m_pid = new PIDController(6, 0, 0);
+  private final PIDController m_pid = new PIDController(6, 0.5, 0);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
       .1 /* static gain, in V */, .15 /* gravity gain, in V */,
       0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
@@ -104,7 +104,7 @@ public class SimulatedElevator extends AbstractElevator {
     config.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
     m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_pid.setTolerance(0.01); // within 1cm is fine
+    m_pid.setTolerance(0.02); // within 2cm is fine
 
     m_motorSim.setPosition(0);
 

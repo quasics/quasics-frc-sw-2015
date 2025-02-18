@@ -24,7 +24,7 @@ import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.PulseKraken;
-import frc.robot.commands.MoveElevatorToTargetPosition
+import frc.robot.commands.MoveElevatorToTargetPosition;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
@@ -300,7 +300,8 @@ public class RobotContainer {
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new MoveClimbers(m_climbers, true));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveClimbers(m_climbers, false));    // Register the triggers for various buttons on the controllers.
+        .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for various buttons on the
+                                                         // controllers.
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))

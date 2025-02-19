@@ -110,14 +110,17 @@ public class RealElevator extends AbstractElevator {
     super.periodic();
 
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
-    if (m_limitSwitchUp.get() == true && getVelocity() < 0) {
-      stop();
-    }
-
+    /*
+     * if (m_limitSwitchUp.get() == true && getVelocity() < 0) {
+     * stop();
+     * }
+     */
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
-    if (m_limitSwitchDown.get() == true && getVelocity() > 0) {
-      stop();
-    }
+    /*
+     * if (m_limitSwitchDown.get() == true && getVelocity() > 0) {
+     * stop();
+     * }
+     */
 
   }
 

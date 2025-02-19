@@ -1,14 +1,14 @@
 Driver controller (Logitech)
 * Left stick - Arcade Drive Movement Speed
 * Right stick - Arcade Drive Rotation Speed
-* A - 
-* B - 
+* A - Elevator Down
+* B - Switch drive
 * X - 
-* Y - 
+* Y - Elevator Up
 * Left shoulder - Turtle mode (while held)
 * Right shoulder - Turbo mode (while held)
 * Left trigger - Intake algae
-* Right trigger - Shoot algae
+* Right trigger - Pulse Intake
 * Start - 
 * Back -
 
@@ -22,8 +22,8 @@ Operator controller (Xbox)
 * Left bumper - Move pivot arm down
 * Left trigger -
 * Right trigger - 
-* X button - 
-* Y button - Raise Elevator
-* A button - Lower Elevator
+* X button - Shoot
+* Y button - Extend climber
+* A button - Retract climber
 * B button - 
 * D-pad -

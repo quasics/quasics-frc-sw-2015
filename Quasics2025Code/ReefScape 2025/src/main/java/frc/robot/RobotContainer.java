@@ -23,6 +23,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
+import frc.robot.commands.PulseKraken;
 import frc.robot.commands.MoveElevatorToTargetPosition;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
@@ -51,7 +52,7 @@ import java.util.function.Supplier;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private boolean m_switchDrive = false;
+  private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase;
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
@@ -299,23 +300,29 @@ public class RobotContainer {
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new MoveClimbers(m_climbers, true));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveClimbers(m_climbers, false));
-
-    // Register the triggers for various buttons on the controllers.
+        .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for various buttons on the
+                                                         // controllers.
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    // Trigger IntakePulse = new Trigger(() ->
-    // m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
-    // .whileTrue(null); //TODO periodic intaking
+    Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+        .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.2));// UP
+        .whileTrue(new RunElevator(m_elevator, -0.4));// UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.2));// DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.25));// DOWN
   }
 
   private void ConfigureOperatorButtons() {
+    // Arm Pivot Controls
+    Trigger extendClimber = new Trigger(
+        () -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new MoveClimbers(m_climbers, true));
+    Trigger retractClimber = new Trigger(
+        () -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new MoveClimbers(m_climbers, false));
+
     // Shooting
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());

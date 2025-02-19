@@ -46,7 +46,7 @@ public class Vision extends SubsystemBase implements IVision {
   public static final Angle CAMERA_PITCH = Degrees.of(-15); // pointed 15 degrees up
   public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
   public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
-  // ...with image dimensions, field of view, FPS being this...
+  // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS...
   public static final int CAMERA_WIDTH_PX = 960; // pixels
   public static final int CAMERA_HEIGHT_PX = 720; // pixels
   public static final int CAMERA_FOV_DEG = 100; // degrees

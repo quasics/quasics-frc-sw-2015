@@ -66,24 +66,32 @@ public abstract class AbstractElevator extends SubsystemBase {
     setName(NAME);
   }
 
+  /** @param tf enables "safe mode" if true */
   public void enableSafeMode(boolean tf) {
     m_safetyOn = tf;
   }
 
+  /** @return true if "safe mode" is enabled */
   public boolean isSafeModeEnabled() {
     return m_safetyOn;
   }
 
+  /** @return current operating mode */
   public Mode getMode() {
     return m_mode;
   }
 
+  /** Stops the elevator (including clearing any target position). */
   public void stop() {
     m_mode = Mode.Stopped;
     m_target = TargetPosition.DontCare;
     stop_impl();
   }
 
+  /**
+   * Starts extending the elevator.  Will not do anything if "safe mode" is
+   * enabled, and elevator is already beyond MAX_SAFE_HEIGHT.
+   */
   public boolean extend() {
     if (m_safetyOn && getHeight_impl() >= MAX_SAFE_HEIGHT) {
       stop();
@@ -95,6 +103,11 @@ public abstract class AbstractElevator extends SubsystemBase {
     return true;
   }
 
+
+  /**
+   * Starts retracting the elevator.  Will not do anything if "safe mode" is
+   * enabled, and elevator is already beyond MIN_SAFE_HEIGHT.
+   */
   public boolean retract() {
     if (m_safetyOn && getHeight_impl() <= 0) {
       stop();
@@ -105,8 +118,6 @@ public abstract class AbstractElevator extends SubsystemBase {
     m_mode = Mode.Retracting;
     return true;
   }
-
-  public abstract boolean atTargetPosition();
 
   @Override
   public void periodic() {
@@ -138,6 +149,12 @@ public abstract class AbstractElevator extends SubsystemBase {
     m_mode = Mode.Targeted;
     m_target = targetPosition;
   }
+
+  /**
+   * @return true iff the elevator is currently at the target position (or if
+   *         target is "don't care")
+   */
+  public abstract boolean atTargetPosition();
 
   /**
    * Handles motor adjustments (e.g., via PID) when a target position has been

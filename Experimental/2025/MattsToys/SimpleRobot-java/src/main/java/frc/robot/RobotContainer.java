@@ -57,8 +57,11 @@ public class RobotContainer {
         "Arm up",
         new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
     SmartDashboard.putData(
-        "Raise elevator",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top));
+        "Raise elevator (wait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
+    SmartDashboard.putData(
+        "Raise elevator (nowait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
   }
 
   private void configureArcadeDrive() {

@@ -22,8 +22,8 @@ Operator controller (Xbox)
 * Left bumper - Move pivot arm down
 * Left trigger -
 * Right trigger - 
-* X button - Shoot
+* X button - Shoot fastly
 * Y button - Extend climber
 * A button - Retract climber
-* B button - 
+* B button - Shoot slowly
 * D-pad -

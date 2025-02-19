@@ -150,6 +150,8 @@ public class RobotContainer {
     SmartDashboard.putData("Arm Pivot 0", m_armPivot.setArmPivotUp());
     SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown());
 
+    SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
+
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
@@ -326,6 +328,8 @@ public class RobotContainer {
     // Shooting
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value))
+        .whileTrue(new RunKraken(m_armRoller, 0.5));
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))

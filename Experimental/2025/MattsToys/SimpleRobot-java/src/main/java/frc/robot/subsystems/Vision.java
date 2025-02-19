@@ -4,22 +4,18 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Radians;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
+import frc.robot.utils.RobotConfigs.RobotConfig;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -29,31 +25,10 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+/**
+ * Vision processing implementation, based on Photonvision.
+ */
 public class Vision extends SubsystemBase implements IVision {
-  // The camera properties, relative to the center of the robot (and ground
-  // level).
-  //
-  // TODO: Update these values to reflect the real camera's properties.
-  //
-  // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
-  // pose (which is considered to be its center of rotation at the floor level, or
-  // Z = 0)...
-  public static final Distance CAMERA_HEIGHT = Meters.of(0.5); // meters
-  public static final Distance CAMERA_X = Meters.of(0.1); // meters
-  public static final Distance CAMERA_Y = Meters.of(0.0); // meters
-  // ...pitched 15 degrees up, pointing straightforward and in plane with the
-  // robot,...
-  public static final Angle CAMERA_PITCH = Degrees.of(-15); // pointed 15 degrees up
-  public static final Angle CAMERA_ROLL = Degrees.of(0); // degrees
-  public static final Angle CAMERA_YAW = Degrees.of(0); // degrees
-  // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS...
-  public static final int CAMERA_WIDTH_PX = 960; // pixels
-  public static final int CAMERA_HEIGHT_PX = 720; // pixels
-  public static final int CAMERA_FOV_DEG = 100; // degrees
-  public static final int CAMERA_FPS = 20; // frames per second (limited by robot loop rate)
-  // ...and is named as follows.
-  public static final String CAMERA_NAME = "USBCamera1";
-
   /** Connection to our (single) camera. */
   protected final PhotonCamera m_camera;
 
@@ -90,20 +65,23 @@ public class Vision extends SubsystemBase implements IVision {
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
   ;
 
-  /** Creates a new Vision. */
-  public Vision() {
+  public Vision(RobotConfig config) {
+    this(config.camera().name(), new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
+        config.camera().pos().z()),
+        new Rotation3d(config.camera().orientation().roll(),
+            config.camera().orientation().pitch(), config.camera().orientation().yaw())));
+
+  }
+
+  private Vision(String cameraName, Transform3d transform3d) {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
-    Translation3d robotToCameraTrl = new Translation3d(CAMERA_X.in(Meters), CAMERA_Y.in(Meters),
-        CAMERA_HEIGHT.in(Meters));
-    Rotation3d robotToCameraRot = new Rotation3d(CAMERA_ROLL.in(Radians), CAMERA_PITCH.in(Radians),
-        CAMERA_YAW.in(Radians));
-    m_robotToCamera = new Transform3d(robotToCameraTrl, robotToCameraRot);
+    m_robotToCamera = transform3d;
 
     // Connect to our camera. (May be a simulation.)
-    if (CAMERA_NAME != null && !CAMERA_NAME.isBlank()) {
-      m_camera = new PhotonCamera(CAMERA_NAME);
+    if (cameraName != null && !cameraName.isBlank()) {
+      m_camera = new PhotonCamera(cameraName);
     } else {
       // Need to set a value, since it's final, unless we're prepared to abort the
       // ctor. But we'll need to test for this elsewhere.

@@ -26,11 +26,17 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.RobotConfigs;
+import frc.robot.utils.RobotConfigs.RobotConfig;
+
 import java.util.function.Supplier;
 
 public class RobotContainer {
+  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
+  final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
+
   // Subsystems
-  final IVision m_vision = new SimulatedVision();
+  final IVision m_vision = new SimulatedVision(m_robotConfig);
   private final IDrivebase m_drivebase = new SimDrivebase();
   final AbstractElevator m_elevator = new SimulatedElevator();
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();

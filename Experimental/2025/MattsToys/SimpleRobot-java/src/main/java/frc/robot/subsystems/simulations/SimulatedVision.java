@@ -73,7 +73,7 @@ public class SimulatedVision extends Vision {
    * @see
    *      https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
    */
-  private SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
+  private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
     cameraProp.setCalibration(
         cameraConfig.imaging().width(), cameraConfig.imaging().height(),

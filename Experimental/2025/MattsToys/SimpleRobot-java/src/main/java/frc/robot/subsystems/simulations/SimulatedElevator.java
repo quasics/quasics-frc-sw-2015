@@ -58,7 +58,7 @@ public class SimulatedElevator extends AbstractElevator {
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Note: arbitrary values; we'd want to define something real.
-  private final PIDController m_pid = new PIDController(6, 0.5, 0);
+  private final PIDController m_pid = new PIDController(4, 0.0, 0.0);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
       .1 /* static gain, in V */, .15 /* gravity gain, in V */,
       0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
@@ -124,6 +124,7 @@ public class SimulatedElevator extends AbstractElevator {
     final boolean noisy = true;
 
     final double setpoint = getPositionForTarget(m_target);
+    final double velocity = m_encoder.getVelocity();
     final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint);
     final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
 
@@ -132,8 +133,8 @@ public class SimulatedElevator extends AbstractElevator {
 
     if (noisy) {
       System.out.printf(
-          "PID -> pos: %.02f, set: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), setpoint, pidOutput, feedForward, output, m_pid.atSetpoint());
+          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+          m_encoder.getPosition(), setpoint, velocity, pidOutput, feedForward, output, m_pid.atSetpoint());
     }
   }
 

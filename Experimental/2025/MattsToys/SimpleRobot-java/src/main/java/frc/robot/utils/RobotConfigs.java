@@ -29,7 +29,7 @@ public class RobotConfigs {
   public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
   }
 
-  public static record Imaging(int imageWidth, int imageHeight, Angle fov, double fps) {
+  public static record Imaging(int width, int height, Angle fov, double fps) {
   }
 
   /**
@@ -72,7 +72,7 @@ public class RobotConfigs {
             // robot,...
             new Orientation(Degrees.of(-15), Degrees.of(0), Degrees.of(0)),
             // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
-            new Imaging(960, 720, Degrees.of(10), 30))));
+            new Imaging(960, 720, Degrees.of(100), 30))));
     return map;
   }
 }

@@ -82,7 +82,7 @@ public class SimulatedVision extends Vision {
 
     // Approximate detection noise with average and standard deviation error in
     // pixels.
-    cameraProp.setCalibError(0.25, 0.08);
+    cameraProp.setCalibError(0.025, 0.08);
 
     // The average and standard deviation in milliseconds of image data latency.
     cameraProp.setAvgLatencyMs(35);

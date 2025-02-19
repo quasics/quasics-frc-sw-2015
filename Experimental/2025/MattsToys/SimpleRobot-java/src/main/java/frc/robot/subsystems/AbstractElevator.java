@@ -79,8 +79,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   public void stop() {
-    stop_impl();
     m_mode = Mode.Stopped;
+    m_target = TargetPosition.DontCare;
+    stop_impl();
   }
 
   public boolean extend() {

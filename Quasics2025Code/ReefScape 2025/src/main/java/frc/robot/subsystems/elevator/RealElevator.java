@@ -78,14 +78,6 @@ public class RealElevator extends AbstractElevator {
   }
 
   @Override
-  public void setVoltage(double voltage) {
-    m_leader.setVoltage(voltage);
-    // CODE_REVIEW: Same as setSpeed(). If you're setting the follower to the
-    // negative of the leader, then do you instead want to configure it as inverted?
-    m_leader.setVoltage(-voltage);
-  }
-
-  @Override
   public void stop() {
     setSpeed(0);
   }

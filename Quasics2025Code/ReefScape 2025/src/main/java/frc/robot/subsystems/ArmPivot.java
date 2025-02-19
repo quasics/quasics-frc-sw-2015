@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.Constants.ArmPIDConstants;
 
@@ -87,8 +88,8 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotUp() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.ARM_UP) {
-            setArmPivotSpeed(-0.25);
+          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.ARM_UP) {
+            setArmPivotSpeed(-0.15);
           }
         },
         () -> {
@@ -99,8 +100,8 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotDown() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.ARM_DOWN) {
-            setArmPivotSpeed(.25); // check value and change as needed
+          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.ARM_DOWN) {
+            setArmPivotSpeed(.15); // check value and change as needed
           }
         },
         () -> {

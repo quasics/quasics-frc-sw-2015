@@ -26,9 +26,6 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setTargetPosition(TargetPosition position);
 
-  // CODE_REVIEW: This isn't being used, so it should probably be removed.
-  public abstract void setVoltage(double voltage);
-
   public abstract void stop();
 
   public abstract void resetEncoders();

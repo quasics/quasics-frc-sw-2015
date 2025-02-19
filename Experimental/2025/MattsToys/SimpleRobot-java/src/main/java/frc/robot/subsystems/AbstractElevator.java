@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -27,8 +30,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public abstract class AbstractElevator extends SubsystemBase {
   public static final String NAME = "Elevator";
-  public static final double MAX_SAFE_HEIGHT = 2.5;
-  public static final double MIN_SAFE_HEIGHT = 0.0;
+  public static final Distance MAX_SAFE_HEIGHT = Meters.of(2.5);
+  public static final Distance MIN_SAFE_HEIGHT = Meters.of(0.0);
 
   /** Supported target positions for the elevator. */
   public enum TargetPosition {
@@ -89,11 +92,11 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   /**
-   * Starts extending the elevator.  Will not do anything if "safe mode" is
+   * Starts extending the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MAX_SAFE_HEIGHT.
    */
   public boolean extend() {
-    if (m_safetyOn && getHeight_impl() >= MAX_SAFE_HEIGHT) {
+    if (m_safetyOn && getHeight_impl().gte(MAX_SAFE_HEIGHT)) {
       stop();
       return false;
     }
@@ -103,13 +106,12 @@ public abstract class AbstractElevator extends SubsystemBase {
     return true;
   }
 
-
   /**
-   * Starts retracting the elevator.  Will not do anything if "safe mode" is
+   * Starts retracting the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MIN_SAFE_HEIGHT.
    */
   public boolean retract() {
-    if (m_safetyOn && getHeight_impl() <= 0) {
+    if (m_safetyOn && getHeight_impl().lte(MIN_SAFE_HEIGHT)) {
       stop();
       return false;
     }
@@ -128,9 +130,9 @@ public abstract class AbstractElevator extends SubsystemBase {
       // We're under manual control.
       if (m_safetyOn) {
         // Check to see if we've exceeded our safety limits.
-        final double currentHeight = getHeight_impl();
-        if ((m_mode == Mode.Extending && currentHeight >= MAX_SAFE_HEIGHT)
-            || (m_mode == Mode.Retracting && currentHeight <= 0)) {
+        final Distance currentHeight = getHeight_impl();
+        if ((m_mode == Mode.Extending && currentHeight.gte(MAX_SAFE_HEIGHT))
+            || (m_mode == Mode.Retracting && currentHeight.lte(MIN_SAFE_HEIGHT))) {
           stop();
         }
       }
@@ -169,7 +171,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   protected abstract void resetEncoder_impl();
 
   /** Returns the current elevator height (in meters). */
-  protected abstract double getHeight_impl();
+  protected abstract Distance getHeight_impl();
 
   /** Stops the actual motor on the elevator. */
   protected abstract void stop_impl();

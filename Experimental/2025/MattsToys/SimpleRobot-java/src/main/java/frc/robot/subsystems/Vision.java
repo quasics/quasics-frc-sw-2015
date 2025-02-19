@@ -52,7 +52,7 @@ public class Vision extends SubsystemBase implements IVision {
   public static final int CAMERA_FOV_DEG = 100; // degrees
   public static final int CAMERA_FPS = 20; // frames per second (limited by robot loop rate)
   // ...and is named as follows.
-  public static final String CAMERA_NAME = "cameraName";
+  public static final String CAMERA_NAME = "USBCamera1";
 
   /** Connection to our (single) camera. */
   protected final PhotonCamera m_camera;

@@ -47,6 +47,12 @@ public class RobotContainer {
   // explicitly bind specific channels for X/Y, possibly simplifying live vs
   // simulation handling, as well as directly providing "trigger factories" for
   // commands.)
+  //
+  // Note that live joysticks generally follow a different orientation/coordinate
+  // system than the one used for the robot.
+  //
+  // @see
+  // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   public RobotContainer() {

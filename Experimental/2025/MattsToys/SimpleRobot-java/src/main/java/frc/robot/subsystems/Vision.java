@@ -65,6 +65,11 @@ public class Vision extends SubsystemBase implements IVision {
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
   ;
 
+  /**
+   * Constructs a Vision subsystem, based on a specified robot configuration.
+   * 
+   * @param config robot configuration
+   */
   public Vision(RobotConfig config) {
     this(config.camera().name(), new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
         config.camera().pos().z()),
@@ -73,6 +78,17 @@ public class Vision extends SubsystemBase implements IVision {
 
   }
 
+  /**
+   * Delegated constructor for a Vision subystem.
+   * 
+   * @param cameraName             name configured for the camera in the
+   *                               CameraServer
+   * @param robotToCameraTransform Transform3d from the center of the robot to the
+   *                               camera mount position (ie, robot ➔ camera) in
+   *                               the Robot Coordinate System.
+   * 
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   */
   private Vision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
 

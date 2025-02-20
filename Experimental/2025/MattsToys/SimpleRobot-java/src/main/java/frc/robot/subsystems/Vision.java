@@ -73,11 +73,11 @@ public class Vision extends SubsystemBase implements IVision {
 
   }
 
-  private Vision(String cameraName, Transform3d transform3d) {
+  private Vision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
-    m_robotToCamera = transform3d;
+    m_robotToCamera = robotToCameraTransform;
 
     // Connect to our camera. (May be a simulation.)
     if (cameraName != null && !cameraName.isBlank()) {

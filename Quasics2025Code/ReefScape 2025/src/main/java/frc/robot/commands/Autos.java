@@ -18,7 +18,7 @@ public final class Autos {
   public static Command getAutonomousCommand(AbstractDrivebase drivebase, String operation, String position,
       boolean isBlue) {
     // return new PathPlannerAuto("Basic test");
-    if (operation == AutonomousSelectedOperation.doNothing) {
+    if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");
     }
     if (operation == AutonomousSelectedOperation.GTFO) {

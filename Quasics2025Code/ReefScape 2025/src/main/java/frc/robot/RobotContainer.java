@@ -204,8 +204,8 @@ public class RobotContainer {
   }
 
   private void addOverallSelectorToSmartDashboard() {
-    m_autonomousOperations.setDefaultOption(Constants.AutonomousSelectedOperation.doNothing,
-        Constants.AutonomousSelectedOperation.doNothing);
+    m_autonomousOperations.setDefaultOption(Constants.AutonomousSelectedOperation.DO_NOTHING,
+        Constants.AutonomousSelectedOperation.DO_NOTHING);
     m_autonomousOperations.addOption(
         Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
 

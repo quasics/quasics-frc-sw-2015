@@ -72,8 +72,31 @@ public class RobotConfigs {
       Imaging imaging) {
   }
 
+  public static record PIDConfig(double kP, double kI, double kD) {
+    /** Overloaded ctor for kP-only configs. */
+    public PIDConfig(double kP) {
+      this(kP, 0.0, 0.0);
+    }
+  }
+
+  /**
+   * Feed forward settings.
+   * 
+   * TODO: Convert this from raw doubles to unit-based values.
+   * 
+   * @param kS static gain, in V
+   * @param kG gravity gain, in V
+   * @param kV kV, in V/(m/s)
+   * @param kA kA, in V/(m/s^2)
+   */
+  public static record FeedForwardConfig(double kS, double kG, double kV, double kA) {
+  }
+
+  public static record ElevatorConfig(PIDConfig pid, FeedForwardConfig feedForward) {
+  }
+
   // TODO: Add other data, such as PID settings for different things, etc.
-  public static record RobotConfig(CameraConfig camera) {
+  public static record RobotConfig(CameraConfig camera, ElevatorConfig elevator) {
   }
 
   // TODO: Add definitions for actual hardware.
@@ -112,7 +135,11 @@ public class RobotConfigs {
                 Degrees.of(0) // yaw
             ),
             // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
-            new Imaging(960, 720, Degrees.of(100), 30))));
+            new Imaging(960, 720, Degrees.of(100), 30)),
+        new ElevatorConfig(
+            // Note: PID and FF values are arbitrary for simulation use.
+            new PIDConfig(4.0, 0, 0),
+            new FeedForwardConfig(0.1, 0.05, 0.25, 0))));
 
     assert (map.size() == Robot.values().length) : "Configurations for one or more robots are missing!";
     return map;

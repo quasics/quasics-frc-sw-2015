@@ -38,7 +38,7 @@ public class RobotContainer {
   // Subsystems
   final IVision m_vision = new SimulatedVision(m_robotConfig);
   private final IDrivebase m_drivebase = new SimDrivebase();
-  final AbstractElevator m_elevator = new SimulatedElevator();
+  final AbstractElevator m_elevator = new SimulatedElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers

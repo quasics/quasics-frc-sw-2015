@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.AbstractElevator;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Completes the AbstractElevator class definition for the purpose of
@@ -63,10 +64,8 @@ public class SimulatedElevator extends AbstractElevator {
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Note: arbitrary values; we'd want to define something real.
-  private final PIDController m_pid = new PIDController(4, 0.0, 0.0);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
-      .1 /* static gain, in V */, .15 /* gravity gain, in V */,
-      0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
+  private final PIDController m_pid;
+  private final ElevatorFeedforward m_feedforward;
 
   /**
    * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
@@ -103,12 +102,19 @@ public class SimulatedElevator extends AbstractElevator {
           .in(Meters));
 
   /** Creates a new SimulatedElevator. */
-  public SimulatedElevator() {
+  public SimulatedElevator(RobotConfig robotConfig) {
+    var pidConfig = robotConfig.elevator().pid();
+    var ffConfig = robotConfig.elevator().feedForward();
+
+    m_pid = new PIDController(pidConfig.kP(), pidConfig.kI(), pidConfig.kD());
+    m_feedforward = new ElevatorFeedforward(
+        ffConfig.kS(), ffConfig.kG(), ffConfig.kV(), ffConfig.kA());
+
     // Configure the motor.
-    var config = new SparkMaxConfig();
-    config.encoder.positionConversionFactor(kEncoderMetersPerPulse);
-    config.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
-    m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    var motorConfig = new SparkMaxConfig();
+    motorConfig.encoder.positionConversionFactor(kEncoderMetersPerPulse);
+    motorConfig.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
+    m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_pid.setTolerance(0.02); // within 2cm is fine
 

@@ -198,4 +198,5 @@ public class SimulationElevator extends AbstractElevator {
   public double getVelocity() {
     return m_encoder.getRate();
   }
+
 }

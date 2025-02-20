@@ -93,7 +93,7 @@ public final class Constants {
   } // public static class AutonomousStartingPositions
 
   public static class AutonomousSelectedOperation {
-    public static final String doNothing = "Do nothing";
+    public static final String DO_NOTHING = "Do nothing";
     public static final String GTFO = "GTFO";
   } // public static class AutonomousSelectedOperation
 
@@ -103,7 +103,7 @@ public final class Constants {
 
   public static class DesiredEncoderValues {
     public static final double ARM_DOWN = 0; // TODO: needs testing
-    public static final double ARM_UP = 0.75; // TODO: needs updated once the value can be tested
+    public static final double ARM_UP = 0.25; // TODO: needs updated once the value can be tested
   }
 
   public static class ArmPIDConstants {

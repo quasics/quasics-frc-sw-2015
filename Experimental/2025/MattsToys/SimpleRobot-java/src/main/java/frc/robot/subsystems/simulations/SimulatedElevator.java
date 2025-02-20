@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.simulations;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
@@ -16,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.AbstractElevator;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Completes the AbstractElevator class definition for the purpose of
@@ -37,15 +39,19 @@ public class SimulatedElevator extends AbstractElevator {
   /** Retraction speed while running under manual control. */
   static final double RETRACTION_SPEED = -1.0;
 
+  static final Distance MAX_SAFE_SPAN = MAX_SAFE_HEIGHT.minus(MIN_SAFE_HEIGHT);
+
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
   private static final double kGearing = 80.0; // Arbitrary (but needs to be enough for the simulated physics to work)
-  private static final Distance kDrumRadius = Units.Inches.of(1);
-  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
+  private static final Distance kDrumRadius = Inches.of(1);
+  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
-  private static final double kMinHeightMeters = -0.5; // arbitrary: should be < min desired
-  private static final double kMaxHeightMeters = MAX_SAFE_HEIGHT + 0.5; // arbitrary: should be > max desired
-  private static final double kHeightMetersAtStart = 0;
+  private static final Distance kMinSimulationHeight = MIN_SAFE_HEIGHT.minus(Meters.of(-0.1)); // arbitrary: should be
+                                                                                               // <= min desired
+  private static final Distance kMaxSimulationHeight = MAX_SAFE_HEIGHT.plus(Meters.of(0.25)); // arbitrary: should be >=
+                                                                                              // max desired
+  private static final Distance kStartingSimulationHeight = MIN_SAFE_HEIGHT;
   private static final boolean ENABLE_GRAVITY = true;
 
   /** This gearbox represents a gearbox containing 2 NEO motors. */
@@ -58,10 +64,8 @@ public class SimulatedElevator extends AbstractElevator {
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
 
   // Note: arbitrary values; we'd want to define something real.
-  private final PIDController m_pid = new PIDController(6, 0.5, 0);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
-      .1 /* static gain, in V */, .15 /* gravity gain, in V */,
-      0.25 /* kV, in V/(m/s) */, 0.0 /* kA, in V/(m/s^2) */);
+  private final PIDController m_pid;
+  private final ElevatorFeedforward m_feedforward;
 
   /**
    * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
@@ -93,23 +97,31 @@ public class SimulatedElevator extends AbstractElevator {
   private final SparkMaxSim m_motorSim = new SparkMaxSim(m_motor, elevatorPlant);
 
   // Physics simulation control.
-  private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
-      kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
+  private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Meters),
+      kMinSimulationHeight.in(Meters), kMaxSimulationHeight.in(Meters), ENABLE_GRAVITY, kStartingSimulationHeight
+          .in(Meters));
 
   /** Creates a new SimulatedElevator. */
-  public SimulatedElevator() {
+  public SimulatedElevator(RobotConfig robotConfig) {
+    var pidConfig = robotConfig.elevator().pid();
+    var ffConfig = robotConfig.elevator().feedForward();
+
+    m_pid = new PIDController(pidConfig.kP(), pidConfig.kI(), pidConfig.kD());
+    m_feedforward = new ElevatorFeedforward(
+        ffConfig.kS(), ffConfig.kG(), ffConfig.kV(), ffConfig.kA());
+
     // Configure the motor.
-    var config = new SparkMaxConfig();
-    config.encoder.positionConversionFactor(kEncoderMetersPerPulse);
-    config.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
-    m_motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    var motorConfig = new SparkMaxConfig();
+    motorConfig.encoder.positionConversionFactor(kEncoderMetersPerPulse);
+    motorConfig.encoder.velocityConversionFactor(kEncoderMetersPerPulse / 60);
+    m_motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_pid.setTolerance(0.02); // within 2cm is fine
 
     m_motorSim.setPosition(0);
 
     // Simulation rendering setup.
-    Mechanism2d rootMech2d = new Mechanism2d(9, MAX_SAFE_HEIGHT * 1.15 /* Leave a little room at the top */);
+    Mechanism2d rootMech2d = new Mechanism2d(9, MAX_SAFE_HEIGHT.in(Meters) * 1.15 /* Leave a little room at the top */);
     m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
         .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
 
@@ -123,8 +135,9 @@ public class SimulatedElevator extends AbstractElevator {
   protected void updateMotor_impl() {
     final boolean noisy = true;
 
-    final double setpoint = getPositionForTarget(m_target);
-    final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint);
+    final Distance setpoint = getPositionForTarget(m_target);
+    final double velocity = m_encoder.getVelocity();
+    final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint.in(Meters));
     final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
 
     final double output = MathUtil.clamp(pidOutput + feedForward, -1.0, +1.0);
@@ -132,8 +145,8 @@ public class SimulatedElevator extends AbstractElevator {
 
     if (noisy) {
       System.out.printf(
-          "PID -> pos: %.02f, set: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), setpoint, pidOutput, feedForward, output, m_pid.atSetpoint());
+          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+          m_encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForward, output, m_pid.atSetpoint());
     }
   }
 
@@ -205,8 +218,8 @@ public class SimulatedElevator extends AbstractElevator {
   }
 
   @Override
-  protected double getHeight_impl() {
-    return m_encoder.getPosition();
+  protected Distance getHeight_impl() {
+    return Meters.of(m_encoder.getPosition());
   }
 
   @Override
@@ -224,25 +237,25 @@ public class SimulatedElevator extends AbstractElevator {
     m_motor.set(RETRACTION_SPEED);
   }
 
-  protected double getPositionForTarget(TargetPosition targetPosition) {
+  protected Distance getPositionForTarget(TargetPosition targetPosition) {
     switch (targetPosition) {
       case DontCare:
         // Wherever we are right now is fine, thanks.
-        return m_encoder.getPosition();
+        return Meters.of(m_encoder.getPosition());
 
       case Bottom:
-        return 0;
+        return MIN_SAFE_HEIGHT;
       case Top:
         return MAX_SAFE_HEIGHT;
 
       case L1:
-        return MAX_SAFE_HEIGHT * (1.0 / 3.0);
+        return MIN_SAFE_HEIGHT.plus(MAX_SAFE_SPAN.times(1.0 / 3.0));
       case L2:
-        return MAX_SAFE_HEIGHT * (2.0 / 3.0);
+        return MIN_SAFE_HEIGHT.plus(MAX_SAFE_SPAN.times(2.0 / 3.0));
     }
 
     System.err.println("Unrecognized target position: " + targetPosition);
-    return 0;
+    return MIN_SAFE_HEIGHT;
   }
 
   @Override

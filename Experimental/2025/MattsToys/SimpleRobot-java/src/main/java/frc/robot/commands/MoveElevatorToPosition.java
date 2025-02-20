@@ -36,7 +36,7 @@ public class MoveElevatorToPosition extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (interrupted) {
+    if (m_waitForTargetReached || interrupted) {
       m_elevator.stop();
     }
   }

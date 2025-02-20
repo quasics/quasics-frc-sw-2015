@@ -26,13 +26,19 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.RobotConfigs;
+import frc.robot.utils.RobotConfigs.RobotConfig;
+
 import java.util.function.Supplier;
 
 public class RobotContainer {
+  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
+  final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
+
   // Subsystems
-  final IVision m_vision = new SimulatedVision();
+  final IVision m_vision = new SimulatedVision(m_robotConfig);
   private final IDrivebase m_drivebase = new SimDrivebase();
-  final AbstractElevator m_elevator = new SimulatedElevator();
+  final AbstractElevator m_elevator = new SimulatedElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers
@@ -41,12 +47,21 @@ public class RobotContainer {
   // explicitly bind specific channels for X/Y, possibly simplifying live vs
   // simulation handling, as well as directly providing "trigger factories" for
   // commands.)
+  //
+  // Note that live joysticks generally follow a different orientation/coordinate
+  // system than the one used for the robot.
+  //
+  // @see
+  // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   public RobotContainer() {
     configureArcadeDrive();
+    configureSmartDashboard();
     configureBindings();
+  }
 
+  private void configureSmartDashboard() {
     SmartDashboard.putData(
         "Wave arm",
         new ArmWaveCommand(m_arm));
@@ -57,8 +72,11 @@ public class RobotContainer {
         "Arm up",
         new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
     SmartDashboard.putData(
-        "Raise elevator",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top));
+        "Raise elevator (wait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
+    SmartDashboard.putData(
+        "Raise elevator (nowait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
   }
 
   private void configureArcadeDrive() {

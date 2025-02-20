@@ -87,8 +87,23 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotUp() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.ARM_UP) {
-            setArmPivotSpeed(-0.25);
+          // CODE_REVIEW: This is unsafe. The design for "startEnd()" is that it takes one
+          // function to be run as the "init" for a command, and another for the "end".
+          //
+          // An "init()" is supposed to run and then get out of the way for other
+          // commands/stuff (remembering that the command processing is "init, isFinished,
+          // execute, isFinished, execute,..."), but this function is going to run for an
+          // indefinite period of time until the arm reaches the "up" position. This can
+          // cause "starvation" for processing other commands (e.g., stuff dealing the
+          // drive base, etc.), and potentially cause the WPILib framework to declare an
+          // error and reboot.
+          //
+          // What you want to do in here is set the pivot speed and then be done; let the
+          // arm just keep moving until it gets to the point that you want. (But that also
+          // means that you need a command that can detect the "isFinished" state, so
+          // "startEnd()" probably isn't what you want to be using.)
+          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.ARM_UP) {
+            setArmPivotSpeed(-0.15);
           }
         },
         () -> {
@@ -99,8 +114,9 @@ public class ArmPivot extends SubsystemBase {
   public Command setArmPivotDown() {
     return this.startEnd(
         () -> {
-          while (m_throughBoreEncoder.getPosition() < Constants.DesiredEncoderValues.ARM_DOWN) {
-            setArmPivotSpeed(.25); // check value and change as needed
+          // CODE_REVIEW: See comment on "setArmPivotUp()".
+          while (m_throughBoreEncoder.getPosition() > Constants.DesiredEncoderValues.ARM_DOWN) {
+            setArmPivotSpeed(.15); // check value and change as needed
           }
         },
         () -> {

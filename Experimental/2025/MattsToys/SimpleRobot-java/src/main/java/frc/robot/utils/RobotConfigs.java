@@ -19,11 +19,15 @@ import edu.wpi.first.units.measure.Distance;
  */
 public class RobotConfigs {
   /**
-   * Location of something in terms of the robot's center of mass.
+   * Location of something in terms of the robot's center of driveframe.
    * 
    * This is currently used for the camera(s), but could easily be used for other
    * things as needed. (Note: I could've used a Translation3D for this, but felt
    * that "position" was more readable.)
+   * 
+   * @param x distance along the X axis (left (-)/right (+)) from CoDF
+   * @param y distance along the Y axis (forward (+)/backward (-)) from CoDF
+   * @param z distance along the Z axis (up (+)/down (-)) from CoDF
    */
   public static record Position(Distance x, Distance y, Distance z) {
   }
@@ -31,9 +35,9 @@ public class RobotConfigs {
   /**
    * Describes a camera's orientiation relative to the robot.
    * 
-   * @oaran pitch downward pitch of camera (negative == upward)
-   * @param roll left/right rotation of the camera
-   * @param yaw
+   * @param roll  The counterclockwise rotation angle around the X axis (roll).
+   * @param pitch The counterclockwise rotation angle around the Y axis (pitch).
+   * @param yaw   The counterclockwise rotation angle around the Z axis (yaw).
    */
   public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
   }
@@ -93,10 +97,17 @@ public class RobotConfigs {
             // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
             // pose (which is considered to be its center of rotation at the floor level, or
             // Z = 0)...
-            new Position(Meters.of(0.1), Meters.of(0.0), Meters.of(0.5)),
+            new Position(
+                Meters.of(0.1), // x
+                Meters.of(0.0), // y
+                Meters.of(0.5)), // z
             // ...pitched 15 degrees up, pointing straightforward and in plane with the
             // robot,...
-            new Orientation(Degrees.of(-15), Degrees.of(0), Degrees.of(0)),
+            new Orientation(
+                Degrees.of(0), // roll
+                Degrees.of(-15), // pitch
+                Degrees.of(0) // yaw
+            ),
             // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
             new Imaging(960, 720, Degrees.of(100), 30))));
 

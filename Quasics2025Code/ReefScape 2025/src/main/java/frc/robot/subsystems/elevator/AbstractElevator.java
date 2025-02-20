@@ -26,9 +26,6 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setTargetPosition(TargetPosition position);
 
-  // CODE_REVIEW: This isn't being used, so it should probably be removed.
-  public abstract void setVoltage(double voltage);
-
   public abstract void stop();
 
   public abstract void resetEncoders();
@@ -36,15 +33,6 @@ public abstract class AbstractElevator extends SubsystemBase {
   public abstract double getPosition();
 
   public abstract double getVelocity();
-
-  // CODE_REVIEW: Try to avoid using hardware-specific types in your API. A better
-  // approach would be to use a more generic type (e.g., a PIDController
-  // interface) or to have the abstract class provide a higher-level function
-  // (e.g., "setTargetPosition()"), and then have the concrete implementations use
-  // the hardware-specific types. This will make it easier to swap out the
-  // hardware-specific types in the future, or to implement the same functionality
-  // on other hardware (e.g., under simulation).
-  public abstract SparkClosedLoopController getPIDController();
 
   @Override
   public void periodic() {

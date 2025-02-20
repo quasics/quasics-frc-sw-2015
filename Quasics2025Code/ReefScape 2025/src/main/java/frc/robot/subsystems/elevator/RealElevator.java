@@ -33,12 +33,6 @@ public class RealElevator extends AbstractElevator {
   DigitalInput m_limitSwitchUp = new DigitalInput(0);
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
-  // CODE_REVIEW: These are only used in the constructor, so they should be local
-  // variables there. This will make the code easier to read/maintain.
-  private SparkMaxConfig m_config = new SparkMaxConfig();
-  private SparkMaxConfig m_followerConfig = new SparkMaxConfig();
-  private SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
-
   private RelativeEncoder m_encoder;
 
   private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
@@ -49,16 +43,39 @@ public class RealElevator extends AbstractElevator {
   public RealElevator() {
     m_encoder = m_leader.getEncoder();
 
+    /*
+     * SparkMaxConfig m_followerConfig = new SparkMaxConfig();
+     * SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
+     * 
+     * m_followerConfig.follow(m_leader, true);
+     * m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters,
+     * PersistMode.kPersistParameters);
+     * 
+     * m_leaderConfig.inverted(false);
+     * // TODO: change this obviously
+     * m_leaderConfig.closedLoop.p(0.00).i(0.00).d(0.00).velocityFF(0.00);
+     * m_leader.configure(m_leaderConfig, ResetMode.kResetSafeParameters,
+     * PersistMode.kPersistParameters);
+     */
+
+    SparkMaxConfig m_config = new SparkMaxConfig();
+    SparkMaxConfig m_followerConfig = new SparkMaxConfig();
+    SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
+
     m_followerConfig.inverted(false);
     m_leaderConfig.inverted(false);
     m_config.closedLoop.p(0.00).i(0.00).d(0.00).velocityFF(0.00);
-    m_leader.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_follower.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leader.configure(m_config, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    m_follower.configure(m_config, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
     m_leader.configure(
-        m_leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_leaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
     m_follower.configure(
-        m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_followerConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
   }
 
   @Override
@@ -75,14 +92,6 @@ public class RealElevator extends AbstractElevator {
 
   public SparkClosedLoopController getPIDController() {
     return m_pid;
-  }
-
-  @Override
-  public void setVoltage(double voltage) {
-    m_leader.setVoltage(voltage);
-    // CODE_REVIEW: Same as setSpeed(). If you're setting the follower to the
-    // negative of the leader, then do you instead want to configure it as inverted?
-    m_leader.setVoltage(-voltage);
   }
 
   @Override
@@ -143,5 +152,10 @@ public class RealElevator extends AbstractElevator {
 
   public void setTargetPosition(TargetPosition position) {
     m_pid.setReference(getRotationsForPosition(position), ControlType.kPosition);
+  }
+
+  // this is just for testing, don't actually use this pease
+  public void setTargetRotations(double rotations) {
+    m_pid.setReference(rotations, ControlType.kPosition);
   }
 }

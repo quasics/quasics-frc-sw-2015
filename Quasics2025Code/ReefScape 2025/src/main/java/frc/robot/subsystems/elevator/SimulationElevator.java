@@ -198,15 +198,4 @@ public class SimulationElevator extends AbstractElevator {
   public double getVelocity() {
     return m_encoder.getRate();
   }
-
-  @Override
-  public void setVoltage(double voltage) {
-    // TODO: Implement this method
-  }
-
-  @Override
-  public SparkClosedLoopController getPIDController() {
-    // TODO: Implement this method
-    return null;
-  }
 }

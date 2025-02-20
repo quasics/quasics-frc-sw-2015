@@ -57,8 +57,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureArcadeDrive();
+    configureSmartDashboard();
     configureBindings();
+  }
 
+  private void configureSmartDashboard() {
     SmartDashboard.putData(
         "Wave arm",
         new ArmWaveCommand(m_arm));

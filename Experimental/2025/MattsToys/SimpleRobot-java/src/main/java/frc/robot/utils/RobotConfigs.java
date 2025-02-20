@@ -14,8 +14,17 @@ import java.util.Map;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
-/** Add your docs here. */
+/**
+ * Defines various configuration data for robot subsystems.
+ */
 public class RobotConfigs {
+  /**
+   * Location of something in terms of the robot's center of mass.
+   * 
+   * This is currently used for the camera(s), but could easily be used for other
+   * things as needed. (Note: I could've used a Translation3D for this, but felt
+   * that "position" was more readable.)
+   */
   public static record Position(Distance x, Distance y, Distance z) {
   }
 
@@ -29,6 +38,17 @@ public class RobotConfigs {
   public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
   }
 
+  /**
+   * Defines the image-related characteristics of a camera on the robot.
+   * 
+   * Note that some of these characteristics would only be used (directly) in the
+   * code for simulation purposes.
+   * 
+   * @param width  camera field width (in pixels)
+   * @param height camera field height (in pixels)
+   * @param fov    field of view (e.g., 100 degrees)
+   * @param fps    frames per second produced by the video stream
+   */
   public static record Imaging(int width, int height, Angle fov, double fps) {
   }
 
@@ -49,16 +69,22 @@ public class RobotConfigs {
   public static record RobotConfig(CameraConfig camera) {
   }
 
+  // TODO: Add definitions for actual hardware.
   public enum Robot {
     Simulation
   }
 
-  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
-
+  /** @return the configuration associated with a specific robot */
   public static RobotConfig getConfig(Robot robot) {
     return m_map.get(robot);
   }
 
+  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
+
+  /**
+   * Helper function, used to construct the underlying map. (Java doesn't support
+   * inline specification of Map data.)
+   */
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, new RobotConfig(
@@ -73,6 +99,8 @@ public class RobotConfigs {
             new Orientation(Degrees.of(-15), Degrees.of(0), Degrees.of(0)),
             // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
             new Imaging(960, 720, Degrees.of(100), 30))));
+
+    assert (map.size() == Robot.values().length) : "Configurations for one or more robots are missing!";
     return map;
   }
 }

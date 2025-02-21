@@ -36,7 +36,7 @@ public class ArmPivot extends AbstractArmPivot {
   public void driveArmToSetpoint(double velocity) {
     double pidOutput = m_armPIDController.calculate(
         getPivotAngleRadians(),
-        angleSetpoint.in(Radians));
+        m_angleSetpoint.in(Radians));
     double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
         velocity);
     double output = feedForwardOutput + pidOutput;

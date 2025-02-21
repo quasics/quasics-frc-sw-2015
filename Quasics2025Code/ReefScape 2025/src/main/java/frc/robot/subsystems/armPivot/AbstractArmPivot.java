@@ -26,7 +26,7 @@ public class AbstractArmPivot extends SubsystemBase {
 
   protected final ArmFeedforward m_feedForward;
 
-  protected Angle angleSetpoint = Degrees.of(0);
+  protected Angle m_angleSetpoint = Degrees.of(0);
 
   // 360 (degrees) / 2048 (cycles per revolution)
   // TODO: Switch this to "Angle" type.
@@ -73,7 +73,7 @@ public class AbstractArmPivot extends SubsystemBase {
     m_pivot.set(0);
   }
 
-  public void setAngleSetpoint(Angle angle) {
-    this.angleSetpoint = angle;
+  public void setM_angleSetpoint(Angle angle) {
+    this.m_angleSetpoint = angle;
   }
 }

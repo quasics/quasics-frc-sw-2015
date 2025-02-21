@@ -50,11 +50,11 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   ////////////////////////////////////////////////////////////////////////////////////
 
   /** Motor being driven by the controller. */
-  private DCMotor armPlant = DCMotor.getNEO(1);
+  private DCMotor m_armPlant = DCMotor.getNEO(1);
 
   /** Simulation engine for the arm. */
-  private SingleJointedArmSim armSim = new SingleJointedArmSim(
-      armPlant, GEARING,
+  private SingleJointedArmSim m_armSim = new SingleJointedArmSim(
+      m_armPlant, GEARING,
       SingleJointedArmSim.estimateMOI(
           ARM_LENGTH_METERS, ARM_MASS_KG),
       ARM_LENGTH_METERS,
@@ -62,10 +62,10 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
       SIMULATE_GRAVITY, STARTING_ANGLE.in(Radians));
 
   /** Simulation driver for the motor controller. */
-  private SparkMaxSim sparkSim = new SparkMaxSim(m_motorController, armPlant);
+  private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
 
   /** Smart Dashboard UI component showing the arm's position. */
-  private final MechanismLigament2d crankMech2d;
+  private final MechanismLigament2d m_crankMech2d;
 
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
@@ -95,13 +95,13 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     // Configure simulation support
     //
     configureSimulation();
-    crankMech2d = configureSmartDashboardWidgets();
+    m_crankMech2d = configureSmartDashboardWidgets();
   }
 
   /** Configures simulation objects. */
   private void configureSimulation() {
-    sparkSim.setPosition(STARTING_ANGLE.in(Radians));
-    sparkSim.enable();
+    m_sparkSim.setPosition(STARTING_ANGLE.in(Radians));
+    m_sparkSim.enable();
   }
 
   /** @#return the ligament for the arm on the smart dashboard. */
@@ -109,7 +109,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     Mechanism2d armMech2d = new Mechanism2d(60, 60);
     MechanismRoot2d root = armMech2d.getRoot("root", 40, 10);
     var baseMech2d = root.append(new MechanismLigament2d("frame", -20, 0));
-    var crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, armSim.getAngleRads()));
+    var crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, m_armSim.getAngleRads()));
     baseMech2d.setColor(new Color8Bit(200, 200, 200));
     SmartDashboard.putData("Arm", armMech2d);
 
@@ -135,29 +135,33 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   public void simulationPeriodic() {
     super.simulationPeriodic();
 
-    // Compute the changes to the simulated hardware.
-    final Angle preAngle = Radians.of(armSim.getAngleRads());
-    var appliedOutput = sparkSim.getAppliedOutput();
+    // Compute the changes in this iteration for the simulated hardware, based on
+    // current state.
+    final Angle preAngle = Radians.of(m_armSim.getAngleRads());
+    var appliedOutput = m_sparkSim.getAppliedOutput();
     var voltsIn = RoboRioSim.getVInVoltage();
-    armSim.setInput(0, appliedOutput * voltsIn);
+    m_armSim.setInput(0, appliedOutput * voltsIn);
     final double timeIncrement = 0.020;
-    armSim.update(timeIncrement);
-    final Angle postAngle = Radians.of(armSim.getAngleRads());
+    m_armSim.update(timeIncrement);
+    final Angle postAngle = Radians.of(m_armSim.getAngleRads());
 
-    // Per original example, if we don't do this, the rendered angle is off a
-    // little bit.
-    sparkSim.setPosition(postAngle.in(Radians));
+    // Apply the computed changes to the hardware simulation.
+    var armVelocity = m_armSim.getVelocityRadPerSec();
+    m_sparkSim.iterate(armVelocity, voltsIn, timeIncrement);
 
-    var armVelocity = armSim.getVelocityRadPerSec();
-    sparkSim.iterate(armVelocity, voltsIn, timeIncrement);
+    // As indicated in the original example, if we don't do this, the rendered angle
+    // is off a little bit. (Unclear *why* this should happen, but it definitely
+    // *does*.)
+    m_sparkSim.setPosition(postAngle.in(Radians));
+
+    // Update the rendering.
+    m_crankMech2d.setAngle(postAngle.in(Degrees));
 
     // // Note: this should actually be calculated across *all* of the draws, which
     // // implies some sort of centralized physics would be useful.
     // final double currentDraw = armSim.getCurrentDrawAmps();
     // RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(
     // /* List of current draws (in amps): */ currentDraw));
-
-    crankMech2d.setAngle(postAngle.in(Degrees));
 
     if (NOISY) {
       System.out.println("Target: " + m_referencePosition.in(Degrees) +

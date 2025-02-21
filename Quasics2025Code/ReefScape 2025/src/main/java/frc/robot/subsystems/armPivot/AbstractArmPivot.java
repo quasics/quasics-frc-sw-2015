@@ -77,7 +77,7 @@ public abstract class AbstractArmPivot extends SubsystemBase {
     m_pivot.set(0);
   }
 
-  public void setM_angleSetpoint(Angle angle) {
+  public void setAngleSetpoint(Angle angle) {
     this.m_angleSetpoint = angle;
   }
 

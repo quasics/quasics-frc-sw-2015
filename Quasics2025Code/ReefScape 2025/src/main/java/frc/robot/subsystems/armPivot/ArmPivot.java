@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.armPivot;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -65,6 +65,10 @@ public class ArmPivot extends SubsystemBase {
   // state. (For an example, you may want to take a look at the handling of
   // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint(double velocity) {
+    // CODE_REVIEW: PID and FF values are computed in terms of *voltages*). As a
+    // result, you need to call "setVoltage()" (-12V to +12V) on the controller,
+    // rather than just "set()" (which assumes you're providing a speed from -1.0 to
+    // +1.0)
     double pidOutput = m_armPIDController.calculate(getPivotAngleRadians(), angleSetpointRadians);
     double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
         velocity);

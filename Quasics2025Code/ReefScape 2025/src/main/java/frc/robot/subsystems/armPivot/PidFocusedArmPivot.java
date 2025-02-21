@@ -7,7 +7,6 @@ package frc.robot.subsystems.armPivot;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.measure.Angle;
 
 /**
  * Defines a version of the ArmPivot that is primarily focused on (internalized)

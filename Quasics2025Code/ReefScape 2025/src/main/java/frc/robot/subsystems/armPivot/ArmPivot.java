@@ -4,46 +4,14 @@
 
 package frc.robot.subsystems.armPivot;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
-import frc.robot.Constants.ArmPIDConstants;
 
-public class ArmPivot extends SubsystemBase {
-  private SparkMax m_pivot;
-  private PIDController m_armPIDController;
-
-  private AbsoluteEncoder m_throughBoreEncoder;
-
-  private ArmFeedforward m_feedForward;
+public class ArmPivot extends AbstractArmPivot {
   private double angleSetpointRadians;
 
   /** Creates a new ArmPivot. */
   public ArmPivot() {
-    m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
-    m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
-    m_armPIDController = new PIDController(ArmPIDConstants.kP, ArmPIDConstants.kI, ArmPIDConstants.kD);
-    m_feedForward = new ArmFeedforward(ArmPIDConstants.kS, ArmPIDConstants.kG, ArmPIDConstants.kV);
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber(
-        "Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
-    SmartDashboard.putData("PID Controller", m_armPIDController);
-  }
-
-  public double getPivotAngleRadians() {
-    // *360 (degrees) / 2048 (cycles per revolution) * pi / 180 (convert to radians)
-    double currentAngleRadians = m_throughBoreEncoder.getPosition() * 360 / 2048 * Math.PI / 180; // TODO: test
-    return currentAngleRadians;
+    super();
   }
 
   // CODE_REVIEW: Don't expose the PID controller to clients; this should be
@@ -65,30 +33,20 @@ public class ArmPivot extends SubsystemBase {
   // state. (For an example, you may want to take a look at the handling of
   // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint(double velocity) {
-    // CODE_REVIEW: PID and FF values are computed in terms of *voltages*). As a
-    // result, you need to call "setVoltage()" (-12V to +12V) on the controller,
-    // rather than just "set()" (which assumes you're providing a speed from -1.0 to
-    // +1.0)
     double pidOutput = m_armPIDController.calculate(getPivotAngleRadians(), angleSetpointRadians);
     double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
         velocity);
     double output = feedForwardOutput + pidOutput;
+
+    // CODE_REVIEW: PID and FF values are computed in terms of *voltages*). As a
+    // result, you need to call "setVoltage()" (-12V to +12V) on the controller,
+    // rather than just "set()" (which assumes you're providing a speed from -1.0 to
+    // +1.0). (If you call "set()" with a voltage, you're probably going to *way*
+    // overshoot your target position.)
     m_pivot.set(output);
   }
 
   public void setAngleSetpointRadians(double angleSetpoint) {
     this.angleSetpointRadians = angleSetpoint;
-  }
-
-  public double getPivotPosition() {
-    return m_throughBoreEncoder.getPosition();
-  }
-
-  public void setArmPivotSpeed(double percentSpeed) {
-    m_pivot.set(percentSpeed);
-  }
-
-  public void stop() {
-    m_pivot.set(0);
   }
 }

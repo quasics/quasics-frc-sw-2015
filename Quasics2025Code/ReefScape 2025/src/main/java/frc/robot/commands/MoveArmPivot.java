@@ -54,7 +54,10 @@ public class MoveArmPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double position = m_pivot.getPivotPosition();
+    // CODE_REVIEW: Why not look for the target position in terms of the angle,
+    // since you're using that for other stuff? (It would likely also be more
+    // intuitive to folks reading the code.)
+    double position = m_pivot.getRawPivotPosition();
     if (m_direction == Direction.UP) {
       if (position < Constants.DesiredEncoderValues.ARM_UP) {
         return true;

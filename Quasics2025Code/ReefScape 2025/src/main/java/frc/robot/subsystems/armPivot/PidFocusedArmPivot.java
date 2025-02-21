@@ -13,9 +13,6 @@ import edu.wpi.first.math.MathUtil;
  * PID usage.
  */
 public class PidFocusedArmPivot extends AbstractArmPivot {
-  // TODO: Validate this tolerance.
-  private final double ANGLE_TOLERANCE_RADIANS = Math.toRadians(2); // within N degrees is fine
-
   /** Creates a new ArmPivot. */
   public PidFocusedArmPivot() {
     super();
@@ -24,7 +21,7 @@ public class PidFocusedArmPivot extends AbstractArmPivot {
     m_angleSetpoint = null;
 
     // Set the tolerance we're willing to accept for the arm's angle.
-    m_armPIDController.setTolerance(ANGLE_TOLERANCE_RADIANS);
+    m_armPIDController.setTolerance(ANGLE_TOLERANCE_RADIANS.in(Radians));
   }
 
   @Override
@@ -44,7 +41,7 @@ public class PidFocusedArmPivot extends AbstractArmPivot {
     }
 
     final double currentVelocity_radiansPerSec = getPivotVelocity();
-    final double currentAngle = getPivotAngleRadians();
+    final double currentAngle = getPivotAngle().in(Radians);
 
     final double pidOutput = m_armPIDController.calculate(
         // Current position (in radians)

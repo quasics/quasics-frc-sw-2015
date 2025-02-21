@@ -5,6 +5,7 @@
 package frc.robot.subsystems.armPivot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmPIDConstants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
-public class AbstractArmPivot extends SubsystemBase {
+public abstract class AbstractArmPivot extends SubsystemBase {
   protected final SparkMax m_pivot;
   protected final PIDController m_armPIDController;
 
@@ -27,6 +28,9 @@ public class AbstractArmPivot extends SubsystemBase {
   protected final ArmFeedforward m_feedForward;
 
   protected Angle m_angleSetpoint = Degrees.of(0);
+
+  // TODO: Validate this tolerance.
+  protected final Angle ANGLE_TOLERANCE_RADIANS = Degrees.of(2); // within N degrees is fine
 
   // 360 (degrees) / 2048 (cycles per revolution)
   // TODO: Switch this to "Angle" type.
@@ -48,13 +52,13 @@ public class AbstractArmPivot extends SubsystemBase {
     SmartDashboard.putData("PID Controller", m_armPIDController);
   }
 
-  // TODO: Change this to return "Angle"
-  public double getPivotAngleRadians() {
+  public Angle getPivotAngle() {
     final double currentAngleRadians = m_throughBoreEncoder.getPosition() * ENCODER_SCALING_FACTOR_RADIANS;
-    return currentAngleRadians;
+    return Radians.of(currentAngleRadians);
   }
 
   /** @return current velocity in radians/sec */
+  // TODO: Change to return RadiansPerSecond type.
   public double getPivotVelocity() {
     final double currentVelocity_radiansPerSec = m_throughBoreEncoder.getVelocity() /* in revs/min */
         * (ENCODER_SCALING_FACTOR_RADIANS / 60);
@@ -76,4 +80,6 @@ public class AbstractArmPivot extends SubsystemBase {
   public void setM_angleSetpoint(Angle angle) {
     this.m_angleSetpoint = angle;
   }
+
+  public abstract boolean atSetpoint();
 }

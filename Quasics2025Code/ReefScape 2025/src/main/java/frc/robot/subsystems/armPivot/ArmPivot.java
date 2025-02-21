@@ -34,10 +34,12 @@ public class ArmPivot extends AbstractArmPivot {
   // state. (For an example, you may want to take a look at the handling of
   // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint(double velocity) {
+    final double currentAngleRadians = getPivotAngle().in(Radians);
     double pidOutput = m_armPIDController.calculate(
-        getPivotAngleRadians(),
+        currentAngleRadians,
         m_angleSetpoint.in(Radians));
-    double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
+    double feedForwardOutput = m_feedForward.calculate(
+        currentAngleRadians,
         velocity);
     double output = feedForwardOutput + pidOutput;
 
@@ -47,5 +49,19 @@ public class ArmPivot extends AbstractArmPivot {
     // +1.0). (If you call "set()" with a voltage, you're probably going to *way*
     // overshoot your target position.)
     m_pivot.set(output);
+  }
+
+  // TODO: Test this.
+  public boolean atSetpoint() {
+    final Angle currentAngle = getPivotAngle();
+    Angle delta;
+    if (m_angleSetpoint.gte(currentAngle)) {
+      // setpoint >= current angle
+      delta = m_angleSetpoint.minus(currentAngle);
+    } else {
+      // setpoint < current angle
+      delta = currentAngle.minus(m_angleSetpoint);
+    }
+    return delta.lte(ANGLE_TOLERANCE_RADIANS);
   }
 }

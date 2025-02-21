@@ -199,9 +199,4 @@ public class SimulationElevator extends AbstractElevator {
     return m_encoder.getRate();
   }
 
-  @Override
-  public SparkClosedLoopController getPIDController() {
-    // TODO: Implement this method
-    return null;
-  }
 }

@@ -51,8 +51,10 @@ public class MoveElevatorToPosition extends Command {
     // to call this repeatedly in execute() would be if the reference point were
     // changing (e.g., if you're using this to control speed, and that was linked to
     // a driver control or something).
-    SparkClosedLoopController pid = m_elevator.getPIDController();
-    pid.setReference(m_targetRotations, ControlType.kPosition);
+
+    // TODO: do this
+    // SparkClosedLoopController pid = m_elevator.getPIDController();
+    // pid.setReference(m_targetRotations, ControlType.kPosition);
   }
 
   // Called once the command ends or is interrupted.

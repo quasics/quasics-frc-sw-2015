@@ -34,15 +34,6 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract double getVelocity();
 
-  // CODE_REVIEW: Try to avoid using hardware-specific types in your API. A better
-  // approach would be to use a more generic type (e.g., a PIDController
-  // interface) or to have the abstract class provide a higher-level function
-  // (e.g., "setTargetPosition()"), and then have the concrete implementations use
-  // the hardware-specific types. This will make it easier to swap out the
-  // hardware-specific types in the future, or to implement the same functionality
-  // on other hardware (e.g., under simulation).
-  public abstract SparkClosedLoopController getPIDController();
-
   @Override
   public void periodic() {
     // Always invoke the base class version, unless you *know* why you shouldn't do

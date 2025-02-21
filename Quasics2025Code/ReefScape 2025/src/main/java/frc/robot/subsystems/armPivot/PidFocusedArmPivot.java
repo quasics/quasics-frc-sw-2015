@@ -56,9 +56,7 @@ public class PidFocusedArmPivot extends AbstractArmPivot {
         currentVelocity_radiansPerSec);
 
     // Compute new voltage to drive to the motor (and apply it)
-    final double output = MathUtil.clamp(
-        feedForwardOutput + pidOutput,
-        -12.0, +12.0);
+    final double output = MathUtil.clamp(feedForwardOutput + pidOutput, -12.0, +12.0);
     m_pivot.setVoltage(output);
   }
 

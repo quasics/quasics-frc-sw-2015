@@ -35,12 +35,9 @@ public class ArmPivot extends AbstractArmPivot {
   // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint(double velocity) {
     final double currentAngleRadians = getPivotAngle().in(Radians);
-    double pidOutput = m_armPIDController.calculate(
-        currentAngleRadians,
-        m_angleSetpoint.in(Radians));
-    double feedForwardOutput = m_feedForward.calculate(
-        currentAngleRadians,
-        velocity);
+    double pidOutput =
+        m_armPIDController.calculate(currentAngleRadians, m_angleSetpoint.in(Radians));
+    double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, velocity);
     double output = feedForwardOutput + pidOutput;
 
     // CODE_REVIEW: PID and FF values are computed in terms of *voltages*). As a

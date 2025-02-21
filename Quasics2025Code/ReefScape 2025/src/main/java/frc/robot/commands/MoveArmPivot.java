@@ -12,9 +12,7 @@ import frc.robot.subsystems.armPivot.ArmPivot;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class MoveArmPivot extends Command {
-  public enum Direction {
-    UP, DOWN
-  }
+  public enum Direction { UP, DOWN }
 
   private final ArmPivot m_pivot;
   private final double m_pivotSpeed;

@@ -140,15 +140,17 @@ public interface IGyro {
   // Helper function to wrap the Pigeon2 type from CTRE.
   static IGyro wrapYawGyro(Pigeon2 pigeon2) {
     return new OffsetGyro(
-        new FunctionalGyro(() -> {
-          System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
-        },
+        new FunctionalGyro(()
+                               -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates."); },
             // Per docs, "getAngle()" (CW+) has been replaced by "getYaw()" (CCW+).
-            () -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
+            ()
+                -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
             // Per docs, "getRate()" (CW+) has been replaced by "getAngularVelocityZWorld()"
             // (CCW+).
-            () -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
-            () -> pigeon2.getRotation2d().unaryMinus(),
+            ()
+                -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
+            ()
+                -> pigeon2.getRotation2d().unaryMinus(),
             () -> {
               // Note that this will reset *all* axes for the Pigeon2. May want
               // to wrap further in an OffsetGyro.

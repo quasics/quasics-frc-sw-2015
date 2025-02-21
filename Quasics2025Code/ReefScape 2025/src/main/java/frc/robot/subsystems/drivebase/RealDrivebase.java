@@ -36,7 +36,8 @@ public class RealDrivebase extends AbstractDrivebase {
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightFollower =
+      new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMaxConfig m_leftLeaderConfig = new SparkMaxConfig();
   final SparkMaxConfig m_rightLeaderConfig = new SparkMaxConfig();
 

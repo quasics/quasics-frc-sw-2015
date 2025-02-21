@@ -4,19 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AutonomousSelectedOperation;
-
 import static edu.wpi.first.units.Units.*;
 
-import frc.robot.subsystems.drivebase.AbstractDrivebase;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.Constants.AutonomousSelectedOperation;
+import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static Command getAutonomousCommand(AbstractDrivebase drivebase, String operation, String position,
-      boolean isBlue) {
+  public static Command getAutonomousCommand(
+      AbstractDrivebase drivebase, String operation, String position, boolean isBlue) {
     // return new PathPlannerAuto("Basic test");
     if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");
@@ -26,6 +24,5 @@ public final class Autos {
     }
 
     return new PrintCommand("Doing nothing because no operation?");
-
   }
 }

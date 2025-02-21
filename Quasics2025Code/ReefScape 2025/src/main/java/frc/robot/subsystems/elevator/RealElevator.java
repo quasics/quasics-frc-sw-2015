@@ -5,14 +5,13 @@
 package frc.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,7 +29,8 @@ public class RealElevator extends AbstractElevator {
   //
   // On the other hand, if you *aren't* configuring them in leader/follower mode,
   // then you should probably avoid using variable names that imply that you are.
-  private SparkMax m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
+  private SparkMax m_follower =
+      new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
 
   DigitalInput m_limitSwitchUp = new DigitalInput(0);
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
@@ -39,7 +39,8 @@ public class RealElevator extends AbstractElevator {
   private double m_referenceRotations = 0;
 
   private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
-  private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+  private final ElevatorFeedforward m_elevatorFeedforward =
+      new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
    * Creates a new Elevator.
@@ -50,11 +51,11 @@ public class RealElevator extends AbstractElevator {
     /*
      * SparkMaxConfig m_followerConfig = new SparkMaxConfig();
      * SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
-     * 
+     *
      * m_followerConfig.follow(m_leader, true);
      * m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters,
      * PersistMode.kPersistParameters);
-     * 
+     *
      * m_leaderConfig.inverted(false);
      */
 
@@ -65,11 +66,9 @@ public class RealElevator extends AbstractElevator {
     m_leaderConfig.inverted(false);
 
     m_leader.configure(
-        m_leaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+        m_leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_follower.configure(
-        m_followerConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+        m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -120,7 +119,6 @@ public class RealElevator extends AbstractElevator {
     if (!ableToMove()) {
       stop();
     }
-
   }
 
   protected double getRotationsForPosition(TargetPosition position) {

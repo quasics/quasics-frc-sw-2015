@@ -12,13 +12,13 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.io.IOException;
 import java.util.*;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
-// CODE_REVIEW: Nothing is happening in this subsystem. Are you planning to make changes to add functionality?
+// CODE_REVIEW: Nothing is happening in this subsystem. Are you planning to make changes to add
+// functionality?
 public class Vision extends SubsystemBase {
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
@@ -35,8 +35,7 @@ public class Vision extends SubsystemBase {
    * reefscape layour isn't being used).
    */
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
-          ? AprilTagFields.k2025ReefscapeAndyMark
+      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
           : AprilTagFields.k2025ReefscapeWelded)
       : null // Fall back on the custom layout
   ;

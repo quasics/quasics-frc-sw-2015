@@ -24,9 +24,9 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setSpeed(double percentSpeed);
 
-  public abstract void setTargetPosition(TargetPosition position);
+  public abstract void setVoltage(double voltage);
 
-  public abstract void setTargetRotations(double rotations);
+  public abstract void setTargetPosition(TargetPosition position);
 
   public abstract void stop();
 

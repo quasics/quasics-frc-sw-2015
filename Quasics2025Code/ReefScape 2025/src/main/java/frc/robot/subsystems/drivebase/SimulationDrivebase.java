@@ -34,6 +34,9 @@ import frc.robot.utils.RobotSettings;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private static final Distance kWheelRadius = Meters.of(0.0508);
+
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   private final IGyro m_wrappedGyro;
@@ -131,13 +134,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
    * private void configureDriveMotorsAndSensors() {
    * m_leftLeaderSpark.addFollower(m_leftFollower);
    * m_rightLeaderSpark.addFollower(m_rightFollower);
-   * 
+   *
    * // We need to invert one side of the drivetrain so that positive voltages
    * // result in both sides moving forward. Depending on how your robot's
    * // gearbox is constructed, you might have to invert the left side instead.
    * m_rightLeader.setInverted(true);
-   * 
-   * 
+   *
+   *
    * }
    */
 

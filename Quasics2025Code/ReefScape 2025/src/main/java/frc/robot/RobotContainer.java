@@ -21,18 +21,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
-import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
-import frc.robot.commands.PulseKraken;
 import frc.robot.commands.MoveElevatorToTargetPosition;
+import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
-import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
@@ -143,32 +142,29 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
 
-    SmartDashboard.putData("Arm Pivot Up", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.UP));
-    SmartDashboard.putData("Arm Pivot Down", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.DOWN));
+    SmartDashboard.putData(
+        "Arm Pivot Up", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.UP));
+    SmartDashboard.putData(
+        "Arm Pivot Down", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.DOWN));
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
-
-    SmartDashboard.putData("Move elevator to 300 rotations",
-        new InstantCommand(() -> m_elevator.setTargetRotations(300)));
 
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
-    SmartDashboard.putData(
-        "Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
-    SmartDashboard.putData(
-        "Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
+    SmartDashboard.putData("Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
+    SmartDashboard.putData("Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
 
-    SmartDashboard.putData("Extend Climber 25% ",
-        new MoveClimbersForTime(m_climbers, true, 0.25, .5));
-    SmartDashboard.putData("Extend Climber 50% ",
-        new MoveClimbersForTime(m_climbers, true, 0.5, .25));
-    SmartDashboard.putData("Extend Climber 5% ",
-        new MoveClimbersForTime(m_climbers, false, 0.5, 1));
-    SmartDashboard.putData("Extend Climber 10% ",
-        new MoveClimbersForTime(m_climbers, false, .10, 1));
-    SmartDashboard.putData("Retract Climber 10% ",
-        new MoveClimbersForTime(m_climbers, true, 0.10, .5));
+    SmartDashboard.putData(
+        "Extend Climber 25% ", new MoveClimbersForTime(m_climbers, true, 0.25, .5));
+    SmartDashboard.putData(
+        "Extend Climber 50% ", new MoveClimbersForTime(m_climbers, true, 0.5, .25));
+    SmartDashboard.putData(
+        "Extend Climber 5% ", new MoveClimbersForTime(m_climbers, false, 0.5, 1));
+    SmartDashboard.putData(
+        "Extend Climber 10% ", new MoveClimbersForTime(m_climbers, false, .10, 1));
+    SmartDashboard.putData(
+        "Retract Climber 10% ", new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     SmartDashboard.putData("Elevator to L2",
         new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
@@ -297,31 +293,28 @@ public class RobotContainer {
   }
 
   private void ConfigureDriverButtons() {
-
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
         .whileTrue(new MoveClimbers(m_climbers, true));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for various buttons on the
-                                                         // controllers.
+        .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for various
+                                                         // buttons on the controllers.
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    Trigger IntakePulse = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
         .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.4));// UP
+        .whileTrue(new RunElevator(m_elevator, -0.4)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.25));// DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.25)); // DOWN
   }
 
   private void ConfigureOperatorButtons() {
     // Arm Pivot Controls
-    Trigger extendClimber = new Trigger(
-        () -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
         .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber = new Trigger(
-        () -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
         .whileTrue(new MoveClimbers(m_climbers, false));
 
     // Shooting
@@ -335,7 +328,6 @@ public class RobotContainer {
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, MoveArmPivot.Direction.UP));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, MoveArmPivot.Direction.DOWN));
-
   }
 
   private double getDriveSpeedScalingFactor() {

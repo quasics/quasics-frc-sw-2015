@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.spark.SparkClosedLoopController;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -35,8 +33,7 @@ public class SimulationElevator extends AbstractElevator {
   // This gearbox represents a gearbox containing 4 Vex 775pro motors.
   private final DCMotor m_gearing = DCMotor.getNEO(1);
 
-  private final Encoder m_encoder = new Encoder(ELEVATOR_ENCODER_PORT_A,
-      ELEVATOR_ENCODER_PORT_B);
+  private final Encoder m_encoder = new Encoder(ELEVATOR_ENCODER_PORT_A, ELEVATOR_ENCODER_PORT_B);
   private final PWMSparkMax m_motor = new PWMSparkMax(ELEVATOR_PWM_ID);
 
   // Mechanism2d visualization of the hardware (for rendering in
@@ -200,8 +197,7 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   @Override
-  public void setTargetRotations(double rotations) {
-    // TODO, maybe
+  public void setVoltage(double voltage) {
+    m_motor.setVoltage(voltage);
   }
-
 }

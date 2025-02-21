@@ -4,11 +4,15 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ArmPivot;
+import frc.robot.subsystems.armPivot.ArmPivot;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class MoveArmPivotToPosition extends Command {
   private final ArmPivot m_pivot;
   private final double m_angle;
@@ -24,7 +28,6 @@ public class MoveArmPivotToPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +35,7 @@ public class MoveArmPivotToPosition extends Command {
   public void execute() {
     PIDController pidController = m_pivot.getPivotPIDController();
     pidController.setSetpoint(m_angle);
-    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngleRadians()));
+    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngle().in(Radians)));
   }
 
   // Called once the command ends or is interrupted.

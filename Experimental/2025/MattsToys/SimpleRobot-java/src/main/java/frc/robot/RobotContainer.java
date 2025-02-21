@@ -67,10 +67,10 @@ public class RobotContainer {
         new ArmWaveCommand(m_arm));
     SmartDashboard.putData(
         "Arm out",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
     SmartDashboard.putData(
         "Arm up",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE_RADIANS));
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
     SmartDashboard.putData(
         "Raise elevator (wait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));

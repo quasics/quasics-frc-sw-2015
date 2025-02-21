@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -19,8 +18,8 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 public class Climbers extends SubsystemBase {
   private SparkMax m_leftClimber;
 
-  // CODE_REVIEW: You're not doing anything with these encoders. Are you planning
-  // to use them later?
+  // CODE_REVIEW: You're not doing anything with this encoder. Are you planning
+  // to use it later? (If not, it should be removed.)
   private RelativeEncoder m_leftEncoder;
 
   private final SparkMaxConfig m_config = new SparkMaxConfig();
@@ -35,7 +34,6 @@ public class Climbers extends SubsystemBase {
 
     m_leftClimber.configure(
         m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
   // negative speed = extension
@@ -56,6 +54,5 @@ public class Climbers extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Climber Current", m_leftClimber.getOutputCurrent());
-
   }
 }

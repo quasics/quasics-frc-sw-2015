@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.elevator;
 
+import java.lang.annotation.Target;
+
+import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -36,10 +39,10 @@ public class RealElevator extends AbstractElevator {
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
   private RelativeEncoder m_encoder;
-  private double m_referenceRotations = 0;
+  private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
   private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
-  private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
    * Creates a new Elevator.
@@ -74,6 +77,9 @@ public class RealElevator extends AbstractElevator {
 
   @Override
   public void setSpeed(double percentSpeed) {
+    // do not use this when using pid, only for manual control
+    m_targetPosition = TargetPosition.kDontCare;
+
     if (ableToMove()) {
       m_leader.set(percentSpeed);
 
@@ -84,6 +90,12 @@ public class RealElevator extends AbstractElevator {
       // consistent value for the speeds?
       m_follower.set(-percentSpeed);
     }
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    m_leader.setVoltage(voltage);
+    m_follower.setVoltage(-voltage);
   }
 
   @Override
@@ -121,6 +133,19 @@ public class RealElevator extends AbstractElevator {
       stop();
     }
 
+    if (m_targetPosition != TargetPosition.kDontCare) {
+      double targetRotations = getRotationsForPosition(m_targetPosition);
+      double velocity = m_encoder.getVelocity();
+      double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
+      double feedforward = m_feedforward.calculate(velocity);
+
+      double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
+      setVoltage(output);
+
+      System.out.printf(
+          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+          m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+    }
   }
 
   protected double getRotationsForPosition(TargetPosition position) {
@@ -141,11 +166,6 @@ public class RealElevator extends AbstractElevator {
   }
 
   public void setTargetPosition(TargetPosition position) {
-    m_referenceRotations = getRotationsForPosition(position);
-  }
-
-  // this is just for testing, don't actually use this
-  public void setTargetRotations(double rotations) {
-    m_referenceRotations = rotations;
+    m_targetPosition = position;
   }
 }

@@ -38,7 +38,8 @@ public class AbstractArmPivot extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber(
-        "Through Bore Encoder Position", m_throughBoreEncoder.getPosition() * 360);
+        "Through Bore Encoder Position (deg)",
+        m_throughBoreEncoder.getPosition() * 360.0 / 2048.0);
     SmartDashboard.putData("PID Controller", m_armPIDController);
   }
 

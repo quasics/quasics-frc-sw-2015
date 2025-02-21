@@ -152,6 +152,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
 
+    SmartDashboard.putData("Move elevator to 300 rotations",
+        new InstantCommand(() -> m_elevator.setTargetRotations(300)));
+
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 

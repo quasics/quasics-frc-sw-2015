@@ -199,4 +199,9 @@ public class SimulationElevator extends AbstractElevator {
     return m_encoder.getRate();
   }
 
+  @Override
+  public void setTargetRotations(double rotations) {
+    // TODO, maybe
+  }
+
 }

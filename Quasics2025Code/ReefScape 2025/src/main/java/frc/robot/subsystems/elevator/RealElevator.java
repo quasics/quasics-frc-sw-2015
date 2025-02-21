@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -36,6 +37,7 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
 
   private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
+  private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
    * Creates a new Elevator.
@@ -53,7 +55,7 @@ public class RealElevator extends AbstractElevator {
      * 
      * m_leaderConfig.inverted(false);
      * // TODO: change this obviously
-     * m_leaderConfig.closedLoop.p(0.00).i(0.00).d(0.00).velocityFF(0.00);
+     * m_leaderConfig.closedLoop.p(0.00).i(0.00).d(0.00);
      * m_leader.configure(m_leaderConfig, ResetMode.kResetSafeParameters,
      * PersistMode.kPersistParameters);
      */
@@ -64,7 +66,7 @@ public class RealElevator extends AbstractElevator {
 
     m_followerConfig.inverted(false);
     m_leaderConfig.inverted(false);
-    m_config.closedLoop.p(0.00).i(0.00).d(0.00).velocityFF(0.00);
+    m_config.closedLoop.p(0.00).i(0.00).d(0.00);
     m_leader.configure(m_config, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     m_follower.configure(m_config, ResetMode.kResetSafeParameters,
@@ -88,10 +90,6 @@ public class RealElevator extends AbstractElevator {
     // inverted when you configure it in the constructor, so that you can use a
     // consistent value for the speeds?
     m_follower.set(-percentSpeed);
-  }
-
-  public SparkClosedLoopController getPIDController() {
-    return m_pid;
   }
 
   @Override

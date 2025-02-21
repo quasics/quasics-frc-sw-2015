@@ -26,6 +26,8 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setTargetPosition(TargetPosition position);
 
+  public abstract void setTargetRotations(double rotations);
+
   public abstract void stop();
 
   public abstract void resetEncoders();

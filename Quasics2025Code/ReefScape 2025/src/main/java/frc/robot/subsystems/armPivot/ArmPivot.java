@@ -4,10 +4,14 @@
 
 package frc.robot.subsystems.armPivot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Angle;
 
 public class ArmPivot extends AbstractArmPivot {
-  private double angleSetpointRadians;
+  private Angle angleSetpoint = Degrees.of(0);
 
   /** Creates a new ArmPivot. */
   public ArmPivot() {
@@ -33,7 +37,9 @@ public class ArmPivot extends AbstractArmPivot {
   // state. (For an example, you may want to take a look at the handling of
   // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint(double velocity) {
-    double pidOutput = m_armPIDController.calculate(getPivotAngleRadians(), angleSetpointRadians);
+    double pidOutput = m_armPIDController.calculate(
+        getPivotAngleRadians(),
+        angleSetpoint.in(Radians));
     double feedForwardOutput = m_feedForward.calculate(getPivotAngleRadians(),
         velocity);
     double output = feedForwardOutput + pidOutput;
@@ -46,7 +52,7 @@ public class ArmPivot extends AbstractArmPivot {
     m_pivot.set(output);
   }
 
-  public void setAngleSetpointRadians(double angleSetpoint) {
-    this.angleSetpointRadians = angleSetpoint;
+  public void setAngleSetpoint(Angle angle) {
+    this.angleSetpoint = angle;
   }
 }

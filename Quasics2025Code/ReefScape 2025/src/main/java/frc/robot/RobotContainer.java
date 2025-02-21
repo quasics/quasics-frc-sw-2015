@@ -54,7 +54,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase;
-  private final AbstractArmPivot m_armPivot = new ArmPivot();
+  private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator;
   private final Climbers m_climbers = new Climbers();

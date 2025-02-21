@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems.armPivot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmPIDConstants;
@@ -22,6 +25,8 @@ public class AbstractArmPivot extends SubsystemBase {
   protected final AbsoluteEncoder m_throughBoreEncoder;
 
   protected final ArmFeedforward m_feedForward;
+
+  protected Angle angleSetpoint = Degrees.of(0);
 
   // 360 (degrees) / 2048 (cycles per revolution)
   // TODO: Switch this to "Angle" type.
@@ -66,5 +71,9 @@ public class AbstractArmPivot extends SubsystemBase {
 
   public void stop() {
     m_pivot.set(0);
+  }
+
+  public void setAngleSetpoint(Angle angle) {
+    this.angleSetpoint = angle;
   }
 }

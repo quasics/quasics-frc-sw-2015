@@ -4,15 +4,12 @@
 
 package frc.robot.subsystems.armPivot;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 
 public class ArmPivot extends AbstractArmPivot {
-  private Angle angleSetpoint = Degrees.of(0);
-
   /** Creates a new ArmPivot. */
   public ArmPivot() {
     super();
@@ -50,9 +47,5 @@ public class ArmPivot extends AbstractArmPivot {
     // +1.0). (If you call "set()" with a voltage, you're probably going to *way*
     // overshoot your target position.)
     m_pivot.set(output);
-  }
-
-  public void setAngleSetpoint(Angle angle) {
-    this.angleSetpoint = angle;
   }
 }

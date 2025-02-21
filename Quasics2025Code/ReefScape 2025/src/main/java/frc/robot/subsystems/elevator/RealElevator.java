@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
@@ -35,8 +36,9 @@ public class RealElevator extends AbstractElevator {
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
   private RelativeEncoder m_encoder;
+  private double m_referenceRotations = 0;
 
-  private final SparkClosedLoopController m_pid = m_leader.getClosedLoopController();
+  private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
   private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
@@ -54,23 +56,13 @@ public class RealElevator extends AbstractElevator {
      * PersistMode.kPersistParameters);
      * 
      * m_leaderConfig.inverted(false);
-     * // TODO: change this obviously
-     * m_leaderConfig.closedLoop.p(0.00).i(0.00).d(0.00);
-     * m_leader.configure(m_leaderConfig, ResetMode.kResetSafeParameters,
-     * PersistMode.kPersistParameters);
      */
 
-    SparkMaxConfig m_config = new SparkMaxConfig();
     SparkMaxConfig m_followerConfig = new SparkMaxConfig();
     SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
 
     m_followerConfig.inverted(false);
     m_leaderConfig.inverted(false);
-    m_config.closedLoop.p(0.00).i(0.00).d(0.00);
-    m_leader.configure(m_config, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-    m_follower.configure(m_config, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
 
     m_leader.configure(
         m_leaderConfig, ResetMode.kResetSafeParameters,
@@ -82,14 +74,16 @@ public class RealElevator extends AbstractElevator {
 
   @Override
   public void setSpeed(double percentSpeed) {
-    m_leader.set(percentSpeed);
+    if (ableToMove()) {
+      m_leader.set(percentSpeed);
 
-    // CODE_REVIEW: OK. You're setting the follower to the negative of the leader.
-    // That implies that this motor is inverted vs. the other one (which is
-    // perfectly fine, and reasonably expected). So why not just set the follower to
-    // inverted when you configure it in the constructor, so that you can use a
-    // consistent value for the speeds?
-    m_follower.set(-percentSpeed);
+      // CODE_REVIEW: OK. You're setting the follower to the negative of the leader.
+      // That implies that this motor is inverted vs. the other one (which is
+      // perfectly fine, and reasonably expected). So why not just set the follower to
+      // inverted when you configure it in the constructor, so that you can use a
+      // consistent value for the speeds?
+      m_follower.set(-percentSpeed);
+    }
   }
 
   @Override
@@ -112,22 +106,20 @@ public class RealElevator extends AbstractElevator {
     return m_encoder.getVelocity();
   }
 
+  public boolean ableToMove() {
+    return (m_limitSwitchUp.get() == true && getVelocity() < 0)
+        || (m_limitSwitchDown.get() == true && getVelocity() > 0);
+  }
+
   @Override
   public void periodic() {
     super.periodic();
 
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
-    /*
-     * if (m_limitSwitchUp.get() == true && getVelocity() < 0) {
-     * stop();
-     * }
-     */
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
-    /*
-     * if (m_limitSwitchDown.get() == true && getVelocity() > 0) {
-     * stop();
-     * }
-     */
+    if (!ableToMove()) {
+      stop();
+    }
 
   }
 
@@ -149,11 +141,11 @@ public class RealElevator extends AbstractElevator {
   }
 
   public void setTargetPosition(TargetPosition position) {
-    m_pid.setReference(getRotationsForPosition(position), ControlType.kPosition);
+    m_referenceRotations = getRotationsForPosition(position);
   }
 
-  // this is just for testing, don't actually use this pease
+  // this is just for testing, don't actually use this
   public void setTargetRotations(double rotations) {
-    m_pid.setReference(rotations, ControlType.kPosition);
+    m_referenceRotations = rotations;
   }
 }

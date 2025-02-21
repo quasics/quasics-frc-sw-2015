@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.armPivot.ArmPivot;
@@ -32,7 +34,7 @@ public class MoveArmPivotToPosition extends Command {
   public void execute() {
     PIDController pidController = m_pivot.getPivotPIDController();
     pidController.setSetpoint(m_angle);
-    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngleRadians()));
+    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngle().in(Radians)));
   }
 
   // Called once the command ends or is interrupted.

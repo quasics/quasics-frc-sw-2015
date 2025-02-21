@@ -138,8 +138,8 @@ public class RobotConfigs {
             new Imaging(960, 720, Degrees.of(100), 30)),
         new ElevatorConfig(
             // Note: PID and FF values are arbitrary for simulation use.
-            new PIDConfig(4.0, 0, 0),
-            new FeedForwardConfig(0.1, 0.05, 0.25, 0))));
+            new PIDConfig(10.0, 0, 0),
+            new FeedForwardConfig(0.01, 0.05, 0.20, 0))));
 
     assert (map.size() == Robot.values().length) : "Configurations for one or more robots are missing!";
     return map;

@@ -140,8 +140,8 @@ public class SimulatedElevator extends AbstractElevator {
     final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint.in(Meters));
     final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
 
-    final double output = MathUtil.clamp(pidOutput + feedForward, -1.0, +1.0);
-    m_motor.set(output);
+    final double output = MathUtil.clamp(pidOutput + feedForward, -12.0, +12.0);
+    m_motor.setVoltage(output);
 
     if (noisy) {
       System.out.printf(

@@ -12,15 +12,19 @@ import frc.robot.Constants;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class MoveArmPivot extends Command {
+  public enum Direction {
+    UP, DOWN
+  }
+
   private final ArmPivot m_pivot;
   private final double m_pivotSpeed;
-  private final boolean m_up;
+  private final Direction m_direction;
 
   /** Creates a new MoveArmPivot. */
-  public MoveArmPivot(ArmPivot pivot, double pivotSpeed, boolean up) {
+  public MoveArmPivot(ArmPivot pivot, double pivotSpeed, Direction direction) {
     m_pivot = pivot;
-    m_up = up;
-    if (m_up) {
+    m_direction = direction;
+    if (m_direction == Direction.UP) {
       m_pivotSpeed = -Math.abs(pivotSpeed);
     } else {
       m_pivotSpeed = Math.abs(pivotSpeed);
@@ -51,7 +55,7 @@ public class MoveArmPivot extends Command {
   @Override
   public boolean isFinished() {
     double position = m_pivot.getPivotPosition();
-    if (m_up == true) {
+    if (m_direction == Direction.UP) {
       if (position < Constants.DesiredEncoderValues.ARM_UP) {
         return true;
       }

@@ -14,6 +14,7 @@ import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public final class Autos {
+  static final double DIST_TO_REEF = 2.134;
   /** Example static factory for an autonomous command. */
   public static Command getAutonomousCommand(AbstractDrivebase drivebase, String operation, String position,
       boolean isBlue) {
@@ -22,7 +23,7 @@ public final class Autos {
       return new PrintCommand("Doing nothing!");
     }
     if (operation == AutonomousSelectedOperation.GTFO) {
-      return new DriveForDistance(drivebase, 0.20, Meters.of(2));
+      return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
     }
 
     return new PrintCommand("Doing nothing because no operation?");

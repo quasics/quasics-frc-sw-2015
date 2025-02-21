@@ -24,11 +24,11 @@ public class Vision extends SubsystemBase {
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
 
   /** Custom tag positions for use in the Quasics workspace. */
-  private static List<AprilTag> CUSTOM_TAGS =
-      Arrays.asList(new AprilTag(0, new Pose3d(0, 0, 19.3 / 39.37, new Rotation3d())),
-          new AprilTag(1, new Pose3d(0, 23.2 / 39.37, 18.6 / 39.37, new Rotation3d())),
-          new AprilTag(585, new Pose3d(-1, -1, 18.1, new Rotation3d())),
-          new AprilTag(586, new Pose3d(26.8, -1, 20.5, new Rotation3d())));
+  private static List<AprilTag> CUSTOM_TAGS = Arrays.asList(
+      new AprilTag(0, new Pose3d(0, 0, 19.3 / 39.37, new Rotation3d())),
+      new AprilTag(1, new Pose3d(0, 23.2 / 39.37, 18.6 / 39.37, new Rotation3d())),
+      new AprilTag(585, new Pose3d(-1, -1, 18.1, new Rotation3d())),
+      new AprilTag(586, new Pose3d(26.8, -1, 20.5, new Rotation3d())));
 
   /**
    * The predefined tag field layout that should be loaded (or null, if the
@@ -36,14 +36,13 @@ public class Vision extends SubsystemBase {
    */
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : null // Fall back on the custom layout
-      ;
+  ;
 
   // TODO: Add the actual values for translating the robot's position to the
   // camera's position.
-  private final Transform3d robotToCam =
-      new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
+  private final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
 
   private PhotonCamera camera = new PhotonCamera("USB_Camera");
   private final PhotonPoseEstimator visionEstimator;

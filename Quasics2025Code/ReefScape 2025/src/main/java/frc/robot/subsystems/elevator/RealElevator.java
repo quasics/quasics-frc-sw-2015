@@ -5,10 +5,8 @@
 package frc.robot.subsystems.elevator;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -29,18 +27,24 @@ public class RealElevator extends AbstractElevator {
   //
   // On the other hand, if you *aren't* configuring them in leader/follower mode,
   // then you should probably avoid using variable names that imply that you are.
-  private SparkMax m_follower =
-      new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
+  private SparkMax m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
 
   DigitalInput m_limitSwitchUp = new DigitalInput(0);
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
   private RelativeEncoder m_encoder;
+
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private double m_referenceRotations = 0;
 
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
-  private final ElevatorFeedforward m_elevatorFeedforward =
-      new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
+  private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
    * Creates a new Elevator.

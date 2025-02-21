@@ -34,12 +34,15 @@ import frc.robot.utils.RobotSettings;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private static final Distance kWheelRadius = Meters.of(0.0508);
+
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   private final IGyro m_wrappedGyro;
 
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
+      0.3);
   private final DifferentialDrivetrainSim m_drivetrainSim;
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
@@ -56,8 +59,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
    */
 
   final SparkMax m_leftLeaderSpark = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightLeaderSpark =
-      new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final SparkMax m_rightLeaderSpark = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
   final DCMotor m_leftGearBox = DCMotor.getNEO(2);
   final DCMotor m_rightGearBox = DCMotor.getNEO(2);
 
@@ -221,10 +223,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_drivetrainSim.update(0.02);
 
     m_leftLeaderSparkSim.iterate(m_drivetrainSim.getLeftVelocityMetersPerSecond()
-            / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
+        / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
         12, 0.02);
     m_rightLeaderSparkSim.iterate(m_drivetrainSim.getRightVelocityMetersPerSecond()
-            / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
+        / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
         12, 0.02);
 
     // Update the encoders and gyro, based on what the drive train simulation says

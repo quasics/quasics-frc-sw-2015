@@ -18,8 +18,8 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 public class Climbers extends SubsystemBase {
   private SparkMax m_leftClimber;
 
-  // CODE_REVIEW: You're not doing anything with these encoders. Are you planning
-  // to use them later?
+  // CODE_REVIEW: You're not doing anything with this encoder. Are you planning
+  // to use it later? (If not, it should be removed.)
   private RelativeEncoder m_leftEncoder;
 
   private final SparkMaxConfig m_config = new SparkMaxConfig();

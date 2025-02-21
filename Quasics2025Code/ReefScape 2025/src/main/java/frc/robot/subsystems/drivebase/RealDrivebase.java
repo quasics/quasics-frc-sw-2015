@@ -28,7 +28,12 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
 public class RealDrivebase extends AbstractDrivebase {
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private static final double kV = 473;
+
+  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
+  // later? (If not, it should be removed.)
   private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
@@ -36,8 +41,7 @@ public class RealDrivebase extends AbstractDrivebase {
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_leftFollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeader = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
-  final SparkMax m_rightFollower =
-      new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  final SparkMax m_rightFollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
   final SparkMaxConfig m_leftLeaderConfig = new SparkMaxConfig();
   final SparkMaxConfig m_rightLeaderConfig = new SparkMaxConfig();
 

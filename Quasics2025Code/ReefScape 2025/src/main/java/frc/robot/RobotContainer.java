@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
-import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.MoveElevatorToTargetPosition;
@@ -32,7 +31,6 @@ import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.armPivot.AbstractArmPivot;
 import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
@@ -73,8 +71,7 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController =
-      new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
   Trigger switchDriveTrigger;
@@ -120,15 +117,11 @@ public class RobotContainer {
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
-      m_arcadeDriveLeftStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      m_arcadeDriveRightStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
     } else {
-      m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
-      m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(0);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(1);
       drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
     }
     return drivebase;
@@ -287,9 +280,10 @@ public class RobotContainer {
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    switchDriveTrigger =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
-            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
+        .onTrue(new InstantCommand(() -> {
+          m_switchDrive = !m_switchDrive;
+        }));
 
     m_drivebase.setDefaultCommand(
         new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
@@ -309,9 +303,8 @@ public class RobotContainer {
                                                          // buttons on the controllers.
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    Trigger IntakePulse =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
-            .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+        .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
@@ -322,12 +315,10 @@ public class RobotContainer {
 
   private void ConfigureOperatorButtons() {
     // Arm Pivot Controls
-    Trigger extendClimber =
-        new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-            .whileTrue(new MoveClimbers(m_climbers, true));
-    Trigger retractClimber =
-        new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-            .whileTrue(new MoveClimbers(m_climbers, false));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new MoveClimbers(m_climbers, true));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new MoveClimbers(m_climbers, false));
 
     // Shooting
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
@@ -343,10 +334,8 @@ public class RobotContainer {
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo =
-        m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
-    final boolean isTurtle =
-        m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
@@ -367,9 +356,8 @@ public class RobotContainer {
     String autonomousOperation = m_autonomousOperations.getSelected();
     String positionOption = m_positionOptions.getSelected();
 
-    DriverStation.Alliance alliance =
-        DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is
-                                                                         // blue
+    DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is
+                                                                                                       // blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
     return Autos.getAutonomousCommand(m_drivebase, autonomousOperation, positionOption, isBlue);

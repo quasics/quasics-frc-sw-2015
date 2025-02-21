@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.spark.SparkClosedLoopController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
@@ -52,21 +51,17 @@ public class SimulationElevator extends AbstractElevator {
   // hardware. (But for now, this will at least give us something we can use.)
   private static final double kGearing = 10.0;
   private static final Distance kDrumRadius = Units.Inches.of(1);
-  private static final double kEncoderMetersPerPulse =
-      2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
+  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Units.Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
-  private static final double kMinHeightMeters =
-      MIN_DESIRED_HEIGHT - 1; // arbitrary: should be < min desired
-  private static final double kMaxHeightMeters =
-      MAX_DESIRED_HEIGHT + 1; // arbitrary: should be > max desired
+  private static final double kMinHeightMeters = MIN_DESIRED_HEIGHT - 1; // arbitrary: should be < min desired
+  private static final double kMaxHeightMeters = MAX_DESIRED_HEIGHT + 1; // arbitrary: should be > max desired
   private static final boolean ENABLE_GRAVITY = true;
   private static final double kHeightMetersAtStart = 0;
 
   // Simulation classes help us simulate what's going on, optionally including
   // gravity.
-  private final ElevatorSim m_sim =
-      new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
-          kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
+  private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass, kDrumRadius.in(Units.Meters),
+      kMinHeightMeters, kMaxHeightMeters, ENABLE_GRAVITY, kHeightMetersAtStart);
 
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
@@ -80,7 +75,7 @@ public class SimulationElevator extends AbstractElevator {
     // Simulation rendering setup.
     Mechanism2d rootMech2d = new Mechanism2d(9, 10);
     m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
-                   .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
+        .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
 
     // Publish Mechanism2d to SmartDashboard.
     // To show the visualization, select Network Tables -> SmartDashboard
@@ -109,8 +104,7 @@ public class SimulationElevator extends AbstractElevator {
     if (m_targetPosition != TargetPosition.kDontCare) {
       final double targetValue = translateTargetPositionToValue(m_targetPosition);
       final double error = targetValue - m_encoder.getDistance();
-      final double percentError =
-          error / (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT); // Complete hack
+      final double percentError = error / (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT); // Complete hack
       final double errorScaling = 1.0;
       double speed = Math.min(Math.max(percentError * errorScaling, -1.0), 1.0);
       if (ACCEPTABLE_ERROR > Math.abs(error)) {

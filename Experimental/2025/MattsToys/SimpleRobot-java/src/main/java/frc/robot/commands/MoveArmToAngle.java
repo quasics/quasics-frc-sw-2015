@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 
@@ -17,13 +18,13 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
  * specified position (unless something else changes that value).
  */
 public class MoveArmToAngle extends Command {
-  final private ISingleJointArm arm;
-  final private double angleRadians;
+  final private ISingleJointArm m_arm;
+  final private Angle m_angle;
 
   /** Creates a new MoveArmToAngle. */
-  public MoveArmToAngle(ISingleJointArm arm, double angleRadians) {
-    this.arm = arm;
-    this.angleRadians = angleRadians;
+  public MoveArmToAngle(ISingleJointArm arm, Angle angle) {
+    this.m_arm = arm;
+    this.m_angle = angle;
 
     addRequirements(arm.asSubsystem());
   }
@@ -31,7 +32,7 @@ public class MoveArmToAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    arm.setTargetPositionInRadians(angleRadians);
+    m_arm.setTargetPosition(m_angle);
   }
 
   // Returns true when the command should end.

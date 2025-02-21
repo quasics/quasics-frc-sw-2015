@@ -4,13 +4,17 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
+
 public interface ISingleJointArm extends ISubsystem {
   ////////////////////////////////////////////////////////////////////////////////////
   // Values defining the arm's characteristics/physics
   ////////////////////////////////////////////////////////////////////////////////////
 
-  final double ARM_OUT_ANGLE_RADIANS = Math.toRadians(180);
-  final double ARM_UP_ANGLE_RADIANS = Math.toRadians(90);
+  final Angle ARM_OUT_ANGLE = Degrees.of(180);
+  final Angle ARM_UP_ANGLE = Degrees.of(90);
   final double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for
                                            // simulated physics to work)
   final double ARM_LENGTH_METERS = 1.0; // Arbitrary
@@ -18,5 +22,5 @@ public interface ISingleJointArm extends ISubsystem {
 
   String SUBSYSTEM_NAME = "Arm";
 
-  void setTargetPositionInRadians(double targetPosition);
+  void setTargetPosition(Angle targetPosition);
 }

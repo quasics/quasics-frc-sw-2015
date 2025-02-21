@@ -4,12 +4,18 @@
 
 package frc.robot.subsystems.elevator;
 
+import java.lang.annotation.Target;
+
+import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -33,18 +39,10 @@ public class RealElevator extends AbstractElevator {
   DigitalInput m_limitSwitchDown = new DigitalInput(1);
 
   private RelativeEncoder m_encoder;
+  private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
-  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
-  // later? (If not, it should be removed.)
-  private double m_referenceRotations = 0;
-
-  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
-  // later? (If not, it should be removed.)
   private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
-
-  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
-  // later? (If not, it should be removed.)
-  private final ElevatorFeedforward m_elevatorFeedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
 
   /**
    * Creates a new Elevator.
@@ -55,11 +53,11 @@ public class RealElevator extends AbstractElevator {
     /*
      * SparkMaxConfig m_followerConfig = new SparkMaxConfig();
      * SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
-     *
+     * 
      * m_followerConfig.follow(m_leader, true);
      * m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters,
      * PersistMode.kPersistParameters);
-     *
+     * 
      * m_leaderConfig.inverted(false);
      */
 
@@ -70,13 +68,18 @@ public class RealElevator extends AbstractElevator {
     m_leaderConfig.inverted(false);
 
     m_leader.configure(
-        m_leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_leaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
     m_follower.configure(
-        m_followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        m_followerConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
   }
 
   @Override
   public void setSpeed(double percentSpeed) {
+    // do not use this when using pid, only for manual control
+    m_targetPosition = TargetPosition.kDontCare;
+
     if (ableToMove()) {
       m_leader.set(percentSpeed);
 
@@ -87,6 +90,12 @@ public class RealElevator extends AbstractElevator {
       // consistent value for the speeds?
       m_follower.set(-percentSpeed);
     }
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    m_leader.setVoltage(voltage);
+    m_follower.setVoltage(-voltage);
   }
 
   @Override
@@ -123,6 +132,20 @@ public class RealElevator extends AbstractElevator {
     if (!ableToMove()) {
       stop();
     }
+
+    if (m_targetPosition != TargetPosition.kDontCare) {
+      double targetRotations = getRotationsForPosition(m_targetPosition);
+      double velocity = m_encoder.getVelocity();
+      double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
+      double feedforward = m_feedforward.calculate(velocity);
+
+      double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
+      setVoltage(output);
+
+      System.out.printf(
+          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+          m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+    }
   }
 
   protected double getRotationsForPosition(TargetPosition position) {
@@ -143,11 +166,6 @@ public class RealElevator extends AbstractElevator {
   }
 
   public void setTargetPosition(TargetPosition position) {
-    m_referenceRotations = getRotationsForPosition(position);
-  }
-
-  // this is just for testing, don't actually use this
-  public void setTargetRotations(double rotations) {
-    m_referenceRotations = rotations;
+    m_targetPosition = position;
   }
 }

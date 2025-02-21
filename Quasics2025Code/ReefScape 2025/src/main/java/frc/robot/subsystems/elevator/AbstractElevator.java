@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems.elevator;
 
+import com.revrobotics.spark.SparkClosedLoopController;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class AbstractElevator extends SubsystemBase {
+
   public enum TargetPosition {
     kDontCare,
     kBottom,
@@ -21,9 +24,9 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract void setSpeed(double percentSpeed);
 
-  public abstract void setTargetPosition(TargetPosition position);
+  public abstract void setVoltage(double voltage);
 
-  public abstract void setTargetRotations(double rotations);
+  public abstract void setTargetPosition(TargetPosition position);
 
   public abstract void stop();
 

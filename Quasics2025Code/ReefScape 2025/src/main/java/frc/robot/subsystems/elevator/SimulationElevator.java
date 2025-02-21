@@ -197,7 +197,7 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   @Override
-  public void setTargetRotations(double rotations) {
-    // TODO, maybe
+  public void setVoltage(double voltage) {
+    m_motor.setVoltage(voltage);
   }
 }

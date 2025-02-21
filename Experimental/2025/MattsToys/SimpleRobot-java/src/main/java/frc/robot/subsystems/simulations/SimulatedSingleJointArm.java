@@ -155,8 +155,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     // // implies some sort of centralized physics would be useful.
     // final double currentDraw = armSim.getCurrentDrawAmps();
     // RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(
-    // // List of current draws (in amps)
-    // currentDraw));
+    // /* List of current draws (in amps): */ currentDraw));
 
     crankMech2d.setAngle(postAngle.in(Degrees));
 

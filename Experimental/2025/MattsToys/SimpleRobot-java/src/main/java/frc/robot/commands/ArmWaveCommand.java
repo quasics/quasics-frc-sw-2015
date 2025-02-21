@@ -42,12 +42,12 @@ public class ArmWaveCommand extends Command {
       if (NOISY) {
         System.out.println("Setting to upright");
       }
-      arm.setTargetPositionInRadians(Math.toRadians(ISingleJointArm.ARM_UP_ANGLE_RADIANS));
+      arm.setTargetPositionInRadians(ISingleJointArm.ARM_UP_ANGLE_RADIANS);
     } else if (counter % CYCLE_TIME_IN_ITERATIONS == 0) {
       if (NOISY) {
         System.out.println("Setting to flat");
       }
-      arm.setTargetPositionInRadians(Math.toRadians(ISingleJointArm.ARM_OUT_ANGLE_RADIANS));
+      arm.setTargetPositionInRadians(ISingleJointArm.ARM_OUT_ANGLE_RADIANS);
     }
 
     // Increment counter for next pass

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.PulseKraken;
@@ -144,11 +145,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
 
-    SmartDashboard.putData("Arm Pivot Up", m_armPivot.setArmPivotUp());
-    SmartDashboard.putData("Arm Pivot Down", m_armPivot.setArmPivotDown());
-
-    SmartDashboard.putData("Arm Pivot 0", m_armPivot.setArmPivotUp());
-    SmartDashboard.putData("Arm Pivot 90", m_armPivot.setArmPivotDown());
+    SmartDashboard.putData("Arm Pivot Up", new MoveArmPivot(m_armPivot, 0.1, true));
+    SmartDashboard.putData("Arm Pivot Down", new MoveArmPivot(m_armPivot, 0.1, false));
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
 

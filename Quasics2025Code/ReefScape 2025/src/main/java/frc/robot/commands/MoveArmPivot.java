@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmPivot;
+import frc.robot.Constants;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
@@ -13,15 +14,16 @@ import frc.robot.subsystems.ArmPivot;
 public class MoveArmPivot extends Command {
   private final ArmPivot m_pivot;
   private final double m_pivotSpeed;
-  private final boolean m_deploying;
+  private final boolean m_up;
+
   /** Creates a new MoveArmPivot. */
-  public MoveArmPivot(ArmPivot pivot, double pivotSpeed, boolean deploying) {
+  public MoveArmPivot(ArmPivot pivot, double pivotSpeed, boolean up) {
     m_pivot = pivot;
-    m_deploying = deploying;
-    if (m_deploying) {
-      m_pivotSpeed = Math.abs(pivotSpeed);
-    } else {
+    m_up = up;
+    if (m_up) {
       m_pivotSpeed = -Math.abs(pivotSpeed);
+    } else {
+      m_pivotSpeed = Math.abs(pivotSpeed);
     }
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
@@ -48,6 +50,16 @@ public class MoveArmPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    double position = m_pivot.getPivotPosition();
+    if (m_up == true) {
+      if (position < Constants.DesiredEncoderValues.ARM_UP) {
+        return true;
+      }
+    } else {
+      if (position > Constants.DesiredEncoderValues.ARM_DOWN) {
+        return true;
+      }
+    }
     return false;
   }
 }

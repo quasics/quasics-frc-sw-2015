@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.elevator;
 
-import java.lang.annotation.Target;
-
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -13,8 +11,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;

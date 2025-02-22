@@ -4,10 +4,7 @@
 
 package frc.robot.utils;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
+import static edu.wpi.first.units.Units.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,7 +108,12 @@ public class RobotConfigs {
   public static record ElevatorConfig(PIDConfig pid, FeedForwardConfig feedForward) {
   }
 
-  public static record DriveConfig(PIDConfig pid, FeedForwardConfig feedForward) {
+  public static record DriveConfig(
+      Distance wheelRadius,
+      Distance trackWidth,
+      double gearing, // (gearing between motor and wheel axel (>=1))
+      PIDConfig pid,
+      FeedForwardConfig feedForward) {
   }
 
   // TODO: Add other data, such as PID settings for different things, etc.
@@ -138,6 +140,9 @@ public class RobotConfigs {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, new RobotConfig(
         new DriveConfig(
+            Inches.of(3), // Wheel radius
+            Inches.of(22), // Trackwidth
+            8.0, // Gearing
             new PIDConfig(
                 1.6018),
             new FeedForwardConfig(

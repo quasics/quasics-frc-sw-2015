@@ -310,9 +310,9 @@ public class RobotContainer {
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
+        .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.15)); // DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.4)); // DOWN
   }
 
   private void ConfigureOperatorButtons() {

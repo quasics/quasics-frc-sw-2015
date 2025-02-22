@@ -8,7 +8,9 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Degrees;
 
+import edu.wpi.first.units.measure.Angle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
@@ -63,15 +65,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
           this::resetOdometry, // Method to reset odometry (will be called if your auto has a
                                // starting pose)
           this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards)
-              -> setSpeeds(
-                  speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
-                           // Also optionally outputs individual module feedforwards
+          (speeds, feedforwards) -> setSpeeds(
+              speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+                       // Also optionally outputs individual module feedforwards
           new PPLTVController(0.02), // PPLTVController is the built in path following controller
                                      // for differential drive trains
           config, // The robot configuration
-          ()
-              -> {
+          () -> {
             // Boolean supplier that controls when the path will be mirrored for the red
             // alliance
             // This will flip the path being followed to the red side of the field.
@@ -93,8 +93,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected AbstractDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
-    m_poseEstimator =
-        new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
 
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
@@ -148,8 +147,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_driveBaseWidthWithBumpers;
   }
 
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  public Angle getHeading() {
+    return Degrees.of(getOdometry().getPoseMeters().getRotation().getDegrees());
+  }
+
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;

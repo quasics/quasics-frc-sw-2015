@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechGamePad;
@@ -32,6 +33,12 @@ import frc.robot.utils.SysIdGenerator;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 import java.util.function.Supplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import choreo.auto.AutoFactory;
 
 public class RobotContainer {
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
@@ -63,22 +70,7 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureSmartDashboard() {
-    SmartDashboard.putData(
-        "Wave arm",
-        new ArmWaveCommand(m_arm));
-    SmartDashboard.putData(
-        "Arm out",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
-    SmartDashboard.putData(
-        "Arm up",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
-    SmartDashboard.putData(
-        "Raise elevator (wait)",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
-    SmartDashboard.putData(
-        "Raise elevator (nowait)",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+  private void addSysIdControlsToDashboard() {
 
     SmartDashboard.putData(
         "SysID: Quasistatic(fwd)",
@@ -108,6 +100,61 @@ public class RobotContainer {
     SmartDashboard.putData(
         "SysID(rot): Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+  }
+
+  private void configureSmartDashboard() {
+    addSysIdControlsToDashboard();
+
+    SmartDashboard.putData(
+        "Wave arm",
+        new ArmWaveCommand(m_arm));
+    SmartDashboard.putData(
+        "Arm out",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
+    SmartDashboard.putData(
+        "Arm up",
+        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
+    SmartDashboard.putData(
+        "Raise elevator (wait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
+    SmartDashboard.putData(
+        "Raise elevator (nowait)",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+
+    // Trajectory commands
+    SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
+  }
+
+  private final AutoFactory m_autoFactory = new AutoFactory(
+      m_drivebase::getPose, // A function that returns the current robot pose
+      m_drivebase::resetPose, // A function that resets the current robot pose to the provided Pose2d
+      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+      true, // If alliance flipping should be enabled
+      m_drivebase.asSubsystem() // The drive subsystem
+  );
+
+  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+    return Commands.sequence(
+        // Per https://choreo.autos/choreolib/auto-factory/
+        m_autoFactory.resetOdometry("Demo path"),
+        // Then do the thing
+        m_autoFactory.trajectoryCmd(trajectoryName));
+  }
+
+  protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
+    try {
+      // Load the path you want to follow using its name in the GUI
+      PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(trajectoryName);
+
+      // Create a path following command using AutoBuilder. This will also trigger
+      // event markers.
+      return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+      // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      System.err.println("Failed to load Choreo trajectory: " + trajectoryName);
+      e.printStackTrace();
+      return Commands.none();
+    }
   }
 
   private void configureArcadeDrive() {

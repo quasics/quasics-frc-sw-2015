@@ -28,6 +28,7 @@ import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
+import frc.robot.utils.SysIdGenerator;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 import java.util.function.Supplier;
@@ -80,16 +81,16 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
     SmartDashboard.putData(
         "SysID: Quasistatic(fwd)",
-        m_drivebase.sysIdQuasistatic(Direction.kForward));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
     SmartDashboard.putData(
         "SysID: Quasistatic(rev)",
-        m_drivebase.sysIdQuasistatic(Direction.kReverse));
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
     SmartDashboard.putData(
         "SysID: Dynamic(fwd)",
-        m_drivebase.sysIdDynamic(Direction.kForward));
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
     SmartDashboard.putData(
         "SysID: Dynamic(rev)",
-        m_drivebase.sysIdDynamic(Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
   }
 
   private void configureArcadeDrive() {

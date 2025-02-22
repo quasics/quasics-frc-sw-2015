@@ -93,6 +93,9 @@ public class RobotContainer {
         "SysID: Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
 
+    // SysId commands for rotational actions (used to calculate kA-angular), for use
+    // in estimating the moment of inertia (MOI).
+    // See: https://choreo.autos/usage/estimating-moi/
     SmartDashboard.putData(
         "SysID(rot): Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));

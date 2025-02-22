@@ -181,4 +181,38 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
+
+  public static final AbstractElevator NULL_ELEVATOR = new AbstractElevator() {
+
+    @Override
+    public boolean atTargetPosition() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'atTargetPosition'");
+    }
+
+    @Override
+    protected void updateMotor_impl() {
+    }
+
+    @Override
+    protected void resetEncoder_impl() {
+    }
+
+    @Override
+    protected Distance getHeight_impl() {
+      return Meters.of(0);
+    }
+
+    @Override
+    protected void stop_impl() {
+    }
+
+    @Override
+    protected void extend_impl() {
+    }
+
+    @Override
+    protected void retract_impl() {
+    }
+  };
 }

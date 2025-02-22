@@ -108,7 +108,7 @@ public class SimulatedElevator extends AbstractElevator {
 
     m_pid = new PIDController(pidConfig.kP(), pidConfig.kI(), pidConfig.kD());
     m_feedforward = new ElevatorFeedforward(
-        ffConfig.kS(), ffConfig.kG(), ffConfig.kV(), ffConfig.kA());
+        ffConfig.kS().in(Volts), ffConfig.kG().in(Volts), ffConfig.kV(), ffConfig.kA());
 
     // Configure the motor.
     var motorConfig = new SparkMaxConfig();

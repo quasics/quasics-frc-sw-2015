@@ -6,6 +6,8 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 
 /**
  * Defines various configuration data for robot subsystems.
@@ -85,11 +88,15 @@ public class RobotConfigs {
    * TODO: Convert this from raw doubles to unit-based values.
    * 
    * @param kS static gain, in V
-   * @param kG gravity gain, in V
+   * @param kG gravity gain, in V (only used for elevator)
    * @param kV kV, in V/(m/s)
    * @param kA kA, in V/(m/s^2)
    */
-  public static record FeedForwardConfig(double kS, double kG, double kV, double kA) {
+  public static record FeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+    public FeedForwardConfig(double kS, double kG, double kV, double kA) {
+      this(Volts.of(kS), Volts.of(kG), kV, kA);
+      VoltsPerMeterPerSecond.of(0);
+    }
   }
 
   public static record ElevatorConfig(PIDConfig pid, FeedForwardConfig feedForward) {

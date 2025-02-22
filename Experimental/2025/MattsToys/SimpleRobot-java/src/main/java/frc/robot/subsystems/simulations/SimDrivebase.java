@@ -39,6 +39,8 @@ import frc.robot.sensors.IGyro;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
+import frc.robot.utils.RobotConfigs.RobotConfig;
+
 import java.util.Optional;
 
 /**
@@ -46,10 +48,9 @@ import java.util.Optional;
  */
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
-  public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
-  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kRobotTrackWidth.in(Meters));
+  private final DifferentialDriveKinematics m_kinematics;
 
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
@@ -71,14 +72,24 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final AnalogGyroSim m_gyroSim;
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      DCMotor.getCIM(2), 8,
-      kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator;
   final Field2d m_fieldSim = new Field2d();
 
   /** Creates a new SimDrivebase. */
-  public SimDrivebase() {
+  public SimDrivebase(RobotConfig config) {
     setName(SUBSYSTEM_NAME);
+
+    final var driveConfig = config.drive();
+
+    final double trackWidthMeters = driveConfig.trackWidth().in(Meters);
+
+    m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
+
+    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+        DCMotor.getCIM(2),
+        driveConfig.gearing(),
+        driveConfig.trackWidth().in(Meters),
+        trackWidthMeters, null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's

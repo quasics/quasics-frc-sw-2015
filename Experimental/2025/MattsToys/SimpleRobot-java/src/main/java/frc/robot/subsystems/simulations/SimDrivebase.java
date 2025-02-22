@@ -176,7 +176,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     // Set the speeds of the left and right sides of the drivetrain.
     final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
-    setPower(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
+    setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
   // TODO: Consider moving this into a base class with access to m_kinematics.
@@ -272,7 +272,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
    * @param leftPercentage  left motor speed (as a percentage of full speed)
    * @param rightPercentage right motor speed (as a percentage of full speed)
    */
-  private void setPower(double leftPercentage, double rightPercentage) {
+  private void setMotorSpeeds(double leftPercentage, double rightPercentage) {
     // Clamp speeds to the range [-1.0, 1.0].
     leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
     rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
@@ -290,10 +290,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     logValue("right", left);
   }
 
+  @Override
   public Voltage getLeftVoltage() {
     return Volts.of(m_left.getVoltage());
   }
 
+  @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_right.getVoltage());
   }

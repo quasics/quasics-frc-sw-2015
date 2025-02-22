@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
@@ -77,6 +78,18 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+    SmartDashboard.putData(
+        "SysID: Quasistatic(fwd)",
+        m_drivebase.sysIdQuasistatic(Direction.kForward));
+    SmartDashboard.putData(
+        "SysID: Quasistatic(rev)",
+        m_drivebase.sysIdQuasistatic(Direction.kReverse));
+    SmartDashboard.putData(
+        "SysID: Dynamic(fwd)",
+        m_drivebase.sysIdDynamic(Direction.kForward));
+    SmartDashboard.putData(
+        "SysID: Dynamic(rev)",
+        m_drivebase.sysIdDynamic(Direction.kReverse));
   }
 
   private void configureArcadeDrive() {

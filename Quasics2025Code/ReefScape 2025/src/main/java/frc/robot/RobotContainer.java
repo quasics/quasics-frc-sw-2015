@@ -31,6 +31,7 @@ import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.armPivot.AbstractArmPivot;
 import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
@@ -52,7 +53,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase;
-  private final ArmPivot m_armPivot = new ArmPivot();
+  private final AbstractArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator;
   private final Climbers m_climbers = new Climbers();
@@ -143,9 +144,9 @@ public class RobotContainer {
         "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
 
     SmartDashboard.putData(
-        "Arm Pivot Up", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.UP));
+        "Arm Pivot Up", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(-0.1)));
     SmartDashboard.putData(
-        "Arm Pivot Down", new MoveArmPivot(m_armPivot, 0.1, MoveArmPivot.Direction.DOWN));
+        "Arm Pivot Down", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(0.1)));
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
 
@@ -210,6 +211,7 @@ public class RobotContainer {
   private void addAutonomousStartingPositionsToSmartDashboard() {
     m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.examplePosition,
         Constants.AutonomousStartingPositions.examplePosition);
+    
 
     SmartDashboard.putData("Starting position", m_positionOptions);
   }

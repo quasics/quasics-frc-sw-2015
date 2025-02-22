@@ -90,6 +90,9 @@ public final class Constants {
 
   public static class AutonomousStartingPositions {
     public static final String examplePosition = "Example position";
+    public static final String middle = "Middle";
+    public static final String left = "left";
+    public static final String right = "Right";
   } // public static class AutonomousStartingPositions
 
   public static class AutonomousSelectedOperation {

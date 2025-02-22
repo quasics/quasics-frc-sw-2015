@@ -20,12 +20,16 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.SimulationPorts;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -41,22 +45,23 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private final IGyro m_wrappedGyro;
 
+  private Encoder m_leftEncoder = new Encoder(SimulationPorts.LEFT_DRIVE_ENCODER_PORT_A,
+      SimulationPorts.LEFT_DRIVE_ENCODER_PORT_B);
+  private Encoder m_rightEncoder = new Encoder(SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_A,
+      SimulationPorts.RIGHT_DRIVE_ENCODER_PORT_B);
+  private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+
   private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
       0.3);
   private final DifferentialDrivetrainSim m_drivetrainSim;
   private final Field2d m_fieldSim = new Field2d();
   private final AnalogGyroSim m_gyroSim;
 
-  /*
-   * final PWMSparkMax m_leftLeader = new
-   * PWMSparkMax(SimulationPorts.LEFT_FRONT_DRIVE_PWM_ID);
-   * final PWMSparkMax m_leftFollower = new
-   * PWMSparkMax(SimulationPorts.LEFT_REAR_DRIVE_PWM_ID);
-   * final PWMSparkMax m_rightLeader = new
-   * PWMSparkMax(SimulationPorts.RIGHT_FRONT_DRIVE_PWM_ID);
-   * final PWMSparkMax m_rightFollower = new
-   * PWMSparkMax(SimulationPorts.RIGHT_REAR_DRIVE_PWM_ID);
-   */
+  final PWMSparkMax m_leftLeader = new PWMSparkMax(SimulationPorts.LEFT_FRONT_DRIVE_PWM_ID);
+  final PWMSparkMax m_leftFollower = new PWMSparkMax(SimulationPorts.LEFT_REAR_DRIVE_PWM_ID);
+  final PWMSparkMax m_rightLeader = new PWMSparkMax(SimulationPorts.RIGHT_FRONT_DRIVE_PWM_ID);
+  final PWMSparkMax m_rightFollower = new PWMSparkMax(SimulationPorts.RIGHT_REAR_DRIVE_PWM_ID);
 
   final SparkMax m_leftLeaderSpark = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);
   final SparkMax m_rightLeaderSpark = new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless);
@@ -69,10 +74,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
   final SparkMaxSim m_leftLeaderSparkSim = new SparkMaxSim(m_leftLeaderSpark, m_leftGearBox);
   final SparkMaxSim m_rightLeaderSparkSim = new SparkMaxSim(m_rightLeaderSpark, m_rightGearBox);
 
-  private final RelativeEncoder m_leftEncoder = m_leftLeaderSpark.getEncoder();
-  private final RelativeEncoder m_rightEncoder = m_rightLeaderSpark.getEncoder();
-  private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
-  private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
+  /*
+   * private final RelativeEncoder m_leftEncoder = m_leftLeaderSpark.getEncoder();
+   * private final RelativeEncoder m_rightEncoder =
+   * m_rightLeaderSpark.getEncoder();
+   */
+  private final TrivialEncoder m_leftTrivialEncoder;
+  private final TrivialEncoder m_rightTrivialEncoder;
 
   /*
    * private final EncoderSim m_leftEncoderSim;
@@ -91,58 +99,46 @@ public class SimulationDrivebase extends AbstractDrivebase {
     final AnalogGyro rawGyro = new AnalogGyro(0);
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
-    // configureDriveMotorsAndSensors();
+    configureDriveMotorsAndSensors();
 
     m_drivetrainSim = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2),
         GEAR_RATIO, robot.trackWidthMeters.in(Meters), kWheelRadius.in(Meters), null);
     m_gyroSim = new AnalogGyroSim(rawGyro);
-    /*
-     * m_leftEncoderSim = new EncoderSim(m_leftEncoder);
-     * m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-     */
 
-    /*
-     * m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder,
-     * m_leftEncoderSim);
-     * m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder,
-     * m_rightEncoderSim);
-     */
+    m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder,
+        m_leftEncoderSim);
+    m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder,
+        m_rightEncoderSim);
 
     // Set the distance per pulse (in meters) for the drive encoders. We can simply
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
 
-    // distancePerPulse = 2 * Math.PI * kWheelRadius.in(Meters) /
-    // kEncoderResolutionTicksPerRevolution;
+    double distancePerPulse = 2 * Math.PI * kWheelRadius.in(Meters) /
+        kEncoderResolutionTicksPerRevolution;
 
-    final double distanceScalingFactorForGearing = WHEEL_CIRCUMFERENCE.div(GEAR_RATIO).in(Meters);
-    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-
-    m_leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_leftLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-    m_rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
-    m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
+    m_leftEncoder.setDistancePerPulse(distancePerPulse);
+    m_rightEncoder.setDistancePerPulse(distancePerPulse);
 
     // Make sure our encoders are zeroed out on startup.
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    m_leftEncoder.reset();
+    m_rightEncoder.reset();
 
     SmartDashboard.putData("field", m_fieldSim);
   }
 
-  /*
-   * private void configureDriveMotorsAndSensors() {
-   * m_leftLeaderSpark.addFollower(m_leftFollower);
-   * m_rightLeaderSpark.addFollower(m_rightFollower);
-   *
-   * // We need to invert one side of the drivetrain so that positive voltages
-   * // result in both sides moving forward. Depending on how your robot's
-   * // gearbox is constructed, you might have to invert the left side instead.
-   * m_rightLeader.setInverted(true);
-   *
-   *
-   * }
-   */
+  private void configureDriveMotorsAndSensors() {
+    m_leftLeader.addFollower(m_leftFollower);
+    m_rightLeader.addFollower(m_rightFollower);
+    /*
+     * // We need to invert one side of the drivetrain so that positive voltages
+     * // result in both sides moving forward. Depending on how your robot's
+     * // gearbox is constructed, you might have to invert the left side instead.
+     * m_rightLeader.setInverted(true);
+     *
+     **/
+    m_rightLeader.setInverted(true);
+  }
 
   @Override
   public void resetOdometry(Pose2d pose) {
@@ -188,12 +184,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   @Override
   public double getLeftDistanceMeters() {
-    return m_leftEncoder.getPosition();
+    return m_leftEncoder.getDistance();
   }
 
   @Override
   public double getRightDistanceMeters() {
-    return m_rightEncoder.getPosition();
+    return m_rightEncoder.getDistance();
   }
 
   @Override
@@ -216,24 +212,19 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
     m_drivetrainSim.setInputs(
-        m_leftLeaderSparkSim.getAppliedOutput() * RobotController.getInputVoltage(),
-        m_rightLeaderSparkSim.getAppliedOutput() * RobotController.getInputVoltage());
+        m_leftLeader.get() * RobotController.getInputVoltage(),
+        m_rightLeader.get() * RobotController.getInputVoltage());
 
     // Simulated clock ticks forward
     m_drivetrainSim.update(0.02);
 
-    m_leftLeaderSparkSim.iterate(m_drivetrainSim.getLeftVelocityMetersPerSecond()
-        / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
-        12, 0.02);
-    m_rightLeaderSparkSim.iterate(m_drivetrainSim.getRightVelocityMetersPerSecond()
-        / (Math.PI * kWheelRadius.in(Meters)) / 6.06,
-        12, 0.02);
-
     // Update the encoders and gyro, based on what the drive train simulation says
     // happend.
 
-    m_leftEncoder.setPosition(m_drivetrainSim.getLeftPositionMeters());
-    m_rightEncoder.setPosition(m_drivetrainSim.getRightPositionMeters());
+    m_leftEncoderSim.setDistance(m_drivetrainSim.getLeftPositionMeters());
+    m_leftEncoderSim.setRate(m_drivetrainSim.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistance(m_drivetrainSim.getRightPositionMeters());
+    m_rightEncoderSim.setRate(m_drivetrainSim.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSim.getHeading().getDegrees());
   }
 }

@@ -85,7 +85,7 @@ public class RobotConfigs {
   /**
    * Feed forward settings.
    * 
-   * TODO: Convert this from raw doubles to unit-based values.
+   * TODO: Convert kV/kA from raw doubles to unit-based values.
    * 
    * @param kS static gain, in V
    * @param kG gravity gain, in V (only used for elevator)
@@ -96,13 +96,26 @@ public class RobotConfigs {
     public FeedForwardConfig(double kS, double kG, double kV, double kA) {
       this(Volts.of(kS), Volts.of(kG), kV, kA);
     }
+
+    /** FF configuration without kG (e.g., for non-elevator). */
+    public FeedForwardConfig(double kS, double kV, double kA) {
+      this(Volts.of(kS), Volts.of(0), kV, kA);
+    }
+
+    /** FF configuration without kG (e.g., for non-elevator). */
+    public FeedForwardConfig(Voltage kS, double kV, double kA) {
+      this(kS, Volts.of(0), kV, kA);
+    }
   }
 
   public static record ElevatorConfig(PIDConfig pid, FeedForwardConfig feedForward) {
   }
 
+  public static record DriveConfig(PIDConfig pid, FeedForwardConfig feedForward) {
+  }
+
   // TODO: Add other data, such as PID settings for different things, etc.
-  public static record RobotConfig(CameraConfig camera, ElevatorConfig elevator) {
+  public static record RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
   }
 
   // TODO: Add definitions for actual hardware.
@@ -124,6 +137,13 @@ public class RobotConfigs {
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, new RobotConfig(
+        new DriveConfig(
+            new PIDConfig(
+                1.6018),
+            new FeedForwardConfig(
+                0.014206,
+                1.9803,
+                0.19182)),
         new CameraConfig(
             "USBCamera1",
             // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot

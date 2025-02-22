@@ -23,4 +23,12 @@ public interface ISingleJointArm extends ISubsystem {
   String SUBSYSTEM_NAME = "Arm";
 
   void setTargetPosition(Angle targetPosition);
+
+  final ISingleJointArm NULL_ARM = new ISingleJointArm() {
+    @Override
+    public void setTargetPosition(Angle targetPosition) {
+      System.out.println("Null arm: setting target position to " + targetPosition);
+      return;
+    }
+  };
 }

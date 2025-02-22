@@ -59,11 +59,11 @@ public class MoveArmPivot extends Command {
     // intuitive to folks reading the code.)
     double position = m_pivot.getRawPivotPosition();
     if (m_direction == Direction.UP) {
-      if (position < Constants.DesiredEncoderValues.ARM_UP) {
+      if (position > Constants.DesiredEncoderValues.ARM_UP && position < 0.95) {
         return true;
       }
     } else {
-      if (position > Constants.DesiredEncoderValues.ARM_DOWN) {
+      if (position < Constants.DesiredEncoderValues.ARM_DOWN) {
         return true;
       }
     }

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.elevator;
 
-import java.lang.annotation.Target;
-
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -13,8 +11,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,25 +20,17 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealElevator extends AbstractElevator {
   private SparkMax m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
-  // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
-  // you shouldn't need to talk to the follower at all. (It will just, well,
-  // "follow the leader".) In this case, you should probably only set up the
-  // leader motor as a member of the class, and (if you need to) just set up the
-  // the follower in the constructor via a local variable. This will make the code
-  // easier to read.
-  //
-  // On the other hand, if you *aren't* configuring them in leader/follower mode,
-  // then you should probably avoid using variable names that imply that you are.
-  private SparkMax m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
-
   DigitalInput m_limitSwitchUp = new DigitalInput(1);
   DigitalInput m_limitSwitchDown = new DigitalInput(0);
 
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
+  // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+
+  // TODO: Change this to specify real FF values
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
 
   /**
    * Creates a new Elevator.
@@ -50,16 +38,22 @@ public class RealElevator extends AbstractElevator {
   public RealElevator() {
     m_encoder = m_leader.getEncoder();
 
-    SparkMaxConfig m_followerConfig = new SparkMaxConfig();
-    SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
+    // CODE_REVIEW: You _might_ also want to think about configuring the follower
+    // just using the REV softeware, rather than doing it every time in the robot's
+    // software.)
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    followerConfig.follow(m_leader, true);
 
-    m_followerConfig.follow(m_leader, true);
-    m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    try (SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless)) {
+      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+    }
 
-    m_leaderConfig.inverted(false);
+    // Configure the primary (leader) motor.
+    SparkMaxConfig leaderConfig = new SparkMaxConfig();
+    leaderConfig.inverted(false);
     m_leader.configure(
-        m_leaderConfig, ResetMode.kResetSafeParameters,
+        leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
 

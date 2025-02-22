@@ -293,11 +293,16 @@ public class RobotContainer {
   }
 
   private void ConfigureDriverButtons() {
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new MoveClimbers(m_climbers, true));
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for various
-                                                         // buttons on the controllers.
+    /*
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+     * .whileTrue(new MoveClimbers(m_climbers, true));
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+     * .whileTrue(new MoveClimbers(m_climbers, false)); // Register the triggers for
+     * various
+     * // buttons on the controllers.
+     */
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
@@ -305,9 +310,9 @@ public class RobotContainer {
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.4)); // UP
+        .whileTrue(new RunElevator(m_elevator, -0.2)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.25)); // DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.15)); // DOWN
   }
 
   private void ConfigureOperatorButtons() {
@@ -325,7 +330,7 @@ public class RobotContainer {
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, MoveArmPivot.Direction.UP));
+        .whileTrue(new MoveArmPivot(m_armPivot, -0.2, MoveArmPivot.Direction.UP));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.2, MoveArmPivot.Direction.DOWN));
   }

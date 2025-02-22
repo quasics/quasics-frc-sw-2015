@@ -42,7 +42,7 @@ public class RealElevator extends AbstractElevator {
     // just using the REV softeware, rather than doing it every time in the robot's
     // software.)
     SparkMaxConfig followerConfig = new SparkMaxConfig();
-    m_followerConfig.follow(m_leader, true);
+    followerConfig.follow(m_leader, true);
 
     SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
     follower.configure(followerConfig, ResetMode.kResetSafeParameters,

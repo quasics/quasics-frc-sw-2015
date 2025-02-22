@@ -48,6 +48,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
   public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
+  private static final double GEARING = 8;
 
   private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kRobotTrackWidth.in(Meters));
 
@@ -72,7 +73,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final AnalogGyroSim m_gyroSim;
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      DCMotor.getCIM(2), 8,
+      DCMotor.getCIM(2),
+      GEARING,
       kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
   final Field2d m_fieldSim = new Field2d();
 

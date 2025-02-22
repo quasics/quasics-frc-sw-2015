@@ -25,7 +25,10 @@ public final class Autos {
     if (operation == AutonomousSelectedOperation.GTFO) {
       return Commands.sequence(
           new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
-          new TurnForDegrees(drivebase, 74, 0.20));
+          new TurnForDegrees(drivebase, 64, -0.15),
+          new DriveForDistance(drivebase, 0.20, Meters.of(1.4)),
+          new TurnForDegrees(drivebase, -64, -0.15));
+
     }
 
     return new PrintCommand("Doing nothing because no operation?");

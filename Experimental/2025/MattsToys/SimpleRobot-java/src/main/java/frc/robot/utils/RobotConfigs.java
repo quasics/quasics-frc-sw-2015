@@ -95,7 +95,6 @@ public class RobotConfigs {
   public static record FeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
     public FeedForwardConfig(double kS, double kG, double kV, double kA) {
       this(Volts.of(kS), Volts.of(kG), kV, kA);
-      VoltsPerMeterPerSecond.of(0);
     }
   }
 

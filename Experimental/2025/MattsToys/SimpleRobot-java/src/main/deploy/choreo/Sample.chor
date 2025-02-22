@@ -1,7 +1,7 @@
 {
  "name":"Sample",
  "version":1,
- "type":"Differential",
+ "type":"Swerve",
  "variables":{
   "expressions":{},
   "poses":{}
@@ -28,20 +28,20 @@
    }
   },
   "mass":{
-   "exp":"120 lbs",
-   "val":54.4310844
+   "exp":"150 lbs",
+   "val":68.0388555
   },
   "inertia":{
    "exp":"6 kg m ^ 2",
    "val":6.0
   },
   "gearing":{
-   "exp":"8",
-   "val":8.0
+   "exp":"6.5",
+   "val":6.5
   },
   "radius":{
-   "exp":"3 in",
-   "val":0.07619999999999999
+   "exp":"2 in",
+   "val":0.0508
   },
   "vmax":{
    "exp":"6000 RPM",

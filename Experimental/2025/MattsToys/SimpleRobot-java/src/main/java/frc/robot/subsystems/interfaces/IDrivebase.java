@@ -151,6 +151,10 @@ public interface IDrivebase extends ISubsystem {
   // Functionality required for AutoBuilder (in PathPlanner library) or
   // AutoFactory (in Choreo library)
   //
+  // See: https://choreo.autos/choreolib/getting-started/
+  // See: https://www.chiefdelphi.com/t/choreo-2025-beta/472224/23
+  // See: https://github.com/mjansen4857/pathplanner/tree/main/examples/java
+  //
 
   void resetPose(Pose2d pose);
 

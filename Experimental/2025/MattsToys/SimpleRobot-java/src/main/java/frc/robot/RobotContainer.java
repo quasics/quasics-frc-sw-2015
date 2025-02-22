@@ -133,6 +133,10 @@ public class RobotContainer {
       m_drivebase.asSubsystem() // The drive subsystem
   );
 
+  /**
+   * @see https://choreo.autos/choreolib/getting-started/
+   * @see https://choreo.autos/choreolib/auto-factory/
+   */
   private Command generateCommandForChoreoTrajectory(String trajectoryName) {
     return Commands.sequence(
         // Per https://choreo.autos/choreolib/auto-factory/

@@ -79,6 +79,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+
     SmartDashboard.putData(
         "SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
@@ -91,6 +92,19 @@ public class RobotContainer {
     SmartDashboard.putData(
         "SysID: Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+
+    SmartDashboard.putData(
+        "SysID(rot): Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID(rot): Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+    SmartDashboard.putData(
+        "SysID(rot): Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID(rot): Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
   }
 
   private void configureArcadeDrive() {

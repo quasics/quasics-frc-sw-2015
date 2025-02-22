@@ -300,13 +300,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public LinearVelocity getLeftVelocity() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getLeftVelocity'");
+    return MetersPerSecond.of(m_leftEncoderSim.getRate());
   }
 
   @Override
   public LinearVelocity getRightVelocity() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRightVelocity'");
+    return MetersPerSecond.of(m_rightEncoderSim.getRate());
   }
 }

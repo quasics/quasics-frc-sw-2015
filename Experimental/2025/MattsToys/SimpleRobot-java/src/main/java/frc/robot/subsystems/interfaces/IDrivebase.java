@@ -4,18 +4,18 @@
 
 package frc.robot.subsystems.interfaces;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,7 +104,17 @@ public interface IDrivebase extends ISubsystem {
 
   boolean DUMP_SYSID_TO_CONSOLE = true;
 
-  // Create a new SysId routine for characterizing the drive.
+  /**
+   * Create a new SysId routine for characterizing the drive.
+   * 
+   * When running under a simulator, the logs will be in '*.wpilog' files, stored
+   * in the "logs" directory for the project; when running on actual robot
+   * hardware, log files are typically saved to either /home/lvuser/logs or
+   * /u/logs (USB stick location).
+   * 
+   * @see https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/creating-routine.html#creating-an-identification-routine
+   * @see https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog-download.html
+   */
   default SysIdRoutine getSysIdRoutine() {
     return new SysIdRoutine(
         // Empty config defaults to 1 volt/second ramp rate and 7 volt step
@@ -126,10 +136,12 @@ public interface IDrivebase extends ISubsystem {
 
               if (DUMP_SYSID_TO_CONSOLE) {
                 System.err.println("Logging "
-                    + "left=" + String.format("%,.3f", leftVoltage) + "V, "
+                    + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
                     + String.format("%,.3f", leftPosition.in(Meters)) + "m, "
                     + String.format("%,.3f", leftVelocity.in(MetersPerSecond)) + "m/s   "
-                    + "right=" + String.format("%,.3f", rightVoltage) + "V, "
+                    + "right=" + String.format("%,.3f", rightVoltage.in(
+                        Volts))
+                    + "V, "
                     + String.format("%,.3f", rightPosition.in(Meters)) + "m, "
                     + String.format("%,.3f", rightVelocity.in(MetersPerSecond)) + "m/s   ");
               }

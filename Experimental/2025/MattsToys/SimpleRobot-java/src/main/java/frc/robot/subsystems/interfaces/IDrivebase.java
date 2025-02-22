@@ -4,14 +4,22 @@
 
 package frc.robot.subsystems.interfaces;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * Basic interface for drive base functionality.
@@ -31,6 +39,8 @@ public interface IDrivebase extends ISubsystem {
 
   /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+
+  final boolean LOG_TO_SMARTDASHBOARD = true;
 
   /**
    * Drive the robot using tank drive (as a percentage of MAX_SPEED).
@@ -73,11 +83,44 @@ public interface IDrivebase extends ISubsystem {
     tankDrive(0, 0);
   }
 
-  /** @return The reading from the left encoder (in meters) */
-  Distance getLeftPositionMeters();
+  @SuppressWarnings("rawtypes")
+  default void logValue(String label, Measure val) {
+    logValue(
+        label + " (" + val.baseUnit() + ")",
+        (val != null ? val.baseUnitMagnitude() : 0));
+  }
 
-  /** @return The reading from the right encoder (in meters) */
-  Distance getRightPositionMeters();
+  default void logValue(String label, double val) {
+    if (LOG_TO_SMARTDASHBOARD) {
+      SmartDashboard.putNumber(label, val);
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // "Purely abstract methods"
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  void setMotorVoltages(Voltage left, Voltage right);
+
+  /** @return The applied voltage from the left motor */
+  Voltage getLeftVoltage();
+
+  /** @return The applied voltage from the right motor */
+  Voltage getRightVoltage();
+
+  /** @return The position reading from the left encoder */
+  Distance getLeftPosition();
+
+  /** @return The position reading from the right encoder */
+  Distance getRightPosition();
+
+  /** @return The velocity reading from the left encoder */
+  LinearVelocity getLeftVelocity();
+
+  /** @return The velocity reading from the right encoder */
+  LinearVelocity getRightVelocity();
 
   /** @return heading of the robot (as an Angle) */
   Angle getHeading();

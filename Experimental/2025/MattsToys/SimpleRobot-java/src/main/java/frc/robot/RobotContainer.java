@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
+import frc.robot.utils.SysIdGenerator;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 import java.util.function.Supplier;
@@ -37,7 +39,7 @@ public class RobotContainer {
 
   // Subsystems
   final IVision m_vision = new SimulatedVision(m_robotConfig);
-  private final IDrivebase m_drivebase = new SimDrivebase();
+  private final IDrivebase m_drivebase = new SimDrivebase(m_robotConfig);
   final AbstractElevator m_elevator = new SimulatedElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
@@ -77,6 +79,32 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+
+    SmartDashboard.putData(
+        "SysID: Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID: Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+    SmartDashboard.putData(
+        "SysID: Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID: Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+
+    SmartDashboard.putData(
+        "SysID(rot): Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID(rot): Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+    SmartDashboard.putData(
+        "SysID(rot): Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData(
+        "SysID(rot): Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
   }
 
   private void configureArcadeDrive() {

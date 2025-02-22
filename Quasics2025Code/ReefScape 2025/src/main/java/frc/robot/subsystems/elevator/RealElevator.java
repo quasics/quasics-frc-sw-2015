@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.elevator;
 
-import java.lang.annotation.Target;
-
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -13,8 +11,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -24,25 +20,17 @@ import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealElevator extends AbstractElevator {
   private SparkMax m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
-  // CODE_REVIEW: If you're configuring the motors in leader/follower mode, then
-  // you shouldn't need to talk to the follower at all. (It will just, well,
-  // "follow the leader".) In this case, you should probably only set up the
-  // leader motor as a member of the class, and (if you need to) just set up the
-  // the follower in the constructor via a local variable. This will make the code
-  // easier to read.
-  //
-  // On the other hand, if you *aren't* configuring them in leader/follower mode,
-  // then you should probably avoid using variable names that imply that you are.
-  private SparkMax m_follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
-
-  DigitalInput m_limitSwitchUp = new DigitalInput(0);
-  DigitalInput m_limitSwitchDown = new DigitalInput(1);
+  DigitalInput m_limitSwitchUp = new DigitalInput(1);
+  DigitalInput m_limitSwitchDown = new DigitalInput(0);
 
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
-  private final PIDController m_pid = new PIDController(0.00, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+  // TODO: Tune PID values.
+  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+
+  // TODO: Change this to specify real FF values
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
 
   /**
    * Creates a new Elevator.
@@ -50,28 +38,22 @@ public class RealElevator extends AbstractElevator {
   public RealElevator() {
     m_encoder = m_leader.getEncoder();
 
-    /*
-     * SparkMaxConfig m_followerConfig = new SparkMaxConfig();
-     * SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
-     * 
-     * m_followerConfig.follow(m_leader, true);
-     * m_follower.configure(m_followerConfig, ResetMode.kResetSafeParameters,
-     * PersistMode.kPersistParameters);
-     * 
-     * m_leaderConfig.inverted(false);
-     */
+    // CODE_REVIEW: You _might_ also want to think about configuring the follower
+    // just using the REV softeware, rather than doing it every time in the robot's
+    // software.)
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    followerConfig.follow(m_leader, true);
 
-    SparkMaxConfig m_followerConfig = new SparkMaxConfig();
-    SparkMaxConfig m_leaderConfig = new SparkMaxConfig();
+    try (SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless)) {
+      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+    }
 
-    m_followerConfig.inverted(false);
-    m_leaderConfig.inverted(false);
-
+    // Configure the primary (leader) motor.
+    SparkMaxConfig leaderConfig = new SparkMaxConfig();
+    leaderConfig.inverted(false);
     m_leader.configure(
-        m_leaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-    m_follower.configure(
-        m_followerConfig, ResetMode.kResetSafeParameters,
+        leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
   }
 
@@ -79,23 +61,16 @@ public class RealElevator extends AbstractElevator {
   public void setSpeed(double percentSpeed) {
     // do not use this when using pid, only for manual control
     m_targetPosition = TargetPosition.kDontCare;
-
-    if (ableToMove()) {
+    if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
-
-      // CODE_REVIEW: OK. You're setting the follower to the negative of the leader.
-      // That implies that this motor is inverted vs. the other one (which is
-      // perfectly fine, and reasonably expected). So why not just set the follower to
-      // inverted when you configure it in the constructor, so that you can use a
-      // consistent value for the speeds?
-      m_follower.set(-percentSpeed);
     }
   }
 
   @Override
   public void setVoltage(double voltage) {
-    m_leader.setVoltage(voltage);
-    m_follower.setVoltage(-voltage);
+    if (ableToMove(voltage)) {
+      m_leader.setVoltage(voltage);
+    }
   }
 
   @Override
@@ -118,9 +93,9 @@ public class RealElevator extends AbstractElevator {
     return m_encoder.getVelocity();
   }
 
-  public boolean ableToMove() {
-    return (m_limitSwitchUp.get() == true && getVelocity() < 0)
-        || (m_limitSwitchDown.get() == true && getVelocity() > 0);
+  public boolean ableToMove(double speed) {
+    return !((m_limitSwitchUp.get() == false && speed < 0)
+        || (m_limitSwitchDown.get() == false && speed > 0));
   }
 
   @Override
@@ -129,7 +104,10 @@ public class RealElevator extends AbstractElevator {
 
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
-    if (!ableToMove()) {
+
+    // SmartDashboard.putBoolean("Able to move", ableToMove());
+
+    if (!ableToMove(m_encoder.getVelocity())) {
       stop();
     }
 
@@ -156,9 +134,9 @@ public class RealElevator extends AbstractElevator {
       case kBottom:
         return 0;
       case kL1:
-        return 1;
+        return -30;
       case kL2:
-        return 2;
+        return -50;
     }
 
     System.err.println("**** Invalid/unexpected target position: " + position);
@@ -167,5 +145,6 @@ public class RealElevator extends AbstractElevator {
 
   public void setTargetPosition(TargetPosition position) {
     m_targetPosition = position;
+
   }
 }

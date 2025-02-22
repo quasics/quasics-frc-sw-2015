@@ -44,9 +44,10 @@ public class RealElevator extends AbstractElevator {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(m_leader, true);
 
-    SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless);
-    follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+    try (SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless)) {
+      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+    }
 
     // Configure the primary (leader) motor.
     SparkMaxConfig leaderConfig = new SparkMaxConfig();

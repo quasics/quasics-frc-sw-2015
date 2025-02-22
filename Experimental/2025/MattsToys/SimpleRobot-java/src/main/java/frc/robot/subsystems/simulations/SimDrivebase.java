@@ -24,6 +24,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -48,21 +49,18 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public static final Distance kRobotTrackWidth = Units.Meters.of(0.381 * 2);
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
-  private final DifferentialDriveKinematics m_kinematics =
-      new DifferentialDriveKinematics(kRobotTrackWidth.in(Meters));
+  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kRobotTrackWidth.in(Meters));
 
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
-  private final Encoder m_leftEncoder =
-      new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
-  private final Encoder m_rightEncoder =
-      new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final IGyro m_wrappedGyro;
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -72,11 +70,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final AnalogGyroSim m_gyroSim;
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
-  final DifferentialDrivetrainSim m_drivetrainSimulator =
-      new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
-          kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+      DCMotor.getCIM(2), 8,
+      kRobotTrackWidth.in(Meters), kWheelRadius.in(Meters), null);
   final Field2d m_fieldSim = new Field2d();
 
   /** Creates a new SimDrivebase. */
@@ -186,20 +183,19 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final var wheelSpeeds =
-        m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
   }
 
   @Override
-  public Distance getLeftPositionMeters() {
+  public Distance getLeftPosition() {
     return Meters.of(m_leftEncoder.getDistance());
   }
 
   @Override
-  public Distance getRightPositionMeters() {
+  public Distance getRightPosition() {
     return Meters.of(m_rightEncoder.getDistance());
   }
 
@@ -262,13 +258,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     // If an estimated position has been posted by the vision subsystem, integrate
     // it into our estimate.
-    Optional<Object> optionalPose =
-        BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
+    Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
     optionalPose.ifPresent(poseObject -> {
       BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-          .ifPresent(timestampObject
-              -> m_poseEstimator.addVisionMeasurement(
-                  (Pose2d) poseObject, (Double) timestampObject));
+          .ifPresent(timestampObject -> m_poseEstimator.addVisionMeasurement(
+              (Pose2d) poseObject, (Double) timestampObject));
     });
   }
 
@@ -285,5 +279,34 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     m_left.set(leftPercentage);
     m_right.set(rightPercentage);
+  }
+
+  @Override
+  public void setMotorVoltages(Voltage left, Voltage right) {
+    m_left.setVoltage(left);
+    m_right.setVoltage(right);
+
+    logValue("left", left);
+    logValue("right", left);
+  }
+
+  public Voltage getLeftVoltage() {
+    return Volts.of(m_left.getVoltage());
+  }
+
+  public Voltage getRightVoltage() {
+    return Volts.of(m_right.getVoltage());
+  }
+
+  @Override
+  public LinearVelocity getLeftVelocity() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getLeftVelocity'");
+  }
+
+  @Override
+  public LinearVelocity getRightVelocity() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getRightVelocity'");
   }
 }

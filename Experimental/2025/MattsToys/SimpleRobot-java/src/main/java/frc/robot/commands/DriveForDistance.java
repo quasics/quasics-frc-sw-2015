@@ -30,7 +30,7 @@ public class DriveForDistance extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_stopAtPosition = m_drivebase.getLeftPositionMeters().plus(m_distance);
+    m_stopAtPosition = m_drivebase.getLeftPosition().plus(m_distance);
     // TODO: Add deadband handling (i.e., if distance is basically 0).
     m_drivebase.setSpeed(m_percentSpeed);
   }
@@ -52,10 +52,10 @@ public class DriveForDistance extends Command {
   public boolean isFinished() {
     if (m_distance.baseUnitMagnitude() >= 0) {
       // Moving forward
-      return m_drivebase.getLeftPositionMeters().gte(m_stopAtPosition);
+      return m_drivebase.getLeftPosition().gte(m_stopAtPosition);
     } else {
       // Moving backward
-      return m_drivebase.getLeftPositionMeters().lte(m_stopAtPosition);
+      return m_drivebase.getLeftPosition().lte(m_stopAtPosition);
     }
   }
 }

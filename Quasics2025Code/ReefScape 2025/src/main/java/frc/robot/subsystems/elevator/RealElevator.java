@@ -37,8 +37,11 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
+  // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00); // TODO: CHANGE
+
+  // TODO: Change this to specify real FF values
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
 
   /**
    * Creates a new Elevator.

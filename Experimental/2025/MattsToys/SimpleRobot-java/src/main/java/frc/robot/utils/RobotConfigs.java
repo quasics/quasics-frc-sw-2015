@@ -81,7 +81,7 @@ public class RobotConfigs {
   }
 
   /**
-   * Feed forward settings.
+   * Elevator Feed forward settings.
    * 
    * TODO: Convert kV/kA from raw doubles to unit-based values.
    * 
@@ -90,23 +90,28 @@ public class RobotConfigs {
    * @param kV kV, in V/(m/s)
    * @param kA kA, in V/(m/s^2)
    */
-  public static record FeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
-    public FeedForwardConfig(double kS, double kG, double kV, double kA) {
+  public static record ElevatorFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+    public ElevatorFeedForwardConfig(double kS, double kG, double kV, double kA) {
       this(Volts.of(kS), Volts.of(kG), kV, kA);
-    }
-
-    /** FF configuration without kG (e.g., for non-elevator). */
-    public FeedForwardConfig(double kS, double kV, double kA) {
-      this(Volts.of(kS), Volts.of(0), kV, kA);
-    }
-
-    /** FF configuration without kG (e.g., for non-elevator). */
-    public FeedForwardConfig(Voltage kS, double kV, double kA) {
-      this(kS, Volts.of(0), kV, kA);
     }
   }
 
-  public static record ElevatorConfig(PIDConfig pid, FeedForwardConfig feedForward) {
+  public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
+  }
+
+  public static record SimpleFeedForwardConfig(Voltage kV, double kA) {
+    public SimpleFeedForwardConfig(double kV, double kA) {
+      this(Volts.of(kV), kA);
+    }
+  }
+
+  /**
+   * Drive Feed forward settings.
+   */
+  public static record DriveFeedForwardConfig(SimpleFeedForwardConfig linear, SimpleFeedForwardConfig angular) {
+    public DriveFeedForwardConfig(Voltage kvLinear, double kaLinear, Voltage kvAngular, double kaAngular) {
+      this(new SimpleFeedForwardConfig(kvLinear, kaLinear), new SimpleFeedForwardConfig(kvAngular, kaAngular));
+    }
   }
 
   public static record DriveConfig(
@@ -114,7 +119,7 @@ public class RobotConfigs {
       Distance trackWidth,
       double gearing, // (gearing between motor and wheel axel (>=1))
       PIDConfig pid,
-      FeedForwardConfig feedForward) {
+      DriveFeedForwardConfig feedForward) {
   }
 
   // TODO: Add other data, such as PID settings for different things, etc.
@@ -146,10 +151,12 @@ public class RobotConfigs {
             8.0, // Gearing
             new PIDConfig(
                 1.6018),
-            new FeedForwardConfig(
-                0.014206,
-                1.9803,
-                0.19182)),
+            new DriveFeedForwardConfig(
+                // ksLinear: 0.014183
+                Volts.of(1.9802), 0.19202, // Linear data
+                // ksAngular: 0.011388
+                Volts.of(1.5001), 0.29782) // Angular data
+        ),
         new CameraConfig(
             "USBCamera1",
             // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
@@ -171,7 +178,7 @@ public class RobotConfigs {
         new ElevatorConfig(
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
-            new FeedForwardConfig(0.01, 0.05, 0.20, 0))));
+            new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
 
     assert (map.size() == Robot.values().length) : "Configurations for one or more robots are missing!";
     return map;

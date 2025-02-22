@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.simulations.SimulationPorts.*;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
+import edu.wpi.first.math.controller.LTVUnicycleController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -118,6 +121,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
         new Pose2d(), VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
+    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_feedforward = new DifferentialDriveFeedforward(
+        driveConfig.feedForward().linear().kV().in(Volts),
+        driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().angular().kV().in(Volts),
+        driveConfig.feedForward().angular().kA());
+
     //
     // Pure simulation support
     //
@@ -220,6 +231,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
    * Get the current estimated robot pose, based on odometery, plus any vision
    * updates.
    */
+  @Override
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
@@ -236,7 +248,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public void resetOdometry(Pose2d pose) {
     m_leftEncoder.reset();
     m_rightEncoder.reset();
-    m_gyroSim.setAngle(pose.getRotation().getDegrees());
+    // m_gyroSim.setAngle(pose.getRotation().getDegrees());
 
     // Update the pose information in the simulator.
     m_drivetrainSimulator.setPose(pose);
@@ -319,5 +331,64 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public LinearVelocity getRightVelocity() {
     return MetersPerSecond.of(m_rightEncoderSim.getRate());
+  }
+
+  @Override
+  public void resetPose(Pose2d pose) {
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        pose);
+    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        pose);
+  }
+
+  @Override
+  public ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), m_wrappedGyro.getRate());
+  }
+
+  final PIDController m_leftPidController;
+  final PIDController m_rightPidController;
+  final DifferentialDriveFeedforward m_feedforward;
+
+  @Override
+  public void drive(ChassisSpeeds speeds) {
+    var wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
+
+    // var leftStabilized =
+    // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
+    // var rightStabilized =
+    // wheelSpeedsDeadband.limit(wheelSpeeds.rightMetersPerSecond);
+    // logValue("leftStable", leftStabilized);
+    // logValue("rightStable", rightStabilized);
+
+    // Figure out the voltages we should need at the target speeds.
+    final var feedforwardVolts = m_feedforward.calculate(
+        getLeftVelocity().in(MetersPerSecond),
+        wheelSpeeds.leftMetersPerSecond,
+        getRightVelocity().in(MetersPerSecond),
+        wheelSpeeds.rightMetersPerSecond,
+        0.020);
+    logValue("FF left", feedforwardVolts.left);
+    logValue("FF right", feedforwardVolts.right);
+
+    // Figure out the deltas, based on our current speed vs. the target speeds.
+    double leftPidOutput = m_leftPidController.calculate(
+        getLeftVelocity().in(MetersPerSecond), wheelSpeeds.leftMetersPerSecond);
+    double rightPidOutput = m_rightPidController.calculate(
+        getRightVelocity().in(MetersPerSecond), wheelSpeeds.rightMetersPerSecond);
+    logValue("leftPid", leftPidOutput);
+    logValue("rightPid", rightPidOutput);
+
+    // OK, apply those to the actual hardware.
+    setMotorVoltages(Volts.of(feedforwardVolts.left + leftPidOutput),
+        Volts.of(feedforwardVolts.right + rightPidOutput));
+  }
+
+  private final LTVUnicycleController unicycleController = new LTVUnicycleController(0.02);
+
+  @Override
+  public LTVUnicycleController getLtvUnicycleController() {
+    return unicycleController;
   }
 }

@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems.interfaces;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Volts;
 
+import choreo.trajectory.DifferentialSample;
+import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
@@ -18,8 +19,6 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * Basic interface for drive base functionality.
@@ -96,6 +95,24 @@ public interface IDrivebase extends ISubsystem {
     }
   }
 
+  default void followTrajectory(DifferentialSample sample) {
+    // Get the current pose of the robot
+    Pose2d pose = getPose();
+
+    // Get the velocity feedforward specified by the sample
+    ChassisSpeeds ff = sample.getChassisSpeeds();
+
+    // Generate the next speeds for the robot
+    ChassisSpeeds speeds = getLtvUnicycleController().calculate(
+        pose,
+        sample.getPose(),
+        ff.vxMetersPerSecond,
+        ff.omegaRadiansPerSecond);
+
+    // Apply the generated speeds
+    drive(speeds);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // "Purely abstract methods"
@@ -125,6 +142,21 @@ public interface IDrivebase extends ISubsystem {
   /** @return heading of the robot (as an Angle) */
   Angle getHeading();
 
-  /** @return heading of the robot (as a Pose2d) */
+  /** @return heading of the robot, based on odometry */
   Pose2d getPose();
+
+  Pose2d getEstimatedPose();
+
+  //
+  // Functionality required for AutoBuilder (in PathPlanner library) or
+  // AutoFactory (in Choreo library)
+  //
+
+  void resetPose(Pose2d pose);
+
+  ChassisSpeeds getCurrentSpeeds();
+
+  void drive(ChassisSpeeds speeds);
+
+  LTVUnicycleController getLtvUnicycleController();
 }

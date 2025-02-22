@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
@@ -141,7 +142,7 @@ public class RobotConfigs {
     map.put(Robot.Simulation, new RobotConfig(
         new DriveConfig(
             Inches.of(3), // Wheel radius
-            Inches.of(22), // Trackwidth
+            Units.Meters.of(0.381 * 2), // Trackwidth
             8.0, // Gearing
             new PIDConfig(
                 1.6018),

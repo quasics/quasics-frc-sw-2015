@@ -7,12 +7,14 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 public final class Autos {
   static final double DIST_TO_REEF = 2.134;
+
   /** Example static factory for an autonomous command. */
   public static Command getAutonomousCommand(
       AbstractDrivebase drivebase, String operation, String position, boolean isBlue) {
@@ -21,7 +23,9 @@ public final class Autos {
       return new PrintCommand("Doing nothing!");
     }
     if (operation == AutonomousSelectedOperation.GTFO) {
-      return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
+      return Commands.sequence(
+          new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
+          new TurnForDegrees(drivebase, 74, 0.20));
     }
 
     return new PrintCommand("Doing nothing because no operation?");

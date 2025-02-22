@@ -12,7 +12,9 @@ import frc.robot.subsystems.armPivot.ArmPivot;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class MoveArmPivot extends Command {
-  public enum Direction { UP, DOWN }
+  public enum Direction {
+    UP, DOWN
+  }
 
   private final ArmPivot m_pivot;
   private final double m_pivotSpeed;
@@ -57,11 +59,11 @@ public class MoveArmPivot extends Command {
     // intuitive to folks reading the code.)
     double position = m_pivot.getRawPivotPosition();
     if (m_direction == Direction.UP) {
-      if (position < Constants.DesiredEncoderValues.ARM_UP) {
+      if (position > Constants.DesiredEncoderValues.ARM_UP && position < 0.95) {
         return true;
       }
     } else {
-      if (position > Constants.DesiredEncoderValues.ARM_DOWN) {
+      if (position < Constants.DesiredEncoderValues.ARM_DOWN) {
         return true;
       }
     }

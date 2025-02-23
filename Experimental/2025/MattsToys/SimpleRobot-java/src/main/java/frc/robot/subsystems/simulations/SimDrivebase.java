@@ -50,7 +50,6 @@ import java.util.Optional;
  * Defines a version of IDrivebase that runs under (full) simulation.
  */
 public class SimDrivebase extends SubsystemBase implements IDrivebase {
-  public static final Distance kWheelRadius = Units.Inches.of(6.0).div(2); // 6" diameter
   public static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   private final DifferentialDriveKinematics m_kinematics;
@@ -106,9 +105,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // use the distance traveled for one rotation of the wheel divided by the
     // encoder resolution.
     m_leftEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+        2 * Math.PI * driveConfig.wheelRadius().in(Meters) / kEncoderResolutionTicksPerRevolution);
     m_rightEncoder.setDistancePerPulse(
-        2 * Math.PI * kWheelRadius.in(Meters) / kEncoderResolutionTicksPerRevolution);
+        2 * Math.PI * driveConfig.wheelRadius().in(Meters) / kEncoderResolutionTicksPerRevolution);
 
     // Make sure our encoders are zeroed out on startup.
     m_leftEncoder.reset();
@@ -120,8 +119,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     // Set up the pose estimator
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
-        m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
-        new Pose2d(), VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        new Pose2d(),
+        VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
     m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
@@ -215,6 +216,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
+  public IGyro getGyro() {
+    return IGyro.readOnlyGyro(m_wrappedGyro);
+  }
+
+  @Override
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
@@ -222,11 +228,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
-  }
-
-  @Override
-  public Angle getHeading() {
-    return m_wrappedGyro.getAngle();
   }
 
   @Override
@@ -242,11 +243,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_right.getVoltage());
-  }
-
-  @Override
-  public AngularVelocity getTurnRate() {
-    return m_wrappedGyro.getRate();
   }
 
   @Override

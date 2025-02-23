@@ -151,6 +151,11 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
+  public IGyro getGyro() {
+    return IGyro.readOnlyGyro(m_wrappedGyro);
+  }
+
+  @Override
   public void setMotorVoltages(Voltage left, Voltage right) {
     m_leftLeader.setVoltage(left);
     m_rightLeader.setVoltage(right);
@@ -164,11 +169,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_rightLeader.getAppliedOutput());
-  }
-
-  @Override
-  public Angle getHeading() {
-    return m_wrappedGyro.getAngle();
   }
 
   @Override
@@ -193,11 +193,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
         m_leftEncoder.getPosition(),
         m_rightEncoder.getPosition(),
         pose);
-  }
-
-  @Override
-  public AngularVelocity getTurnRate() {
-    return m_wrappedGyro.getRate();
   }
 
   final LTVUnicycleController m_unicycleController = new LTVUnicycleController(0.02);

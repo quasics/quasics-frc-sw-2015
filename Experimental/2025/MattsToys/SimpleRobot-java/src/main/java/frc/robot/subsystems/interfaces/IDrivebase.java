@@ -20,6 +20,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 /**
@@ -120,6 +121,16 @@ public interface IDrivebase extends ISubsystem {
     return getLeftEncoder().getVelocity();
   }
 
+  /** @return the angular velocity of the robot (from the ALU) */
+  default AngularVelocity getTurnRate() {
+    return getGyro().getRate();
+  }
+
+  /** @return heading of the robot (as an Angle) */
+  default Angle getHeading() {
+    return getGyro().getAngle();
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Utility logging methods
@@ -167,11 +178,7 @@ public interface IDrivebase extends ISubsystem {
 
   TrivialEncoder getRightEncoder();
 
-  /** @return the angular velocity of the robot (from the ALU) */
-  AngularVelocity getTurnRate();
-
-  /** @return heading of the robot (as an Angle) */
-  Angle getHeading();
+  IGyro getGyro();
 
   /** @return heading of the robot, based on odometry */
   Pose2d getPose();

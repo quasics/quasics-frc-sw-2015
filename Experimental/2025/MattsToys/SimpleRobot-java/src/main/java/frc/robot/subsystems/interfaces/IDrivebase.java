@@ -26,6 +26,9 @@ import frc.robot.sensors.TrivialEncoder;
 
 /**
  * Basic interface for drive base functionality.
+ * 
+ * TODO: At this point, this *really* ought to be an abstract class, vs an
+ * interface, based on the amount of code it contains.
  */
 public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */

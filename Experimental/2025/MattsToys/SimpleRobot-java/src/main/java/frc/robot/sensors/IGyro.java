@@ -128,6 +128,12 @@ public interface IGyro {
     }
   }
 
+  static IGyro readOnlyGyro(IGyro g) {
+    return new FunctionalGyro(
+        g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {
+        });
+  }
+
   /** Helper function to wrap the AnalogGyro type from WPILib. */
   static IGyro wrapGyro(AnalogGyro g) {
     final Runnable calibrator = () -> {

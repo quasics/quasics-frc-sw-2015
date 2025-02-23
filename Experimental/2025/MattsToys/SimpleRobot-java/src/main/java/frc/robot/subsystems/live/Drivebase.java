@@ -32,7 +32,11 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-/** Add your docs here. */
+/**
+ * Defines a version of IDrivebase that runs on live (Quasics) hardware.
+ * 
+ * TODO: Test this!!!!
+ */
 public class Drivebase extends SubsystemBase implements IDrivebase {
   // Common CAN IDs for Quasics' robots.
   public static final int PIGEON2_CAN_ID = 1;

@@ -22,6 +22,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -36,11 +37,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVision;
-import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-
-import java.util.Optional;
 
 /**
  * Defines a version of IDrivebase that runs under (full) simulation.
@@ -272,6 +269,18 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
+  public LinearVelocity getLeftVelocity() {
+    // TODO: clean this up, but it's currently needed to make Choreo work
+    return MetersPerSecond.of(m_leftEncoderSim.getRate());
+  }
+
+  @Override
+  public LinearVelocity getRightVelocity() {
+    // TODO: clean this up, but it's currently needed to make Choreo work
+    return MetersPerSecond.of(m_rightEncoderSim.getRate());
+  }
+
+  @Override
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(
         m_wrappedGyro.getRotation2d(),
@@ -294,6 +303,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     driveWithPid(m_kinematics.toWheelSpeeds(speeds));
   }
 
+  @Override
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
     // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);

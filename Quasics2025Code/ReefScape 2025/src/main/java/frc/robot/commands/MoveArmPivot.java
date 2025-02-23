@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.armPivot.ArmPivot;
+import frc.robot.subsystems.armPivot.AbstractArmPivot;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
@@ -16,12 +16,12 @@ public class MoveArmPivot extends Command {
     UP, DOWN
   }
 
-  private final ArmPivot m_pivot;
+  private final AbstractArmPivot m_pivot;
   private final double m_pivotSpeed;
   private final Direction m_direction;
 
   /** Creates a new MoveArmPivot. */
-  public MoveArmPivot(ArmPivot pivot, double pivotSpeed, Direction direction) {
+  public MoveArmPivot(AbstractArmPivot pivot, double pivotSpeed, Direction direction) {
     m_pivot = pivot;
     m_direction = direction;
     if (m_direction == Direction.UP) {

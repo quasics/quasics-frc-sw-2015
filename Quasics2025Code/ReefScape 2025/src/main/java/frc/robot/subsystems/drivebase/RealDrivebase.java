@@ -32,10 +32,6 @@ public class RealDrivebase extends AbstractDrivebase {
   // later? (If not, it should be removed.)
   private static final double kV = 473;
 
-  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
-  // later? (If not, it should be removed.)
-  private static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
-
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
 
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);

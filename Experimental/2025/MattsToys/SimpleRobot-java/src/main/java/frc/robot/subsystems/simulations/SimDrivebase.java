@@ -120,6 +120,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
+    // PID and FF setup
     m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(

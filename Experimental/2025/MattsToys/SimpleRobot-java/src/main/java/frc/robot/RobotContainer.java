@@ -35,7 +35,6 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.controllers.PPLTVController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import choreo.auto.AutoFactory;
@@ -122,7 +121,8 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
 
     // Trajectory commands
-    SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
+    // SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo
+    // path"));
   }
 
   private final AutoFactory m_autoFactory = new AutoFactory(
@@ -192,9 +192,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    // return generateCommandForChoreoTrajectory("Demo path");
+
     // Simple demo command to drive forward while raising the elevator.
     return new ParallelCommandGroup(
         new DriveForDistance(m_drivebase, .50, Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
+
     // return Commands.print("No autonomous command configured");
   }
 }

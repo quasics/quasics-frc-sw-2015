@@ -64,6 +64,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   private final LTVUnicycleController unicycleController = new LTVUnicycleController(0.02);
 
+  // PID/FF calculators
+  final PIDController m_leftPidController;
+  final PIDController m_rightPidController;
+  final DifferentialDriveFeedforward m_feedforward;
+
   /////////////////////////////////////////////////////////////////////////////////////
   // Simulated "hardware" and other simulation-specific objects.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
@@ -185,46 +190,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // m_drivetrainSimulator.getPose());
   }
 
-  @Override
-  public TrivialEncoder getLeftEncoder() {
-    return m_leftTrivialEncoder;
-  }
-
-  @Override
-  public TrivialEncoder getRightEncoder() {
-    return m_rightTrivialEncoder;
-  }
-
-  @Override
-  public IGyro getGyro() {
-    return IGyro.readOnlyGyro(m_wrappedGyro);
-  }
-
-  @Override
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
-
-  @Override
-  public Pose2d getEstimatedPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
-
-  @Override
-  public DifferentialDriveKinematics getKinematics() {
-    return m_kinematics;
-  }
-
-  @Override
-  public Voltage getLeftVoltage() {
-    return Volts.of(m_left.getVoltage());
-  }
-
-  @Override
-  public Voltage getRightVoltage() {
-    return Volts.of(m_right.getVoltage());
-  }
-
   /**
    * Resets robot odometry (e.g., if we know that we've been placed at a
    * specific position/angle on the field, such as at the start of a match).
@@ -272,15 +237,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
         pose);
   }
 
-  final PIDController m_leftPidController;
-  final PIDController m_rightPidController;
-  final DifferentialDriveFeedforward m_feedforward;
-
-  @Override
-  public void driveWithPid(ChassisSpeeds speeds) {
-    driveWithPid(m_kinematics.toWheelSpeeds(speeds));
-  }
-
   @Override
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
@@ -311,6 +267,46 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // OK, apply those to the actual hardware.
     setMotorVoltages(Volts.of(feedforwardVolts.left + leftPidOutput),
         Volts.of(feedforwardVolts.right + rightPidOutput));
+  }
+
+  @Override
+  public TrivialEncoder getLeftEncoder() {
+    return m_leftTrivialEncoder;
+  }
+
+  @Override
+  public TrivialEncoder getRightEncoder() {
+    return m_rightTrivialEncoder;
+  }
+
+  @Override
+  public IGyro getGyro() {
+    return IGyro.readOnlyGyro(m_wrappedGyro);
+  }
+
+  @Override
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  @Override
+  public Pose2d getEstimatedPose() {
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
+  @Override
+  public DifferentialDriveKinematics getKinematics() {
+    return m_kinematics;
+  }
+
+  @Override
+  public Voltage getLeftVoltage() {
+    return Volts.of(m_left.getVoltage());
+  }
+
+  @Override
+  public Voltage getRightVoltage() {
+    return Volts.of(m_right.getVoltage());
   }
 
   @Override

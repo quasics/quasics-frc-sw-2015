@@ -57,8 +57,7 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry;
 
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -111,11 +110,17 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     final AnalogGyro rawGyro = new AnalogGyro(GYRO_CHANNEL); // also used in simulation setup
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
-    // Set up the pose estimator
+    // Set up the odometry and pose estimator
+    m_odometry = new DifferentialDriveOdometry(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        new Pose2d());
     m_poseEstimator = new DifferentialDrivePoseEstimator(
         m_kinematics,
         m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));

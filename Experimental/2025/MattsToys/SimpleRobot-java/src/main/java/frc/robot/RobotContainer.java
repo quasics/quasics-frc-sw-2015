@@ -121,8 +121,7 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
 
     // Trajectory commands
-    // SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo
-    // path"));
+    SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
   private final AutoFactory m_autoFactory = new AutoFactory(

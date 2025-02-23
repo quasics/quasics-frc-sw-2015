@@ -129,12 +129,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setSpeeds'");
-  }
-
-  @Override
   public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
     m_leftLeader.set(leftPercentage);
     m_rightLeader.set(rightPercentage);
@@ -212,7 +206,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public void drive(DifferentialDriveWheelSpeeds wheelSpeeds) {
+  public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
     // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
     // var rightStabilized =

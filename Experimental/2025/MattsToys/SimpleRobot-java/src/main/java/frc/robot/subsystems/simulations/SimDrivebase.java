@@ -320,11 +320,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final DifferentialDriveFeedforward m_feedforward;
 
   @Override
-  public void drive(ChassisSpeeds speeds) {
-    drive(m_kinematics.toWheelSpeeds(speeds));
+  public void driveWithPid(ChassisSpeeds speeds) {
+    driveWithPid(m_kinematics.toWheelSpeeds(speeds));
   }
 
-  public void drive(DifferentialDriveWheelSpeeds wheelSpeeds) {
+  public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
     // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
     // var rightStabilized =

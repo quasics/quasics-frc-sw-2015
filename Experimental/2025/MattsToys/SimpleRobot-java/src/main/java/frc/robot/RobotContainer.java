@@ -196,7 +196,8 @@ public class RobotContainer {
 
     // Simple demo command to drive forward while raising the elevator.
     return new ParallelCommandGroup(
-        new DriveForDistance(m_drivebase, .50, Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
+        new DriveForDistance(m_drivebase, .50, Meters.of(3)),
+        new MoveElevatorToExtreme(m_elevator, true));
 
     // return Commands.print("No autonomous command configured");
   }

@@ -199,7 +199,7 @@ public interface IDrivebase extends ISubsystem {
 
   /** @return The velocity reading from the right encoder */
   default LinearVelocity getRightVelocity() {
-    return getLeftEncoder().getVelocity();
+    return getRightEncoder().getVelocity();
   }
 
   /** @return the angular velocity of the robot (from the ALU) */

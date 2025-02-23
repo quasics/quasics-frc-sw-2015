@@ -269,18 +269,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public LinearVelocity getLeftVelocity() {
-    // TODO: clean this up, but it's currently needed to make Choreo work
-    return MetersPerSecond.of(m_leftEncoderSim.getRate());
-  }
-
-  @Override
-  public LinearVelocity getRightVelocity() {
-    // TODO: clean this up, but it's currently needed to make Choreo work
-    return MetersPerSecond.of(m_rightEncoderSim.getRate());
-  }
-
-  @Override
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(
         m_wrappedGyro.getRotation2d(),

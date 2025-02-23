@@ -27,11 +27,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
@@ -48,8 +48,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   //
 
   // Gyro
-  final private Pigeon2 m_rawGyro = new Pigeon2(PIGEON2_CAN_ID);
-  private final IGyro m_wrappedGyro = IGyro.wrapGyro(m_rawGyro);
+  private final IGyro m_wrappedGyro = IGyro.wrapGyro(new Pigeon2(PIGEON2_CAN_ID));
 
   // Leader motors
   final private SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
@@ -57,6 +56,9 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   final private RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   final private RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
+
+  final private TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
+  final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
@@ -133,6 +135,22 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
+  public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
+    m_leftLeader.set(leftPercentage);
+    m_rightLeader.set(rightPercentage);
+  }
+
+  @Override
+  public TrivialEncoder getLeftEncoder() {
+    return m_leftTrivialEncoder;
+  }
+
+  @Override
+  public TrivialEncoder getRightEncoder() {
+    return m_rightTrivialEncoder;
+  }
+
+  @Override
   public void setMotorVoltages(Voltage left, Voltage right) {
     m_leftLeader.setVoltage(left);
     m_rightLeader.setVoltage(right);
@@ -146,26 +164,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_rightLeader.getAppliedOutput());
-  }
-
-  @Override
-  public Distance getLeftPosition() {
-    return Meters.of(m_leftEncoder.getPosition());
-  }
-
-  @Override
-  public Distance getRightPosition() {
-    return Meters.of(m_rightEncoder.getPosition());
-  }
-
-  @Override
-  public LinearVelocity getLeftVelocity() {
-    return MetersPerSecond.of(m_leftEncoder.getVelocity());
-  }
-
-  @Override
-  public LinearVelocity getRightVelocity() {
-    return MetersPerSecond.of(m_rightEncoder.getVelocity());
   }
 
   @Override
@@ -250,11 +248,5 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     // OK, apply those to the actual hardware.
     setMotorVoltages(Volts.of(feedforwardVolts.left + leftPidOutput),
         Volts.of(feedforwardVolts.right + rightPidOutput));
-  }
-
-  @Override
-  public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
-    m_leftLeader.set(leftPercentage);
-    m_rightLeader.set(rightPercentage);
   }
 }

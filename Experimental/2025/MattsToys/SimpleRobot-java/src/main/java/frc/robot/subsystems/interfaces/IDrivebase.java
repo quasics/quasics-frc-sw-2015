@@ -20,6 +20,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.TrivialEncoder;
 
 /**
  * Basic interface for drive base functionality.
@@ -99,6 +100,26 @@ public interface IDrivebase extends ISubsystem {
     setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
+  /** @return The position reading from the left encoder */
+  default Distance getLeftPosition() {
+    return getLeftEncoder().getPosition();
+  }
+
+  /** @return The position reading from the right encoder */
+  default Distance getRightPosition() {
+    return getRightEncoder().getPosition();
+  }
+
+  /** @return The velocity reading from the left encoder */
+  default LinearVelocity getLeftVelocity() {
+    return getLeftEncoder().getVelocity();
+  }
+
+  /** @return The velocity reading from the right encoder */
+  default LinearVelocity getRightVelocity() {
+    return getLeftEncoder().getVelocity();
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Utility logging methods
@@ -128,6 +149,8 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Motor speed control (as a percentage).
+   * 
+   * TODO: Add a default implementation based on setMotorVoltages().
    *
    * @param leftPercentage  left motor speed (as a percentage of full speed)
    * @param rightPercentage right motor speed (as a percentage of full speed)
@@ -140,17 +163,9 @@ public interface IDrivebase extends ISubsystem {
   /** @return The applied voltage from the right motor */
   Voltage getRightVoltage();
 
-  /** @return The position reading from the left encoder */
-  Distance getLeftPosition();
+  TrivialEncoder getLeftEncoder();
 
-  /** @return The position reading from the right encoder */
-  Distance getRightPosition();
-
-  /** @return The velocity reading from the left encoder */
-  LinearVelocity getLeftVelocity();
-
-  /** @return The velocity reading from the right encoder */
-  LinearVelocity getRightVelocity();
+  TrivialEncoder getRightEncoder();
 
   /** @return the angular velocity of the robot (from the ALU) */
   AngularVelocity getTurnRate();

@@ -26,7 +26,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -39,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
@@ -61,6 +61,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
   private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final IGyro m_wrappedGyro;
+
+  final private TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
@@ -202,25 +205,20 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public Distance getLeftPosition() {
-    return Meters.of(m_leftEncoder.getDistance());
+  public TrivialEncoder getLeftEncoder() {
+    return m_leftTrivialEncoder;
   }
 
   @Override
-  public Distance getRightPosition() {
-    return Meters.of(m_rightEncoder.getDistance());
+  public TrivialEncoder getRightEncoder() {
+    return m_rightTrivialEncoder;
   }
 
-  /** Get the current robot pose, based on odometery. */
   @Override
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
 
-  /**
-   * Get the current estimated robot pose, based on odometery, plus any vision
-   * updates.
-   */
   @Override
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
@@ -229,6 +227,31 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   @Override
   public Angle getHeading() {
     return m_wrappedGyro.getAngle();
+  }
+
+  @Override
+  public DifferentialDriveKinematics getKinematics() {
+    return m_kinematics;
+  }
+
+  @Override
+  public Voltage getLeftVoltage() {
+    return Volts.of(m_left.getVoltage());
+  }
+
+  @Override
+  public Voltage getRightVoltage() {
+    return Volts.of(m_right.getVoltage());
+  }
+
+  @Override
+  public AngularVelocity getTurnRate() {
+    return m_wrappedGyro.getRate();
+  }
+
+  @Override
+  public ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), m_wrappedGyro.getRate());
   }
 
   /**
@@ -290,11 +313,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public DifferentialDriveKinematics getKinematics() {
-    return m_kinematics;
-  }
-
-  @Override
   public void setMotorVoltages(Voltage left, Voltage right) {
     m_left.setVoltage(left);
     m_right.setVoltage(right);
@@ -304,42 +322,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public Voltage getLeftVoltage() {
-    return Volts.of(m_left.getVoltage());
-  }
-
-  @Override
-  public Voltage getRightVoltage() {
-    return Volts.of(m_right.getVoltage());
-  }
-
-  @Override
-  public LinearVelocity getLeftVelocity() {
-    return MetersPerSecond.of(m_leftEncoderSim.getRate());
-  }
-
-  @Override
-  public LinearVelocity getRightVelocity() {
-    return MetersPerSecond.of(m_rightEncoderSim.getRate());
-  }
-
-  @Override
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
         pose);
     m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
         m_rightEncoder.getDistance(),
         pose);
-  }
-
-  @Override
-  public AngularVelocity getTurnRate() {
-    return m_wrappedGyro.getRate();
-  }
-
-  @Override
-  public ChassisSpeeds getCurrentSpeeds() {
-    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), m_wrappedGyro.getRate());
   }
 
   final PIDController m_leftPidController;

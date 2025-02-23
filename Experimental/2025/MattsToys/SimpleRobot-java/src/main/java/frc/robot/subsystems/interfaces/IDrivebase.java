@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
@@ -111,9 +113,11 @@ public interface IDrivebase extends ISubsystem {
   /**
    * Set the wheel speeds (positive values are forward).
    * 
-   * Note: operates directly; no PIDm but clamped to MAX_SPEED.
+   * Note: operates directly; no PID, but clamped to MAX_SPEED.
    *
    * @param wheelSpeeds The wheel speeds to set.
+   * 
+   * @see #setMotorSpeeds
    */
   default void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // Calculate the (clamped) left and right wheel speeds based on the inputs.
@@ -129,6 +133,35 @@ public interface IDrivebase extends ISubsystem {
     // Set the speeds of the left and right sides of the drivetrain.
     final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
     setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
+  }
+
+  /**
+   * Motor speed control (as a percentage).
+   * 
+   * Note: operates directly; no PID, and does not reference MAX_SPEED, though
+   * percentages are clamped to [-1,+1].
+   *
+   * @param leftPercentage  left motor speed (as a percentage of full speed)
+   * @param rightPercentage right motor speed (as a percentage of full speed)
+   */
+  default void setMotorSpeeds(double leftPercentage, double rightPercentage) {
+    final double referenceVoltage = RobotController.getInputVoltage();
+    setMotorVoltages(
+        Volts.of(referenceVoltage * MathUtil.clamp(leftPercentage, -1, +1)),
+        Volts.of(referenceVoltage * MathUtil.clamp(rightPercentage, -1, +1)));
+  }
+
+  /**
+   * Sets the speeds for the robot.
+   * 
+   * Used for trajectory-following (e.g., with Choreo).
+   * 
+   * @param speeds desired left/right/rotational speeds
+   * 
+   * @see #driveWithPid(DifferentialDriveWheelSpeeds)
+   */
+  default void driveWithPid(ChassisSpeeds speeds) {
+    driveWithPid(getKinematics().toWheelSpeeds(speeds));
   }
 
   /**
@@ -220,19 +253,6 @@ public interface IDrivebase extends ISubsystem {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
   }
 
-  /**
-   * Sets the speeds for the robot.
-   * 
-   * Used for trajectory-following (e.g., with Choreo).
-   * 
-   * @param speeds desired left/right/rotational speeds
-   * 
-   * @see #driveWithPid(DifferentialDriveWheelSpeeds)
-   */
-  default void driveWithPid(ChassisSpeeds speeds) {
-    driveWithPid(getKinematics().toWheelSpeeds(speeds));
-  }
-
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Utility logging methods
@@ -267,18 +287,6 @@ public interface IDrivebase extends ISubsystem {
    * @param right voltage for the right-side motors
    */
   void setMotorVoltages(Voltage left, Voltage right);
-
-  /**
-   * Motor speed control (as a percentage).
-   * 
-   * Note: operates directly; no PID, nut does not reference MAX_SPEED.
-   * 
-   * TODO: Add a default implementation based on setMotorVoltages().
-   *
-   * @param leftPercentage  left motor speed (as a percentage of full speed)
-   * @param rightPercentage right motor speed (as a percentage of full speed)
-   */
-  void setMotorSpeeds(double leftPercentage, double rightPercentage);
 
   /** @return The applied voltage from the left motor */
   Voltage getLeftVoltage();

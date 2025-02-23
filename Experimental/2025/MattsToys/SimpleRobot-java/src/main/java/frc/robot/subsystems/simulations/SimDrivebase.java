@@ -225,11 +225,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     return Volts.of(m_right.getVoltage());
   }
 
-  @Override
-  public ChassisSpeeds getCurrentSpeeds() {
-    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), m_wrappedGyro.getRate());
-  }
-
   /**
    * Resets robot odometry (e.g., if we know that we've been placed at a
    * specific position/angle on the field, such as at the start of a match).
@@ -252,16 +247,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
         m_leftEncoder.getDistance(),
         m_rightEncoder.getDistance(),
         pose);
-  }
-
-  @Override
-  public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
-    // Clamp speeds to the range [-1.0, 1.0].
-    leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
-    rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
-
-    m_left.set(leftPercentage);
-    m_right.set(rightPercentage);
   }
 
   @Override

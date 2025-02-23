@@ -67,6 +67,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
+  private final LTVUnicycleController unicycleController = new LTVUnicycleController(0.02);
+
   /////////////////////////////////////////////////////////////////////////////////////
   // Simulated "hardware" and other simulation-specific objects.
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
@@ -110,11 +112,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_rightEncoder.reset();
 
     // Set up the gyro
-    final AnalogGyro rawGyro = new AnalogGyro(GYRO_CHANNEL);
+    final AnalogGyro rawGyro = new AnalogGyro(GYRO_CHANNEL); // also used in simulation setup
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Set up the pose estimator
-    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
+    m_poseEstimator = new DifferentialDrivePoseEstimator(
+        m_kinematics,
         m_wrappedGyro.getRotation2d(),
         m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
         new Pose2d(),
@@ -350,8 +353,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     setMotorVoltages(Volts.of(feedforwardVolts.left + leftPidOutput),
         Volts.of(feedforwardVolts.right + rightPidOutput));
   }
-
-  private final LTVUnicycleController unicycleController = new LTVUnicycleController(0.02);
 
   @Override
   public LTVUnicycleController getLtvUnicycleController() {

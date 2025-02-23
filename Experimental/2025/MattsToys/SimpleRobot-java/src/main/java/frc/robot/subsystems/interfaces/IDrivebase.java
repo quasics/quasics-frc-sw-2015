@@ -131,6 +131,18 @@ public interface IDrivebase extends ISubsystem {
     return getGyro().getAngle();
   }
 
+  /**
+   * @return the current ChassisSpeeds of the robot (used for
+   *         trajectory-following)
+   */
+  default ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
+  }
+
+  default void drive(ChassisSpeeds speeds) {
+    drive(getKinematics().toWheelSpeeds(speeds));
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Utility logging methods
@@ -222,13 +234,9 @@ public interface IDrivebase extends ISubsystem {
     drive(speeds);
   }
 
-  default ChassisSpeeds getCurrentSpeeds() {
-    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
-  }
-
   void resetPose(Pose2d pose);
 
-  void drive(ChassisSpeeds speeds);
+  public void drive(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   LTVUnicycleController getLtvUnicycleController();
 }

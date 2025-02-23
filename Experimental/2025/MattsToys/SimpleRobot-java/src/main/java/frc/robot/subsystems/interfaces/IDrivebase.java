@@ -80,7 +80,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final var wheelSpeeds = getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
+        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);

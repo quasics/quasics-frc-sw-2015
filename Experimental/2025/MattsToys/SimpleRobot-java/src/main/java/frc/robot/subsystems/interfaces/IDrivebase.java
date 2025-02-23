@@ -102,7 +102,7 @@ public interface IDrivebase extends ISubsystem {
    * @param wheelSpeeds The wheel speeds to set.
    */
   default void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
-    // Calculate the left and right wheel speeds based on the inputs.
+    // Calculate the (clamped) left and right wheel speeds based on the inputs.
     final double leftSpeed = MathUtil.clamp(
         wheelSpeeds.leftMetersPerSecond,
         -MAX_SPEED.in(MetersPerSecond),

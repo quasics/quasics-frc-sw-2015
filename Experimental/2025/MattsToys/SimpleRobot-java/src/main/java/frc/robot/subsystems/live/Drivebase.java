@@ -212,9 +212,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public void drive(ChassisSpeeds speeds) {
-    var wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
-
+  public void drive(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
     // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
     // var rightStabilized =

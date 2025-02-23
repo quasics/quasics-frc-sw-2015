@@ -195,17 +195,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
-    // Calculate the left and right wheel speeds based on the inputs.
-    final var leftSpeed = wheelSpeeds.leftMetersPerSecond;
-    final var rightSpeed = wheelSpeeds.rightMetersPerSecond;
-
-    // Set the speeds of the left and right sides of the drivetrain.
-    final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
-    setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
-  }
-
-  @Override
   public TrivialEncoder getLeftEncoder() {
     return m_leftTrivialEncoder;
   }
@@ -332,8 +321,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void drive(ChassisSpeeds speeds) {
-    var wheelSpeeds = m_kinematics.toWheelSpeeds(speeds);
+    drive(m_kinematics.toWheelSpeeds(speeds));
+  }
 
+  public void drive(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // var leftStabilized =
     // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
     // var rightStabilized =

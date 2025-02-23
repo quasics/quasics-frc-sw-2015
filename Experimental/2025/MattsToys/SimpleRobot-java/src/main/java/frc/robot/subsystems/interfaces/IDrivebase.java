@@ -4,8 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.controller.LTVUnicycleController;
@@ -34,10 +34,10 @@ public interface IDrivebase extends ISubsystem {
   final String POSE_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
-  final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.25);
+  final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
 
   /** Maximum rotational velocity for arcade drive. */
-  final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(.25 * Math.PI);
+  final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(180);
 
   /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);

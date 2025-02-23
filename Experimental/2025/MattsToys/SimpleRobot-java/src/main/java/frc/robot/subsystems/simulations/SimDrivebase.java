@@ -201,16 +201,6 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
-  // TODO: Consider moving this into a base class with access to m_kinematics.
-  @Override
-  public void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
-    // Calculate the left and right wheel speeds based on the inputs.
-    final var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
-
-    // Set the speeds of the left and right sides of the drivetrain.
-    setSpeeds(wheelSpeeds);
-  }
-
   @Override
   public Distance getLeftPosition() {
     return Meters.of(m_leftEncoder.getDistance());
@@ -289,19 +279,19 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     });
   }
 
-  /**
-   * Implementation method for motor speed control.
-   *
-   * @param leftPercentage  left motor speed (as a percentage of full speed)
-   * @param rightPercentage right motor speed (as a percentage of full speed)
-   */
-  private void setMotorSpeeds(double leftPercentage, double rightPercentage) {
+  @Override
+  public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
     // Clamp speeds to the range [-1.0, 1.0].
     leftPercentage = Math.max(-1.0, Math.min(1.0, leftPercentage));
     rightPercentage = Math.max(-1.0, Math.min(1.0, rightPercentage));
 
     m_left.set(leftPercentage);
     m_right.set(rightPercentage);
+  }
+
+  @Override
+  public DifferentialDriveKinematics getKinematics() {
+    return m_kinematics;
   }
 
   @Override
@@ -340,6 +330,11 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
         m_rightEncoder.getDistance(),
         pose);
+  }
+
+  @Override
+  public AngularVelocity getTurnRate() {
+    return m_wrappedGyro.getRate();
   }
 
   @Override

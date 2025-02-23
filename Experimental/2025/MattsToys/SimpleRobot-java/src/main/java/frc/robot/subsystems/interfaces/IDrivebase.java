@@ -11,6 +11,7 @@ import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
@@ -41,6 +42,21 @@ public interface IDrivebase extends ISubsystem {
 
   final boolean LOG_TO_SMARTDASHBOARD = true;
 
+  /** Utility method: stops the robot. */
+  default void stop() {
+    tankDrive(0, 0);
+  }
+
+  /**
+   * Utility method: straight forward/backward. (Effectively, tank drive with a
+   * single speed for both sides.)
+   *
+   * @param percentage The percentage of MAX_SPEED to drive at.
+   */
+  default void tankDrive(double percentage) {
+    tankDrive(percentage, percentage);
+  }
+
   /**
    * Drive the robot using tank drive (as a percentage of MAX_SPEED).
    *
@@ -54,33 +70,40 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Drive the robot using arcade drive.
+   * 
+   * TODO: Consider rewriting this to use the "drive(ChassisSpeeds)" method.
    *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
    */
-  void arcadeDrive(LinearVelocity speed, AngularVelocity rotation);
+  default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
+    // Calculate the left and right wheel speeds based on the inputs.
+    final var wheelSpeeds = getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+
+    // Set the speeds of the left and right sides of the drivetrain.
+    setSpeeds(wheelSpeeds);
+  }
 
   /**
    * Set the wheel speeds (positive values are forward).
    *
    * @param wheelSpeeds The wheel speeds to set.
    */
-  void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds);
+  default void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
+    // Calculate the left and right wheel speeds based on the inputs.
+    final var leftSpeed = wheelSpeeds.leftMetersPerSecond;
+    final var rightSpeed = wheelSpeeds.rightMetersPerSecond;
 
-  /**
-   * Utility method: straight forward/backward. (Effectively, tank drive with a
-   * single speed for both sides.)
-   *
-   * @param percentage The percentage of MAX_SPEED to drive at.
-   */
-  default void setSpeed(double percentage) {
-    tankDrive(percentage, percentage);
+    // Set the speeds of the left and right sides of the drivetrain.
+    final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
+    setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
   }
 
-  /** Utility method: stops the robot. */
-  default void stop() {
-    tankDrive(0, 0);
-  }
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Utility logging methods
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
   @SuppressWarnings("rawtypes")
   default void logValue(String label, Measure val) {
@@ -95,24 +118,6 @@ public interface IDrivebase extends ISubsystem {
     }
   }
 
-  default void followTrajectory(DifferentialSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = getPose();
-
-    // Get the velocity feedforward specified by the sample
-    ChassisSpeeds ff = sample.getChassisSpeeds();
-
-    // Generate the next speeds for the robot
-    ChassisSpeeds speeds = getLtvUnicycleController().calculate(
-        pose,
-        sample.getPose(),
-        ff.vxMetersPerSecond,
-        ff.omegaRadiansPerSecond);
-
-    // Apply the generated speeds
-    drive(speeds);
-  }
-
   /////////////////////////////////////////////////////////////////////////////////
   //
   // "Purely abstract methods"
@@ -120,6 +125,14 @@ public interface IDrivebase extends ISubsystem {
   /////////////////////////////////////////////////////////////////////////////////
 
   void setMotorVoltages(Voltage left, Voltage right);
+
+  /**
+   * Motor speed control (as a percentage).
+   *
+   * @param leftPercentage  left motor speed (as a percentage of full speed)
+   * @param rightPercentage right motor speed (as a percentage of full speed)
+   */
+  void setMotorSpeeds(double leftPercentage, double rightPercentage);
 
   /** @return The applied voltage from the left motor */
   Voltage getLeftVoltage();
@@ -139,6 +152,9 @@ public interface IDrivebase extends ISubsystem {
   /** @return The velocity reading from the right encoder */
   LinearVelocity getRightVelocity();
 
+  /** @return the angular velocity of the robot (from the ALU) */
+  AngularVelocity getTurnRate();
+
   /** @return heading of the robot (as an Angle) */
   Angle getHeading();
 
@@ -147,6 +163,9 @@ public interface IDrivebase extends ISubsystem {
 
   Pose2d getEstimatedPose();
 
+  DifferentialDriveKinematics getKinematics();
+
+  /////////////////////////////////////////////////////////////////////////////////
   //
   // Functionality required for AutoBuilder (in PathPlanner library) or
   // AutoFactory (in Choreo library)
@@ -155,10 +174,37 @@ public interface IDrivebase extends ISubsystem {
   // See: https://www.chiefdelphi.com/t/choreo-2025-beta/472224/23
   // See: https://github.com/mjansen4857/pathplanner/tree/main/examples/java
   //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Follows (executes) a sample of a Choreo trajectory for a differential drive
+   * robot.
+   * 
+   * @param sample component of the trajectory to be followed
+   */
+  default void followTrajectory(DifferentialSample sample) {
+    // Get the current pose of the robot
+    Pose2d pose = getPose();
+
+    // Get the velocity feedforward specified by the sample
+    ChassisSpeeds ff = sample.getChassisSpeeds();
+
+    // Generate the next speeds for the robot
+    ChassisSpeeds speeds = getLtvUnicycleController().calculate(
+        pose,
+        sample.getPose(),
+        ff.vxMetersPerSecond,
+        ff.omegaRadiansPerSecond);
+
+    // Apply the generated speeds
+    drive(speeds);
+  }
+
+  default ChassisSpeeds getCurrentSpeeds() {
+    return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
+  }
 
   void resetPose(Pose2d pose);
-
-  ChassisSpeeds getCurrentSpeeds();
 
   void drive(ChassisSpeeds speeds);
 

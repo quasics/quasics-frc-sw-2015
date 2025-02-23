@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -99,6 +99,12 @@ public class RobotConfigs {
   public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
   }
 
+  /**
+   * Simple feedforward data.
+   * 
+   * @param kV kV, in V/(m/s); must be > 0
+   * @param kA kA, in V/(m/s^2)
+   */
   public static record SimpleFeedForwardConfig(Voltage kV, double kA) {
     public SimpleFeedForwardConfig(double kV, double kA) {
       this(Volts.of(kV), kA);
@@ -114,6 +120,9 @@ public class RobotConfigs {
     }
   }
 
+  /**
+   * Drive base configuration data.
+   */
   public static record DriveConfig(
       Distance wheelRadius,
       Distance trackWidth,
@@ -122,7 +131,7 @@ public class RobotConfigs {
       DriveFeedForwardConfig feedForward) {
   }
 
-  // TODO: Add other data, such as PID settings for different things, etc.
+  /** Collective robot configuration data. */
   public static record RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
   }
 

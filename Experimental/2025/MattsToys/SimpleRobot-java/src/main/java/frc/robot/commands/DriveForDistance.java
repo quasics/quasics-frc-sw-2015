@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -12,8 +14,6 @@ import frc.robot.subsystems.interfaces.IDrivebase;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class DriveForDistance extends Command {
-  final static double EPSILON = 0.01;
-
   final IDrivebase m_drivebase;
   final double m_percentSpeed;
   final Distance m_distance;
@@ -22,7 +22,8 @@ public class DriveForDistance extends Command {
   /** Creates a new DriveForDistance. */
   public DriveForDistance(IDrivebase drivebase, double percentSpeed, Distance distance) {
     m_drivebase = drivebase;
-    m_percentSpeed = (distance.baseUnitMagnitude() > 0 ? 1 : -1) * Math.abs(percentSpeed);
+    final double distanceSign = (distance.baseUnitMagnitude() > 0 ? 1 : -1);
+    m_percentSpeed = distanceSign * Math.abs(percentSpeed);
     m_distance = distance;
     addRequirements(m_drivebase.asSubsystem());
   }
@@ -31,7 +32,6 @@ public class DriveForDistance extends Command {
   @Override
   public void initialize() {
     m_stopAtPosition = m_drivebase.getLeftPosition().plus(m_distance);
-    // TODO: Add deadband handling (i.e., if distance is basically 0).
     m_drivebase.tankDrive(m_percentSpeed);
   }
 

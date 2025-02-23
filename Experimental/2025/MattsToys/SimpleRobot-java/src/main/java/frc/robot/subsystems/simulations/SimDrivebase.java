@@ -145,22 +145,12 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   public void periodic() {
     super.periodic();
 
-    updateOdometry();
+    updateOdometry(m_odometry, m_poseEstimator);
 
-    // Share the current pose with other subsystems (e.g., vision).
-    var pose = getOdometry().getPoseMeters();
-    BulletinBoard.common.updateValue(POSE_KEY, pose);
+    publishData(m_leftPidController, m_rightPidController);
 
-    // Update published field simulation data. We're doing this here (in the
-    // periodic function, rather than in the simulationPeriodic function) because we
-    // want to take advantage of the fact that the odometry has just been updated.
-    //
-    // When we move stuff into a base class, the code above would be there, and this
-    // would be in the overridden periodic function for this (simulation-specific)
-    // class.
-    SmartDashboard.putNumber("X", pose.getX());
-    SmartDashboard.putNumber("Y", pose.getY());
-    m_fieldSim.setRobotPose(pose);
+    // Update the field simulator to reflect refreshed odometry.
+    m_fieldSim.setRobotPose(getPose());
     m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
   }
 
@@ -243,47 +233,23 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
    * specific position/angle on the field, such as at the start of a match).
    */
   public void resetOdometry(Pose2d pose) {
-    m_leftEncoder.reset();
-    m_rightEncoder.reset();
+    // m_leftEncoder.reset();
+    // m_rightEncoder.reset();
     // m_gyroSim.setAngle(pose.getRotation().getDegrees());
 
     // Update the pose information in the simulator.
     m_drivetrainSimulator.setPose(pose);
 
-    // TODO: Figure out how to align the gyro's data with the provided pose.
-
-    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
-    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), 0, 0, pose);
-  }
-
-  // TODO: Move to a base class as a protected method. (It shouldn't be exposed as
-  // public, since we don't want client code to directly manipulate/change the
-  // data.)
-  protected final DifferentialDriveOdometry getOdometry() {
-    return m_odometry;
-  }
-
-  /**
-   * Update the robot's odometry.
-   *
-   * TODO: This should be moved to a base class or interface.
-   */
-  protected void updateOdometry() {
-    final Rotation2d rotation = m_wrappedGyro.getRotation2d();
-    final double leftDistanceMeters = m_leftEncoder.getDistance();
-    final double rightDistanceMeters = m_rightEncoder.getDistance();
-
-    m_odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
-    m_poseEstimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
-
-    // If an estimated position has been posted by the vision subsystem, integrate
-    // it into our estimate.
-    Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
-    optionalPose.ifPresent(poseObject -> {
-      BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-          .ifPresent(timestampObject -> m_poseEstimator.addVisionMeasurement(
-              (Pose2d) poseObject, (Double) timestampObject));
-    });
+    m_odometry.resetPosition(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        pose);
+    m_poseEstimator.resetPosition(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        pose);
   }
 
   @Override
@@ -307,9 +273,14 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void resetPose(Pose2d pose) {
-    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+    m_odometry.resetPosition(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
         pose);
-    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+    m_poseEstimator.resetPosition(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
         m_rightEncoder.getDistance(),
         pose);
   }

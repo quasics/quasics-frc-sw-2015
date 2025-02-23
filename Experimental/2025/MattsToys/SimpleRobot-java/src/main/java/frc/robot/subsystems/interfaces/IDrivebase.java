@@ -5,14 +5,21 @@
 package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import java.util.Optional;
 
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.LTVUnicycleController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
@@ -23,6 +30,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.BulletinBoard;
 
 /**
  * Basic interface for drive base functionality.
@@ -34,8 +42,11 @@ public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   final String SUBSYSTEM_NAME = "Drivebase";
 
-  /** Key used to post Pose information to BulletinBoard. */
+  /** Key used to post odometry-based pose information to BulletinBoard. */
   final String POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+
+  /** Key used to post odometry-based pose information to BulletinBoard. */
+  final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
   final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
@@ -118,6 +129,57 @@ public interface IDrivebase extends ISubsystem {
     // Set the speeds of the left and right sides of the drivetrain.
     final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
     setMotorSpeeds(leftSpeed / maxSpeed, rightSpeed / maxSpeed);
+  }
+
+  /**
+   * Update the odometry/pose estimation, based on current sensor data.
+   */
+  default void updateOdometry(DifferentialDriveOdometry odometry, DifferentialDrivePoseEstimator estimator) {
+    final Rotation2d rotation = getGyro().getRotation2d();
+    final double leftDistanceMeters = getLeftEncoder().getPosition().in(Meters);
+    final double rightDistanceMeters = getRightEncoder().getPosition().in(Meters);
+
+    if (odometry != null) {
+      odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
+    }
+
+    if (estimator != null) {
+      estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
+
+      // If an estimated position has been posted by the vision subsystem, integrate
+      // it into our estimate.
+      Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
+      optionalPose.ifPresent(poseObject -> {
+        BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
+            .ifPresent(timestampObject -> estimator.addVisionMeasurement(
+                (Pose2d) poseObject, (Double) timestampObject));
+      });
+    }
+  }
+
+  /** Share the current pose with other subsystems (e.g., vision). */
+  default void publishData(PIDController leftPidController, PIDController rightPidController) {
+    final Pose2d currentPose = getPose();
+    BulletinBoard.common.updateValue(POSE_KEY, currentPose);
+    BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, getEstimatedPose());
+
+    // Update published field simulation data. We're doing this here (in the
+    // periodic function, rather than in the simulationPeriodic function) because we
+    // want to take advantage of the fact that the odometry has just been updated.
+    //
+    // When we move stuff into a base class, the code above would be there, and this
+    // would be in the overridden periodic function for this (simulation-specific)
+    // class.
+    SmartDashboard.putNumber("X", currentPose.getX());
+    SmartDashboard.putNumber("Y", currentPose.getY());
+
+    // Push our PID info out to the dashboard.
+    if (leftPidController != null) {
+      SmartDashboard.putData("Drive pid (L)", leftPidController);
+    }
+    if (rightPidController != null) {
+      SmartDashboard.putData("Drive pid (R)", rightPidController);
+    }
   }
 
   /** @return The position reading from the left encoder */

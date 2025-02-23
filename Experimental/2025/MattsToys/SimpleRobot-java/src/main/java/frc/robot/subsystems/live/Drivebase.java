@@ -131,6 +131,15 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
+  public void periodic() {
+    super.periodic();
+
+    updateOdometry(m_odometry, m_poseEstimator);
+
+    publishData(m_leftPidController, m_rightPidController);
+  }
+
+  @Override
   public void setMotorSpeeds(double leftPercentage, double rightPercentage) {
     m_leftLeader.set(leftPercentage);
     m_rightLeader.set(rightPercentage);

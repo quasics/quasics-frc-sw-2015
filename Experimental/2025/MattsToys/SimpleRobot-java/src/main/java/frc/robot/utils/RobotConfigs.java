@@ -19,6 +19,19 @@ import edu.wpi.first.units.measure.Voltage;
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
+  // TODO: Add definitions for actual hardware.
+  public enum Robot {
+    Simulation
+  }
+
+  /** @return the configuration associated with a specific robot */
+  public static RobotConfig getConfig(Robot robot) {
+    return m_map.get(robot);
+  }
+
+  /** Stores the actual mapping of robot IDs to configurations. */
+  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
+
   /**
    * Location of something in terms of the robot's center (in terms of the robot
    * coordinate system).
@@ -135,18 +148,6 @@ public class RobotConfigs {
   public static record RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
   }
 
-  // TODO: Add definitions for actual hardware.
-  public enum Robot {
-    Simulation
-  }
-
-  /** @return the configuration associated with a specific robot */
-  public static RobotConfig getConfig(Robot robot) {
-    return m_map.get(robot);
-  }
-
-  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
-
   /**
    * Helper function, used to construct the underlying map. (Java doesn't support
    * inline specification of Map data.)
@@ -189,6 +190,7 @@ public class RobotConfigs {
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
 
+    // Sanity check to make sure that we have entries for all known robots.
     assert (map.size() == Robot.values().length) : "Configurations for one or more robots are missing!";
     return map;
   }

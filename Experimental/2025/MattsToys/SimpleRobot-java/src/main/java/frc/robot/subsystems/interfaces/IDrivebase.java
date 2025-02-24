@@ -180,7 +180,9 @@ public interface IDrivebase extends ISubsystem {
       estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
 
       // If an estimated position has been posted by the vision subsystem, integrate
-      // it into our estimate.
+      // it into our estimate. (Note that some sources suggest *not* doing this while
+      // the robot is in motion, since that's when you'll have the most significant
+      // error introduced into the images.)
       Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
       optionalPose.ifPresent(poseObject -> {
         BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)

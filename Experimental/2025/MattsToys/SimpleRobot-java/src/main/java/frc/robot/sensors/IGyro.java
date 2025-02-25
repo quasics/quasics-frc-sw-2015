@@ -6,8 +6,6 @@ package frc.robot.sensors;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -15,7 +13,6 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 import java.util.function.Supplier;
 
-// import com.ctre.phoenix6.hardware.Pigeon2;
 // import edu.wpi.first.wpilibj.romi.RomiGyro;
 // import edu.wpi.first.wpilibj.xrp.XRPGyro;
 
@@ -153,31 +150,7 @@ public interface IGyro {
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
 
-  // Helper function to wrap the Pigeon2 type from CTRE.
-  static IGyro wrapYawGyro(Pigeon2 pigeon2) {
-    return new OffsetGyro(
-        new FunctionalGyro(
-            () -> {
-              System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
-            },
-            // Per docs, "getAngle()" (CW+) has been replaced by "getYaw()" (CCW+).
-            () -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
-            // Per docs, "getRate()" (CW+) has been replaced by "getAngularVelocityZWorld()"
-            // (CCW+).
-            () -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
-            () -> pigeon2.getRotation2d().unaryMinus(),
-            () -> {
-              // Note that this will reset *all* axes for the Pigeon2. May want
-              // to wrap further in an OffsetGyro.
-              pigeon2.reset();
-            }));
-  }
-
-  // Convenient overload.
-  static IGyro wrapGyro(Pigeon2 g) {
-    return wrapYawGyro(g);
-  }
-
+  // TODO: Extract this into a separate class, similar to that for Pigeon2.
   // /** Helper function to wrap the XRPGyro type from WPILib. */
   // static IGyro wrapYawGyro(XRPGyro g) {
   // return new OffsetGyro(new FunctionalGyro(
@@ -196,6 +169,7 @@ public interface IGyro {
   // }));
   // }
 
+  // TODO: Extract this into a separate class, similar to that for Pigeon2.
   // /** Helper function to wrap the RomiGyro type from WPILib. */
   // static IGyro wrapYawGyro(RomiGyro g) {
   // return new OffsetGyro(new FunctionalGyro(

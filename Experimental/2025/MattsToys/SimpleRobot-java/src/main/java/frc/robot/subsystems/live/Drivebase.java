@@ -27,6 +27,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
+import frc.robot.sensors.Pigeon2Wrapper;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -49,7 +50,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   //
 
   // Gyro
-  private final IGyro m_wrappedGyro = IGyro.wrapGyro(new Pigeon2(PIGEON2_CAN_ID));
+  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(PIGEON2_CAN_ID));
 
   // Leader motors
   final private SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);

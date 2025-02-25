@@ -46,7 +46,11 @@ public interface IVision extends ISubsystem {
   boolean getEstimateRecentlyUpdated();
 
   // Trivial implementation of IVision (e.g., if we don't have a camera).
-  final IVision NULL_VISION = new IVision() {
+  public class NullVision implements IVision {
+    public NullVision() {
+      System.out.println("INFO: allocating NullVision");
+    }
+
     @Override
     public void updateReferencePose(Pose2d pose) {
       // No-op
@@ -71,5 +75,5 @@ public interface IVision extends ISubsystem {
     public boolean getEstimateRecentlyUpdated() {
       return false;
     }
-  };
+  }
 }

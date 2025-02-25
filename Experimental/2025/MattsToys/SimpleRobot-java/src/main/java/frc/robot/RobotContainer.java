@@ -191,12 +191,12 @@ public class RobotContainer {
 
   private static AbstractElevator allocateElevator(RobotConfigs.RobotConfig config) {
     if (!config.hasElevator()) {
-      return AbstractElevator.NULL_ELEVATOR;
+      return new AbstractElevator.NullElevator();
     }
 
     if (Robot.isReal()) {
       // TODO: Implement "real elevator" support.
-      return AbstractElevator.NULL_ELEVATOR;
+      return new AbstractElevator.NullElevator();
     } else {
       return new SimulatedElevator(config);
     }
@@ -204,7 +204,7 @@ public class RobotContainer {
 
   private static IVision allocateVision(RobotConfigs.RobotConfig config) {
     if (!config.hasCamera()) {
-      return IVision.NULL_VISION;
+      return new IVision.NullVision();
     }
 
     if (Robot.isReal()) {

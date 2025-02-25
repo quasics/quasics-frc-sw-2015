@@ -182,7 +182,11 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
 
-  public static final AbstractElevator NULL_ELEVATOR = new AbstractElevator() {
+  static public class NullElevator extends AbstractElevator {
+    public NullElevator() {
+      System.out.println("INFO: Allocating NullElevator");
+    }
+
     @Override
     public boolean atTargetPosition() {
       return true;
@@ -212,5 +216,5 @@ public abstract class AbstractElevator extends SubsystemBase {
     @Override
     protected void retract_impl() {
     }
-  };
+  }
 }

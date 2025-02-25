@@ -19,7 +19,9 @@ import java.util.Map;
  */
 public class RobotConfigs {
   // TODO: Add definitions for actual hardware.
-  public enum Robot { Simulation }
+  public enum Robot {
+    Simulation,
+  }
 
   /** @return the configuration associated with a specific robot */
   public static RobotConfig getConfig(Robot robot) {
@@ -42,7 +44,7 @@ public class RobotConfigs {
    * @param z distance along the Z axis (up (+)/down (-)) from center
    *
    * @see
-   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   *      https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
    */
   public static record Position(Distance x, Distance y, Distance z) {
   }
@@ -154,16 +156,17 @@ public class RobotConfigs {
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
-        new RobotConfig(new DriveConfig(Inches.of(3), // Wheel radius
-                            Units.Meters.of(0.381 * 2), // Trackwidth
-                            8.0, // Gearing
-                            new PIDConfig(1.6018),
-                            new DriveFeedForwardConfig(
-                                // ksLinear: 0.014183
-                                Volts.of(1.9802), 0.19202, // Linear data
-                                // ksAngular: 0.011388
-                                Volts.of(1.5001), 0.29782) // Angular data
-                            ),
+        new RobotConfig(
+            new DriveConfig(Inches.of(3), // Wheel radius
+                Units.Meters.of(0.381 * 2), // Trackwidth
+                8.0, // Gearing
+                new PIDConfig(1.6018),
+                new DriveFeedForwardConfig(
+                    // ksLinear: 0.014183
+                    Volts.of(1.9802), 0.19202, // Linear data
+                    // ksAngular: 0.011388
+                    Volts.of(1.5001), 0.29782) // Angular data
+            ),
             new CameraConfig("USBCamera1",
                 // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
                 // pose (which is considered to be its center of rotation at the floor level, or
@@ -176,16 +179,28 @@ public class RobotConfigs {
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(-15), // pitch
                     Degrees.of(0) // yaw
-                    ),
+                ),
                 // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
                 new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
 
-    // Sanity check to make sure that we have entries for all known robots.
+    //
+    // Sanity checks to make sure that we have entries for all known robots.
+
+    // Note that assertions are disabled by default. :-(
+    // See
+    // https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html.
     assert (map.size() == Robot.values().length)
         : "Configurations for one or more robots are missing!";
+
+    // Back up the assertion with something that can't be disabled.
+    if (map.size() != Robot.values().length) {
+      final int numRobotsWithoutConfigs = Robot.values().length - map.size();
+      throw new RuntimeException(
+          "Configurations are missing for " + numRobotsWithoutConfigs + " robot(s)!");
+    }
     return map;
   }
 }

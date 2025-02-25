@@ -185,8 +185,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   public static final AbstractElevator NULL_ELEVATOR = new AbstractElevator() {
     @Override
     public boolean atTargetPosition() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'atTargetPosition'");
+      return true;
     }
 
     @Override

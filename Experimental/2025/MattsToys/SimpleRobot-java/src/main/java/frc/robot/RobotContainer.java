@@ -169,6 +169,9 @@ public class RobotContainer {
         m_autoFactory.trajectoryCmd(trajectoryName));
   }
 
+  /**
+   * @see https://pathplanner.dev/pplib-getting-started.html
+   */
   protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
     try {
       // Load the path you want to follow using its name in the GUI
@@ -176,10 +179,14 @@ public class RobotContainer {
 
       // Create a path following command using AutoBuilder. This will also trigger
       // event markers.
+      //
+      // Note: the AutoBuilder would need to be configured first, based on auto files
+      // created in the PathPlanner GUI app. (This would normally be done in the
+      // constructor for the RobotContainer, prior to this function being invoked.)
       return AutoBuilder.followPath(path);
     } catch (Exception e) {
       // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-      System.err.println("Failed to load Choreo trajectory: " + trajectoryName);
+      System.err.println("Failed to load PathPlanner trajectory: " + trajectoryName);
       e.printStackTrace();
       return Commands.none();
     }

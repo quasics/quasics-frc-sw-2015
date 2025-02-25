@@ -4,40 +4,34 @@
 
 package frc.robot.subsystems.interfaces;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.*;
 
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.LTVUnicycleController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.BulletinBoard;
-import java.util.Optional;
 
 /**
  * Basic interface for drive base functionality.
- *
- * TODO: At this point, this *really* ought to be an abstract class, vs an
- * interface, based on the amount of code it contains.
+ * 
+ * I'm currently breaking this out into:
+ * <ul>
+ * <li>An interface for the core functionality (and default implementations of
+ * simple things)
+ * <li>An abstract class, which starts handling things like PID, etc.
+ * <li>Concrete types, which mostly serve to set up/access the underlying
+ * hardware.
+ * </ul>
  */
 public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
@@ -102,8 +96,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds =
-        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
+        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -158,61 +152,6 @@ public interface IDrivebase extends ISubsystem {
     driveWithPid(getKinematics().toWheelSpeeds(speeds));
   }
 
-  /**
-   * Update the odometry/pose estimation, based on current sensor data.
-   */
-  default void updateOdometry(
-      DifferentialDriveOdometry odometry, DifferentialDrivePoseEstimator estimator) {
-    final Rotation2d rotation = getGyro().getRotation2d();
-    final double leftDistanceMeters = getLeftEncoder().getPosition().in(Meters);
-    final double rightDistanceMeters = getRightEncoder().getPosition().in(Meters);
-
-    if (odometry != null) {
-      odometry.update(rotation, leftDistanceMeters, rightDistanceMeters);
-    }
-
-    if (estimator != null) {
-      estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
-
-      // If an estimated position has been posted by the vision subsystem, integrate
-      // it into our estimate. (Note that some sources suggest *not* doing this while
-      // the robot is in motion, since that's when you'll have the most significant
-      // error introduced into the images.)
-      Optional<Object> optionalPose =
-          BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
-      optionalPose.ifPresent(poseObject -> {
-        BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(timestampObject
-                -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
-      });
-    }
-  }
-
-  /** Share the current pose with other subsystems (e.g., vision). */
-  default void publishData(PIDController leftPidController, PIDController rightPidController) {
-    final Pose2d currentPose = getPose();
-    BulletinBoard.common.updateValue(POSE_KEY, currentPose);
-    BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, getEstimatedPose());
-
-    // Update published field simulation data. We're doing this here (in the
-    // periodic function, rather than in the simulationPeriodic function) because we
-    // want to take advantage of the fact that the odometry has just been updated.
-    //
-    // When we move stuff into a base class, the code above would be there, and this
-    // would be in the overridden periodic function for this (simulation-specific)
-    // class.
-    SmartDashboard.putNumber("X", currentPose.getX());
-    SmartDashboard.putNumber("Y", currentPose.getY());
-
-    // Push our PID info out to the dashboard.
-    if (leftPidController != null) {
-      SmartDashboard.putData("Drive pid (L)", leftPidController);
-    }
-    if (rightPidController != null) {
-      SmartDashboard.putData("Drive pid (R)", rightPidController);
-    }
-  }
-
   /** @return The position reading from the left encoder */
   default Distance getLeftPosition() {
     return getLeftEncoder().getPosition();
@@ -249,23 +188,6 @@ public interface IDrivebase extends ISubsystem {
    */
   default ChassisSpeeds getCurrentSpeeds() {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////
-  //
-  // Utility logging methods
-  //
-  /////////////////////////////////////////////////////////////////////////////////
-
-  @SuppressWarnings("rawtypes")
-  default void logValue(String label, Measure val) {
-    logValue(label + " (" + val.baseUnit() + ")", (val != null ? val.baseUnitMagnitude() : 0));
-  }
-
-  default void logValue(String label, double val) {
-    if (LOG_TO_SMARTDASHBOARD) {
-      SmartDashboard.putNumber(label, val);
-    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -327,24 +249,9 @@ public interface IDrivebase extends ISubsystem {
    *
    * @see #driveWithPid(ChassisSpeeds)
    */
-  default void followTrajectory(DifferentialSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = getPose();
-
-    // Get the velocity feedforward specified by the sample
-    ChassisSpeeds ff = sample.getChassisSpeeds();
-
-    // Generate the next speeds for the robot
-    ChassisSpeeds speeds = getLtvUnicycleController().calculate(
-        pose, sample.getPose(), ff.vxMetersPerSecond, ff.omegaRadiansPerSecond);
-
-    // Apply the generated speeds
-    driveWithPid(speeds);
-  }
+  void followTrajectory(DifferentialSample sample);
 
   void resetPose(Pose2d pose);
 
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
-
-  LTVUnicycleController getLtvUnicycleController();
 }

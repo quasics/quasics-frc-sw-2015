@@ -14,22 +14,17 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
-import edu.wpi.first.math.controller.LTVUnicycleController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.Pigeon2Wrapper;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
@@ -37,7 +32,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  *
  * TODO: Test this!!!!
  */
-public class Drivebase extends SubsystemBase implements IDrivebase {
+public class Drivebase extends AbstractDrivebase {
   // Common CAN IDs for Quasics' robots.
   public static final int PIGEON2_CAN_ID = 1;
   public static final int LEFT_LEADER_ID = 2;
@@ -62,8 +57,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+      new Pose2d());
 
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -77,7 +72,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    * @param config robot configuration data
    */
   public Drivebase(RobotConfig config) {
-    setName(SUBSYSTEM_NAME);
+    super(config);
 
     final var driveConfig = config.drive();
 
@@ -88,8 +83,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
 
-    final double distanceScalingFactorForGearing =
-        driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
+    final double distanceScalingFactorForGearing = driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
@@ -117,24 +111,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)) /* stateStdDevs */,
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)) /* visionMeasurementStdDevs */);
-
-    m_leftPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
-        driveConfig.feedForward().angular().kV().in(Volts),
-        driveConfig.feedForward().angular().kA());
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-
-    updateOdometry(m_odometry, m_poseEstimator);
-
-    publishData(m_leftPidController, m_rightPidController);
   }
 
   @Override
@@ -169,65 +145,17 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   @Override
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
-
-  @Override
-  public Pose2d getEstimatedPose() {
-    return m_poseEstimator.getEstimatedPosition();
-  }
-
-  @Override
-  public void resetPose(Pose2d pose) {
-    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(),
-        m_rightEncoder.getPosition(), pose);
-    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(),
-        m_rightEncoder.getPosition(), pose);
-  }
-
-  final LTVUnicycleController m_unicycleController = new LTVUnicycleController(0.02);
-
-  final PIDController m_leftPidController;
-  final PIDController m_rightPidController;
-  final DifferentialDriveFeedforward m_feedforward;
-
-  @Override
-  public LTVUnicycleController getLtvUnicycleController() {
-    return m_unicycleController;
-  }
-
-  @Override
   public DifferentialDriveKinematics getKinematics() {
     return m_kinematics;
   }
 
   @Override
-  public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
-    // var leftStabilized =
-    // wheelSpeedsDeadband.limit(wheelSpeeds.leftMetersPerSecond);
-    // var rightStabilized =
-    // wheelSpeedsDeadband.limit(wheelSpeeds.rightMetersPerSecond);
-    // logValue("leftStable", leftStabilized);
-    // logValue("rightStable", rightStabilized);
+  protected DifferentialDriveOdometry getOdometry() {
+    return m_odometry;
+  }
 
-    // Figure out the voltages we should need at the target speeds.
-    final var feedforwardVolts = m_feedforward.calculate(getLeftVelocity().in(MetersPerSecond),
-        wheelSpeeds.leftMetersPerSecond, getRightVelocity().in(MetersPerSecond),
-        wheelSpeeds.rightMetersPerSecond, 0.020);
-    logValue("FF left", feedforwardVolts.left);
-    logValue("FF right", feedforwardVolts.right);
-
-    // Figure out the deltas, based on our current speed vs. the target speeds.
-    double leftPidOutput = m_leftPidController.calculate(
-        getLeftVelocity().in(MetersPerSecond), wheelSpeeds.leftMetersPerSecond);
-    double rightPidOutput = m_rightPidController.calculate(
-        getRightVelocity().in(MetersPerSecond), wheelSpeeds.rightMetersPerSecond);
-    logValue("leftPid", leftPidOutput);
-    logValue("rightPid", rightPidOutput);
-
-    // OK, apply those to the actual hardware.
-    setMotorVoltages(Volts.of(feedforwardVolts.left + leftPidOutput),
-        Volts.of(feedforwardVolts.right + rightPidOutput));
+  @Override
+  protected DifferentialDrivePoseEstimator getPoseEstimator() {
+    return m_poseEstimator;
   }
 }

@@ -6,6 +6,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import choreo.auto.AutoFactory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,15 +32,9 @@ import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
-import frc.robot.utils.SysIdGenerator;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-
+import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import choreo.auto.AutoFactory;
 
 public class RobotContainer {
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
@@ -70,67 +67,55 @@ public class RobotContainer {
   }
 
   private void addSysIdControlsToDashboard() {
-
-    SmartDashboard.putData(
-        "SysID: Quasistatic(fwd)",
-        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
-    SmartDashboard.putData(
-        "SysID: Quasistatic(rev)",
-        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
-    SmartDashboard.putData(
-        "SysID: Dynamic(fwd)",
+    SmartDashboard.putData("SysID: Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+    SmartDashboard.putData("SysID: Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+    SmartDashboard.putData("SysID: Dynamic(fwd)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
-    SmartDashboard.putData(
-        "SysID: Dynamic(rev)",
+    SmartDashboard.putData("SysID: Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
 
     // SysId commands for rotational actions (used to calculate kA-angular), for use
     // in estimating the moment of inertia (MOI).
     // See: https://choreo.autos/usage/estimating-moi/
-    SmartDashboard.putData(
-        "SysID(rot): Quasistatic(fwd)",
-        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
-    SmartDashboard.putData(
-        "SysID(rot): Quasistatic(rev)",
-        SysIdGenerator.sysIdQuasistatic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
-    SmartDashboard.putData(
-        "SysID(rot): Dynamic(fwd)",
+    SmartDashboard.putData("SysID(rot): Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData("SysID(rot): Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+    SmartDashboard.putData("SysID(rot): Dynamic(fwd)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
-    SmartDashboard.putData(
-        "SysID(rot): Dynamic(rev)",
+    SmartDashboard.putData("SysID(rot): Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
   }
 
   private void configureSmartDashboard() {
     addSysIdControlsToDashboard();
 
-    SmartDashboard.putData(
-        "Wave arm",
-        new ArmWaveCommand(m_arm));
-    SmartDashboard.putData(
-        "Arm out",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
-    SmartDashboard.putData(
-        "Arm up",
-        new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
-    SmartDashboard.putData(
-        "Raise elevator (wait)",
+    SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
+    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
+    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
+    SmartDashboard.putData("Raise elevator (wait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
-    SmartDashboard.putData(
-        "Raise elevator (nowait)",
+    SmartDashboard.putData("Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
 
     // Trajectory commands
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
-  private final AutoFactory m_autoFactory = new AutoFactory(
-      m_drivebase::getPose, // A function that returns the current robot pose
-      m_drivebase::resetPose, // A function that resets the current robot pose to the provided Pose2d
-      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
-      true, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem() // The drive subsystem
-  );
+  private final AutoFactory m_autoFactory =
+      new AutoFactory(m_drivebase::getPose, // A function that returns the current robot pose
+          m_drivebase::resetPose, // A function that resets the current robot pose to the provided
+                                  // Pose2d
+          m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+          true, // If alliance flipping should be enabled
+          m_drivebase.asSubsystem() // The drive subsystem
+      );
 
   /**
    * @see https://choreo.autos/choreolib/getting-started/
@@ -161,7 +146,8 @@ public class RobotContainer {
   }
 
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer =
+        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -170,8 +156,12 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
+      forwardSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
+      rotationSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -179,7 +169,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -194,8 +184,7 @@ public class RobotContainer {
     // return generateCommandForChoreoTrajectory("Demo path");
 
     // Simple demo command to drive forward while raising the elevator.
-    return new ParallelCommandGroup(
-        new DriveForDistance(m_drivebase, .50, Meters.of(3)),
+    return new ParallelCommandGroup(new DriveForDistance(m_drivebase, .50, Meters.of(3)),
         new MoveElevatorToExtreme(m_elevator, true));
 
     // return Commands.print("No autonomous command configured");

@@ -9,8 +9,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.Optional;
-
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.LTVUnicycleController;
@@ -33,10 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.BulletinBoard;
+import java.util.Optional;
 
 /**
  * Basic interface for drive base functionality.
- * 
+ *
  * TODO: At this point, this *really* ought to be an abstract class, vs an
  * interface, based on the amount of code it contains.
  */
@@ -71,7 +70,7 @@ public interface IDrivebase extends ISubsystem {
    * single speed for both sides.)
    *
    * @param percentage The percentage of MAX_SPEED to drive at.
-   * 
+   *
    * @see #tankDrive(double, double)
    */
   default void tankDrive(double percentage) {
@@ -80,7 +79,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Drive the robot using tank drive (as a percentage of MAX_SPEED).
-   * 
+   *
    * Note: operates directly; no PID, but based on MAX_SPEED.
    *
    * @param leftPercentage  The percentage of MAX_SPEED for the left side.
@@ -93,9 +92,9 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Drive the robot using arcade drive.
-   * 
+   *
    * Note: operates directly; no PID, but clamped to MAX_SPEED.
-   * 
+   *
    * TODO: Consider rewriting this to use the "drive(ChassisSpeeds)" method.
    *
    * @param speed    The linear velocity to drive at.
@@ -103,8 +102,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -112,23 +111,19 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Set the wheel speeds (positive values are forward).
-   * 
+   *
    * Note: operates directly; no PID, but clamped to MAX_SPEED.
    *
    * @param wheelSpeeds The wheel speeds to set.
-   * 
+   *
    * @see #setMotorSpeeds
    */
   default void setSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
     // Calculate the (clamped) left and right wheel speeds based on the inputs.
-    final double leftSpeed = MathUtil.clamp(
-        wheelSpeeds.leftMetersPerSecond,
-        -MAX_SPEED.in(MetersPerSecond),
-        MAX_SPEED.in(MetersPerSecond));
-    final double rightSpeed = MathUtil.clamp(
-        wheelSpeeds.rightMetersPerSecond,
-        -MAX_SPEED.in(MetersPerSecond),
-        MAX_SPEED.in(MetersPerSecond));
+    final double leftSpeed = MathUtil.clamp(wheelSpeeds.leftMetersPerSecond,
+        -MAX_SPEED.in(MetersPerSecond), MAX_SPEED.in(MetersPerSecond));
+    final double rightSpeed = MathUtil.clamp(wheelSpeeds.rightMetersPerSecond,
+        -MAX_SPEED.in(MetersPerSecond), MAX_SPEED.in(MetersPerSecond));
 
     // Set the speeds of the left and right sides of the drivetrain.
     final var maxSpeed = MAX_SPEED.in(MetersPerSecond);
@@ -137,7 +132,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Motor speed control (as a percentage).
-   * 
+   *
    * Note: operates directly; no PID, and does not reference MAX_SPEED, though
    * percentages are clamped to [-1,+1].
    *
@@ -146,18 +141,17 @@ public interface IDrivebase extends ISubsystem {
    */
   default void setMotorSpeeds(double leftPercentage, double rightPercentage) {
     final double referenceVoltage = RobotController.getInputVoltage();
-    setMotorVoltages(
-        Volts.of(referenceVoltage * MathUtil.clamp(leftPercentage, -1, +1)),
+    setMotorVoltages(Volts.of(referenceVoltage * MathUtil.clamp(leftPercentage, -1, +1)),
         Volts.of(referenceVoltage * MathUtil.clamp(rightPercentage, -1, +1)));
   }
 
   /**
    * Sets the speeds for the robot.
-   * 
+   *
    * Used for trajectory-following (e.g., with Choreo).
-   * 
+   *
    * @param speeds desired left/right/rotational speeds
-   * 
+   *
    * @see #driveWithPid(DifferentialDriveWheelSpeeds)
    */
   default void driveWithPid(ChassisSpeeds speeds) {
@@ -167,7 +161,8 @@ public interface IDrivebase extends ISubsystem {
   /**
    * Update the odometry/pose estimation, based on current sensor data.
    */
-  default void updateOdometry(DifferentialDriveOdometry odometry, DifferentialDrivePoseEstimator estimator) {
+  default void updateOdometry(
+      DifferentialDriveOdometry odometry, DifferentialDrivePoseEstimator estimator) {
     final Rotation2d rotation = getGyro().getRotation2d();
     final double leftDistanceMeters = getLeftEncoder().getPosition().in(Meters);
     final double rightDistanceMeters = getRightEncoder().getPosition().in(Meters);
@@ -183,11 +178,12 @@ public interface IDrivebase extends ISubsystem {
       // it into our estimate. (Note that some sources suggest *not* doing this while
       // the robot is in motion, since that's when you'll have the most significant
       // error introduced into the images.)
-      Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
+      Optional<Object> optionalPose =
+          BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
       optionalPose.ifPresent(poseObject -> {
         BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(timestampObject -> estimator.addVisionMeasurement(
-                (Pose2d) poseObject, (Double) timestampObject));
+            .ifPresent(timestampObject
+                -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
       });
     }
   }
@@ -263,9 +259,7 @@ public interface IDrivebase extends ISubsystem {
 
   @SuppressWarnings("rawtypes")
   default void logValue(String label, Measure val) {
-    logValue(
-        label + " (" + val.baseUnit() + ")",
-        (val != null ? val.baseUnitMagnitude() : 0));
+    logValue(label + " (" + val.baseUnit() + ")", (val != null ? val.baseUnitMagnitude() : 0));
   }
 
   default void logValue(String label, double val) {
@@ -282,9 +276,9 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Directly sets the voltages delivered to the motors.
-   * 
+   *
    * Note: operates directly; no PID.
-   * 
+   *
    * @param left  voltage for the left-side motors
    * @param right voltage for the right-side motors
    */
@@ -328,9 +322,9 @@ public interface IDrivebase extends ISubsystem {
   /**
    * Follows (executes) a sample of a Choreo trajectory for a differential drive
    * robot.
-   * 
+   *
    * @param sample component of the trajectory to be followed
-   * 
+   *
    * @see #driveWithPid(ChassisSpeeds)
    */
   default void followTrajectory(DifferentialSample sample) {
@@ -342,10 +336,7 @@ public interface IDrivebase extends ISubsystem {
 
     // Generate the next speeds for the robot
     ChassisSpeeds speeds = getLtvUnicycleController().calculate(
-        pose,
-        sample.getPose(),
-        ff.vxMetersPerSecond,
-        ff.omegaRadiansPerSecond);
+        pose, sample.getPose(), ff.vxMetersPerSecond, ff.omegaRadiansPerSecond);
 
     // Apply the generated speeds
     driveWithPid(speeds);

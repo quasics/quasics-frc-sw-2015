@@ -11,7 +11,6 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -19,7 +18,7 @@ import org.photonvision.simulation.VisionSystemSim;
 /**
  * A simulated version of the Vision subsystem, including wireframe rendering of
  * the camera data.
- * 
+ *
  * The "raw" image stream will be served at http://localhost:1181/, and the
  * "processed" stream at http://localhost:1182/.
  */
@@ -75,8 +74,7 @@ public class SimulatedVision extends Vision {
    */
   private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(
-        cameraConfig.imaging().width(), cameraConfig.imaging().height(),
+    cameraProp.setCalibration(cameraConfig.imaging().width(), cameraConfig.imaging().height(),
         new Rotation2d(cameraConfig.imaging().fov()));
     cameraProp.setFPS(cameraConfig.imaging().fps());
 
@@ -97,8 +95,9 @@ public class SimulatedVision extends Vision {
     // Should be a no-op, but good practice to call the base class.
     super.simulationPeriodic();
 
-    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
-        .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters =
+        (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
+            .orElse(new Pose2d());
 
     m_visionSim.update(driveBasePoseMeters);
 
@@ -107,9 +106,8 @@ public class SimulatedVision extends Vision {
     final var debugField = m_visionSim.getDebugField();
     m_lastEstimatedPose.ifPresentOrElse(
         // Do this with the data in m_lastEstimatedPose (if it has some)
-        est -> {
-          debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
-        },
+        est
+        -> { debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()); },
         // If we have nothing in m_lastEstimatedPose, do this
         () -> {
           if (m_estimateRecentlyUpdated)

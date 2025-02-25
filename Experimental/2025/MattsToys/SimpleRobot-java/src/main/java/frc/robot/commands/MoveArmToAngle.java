@@ -10,7 +10,7 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
 
 /**
  * Command to move the arm to a specific angle.
- * 
+ *
  * Note that this is a "set it and done" sort of command, since *all* the
  * command needs to do is to configure the target position for the elevator.
  * Once that's been done, the PID logic on the elevator (or a simulated version

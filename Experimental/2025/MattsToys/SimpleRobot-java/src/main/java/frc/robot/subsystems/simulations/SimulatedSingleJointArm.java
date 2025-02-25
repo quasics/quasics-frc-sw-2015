@@ -8,13 +8,12 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -26,10 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import edu.wpi.first.wpilibj.simulation.BatterySim;
-
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 
-// Based on example at https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
+// Based on example at
+// https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
   final static Angle MIN_ANGLE = Degrees.of(80);
   final static Angle MAX_ANGLE = Degrees.of(190);
@@ -53,13 +52,9 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   private DCMotor m_armPlant = DCMotor.getNEO(1);
 
   /** Simulation engine for the arm. */
-  private SingleJointedArmSim m_armSim = new SingleJointedArmSim(
-      m_armPlant, GEARING,
-      SingleJointedArmSim.estimateMOI(
-          ARM_LENGTH_METERS, ARM_MASS_KG),
-      ARM_LENGTH_METERS,
-      MIN_ANGLE.in(Radians), MAX_ANGLE.in(Radians),
-      SIMULATE_GRAVITY, STARTING_ANGLE.in(Radians));
+  private SingleJointedArmSim m_armSim = new SingleJointedArmSim(m_armPlant, GEARING,
+      SingleJointedArmSim.estimateMOI(ARM_LENGTH_METERS, ARM_MASS_KG), ARM_LENGTH_METERS,
+      MIN_ANGLE.in(Radians), MAX_ANGLE.in(Radians), SIMULATE_GRAVITY, STARTING_ANGLE.in(Radians));
 
   /** Simulation driver for the motor controller. */
   private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
@@ -73,10 +68,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
     // Configure the motor.
     var config = new SparkMaxConfig();
-    config.closedLoop
-        .p(6)
-        .i(0)
-        .d(0);
+    config.closedLoop.p(6).i(0).d(0);
 
     // Note: the SparkSim derives the gear ratio based on the ratio between
     // positionconversionfactor and velocityconversionfactor. As a result,
@@ -86,7 +78,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     config.encoder.positionConversionFactor(tau / GEARING);
     config.encoder.velocityConversionFactor(tau / (60 * GEARING));
 
-    m_motorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_motorController.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // By default, hold the arm in our starting position
     setTargetPosition(STARTING_ANGLE);
@@ -109,7 +102,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     Mechanism2d armMech2d = new Mechanism2d(60, 60);
     MechanismRoot2d root = armMech2d.getRoot("root", 40, 10);
     var baseMech2d = root.append(new MechanismLigament2d("frame", -20, 0));
-    var crankMech2d = baseMech2d.append(new MechanismLigament2d("crank", 20, m_armSim.getAngleRads()));
+    var crankMech2d =
+        baseMech2d.append(new MechanismLigament2d("crank", 20, m_armSim.getAngleRads()));
     baseMech2d.setColor(new Color8Bit(200, 200, 200));
     SmartDashboard.putData("Arm", armMech2d);
 
@@ -118,14 +112,14 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
   /**
    * Sets the target position (angle) for the arm.
-   * 
+   *
    * @param targetPosition target arm position (in radians)
    */
   @Override
   public void setTargetPosition(Angle targetPosition) {
     m_referencePosition = targetPosition;
-    m_motorController.getClosedLoopController().setReference(targetPosition.in(Radians),
-        SparkBase.ControlType.kPosition);
+    m_motorController.getClosedLoopController().setReference(
+        targetPosition.in(Radians), SparkBase.ControlType.kPosition);
   }
 
   /** Determines if debugging output is produced under simulation. */
@@ -164,10 +158,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     // /* List of current draws (in amps): */ currentDraw));
 
     if (NOISY) {
-      System.out.println("Target: " + m_referencePosition.in(Degrees) +
-          ", vel: " + armVelocity +
-          ", pre angle: " + preAngle.in(Degrees) +
-          ", post angle: " + postAngle.in(Degrees));
+      System.out.println("Target: " + m_referencePosition.in(Degrees) + ", vel: " + armVelocity
+          + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees));
     }
   }
 }

@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * raised/lowered, including a "safety mode" that is intended to prevent it from
  * being wound too far though this assumes that we'd always be starting up the
  * code with the elevator fully lowered, so that "0 in code" is "0 in reality").
- * 
+ *
  * Note that this is an example of using an "abstract" class as the base for one
  * or more derived types, where the base (a) implements the general
  * functionality and (b) defines the hardware-specific pieces that the derived
  * classes then fill in.
- * 
+ *
  * Possible improvements would include:
  * <ul>
  * <li>Limit switches for safety controls at top and bottom</li>
@@ -141,7 +141,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Establishes a target position that we want to move towards (e.g., via PID).
-   * 
+   *
    * @param targetPosition the desired elevator position
    */
   public void setTargetPosition(TargetPosition targetPosition) {
@@ -161,7 +161,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Handles motor adjustments (e.g., via PID) when a target position has been
    * set.
-   * 
+   *
    * @see #periodic()
    * @see #setTargetPosition(TargetPosition)
    */
@@ -183,7 +183,6 @@ public abstract class AbstractElevator extends SubsystemBase {
   protected abstract void retract_impl();
 
   public static final AbstractElevator NULL_ELEVATOR = new AbstractElevator() {
-
     @Override
     public boolean atTargetPosition() {
       // TODO Auto-generated method stub

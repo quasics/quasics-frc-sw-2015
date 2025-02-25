@@ -13,10 +13,7 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 
 /** Add your docs here. */
 public class SysIdGenerator {
-
-  public enum Mode {
-    Linear, Rotating
-  }
+  public enum Mode { Linear, Rotating }
 
   final static boolean DUMP_SYSID_TO_CONSOLE = true;
 
@@ -26,12 +23,14 @@ public class SysIdGenerator {
         // voltage.
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism(
-            (Voltage volts) -> {
+            (Voltage volts)
+                -> {
               drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log -> {
+            log
+            -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();
@@ -44,9 +43,7 @@ public class SysIdGenerator {
                     + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
                     + String.format("%,.3f", leftPosition.in(Meters)) + "m, "
                     + String.format("%,.3f", leftVelocity.in(MetersPerSecond)) + "m/s   "
-                    + "right=" + String.format("%,.3f", rightVoltage.in(
-                        Volts))
-                    + "V, "
+                    + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
                     + String.format("%,.3f", rightPosition.in(Meters)) + "m, "
                     + String.format("%,.3f", rightVelocity.in(MetersPerSecond)) + "m/s   ");
               }
@@ -73,7 +70,8 @@ public class SysIdGenerator {
    * @return a Command for use in running quasistatic profiling in the
    *         specified direction.
    */
-  public static Command sysIdQuasistatic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
+  public static Command sysIdQuasistatic(
+      IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).quasistatic(direction);
   }
 
@@ -81,7 +79,8 @@ public class SysIdGenerator {
    * @return a Command for use in running dynamic profiling in the
    *         specified direction.
    */
-  public static Command sysIdDynamic(IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
+  public static Command sysIdDynamic(
+      IDrivebase drivebase, Mode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).dynamic(direction);
   }
 }

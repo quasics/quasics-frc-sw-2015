@@ -15,7 +15,6 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -59,35 +58,35 @@ public class Vision extends SubsystemBase implements IVision {
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
-          ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
+      ;
 
   /**
    * Constructs a Vision subsystem, based on a specified robot configuration.
-   * 
+   *
    * @param config robot configuration
    */
   public Vision(RobotConfig config) {
-    this(config.camera().name(), new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-        config.camera().pos().z()),
-        new Rotation3d(config.camera().orientation().roll(),
-            config.camera().orientation().pitch(), config.camera().orientation().yaw())));
-
+    this(config.camera().name(),
+        new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
+                            config.camera().pos().z()),
+            new Rotation3d(config.camera().orientation().roll(),
+                config.camera().orientation().pitch(), config.camera().orientation().yaw())));
   }
 
   /**
    * Delegated constructor for a Vision subystem.
-   * 
+   *
    * @param cameraName             name configured for the camera in the
    *                               CameraServer
    * @param robotToCameraTransform Transform3d from the center of the robot to the
    *                               camera mount position (ie, robot ➔ camera) in
    *                               the Robot Coordinate System.
-   * 
-   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   *
+   * @see
+   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
    */
   private Vision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
@@ -159,8 +158,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math
-        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
+        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

@@ -8,12 +8,11 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
 import edu.wpi.first.math.controller.LTVUnicycleController;
@@ -35,7 +34,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Defines a version of IDrivebase that runs on live (Quasics) hardware.
- * 
+ *
  * TODO: Test this!!!!
  */
 public class Drivebase extends SubsystemBase implements IDrivebase {
@@ -63,8 +62,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -74,7 +73,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config robot configuration data
    */
   public Drivebase(RobotConfig config) {
@@ -89,14 +88,13 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
 
-    final double distanceScalingFactorForGearing = driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
+    final double distanceScalingFactorForGearing =
+        driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
-    leftLeaderConfig.encoder
-        .positionConversionFactor(distanceScalingFactorForGearing)
+    leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
         .velocityConversionFactor(velocityScalingFactor);
-    rightLeaderConfig.encoder
-        .positionConversionFactor(distanceScalingFactorForGearing)
+    rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
         .velocityConversionFactor(velocityScalingFactor);
 
     // We need to invert one side of the drivetrain so that positive voltages
@@ -114,19 +112,18 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     // m_rightEncoder.setPosition(0);
 
     // Set up the pose estimator
-    m_poseEstimator = new DifferentialDrivePoseEstimator(
-        m_kinematics,
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getPosition(), m_rightEncoder.getPosition(),
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
+        m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(),
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)) /* stateStdDevs */,
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)) /* visionMeasurementStdDevs */);
 
-    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts),
-        driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
         driveConfig.feedForward().angular().kA());
   }
@@ -183,16 +180,10 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void resetPose(Pose2d pose) {
-    m_odometry.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getPosition(),
-        m_rightEncoder.getPosition(),
-        pose);
-    m_poseEstimator.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getPosition(),
-        m_rightEncoder.getPosition(),
-        pose);
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition(), pose);
+    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(),
+        m_rightEncoder.getPosition(), pose);
   }
 
   final LTVUnicycleController m_unicycleController = new LTVUnicycleController(0.02);
@@ -221,12 +212,9 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     // logValue("rightStable", rightStabilized);
 
     // Figure out the voltages we should need at the target speeds.
-    final var feedforwardVolts = m_feedforward.calculate(
-        getLeftVelocity().in(MetersPerSecond),
-        wheelSpeeds.leftMetersPerSecond,
-        getRightVelocity().in(MetersPerSecond),
-        wheelSpeeds.rightMetersPerSecond,
-        0.020);
+    final var feedforwardVolts = m_feedforward.calculate(getLeftVelocity().in(MetersPerSecond),
+        wheelSpeeds.leftMetersPerSecond, getRightVelocity().in(MetersPerSecond),
+        wheelSpeeds.rightMetersPerSecond, 0.020);
     logValue("FF left", feedforwardVolts.left);
     logValue("FF right", feedforwardVolts.right);
 

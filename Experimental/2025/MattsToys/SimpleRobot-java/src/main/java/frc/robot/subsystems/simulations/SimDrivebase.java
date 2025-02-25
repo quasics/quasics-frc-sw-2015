@@ -47,12 +47,16 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
-  private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
-  private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_leftEncoder =
+      new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder =
+      new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final IGyro m_wrappedGyro;
 
-  final private TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  final private TrivialEncoder m_leftTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  final private TrivialEncoder m_rightTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry;
@@ -72,7 +76,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final AnalogGyroSim m_gyroSim;
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   final DifferentialDrivetrainSim m_drivetrainSimulator;
   final Field2d m_fieldSim = new Field2d();
 
@@ -86,11 +91,8 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
-    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-        DCMotor.getCIM(2),
-        driveConfig.gearing(),
-        driveConfig.trackWidth().in(Meters),
-        trackWidthMeters, null);
+    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2),
+        driveConfig.gearing(), driveConfig.trackWidth().in(Meters), trackWidthMeters, null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -114,26 +116,20 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Set up the odometry and pose estimator
-    m_odometry = new DifferentialDriveOdometry(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        new Pose2d());
-    m_poseEstimator = new DifferentialDrivePoseEstimator(
-        m_kinematics,
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        new Pose2d(),
-        VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
+    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), new Pose2d());
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
+        m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        new Pose2d(), VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
     // PID and FF setup
-    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts),
-        driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
         driveConfig.feedForward().angular().kA());
 
@@ -200,16 +196,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // Update the pose information in the simulator.
     m_drivetrainSimulator.setPose(pose);
 
-    m_odometry.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        pose);
-    m_poseEstimator.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        pose);
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(), pose);
+    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(), pose);
   }
 
   @Override
@@ -223,16 +213,10 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void resetPose(Pose2d pose) {
-    m_odometry.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        pose);
-    m_poseEstimator.resetPosition(
-        m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance(),
-        pose);
+    m_odometry.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(), pose);
+    m_poseEstimator.resetPosition(m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(), pose);
   }
 
   @Override
@@ -245,12 +229,9 @@ public class SimDrivebase extends SubsystemBase implements IDrivebase {
     // logValue("rightStable", rightStabilized);
 
     // Figure out the voltages we should need at the target speeds.
-    final var feedforwardVolts = m_feedforward.calculate(
-        getLeftVelocity().in(MetersPerSecond),
-        wheelSpeeds.leftMetersPerSecond,
-        getRightVelocity().in(MetersPerSecond),
-        wheelSpeeds.rightMetersPerSecond,
-        0.020);
+    final var feedforwardVolts = m_feedforward.calculate(getLeftVelocity().in(MetersPerSecond),
+        wheelSpeeds.leftMetersPerSecond, getRightVelocity().in(MetersPerSecond),
+        wheelSpeeds.rightMetersPerSecond, 0.020);
     logValue("FF left", feedforwardVolts.left);
     logValue("FF right", feedforwardVolts.right);
 

@@ -75,8 +75,7 @@ public interface IGyro {
    * @return read-only version of an IGyro (disabling reset functionality
    */
   static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {
-    });
+    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
   }
 
   /**
@@ -144,5 +143,4 @@ public interface IGyro {
 
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
-
 }

@@ -182,6 +182,10 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
 
+  /**
+   * Trivial implementation of an AbstractElevator. (Does nothing, but does it
+   * well.... :-)
+   */
   static public class NullElevator extends AbstractElevator {
     public NullElevator() {
       System.out.println("INFO: Allocating NullElevator");
@@ -194,10 +198,12 @@ public abstract class AbstractElevator extends SubsystemBase {
 
     @Override
     protected void updateMotor_impl() {
+      // No-op
     }
 
     @Override
     protected void resetEncoder_impl() {
+      // No-op
     }
 
     @Override
@@ -207,14 +213,17 @@ public abstract class AbstractElevator extends SubsystemBase {
 
     @Override
     protected void stop_impl() {
+      // No-op
     }
 
     @Override
     protected void extend_impl() {
+      // No-op
     }
 
     @Override
     protected void retract_impl() {
+      // No-op
     }
   }
 }

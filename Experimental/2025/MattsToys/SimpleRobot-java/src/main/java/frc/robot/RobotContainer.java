@@ -121,34 +121,6 @@ public class RobotContainer {
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
-  /**
-   * @see https://choreo.autos/choreolib/getting-started/
-   * @see https://choreo.autos/choreolib/auto-factory/
-   */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
-    return Commands.sequence(
-        // Per https://choreo.autos/choreolib/auto-factory/
-        m_autoFactory.resetOdometry("Demo path"),
-        // Then do the thing
-        m_autoFactory.trajectoryCmd(trajectoryName));
-  }
-
-  protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
-    try {
-      // Load the path you want to follow using its name in the GUI
-      PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(trajectoryName);
-
-      // Create a path following command using AutoBuilder. This will also trigger
-      // event markers.
-      return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-      // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-      System.err.println("Failed to load Choreo trajectory: " + trajectoryName);
-      e.printStackTrace();
-      return Commands.none();
-    }
-  }
-
   private void configureArcadeDrive() {
     final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
@@ -177,6 +149,40 @@ public class RobotContainer {
 
   private void configureBindings() {
     // TODO: Configure any bindings as required.
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  // Factory methods for commands to be executed by the rbot.
+  //
+  ////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @see https://choreo.autos/choreolib/getting-started/
+   * @see https://choreo.autos/choreolib/auto-factory/
+   */
+  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+    return Commands.sequence(
+        // Per https://choreo.autos/choreolib/auto-factory/
+        m_autoFactory.resetOdometry("Demo path"),
+        // Then do the thing
+        m_autoFactory.trajectoryCmd(trajectoryName));
+  }
+
+  protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
+    try {
+      // Load the path you want to follow using its name in the GUI
+      PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(trajectoryName);
+
+      // Create a path following command using AutoBuilder. This will also trigger
+      // event markers.
+      return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+      // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      System.err.println("Failed to load Choreo trajectory: " + trajectoryName);
+      e.printStackTrace();
+      return Commands.none();
+    }
   }
 
   public Command getAutonomousCommand() {

@@ -44,4 +44,32 @@ public interface IVision extends ISubsystem {
 
   /** @return true iff the estimated pose was recently updated */
   boolean getEstimateRecentlyUpdated();
+
+  // Trivial implementation of IVision (e.g., if we don't have a camera).
+  final IVision NULL_VISION = new IVision() {
+    @Override
+    public void updateReferencePose(Pose2d pose) {
+      // No-op
+    }
+
+    @Override
+    public void updateLastPose(Pose2d pose) {
+      // No-op
+    }
+
+    @Override
+    public Optional<EstimatedRobotPose> getLastEstimatedPose() {
+      return Optional.empty();
+    }
+
+    @Override
+    public double getLastEstTimestamp() {
+      return 0;
+    }
+
+    @Override
+    public boolean getEstimateRecentlyUpdated() {
+      return false;
+    }
+  };
 }

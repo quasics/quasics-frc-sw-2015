@@ -65,6 +65,14 @@ public class RobotContainer {
   // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
+  /** Factory object for Choreo trajectories. */
+  private final AutoFactory m_autoFactory = new AutoFactory(
+      m_drivebase::getPose,
+      m_drivebase::resetPose,
+      m_drivebase::followTrajectory,
+      true, // If alliance flipping should be enabled
+      m_drivebase.asSubsystem());
+
   public RobotContainer() {
     configureArcadeDrive();
     configureSmartDashboard();
@@ -112,15 +120,6 @@ public class RobotContainer {
     // Trajectory commands
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
-
-  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, // A function that returns the current
-                                                                                  // robot pose
-      m_drivebase::resetPose, // A function that resets the current robot pose to the provided
-                              // Pose2d
-      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
-      true, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem() // The drive subsystem
-  );
 
   /**
    * @see https://choreo.autos/choreolib/getting-started/

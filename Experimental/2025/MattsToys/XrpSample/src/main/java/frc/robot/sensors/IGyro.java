@@ -10,10 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
-
-import java.util.function.Supplier;
-
 // import edu.wpi.first.wpilibj.romi.RomiGyro;
+import edu.wpi.first.wpilibj.xrp.XRPGyro;
+import java.util.function.Supplier;
 
 /**
  * This defines a "wrapper" type that can be used to let any arbitrary "Gyro" or
@@ -129,9 +128,7 @@ public interface IGyro {
    * @return read-only version of an IGyro (disabling reset functionality
    */
   static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(
-        g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {
-        });
+    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
   }
 
   /** Helper function to wrap the AnalogGyro type from WPILib. */
@@ -155,6 +152,25 @@ public interface IGyro {
   // return new OffsetGyro(new FunctionalGyro(
   // ()
   // -> { System.out.println(">>> Null-op: XRPGyro doesn't calibrate."); },
+  // ()
+  // -> Degrees.of(g.getAngleZ()),
+  // ()
+  // -> DegreesPerSecond.of(g.getRateZ()),
+  // ()
+  // -> { return Rotation2d.fromDegrees(g.getAngleZ()); },
+  // ()
+  // -> {
+  // // Note that this won't actually get invoked, because the OffsetGyro will
+  // // instead just reset its offset value.
+  // }));
+  // }
+
+  // TODO: Extract this into a separate class, similar to that for Pigeon2.
+  // /** Helper function to wrap the RomiGyro type from WPILib. */
+  // static IGyro wrapYawGyro(RomiGyro g) {
+  // return new OffsetGyro(new FunctionalGyro(
+  // ()
+  // -> { System.out.println(">>> Null-op: RomiGyro doesn't calibrate."); },
   // ()
   // -> Degrees.of(g.getAngleZ()),
   // ()

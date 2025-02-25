@@ -21,6 +21,7 @@ public class RobotConfigs {
   // TODO: Add definitions for actual hardware.
   public enum Robot {
     Simulation,
+    Sally
   }
 
   /** @return the configuration associated with a specific robot */
@@ -147,6 +148,13 @@ public class RobotConfigs {
   /** Collective robot configuration data. */
   public static record RobotConfig(
       DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
+    public boolean hasCamera() {
+      return camera != null;
+    }
+
+    public boolean hasElevator() {
+      return elevator != null;
+    }
   }
 
   /**
@@ -185,6 +193,22 @@ public class RobotConfigs {
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
                 new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
+
+    // TODO: Update constants to match Sally's configuration.
+    map.put(Robot.Sally,
+        new RobotConfig(
+            new DriveConfig(Inches.of(3), // Wheel radius
+                Meters.of(0.5588) /* 22 in */,
+                8.45, // Gearing
+                new PIDConfig(0.29613),
+                new DriveFeedForwardConfig(
+                    Volts.of(0.19529), 0.01, // Linear data
+                    Volts.of(0.19529), 0.01) // Angular data
+            ),
+            null,
+            new ElevatorConfig(
+                new PIDConfig(0.25, 0, 0),
+                new ElevatorFeedForwardConfig(0.00, 0.00, 0.0, 0.0))));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

@@ -148,6 +148,10 @@ public class RobotConfigs {
   /** Collective robot configuration data. */
   public static record RobotConfig(
       DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
+    public boolean hasDrive() {
+      return drive != null;
+    }
+
     public boolean hasCamera() {
       return camera != null;
     }

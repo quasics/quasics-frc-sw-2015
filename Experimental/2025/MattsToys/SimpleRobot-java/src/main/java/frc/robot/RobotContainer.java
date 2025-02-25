@@ -27,6 +27,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
@@ -46,7 +47,7 @@ public class RobotContainer {
 
   // Subsystems
   final IVision m_vision = allocateVision(m_robotConfig);
-  private final IDrivebase m_drivebase = new SimDrivebase(m_robotConfig);
+  private final IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
@@ -217,6 +218,18 @@ public class RobotContainer {
       return new Vision(config);
     } else {
       return new SimulatedVision(config);
+    }
+  }
+
+  private static IDrivebase allocateDrivebase(RobotConfigs.RobotConfig config) {
+    if (!config.hasDrive()) {
+      return new IDrivebase.NullDrivebase();
+    }
+
+    if (Robot.isReal()) {
+      return new Drivebase(config);
+    } else {
+      return new SimDrivebase(config);
     }
   }
 }

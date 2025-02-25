@@ -23,6 +23,7 @@ import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToExtreme;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.subsystems.AbstractElevator;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
@@ -41,7 +42,7 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
-  final IVision m_vision = new SimulatedVision(m_robotConfig);
+  final IVision m_vision = allocateVision(m_robotConfig);
   private final IDrivebase m_drivebase = new SimDrivebase(m_robotConfig);
   final AbstractElevator m_elevator = new SimulatedElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
@@ -108,14 +109,14 @@ public class RobotContainer {
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
-  private final AutoFactory m_autoFactory =
-      new AutoFactory(m_drivebase::getPose, // A function that returns the current robot pose
-          m_drivebase::resetPose, // A function that resets the current robot pose to the provided
-                                  // Pose2d
-          m_drivebase::followTrajectory, // The drive subsystem trajectory follower
-          true, // If alliance flipping should be enabled
-          m_drivebase.asSubsystem() // The drive subsystem
-      );
+  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, // A function that returns the current
+                                                                                  // robot pose
+      m_drivebase::resetPose, // A function that resets the current robot pose to the provided
+                              // Pose2d
+      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+      true, // If alliance flipping should be enabled
+      m_drivebase.asSubsystem() // The drive subsystem
+  );
 
   /**
    * @see https://choreo.autos/choreolib/getting-started/
@@ -146,8 +147,7 @@ public class RobotContainer {
   }
 
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer =
-        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -156,12 +156,8 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
-      rotationSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
+      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -169,7 +165,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -188,5 +184,17 @@ public class RobotContainer {
         new MoveElevatorToExtreme(m_elevator, true));
 
     // return Commands.print("No autonomous command configured");
+  }
+
+  private static IVision allocateVision(RobotConfigs.RobotConfig config) {
+    if (!config.hasCamera()) {
+      return IVision.NULL_VISION;
+    }
+
+    if (Robot.isReal()) {
+      return new Vision(config);
+    } else {
+      return new SimulatedVision(config);
+    }
   }
 }

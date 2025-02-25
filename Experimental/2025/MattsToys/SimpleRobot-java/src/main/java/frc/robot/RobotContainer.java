@@ -38,7 +38,10 @@ import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
 
 public class RobotContainer {
-  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
+  /** Indicates the robot we are going to target. */
+  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Sally;
+
+  /** Configuration data for the targeted robot. */
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems

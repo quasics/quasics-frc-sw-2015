@@ -166,6 +166,9 @@ public class RobotConfigs {
    * inline specification of Map data.)
    */
   static private Map<Robot, RobotConfig> createMap() {
+    final CameraConfig NO_CAMERA = null;
+    final ElevatorConfig NO_ELEVATOR = null;
+
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
         new RobotConfig(
@@ -198,21 +201,21 @@ public class RobotConfigs {
                 // Note: PID and FF values are arbitrary for simulation use.
                 new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
 
-    // TODO: Update constants to match Sally's configuration.
-    map.put(Robot.Sally,
+    map.put(
+        Robot.Sally,
         new RobotConfig(
-            new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5588) /* 22 in */,
-                8.45, // Gearing
-                new PIDConfig(0.29613),
+            // TODO: Update DriveConfig data to match Sally's configuration.
+            new DriveConfig(
+                Inches.of(3), // Wheel radius
+                Meters.of(0.5588) /* 22 in (from 2024) */,
+                8.45, // Gearing (from 2024)
+                new PIDConfig(0.29613), // (from 2024)
                 new DriveFeedForwardConfig(
-                    Volts.of(0.19529), 0.01, // Linear data
-                    Volts.of(0.19529), 0.01) // Angular data
+                    Volts.of(0.19529), 0.01, // Linear data (from 2024)
+                    Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
-            null,
-            new ElevatorConfig(
-                new PIDConfig(0.25, 0, 0),
-                new ElevatorFeedForwardConfig(0.00, 0.00, 0.0, 0.0))));
+            NO_CAMERA,
+            NO_ELEVATOR));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

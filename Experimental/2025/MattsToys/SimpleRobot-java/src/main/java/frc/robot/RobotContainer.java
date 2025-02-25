@@ -47,7 +47,7 @@ public class RobotContainer {
   // Subsystems
   final IVision m_vision = allocateVision(m_robotConfig);
   private final IDrivebase m_drivebase = new SimDrivebase(m_robotConfig);
-  final AbstractElevator m_elevator = new SimulatedElevator(m_robotConfig);
+  final AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
 
   // Controllers
@@ -187,6 +187,19 @@ public class RobotContainer {
         new MoveElevatorToExtreme(m_elevator, true));
 
     // return Commands.print("No autonomous command configured");
+  }
+
+  private static AbstractElevator allocateElevator(RobotConfigs.RobotConfig config) {
+    if (!config.hasElevator()) {
+      return AbstractElevator.NULL_ELEVATOR;
+    }
+
+    if (Robot.isReal()) {
+      // TODO: Implement "real elevator" support.
+      return AbstractElevator.NULL_ELEVATOR;
+    } else {
+      return new SimulatedElevator(config);
+    }
   }
 
   private static IVision allocateVision(RobotConfigs.RobotConfig config) {

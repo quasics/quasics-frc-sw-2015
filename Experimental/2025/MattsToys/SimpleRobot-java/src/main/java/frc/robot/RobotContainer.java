@@ -189,6 +189,12 @@ public class RobotContainer {
     // return Commands.print("No autonomous command configured");
   }
 
+  ////////////////////////////////////////////////////////////////////////////////
+  //
+  // Factory methods for our subsystems
+  //
+  ////////////////////////////////////////////////////////////////////////////////
+
   private static AbstractElevator allocateElevator(RobotConfigs.RobotConfig config) {
     if (!config.hasElevator()) {
       return new AbstractElevator.NullElevator();

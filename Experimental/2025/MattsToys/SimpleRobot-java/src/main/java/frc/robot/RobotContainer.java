@@ -39,6 +39,8 @@ import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
 
 public class RobotContainer {
+  static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+
   /** Indicates the robot we are going to target. */
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Sally;
 
@@ -70,7 +72,7 @@ public class RobotContainer {
       m_drivebase::getPose,
       m_drivebase::resetPose,
       m_drivebase::followTrajectory,
-      true, // If alliance flipping should be enabled
+      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
       m_drivebase.asSubsystem());
 
   public RobotContainer() {

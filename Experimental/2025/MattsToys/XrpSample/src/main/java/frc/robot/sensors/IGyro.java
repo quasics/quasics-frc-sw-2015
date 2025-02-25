@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -10,8 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
-// import edu.wpi.first.wpilibj.romi.RomiGyro;
-import edu.wpi.first.wpilibj.xrp.XRPGyro;
 import java.util.function.Supplier;
 
 /**
@@ -73,6 +71,14 @@ public interface IGyro {
   void reset();
 
   /**
+   * @param g gyro to be put in a read-only wrapper
+   * @return read-only version of an IGyro (disabling reset functionality
+   */
+  static IGyro readOnlyGyro(IGyro g) {
+    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
+  }
+
+  /**
    * A helper class that implements IGyro, and makes it easier to wrap arbitrary
    * types within this interface.
    */
@@ -123,14 +129,6 @@ public interface IGyro {
     }
   }
 
-  /**
-   * @param g gyro to be put in a read-only wrapper
-   * @return read-only version of an IGyro (disabling reset functionality
-   */
-  static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
-  }
-
   /** Helper function to wrap the AnalogGyro type from WPILib. */
   static IGyro wrapGyro(AnalogGyro g) {
     final Runnable calibrator = () -> {
@@ -146,41 +144,4 @@ public interface IGyro {
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
 
-  // TODO: Extract this into a separate class, similar to that for Pigeon2.
-  // /** Helper function to wrap the XRPGyro type from WPILib. */
-  // static IGyro wrapYawGyro(XRPGyro g) {
-  // return new OffsetGyro(new FunctionalGyro(
-  // ()
-  // -> { System.out.println(">>> Null-op: XRPGyro doesn't calibrate."); },
-  // ()
-  // -> Degrees.of(g.getAngleZ()),
-  // ()
-  // -> DegreesPerSecond.of(g.getRateZ()),
-  // ()
-  // -> { return Rotation2d.fromDegrees(g.getAngleZ()); },
-  // ()
-  // -> {
-  // // Note that this won't actually get invoked, because the OffsetGyro will
-  // // instead just reset its offset value.
-  // }));
-  // }
-
-  // TODO: Extract this into a separate class, similar to that for Pigeon2.
-  // /** Helper function to wrap the RomiGyro type from WPILib. */
-  // static IGyro wrapYawGyro(RomiGyro g) {
-  // return new OffsetGyro(new FunctionalGyro(
-  // ()
-  // -> { System.out.println(">>> Null-op: RomiGyro doesn't calibrate."); },
-  // ()
-  // -> Degrees.of(g.getAngleZ()),
-  // ()
-  // -> DegreesPerSecond.of(g.getRateZ()),
-  // ()
-  // -> { return Rotation2d.fromDegrees(g.getAngleZ()); },
-  // ()
-  // -> {
-  // // Note that this won't actually get invoked, because the OffsetGyro will
-  // // instead just reset its offset value.
-  // }));
-  // }
 }

@@ -144,5 +144,4 @@ public interface IGyro {
 
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
-
 }

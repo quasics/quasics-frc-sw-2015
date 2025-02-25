@@ -41,6 +41,7 @@ public interface RobotSettings {
         // gear ratio
         8.45),
     NewRobot(MotorConfigModel.RearMotorsLeading, Meters.of(0.5628), /* 22 5/32 in */
+        // CODE_REVIEW: I'm guessing that our gear ratio on the robot is *not* 0:1....
         0);
 
     ////////////////////////////////////////////////

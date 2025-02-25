@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Meters;
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -166,7 +168,7 @@ public class RobotContainer {
   private Command generateCommandForChoreoTrajectory(String trajectoryName) {
     return Commands.sequence(
         // Per https://choreo.autos/choreolib/auto-factory/
-        m_autoFactory.resetOdometry("Demo path"),
+        m_autoFactory.resetOdometry(trajectoryName),
         // Then do the thing
         m_autoFactory.trajectoryCmd(trajectoryName));
   }
@@ -194,12 +196,52 @@ public class RobotContainer {
     }
   }
 
+  private Command generateChoreoAutoCommand() {
+    var allianceOpt = DriverStation.getAlliance();
+    if (allianceOpt.isEmpty()) {
+      return Commands.none();
+    }
+
+    // Simple matrix of choices: we know how to get to precisely 1 algae from each
+    // of the red starting points (and nowhere from blue), and we'll assume that
+    // our position on the field is directly mapping to our driver station location.
+
+    switch (allianceOpt.get()) {
+      case Blue:
+        System.out.println("WARNING: Don't know how to handle Blue with Choreo paths.");
+        return Commands.none();
+
+      case Red:
+        var positionOpt = DriverStation.getLocation();
+        if (positionOpt.isEmpty()) {
+          System.out.println("WARNING: Can't get position!");
+          return Commands.none();
+        }
+
+        System.out.println("INFO: OK, we're Red-" + positionOpt.getAsInt());
+        switch (positionOpt.getAsInt()) {
+          case 1:
+            return generateCommandForChoreoTrajectory("RStart-outside-to-south-algae");
+          case 2:
+            return generateCommandForChoreoTrajectory("RStart-center-to-center-algae");
+          case 3:
+            // "North" end, so the cage to field center
+            return generateCommandForChoreoTrajectory("RStart-inside-to-north-algae");
+        }
+    }
+
+    System.out.println("WARNING: Couldn't identify Choreo path");
+    return Commands.none();
+  }
+
   public Command getAutonomousCommand() {
     // return generateCommandForChoreoTrajectory("Demo path");
 
+    return generateChoreoAutoCommand();
+
     // Simple demo command to drive forward while raising the elevator.
-    return new ParallelCommandGroup(new DriveForDistance(m_drivebase, .50, Meters.of(3)),
-        new MoveElevatorToExtreme(m_elevator, true));
+    // return new ParallelCommandGroup(new DriveForDistance(m_drivebase, .50,
+    // Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
 
     // return Commands.print("No autonomous command configured");
   }

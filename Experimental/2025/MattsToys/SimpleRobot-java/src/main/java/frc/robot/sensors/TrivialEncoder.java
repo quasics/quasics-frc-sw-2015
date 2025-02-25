@@ -115,4 +115,20 @@ public interface TrivialEncoder {
       }
     };
   }
+
+  public static final class NullEncoder implements TrivialEncoder {
+    @Override
+    public Distance getPosition() {
+      return Meters.of(0);
+    }
+
+    @Override
+    public LinearVelocity getVelocity() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public void reset() {
+    }
+  }
 }

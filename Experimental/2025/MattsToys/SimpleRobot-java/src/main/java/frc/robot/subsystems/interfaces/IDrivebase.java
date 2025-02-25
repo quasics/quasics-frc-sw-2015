@@ -254,4 +254,74 @@ public interface IDrivebase extends ISubsystem {
   void resetPose(Pose2d pose);
 
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
+
+  /** Trivial implementation of the IDrivebase interface. */
+  public static class NullDrivebase implements IDrivebase {
+    static final TrivialEncoder NULL_ENCODER = new TrivialEncoder.NullEncoder();
+    static final IGyro NULL_GYRO = new IGyro.NullGyro();
+
+    public NullDrivebase() {
+      System.out.println("INFO: Allocating null drivebase");
+    }
+
+    @Override
+    public void setMotorVoltages(Voltage left, Voltage right) {
+      // No-op
+    }
+
+    @Override
+    public Voltage getLeftVoltage() {
+      return Volts.of(0);
+    }
+
+    @Override
+    public Voltage getRightVoltage() {
+      return Volts.of(0);
+    }
+
+    @Override
+    public TrivialEncoder getLeftEncoder() {
+      return NULL_ENCODER;
+    }
+
+    @Override
+    public TrivialEncoder getRightEncoder() {
+      return NULL_ENCODER;
+    }
+
+    @Override
+    public IGyro getGyro() {
+      return NULL_GYRO;
+    }
+
+    @Override
+    public Pose2d getPose() {
+      return new Pose2d();
+    }
+
+    @Override
+    public Pose2d getEstimatedPose() {
+      return getPose();
+    }
+
+    @Override
+    public DifferentialDriveKinematics getKinematics() {
+      return new DifferentialDriveKinematics(Meters.of(0.5));
+    }
+
+    @Override
+    public void followTrajectory(DifferentialSample sample) {
+      // No-op
+    }
+
+    @Override
+    public void resetPose(Pose2d pose) {
+      // No-op
+    }
+
+    @Override
+    public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
+      // No-op
+    }
+  }
 }

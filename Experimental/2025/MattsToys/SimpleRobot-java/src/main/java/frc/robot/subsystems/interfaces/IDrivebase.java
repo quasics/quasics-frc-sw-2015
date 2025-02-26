@@ -24,7 +24,7 @@ import frc.robot.sensors.TrivialEncoder;
 /**
  * Basic interface for drive base functionality.
  * 
- * I'm currently breaking this out into:
+ * Note that I'm currently breaking this out into:
  * <ul>
  * <li>An interface for the core functionality (and default implementations of
  * simple things)
@@ -52,6 +52,7 @@ public interface IDrivebase extends ISubsystem {
   /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
+  /** Controls if data should be logged to the dashboard. */
   final boolean LOG_TO_SMARTDASHBOARD = true;
 
   /** Utility method: stops the robot. */

@@ -25,7 +25,7 @@ public class Lighting extends SubsystemBase implements ILighting {
   /**
    * Constructs a lighting subsystem for the specified robot.
    * 
-   * @param robot the configuration for the robot being targeted
+   * @param config the configuration for the robot being targeted
    */
   public Lighting(RobotConfig config) {
     this(config.lighting().pwmPort(), config.lighting().stripLength());

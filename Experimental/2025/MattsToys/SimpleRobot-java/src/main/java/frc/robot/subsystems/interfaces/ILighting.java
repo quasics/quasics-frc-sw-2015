@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -8,7 +8,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public interface ILighting {
+/**
+ * Basic interface to a lighting subsystem.
+ */
+public interface ILighting extends ISubsystem {
   /** Interface to use in populating the data for each LED on the strip. */
   public interface ColorSupplier {
     /**

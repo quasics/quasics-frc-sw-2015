@@ -37,12 +37,21 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   final protected DifferentialDriveKinematics m_kinematics;
 
   // PID/FF calculators
+  /** PID controller for left side motors. */
   final protected PIDController m_leftPidController;
+  /** PID controller for right side motors. */
   final protected PIDController m_rightPidController;
+  /** Feedforward controller for drive base. */
   final protected DifferentialDriveFeedforward m_feedforward;
 
+  /** Unicycle controller for use with trajectory-following. */
   final LTVUnicycleController m_unicycleController = new LTVUnicycleController(0.02);
 
+  /**
+   * Constructor.
+   * 
+   * @param config configuration for the targeted robot (PID/FF constants, etc.)
+   */
   protected AbstractDrivebase(RobotConfig config) {
     setName(SUBSYSTEM_NAME);
     final var driveConfig = config.drive();
@@ -211,12 +220,26 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   //
   /////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Logs the specified data to the dashboard iff LOG_TO_SMART_DASHBOARD is true.
+   * 
+   * @param label label for the value
+   * @param val   value to be shown
+   */
   protected void logValue(String label, double val) {
     if (LOG_TO_SMARTDASHBOARD) {
       SmartDashboard.putNumber(label, val);
     }
   }
 
+  /**
+   * Logs the specified measure to the dashboard iff LOG_TO_SMART_DASHBOARD is
+   * true.
+   * 
+   * @param label label for the value (will have " (<units>)" appended, based on
+   *              the measure's underlying units)
+   * @param val   value to be shown
+   */
   @SuppressWarnings("rawtypes")
   protected void logValue(String label, Measure val) {
     logValue(label + " (" + val.baseUnit() + ")", (val != null ? val.baseUnitMagnitude() : 0));
@@ -228,7 +251,21 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   //
   /////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Allows the base class to access odometery data allocated specifically by a
+   * derived type during construction. (Relies on hardware-specific elements that
+   * are not available during AbstractDriveBase construction.)
+   * 
+   * @return odometry object for the drive base
+   */
   protected abstract DifferentialDriveOdometry getOdometry();
 
+  /**
+   * Allows the base class to access pose estimator allocated specifically by a
+   * derived type during construction. (Relies on hardware-specific elements that
+   * are not available during AbstractDriveBase construction.)
+   * 
+   * @return pose estimator object for the drive base
+   */
   protected abstract DifferentialDrivePoseEstimator getPoseEstimator();
 }

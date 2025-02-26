@@ -45,8 +45,9 @@ public interface IVision extends ISubsystem {
   /** @return true iff the estimated pose was recently updated */
   boolean getEstimateRecentlyUpdated();
 
-  // Trivial implementation of IVision (e.g., if we don't have a camera).
+  /** Trivial implementation of IVision (e.g., if we don't have a camera). */
   public class NullVision implements IVision {
+    /** Constructor. */
     public NullVision() {
       System.out.println("INFO: allocating NullVision");
     }

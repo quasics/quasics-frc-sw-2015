@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
@@ -31,6 +32,9 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
  * of the underlying hardware is left to derived classes.
+ * 
+ * TODO: Consider adding "mode" info, to allow switching between PID and "manual
+ * control".
  */
 public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
   /** Kinematics definition for this drive base. */
@@ -212,6 +216,11 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // Push our PID info out to the dashboard.
     SmartDashboard.putData("Drive pid (L)", m_leftPidController);
     SmartDashboard.putData("Drive pid (R)", m_rightPidController);
+  }
+
+  @Override
+  public void setDefaultCommand(Command defaultCommand) {
+    super.setDefaultCommand(defaultCommand);
   }
 
   /////////////////////////////////////////////////////////////////////////////////

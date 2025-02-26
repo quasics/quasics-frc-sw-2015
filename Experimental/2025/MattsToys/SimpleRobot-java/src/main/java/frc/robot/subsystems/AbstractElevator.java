@@ -27,10 +27,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * <li>Assuming that there were (good) hard stops on the elevator, monitoring
  * the velocity of the motor to detect when we run up against them</li>
  * </ul>
+ * 
+ * TODO: Consider adjusting min/max safe height to reflect 2025 hardware.
  */
 public abstract class AbstractElevator extends SubsystemBase {
+  /** Subsystem name. */
   public static final String NAME = "Elevator";
+
+  /** Minimum safe height. */
   public static final Distance MAX_SAFE_HEIGHT = Meters.of(2.5);
+  /** Maximum safe height. */
   public static final Distance MIN_SAFE_HEIGHT = Meters.of(0.0);
 
   /** Supported target positions for the elevator. */
@@ -187,6 +193,7 @@ public abstract class AbstractElevator extends SubsystemBase {
    * well.... :-)
    */
   static public class NullElevator extends AbstractElevator {
+    /** Constructor. */
     public NullElevator() {
       System.out.println("INFO: Allocating NullElevator");
     }

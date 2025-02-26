@@ -252,15 +252,30 @@ public interface IDrivebase extends ISubsystem {
    */
   void followTrajectory(DifferentialSample sample);
 
+  /**
+   * Resets the robot's pose (e.g., when starting a trajectory).
+   * 
+   * @param pose new pose to use as a basis for odometry/pose estimation
+   */
   void resetPose(Pose2d pose);
 
+  /**
+   * Sets the wheel speeds (e.g., during trajectory following).
+   *
+   * Note: as suggested by the name, will use PID control for speed adjustments
+   * 
+   * @param wheelSpeeds desired wheel speeds (based on trajectory planning)
+   */
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /** Trivial implementation of the IDrivebase interface. */
   public static class NullDrivebase implements IDrivebase {
+    /** No-op encoder. */
     static final TrivialEncoder NULL_ENCODER = new TrivialEncoder.NullEncoder();
+    /** No-op gyro. */
     static final IGyro NULL_GYRO = new IGyro.NullGyro();
 
+    /** Constructor. */
     public NullDrivebase() {
       System.out.println("INFO: Allocating null drivebase");
     }

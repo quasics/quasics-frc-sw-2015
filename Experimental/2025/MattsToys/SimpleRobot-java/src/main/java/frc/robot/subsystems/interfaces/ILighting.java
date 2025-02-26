@@ -149,5 +149,10 @@ public interface ILighting extends ISubsystem {
     }
   }
 
+  /**
+   * Exposes 'setDefaultCommand' from the WPILib Subsystem class.
+   * 
+   * @param defaultCommand default command to be associated with this subsystem
+   */
   void setDefaultCommand(Command defaultCommand);
 }

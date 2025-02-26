@@ -26,7 +26,7 @@ public class MoveElevatorToPosition extends Command {
   /**
    * Contructor. Will wait until the elevator is in position before signalling
    * "finished".
-   * 
+   *
    * @param elevator elevator being controlled
    * @param target   target position
    */
@@ -36,7 +36,7 @@ public class MoveElevatorToPosition extends Command {
 
   /**
    * Contructor.
-   * 
+   *
    * @param elevator             elevator being controlled
    * @param target               target position
    * @param waitForTargetReached indicates if the command should wait to signal

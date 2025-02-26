@@ -11,7 +11,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.simulations.SimulationPorts;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class RobotConfigs {
 
   /**
    * Returns the configuration for a specific robot.
-   * 
+   *
    * @param robot the targeted robot
    * @return the configuration associated with the targeted robot
    */
@@ -101,7 +100,7 @@ public class RobotConfigs {
 
   /**
    * PID configuration settings.
-   * 
+   *
    * @param kP proportional constant
    * @param kI integral constant
    * @param kD derivitive constant
@@ -109,7 +108,7 @@ public class RobotConfigs {
   public static record PIDConfig(double kP, double kI, double kD) {
     /**
      * Overloaded ctor for kP-only configs.
-     * 
+     *
      * @param kP proportional constant
      */
     public PIDConfig(double kP) {
@@ -143,7 +142,7 @@ public class RobotConfigs {
 
   /**
    * Configuration data for an elevator.
-   * 
+   *
    * @param pid         PID configuration settings for the elevator's motors
    * @param feedForward feedforward data for the elevator
    */
@@ -170,7 +169,7 @@ public class RobotConfigs {
 
   /**
    * Drive Feed forward settings.
-   * 
+   *
    * @param linear  linear feedforward settings
    * @param angular angular (rotational) feedforward settings
    */
@@ -178,7 +177,7 @@ public class RobotConfigs {
       SimpleFeedForwardConfig linear, SimpleFeedForwardConfig angular) {
     /**
      * Overloaded constructor, taking pairs of (kV, kA) as discrete values
-     * 
+     *
      * @param kvLinear  linear feedforward kV value
      * @param kaLinear  linear feedforward kA value
      * @param kvAngular angular (rotational) feedforward kV value
@@ -193,7 +192,7 @@ public class RobotConfigs {
 
   /**
    * Drive base configuration data.
-   * 
+   *
    * @param wheelRadius radius of the drive base wheels
    * @param trackWidth  maximum width between drive base wheels
    * @param pid         PID configuration for the drivebase
@@ -206,7 +205,7 @@ public class RobotConfigs {
 
   /**
    * Lighting subsystem configuration data.
-   * 
+   *
    * @param pwmPort     the PWM port driving the LED strip
    * @param stripLength the length (in pixels/cells) of the LED strip
    */
@@ -215,7 +214,7 @@ public class RobotConfigs {
 
   /**
    * Collective robot configuration data.
-   * 
+   *
    * @param drive    drive base configuration (may be null)
    * @param camera   camera configuration (may be null)
    * @param elevator elevator configuration (may be null)
@@ -249,7 +248,7 @@ public class RobotConfigs {
   /**
    * Helper function, used to construct the underlying map. (Java doesn't support
    * inline specification of Map data.)
-   * 
+   *
    * @return the mapping of robots to configurations to be exposed to clients
    */
   static private Map<Robot, RobotConfig> createMap() {
@@ -259,17 +258,16 @@ public class RobotConfigs {
 
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
-        new RobotConfig(
-            new DriveConfig(Inches.of(3), // Wheel radius
-                Units.Meters.of(0.381 * 2), // Trackwidth
-                8.0, // Gearing
-                new PIDConfig(1.6018),
-                new DriveFeedForwardConfig(
-                    // ksLinear: 0.014183
-                    Volts.of(1.9802), 0.19202, // Linear data
-                    // ksAngular: 0.011388
-                    Volts.of(1.5001), 0.29782) // Angular data
-            ),
+        new RobotConfig(new DriveConfig(Inches.of(3), // Wheel radius
+                            Units.Meters.of(0.381 * 2), // Trackwidth
+                            8.0, // Gearing
+                            new PIDConfig(1.6018),
+                            new DriveFeedForwardConfig(
+                                // ksLinear: 0.014183
+                                Volts.of(1.9802), 0.19202, // Linear data
+                                // ksAngular: 0.011388
+                                Volts.of(1.5001), 0.29782) // Angular data
+                            ),
             new CameraConfig("USBCamera1",
                 // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
                 // pose (which is considered to be its center of rotation at the floor level, or
@@ -282,7 +280,7 @@ public class RobotConfigs {
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(-15), // pitch
                     Degrees.of(0) // yaw
-                ),
+                    ),
                 // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new ElevatorConfig(
@@ -290,22 +288,17 @@ public class RobotConfigs {
                 new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
             new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80)));
 
-    map.put(
-        Robot.Sally,
+    map.put(Robot.Sally,
         new RobotConfig(
             // TODO: Update DriveConfig data to match Sally's configuration.
-            new DriveConfig(
-                Inches.of(3), // Wheel radius
+            new DriveConfig(Inches.of(3), // Wheel radius
                 Meters.of(0.5588) /* 22 in (from 2024) */,
                 8.45, // Gearing (from 2024)
                 new PIDConfig(0.29613), // (from 2024)
-                new DriveFeedForwardConfig(
-                    Volts.of(0.19529), 0.01, // Linear data (from 2024)
+                new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
-            ),
-            NO_CAMERA,
-            NO_ELEVATOR,
-            NO_LIGHTING));
+                ),
+            NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

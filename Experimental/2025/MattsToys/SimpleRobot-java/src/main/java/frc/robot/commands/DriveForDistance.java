@@ -27,7 +27,7 @@ public class DriveForDistance extends Command {
 
   /**
    * Creates a new DriveForDistance.
-   * 
+   *
    * @param drivebase    drive base being controlled
    * @param percentSpeed desired velocity (as a % of the drive base's maximum),
    *                     with negative values

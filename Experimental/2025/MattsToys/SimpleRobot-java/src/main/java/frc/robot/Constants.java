@@ -37,11 +37,11 @@ public class Constants {
 
   /**
    * Defines constants for the different controls on a Logitech gamepad.
-   * 
+   *
    * Note that the left and right triggers aren't treated as buttons: they
    * report to the driver's station software as if they're single-axis joysticks
    * (with a range of [0.0, 1.0], unlike regular joysticks).
-   * 
+   *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "D" position, causing it to enumerate as a Logitech
    * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and 3,
@@ -93,9 +93,9 @@ public class Constants {
 
   /**
    * Defines constants for the different controls on a Logitech gamepad.
-   * 
+   *
    * Note that the left and right triggers aren't treated as buttons:
-   * 
+   *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "X" position, causing it to enumerate as a Logitech
    * Gamepad F310. In this mode, the left and right triggers on the front

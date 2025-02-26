@@ -49,7 +49,7 @@ public interface ILighting extends ISubsystem {
 
     /**
      * Constructor.
-     * 
+     *
      * @param r red component
      * @param g green component
      * @param b blue component
@@ -162,7 +162,7 @@ public interface ILighting extends ISubsystem {
 
   /**
    * Exposes 'setDefaultCommand' from the WPILib Subsystem class.
-   * 
+   *
    * @param defaultCommand default command to be associated with this subsystem
    */
   void setDefaultCommand(Command defaultCommand);

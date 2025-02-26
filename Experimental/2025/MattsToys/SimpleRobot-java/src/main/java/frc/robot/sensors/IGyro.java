@@ -75,13 +75,12 @@ public interface IGyro {
   /**
    * Provides a "read-only" wrapper around an IGyro (preventing clients from
    * resetting the underlying data).
-   * 
+   *
    * @param g gyro to be put in a read-only wrapper
    * @return read-only version of an IGyro (disabling reset functionality
    */
   static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {
-    });
+    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
   }
 
   /**
@@ -103,7 +102,7 @@ public interface IGyro {
     /**
      * Constructor, accepting an input function for each of the supported
      * operations.
-     * 
+     *
      * @param calibrator       calibration function
      * @param angleSupplier    supplies the angle data for the gyro
      * @param rateSupplier     supplies the rate-of-change data for the gyro
@@ -148,7 +147,7 @@ public interface IGyro {
 
   /**
    * Helper function to wrap the AnalogGyro type from WPILib.
-   * 
+   *
    * @param g the AnalogGyro being wrapped
    * @return an IGyro wrapping the supplied object
    */

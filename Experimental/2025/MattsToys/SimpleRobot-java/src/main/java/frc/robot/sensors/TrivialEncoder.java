@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * don't share a common base class. (This wrapper provides a pretty basic view
  * of encoders, but that's the point; I'm just looking for a way to use all
  * kinds of an encoder as though there are a common/single kind of object.)
- * 
+ *
  * Note: this wrapper assumes tht the underlying encoders have been configured
  * to return values using "meters" and "seconds" as base units (e.g., vs.
  * "revolutions" and "minutes"). If this isn't supported for a given type, then
@@ -72,7 +72,7 @@ public interface TrivialEncoder {
 
   /**
    * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
-   * 
+   *
    * @param encoder the WPILib encoder to be wrapped
    * @return a TrivialEncoder that can be used to interact with the underlying
    *         hardware
@@ -102,7 +102,7 @@ public interface TrivialEncoder {
 
   /**
    * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
-   * 
+   *
    * @param encoder    the WPILib encoder to be wrapped
    * @param encoderSim the WPILib "EncoderSim" being used to simulate operations
    *                   and "drive" the encoder

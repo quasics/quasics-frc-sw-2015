@@ -55,15 +55,14 @@ public class Vision extends SubsystemBase implements IVision {
   protected final AprilTagFieldLayout m_tagLayout;
 
   private final PoseStrategy m_poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
-
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
+      ;
 
   /**
    * Constructs a Vision subsystem, based on a specified robot configuration.
@@ -73,7 +72,7 @@ public class Vision extends SubsystemBase implements IVision {
   public Vision(RobotConfig config) {
     this(config.camera().name(),
         new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-            config.camera().pos().z()),
+                            config.camera().pos().z()),
             new Rotation3d(config.camera().orientation().roll(),
                 config.camera().orientation().pitch(), config.camera().orientation().yaw())));
   }
@@ -160,8 +159,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math
-        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
+        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

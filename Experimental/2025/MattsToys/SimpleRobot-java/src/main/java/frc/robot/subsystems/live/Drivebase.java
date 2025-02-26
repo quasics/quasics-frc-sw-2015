@@ -38,12 +38,15 @@ public class Drivebase extends AbstractDrivebase {
   //
 
   /** The gyro (a Pigeon2) on the drive base. */
-  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsCanIds.PIGEON2_CAN_ID));
+  private final IGyro m_wrappedGyro =
+      new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsCanIds.PIGEON2_CAN_ID));
 
   /** Left leading motor. */
-  final private SparkMax m_leftLeader = new SparkMax(Constants.QuasicsCanIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_leftLeader =
+      new SparkMax(Constants.QuasicsCanIds.LEFT_LEADER_ID, MotorType.kBrushless);
   /** Right leading motor. */
-  final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_rightLeader =
+      new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
 
   // TODO: Consider fully replacing the relative encoders with TrivialEncoders.
   /** Left encoder. */
@@ -57,8 +60,8 @@ public class Drivebase extends AbstractDrivebase {
   final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
-      new Pose2d());
+  final private DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
 
   /** Drivetrain pose estimator. */
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -83,7 +86,8 @@ public class Drivebase extends AbstractDrivebase {
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
 
-    final double distanceScalingFactorForGearing = driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
+    final double distanceScalingFactorForGearing =
+        driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
@@ -115,7 +119,7 @@ public class Drivebase extends AbstractDrivebase {
 
   /**
    * Configures a motor (specified via CAN ID) to follow another motor.
-   * 
+   *
    * @param followerId CAN ID for the motor to be configured as a follower
    * @param leader     the motor that should serve as leader
    */
@@ -124,8 +128,8 @@ public class Drivebase extends AbstractDrivebase {
     followerConfig.follow(leader, true);
 
     try (SparkMax follower = new SparkMax(followerId, MotorType.kBrushless)) {
-      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-          PersistMode.kPersistParameters);
+      follower.configure(
+          followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
   }
 

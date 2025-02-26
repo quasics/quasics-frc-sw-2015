@@ -27,7 +27,7 @@ public interface IVision extends ISubsystem {
   /**
    * Updates the reference pose (e.g., from the drivebase, for use in building
    * visual estimates).
-   * 
+   *
    * @param pose the new reference pose
    */
   void updateReferencePose(Pose2d pose);
@@ -35,7 +35,7 @@ public interface IVision extends ISubsystem {
   /**
    * Updates the last pose (e.g., from the drivebase, for use in building visual
    * estimates).
-   * 
+   *
    * @param pose the new "last pose" value
    */
   void updateLastPose(Pose2d pose);

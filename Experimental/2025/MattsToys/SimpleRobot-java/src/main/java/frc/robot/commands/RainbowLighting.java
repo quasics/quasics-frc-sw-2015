@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.interfaces.ILighting;;
+import frc.robot.subsystems.interfaces.ILighting;
+;
 
 /**
  * Provides a "flowing rainbow" effect on the LED strip.
@@ -45,9 +46,9 @@ public class RainbowLighting extends Command {
 
   /**
    * Creates a new RainbowLightingCommand.
-   * 
+   *
    * @param subsystem the lighting subsystem to be controlled
-   * 
+   *
    * @see #RainbowLighting(ILighting, double)
    */
   public RainbowLighting(ILighting subsystem) {
@@ -62,7 +63,7 @@ public class RainbowLighting extends Command {
    * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain
    *                               a given color before "advancing" to the next
    *                               stage
-   * 
+   *
    * @see #RainbowLighting(ILighting, double, int)
    */
   public RainbowLighting(ILighting subsystem, double secondsBeforeAdvancing) {

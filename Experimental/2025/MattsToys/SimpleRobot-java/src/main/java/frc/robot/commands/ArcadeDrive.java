@@ -22,7 +22,7 @@ public class ArcadeDrive extends Command {
 
   /**
    * Creates a new ArcadeDrive.
-   * 
+   *
    * @param drivebase drive base to be controlled
    * @param speed     linear speed supplier
    * @param rotation  rotational speed supplier
@@ -37,7 +37,7 @@ public class ArcadeDrive extends Command {
 
   /**
    * Invoked to update the drivebase speeds, based on the suppliers.
-   * 
+   *
    * @see #initialize()
    * @see #execute()
    */

@@ -10,7 +10,7 @@ import edu.wpi.first.units.measure.Angle;
 
 /**
  * Defines a simple interface to control a single-joint arm the robot.
- * 
+ *
  * Note: this interface assumes that the arm is completely controlled via PID,
  * with no "manual" control of the motors.
  */
@@ -57,7 +57,7 @@ public interface ISingleJointArm extends ISubsystem {
 
   /**
    * Sets the target position for the arm, to which it will be driven.
-   * 
+   *
    * @param targetPosition position to which the arm should move
    */
   void setTargetPosition(Angle targetPosition);

@@ -27,7 +27,7 @@ public class ArmWaveCommand extends Command {
 
   /**
    * Creates a new ArmWaveCommand.
-   * 
+   *
    * @param arm the arm being controlled
    */
   public ArmWaveCommand(ISingleJointArm arm) {

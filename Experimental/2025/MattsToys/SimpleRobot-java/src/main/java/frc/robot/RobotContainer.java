@@ -7,7 +7,6 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -89,12 +88,10 @@ public class RobotContainer {
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory = new AutoFactory(
-      m_drivebase::getPose,
-      m_drivebase::resetPose,
-      m_drivebase::followTrajectory,
-      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory =
+      new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose, m_drivebase::followTrajectory,
+          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+          m_drivebase.asSubsystem());
 
   /** Constructor. */
   public RobotContainer() {
@@ -156,7 +153,8 @@ public class RobotContainer {
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer =
+        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -165,8 +163,12 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
+      forwardSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+      rotationSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -174,7 +176,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -197,10 +199,10 @@ public class RobotContainer {
 
   /**
    * Generates a Choreo command for the specified trajectory.
-   * 
+   *
    * @param trajectoryName name of the trajectory being loaded
    * @return a command for the trajectory, or a no-op if it couldn't be found
-   * 
+   *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
   private Command generateCommandForChoreoTrajectory(String trajectoryName) {
@@ -209,13 +211,13 @@ public class RobotContainer {
 
   /**
    * Generates a Choreo command for the specified trajectory.
-   * 
+   *
    * @param trajectoryName name of the trajectory being loaded
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
    * @return a command for the trajectory, or a no-op if it couldn't be found
-   * 
+   *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
@@ -236,13 +238,13 @@ public class RobotContainer {
 
   /**
    * Generates a command for the specified PathPlanner trajectory.
-   * 
+   *
    * NOTE: THIS IS NOT YET FULLY IMPLEMENTED, AS CONFIGURATION OF THE AutoBuilder
    * FACTORY IS NOT YET BEING DONE.
-   * 
+   *
    * @param trajectoryName name of the trajectory being loaded
    * @return a command for the trajectory, or a no-op if it couldn't be found
-   * 
+   *
    * @see <a href="https://pathplanner.dev/pplib-getting-started.html">PathPlanner
    *      'Getting Started'</a>
    */
@@ -268,10 +270,10 @@ public class RobotContainer {
 
   /**
    * Generates a command (based on a Choreo trajectory) to be used in Auto mode.
-   * 
+   *
    * Note: this function assumes that our position on the field is directly
    * mapping to our driver station location.
-   * 
+   *
    * @return a Choreo-based trajectory command, based on the robot's
    *         alliance/position
    */
@@ -315,16 +317,17 @@ public class RobotContainer {
 
   /**
    * @return a command to be run in Auto mode, based on the configured option
-   * 
+   *
    * @see #AUTO_MODE_OPTION
    */
   public Command getAutonomousCommand() {
     return switch (AUTO_MODE_OPTION) {
       case eDoNothing -> Commands.print("No autonomous command configured");
       case eChoreo -> generateChoreoAutoCommand();
-      case eMoveAndRaise -> new ParallelCommandGroup(
-          new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
-          new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
+      case eMoveAndRaise ->
+        new ParallelCommandGroup(
+            new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
+            new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
     };
   }
 
@@ -336,7 +339,7 @@ public class RobotContainer {
 
   /**
    * Allocates an elevator subsystem object.
-   * 
+   *
    * @param config the target robot's configuration
    * @return an elevator subsystem for this robot (may be trivial)
    */
@@ -355,7 +358,7 @@ public class RobotContainer {
 
   /**
    * Allocates a Vision subsystem object.
-   * 
+   *
    * @param config the target robot's configuration
    * @return a Vision subsystem for this robot (may be trivial)
    */
@@ -373,7 +376,7 @@ public class RobotContainer {
 
   /**
    * Allocates a drive base subsystem object.
-   * 
+   *
    * @param config the target robot's configuration
    * @return a drive base subsystem for this robot (may be trivial)
    */
@@ -391,7 +394,7 @@ public class RobotContainer {
 
   /**
    * Allocates a lighting subsystem object.
-   * 
+   *
    * @param config the target robot's configuration
    * @return a lighting subsystem for this robot (may be trivial)
    */

@@ -24,7 +24,7 @@ public class MoveElevatorToExtreme extends Command {
   public static final class LowerElevator extends MoveElevatorToExtreme {
     /**
      * Constructor.
-     * 
+     *
      * @param elevator elevator being controlled
      */
     public LowerElevator(AbstractElevator elevator) {
@@ -36,7 +36,7 @@ public class MoveElevatorToExtreme extends Command {
   public static final class RaiseElevator extends MoveElevatorToExtreme {
     /**
      * Constructor.
-     * 
+     *
      * @param elevator elevator being controlled
      */
     public RaiseElevator(AbstractElevator elevator) {
@@ -46,7 +46,7 @@ public class MoveElevatorToExtreme extends Command {
 
   /**
    * Constructor.
-   * 
+   *
    * @param elevator      elevator being controlled
    * @param raiseElevator if the elevator should be raised (or lowered, if false)
    */

@@ -25,7 +25,7 @@ public class MoveArmToAngle extends Command {
 
   /**
    * Creates a new MoveArmToAngle.
-   * 
+   *
    * @param arm   arm being controlled
    * @param angle angle to which the arm should be moved
    */

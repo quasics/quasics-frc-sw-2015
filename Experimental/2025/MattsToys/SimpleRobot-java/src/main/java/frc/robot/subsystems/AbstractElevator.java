@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * <li>Assuming that there were (good) hard stops on the elevator, monitoring
  * the velocity of the motor to detect when we run up against them</li>
  * </ul>
- * 
+ *
  * TODO: Consider adjusting min/max safe height to reflect 2025 hardware.
  */
 public abstract class AbstractElevator extends SubsystemBase {
@@ -104,7 +104,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts extending the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MAX_SAFE_HEIGHT.
-   * 
+   *
    * @return true iff we started moving the elevator (i.e., not in safe mode, or
    *         below MAX_SAFE_HEIGHT)
    */
@@ -122,7 +122,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts retracting the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MIN_SAFE_HEIGHT.
-   * 
+   *
    * @return true iff we started moving the elevator (i.e., not in safe mode, or
    *         above MIN_SAFE_HEIGHT)
    */

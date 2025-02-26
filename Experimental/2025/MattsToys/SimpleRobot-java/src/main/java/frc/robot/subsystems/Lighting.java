@@ -24,7 +24,7 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   /**
    * Constructs a lighting subsystem for the specified robot.
-   * 
+   *
    * @param config the configuration for the robot being targeted
    */
   public Lighting(RobotConfig config) {
@@ -63,9 +63,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     // On start-up, turn every other pixel on (white).
     final var white = StockColor.White.toWpiColor();
     final var black = StockColor.Black.toWpiColor();
-    SetStripColor((int position) -> {
-      return (position % 2 == 0) ? white : black;
-    });
+    SetStripColor((int position) -> { return (position % 2 == 0) ? white : black; });
 
     // Start up the LED handling.
     m_led.start();

@@ -28,7 +28,7 @@ public class SysIdGenerator {
 
   /**
    * Returns a SysIdRoutine generator for the specified drivebase/mode.
-   * 
+   *
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @return a configured SysIdRoutine generator
@@ -39,12 +39,14 @@ public class SysIdGenerator {
         // voltage.
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism(
-            (Voltage volts) -> {
+            (Voltage volts)
+                -> {
               drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log -> {
+            log
+            -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();

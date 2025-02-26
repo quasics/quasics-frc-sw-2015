@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Optional;
-
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
 import edu.wpi.first.math.controller.LTVUnicycleController;
@@ -28,11 +26,12 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import java.util.Optional;
 
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
  * of the underlying hardware is left to derived classes.
- * 
+ *
  * TODO: Consider adding "mode" info, to allow switching between PID and "manual
  * control".
  */
@@ -56,7 +55,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
   /**
    * Constructor.
-   * 
+   *
    * @param config configuration for the targeted robot (PID/FF constants, etc.)
    */
   protected AbstractDrivebase(RobotConfig config) {
@@ -68,8 +67,10 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
     // PID and FF setup
-    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController =
+        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
         driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
@@ -121,7 +122,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     final Rotation2d position = getGyro().getRotation2d();
 
     getOdometry().resetPosition(position, leftPosition, rightPosition, pose);
-    getPoseEstimator().resetPosition(position, leftPosition.in(Meters), rightPosition.in(Meters), pose);
+    getPoseEstimator().resetPosition(
+        position, leftPosition.in(Meters), rightPosition.in(Meters), pose);
 
     // TODO: Should probably clear position data from Vision when we're running in
     // the simulator, since we could be jumping significantly in a way that the
@@ -191,11 +193,12 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
       // it into our estimate. (Note that some sources suggest *not* doing this while
       // the robot is in motion, since that's when you'll have the most significant
       // error introduced into the images.)
-      Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
+      Optional<Object> optionalPose =
+          BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
       optionalPose.ifPresent(poseObject -> {
         BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(
-                timestampObject -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+            .ifPresent(timestampObject
+                -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
       });
     }
   }
@@ -234,7 +237,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
   /**
    * Logs the specified data to the dashboard iff LOG_TO_SMART_DASHBOARD is true.
-   * 
+   *
    * @param label label for the value
    * @param val   value to be shown
    */
@@ -247,7 +250,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   /**
    * Logs the specified measure to the dashboard iff LOG_TO_SMART_DASHBOARD is
    * true.
-   * 
+   *
    * @param label label for the value (will have " (X)" appended, where "X" will
    *              reflect the measure's underlying units)
    * @param val   value to be shown
@@ -267,7 +270,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * Allows the base class to access odometery data allocated specifically by a
    * derived type during construction. (Relies on hardware-specific elements that
    * are not available during AbstractDriveBase construction.)
-   * 
+   *
    * @return odometry object for the drive base
    */
   protected abstract DifferentialDriveOdometry getOdometry();
@@ -276,7 +279,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * Allows the base class to access pose estimator allocated specifically by a
    * derived type during construction. (Relies on hardware-specific elements that
    * are not available during AbstractDriveBase construction.)
-   * 
+   *
    * @return pose estimator object for the drive base
    */
   protected abstract DifferentialDrivePoseEstimator getPoseEstimator();

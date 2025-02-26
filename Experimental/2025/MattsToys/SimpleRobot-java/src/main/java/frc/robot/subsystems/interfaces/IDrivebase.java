@@ -23,7 +23,7 @@ import frc.robot.sensors.TrivialEncoder;
 
 /**
  * Basic interface for drive base functionality.
- * 
+ *
  * Note that I'm currently breaking this out into:
  * <ul>
  * <li>An interface for the core functionality (and default implementations of
@@ -94,8 +94,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -251,7 +251,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Resets the robot's pose (e.g., when starting a trajectory).
-   * 
+   *
    * @param pose new pose to use as a basis for odometry/pose estimation
    */
   void resetPose(Pose2d pose);
@@ -260,7 +260,7 @@ public interface IDrivebase extends ISubsystem {
    * Sets the wheel speeds (e.g., during trajectory following).
    *
    * Note: as suggested by the name, will use PID control for speed adjustments
-   * 
+   *
    * @param wheelSpeeds desired wheel speeds (based on trajectory planning)
    */
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);

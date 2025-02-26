@@ -14,7 +14,7 @@ public final class Main {
 
   /**
    * Main function.
-   * 
+   *
    * @param args command-line arguments (ignored)
    */
   public static void main(String... args) {

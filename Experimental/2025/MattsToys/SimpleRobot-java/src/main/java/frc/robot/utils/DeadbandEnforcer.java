@@ -25,7 +25,7 @@ public class DeadbandEnforcer {
 
   /**
    * Constructor.
-   * 
+   *
    * @param minVal  minimum (low) value for the deadband range
    * @param maxVal  maximum (high) value for the deadband range
    * @param deadVal value to be returned when a subsequent check indicates that
@@ -40,7 +40,7 @@ public class DeadbandEnforcer {
 
   /**
    * Constructor. Will use 0 as the deadband value.
-   * 
+   *
    * @param minVal minimum (low) value for the deadband range
    * @param maxVal maximum (high) value for the deadband range
    */
@@ -51,7 +51,7 @@ public class DeadbandEnforcer {
   /**
    * Constructor. Will use 0 as the deadband value, and [-val,+val] as the
    * deadband range.
-   * 
+   *
    * @param val value defining the deadband range (+/-)
    */
   public DeadbandEnforcer(double val) {
@@ -61,7 +61,7 @@ public class DeadbandEnforcer {
   /**
    * Evaluates the specified value in the context of the configured deadband
    * range.
-   * 
+   *
    * @param val value being evaluated
    * @return val if it is outside the deadband, or the configured deadband value
    *         if val is within the deadband range

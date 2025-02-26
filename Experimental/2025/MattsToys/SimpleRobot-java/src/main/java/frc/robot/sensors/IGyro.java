@@ -146,7 +146,12 @@ public interface IGyro {
     }
   }
 
-  /** Helper function to wrap the AnalogGyro type from WPILib. */
+  /**
+   * Helper function to wrap the AnalogGyro type from WPILib.
+   * 
+   * @param g the AnalogGyro being wrapped
+   * @return an IGyro wrapping the supplied object
+   */
   static IGyro wrapGyro(AnalogGyro g) {
     final Runnable calibrator = () -> {
       g.calibrate();

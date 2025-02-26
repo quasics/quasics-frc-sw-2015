@@ -15,7 +15,8 @@ public interface ILighting extends ISubsystem {
   /** Interface to use in populating the data for each LED on the strip. */
   public interface ColorSupplier {
     /**
-     * Returns the color to be used for the LED at a given position on the strip.
+     * @param position the position of an LED on the strip
+     * @return the color to be used for the LED
      */
     public Color getColorForLed(int position);
   }
@@ -32,34 +33,45 @@ public interface ILighting extends ISubsystem {
    * Convenience type, used to provide (named) values for different LED colors.
    */
   public enum StockColor {
+    /** Green. */
     Green(0, 255, 0),
+    /** Red. */
     Red(255, 0, 0),
+    /** Blue. */
     Blue(0, 0, 255),
+    /** White. */
     White(255, 255, 255),
+    /** Black (off). */
     Black(0, 0, 0);
 
     /** RGB color values (ranging from 0-255 for each component). */
     public final int r, g, b;
 
-    /** Constructor */
+    /**
+     * Constructor.
+     * 
+     * @param r red component
+     * @param g green component
+     * @param b blue component
+     */
     StockColor(int r, int g, int b) {
       this.r = r;
       this.g = g;
       this.b = b;
     }
 
-    /** Converts the stock color to the representation used by WPILib. */
+    /** @return the representation of this color used by WPILib. */
     public Color toWpiColor() {
       return toWpiColor(1.0);
     }
 
     /**
      * Converts the stock color to the representation used by WPILib, scaled to the
-     * specified
-     * intensity (brightness).
+     * specified intensity (brightness).
      *
      * @param intensityPercent intensity to which the color should be scaled
      *                         (0.0-1.0)
+     * @return the scaled value of this color, as used by WPILib
      */
     public Color toWpiColor(double intensityPercent) {
       return new Color(
@@ -112,8 +124,7 @@ public interface ILighting extends ISubsystem {
    *
    * <p>
    * Note: unlike with various other APIs, the component values for WPI's version
-   * of color
-   * specification are all as percentages (0.0-1.0).
+   * of color specification are all as percentages (0.0-1.0).
    *
    * @param color the color to make all of the lights in the strip
    */

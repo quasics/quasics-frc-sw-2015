@@ -22,8 +22,10 @@ import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.subsystems.AbstractElevator;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Drivebase;
@@ -59,6 +61,7 @@ public class RobotContainer {
   private final IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
+  final ILighting m_lighting = allocateLighting(m_robotConfig);
 
   // Controllers
   //
@@ -294,5 +297,13 @@ public class RobotContainer {
     } else {
       return new SimDrivebase(config);
     }
+  }
+
+  private static ILighting allocateLighting(RobotConfigs.RobotConfig config) {
+    if (!config.hasDrive()) {
+      return new ILighting.NullLighting();
+    }
+
+    return new Lighting(config);
   }
 }

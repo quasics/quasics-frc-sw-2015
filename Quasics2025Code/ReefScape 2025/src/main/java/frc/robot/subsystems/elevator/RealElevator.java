@@ -38,9 +38,6 @@ public class RealElevator extends AbstractElevator {
   public RealElevator() {
     m_encoder = m_leader.getEncoder();
 
-    // CODE_REVIEW: You _might_ also want to think about configuring the follower
-    // just using the REV softeware, rather than doing it every time in the robot's
-    // software.)
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(m_leader, true);
 

@@ -28,10 +28,6 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
 public class RealDrivebase extends AbstractDrivebase {
-  // CODE_REVIEW: You're not doing anything with this. Are you planning to use it
-  // later? (If not, it should be removed.)
-  private static final double kV = 473;
-
   private final Pigeon2 m_rawGyro = new Pigeon2(CanBusIds.PIGEON2_CAN_ID);
 
   final SparkMax m_leftLeader = new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless);

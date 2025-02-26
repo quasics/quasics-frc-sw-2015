@@ -44,6 +44,8 @@ import frc.robot.subsystems.elevator.SimulationElevator;
 import frc.robot.utils.RobotSettings;
 import java.util.function.Supplier;
 
+import choreo.auto.AutoFactory;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -77,6 +79,8 @@ public class RobotContainer {
   private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
+  private final AutoFactory autoFactory;
+
   Trigger switchDriveTrigger;
 
   SendableChooser<String> m_autonomousOperations = new SendableChooser<String>();
@@ -96,6 +100,15 @@ public class RobotContainer {
   public RobotContainer() {
     m_drivebase = setupDriveBase();
     m_elevator = setupElevator();
+
+    autoFactory = new AutoFactory(
+        m_drivebase::getPose, // A function that returns the current robot pose
+        m_drivebase::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+        m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+        false, // TODO: make this not always true
+        m_drivebase // The drive subsystem
+    );
+
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -103,6 +116,7 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
+
   }
 
   private AbstractElevator setupElevator() {
@@ -139,6 +153,12 @@ public class RobotContainer {
   private void addButtonsToSmartDashboard() {
     addSysIdButtonsToSmartDashboard();
     addTestButtonsToSmartDashboard();
+  }
+
+  private Command testTrajectory(String name) {
+    return Commands.sequence(
+        autoFactory.resetOdometry(name),
+        autoFactory.trajectoryCmd(name));
   }
 
   private void addTestButtonsToSmartDashboard() {
@@ -180,6 +200,8 @@ public class RobotContainer {
         new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
         new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+
+    SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new

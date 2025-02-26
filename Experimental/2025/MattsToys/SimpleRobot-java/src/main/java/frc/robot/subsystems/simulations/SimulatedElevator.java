@@ -42,18 +42,14 @@ public class SimulatedElevator extends AbstractElevator {
 
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
-  private static final double kGearing =
-      80.0; // Arbitrary (but needs to be enough for the simulated physics to work)
+  private static final double kGearing = 80.0; // Arbitrary (but needs to be enough for the simulated physics to work)
   private static final Distance kDrumRadius = Inches.of(1);
-  private static final double kEncoderMetersPerPulse =
-      2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
+  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
-  private static final Distance kMinSimulationHeight =
-      MIN_SAFE_HEIGHT.minus(Meters.of(-0.1)); // arbitrary: should be
-                                              // <= min desired
-  private static final Distance kMaxSimulationHeight =
-      MAX_SAFE_HEIGHT.plus(Meters.of(0.25)); // arbitrary: should be >=
-                                             // max desired
+  private static final Distance kMinSimulationHeight = MIN_SAFE_HEIGHT.minus(Meters.of(-0.1)); // arbitrary: should be
+                                                                                               // <= min desired
+  private static final Distance kMaxSimulationHeight = MAX_SAFE_HEIGHT.plus(Meters.of(0.25)); // arbitrary: should be >=
+                                                                                              // max desired
   private static final Distance kStartingSimulationHeight = MIN_SAFE_HEIGHT;
   private static final boolean ENABLE_GRAVITY = true;
 
@@ -61,8 +57,7 @@ public class SimulatedElevator extends AbstractElevator {
   private final DCMotor m_gearing = DCMotor.getNEO(2);
 
   /** Motor controller driving the elevator. */
-  private final SparkMax m_motor =
-      new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
+  private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
 
   /** Encoder tracking the current position of the elevator. */
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
@@ -105,7 +100,11 @@ public class SimulatedElevator extends AbstractElevator {
       kDrumRadius.in(Meters), kMinSimulationHeight.in(Meters), kMaxSimulationHeight.in(Meters),
       ENABLE_GRAVITY, kStartingSimulationHeight.in(Meters));
 
-  /** Creates a new SimulatedElevator. */
+  /**
+   * Creates a new SimulatedElevator.
+   * 
+   * @param robotConfig configuration of the robot being targeted
+   */
   public SimulatedElevator(RobotConfig robotConfig) {
     var pidConfig = robotConfig.elevator().pid();
     var ffConfig = robotConfig.elevator().feedForward();
@@ -125,10 +124,9 @@ public class SimulatedElevator extends AbstractElevator {
     m_motorSim.setPosition(0);
 
     // Simulation rendering setup.
-    Mechanism2d rootMech2d =
-        new Mechanism2d(9, MAX_SAFE_HEIGHT.in(Meters) * 1.15 /* Leave a little room at the top */);
+    Mechanism2d rootMech2d = new Mechanism2d(9, MAX_SAFE_HEIGHT.in(Meters) * 1.15 /* Leave a little room at the top */);
     m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
-                   .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
+        .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
 
     // Publish Mechanism2d to SmartDashboard.
     // To show the visualization, select Network Tables -> SmartDashboard
@@ -150,7 +148,7 @@ public class SimulatedElevator extends AbstractElevator {
 
     if (noisy) {
       System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-                        + "output: %.02f, atSetpoint: %b%n",
+          + "output: %.02f, atSetpoint: %b%n",
           m_encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForward, output,
           m_pid.atSetpoint());
     }
@@ -241,6 +239,10 @@ public class SimulatedElevator extends AbstractElevator {
     m_motor.set(RETRACTION_SPEED);
   }
 
+  /**
+   * @param targetPosition the logical position to which the elevator should move
+   * @return the height to which the elevator should move
+   */
   protected Distance getPositionForTarget(TargetPosition targetPosition) {
     switch (targetPosition) {
       case DontCare:

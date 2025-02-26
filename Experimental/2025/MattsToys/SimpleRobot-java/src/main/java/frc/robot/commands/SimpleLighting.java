@@ -22,7 +22,7 @@ public class SimpleLighting extends Command {
   /**
    * Creates a new SimpleLighting.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param subsystem the subsystem used by this command.
    */
   public SimpleLighting(ILighting subsystem) {
     this(subsystem, ILighting.StockColor.Green);
@@ -31,7 +31,8 @@ public class SimpleLighting extends Command {
   /**
    * Creates a new SimpleLighting.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param subsystem the subsystem used by this command
+   * @param color     the color to which the strip should be set
    */
   public SimpleLighting(ILighting subsystem, ILighting.StockColor color) {
     setName("Lighting");

@@ -41,9 +41,11 @@ public class Vision extends SubsystemBase implements IVision {
    */
   private final PhotonPoseEstimator m_photonEstimator;
 
-  // Cached results of the last pose estimation update.
+  /** Cached pose from last pose estimation update. */
   protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
+  /** Timestamp of the last pose estimation update. */
   protected double m_lastEstTimestamp = 0;
+  /** Has the pose estimate been updated recently? */
   protected boolean m_estimateRecentlyUpdated = false;
 
   /**
@@ -59,9 +61,9 @@ public class Vision extends SubsystemBase implements IVision {
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-      ;
+  ;
 
   /**
    * Constructs a Vision subsystem, based on a specified robot configuration.
@@ -71,7 +73,7 @@ public class Vision extends SubsystemBase implements IVision {
   public Vision(RobotConfig config) {
     this(config.camera().name(),
         new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-                            config.camera().pos().z()),
+            config.camera().pos().z()),
             new Rotation3d(config.camera().orientation().roll(),
                 config.camera().orientation().pitch(), config.camera().orientation().yaw())));
   }
@@ -86,7 +88,7 @@ public class Vision extends SubsystemBase implements IVision {
    *                               the Robot Coordinate System.
    *
    * @see
-   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   *      https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
    */
   private Vision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
@@ -158,8 +160,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
-        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

@@ -32,7 +32,11 @@ public class SimulatedVision extends Vision {
   /** The interface to control/inject simulated camera stuff. */
   private PhotonCameraSim m_cameraSim = null;
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   * 
+   * @param config the configuration of the robot being targeted
+   */
   public SimulatedVision(RobotConfig config) {
     super(config);
 

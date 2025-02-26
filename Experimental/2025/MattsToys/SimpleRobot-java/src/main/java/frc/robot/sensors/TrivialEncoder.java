@@ -17,6 +17,11 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * don't share a common base class. (This wrapper provides a pretty basic view
  * of encoders, but that's the point; I'm just looking for a way to use all
  * kinds of an encoder as though there are a common/single kind of object.)
+ * 
+ * Note: this wrapper assumes tht the underlying encoders have been configured
+ * to return values using "meters" and "seconds" as base units (e.g., vs.
+ * "revolutions" and "minutes"). If this isn't supported for a given type, then
+ * additional work will be required to support it.
  *
  * As context:
  * <ul>
@@ -56,10 +61,10 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  *      pattern</a>
  */
 public interface TrivialEncoder {
-  /** Returns the distance recorded by the encoder (in meters). */
+  /** @return the distance recorded by the encoder (in meters). */
   Distance getPosition();
 
-  /** Returns the current speed reported by the encoder (in meters/sec). */
+  /** @return the current speed reported by the encoder (in meters/sec). */
   LinearVelocity getVelocity();
 
   /** Resets the encoder's distance. */

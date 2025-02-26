@@ -40,15 +40,25 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
 
+/**
+ * RobotContainer for a demo (mostly simulation-oriented) robot.
+ */
 public class RobotContainer {
   static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
+  /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
+    /** Do nothing in auto mode. */
     eDoNothing,
+    /** Move forward and raise the elevator in auto mode. */
+    eMoveAndRaise,
+    /**
+     * Follow a Choreo-based trajectory in auto mode, based on starting position.
+     */
     eChoreo,
-    eMoveAndRaise
   }
 
+  /** Option to be used for auto mode actions. */
   static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.eChoreo;
 
   /** Indicates the robot we are going to target. */
@@ -86,14 +96,19 @@ public class RobotContainer {
       CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
       m_drivebase.asSubsystem());
 
+  /** Constructor. */
   public RobotContainer() {
     configureArcadeDrive();
-    configureSmartDashboard();
+    configureDashboard();
     configureBindings();
 
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
   }
 
+  /**
+   * Adds "SysID"-related commands to the dashboard, to support robot
+   * characterization.
+   */
   private void addSysIdControlsToDashboard() {
     SmartDashboard.putData("SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
@@ -121,7 +136,10 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
   }
 
-  private void configureSmartDashboard() {
+  /**
+   * Configures the buttons on the dashboard.
+   */
+  private void configureDashboard() {
     addSysIdControlsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
@@ -136,6 +154,7 @@ public class RobotContainer {
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
 
+  /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
     final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
@@ -162,8 +181,12 @@ public class RobotContainer {
         new ArcadeDrive(m_drivebase, forwardSupplier, rotationSupplier));
   }
 
+  /**
+   * Configures any additional command bindings (e.g., to buttons on game
+   * controllers, etc.).
+   */
   private void configureBindings() {
-    // TODO: Configure any bindings as required.
+    // No-op at present; retained for future use if needed.
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -172,24 +195,54 @@ public class RobotContainer {
   //
   ////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Generates a Choreo command for the specified trajectory.
+   * 
+   * @param trajectoryName name of the trajectory being loaded
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * 
+   * @see #generateCommandForChoreoTrajectory(String, boolean)
+   */
   private Command generateCommandForChoreoTrajectory(String trajectoryName) {
     return generateCommandForChoreoTrajectory(trajectoryName, true);
   }
 
   /**
+   * Generates a Choreo command for the specified trajectory.
+   * 
+   * @param trajectoryName name of the trajectory being loaded
+   * @param resetOdometry  if true, reset the robot's pose before running the
+   *                       trajectory, based on the starting point in the
+   *                       trajectory's data
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * 
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
   private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
-    return Commands.sequence(
-        // Per https://choreo.autos/choreolib/auto-factory/
-        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none()),
-        // Then do the thing
-        m_autoFactory.trajectoryCmd(trajectoryName));
+    try {
+      return Commands.sequence(
+          // Per https://choreo.autos/choreolib/auto-factory/
+          (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none()),
+          // Then do the thing
+          m_autoFactory.trajectoryCmd(trajectoryName));
+    } catch (Exception e) {
+      System.err.println("ERROR: Failed to load Choreo trajectory '" + trajectoryName + "'");
+      e.printStackTrace();
+      return Commands.none();
+    }
   }
 
   /**
+   * Generates a command for the specified PathPlanner trajectory.
+   * 
+   * NOTE: THIS IS NOT YET FULLY IMPLEMENTED, AS CONFIGURATION OF THE AutoBuilder
+   * FACTORY IS NOT YET BEING DONE.
+   * 
+   * @param trajectoryName name of the trajectory being loaded
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * 
    * @see <a href="https://pathplanner.dev/pplib-getting-started.html">PathPlanner
    *      'Getting Started'</a>
    */
@@ -213,6 +266,15 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Generates a command (based on a Choreo trajectory) to be used in Auto mode.
+   * 
+   * Note: this function assumes that our position on the field is directly
+   * mapping to our driver station location.
+   * 
+   * @return a Choreo-based trajectory command, based on the robot's
+   *         alliance/position
+   */
   private Command generateChoreoAutoCommand() {
     var allianceOpt = DriverStation.getAlliance();
     if (allianceOpt.isEmpty()) {
@@ -251,6 +313,11 @@ public class RobotContainer {
     return Commands.none();
   }
 
+  /**
+   * @return a command to be run in Auto mode, based on the configured option
+   * 
+   * @see #AUTO_MODE_OPTION
+   */
   public Command getAutonomousCommand() {
     return switch (AUTO_MODE_OPTION) {
       case eDoNothing -> Commands.print("No autonomous command configured");
@@ -267,6 +334,12 @@ public class RobotContainer {
   //
   ////////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Allocates an elevator subsystem object.
+   * 
+   * @param config the target robot's configuration
+   * @return an elevator subsystem for this robot (may be trivial)
+   */
   private static AbstractElevator allocateElevator(RobotConfigs.RobotConfig config) {
     if (!config.hasElevator()) {
       return new AbstractElevator.NullElevator();
@@ -280,6 +353,12 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates a Vision subsystem object.
+   * 
+   * @param config the target robot's configuration
+   * @return a Vision subsystem for this robot (may be trivial)
+   */
   private static IVision allocateVision(RobotConfigs.RobotConfig config) {
     if (!config.hasCamera()) {
       return new IVision.NullVision();
@@ -292,6 +371,12 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates a drive base subsystem object.
+   * 
+   * @param config the target robot's configuration
+   * @return a drive base subsystem for this robot (may be trivial)
+   */
   private static IDrivebase allocateDrivebase(RobotConfigs.RobotConfig config) {
     if (!config.hasDrive()) {
       return new IDrivebase.NullDrivebase();
@@ -304,6 +389,12 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates a lighting subsystem object.
+   * 
+   * @param config the target robot's configuration
+   * @return a lighting subsystem for this robot (may be trivial)
+   */
   private static ILighting allocateLighting(RobotConfigs.RobotConfig config) {
     if (!config.hasLighting()) {
       return new ILighting.NullLighting();

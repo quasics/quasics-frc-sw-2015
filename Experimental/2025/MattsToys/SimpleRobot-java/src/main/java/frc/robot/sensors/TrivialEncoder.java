@@ -65,7 +65,13 @@ public interface TrivialEncoder {
   /** Resets the encoder's distance. */
   void reset();
 
-  /** Creates a TrivialEncoder wrapper around a stock WPILib Encoder object. */
+  /**
+   * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
+   * 
+   * @param encoder the WPILib encoder to be wrapped
+   * @return a TrivialEncoder that can be used to interact with the underlying
+   *         hardware
+   */
   public static TrivialEncoder forWpiLibEncoder(final Encoder encoder) {
     if (encoder == null) {
       throw new IllegalArgumentException("Null encoder");
@@ -89,7 +95,15 @@ public interface TrivialEncoder {
     };
   }
 
-  /** Creates a TrivialEncoder wrapper around a stock WPILib Encoder object. */
+  /**
+   * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
+   * 
+   * @param encoder    the WPILib encoder to be wrapped
+   * @param encoderSim the WPILib "EncoderSim" being used to simulate operations
+   *                   and "drive" the encoder
+   * @return a TrivialEncoder that can be used to interact with the underlying
+   *         hardware
+   */
   public static TrivialEncoder forWpiLibEncoder(
       final Encoder encoder, final EncoderSim encoderSim) {
     if (encoder == null) {
@@ -118,6 +132,7 @@ public interface TrivialEncoder {
     };
   }
 
+  /** A no-op implementation of the TrivialEncoder interface. */
   public static final class NullEncoder implements TrivialEncoder {
     @Override
     public Distance getPosition() {

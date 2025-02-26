@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.LogitechGamePad;
+import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.MoveArmToAngle;
@@ -146,8 +146,8 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.LeftYAxis));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechGamePad.RightXAxis));
+      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
     } else {
       // Configure the simulated robot
       //

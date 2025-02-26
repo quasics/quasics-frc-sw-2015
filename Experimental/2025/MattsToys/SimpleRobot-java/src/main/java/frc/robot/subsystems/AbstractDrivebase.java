@@ -37,6 +37,9 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * control".
  */
 public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
+  /** Controls if data should be logged to the dashboard. */
+  final static boolean LOG_TO_DASHBOARD = true;
+
   /** Kinematics definition for this drive base. */
   final protected DifferentialDriveKinematics m_kinematics;
 
@@ -245,8 +248,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * Logs the specified measure to the dashboard iff LOG_TO_SMART_DASHBOARD is
    * true.
    * 
-   * @param label label for the value (will have " (<units>)" appended, based on
-   *              the measure's underlying units)
+   * @param label label for the value (will have " (X)" appended, where "X" will
+   *              reflect the measure's underlying units)
    * @param val   value to be shown
    */
   @SuppressWarnings("rawtypes")

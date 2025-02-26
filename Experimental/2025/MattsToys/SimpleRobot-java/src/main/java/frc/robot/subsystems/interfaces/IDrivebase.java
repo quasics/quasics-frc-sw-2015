@@ -53,7 +53,7 @@ public interface IDrivebase extends ISubsystem {
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
   /** Controls if data should be logged to the dashboard. */
-  final boolean LOG_TO_SMARTDASHBOARD = true;
+  final boolean LOG_TO_DASHBOARD = true;
 
   /** Utility method: stops the robot. */
   default void stop() {

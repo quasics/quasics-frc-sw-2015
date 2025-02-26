@@ -227,7 +227,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * @param val   value to be shown
    */
   protected void logValue(String label, double val) {
-    if (LOG_TO_SMARTDASHBOARD) {
+    if (LOG_TO_DASHBOARD) {
       SmartDashboard.putNumber(label, val);
     }
   }

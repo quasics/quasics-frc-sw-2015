@@ -161,14 +161,18 @@ public class RobotContainer {
   //
   ////////////////////////////////////////////////////////////////////////////////
 
+  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+    return generateCommandForChoreoTrajectory(trajectoryName, true);
+  }
+
   /**
    * @see https://choreo.autos/choreolib/getting-started/
    * @see https://choreo.autos/choreolib/auto-factory/
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
     return Commands.sequence(
         // Per https://choreo.autos/choreolib/auto-factory/
-        m_autoFactory.resetOdometry(trajectoryName),
+        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none()),
         // Then do the thing
         m_autoFactory.trajectoryCmd(trajectoryName));
   }

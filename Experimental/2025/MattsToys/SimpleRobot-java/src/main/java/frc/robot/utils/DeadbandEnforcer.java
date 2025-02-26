@@ -10,7 +10,8 @@ package frc.robot.utils;
  * Note: this does the same thing as MathUtil.applyDeadband, but allows us to
  * embed the limits in a (shareable) object.
  *
- * @see https://en.wikipedia.org/wiki/Deadband
+ * @see <a href="https://en.wikipedia.org/wiki/Deadband">Deadband
+ *      (Wikipedia)</a>
  */
 public class DeadbandEnforcer {
   /** Defines the lower end of the deadband (inclusive). */

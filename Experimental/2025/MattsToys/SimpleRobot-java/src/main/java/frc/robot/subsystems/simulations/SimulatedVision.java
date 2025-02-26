@@ -69,8 +69,10 @@ public class SimulatedVision extends Vision {
    * Returns the simulated camera properties (used to control properties like FOV,
    * resolution, etc.).
    *
-   * @see
-   *      https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
+   * @see <a
+   *      href=
+   *      "https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation">Camera
+   *      simulation in PhotonVision</a>
    */
   private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
@@ -95,9 +97,8 @@ public class SimulatedVision extends Vision {
     // Should be a no-op, but good practice to call the base class.
     super.simulationPeriodic();
 
-    Pose2d driveBasePoseMeters =
-        (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
-            .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
+        .orElse(new Pose2d());
 
     m_visionSim.update(driveBasePoseMeters);
 
@@ -106,8 +107,9 @@ public class SimulatedVision extends Vision {
     final var debugField = m_visionSim.getDebugField();
     m_lastEstimatedPose.ifPresentOrElse(
         // Do this with the data in m_lastEstimatedPose (if it has some)
-        est
-        -> { debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()); },
+        est -> {
+          debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
+        },
         // If we have nothing in m_lastEstimatedPose, do this
         () -> {
           if (m_estimateRecentlyUpdated)

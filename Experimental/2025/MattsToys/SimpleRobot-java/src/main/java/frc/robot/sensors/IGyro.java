@@ -48,8 +48,10 @@ import java.util.function.Supplier;
  * adapt any arbitrary gyro/ALU to a common type, along with some functions to
  * help encapsulate specific examples "real" gyro classes with the wrapper.
  *
- * @see https://refactoring.guru/design-patterns/decorator
- * @see https://en.wikipedia.org/wiki/Adapter_pattern
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
+ *      pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
+ *      pattern</a>
  */
 public interface IGyro {
   /** Tells the gyro to perform any calibration processing (e.g., on power-up). */

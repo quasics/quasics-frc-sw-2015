@@ -44,8 +44,10 @@ public class RobotConfigs {
    * @param y distance along the Y axis (left (+)/right (-)) from center
    * @param z distance along the Z axis (up (+)/down (-)) from center
    *
-   * @see
-   *      https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   * @see <a
+   *      href=
+   *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system">Robot
+   *      coordinate system</a>
    */
   public static record Position(Distance x, Distance y, Distance z) {
   }

@@ -177,8 +177,9 @@ public class RobotContainer {
   }
 
   /**
-   * @see https://choreo.autos/choreolib/getting-started/
-   * @see https://choreo.autos/choreolib/auto-factory/
+   * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
+   *      'Getting Started'</a>
+   * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
   private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
     return Commands.sequence(
@@ -189,7 +190,8 @@ public class RobotContainer {
   }
 
   /**
-   * @see https://pathplanner.dev/pplib-getting-started.html
+   * @see <a href="https://pathplanner.dev/pplib-getting-started.html">PathPlanner
+   *      'Getting Started'</a>
    */
   protected static Command generateCommandForPathPlannerTrajectory(String trajectoryName) {
     try {

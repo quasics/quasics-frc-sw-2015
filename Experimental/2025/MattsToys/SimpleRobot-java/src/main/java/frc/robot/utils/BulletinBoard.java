@@ -29,8 +29,11 @@ import java.util.Optional;
  * is also a concrete class (rather than an adaptable interface), which makes it
  * hard to use trivially with WPILib subsystems.
  *
- * @see https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern
- * @see https://en.wikipedia.org/wiki/Observer_pattern
+ * @see <a href=
+ *      "https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern">Publish/subscribe
+ *      pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Observer_pattern">Observer
+ *      pattern"</a>
  *
  */
 public class BulletinBoard {

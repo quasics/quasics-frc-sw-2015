@@ -37,17 +37,23 @@ public class Drivebase extends AbstractDrivebase {
   // Hardware control/sensing.
   //
 
-  // Gyro
+  /** The gyro (a Pigeon2) on the drive base. */
   private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsCanIds.PIGEON2_CAN_ID));
 
-  // Leader motors
+  /** Left leading motor. */
   final private SparkMax m_leftLeader = new SparkMax(Constants.QuasicsCanIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  /** Right leading motor. */
   final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
 
+  // TODO: Consider fully replacing the relative encoders with TrivialEncoders.
+  /** Left encoder. */
   final private RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
+  /** Right encoder. */
   final private RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
 
+  /** Left encoder (as a TrivialEncoder). */
   final private TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
+  /** Right encoder (as a TrivialEncoder). */
   final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
@@ -107,6 +113,12 @@ public class Drivebase extends AbstractDrivebase {
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)) /* visionMeasurementStdDevs */);
   }
 
+  /**
+   * Configures a motor (specified via CAN ID) to follow another motor.
+   * 
+   * @param followerId CAN ID for the motor to be configured as a follower
+   * @param leader     the motor that should serve as leader
+   */
   static void configureMotorToFollow(int followerId, SparkMax leader) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(leader, true);

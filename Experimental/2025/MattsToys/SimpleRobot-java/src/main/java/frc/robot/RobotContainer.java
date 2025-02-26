@@ -4,11 +4,12 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,13 +19,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
-import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.MoveArmToAngle;
-import frc.robot.commands.MoveElevatorToExtreme;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.subsystems.AbstractElevator;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Drivebase;
@@ -41,6 +42,14 @@ import java.util.function.Supplier;
 public class RobotContainer {
   static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
+  enum AutoModeOperation {
+    eDoNothing,
+    eChoreo,
+    eMoveAndRaise
+  }
+
+  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.eChoreo;
+
   /** Indicates the robot we are going to target. */
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Sally;
 
@@ -52,6 +61,7 @@ public class RobotContainer {
   private final IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final ISingleJointArm m_arm = new SimulatedSingleJointArm();
+  final ILighting m_lighting = allocateLighting(m_robotConfig);
 
   // Controllers
   //
@@ -159,14 +169,18 @@ public class RobotContainer {
   //
   ////////////////////////////////////////////////////////////////////////////////
 
+  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+    return generateCommandForChoreoTrajectory(trajectoryName, true);
+  }
+
   /**
    * @see https://choreo.autos/choreolib/getting-started/
    * @see https://choreo.autos/choreolib/auto-factory/
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
     return Commands.sequence(
         // Per https://choreo.autos/choreolib/auto-factory/
-        m_autoFactory.resetOdometry("Demo path"),
+        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none()),
         // Then do the thing
         m_autoFactory.trajectoryCmd(trajectoryName));
   }
@@ -194,14 +208,52 @@ public class RobotContainer {
     }
   }
 
+  private Command generateChoreoAutoCommand() {
+    var allianceOpt = DriverStation.getAlliance();
+    if (allianceOpt.isEmpty()) {
+      return Commands.none();
+    }
+
+    // Simple matrix of choices: we know how to get to precisely 1 algae from each
+    // of the red starting points (and nowhere from blue), and we'll assume that
+    // our position on the field is directly mapping to our driver station location.
+
+    switch (allianceOpt.get()) {
+      case Blue:
+        System.out.println("WARNING: Don't know how to handle Blue with Choreo paths.");
+        return Commands.none();
+
+      case Red:
+        var positionOpt = DriverStation.getLocation();
+        if (positionOpt.isEmpty()) {
+          System.out.println("WARNING: Can't get position!");
+          return Commands.none();
+        }
+
+        System.out.println("INFO: OK, we're Red-" + positionOpt.getAsInt());
+        switch (positionOpt.getAsInt()) {
+          case 1:
+            return generateCommandForChoreoTrajectory("RStart-outside-to-south-algae");
+          case 2:
+            return generateCommandForChoreoTrajectory("RStart-center-to-center-algae");
+          case 3:
+            // "North" end, so the cage to field center
+            return generateCommandForChoreoTrajectory("RStart-inside-to-north-algae");
+        }
+    }
+
+    System.out.println("WARNING: Couldn't identify Choreo path");
+    return Commands.none();
+  }
+
   public Command getAutonomousCommand() {
-    // return generateCommandForChoreoTrajectory("Demo path");
-
-    // Simple demo command to drive forward while raising the elevator.
-    return new ParallelCommandGroup(new DriveForDistance(m_drivebase, .50, Meters.of(3)),
-        new MoveElevatorToExtreme(m_elevator, true));
-
-    // return Commands.print("No autonomous command configured");
+    return switch (AUTO_MODE_OPTION) {
+      case eDoNothing -> Commands.print("No autonomous command configured");
+      case eChoreo -> generateChoreoAutoCommand();
+      case eMoveAndRaise -> new ParallelCommandGroup(
+          new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
+          new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
+    };
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -245,5 +297,13 @@ public class RobotContainer {
     } else {
       return new SimDrivebase(config);
     }
+  }
+
+  private static ILighting allocateLighting(RobotConfigs.RobotConfig config) {
+    if (!config.hasDrive()) {
+      return new ILighting.NullLighting();
+    }
+
+    return new Lighting(config);
   }
 }

@@ -8,11 +8,13 @@ import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.ArcadeDrive;
@@ -37,6 +39,14 @@ import java.util.function.Supplier;
 
 public class RobotContainer {
   static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+
+  enum AutoModeOperation {
+    eDoNothing,
+    eChoreo,
+    eMoveAndRaise
+  }
+
+  static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.eChoreo;
 
   /** Indicates the robot we are going to target. */
   final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Sally;
@@ -234,15 +244,13 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return generateCommandForChoreoTrajectory("Demo path");
-
-    return generateChoreoAutoCommand();
-
-    // Simple demo command to drive forward while raising the elevator.
-    // return new ParallelCommandGroup(new DriveForDistance(m_drivebase, .50,
-    // Meters.of(3)), new MoveElevatorToExtreme(m_elevator, true));
-
-    // return Commands.print("No autonomous command configured");
+    return switch (AUTO_MODE_OPTION) {
+      case eDoNothing -> Commands.print("No autonomous command configured");
+      case eChoreo -> generateChoreoAutoCommand();
+      case eMoveAndRaise -> new ParallelCommandGroup(
+          new frc.robot.commands.DriveForDistance(m_drivebase, .50, Units.Meters.of(3)),
+          new frc.robot.commands.MoveElevatorToExtreme(m_elevator, true));
+    };
   }
 
   ////////////////////////////////////////////////////////////////////////////////

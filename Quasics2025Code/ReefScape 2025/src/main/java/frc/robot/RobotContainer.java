@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
 import frc.robot.commands.MoveElevatorToTargetPosition;
@@ -53,7 +55,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase;
-  private final AbstractArmPivot m_armPivot = new ArmPivot();
+  private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator;
   private final Climbers m_climbers = new Climbers();
@@ -148,6 +150,9 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Arm Pivot Down", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(0.1)));
 
+    SmartDashboard.putData("Arm Pivot PID Up", new MoveArmPivotToPosition(m_armPivot, Radians.of(90)));
+    SmartDashboard.putData("Arm Pivot PID Down", new MoveArmPivotToPosition(m_armPivot, Radians.of(0)));
+
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
 
     SmartDashboard.putData(
@@ -211,7 +216,6 @@ public class RobotContainer {
   private void addAutonomousStartingPositionsToSmartDashboard() {
     m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.examplePosition,
         Constants.AutonomousStartingPositions.examplePosition);
-    
 
     SmartDashboard.putData("Starting position", m_positionOptions);
   }

@@ -15,12 +15,11 @@ public class ArmPivot extends AbstractArmPivot {
     super();
   }
 
-  // CODE_REVIEW: Don't expose the PID controller to clients; this should be
-  // something managed by the subsystem (i.e., the client establishes the
-  // setpoint/target value, and then the subsystem is responsible for driving to
-  // that, such as via the periodic() function).
-  //
-  // As an example, take a look at the SimulationElevator class.
+  public void periodic() {
+    driveArmToSetpoint();
+    super.periodic();
+  }
+
   public PIDController getPivotPIDController() {
     return m_armPIDController;
   }
@@ -33,32 +32,36 @@ public class ArmPivot extends AbstractArmPivot {
   // establish appropriate flags, or some other way of indicating a "don't care"
   // state. (For an example, you may want to take a look at the handling of
   // AbstractElevator.TargetPosition.kDontCare.)
-  public void driveArmToSetpoint(double velocity) {
+  public void driveArmToSetpoint() {
+    if (m_angleSetpoint == null) {
+      return;
+    }
     final double currentAngleRadians = getPivotAngle().in(Radians);
-    double pidOutput =
-        m_armPIDController.calculate(currentAngleRadians, m_angleSetpoint.in(Radians));
-    double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, velocity);
+    final double currentVelocity_radiansPerSec = getPivotVelocity();
+    double pidOutput = m_armPIDController.calculate(currentAngleRadians, m_angleSetpoint.in(Radians));
+    double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, currentVelocity_radiansPerSec);
     double output = feedForwardOutput + pidOutput;
-
-    // CODE_REVIEW: PID and FF values are computed in terms of *voltages*). As a
-    // result, you need to call "setVoltage()" (-12V to +12V) on the controller,
-    // rather than just "set()" (which assumes you're providing a speed from -1.0 to
-    // +1.0). (If you call "set()" with a voltage, you're probably going to *way*
-    // overshoot your target position.)
-    m_pivot.set(output);
+    m_pivot.setVoltage(output);
   }
 
   // TODO: Test this.
+  /*
+   * public boolean atSetpoint() {
+   * final Angle currentAngle = getPivotAngle();
+   * Angle delta;
+   * if (m_angleSetpoint.gte(currentAngle)) {
+   * // setpoint >= current angle
+   * delta = m_angleSetpoint.minus(currentAngle);
+   * } else {
+   * // setpoint < current angle
+   * delta = currentAngle.minus(m_angleSetpoint);
+   * }
+   * return delta.lte(ANGLE_TOLERANCE_RADIANS);
+   * }
+   */
+
   public boolean atSetpoint() {
-    final Angle currentAngle = getPivotAngle();
-    Angle delta;
-    if (m_angleSetpoint.gte(currentAngle)) {
-      // setpoint >= current angle
-      delta = m_angleSetpoint.minus(currentAngle);
-    } else {
-      // setpoint < current angle
-      delta = currentAngle.minus(m_angleSetpoint);
-    }
-    return delta.lte(ANGLE_TOLERANCE_RADIANS);
+    return m_angleSetpoint == null // No setpoint to get to
+        || m_armPIDController.atSetpoint();
   }
 }

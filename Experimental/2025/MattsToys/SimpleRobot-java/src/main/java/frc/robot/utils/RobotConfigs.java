@@ -208,7 +208,7 @@ public class RobotConfigs {
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
                 new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
-            new LightingConfig(1, 80)));
+            new LightingConfig(2, 80)));
 
     map.put(
         Robot.Sally,

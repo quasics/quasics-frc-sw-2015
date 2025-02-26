@@ -21,6 +21,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
+import frc.robot.commands.RainbowLighting;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.Vision;
@@ -51,7 +52,7 @@ public class RobotContainer {
   static final AutoModeOperation AUTO_MODE_OPTION = AutoModeOperation.eChoreo;
 
   /** Indicates the robot we are going to target. */
-  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Sally;
+  final RobotConfigs.Robot DEPLOYED_ON = RobotConfigs.Robot.Simulation;
 
   /** Configuration data for the targeted robot. */
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
@@ -89,6 +90,8 @@ public class RobotContainer {
     configureArcadeDrive();
     configureSmartDashboard();
     configureBindings();
+
+    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
   }
 
   private void addSysIdControlsToDashboard() {
@@ -300,7 +303,7 @@ public class RobotContainer {
   }
 
   private static ILighting allocateLighting(RobotConfigs.RobotConfig config) {
-    if (!config.hasDrive()) {
+    if (!config.hasLighting()) {
       return new ILighting.NullLighting();
     }
 

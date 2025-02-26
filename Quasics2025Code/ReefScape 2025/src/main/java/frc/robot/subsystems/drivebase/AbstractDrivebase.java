@@ -14,6 +14,9 @@ import edu.wpi.first.units.measure.Angle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+
+import choreo.trajectory.DifferentialSample;
+import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,6 +54,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final Distance m_driveBaseWidthWithBumpers;
 
   RobotConfig config;
+  private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
 
   /** Creates a new IDrivebase. */
   public AbstractDrivebase(RobotSettings.Robot robot) {
@@ -98,6 +102,25 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
     m_driveBaseWidthWithBumpers = Inches.of(26);
+  }
+
+  public void followTrajectory(DifferentialSample sample) {
+    System.out.println("test");
+    // Get the current pose of the robot
+    Pose2d pose = getPose();
+
+    // Get the velocity feedforward specified by the sample
+    ChassisSpeeds ff = sample.getChassisSpeeds();
+
+    // Generate the next speeds for the robot
+    ChassisSpeeds speeds = m_controller.calculate(
+        pose,
+        sample.getPose(),
+        ff.vxMetersPerSecond,
+        ff.omegaRadiansPerSecond);
+
+    // Apply the generated speeds
+    setSpeeds(speeds);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {

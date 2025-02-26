@@ -42,11 +42,17 @@ public class BulletinBoard {
    */
   public static final BulletinBoard common = new BulletinBoard();
 
+  /** Maps stored values to their associated keys. */
   private Map<String, Object> values = new HashMap<String, Object>();
 
   /**
    * Retrieves the value associated with the specified key (if any is present),
    * without any typing constraints being applied.
+   * 
+   * @param key the key for the desired value
+   * @return an Optional wrapping the desired value, if found
+   * 
+   * @see #updateValue(String, Object)
    */
   public synchronized Optional<Object> getValue(String key) {
     if (!values.containsKey(key)) {
@@ -58,6 +64,12 @@ public class BulletinBoard {
   /**
    * Retrieves the value associated with the specified key (if any is present, and
    * if it is compliant with the specified type).
+   * 
+   * @param key  the key for the desired value
+   * @param type the type of data expected for the value
+   * @return an Optional wrapping the desired value, if a match is found
+   * 
+   * @see #updateValue(String, Object)
    */
   public synchronized Optional<Object> getValue(String key, Class<?> type) {
     if (!values.containsKey(key)) {
@@ -73,6 +85,8 @@ public class BulletinBoard {
 
   /**
    * Removes any previously-set value associated with the specified key.
+   * 
+   * @param key the key for the targeted value
    */
   public synchronized void clearValue(String key) {
     values.remove(key);
@@ -81,6 +95,12 @@ public class BulletinBoard {
   /**
    * Sets/updates the value associated with the specified key, allowing later
    * retrieval with "getValue()".
+   * 
+   * @param key   the key associated with the value being stored
+   * @param value the value to be stored
+   * 
+   * @see #getValue(String)
+   * @see #getValue(String, Class)
    */
   public synchronized void updateValue(String key, Object value) {
     values.put(key, value);

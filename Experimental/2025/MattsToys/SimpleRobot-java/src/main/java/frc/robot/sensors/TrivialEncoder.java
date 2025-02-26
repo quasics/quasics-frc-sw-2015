@@ -50,8 +50,10 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
  *
- * @see https://refactoring.guru/design-patterns/decorator
- * @see https://en.wikipedia.org/wiki/Adapter_pattern
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
+ *      pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
+ *      pattern</a>
  */
 public interface TrivialEncoder {
   /** Returns the distance recorded by the encoder (in meters). */

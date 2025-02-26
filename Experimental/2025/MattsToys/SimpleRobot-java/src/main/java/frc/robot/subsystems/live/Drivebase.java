@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.Pigeon2Wrapper;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
@@ -33,22 +34,15 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * TODO: Test this!!!!
  */
 public class Drivebase extends AbstractDrivebase {
-  // Common CAN IDs for Quasics' robots.
-  public static final int PIGEON2_CAN_ID = 1;
-  public static final int LEFT_LEADER_ID = 2;
-  public static final int LEFT_FOLLOWER_ID = 1;
-  public static final int RIGHT_LEADER_ID = 4;
-  public static final int RIGHT_FOLLOWER_ID = 3;
-
   // Hardware control/sensing.
   //
 
   // Gyro
-  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(PIGEON2_CAN_ID));
+  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsCanIds.PIGEON2_CAN_ID));
 
   // Leader motors
-  final private SparkMax m_leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
-  final private SparkMax m_rightLeader = new SparkMax(RIGHT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_leftLeader = new SparkMax(Constants.QuasicsCanIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
 
   final private RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   final private RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
@@ -101,9 +95,9 @@ public class Drivebase extends AbstractDrivebase {
     m_rightLeader.configure(
         rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // Make sure our encoders are zeroed out on startup.
-    // m_leftEncoder.setPosition(0);
-    // m_rightEncoder.setPosition(0);
+    // Configure the other motors to follow their leader
+    configureMotorToFollow(Constants.QuasicsCanIds.LEFT_FOLLOWER_ID, m_leftLeader);
+    configureMotorToFollow(Constants.QuasicsCanIds.RIGHT_FOLLOWER_ID, m_rightLeader);
 
     // Set up the pose estimator
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
@@ -111,6 +105,16 @@ public class Drivebase extends AbstractDrivebase {
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)) /* stateStdDevs */,
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)) /* visionMeasurementStdDevs */);
+  }
+
+  static void configureMotorToFollow(int followerId, SparkMax leader) {
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    followerConfig.follow(leader, true);
+
+    try (SparkMax follower = new SparkMax(followerId, MotorType.kBrushless)) {
+      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
+    }
   }
 
   @Override

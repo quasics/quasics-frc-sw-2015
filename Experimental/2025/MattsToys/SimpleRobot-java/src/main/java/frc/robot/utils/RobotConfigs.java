@@ -258,16 +258,17 @@ public class RobotConfigs {
 
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
-        new RobotConfig(new DriveConfig(Inches.of(3), // Wheel radius
-                            Units.Meters.of(0.381 * 2), // Trackwidth
-                            8.0, // Gearing
-                            new PIDConfig(1.6018),
-                            new DriveFeedForwardConfig(
-                                // ksLinear: 0.014183
-                                Volts.of(1.9802), 0.19202, // Linear data
-                                // ksAngular: 0.011388
-                                Volts.of(1.5001), 0.29782) // Angular data
-                            ),
+        new RobotConfig(
+            new DriveConfig(Inches.of(3), // Wheel radius
+                Units.Meters.of(0.381 * 2), // Trackwidth
+                8.0, // Gearing
+                new PIDConfig(1.6018),
+                new DriveFeedForwardConfig(
+                    // ksLinear: 0.014183
+                    Volts.of(1.9802), 0.19202, // Linear data
+                    // ksAngular: 0.011388
+                    Volts.of(1.5001), 0.29782) // Angular data
+            ),
             new CameraConfig("USBCamera1",
                 // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
                 // pose (which is considered to be its center of rotation at the floor level, or
@@ -280,12 +281,13 @@ public class RobotConfigs {
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(-15), // pitch
                     Degrees.of(0) // yaw
-                    ),
+                ),
                 // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
-                new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+                new PIDConfig(10.0, 0, 0),
+                new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
             new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80)));
 
     map.put(Robot.Sally,
@@ -297,7 +299,7 @@ public class RobotConfigs {
                 new PIDConfig(0.29613), // (from 2024)
                 new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
-                ),
+            ),
             NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
 
     //

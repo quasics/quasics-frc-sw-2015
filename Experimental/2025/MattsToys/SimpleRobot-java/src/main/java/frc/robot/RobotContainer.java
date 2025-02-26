@@ -88,10 +88,10 @@ public class RobotContainer {
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory =
-      new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose, m_drivebase::followTrajectory,
-          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-          m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
+      m_drivebase::followTrajectory,
+      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+      m_drivebase.asSubsystem());
 
   /** Constructor. */
   public RobotContainer() {
@@ -153,8 +153,7 @@ public class RobotContainer {
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer =
-        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -163,12 +162,8 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
-      rotationSupplier = ()
-          ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
+      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -176,7 +171,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -280,26 +275,34 @@ public class RobotContainer {
   private Command generateChoreoAutoCommand() {
     var allianceOpt = DriverStation.getAlliance();
     if (allianceOpt.isEmpty()) {
+      System.out.println("WARNING: Can't get alliance!");
       return Commands.none();
     }
 
+    var positionOpt = DriverStation.getLocation();
+    if (positionOpt.isEmpty()) {
+      System.out.println("WARNING: Can't get position!");
+      return Commands.none();
+    }
+    System.out.println("INFO: OK, we're " + allianceOpt.get() + "-" + positionOpt.getAsInt());
+
     // Simple matrix of choices: we know how to get to precisely 1 algae from each
-    // of the red starting points (and nowhere from blue), and we'll assume that
-    // our position on the field is directly mapping to our driver station location.
+    // of the red/blue starting points, and we'll assume that our position on the
+    // field is directly mapping to our driver station location.
 
     switch (allianceOpt.get()) {
       case Blue:
-        System.out.println("WARNING: Don't know how to handle Blue with Choreo paths.");
-        return Commands.none();
+        switch (positionOpt.getAsInt()) {
+          case 1:
+            return generateCommandForChoreoTrajectory("BStart-outside-to-south-algae");
+          case 2:
+            return generateCommandForChoreoTrajectory("BStart-center-to-center-algae");
+          case 3:
+            return generateCommandForChoreoTrajectory("BStart-inside-to-north-algae");
+        }
+        break;
 
       case Red:
-        var positionOpt = DriverStation.getLocation();
-        if (positionOpt.isEmpty()) {
-          System.out.println("WARNING: Can't get position!");
-          return Commands.none();
-        }
-
-        System.out.println("INFO: OK, we're Red-" + positionOpt.getAsInt());
         switch (positionOpt.getAsInt()) {
           case 1:
             return generateCommandForChoreoTrajectory("RStart-outside-to-south-algae");

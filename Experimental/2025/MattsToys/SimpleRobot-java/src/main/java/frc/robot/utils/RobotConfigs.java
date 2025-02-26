@@ -145,9 +145,12 @@ public class RobotConfigs {
       PIDConfig pid, DriveFeedForwardConfig feedForward) {
   }
 
+  public static record LightingConfig(int pwmPort, int stripLength) {
+  }
+
   /** Collective robot configuration data. */
   public static record RobotConfig(
-      DriveConfig drive, CameraConfig camera, ElevatorConfig elevator) {
+      DriveConfig drive, CameraConfig camera, ElevatorConfig elevator, LightingConfig lighting) {
     public boolean hasDrive() {
       return drive != null;
     }
@@ -159,6 +162,10 @@ public class RobotConfigs {
     public boolean hasElevator() {
       return elevator != null;
     }
+
+    public boolean hasLighting() {
+      return lighting != null;
+    }
   }
 
   /**
@@ -168,6 +175,7 @@ public class RobotConfigs {
   static private Map<Robot, RobotConfig> createMap() {
     final CameraConfig NO_CAMERA = null;
     final ElevatorConfig NO_ELEVATOR = null;
+    final LightingConfig NO_LIGHTING = null;
 
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
@@ -199,7 +207,8 @@ public class RobotConfigs {
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
-                new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0))));
+                new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+            new LightingConfig(1, 80)));
 
     map.put(
         Robot.Sally,
@@ -215,7 +224,8 @@ public class RobotConfigs {
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
             NO_CAMERA,
-            NO_ELEVATOR));
+            NO_ELEVATOR,
+            NO_LIGHTING));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

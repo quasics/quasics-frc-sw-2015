@@ -9,40 +9,58 @@ import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.AbstractElevator.Mode;
 
 /**
- * Simple command to raise the elevator to its highest position. This relies
- * upon the "safety mode" functionality in the elevator, which assumes that it
- * will automatically stop when it reaches maximum extension.
+ * Simple command to raise the elevator to its highest position (manually/not
+ * using PID). This relies upon the "safety mode" functionality in the elevator,
+ * which assumes that it will automatically stop when it reaches maximum
+ * extension.
  */
 public class MoveElevatorToExtreme extends Command {
+  /** Elevator being controlled. */
   final AbstractElevator m_elevator;
-  final boolean m_fullyExtend;
+  /** Indicates if the elevator should be raised (true) or lowered (false). */
+  final boolean m_fullyRaise;
 
-  /** Convenience class. */
-  public static final class RetractElevator extends MoveElevatorToExtreme {
-    public RetractElevator(AbstractElevator elevator) {
+  /** Utility class that only lowers the elevator. */
+  public static final class LowerElevator extends MoveElevatorToExtreme {
+    /**
+     * Constructor.
+     * 
+     * @param elevator elevator being controlled
+     */
+    public LowerElevator(AbstractElevator elevator) {
       super(elevator, false);
     }
   }
 
-  /** Convenience class. */
+  /** Utility class that only raises the elevator. */
   public static final class RaiseElevator extends MoveElevatorToExtreme {
+    /**
+     * Constructor.
+     * 
+     * @param elevator elevator being controlled
+     */
     public RaiseElevator(AbstractElevator elevator) {
       super(elevator, true);
     }
   }
 
-  /** Creates a new RaiseElevator. */
-  public MoveElevatorToExtreme(AbstractElevator elevator, boolean fullyExtend) {
+  /**
+   * Constructor.
+   * 
+   * @param elevator      elevator being controlled
+   * @param raiseElevator if the elevator should be raised (or lowered, if false)
+   */
+  public MoveElevatorToExtreme(AbstractElevator elevator, boolean raiseElevator) {
     m_elevator = elevator;
-    m_fullyExtend = fullyExtend;
+    m_fullyRaise = raiseElevator;
     addRequirements(m_elevator);
   }
 
   @Override
   public void initialize() {
-    if (m_fullyExtend && !m_elevator.extend()) {
+    if (m_fullyRaise && !m_elevator.extend()) {
       System.err.println("*** Warning: couldn't start extending the elevator!");
-    } else if (!m_fullyExtend && !m_elevator.retract()) {
+    } else if (!m_fullyRaise && !m_elevator.retract()) {
       System.err.println("*** Warning: couldn't start retracting the elevator!");
     }
   }

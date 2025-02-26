@@ -43,9 +43,13 @@ public abstract class AbstractElevator extends SubsystemBase {
   public enum TargetPosition {
     /** No target set (manual control). */
     DontCare,
+    /** Target MIN_SAFE_HEIGHT. */
     Bottom,
+    /** Target MAX_SAFE_HEIGHT. */
     Top,
+    /** Target L1 height. */
     L1,
+    /** Target L2 height. */
     L2
   }
 
@@ -100,6 +104,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts extending the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MAX_SAFE_HEIGHT.
+   * 
+   * @return true iff we started moving the elevator (i.e., not in safe mode, or
+   *         below MAX_SAFE_HEIGHT)
    */
   public boolean extend() {
     if (m_safetyOn && getHeight_impl().gte(MAX_SAFE_HEIGHT)) {
@@ -115,6 +122,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts retracting the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MIN_SAFE_HEIGHT.
+   * 
+   * @return true iff we started moving the elevator (i.e., not in safe mode, or
+   *         above MIN_SAFE_HEIGHT)
    */
   public boolean retract() {
     if (m_safetyOn && getHeight_impl().lte(MIN_SAFE_HEIGHT)) {
@@ -176,7 +186,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Resets the underlying encoder on the elevator. */
   protected abstract void resetEncoder_impl();
 
-  /** Returns the current elevator height (in meters). */
+  /** @return the current elevator height (in meters). */
   protected abstract Distance getHeight_impl();
 
   /** Stops the actual motor on the elevator. */

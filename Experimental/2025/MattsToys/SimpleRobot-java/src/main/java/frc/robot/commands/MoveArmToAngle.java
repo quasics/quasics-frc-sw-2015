@@ -18,10 +18,17 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
  * specified position (unless something else changes that value).
  */
 public class MoveArmToAngle extends Command {
+  /** Arm being controlled. */
   final private ISingleJointArm m_arm;
+  /** Target angle. */
   final private Angle m_angle;
 
-  /** Creates a new MoveArmToAngle. */
+  /**
+   * Creates a new MoveArmToAngle.
+   * 
+   * @param arm   arm being controlled
+   * @param angle angle to which the arm should be moved
+   */
   public MoveArmToAngle(ISingleJointArm arm, Angle angle) {
     this.m_arm = arm;
     this.m_angle = angle;
@@ -29,13 +36,11 @@ public class MoveArmToAngle extends Command {
     addRequirements(arm.asSubsystem());
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_arm.setTargetPosition(m_angle);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return true;

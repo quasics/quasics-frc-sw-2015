@@ -7,20 +7,42 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractElevator;
 
-/* You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+/**
+ * Moves the elevator to a specified target height (using PID control), and
+ * optionally waiting to signal completion until the elevator gets to that
+ * point.
  */
 public class MoveElevatorToPosition extends Command {
+  /** Elevator being controlled. */
   final private AbstractElevator m_elevator;
+  /** Target position. */
   final private AbstractElevator.TargetPosition m_target;
+  /**
+   * Iff true, command will wait to signal "finished" until the elevator has
+   * reached the target.
+   */
   final private boolean m_waitForTargetReached;
 
-  /** Creates a new MoveElevatorToPosition. */
+  /**
+   * Contructor. Will wait until the elevator is in position before signalling
+   * "finished".
+   * 
+   * @param elevator elevator being controlled
+   * @param target   target position
+   */
   public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target) {
     this(elevator, target, true);
   }
 
-  /** Creates a new MoveElevatorToPosition. */
+  /**
+   * Contructor.
+   * 
+   * @param elevator             elevator being controlled
+   * @param target               target position
+   * @param waitForTargetReached indicates if the command should wait to signal
+   *                             "finished" until the elevator reaches the target
+   *                             position
+   */
   public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target,
       boolean waitForTargetReached) {
     m_elevator = elevator;
@@ -30,7 +52,6 @@ public class MoveElevatorToPosition extends Command {
     addRequirements(elevator);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_elevator.setTargetPosition(m_target);

@@ -11,31 +11,39 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
  * Sample command to wave the arm continuously between two positions.
  */
 public class ArmWaveCommand extends Command {
+  /** Arm being controlled. */
   private final ISingleJointArm arm;
+  /** Used to control cycling between positions. */
   private int counter;
+
   /**
    * How fast the command should spend on a full transition from one extreme to
    * the other and back.
    */
   private final int CYCLE_TIME_IN_SECONDS = 4;
+
+  /** Full cycle time in iterations (i.e., calls to "execute") at 50Hz. */
   private final int CYCLE_TIME_IN_ITERATIONS = (CYCLE_TIME_IN_SECONDS * 50);
 
-  /** Creates a new ArmWaveCommand. */
+  /**
+   * Creates a new ArmWaveCommand.
+   * 
+   * @param arm the arm being controlled
+   */
   public ArmWaveCommand(ISingleJointArm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
     addRequirements(arm.asSubsystem());
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     counter = 0;
   }
 
+  /** Iff true, report changes in arm's target position (for debugging). */
   static final boolean NOISY = false;
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (counter % CYCLE_TIME_IN_ITERATIONS == CYCLE_TIME_IN_ITERATIONS / 2) {

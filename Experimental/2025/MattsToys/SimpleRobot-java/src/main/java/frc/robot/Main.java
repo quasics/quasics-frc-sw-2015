@@ -6,10 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
+/** Auto-generated main class. */
 public final class Main {
+  /** Constructor. */
   private Main() {
   }
 
+  /**
+   * Main function.
+   * 
+   * @param args command-line arguments (ignored)
+   */
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
   }

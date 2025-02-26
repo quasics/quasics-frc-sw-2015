@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.interfaces.ILighting;;
 
+/**
+ * Provides a "flowing rainbow" effect on the LED strip.
+ */
 public class RainbowLighting extends Command {
   /** The subsystem we'll work with to set the lights. */
   final ILighting subsystem;
@@ -19,10 +22,9 @@ public class RainbowLighting extends Command {
 
   /**
    * Used to store an "offset" used to translate a physical LED's position to an
-   * effective position
-   * around the range of hues. This is reset in initialize(), and then updated
-   * every time that
-   * execute() is called, in order to advance the rainbow a step.
+   * effective position around the range of hues. This is reset in initialize(),
+   * and then updated every time that execute() is called, in order to advance the
+   * rainbow a step.
    */
   int offset = 0;
 
@@ -36,9 +38,18 @@ public class RainbowLighting extends Command {
   /** Used to control delay in advancing colors. */
   final Timer timer = new Timer();
 
+  /**
+   * The functor to be used in controlling the colors across the strip.
+   */
   private final ILighting.ColorSupplier colorFunction;
 
-  /** Creates a new RainbowLightingCommand. */
+  /**
+   * Creates a new RainbowLightingCommand.
+   * 
+   * @param subsystem the lighting subsystem to be controlled
+   * 
+   * @see #RainbowLighting(ILighting, double)
+   */
   public RainbowLighting(ILighting subsystem) {
     this(subsystem, 0, 0);
   }
@@ -49,8 +60,10 @@ public class RainbowLighting extends Command {
    * @param subsystem              the lighting subsystem being controlled by the
    *                               command
    * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain
-   *                               a given color
-   *                               before "advancing" to the next stage
+   *                               a given color before "advancing" to the next
+   *                               stage
+   * 
+   * @see #RainbowLighting(ILighting, double, int)
    */
   public RainbowLighting(ILighting subsystem, double secondsBeforeAdvancing) {
     this(subsystem, secondsBeforeAdvancing, 0);
@@ -62,9 +75,8 @@ public class RainbowLighting extends Command {
    * @param subsystem              the lighting subsystem being controlled by the
    *                               command
    * @param secondsBeforeAdvancing how long (in seconds) that the LEDs will remain
-   *                               a given color
-   *                               before "advancing" to the next stage.
-   *                               (Normalized to a minimum of 0.)
+   *                               a given color before "advancing" to the next
+   *                               stage. (Normalized to a minimum of 0.)
    * @param extraGapBetweenColors  any extra "distance" along the color wheel to
    *                               be used between
    *                               adjacent LEDs. (Normalized to a minimum of 0.)
@@ -87,7 +99,6 @@ public class RainbowLighting extends Command {
     };
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // Reset the values used to control color advance.
@@ -99,7 +110,6 @@ public class RainbowLighting extends Command {
     subsystem.SetStripColor(colorFunction);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // See if any requested delay has elapsed before updating "offset" to advance

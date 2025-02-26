@@ -11,9 +11,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-/** Add your docs here. */
+/**
+ * Utility class to support generating commands used to gather data for SysId
+ * characterization of a robot.
+ */
 public class SysIdGenerator {
-  public enum Mode { Linear, Rotating }
+  public enum Mode {
+    Linear, Rotating
+  }
 
   final static boolean DUMP_SYSID_TO_CONSOLE = true;
 
@@ -23,14 +28,12 @@ public class SysIdGenerator {
         // voltage.
         new SysIdRoutine.Config(),
         new SysIdRoutine.Mechanism(
-            (Voltage volts)
-                -> {
+            (Voltage volts) -> {
               drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log
-            -> {
+            log -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();

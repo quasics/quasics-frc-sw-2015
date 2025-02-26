@@ -16,18 +16,22 @@ import com.ctre.phoenix6.hardware.Pigeon2;
  * in order to simplify reuse of that type in projects that don't use a Pigeon2.
  */
 public class Pigeon2Wrapper extends IGyro.FunctionalGyro {
+  /**
+   * Constructor.
+   * 
+   * @param pigeon2 the device to be wrapped in an IGyro interface
+   */
   public Pigeon2Wrapper(Pigeon2 pigeon2) {
-    super(()
-              -> { System.out.println(">>> Null-op: Pigeon2 auto-calibrates."); },
+    super(
+        () -> {
+          System.out.println(">>> Null-op: Pigeon2 auto-calibrates.");
+        },
         // Per docs, "getAngle()" (CW+) has been replaced by "getYaw()" (CCW+).
-        ()
-            -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
+        () -> Degrees.of(pigeon2.getYaw().getValueAsDouble()),
         // Per docs, "getRate()" (CW+) has been replaced by "getAngularVelocityZWorld()"
         // (CCW+).
-        ()
-            -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
-        ()
-            -> pigeon2.getRotation2d().unaryMinus(),
+        () -> DegreesPerSecond.of(pigeon2.getAngularVelocityZWorld().getValueAsDouble()),
+        () -> pigeon2.getRotation2d().unaryMinus(),
         () -> {
           // Note that this will reset *all* axes for the Pigeon2. May want
           // to wrap further in an OffsetGyro.
@@ -35,7 +39,12 @@ public class Pigeon2Wrapper extends IGyro.FunctionalGyro {
         });
   }
 
-  // Convenience function to produce a wrapped Pigeon2.
+  /**
+   * Convenience function to produce a wrapped Pigeon2.
+   * 
+   * @param g a Pigeon2 to be wrapped
+   * @return an IGyro object providing access to the underlying Pigeon2
+   */
   static IGyro wrapGyro(Pigeon2 g) {
     return new Pigeon2Wrapper(g);
   }

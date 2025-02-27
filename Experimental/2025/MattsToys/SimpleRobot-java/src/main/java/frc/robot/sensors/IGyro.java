@@ -48,20 +48,22 @@ import java.util.function.Supplier;
  * adapt any arbitrary gyro/ALU to a common type, along with some functions to
  * help encapsulate specific examples "real" gyro classes with the wrapper.
  *
- * @see https://refactoring.guru/design-patterns/decorator
- * @see https://en.wikipedia.org/wiki/Adapter_pattern
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
+ *      pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
+ *      pattern</a>
  */
 public interface IGyro {
   /** Tells the gyro to perform any calibration processing (e.g., on power-up). */
   void calibrate();
 
-  /** Returns the heading of the robot in degrees. */
+  /** @return the heading of the robot in degrees. */
   Angle getAngle();
 
-  /** Returns the rate of rotation of the gyro. */
+  /** @return the rate of rotation of the gyro. */
   AngularVelocity getRate();
 
-  /** Returns the heading of the robot as a Rotation2d. */
+  /** @return the heading of the robot as a Rotation2d. */
   Rotation2d getRotation2d();
 
   /**
@@ -71,12 +73,14 @@ public interface IGyro {
   void reset();
 
   /**
+   * Provides a "read-only" wrapper around an IGyro (preventing clients from
+   * resetting the underlying data).
+   *
    * @param g gyro to be put in a read-only wrapper
    * @return read-only version of an IGyro (disabling reset functionality
    */
   static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {
-    });
+    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
   }
 
   /**
@@ -84,15 +88,26 @@ public interface IGyro {
    * types within this interface.
    */
   public class FunctionalGyro implements IGyro {
+    /** Calibration function. */
     private final Runnable m_calibrator;
+    /** Supplies the angle data for the gyro. */
     private final Supplier<Angle> m_angleSupplier;
+    /** Supplies the rate-of-change data for the gyro. */
     private final Supplier<AngularVelocity> m_rateSupplier;
+    /** Supplies the rotation for the gyro. */
     private final Supplier<Rotation2d> m_rotationSupplier;
+    /** Reset function. */
     private final Runnable m_resetter;
 
     /**
      * Constructor, accepting an input function for each of the supported
      * operations.
+     *
+     * @param calibrator       calibration function
+     * @param angleSupplier    supplies the angle data for the gyro
+     * @param rateSupplier     supplies the rate-of-change data for the gyro
+     * @param rotationSupplier supplies the position data for the gyro
+     * @param resetter         reset function
      */
     FunctionalGyro(Runnable calibrator, Supplier<Angle> angleSupplier,
         Supplier<AngularVelocity> rateSupplier, Supplier<Rotation2d> rotationSupplier,
@@ -130,7 +145,12 @@ public interface IGyro {
     }
   }
 
-  /** Helper function to wrap the AnalogGyro type from WPILib. */
+  /**
+   * Helper function to wrap the AnalogGyro type from WPILib.
+   *
+   * @param g the AnalogGyro being wrapped
+   * @return an IGyro wrapping the supplied object
+   */
   static IGyro wrapGyro(AnalogGyro g) {
     final Runnable calibrator = () -> {
       g.calibrate();
@@ -145,7 +165,16 @@ public interface IGyro {
     return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
 
+  /**
+   * Implements a trivial (no-op) gyro, which always reports "we're not moving
+   * from 0".
+   */
   public static final class NullGyro implements IGyro {
+    /** Constructor. */
+    public NullGyro() {
+      System.out.println("INFO: Allocating a NullGyro");
+    }
+
     @Override
     public void calibrate() {
       // No-op

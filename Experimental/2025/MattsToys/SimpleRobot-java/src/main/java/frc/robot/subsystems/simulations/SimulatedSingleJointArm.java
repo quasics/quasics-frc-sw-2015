@@ -24,11 +24,15 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import edu.wpi.first.wpilibj.simulation.BatterySim;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+// import edu.wpi.first.wpilibj.simulation.BatterySim;
 
-// Based on example at
-// https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
+/**
+ * Subsystem simulating a single-joint arm.
+ *
+ * Note: this is based on example at
+ * https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
+ */
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
   final static Angle MIN_ANGLE = Degrees.of(80);
   final static Angle MAX_ANGLE = Degrees.of(190);

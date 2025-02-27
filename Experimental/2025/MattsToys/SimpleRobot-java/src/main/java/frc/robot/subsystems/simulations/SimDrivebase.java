@@ -27,14 +27,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.abstracts.AbstractDrivebase;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Defines a version of IDrivebase that runs under (full) simulation.
  */
 public class SimDrivebase extends AbstractDrivebase {
-  public static final int kEncoderResolutionTicksPerRevolution = -4096;
+  private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
@@ -61,7 +61,11 @@ public class SimDrivebase extends AbstractDrivebase {
   final DifferentialDrivetrainSim m_drivetrainSimulator;
   final Field2d m_fieldSim = new Field2d();
 
-  /** Creates a new SimDrivebase. */
+  /**
+   * Creates a new SimDrivebase.
+   *
+   * @param config configuration of the robot being targeted
+   */
   public SimDrivebase(RobotConfig config) {
     super(config);
 

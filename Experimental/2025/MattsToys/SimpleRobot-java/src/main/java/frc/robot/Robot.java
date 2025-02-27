@@ -8,11 +8,15 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+/** Auto-generated class. */
 public class Robot extends TimedRobot {
+  /** Autonomous command. */
   private Command m_autonomousCommand;
 
+  /** RobotContainer, where the heavy lifting is done. */
   private final RobotContainer m_robotContainer;
 
+  /** Constructor. */
   public Robot() {
     m_robotContainer = new RobotContainer();
   }

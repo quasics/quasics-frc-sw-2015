@@ -23,8 +23,8 @@ import frc.robot.sensors.TrivialEncoder;
 
 /**
  * Basic interface for drive base functionality.
- * 
- * I'm currently breaking this out into:
+ *
+ * Note that I'm currently breaking this out into:
  * <ul>
  * <li>An interface for the core functionality (and default implementations of
  * simple things)
@@ -38,7 +38,7 @@ public interface IDrivebase extends ISubsystem {
   final String SUBSYSTEM_NAME = "Drivebase";
 
   /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Key used to post odometry-based pose information to BulletinBoard. */
   final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
@@ -51,8 +51,6 @@ public interface IDrivebase extends ISubsystem {
 
   /** Zero velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
-
-  final boolean LOG_TO_SMARTDASHBOARD = true;
 
   /** Utility method: stops the robot. */
   default void stop() {
@@ -251,15 +249,30 @@ public interface IDrivebase extends ISubsystem {
    */
   void followTrajectory(DifferentialSample sample);
 
+  /**
+   * Resets the robot's pose (e.g., when starting a trajectory).
+   *
+   * @param pose new pose to use as a basis for odometry/pose estimation
+   */
   void resetPose(Pose2d pose);
 
+  /**
+   * Sets the wheel speeds (e.g., during trajectory following).
+   *
+   * Note: as suggested by the name, will use PID control for speed adjustments
+   *
+   * @param wheelSpeeds desired wheel speeds (based on trajectory planning)
+   */
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /** Trivial implementation of the IDrivebase interface. */
   public static class NullDrivebase implements IDrivebase {
+    /** No-op encoder. */
     static final TrivialEncoder NULL_ENCODER = new TrivialEncoder.NullEncoder();
+    /** No-op gyro. */
     static final IGyro NULL_GYRO = new IGyro.NullGyro();
 
+    /** Constructor. */
     public NullDrivebase() {
       System.out.println("INFO: Allocating null drivebase");
     }

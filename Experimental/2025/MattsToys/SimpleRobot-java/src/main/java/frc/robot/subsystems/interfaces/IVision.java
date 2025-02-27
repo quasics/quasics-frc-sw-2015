@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.interfaces;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
@@ -15,26 +14,22 @@ public interface IVision extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   static final String SUBSYSTEM_NAME = "Vision";
 
-  /** Key used to post estimated Pose to BulletinBoard. */
-  static final String VISION_POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+  /** Key used to post multi-camera List<EstimatedRobotPose> to BulletinBoard. */
+  static final String POSES_KEY = SUBSYSTEM_NAME + ".EstimatedPoses";
 
   /** Key used to post last estimated Pose timestamp to BulletinBoard. */
-  static final String VISION_TIMESTAMP_KEY = SUBSYSTEM_NAME + ".Timestamp";
+  static final String POSE_TIMESTAMP_KEY = SUBSYSTEM_NAME + ".Timestamp";
 
   /** Key used to post "was Pose estimate recently updated?" to BulletinBoard. */
-  static final double VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.01;
+  static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
-  /**
-   * Updates the reference pose (e.g., from the drivebase, for use in building
-   * visual estimates).
-   */
-  void updateReferencePose(Pose2d pose);
-
-  /**
-   * Updates the last pose (e.g., from the drivebase, for use in building visual
-   * estimates).
-   */
-  void updateLastPose(Pose2d pose);
+  ////////////////////////////////////////////////////////////////////////
+  //
+  // Single-camera functions.
+  //
+  // TODO: Consider removing these, or adding multi-camera functions.
+  //
+  ////////////////////////////////////////////////////////////////////////
 
   /** @return last estimated pose (if any), based on vision-tracking data */
   Optional<EstimatedRobotPose> getLastEstimatedPose();
@@ -45,20 +40,11 @@ public interface IVision extends ISubsystem {
   /** @return true iff the estimated pose was recently updated */
   boolean getEstimateRecentlyUpdated();
 
-  // Trivial implementation of IVision (e.g., if we don't have a camera).
+  /** Trivial implementation of IVision (e.g., if we don't have a camera). */
   public class NullVision implements IVision {
+    /** Constructor. */
     public NullVision() {
       System.out.println("INFO: allocating NullVision");
-    }
-
-    @Override
-    public void updateReferencePose(Pose2d pose) {
-      // No-op
-    }
-
-    @Override
-    public void updateLastPose(Pose2d pose) {
-      // No-op
     }
 
     @Override

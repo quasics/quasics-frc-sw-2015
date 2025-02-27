@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.abstracts;
 
 import static edu.wpi.first.units.Units.Meters;
 
@@ -27,19 +27,29 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * <li>Assuming that there were (good) hard stops on the elevator, monitoring
  * the velocity of the motor to detect when we run up against them</li>
  * </ul>
+ *
+ * TODO: Consider adjusting min/max safe height to reflect 2025 hardware.
  */
 public abstract class AbstractElevator extends SubsystemBase {
+  /** Subsystem name. */
   public static final String NAME = "Elevator";
+
+  /** Minimum safe height. */
   public static final Distance MAX_SAFE_HEIGHT = Meters.of(2.5);
+  /** Maximum safe height. */
   public static final Distance MIN_SAFE_HEIGHT = Meters.of(0.0);
 
   /** Supported target positions for the elevator. */
   public enum TargetPosition {
     /** No target set (manual control). */
     DontCare,
+    /** Target MIN_SAFE_HEIGHT. */
     Bottom,
+    /** Target MAX_SAFE_HEIGHT. */
     Top,
+    /** Target L1 height. */
     L1,
+    /** Target L2 height. */
     L2
   }
 
@@ -94,6 +104,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts extending the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MAX_SAFE_HEIGHT.
+   *
+   * @return true iff we started moving the elevator (i.e., not in safe mode, or
+   *         below MAX_SAFE_HEIGHT)
    */
   public boolean extend() {
     if (m_safetyOn && getHeight_impl().gte(MAX_SAFE_HEIGHT)) {
@@ -109,6 +122,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   /**
    * Starts retracting the elevator. Will not do anything if "safe mode" is
    * enabled, and elevator is already beyond MIN_SAFE_HEIGHT.
+   *
+   * @return true iff we started moving the elevator (i.e., not in safe mode, or
+   *         above MIN_SAFE_HEIGHT)
    */
   public boolean retract() {
     if (m_safetyOn && getHeight_impl().lte(MIN_SAFE_HEIGHT)) {
@@ -170,7 +186,7 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Resets the underlying encoder on the elevator. */
   protected abstract void resetEncoder_impl();
 
-  /** Returns the current elevator height (in meters). */
+  /** @return the current elevator height (in meters). */
   protected abstract Distance getHeight_impl();
 
   /** Stops the actual motor on the elevator. */
@@ -187,6 +203,7 @@ public abstract class AbstractElevator extends SubsystemBase {
    * well.... :-)
    */
   static public class NullElevator extends AbstractElevator {
+    /** Constructor. */
     public NullElevator() {
       System.out.println("INFO: Allocating NullElevator");
     }

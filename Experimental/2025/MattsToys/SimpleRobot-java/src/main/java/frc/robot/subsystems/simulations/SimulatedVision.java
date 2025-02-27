@@ -6,23 +6,24 @@ package frc.robot.subsystems.simulations;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.live.SingleCameraVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
 /**
  * A simulated version of the Vision subsystem, including wireframe rendering of
- * the camera data.
+ * the (single) camera's data.
  *
  * The "raw" image stream will be served at http://localhost:1181/, and the
  * "processed" stream at http://localhost:1182/.
  */
-public class SimulatedVision extends Vision {
+public class SimulatedVision extends SingleCameraVision {
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
    * rendering.
@@ -32,7 +33,11 @@ public class SimulatedVision extends Vision {
   /** The interface to control/inject simulated camera stuff. */
   private PhotonCameraSim m_cameraSim = null;
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   *
+   * @param config the configuration of the robot being targeted
+   */
   public SimulatedVision(RobotConfig config) {
     super(config);
 
@@ -69,8 +74,10 @@ public class SimulatedVision extends Vision {
    * Returns the simulated camera properties (used to control properties like FOV,
    * resolution, etc.).
    *
-   * @see
-   *      https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation
+   * @see <a
+   *      href=
+   *      "https://docs.photonvision.org/en/v2025.1.1/docs/simulation/simulation-java.html#camera-simulation">Camera
+   *      simulation in PhotonVision</a>
    */
   private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
@@ -95,23 +102,41 @@ public class SimulatedVision extends Vision {
     // Should be a no-op, but good practice to call the base class.
     super.simulationPeriodic();
 
-    Pose2d driveBasePoseMeters =
-        (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
-            .orElse(new Pose2d());
-
+    // Update the simulator to show where the drive base's (pure) odometry suggests
+    // that we are located.
+    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common
+        .getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class)
+        .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
-    // Update the simulator to reflect where the estimated pose suggests that we
-    // are located.
+    // Update the simulator to reflect where the (purely) vision-based pose estimate
+    // suggests that we are located.
     final var debugField = m_visionSim.getDebugField();
     m_lastEstimatedPose.ifPresentOrElse(
         // Do this with the data in m_lastEstimatedPose (if it has some)
-        est
-        -> { debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()); },
+        est -> {
+          debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
+        },
         // If we have nothing in m_lastEstimatedPose, do this
         () -> {
           if (m_estimateRecentlyUpdated)
             debugField.getObject("VisionEstimation").setPoses();
         });
+
+    // Update the simulator to reflect where the drivebase's (potentially composite)
+    // pose estimate suggests that we are located.
+    var driveBaseEstimatedPose = BulletinBoard.common
+        .getValue(IDrivebase.ESTIMATED_POSE_KEY, Pose2d.class);
+    driveBaseEstimatedPose.ifPresentOrElse(
+        // Do this with the estimated pose from drive base (if it has some)
+        est -> {
+          debugField.getObject("DriveEstimation").setPose((Pose2d) est);
+        },
+        // If we have no estimated pose from the drive base, do this
+        () -> {
+          if (m_estimateRecentlyUpdated)
+            debugField.getObject("DriveEstimation").setPoses();
+        });
+
   }
 }

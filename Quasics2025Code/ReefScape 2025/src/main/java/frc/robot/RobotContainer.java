@@ -4,9 +4,10 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -25,6 +26,7 @@ import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbers;
 import frc.robot.commands.MoveClimbersForTime;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.MoveElevatorToTargetPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunElevator;
@@ -33,7 +35,6 @@ import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.armPivot.AbstractArmPivot;
 import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
@@ -42,7 +43,11 @@ import frc.robot.subsystems.elevator.AbstractElevator;
 import frc.robot.subsystems.elevator.RealElevator;
 import frc.robot.subsystems.elevator.SimulationElevator;
 import frc.robot.utils.RobotSettings;
+import frc.robot.utils.SysIdGenerator;
+
 import java.util.function.Supplier;
+
+import choreo.auto.AutoFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -54,10 +59,10 @@ import java.util.function.Supplier;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
-  private final AbstractDrivebase m_drivebase;
+  private final AbstractDrivebase m_drivebase = setupDriveBase();
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
-  private final AbstractElevator m_elevator;
+  private final AbstractElevator m_elevator = setupElevator();
   private final Climbers m_climbers = new Climbers();
   private final Vision m_vision = new Vision();
 
@@ -77,6 +82,14 @@ public class RobotContainer {
   private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
+  private final AutoFactory m_autoFactory = new AutoFactory(
+      m_drivebase::getPose, // A function that returns the current robot pose
+      m_drivebase::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+      true, // flip path when on red side
+      m_drivebase // The drive subsystem
+  );
+
   Trigger switchDriveTrigger;
 
   SendableChooser<String> m_autonomousOperations = new SendableChooser<String>();
@@ -94,8 +107,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_drivebase = setupDriveBase();
-    m_elevator = setupElevator();
+
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -103,6 +115,7 @@ public class RobotContainer {
     addAutonomousStartingPositionsToSmartDashboard();
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
+
   }
 
   private AbstractElevator setupElevator() {
@@ -145,6 +158,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
 
+    SmartDashboard.putData("Reset odometry test",
+        new InstantCommand(
+            () -> m_drivebase.resetOdometry(new Pose2d(Meters.of(3), Meters.of(3), new Rotation2d(Degrees.of(180))))));
+
     SmartDashboard.putData(
         "Arm Pivot Up", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(-0.1)));
     SmartDashboard.putData(
@@ -181,14 +198,23 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator to DC",
         new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
 
+    SmartDashboard.putData("Test path", testTrajectory("testPath"));
+
     // SmartDashboard.putData("Drive 3m/s sim", new DriveForTime(m_drivebase,
     // Seconds.of(3), new
     // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
     // RadiansPerSecond.of(0))));
   }
 
+  private Command testTrajectory(String name) {
+    return Commands.sequence(
+        m_autoFactory.resetOdometry(name),
+        m_autoFactory.trajectoryCmd(name));
+  }
+
   private void addSysIdButtonsToSmartDashboard() {
     /*
+     * old stuff? idk
      * SmartDashboard.putData(
      * "Quasistatic Forward",
      * m_drivebase.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -202,6 +228,32 @@ public class RobotContainer {
      * "Dynamic Reverse",
      * m_drivebase.sysIdDynamic(SysIdRoutine.Direction.kReverse));
      */
+
+    SmartDashboard.putData("SysID: Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+    SmartDashboard.putData("SysID: Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+    SmartDashboard.putData("SysID: Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+    SmartDashboard.putData("SysID: Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+
+    // SysId commands for rotational actions (used to calculate kA-angular), for use
+    // in estimating the moment of inertia (MOI).
+    // See: https://choreo.autos/usage/estimating-moi/
+    SmartDashboard.putData("SysID(rot): Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData("SysID(rot): Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+    SmartDashboard.putData("SysID(rot): Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+    SmartDashboard.putData("SysID(rot): Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+
   }
 
   private void addOverallSelectorToSmartDashboard() {
@@ -209,6 +261,10 @@ public class RobotContainer {
         Constants.AutonomousSelectedOperation.DO_NOTHING);
     m_autonomousOperations.addOption(
         Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
+    m_autonomousOperations.addOption(
+        Constants.AutonomousSelectedOperation.GO_TO_REEF, Constants.AutonomousSelectedOperation.GO_TO_REEF);
+    m_autonomousOperations.addOption(
+        Constants.AutonomousSelectedOperation.SCORE_ALGAE, Constants.AutonomousSelectedOperation.SCORE_ALGAE);
 
     SmartDashboard.putData("Overall operation", m_autonomousOperations);
   }
@@ -362,12 +418,18 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     String autonomousOperation = m_autonomousOperations.getSelected();
-    String positionOption = m_positionOptions.getSelected();
+    // String positionOption = m_positionOptions.getSelected();
+
+    var positionOpt = DriverStation.getLocation();
+    if (positionOpt.isEmpty()) {
+      System.out.println("WARNING: Can't get position!");
+      return Commands.none();
+    }
 
     DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is
                                                                                                        // blue
     final boolean isBlue = alliance == DriverStation.Alliance.Blue;
 
-    return Autos.getAutonomousCommand(m_drivebase, autonomousOperation, positionOption, isBlue);
+    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, autonomousOperation, positionOpt.getAsInt(), isBlue);
   }
 }

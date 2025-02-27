@@ -63,7 +63,7 @@ public class DriveForDistance extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_stopAtPosition = m_drivebase.getLeftDistance().plus(m_distance);
+    m_stopAtPosition = m_drivebase.getLeftPosition().plus(m_distance);
     m_drivebase.setSpeeds(m_percentSpeed);
   }
 
@@ -84,10 +84,10 @@ public class DriveForDistance extends Command {
   public boolean isFinished() {
     if (m_distance.baseUnitMagnitude() >= 0) {
       // Desired distance was positive, so we're moving forward
-      return m_drivebase.getLeftDistance().gte(m_stopAtPosition);
+      return m_drivebase.getLeftPosition().gte(m_stopAtPosition);
     } else {
       // Desired distance was negative, so we're moving backward
-      return m_drivebase.getLeftDistance().lte(m_stopAtPosition);
+      return m_drivebase.getLeftPosition().lte(m_stopAtPosition);
     }
   }
 }

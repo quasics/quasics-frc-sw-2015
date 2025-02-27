@@ -101,6 +101,9 @@ public final class Constants {
   public static class AutonomousSelectedOperation {
     public static final String DO_NOTHING = "Do nothing";
     public static final String GTFO = "GTFO";
+    public static final String GO_TO_REEF = "Go to reef";
+    public static final String SCORE_ALGAE = "Score algae";
+
   } // public static class AutonomousSelectedOperation
 
   public static class OperatorConstants {

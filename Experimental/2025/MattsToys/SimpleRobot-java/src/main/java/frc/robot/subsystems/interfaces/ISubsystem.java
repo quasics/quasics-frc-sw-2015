@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * interfaces.
  */
 public interface ISubsystem {
-  /** Convert the object to a subsystem (for listing in requirements). */
+  /** @return the object cast to a subsystem (for listing in requirements). */
   default Subsystem asSubsystem() {
     return (Subsystem) this;
   }

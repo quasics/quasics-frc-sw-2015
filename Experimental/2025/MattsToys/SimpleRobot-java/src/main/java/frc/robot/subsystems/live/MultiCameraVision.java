@@ -114,7 +114,9 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
-  private static Optional<EstimateResult> updateEstimateForCamera(CameraData cameraData, Pose2d drivePose) {
+  private static Optional<EstimatedRobotPose> updateEstimateForCamera(
+      CameraData cameraData,
+      Pose2d drivePose) {
     final var estimator = cameraData.estimator();
 
     // Update the vision pose estimator with the latest robot pose from the drive
@@ -133,17 +135,11 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     }
 
     Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
-    double lastEstimatedTimestamp = 0;
     for (PhotonPipelineResult photonPipelineResult : results) {
       lastEstimatedPose = cameraData.estimator().update(photonPipelineResult);
-      lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    if (lastEstimatedPose.isEmpty()) {
-      return Optional.empty();
-    } else {
-      return Optional.of(new EstimateResult(lastEstimatedPose.get(), lastEstimatedTimestamp));
-    }
+    return lastEstimatedPose;
   }
 
   @Override
@@ -155,7 +151,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Update camera-specific estimators (and gather their results).
-    List<EstimateResult> estimates = new LinkedList<EstimateResult>();
+    List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
     for (CameraData cameraData : m_cameraData) {
       var estimate = updateEstimateForCamera(cameraData, drivePose);
       if (!estimate.isEmpty()) {
@@ -164,9 +160,9 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     }
 
     if (!estimates.isEmpty()) {
-      BulletinBoard.common.updateValue(VISION_MULTI_POSE_KEY, estimates);
+      BulletinBoard.common.updateValue(POSES_KEY, estimates);
     } else {
-      BulletinBoard.common.clearValue(VISION_MULTI_POSE_KEY);
+      BulletinBoard.common.clearValue(POSES_KEY);
     }
   }
 

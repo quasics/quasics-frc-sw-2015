@@ -26,7 +26,12 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
@@ -192,25 +197,33 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
     if (estimator != null) {
       estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
+      updatePoseEstimatesWithVisionData(estimator);
+    }
+  }
 
-      if (USE_VISION_ESTIMATES) {
-        // If an estimated position has been posted by the vision subsystem, integrate
-        // it into our estimate. (Note that some sources suggest *not* doing this while
-        // the robot is in motion, since that's when you'll have the most significant
-        // error introduced into the images.)
-        //
-        // TODO: Update this to handle the case where we have multi-camera data.
-        Optional<Object> optionalPose = BulletinBoard.common.getValue(
-            IVision.VISION_SINGLE_POSE_KEY,
-            Pose2d.class);
-        optionalPose.ifPresent(poseObject -> {
-          BulletinBoard.common.getValue(
-              IVision.VISION_TIMESTAMP_KEY,
-              Double.class)
-              .ifPresent(
-                  timestampObject -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
-        });
-      }
+  @SuppressWarnings("unchecked")
+  private static void updatePoseEstimatesWithVisionData(DifferentialDrivePoseEstimator estimator) {
+    if (!USE_VISION_ESTIMATES) {
+      return;
+    }
+
+    // If an estimated position has been posted by the vision subsystem, integrate
+    // it into our estimate. (Note that some sources suggest *not* doing this while
+    // the robot is in motion, since that's when you'll have the most significant
+    // error introduced into the images.)
+    Optional<Object> optionalPoseList = BulletinBoard.common.getValue(
+        IVision.POSES_KEY,
+        List.class);
+    if (optionalPoseList.isEmpty()) {
+      return;
+    }
+    List<EstimatedRobotPose> poses = (List<EstimatedRobotPose>) optionalPoseList.get();
+
+    // OK. Update the estimator based on the pose(s) and timestamp.
+    for (EstimatedRobotPose estimate : poses) {
+      estimator.addVisionMeasurement(
+          estimate.estimatedPose.toPose2d(),
+          estimate.timestampSeconds);
     }
   }
 

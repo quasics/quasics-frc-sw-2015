@@ -16,6 +16,7 @@ import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -163,19 +164,23 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
 
     // Update "recently updated" and "last" values.
     m_estimateRecentlyUpdated = Math
-        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
-    if (m_estimateRecentlyUpdated) {
-      m_lastEstTimestamp = lastEstimatedTimestamp;
-      m_lastEstimatedPose = lastEstimatedPose;
-    }
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_lastEstTimestamp = lastEstimatedTimestamp;
+    m_lastEstimatedPose = lastEstimatedPose;
 
     // Update published data
+    publishDataToBulletinBoard();
+  }
+
+  private void publishDataToBulletinBoard() {
     if (m_estimateRecentlyUpdated) {
-      BulletinBoard.common.updateValue(VISION_TIMESTAMP_KEY, m_lastEstTimestamp);
-      BulletinBoard.common.updateValue(VISION_SINGLE_POSE_KEY, lastEstimatedPose);
+      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, m_lastEstTimestamp);
+      BulletinBoard.common.updateValue(
+          POSES_KEY,
+          Collections.singletonList(m_lastEstimatedPose.get()));
     } else {
-      BulletinBoard.common.clearValue(VISION_SINGLE_POSE_KEY);
-      BulletinBoard.common.clearValue(VISION_TIMESTAMP_KEY);
+      BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
+      BulletinBoard.common.clearValue(POSES_KEY);
     }
   }
 

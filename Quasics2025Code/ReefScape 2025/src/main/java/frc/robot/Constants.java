@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Radians;
+import edu.wpi.first.units.measure.Angle;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -107,6 +110,7 @@ public final class Constants {
   public static class DesiredEncoderValues {
     public static final double ARM_DOWN = 0; // TODO: needs testing
     public static final double ARM_UP = 0.265; // TODO: needs updated once the value can be tested
+    public static final Angle ARM_UP_IN_RADIANS = Radians.of(1.5708);
   }
 
   public static class ArmPIDConstants {

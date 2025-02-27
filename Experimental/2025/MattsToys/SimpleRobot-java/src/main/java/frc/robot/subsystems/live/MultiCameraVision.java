@@ -151,7 +151,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     super.periodic();
 
     // Where does the drive base think we are?
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class);
+    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Update camera-specific estimators (and gather their results).

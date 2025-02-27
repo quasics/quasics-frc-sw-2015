@@ -101,7 +101,7 @@ public class SimulatedVision extends SingleCameraVision {
     // Should be a no-op, but good practice to call the base class.
     super.simulationPeriodic();
 
-    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class)
+    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class)
         .orElse(new Pose2d());
 
     m_visionSim.update(driveBasePoseMeters);

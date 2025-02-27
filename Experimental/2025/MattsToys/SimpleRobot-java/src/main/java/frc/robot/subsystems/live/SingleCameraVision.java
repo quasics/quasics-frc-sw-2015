@@ -141,7 +141,7 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
 
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(pose -> {
+    BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class).ifPresentOrElse(pose -> {
       Pose2d pose2d = (Pose2d) pose;
       m_photonEstimator.setLastPose(pose2d);
       m_photonEstimator.setReferencePose(pose2d);

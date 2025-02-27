@@ -217,7 +217,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   /** Share the current pose with other subsystems (e.g., vision). */
   private void publishData() {
     final Pose2d currentPose = getPose();
-    BulletinBoard.common.updateValue(POSE_KEY, currentPose);
+    BulletinBoard.common.updateValue(ODOMETRY_KEY, currentPose);
     BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, getEstimatedPose());
 
     // Update published field simulation data. We're doing this here (in the

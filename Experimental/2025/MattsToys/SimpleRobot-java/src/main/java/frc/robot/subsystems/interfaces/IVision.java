@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.interfaces;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
@@ -15,8 +14,11 @@ public interface IVision extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   static final String SUBSYSTEM_NAME = "Vision";
 
-  /** Key used to post estimated Pose to BulletinBoard. */
+  /** Key used to post a single-camera estimated Pose to BulletinBoard. */
   static final String VISION_SINGLE_POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+
+  /** Key used to post multi-camera estimated Poses to BulletinBoard. */
+  static final String VISION_MULTI_POSE_KEY = SUBSYSTEM_NAME + ".Poses";
 
   /** Key used to post last estimated Pose timestamp to BulletinBoard. */
   static final String VISION_TIMESTAMP_KEY = SUBSYSTEM_NAME + ".Timestamp";
@@ -24,21 +26,18 @@ public interface IVision extends ISubsystem {
   /** Key used to post "was Pose estimate recently updated?" to BulletinBoard. */
   static final double VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.01;
 
-  /**
-   * Updates the reference pose (e.g., from the drivebase, for use in building
-   * visual estimates).
-   *
-   * @param pose the new reference pose
-   */
-  void updateReferencePose(Pose2d pose);
+  /** Estimate data reported in the multi-camera case. */
+  public record EstimateResult(EstimatedRobotPose pose, double timestamp) {
+  }
 
-  /**
-   * Updates the last pose (e.g., from the drivebase, for use in building visual
-   * estimates).
-   *
-   * @param pose the new "last pose" value
-   */
-  void updateLastPose(Pose2d pose);
+  ////////////////////////////////////////////////////////////////////////
+  //
+  // Single-camera functions.
+  //
+  // TODO: Consider removing these, or adding multi-camera functions.
+  // TODO: Consider rewriting these to use "EstimateResult".
+  //
+  ////////////////////////////////////////////////////////////////////////
 
   /** @return last estimated pose (if any), based on vision-tracking data */
   Optional<EstimatedRobotPose> getLastEstimatedPose();
@@ -54,16 +53,6 @@ public interface IVision extends ISubsystem {
     /** Constructor. */
     public NullVision() {
       System.out.println("INFO: allocating NullVision");
-    }
-
-    @Override
-    public void updateReferencePose(Pose2d pose) {
-      // No-op
-    }
-
-    @Override
-    public void updateLastPose(Pose2d pose) {
-      // No-op
     }
 
     @Override

@@ -22,7 +22,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
@@ -112,21 +114,18 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
-  record EstimateResult(EstimatedRobotPose pose, double timestamp) {
-  }
+  private static Optional<EstimateResult> updateEstimateForCamera(CameraData cameraData, Pose2d drivePose) {
+    final var estimator = cameraData.estimator();
 
-  private static Optional<EstimateResult> updateEstimateForCamera(CameraData cameraData) {
+    // Update the vision pose estimator with the latest robot pose from the drive
+    // base (if we have one).
+    if (drivePose != null) {
+      estimator.setLastPose(drivePose);
+      estimator.setReferencePose(drivePose);
+    }
 
-    // // Update the vision pose estimator with the latest robot pose from the drive
-    // // base.
-    // BulletinBoard.common.getValue(IDrivebase.POSE_KEY,
-    // Pose2d.class).ifPresentOrElse(pose -> {
-    // Pose2d pose2d = (Pose2d) pose;
-    // updateLastPose(pose2d);
-    // updateReferencePose(pose2d);
-    // }, () -> System.err.println("Warning: no robot drive pose available."));
-
-    // Update the pose estimator with the latest vision measurements.
+    // Update the pose estimator with the latest vision measurements from its
+    // camera.
     List<PhotonPipelineResult> results = cameraData.camera().getAllUnreadResults();
     if (results.isEmpty()) {
       // No results? Nothing to do.
@@ -151,30 +150,24 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
   public void periodic() {
     super.periodic();
 
+    // Where does the drive base think we are?
+    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class);
+    final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
+
+    // Update camera-specific estimators (and gather their results).
     List<EstimateResult> estimates = new LinkedList<EstimateResult>();
     for (CameraData cameraData : m_cameraData) {
-      var estimate = updateEstimateForCamera(cameraData);
+      var estimate = updateEstimateForCamera(cameraData, drivePose);
       if (!estimate.isEmpty()) {
         estimates.add(estimate.get());
       }
     }
 
-    // TODO: Add code to support updating the composite estimator, based on the
-    // computed per-camera estimates
-    for (EstimateResult estimateResult : estimates) {
+    if (!estimates.isEmpty()) {
+      BulletinBoard.common.updateValue(VISION_MULTI_POSE_KEY, estimates);
+    } else {
+      BulletinBoard.common.clearValue(VISION_MULTI_POSE_KEY);
     }
-  }
-
-  @Override
-  public void updateReferencePose(Pose2d pose) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateReferencePose'");
-  }
-
-  @Override
-  public void updateLastPose(Pose2d pose) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'updateLastPose'");
   }
 
   @Override

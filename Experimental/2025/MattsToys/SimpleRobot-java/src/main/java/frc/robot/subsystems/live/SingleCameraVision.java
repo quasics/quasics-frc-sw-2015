@@ -143,8 +143,8 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
     // base.
     BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(pose -> {
       Pose2d pose2d = (Pose2d) pose;
-      updateLastPose(pose2d);
-      updateReferencePose(pose2d);
+      m_photonEstimator.setLastPose(pose2d);
+      m_photonEstimator.setReferencePose(pose2d);
     }, () -> System.err.println("Warning: no robot drive pose available."));
 
     // Update the pose estimator with the latest vision measurements.
@@ -185,30 +185,6 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
     super.periodic();
 
     updateEstimatedGlobalPose();
-  }
-
-  /**
-   * Updates the pose that will be used as a basis for reference when the
-   * CrossCheckWithReferencePose mode is selected.
-   *
-   * @param pose the reference pose to set
-   */
-  public void updateReferencePose(Pose2d pose) {
-    if (m_photonEstimator != null) {
-      m_photonEstimator.setReferencePose(pose);
-    }
-  }
-
-  /**
-   * Updates the pose that will be used as a basis for reference when the
-   * AssumeMinimumMovement mode is selected.
-   *
-   * @param pose the reference pose to set
-   */
-  public void updateLastPose(Pose2d pose) {
-    if (m_photonEstimator != null) {
-      m_photonEstimator.setLastPose(pose);
-    }
   }
 
   @Override

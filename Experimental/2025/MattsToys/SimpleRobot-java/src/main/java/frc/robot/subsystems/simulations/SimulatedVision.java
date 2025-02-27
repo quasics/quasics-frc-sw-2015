@@ -18,7 +18,7 @@ import org.photonvision.simulation.VisionSystemSim;
 
 /**
  * A simulated version of the Vision subsystem, including wireframe rendering of
- * the camera data.
+ * the (single) camera's data.
  *
  * The "raw" image stream will be served at http://localhost:1181/, and the
  * "processed" stream at http://localhost:1182/.

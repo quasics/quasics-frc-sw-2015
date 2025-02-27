@@ -10,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.subsystems.interfaces.IDrivebase.NullDrivebase;
 import frc.robot.subsystems.simulations.SimulationPorts;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,8 +25,10 @@ public class RobotConfigs {
   public enum Robot {
     /** Simulation-only */
     Simulation,
-    /** Sally ("naked" drivebase used by the coding sub-team) */
-    Sally
+    /** "Naked" drivebase used by the coding sub-team */
+    Sally,
+    /** 2025 ("Reefscape") robot */
+    Amelia
   }
 
   /**
@@ -252,6 +255,7 @@ public class RobotConfigs {
    * @return the mapping of robots to configurations to be exposed to clients
    */
   static private Map<Robot, RobotConfig> createMap() {
+    final DriveConfig NO_DRIVE = null;
     final CameraConfig NO_CAMERA = null;
     final ElevatorConfig NO_ELEVATOR = null;
     final LightingConfig NO_LIGHTING = null;
@@ -301,6 +305,14 @@ public class RobotConfigs {
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
             NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
+
+    map.put(Robot.Amelia,
+        // TODO: Add subsystem configurations for Amelia
+        new RobotConfig(
+            NO_DRIVE,
+            NO_CAMERA,
+            NO_ELEVATOR,
+            NO_LIGHTING));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

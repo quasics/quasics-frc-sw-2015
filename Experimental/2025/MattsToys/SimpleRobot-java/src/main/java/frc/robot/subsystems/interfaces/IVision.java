@@ -15,6 +15,8 @@ public interface IVision extends ISubsystem {
   static final String SUBSYSTEM_NAME = "Vision";
 
   /** Key used to post a single-camera estimated Pose to BulletinBoard. */
+  // TODO: Replace this with just "pose key", and consoldate single/multi pose
+  // with a list of N.
   static final String VISION_SINGLE_POSE_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Key used to post multi-camera estimated Poses to BulletinBoard. */

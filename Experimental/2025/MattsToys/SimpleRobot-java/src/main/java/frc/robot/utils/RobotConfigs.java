@@ -222,6 +222,7 @@ public class RobotConfigs {
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    */
+  // TODO: Add multi-camera support.
   public static record RobotConfig(
       DriveConfig drive, CameraConfig camera, ElevatorConfig elevator, LightingConfig lighting) {
     /** @return true iff the configuration includes data for the drivebase */

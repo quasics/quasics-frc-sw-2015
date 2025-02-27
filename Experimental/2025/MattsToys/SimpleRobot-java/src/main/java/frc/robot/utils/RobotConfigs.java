@@ -24,8 +24,10 @@ public class RobotConfigs {
   public enum Robot {
     /** Simulation-only */
     Simulation,
-    /** Sally ("naked" drivebase used by the coding sub-team) */
-    Sally
+    /** "Naked" drivebase used by the coding sub-team */
+    Sally,
+    /** 2025 ("Reefscape") robot */
+    Amelia
   }
 
   /**
@@ -220,6 +222,7 @@ public class RobotConfigs {
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    */
+  // TODO: Add multi-camera support.
   public static record RobotConfig(
       DriveConfig drive, CameraConfig camera, ElevatorConfig elevator, LightingConfig lighting) {
     /** @return true iff the configuration includes data for the drivebase */
@@ -252,6 +255,8 @@ public class RobotConfigs {
    * @return the mapping of robots to configurations to be exposed to clients
    */
   static private Map<Robot, RobotConfig> createMap() {
+    @SuppressWarnings("unused")
+    final DriveConfig NO_DRIVE = null;
     final CameraConfig NO_CAMERA = null;
     final ElevatorConfig NO_ELEVATOR = null;
     final LightingConfig NO_LIGHTING = null;
@@ -301,6 +306,21 @@ public class RobotConfigs {
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
             NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
+
+    map.put(Robot.Amelia,
+        // TODO: Add subsystem configurations for Amelia
+        new RobotConfig(
+            // TODO: Update DriveConfig data to match Amelia's configuration.
+            new DriveConfig(Inches.of(3), // Wheel radius
+                Meters.of(0.5588) /* 22 in (from 2024) */,
+                8.45, // Gearing (from 2024)
+                new PIDConfig(0.29613), // (from 2024 robot)
+                new DriveFeedForwardConfig(Volts.of(0.18), 0.0, // Linear data (from 2024)
+                    Volts.of(0.18), 0.0) // Angular data (FAKE)
+            ),
+            NO_CAMERA,
+            NO_ELEVATOR,
+            NO_LIGHTING));
 
     //
     // Sanity checks to make sure that we have entries for all known robots.

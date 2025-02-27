@@ -38,7 +38,7 @@ public interface IDrivebase extends ISubsystem {
   final String SUBSYSTEM_NAME = "Drivebase";
 
   /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Key used to post odometry-based pose information to BulletinBoard. */
   final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
@@ -94,8 +94,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds =
-        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
+        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);

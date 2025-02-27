@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.abstracts;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -26,7 +26,12 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
@@ -38,6 +43,12 @@ import java.util.Optional;
 public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
   /** Controls if data should be logged to the dashboard. */
   final static boolean LOG_TO_DASHBOARD = true;
+
+  /**
+   * Controls if vision pose estimates should be included in the drive base's
+   * estimate.
+   */
+  final static boolean USE_VISION_ESTIMATES = true;
 
   /** Kinematics definition for this drive base. */
   final protected DifferentialDriveKinematics m_kinematics;
@@ -67,10 +78,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
     // PID and FF setup
-    m_leftPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
         driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
@@ -188,25 +197,40 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
     if (estimator != null) {
       estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
+      updatePoseEstimatesWithVisionData(estimator);
+    }
+  }
 
-      // If an estimated position has been posted by the vision subsystem, integrate
-      // it into our estimate. (Note that some sources suggest *not* doing this while
-      // the robot is in motion, since that's when you'll have the most significant
-      // error introduced into the images.)
-      Optional<Object> optionalPose =
-          BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
-      optionalPose.ifPresent(poseObject -> {
-        BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(timestampObject
-                -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
-      });
+  @SuppressWarnings("unchecked")
+  private static void updatePoseEstimatesWithVisionData(DifferentialDrivePoseEstimator estimator) {
+    if (!USE_VISION_ESTIMATES) {
+      return;
+    }
+
+    // If an estimated position has been posted by the vision subsystem, integrate
+    // it into our estimate. (Note that some sources suggest *not* doing this while
+    // the robot is in motion, since that's when you'll have the most significant
+    // error introduced into the images.)
+    Optional<Object> optionalPoseList = BulletinBoard.common.getValue(
+        IVision.POSES_KEY,
+        List.class);
+    if (optionalPoseList.isEmpty()) {
+      return;
+    }
+    List<EstimatedRobotPose> poses = (List<EstimatedRobotPose>) optionalPoseList.get();
+
+    // OK. Update the estimator based on the pose(s) and timestamp.
+    for (EstimatedRobotPose estimate : poses) {
+      estimator.addVisionMeasurement(
+          estimate.estimatedPose.toPose2d(),
+          estimate.timestampSeconds);
     }
   }
 
   /** Share the current pose with other subsystems (e.g., vision). */
   private void publishData() {
     final Pose2d currentPose = getPose();
-    BulletinBoard.common.updateValue(POSE_KEY, currentPose);
+    BulletinBoard.common.updateValue(ODOMETRY_KEY, currentPose);
     BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, getEstimatedPose());
 
     // Update published field simulation data. We're doing this here (in the

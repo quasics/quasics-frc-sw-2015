@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.live;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -63,7 +63,9 @@ public class Lighting extends SubsystemBase implements ILighting {
     // On start-up, turn every other pixel on (white).
     final var white = StockColor.White.toWpiColor();
     final var black = StockColor.Black.toWpiColor();
-    SetStripColor((int position) -> { return (position % 2 == 0) ? white : black; });
+    SetStripColor((int position) -> {
+      return (position % 2 == 0) ? white : black;
+    });
 
     // Start up the LED handling.
     m_led.start();

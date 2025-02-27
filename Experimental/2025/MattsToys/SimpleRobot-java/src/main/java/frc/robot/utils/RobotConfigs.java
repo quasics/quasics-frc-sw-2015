@@ -254,6 +254,7 @@ public class RobotConfigs {
    * @return the mapping of robots to configurations to be exposed to clients
    */
   static private Map<Robot, RobotConfig> createMap() {
+    @SuppressWarnings("unused")
     final DriveConfig NO_DRIVE = null;
     final CameraConfig NO_CAMERA = null;
     final ElevatorConfig NO_ELEVATOR = null;

@@ -15,6 +15,10 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -49,9 +53,6 @@ public class RealDrivebase extends AbstractDrivebase {
   private final TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
   private final TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
 
-  private final SparkClosedLoopController m_leftPID = m_leftLeader.getClosedLoopController();
-  private final SparkClosedLoopController m_rightPID = m_rightLeader.getClosedLoopController();
-
   /** Creates a new Drivebase. */
   public RealDrivebase(RobotSettings.Robot robot) {
     super(robot);
@@ -65,10 +66,6 @@ public class RealDrivebase extends AbstractDrivebase {
     m_leftLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
     m_rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing);
     m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
-
-    // TODO: add pid?
-    m_leftLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.18);
-    m_rightLeaderConfig.closedLoop.p(0).i(0).d(0).velocityFF(0.18);
 
     m_rightLeaderConfig.inverted(true);
 
@@ -99,8 +96,17 @@ public class RealDrivebase extends AbstractDrivebase {
 
   @Override
   protected void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds) {
-    m_leftPID.setReference(speeds.leftMetersPerSecond, ControlType.kVelocity);
-    m_rightPID.setReference(speeds.rightMetersPerSecond, ControlType.kVelocity);
+    setSpeeds_HAL(speeds.leftMetersPerSecond * 0.18, speeds.rightMetersPerSecond * 0.18);
+  }
+
+  @Override
+  public Voltage getLeftVoltage() {
+    return Volts.of(m_leftLeader.getAppliedOutput());
+  }
+
+  @Override
+  public Voltage getRightVoltage() {
+    return Volts.of(m_rightLeader.getAppliedOutput());
   }
 
   protected TrivialEncoder getLeftEncoder_HAL() {
@@ -113,15 +119,5 @@ public class RealDrivebase extends AbstractDrivebase {
 
   protected IGyro getGyro_HAL() {
     return m_offsetGyro;
-  }
-
-  @Override
-  public double getLeftDistanceMeters() {
-    return m_leftEncoder.getPosition();
-  }
-
-  @Override
-  public double getRightDistanceMeters() {
-    return m_rightEncoder.getPosition();
   }
 }

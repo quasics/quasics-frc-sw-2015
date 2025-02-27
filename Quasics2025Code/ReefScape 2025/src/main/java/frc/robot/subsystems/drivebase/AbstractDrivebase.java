@@ -4,19 +4,15 @@
 
 package frc.robot.subsystems.drivebase;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.Angle;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPLTVController;
+import edu.wpi.first.units.measure.Voltage;
 
 import choreo.trajectory.DifferentialSample;
+import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
 import edu.wpi.first.math.controller.LTVUnicycleController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,10 +37,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   // Max rotational speed is 1/2 rotations per second
   public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(8.42);
 
-  protected static final double NEO_FREE_SPEED = 5676;
-
-  private static final boolean ENABLE_VOLTAGE_APPLICATON = true;
-
   protected static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 
   private final DifferentialDriveKinematics m_kinematics;
@@ -53,46 +45,19 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final Distance m_driveBaseLengthWithBumpers;
   private final Distance m_driveBaseWidthWithBumpers;
 
-  RobotConfig config;
+  // TODO: add some config thing so these values can be easily changed across
+  // robots
+  final protected PIDController m_leftPidController = new PIDController(1.6018, 0.0, 0.0);
+  final protected PIDController m_rightPidController = new PIDController(1.6018, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
+      0.29782);
+
   private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
 
   /** Creates a new IDrivebase. */
   public AbstractDrivebase(RobotSettings.Robot robot) {
     this(robot.trackWidthMeters);
     super.setName(robot.name());
-
-    try {
-      config = RobotConfig.fromGUISettings();
-
-      // Configure AutoBuilder last
-      AutoBuilder.configure(this::getPose, // Robot pose supplier
-          this::resetOdometry, // Method to reset odometry (will be called if your auto has a
-                               // starting pose)
-          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          (speeds, feedforwards) -> setSpeeds(
-              speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
-                       // Also optionally outputs individual module feedforwards
-          new PPLTVController(0.02), // PPLTVController is the built in path following controller
-                                     // for differential drive trains
-          config, // The robot configuration
-          () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red
-            // alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Blue;
-            }
-            return true;
-          },
-          this // Reference to this subsystem to set requirements
-      );
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
   }
 
   protected AbstractDrivebase(Distance trackWidthMeters) {
@@ -105,7 +70,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void followTrajectory(DifferentialSample sample) {
-    System.out.println("test");
     // Get the current pose of the robot
     Pose2d pose = getPose();
 
@@ -119,8 +83,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         ff.vxMetersPerSecond,
         ff.omegaRadiansPerSecond);
 
+    // System.out.println("Commandded: " + speeds);
+    // System.out.println("Actual: " + getRobotRelativeSpeeds());
+
     // Apply the generated speeds
-    setSpeeds(speeds);
+    driveWithPid(speeds);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -142,6 +109,21 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
   }
 
+  public final void driveWithPid(ChassisSpeeds chassisSpeeds) {
+    DifferentialDriveWheelSpeeds speeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
+
+    var feedforward = m_feedforward.calculate(getLeftEncoder_HAL().getVelocity().in(MetersPerSecond),
+        speeds.leftMetersPerSecond,
+        getRightEncoder_HAL().getVelocity().in(MetersPerSecond), speeds.rightMetersPerSecond, 0.02);
+
+    double leftPidOutput = m_leftPidController.calculate(getLeftEncoder_HAL().getVelocity().in(MetersPerSecond),
+        speeds.leftMetersPerSecond);
+    double rightPidOutput = m_rightPidController.calculate(getRightEncoder_HAL().getVelocity().in(MetersPerSecond),
+        speeds.rightMetersPerSecond);
+
+    setMotorVoltages(feedforward.left + leftPidOutput, feedforward.right + rightPidOutput);
+  }
+
   public final void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     setSpeeds_HAL(speeds);
   }
@@ -151,11 +133,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void setMotorVoltages(double leftVoltage, double rightVoltage) {
-    // feeder command into the HAL (hardware access layer) for left and right
-    // voltages
-    if (ENABLE_VOLTAGE_APPLICATON) { // what the hell is ENABLE_VOLTAGE_APPLICATION??
-      this.setSpeeds_HAL(leftVoltage, rightVoltage);
-    }
+    this.setMotorVoltages_HAL(leftVoltage, rightVoltage);
+  }
+
+  public void setMotorVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+    this.setMotorVoltages(leftVoltage.in(Volts), rightVoltage.in(Volts));
   }
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
@@ -198,11 +180,20 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    getLeftEncoder_HAL().reset();
-    getRightEncoder_HAL().reset();
-    getGyro_HAL().reset();
-    m_odometry.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
-    m_poseEstimator.resetPosition(getGyro_HAL().getRotation2d(), 0, 0, pose);
+    /*
+     * getLeftEncoder_HAL().reset();
+     * getRightEncoder_HAL().reset();
+     * getGyro_HAL().reset();
+     * m_odometry.resetPosition(new Rotation2d(), 0, 0, pose);
+     * m_poseEstimator.resetPosition(new Rotation2d(), 0, 0, pose);
+     */
+    final Distance leftPosition = getLeftPosition();
+    final Distance rightPosition = getRightPosition();
+    final Rotation2d position = getGyro_HAL().getRotation2d();
+
+    getOdometry().resetPosition(position, leftPosition, rightPosition, pose);
+    m_poseEstimator.resetPosition(
+        position, leftPosition.in(Meters), rightPosition.in(Meters), pose);
   }
 
   @Override
@@ -229,23 +220,31 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected abstract TrivialEncoder getRightEncoder_HAL();
 
-  public abstract double getLeftDistanceMeters();
-
-  public abstract double getRightDistanceMeters();
-
   protected abstract IGyro getGyro_HAL();
 
   protected abstract void setMotorVoltages_HAL(double leftSpeeds, double rightSpeeds);
+
+  public abstract Voltage getLeftVoltage();
+
+  public abstract Voltage getRightVoltage();
 
   protected abstract void setSpeeds_HAL(double leftSpeeds, double rightSpeeds);
 
   protected abstract void setSpeeds_HAL(DifferentialDriveWheelSpeeds speeds);
 
-  public Distance getLeftDistance() {
-    return Meters.of(getLeftDistanceMeters());
+  public Distance getLeftPosition() {
+    return getLeftEncoder_HAL().getPosition();
   }
 
-  public Distance getRightDistance() {
-    return Meters.of(getRightDistanceMeters());
+  public Distance getRightPosition() {
+    return getRightEncoder_HAL().getPosition();
+  }
+
+  public LinearVelocity getLeftVelocity() {
+    return getLeftEncoder_HAL().getVelocity();
+  }
+
+  public LinearVelocity getRightVelocity() {
+    return getRightEncoder_HAL().getVelocity();
   }
 }

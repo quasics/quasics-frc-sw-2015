@@ -17,7 +17,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.Constants;
 import frc.robot.Constants.CanBusIds;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;

@@ -7,7 +7,6 @@ package frc.robot.subsystems.armPivot;
 import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.measure.Angle;
 
 public class ArmPivot extends AbstractArmPivot {
   /** Creates a new ArmPivot. */

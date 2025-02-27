@@ -7,7 +7,6 @@ package frc.robot.subsystems.drivebase;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -32,7 +31,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.SimulationPorts;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 import frc.robot.sensors.IGyro;
-import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 

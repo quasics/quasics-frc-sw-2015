@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AbstractElevator;
-import frc.robot.subsystems.AbstractElevator.Mode;
+import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.abstracts.AbstractElevator.Mode;
 
 /**
  * Simple command to raise the elevator to its highest position (manually/not

@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.abstracts.AbstractDrivebase;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
@@ -39,16 +39,12 @@ public class SimDrivebase extends AbstractDrivebase {
   // "Hardware" allocation
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
-  private final Encoder m_leftEncoder =
-      new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
-  private final Encoder m_rightEncoder =
-      new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
   private final IGyro m_wrappedGyro;
 
-  final private TrivialEncoder m_leftTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  final private TrivialEncoder m_rightTrivialEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  final private TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry;
@@ -61,8 +57,7 @@ public class SimDrivebase extends AbstractDrivebase {
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final AnalogGyroSim m_gyroSim;
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   final DifferentialDrivetrainSim m_drivetrainSimulator;
   final Field2d m_fieldSim = new Field2d();
 

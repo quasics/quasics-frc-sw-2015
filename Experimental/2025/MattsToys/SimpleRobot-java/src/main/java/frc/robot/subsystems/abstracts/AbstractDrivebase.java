@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.abstracts;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -67,10 +67,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
     // PID and FF setup
-    m_leftPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController =
-        new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
         driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
@@ -193,12 +191,11 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
       // it into our estimate. (Note that some sources suggest *not* doing this while
       // the robot is in motion, since that's when you'll have the most significant
       // error introduced into the images.)
-      Optional<Object> optionalPose =
-          BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
+      Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
       optionalPose.ifPresent(poseObject -> {
         BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(timestampObject
-                -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+            .ifPresent(
+                timestampObject -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
       });
     }
   }

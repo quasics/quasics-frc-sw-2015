@@ -16,7 +16,7 @@ public interface IVision extends ISubsystem {
   static final String SUBSYSTEM_NAME = "Vision";
 
   /** Key used to post estimated Pose to BulletinBoard. */
-  static final String VISION_POSE_KEY = SUBSYSTEM_NAME + ".Pose";
+  static final String VISION_SINGLE_POSE_KEY = SUBSYSTEM_NAME + ".Pose";
 
   /** Key used to post last estimated Pose timestamp to BulletinBoard. */
   static final String VISION_TIMESTAMP_KEY = SUBSYSTEM_NAME + ".Timestamp";

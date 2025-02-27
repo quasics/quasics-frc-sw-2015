@@ -1,10 +1,10 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.sensors;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
@@ -13,23 +13,33 @@ import edu.wpi.first.units.measure.AngularVelocity;
 /**
  * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
  * the original gyro's data.
- *
+ * 
  * I foresee this as being useful under at least two different circumstances:
  * <ol>
  * <li>
  * When we're wrapping a multi-axis gyro/ALU inside of the single-axis "IGyro"
- * interface, and want to be able to support resetting data for that axis under
- * some circumstances, without impacting the others.
+ * interface and want to be able to support resetting data for that specific
+ * axis under some circumstances, without changing the others.
+ * <p/>
+ * For example, in the 2023 game ("Charged up"), we needed to track both the
+ * robot's heading (left/right rotation, or "yaw") for navigating around the
+ * field, but also needed to track the "pitch" of the robot up/down in order
+ * to be able to balance on the the "charging station" (think of a big see-saw),
+ * and didn't want to reset one of those as a side effect of resetting the
+ * other.
  * </li>
  * <li>
  * When we're performing some temporally-scoped set of operations (e.g., while a
  * command is running) and want to have an easy reference point (i.e., 0)
- * without affecting the overall use of a gyro/ALU. For example, the gyro might
- * be used on a continuous basis to maintain data for odometry/pose estimation,
- * and thus resetting the actual gyro would "break" that processing. However, we
- * might want to simplify the handling of a command like "turn N degrees" by
- * allowing the code to use 0 as a reference point (and this class would be able
- * to support that).
+ * without affecting the overall use of a gyro/ALU.
+ * <p/>
+ * For example, the "real" gyro might be used on a continuous basis to maintain
+ * data for odometry/pose estimation, and thus resetting the actual gyro would
+ * "break" that processing. However, we might want to simplify the handling of a
+ * command like "turn N degrees" by allowing the code to use 0 as a reference
+ * point; wrapping an object of this class around the "real" gyro would be able
+ * to support that, since resetting *this* gyro would only change *its* idea of
+ * where 0 was, and wouldn't affect the "real" gyro's idea of 0.
  * </li>
  * </ol>
  */

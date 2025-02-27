@@ -161,11 +161,21 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
+    // Update "recently updated" and "last" values.
     m_estimateRecentlyUpdated = Math
         .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;
+    }
+
+    // Update published data
+    if (m_estimateRecentlyUpdated) {
+      BulletinBoard.common.updateValue(VISION_TIMESTAMP_KEY, m_lastEstTimestamp);
+      BulletinBoard.common.updateValue(VISION_SINGLE_POSE_KEY, lastEstimatedPose);
+    } else {
+      BulletinBoard.common.clearValue(VISION_SINGLE_POSE_KEY);
+      BulletinBoard.common.clearValue(VISION_TIMESTAMP_KEY);
     }
   }
 

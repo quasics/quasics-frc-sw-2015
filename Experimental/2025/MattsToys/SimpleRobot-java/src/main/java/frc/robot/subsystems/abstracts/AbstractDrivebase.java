@@ -39,6 +39,12 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   /** Controls if data should be logged to the dashboard. */
   final static boolean LOG_TO_DASHBOARD = true;
 
+  /**
+   * Controls if vision pose estimates should be included in the drive base's
+   * estimate.
+   */
+  final static boolean USE_VISION_ESTIMATES = true;
+
   /** Kinematics definition for this drive base. */
   final protected DifferentialDriveKinematics m_kinematics;
 
@@ -187,16 +193,22 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     if (estimator != null) {
       estimator.update(rotation, leftDistanceMeters, rightDistanceMeters);
 
-      // If an estimated position has been posted by the vision subsystem, integrate
-      // it into our estimate. (Note that some sources suggest *not* doing this while
-      // the robot is in motion, since that's when you'll have the most significant
-      // error introduced into the images.)
-      Optional<Object> optionalPose = BulletinBoard.common.getValue(IVision.VISION_POSE_KEY, Pose2d.class);
-      optionalPose.ifPresent(poseObject -> {
-        BulletinBoard.common.getValue(IVision.VISION_TIMESTAMP_KEY, Double.class)
-            .ifPresent(
-                timestampObject -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
-      });
+      if (USE_VISION_ESTIMATES) {
+        // If an estimated position has been posted by the vision subsystem, integrate
+        // it into our estimate. (Note that some sources suggest *not* doing this while
+        // the robot is in motion, since that's when you'll have the most significant
+        // error introduced into the images.)
+        Optional<Object> optionalPose = BulletinBoard.common.getValue(
+            IVision.VISION_SINGLE_POSE_KEY,
+            Pose2d.class);
+        optionalPose.ifPresent(poseObject -> {
+          BulletinBoard.common.getValue(
+              IVision.VISION_TIMESTAMP_KEY,
+              Double.class)
+              .ifPresent(
+                  timestampObject -> estimator.addVisionMeasurement((Pose2d) poseObject, (Double) timestampObject));
+        });
+      }
     }
   }
 

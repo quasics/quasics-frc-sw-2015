@@ -23,7 +23,7 @@ import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.subsystems.AbstractElevator;
 import frc.robot.subsystems.Lighting;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.SingleCameraVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
@@ -371,7 +371,7 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      return new Vision(config);
+      return new SingleCameraVision(config);
     } else {
       return new SimulatedVision(config);
     }

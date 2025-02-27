@@ -25,9 +25,11 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
- * Vision processing implementation, based on Photonvision.
+ * Vision processing implementation for a single camera, based on Photonvision.
+ * 
+ * TODO: Add support for multiple simulated cameras.
  */
-public class Vision extends SubsystemBase implements IVision {
+public class SingleCameraVision extends SubsystemBase implements IVision {
   /** Connection to our (single) camera. */
   protected final PhotonCamera m_camera;
 
@@ -60,19 +62,19 @@ public class Vision extends SubsystemBase implements IVision {
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-      ;
+  ;
 
   /**
    * Constructs a Vision subsystem, based on a specified robot configuration.
    *
    * @param config robot configuration
    */
-  public Vision(RobotConfig config) {
+  public SingleCameraVision(RobotConfig config) {
     this(config.camera().name(),
         new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-                            config.camera().pos().z()),
+            config.camera().pos().z()),
             new Rotation3d(config.camera().orientation().roll(),
                 config.camera().orientation().pitch(), config.camera().orientation().yaw())));
   }
@@ -89,7 +91,7 @@ public class Vision extends SubsystemBase implements IVision {
    * @see
    *      https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
    */
-  private Vision(String cameraName, Transform3d robotToCameraTransform) {
+  private SingleCameraVision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
@@ -159,8 +161,8 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
-        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    m_estimateRecentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
     if (m_estimateRecentlyUpdated) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;

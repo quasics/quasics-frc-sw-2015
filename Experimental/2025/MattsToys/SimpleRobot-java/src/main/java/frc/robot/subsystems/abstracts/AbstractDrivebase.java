@@ -198,6 +198,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
         // it into our estimate. (Note that some sources suggest *not* doing this while
         // the robot is in motion, since that's when you'll have the most significant
         // error introduced into the images.)
+        //
+        // TODO: Update this to handle the case where we have multi-camera data.
         Optional<Object> optionalPose = BulletinBoard.common.getValue(
             IVision.VISION_SINGLE_POSE_KEY,
             Pose2d.class);

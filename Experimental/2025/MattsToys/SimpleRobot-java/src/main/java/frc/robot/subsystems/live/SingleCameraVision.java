@@ -119,7 +119,7 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
     //
     // Set up the vision pose estimator
     m_photonEstimator = new PhotonPoseEstimator(
-        m_tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCamera);
+        m_tagLayout, m_poseStrategy, m_robotToCamera);
 
     // Configure what to do in a multi-tag environment (like Crescendo) when only
     // one tag can be seen.

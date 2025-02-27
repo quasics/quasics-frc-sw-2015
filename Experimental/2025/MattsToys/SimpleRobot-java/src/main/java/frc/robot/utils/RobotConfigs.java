@@ -309,7 +309,14 @@ public class RobotConfigs {
     map.put(Robot.Amelia,
         // TODO: Add subsystem configurations for Amelia
         new RobotConfig(
-            NO_DRIVE,
+            // TODO: Update DriveConfig data to match Amelia's configuration.
+            new DriveConfig(Inches.of(3), // Wheel radius
+                Meters.of(0.5588) /* 22 in (from 2024) */,
+                8.45, // Gearing (from 2024)
+                new PIDConfig(0.29613), // (from 2024 robot)
+                new DriveFeedForwardConfig(Volts.of(0.18), 0.0, // Linear data (from 2024)
+                    Volts.of(0.18), 0.0) // Angular data (FAKE)
+            ),
             NO_CAMERA,
             NO_ELEVATOR,
             NO_LIGHTING));

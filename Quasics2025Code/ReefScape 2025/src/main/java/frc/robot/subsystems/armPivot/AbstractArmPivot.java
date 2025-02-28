@@ -27,7 +27,7 @@ public abstract class AbstractArmPivot extends SubsystemBase {
 
   protected final ArmFeedforward m_feedForward;
 
-  protected Angle m_angleSetpoint = Degrees.of(0);
+  protected Angle m_angleSetpoint = null;
 
   // TODO: Validate this tolerance.
   protected final Angle ANGLE_TOLERANCE_RADIANS = Degrees.of(2); // within N degrees is fine
@@ -69,6 +69,7 @@ public abstract class AbstractArmPivot extends SubsystemBase {
   }
 
   public void setArmPivotSpeed(double percentSpeed) {
+    m_angleSetpoint = null;
     m_pivot.set(percentSpeed);
   }
 

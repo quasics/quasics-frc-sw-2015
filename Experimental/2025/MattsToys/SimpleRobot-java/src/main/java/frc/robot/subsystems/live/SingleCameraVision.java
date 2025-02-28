@@ -27,8 +27,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
  * Vision processing implementation for a single camera, based on Photonvision.
- * 
- * TODO: Add support for multiple simulated cameras.
  */
 public class SingleCameraVision extends SubsystemBase implements IVision {
   /** Connection to our (single) camera. */
@@ -44,12 +42,10 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
    */
   private final PhotonPoseEstimator m_photonEstimator;
 
-  /** Cached pose from last pose estimation update. */
-  protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
   /** Timestamp of the last pose estimation update. */
-  protected double m_lastEstTimestamp = 0;
-  /** Has the pose estimate been updated recently? */
-  protected boolean m_estimateRecentlyUpdated = false;
+  private double m_lastEstTimestamp = 0;
+
+  private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
 
   /**
    * The layout of the AprilTags on the field. This is used for the pose
@@ -163,21 +159,28 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
     }
 
     // Update "recently updated" and "last" values.
-    m_estimateRecentlyUpdated = Math
+    boolean recentlyUpdated = Math
         .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > TIMESTAMP_RECENCY_THRESHOLD_SECS;
-    m_lastEstTimestamp = lastEstimatedTimestamp;
-    m_lastEstimatedPose = lastEstimatedPose;
+    if (recentlyUpdated && lastEstimatedPose.isPresent()) {
+      m_lastEstTimestamp = lastEstimatedTimestamp;
+      m_lastEstimatedPose = lastEstimatedPose;
+    } else {
+      m_lastEstimatedPose = Optional.empty();
+    }
 
     // Update published data
-    publishDataToBulletinBoard();
+    publishDataToBulletinBoard(recentlyUpdated, lastEstimatedTimestamp, lastEstimatedPose);
   }
 
-  private void publishDataToBulletinBoard() {
-    if (m_estimateRecentlyUpdated) {
-      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, m_lastEstTimestamp);
+  private static void publishDataToBulletinBoard(
+      boolean recentlyUpdated,
+      double lastTimestamp,
+      Optional<EstimatedRobotPose> lastPose) {
+    if (recentlyUpdated && lastPose.isPresent()) {
+      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, lastTimestamp);
       BulletinBoard.common.updateValue(
           POSES_KEY,
-          Collections.singletonList(m_lastEstimatedPose.get()));
+          Collections.singletonList(lastPose.get()));
     } else {
       BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
       BulletinBoard.common.clearValue(POSES_KEY);
@@ -193,17 +196,11 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
   }
 
   @Override
-  public Optional<EstimatedRobotPose> getLastEstimatedPose() {
-    return m_lastEstimatedPose;
-  }
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    if (m_lastEstimatedPose.isEmpty()) {
+      return Collections.emptyList();
+    }
 
-  @Override
-  public double getLastEstTimestamp() {
-    return m_lastEstTimestamp;
-  }
-
-  @Override
-  public boolean getEstimateRecentlyUpdated() {
-    return m_estimateRecentlyUpdated;
+    return Collections.singletonList(m_lastEstimatedPose.get());
   }
 }

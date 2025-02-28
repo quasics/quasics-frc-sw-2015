@@ -219,6 +219,13 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     List<EstimatedRobotPose> poses = (List<EstimatedRobotPose>) optionalPoseList.get();
 
     // OK. Update the estimator based on the pose(s) and timestamp.
+    //
+    // TODO: Consider moving from this naive approach for integrating multiple
+    // vision-based estimates to something more sophisticated. For some further
+    // details, see
+    // https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/4
+    // and
+    // https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
     for (EstimatedRobotPose estimate : poses) {
       estimator.addVisionMeasurement(
           estimate.estimatedPose.toPose2d(),

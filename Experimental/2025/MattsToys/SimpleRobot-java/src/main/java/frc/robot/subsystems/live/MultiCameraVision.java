@@ -5,6 +5,7 @@
 package frc.robot.subsystems.live;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +29,10 @@ import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-/** Add your docs here. */
-// Based in part on the discussion at
-// https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/4
-// and code at
-// https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
+/**
+ * Vision processing implementation for a single/multiple cameras, using the
+ * Photonvision libraries/server.
+ */
 public class MultiCameraVision extends SubsystemBase implements IVision {
   /**
    * @param camera      connection to the camera
@@ -46,12 +46,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
 
-  /** Cached pose from last pose estimation update. */
-  protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
-  /** Timestamp of the last pose estimation update. */
-  protected double m_lastEstTimestamp = 0;
-  /** Has the pose estimate been updated recently? */
-  protected boolean m_estimateRecentlyUpdated = false;
+  private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
   private static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -159,26 +154,17 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
       }
     }
 
-    if (!estimates.isEmpty()) {
-      BulletinBoard.common.updateValue(POSES_KEY, estimates);
+    // Save it, and publish it.
+    m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
+    if (!m_latestEstimatedPoses.isEmpty()) {
+      BulletinBoard.common.updateValue(POSES_KEY, m_latestEstimatedPoses);
     } else {
       BulletinBoard.common.clearValue(POSES_KEY);
     }
   }
 
   @Override
-  public Optional<EstimatedRobotPose> getLastEstimatedPose() {
-    return m_lastEstimatedPose;
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    return m_latestEstimatedPoses;
   }
-
-  @Override
-  public double getLastEstTimestamp() {
-    return m_lastEstTimestamp;
-  }
-
-  @Override
-  public boolean getEstimateRecentlyUpdated() {
-    return m_estimateRecentlyUpdated;
-  }
-
 }

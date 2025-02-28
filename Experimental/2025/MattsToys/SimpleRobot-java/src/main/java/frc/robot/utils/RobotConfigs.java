@@ -329,12 +329,13 @@ public class RobotConfigs {
         new RobotConfig(
             // TODO: Update DriveConfig data to match Amelia's configuration.
             new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5588) /* 22 in (from 2024 robot) */,
+                Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
                 8.45, // Gearing (from 2024)
-                new PIDConfig(0.29613), // (from 2024 robot)
-                new PIDConfig(0.29613), // (from 2024 robot)
-                new DriveFeedForwardConfig(Volts.of(0.18), 0.0, // Linear data (from 2024)
-                    Volts.of(0.18), 0.0) // Angular data (FAKE)
+                new PIDConfig(0.046218), // Left (from 27Feb2025)
+                new PIDConfig(0.066374), // Right (from 27Feb2025)
+                new DriveFeedForwardConfig(
+                    Volts.of(0.1884), 0.033803, // Linear data (from 27Feb2025)
+                    Volts.of(0.20183), 0.02384) // Angular data (from 27Feb2025)
             ),
             NO_CAMERA,
             NO_ELEVATOR,

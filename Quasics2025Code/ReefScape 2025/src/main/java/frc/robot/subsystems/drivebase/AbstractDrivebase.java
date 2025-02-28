@@ -147,7 +147,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_driveBaseWidthWithBumpers;
   }
 
+  // get raw, unwrapped heading in degrees
   public Angle getHeading() {
+    return (getOdometry().getPoseMeters().getRotation().getMeasure());
+  }
+
+  // This one is constrained to (-180, 180]
+  public Angle getHeadingInDegreea() {
     return Degrees.of(getOdometry().getPoseMeters().getRotation().getDegrees());
   }
 

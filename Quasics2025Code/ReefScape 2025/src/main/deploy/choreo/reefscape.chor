@@ -1,7 +1,7 @@
 {
  "name":"reefscape",
  "version":1,
- "type":"Swerve",
+ "type":"Differential",
  "variables":{
   "expressions":{},
   "poses":{}
@@ -28,32 +28,32 @@
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"27.76 kg",
+   "val":27.76
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"3.789 kg m ^ 2",
+   "val":3.789
   },
   "gearing":{
-   "exp":"6.5",
-   "val":6.5
+   "exp":"8.45",
+   "val":8.45
   },
   "radius":{
-   "exp":"2 in",
-   "val":0.0508
+   "exp":"3 in",
+   "val":0.07619999999999999
   },
   "vmax":{
-   "exp":"6000 RPM",
-   "val":628.3185307179587
+   "exp":"4540 RPM",
+   "val":475.4276882432553
   },
   "tmax":{
-   "exp":"1.2 N * m",
-   "val":1.2
+   "exp":"2.5 N * m",
+   "val":2.5
   },
   "cof":{
-   "exp":"1.5",
-   "val":1.5
+   "exp":"0.975",
+   "val":0.975
   },
   "bumper":{
    "front":{
@@ -70,7 +70,7 @@
    }
   },
   "differentialTrackWidth":{
-   "exp":"22 in",
+   "exp":"0.5588 m",
    "val":0.5588
   }
  },

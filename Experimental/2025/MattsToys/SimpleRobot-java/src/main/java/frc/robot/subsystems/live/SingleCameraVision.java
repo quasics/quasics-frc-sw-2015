@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.live;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -16,6 +16,7 @@ import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -25,9 +26,9 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
- * Vision processing implementation, based on Photonvision.
+ * Vision processing implementation for a single camera, based on Photonvision.
  */
-public class Vision extends SubsystemBase implements IVision {
+public class SingleCameraVision extends SubsystemBase implements IVision {
   /** Connection to our (single) camera. */
   protected final PhotonCamera m_camera;
 
@@ -41,10 +42,10 @@ public class Vision extends SubsystemBase implements IVision {
    */
   private final PhotonPoseEstimator m_photonEstimator;
 
-  // Cached results of the last pose estimation update.
-  protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
-  protected double m_lastEstTimestamp = 0;
-  protected boolean m_estimateRecentlyUpdated = false;
+  /** Timestamp of the last pose estimation update. */
+  private double m_lastEstTimestamp = 0;
+
+  private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
 
   /**
    * The layout of the AprilTags on the field. This is used for the pose
@@ -53,25 +54,24 @@ public class Vision extends SubsystemBase implements IVision {
   protected final AprilTagFieldLayout m_tagLayout;
 
   private final PoseStrategy m_poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
-
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-      ;
+  ;
 
   /**
    * Constructs a Vision subsystem, based on a specified robot configuration.
    *
    * @param config robot configuration
    */
-  public Vision(RobotConfig config) {
+  public SingleCameraVision(RobotConfig config) {
     this(config.camera().name(),
         new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-                            config.camera().pos().z()),
+            config.camera().pos().z()),
             new Rotation3d(config.camera().orientation().roll(),
                 config.camera().orientation().pitch(), config.camera().orientation().yaw())));
   }
@@ -86,9 +86,9 @@ public class Vision extends SubsystemBase implements IVision {
    *                               the Robot Coordinate System.
    *
    * @see
-   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
+   *      https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system
    */
-  private Vision(String cameraName, Transform3d robotToCameraTransform) {
+  private SingleCameraVision(String cameraName, Transform3d robotToCameraTransform) {
     setName(SUBSYSTEM_NAME);
 
     // Set up the relative positioning of the camera.
@@ -116,7 +116,7 @@ public class Vision extends SubsystemBase implements IVision {
     //
     // Set up the vision pose estimator
     m_photonEstimator = new PhotonPoseEstimator(
-        m_tagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_robotToCamera);
+        m_tagLayout, m_poseStrategy, m_robotToCamera);
 
     // Configure what to do in a multi-tag environment (like Crescendo) when only
     // one tag can be seen.
@@ -138,10 +138,10 @@ public class Vision extends SubsystemBase implements IVision {
 
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    BulletinBoard.common.getValue(IDrivebase.POSE_KEY, Pose2d.class).ifPresentOrElse(pose -> {
+    BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class).ifPresentOrElse(pose -> {
       Pose2d pose2d = (Pose2d) pose;
-      updateLastPose(pose2d);
-      updateReferencePose(pose2d);
+      m_photonEstimator.setLastPose(pose2d);
+      m_photonEstimator.setReferencePose(pose2d);
     }, () -> System.err.println("Warning: no robot drive pose available."));
 
     // Update the pose estimator with the latest vision measurements.
@@ -158,11 +158,32 @@ public class Vision extends SubsystemBase implements IVision {
       lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
     }
 
-    m_estimateRecentlyUpdated = Math.abs(lastEstimatedTimestamp - m_lastEstTimestamp)
-        > VISION_TIMESTAMP_RECENCY_THRESHOLD_SECS;
-    if (m_estimateRecentlyUpdated) {
+    // Update "recently updated" and "last" values.
+    boolean recentlyUpdated = Math
+        .abs(lastEstimatedTimestamp - m_lastEstTimestamp) > TIMESTAMP_RECENCY_THRESHOLD_SECS;
+    if (recentlyUpdated && lastEstimatedPose.isPresent()) {
       m_lastEstTimestamp = lastEstimatedTimestamp;
       m_lastEstimatedPose = lastEstimatedPose;
+    } else {
+      m_lastEstimatedPose = Optional.empty();
+    }
+
+    // Update published data
+    publishDataToBulletinBoard(recentlyUpdated, lastEstimatedTimestamp, lastEstimatedPose);
+  }
+
+  private static void publishDataToBulletinBoard(
+      boolean recentlyUpdated,
+      double lastTimestamp,
+      Optional<EstimatedRobotPose> lastPose) {
+    if (recentlyUpdated && lastPose.isPresent()) {
+      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, lastTimestamp);
+      BulletinBoard.common.updateValue(
+          POSES_KEY,
+          Collections.singletonList(lastPose.get()));
+    } else {
+      BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
+      BulletinBoard.common.clearValue(POSES_KEY);
     }
   }
 
@@ -174,42 +195,12 @@ public class Vision extends SubsystemBase implements IVision {
     updateEstimatedGlobalPose();
   }
 
-  /**
-   * Updates the pose that will be used as a basis for reference when the
-   * CrossCheckWithReferencePose mode is selected.
-   *
-   * @param pose the reference pose to set
-   */
-  public void updateReferencePose(Pose2d pose) {
-    if (m_photonEstimator != null) {
-      m_photonEstimator.setReferencePose(pose);
+  @Override
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    if (m_lastEstimatedPose.isEmpty()) {
+      return Collections.emptyList();
     }
-  }
 
-  /**
-   * Updates the pose that will be used as a basis for reference when the
-   * AssumeMinimumMovement mode is selected.
-   *
-   * @param pose the reference pose to set
-   */
-  public void updateLastPose(Pose2d pose) {
-    if (m_photonEstimator != null) {
-      m_photonEstimator.setLastPose(pose);
-    }
-  }
-
-  @Override
-  public Optional<EstimatedRobotPose> getLastEstimatedPose() {
-    return m_lastEstimatedPose;
-  }
-
-  @Override
-  public double getLastEstTimestamp() {
-    return m_lastEstTimestamp;
-  }
-
-  @Override
-  public boolean getEstimateRecentlyUpdated() {
-    return m_estimateRecentlyUpdated;
+    return Collections.singletonList(m_lastEstimatedPose.get());
   }
 }

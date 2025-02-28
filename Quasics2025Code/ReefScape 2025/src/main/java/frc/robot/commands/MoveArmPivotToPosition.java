@@ -4,9 +4,7 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Radians;
-
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.armPivot.ArmPivot;
 
@@ -15,10 +13,10 @@ import frc.robot.subsystems.armPivot.ArmPivot;
  */
 public class MoveArmPivotToPosition extends Command {
   private final ArmPivot m_pivot;
-  private final double m_angle;
+  private final Angle m_angle;
 
   /** Creates a new MoveArmPivotToPosition. */
-  public MoveArmPivotToPosition(ArmPivot pivot, double angle) {
+  public MoveArmPivotToPosition(ArmPivot pivot, Angle angle) {
     m_pivot = pivot;
     m_angle = angle;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,14 +26,7 @@ public class MoveArmPivotToPosition extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    PIDController pidController = m_pivot.getPivotPIDController();
-    pidController.setSetpoint(m_angle);
-    m_pivot.driveArmToSetpoint(pidController.calculate(m_pivot.getPivotAngle().in(Radians)));
+    m_pivot.setAngleSetpoint(m_angle);
   }
 
   // Called once the command ends or is interrupted.
@@ -47,6 +38,6 @@ public class MoveArmPivotToPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_pivot.getPivotPIDController().atSetpoint();
+    return m_pivot.atSetpoint();
   }
 }

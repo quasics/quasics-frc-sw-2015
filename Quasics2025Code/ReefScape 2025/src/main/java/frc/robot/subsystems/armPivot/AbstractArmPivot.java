@@ -19,6 +19,7 @@ import frc.robot.Constants.ArmPIDConstants;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public abstract class AbstractArmPivot extends SubsystemBase {
+
   protected final SparkMax m_pivot;
   protected final PIDController m_armPIDController;
 

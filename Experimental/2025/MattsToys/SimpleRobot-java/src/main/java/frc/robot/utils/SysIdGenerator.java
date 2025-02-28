@@ -11,12 +11,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
-/** Add your docs here. */
+/**
+ * Utility class to support generating commands used to gather data for SysId
+ * characterization of a robot.
+ */
 public class SysIdGenerator {
-  public enum Mode { Linear, Rotating }
+  /** Profiling modes. */
+  public enum Mode {
+    /** Profiling linear movement. */
+    Linear,
+    /** Profiling rotational movement. */
+    Rotating
+  }
 
   final static boolean DUMP_SYSID_TO_CONSOLE = true;
 
+  /**
+   * Returns a SysIdRoutine generator for the specified drivebase/mode.
+   *
+   * @param drivebase drive base of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @return a configured SysIdRoutine generator
+   */
   public static SysIdRoutine getSysIdRoutine(final IDrivebase drivebase, final Mode mode) {
     return new SysIdRoutine(
         // Empty config defaults to 1 volt/second ramp rate and 7 volt step
@@ -67,6 +83,9 @@ public class SysIdGenerator {
   }
 
   /**
+   * @param drivebase drive base of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @param direction direction of movement being characterized
    * @return a Command for use in running quasistatic profiling in the
    *         specified direction.
    */
@@ -76,6 +95,9 @@ public class SysIdGenerator {
   }
 
   /**
+   * @param drivebase drive base of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @param direction direction of movement being characterized
    * @return a Command for use in running dynamic profiling in the
    *         specified direction.
    */

@@ -18,6 +18,11 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * of encoders, but that's the point; I'm just looking for a way to use all
  * kinds of an encoder as though there are a common/single kind of object.)
  *
+ * Note: this wrapper assumes tht the underlying encoders have been configured
+ * to return values using "meters" and "seconds" as base units (e.g., vs.
+ * "revolutions" and "minutes"). If this isn't supported for a given type, then
+ * additional work will be required to support it.
+ *
  * As context:
  * <ul>
  * <li>
@@ -50,20 +55,28 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * functions to help encapsulate specific examples "real" encoder classes with
  * the wrapper.
  *
- * @see https://refactoring.guru/design-patterns/decorator
- * @see https://en.wikipedia.org/wiki/Adapter_pattern
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
+ *      pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
+ *      pattern</a>
  */
 public interface TrivialEncoder {
-  /** Returns the distance recorded by the encoder (in meters). */
+  /** @return the distance recorded by the encoder (in meters). */
   Distance getPosition();
 
-  /** Returns the current speed reported by the encoder (in meters/sec). */
+  /** @return the current speed reported by the encoder (in meters/sec). */
   LinearVelocity getVelocity();
 
   /** Resets the encoder's distance. */
   void reset();
 
-  /** Creates a TrivialEncoder wrapper around a stock WPILib Encoder object. */
+  /**
+   * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
+   *
+   * @param encoder the WPILib encoder to be wrapped
+   * @return a TrivialEncoder that can be used to interact with the underlying
+   *         hardware
+   */
   public static TrivialEncoder forWpiLibEncoder(final Encoder encoder) {
     if (encoder == null) {
       throw new IllegalArgumentException("Null encoder");
@@ -87,7 +100,15 @@ public interface TrivialEncoder {
     };
   }
 
-  /** Creates a TrivialEncoder wrapper around a stock WPILib Encoder object. */
+  /**
+   * Creates a TrivialEncoder wrapper around a stock WPILib Encoder object.
+   *
+   * @param encoder    the WPILib encoder to be wrapped
+   * @param encoderSim the WPILib "EncoderSim" being used to simulate operations
+   *                   and "drive" the encoder
+   * @return a TrivialEncoder that can be used to interact with the underlying
+   *         hardware
+   */
   public static TrivialEncoder forWpiLibEncoder(
       final Encoder encoder, final EncoderSim encoderSim) {
     if (encoder == null) {
@@ -116,6 +137,7 @@ public interface TrivialEncoder {
     };
   }
 
+  /** A no-op implementation of the TrivialEncoder interface. */
   public static final class NullEncoder implements TrivialEncoder {
     @Override
     public Distance getPosition() {

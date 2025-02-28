@@ -278,6 +278,7 @@ public class RobotConfigs {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
         new RobotConfig(
+            // TODO: Updated with independent left/right PID values for Simulation
             new DriveConfig(Inches.of(3), // Wheel radius
                 Units.Meters.of(0.381 * 2), // Trackwidth
                 8.0, // Gearing
@@ -315,7 +316,9 @@ public class RobotConfigs {
             new DriveConfig(Inches.of(3), // Wheel radius
                 Meters.of(0.5588) /* 22 in (from 2024) */,
                 8.45, // Gearing (from 2024)
-                new PIDConfig(0.29613), // (from 2024)
+                // TODO: Updated with independent left/right PID values for Sally
+                new PIDConfig(0.29613), // Left PID (from 2024)
+                new PIDConfig(0.29613), // Right PID (from 2024)
                 new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
@@ -326,8 +329,9 @@ public class RobotConfigs {
         new RobotConfig(
             // TODO: Update DriveConfig data to match Amelia's configuration.
             new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5588) /* 22 in (from 2024) */,
+                Meters.of(0.5588) /* 22 in (from 2024 robot) */,
                 8.45, // Gearing (from 2024)
+                new PIDConfig(0.29613), // (from 2024 robot)
                 new PIDConfig(0.29613), // (from 2024 robot)
                 new DriveFeedForwardConfig(Volts.of(0.18), 0.0, // Linear data (from 2024)
                     Volts.of(0.18), 0.0) // Angular data (FAKE)

@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
@@ -67,6 +68,9 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
 
     m_rightLeaderConfig.inverted(true);
+
+    m_rightLeaderConfig.idleMode(IdleMode.kBrake);
+    m_leftLeaderConfig.idleMode(IdleMode.kBrake);
 
     m_leftLeader.configure(
         m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

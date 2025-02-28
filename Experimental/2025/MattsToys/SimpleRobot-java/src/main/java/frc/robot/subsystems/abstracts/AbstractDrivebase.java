@@ -77,10 +77,17 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
     // PID and FF setup
-    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController = new PIDController(
+        driveConfig.leftPid().kP(),
+        driveConfig.leftPid().kI(),
+        driveConfig.leftPid().kD());
+    m_rightPidController = new PIDController(
+        driveConfig.rightPid().kP(),
+        driveConfig.rightPid().kI(),
+        driveConfig.rightPid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().linear().kV().in(Volts),
+        driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
         driveConfig.feedForward().angular().kA());
   }

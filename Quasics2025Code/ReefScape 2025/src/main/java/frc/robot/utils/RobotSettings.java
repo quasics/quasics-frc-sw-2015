@@ -29,10 +29,11 @@ public interface RobotSettings {
    */
   public enum Robot {
     /**
-     * TODO: add simulator, Margaret, etc. robot values
+     * TODO: add Margaret, etc. robot values
      * TODO: characterization values, robot to camera, TBD other values
      */
     Simulator(MotorConfigModel.RearMotorsLeading, Meter.of(0.381 * 2), 1.0),
+    // "Bare" drivebase used by the s/w team
     Sally(
         // Motor config model
         MotorConfigModel.RearMotorsLeading,
@@ -40,7 +41,8 @@ public interface RobotSettings {
         Meters.of(0.5588) /* 22 in */,
         // gear ratio
         8.45),
-    NewRobot(MotorConfigModel.RearMotorsLeading, Meters.of(0.5628), /* 22 5/32 in */
+    // 2025 ("Reefscape") robot
+    Amelia(MotorConfigModel.RearMotorsLeading, Meters.of(0.5628), /* 22 5/32 in */
         // CODE_REVIEW: I'm guessing that our gear ratio on the robot is *not* 0:1....
         0);
 

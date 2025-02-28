@@ -145,7 +145,7 @@ public class RobotConfigs {
   /**
    * Configuration data for an elevator.
    *
-   * @param pid         PID configuration settings for the elevator's motors
+   * @param leftPid     PID configuration settings for the elevator's motors
    * @param feedForward feedforward data for the elevator
    */
   public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
@@ -197,12 +197,26 @@ public class RobotConfigs {
    *
    * @param wheelRadius radius of the drive base wheels
    * @param trackWidth  maximum width between drive base wheels
-   * @param pid         PID configuration for the drivebase
+   * @param leftPid     PID configuration for the drivebase's left motors
+   * @param rightPid    PID configuration for the drivebase's right motors
    * @param feedForward feedforward configuration for the drivebase
    */
   public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
       double gearing, // (gearing between motor and wheel axel (>=1))
-      PIDConfig pid, DriveFeedForwardConfig feedForward) {
+      PIDConfig leftPid, PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
+    /**
+     * Convenience constructor, using a single set of PID values for both left and
+     * right.
+     * 
+     * @param wheelRadius radius of the drive base wheels
+     * @param trackWidth  maximum width between drive base wheels
+     * @param commonPid   shared PID configuration for the drivebase
+     * @param feedForward feedforward configuration for the drivebase
+     */
+    public DriveConfig(Distance wheelRadius, Distance trackWidth, double gearing, PIDConfig commonPid,
+        DriveFeedForwardConfig feedForward) {
+      this(wheelRadius, trackWidth, gearing, commonPid, commonPid, feedForward);
+    }
   }
 
   /**
@@ -264,6 +278,7 @@ public class RobotConfigs {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
         new RobotConfig(
+            // TODO: Updated with independent left/right PID values for Simulation
             new DriveConfig(Inches.of(3), // Wheel radius
                 Units.Meters.of(0.381 * 2), // Trackwidth
                 8.0, // Gearing
@@ -301,7 +316,9 @@ public class RobotConfigs {
             new DriveConfig(Inches.of(3), // Wheel radius
                 Meters.of(0.5588) /* 22 in (from 2024) */,
                 8.45, // Gearing (from 2024)
-                new PIDConfig(0.29613), // (from 2024)
+                // TODO: Updated with independent left/right PID values for Sally
+                new PIDConfig(0.29613), // Left PID (from 2024)
+                new PIDConfig(0.29613), // Right PID (from 2024)
                 new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                     Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
@@ -312,8 +329,9 @@ public class RobotConfigs {
         new RobotConfig(
             // TODO: Update DriveConfig data to match Amelia's configuration.
             new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5588) /* 22 in (from 2024) */,
+                Meters.of(0.5588) /* 22 in (from 2024 robot) */,
                 8.45, // Gearing (from 2024)
+                new PIDConfig(0.29613), // (from 2024 robot)
                 new PIDConfig(0.29613), // (from 2024 robot)
                 new DriveFeedForwardConfig(Volts.of(0.18), 0.0, // Linear data (from 2024)
                     Volts.of(0.18), 0.0) // Angular data (FAKE)

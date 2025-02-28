@@ -87,8 +87,6 @@ public interface IDrivebase extends ISubsystem {
    *
    * Note: operates directly; no PID, but clamped to MAX_SPEED.
    *
-   * TODO: Consider rewriting this to use the "drive(ChassisSpeeds)" method.
-   *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
    */

@@ -5,6 +5,7 @@
 package frc.robot.subsystems.live;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +29,10 @@ import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-/** Add your docs here. */
-// Based in part on the discussion at
-// https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/4
-// and code at
-// https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
+/**
+ * Vision processing implementation for a single/multiple cameras, using the
+ * Photonvision libraries/server.
+ */
 public class MultiCameraVision extends SubsystemBase implements IVision {
   /**
    * @param camera      connection to the camera
@@ -46,12 +46,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
 
-  /** Cached pose from last pose estimation update. */
-  protected Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
-  /** Timestamp of the last pose estimation update. */
-  protected double m_lastEstTimestamp = 0;
-  /** Has the pose estimate been updated recently? */
-  protected boolean m_estimateRecentlyUpdated = false;
+  private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
   private static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -97,7 +92,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
    * 
    * Note: must be invoked *after* the tag layout has been loaded.
    * 
-   * @param cameraConfig
+   * @param cameraConfig the configuratin for the camera
    */
   private void addCameraToSet(CameraConfig cameraConfig) {
     if (m_tagLayout == null) {
@@ -114,11 +109,19 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
+  /**
+   * Applies any updates for the estimator on a camera, optionally integrating the
+   * last/reference pose provided by the drivebase.
+   * 
+   * @param camera    camera supplying data to use in the estimate
+   * @param estimator pose estimator being updated
+   * @param drivePose last reported pose from the drivebase (or null)
+   * @return the updated estimate, based on the camera data
+   */
   private static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      CameraData cameraData,
-      Pose2d drivePose) {
-    final var estimator = cameraData.estimator();
-
+      final PhotonCamera camera,
+      final PhotonPoseEstimator estimator,
+      final Pose2d drivePose) {
     // Update the vision pose estimator with the latest robot pose from the drive
     // base (if we have one).
     if (drivePose != null) {
@@ -128,7 +131,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
 
     // Update the pose estimator with the latest vision measurements from its
     // camera.
-    List<PhotonPipelineResult> results = cameraData.camera().getAllUnreadResults();
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
     if (results.isEmpty()) {
       // No results? Nothing to do.
       return Optional.empty();
@@ -136,7 +139,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
 
     Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
     for (PhotonPipelineResult photonPipelineResult : results) {
-      lastEstimatedPose = cameraData.estimator().update(photonPipelineResult);
+      lastEstimatedPose = estimator.update(photonPipelineResult);
     }
 
     return lastEstimatedPose;
@@ -153,32 +156,25 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     // Update camera-specific estimators (and gather their results).
     List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
     for (CameraData cameraData : m_cameraData) {
-      var estimate = updateEstimateForCamera(cameraData, drivePose);
+      var estimate = updateEstimateForCamera(
+          cameraData.camera(), cameraData.estimator(),
+          drivePose);
       if (!estimate.isEmpty()) {
         estimates.add(estimate.get());
       }
     }
 
-    if (!estimates.isEmpty()) {
-      BulletinBoard.common.updateValue(POSES_KEY, estimates);
+    // Save it, and publish it.
+    m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
+    if (!m_latestEstimatedPoses.isEmpty()) {
+      BulletinBoard.common.updateValue(POSES_KEY, m_latestEstimatedPoses);
     } else {
       BulletinBoard.common.clearValue(POSES_KEY);
     }
   }
 
   @Override
-  public Optional<EstimatedRobotPose> getLastEstimatedPose() {
-    return m_lastEstimatedPose;
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    return m_latestEstimatedPoses;
   }
-
-  @Override
-  public double getLastEstTimestamp() {
-    return m_lastEstTimestamp;
-  }
-
-  @Override
-  public boolean getEstimateRecentlyUpdated() {
-    return m_estimateRecentlyUpdated;
-  }
-
 }

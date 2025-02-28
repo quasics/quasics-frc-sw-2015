@@ -12,16 +12,10 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 
 /**
  * Simple command to turn the robot by a specified number of degrees.
- *
- * Note: this command has some bugs, since the WPILib Angle type constrains
- * values to (-180.0, +180.0] degrees. As a result, rotating past one of those
- * points will "reset" the readings, causing problems with the logic.
- *
- * This might be a good place to consider using the "OffsetGyro" type written in
- * previous years.
+ * 
+ * Note: This might be a good place to consider using the "OffsetGyro" type
+ * written in previous years.
  */
-// TODO: Fix the bug described above (caused by Angle constraining the range of
-// values).
 public class TurnCommand extends Command {
   final private IDrivebase m_drivebase;
   final double m_rotationInDegrees;

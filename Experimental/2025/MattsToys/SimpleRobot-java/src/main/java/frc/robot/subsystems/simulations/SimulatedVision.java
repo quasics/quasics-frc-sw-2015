@@ -12,6 +12,10 @@ import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -112,16 +116,18 @@ public class SimulatedVision extends SingleCameraVision {
     // Update the simulator to reflect where the (purely) vision-based pose estimate
     // suggests that we are located.
     final var debugField = m_visionSim.getDebugField();
-    m_lastEstimatedPose.ifPresentOrElse(
-        // Do this with the data in m_lastEstimatedPose (if it has some)
-        est -> {
-          debugField.getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d());
-        },
-        // If we have nothing in m_lastEstimatedPose, do this
-        () -> {
-          if (m_estimateRecentlyUpdated)
-            debugField.getObject("VisionEstimation").setPoses();
-        });
+    var latestEstimates = getEstimatedPoses();
+    if (!latestEstimates.isEmpty()) {
+      // We're derived from SingleCameraVision, so there should only ever be 1, but
+      // this keeps us safe....
+      List<Pose2d> poses = new ArrayList<Pose2d>();
+      for (EstimatedRobotPose estimatedRobotPose : latestEstimates) {
+        poses.add(estimatedRobotPose.estimatedPose.toPose2d());
+      }
+      debugField.getObject("VisionEstimation").setPoses(poses);
+    } else {
+      debugField.getObject("VisionEstimation").setPoses();
+    }
 
     // Update the simulator to reflect where the drivebase's (potentially composite)
     // pose estimate suggests that we are located.
@@ -134,9 +140,7 @@ public class SimulatedVision extends SingleCameraVision {
         },
         // If we have no estimated pose from the drive base, do this
         () -> {
-          if (m_estimateRecentlyUpdated)
-            debugField.getObject("DriveEstimation").setPoses();
+          debugField.getObject("DriveEstimation").setPoses();
         });
-
   }
 }

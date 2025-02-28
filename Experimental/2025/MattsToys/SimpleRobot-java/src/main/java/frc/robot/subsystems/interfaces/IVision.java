@@ -4,7 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
+
 import org.photonvision.EstimatedRobotPose;
 
 /**
@@ -23,22 +25,7 @@ public interface IVision extends ISubsystem {
   /** Key used to post "was Pose estimate recently updated?" to BulletinBoard. */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
-  ////////////////////////////////////////////////////////////////////////
-  //
-  // Single-camera functions.
-  //
-  // TODO: Consider removing these, or adding multi-camera functions.
-  //
-  ////////////////////////////////////////////////////////////////////////
-
-  /** @return last estimated pose (if any), based on vision-tracking data */
-  Optional<EstimatedRobotPose> getLastEstimatedPose();
-
-  /** @return timestamp for last data used to update estimated pose */
-  double getLastEstTimestamp();
-
-  /** @return true iff the estimated pose was recently updated */
-  boolean getEstimateRecentlyUpdated();
+  List<EstimatedRobotPose> getEstimatedPoses();
 
   /** Trivial implementation of IVision (e.g., if we don't have a camera). */
   public class NullVision implements IVision {
@@ -48,18 +35,8 @@ public interface IVision extends ISubsystem {
     }
 
     @Override
-    public Optional<EstimatedRobotPose> getLastEstimatedPose() {
-      return Optional.empty();
-    }
-
-    @Override
-    public double getLastEstTimestamp() {
-      return 0;
-    }
-
-    @Override
-    public boolean getEstimateRecentlyUpdated() {
-      return false;
+    public List<EstimatedRobotPose> getEstimatedPoses() {
+      return Collections.emptyList();
     }
   }
 }

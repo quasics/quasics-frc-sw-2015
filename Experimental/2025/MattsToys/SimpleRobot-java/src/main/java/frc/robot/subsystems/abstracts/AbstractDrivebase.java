@@ -27,7 +27,6 @@ import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,10 +77,17 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
     // PID and FF setup
-    m_leftPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
-    m_rightPidController = new PIDController(driveConfig.pid().kP(), driveConfig.pid().kI(), driveConfig.pid().kD());
+    m_leftPidController = new PIDController(
+        driveConfig.leftPid().kP(),
+        driveConfig.leftPid().kI(),
+        driveConfig.leftPid().kD());
+    m_rightPidController = new PIDController(
+        driveConfig.rightPid().kP(),
+        driveConfig.rightPid().kI(),
+        driveConfig.rightPid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().linear().kV().in(Volts),
+        driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
         driveConfig.feedForward().angular().kA());
   }
@@ -220,6 +226,13 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     List<EstimatedRobotPose> poses = (List<EstimatedRobotPose>) optionalPoseList.get();
 
     // OK. Update the estimator based on the pose(s) and timestamp.
+    //
+    // TODO: Consider moving from this naive approach for integrating multiple
+    // vision-based estimates to something more sophisticated. For some further
+    // details, see
+    // https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/4
+    // and
+    // https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
     for (EstimatedRobotPose estimate : poses) {
       estimator.addVisionMeasurement(
           estimate.estimatedPose.toPose2d(),

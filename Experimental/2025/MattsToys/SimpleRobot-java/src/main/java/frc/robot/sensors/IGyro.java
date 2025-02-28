@@ -57,13 +57,23 @@ public interface IGyro {
   /** Tells the gyro to perform any calibration processing (e.g., on power-up). */
   void calibrate();
 
-  /** @return the heading of the robot in degrees. */
+  /**
+   * @return the heading of the robot; per WPILib convention, this is reported as
+   *         "clockwise positive" (CW+, or NED axis convention).
+   */
   Angle getAngle();
 
-  /** @return the rate of rotation of the gyro. */
+  /**
+   * @return the rate of rotation of the gyro; per WPILib convention, this is
+   *         reported as "clockwise positive" (CW+, or NED axis convention).
+   */
   AngularVelocity getRate();
 
-  /** @return the heading of the robot as a Rotation2d. */
+  /**
+   * @return the heading of the robot as a Rotation2d; per WPILib convention, this
+   *         is reported as "counter-clockwise positive" (CCW+, or NWU
+   *         axis convention), which is different from getAngle() and getRate().
+   */
   Rotation2d getRotation2d();
 
   /**
@@ -80,7 +90,15 @@ public interface IGyro {
    * @return read-only version of an IGyro (disabling reset functionality
    */
   static IGyro readOnlyGyro(IGyro g) {
-    return new FunctionalGyro(g::calibrate, g::getAngle, g::getRate, g::getRotation2d, () -> {});
+    return new FunctionalGyro(
+        // Most functions are passed through to the gyro being wrapped...
+        g::calibrate,
+        g::getAngle,
+        g::getRate,
+        g::getRotation2d,
+        // ...but reset() is replaced with a no-op.
+        () -> {
+        });
   }
 
   /**
@@ -152,17 +170,14 @@ public interface IGyro {
    * @return an IGyro wrapping the supplied object
    */
   static IGyro wrapGyro(AnalogGyro g) {
-    final Runnable calibrator = () -> {
-      g.calibrate();
-    };
-    final Supplier<Angle> angleSupplier = () -> Degrees.of(g.getAngle());
-    final Supplier<AngularVelocity> rateSupplier = () -> DegreesPerSecond.of(g.getRate());
-    final Supplier<Rotation2d> rotationSupplier = () -> g.getRotation2d();
-    final Runnable resetter = () -> {
-      g.reset();
-    };
-
-    return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
+    return new FunctionalGyro(
+        g::calibrate,
+        () -> Degrees.of(g
+            .getAngle()),
+        () -> DegreesPerSecond.of(g
+            .getRate()),
+        g::getRotation2d,
+        g::reset);
   }
 
   /**

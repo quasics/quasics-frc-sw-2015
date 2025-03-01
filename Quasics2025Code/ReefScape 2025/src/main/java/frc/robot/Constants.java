@@ -103,7 +103,9 @@ public final class Constants {
     public static final String GTFO = "GTFO";
     public static final String GO_TO_REEF = "Go to reef";
     public static final String GO_TO_REEF_DR = "Go to reef DR";
-    public static final String SCORE_ALGAE = "Score algae";
+    public static final String GRAB_ALGAE_FROM_REEF = "Grab algae from reef";
+    public static final String SCORE_ALGAE_REEF_BARGE = "Score algae from reef into barge";
+    public static final String SCORE_ALGAE_REEF_PROCESSOR = "Score algae from reef into processor";
 
   } // public static class AutonomousSelectedOperation
 

@@ -4,15 +4,19 @@
 
 package frc.robot.subsystems.armPivot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.*;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmPIDConstants;
@@ -24,8 +28,10 @@ public abstract class AbstractArmPivot extends SubsystemBase {
   protected final PIDController m_armPIDController;
 
   protected final AbsoluteEncoder m_throughBoreEncoder;
+  protected final AbsoluteEncoderConfig m_throughBoreConfig = new AbsoluteEncoderConfig();
 
   protected final ArmFeedforward m_feedForward;
+  private final SparkMaxConfig m_config = new SparkMaxConfig();
 
   protected Angle m_angleSetpoint = null;
 
@@ -40,28 +46,43 @@ public abstract class AbstractArmPivot extends SubsystemBase {
   public AbstractArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
-    m_armPIDController = new PIDController(ArmPIDConstants.kP, ArmPIDConstants.kI, ArmPIDConstants.kD);
-    m_feedForward = new ArmFeedforward(ArmPIDConstants.kS, ArmPIDConstants.kG, ArmPIDConstants.kV);
+    m_armPIDController = new PIDController(0.0, 0.0, 0.0);
+    m_feedForward = new ArmFeedforward(0.2, 0.25, 0.0);
+
+    m_config.inverted(false);
+    m_throughBoreConfig.inverted(true);
+    m_config.apply(m_throughBoreConfig);
+    m_pivot.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void periodic() {
+    m_armPIDController.setP(7);
     SmartDashboard.putNumber(
-        "Through Bore Encoder Position (deg)", m_throughBoreEncoder.getPosition());
+        "Through Bore Encoder Position (deg)", getPivotAngle().in(Degrees));
+    SmartDashboard.putNumber(
+        "Through Bore Encoder Position (rad)", getPivotAngle().in(Radians));
+
+    SmartDashboard.putNumber("Through bore encoder velocity (deg/s)", getPivotVelocity().in(DegreesPerSecond));
+
     SmartDashboard.putData("PID Controller", m_armPIDController);
+    SmartDashboard.putNumber("armpivot p", m_armPIDController.getP());
+
+    SmartDashboard.putBoolean("At armpivot setpoint?", m_armPIDController.atSetpoint());
   }
 
   public Angle getPivotAngle() {
-    final double currentAngleRadians = m_throughBoreEncoder.getPosition() * ENCODER_SCALING_FACTOR_RADIANS;
+    double currentAngleRadians = m_throughBoreEncoder.getPosition() * 2 * Math.PI;
+    if (currentAngleRadians > Math.PI)
+      currentAngleRadians = 0;
     return Radians.of(currentAngleRadians);
   }
 
   /** @return current velocity in radians/sec */
-  // TODO: Change to return RadiansPerSecond type.
-  public double getPivotVelocity() {
-    final double currentVelocity_radiansPerSec = m_throughBoreEncoder.getVelocity() /* in revs/min */
-        * (ENCODER_SCALING_FACTOR_RADIANS / 60);
-    return currentVelocity_radiansPerSec;
+  public AngularVelocity getPivotVelocity() {
+    final double currentVelocity = m_throughBoreEncoder.getVelocity() /* in revs/min */
+        * 2 * Math.PI / 60; // in rad/s
+    return RadiansPerSecond.of(currentVelocity);
   }
 
   public double getRawPivotPosition() {
@@ -71,6 +92,7 @@ public abstract class AbstractArmPivot extends SubsystemBase {
   public void setArmPivotSpeed(double percentSpeed) {
     m_angleSetpoint = null;
     m_pivot.set(percentSpeed);
+    System.out.println(percentSpeed);
   }
 
   public void stop() {
@@ -81,5 +103,8 @@ public abstract class AbstractArmPivot extends SubsystemBase {
     this.m_angleSetpoint = angle;
   }
 
-  public abstract boolean atSetpoint();
+  public boolean atSetpoint() {
+    return m_angleSetpoint == null // No setpoint to get to
+        || m_armPIDController.atSetpoint();
+  }
 }

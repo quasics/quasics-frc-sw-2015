@@ -27,26 +27,35 @@ public class SysIdGenerator {
   final static boolean DUMP_SYSID_TO_CONSOLE = true;
 
   /**
-   * Returns a SysIdRoutine generator for the specified drivebase/mode.
+   * Returns a SysIdRoutine generator for the specified drivebase/mode, using a
+   * default configuration (1 volt/sec ramp ramp, 7 volt step).
    *
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @return a configured SysIdRoutine generator
    */
   public static SysIdRoutine getSysIdRoutine(final IDrivebase drivebase, final Mode mode) {
+    return getSysIdRoutine(new SysIdRoutine.Config(), drivebase, mode);
+  }
+
+  /**
+   * Returns a SysIdRoutine generator for the specified drivebase/mode.
+   *
+   * @param drivebase drive base of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @return a configured SysIdRoutine generator
+   */
+  public static SysIdRoutine getSysIdRoutine(final SysIdRoutine.Config config, final IDrivebase drivebase,
+      final Mode mode) {
     return new SysIdRoutine(
-        // Empty config defaults to 1 volt/second ramp rate and 7 volt step
-        // voltage.
-        new SysIdRoutine.Config(),
+        config,
         new SysIdRoutine.Mechanism(
-            (Voltage volts)
-                -> {
+            (Voltage volts) -> {
               drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log
-            -> {
+            log -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();

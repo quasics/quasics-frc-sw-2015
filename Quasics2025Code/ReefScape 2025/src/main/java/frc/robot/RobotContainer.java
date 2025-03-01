@@ -209,6 +209,7 @@ public class RobotContainer {
   private Command testTrajectory(String name) {
     return Commands.sequence(
         m_autoFactory.resetOdometry(name),
+        m_autoFactory.resetOdometry(name),
         m_autoFactory.trajectoryCmd(name));
   }
 

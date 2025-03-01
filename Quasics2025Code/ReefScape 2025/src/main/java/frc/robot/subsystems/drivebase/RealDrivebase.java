@@ -8,17 +8,14 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Constants;
@@ -67,6 +64,9 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightLeaderConfig.encoder.velocityConversionFactor(velocityScalingFactor);
 
     m_rightLeaderConfig.inverted(true);
+
+    m_rightLeaderConfig.idleMode(IdleMode.kBrake);
+    m_leftLeaderConfig.idleMode(IdleMode.kBrake);
 
     m_leftLeader.configure(
         m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

@@ -92,7 +92,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
    * 
    * Note: must be invoked *after* the tag layout has been loaded.
    * 
-   * @param cameraConfig
+   * @param cameraConfig the configuratin for the camera
    */
   private void addCameraToSet(CameraConfig cameraConfig) {
     if (m_tagLayout == null) {
@@ -109,11 +109,19 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
+  /**
+   * Applies any updates for the estimator on a camera, optionally integrating the
+   * last/reference pose provided by the drivebase.
+   * 
+   * @param camera    camera supplying data to use in the estimate
+   * @param estimator pose estimator being updated
+   * @param drivePose last reported pose from the drivebase (or null)
+   * @return the updated estimate, based on the camera data
+   */
   private static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      CameraData cameraData,
-      Pose2d drivePose) {
-    final var estimator = cameraData.estimator();
-
+      final PhotonCamera camera,
+      final PhotonPoseEstimator estimator,
+      final Pose2d drivePose) {
     // Update the vision pose estimator with the latest robot pose from the drive
     // base (if we have one).
     if (drivePose != null) {
@@ -123,7 +131,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
 
     // Update the pose estimator with the latest vision measurements from its
     // camera.
-    List<PhotonPipelineResult> results = cameraData.camera().getAllUnreadResults();
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
     if (results.isEmpty()) {
       // No results? Nothing to do.
       return Optional.empty();
@@ -131,7 +139,7 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
 
     Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
     for (PhotonPipelineResult photonPipelineResult : results) {
-      lastEstimatedPose = cameraData.estimator().update(photonPipelineResult);
+      lastEstimatedPose = estimator.update(photonPipelineResult);
     }
 
     return lastEstimatedPose;
@@ -148,7 +156,9 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     // Update camera-specific estimators (and gather their results).
     List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
     for (CameraData cameraData : m_cameraData) {
-      var estimate = updateEstimateForCamera(cameraData, drivePose);
+      var estimate = updateEstimateForCamera(
+          cameraData.camera(), cameraData.estimator(),
+          drivePose);
       if (!estimate.isEmpty()) {
         estimates.add(estimate.get());
       }

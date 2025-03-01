@@ -47,10 +47,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   // TODO: add some config thing so these values can be easily changed across
   // robots
-  final protected PIDController m_leftPidController = new PIDController(1.6018, 0.0, 0.0);
-  final protected PIDController m_rightPidController = new PIDController(1.6018, 0.0, 0.0);
-  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
-      0.29782);
+  final protected PIDController m_leftPidController = new PIDController(0.046218, 0.0, 0.0);
+  final protected PIDController m_rightPidController = new PIDController(0.066374, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(0.1884, 0.033803,
+      0.20183,
+      0.02384);
 
   private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
 
@@ -83,8 +84,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         ff.vxMetersPerSecond,
         ff.omegaRadiansPerSecond);
 
-    // System.out.println("Commandded: " + speeds);
-    // System.out.println("Actual: " + getRobotRelativeSpeeds());
+    System.out.println("Commandded: " + speeds);
+    System.out.println("Actual: " + getRobotRelativeSpeeds());
 
     // Apply the generated speeds
     driveWithPid(speeds);
@@ -102,11 +103,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
+    setSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot));
   }
 
   public final void setSpeeds(ChassisSpeeds chassisSpeeds) {
-    setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
+    // setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
+    // System.out.println(chassisSpeeds);
+    driveWithPid(chassisSpeeds);
   }
 
   public final void driveWithPid(ChassisSpeeds chassisSpeeds) {

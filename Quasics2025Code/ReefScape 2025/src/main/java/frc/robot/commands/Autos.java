@@ -26,7 +26,7 @@ public final class Autos {
         autoFactory.trajectoryCmd(pathName));
   }
 
-  public static Command GTFO(AutoFactory autoFactory, AbstractDrivebase drivebase, int position, boolean isBlue) {
+  public static Command GO_TO_REEF(AutoFactory autoFactory, AbstractDrivebase drivebase, int position, boolean isBlue) {
     switch (position) {
       case 1:
         return followPath(autoFactory, drivebase, "blue1gtfo", true);
@@ -35,7 +35,7 @@ public final class Autos {
       case 3:
         return followPath(autoFactory, drivebase, "blue3gtfo", true);
       default:
-        return new PrintCommand("GTFO failed?");
+        return new PrintCommand("GO_TO_REEF failed?");
     }
   }
 
@@ -46,20 +46,20 @@ public final class Autos {
     if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");
     }
-    if (operation == AutonomousSelectedOperation.GTFO) {
-      return GTFO(autoFactory, drivebase, position, isBlue);
-      /*
-       * return Commands.sequence(
-       * new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
-       * new TurnForDegrees(drivebase, 64, -0.15),
-       * new DriveForDistance(drivebase, 0.20, Meters.of(1.4)),
-       * new TurnForDegrees(drivebase, -64, -0.15));
-       */
-
+    if (operation == AutonomousSelectedOperation.GO_TO_REEF_DR) {
+      return Commands.sequence(
+          new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
+          new TurnForDegrees(drivebase, 60, -0.13),
+          new DriveForDistance(drivebase, 0.20, Meters.of(1.6)),
+          new TurnForDegrees(drivebase, -62, -0.14));
     }
 
     if (operation == AutonomousSelectedOperation.GO_TO_REEF) {
-      // TODO
+      return GO_TO_REEF(autoFactory, drivebase, position, isBlue);
+    }
+
+    if (operation == AutonomousSelectedOperation.GTFO) {
+      return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE) {

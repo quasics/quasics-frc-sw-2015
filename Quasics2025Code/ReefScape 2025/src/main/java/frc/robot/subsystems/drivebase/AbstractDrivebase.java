@@ -44,14 +44,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   private final Distance m_driveBaseLengthWithBumpers;
   private final Distance m_driveBaseWidthWithBumpers;
-
+  /*
+   * Sally mass: 61.2 lbs
+   * Sally moi: 5.4701 kg m^2
+   * New bot mass:
+   * New bot moi:
+   */
   // TODO: add some config thing so these values can be easily changed across
   // robots
-  final protected PIDController m_leftPidController = new PIDController(0.046218, 0.0, 0.0);
-  final protected PIDController m_rightPidController = new PIDController(0.066374, 0.0, 0.0);
-  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(0.1884, 0.033803,
-      0.20183,
-      0.02384);
+  final protected PIDController m_leftPidController = new PIDController(1.6018, 0.0, 0.0);
+  final protected PIDController m_rightPidController = new PIDController(1.6018, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
+      0.29782);
 
   private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
 
@@ -84,8 +88,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         ff.vxMetersPerSecond,
         ff.omegaRadiansPerSecond);
 
-    System.out.println("Commandded: " + speeds);
-    System.out.println("Actual: " + getRobotRelativeSpeeds());
+    // System.out.println("Commandded: " + speeds);
+    // System.out.println("Actual: " + getRobotRelativeSpeeds());
 
     // Apply the generated speeds
     driveWithPid(speeds);
@@ -103,13 +107,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   }
 
   public final void arcadeDrive(LinearVelocity xSpeed, AngularVelocity rot) {
-    setSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot));
+    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ZERO_MPS, rot)));
   }
 
   public final void setSpeeds(ChassisSpeeds chassisSpeeds) {
-    // setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
-    // System.out.println(chassisSpeeds);
-    driveWithPid(chassisSpeeds);
+    setSpeeds(m_kinematics.toWheelSpeeds(chassisSpeeds));
   }
 
   public final void driveWithPid(ChassisSpeeds chassisSpeeds) {
@@ -155,13 +157,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_driveBaseWidthWithBumpers;
   }
 
-  // get raw, unwrapped heading in degrees
   public Angle getHeading() {
-    return (getOdometry().getPoseMeters().getRotation().getMeasure());
-  }
-
-  // This one is constrained to (-180, 180]
-  public Angle getHeadingInDegreea() {
     return Degrees.of(getOdometry().getPoseMeters().getRotation().getDegrees());
   }
 

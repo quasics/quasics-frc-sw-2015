@@ -65,20 +65,21 @@ public final class Autos {
     if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");
     }
-    if (operation == AutonomousSelectedOperation.GTFO) {
-      return GTFO();
-      /*
-       * return Commands.sequence(
-       * new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
-       * new TurnForDegrees(drivebase, 64, -0.15),
-       * new DriveForDistance(drivebase, 0.20, Meters.of(1.4)),
-       * new TurnForDegrees(drivebase, -64, -0.15));
-       */
-
+    if (operation == AutonomousSelectedOperation.GO_TO_REEF_DR) {
+      return Commands.sequence(
+          new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF)),
+          new TurnForDegrees(drivebase, 60, -0.13),
+          new DriveForDistance(drivebase, 0.20, Meters.of(1.6)),
+          new TurnForDegrees(drivebase, -62, -0.14));
     }
 
     if (operation == AutonomousSelectedOperation.GO_TO_REEF) {
       return goToReef();
+    }
+
+    if (operation == AutonomousSelectedOperation.GTFO) {
+      // return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
+      GTFO();
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE) {

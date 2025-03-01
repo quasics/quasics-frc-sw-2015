@@ -7,6 +7,7 @@ package frc.robot.subsystems.simulations;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.live.MultiCameraVision;
 import frc.robot.subsystems.live.SingleCameraVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -27,7 +28,7 @@ import org.photonvision.simulation.VisionSystemSim;
  * The "raw" image stream will be served at http://localhost:1181/, and the
  * "processed" stream at http://localhost:1182/.
  */
-public class SimulatedVision extends SingleCameraVision {
+public class SimulatedVision extends MultiCameraVision {
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
    * rendering.
@@ -45,7 +46,9 @@ public class SimulatedVision extends SingleCameraVision {
   public SimulatedVision(RobotConfig config) {
     super(config);
 
-    m_cameraSim = new PhotonCameraSim(m_camera, getCameraProperties(config.camera()));
+    var cameraData = m_cameraData.get(0);
+
+    m_cameraSim = new PhotonCameraSim(getFirsCamera(), getCameraProperties(config.camera()));
 
     if (m_tagLayout != null) {
       m_visionSim.addAprilTags(m_tagLayout);
@@ -55,7 +58,7 @@ public class SimulatedVision extends SingleCameraVision {
 
     // Add this camera to the vision system simulation with the given
     // robot-to-camera transform.
-    m_visionSim.addCamera(m_cameraSim, m_robotToCamera);
+    m_visionSim.addCamera(m_cameraSim, getFirsCameraPosition());
 
     // Enable the raw and processed streams. (These are enabled by default, but I'm
     // making it explicit here, so that we can easily turn them off if we decide

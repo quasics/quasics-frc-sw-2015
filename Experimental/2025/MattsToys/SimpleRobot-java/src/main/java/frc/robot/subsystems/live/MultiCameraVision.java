@@ -48,11 +48,14 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
 
   private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
+  // TODO: Consider moving this into an abstract base class.
   private static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
   /**
    * The layout of the AprilTags on the field. This is used for the pose
    * estimation (as well as in the simulator, when it's rendering the tag).
+   * 
+   * TODO: Consider moving related data/logic into an abstract base class.
    */
   protected final AprilTagFieldLayout m_tagLayout;
 
@@ -107,6 +110,14 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     final PhotonPoseEstimator estimator = new PhotonPoseEstimator(
         m_tagLayout, POSE_STRATEGY, robotToCamera);
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
+  }
+
+  protected PhotonCamera getFirsCamera() {
+    return m_cameraData.get(0).camera();
+  }
+
+  protected Transform3d getFirsCameraPosition() {
+    return m_cameraData.get(0).transform3d();
   }
 
   /**

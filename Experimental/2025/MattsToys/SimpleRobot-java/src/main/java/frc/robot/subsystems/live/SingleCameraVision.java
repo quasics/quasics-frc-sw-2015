@@ -123,6 +123,14 @@ public class SingleCameraVision extends SubsystemBase implements IVision {
     m_photonEstimator.setMultiTagFallbackStrategy(m_poseStrategy);
   }
 
+  protected PhotonCamera getFirsCamera() {
+    return m_camera;
+  }
+
+  protected Transform3d getFirsCameraPosition() {
+    return m_robotToCamera;
+  }
+
   /**
    * Updates/caches the latest estimated robot pose on the field from vision data,
    * which may be empty. This should only be called once per loop, and will be

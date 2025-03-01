@@ -113,6 +113,7 @@ public final class Constants {
   public static class DesiredEncoderValues {
     public static final double ARM_DOWN = 0; // TODO: needs testing
     public static final double ARM_UP = 0.265; // TODO: needs updated once the value can be tested
+    public static final Angle ARM_DOWN_IN_RADIANS = Radians.of(0);
     public static final Angle ARM_UP_IN_RADIANS = Radians.of(1.5708);
   }
 

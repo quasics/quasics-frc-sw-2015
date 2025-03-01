@@ -169,6 +169,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Arm Pivot PID Up", new MoveArmPivotToPosition(m_armPivot, Radians.of(1.5708)));
     SmartDashboard.putData("Arm Pivot PID Down", new MoveArmPivotToPosition(m_armPivot, Radians.of(0)));
+    SmartDashboard.putData("Arm Pivot 45", new MoveArmPivotToPosition(m_armPivot, Degrees.of(45)));
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
 

@@ -6,6 +6,14 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.PerUnit;
+import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.TimeUnit;
+import edu.wpi.first.units.VelocityUnit;
+import edu.wpi.first.units.measure.MutVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -37,7 +45,7 @@ public class SysIdGenerator {
         return new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step
                 // voltage.
-                new SysIdRoutine.Config(),
+                new SysIdRoutine.Config(Volts.of(0.5).div(Seconds.of(1)), Volts.of(3.5), Seconds.of(10)),
                 new SysIdRoutine.Mechanism(
                         (Voltage volts) -> {
                             drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));

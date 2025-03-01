@@ -29,11 +29,11 @@ public final class Autos {
   public static Command GTFO(AutoFactory autoFactory, AbstractDrivebase drivebase, int position, boolean isBlue) {
     switch (position) {
       case 1:
-        return followPath(autoFactory, drivebase, "blue1toreef", true);
+        return followPath(autoFactory, drivebase, "1toreef", true);
       case 2:
-        return followPath(autoFactory, drivebase, "blue2toreef", true);
+        return followPath(autoFactory, drivebase, "2toreef", true);
       case 3:
-        return followPath(autoFactory, drivebase, "blue3toreef", true);
+        return followPath(autoFactory, drivebase, "3toreef", true);
       default:
         return new PrintCommand("GTFO failed?");
     }

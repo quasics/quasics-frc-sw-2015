@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.abstracts.AbstractVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.BulletinBoard;
+import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.Collections;
 import java.util.List;
@@ -38,11 +39,20 @@ public class SingleCameraVision extends AbstractVision {
    * @param config robot configuration
    */
   public SingleCameraVision(RobotConfig config) {
-    this(config.camera().name(),
-        new Transform3d(new Translation3d(config.camera().pos().x(), config.camera().pos().y(),
-            config.camera().pos().z()),
-            new Rotation3d(config.camera().orientation().roll(),
-                config.camera().orientation().pitch(), config.camera().orientation().yaw())));
+    this(config.cameras().get(0));
+  }
+
+  /**
+   * Constructs a Vision subsystem, based on a specified robot configuration.
+   *
+   * @param cameraConfig robot configuration
+   */
+  private SingleCameraVision(RobotConfigs.CameraConfig cameraConfig) {
+    this(cameraConfig.name(),
+        new Transform3d(new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(),
+            cameraConfig.pos().z()),
+            new Rotation3d(cameraConfig.orientation().roll(),
+                cameraConfig.orientation().pitch(), cameraConfig.orientation().yaw())));
   }
 
   /**

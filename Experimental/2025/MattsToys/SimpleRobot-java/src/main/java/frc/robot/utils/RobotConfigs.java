@@ -13,6 +13,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.simulations.SimulationPorts;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -238,7 +239,27 @@ public class RobotConfigs {
    */
   // TODO: Add multi-camera support.
   public static record RobotConfig(
-      DriveConfig drive, CameraConfig camera, ElevatorConfig elevator, LightingConfig lighting) {
+      DriveConfig drive,
+      List<CameraConfig> cameras,
+      ElevatorConfig elevator,
+      LightingConfig lighting) {
+
+    /**
+     * Utility constructor fo a single-camera robot.
+     * 
+     * @param drive
+     * @param camera
+     * @param elevator
+     * @param lighting
+     */
+    RobotConfig(
+        DriveConfig drive,
+        CameraConfig camera,
+        ElevatorConfig elevator,
+        LightingConfig lighting) {
+      this(drive, Collections.singletonList(camera), elevator, lighting);
+    }
+
     /** @return true iff the configuration includes data for the drivebase */
     public boolean hasDrive() {
       return drive != null;
@@ -246,7 +267,7 @@ public class RobotConfigs {
 
     /** @return true iff the configuration includes data for the camera */
     public boolean hasCamera() {
-      return camera != null;
+      return (cameras() != null) && !cameras.isEmpty();
     }
 
     /** @return true iff the configuration includes data for the elevator */

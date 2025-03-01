@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.subsystems.abstracts.AbstractVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.utils.BulletinBoard;
+import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
@@ -37,13 +38,14 @@ public class MultiCameraVision extends AbstractVision {
   /**
    * Constructor.
    * 
-   * TODO: Update this to deal with multi-cam, once the robot config supports it.
-   * 
    * @param config robot configuration, including camera data
    */
   public MultiCameraVision(RobotConfig config) {
     // Add each of the cameras to our known set.
-    addCameraToSet(config.camera());
+    List<RobotConfigs.CameraConfig> cameras = config.cameras();
+    for (var camera : cameras) {
+      addCameraToSet(camera);
+    }
   }
 
   /**

@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.live.SingleCameraVision;
 import frc.robot.utils.BulletinBoard;
+import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
@@ -45,21 +46,20 @@ public class SimulatedVision extends SingleCameraVision {
   public SimulatedVision(RobotConfig config) {
     super(config);
 
+    //
+    // Set up the camera simulation
+    //
+
+    final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(0);
+
     // Get our first camera's data. (Will throw an exception if we don't have any,
     // but that's fair.)
     final CameraData cameraData = getCameraData().get(0);
 
     // Set up the camera simulation
-    m_cameraSim = new PhotonCameraSim(cameraData.camera(), getCameraProperties(config.camera()));
-    if (m_tagLayout != null) {
-      m_visionSim.addAprilTags(m_tagLayout);
-    } else {
-      System.err.println("Warning: no April Tags layout loaded.");
-    }
-
-    // Add this camera to the vision system simulation with the given
-    // robot-to-camera transform.
-    m_visionSim.addCamera(m_cameraSim, cameraData.transform3d());
+    m_cameraSim = new PhotonCameraSim(
+        cameraData.camera(),
+        getCameraProperties(cameraConfig));
 
     // Enable the raw and processed streams. (These are enabled by default, but I'm
     // making it explicit here, so that we can easily turn them off if we decide
@@ -76,6 +76,21 @@ public class SimulatedVision extends SingleCameraVision {
     //
     // Note: This is extremely resource-intensive and is disabled by default.
     m_cameraSim.enableDrawWireframe(true);
+
+    //
+    // Finish setting up the vision simulation display in the simulator.
+    //
+
+    // Add the camera to the vision system simulation with the given
+    // robot-to-camera transform.
+    m_visionSim.addCamera(m_cameraSim, cameraData.transform3d());
+
+    // Add the tag layout to the vision simulation.
+    if (m_tagLayout != null) {
+      m_visionSim.addAprilTags(m_tagLayout);
+    } else {
+      System.err.println("Warning: no April Tags layout loaded.");
+    }
   }
 
   /**

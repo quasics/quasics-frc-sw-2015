@@ -58,6 +58,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   /** PID controller for right side motors. */
   final protected PIDController m_rightPidController;
   /** Feedforward controller for drive base. */
+  // TODO: Consider independent FF for left and right, since kV/kA may differ.
   final protected DifferentialDriveFeedforward m_feedforward;
 
   /** Unicycle controller for use with trajectory-following. */

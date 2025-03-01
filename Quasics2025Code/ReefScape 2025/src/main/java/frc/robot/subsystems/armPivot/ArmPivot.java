@@ -4,8 +4,7 @@
 
 package frc.robot.subsystems.armPivot;
 
-import static edu.wpi.first.units.Units.Radians;
-
+import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.controller.PIDController;
 
 public class ArmPivot extends AbstractArmPivot {
@@ -23,23 +22,17 @@ public class ArmPivot extends AbstractArmPivot {
     return m_armPIDController;
   }
 
-  // CODE_REVIEW: You may want to consider invoking this from the periodic()
-  // function, so that your commands can set the target position and then just let
-  // it "automatically" move to that position.
-  //
-  // If you also want to be able to support manual control, you would also need to
-  // establish appropriate flags, or some other way of indicating a "don't care"
-  // state. (For an example, you may want to take a look at the handling of
-  // AbstractElevator.TargetPosition.kDontCare.)
   public void driveArmToSetpoint() {
     if (m_angleSetpoint == null) {
       return;
     }
     final double currentAngleRadians = getPivotAngle().in(Radians);
-    final double currentVelocity_radiansPerSec = getPivotVelocity();
+    final double currentVelocity_radiansPerSec = getPivotVelocity().in(RadiansPerSecond);
     double pidOutput = m_armPIDController.calculate(currentAngleRadians, m_angleSetpoint.in(Radians));
     double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, currentVelocity_radiansPerSec);
     double output = feedForwardOutput + pidOutput;
+    System.out.printf("pid: %.02f, feedforward: %.02f, output: %.02f, setpoint: %.02f\n", pidOutput, feedForwardOutput,
+        output, m_angleSetpoint.in(Degrees));
     m_pivot.setVoltage(output);
   }
 
@@ -58,9 +51,4 @@ public class ArmPivot extends AbstractArmPivot {
    * return delta.lte(ANGLE_TOLERANCE_RADIANS);
    * }
    */
-
-  public boolean atSetpoint() {
-    return m_angleSetpoint == null // No setpoint to get to
-        || m_armPIDController.atSetpoint();
-  }
 }

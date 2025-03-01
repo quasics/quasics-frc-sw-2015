@@ -32,12 +32,11 @@ public class MoveArmPivotToPosition extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_pivot.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_pivot.atSetpoint();
+    return true;
   }
 }

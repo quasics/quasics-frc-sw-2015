@@ -13,23 +13,13 @@ import frc.robot.subsystems.armPivot.AbstractArmPivot;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class MoveArmPivot extends Command {
-  public enum Direction {
-    UP, DOWN
-  }
-
   private final AbstractArmPivot m_pivot;
   private final double m_pivotSpeed;
-  private final Direction m_direction;
 
   /** Creates a new MoveArmPivot. */
-  public MoveArmPivot(AbstractArmPivot pivot, double pivotSpeed, Direction direction) {
+  public MoveArmPivot(AbstractArmPivot pivot, double pivotSpeed) {
     m_pivot = pivot;
-    m_direction = direction;
-    if (m_direction == Direction.UP) {
-      m_pivotSpeed = -Math.abs(pivotSpeed);
-    } else {
-      m_pivotSpeed = Math.abs(pivotSpeed);
-    }
+    m_pivotSpeed = pivotSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(pivot);
   }
@@ -55,20 +45,21 @@ public class MoveArmPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    Angle currentAngle = m_pivot.getPivotAngle();
-    if (m_direction == Direction.UP) {
-      if (currentAngle.gte(Constants.DesiredEncoderValues.ARM_UP_IN_RADIANS)) {
-        return true;
-      }
-    } else {
-      if (m_direction == Direction.DOWN) {
-        if (currentAngle.lte(Constants.DesiredEncoderValues.ARM_DOWN_IN_RADIANS)) {
-          return true;
-        }
-      }
-    }
-
     /*
+     * Angle currentAngle = m_pivot.getPivotAngle();
+     * if (m_direction == Direction.UP) {
+     * if (currentAngle.gte(Constants.DesiredEncoderValues.ARM_UP_IN_RADIANS)) {
+     * return true;
+     * }
+     * } else {
+     * if (m_direction == Direction.DOWN) {
+     * if (currentAngle.lte(Constants.DesiredEncoderValues.ARM_DOWN_IN_RADIANS)) {
+     * return true;
+     * }
+     * }
+     * }
+     * 
+     * /*
      * double position = m_pivot.getRawPivotPosition();
      * if (m_direction == Direction.UP) {
      * if (position > Constants.DesiredEncoderValues.ARM_UP && position < 0.95) {

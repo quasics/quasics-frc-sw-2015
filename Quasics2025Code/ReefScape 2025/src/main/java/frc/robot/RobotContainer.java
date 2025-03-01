@@ -35,6 +35,7 @@ import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.armPivot.AbstractArmPivot;
 import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
@@ -167,8 +168,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Arm Pivot Down", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(0.1)));
 
-    SmartDashboard.putData("Arm Pivot PID Up", new MoveArmPivotToPosition(m_armPivot, Radians.of(1.5708)));
-    SmartDashboard.putData("Arm Pivot PID Down", new MoveArmPivotToPosition(m_armPivot, Radians.of(0)));
+    SmartDashboard.putData("Arm Pivot PID Up", new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
+    SmartDashboard.putData("Arm Pivot PID Down", new MoveArmPivotToPosition(m_armPivot, Degrees.of(1)));
     SmartDashboard.putData("Arm Pivot 45", new MoveArmPivotToPosition(m_armPivot, Degrees.of(45)));
 
     SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
@@ -266,7 +267,15 @@ public class RobotContainer {
     m_autonomousOperations.addOption(
         Constants.AutonomousSelectedOperation.GO_TO_REEF, Constants.AutonomousSelectedOperation.GO_TO_REEF);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.SCORE_ALGAE, Constants.AutonomousSelectedOperation.SCORE_ALGAE);
+        Constants.AutonomousSelectedOperation.GO_TO_REEF_DR, Constants.AutonomousSelectedOperation.GO_TO_REEF_DR);
+    m_autonomousOperations.addOption(Constants.AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF,
+        Constants.AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF);
+    m_autonomousOperations.addOption(
+        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
+        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE);
+    m_autonomousOperations.addOption(
+        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
+        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
 
     SmartDashboard.putData("Overall operation", m_autonomousOperations);
   }
@@ -374,18 +383,12 @@ public class RobotContainer {
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
+        .whileTrue(new RunElevator(m_elevator, -0.85)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.4)); // DOWN
+        .whileTrue(new RunElevator(m_elevator, 0.75)); // DOWN
   }
 
   private void ConfigureOperatorButtons() {
-    // Arm Pivot Controls
-    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-        .whileTrue(new MoveClimbers(m_climbers, true));
-    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-        .whileTrue(new MoveClimbers(m_climbers, false));
-
     // Shooting
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());
@@ -394,14 +397,14 @@ public class RobotContainer {
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-        .whileTrue(new MoveArmPivot(m_armPivot, -0.2, MoveArmPivot.Direction.UP));
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.3));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
-        .whileTrue(new MoveArmPivot(m_armPivot, 0.2, MoveArmPivot.Direction.DOWN));
+        .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
-    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;

@@ -18,7 +18,8 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /** Creates a new AbstractElevator. */
   public AbstractElevator() {
-  }
+  } // 54 deg
+  // -158
 
   public abstract void setSpeed(double percentSpeed);
 
@@ -40,7 +41,7 @@ public abstract class AbstractElevator extends SubsystemBase {
     // so.
     super.periodic();
 
-    SmartDashboard.putNumber("elevator encoder position", getPosition());
-    SmartDashboard.putNumber("elevator encoder velocity", getVelocity());
+    SmartDashboard.putNumber("elevator position", getPosition());
+    SmartDashboard.putNumber("elevator velocity", getVelocity());
   }
 }

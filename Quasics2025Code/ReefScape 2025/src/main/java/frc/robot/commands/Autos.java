@@ -15,6 +15,20 @@ import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 public final class Autos {
+
+  /*
+   * IMPORTANT POSITIONS FOR CHOREO
+   * Robot size: 0.851 m by 0.993 m
+   * Blue 1:
+   * Blue 2:
+   * Blue 3:
+   * Top of reef:
+   * Middle of reef:
+   * Bottom of reef:
+   * Barge:
+   * Processor:
+   */
+
   static final double DIST_TO_REEF = 2.134;
   private static AutoFactory m_autoFactory;
   private static AbstractDrivebase m_drivebase;
@@ -55,6 +69,18 @@ public final class Autos {
     }
   }
 
+  public static Command grabAlgaeFromReef() {
+    return new PrintCommand("TODO");
+  }
+
+  public static Command scoreAlgaeFromReefIntoBarge() {
+    return new PrintCommand("TODO");
+  }
+
+  public static Command scoreAlgaeFromReefIntoProcessor() {
+    return new PrintCommand("TODO");
+  }
+
   /** Example static factory for an autonomous command. */
   public static Command getAutonomousCommand(AutoFactory autoFactory,
       AbstractDrivebase drivebase, String operation, int position) {
@@ -82,8 +108,16 @@ public final class Autos {
       GTFO();
     }
 
-    if (operation == AutonomousSelectedOperation.SCORE_ALGAE) {
-      // TODO
+    if (operation == AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF) {
+      grabAlgaeFromReef();
+    }
+
+    if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE) {
+      scoreAlgaeFromReefIntoBarge();
+    }
+
+    if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR) {
+      scoreAlgaeFromReefIntoProcessor();
     }
 
     return new PrintCommand("Doing nothing because no operation?");

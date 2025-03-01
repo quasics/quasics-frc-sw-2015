@@ -28,8 +28,6 @@ public class RealElevator extends AbstractElevator {
 
   // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
-
-  // TODO: Change this to specify real FF values
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
 
   /**
@@ -115,7 +113,11 @@ public class RealElevator extends AbstractElevator {
       double feedforward = m_feedforward.calculate(velocity);
 
       double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
-      setVoltage(output);
+      if (ableToMove(output)) {
+        setVoltage(output);
+      } else {
+        System.out.printf("ERROR: limit switch stopped PID, output voltage: %0.2f", output);
+      }
 
       System.out.printf(
           "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
@@ -131,9 +133,9 @@ public class RealElevator extends AbstractElevator {
       case kBottom:
         return 0;
       case kL1:
-        return -30;
+        return -158;
       case kL2:
-        return -50;
+        return -258;
     }
 
     System.err.println("**** Invalid/unexpected target position: " + position);

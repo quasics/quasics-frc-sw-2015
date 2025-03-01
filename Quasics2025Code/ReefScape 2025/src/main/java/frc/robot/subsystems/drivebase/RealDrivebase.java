@@ -65,8 +65,8 @@ public class RealDrivebase extends AbstractDrivebase {
 
     m_rightLeaderConfig.inverted(true);
 
-    m_rightLeaderConfig.idleMode(IdleMode.kBrake);
-    m_leftLeaderConfig.idleMode(IdleMode.kBrake);
+    m_rightLeaderConfig.idleMode(IdleMode.kCoast);
+    m_leftLeaderConfig.idleMode(IdleMode.kCoast);
 
     m_leftLeader.configure(
         m_leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -118,5 +118,8 @@ public class RealDrivebase extends AbstractDrivebase {
 
   protected IGyro getGyro_HAL() {
     return m_offsetGyro;
+  }
+
+  public void setCoastMode() {
   }
 }

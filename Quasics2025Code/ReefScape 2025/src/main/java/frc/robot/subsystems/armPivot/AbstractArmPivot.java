@@ -27,14 +27,14 @@ public abstract class AbstractArmPivot extends SubsystemBase {
 
   protected final ArmFeedforward m_feedForward;
 
-  protected Angle m_angleSetpoint = Degrees.of(0);
+  protected Angle m_angleSetpoint = null;
 
   // TODO: Validate this tolerance.
   protected final Angle ANGLE_TOLERANCE_RADIANS = Degrees.of(2); // within N degrees is fine
 
   // 360 (degrees) / 2048 (cycles per revolution)
   // TODO: Switch this to "Angle" type.
-  final double ENCODER_SCALING_FACTOR_RADIANS = Math.toRadians(360.0 / 2048.0); // TODO: test
+  final double ENCODER_SCALING_FACTOR_RADIANS = Math.toRadians(360.0 / 2048.0);
 
   /** Creates a new AbstractArmPivot. */
   public AbstractArmPivot() {
@@ -69,6 +69,7 @@ public abstract class AbstractArmPivot extends SubsystemBase {
   }
 
   public void setArmPivotSpeed(double percentSpeed) {
+    m_angleSetpoint = null;
     m_pivot.set(percentSpeed);
   }
 

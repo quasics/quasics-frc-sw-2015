@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.armPivot.AbstractArmPivot;
@@ -54,19 +55,31 @@ public class MoveArmPivot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // CODE_REVIEW: Why not look for the target position in terms of the angle,
-    // since you're using that for other stuff? (It would likely also be more
-    // intuitive to folks reading the code.)
-    double position = m_pivot.getRawPivotPosition();
+    Angle currentAngle = m_pivot.getPivotAngle();
     if (m_direction == Direction.UP) {
-      if (position > Constants.DesiredEncoderValues.ARM_UP && position < 0.95) {
+      if (currentAngle.gte(Constants.DesiredEncoderValues.ARM_UP_IN_RADIANS)) {
         return true;
       }
     } else {
-      if (position < Constants.DesiredEncoderValues.ARM_DOWN) {
-        return true;
+      if (m_direction == Direction.DOWN) {
+        if (currentAngle.lte(Constants.DesiredEncoderValues.ARM_DOWN_IN_RADIANS)) {
+          return true;
+        }
       }
     }
+
+    /*
+     * double position = m_pivot.getRawPivotPosition();
+     * if (m_direction == Direction.UP) {
+     * if (position > Constants.DesiredEncoderValues.ARM_UP && position < 0.95) {
+     * return true;
+     * }
+     * } else {
+     * if (position < Constants.DesiredEncoderValues.ARM_DOWN) {
+     * return true;
+     * }
+     * }
+     */
     return false;
   }
 }

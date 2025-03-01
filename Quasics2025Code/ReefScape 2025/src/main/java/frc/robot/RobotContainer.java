@@ -427,10 +427,6 @@ public class RobotContainer {
       return Commands.none();
     }
 
-    DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue); // default is
-                                                                                                       // blue
-    final boolean isBlue = alliance == DriverStation.Alliance.Blue;
-
-    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, autonomousOperation, positionOpt.getAsInt(), isBlue);
+    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, autonomousOperation, positionOpt.getAsInt());
   }
 }

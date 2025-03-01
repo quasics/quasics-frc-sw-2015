@@ -102,6 +102,7 @@ public final class Constants {
     public static final String DO_NOTHING = "Do nothing";
     public static final String GTFO = "GTFO";
     public static final String GO_TO_REEF = "Go to reef";
+    public static final String GO_TO_REEF_DR = "Go to reef DR";
     public static final String SCORE_ALGAE = "Score algae";
 
   } // public static class AutonomousSelectedOperation
@@ -113,6 +114,7 @@ public final class Constants {
   public static class DesiredEncoderValues {
     public static final double ARM_DOWN = 0; // TODO: needs testing
     public static final double ARM_UP = 0.265; // TODO: needs updated once the value can be tested
+    public static final Angle ARM_DOWN_IN_RADIANS = Radians.of(0);
     public static final Angle ARM_UP_IN_RADIANS = Radians.of(1.5708);
   }
 

@@ -298,17 +298,16 @@ public class RobotConfigs {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation,
         new RobotConfig(
-            // TODO: Updated with independent left/right PID values for Simulation
             new DriveConfig(Inches.of(3), // Wheel radius
                 Units.Meters.of(0.381 * 2), // Trackwidth
                 8.0, // Gearing
-                new PIDConfig(1.6018),
+                new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
+                new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
                 new DriveFeedForwardConfig(
-                    // ksLinear: 0.014183
-                    Volts.of(1.9802), 0.19202, // Linear data
-                    // ksAngular: 0.011388
-                    Volts.of(1.5001), 0.29782) // Angular data
-            ),
+                    // Linear data
+                    Volts.of(1.9801), 0.19198,
+                    // Angular data
+                    Volts.of(1.4999), 0.29835)),
             new CameraConfig("USBCamera1",
                 // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
                 // pose (which is considered to be its center of rotation at the floor level, or

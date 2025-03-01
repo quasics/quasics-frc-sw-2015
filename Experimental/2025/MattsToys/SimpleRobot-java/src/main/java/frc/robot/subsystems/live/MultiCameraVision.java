@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.live;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,18 +12,14 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.abstracts.AbstractVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -33,60 +28,21 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * Vision processing implementation for a single/multiple cameras, using the
  * Photonvision libraries/server.
  */
-public class MultiCameraVision extends SubsystemBase implements IVision {
-  /**
-   * @param camera      connection to the camera
-   * @param transform3d defines the conversion from the robot's position, to the
-   *                    cameras's
-   * @param estimator   pose estimator associated with this camera
-   */
-  protected record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
-
+public class MultiCameraVision extends AbstractVision {
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
 
   private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
-  // TODO: Consider moving this into an abstract base class.
-  private static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-
-  /**
-   * The layout of the AprilTags on the field. This is used for the pose
-   * estimation (as well as in the simulator, when it's rendering the tag).
-   * 
-   * TODO: Consider moving related data/logic into an abstract base class.
-   */
-  protected final AprilTagFieldLayout m_tagLayout;
-
-  private static final boolean USE_REEFSCAPE_LAYOUT = true;
-  private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
-
-  private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
-
   /**
    * Constructor.
+   * 
+   * TODO: Update this to deal with multi-cam, once the robot config supports it.
    * 
    * @param config robot configuration, including camera data
    */
   public MultiCameraVision(RobotConfig config) {
-    // Load the layout of the AprilTags on the field.
-    AprilTagFieldLayout tagLayout = null;
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
-    } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
-      ioe.printStackTrace();
-    }
-    m_tagLayout = tagLayout;
-
     // Add each of the cameras to our known set.
-    // TODO: Update this to deal with multi-cam, once the robot config supports
-    // that.
     addCameraToSet(config.camera());
   }
 
@@ -112,12 +68,12 @@ public class MultiCameraVision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
-  protected PhotonCamera getFirsCamera() {
-    return m_cameraData.get(0).camera();
+  public int getNumCameras() {
+    return m_cameraData.size();
   }
 
-  protected Transform3d getFirsCameraPosition() {
-    return m_cameraData.get(0).transform3d();
+  protected List<CameraData> getCameraData() {
+    return m_cameraData;
   }
 
   /**

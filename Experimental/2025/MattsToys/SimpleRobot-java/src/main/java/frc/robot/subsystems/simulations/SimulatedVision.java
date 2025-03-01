@@ -7,7 +7,6 @@ package frc.robot.subsystems.simulations;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.live.MultiCameraVision;
 import frc.robot.subsystems.live.SingleCameraVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -28,7 +27,7 @@ import org.photonvision.simulation.VisionSystemSim;
  * The "raw" image stream will be served at http://localhost:1181/, and the
  * "processed" stream at http://localhost:1182/.
  */
-public class SimulatedVision extends MultiCameraVision {
+public class SimulatedVision extends SingleCameraVision {
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
    * rendering.
@@ -46,10 +45,12 @@ public class SimulatedVision extends MultiCameraVision {
   public SimulatedVision(RobotConfig config) {
     super(config);
 
-    var cameraData = m_cameraData.get(0);
+    // Get our first camera's data. (Will throw an exception if we don't have any,
+    // but that's fair.)
+    final CameraData cameraData = getCameraData().get(0);
 
-    m_cameraSim = new PhotonCameraSim(getFirsCamera(), getCameraProperties(config.camera()));
-
+    // Set up the camera simulation
+    m_cameraSim = new PhotonCameraSim(cameraData.camera(), getCameraProperties(config.camera()));
     if (m_tagLayout != null) {
       m_visionSim.addAprilTags(m_tagLayout);
     } else {
@@ -58,7 +59,7 @@ public class SimulatedVision extends MultiCameraVision {
 
     // Add this camera to the vision system simulation with the given
     // robot-to-camera transform.
-    m_visionSim.addCamera(m_cameraSim, getFirsCameraPosition());
+    m_visionSim.addCamera(m_cameraSim, cameraData.transform3d());
 
     // Enable the raw and processed streams. (These are enabled by default, but I'm
     // making it explicit here, so that we can easily turn them off if we decide

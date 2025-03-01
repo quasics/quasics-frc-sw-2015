@@ -146,7 +146,7 @@ public class RobotConfigs {
   /**
    * Configuration data for an elevator.
    *
-   * @param leftPid     PID configuration settings for the elevator's motors
+   * @param pid         PID configuration settings for the elevator's motors
    * @param feedForward feedforward data for the elevator
    */
   public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
@@ -198,23 +198,33 @@ public class RobotConfigs {
    *
    * @param wheelRadius radius of the drive base wheels
    * @param trackWidth  maximum width between drive base wheels
+   * @param gearing     gearing between motor and wheel axel (>=1)
    * @param leftPid     PID configuration for the drivebase's left motors
    * @param rightPid    PID configuration for the drivebase's right motors
    * @param feedForward feedforward configuration for the drivebase
    */
-  public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
-      double gearing, // (gearing between motor and wheel axel (>=1))
-      PIDConfig leftPid, PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
+  public static record DriveConfig(
+      Distance wheelRadius,
+      Distance trackWidth,
+      double gearing,
+      PIDConfig leftPid,
+      PIDConfig rightPid,
+      DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left and
      * right.
      * 
      * @param wheelRadius radius of the drive base wheels
      * @param trackWidth  maximum width between drive base wheels
+     * @param gearing     gearing between motor and wheel axel (>=1)
      * @param commonPid   shared PID configuration for the drivebase
      * @param feedForward feedforward configuration for the drivebase
      */
-    public DriveConfig(Distance wheelRadius, Distance trackWidth, double gearing, PIDConfig commonPid,
+    public DriveConfig(
+        Distance wheelRadius,
+        Distance trackWidth,
+        double gearing,
+        PIDConfig commonPid,
         DriveFeedForwardConfig feedForward) {
       this(wheelRadius, trackWidth, gearing, commonPid, commonPid, feedForward);
     }
@@ -233,7 +243,7 @@ public class RobotConfigs {
    * Collective robot configuration data.
    *
    * @param drive    drive base configuration (may be null)
-   * @param camera   camera configuration (may be null)
+   * @param cameras  list of camera configurations (may be null)
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    */
@@ -246,10 +256,10 @@ public class RobotConfigs {
     /**
      * Utility constructor fo a single-camera robot.
      * 
-     * @param drive
-     * @param camera
-     * @param elevator
-     * @param lighting
+     * @param drive    drive base configuration (may be null)
+     * @param camera   camera configuration (may be null)
+     * @param elevator elevator configuration (may be null)
+     * @param lighting lighting configuration (may be null)
      */
     RobotConfig(
         DriveConfig drive,

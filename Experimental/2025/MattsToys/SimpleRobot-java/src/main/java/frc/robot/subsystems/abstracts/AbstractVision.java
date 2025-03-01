@@ -34,6 +34,7 @@ public abstract class AbstractVision extends SubsystemBase implements IVision {
   public record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
   }
 
+  /** Pose strategy to be used for resolving estimates. */
   protected static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
   /**
@@ -66,7 +67,9 @@ public abstract class AbstractVision extends SubsystemBase implements IVision {
     m_tagLayout = tagLayout;
   }
 
+  /** @return the number of cameras being used */
   public abstract int getNumCameras();
 
+  /** @return the list of CameraData objects for this subsystem */
   protected abstract List<CameraData> getCameraData();
 }

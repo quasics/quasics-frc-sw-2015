@@ -41,6 +41,7 @@ public class SysIdGenerator {
   /**
    * Returns a SysIdRoutine generator for the specified drivebase/mode.
    *
+   * @param config    SysIdRoutine configuration data
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @return a configured SysIdRoutine generator

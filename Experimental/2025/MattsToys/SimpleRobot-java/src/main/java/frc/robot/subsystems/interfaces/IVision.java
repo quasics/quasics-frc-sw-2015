@@ -16,7 +16,10 @@ public interface IVision extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   static final String SUBSYSTEM_NAME = "Vision";
 
-  /** Key used to post multi-camera List<EstimatedRobotPose> to BulletinBoard. */
+  /**
+   * Key used to post multi-camera List of EstimatedRobotPose data to
+   * BulletinBoard.
+   */
   static final String POSES_KEY = SUBSYSTEM_NAME + ".EstimatedPoses";
 
   /** Key used to post last estimated Pose timestamp to BulletinBoard. */
@@ -25,6 +28,7 @@ public interface IVision extends ISubsystem {
   /** Key used to post "was Pose estimate recently updated?" to BulletinBoard. */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
+  /** @return the most recent pose estimates (based on camera data) */
   List<EstimatedRobotPose> getEstimatedPoses();
 
   /** Trivial implementation of IVision (e.g., if we don't have a camera). */

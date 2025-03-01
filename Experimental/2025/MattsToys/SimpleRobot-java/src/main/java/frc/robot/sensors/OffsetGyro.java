@@ -20,7 +20,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  * When we're wrapping a multi-axis gyro/ALU inside of the single-axis "IGyro"
  * interface and want to be able to support resetting data for that specific
  * axis under some circumstances, without changing the others.
- * <p/>
+ * <p>
  * For example, in the 2023 game ("Charged up"), we needed to track both the
  * robot's heading (left/right rotation, or "yaw") for navigating around the
  * field, but also needed to track the "pitch" of the robot up/down in order
@@ -32,7 +32,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
  * When we're performing some temporally-scoped set of operations (e.g., while a
  * command is running) and want to have an easy reference point (i.e., 0)
  * without affecting the overall use of a gyro/ALU.
- * <p/>
+ * <p>
  * For example, the "real" gyro might be used on a continuous basis to maintain
  * data for odometry/pose estimation, and thus resetting the actual gyro would
  * "break" that processing. However, we might want to simplify the handling of a

@@ -5,7 +5,6 @@
 package frc.robot.subsystems.armPivot;
 
 import static edu.wpi.first.units.Units.*;
-import edu.wpi.first.math.controller.PIDController;
 
 public class ArmPivot extends AbstractArmPivot {
   /** Creates a new ArmPivot. */
@@ -16,10 +15,6 @@ public class ArmPivot extends AbstractArmPivot {
   public void periodic() {
     driveArmToSetpoint();
     super.periodic();
-  }
-
-  public PIDController getPivotPIDController() {
-    return m_armPIDController;
   }
 
   public void driveArmToSetpoint() {

@@ -51,10 +51,23 @@ public abstract class AbstractDrivebase extends SubsystemBase {
    */
   // TODO: add some config thing so these values can be easily changed across
   // robots
-  final protected PIDController m_leftPidController = new PIDController(1.6018, 0.0, 0.0);
-  final protected PIDController m_rightPidController = new PIDController(1.6018, 0.0, 0.0);
-  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
-      0.29782);
+  /*
+   * final protected PIDController m_leftPidController = new PIDController(1.6018,
+   * 0.0, 0.0);
+   * final protected PIDController m_rightPidController = new
+   * PIDController(1.6018, 0.0, 0.0);
+   * final protected DifferentialDriveFeedforward m_feedforward = new
+   * DifferentialDriveFeedforward(1.9802, 1.9202, 1.5001,
+   * 0.29782);
+   */
+
+  final protected PIDController m_leftPidController = new PIDController(0.1474, 0.0, 0.0);
+  final protected PIDController m_rightPidController = new PIDController(0.16513, 0.0, 0.0);
+  final protected DifferentialDriveFeedforward m_feedforward = new DifferentialDriveFeedforward(
+      0.18581,
+      0.05689,
+      0.20933,
+      0.054005);
 
   private final LTVUnicycleController m_controller = new LTVUnicycleController(0.02);
 

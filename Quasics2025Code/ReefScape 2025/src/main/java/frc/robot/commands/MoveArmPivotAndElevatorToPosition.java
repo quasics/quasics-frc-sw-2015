@@ -8,18 +8,19 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.armPivot.AbstractArmPivot;
+import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.elevator.AbstractElevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveArmPivotAndElevatorToPosition extends Command {
-  private final AbstractArmPivot m_armPivot;
+  private final ArmPivot m_armPivot;
   private final AbstractElevator m_elevator;
   final private Angle m_armPivotSetpoint;
   final private AbstractElevator.TargetPosition m_targetPosition;
 
   /** Creates a new MoveArmPivotAndElevatorToPosition. */
-  public MoveArmPivotAndElevatorToPosition(AbstractArmPivot armPivot, AbstractElevator elevator, Angle armPivotSetpoint,
+  public MoveArmPivotAndElevatorToPosition(
+      ArmPivot armPivot, AbstractElevator elevator, Angle armPivotSetpoint,
       AbstractElevator.TargetPosition targetPosition) {
     m_armPivot = armPivot;
     m_elevator = elevator;

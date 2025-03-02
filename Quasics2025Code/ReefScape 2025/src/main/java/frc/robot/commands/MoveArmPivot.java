@@ -7,17 +7,17 @@ package frc.robot.commands;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.armPivot.AbstractArmPivot;
+import frc.robot.subsystems.armPivot.ArmPivot;
 
 /* You should consider using the more terse Command factories API instead
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class MoveArmPivot extends Command {
-  private final AbstractArmPivot m_pivot;
+  private final ArmPivot m_pivot;
   private final double m_pivotSpeed;
 
   /** Creates a new MoveArmPivot. */
-  public MoveArmPivot(AbstractArmPivot pivot, double pivotSpeed) {
+  public MoveArmPivot(ArmPivot pivot, double pivotSpeed) {
     m_pivot = pivot;
     m_pivotSpeed = pivotSpeed;
     // Use addRequirements() here to declare subsystem dependencies.

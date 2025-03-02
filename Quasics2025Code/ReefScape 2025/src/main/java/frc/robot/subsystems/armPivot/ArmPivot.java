@@ -10,6 +10,9 @@ public class ArmPivot extends AbstractArmPivot {
   /** Creates a new ArmPivot. */
   public ArmPivot() {
     super();
+
+    // CODE_REVIEW: Consider calling m_armPIDController.setTolerance(<value>) to
+    // establish how much error is "close enough".
   }
 
   public void periodic() {
@@ -17,7 +20,9 @@ public class ArmPivot extends AbstractArmPivot {
     super.periodic();
   }
 
-  public void driveArmToSetpoint() {
+  static final boolean NOISY = false;
+
+  private void driveArmToSetpoint() {
     if (m_angleSetpoint == null) {
       return;
     }
@@ -26,9 +31,18 @@ public class ArmPivot extends AbstractArmPivot {
     double pidOutput = m_armPIDController.calculate(currentAngleRadians, m_angleSetpoint.in(Radians));
     double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, currentVelocity_radiansPerSec);
     double output = feedForwardOutput + pidOutput;
-    System.out.printf("pid: %.02f, feedforward: %.02f, output: %.02f, setpoint: %.02f\n", pidOutput, feedForwardOutput,
-        output, m_angleSetpoint.in(Degrees));
+    if (NOISY) {
+      System.out.printf(
+          "pid: %.02f, feedforward: %.02f, output: %.02f, setpoint: %.02f\n",
+          pidOutput,
+          feedForwardOutput,
+          output, m_angleSetpoint.in(Degrees));
+    }
     m_pivot.setVoltage(output);
+  }
+
+  public boolean atSetpoint() {
+    return m_armPIDController.atSetpoint();
   }
 
   // TODO: Test this.

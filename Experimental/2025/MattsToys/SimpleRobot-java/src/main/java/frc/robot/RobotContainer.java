@@ -67,24 +67,25 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
-  final IVision m_vision = allocateVision(m_robotConfig);
-  private final IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
-  final AbstractElevator m_elevator = allocateElevator(m_robotConfig);
-  final ISingleJointArm m_arm = new SimulatedSingleJointArm();
-  final ILighting m_lighting = allocateLighting(m_robotConfig);
+  final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
+  final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
+  final private ISingleJointArm m_arm = new SimulatedSingleJointArm();
+  final private ILighting m_lighting = allocateLighting(m_robotConfig);
+  @SuppressWarnings("unused") // Vision interacts via BulletinBoard
+  final private IVision m_vision = allocateVision(m_robotConfig);
 
   // Controllers
   //
-  // TODO: Consider using CommandJoystick class instead of Joystick. (Would let me
-  // explicitly bind specific channels for X/Y, possibly simplifying live vs
-  // simulation handling, as well as directly providing "trigger factories" for
-  // commands.)
+  // Note that we can also consider using CommandJoystick class instead of
+  // Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
+  // possibly simplifying live vs simulation handling by not requiring custom
+  // value inversion), as well as directly providing "trigger factories" for
+  // commands.
   //
-  // Note that live joysticks generally follow a different orientation/coordinate
-  // system than the one used for the robot.
-  //
-  // @see
+  // Note also that live joysticks generally follow a different
+  // orientation/coordinate system than the one used for the robot. (See
   // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
+  // for details.)
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   /** Factory object for Choreo trajectories. */

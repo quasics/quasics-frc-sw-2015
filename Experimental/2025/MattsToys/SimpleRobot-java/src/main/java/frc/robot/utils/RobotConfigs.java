@@ -341,7 +341,7 @@ public class RobotConfigs {
 
     map.put(Robot.Sally,
         new RobotConfig(
-            // TODO: Update DriveConfig data to match Sally's configuration.
+            // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile.
             new DriveConfig(Inches.of(3), // Wheel radius
                 Meters.of(0.5588) /* 22 in (from 2024) */,
                 8.45, // Gearing (from 2024)

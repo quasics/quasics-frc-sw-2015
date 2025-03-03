@@ -248,7 +248,13 @@ public interface IDrivebase extends ISubsystem {
   void followTrajectory(DifferentialSample sample);
 
   /**
-   * Resets the robot's pose (e.g., when starting a trajectory).
+   * Resets the current pose to the specified value.
+   * 
+   * This should ONLY be called when the robot's position on the field is known
+   * (e.g., at the beginning of a match). The code for trajectory-following may
+   * invoke this, because it assumes that pre-defined trajectories are started at
+   * a well-defined/fixed place.
+   * 
    *
    * @param pose new pose to use as a basis for odometry/pose estimation
    */

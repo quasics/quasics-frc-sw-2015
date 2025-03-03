@@ -20,7 +20,6 @@ import java.util.Map;
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
-  // TODO: Add definitions for actual hardware.
   /** The supported robots. */
   public enum Robot {
     /** Simulation-only */

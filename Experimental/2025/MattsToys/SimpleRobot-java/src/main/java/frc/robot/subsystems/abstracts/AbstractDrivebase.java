@@ -7,6 +7,7 @@ package frc.robot.subsystems.abstracts;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.trajectory.DifferentialSample;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.DifferentialDriveFeedforward;
 import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.controller.PIDController;
@@ -17,11 +18,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
@@ -42,6 +46,12 @@ import org.photonvision.EstimatedRobotPose;
 public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
   /** Controls if data should be logged to the dashboard. */
   final static boolean LOG_TO_DASHBOARD = true;
+
+  /**
+   * Controls if the confidence estimate when using vision data for pose
+   * calculation should be scaled based on distance/ambiguity.
+   */
+  final static boolean USE_CONFIDENCE_SCALING = true;
 
   /**
    * Controls if vision pose estimates should be included in the drive base's
@@ -144,6 +154,9 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // TODO: Should probably clear position data from Vision when we're running in
     // the simulator, since we could be jumping significantly in a way that the
     // vision stuff won't pick up (unlike in real-world movement).
+    //
+    // One option for this could be to publish a signal to the bulletin board, and
+    // have the Vision subsytem "notice" it.
   }
 
   @Override
@@ -227,17 +240,17 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     List<EstimatedRobotPose> poses = (List<EstimatedRobotPose>) optionalPoseList.get();
 
     // OK. Update the estimator based on the pose(s) and timestamp.
-    //
-    // TODO: Consider moving from this naive approach for integrating multiple
-    // vision-based estimates to something more sophisticated. For some further
-    // details, see
-    // https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/4
-    // and
-    // https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
     for (EstimatedRobotPose estimate : poses) {
-      estimator.addVisionMeasurement(
-          estimate.estimatedPose.toPose2d(),
-          estimate.timestampSeconds);
+      if (USE_CONFIDENCE_SCALING) {
+        estimator.addVisionMeasurement(
+            estimate.estimatedPose.toPose2d(),
+            estimate.timestampSeconds,
+            confidenceCalculator(estimate));
+      } else {
+        estimator.addVisionMeasurement(
+            estimate.estimatedPose.toPose2d(),
+            estimate.timestampSeconds);
+      }
     }
   }
 
@@ -265,6 +278,53 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   @Override
   public void setDefaultCommand(Command defaultCommand) {
     super.setDefaultCommand(defaultCommand);
+  }
+
+  /**
+   * Generates a confidence estimate (as standard deviations) for the vision
+   * system's estimated pose, to be used in applying it to our estimate (based on
+   * odometry data).
+   * 
+   * @return matrix expressing the standard deviations to be used in applying the
+   *         estimated position from vision to the drivebase's estimated.
+   * 
+   * @see <a href=
+   *      "https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/">CD
+   *      thread</a>
+   * @see <a href=
+   *      "https://github.com/Hemlock5712/2023-Robot/blob/Joe-Test/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java">Sample
+   *      from Hemlocks 5712's 2023 robot</a>
+   */
+  protected static Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
+    // Find the shortest distance to a target that was used to build this estimated
+    // position.
+    double smallestDistance = Double.POSITIVE_INFINITY;
+    for (var target : estimation.targetsUsed) {
+      var t3d = target.getBestCameraToTarget();
+      var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+      if (distance < smallestDistance)
+        smallestDistance = distance;
+    }
+
+    // Calculate some factors to roll into the weighting of the estimate.
+    double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
+        ? 1
+        : Math.max(
+            1,
+            (estimation.targetsUsed.get(0).getPoseAmbiguity()
+                + VisionConstants.POSE_AMBIGUITY_SHIFTER)
+                * VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
+    double confidenceMultiplier = Math.max(
+        1,
+        (Math.max(
+            1,
+            Math.max(0, smallestDistance - VisionConstants.NOISY_DISTANCE_METERS)
+                * VisionConstants.DISTANCE_WEIGHT)
+            * poseAmbiguityFactor)
+            / (1
+                + ((estimation.targetsUsed.size() - 1) * VisionConstants.TAG_PRESENCE_WEIGHT)));
+
+    return VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
   }
 
   /////////////////////////////////////////////////////////////////////////////////

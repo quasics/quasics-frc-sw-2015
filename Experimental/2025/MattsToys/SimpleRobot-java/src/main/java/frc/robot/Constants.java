@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+
 /**
  * Defines some constants for the robot.
  */
@@ -143,5 +148,47 @@ public class Constants {
     public static final int LeftStickPress = 9;
     /** ID for the button clicked by pressing on the right joystick. */
     public static final int RightStickPress = 10;
+  }
+
+  public static class VisionConstants {
+
+    public static boolean USE_VISION = true;
+
+    /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
+    public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+    public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
+    public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+    public static final double NOISY_DISTANCE_METERS = 2.5;
+    public static final double DISTANCE_WEIGHT = 7;
+    public static final int TAG_PRESENCE_WEIGHT = 10;
+
+    /**
+     * Standard deviations of model states. Increase these numbers to trust your
+     * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ, with
+     * units in meters and radians, then meters.
+     */
+    public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = new Matrix<N3, N1>(
+        Nat.N3(), Nat.N1(),
+        new double[] {
+            // if these numbers are less than one, multiplying will do bad things
+            1, // x
+            1, // y
+            1 * Math.PI // theta
+        });
+
+    /**
+     * Standard deviations of the vision measurements. Increase these numbers to
+     * trust global measurements from vision less. This matrix is in the form [x, y,
+     * theta]ᵀ, with units in meters and radians.
+     */
+    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = new Matrix<N3, N1>(
+        Nat.N3(), Nat.N1(),
+        new double[] {
+            // if these numbers are less than one, multiplying will do bad things
+            .1, // x
+            .1, // y
+            .1
+        });
+
   }
 }

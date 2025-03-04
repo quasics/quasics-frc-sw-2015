@@ -104,19 +104,19 @@ public final class Autos {
 
     if (operation == AutonomousSelectedOperation.GTFO) {
       // return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
-      GTFO();
+      return GTFO();
     }
 
     if (operation == AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF) {
-      grabAlgaeFromReef();
+      return grabAlgaeFromReef();
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE) {
-      scoreAlgaeFromReefIntoBarge();
+      return scoreAlgaeFromReefIntoBarge();
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR) {
-      scoreAlgaeFromReefIntoProcessor();
+      return scoreAlgaeFromReefIntoProcessor();
     }
 
     return new PrintCommand("Doing nothing because no operation?");

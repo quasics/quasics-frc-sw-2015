@@ -398,6 +398,8 @@ public class RobotContainer {
         .whileTrue(new MoveArmPivot(m_armPivot, 0.3));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.
+        kA.value)).whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
   }
 
   private double getDriveSpeedScalingFactor() {

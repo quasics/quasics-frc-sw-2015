@@ -7,11 +7,17 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoFactory;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
+import frc.robot.commands.*;
+import frc.robot.subsystems.armPivot.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
+import frc.robot.subsystems.elevator.AbstractElevator;
 
 public final class Autos {
 
@@ -31,6 +37,8 @@ public final class Autos {
   static final double DIST_TO_REEF = 2.134;
   private static AutoFactory m_autoFactory;
   private static AbstractDrivebase m_drivebase;
+  private static ArmPivot m_armPivot;
+  private static AbstractElevator m_elevator;
   private static int m_position;
 
   public static Command followPath(String pathName,
@@ -77,7 +85,22 @@ public final class Autos {
   }
 
   public static Command scoreAlgaeFromReefIntoProcessor() {
-    return new PrintCommand("TODO");
+    switch (m_position) {
+      case 1:
+        return Commands.parallel(followPath("middlereeftoprocessor", true),
+            runArmPivotAndElevatorDownAfterTime(m_elevator, m_armPivot, 1.0));
+      case 2:
+        return Commands.parallel(followPath("bottomreeftoprocessor", true),
+            runArmPivotAndElevatorDownAfterTime(m_elevator, m_armPivot, 1.0));
+      default:
+        return new PrintCommand("scoreAlgaeFromReefIntoProcessor");
+    }
+  }
+
+  public static Command runArmPivotAndElevatorDownAfterTime(AbstractElevator m_elevator,
+      ArmPivot m_armPivot, double seconds) {
+    return Commands.sequence(new WaitCommand(seconds), new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator,
+        Radians.of(0), AbstractElevator.TargetPosition.kBottom));
   }
 
   /** Example static factory for an autonomous command. */

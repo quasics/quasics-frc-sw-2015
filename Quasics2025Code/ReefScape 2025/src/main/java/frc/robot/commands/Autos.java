@@ -32,42 +32,38 @@ public final class Autos {
    */
 
   static final double DIST_TO_REEF = 2.134;
-  private static AutoFactory m_autoFactory;
-  private static AbstractDrivebase m_drivebase;
-  private static ArmPivot m_armPivot;
-  private static AbstractElevator m_elevator;
-  private static int m_position;
 
-  public static Command followPath(String pathName,
+  public static Command followPath(
+      AutoFactory autoFactory, String pathName,
       boolean resetOdometry) {
 
     return Commands.sequence(
-        resetOdometry ? m_autoFactory.resetOdometry(pathName) : Commands.none(),
-        resetOdometry ? m_autoFactory.resetOdometry(pathName) : Commands.none(),
-        m_autoFactory.trajectoryCmd(pathName));
+        resetOdometry ? autoFactory.resetOdometry(pathName) : Commands.none(),
+        resetOdometry ? autoFactory.resetOdometry(pathName) : Commands.none(),
+        autoFactory.trajectoryCmd(pathName));
   }
 
-  public static Command GTFO() {
-    switch (m_position) {
+  public static Command GTFO(AutoFactory autoFactory, int position) {
+    switch (position) {
       case 1:
-        return followPath("1gtfo", true);
+        return followPath(autoFactory, "1gtfo", true);
       case 2:
-        return followPath("2gtfo", true);
+        return followPath(autoFactory, "2gtfo", true);
       case 3:
-        return followPath("3gtfo", true);
+        return followPath(autoFactory, "3gtfo", true);
       default:
         return new PrintCommand("GTFO failed?");
     }
   }
 
-  public static Command goToReef() {
-    switch (m_position) {
+  public static Command goToReef(AutoFactory autoFactory, int position) {
+    switch (position) {
       case 1:
-        return followPath("1toreef", true);
+        return followPath(autoFactory, "1toreef", true);
       case 2:
-        return followPath("2toreef", true);
+        return followPath(autoFactory, "2toreef", true);
       case 3:
-        return followPath("3toreef", true);
+        return followPath(autoFactory, "3toreef", true);
       default:
         return new PrintCommand("goToReef failed?");
     }
@@ -81,31 +77,37 @@ public final class Autos {
     return new PrintCommand("TODO");
   }
 
-  public static Command scoreAlgaeFromReefIntoProcessor() {
-    switch (m_position) {
+  public static Command scoreAlgaeFromReefIntoProcessor(
+      AutoFactory autoFactory,
+      AbstractElevator elevator,
+      ArmPivot armPivot,
+      int position) {
+    switch (position) {
       case 1:
-        return Commands.parallel(followPath("middlereeftoprocessor", true),
-            runArmPivotAndElevatorDownAfterTime(m_elevator, m_armPivot, 1.0));
+        return Commands.parallel(followPath(autoFactory, "middlereeftoprocessor", true),
+            runArmPivotAndElevatorDownAfterTime(elevator, armPivot, 1.0));
       case 2:
-        return Commands.parallel(followPath("bottomreeftoprocessor", true),
-            runArmPivotAndElevatorDownAfterTime(m_elevator, m_armPivot, 1.0));
+        return Commands.parallel(followPath(autoFactory, "bottomreeftoprocessor", true),
+            runArmPivotAndElevatorDownAfterTime(elevator, armPivot, 1.0));
       default:
         return new PrintCommand("scoreAlgaeFromReefIntoProcessor");
     }
   }
 
-  public static Command runArmPivotAndElevatorDownAfterTime(AbstractElevator m_elevator,
-      ArmPivot m_armPivot, double seconds) {
-    return Commands.sequence(new WaitCommand(seconds), new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator,
+  public static Command runArmPivotAndElevatorDownAfterTime(AbstractElevator elevator,
+      ArmPivot armPivot, double seconds) {
+    return Commands.sequence(new WaitCommand(seconds), new MoveArmPivotAndElevatorToPosition(armPivot, elevator,
         Radians.of(0), AbstractElevator.TargetPosition.kBottom));
   }
 
   /** Example static factory for an autonomous command. */
-  public static Command getAutonomousCommand(AutoFactory autoFactory,
-      AbstractDrivebase drivebase, String operation, int position) {
-    m_autoFactory = autoFactory;
-    m_drivebase = drivebase;
-    m_position = position;
+  public static Command getAutonomousCommand(
+      AutoFactory autoFactory,
+      AbstractDrivebase drivebase,
+      AbstractElevator elevator,
+      ArmPivot armPivot,
+      String operation,
+      int position) {
 
     if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");
@@ -119,12 +121,12 @@ public final class Autos {
     }
 
     if (operation == AutonomousSelectedOperation.GO_TO_REEF) {
-      return goToReef();
+      return goToReef(autoFactory, position);
     }
 
     if (operation == AutonomousSelectedOperation.GTFO) {
       // return new DriveForDistance(drivebase, 0.20, Meters.of(DIST_TO_REEF));
-      return GTFO();
+      return GTFO(autoFactory, position);
     }
 
     if (operation == AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF) {
@@ -136,7 +138,7 @@ public final class Autos {
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR) {
-      return scoreAlgaeFromReefIntoProcessor();
+      return scoreAlgaeFromReefIntoProcessor(autoFactory, elevator, armPivot, position);
     }
 
     return new PrintCommand("Doing nothing because no operation?");

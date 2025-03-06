@@ -7,12 +7,10 @@ package frc.robot.subsystems.live;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -78,42 +76,6 @@ public class MultiCameraVision extends AbstractVision {
     return m_cameraData;
   }
 
-  /**
-   * Applies any updates for the estimator on a camera, optionally integrating the
-   * last/reference pose provided by the drivebase.
-   * 
-   * @param camera    camera supplying data to use in the estimate
-   * @param estimator pose estimator being updated
-   * @param drivePose last reported pose from the drivebase (or null)
-   * @return the updated estimate, based on the camera data
-   */
-  private static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      final PhotonCamera camera,
-      final PhotonPoseEstimator estimator,
-      final Pose2d drivePose) {
-    // Update the vision pose estimator with the latest robot pose from the drive
-    // base (if we have one).
-    if (drivePose != null) {
-      estimator.setLastPose(drivePose);
-      estimator.setReferencePose(drivePose);
-    }
-
-    // Update the pose estimator with the latest vision measurements from its
-    // camera.
-    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-    if (results.isEmpty()) {
-      // No results? Nothing to do.
-      return Optional.empty();
-    }
-
-    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
-    for (PhotonPipelineResult photonPipelineResult : results) {
-      lastEstimatedPose = estimator.update(photonPipelineResult);
-    }
-
-    return lastEstimatedPose;
-  }
-
   @Override
   public void periodic() {
     super.periodic();
@@ -123,23 +85,22 @@ public class MultiCameraVision extends AbstractVision {
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Update camera-specific estimators (and gather their results).
+    double lastTimestamp = 0;
     List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
     for (CameraData cameraData : m_cameraData) {
       var estimate = updateEstimateForCamera(
           cameraData.camera(), cameraData.estimator(),
           drivePose);
       if (!estimate.isEmpty()) {
-        estimates.add(estimate.get());
+        var estimatedPose = estimate.get();
+        estimates.add(estimatedPose);
+        lastTimestamp = Math.max(estimatedPose.timestampSeconds, lastTimestamp);
       }
     }
 
     // Save it, and publish it.
     m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
-    if (!m_latestEstimatedPoses.isEmpty()) {
-      BulletinBoard.common.updateValue(POSES_KEY, m_latestEstimatedPoses);
-    } else {
-      BulletinBoard.common.clearValue(POSES_KEY);
-    }
+    publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
   }
 
   @Override

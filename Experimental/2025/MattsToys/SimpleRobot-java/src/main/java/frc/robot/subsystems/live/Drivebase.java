@@ -7,7 +7,6 @@ package frc.robot.subsystems.live;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -45,16 +44,10 @@ public class Drivebase extends AbstractDrivebase {
   /** Right leading motor. */
   final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
 
-  // TODO: Consider fully replacing the relative encoders with TrivialEncoders.
-  /** Left encoder. */
-  final private RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
-  /** Right encoder. */
-  final private RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();
-
   /** Left encoder (as a TrivialEncoder). */
-  final private TrivialEncoder m_leftTrivialEncoder = new SparkMaxEncoderWrapper(m_leftEncoder);
+  final private TrivialEncoder m_leftEncoder = new SparkMaxEncoderWrapper(m_leftLeader.getEncoder());
   /** Right encoder (as a TrivialEncoder). */
-  final private TrivialEncoder m_rightTrivialEncoder = new SparkMaxEncoderWrapper(m_rightEncoder);
+  final private TrivialEncoder m_rightEncoder = new SparkMaxEncoderWrapper(m_rightLeader.getEncoder());
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
@@ -107,7 +100,8 @@ public class Drivebase extends AbstractDrivebase {
 
     // Set up the pose estimator
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
-        m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition(),
+        m_wrappedGyro.getRotation2d(), m_leftEncoder.getPosition().in(Meters),
+        m_rightEncoder.getPosition().in(Meters),
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)) /* stateStdDevs */,
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)) /* visionMeasurementStdDevs */);
@@ -131,12 +125,12 @@ public class Drivebase extends AbstractDrivebase {
 
   @Override
   public TrivialEncoder getLeftEncoder() {
-    return m_leftTrivialEncoder;
+    return m_leftEncoder;
   }
 
   @Override
   public TrivialEncoder getRightEncoder() {
-    return m_rightTrivialEncoder;
+    return m_rightEncoder;
   }
 
   @Override

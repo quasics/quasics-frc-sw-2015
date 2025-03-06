@@ -39,9 +39,14 @@ import org.photonvision.EstimatedRobotPose;
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
  * of the underlying hardware is left to derived classes.
- *
- * TODO: Consider adding "mode" info, to allow switching between PID and "manual
- * control".
+ * 
+ * Possible improvements:
+ * <ul>
+ * <li>
+ * Consider implementing independent FF for left and right, since kV/kA may
+ * differ.
+ * </li>
+ * </ul>
  */
 public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
   /** Controls if data should be logged to the dashboard. */
@@ -68,7 +73,6 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   /** PID controller for right side motors. */
   final protected PIDController m_rightPidController;
   /** Feedforward controller for drive base. */
-  // TODO: Consider independent FF for left and right, since kV/kA may differ.
   final protected DifferentialDriveFeedforward m_feedforward;
 
   /** Unicycle controller for use with trajectory-following. */

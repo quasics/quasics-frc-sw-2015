@@ -50,6 +50,8 @@ public class RealElevator extends AbstractElevator {
     m_leader.configure(
         leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    m_pid.setTolerance(1, 2);
   }
 
   @Override
@@ -100,10 +102,13 @@ public class RealElevator extends AbstractElevator {
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
 
+    SmartDashboard.putBoolean("At elevator setpoint?", m_pid.atSetpoint());
+
     // SmartDashboard.putBoolean("Able to move", ableToMove());
 
     if (!ableToMove(m_encoder.getVelocity())) {
       stop();
+      m_targetPosition = TargetPosition.kDontCare;
     }
 
     if (m_targetPosition != TargetPosition.kDontCare) {
@@ -113,11 +118,6 @@ public class RealElevator extends AbstractElevator {
       double feedforward = m_feedforward.calculate(velocity);
 
       double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
-      if (ableToMove(output)) {
-        setVoltage(output);
-      } else {
-        System.out.printf("ERROR: limit switch stopped PID, output voltage: %0.2f", output);
-      }
 
       System.out.printf(
           "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",

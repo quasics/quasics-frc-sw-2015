@@ -20,12 +20,12 @@ import frc.robot.subsystems.elevator.AbstractElevator;
  * default on the elevator (e.g., something that reads a joystick control for
  * height, etc.), then that could conflict with this approach.
  */
-public class MoveElevatorToTargetPosition extends Command {
+public class MoveElevatorToPosition extends Command {
   final private AbstractElevator m_elevator;
   final private AbstractElevator.TargetPosition m_targetPosition;
 
   /** Creates a new MoveElevatorToTargetPosition. */
-  public MoveElevatorToTargetPosition(
+  public MoveElevatorToPosition(
       AbstractElevator elevator, AbstractElevator.TargetPosition targetPosition) {
     m_elevator = elevator;
     m_targetPosition = targetPosition;

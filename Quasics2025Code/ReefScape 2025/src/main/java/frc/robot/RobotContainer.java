@@ -26,7 +26,7 @@ import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbersForTime;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.MoveElevatorToTargetPosition;
+import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
@@ -63,6 +63,7 @@ public class RobotContainer {
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
   private final Climbers m_climbers = new Climbers();
+  @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
@@ -190,13 +191,13 @@ public class RobotContainer {
         "Retract Climber 10% ", new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     SmartDashboard.putData("Elevator to L2",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
     SmartDashboard.putData("Elevator to L1",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
     SmartDashboard.putData("Elevator to bottom",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
@@ -398,6 +399,8 @@ public class RobotContainer {
         .whileTrue(new MoveArmPivot(m_armPivot, 0.3));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
   }
 
   private double getDriveSpeedScalingFactor() {
@@ -429,6 +432,8 @@ public class RobotContainer {
       return Commands.none();
     }
 
-    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, autonomousOperation, positionOpt.getAsInt());
+    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot, m_armRoller,
+        autonomousOperation,
+        positionOpt.getAsInt());
   }
 }

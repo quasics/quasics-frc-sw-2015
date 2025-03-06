@@ -115,7 +115,7 @@ public class SingleCameraVision extends AbstractVision {
 
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    final Pose2d lastOdometryPose = IDrivebase.getLastPose();
+    final Pose2d lastOdometryPose = IDrivebase.getPublishedLastPose();
     final Optional<EstimatedRobotPose> lastEstimatedPose = updateEstimateForCamera(camera, estimator, lastOdometryPose);
     final double lastEstimatedTimestamp = lastEstimatedPose.isPresent()
         ? lastEstimatedPose.get().timestampSeconds

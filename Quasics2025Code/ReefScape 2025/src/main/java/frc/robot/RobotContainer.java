@@ -26,7 +26,7 @@ import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotToPosition;
 import frc.robot.commands.MoveClimbersForTime;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.MoveElevatorToTargetPosition;
+import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
@@ -191,13 +191,13 @@ public class RobotContainer {
         "Retract Climber 10% ", new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     SmartDashboard.putData("Elevator to L2",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
     SmartDashboard.putData("Elevator to L1",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
     SmartDashboard.putData("Elevator to bottom",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
-        new MoveElevatorToTargetPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
@@ -432,7 +432,8 @@ public class RobotContainer {
       return Commands.none();
     }
 
-    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot, autonomousOperation,
+    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot, m_armRoller,
+        autonomousOperation,
         positionOpt.getAsInt());
   }
 }

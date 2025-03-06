@@ -55,9 +55,7 @@ public class ArmPivot extends SubsystemBase {
     m_pivot.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_armPIDController.setP(7);
-    // CODE_REVIEW/FIXME: Consider calling m_armPIDController.setTolerance(<value>)
-    // to
-    // establish how much error is "close enough".
+    m_armPIDController.setTolerance(0.5, 1);
   }
 
   static final boolean NOISY = false;

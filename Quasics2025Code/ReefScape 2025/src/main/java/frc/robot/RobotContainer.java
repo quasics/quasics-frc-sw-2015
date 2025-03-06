@@ -63,6 +63,7 @@ public class RobotContainer {
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
   private final Climbers m_climbers = new Climbers();
+  @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;

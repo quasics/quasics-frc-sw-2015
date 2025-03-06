@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import java.util.function.Supplier;
 
-// CODE_REVIEW: If we're not going to use tank drive for the robot, then we
+// CODE_REVIEW/FIXME: If we're not going to use tank drive for the robot, then we
 // should probably just remove this command.
 public class TankDrive extends Command {
   private final RealDrivebase m_drivebase;

@@ -24,7 +24,6 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotToPosition;
-import frc.robot.commands.MoveClimbersForTime;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
@@ -32,7 +31,6 @@ import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
-import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
@@ -62,7 +60,6 @@ public class RobotContainer {
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
-  private final Climbers m_climbers = new Climbers();
   @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
 
@@ -178,17 +175,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
     SmartDashboard.putData("Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
-
-    SmartDashboard.putData(
-        "Extend Climber 25% ", new MoveClimbersForTime(m_climbers, true, 0.25, .5));
-    SmartDashboard.putData(
-        "Extend Climber 50% ", new MoveClimbersForTime(m_climbers, true, 0.5, .25));
-    SmartDashboard.putData(
-        "Extend Climber 5% ", new MoveClimbersForTime(m_climbers, false, 0.5, 1));
-    SmartDashboard.putData(
-        "Extend Climber 10% ", new MoveClimbersForTime(m_climbers, false, .10, 1));
-    SmartDashboard.putData(
-        "Retract Climber 10% ", new MoveClimbersForTime(m_climbers, true, 0.10, .5));
 
     SmartDashboard.putData("Elevator to L2",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));

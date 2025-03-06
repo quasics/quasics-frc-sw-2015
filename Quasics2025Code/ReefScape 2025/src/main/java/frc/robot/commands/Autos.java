@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.commands.*;
-import frc.robot.subsystems.armPivot.ArmPivot;
+import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;

@@ -20,6 +20,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.utils.BulletinBoard;
 
 /**
  * Basic interface for drive base functionality.
@@ -184,6 +185,14 @@ public interface IDrivebase extends ISubsystem {
    */
   default ChassisSpeeds getCurrentSpeeds() {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
+  }
+
+  /** @return last posted odemetry pose, or null */
+  static Pose2d getPublishedLastPose() {
+    // Update the vision pose estimator with the latest robot pose from the drive
+    // base.
+    var stored = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
+    return (Pose2d) stored.orElse(null);
   }
 
   /////////////////////////////////////////////////////////////////////////////////

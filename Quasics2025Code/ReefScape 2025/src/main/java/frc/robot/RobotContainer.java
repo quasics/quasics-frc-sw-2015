@@ -34,7 +34,7 @@ import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.armPivot.ArmPivot;
+import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;

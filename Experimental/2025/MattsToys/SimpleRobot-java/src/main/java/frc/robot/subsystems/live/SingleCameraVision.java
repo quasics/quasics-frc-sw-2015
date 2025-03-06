@@ -115,25 +115,11 @@ public class SingleCameraVision extends AbstractVision {
 
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class).ifPresentOrElse(pose -> {
-      Pose2d pose2d = (Pose2d) pose;
-      estimator.setLastPose(pose2d);
-      estimator.setReferencePose(pose2d);
-    }, () -> System.err.println("Warning: no robot drive pose available."));
-
-    // Update the pose estimator with the latest vision measurements.
-    List<PhotonPipelineResult> results = m_cameraData.camera().getAllUnreadResults();
-    if (results.isEmpty()) {
-      // No results? Nothing to do.
-      return;
-    }
-
-    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
-    double lastEstimatedTimestamp = 0;
-    for (PhotonPipelineResult photonPipelineResult : results) {
-      lastEstimatedPose = estimator.update(photonPipelineResult);
-      lastEstimatedTimestamp = photonPipelineResult.getTimestampSeconds();
-    }
+    final Pose2d lastOdometryPose = IDrivebase.getLastPose();
+    final Optional<EstimatedRobotPose> lastEstimatedPose = updateEstimateForCamera(camera, estimator, lastOdometryPose);
+    final double lastEstimatedTimestamp = lastEstimatedPose.isPresent()
+        ? lastEstimatedPose.get().timestampSeconds
+        : 0;
 
     // Update "recently updated" and "last" values.
     boolean recentlyUpdated = Math
@@ -147,21 +133,6 @@ public class SingleCameraVision extends AbstractVision {
 
     // Update published data
     publishDataToBulletinBoard(recentlyUpdated, lastEstimatedTimestamp, lastEstimatedPose);
-  }
-
-  private static void publishDataToBulletinBoard(
-      boolean recentlyUpdated,
-      double lastTimestamp,
-      Optional<EstimatedRobotPose> lastPose) {
-    if (recentlyUpdated && lastPose.isPresent()) {
-      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, lastTimestamp);
-      BulletinBoard.common.updateValue(
-          POSES_KEY,
-          Collections.singletonList(lastPose.get()));
-    } else {
-      BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
-      BulletinBoard.common.clearValue(POSES_KEY);
-    }
   }
 
   // Note: this method will be called once per scheduler run

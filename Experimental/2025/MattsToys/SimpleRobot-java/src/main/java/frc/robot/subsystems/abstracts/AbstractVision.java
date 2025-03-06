@@ -5,17 +5,23 @@
 package frc.robot.subsystems.abstracts;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.utils.BulletinBoard;
 
 /**
  * Abstract base class for vision-handling, unifying some single/multi-camera
@@ -65,6 +71,63 @@ public abstract class AbstractVision extends SubsystemBase implements IVision {
       ioe.printStackTrace();
     }
     m_tagLayout = tagLayout;
+  }
+
+  /**
+   * Applies any updates for the estimator on a camera, optionally integrating the
+   * last/reference pose provided by the drivebase.
+   * 
+   * @param camera    camera supplying data to use in the estimate
+   * @param estimator pose estimator being updated
+   * @param drivePose last reported pose from the drivebase (or null)
+   * @return the updated estimate, based on the camera data
+   */
+  protected static Optional<EstimatedRobotPose> updateEstimateForCamera(
+      final PhotonCamera camera,
+      final PhotonPoseEstimator estimator,
+      final Pose2d drivePose) {
+    // Update the vision pose estimator with the latest robot pose from the drive
+    // base (if we have one).
+    if (drivePose != null) {
+      estimator.setLastPose(drivePose);
+      estimator.setReferencePose(drivePose);
+    }
+
+    // Update the pose estimator with the latest vision measurements from its
+    // camera.
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      // No results? Nothing to do.
+      return Optional.empty();
+    }
+
+    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
+    for (PhotonPipelineResult photonPipelineResult : results) {
+      lastEstimatedPose = estimator.update(photonPipelineResult);
+    }
+
+    return lastEstimatedPose;
+  }
+
+  protected static void publishDataToBulletinBoard(
+      boolean recentlyUpdated,
+      double lastTimestamp,
+      Optional<EstimatedRobotPose> lastPose) {
+    publishDataToBulletinBoard(recentlyUpdated, lastTimestamp,
+        lastPose.isPresent() ? Collections.singletonList(lastPose.get()) : null);
+  }
+
+  protected static void publishDataToBulletinBoard(
+      boolean recentlyUpdated,
+      double lastTimestamp,
+      List<EstimatedRobotPose> lastPoses) {
+    if (!recentlyUpdated || lastPoses == null || lastPoses.isEmpty()) {
+      BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
+      BulletinBoard.common.clearValue(POSES_KEY);
+    } else {
+      BulletinBoard.common.updateValue(POSE_TIMESTAMP_KEY, lastTimestamp);
+      BulletinBoard.common.updateValue(POSES_KEY, lastPoses);
+    }
   }
 
   /** @return the number of cameras being used */

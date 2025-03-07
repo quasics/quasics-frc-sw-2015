@@ -26,17 +26,25 @@ import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
+/**
+ * Implements a simulation wrapper on top of an AbstractCamera object.
+ */
 public class SimVisionWrapper extends SubsystemBase implements IVision {
+  /** The primary vision object that's actually being used. */
   final private AbstractVision m_realVision;
+
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
    * rendering.
    */
   protected VisionSystemSim m_visionSim = new VisionSystemSim("main");
 
-  private List<PhotonCameraSim> m_cameraSimulators = new LinkedList<PhotonCameraSim>();
-
-  /** Creates a new SimVisionWrapper. */
+  /**
+   * Constructor.
+   * 
+   * @param config     the robot's configuration
+   * @param realVision the AbstractVision object providing the core functionality
+   */
   public SimVisionWrapper(RobotConfig config, AbstractVision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
@@ -60,20 +68,25 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     }
 
     //
-    // Set up simulation for all of the cameras.
+    // Set up simulation for each of the cameras.
     //
     for (int index = 0; index < m_realVision.getCameraDataForSimulation().size(); ++index) {
       final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(index);
       final CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
-
-      PhotonCameraSim cameraSim = configureCameraSim(cameraConfig, cameraData);
-      m_cameraSimulators.add(cameraSim);
-      // Add the camera to the vision system simulation with the given
-      // robot-to-camera transform.
-      m_visionSim.addCamera(cameraSim, cameraData.transform3d());
+      m_visionSim.addCamera(
+          configureCameraSim(cameraConfig, cameraData),
+          cameraData.transform3d());
     }
   }
 
+  /**
+   * Sets up simulation for the specified camera.
+   * 
+   * @param cameraConfig camera configuration data
+   * @param cameraData   the camera record from the underlying AbstractVision
+   *                     object
+   * @return the simulation controller for the camera
+   */
   private PhotonCameraSim configureCameraSim(RobotConfigs.CameraConfig cameraConfig, CameraData cameraData) {
     // Set up the camera simulation
     PhotonCameraSim cameraSim = new PhotonCameraSim(
@@ -176,5 +189,10 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
   @Override
   public List<EstimatedRobotPose> getEstimatedPoses() {
     return m_realVision.getEstimatedPoses();
+  }
+
+  @Override
+  public void periodic() {
+    m_realVision.periodic();
   }
 }

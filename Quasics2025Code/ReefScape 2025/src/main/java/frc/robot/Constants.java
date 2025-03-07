@@ -92,10 +92,11 @@ public final class Constants {
   }
 
   public static class AutonomousStartingPositions {
-    public static final String examplePosition = "Example position";
-    public static final String middle = "Middle";
-    public static final String left = "left";
-    public static final String right = "Right";
+    public static final String VERY_TOP = "very top (4)";
+    public static final String TOP = "top (1)";
+    public static final String MIDDLE = "middle (2)";
+    public static final String BOTTOM = "bottom (3)";
+    public static final String VERY_BOTTOM = "very bottom (5)";
   } // public static class AutonomousStartingPositions
 
   public static class AutonomousSelectedOperation {

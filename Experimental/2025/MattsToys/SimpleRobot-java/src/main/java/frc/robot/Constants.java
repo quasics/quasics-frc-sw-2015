@@ -67,12 +67,12 @@ public class Constants {
     //
     // Buttons
     //
-    /** ID for the "A" button. */
-    public static final int AButton = 1;
-    /** ID for the "B" button. */
-    public static final int BButton = 2;
     /** ID for the "X" button. */
-    public static final int XButton = 3;
+    public static final int XButton = 1;
+    /** ID for the "A" button. */
+    public static final int AButton = 2;
+    /** ID for the "B" button. */
+    public static final int BButton = 3;
     /** ID for the "Y" button. */
     public static final int YButton = 4;
     /** ID for the left shoulder button. */

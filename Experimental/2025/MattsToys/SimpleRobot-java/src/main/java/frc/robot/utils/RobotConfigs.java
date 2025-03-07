@@ -11,6 +11,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.simulations.SimulationPorts;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -317,21 +318,41 @@ public class RobotConfigs {
                     Volts.of(1.9801), 0.19198,
                     // Angular data
                     Volts.of(1.4999), 0.29835)),
-            new CameraConfig("USBCamera1",
-                // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
-                // pose (which is considered to be its center of rotation at the floor level, or
-                // Z = 0)...
-                new Position(Meters.of(0.1), // x
-                    Meters.of(0.0), // y
-                    Meters.of(0.5)), // z
-                // ...pitched 15 degrees up, pointing straightforward and in plane with the
-                // robot,...
-                new Orientation(Degrees.of(0), // roll
-                    Degrees.of(-15), // pitch
-                    Degrees.of(0) // yaw
-                ),
-                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
-                new Imaging(960, 720, Degrees.of(100), 30)),
+            Arrays.asList(
+                new CameraConfig[] {
+                    new CameraConfig("USBCamera1",
+                        // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                        // pose (which is considered to be its center of rotation at the floor level, or
+                        // Z = 0)...
+                        new Position(Meters.of(0.1), // x
+                            Meters.of(0.0), // y
+                            Meters.of(0.5)), // z
+                        // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                        // robot,...
+                        new Orientation(Degrees.of(0), // roll
+                            Degrees.of(-15), // pitch
+                            Degrees.of(0) // yaw
+                        ),
+                        // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                        new Imaging(960, 720, Degrees.of(100), 30)),
+                // new CameraConfig("USBCamera2",
+                // // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the
+                // robot
+                // // pose (which is considered to be its center of rotation at the floor level,
+                // or
+                // // Z = 0)...
+                // new Position(Meters.of(-0.25), // x
+                // Meters.of(0.0), // y
+                // Meters.of(1.0)), // z
+                // // ...pitched 0 degrees up, pointing straight backward and in plane with the
+                // // robot,...
+                // new Orientation(Degrees.of(0), // roll
+                // Degrees.of(0), // pitch
+                // Degrees.of(180) // yaw
+                // ),
+                // // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                // new Imaging(960, 720, Degrees.of(100), 30)),
+                }),
             new ElevatorConfig(
                 // Note: PID and FF values are arbitrary for simulation use.
                 new PIDConfig(10.0, 0, 0),

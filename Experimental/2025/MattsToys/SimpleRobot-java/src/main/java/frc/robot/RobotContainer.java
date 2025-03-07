@@ -28,11 +28,12 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Lighting;
+import frc.robot.subsystems.live.MultiCameraVision;
 import frc.robot.subsystems.live.SingleCameraVision;
 import frc.robot.subsystems.simulations.SimDrivebase;
+import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
-import frc.robot.subsystems.simulations.SimulatedVision;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -374,7 +375,7 @@ public class RobotContainer {
     if (Robot.isReal()) {
       return new SingleCameraVision(config);
     } else {
-      return new SimulatedVision(config);
+      return new SimVisionWrapper(config, new MultiCameraVision(config));
     }
   }
 

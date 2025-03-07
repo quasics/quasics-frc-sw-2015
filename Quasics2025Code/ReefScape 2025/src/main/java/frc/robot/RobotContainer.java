@@ -130,8 +130,8 @@ public class RobotContainer {
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
-      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.LeftYAxis);
-      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechGamePad.RightXAxis);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis);
     } else {
       m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(0);
       m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(1);
@@ -289,7 +289,7 @@ public class RobotContainer {
   private void configureBindings() {
     m_tankDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
-      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
+      double axis = -getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
       // needs testing to affirm direction is correct! if wrong just switch the -
       // signs
       if (m_switchDrive) {
@@ -303,7 +303,7 @@ public class RobotContainer {
 
     m_tankDriveRightStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
-      double axis = -getDriverAxis(Constants.LogitechGamePad.RightYAxis);
+      double axis = -getDriverAxis(Constants.LogitechDualshock.RightYAxis);
       // needs testing also to affirm the direction is correct & switch signs if it is
       // wrong
       if (m_switchDrive) {
@@ -317,7 +317,7 @@ public class RobotContainer {
 
     m_arcadeDriveLeftStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
-      double axis = -getDriverAxis(Constants.LogitechGamePad.LeftYAxis);
+      double axis = -getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
       if (m_switchDrive) {
         double joystickPercentage = axis * scalingFactor;
         return m_arcadeSpeedLimiter.calculate(joystickPercentage);
@@ -330,12 +330,12 @@ public class RobotContainer {
     m_arcadeDriveRightStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
 
-      double axis = -getDriverAxis(Constants.LogitechGamePad.RightXAxis);
+      double axis = -getDriverAxis(Constants.LogitechDualshock.RightXAxis);
       double joystickPercentage = axis * scalingFactor;
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.BButton))
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
         .onTrue(new InstantCommand(() -> {
           m_switchDrive = !m_switchDrive;
         }));
@@ -361,15 +361,15 @@ public class RobotContainer {
      * various
      * // buttons on the controllers.
      */
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.LeftTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.3));
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.RightTrigger))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
         .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 
     // Elevator controls
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.YButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.YButton))
         .whileTrue(new RunElevator(m_elevator, -0.85)); // UP
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechGamePad.AButton))
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.75)); // DOWN
   }
 
@@ -390,8 +390,8 @@ public class RobotContainer {
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechGamePad.LeftShoulder);
-    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechGamePad.RightShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;

@@ -27,7 +27,7 @@ public class RealElevator extends AbstractElevator {
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+  private final PIDController m_pid = new PIDController(0.1, 0.00, 0.00);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
 
   /**
@@ -60,6 +60,9 @@ public class RealElevator extends AbstractElevator {
     m_targetPosition = TargetPosition.kDontCare;
     if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
+      System.out.println("Speed: " + percentSpeed);
+    } else {
+      System.out.println("Stopping limit switch 1");
     }
   }
 
@@ -67,6 +70,8 @@ public class RealElevator extends AbstractElevator {
   public void setVoltage(double voltage) {
     if (ableToMove(voltage)) {
       m_leader.setVoltage(voltage);
+    } else {
+      System.out.println("Stopping limit switch 1");
     }
   }
 
@@ -107,6 +112,7 @@ public class RealElevator extends AbstractElevator {
     // SmartDashboard.putBoolean("Able to move", ableToMove());
 
     if (!ableToMove(m_encoder.getVelocity())) {
+      System.out.println("Stopping limit switch 2");
       stop();
       m_targetPosition = TargetPosition.kDontCare;
     }

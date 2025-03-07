@@ -100,8 +100,8 @@ public class SingleCameraVision extends AbstractVision {
    * which may be empty. This should only be called once per loop, and will be
    * invoked from our <code>periodic()</code> method.
    * 
-   * TODO: Look at uniting functionality from this (and multi-camera) in base
-   * class.
+   * TODO: Look at uniting (more) functionality from this (and multi-camera) in
+   * base class.
    *
    * @see #periodic()
    */

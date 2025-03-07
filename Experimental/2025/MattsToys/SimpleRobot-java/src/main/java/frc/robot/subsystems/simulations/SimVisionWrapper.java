@@ -5,6 +5,7 @@
 package frc.robot.subsystems.simulations;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.photonvision.EstimatedRobotPose;
@@ -33,27 +34,49 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    */
   protected VisionSystemSim m_visionSim = new VisionSystemSim("main");
 
-  /** The interface to control/inject simulated camera stuff. */
-  private PhotonCameraSim m_cameraSim = null;
+  private List<PhotonCameraSim> m_cameraSimulators = new LinkedList<PhotonCameraSim>();
 
   /** Creates a new SimVisionWrapper. */
   public SimVisionWrapper(RobotConfig config, AbstractVision realVision) {
-    setName(SUBSYSTEM_NAME);
+    // Sanity checking parameters.
+    if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
+      throw new RuntimeException(
+          "Camera data mismatch:" +
+              " config has " + config.cameras().size() +
+              " but we only have " + realVision.getCameraDataForSimulation().size() +
+              " cameras allocated!");
+    }
 
+    // Basic setup
+    setName(SUBSYSTEM_NAME);
     m_realVision = realVision;
 
+    // Add the tag layout to the vision simulation.
+    final AprilTagFieldLayout tagLayout = m_realVision.getFieldLayoutForSimulation();
+    if (tagLayout != null) {
+      m_visionSim.addAprilTags(tagLayout);
+    } else {
+      System.err.println("Warning: no April Tags layout loaded.");
+    }
+
     //
-    // Set up the camera simulation
+    // Set up simulation for all of the cameras.
     //
+    for (int index = 0; index < m_realVision.getCameraDataForSimulation().size(); ++index) {
+      final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(index);
+      final CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
 
-    final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(0);
+      PhotonCameraSim cameraSim = configureCameraSim(cameraConfig, cameraData);
+      m_cameraSimulators.add(cameraSim);
+      // Add the camera to the vision system simulation with the given
+      // robot-to-camera transform.
+      m_visionSim.addCamera(cameraSim, cameraData.transform3d());
+    }
+  }
 
-    // Get our first camera's data. (Will throw an exception if we don't have any,
-    // but that's fair.)
-    final CameraData cameraData = m_realVision.getCameraDataForSimulation().get(0);
-
+  private PhotonCameraSim configureCameraSim(RobotConfigs.CameraConfig cameraConfig, CameraData cameraData) {
     // Set up the camera simulation
-    m_cameraSim = new PhotonCameraSim(
+    PhotonCameraSim cameraSim = new PhotonCameraSim(
         cameraData.camera(),
         getCameraProperties(cameraConfig));
 
@@ -65,34 +88,19 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     // example, a single simulated camera will have its raw stream at localhost:1181
     // and processed stream at localhost:1182, which can also be found in the
     // CameraServer tab of Shuffleboard like a normal camera stream.
-    m_cameraSim.enableRawStream(true);
-    m_cameraSim.enableProcessedStream(true);
+    cameraSim.enableRawStream(true);
+    cameraSim.enableProcessedStream(true);
 
     // Enable drawing a wireframe visualization of the field to the camera streams.
     //
     // Note: This is extremely resource-intensive and is disabled by default.
-    m_cameraSim.enableDrawWireframe(true);
-
-    //
-    // Finish setting up the vision simulation display in the simulator.
-    //
+    cameraSim.enableDrawWireframe(true);
 
     // Add the camera to the vision system simulation with the given
     // robot-to-camera transform.
-    m_visionSim.addCamera(m_cameraSim, cameraData.transform3d());
+    m_visionSim.addCamera(cameraSim, cameraData.transform3d());
 
-    // Add the tag layout to the vision simulation.
-    final AprilTagFieldLayout tagLayout = m_realVision.getFieldLayoutForSimulation();
-    if (tagLayout != null) {
-      m_visionSim.addAprilTags(tagLayout);
-    } else {
-      System.err.println("Warning: no April Tags layout loaded.");
-    }
-  }
-
-  @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
-    return m_realVision.getEstimatedPoses();
+    return cameraSim;
   }
 
   /**
@@ -163,5 +171,10 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
         () -> {
           debugField.getObject("DriveEstimation").setPoses();
         });
+  }
+
+  @Override
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    return m_realVision.getEstimatedPoses();
   }
 }

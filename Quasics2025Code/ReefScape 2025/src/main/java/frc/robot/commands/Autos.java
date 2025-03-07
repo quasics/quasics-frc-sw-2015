@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
+import frc.robot.Constants.AutonomousStartingPositions;
 import frc.robot.commands.*;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
@@ -42,7 +43,7 @@ public final class Autos {
   private static ArmPivot m_armPivot;
   private static AbstractElevator m_elevator;
   private static ArmRoller m_armRoller;
-  private static int m_position;
+  private static String m_positionOption;
 
   public static Command followPath(String pathName,
       boolean resetOdometry) {
@@ -67,12 +68,12 @@ public final class Autos {
   }
 
   public static Command GTFO() {
-    switch (m_position) {
-      case 1:
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.TOP:
         return followPath("1gtfo", true);
-      case 2:
+      case AutonomousStartingPositions.MIDDLE:
         return followPath("2gtfo", true);
-      case 3:
+      case AutonomousStartingPositions.BOTTOM:
         return followPath("3gtfo", true);
       default:
         return new PrintCommand("GTFO failed?");
@@ -80,12 +81,12 @@ public final class Autos {
   }
 
   public static Command goToReef() {
-    switch (m_position) {
-      case 1:
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.TOP:
         return followPath("1toreef", true);
-      case 2:
+      case AutonomousStartingPositions.MIDDLE:
         return followPath("2toreef", true);
-      case 3:
+      case AutonomousStartingPositions.BOTTOM:
         return followPath("3toreef", true);
       default:
         return new PrintCommand("goToReef failed?");
@@ -93,22 +94,22 @@ public final class Autos {
   }
 
   public static Command grabAlgaeFromReef() {
-    switch (m_position) {
-      case 1:
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.TOP:
         return Commands.parallel(
             followPath("1toreef", true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.5),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));
-      case 2:
+      case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2toreef", true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1),
                 0.5),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));
-      case 3:
+      case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3toreef", true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
@@ -121,15 +122,15 @@ public final class Autos {
   }
 
   public static Command scoreAlgaeFromReefIntoBarge() {
-    switch (m_position) {
-      case 1:
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.TOP:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("topreeftobarge", false),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 1.7)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 3.1)));
-      case 2:
+      case AutonomousStartingPositions.MIDDLE:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("middlereeftobarge", false),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
@@ -142,13 +143,13 @@ public final class Autos {
   }
 
   public static Command scoreAlgaeFromReefIntoProcessor() {
-    switch (m_position) {
-      case 2:
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.MIDDLE:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("middlereeftoprocessor", false),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
             runCommandAfterTime(extakeInProcessor(), 3.7)));
-      case 3:
+      case AutonomousStartingPositions.BOTTOM:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("bottomreeftoprocessor", false),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
@@ -166,13 +167,13 @@ public final class Autos {
       ArmPivot armPivot,
       ArmRoller armRoller,
       String operation,
-      int position) {
+      String positionOption) {
     m_autoFactory = autoFactory;
     m_drivebase = drivebase;
     m_elevator = elevator;
     m_armPivot = armPivot;
     m_armRoller = armRoller;
-    m_position = position;
+    m_positionOption = positionOption;
 
     if (operation == AutonomousSelectedOperation.DO_NOTHING) {
       return new PrintCommand("Doing nothing!");

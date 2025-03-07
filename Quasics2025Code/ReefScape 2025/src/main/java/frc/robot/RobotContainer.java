@@ -266,8 +266,15 @@ public class RobotContainer {
   }
 
   private void addAutonomousStartingPositionsToSmartDashboard() {
-    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.examplePosition,
-        Constants.AutonomousStartingPositions.examplePosition);
+    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.VERY_TOP,
+        Constants.AutonomousStartingPositions.VERY_TOP);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.TOP, Constants.AutonomousStartingPositions.TOP);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.MIDDLE,
+        Constants.AutonomousStartingPositions.MIDDLE);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.BOTTOM,
+        Constants.AutonomousStartingPositions.BOTTOM);
+    m_positionOptions.addOption(Constants.AutonomousStartingPositions.VERY_BOTTOM,
+        Constants.AutonomousStartingPositions.VERY_BOTTOM);
 
     SmartDashboard.putData("Starting position", m_positionOptions);
   }
@@ -410,16 +417,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     String autonomousOperation = m_autonomousOperations.getSelected();
-    // String positionOption = m_positionOptions.getSelected();
-
-    var positionOpt = DriverStation.getLocation();
-    if (positionOpt.isEmpty()) {
-      System.out.println("WARNING: Can't get position!");
-      return Commands.none();
-    }
+    String positionOption = m_positionOptions.getSelected();
 
     return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot, m_armRoller,
         autonomousOperation,
-        positionOpt.getAsInt());
+        positionOption);
   }
 }

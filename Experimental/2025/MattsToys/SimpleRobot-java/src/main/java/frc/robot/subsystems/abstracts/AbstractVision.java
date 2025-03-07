@@ -130,9 +130,37 @@ public abstract class AbstractVision extends SubsystemBase implements IVision {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Abstract methods
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
   /** @return the number of cameras being used */
   public abstract int getNumCameras();
 
   /** @return the list of CameraData objects for this subsystem */
   protected abstract List<CameraData> getCameraData();
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Functions exposed for simulation support.
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @return the list of CameraData (exposed as public only for use with
+   *         SimVisionWrapper)
+   */
+  public final List<CameraData> getCameraDataForSimulation() {
+    return getCameraData();
+  }
+
+  /**
+   * @return the AprilTagFieldLayout (exposed as public only for use with
+   *         SimVisionWrapper)
+   */
+  public final AprilTagFieldLayout getFieldLayoutForSimulation() {
+    return m_tagLayout;
+  }
 }

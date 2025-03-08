@@ -180,11 +180,8 @@ public class SimulatedElevator extends AbstractElevator {
           + ", speed: " + motorSpeed);
     }
 
-    RoboRioSim.setVInVoltage(
-        // Note: this should really be updated in conjunction with the simulated drive
-        // base (and anything else we're "powering", such as a simulated shooter, as
-        // well).
-        BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
+    // Publish the current draw.
+    SimulationUxSupport.instance.postCurrentDraw(m_sim.getCurrentDrawAmps());
   }
 
   /** Advance the simulation. */

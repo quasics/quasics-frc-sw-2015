@@ -136,13 +136,13 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
     // // Note: this should actually be calculated across *all* of the draws, which
     // // implies some sort of centralized physics would be useful.
-    // final double currentDraw = armSim.getCurrentDrawAmps();
-    // RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(
-    // /* List of current draws (in amps): */ currentDraw));
+    final double currentDraw = m_armSim.getCurrentDrawAmps();
+    SimulationUxSupport.instance.postCurrentDraw(currentDraw);
 
     if (NOISY) {
       System.out.println("Target: " + m_referencePosition.in(Degrees) + ", vel: " + armVelocity
-          + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees));
+          + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees)
+          + ", current: " + currentDraw);
     }
   }
 

@@ -18,11 +18,10 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -109,7 +108,7 @@ public class SimulatedElevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    final boolean noisy = true;
+    final boolean noisy = false;
 
     final Distance setpoint = getPositionForTarget(m_target);
     final double velocity = m_encoder.getVelocity();
@@ -153,12 +152,8 @@ public class SimulatedElevator extends AbstractElevator {
         status);
   }
 
-  /** Advance the simulation. */
-  @Override
-  public void simulationPeriodic() {
+  private void updateSimulation() {
     final boolean noisy = false;
-
-    super.simulationPeriodic();
 
     // In this method, we update our simulation of what our subsystem is doing.
 
@@ -190,6 +185,16 @@ public class SimulatedElevator extends AbstractElevator {
         // base (and anything else we're "powering", such as a simulated shooter, as
         // well).
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
+  }
+
+  /** Advance the simulation. */
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    if (!DriverStation.isDisabled()) {
+      updateSimulation();
+    }
   }
 
   @Override

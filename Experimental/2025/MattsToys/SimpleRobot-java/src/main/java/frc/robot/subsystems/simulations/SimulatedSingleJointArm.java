@@ -109,14 +109,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   /** Determines if debugging output is produced under simulation. */
   final static boolean NOISY = false;
 
-  @Override
-  public void simulationPeriodic() {
-    super.simulationPeriodic();
-
-    if (DriverStation.isDisabled()) {
-      return;
-    }
-
+  private void updateSimulation() {
     // Compute the changes in this iteration for the simulated hardware, based on
     // current state.
     final Angle preAngle = Radians.of(m_armSim.getAngleRads());
@@ -150,6 +143,15 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     if (NOISY) {
       System.out.println("Target: " + m_referencePosition.in(Degrees) + ", vel: " + armVelocity
           + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees));
+    }
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    if (!DriverStation.isDisabled()) {
+      updateSimulation();
     }
   }
 }

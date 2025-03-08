@@ -125,7 +125,6 @@ public class SimDrivebase extends AbstractDrivebase {
   }
 
   private void updateSimulation() {
-
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive

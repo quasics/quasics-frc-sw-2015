@@ -6,6 +6,8 @@ package frc.robot.subsystems.live;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -21,6 +23,8 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
+
+  private static final boolean START_CHECKERBOARDED = false;
 
   /**
    * Constructs a lighting subsystem for the specified robot.
@@ -60,12 +64,14 @@ public class Lighting extends SubsystemBase implements ILighting {
     m_ledBuffer = new AddressableLEDBuffer(numLights);
     m_led.setLength(m_ledBuffer.getLength());
 
-    // On start-up, turn every other pixel on (white).
-    final var white = StockColor.White.toWpiColor();
-    final var black = StockColor.Black.toWpiColor();
-    SetStripColor((int position) -> {
-      return (position % 2 == 0) ? white : black;
-    });
+    // Start-up lighting
+    if (START_CHECKERBOARDED) {
+      // On start-up, turn every other pixel on (white).
+      SetAlternatingColors(StockColor.White, StockColor.Black);
+    } else {
+      // On start-up, set to solid (Quasics) green.
+      SetStripColor(StockColor.Green.toWpiColor());
+    }
 
     // Start up the LED handling.
     m_led.start();
@@ -93,7 +99,12 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (DriverStation.isDisabled()) {
+      SetStripColor(StockColor.Green);
+    } else if (DriverStation.isEStopped()) {
+      // If we're e-stopped, reflect that....
+      SetAlternatingColors(StockColor.Red, StockColor.Blue);
+    }
   }
 
   @Override

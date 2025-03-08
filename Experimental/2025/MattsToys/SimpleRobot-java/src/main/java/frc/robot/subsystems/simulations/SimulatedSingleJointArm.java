@@ -16,15 +16,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 // import edu.wpi.first.wpilibj.simulation.BatterySim;
 
 /**
@@ -63,9 +60,6 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   /** Simulation driver for the motor controller. */
   private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
 
-  /** Smart Dashboard UI component showing the arm's position. */
-  private final MechanismLigament2d m_crankMech2d;
-
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
     setName(SUBSYSTEM_NAME);
@@ -92,26 +86,12 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     // Configure simulation support
     //
     configureSimulation();
-    m_crankMech2d = configureSmartDashboardWidgets();
   }
 
   /** Configures simulation objects. */
   private void configureSimulation() {
     m_sparkSim.setPosition(STARTING_ANGLE.in(Radians));
     m_sparkSim.enable();
-  }
-
-  /** @#return the ligament for the arm on the smart dashboard. */
-  private MechanismLigament2d configureSmartDashboardWidgets() {
-    Mechanism2d armMech2d = new Mechanism2d(60, 60);
-    MechanismRoot2d root = armMech2d.getRoot("root", 40, 10);
-    var baseMech2d = root.append(new MechanismLigament2d("frame", -20, 0));
-    var crankMech2d =
-        baseMech2d.append(new MechanismLigament2d("crank", 20, m_armSim.getAngleRads()));
-    baseMech2d.setColor(new Color8Bit(200, 200, 200));
-    SmartDashboard.putData("Arm", armMech2d);
-
-    return crankMech2d;
   }
 
   /**
@@ -129,10 +109,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   /** Determines if debugging output is produced under simulation. */
   final static boolean NOISY = false;
 
-  @Override
-  public void simulationPeriodic() {
-    super.simulationPeriodic();
-
+  private void updateSimulation() {
     // Compute the changes in this iteration for the simulated hardware, based on
     // current state.
     final Angle preAngle = Radians.of(m_armSim.getAngleRads());
@@ -153,17 +130,28 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     m_sparkSim.setPosition(postAngle.in(Radians));
 
     // Update the rendering.
-    m_crankMech2d.setAngle(postAngle.in(Degrees));
+    boolean closeEnough = postAngle.isNear(m_referencePosition, Degrees.of(0.5));
+    SimulationUxSupport.instance.updateArm(postAngle,
+        closeEnough ? DeviceStatus.AtSetpoint : DeviceStatus.NotAtSetpoint);
 
     // // Note: this should actually be calculated across *all* of the draws, which
     // // implies some sort of centralized physics would be useful.
-    // final double currentDraw = armSim.getCurrentDrawAmps();
-    // RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(
-    // /* List of current draws (in amps): */ currentDraw));
+    final double currentDraw = m_armSim.getCurrentDrawAmps();
+    SimulationUxSupport.instance.postCurrentDraw(currentDraw);
 
     if (NOISY) {
       System.out.println("Target: " + m_referencePosition.in(Degrees) + ", vel: " + armVelocity
-          + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees));
+          + ", pre angle: " + preAngle.in(Degrees) + ", post angle: " + postAngle.in(Degrees)
+          + ", current: " + currentDraw);
+    }
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    if (!DriverStation.isDisabled()) {
+      updateSimulation();
     }
   }
 }

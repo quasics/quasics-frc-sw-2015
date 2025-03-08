@@ -26,9 +26,11 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
+  private final double VELOCITY_DEADBAND = 1;
+
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.05, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.00, 0.00);
+  private final PIDController m_pid = new PIDController(0.15, 0.00, 0.00);
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.0, 0.00);
 
   /**
    * Creates a new Elevator.
@@ -58,9 +60,9 @@ public class RealElevator extends AbstractElevator {
   public void setSpeed(double percentSpeed) {
     // do not use this when using pid, only for manual control
     m_targetPosition = TargetPosition.kDontCare;
+    System.out.println("Calling setSpeeds: " + percentSpeed);
     if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
-      System.out.println("Speed: " + percentSpeed);
     }
   }
 
@@ -110,10 +112,10 @@ public class RealElevator extends AbstractElevator {
     SmartDashboard.putBoolean("At elevator setpoint?", m_pid.atSetpoint());
 
     // SmartDashboard.putBoolean("Able to move", ableToMove());
+    System.out.println(m_targetPosition);
 
-    if (!ableToMove(m_encoder.getVelocity())) {
+    if (!ableToMove(m_encoder.getVelocity()) && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
       stop();
-      m_targetPosition = TargetPosition.kDontCare;
     }
 
     if (m_limitSwitchDown.get()) {
@@ -134,6 +136,8 @@ public class RealElevator extends AbstractElevator {
       System.out.printf(
           "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
           m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+
+      setVoltage(output);
     }
   }
 
@@ -145,11 +149,11 @@ public class RealElevator extends AbstractElevator {
       case kBottom:
         return 0;
       case kL1:
-        return -158;
+        return -119;
       case kL2:
-        return -258;
-      case kTestPosition:
-        return 10;
+        return -194;
+      case kTop:
+        return -194;
     }
 
     System.err.println("**** Invalid/unexpected target position: " + position);

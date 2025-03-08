@@ -27,4 +27,3 @@ Operator controller (Xbox)
 * Y button - Level 2 algae
 * A button - Level 1 algae
 * B button - Shoot slowly
-* D-pad - up - Score barge

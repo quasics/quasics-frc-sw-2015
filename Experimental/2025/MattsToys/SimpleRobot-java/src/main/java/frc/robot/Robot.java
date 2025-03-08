@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
 
   /** Constructor. */
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer(this);
   }
 
   @Override

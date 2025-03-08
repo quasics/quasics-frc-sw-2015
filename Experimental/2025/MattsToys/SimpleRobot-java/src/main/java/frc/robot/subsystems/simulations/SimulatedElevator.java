@@ -21,9 +21,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
@@ -67,26 +65,6 @@ public class SimulatedElevator extends AbstractElevator {
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
 
-  /**
-   * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
-   * or the simulator).
-   */
-  private final MechanismLigament2d m_mech2d;
-
-  /** Color used to render the elevator when running under manual control. */
-  private final static Color8Bit NO_SETPOINT = new Color8Bit(255, 165, 0);
-
-  /**
-   * Color used to render the elevator when we've reached the target position .
-   */
-  private final static Color8Bit AT_SETPOINT = new Color8Bit(0, 255, 0);
-
-  /**
-   * Color used to render the elevator when we're driving towards the target
-   * position .
-   */
-  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit(255, 0, 0);
-
   //////////////////////////////////////////////////////////////////////////////
   // Simulation support data/objects
 
@@ -100,8 +78,6 @@ public class SimulatedElevator extends AbstractElevator {
   private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass,
       kDrumRadius.in(Meters), kMinSimulationHeight.in(Meters), kMaxSimulationHeight.in(Meters),
       ENABLE_GRAVITY, kStartingSimulationHeight.in(Meters));
-
-  static final boolean USE_EXTERNAL_SIM_UX = true;
 
   /**
    * Creates a new SimulatedElevator.
@@ -127,21 +103,8 @@ public class SimulatedElevator extends AbstractElevator {
     m_motorSim.setPosition(0);
 
     // Simulation rendering setup.
-    if (!USE_EXTERNAL_SIM_UX) {
-      Mechanism2d rootMech2d = new Mechanism2d(9,
-          MAX_SAFE_HEIGHT.in(Meters) * 1.15 /* Leave a little room at the top */);
-      m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
-          .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
-
-      // Publish Mechanism2d to SmartDashboard.
-      // To show the visualization, select Network Tables -> SmartDashboard
-      // -> Elevator Sim
-      SmartDashboard.putData("Elevator Sim", rootMech2d);
-    } else {
-      SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
-          DeviceStatus.Manual);
-      m_mech2d = null;
-    }
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
+        DeviceStatus.Manual);
   }
 
   @Override
@@ -178,28 +141,16 @@ public class SimulatedElevator extends AbstractElevator {
     SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
         DeviceStatus.Manual);
 
-    if (!USE_EXTERNAL_SIM_UX) {
-      m_mech2d.setLength(m_encoder.getPosition());
-      if (m_target == TargetPosition.DontCare) {
-        m_mech2d.setColor(NO_SETPOINT);
-      } else if (m_pid.atSetpoint()) {
-        m_mech2d.setColor(AT_SETPOINT);
-      } else {
-        m_mech2d.setColor(NOT_AT_SETPOINT);
-      }
+    DeviceStatus status = null;
+    if (m_target == TargetPosition.DontCare) {
+      status = DeviceStatus.Manual;
+    } else if (m_pid.atSetpoint()) {
+      status = DeviceStatus.AtSetpoint;
     } else {
-      DeviceStatus status = null;
-      if (m_target == TargetPosition.DontCare) {
-        status = DeviceStatus.Manual;
-      } else if (m_pid.atSetpoint()) {
-        status = DeviceStatus.AtSetpoint;
-      } else {
-        status = DeviceStatus.Manual;
-      }
-      SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
-          status);
-
+      status = DeviceStatus.Manual;
     }
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
+        status);
   }
 
   /** Advance the simulation. */

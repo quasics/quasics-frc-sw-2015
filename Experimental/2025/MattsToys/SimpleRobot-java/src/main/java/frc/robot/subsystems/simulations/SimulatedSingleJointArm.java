@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -111,6 +112,10 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
+
+    if (DriverStation.isDisabled()) {
+      return;
+    }
 
     // Compute the changes in this iteration for the simulated hardware, based on
     // current state.

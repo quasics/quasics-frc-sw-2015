@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
 import frc.robot.commands.MoveArmPivotToPosition;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.MoveElevatorToPosition;
@@ -39,6 +40,7 @@ import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;
 import frc.robot.subsystems.elevator.RealElevator;
 import frc.robot.subsystems.elevator.SimulationElevator;
+import frc.robot.subsystems.elevator.AbstractElevator.TargetPosition;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SysIdGenerator;
 
@@ -147,7 +149,7 @@ public class RobotContainer {
   }
 
   private void addButtonsToSmartDashboard() {
-    addSysIdButtonsToSmartDashboard();
+    // addSysIdButtonsToSmartDashboard();
     addTestButtonsToSmartDashboard();
   }
 
@@ -385,7 +387,6 @@ public class RobotContainer {
         .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.6)); // DOWN
-
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
         .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
@@ -397,7 +398,7 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
         .whileTrue(intakeThenExtake());
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value))
-        .whileTrue(new RunKraken(m_armRoller, 0.5));
+        .whileTrue(new RunKraken(m_armRoller, 1));
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
@@ -406,7 +407,12 @@ public class RobotContainer {
         .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
 
     // PID controls (both armpivot and elevator)
-
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kL1));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kL2));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kBack.value))
+        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
   }
 
   private double getDriveSpeedScalingFactor() {

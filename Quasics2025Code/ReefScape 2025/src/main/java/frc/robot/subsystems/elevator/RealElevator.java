@@ -81,6 +81,10 @@ public class RealElevator extends AbstractElevator {
     m_encoder.setPosition(0);
   }
 
+  public void resetEncoders(double position) {
+    m_encoder.setPosition(position);
+  }
+
   @Override
   public double getPosition() {
     return m_encoder.getPosition();
@@ -110,6 +114,13 @@ public class RealElevator extends AbstractElevator {
     if (!ableToMove(m_encoder.getVelocity())) {
       stop();
       m_targetPosition = TargetPosition.kDontCare;
+    }
+
+    if (m_limitSwitchDown.get()) {
+      // resetEncoders();
+    }
+    if (m_limitSwitchUp.get()) {
+      // resetEncoders(getRotationsForPosition(AbstractElevator.TargetPosition.kL2));
     }
 
     if (m_targetPosition != TargetPosition.kDontCare) {

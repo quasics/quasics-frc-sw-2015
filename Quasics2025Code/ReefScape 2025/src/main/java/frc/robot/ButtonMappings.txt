@@ -10,8 +10,8 @@ Driver controller (Logitech)
 * Right shoulder - Turbo mode (while held)
 * Left trigger - Intake algae
 * Right trigger - Pulse Intake
-* Start - 
-* Back -
+* Start - Armpivot 95
+* Back - Shoot with elevator
 
 
 Operator controller (Xbox)
@@ -24,7 +24,7 @@ Operator controller (Xbox)
 * Left trigger -
 * Right trigger - 
 * X button - Shoot fastly
-* Y button - Shoot with elevator moving up
-* A button - PID armpivot 95
+* Y button - Level 2 algae
+* A button - Level 1 algae
 * B button - Shoot slowly
-* D-pad -
+* D-pad - up - Score barge

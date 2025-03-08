@@ -385,6 +385,11 @@ public class RobotContainer {
         .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.6)); // DOWN
+
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
+        .whileTrue(shootWithElevator());
   }
 
   private void ConfigureOperatorButtons() {
@@ -393,16 +398,15 @@ public class RobotContainer {
         .whileTrue(intakeThenExtake());
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value))
         .whileTrue(new RunKraken(m_armRoller, 0.5));
-    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-        .whileTrue(shootWithElevator());
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, 0.3));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
         .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
-    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
+
+    // PID controls (both armpivot and elevator)
+
   }
 
   private double getDriveSpeedScalingFactor() {

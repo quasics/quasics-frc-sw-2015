@@ -374,7 +374,6 @@ public class RobotConfigs {
             NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
 
     map.put(Robot.Amelia,
-        // TODO: Add subsystem configurations for Amelia
         new RobotConfig(
             // TODO: Update DriveConfig data to match Amelia's configuration.
             new DriveConfig(Inches.of(3), // Wheel radius

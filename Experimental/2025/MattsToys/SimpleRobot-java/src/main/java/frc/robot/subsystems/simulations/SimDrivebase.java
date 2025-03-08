@@ -124,6 +124,9 @@ public class SimDrivebase extends AbstractDrivebase {
     m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
   }
 
+  /**
+   * Updates the simulation of the drive (position, encoders, current draw, etc.).
+   */
   private void updateSimulation() {
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
@@ -143,6 +146,8 @@ public class SimDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+
+    SimulationUxSupport.instance.postCurrentDraw(m_drivetrainSimulator.getCurrentDrawAmps());
   }
 
   @Override

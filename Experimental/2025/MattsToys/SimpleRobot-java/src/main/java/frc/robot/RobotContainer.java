@@ -44,8 +44,6 @@ import frc.robot.utils.SysIdGenerator;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.time.Duration;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**

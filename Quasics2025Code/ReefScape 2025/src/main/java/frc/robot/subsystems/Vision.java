@@ -8,14 +8,20 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import java.io.IOException;
 import java.util.*;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
 
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
 // functionality?
@@ -31,6 +37,7 @@ public class Vision extends SubsystemBase {
       new AprilTag(586, new Pose3d(26.8, -1, 20.5, new Rotation3d())));
 
   /**
+   * sim
    * The predefined tag field layout that should be loaded (or null, if the
    * reefscape layour isn't being used).
    */
@@ -70,5 +77,47 @@ public class Vision extends SubsystemBase {
     // var result = camera.getLatestResult();
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    if (visionSim == null) {
+      return;
+    }
+
+    // visionSim.update(); (get pose from sim drive base)
+  }
+
+  private VisionSystemSim visionSim;
+  private SimCameraProperties cameraProp;
+  private PhotonCameraSim cameraSim;
+  final boolean ENABLE_WIREFRAME_RENDERING = false;
+
+  private void setUpSimulationSupport() {
+    if (Robot.isReal()) {
+      return;
+    }
+
+    visionSim = new VisionSystemSim("main");
+    visionSim.addAprilTags(null);
+
+    cameraProp = new SimCameraProperties();
+    cameraProp.setCalibration(1080, 720, Rotation2d.fromDegrees(78));
+    // double check these numbers, most are placeholders
+    cameraProp.setCalibError(0.0, 0.0);
+    cameraProp.setFPS(30);
+    cameraProp.setAvgLatencyMs(0);
+    cameraProp.setLatencyStdDevMs(0);
+
+    cameraSim = new PhotonCameraSim(camera, cameraProp);
+    visionSim.addCamera(cameraSim, robotToCam);
+    cameraSim.enableDrawWireframe(ENABLE_WIREFRAME_RENDERING);
+  }
+
+  public Field2d getDebugField() {
+    if (visionSim == null) {
+      return null;
+    }
+    return visionSim.getDebugField();
   }
 }

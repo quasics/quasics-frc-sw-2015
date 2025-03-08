@@ -17,6 +17,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -123,9 +124,7 @@ public class SimDrivebase extends AbstractDrivebase {
     m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
   }
 
-  @Override
-  public void simulationPeriodic() {
-    super.simulationPeriodic();
+  private void updateSimulation() {
 
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
@@ -149,6 +148,15 @@ public class SimDrivebase extends AbstractDrivebase {
     // Publish the data for any that need it.
     // BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY,
     // m_drivetrainSimulator.getPose());
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    if (!DriverStation.isDisabled()) {
+      updateSimulation();
+    }
   }
 
   @Override

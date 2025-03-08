@@ -127,16 +127,16 @@ public final class Autos {
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("topreeftobarge", false),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 1.7)),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
-            runCommandAfterTime(intakeThenExtake(), 3.1)));
+            runCommandAfterTime(intakeThenExtake(), 8)));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
             followPath("middlereeftobarge", false),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 1.7)),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
-            runCommandAfterTime(intakeThenExtake(), 3.1)));
+            runCommandAfterTime(intakeThenExtake(), 8)));
       default:
         return new PrintCommand("scoreAlgaeFromReefIntoBarge failed?");
     }

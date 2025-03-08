@@ -14,6 +14,7 @@ public abstract class AbstractElevator extends SubsystemBase {
     kBottom,
     kL1,
     kL2,
+    kTestPosition
   }
 
   /** Creates a new AbstractElevator. */

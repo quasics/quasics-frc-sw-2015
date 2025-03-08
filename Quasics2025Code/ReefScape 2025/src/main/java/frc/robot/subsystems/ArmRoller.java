@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmRoller extends SubsystemBase {
@@ -27,6 +30,7 @@ public class ArmRoller extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Kraken current", m_kraken.getSupplyCurrent().getValue().in(Amps));
     // This method will be called once per scheduler run
   }
 }

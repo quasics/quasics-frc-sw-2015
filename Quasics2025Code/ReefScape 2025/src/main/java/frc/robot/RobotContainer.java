@@ -184,6 +184,8 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+    SmartDashboard.putData("Elevator to test position",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTestPosition));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
@@ -354,7 +356,12 @@ public class RobotContainer {
 
   private Command intakeThenExtake() {
     return Commands.sequence(new RunKrakenForTime(m_armRoller, true, 0.2), new WaitCommand(0.1),
-        new RunKraken(m_armRoller, 1.0));
+        new RunKrakenForTime(m_armRoller, false, 0.5));
+  }
+
+  private Command shootWithElevator() {
+    return Commands.parallel(new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2),
+        Commands.sequence(new WaitCommand(1.5), intakeThenExtake()));
   }
 
   private void ConfigureDriverButtons() {
@@ -386,6 +393,8 @@ public class RobotContainer {
         .whileTrue(intakeThenExtake());
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value))
         .whileTrue(new RunKraken(m_armRoller, 0.5));
+    new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
+        .whileTrue(shootWithElevator());
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))

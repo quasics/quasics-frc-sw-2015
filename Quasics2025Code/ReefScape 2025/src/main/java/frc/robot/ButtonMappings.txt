@@ -24,7 +24,7 @@ Operator controller (Xbox)
 * Left trigger -
 * Right trigger - 
 * X button - Shoot fastly
-* Y button - 
+* Y button - Shoot with elevator moving up
 * A button - PID armpivot 95
 * B button - Shoot slowly
 * D-pad -

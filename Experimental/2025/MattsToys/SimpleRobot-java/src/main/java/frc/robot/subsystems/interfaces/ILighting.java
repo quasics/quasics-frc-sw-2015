@@ -120,6 +120,30 @@ public interface ILighting extends ISubsystem {
   }
 
   /**
+   * Sets the strip to an alternating pair of colors, with even pixels set to
+   * color1, and odd pixels set to color2.
+   * 
+   * @param color1 color to use for even pixels (starting at 0)
+   * @param color2 color to use for odd pixels (starting at 1)
+   */
+  public default void SetAlternatingColors(Color color1, Color color2) {
+    SetStripColor((int position) -> {
+      return (position % 2 == 0) ? color1 : color2;
+    });
+  }
+
+  /**
+   * Sets the strip to an alternating pair of colors, with even pixels set to
+   * color1, and odd pixels set to color2.
+   * 
+   * @param color1 color to use for even pixels (starting at 0)
+   * @param color2 color to use for odd pixels (starting at 1)
+   */
+  public default void SetAlternatingColors(StockColor color1, StockColor color2) {
+    SetAlternatingColors(color1.toWpiColor(), color2.toWpiColor());
+  }
+
+  /**
    * Convenience function: sets all controlled lights to a solid color.
    *
    * <p>

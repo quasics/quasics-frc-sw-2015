@@ -144,10 +144,6 @@ public class SimDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
 
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
-
-    // Publish the data for any that need it.
-    // BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY,
-    // m_drivetrainSimulator.getPose());
   }
 
   @Override

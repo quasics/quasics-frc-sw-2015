@@ -151,8 +151,8 @@ public class RealElevator extends AbstractElevator {
         return -119;
       case kL2:
         return -194;
-      case kTestPosition:
-        return 10;
+      case kTop:
+        return -194;
     }
 
     System.err.println("**** Invalid/unexpected target position: " + position);

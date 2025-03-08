@@ -175,9 +175,8 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
-    SmartDashboard.putData("Elevator Up", new InstantCommand(() -> m_elevator.setSpeed(-0.2)));
-    SmartDashboard.putData("Elevator Down", new InstantCommand(() -> m_elevator.setSpeed(0.2)));
-
+    SmartDashboard.putData("Elevator to top",
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop));
     SmartDashboard.putData("Elevator to L2",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
     SmartDashboard.putData("Elevator to L1",
@@ -186,8 +185,6 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
-    SmartDashboard.putData("Elevator to test position",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTestPosition));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 

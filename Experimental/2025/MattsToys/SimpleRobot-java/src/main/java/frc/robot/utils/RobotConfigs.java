@@ -25,6 +25,8 @@ public class RobotConfigs {
   public enum Robot {
     /** Simulation-only */
     Simulation,
+    /** Simulation-only */
+    SimulationWithTwoCameras,
     /** "Naked" drivebase used by the coding sub-team */
     Sally,
     /** 2025 ("Reefscape") robot */
@@ -43,6 +45,47 @@ public class RobotConfigs {
 
   /** Stores the actual mapping of robot IDs to configurations. */
   static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
+
+  /**
+   * Helper function, used to construct the underlying map. (Java doesn't support
+   * inline specification of Map data.)
+   *
+   * @return the mapping of robots to configurations to be exposed to clients
+   */
+  static private Map<Robot, RobotConfig> createMap() {
+
+    var map = new HashMap<Robot, RobotConfig>();
+    map.put(
+        Robot.Simulation,
+        generateSingleCameraSimulationConfig());
+
+    map.put(
+        Robot.SimulationWithTwoCameras,
+        generateTwoCameraSimulationConfig());
+
+    map.put(
+        Robot.Sally,
+        generateSallyConfig());
+
+    map.put(Robot.Amelia, generateAmeliaConfig());
+
+    //
+    // Sanity checks to make sure that we have entries for all known robots.
+
+    // Note that assertions are disabled by default. :-(
+    // See
+    // https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html.
+    assert (map.size() == Robot.values().length)
+        : "Configurations for one or more robots are missing!";
+
+    // Back up the assertion with something that can't be disabled.
+    if (map.size() != Robot.values().length) {
+      final int numRobotsWithoutConfigs = Robot.values().length - map.size();
+      throw new RuntimeException(
+          "Configurations are missing for " + numRobotsWithoutConfigs + " robot(s)!");
+    }
+    return map;
+  }
 
   /**
    * Location of something in terms of the robot's center (in terms of the robot
@@ -292,119 +335,130 @@ public class RobotConfigs {
     }
   }
 
-  /**
-   * Helper function, used to construct the underlying map. (Java doesn't support
-   * inline specification of Map data.)
-   *
-   * @return the mapping of robots to configurations to be exposed to clients
-   */
-  static private Map<Robot, RobotConfig> createMap() {
-    @SuppressWarnings("unused")
-    final DriveConfig NO_DRIVE = null;
-    final CameraConfig NO_CAMERA = null;
-    final ElevatorConfig NO_ELEVATOR = null;
-    final LightingConfig NO_LIGHTING = null;
+  @SuppressWarnings("unused")
+  private static final DriveConfig NO_DRIVE = null;
+  private static final CameraConfig NO_CAMERA = null;
+  private static final ElevatorConfig NO_ELEVATOR = null;
+  private static final LightingConfig NO_LIGHTING = null;
 
-    var map = new HashMap<Robot, RobotConfig>();
-    map.put(Robot.Simulation,
-        new RobotConfig(
-            new DriveConfig(Inches.of(3), // Wheel radius
-                Units.Meters.of(0.381 * 2), // Trackwidth
-                8.0, // Gearing
-                new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
-                new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
-                new DriveFeedForwardConfig(
-                    // Linear data
-                    Volts.of(1.9801), 0.19198,
-                    // Angular data
-                    Volts.of(1.4999), 0.29835)),
-            Arrays.asList(
-                new CameraConfig[] {
-                    new CameraConfig("USBCamera1",
-                        // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
-                        // pose (which is considered to be its center of rotation at the floor level, or
-                        // Z = 0)...
-                        new Position(Meters.of(0.1), // x
-                            Meters.of(0.0), // y
-                            Meters.of(0.5)), // z
-                        // ...pitched 15 degrees up, pointing straightforward and in plane with the
-                        // robot,...
-                        new Orientation(Degrees.of(0), // roll
-                            Degrees.of(-15), // pitch
-                            Degrees.of(0) // yaw
-                        ),
-                        // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
-                        new Imaging(960, 720, Degrees.of(100), 30)),
-                // new CameraConfig("USBCamera2",
-                // // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the
-                // robot
-                // // pose (which is considered to be its center of rotation at the floor level,
-                // or
-                // // Z = 0)...
-                // new Position(Meters.of(-0.25), // x
-                // Meters.of(0.0), // y
-                // Meters.of(1.0)), // z
-                // // ...pitched 0 degrees up, pointing straight backward and in plane with the
-                // // robot,...
-                // new Orientation(Degrees.of(0), // roll
-                // Degrees.of(0), // pitch
-                // Degrees.of(180) // yaw
-                // ),
-                // // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
-                // new Imaging(960, 720, Degrees.of(100), 30)),
-                }),
-            new ElevatorConfig(
-                // Note: PID and FF values are arbitrary for simulation use.
-                new PIDConfig(10.0, 0, 0),
-                new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
-            new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80)));
+  private static RobotConfig generateAmeliaConfig() {
+    return new RobotConfig(
+        // TODO: Update DriveConfig data to match Amelia's configuration.
+        new DriveConfig(Inches.of(3), // Wheel radius
+            Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
+            8.45, // Gearing (from 2024)
+            new PIDConfig(0.046218), // Left (from 27Feb2025)
+            new PIDConfig(0.066374), // Right (from 27Feb2025)
+            new DriveFeedForwardConfig(
+                Volts.of(0.1884), 0.033803, // Linear data (from 27Feb2025)
+                Volts.of(0.20183), 0.02384) // Angular data (from 27Feb2025)
+        ),
+        NO_CAMERA,
+        NO_ELEVATOR,
+        NO_LIGHTING);
+  }
 
-    map.put(Robot.Sally,
-        new RobotConfig(
-            // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile.
-            new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5588) /* 22 in (from 2024) */,
-                8.45, // Gearing (from 2024)
-                // TODO: Update with independent left/right PID values for Sally
-                new PIDConfig(0.29613), // Left PID (from 2024)
-                new PIDConfig(0.29613), // Right PID (from 2024)
-                new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
-                    Volts.of(0.19529), 0.01) // Angular data (FAKE)
-            ),
-            NO_CAMERA, NO_ELEVATOR, NO_LIGHTING));
+  private static RobotConfig generateSallyConfig() {
+    return new RobotConfig(
+        // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile.
+        new DriveConfig(Inches.of(3), // Wheel radius
+            Meters.of(0.5588) /* 22 in (from 2024) */,
+            8.45, // Gearing (from 2024)
+            // TODO: Update with independent left/right PID values for Sally
+            new PIDConfig(0.29613), // Left PID (from 2024)
+            new PIDConfig(0.29613), // Right PID (from 2024)
+            new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
+                Volts.of(0.19529), 0.01) // Angular data (FAKE)
+        ),
+        NO_CAMERA, NO_ELEVATOR, NO_LIGHTING);
+  }
 
-    map.put(Robot.Amelia,
-        // TODO: Add subsystem configurations for Amelia
-        new RobotConfig(
-            // TODO: Update DriveConfig data to match Amelia's configuration.
-            new DriveConfig(Inches.of(3), // Wheel radius
-                Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
-                8.45, // Gearing (from 2024)
-                new PIDConfig(0.046218), // Left (from 27Feb2025)
-                new PIDConfig(0.066374), // Right (from 27Feb2025)
-                new DriveFeedForwardConfig(
-                    Volts.of(0.1884), 0.033803, // Linear data (from 27Feb2025)
-                    Volts.of(0.20183), 0.02384) // Angular data (from 27Feb2025)
-            ),
-            NO_CAMERA,
-            NO_ELEVATOR,
-            NO_LIGHTING));
+  private static RobotConfig generateSingleCameraSimulationConfig() {
+    return new RobotConfig(
+        new DriveConfig(Inches.of(3), // Wheel radius
+            Units.Meters.of(0.381 * 2), // Trackwidth
+            8.0, // Gearing
+            new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
+            new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
+            new DriveFeedForwardConfig(
+                // Linear data
+                Volts.of(1.9801), 0.19198,
+                // Angular data
+                Volts.of(1.4999), 0.29835)),
+        Arrays.asList(
+            new CameraConfig[] {
+                new CameraConfig("USBCamera1",
+                    // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                    // pose (which is considered to be its center of rotation at the floor level, or
+                    // Z = 0)...
+                    new Position(Meters.of(0.1), // x
+                        Meters.of(0.0), // y
+                        Meters.of(0.5)), // z
+                    // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                    // robot,...
+                    new Orientation(Degrees.of(0), // roll
+                        Degrees.of(-15), // pitch
+                        Degrees.of(0) // yaw
+                    ),
+                    // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                    new Imaging(960, 720, Degrees.of(100), 30)),
+            }),
+        new ElevatorConfig(
+            // Note: PID and FF values are arbitrary for simulation use.
+            new PIDConfig(10.0, 0, 0),
+            new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
+  }
 
-    //
-    // Sanity checks to make sure that we have entries for all known robots.
-
-    // Note that assertions are disabled by default. :-(
-    // See
-    // https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html.
-    assert (map.size() == Robot.values().length)
-        : "Configurations for one or more robots are missing!";
-
-    // Back up the assertion with something that can't be disabled.
-    if (map.size() != Robot.values().length) {
-      final int numRobotsWithoutConfigs = Robot.values().length - map.size();
-      throw new RuntimeException(
-          "Configurations are missing for " + numRobotsWithoutConfigs + " robot(s)!");
-    }
-    return map;
+  private static RobotConfig generateTwoCameraSimulationConfig() {
+    return new RobotConfig(
+        new DriveConfig(Inches.of(3), // Wheel radius
+            Units.Meters.of(0.381 * 2), // Trackwidth
+            8.0, // Gearing
+            new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
+            new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
+            new DriveFeedForwardConfig(
+                // Linear data
+                Volts.of(1.9801), 0.19198,
+                // Angular data
+                Volts.of(1.4999), 0.29835)),
+        Arrays.asList(
+            new CameraConfig[] {
+                new CameraConfig("USBCamera1",
+                    // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                    // pose (which is considered to be its center of rotation at the floor level, or
+                    // Z = 0)...
+                    new Position(Meters.of(0.1), // x
+                        Meters.of(0.0), // y
+                        Meters.of(0.5)), // z
+                    // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                    // robot,...
+                    new Orientation(Degrees.of(0), // roll
+                        Degrees.of(-15), // pitch
+                        Degrees.of(0) // yaw
+                    ),
+                    // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                    new Imaging(960, 720, Degrees.of(100), 30)),
+                new CameraConfig("USBCamera2",
+                    // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the robot
+                    // pose (which is considered to be its center of rotation at the floor level, or
+                    // Z = 0)...
+                    new Position(Meters.of(-0.25), // x
+                        Meters.of(0.0), // y
+                        Meters.of(1.0)), // z
+                    // ...pitched 0 degrees up, pointing straight backward and in plane with the
+                    // robot,...
+                    new Orientation(Degrees.of(0), // roll
+                        Degrees.of(0), // pitch
+                        Degrees.of(180) // yaw
+                    ),
+                    // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                    new Imaging(960, 720, Degrees.of(100), 30)),
+            }),
+        new ElevatorConfig(
+            // Note: PID and FF values are arbitrary for simulation use.
+            new PIDConfig(10.0, 0, 0),
+            new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 }

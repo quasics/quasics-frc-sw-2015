@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,8 +7,14 @@ package frc.robot.subsystems.simulations;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +23,8 @@ import frc.robot.subsystems.abstracts.AbstractElevator;
 
 /** Add your docs here. */
 public class SimulationUxSupport {
+
+  private final List<Double> m_currentDraws = new LinkedList<Double>();
 
   /**
    * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
@@ -92,4 +100,24 @@ public class SimulationUxSupport {
     }
   }
 
+  public void postCurrentDraw(double currentDraw) {
+    m_currentDraws.add(currentDraw);
+  }
+
+  public List<Double> getCurrentDraws() {
+    return Collections.unmodifiableList(m_currentDraws);
+  }
+
+  public void clearCurrentDraws() {
+    m_currentDraws.clear();
+  }
+
+  public void updateBatteryVoltageFromDraws() {
+    if (m_currentDraws.size() > 0) {
+      double drawsAsArray[] = m_currentDraws.stream().mapToDouble(Double::doubleValue).toArray();
+      RoboRioSim.setVInVoltage(
+          BatterySim.calculateDefaultBatteryLoadedVoltage(drawsAsArray));
+      m_currentDraws.clear();
+    }
+  }
 }

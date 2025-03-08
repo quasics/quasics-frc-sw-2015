@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.IGyro;
@@ -124,13 +125,15 @@ public class SimDrivebase extends AbstractDrivebase {
     m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
   }
 
+  /**
+   * Updates the simulation of the drive (position, encoders, current draw, etc.).
+   */
   private void updateSimulation() {
-
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_left.get() * RobotController.getInputVoltage(),
+    m_drivetrainSimulator.setInputs(m_left.get() * RoboRioSim.getVInVoltage(),
         m_right.get() * RobotController.getInputVoltage());
 
     // Simulated clock ticks forward
@@ -145,9 +148,7 @@ public class SimDrivebase extends AbstractDrivebase {
 
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
-    // Publish the data for any that need it.
-    // BulletinBoard.common.updateValue(SIMULATOR_POSE_KEY,
-    // m_drivetrainSimulator.getPose());
+    SimulationUxSupport.instance.postCurrentDraw(m_drivetrainSimulator.getCurrentDrawAmps());
   }
 
   @Override

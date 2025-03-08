@@ -8,8 +8,10 @@ import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,10 +36,14 @@ import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
+import frc.robot.subsystems.simulations.SimulationUxSupport;
 import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.SysIdGenerator;
+
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.util.function.Supplier;
 
 /**
@@ -95,13 +101,27 @@ public class RobotContainer {
       CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
       m_drivebase.asSubsystem());
 
+  /** Normal cycle time on command-handling (50 Hz). */
+  private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
+
   /** Constructor. */
-  public RobotContainer() {
+  public RobotContainer(TimedRobot robot) {
     configureArcadeDrive();
     configureDashboard();
     configureBindings();
+    configurePeriodicOperations(robot);
 
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+  }
+
+  private void configurePeriodicOperations(TimedRobot robot) {
+    // Once per cycle (under simulation), update the battery voltage based on the
+    // current draw.
+    if (Robot.isSimulation()) {
+      robot.addPeriodic(() -> {
+        SimulationUxSupport.instance.updateBatteryVoltageFromDraws();
+      }, COMMAND_CYCLE_PERIOD);
+    }
   }
 
   /**

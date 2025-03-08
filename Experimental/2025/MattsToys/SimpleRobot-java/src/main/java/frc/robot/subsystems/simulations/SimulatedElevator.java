@@ -19,7 +19,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.subsystems.abstracts.AbstractElevator;
@@ -152,11 +151,10 @@ public class SimulatedElevator extends AbstractElevator {
         status);
   }
 
+  private static final boolean NOISY = false;
+
+  /** Updates our simulation of what our subsystem is doing. */
   private void updateSimulation() {
-    final boolean noisy = false;
-
-    // In this method, we update our simulation of what our subsystem is doing.
-
     // First we set out "inputs" (voltages).
     final double initialPos = m_encoder.getPosition();
     var appliedOutput = m_motorSim.getAppliedOutput();
@@ -175,16 +173,13 @@ public class SimulatedElevator extends AbstractElevator {
     var motorSpeed = m_sim.getVelocityMetersPerSecond();
     m_motorSim.iterate(motorSpeed, voltsIn, timeIncrement);
 
-    if (noisy) {
+    if (NOISY) {
       System.out.println("Sim --> initial: " + initialPos + ", post: " + m_sim.getPositionMeters()
           + ", speed: " + motorSpeed);
     }
 
-    RoboRioSim.setVInVoltage(
-        // Note: this should really be updated in conjunction with the simulated drive
-        // base (and anything else we're "powering", such as a simulated shooter, as
-        // well).
-        BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
+    // Publish the current draw.
+    SimulationUxSupport.instance.postCurrentDraw(m_sim.getCurrentDrawAmps());
   }
 
   /** Advance the simulation. */

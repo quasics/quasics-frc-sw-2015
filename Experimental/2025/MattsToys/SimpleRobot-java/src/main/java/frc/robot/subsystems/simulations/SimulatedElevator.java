@@ -152,11 +152,10 @@ public class SimulatedElevator extends AbstractElevator {
         status);
   }
 
+  private static final boolean NOISY = false;
+
+  /** Updates our simulation of what our subsystem is doing. */
   private void updateSimulation() {
-    final boolean noisy = false;
-
-    // In this method, we update our simulation of what our subsystem is doing.
-
     // First we set out "inputs" (voltages).
     final double initialPos = m_encoder.getPosition();
     var appliedOutput = m_motorSim.getAppliedOutput();
@@ -175,7 +174,7 @@ public class SimulatedElevator extends AbstractElevator {
     var motorSpeed = m_sim.getVelocityMetersPerSecond();
     m_motorSim.iterate(motorSpeed, voltsIn, timeIncrement);
 
-    if (noisy) {
+    if (NOISY) {
       System.out.println("Sim --> initial: " + initialPos + ", post: " + m_sim.getPositionMeters()
           + ", speed: " + motorSpeed);
     }

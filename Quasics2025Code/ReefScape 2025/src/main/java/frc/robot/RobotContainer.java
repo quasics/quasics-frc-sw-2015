@@ -359,7 +359,7 @@ public class RobotContainer {
   }
 
   private Command shootWithElevator() {
-    return Commands.parallel(new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2),
+    return Commands.parallel(new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop),
         Commands.sequence(new WaitCommand(1.5), intakeThenExtake()));
   }
 
@@ -384,8 +384,6 @@ public class RobotContainer {
         .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.6)); // DOWN
-    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
-        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
         .whileTrue(shootWithElevator());
   }
@@ -407,7 +405,7 @@ public class RobotContainer {
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
         .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kL1));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kL2));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kTop));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kBack.value))
         .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
   }

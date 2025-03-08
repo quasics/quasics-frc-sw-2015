@@ -26,6 +26,8 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
+  private final double VELOCITY_DEADBAND = 1;
+
   // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.15, 0.00, 0.00);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.0, 0.00);
@@ -112,9 +114,8 @@ public class RealElevator extends AbstractElevator {
     // SmartDashboard.putBoolean("Able to move", ableToMove());
     System.out.println(m_targetPosition);
 
-    if (!ableToMove(m_encoder.getVelocity())) {
+    if (!ableToMove(m_encoder.getVelocity()) && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
       stop();
-      m_targetPosition = TargetPosition.kDontCare;
     }
 
     if (m_limitSwitchDown.get()) {
@@ -151,8 +152,8 @@ public class RealElevator extends AbstractElevator {
         return -119;
       case kL2:
         return -194;
-      case kTestPosition:
-        return 10;
+      case kTop:
+        return -194;
     }
 
     System.err.println("**** Invalid/unexpected target position: " + position);

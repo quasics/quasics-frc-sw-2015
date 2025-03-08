@@ -149,9 +149,9 @@ public class RealElevator extends AbstractElevator {
       case kBottom:
         return 0;
       case kL1:
-        return -119;
+        return -74;
       case kL2:
-        return -194;
+        return -145;
       case kTop:
         return -194;
     }

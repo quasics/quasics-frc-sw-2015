@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArmPivotToPositionOnController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
@@ -154,37 +155,48 @@ public class RobotContainer {
   }
 
   private void addTestButtonsToSmartDashboard() {
-    SmartDashboard.putData(
-        "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new Pose2d())));
-
-    SmartDashboard.putData("Reset odometry test",
-        new InstantCommand(
-            () -> m_drivebase.resetOdometry(new Pose2d(Meters.of(3), Meters.of(3), new Rotation2d(Degrees.of(180))))));
-
-    SmartDashboard.putData(
-        "Arm Pivot Up", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(-0.1)));
-    SmartDashboard.putData(
-        "Arm Pivot Down", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(0.1)));
-
-    SmartDashboard.putData("Arm Pivot PID Up", new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
-    SmartDashboard.putData("Arm Pivot PID Down", new MoveArmPivotToPosition(m_armPivot, Degrees.of(1)));
-    SmartDashboard.putData("Arm Pivot 45", new MoveArmPivotToPosition(m_armPivot, Degrees.of(45)));
-
-    SmartDashboard.putData("Stop arm pivot", new InstantCommand(() -> m_armPivot.stop()));
-
+    /*
+     * SmartDashboard.putData(
+     * "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new
+     * Pose2d())));
+     * 
+     * SmartDashboard.putData("Reset odometry test",
+     * new InstantCommand(
+     * () -> m_drivebase.resetOdometry(new Pose2d(Meters.of(3), Meters.of(3), new
+     * Rotation2d(Degrees.of(180))))));
+     * 
+     * SmartDashboard.putData(
+     * "Arm Pivot Up", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(-0.1)));
+     * SmartDashboard.putData(
+     * "Arm Pivot Down", new InstantCommand(() ->
+     * m_armPivot.setArmPivotSpeed(0.1)));
+     * 
+     * SmartDashboard.putData("Arm Pivot PID Up", new
+     * MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
+     * SmartDashboard.putData("Arm Pivot PID Down", new
+     * MoveArmPivotToPosition(m_armPivot, Degrees.of(1)));
+     * SmartDashboard.putData("Arm Pivot 45", new MoveArmPivotToPosition(m_armPivot,
+     * Degrees.of(45)));
+     * 
+     * SmartDashboard.putData("Stop arm pivot", new InstantCommand(() ->
+     * m_armPivot.stop()));
+     */
     SmartDashboard.putData(
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
     SmartDashboard.putData("Elevator to top",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop));
+        new MoveElevatorToPosition(m_elevator,
+            AbstractElevator.TargetPosition.kTop));
     SmartDashboard.putData("Elevator to L2",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
     SmartDashboard.putData("Elevator to L1",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
     SmartDashboard.putData("Elevator to bottom",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
+        new MoveElevatorToPosition(m_elevator,
+            AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
+        new MoveElevatorToPosition(m_elevator,
+            AbstractElevator.TargetPosition.kDontCare));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
@@ -403,11 +415,12 @@ public class RobotContainer {
 
     // PID controls (both armpivot and elevator)
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kL1));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL1));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kTop));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL2));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kBack.value))
-        .whileTrue(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
+        .whileTrue(new ArmPivotToPositionOnController(m_armPivot, Degrees.of(95)));
+
   }
 
   private double getDriveSpeedScalingFactor() {

@@ -98,21 +98,22 @@ public final class Autos {
       case AutonomousStartingPositions.TOP:
         return Commands.parallel(
             followPath("1toreef", true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.5),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2toreef", true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)),
+                0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1),
                 0.5),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 2.5));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3toreef", true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.5),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));

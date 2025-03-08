@@ -18,14 +18,12 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
@@ -66,26 +64,6 @@ public class SimulatedElevator extends AbstractElevator {
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
 
-  /**
-   * Mechanism2d visualization of the hardware (for rendering in SmartDashboard,
-   * or the simulator).
-   */
-  private final MechanismLigament2d m_mech2d;
-
-  /** Color used to render the elevator when running under manual control. */
-  private final static Color8Bit NO_SETPOINT = new Color8Bit(255, 165, 0);
-
-  /**
-   * Color used to render the elevator when we've reached the target position .
-   */
-  private final static Color8Bit AT_SETPOINT = new Color8Bit(0, 255, 0);
-
-  /**
-   * Color used to render the elevator when we're driving towards the target
-   * position .
-   */
-  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit(255, 0, 0);
-
   //////////////////////////////////////////////////////////////////////////////
   // Simulation support data/objects
 
@@ -124,19 +102,13 @@ public class SimulatedElevator extends AbstractElevator {
     m_motorSim.setPosition(0);
 
     // Simulation rendering setup.
-    Mechanism2d rootMech2d = new Mechanism2d(9, MAX_SAFE_HEIGHT.in(Meters) * 1.15 /* Leave a little room at the top */);
-    m_mech2d = rootMech2d.getRoot("LeftClimber Root", 3, 0)
-        .append(new MechanismLigament2d("LeftClimber", m_sim.getPositionMeters(), 90));
-
-    // Publish Mechanism2d to SmartDashboard.
-    // To show the visualization, select Network Tables -> SmartDashboard
-    // -> Elevator Sim
-    SmartDashboard.putData("Elevator Sim", rootMech2d);
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
+        DeviceStatus.Manual);
   }
 
   @Override
   protected void updateMotor_impl() {
-    final boolean noisy = true;
+    final boolean noisy = false;
 
     final Distance setpoint = getPositionForTarget(m_target);
     final double velocity = m_encoder.getVelocity();
@@ -165,22 +137,23 @@ public class SimulatedElevator extends AbstractElevator {
     // that this same thing could be done to provide a rendering of the data for a
     // *real* elevator within the SmartDashboard at a match (e.g., as an aid to the
     // drive team).
-    m_mech2d.setLength(m_encoder.getPosition());
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
+        DeviceStatus.Manual);
+
+    DeviceStatus status = null;
     if (m_target == TargetPosition.DontCare) {
-      m_mech2d.setColor(NO_SETPOINT);
+      status = DeviceStatus.Manual;
     } else if (m_pid.atSetpoint()) {
-      m_mech2d.setColor(AT_SETPOINT);
+      status = DeviceStatus.AtSetpoint;
     } else {
-      m_mech2d.setColor(NOT_AT_SETPOINT);
+      status = DeviceStatus.Manual;
     }
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
+        status);
   }
 
-  /** Advance the simulation. */
-  @Override
-  public void simulationPeriodic() {
+  private void updateSimulation() {
     final boolean noisy = false;
-
-    super.simulationPeriodic();
 
     // In this method, we update our simulation of what our subsystem is doing.
 
@@ -212,6 +185,16 @@ public class SimulatedElevator extends AbstractElevator {
         // base (and anything else we're "powering", such as a simulated shooter, as
         // well).
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_sim.getCurrentDrawAmps()));
+  }
+
+  /** Advance the simulation. */
+  @Override
+  public void simulationPeriodic() {
+    super.simulationPeriodic();
+
+    if (!DriverStation.isDisabled()) {
+      updateSimulation();
+    }
   }
 
   @Override

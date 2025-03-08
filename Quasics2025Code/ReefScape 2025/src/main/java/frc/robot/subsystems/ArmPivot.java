@@ -121,7 +121,8 @@ public class ArmPivot extends SubsystemBase {
   }
 
   public void stop() {
-    m_pivot.set(0);
+    // this will also stop pid
+    setArmPivotSpeed(0);
   }
 
   public void setAngleSetpoint(Angle angle) {

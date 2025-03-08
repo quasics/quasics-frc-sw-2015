@@ -5,7 +5,6 @@
 package frc.robot.subsystems.simulations;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.photonvision.EstimatedRobotPose;

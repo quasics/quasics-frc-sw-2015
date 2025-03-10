@@ -6,9 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,8 +22,9 @@ import frc.robot.commands.ArmPivotToPositionOnController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
-import frc.robot.commands.MoveArmPivotToPosition;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.AutonomousSelectedOperation;
+import frc.robot.Constants.AutonomousStartingPositions;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunElevator;
@@ -258,36 +256,36 @@ public class RobotContainer {
   }
 
   private void addOverallSelectorToSmartDashboard() {
-    m_autonomousOperations.setDefaultOption(Constants.AutonomousSelectedOperation.DO_NOTHING,
-        Constants.AutonomousSelectedOperation.DO_NOTHING);
+    m_autonomousOperations.setDefaultOption(AutonomousSelectedOperation.DO_NOTHING,
+        AutonomousSelectedOperation.DO_NOTHING);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.GTFO, Constants.AutonomousSelectedOperation.GTFO);
+        AutonomousSelectedOperation.GTFO, AutonomousSelectedOperation.GTFO);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.GO_TO_REEF, Constants.AutonomousSelectedOperation.GO_TO_REEF);
+        AutonomousSelectedOperation.GO_TO_REEF, AutonomousSelectedOperation.GO_TO_REEF);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.GO_TO_REEF_DR, Constants.AutonomousSelectedOperation.GO_TO_REEF_DR);
-    m_autonomousOperations.addOption(Constants.AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF,
-        Constants.AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF);
+        AutonomousSelectedOperation.GO_TO_REEF_DR, AutonomousSelectedOperation.GO_TO_REEF_DR);
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF,
+        AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
-        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE);
+        AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
+        AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE);
     m_autonomousOperations.addOption(
-        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
-        Constants.AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
+        AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
+        AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
 
     SmartDashboard.putData("Overall operation", m_autonomousOperations);
   }
 
   private void addAutonomousStartingPositionsToSmartDashboard() {
-    m_positionOptions.setDefaultOption(Constants.AutonomousStartingPositions.VERY_TOP,
-        Constants.AutonomousStartingPositions.VERY_TOP);
-    m_positionOptions.addOption(Constants.AutonomousStartingPositions.TOP, Constants.AutonomousStartingPositions.TOP);
-    m_positionOptions.addOption(Constants.AutonomousStartingPositions.MIDDLE,
-        Constants.AutonomousStartingPositions.MIDDLE);
-    m_positionOptions.addOption(Constants.AutonomousStartingPositions.BOTTOM,
-        Constants.AutonomousStartingPositions.BOTTOM);
-    m_positionOptions.addOption(Constants.AutonomousStartingPositions.VERY_BOTTOM,
-        Constants.AutonomousStartingPositions.VERY_BOTTOM);
+    m_positionOptions.setDefaultOption(AutonomousStartingPositions.VERY_TOP,
+        AutonomousStartingPositions.VERY_TOP);
+    m_positionOptions.addOption(AutonomousStartingPositions.TOP, AutonomousStartingPositions.TOP);
+    m_positionOptions.addOption(AutonomousStartingPositions.MIDDLE,
+        AutonomousStartingPositions.MIDDLE);
+    m_positionOptions.addOption(AutonomousStartingPositions.BOTTOM,
+        AutonomousStartingPositions.BOTTOM);
+    m_positionOptions.addOption(AutonomousStartingPositions.VERY_BOTTOM,
+        AutonomousStartingPositions.VERY_BOTTOM);
 
     SmartDashboard.putData("Starting position", m_positionOptions);
   }

@@ -7,15 +7,12 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoFactory;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.Constants.AutonomousStartingPositions;
-import frc.robot.commands.*;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
@@ -38,6 +35,18 @@ public final class Autos {
    */
 
   static final double DIST_TO_REEF = 2.134;
+
+  // CODE_REVIEW/FIXME: Generally, static functions don't set/change static data
+  // members as you're currently doing. Usually, one of three things will happen:
+  // 1. The data needed by any function is explicitly passed into it. (And if one
+  // static function calls another, then it passes the data through as a part of
+  // the call.)
+  // 2. There's a single (or rarely, multiple) static "configuration" methods that
+  // are used to set shared/static data, which must be invoked before anything
+  // else.
+  // 3. Instead of using static functions, you'd set the class up as a "normal"
+  // object with a constructor, and then allocate one of those as your factory
+  // object, after which you'd call the (non-static) functions as normal.
   private static AutoFactory m_autoFactory;
   private static AbstractDrivebase m_drivebase;
   private static ArmPivot m_armPivot;

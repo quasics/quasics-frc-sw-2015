@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N3;
  */
 public class Constants {
   /** Common CAN IDs for Quasics' robots. */
-  public static class QuasicsCanIds {
+  public static class QuasicsDrivebaseCanIds {
     /** CAN ID for a Pigeon2 ALU. */
     public static final int PIGEON2_CAN_ID = 1;
     /** CAN ID for the "leading" motor on the drive base's left side. */
@@ -25,6 +25,17 @@ public class Constants {
     public static final int RIGHT_LEADER_ID = 4;
     /** CAN ID for the "following" motor on the drive base's right side. */
     public static final int RIGHT_FOLLOWER_ID = 3;
+  }
+
+  /** Other CAN IDs for Quasics' 2025 robot. */
+  public static class OtherCanIds {
+    public static final int FOLLOWER_ELEVATOR_ID = 7;
+    public static final int LEADER_ELEVATOR_ID = 8;
+  }
+
+  public static class DioIds {
+    public static final int ELEVATOR_LIMIT_SWITCH_UP = 0;
+    public static final int ELEVATOR_LIMIT_SWITCH_DOWN = 1;
   }
 
   /**

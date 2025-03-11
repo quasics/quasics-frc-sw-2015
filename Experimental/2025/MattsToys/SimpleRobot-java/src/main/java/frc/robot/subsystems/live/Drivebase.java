@@ -37,12 +37,14 @@ public class Drivebase extends AbstractDrivebase {
   //
 
   /** The gyro (a Pigeon2) on the drive base. */
-  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsCanIds.PIGEON2_CAN_ID));
+  private final IGyro m_wrappedGyro = new Pigeon2Wrapper(new Pigeon2(Constants.QuasicsDrivebaseCanIds.PIGEON2_CAN_ID));
 
   /** Left leading motor. */
-  final private SparkMax m_leftLeader = new SparkMax(Constants.QuasicsCanIds.LEFT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_leftLeader = new SparkMax(Constants.QuasicsDrivebaseCanIds.LEFT_LEADER_ID,
+      MotorType.kBrushless);
   /** Right leading motor. */
-  final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsCanIds.RIGHT_LEADER_ID, MotorType.kBrushless);
+  final private SparkMax m_rightLeader = new SparkMax(Constants.QuasicsDrivebaseCanIds.RIGHT_LEADER_ID,
+      MotorType.kBrushless);
 
   /** Left encoder (as a TrivialEncoder). */
   final private TrivialEncoder m_leftEncoder = new SparkMaxEncoderWrapper(m_leftLeader.getEncoder());
@@ -95,8 +97,8 @@ public class Drivebase extends AbstractDrivebase {
         rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // Configure the other motors to follow their leader
-    configureMotorToFollow(Constants.QuasicsCanIds.LEFT_FOLLOWER_ID, m_leftLeader);
-    configureMotorToFollow(Constants.QuasicsCanIds.RIGHT_FOLLOWER_ID, m_rightLeader);
+    configureMotorToFollow(Constants.QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, m_leftLeader);
+    configureMotorToFollow(Constants.QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, m_rightLeader);
 
     // Set up the pose estimator
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,

@@ -105,22 +105,8 @@ public class Elevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    final boolean noisy = false;
-
-    final Distance setpoint = getPositionForTarget(m_target);
-    final double velocity = m_encoder.getVelocity();
-    final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint.in(Meters));
-    final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
-
-    final double output = MathUtil.clamp(pidOutput + feedForward, -12.0, +12.0);
-    m_leader.setVoltage(output);
-
-    if (noisy) {
-      System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-          + "output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForward, output,
-          m_pid.atSetpoint());
-    }
+    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_encoder, m_pid, m_feedforward);
+    m_leader.setVoltage(voltage);
   }
 
   @Override

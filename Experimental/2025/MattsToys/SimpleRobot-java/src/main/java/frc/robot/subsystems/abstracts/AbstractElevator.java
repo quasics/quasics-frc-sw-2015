@@ -5,8 +5,15 @@
 package frc.robot.subsystems.abstracts;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
 
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -197,6 +204,29 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
+
+  // TODO: Rewrite this to use a TrivialEncoder.
+  protected Voltage calculateMotorVoltage(Distance setpoint, RelativeEncoder encoder, PIDController pid,
+      ElevatorFeedforward feedForward) {
+    final boolean noisy = false;
+
+    final double velocity = encoder.getVelocity();
+    final double pidOutput = pid.calculate(encoder.getPosition(), setpoint.in(Meters));
+    final double feedForwardOutput = feedForward.calculate(encoder.getVelocity());
+
+    final double output = MathUtil.clamp(pidOutput + feedForwardOutput, -12.0, +12.0);
+
+    if (noisy) {
+      System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
+          + "output: %.02f, atSetpoint: %b%n",
+          encoder.getPosition(), setpoint.in(Meters),
+          velocity,
+          pidOutput, feedForwardOutput, output,
+          pid.atSetpoint());
+    }
+
+    return Volts.of(output);
+  }
 
   /**
    * Trivial implementation of an AbstractElevator. (Does nothing, but does it

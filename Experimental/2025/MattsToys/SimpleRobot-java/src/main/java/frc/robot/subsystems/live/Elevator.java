@@ -29,7 +29,6 @@ public class Elevator extends AbstractElevator {
   private final DigitalInput m_limitSwitchDown = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_DOWN);
 
   private RelativeEncoder m_encoder;
-  private TargetPosition m_targetPosition = TargetPosition.DontCare;
 
   private final double VELOCITY_DEADBAND = 1;
 
@@ -87,9 +86,21 @@ public class Elevator extends AbstractElevator {
   }
 
   @Override
+  public void setTargetPosition(TargetPosition targetPosition) {
+    if (targetPosition != m_target) {
+      m_pid.reset();
+    }
+
+    super.setTargetPosition(targetPosition);
+  }
+
+  @Override
   public boolean atTargetPosition() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'atTargetPosition'");
+    if (m_target == TargetPosition.DontCare) {
+      return true;
+    } else {
+      return m_pid.atSetpoint();
+    }
   }
 
   @Override
@@ -115,20 +126,17 @@ public class Elevator extends AbstractElevator {
   @Override
   protected void resetEncoder_impl() {
     m_encoder.setPosition(0);
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'resetEncoder_impl'");
   }
 
   @Override
   protected Distance getHeight_impl() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getHeight_impl'");
+    return Meters.of(m_encoder.getPosition());
   }
 
   @Override
   protected void stop_impl() {
     m_leader.set(0);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   private static final double ELEVATOR_SPEED_UP_PERCENT = 0.5;
@@ -137,13 +145,13 @@ public class Elevator extends AbstractElevator {
   @Override
   protected void extend_impl() {
     moveSafely(ELEVATOR_SPEED_UP_PERCENT);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   @Override
   protected void retract_impl() {
     moveSafely(ELEVATOR_SPEED_DOWN_PERCENT);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   final static boolean SWITCH_ACTIVATED_VALUE = true;

@@ -18,6 +18,7 @@ import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;
 import frc.robot.subsystems.elevator.AbstractElevator.TargetPosition;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public final class Autos {
 
@@ -52,18 +53,20 @@ public final class Autos {
   // object with a constructor, and then allocate one of those as your factory
   // object, after which you'd call the (non-static) functions as normal.
   private static AutoFactory m_autoFactory;
+  private static AbstractDrivebase m_drivebase;
   private static ArmPivot m_armPivot;
   private static AbstractElevator m_elevator;
   private static ArmRoller m_armRoller;
   private static String m_positionOption;
 
   public static Command followPath(String pathName,
-      boolean resetOdometry) {
+      boolean resetOdometry, boolean stopAtEnd) {
 
     return Commands.sequence(
         resetOdometry ? m_autoFactory.resetOdometry(pathName) : Commands.none(),
         resetOdometry ? m_autoFactory.resetOdometry(pathName) : Commands.none(),
-        m_autoFactory.trajectoryCmd(pathName));
+        m_autoFactory.trajectoryCmd(pathName),
+        stopAtEnd ? new InstantCommand(() -> m_drivebase.stop()) : Commands.none());
   }
 
   public static Command runCommandAfterTime(Command command, double time) {
@@ -82,11 +85,11 @@ public final class Autos {
   public static Command GTFO() {
     switch (m_positionOption) {
       case AutonomousStartingPositions.TOP:
-        return followPath("1gtfo", true);
+        return followPath("1gtfo", true, true);
       case AutonomousStartingPositions.MIDDLE:
-        return followPath("2gtfo", true);
+        return followPath("2gtfo", true, true);
       case AutonomousStartingPositions.BOTTOM:
-        return followPath("3gtfo", true);
+        return followPath("3gtfo", true, true);
       default:
         return new PrintCommand("GTFO failed?");
     }
@@ -95,11 +98,11 @@ public final class Autos {
   public static Command goToReef() {
     switch (m_positionOption) {
       case AutonomousStartingPositions.TOP:
-        return followPath("1toreef", true);
+        return followPath("1toreef", true, true);
       case AutonomousStartingPositions.MIDDLE:
-        return followPath("2toreef", true);
+        return followPath("2toreef", true, true);
       case AutonomousStartingPositions.BOTTOM:
-        return followPath("3toreef", true);
+        return followPath("3toreef", true, true);
       default:
         return new PrintCommand("goToReef failed?");
     }
@@ -109,14 +112,14 @@ public final class Autos {
     switch (m_positionOption) {
       case AutonomousStartingPositions.TOP:
         return Commands.parallel(
-            followPath("1toreef", true),
+            followPath("1toreef", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.5),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 1.8));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
-            followPath("2toreef", true),
+            followPath("2toreef", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)),
                 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1),
@@ -124,7 +127,7 @@ public final class Autos {
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 2.5));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
-            followPath("3toreef", true),
+            followPath("3toreef", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(33)), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.5),
@@ -138,14 +141,14 @@ public final class Autos {
     switch (m_positionOption) {
       case AutonomousStartingPositions.TOP:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
-            followPath("topreeftobarge", false),
+            followPath("topreeftobarge", false, true),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 8)));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
-            followPath("middlereeftobarge", false),
+            followPath("middlereeftobarge", false, true),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
@@ -159,12 +162,12 @@ public final class Autos {
     switch (m_positionOption) {
       case AutonomousStartingPositions.MIDDLE:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
-            followPath("middlereeftoprocessor", false),
+            followPath("middlereeftoprocessor", false, true),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
             runCommandAfterTime(extakeInProcessor(), 3.7)));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.sequence(grabAlgaeFromReef(), Commands.parallel(
-            followPath("bottomreeftoprocessor", false),
+            followPath("bottomreeftoprocessor", false, true),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
             runCommandAfterTime(extakeInProcessor(), 3.2)));
       default:
@@ -182,6 +185,7 @@ public final class Autos {
       String operation,
       String positionOption) {
     m_autoFactory = autoFactory;
+    m_drivebase = drivebase;
     m_elevator = elevator;
     m_armPivot = armPivot;
     m_armRoller = armRoller;

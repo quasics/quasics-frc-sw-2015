@@ -24,6 +24,7 @@ import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
+import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
@@ -169,6 +170,11 @@ public class RobotContainer {
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
     SmartDashboard.putData("Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+
+    SmartDashboard.putData("Elevator up",
+        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
+    SmartDashboard.putData("Elevator down",
+        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.DOWN));
 
     // Trajectory commands
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));

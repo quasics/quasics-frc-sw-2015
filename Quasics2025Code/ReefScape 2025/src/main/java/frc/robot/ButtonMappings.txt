@@ -1,4 +1,3 @@
-
 Driver controller (Logitech)
 * Left stick - Arcade Drive Movement Speed
 * Right stick - Arcade Drive Rotation Speed

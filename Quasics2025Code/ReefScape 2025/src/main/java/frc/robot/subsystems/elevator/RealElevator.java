@@ -98,6 +98,15 @@ public class RealElevator extends AbstractElevator {
   }
 
   public boolean ableToMove(double speed) {
+    // CODE_REVIEW/FIXME: The following logic appears to be incorrect. Can you check
+    // it?
+    //
+    // Context: "!" has a higher precedence than "||", so the following line is
+    // evaluating the negation of "up switch is false and speed < 0" (i.e., "up
+    // switch is true or speeed >= 0"), while the second part is evaluating "down
+    // switch is false and speed > 0" *without* negation. This means that the two
+    // are testing very different things.
+
     return !((m_limitSwitchUp.get() == false && speed < 0)
         || (m_limitSwitchDown.get() == false && speed > 0));
   }
@@ -146,6 +155,10 @@ public class RealElevator extends AbstractElevator {
       case kDontCare:
         return m_encoder.getPosition();
       // TODO: Define actual values for all cases other than "don't care".
+      // CODE_REVIEW/FIXME: If you're getting negative distances from the encoder,
+      // that suggests that the leader is actually running an inverted direction. Why
+      // not swap the IDs for leader and follower, and normalize these values so that
+      // they're positive? (Or negate the positions being reported?)
       case kBottom:
         return 0;
       case kL1:

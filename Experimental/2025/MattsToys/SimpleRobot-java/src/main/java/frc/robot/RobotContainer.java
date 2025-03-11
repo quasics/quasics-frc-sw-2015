@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
@@ -216,7 +217,7 @@ public class RobotContainer {
 
   /**
    * Generates a Choreo command for the specified trajectory, including initial
-   * reset of odometry.
+   * reset of odometry and explicit "stop" at the end.
    *
    * @param trajectoryName name of the trajectory being loaded
    * @return a command for the trajectory, or a no-op if it couldn't be found
@@ -224,7 +225,25 @@ public class RobotContainer {
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
   private Command generateCommandForChoreoTrajectory(String trajectoryName) {
-    return generateCommandForChoreoTrajectory(trajectoryName, true);
+    return generateCommandForChoreoTrajectory(trajectoryName, true, true);
+  }
+
+  /**
+   * Generates a Choreo command for the specified trajectory, including an
+   * explicit "stop" at the end.
+   *
+   * @param trajectoryName name of the trajectory being loaded
+   * @param resetOdometry  if true, reset the robot's pose before running the
+   *                       trajectory, based on the starting point in the
+   *                       trajectory's data
+   * @return a command for the trajectory, or a no-op if it couldn't be found
+   *
+   * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
+   *      'Getting Started'</a>
+   * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
+   */
+  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
+    return generateCommandForChoreoTrajectory(trajectoryName, resetOdometry, true);
   }
 
   /**
@@ -240,13 +259,25 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
+  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
+    // Per https://choreo.autos/choreolib/auto-factory/
+    final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
+
+    // Don't let the drive base continue moving after the trajectory is done (e.g.,
+    // due to PID settings being left in place).
+    final Command endCommand = (stopAtEnd ? new InstantCommand(() -> {
+      m_drivebase.stop();
+    }, m_drivebase.asSubsystem()) : Commands.none());
+
+    // Generate the actual trajectory-following command.
     try {
       return Commands.sequence(
-          // Per https://choreo.autos/choreolib/auto-factory/
-          (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none()),
+          // Perform any "on start" actions
+          startCommand,
           // Then do the thing
-          m_autoFactory.trajectoryCmd(trajectoryName));
+          m_autoFactory.trajectoryCmd(trajectoryName),
+          // And finally, any "on end" actions
+          endCommand);
     } catch (Exception e) {
       System.err.println("ERROR: Failed to load Choreo trajectory '" + trajectoryName + "'");
       e.printStackTrace();

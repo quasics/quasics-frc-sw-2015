@@ -95,6 +95,20 @@ public class Elevator extends AbstractElevator {
   }
 
   @Override
+  public void periodic() {
+    super.periodic();
+
+    // Safety condition: if we're at the top or bottom, stop.
+    //
+    // Note that we don't do this when we're under PID control (for now, at
+    // least).
+    if ((m_mode == Mode.Extending && isAtTop()) ||
+        (m_mode == Mode.Retracting && isAtBottom())) {
+      stop();
+    }
+  }
+
+  @Override
   public boolean atTargetPosition() {
     if (m_target == TargetPosition.DontCare) {
       return true;
@@ -142,12 +156,20 @@ public class Elevator extends AbstractElevator {
 
   final static boolean SWITCH_ACTIVATED_VALUE = true;
 
+  public boolean isAtTop() {
+    return m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE;
+  }
+
+  public boolean isAtBottom() {
+    return m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE;
+  }
+
   private boolean ableToMove(double speed) {
     // TODO: Confirm that "false" indicates "limit switch not activated".
-    if (m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE) {
+    if (isAtTop()) {
       return (speed <= 0); // We can move *down*, but not up.
     }
-    if (m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE) {
+    if (isAtBottom()) {
       return (speed >= 0); // We can move *up*, but not down.
     }
 

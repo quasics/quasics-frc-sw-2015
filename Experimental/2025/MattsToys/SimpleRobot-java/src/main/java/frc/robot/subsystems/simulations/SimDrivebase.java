@@ -148,7 +148,11 @@ public class SimDrivebase extends AbstractDrivebase {
 
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
-    SimulationUxSupport.instance.postCurrentDraw(m_drivetrainSimulator.getCurrentDrawAmps());
+    // Enabling the following appears to break various operations, including
+    // trajectory following, which suggests that I'm inadvertently doing something
+    // "funky" with the current/voltage calculations. I'm therefore disabling it for
+    // now....
+    // SimulationUxSupport.instance.postCurrentDraw(m_drivetrainSimulator.getCurrentDrawAmps());
   }
 
   @Override

@@ -84,8 +84,6 @@ public class SimulationElevator extends AbstractElevator {
   }
 
   protected double translateTargetPositionToValue(TargetPosition position) {
-    // CODE_REVIEW/FIXME: You're not defining a value for "kTop", and thus it will
-    // be treated as an invalid target position.
     switch (position) {
       case kDontCare:
         return m_encoder.getDistance();
@@ -95,6 +93,8 @@ public class SimulationElevator extends AbstractElevator {
       case kL1:
         return (MAX_DESIRED_HEIGHT - MIN_DESIRED_HEIGHT) / 2;
       case kL2:
+        return MAX_DESIRED_HEIGHT;
+      case kTop:
         return MAX_DESIRED_HEIGHT;
     }
 

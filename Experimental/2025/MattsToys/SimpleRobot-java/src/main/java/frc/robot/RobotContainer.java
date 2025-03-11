@@ -224,7 +224,7 @@ public class RobotContainer {
    *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName) {
     return generateCommandForChoreoTrajectory(trajectoryName, true, true);
   }
 
@@ -242,7 +242,7 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
     return generateCommandForChoreoTrajectory(trajectoryName, resetOdometry, true);
   }
 
@@ -259,7 +259,8 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry,
+      boolean stopAtEnd) {
     // Per https://choreo.autos/choreolib/auto-factory/
     final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
 

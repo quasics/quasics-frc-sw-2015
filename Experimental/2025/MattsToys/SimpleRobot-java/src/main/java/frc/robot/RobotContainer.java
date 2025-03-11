@@ -215,7 +215,8 @@ public class RobotContainer {
   ////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Generates a Choreo command for the specified trajectory.
+   * Generates a Choreo command for the specified trajectory, including initial
+   * reset of odometry.
    *
    * @param trajectoryName name of the trajectory being loaded
    * @return a command for the trajectory, or a no-op if it couldn't be found

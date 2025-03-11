@@ -93,6 +93,8 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim cameraSim;
   final boolean ENABLE_WIREFRAME_RENDERING = false;
 
+  // CODE_REVIEW/FIXME: This function is never called. Is it supposed to be called
+  // from somewhere else?
   private void setUpSimulationSupport() {
     if (Robot.isReal()) {
       return;

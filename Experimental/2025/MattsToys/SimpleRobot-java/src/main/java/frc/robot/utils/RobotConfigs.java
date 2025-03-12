@@ -356,8 +356,8 @@ public class RobotConfigs {
         NO_CAMERA,
         new ElevatorConfig(
             // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
-            new PIDConfig(0.15, 0.00, 0.00),
-            new ElevatorFeedForwardConfig(0.0, 0.0, 0.0, 0.0)),
+            new PIDConfig(0.25, 0.00, 0.00),
+            new ElevatorFeedForwardConfig(0.0, 0.5, 0.0, 0.0)),
         NO_LIGHTING);
   }
 

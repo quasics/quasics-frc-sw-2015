@@ -31,8 +31,6 @@ public class Elevator extends AbstractElevator {
 
   private RelativeEncoder m_encoder;
 
-  private final double VELOCITY_DEADBAND = 1;
-
   // TODO: Tune PID values.
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;

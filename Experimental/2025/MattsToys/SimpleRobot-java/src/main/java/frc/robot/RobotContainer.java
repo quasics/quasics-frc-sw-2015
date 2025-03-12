@@ -31,6 +31,7 @@ import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Drivebase;
+import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.MultiCameraVision;
 import frc.robot.subsystems.live.SingleCameraVision;
@@ -413,8 +414,7 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      // TODO: Implement "real elevator" support.
-      return new AbstractElevator.NullElevator();
+      return new Elevator(config);
     } else {
       return new SimulatedElevator(config);
     }

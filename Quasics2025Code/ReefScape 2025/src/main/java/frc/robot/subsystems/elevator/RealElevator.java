@@ -29,8 +29,8 @@ public class RealElevator extends AbstractElevator {
   private final double VELOCITY_DEADBAND = 1;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.15, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.0, 0.00);
+  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.5, 0.00);
 
   /**
    * Creates a new Elevator.
@@ -60,7 +60,7 @@ public class RealElevator extends AbstractElevator {
   public void setSpeed(double percentSpeed) {
     // do not use this when using pid, only for manual control
     m_targetPosition = TargetPosition.kDontCare;
-    System.out.println("Calling setSpeeds: " + percentSpeed);
+    // System.out.println("Calling setSpeeds: " + percentSpeed);
     if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
     }
@@ -121,7 +121,7 @@ public class RealElevator extends AbstractElevator {
     SmartDashboard.putBoolean("At elevator setpoint?", m_pid.atSetpoint());
 
     // SmartDashboard.putBoolean("Able to move", ableToMove());
-    System.out.println(m_targetPosition);
+    // System.out.println(m_targetPosition);
 
     if (!ableToMove(m_encoder.getVelocity()) && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
       stop();

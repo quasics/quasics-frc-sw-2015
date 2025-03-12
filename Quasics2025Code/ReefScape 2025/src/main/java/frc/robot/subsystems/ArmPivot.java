@@ -54,7 +54,7 @@ public class ArmPivot extends SubsystemBase {
     m_config.apply(m_throughBoreConfig);
     m_pivot.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_armPIDController.setP(7);
+    m_armPIDController.setP(10);
     m_armPIDController.setTolerance(0.5, 1);
   }
 

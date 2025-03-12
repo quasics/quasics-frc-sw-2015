@@ -13,14 +13,17 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.utils.RobotConfigs.ElevatorConfig;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /** Add your docs here. */
 public class Elevator extends AbstractElevator {
@@ -28,16 +31,27 @@ public class Elevator extends AbstractElevator {
   private final DigitalInput m_limitSwitchUp = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_UP);
   private final DigitalInput m_limitSwitchDown = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_DOWN);
 
-  private RelativeEncoder m_encoder;
-  private TargetPosition m_targetPosition = TargetPosition.DontCare;
-
-  private final double VELOCITY_DEADBAND = 1;
+  private RelativeEncoder m_encoder = m_leader.getEncoder();
+  private TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.15, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.0, 0.00);
+  private final PIDController m_pid;
+  private final ElevatorFeedforward m_feedforward;
 
-  public Elevator() {
+  public Elevator(RobotConfig config) {
+    // Configure the PID/FF controllers.
+    ElevatorConfig elevatorConfig = config.elevator();
+    m_pid = new PIDController(
+        elevatorConfig.pid().kP(),
+        elevatorConfig.pid().kI(),
+        elevatorConfig.pid().kD());
+    m_pid.setTolerance(0.02); // within 2cm is fine
+    m_feedforward = new ElevatorFeedforward(
+        elevatorConfig.feedForward().kS().in(Volts),
+        elevatorConfig.feedForward().kG().in(Volts),
+        elevatorConfig.feedForward().kV(),
+        elevatorConfig.feedForward().kA());
+
     // Configure the "follower" motor.
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(m_leader, true);
@@ -55,10 +69,6 @@ public class Elevator extends AbstractElevator {
     m_leader.configure(
         leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    m_encoder = m_leader.getEncoder();
-
-    // Finish configuing the PID controller.
-    m_pid.setTolerance(0.02); // within 2cm is fine
   }
 
   protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {
@@ -87,48 +97,63 @@ public class Elevator extends AbstractElevator {
   }
 
   @Override
+  public void setTargetPosition(TargetPosition targetPosition) {
+    if (targetPosition != m_target) {
+      m_pid.reset();
+    }
+
+    super.setTargetPosition(targetPosition);
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    // Safety condition: if we're at the top or bottom, stop.
+    //
+    // Note that we don't do this when we're under PID control (for now, at
+    // least).
+    if ((m_mode == Mode.Extending && isAtTop()) ||
+        (m_mode == Mode.Retracting && isAtBottom())) {
+      stop();
+    }
+
+    System.out.println(NAME + " - " +
+        "mode" + m_mode +
+        " height: " + getHeight_impl() +
+        " atTop: " + isAtTop() +
+        " atBottom: " + isAtBottom());
+  }
+
+  @Override
   public boolean atTargetPosition() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'atTargetPosition'");
+    if (m_target == TargetPosition.DontCare) {
+      return true;
+    } else {
+      return m_pid.atSetpoint();
+    }
   }
 
   @Override
   protected void updateMotor_impl() {
-    final boolean noisy = false;
-
-    final Distance setpoint = getPositionForTarget(m_target);
-    final double velocity = m_encoder.getVelocity();
-    final double pidOutput = m_pid.calculate(m_encoder.getPosition(), setpoint.in(Meters));
-    final double feedForward = m_feedforward.calculate(m_encoder.getVelocity());
-
-    final double output = MathUtil.clamp(pidOutput + feedForward, -12.0, +12.0);
-    m_leader.setVoltage(output);
-
-    if (noisy) {
-      System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-          + "output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForward, output,
-          m_pid.atSetpoint());
-    }
+    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
+    m_leader.setVoltage(voltage);
   }
 
   @Override
   protected void resetEncoder_impl() {
     m_encoder.setPosition(0);
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'resetEncoder_impl'");
   }
 
   @Override
   protected Distance getHeight_impl() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getHeight_impl'");
+    return m_wrappedEncoder.getPosition();
   }
 
   @Override
   protected void stop_impl() {
     m_leader.set(0);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   private static final double ELEVATOR_SPEED_UP_PERCENT = 0.5;
@@ -137,23 +162,31 @@ public class Elevator extends AbstractElevator {
   @Override
   protected void extend_impl() {
     moveSafely(ELEVATOR_SPEED_UP_PERCENT);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   @Override
   protected void retract_impl() {
     moveSafely(ELEVATOR_SPEED_DOWN_PERCENT);
-    m_targetPosition = TargetPosition.DontCare;
+    m_target = TargetPosition.DontCare;
   }
 
   final static boolean SWITCH_ACTIVATED_VALUE = true;
 
+  public boolean isAtTop() {
+    return m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE;
+  }
+
+  public boolean isAtBottom() {
+    return m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE;
+  }
+
   private boolean ableToMove(double speed) {
     // TODO: Confirm that "false" indicates "limit switch not activated".
-    if (m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE) {
+    if (isAtTop()) {
       return (speed <= 0); // We can move *down*, but not up.
     }
-    if (m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE) {
+    if (isAtBottom()) {
       return (speed >= 0); // We can move *up*, but not down.
     }
 
@@ -172,7 +205,7 @@ public class Elevator extends AbstractElevator {
   protected Distance getPositionForTarget(TargetPosition position) {
     switch (position) {
       case DontCare:
-        return Meters.of(m_encoder.getPosition());
+        return m_wrappedEncoder.getPosition();
       // TODO: Check these values.
       case Bottom:
         return Meters.of(0);

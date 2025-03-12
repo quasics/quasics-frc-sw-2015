@@ -354,7 +354,10 @@ public class RobotConfigs {
                 Volts.of(0.20183), 0.02384) // Angular data (from 27Feb2025)
         ),
         NO_CAMERA,
-        NO_ELEVATOR,
+        new ElevatorConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
+            new PIDConfig(0.15, 0.00, 0.00),
+            new ElevatorFeedForwardConfig(0.0, 0.0, 0.0, 0.0)),
         NO_LIGHTING);
   }
 

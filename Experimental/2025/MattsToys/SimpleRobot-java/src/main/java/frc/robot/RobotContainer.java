@@ -24,12 +24,14 @@ import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
+import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Drivebase;
+import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.MultiCameraVision;
 import frc.robot.subsystems.live.SingleCameraVision;
@@ -170,6 +172,11 @@ public class RobotContainer {
     SmartDashboard.putData("Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
 
+    SmartDashboard.putData("Elevator up",
+        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
+    SmartDashboard.putData("Elevator down",
+        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.DOWN));
+
     // Trajectory commands
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
   }
@@ -224,7 +231,7 @@ public class RobotContainer {
    *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName) {
     return generateCommandForChoreoTrajectory(trajectoryName, true, true);
   }
 
@@ -242,7 +249,7 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
     return generateCommandForChoreoTrajectory(trajectoryName, resetOdometry, true);
   }
 
@@ -259,7 +266,8 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  private Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
+  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry,
+      boolean stopAtEnd) {
     // Per https://choreo.autos/choreolib/auto-factory/
     final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
 
@@ -406,8 +414,7 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      // TODO: Implement "real elevator" support.
-      return new AbstractElevator.NullElevator();
+      return new Elevator(config);
     } else {
       return new SimulatedElevator(config);
     }

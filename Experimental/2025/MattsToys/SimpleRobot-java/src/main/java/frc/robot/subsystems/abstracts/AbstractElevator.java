@@ -5,9 +5,8 @@
 package frc.robot.subsystems.abstracts;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
-
-import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -15,6 +14,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.sensors.TrivialEncoder;
 
 /**
  * Provides pretty basic control for a single-mechanism "elevator" that can be
@@ -205,14 +205,13 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
 
-  // TODO: Rewrite this to use a TrivialEncoder.
-  protected Voltage calculateMotorVoltage(Distance setpoint, RelativeEncoder encoder, PIDController pid,
+  protected Voltage calculateMotorVoltage(Distance setpoint, TrivialEncoder encoder, PIDController pid,
       ElevatorFeedforward feedForward) {
     final boolean noisy = false;
 
-    final double velocity = encoder.getVelocity();
-    final double pidOutput = pid.calculate(encoder.getPosition(), setpoint.in(Meters));
-    final double feedForwardOutput = feedForward.calculate(encoder.getVelocity());
+    final double velocity = encoder.getVelocity().in(MetersPerSecond);
+    final double pidOutput = pid.calculate(encoder.getPosition().in(Meters), setpoint.in(Meters));
+    final double feedForwardOutput = feedForward.calculate(velocity);
 
     final double output = MathUtil.clamp(pidOutput + feedForwardOutput, -12.0, +12.0);
 

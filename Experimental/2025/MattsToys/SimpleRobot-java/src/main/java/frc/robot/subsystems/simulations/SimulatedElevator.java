@@ -20,6 +20,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -60,6 +62,9 @@ public class SimulatedElevator extends AbstractElevator {
 
   /** Encoder tracking the current position of the elevator. */
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
+
+  /** TrivialEncoder wrapper. */
+  private final TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
 
   // Note: arbitrary values; we'd want to define something real.
   private final PIDController m_pid;
@@ -109,7 +114,7 @@ public class SimulatedElevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_encoder, m_pid, m_feedforward);
+    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
     m_motor.setVoltage(voltage);
   }
 
@@ -187,7 +192,7 @@ public class SimulatedElevator extends AbstractElevator {
 
   @Override
   protected Distance getHeight_impl() {
-    return Meters.of(m_encoder.getPosition());
+    return m_wrappedEncoder.getPosition();
   }
 
   @Override
@@ -213,7 +218,7 @@ public class SimulatedElevator extends AbstractElevator {
     switch (targetPosition) {
       case DontCare:
         // Wherever we are right now is fine, thanks.
-        return Meters.of(m_encoder.getPosition());
+        return m_wrappedEncoder.getPosition();
 
       case Bottom:
         return MIN_SAFE_HEIGHT;

@@ -19,6 +19,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
+import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.utils.RobotConfigs.ElevatorConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -29,7 +31,8 @@ public class Elevator extends AbstractElevator {
   private final DigitalInput m_limitSwitchUp = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_UP);
   private final DigitalInput m_limitSwitchDown = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_DOWN);
 
-  private RelativeEncoder m_encoder;
+  private RelativeEncoder m_encoder = m_leader.getEncoder();
+  private TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
 
   // TODO: Tune PID values.
   private final PIDController m_pid;
@@ -66,7 +69,6 @@ public class Elevator extends AbstractElevator {
     m_leader.configure(
         leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    m_encoder = m_leader.getEncoder();
   }
 
   protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {
@@ -134,7 +136,7 @@ public class Elevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_encoder, m_pid, m_feedforward);
+    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
     m_leader.setVoltage(voltage);
   }
 
@@ -145,7 +147,7 @@ public class Elevator extends AbstractElevator {
 
   @Override
   protected Distance getHeight_impl() {
-    return Meters.of(m_encoder.getPosition());
+    return m_wrappedEncoder.getPosition();
   }
 
   @Override
@@ -203,7 +205,7 @@ public class Elevator extends AbstractElevator {
   protected Distance getPositionForTarget(TargetPosition position) {
     switch (position) {
       case DontCare:
-        return Meters.of(m_encoder.getPosition());
+        return m_wrappedEncoder.getPosition();
       // TODO: Check these values.
       case Bottom:
         return Meters.of(0);

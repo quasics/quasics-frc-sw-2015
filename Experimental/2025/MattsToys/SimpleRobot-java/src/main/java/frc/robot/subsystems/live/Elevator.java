@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.utils.RobotConfigs.ElevatorConfig;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /** Add your docs here. */
 public class Elevator extends AbstractElevator {
@@ -32,10 +34,23 @@ public class Elevator extends AbstractElevator {
   private final double VELOCITY_DEADBAND = 1;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.15, 0.00, 0.00);
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.0, 0.00);
+  private final PIDController m_pid;
+  private final ElevatorFeedforward m_feedforward;
 
-  public Elevator() {
+  public Elevator(RobotConfig config) {
+    // Configure the PID/FF controllers.
+    ElevatorConfig elevatorConfig = config.elevator();
+    m_pid = new PIDController(
+        elevatorConfig.pid().kP(),
+        elevatorConfig.pid().kI(),
+        elevatorConfig.pid().kD());
+    m_pid.setTolerance(0.02); // within 2cm is fine
+    m_feedforward = new ElevatorFeedforward(
+        elevatorConfig.feedForward().kS().in(Volts),
+        elevatorConfig.feedForward().kG().in(Volts),
+        elevatorConfig.feedForward().kV(),
+        elevatorConfig.feedForward().kA());
+
     // Configure the "follower" motor.
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(m_leader, true);
@@ -54,9 +69,6 @@ public class Elevator extends AbstractElevator {
         leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     m_encoder = m_leader.getEncoder();
-
-    // Finish configuing the PID controller.
-    m_pid.setTolerance(0.02); // within 2cm is fine
   }
 
   protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {
@@ -105,6 +117,12 @@ public class Elevator extends AbstractElevator {
         (m_mode == Mode.Retracting && isAtBottom())) {
       stop();
     }
+
+    System.out.println(NAME + " - " +
+        "mode" + m_mode +
+        " height: " + getHeight_impl() +
+        " atTop: " + isAtTop() +
+        " atBottom: " + isAtBottom());
   }
 
   @Override

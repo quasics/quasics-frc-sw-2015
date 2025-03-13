@@ -9,14 +9,14 @@ Driver controller (Logitech)
 * Right shoulder - Turbo mode (while held)
 * Left trigger - Intake algae
 * Right trigger - Pulse Intake
-* Start - Armpivot 95
-* Back - Shoot with elevator
+* Start - Scoring position
+* Back - Ground pickup position
 
 
 Operator controller (Xbox)
 * Left stick -
 * Right stick -
-* View button -
+* View button - Armpivot 95
 * Xbox button -
 * Right bumper - Move pivot arm up
 * Left bumper - Move pivot arm down

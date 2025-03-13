@@ -394,8 +394,13 @@ public class RobotContainer {
         .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
         .whileTrue(new RunElevator(m_elevator, 0.6)); // DOWN
+
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
-        .whileTrue(shootWithElevator());
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(95), TargetPosition.kTop));
+    new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
+        .whileTrue(
+            new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kBottom));
+
   }
 
   private void ConfigureOperatorButtons() {

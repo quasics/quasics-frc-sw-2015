@@ -26,7 +26,7 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
-  private final double VELOCITY_DEADBAND = 1;
+  private final double VELOCITY_DEADBAND = 10;
 
   // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);

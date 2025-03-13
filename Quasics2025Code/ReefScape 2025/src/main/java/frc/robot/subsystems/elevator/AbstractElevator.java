@@ -22,6 +22,12 @@ public abstract class AbstractElevator extends SubsystemBase {
   } // 54 deg
   // -158
 
+  /**
+   * Manually configures elevator speed.
+   * 
+   * @param percentSpeed % speed to move at; note that negative is up, positive is
+   *                     down
+   */
   public abstract void setSpeed(double percentSpeed);
 
   public abstract void setVoltage(double voltage);

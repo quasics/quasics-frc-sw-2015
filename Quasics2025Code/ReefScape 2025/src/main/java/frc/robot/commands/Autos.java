@@ -137,6 +137,29 @@ public final class Autos {
     }
   }
 
+  public static Command scoreCoralInReef() {
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.TOP:
+        return Commands.parallel(
+            followPath("1toreef", true, true),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 2.5));
+      case AutonomousStartingPositions.MIDDLE:
+        return Commands.parallel(
+            followPath("2toreef", true, true),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)),
+                0.0),
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 2.5));
+      case AutonomousStartingPositions.BOTTOM:
+        return Commands.parallel(
+            followPath("3toreef", true, true),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, true, 0.5), 2.5));
+      default:
+        return new PrintCommand("grabAlgaeFromReef failed?");
+    }
+  }
+
   public static Command scoreAlgaeFromReefIntoBarge() {
     switch (m_positionOption) {
       case AutonomousStartingPositions.TOP:
@@ -213,6 +236,10 @@ public final class Autos {
 
     if (operation == AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF) {
       return grabAlgaeFromReef();
+    }
+
+    if (operation == AutonomousSelectedOperation.SCORE_CORAL_IN_REEF) {
+      return scoreCoralInReef();
     }
 
     if (operation == AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE) {

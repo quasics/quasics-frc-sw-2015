@@ -266,6 +266,8 @@ public class RobotContainer {
         AutonomousSelectedOperation.GO_TO_REEF_DR, AutonomousSelectedOperation.GO_TO_REEF_DR);
     m_autonomousOperations.addOption(AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF,
         AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF);
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_CORAL_IN_REEF,
+        AutonomousSelectedOperation.SCORE_CORAL_IN_REEF);
     m_autonomousOperations.addOption(
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE);

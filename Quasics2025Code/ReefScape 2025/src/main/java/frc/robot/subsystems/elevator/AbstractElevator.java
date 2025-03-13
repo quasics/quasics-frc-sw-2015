@@ -43,6 +43,6 @@ public abstract class AbstractElevator extends SubsystemBase {
     super.periodic();
 
     SmartDashboard.putNumber("elevator position", getPosition());
-    SmartDashboard.putNumber("elevator velocity", getPosition());
+    SmartDashboard.putNumber("elevator velocity", getVelocity());
   }
 }

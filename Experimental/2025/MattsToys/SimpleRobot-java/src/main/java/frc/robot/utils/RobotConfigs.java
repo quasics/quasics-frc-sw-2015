@@ -363,11 +363,11 @@ public class RobotConfigs {
 
   private static RobotConfig generateSallyConfig() {
     return new RobotConfig(
-        // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile.
         new DriveConfig(Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024)
-            // TODO: Update with independent left/right PID values for Sally
+            // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile,
+            // including independent left/right PID.
             new PIDConfig(0.29613), // Left PID (from 2024)
             new PIDConfig(0.29613), // Right PID (from 2024)
             new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)

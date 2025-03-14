@@ -186,6 +186,9 @@ public final class Constants {
     public static final String SCORE_CORAL_IN_REEF = "Score coral in reef";
     public static final String SCORE_ALGAE_REEF_BARGE = "Score algae from reef into barge";
     public static final String SCORE_ALGAE_REEF_PROCESSOR = "Score algae from reef into processor";
+    public static final String GRAB_ALGAE_FROM_FIELD = "Grab algae from field";
+    public static final String SCORE_ALGAE_FIELD_PROCESSOR = "Score algae from field into processor";
+    public static final String SCORE_ALGAE_FIELD_BARGE = "Score algae from field into barge";
 
   } // public static class AutonomousSelectedOperation
 

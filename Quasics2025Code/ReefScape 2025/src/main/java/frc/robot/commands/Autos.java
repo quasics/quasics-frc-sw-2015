@@ -90,6 +90,10 @@ public final class Autos {
         return followPath("2gtfo", true, true);
       case AutonomousStartingPositions.BOTTOM:
         return followPath("3gtfo", true, true);
+      case AutonomousStartingPositions.VERY_TOP:
+        return followPath("4gtfo", true, true);
+      case AutonomousStartingPositions.VERY_BOTTOM:
+        return followPath("5gtfo", true, true);
       default:
         return new PrintCommand("GTFO failed?");
     }
@@ -105,6 +109,17 @@ public final class Autos {
         return followPath("3toreef", true, true);
       default:
         return new PrintCommand("goToReef failed?");
+    }
+  }
+
+  public static Command goToField() {
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.VERY_TOP:
+        return followPath("4toalgae", true, true);
+      case AutonomousStartingPositions.VERY_BOTTOM:
+        return followPath("5toalgae", true, true);
+      default:
+        return new PrintCommand("goToField failed?");
     }
   }
 
@@ -136,6 +151,16 @@ public final class Autos {
         return new PrintCommand("grabAlgaeFromReef failed?");
     }
   }
+
+  // TODO: finish writing command for grabbing algae on field.
+  /*
+   * public static Command grabAlgaeFromField() {
+   * switch (m_positionOption) {
+   * case AutonomousStartingPositions.VERY_TOP:
+   * return Commands.parallel(followPath(m_positionOption, false, false))
+   * }
+   * }
+   */
 
   public static Command scoreCoralInReef() {
     switch (m_positionOption) {

@@ -11,7 +11,8 @@
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":0.0, "y":0.0, "w":17.548, "h":8.052}}, "enabled":false},
     {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":2.5}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":2.5}}, "enabled":true},
-    {"from":"first", "to":"last", "data":{"type":"MaxAngularVelocity", "props":{"max":3.141592653589793}}, "enabled":true}],
+    {"from":"first", "to":"last", "data":{"type":"MaxAngularVelocity", "props":{"max":3.141592653589793}}, "enabled":true},
+    {"from":1, "to":1, "data":{"type":"KeepInLane", "props":{"tolerance":0.01}}, "enabled":true}],
   "targetDt":0.05
  },
  "params":{

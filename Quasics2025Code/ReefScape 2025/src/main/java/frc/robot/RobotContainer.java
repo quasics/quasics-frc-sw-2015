@@ -274,6 +274,10 @@ public class RobotContainer {
     m_autonomousOperations.addOption(
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_FIELD_BARGE,
+        AutonomousSelectedOperation.SCORE_ALGAE_FIELD_BARGE);
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_FIELD_PROCESSOR,
+        AutonomousSelectedOperation.SCORE_ALGAE_FIELD_PROCESSOR);
 
     SmartDashboard.putData("Overall operation", m_autonomousOperations);
   }

@@ -39,7 +39,7 @@ public class RealDrivebase extends AbstractDrivebase {
 
   public static final Distance TRACK_WIDTH_METERS = Meters.of(Constants.SallyConstants.TRACK_WIDTH);
   public static final Distance WHEEL_CIRCUMFERENCE = Inches.of(6 * Math.PI);
-  public static final double GEAR_RATIO = 8.45;
+  public static final double GEAR_RATIO = 10.71;
 
   private final RelativeEncoder m_leftEncoder = m_leftLeader.getEncoder();
   private final RelativeEncoder m_rightEncoder = m_rightLeader.getEncoder();

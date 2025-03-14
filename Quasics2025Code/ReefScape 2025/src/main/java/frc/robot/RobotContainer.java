@@ -274,6 +274,17 @@ public class RobotContainer {
     m_autonomousOperations.addOption(
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
+    m_autonomousOperations.addOption(
+        AutonomousSelectedOperation.SCORE_CORAL_GRAB_ALGAE,
+        AutonomousSelectedOperation.SCORE_CORAL_GRAB_ALGAE);
+    m_autonomousOperations.addOption(
+        AutonomousSelectedOperation.SCORE_CORAL_SCORE_BARGE,
+        AutonomousSelectedOperation.SCORE_CORAL_SCORE_BARGE);
+    m_autonomousOperations.addOption(
+        AutonomousSelectedOperation.SCORE_CORAL_SCORE_PROCESSOR,
+        AutonomousSelectedOperation.SCORE_CORAL_SCORE_PROCESSOR);
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.GRAB_ALGAE_FROM_FIELD,
+        AutonomousSelectedOperation.GRAB_ALGAE_FROM_FIELD);
     m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_FIELD_BARGE,
         AutonomousSelectedOperation.SCORE_ALGAE_FIELD_BARGE);
     m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_FIELD_PROCESSOR,
@@ -370,8 +381,8 @@ public class RobotContainer {
   }
 
   private Command intakeThenExtake() {
-    return Commands.sequence(new RunKrakenForTime(m_armRoller, true, 0.2), new WaitCommand(0.1),
-        new RunKrakenForTime(m_armRoller, false, 0.5));
+    return Commands.sequence(new RunKrakenForTime(m_armRoller, -0.3, 0.2), new WaitCommand(0.1),
+        new RunKrakenForTime(m_armRoller, 1.0, 0.5));
   }
 
   private Command shootWithElevator() {

@@ -12,18 +12,16 @@ import frc.robot.subsystems.ArmRoller;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class RunKrakenForTime extends Command {
-  ArmRoller m_ArmRoller;
-  double INTAKE_SPEED = -0.3;
-  double EXTAKE_SPEED = 1;
-  boolean m_intake;
-  Timer m_timer;
+  ArmRoller m_armRoller;
+  double m_speed;
   double m_stopTime;
+  Timer m_timer;
 
   /** Creates a new RunKrakenForTime. */
-  public RunKrakenForTime(ArmRoller armRoller, boolean intake, double time) {
+  public RunKrakenForTime(ArmRoller armRoller, double speed, double time) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_ArmRoller = armRoller;
-    m_intake = intake;
+    m_armRoller = armRoller;
+    m_speed = speed;
     m_stopTime = time;
     m_timer = new Timer();
     m_timer.start();
@@ -32,26 +30,20 @@ public class RunKrakenForTime extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake)
-      m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else
-      m_ArmRoller.setSpeed(EXTAKE_SPEED);
+    m_armRoller.setSpeed(m_speed);
     m_timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake)
-      m_ArmRoller.setSpeed(INTAKE_SPEED);
-    else
-      m_ArmRoller.setSpeed(EXTAKE_SPEED);
+    m_armRoller.setSpeed(m_speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_ArmRoller.stop();
+    m_armRoller.stop();
   }
 
   // Returns true when the command should end.

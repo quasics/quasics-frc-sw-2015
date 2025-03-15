@@ -16,7 +16,7 @@ package frc.robot.subsystems.interfaces;
  *      class
  * @see ILighting.StockColor
  */
-public interface ICandle {
+public interface ICandle extends ISubsystem {
   /** Sets all of the LEDs on the CANdle to the specified color. */
   default void setColor(ILighting.StockColor color) {
     setColor(color.r, color.g, color.b);
@@ -24,4 +24,11 @@ public interface ICandle {
 
   /** Sets all of the LEDs on the CANdle to the specified color. */
   void setColor(int r, int g, int b);
+
+  public static class NullCandle implements ICandle {
+    @Override
+    public void setColor(int r, int g, int b) {
+      // Do nothing.
+    }
+  }
 }

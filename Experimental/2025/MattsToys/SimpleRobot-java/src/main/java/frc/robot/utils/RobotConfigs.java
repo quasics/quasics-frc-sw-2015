@@ -282,7 +282,53 @@ public class RobotConfigs {
   public static record LightingConfig(int pwmPort, int stripLength) {
   }
 
-  public static record ArmConfig(PIDConfig pid, SimpleFeedForwardConfig feedForward) {
+  /**
+   * Arm Feed forward settings.
+   *
+   * TODO: Convert kV/kA from raw doubles to unit-based values.
+   *
+   * @param kS static gain
+   * @param kG gravity gain
+   * @param kV kV, in V/(m/s)
+   * @param kA kA, in V/(m/s^2)
+   */
+  public static record ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+    /**
+     * Overloaded constructor (no kA).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     */
+    public ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV) {
+      this(kS, kG, kV, 0);
+    }
+
+    /**
+     * Overloaded constructor (all unitless).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     * @param kA kA, in V/(m/s^2)
+     */
+    public ArmFeedForwardConfig(double kS, double kG, double kV, double kA) {
+      this(Volts.of(kS), Volts.of(kG), kV, kA);
+    }
+
+    /**
+     * Overloaded constructor (all unitless, no kA).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     */
+    public ArmFeedForwardConfig(double kS, double kG, double kV) {
+      this(Volts.of(kS), Volts.of(kG), kV, 0);
+    }
+  }
+
+  public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
   /**
@@ -333,6 +379,11 @@ public class RobotConfigs {
       return elevator != null;
     }
 
+    /** @return true iff the configuration includes data for the arm */
+    public boolean hasArm() {
+      return arm != null;
+    }
+
     /**
      * @return true iff the configuration includes data for the lighting subsystem
      */
@@ -365,7 +416,10 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
             new PIDConfig(0.25, 0.00, 0.00),
             new ElevatorFeedForwardConfig(0.0, 0.5, 0.0, 0.0)),
-        NO_ARM,
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(10.0, 0.00, 0.00),
+            new ArmFeedForwardConfig(0.2, 0.25, 0)),
         NO_LIGHTING);
   }
 
@@ -421,7 +475,10 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
-        NO_ARM,
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(6.0, 0.00, 0.00),
+            null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 
@@ -474,7 +531,10 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
-        NO_ARM,
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(6.0, 0.00, 0.00),
+            null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 }

@@ -22,7 +22,8 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
-// import edu.wpi.first.wpilibj.simulation.BatterySim;
+import frc.robot.utils.RobotConfigs.PIDConfig;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Subsystem simulating a single-joint arm.
@@ -92,12 +93,17 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
 
   /** Creates a new SimulatedSingleJointArm. */
-  public SimulatedSingleJointArm() {
+  public SimulatedSingleJointArm(RobotConfig robotConfig) {
     setName(SUBSYSTEM_NAME);
 
+    final PIDConfig pidConfig = robotConfig.arm().pid();
+
     // Configure the motor.
-    var config = new SparkMaxConfig();
-    config.closedLoop.p(6).i(0).d(0);
+    var motorConfig = new SparkMaxConfig();
+    motorConfig.closedLoop
+        .p(pidConfig.kP())
+        .i(pidConfig.kI())
+        .d(pidConfig.kD());
 
     // Note: under simulation, SparkSim derives the gear ratio based on the ratio
     // between positionconversionfactor and velocityconversionfactor. As a result,
@@ -105,11 +111,11 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     // to work correctly. (And it doesn't hurt to have them set in the real world,
     // either.)
     final double tau = 2 * Math.PI;
-    config.encoder.positionConversionFactor(tau / GEARING);
-    config.encoder.velocityConversionFactor(tau / (60 * GEARING));
+    motorConfig.encoder.positionConversionFactor(tau / GEARING);
+    motorConfig.encoder.velocityConversionFactor(tau / (60 * GEARING));
 
     m_motorController.configure(
-        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // By default, hold the arm in our starting position
     setTargetPosition(STARTING_ANGLE);

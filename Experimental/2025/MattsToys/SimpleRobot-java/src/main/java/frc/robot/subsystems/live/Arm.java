@@ -21,6 +21,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.utils.RobotConfigs.ArmFeedForwardConfig;
+import frc.robot.utils.RobotConfigs.PIDConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
@@ -56,11 +58,19 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
   public Arm(RobotConfig config) {
     setName(SUBSYSTEM_NAME);
 
-    // TODO: Move PID/Feedforward values to the RobotConfig.
-    m_armPIDController = new PIDController(10.0, 0.0, 0.0);
+    final PIDConfig pidConfig = config.arm().pid();
+    m_armPIDController = new PIDController(
+        pidConfig.kP(),
+        pidConfig.kI(),
+        pidConfig.kD());
     m_armPIDController.setTolerance(0.5, 1);
 
-    m_feedForward = new ArmFeedforward(0.2, 0.25, 0.0);
+    final ArmFeedForwardConfig ffConfig = config.arm().feedForward();
+    m_feedForward = new ArmFeedforward(
+        ffConfig.kS().in(Volts),
+        ffConfig.kG().in(Volts),
+        ffConfig.kV(),
+        ffConfig.kA());
 
     // Through-bore encoder configuration settings.
     final AbsoluteEncoderConfig throughBoreConfig = new AbsoluteEncoderConfig();

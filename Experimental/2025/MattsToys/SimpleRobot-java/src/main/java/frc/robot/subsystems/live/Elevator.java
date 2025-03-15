@@ -16,7 +16,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
 import frc.robot.sensors.ITriggerSensor;

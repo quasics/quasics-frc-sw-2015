@@ -21,20 +21,24 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
+import frc.robot.commands.FlickeringCandle;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Arm;
+import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.Vision;
+import frc.robot.subsystems.simulations.SimCandle;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
@@ -83,6 +87,7 @@ public class RobotContainer {
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
+  final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
 
   // Controllers
   //
@@ -115,6 +120,7 @@ public class RobotContainer {
     configurePeriodicOperations(robot);
 
     m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    m_candle.asSubsystem().setDefaultCommand(new FlickeringCandle(m_candle));
   }
 
   private void configurePeriodicOperations(TimedRobot robot) {
@@ -479,6 +485,18 @@ public class RobotContainer {
       return new Arm(config);
     } else {
       return new SimulatedSingleJointArm(config);
+    }
+  }
+
+  private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
+    if (!config.hasCandle()) {
+      return new ICandle.NullCandle();
+    }
+
+    if (Robot.isReal()) {
+      return new Candle();
+    } else {
+      return new SimCandle((Lighting) lighting);
     }
   }
 }

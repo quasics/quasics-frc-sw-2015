@@ -8,7 +8,6 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.ILighting.StockColor;
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.
@@ -20,11 +19,6 @@ public class Candle extends SubsystemBase implements ICandle {
   /** Creates a new Candle. */
   public Candle() {
     setName("Candle");
-  }
-
-  @Override
-  public void setColor(StockColor color) {
-    m_candle.setLEDs(color.r, color.g, color.b);
   }
 
   @Override

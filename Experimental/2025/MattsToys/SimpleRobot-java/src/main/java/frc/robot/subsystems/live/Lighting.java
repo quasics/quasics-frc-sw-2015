@@ -128,9 +128,12 @@ public class Lighting extends SubsystemBase implements ILighting {
   }
 
   /**
+   * Returns a buffer view for the LED strip to be used in simulating a CANdle
+   * device on the robot.
+   * 
    * @return the buffer view for use in simulating a CANdle device
    */
-  AddressableLEDBufferView getCandleBuffer() {
+  public AddressableLEDBufferView getCandleBuffer() {
     return m_candleView;
   }
 }

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,8 +18,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.io.IOException;
 import java.util.*;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -85,13 +89,15 @@ public class Vision extends SubsystemBase {
       return;
     }
 
-    // visionSim.update(); (get pose from sim drive base)
+    setUpSimulationSupport();
+
+    updateEstimatedGlobalPose();
   }
 
   private VisionSystemSim visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  final boolean ENABLE_WIREFRAME_RENDERING = false;
+  final boolean ENABLE_WIREFRAME_RENDERING = true;
 
   // CODE_REVIEW/FIXME: This function is never called. Is it supposed to be called
   // from somewhere else?
@@ -121,5 +127,25 @@ public class Vision extends SubsystemBase {
       return null;
     }
     return visionSim.getDebugField();
+  }
+
+  public void resetSimPose(Pose2d pose) {
+    if (visionSim != null) {
+      visionSim.resetRobotPose(pose);
+    }
+  }
+
+  private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
+
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    return m_lastEstimatedPose;
+  }
+
+  private void updateEstimatedGlobalPose() {
+    if (camera == null) {
+      return;
+    }
+
+    // lastEstimatedPose = visionEstimator.update();
   }
 }

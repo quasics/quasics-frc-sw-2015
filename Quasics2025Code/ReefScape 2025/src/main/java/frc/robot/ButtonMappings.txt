@@ -14,8 +14,8 @@ Driver controller (Logitech)
 
 
 Operator controller (Xbox)
-* Left stick -
-* Right stick -
+* Left stick - Coral pickup
+* Right stick - Processor PID
 * View button - Armpivot 95
 * Xbox button -
 * Right bumper - Move pivot arm up

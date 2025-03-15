@@ -23,6 +23,10 @@ public class Lighting extends SubsystemBase implements ILighting {
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
 
+  /**
+   * Iff true, the robot will initialize LEDs to alternating black (off) and
+   * white; otherwise, they will default to (Quasics) green.
+   */
   private static final boolean START_CHECKERBOARDED = false;
 
   /**

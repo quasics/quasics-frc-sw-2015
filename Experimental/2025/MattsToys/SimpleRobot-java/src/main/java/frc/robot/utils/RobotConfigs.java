@@ -165,8 +165,6 @@ public class RobotConfigs {
   /**
    * Elevator Feed forward settings.
    *
-   * TODO: Convert kV/kA from raw doubles to unit-based values.
-   *
    * @param kS static gain
    * @param kG gravity gain
    * @param kV kV, in V/(m/s)
@@ -284,8 +282,6 @@ public class RobotConfigs {
 
   /**
    * Arm Feed forward settings.
-   *
-   * TODO: Convert kV/kA from raw doubles to unit-based values.
    *
    * @param kS static gain
    * @param kG gravity gain

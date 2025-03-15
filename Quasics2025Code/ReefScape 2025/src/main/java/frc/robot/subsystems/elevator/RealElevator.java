@@ -30,6 +30,7 @@ public class RealElevator extends AbstractElevator {
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
   private final double VELOCITY_DEADBAND = 10;
+  private int m_numCycles = 0;
 
   // TODO: Tune PID values.
   private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
@@ -63,6 +64,7 @@ public class RealElevator extends AbstractElevator {
   public void setSpeed(double percentSpeed) {
     // do not use this when using pid, only for manual control
     m_targetPosition = TargetPosition.kDontCare;
+    m_numCycles = 0;
     // System.out.println("Calling setSpeeds: " + percentSpeed);
     if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
@@ -121,6 +123,8 @@ public class RealElevator extends AbstractElevator {
   public void periodic() {
     super.periodic();
 
+    m_numCycles++;
+
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
 
@@ -146,7 +150,9 @@ public class RealElevator extends AbstractElevator {
       double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
       double feedforward = m_feedforward.calculate(velocity);
 
-      double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
+      double voltClampBasedOnCycles = m_numCycles * 1;
+      double voltClamp = MathUtil.clamp(voltClampBasedOnCycles, -12, 12);
+      double output = MathUtil.clamp(pidOutput + feedforward, -voltClamp, voltClamp);
 
       System.out.printf(
           "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
@@ -176,6 +182,7 @@ public class RealElevator extends AbstractElevator {
   }
 
   public void setTargetPosition(TargetPosition position) {
+    m_numCycles = 0;
     m_targetPosition = position;
 
   }

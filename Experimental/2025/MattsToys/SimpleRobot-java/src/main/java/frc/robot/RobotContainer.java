@@ -34,8 +34,7 @@ import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
-import frc.robot.subsystems.live.MultiCameraVision;
-import frc.robot.subsystems.live.SingleCameraVision;
+import frc.robot.subsystems.live.Vision;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
@@ -433,9 +432,9 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      return new SingleCameraVision(config);
+      return new Vision(config);
     } else {
-      return new SimVisionWrapper(config, new MultiCameraVision(config));
+      return new SimVisionWrapper(config, new Vision(config));
     }
   }
 

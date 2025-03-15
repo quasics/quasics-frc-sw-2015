@@ -16,8 +16,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.abstracts.AbstractVision;
-import frc.robot.subsystems.abstracts.AbstractVision.CameraData;
+import frc.robot.subsystems.live.Vision;
+import frc.robot.subsystems.live.Vision.CameraData;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
@@ -30,7 +30,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  */
 public class SimVisionWrapper extends SubsystemBase implements IVision {
   /** The primary vision object that's actually being used. */
-  final private AbstractVision m_realVision;
+  final private Vision m_realVision;
 
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
@@ -44,7 +44,7 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    * @param config     the robot's configuration
    * @param realVision the AbstractVision object providing the core functionality
    */
-  public SimVisionWrapper(RobotConfig config, AbstractVision realVision) {
+  public SimVisionWrapper(RobotConfig config, Vision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
       throw new RuntimeException(

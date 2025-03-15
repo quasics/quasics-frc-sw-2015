@@ -327,6 +327,9 @@ public class RobotConfigs {
   public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
+  public static record CandleConfig() {
+  }
+
   /**
    * Collective robot configuration data.
    *
@@ -341,7 +344,8 @@ public class RobotConfigs {
       List<CameraConfig> cameras,
       ElevatorConfig elevator,
       ArmConfig arm,
-      LightingConfig lighting) {
+      LightingConfig lighting,
+      CandleConfig candle) {
 
     /**
      * Utility constructor fo a single-camera robot.
@@ -356,8 +360,9 @@ public class RobotConfigs {
         CameraConfig camera,
         ElevatorConfig elevator,
         ArmConfig arm,
-        LightingConfig lighting) {
-      this(drive, Collections.singletonList(camera), elevator, arm, lighting);
+        LightingConfig lighting,
+        CandleConfig candle) {
+      this(drive, Collections.singletonList(camera), elevator, arm, lighting, candle);
     }
 
     /** @return true iff the configuration includes data for the drivebase */
@@ -386,6 +391,13 @@ public class RobotConfigs {
     public boolean hasLighting() {
       return lighting != null;
     }
+
+    /**
+     * @return true iff the configuration includes data for the "candle" subsystem
+     */
+    public boolean hasCandle() {
+      return candle != null;
+    }
   }
 
   @SuppressWarnings("unused")
@@ -394,6 +406,7 @@ public class RobotConfigs {
   private static final ElevatorConfig NO_ELEVATOR = null;
   private static final LightingConfig NO_LIGHTING = null;
   private static final ArmConfig NO_ARM = null;
+  private static final CandleConfig NO_CANDLE = null;
 
   private static RobotConfig generateAmeliaConfig() {
     return new RobotConfig(
@@ -415,7 +428,8 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(10.0, 0.00, 0.00),
             new ArmFeedForwardConfig(0.2, 0.25, 0)),
-        NO_LIGHTING);
+        NO_LIGHTING,
+        NO_CANDLE);
   }
 
   private static RobotConfig generateSallyConfig() {
@@ -433,7 +447,8 @@ public class RobotConfigs {
         NO_CAMERA,
         NO_ELEVATOR,
         NO_ARM,
-        NO_LIGHTING);
+        NO_LIGHTING,
+        NO_CANDLE);
   }
 
   private static RobotConfig generateSingleCameraSimulationConfig() {
@@ -474,7 +489,8 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00),
             null),
-        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
+        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
+        new CandleConfig());
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
@@ -530,6 +546,7 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00),
             null),
-        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
+        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
+        NO_CANDLE);
   }
 }

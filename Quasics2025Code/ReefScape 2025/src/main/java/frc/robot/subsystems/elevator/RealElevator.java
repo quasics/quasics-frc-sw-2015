@@ -33,7 +33,7 @@ public class RealElevator extends AbstractElevator {
   private int m_numCycles = 0;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+  private final PIDController m_pid = new PIDController(0.20, 0.00, 0.00);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.5, 0.00);
 
   /**
@@ -105,18 +105,8 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    // Are we at the top limit?
-    if (m_limitSwitchUp.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed > 0; // We can move down (speed negative) from the top point, but not up.
-    }
-
-    // Are we at the bottom limit?
-    if (m_limitSwitchDown.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed < 0; // We can move up (speed positive) from the bottom point, but not down.
-    }
-
-    // Limit switches are both clear; any direction is OK
-    return true;
+    return !((m_limitSwitchUp.get() == false && speed < 0)
+        || (m_limitSwitchDown.get() == false && speed > 0));
   }
 
   @Override
@@ -137,10 +127,10 @@ public class RealElevator extends AbstractElevator {
       stop();
     }
 
-    if (m_limitSwitchDown.get()) {
-      // resetEncoders();
+    if (!m_limitSwitchDown.get()) {
+      resetEncoders();
     }
-    if (m_limitSwitchUp.get()) {
+    if (!m_limitSwitchUp.get()) {
       // resetEncoders(getRotationsForPosition(AbstractElevator.TargetPosition.kL2));
     }
 
@@ -168,7 +158,7 @@ public class RealElevator extends AbstractElevator {
         return m_encoder.getPosition();
       // TODO: Make down negative and up positive
       case kBottom:
-        return 0;
+        return 5;
       case kL1:
         return -74;
       case kL2:

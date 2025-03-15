@@ -165,8 +165,6 @@ public class RobotConfigs {
   /**
    * Elevator Feed forward settings.
    *
-   * TODO: Convert kV/kA from raw doubles to unit-based values.
-   *
    * @param kS static gain
    * @param kG gravity gain
    * @param kV kV, in V/(m/s)
@@ -283,17 +281,66 @@ public class RobotConfigs {
   }
 
   /**
+   * Arm Feed forward settings.
+   *
+   * @param kS static gain
+   * @param kG gravity gain
+   * @param kV kV, in V/(m/s)
+   * @param kA kA, in V/(m/s^2)
+   */
+  public static record ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+    /**
+     * Overloaded constructor (no kA).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     */
+    public ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV) {
+      this(kS, kG, kV, 0);
+    }
+
+    /**
+     * Overloaded constructor (all unitless).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     * @param kA kA, in V/(m/s^2)
+     */
+    public ArmFeedForwardConfig(double kS, double kG, double kV, double kA) {
+      this(Volts.of(kS), Volts.of(kG), kV, kA);
+    }
+
+    /**
+     * Overloaded constructor (all unitless, no kA).
+     *
+     * @param kS static gain, in V
+     * @param kG gravity gain, in V
+     * @param kV kV, in V/(m/s)
+     */
+    public ArmFeedForwardConfig(double kS, double kG, double kV) {
+      this(Volts.of(kS), Volts.of(kG), kV, 0);
+    }
+  }
+
+  public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
+  }
+
+  /**
    * Collective robot configuration data.
    *
    * @param drive    drive base configuration (may be null)
    * @param cameras  list of camera configurations (may be null)
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
+   * @param arm      arm configuration (may be null)
    */
   public static record RobotConfig(
       DriveConfig drive,
       List<CameraConfig> cameras,
       ElevatorConfig elevator,
+      ArmConfig arm,
       LightingConfig lighting) {
 
     /**
@@ -308,8 +355,9 @@ public class RobotConfigs {
         DriveConfig drive,
         CameraConfig camera,
         ElevatorConfig elevator,
+        ArmConfig arm,
         LightingConfig lighting) {
-      this(drive, Collections.singletonList(camera), elevator, lighting);
+      this(drive, Collections.singletonList(camera), elevator, arm, lighting);
     }
 
     /** @return true iff the configuration includes data for the drivebase */
@@ -327,6 +375,11 @@ public class RobotConfigs {
       return elevator != null;
     }
 
+    /** @return true iff the configuration includes data for the arm */
+    public boolean hasArm() {
+      return arm != null;
+    }
+
     /**
      * @return true iff the configuration includes data for the lighting subsystem
      */
@@ -340,13 +393,13 @@ public class RobotConfigs {
   private static final CameraConfig NO_CAMERA = null;
   private static final ElevatorConfig NO_ELEVATOR = null;
   private static final LightingConfig NO_LIGHTING = null;
+  private static final ArmConfig NO_ARM = null;
 
   private static RobotConfig generateAmeliaConfig() {
     return new RobotConfig(
-        // TODO: Update DriveConfig data to match Amelia's configuration.
         new DriveConfig(Inches.of(3), // Wheel radius
             Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
-            8.45, // Gearing (from 2024)
+            10.71, // Gearing (from 15Mar2025)
             new PIDConfig(0.046218), // Left (from 27Feb2025)
             new PIDConfig(0.066374), // Right (from 27Feb2025)
             new DriveFeedForwardConfig(
@@ -358,6 +411,10 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
             new PIDConfig(0.25, 0.00, 0.00),
             new ElevatorFeedForwardConfig(0.0, 0.5, 0.0, 0.0)),
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(10.0, 0.00, 0.00),
+            new ArmFeedForwardConfig(0.2, 0.25, 0)),
         NO_LIGHTING);
   }
 
@@ -373,7 +430,10 @@ public class RobotConfigs {
             new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_LIGHTING);
+        NO_CAMERA,
+        NO_ELEVATOR,
+        NO_ARM,
+        NO_LIGHTING);
   }
 
   private static RobotConfig generateSingleCameraSimulationConfig() {
@@ -410,6 +470,10 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(6.0, 0.00, 0.00),
+            null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 
@@ -462,6 +526,10 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(6.0, 0.00, 0.00),
+            null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 }

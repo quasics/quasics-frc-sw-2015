@@ -31,6 +31,7 @@ public class Constants {
   public static class OtherCanIds {
     public static final int FOLLOWER_ELEVATOR_ID = 7;
     public static final int LEADER_ELEVATOR_ID = 8;
+    public static final int ARM_LEADER_ID = 9;
   }
 
   public static class DioIds {

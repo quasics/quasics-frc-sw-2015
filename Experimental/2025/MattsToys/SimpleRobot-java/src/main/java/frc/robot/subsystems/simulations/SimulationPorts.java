@@ -19,6 +19,8 @@ public interface SimulationPorts {
   /** CAN ID used for elevator motor. */
   public final int ELEVATOR_CAN_ID = 1;
 
+  public final int ARM_CAN_ID = 2;
+
   /** Channel ID used for the gyro. */
   public final int GYRO_CHANNEL = 0;
 

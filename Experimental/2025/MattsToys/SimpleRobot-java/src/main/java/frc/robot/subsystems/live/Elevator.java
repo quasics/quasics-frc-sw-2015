@@ -25,7 +25,15 @@ import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.utils.RobotConfigs.ElevatorConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-/** Add your docs here. */
+/**
+ * Subsystem representing the elevator on our real 2025 robot.
+ * 
+ * Note: per Ethan, the elevator is currently configures such that "up" for the
+ * leader motor is negative. This feels... wrong, and is something that can be
+ * fixed (e.g., by switching to using the current "follower" as the leader, or
+ * reversing "inverted" values), but until I've had a chance to actually try
+ * out/debug the code on the real hardware, I'm not going to mess with it.
+ */
 public class Elevator extends AbstractElevator {
   private final SparkMax m_leader = new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
   private final DigitalInput m_limitSwitchUp = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_UP);
@@ -34,10 +42,14 @@ public class Elevator extends AbstractElevator {
   private RelativeEncoder m_encoder = m_leader.getEncoder();
   private TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
 
-  // TODO: Tune PID values.
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
 
+  /**
+   * Constructor.
+   * 
+   * @param config robot configuration
+   */
   public Elevator(RobotConfig config) {
     // Configure the PID/FF controllers.
     ElevatorConfig elevatorConfig = config.elevator();
@@ -171,29 +183,49 @@ public class Elevator extends AbstractElevator {
     m_target = TargetPosition.DontCare;
   }
 
-  final static boolean SWITCH_ACTIVATED_VALUE = true;
+  /**
+   * Value returned from the limits switches when they are activated by the
+   * elevator reaching them. (Per Ethan, they are currently "defaulting closed",
+   * and will go open when they are triggered.)
+   */
+  final static boolean SWITCH_ACTIVATED_VALUE = false;
 
+  /**
+   * @return true if the elevator is at the top of its path (based on limit
+   *         switch)
+   */
   public boolean isAtTop() {
     return m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE;
   }
 
+  /**
+   * @return true if the elevator is at the bottom of its path (based on limit
+   *         switch)
+   */
   public boolean isAtBottom() {
     return m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE;
   }
 
+  /**
+   * @return if the elevator is safe to move, given the current speed (with sign
+   *         indicating direction)
+   */
   private boolean ableToMove(double speed) {
-    // TODO: Confirm that "false" indicates "limit switch not activated".
     if (isAtTop()) {
-      return (speed <= 0); // We can move *down*, but not up.
+      return (speed >= 0); // We can move *down* (positive values), but not up.
     }
     if (isAtBottom()) {
-      return (speed >= 0); // We can move *up*, but not down.
+      return (speed <= 0); // We can move *up* (negative values), but not down.
     }
 
-    // If neither switch is activated, we can move in either direction.
+    // If we're at neither extreme, we can move in either direction.
     return true;
   }
 
+  /**
+   * Sets the elevator speed/direction, if it safe to do so; if not, stops the
+   * elevator.
+   */
   private void moveSafely(double speed) {
     if (ableToMove(speed)) {
       m_leader.set(speed);

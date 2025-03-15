@@ -30,11 +30,11 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
-import frc.robot.subsystems.live.MultiCameraVision;
-import frc.robot.subsystems.live.SingleCameraVision;
+import frc.robot.subsystems.live.Vision;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
@@ -79,7 +79,7 @@ public class RobotContainer {
   // Subsystems
   final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
-  final private ISingleJointArm m_arm = new SimulatedSingleJointArm();
+  final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
@@ -165,8 +165,8 @@ public class RobotContainer {
     addSysIdControlsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
-    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
-    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
+    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
+    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, m_arm.getArmUpAngle()));
     SmartDashboard.putData("Raise elevator (wait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
     SmartDashboard.putData("Raise elevator (nowait)",
@@ -432,9 +432,9 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      return new SingleCameraVision(config);
+      return new Vision(config);
     } else {
-      return new SimVisionWrapper(config, new MultiCameraVision(config));
+      return new SimVisionWrapper(config, new Vision(config));
     }
   }
 
@@ -468,5 +468,17 @@ public class RobotContainer {
     }
 
     return new Lighting(config);
+  }
+
+  private static ISingleJointArm allocateArm(RobotConfigs.RobotConfig config) {
+    if (!config.hasArm()) {
+      return new ISingleJointArm.NullArm();
+    }
+
+    if (Robot.isReal()) {
+      return new Arm(config);
+    } else {
+      return new SimulatedSingleJointArm(config);
+    }
   }
 }

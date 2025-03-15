@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.controls.PositionVoltage;
+
 import edu.wpi.first.units.measure.Angle;
 
 import choreo.auto.AutoFactory;
@@ -61,6 +64,7 @@ public final class Autos {
   private static String m_positionOption;
 
   private static final Angle ALGAE_GRABBING_ANGLE = Degrees.of(33);
+  private static final Angle FIELD_ALGAE_ANGLE = Degrees.of(23);
 
   public static Command followPath(String pathName,
       boolean resetOdometry, boolean stopAtEnd) {
@@ -156,14 +160,18 @@ public final class Autos {
   }
 
   // TODO: finish writing command for grabbing algae on field.
-  /*
-   * public static Command grabAlgaeFromField() {
-   * switch (m_positionOption) {
-   * case AutonomousStartingPositions.VERY_TOP:
-   * return Commands.parallel(followPath(m_positionOption, false, false))
-   * }
-   * }
-   */
+
+  public static Command grabAlgaeFromField() {
+    switch (m_positionOption) {
+      case AutonomousStartingPositions.VERY_TOP:
+        return Commands.parallel(followPath(m_positionOption, true, true),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, FIELD_ALGAE_ANGLE), 2.0));
+      case AutonomousStartingPositions.VERY_BOTTOM:
+        return Commands.parallel(followPath(m_positionOption, false, true));
+      default:
+        return new PrintCommand("grabAlgaeFromField failed?");
+    }
+  }
 
   public static Command scoreCoralInReef() {
     switch (m_positionOption) {

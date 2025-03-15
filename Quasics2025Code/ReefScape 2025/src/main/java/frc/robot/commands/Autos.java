@@ -143,7 +143,7 @@ public final class Autos {
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE),
                 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1),
-                0.5),
+                0.2),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.5));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
@@ -190,7 +190,7 @@ public final class Autos {
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 2.5));
       default:
-        return new PrintCommand("grabAlgaeFromReef failed?");
+        return new PrintCommand("scoreCoralInReef failed?");
     }
   }
 
@@ -199,15 +199,15 @@ public final class Autos {
       case AutonomousStartingPositions.TOP:
         return Commands.parallel(
             followPath("topreeftobarge", false, true),
-            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
+            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 8));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("middlereeftobarge", false, true),
-            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
+            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 2.8)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 8));
       default:
@@ -245,20 +245,20 @@ public final class Autos {
       case AutonomousStartingPositions.TOP:
         return Commands.parallel(
             followPath("1reefcoraltoreef", false, true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.7),
-            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 1.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.0),
+            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 0.0),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2reefcoraltoreef", false, true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.7),
-            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1), 1.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.0),
+            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1), 0.0),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3reefcoraltoreef", false, true),
-            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.7),
-            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 1.0),
+            runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, ALGAE_GRABBING_ANGLE), 0.0),
+            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 0.0),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
       default:
         return new PrintCommand("grabAlgaeFromCoralPosition failed?");

@@ -140,7 +140,7 @@ public class RealElevator extends AbstractElevator {
       double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
       double feedforward = m_feedforward.calculate(velocity);
 
-      double voltClampBasedOnCycles = m_numCycles * 1;
+      double voltClampBasedOnCycles = m_numCycles * 0.5;
       double voltClamp = MathUtil.clamp(voltClampBasedOnCycles, -12, 12);
       double output = MathUtil.clamp(pidOutput + feedforward, -voltClamp, voltClamp);
 

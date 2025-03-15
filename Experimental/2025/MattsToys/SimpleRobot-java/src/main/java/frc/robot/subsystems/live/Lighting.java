@@ -71,6 +71,10 @@ public class Lighting extends SubsystemBase implements ILighting {
       throw new IllegalArgumentException("Invalid LED strip length: " + numLights);
     } else if (numLights == 0) {
       System.err.println("WARNING: configuring LED strip support with 0 LEDs on it!");
+    } else if (enableCandleSupport && numLights <= CANDLE_LENGTH) {
+      throw new IllegalArgumentException(
+          "Invalid LED strip length for Candle support: " + numLights +
+              " (must be at least " + (CANDLE_LENGTH + 1) + ")");
     } else {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
@@ -78,10 +82,16 @@ public class Lighting extends SubsystemBase implements ILighting {
     // Configure data members.
     m_led = new AddressableLED(pwmPort);
     final int reservedCandleLength = enableCandleSupport ? CANDLE_LENGTH : 0;
-    m_ledBuffer = new AddressableLEDBuffer(numLights + reservedCandleLength);
-    m_lightingView = new AddressableLEDBufferView(m_ledBuffer, 0, numLights - 1);
+    m_ledBuffer = new AddressableLEDBuffer(numLights);
+    m_lightingView = new AddressableLEDBufferView(
+        m_ledBuffer,
+        0,
+        numLights - (reservedCandleLength + 1));
     m_candleView = enableCandleSupport
-        ? new AddressableLEDBufferView(m_ledBuffer, numLights, numLights + reservedCandleLength - 1)
+        ? new AddressableLEDBufferView(
+            m_ledBuffer,
+            m_lightingView.getLength(),
+            numLights - 1)
         : null;
     m_led.setLength(m_ledBuffer.getLength());
 

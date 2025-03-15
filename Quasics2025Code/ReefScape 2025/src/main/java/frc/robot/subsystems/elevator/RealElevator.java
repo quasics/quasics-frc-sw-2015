@@ -144,11 +144,14 @@ public class RealElevator extends AbstractElevator {
       double voltClamp = MathUtil.clamp(voltClampBasedOnCycles, -12, 12);
       double output = MathUtil.clamp(pidOutput + feedforward, -voltClamp, voltClamp);
 
-      System.out.printf(
-          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
-
       setVoltage(output);
+
+      final boolean noisy = false;
+      if (noisy) {
+        System.out.printf(
+            "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+            m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+      }
     }
   }
 

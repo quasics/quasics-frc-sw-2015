@@ -397,10 +397,9 @@ public class RobotConfigs {
 
   private static RobotConfig generateAmeliaConfig() {
     return new RobotConfig(
-        // TODO: Update DriveConfig data to match Amelia's configuration.
         new DriveConfig(Inches.of(3), // Wheel radius
             Meters.of(0.5628) /* 22 in (from 27Feb2025) */,
-            8.45, // Gearing (from 2024)
+            10.71, // Gearing (from 15Mar2025)
             new PIDConfig(0.046218), // Left (from 27Feb2025)
             new PIDConfig(0.066374), // Right (from 27Feb2025)
             new DriveFeedForwardConfig(

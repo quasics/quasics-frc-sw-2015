@@ -34,7 +34,6 @@ public class Elevator extends AbstractElevator {
   private RelativeEncoder m_encoder = m_leader.getEncoder();
   private TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
 
-  // TODO: Tune PID values.
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
 

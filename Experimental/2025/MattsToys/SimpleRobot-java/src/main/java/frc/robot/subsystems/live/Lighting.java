@@ -41,19 +41,26 @@ public class Lighting extends SubsystemBase implements ILighting {
    * @param config the configuration for the robot being targeted
    */
   public Lighting(RobotConfig config) {
-    this(config.lighting().pwmPort(), config.lighting().stripLength(), config.hasCandle());
+    this(
+        config.lighting().pwmPort(),
+        config.lighting().stripLength(),
+        (config.hasCandle() && config.candle().simulated()));
   }
 
   /**
    * Constructor.
    *
-   * @param pwmPort   PWM port to which the LED strip is connected
-   * @param numLights number of (logical) lights on the LED strip
+   * @param pwmPort             PWM port to which the LED strip is connected
+   * @param numLights           number of (logical) lights on the LED strip
+   * @param enableCandleSupport whether to enable support for a simulated CANdle
    */
   private Lighting(int pwmPort, int numLights, boolean enableCandleSupport) {
     setName("Lighting");
 
-    System.err.println("Setting up lighting: port=" + pwmPort + ", length=" + numLights);
+    System.err.println(
+        "Setting up lighting: port=" + pwmPort +
+            ", length=" + numLights +
+            ", candle=" + enableCandleSupport);
 
     // Sanity-check inputs.
     if (pwmPort < 0 || pwmPort > 9) {

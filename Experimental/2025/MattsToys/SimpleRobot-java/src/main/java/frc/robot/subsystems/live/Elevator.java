@@ -37,7 +37,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 public class Elevator extends AbstractElevator {
   /**
    * Value returned from the limits switches when they are activated by the
-   * elevator reaching them. (Per Ethan, they are currently "defaulting closed",
+   * elevator reaching them. (Per Ethan, they are currently "normally closed",
    * and will go open when they are triggered.)
    */
   final static boolean LIMIT_SWITCH_ACTIVATED_VALUE = false;

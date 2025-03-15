@@ -44,7 +44,11 @@ public class ArmPivot extends SubsystemBase {
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
+
     m_armPIDController = new PIDController(0.0, 0.0, 0.0);
+    m_armPIDController.setP(10);
+    m_armPIDController.setTolerance(0.5, 1);
+
     m_feedForward = new ArmFeedforward(0.2, 0.25, 0.0);
 
     final AbsoluteEncoderConfig throughBoreConfig = new AbsoluteEncoderConfig();
@@ -54,9 +58,6 @@ public class ArmPivot extends SubsystemBase {
     controllerConfig.inverted(false);
     controllerConfig.apply(throughBoreConfig);
     m_pivot.configure(controllerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    m_armPIDController.setP(10);
-    m_armPIDController.setTolerance(0.5, 1);
   }
 
   static final boolean NOISY = false;

@@ -125,6 +125,12 @@ public class Lighting extends SubsystemBase implements ILighting {
       // If we're e-stopped, reflect that....
       SetAlternatingColors(StockColor.Red, StockColor.Blue);
     }
+
+    if (m_candleView != null) {
+      // Refresh the whole strip, in case something has changed for the Candle
+      // simulation.
+      m_led.setData(m_ledBuffer);
+    }
   }
 
   /**

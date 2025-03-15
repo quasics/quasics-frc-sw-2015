@@ -218,7 +218,7 @@ public class Elevator extends AbstractElevator {
       return (speed <= 0); // We can move *up* (negative values), but not down.
     }
 
-    // If neither switch is activated, we can move in either direction.
+    // If we're at neither extreme, we can move in either direction.
     return true;
   }
 

@@ -30,6 +30,7 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
@@ -79,7 +80,7 @@ public class RobotContainer {
   // Subsystems
   final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
-  final private ISingleJointArm m_arm = new SimulatedSingleJointArm();
+  final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
@@ -468,5 +469,17 @@ public class RobotContainer {
     }
 
     return new Lighting(config);
+  }
+
+  private static ISingleJointArm allocateArm(RobotConfigs.RobotConfig config) {
+    if (!config.hasArm()) {
+      return new ISingleJointArm.NullArm();
+    }
+
+    if (Robot.isReal()) {
+      return new Arm(config);
+    } else {
+      return new SimulatedSingleJointArm(config);
+    }
   }
 }

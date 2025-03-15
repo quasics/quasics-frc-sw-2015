@@ -22,7 +22,8 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
-// import edu.wpi.first.wpilibj.simulation.BatterySim;
+import frc.robot.utils.RobotConfigs.PIDConfig;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Subsystem simulating a single-joint arm.
@@ -31,6 +32,9 @@ import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
  * https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
  */
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
+
+  /** Motor controller running the arm. */
+  protected final SparkMax m_motorController = new SparkMax(SimulationPorts.ARM_CAN_ID, MotorType.kBrushless);
 
   ////////////////////////////////////////////////////////////////////////////////////
   // Values defining the arm's characteristics/physics
@@ -48,8 +52,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   final Angle ARM_UP_ANGLE = Degrees.of(90);
 
   /** Gearing used to drive the arm's motion. */
-  final double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for
-                                           // simulated physics to work)
+  final static double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for simulated physics to work)
 
   /**
    * Length of the arm (used for simulation, but defined here because we'd want to
@@ -71,9 +74,6 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
   final boolean SIMULATE_GRAVITY = true;
 
-  /** Motor controller running the arm. */
-  private SparkMax m_motorController = new SparkMax(0, MotorType.kBrushless);
-
   /** Reference/target position for arm. (Saved for logging purposes.) */
   private Angle m_referencePosition = Degrees.of(0);
 
@@ -93,23 +93,29 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
 
   /** Creates a new SimulatedSingleJointArm. */
-  public SimulatedSingleJointArm() {
+  public SimulatedSingleJointArm(RobotConfig robotConfig) {
     setName(SUBSYSTEM_NAME);
 
-    // Configure the motor.
-    var config = new SparkMaxConfig();
-    config.closedLoop.p(6).i(0).d(0);
+    final PIDConfig pidConfig = robotConfig.arm().pid();
 
-    // Note: the SparkSim derives the gear ratio based on the ratio between
-    // positionconversionfactor and velocityconversionfactor. As a result,
+    // Configure the motor.
+    var motorConfig = new SparkMaxConfig();
+    motorConfig.closedLoop
+        .p(pidConfig.kP())
+        .i(pidConfig.kI())
+        .d(pidConfig.kD());
+
+    // Note: under simulation, SparkSim derives the gear ratio based on the ratio
+    // between positionconversionfactor and velocityconversionfactor. As a result,
     // we need to make sure that these are set in order for the simulation
-    // to work correctly.
+    // to work correctly. (And it doesn't hurt to have them set in the real world,
+    // either.)
     final double tau = 2 * Math.PI;
-    config.encoder.positionConversionFactor(tau / GEARING);
-    config.encoder.velocityConversionFactor(tau / (60 * GEARING));
+    motorConfig.encoder.positionConversionFactor(tau / GEARING);
+    motorConfig.encoder.velocityConversionFactor(tau / (60 * GEARING));
 
     m_motorController.configure(
-        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // By default, hold the arm in our starting position
     setTargetPosition(STARTING_ANGLE);
@@ -124,18 +130,6 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   private void configureSimulation() {
     m_sparkSim.setPosition(STARTING_ANGLE.in(Radians));
     m_sparkSim.enable();
-  }
-
-  /**
-   * Sets the target position (angle) for the arm.
-   *
-   * @param targetPosition target arm position (in radians)
-   */
-  @Override
-  public void setTargetPosition(Angle targetPosition) {
-    m_referencePosition = targetPosition;
-    m_motorController.getClosedLoopController().setReference(
-        targetPosition.in(Radians), SparkBase.ControlType.kPosition);
   }
 
   /** Determines if debugging output is produced under simulation. */
@@ -185,6 +179,17 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     if (!DriverStation.isDisabled()) {
       updateSimulation();
     }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Methods from ISingleJointArm
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void setTargetPosition(Angle targetPosition) {
+    m_referencePosition = targetPosition;
+    m_motorController.getClosedLoopController().setReference(
+        targetPosition.in(Radians), SparkBase.ControlType.kPosition);
   }
 
   @Override

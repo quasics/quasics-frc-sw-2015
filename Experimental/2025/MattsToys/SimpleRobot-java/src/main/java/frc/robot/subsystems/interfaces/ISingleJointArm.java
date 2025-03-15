@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * Defines a simple interface to control a single-joint arm the robot.
@@ -44,7 +45,7 @@ public interface ISingleJointArm extends ISubsystem {
   void setTargetPosition(Angle targetPosition);
 
   /** Provides a trivial (no-op) version of the arm subsystem. */
-  final ISingleJointArm NULL_ARM = new ISingleJointArm() {
+  final static class NullArm extends SubsystemBase implements ISingleJointArm {
     @Override
     public void setTargetPosition(Angle targetPosition) {
       System.out.println("Null arm: setting target position to " + targetPosition);

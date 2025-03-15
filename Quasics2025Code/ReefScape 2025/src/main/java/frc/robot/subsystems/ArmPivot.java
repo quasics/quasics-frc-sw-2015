@@ -28,10 +28,8 @@ public class ArmPivot extends SubsystemBase {
   protected final PIDController m_armPIDController;
 
   protected final AbsoluteEncoder m_throughBoreEncoder;
-  protected final AbsoluteEncoderConfig m_throughBoreConfig = new AbsoluteEncoderConfig();
 
   protected final ArmFeedforward m_feedForward;
-  private final SparkMaxConfig m_config = new SparkMaxConfig();
 
   protected Angle m_angleSetpoint = null;
 
@@ -46,16 +44,19 @@ public class ArmPivot extends SubsystemBase {
   public ArmPivot() {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
-    m_armPIDController = new PIDController(0.0, 0.0, 0.0);
+
+    m_armPIDController = new PIDController(10.0, 0.0, 0.0);
+    m_armPIDController.setTolerance(0.5, 1);
+
     m_feedForward = new ArmFeedforward(0.2, 0.25, 0.0);
 
-    m_config.inverted(false);
-    m_throughBoreConfig.inverted(true);
-    m_config.apply(m_throughBoreConfig);
-    m_pivot.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    final AbsoluteEncoderConfig throughBoreConfig = new AbsoluteEncoderConfig();
+    throughBoreConfig.inverted(true);
 
-    m_armPIDController.setP(10);
-    m_armPIDController.setTolerance(0.5, 1);
+    final SparkMaxConfig controllerConfig = new SparkMaxConfig();
+    controllerConfig.inverted(false);
+    controllerConfig.apply(throughBoreConfig);
+    m_pivot.configure(controllerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   static final boolean NOISY = false;

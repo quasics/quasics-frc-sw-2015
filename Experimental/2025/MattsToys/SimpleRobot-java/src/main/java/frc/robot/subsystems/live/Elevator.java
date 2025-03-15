@@ -25,7 +25,15 @@ import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.utils.RobotConfigs.ElevatorConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
-/** Add your docs here. */
+/**
+ * Subsystem representing the elevator on our real 2025 robot.
+ * 
+ * Note: per Ethan, the elevator is currently configures such that "up" for the
+ * leader motor is negative. This feels... wrong, and is something that can be
+ * fixed (e.g., by switching to using the current "follower" as the leader, or
+ * reversing "inverted" values), but until I've had a chance to actually try
+ * out/debug the code on the real hardware, I'm not going to mess with it.
+ */
 public class Elevator extends AbstractElevator {
   private final SparkMax m_leader = new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
   private final DigitalInput m_limitSwitchUp = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_UP);
@@ -37,6 +45,11 @@ public class Elevator extends AbstractElevator {
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
 
+  /**
+   * Constructor.
+   * 
+   * @param config robot configuration
+   */
   public Elevator(RobotConfig config) {
     // Configure the PID/FF controllers.
     ElevatorConfig elevatorConfig = config.elevator();

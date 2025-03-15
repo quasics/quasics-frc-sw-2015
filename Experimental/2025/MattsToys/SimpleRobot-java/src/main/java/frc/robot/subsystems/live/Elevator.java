@@ -183,29 +183,49 @@ public class Elevator extends AbstractElevator {
     m_target = TargetPosition.DontCare;
   }
 
-  final static boolean SWITCH_ACTIVATED_VALUE = true;
+  /**
+   * Value returned from the limits switches when they are activated by the
+   * elevator reaching them. (Per Ethan, they are currently "defaulting closed",
+   * and will go open when they are triggered.)
+   */
+  final static boolean SWITCH_ACTIVATED_VALUE = false;
 
+  /**
+   * @return true if the elevator is at the top of its path (based on limit
+   *         switch)
+   */
   public boolean isAtTop() {
     return m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE;
   }
 
+  /**
+   * @return true if the elevator is at the bottom of its path (based on limit
+   *         switch)
+   */
   public boolean isAtBottom() {
     return m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE;
   }
 
+  /**
+   * @return if the elevator is safe to move, given the current speed (with sign
+   *         indicating direction)
+   */
   private boolean ableToMove(double speed) {
-    // TODO: Confirm that "false" indicates "limit switch not activated".
     if (isAtTop()) {
-      return (speed <= 0); // We can move *down*, but not up.
+      return (speed >= 0); // We can move *down* (positive values), but not up.
     }
     if (isAtBottom()) {
-      return (speed >= 0); // We can move *up*, but not down.
+      return (speed <= 0); // We can move *up* (negative values), but not down.
     }
 
     // If neither switch is activated, we can move in either direction.
     return true;
   }
 
+  /**
+   * Sets the elevator speed/direction, if it safe to do so; if not, stops the
+   * elevator.
+   */
   private void moveSafely(double speed) {
     if (ableToMove(speed)) {
       m_leader.set(speed);

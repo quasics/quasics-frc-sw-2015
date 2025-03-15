@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmPivotToPositionOnController;
+import frc.robot.commands.ElevatorToPositionOnController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
@@ -408,16 +409,26 @@ public class RobotContainer {
 
     // Elevator controls
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.YButton))
-        .whileTrue(new RunElevator(m_elevator, -0.6)); // UP
+        .whileTrue(new RunElevator(m_elevator, -0.3)); // UP
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
-        .whileTrue(new RunElevator(m_elevator, 0.6)); // DOWN
-
+        .whileTrue(new RunElevator(m_elevator, 0.3)); // DOWN
+    /*
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechDualshock.YButton))
+     * .whileTrue(new ElevatorToPositionOnController(m_elevator,
+     * TargetPosition.kTop));
+     * new Trigger(() ->
+     * m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
+     * .whileTrue(new ElevatorToPositionOnController(m_elevator,
+     * TargetPosition.kBottom));
+     */
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(95), TargetPosition.kTop));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator,
+            Degrees.of(95), TargetPosition.kTop));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
         .whileTrue(
-            new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kBottom));
-
+            new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0),
+                TargetPosition.kBottom));
   }
 
   private void ConfigureOperatorButtons() {

@@ -32,7 +32,7 @@ public class RealElevator extends AbstractElevator {
   private final double VELOCITY_DEADBAND = 10;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+  private final PIDController m_pid = new PIDController(0.05, 0.00, 0.00);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.5, 0.00);
 
   /**
@@ -103,18 +103,8 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    // Are we at the top limit?
-    if (m_limitSwitchUp.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed > 0; // We can move down (speed negative) from the top point, but not up.
-    }
-
-    // Are we at the bottom limit?
-    if (m_limitSwitchDown.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed < 0; // We can move up (speed positive) from the bottom point, but not down.
-    }
-
-    // Limit switches are both clear; any direction is OK
-    return true;
+    return !((m_limitSwitchUp.get() == false && speed < 0)
+        || (m_limitSwitchDown.get() == false && speed > 0));
   }
 
   @Override
@@ -129,7 +119,7 @@ public class RealElevator extends AbstractElevator {
     // SmartDashboard.putBoolean("Able to move", ableToMove());
     // System.out.println(m_targetPosition);
 
-    if (!ableToMove(m_encoder.getVelocity()) && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
+    if (!ableToMove(m_encoder.getVelocity())) {
       stop();
     }
 

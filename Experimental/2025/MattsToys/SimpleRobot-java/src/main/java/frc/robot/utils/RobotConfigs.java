@@ -282,6 +282,9 @@ public class RobotConfigs {
   public static record LightingConfig(int pwmPort, int stripLength) {
   }
 
+  public static record ArmConfig(PIDConfig pid, SimpleFeedForwardConfig feedForward) {
+  }
+
   /**
    * Collective robot configuration data.
    *
@@ -289,11 +292,13 @@ public class RobotConfigs {
    * @param cameras  list of camera configurations (may be null)
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
+   * @param arm      arm configuration (may be null)
    */
   public static record RobotConfig(
       DriveConfig drive,
       List<CameraConfig> cameras,
       ElevatorConfig elevator,
+      ArmConfig arm,
       LightingConfig lighting) {
 
     /**
@@ -308,8 +313,9 @@ public class RobotConfigs {
         DriveConfig drive,
         CameraConfig camera,
         ElevatorConfig elevator,
+        ArmConfig arm,
         LightingConfig lighting) {
-      this(drive, Collections.singletonList(camera), elevator, lighting);
+      this(drive, Collections.singletonList(camera), elevator, arm, lighting);
     }
 
     /** @return true iff the configuration includes data for the drivebase */
@@ -340,6 +346,7 @@ public class RobotConfigs {
   private static final CameraConfig NO_CAMERA = null;
   private static final ElevatorConfig NO_ELEVATOR = null;
   private static final LightingConfig NO_LIGHTING = null;
+  private static final ArmConfig NO_ARM = null;
 
   private static RobotConfig generateAmeliaConfig() {
     return new RobotConfig(
@@ -358,6 +365,7 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 11Mar2025.
             new PIDConfig(0.25, 0.00, 0.00),
             new ElevatorFeedForwardConfig(0.0, 0.5, 0.0, 0.0)),
+        NO_ARM,
         NO_LIGHTING);
   }
 
@@ -373,7 +381,10 @@ public class RobotConfigs {
             new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_LIGHTING);
+        NO_CAMERA,
+        NO_ELEVATOR,
+        NO_ARM,
+        NO_LIGHTING);
   }
 
   private static RobotConfig generateSingleCameraSimulationConfig() {
@@ -410,6 +421,7 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        NO_ARM,
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 
@@ -462,6 +474,7 @@ public class RobotConfigs {
             // Note: PID and FF values are arbitrary for simulation use.
             new PIDConfig(10.0, 0, 0),
             new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        NO_ARM,
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80));
   }
 }

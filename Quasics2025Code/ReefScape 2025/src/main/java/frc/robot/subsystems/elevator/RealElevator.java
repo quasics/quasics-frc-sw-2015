@@ -140,12 +140,7 @@ public class RealElevator extends AbstractElevator {
       double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
       double feedforward = m_feedforward.calculate(velocity);
 
-      // Prevent the elevator from moving too fast when we're just starting out (after
-      // setting a new target position). This is intended to resolve some issues that
-      // Coach Jasdeep (and others) are worried about.
-      double voltClampBasedOnCycles = m_numCycles * 1;
-      // CODE_REVIEW/FIXME: This is always going to clamp to a positive value, so -12
-      // isn't needed. Why not just use Math.min(voltClampBasedOnCycles, 12)?
+      double voltClampBasedOnCycles = m_numCycles * 0.5;
       double voltClamp = MathUtil.clamp(voltClampBasedOnCycles, -12, 12);
       double output = MathUtil.clamp(pidOutput + feedforward, -voltClamp, voltClamp);
 

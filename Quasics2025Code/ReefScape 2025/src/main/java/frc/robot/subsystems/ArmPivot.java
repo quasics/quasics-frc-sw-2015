@@ -45,8 +45,7 @@ public class ArmPivot extends SubsystemBase {
     m_pivot = new SparkMax(SparkMaxIds.ARM_PIVOT_ID, MotorType.kBrushless);
     m_throughBoreEncoder = m_pivot.getAbsoluteEncoder();
 
-    m_armPIDController = new PIDController(0.0, 0.0, 0.0);
-    m_armPIDController.setP(10);
+    m_armPIDController = new PIDController(10.0, 0.0, 0.0);
     m_armPIDController.setTolerance(0.5, 1);
 
     m_feedForward = new ArmFeedforward(0.2, 0.25, 0.0);

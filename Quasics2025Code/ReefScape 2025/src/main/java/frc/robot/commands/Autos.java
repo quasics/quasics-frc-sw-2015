@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.controls.PositionVoltage;
-
 import edu.wpi.first.units.measure.Angle;
 
 import choreo.auto.AutoFactory;

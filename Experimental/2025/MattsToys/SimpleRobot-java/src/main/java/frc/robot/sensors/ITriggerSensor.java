@@ -26,6 +26,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * a controller), with each representing a distinct "triggered" state.
  * </li>
  * </ul>
+ * 
+ * For other options, see the WPILib docs for things like POVButton,
+ * InternalButton, etc.
+ * 
+ * @see <a
+ *      href=
+ *      "https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/POVButton.html">POVButton</a>
+ * @see <a
+ *      href=
+ *      "https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/InternalButton.html">InternalButton</a>
  */
 public interface ITriggerSensor {
   /** @return true iff the sensor is in the "triggered" state */

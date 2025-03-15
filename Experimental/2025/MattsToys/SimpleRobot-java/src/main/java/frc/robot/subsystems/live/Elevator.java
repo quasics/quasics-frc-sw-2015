@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
+import frc.robot.sensors.ITriggerSensor;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
@@ -35,12 +36,26 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * out/debug the code on the real hardware, I'm not going to mess with it.
  */
 public class Elevator extends AbstractElevator {
+  /**
+   * Value returned from the limits switches when they are activated by the
+   * elevator reaching them. (Per Ethan, they are currently "defaulting closed",
+   * and will go open when they are triggered.)
+   */
+  final static boolean LIMIT_SWITCH_ACTIVATED_VALUE = false;
+
   private final SparkMax m_leader = new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
-  private final DigitalInput m_limitSwitchUp = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_UP);
-  private final DigitalInput m_limitSwitchDown = new DigitalInput(DioIds.ELEVATOR_LIMIT_SWITCH_DOWN);
+
+  private final ITriggerSensor m_topLimitSwitch = ITriggerSensor.createForDigitalInput(
+      DioIds.ELEVATOR_LIMIT_SWITCH_UP,
+      LIMIT_SWITCH_ACTIVATED_VALUE);
+  private final ITriggerSensor m_bottomLimitSwitch = ITriggerSensor.createForDigitalInput(
+      DioIds.ELEVATOR_LIMIT_SWITCH_DOWN,
+      LIMIT_SWITCH_ACTIVATED_VALUE);
 
   private RelativeEncoder m_encoder = m_leader.getEncoder();
   private TrivialEncoder m_wrappedEncoder = new SparkMaxEncoderWrapper(m_encoder);
+
+  private boolean m_resetEncoderWhenBottomDetected = false;
 
   private final PIDController m_pid;
   private final ElevatorFeedforward m_feedforward;
@@ -81,6 +96,24 @@ public class Elevator extends AbstractElevator {
     m_leader.configure(
         leaderConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+  }
+
+  /**
+   * Enable/disable resetting the encoder when the bottom limit switch is
+   * triggered.
+   * 
+   * @param resetWhenBottomDetected true to enable, false to disable
+   */
+  public void enableEncoderResetWhenBottomDetected(boolean resetWhenBottomDetected) {
+    m_resetEncoderWhenBottomDetected = resetWhenBottomDetected;
+  }
+
+  /**
+   * @return iff we will reset the encoder when the bottom limit switch is
+   *         triggered
+   */
+  public boolean isEncoderResetWhenBottomDetectedEnabled() {
+    return m_resetEncoderWhenBottomDetected;
   }
 
   protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {
@@ -128,6 +161,10 @@ public class Elevator extends AbstractElevator {
     if ((m_mode == Mode.Extending && isAtTop()) ||
         (m_mode == Mode.Retracting && isAtBottom())) {
       stop();
+    }
+
+    if (m_resetEncoderWhenBottomDetected && isAtBottom()) {
+      m_encoder.setPosition(0);
     }
 
     System.out.println(NAME + " - " +
@@ -184,18 +221,11 @@ public class Elevator extends AbstractElevator {
   }
 
   /**
-   * Value returned from the limits switches when they are activated by the
-   * elevator reaching them. (Per Ethan, they are currently "defaulting closed",
-   * and will go open when they are triggered.)
-   */
-  final static boolean SWITCH_ACTIVATED_VALUE = false;
-
-  /**
    * @return true if the elevator is at the top of its path (based on limit
    *         switch)
    */
   public boolean isAtTop() {
-    return m_limitSwitchUp.get() == SWITCH_ACTIVATED_VALUE;
+    return m_topLimitSwitch.isTriggered();
   }
 
   /**
@@ -203,7 +233,7 @@ public class Elevator extends AbstractElevator {
    *         switch)
    */
   public boolean isAtBottom() {
-    return m_limitSwitchDown.get() == SWITCH_ACTIVATED_VALUE;
+    return m_bottomLimitSwitch.isTriggered();
   }
 
   /**

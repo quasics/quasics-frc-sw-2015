@@ -327,7 +327,7 @@ public class RobotConfigs {
   public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
-  public static record CandleConfig() {
+  public static record CandleConfig(boolean simulated) {
   }
 
   /**
@@ -490,7 +490,7 @@ public class RobotConfigs {
             new PIDConfig(6.0, 0.00, 0.00),
             null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
-        new CandleConfig());
+        new CandleConfig(true));
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {

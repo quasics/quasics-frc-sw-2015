@@ -31,6 +31,38 @@ import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
  * https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
  */
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Values defining the arm's characteristics/physics
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Angle reported by the arm when it is fully extended from the robot's frame.
+   */
+  final Angle ARM_OUT_ANGLE = Degrees.of(180);
+
+  /**
+   * Angle reported by the arm when it is fully upright and within the robot's
+   * frame.
+   */
+  final Angle ARM_UP_ANGLE = Degrees.of(90);
+
+  /** Gearing used to drive the arm's motion. */
+  final double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for
+                                           // simulated physics to work)
+
+  /**
+   * Length of the arm (used for simulation, but defined here because we'd want to
+   * simulate the actual hardware's physics).
+   */
+  final double ARM_LENGTH_METERS = 1.0; // Currently arbitrary
+
+  /**
+   * Mass of the arm (used for simulation, but defined here because we'd want to
+   * simulate the actual hardware's physics).
+   */
+  final double ARM_MASS_KG = 4.0; // Currently arbitrary
+
   final static Angle MIN_ANGLE = Degrees.of(80);
   final static Angle MAX_ANGLE = Degrees.of(190);
   final static Angle ARM_RANGE = MAX_ANGLE.minus(MIN_ANGLE);
@@ -153,5 +185,15 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
     if (!DriverStation.isDisabled()) {
       updateSimulation();
     }
+  }
+
+  @Override
+  public Angle getArmOutAngle() {
+    return ARM_OUT_ANGLE;
+  }
+
+  @Override
+  public Angle getArmUpAngle() {
+    return ARM_UP_ANGLE;
   }
 }

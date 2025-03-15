@@ -165,8 +165,8 @@ public class RobotContainer {
     addSysIdControlsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
-    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_OUT_ANGLE));
-    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, ISingleJointArm.ARM_UP_ANGLE));
+    SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
+    SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, m_arm.getArmUpAngle()));
     SmartDashboard.putData("Raise elevator (wait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
     SmartDashboard.putData("Raise elevator (nowait)",

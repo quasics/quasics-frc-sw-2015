@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.abstracts.AbstractSparkMaxArm;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 // import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -31,7 +30,10 @@ import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
  * Note: this is based on example at
  * https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
  */
-public class SimulatedSingleJointArm extends AbstractSparkMaxArm {
+public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
+
+  /** Motor controller running the arm. */
+  protected final SparkMax m_motorController = new SparkMax(SimulationPorts.ARM_CAN_ID, MotorType.kBrushless);
 
   ////////////////////////////////////////////////////////////////////////////////////
   // Values defining the arm's characteristics/physics
@@ -91,7 +93,7 @@ public class SimulatedSingleJointArm extends AbstractSparkMaxArm {
 
   /** Creates a new SimulatedSingleJointArm. */
   public SimulatedSingleJointArm() {
-    super(0);
+    setName(SUBSYSTEM_NAME);
 
     // Configure the motor.
     var config = new SparkMaxConfig();

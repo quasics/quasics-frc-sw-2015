@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -16,16 +18,29 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.abstracts.AbstractSparkMaxArm;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Subsystem representing the arm on our real 2025 robot.
+ * 
+ * TODO: Test this class on the real robot.
  */
-public class Arm extends AbstractSparkMaxArm {
+public class Arm extends SubsystemBase implements ISingleJointArm {
+
+  /** Motor controller running the arm. */
+  protected final SparkMax m_motorController = new SparkMax(Constants.OtherCanIds.ARM_LEADER_ID, MotorType.kBrushless);;
+
   /** Encoder providing readings from the through-bore. */
-  protected final AbsoluteEncoder m_throughBoreEncoder;
+  protected final AbsoluteEncoder m_throughBoreEncoder = m_motorController.getAbsoluteEncoder();
+
+  /**
+   * Reference/target position for arm. (If null, no target position has been
+   * set.)
+   */
+  protected Angle m_referencePosition = null;
 
   /** PID controller for the arm. */
   protected final PIDController m_armPIDController;
@@ -39,9 +54,7 @@ public class Arm extends AbstractSparkMaxArm {
    * @param config robot configuration
    */
   public Arm(RobotConfig config) {
-    super(Constants.OtherCanIds.ARM_LEADER_ID);
-
-    m_throughBoreEncoder = m_motorController.getAbsoluteEncoder();
+    setName(SUBSYSTEM_NAME);
 
     // TODO: Move PID/Feedforward values to the RobotConfig.
     m_armPIDController = new PIDController(10.0, 0.0, 0.0);

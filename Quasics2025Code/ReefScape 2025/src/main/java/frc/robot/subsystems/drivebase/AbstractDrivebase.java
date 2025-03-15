@@ -29,6 +29,18 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.utils.RobotSettings;
 
+/**
+ * An abstract class that represents a drivebase.
+ * 
+ * Some possible enhancements:
+ * <ul>
+ * <li>
+ * Use either the raw odometry or (unified) pose estimation to provide a signal
+ * to the drive team about the robot's position on the field (e.g., when it's
+ * oriented towards the barge and close enough to make the shot).
+ * </li>
+ * </ul>
+ */
 public abstract class AbstractDrivebase extends SubsystemBase {
   // Max linear speed is 3 meters per second
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);

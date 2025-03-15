@@ -33,6 +33,15 @@ import frc.robot.utils.BulletinBoard;
  * <li>Concrete types, which mostly serve to set up/access the underlying
  * hardware.
  * </ul>
+ * 
+ * Possible enhancements:
+ * <ul>
+ * <li>
+ * Use either the raw odometry or (unified) pose estimation to provide a signal
+ * to the drive team about the robot's position on the field (e.g., when it's
+ * oriented towards the barge and close enough to make the shot).
+ * </li>
+ * </ul>
  */
 public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */

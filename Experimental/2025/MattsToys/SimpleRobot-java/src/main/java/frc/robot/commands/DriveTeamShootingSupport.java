@@ -1,10 +1,11 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Meters;
+import static frc.robot.utils.SupportFunctions.isBetween;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Distance;
@@ -22,25 +23,14 @@ import frc.robot.subsystems.interfaces.ILighting.StockColor;
  * (well, the center line of the field), and does not take its shooting angle
  * (relative to the barge) into account. (This would be a good improvement to
  * make, and is left as an exercise for the reader.)
+ * 
+ * Please also note that the values (and colors) I've chosen for this example
+ * are somewhat arbitrary, and do not reflect discussions with the Quasics drive
+ * team (or other sources of reality-based data).
  */
 public class DriveTeamShootingSupport extends Command {
   /** ICandle being used to show status. */
   private final ICandle m_candle;
-
-  /**
-   * Returns true if x is between a and b, inclusive. (Ordering of a and b does
-   * not matter.)
-   * 
-   * @param x the value to check.
-   * @param a one bound
-   * @param b the other bound
-   * 
-   * @return true iff x is between a and b, inclusive.
-   */
-  private static boolean isBetween(Distance x, Distance a, Distance b) {
-    return (x.gte(a) && x.lte(b)) ||
-        (x.gte(b) && x.lte(a));
-  }
 
   /**
    * Constructor.
@@ -52,24 +42,30 @@ public class DriveTeamShootingSupport extends Command {
     addRequirements(m_candle.asSubsystem());
   }
 
-  /** Center line is 8.77m from the blue alliance wall. */
+  /** Center line is ~8.77m from the blue alliance wall. */
   final static Distance CENTER_LINE = Meters.of(8.77);
+
   /** Starting line for blue alliance is ~7.58m from the blue alliance wall. */
   final static Distance BLUE_STARTING_LINE = Meters.of(7.58);
+
   /** Starting line for red alliance is ~9.96m from the red alliance wall. */
   final static Distance RED_STARTING_LINE = Meters.of(9.96);
 
   /** How far away from the starting line we can shoot. */
-  final static Distance FAR_RANGE = Meters.of(0.0);
+  final static Distance FAR_RANGE = Meters.of(0.25);
+
   /** How close in to the starting line we can shoot. */
-  final static Distance NEAR_RANGE = Meters.of(0.25);
+  final static Distance NEAR_RANGE = Meters.of(0.0);
 
   /** Outer range for when we're on the blue alliance. */
   final static Distance BLUE_FAR_RANGE = BLUE_STARTING_LINE.minus(FAR_RANGE);
+
   /** Inner range for when we're on the blue alliance. */
   final static Distance BLUE_NEAR_RANGE = BLUE_STARTING_LINE.minus(NEAR_RANGE);
+
   /** Outer range for when we're on the red alliance. */
   final static Distance RED_FAR_RANGE = RED_STARTING_LINE.plus(FAR_RANGE);
+
   /** Inner range for when we're on the red alliance. */
   final static Distance RED_NEAR_RANGE = RED_STARTING_LINE.plus(NEAR_RANGE);
 

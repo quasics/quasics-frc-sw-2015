@@ -34,6 +34,10 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Defines a version of IDrivebase that runs under (full) simulation.
+ * 
+ * TODO: Think about switching this over to using SparkMax (vs PWM), to allow
+ * reuse with the "live" code. (Though this will require reprofiling the drive
+ * base.)
  */
 public class SimDrivebase extends AbstractDrivebase {
   private static final int kEncoderResolutionTicksPerRevolution = -4096;

@@ -169,8 +169,6 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     final var debugField = m_visionSim.getDebugField();
     var latestEstimates = getEstimatedPoses();
     if (!latestEstimates.isEmpty()) {
-      // We're derived from SingleCameraVision, so there should only ever be 1, but
-      // this keeps us safe....
       List<Pose2d> poses = new ArrayList<Pose2d>();
       for (EstimatedRobotPose estimatedRobotPose : latestEstimates) {
         poses.add(estimatedRobotPose.estimatedPose.toPose2d());

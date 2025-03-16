@@ -28,7 +28,7 @@ public class Lighting extends SubsystemBase implements ILighting {
   /**
    * Subset of the lights controlled by this subsystem (may be the full strip).
    */
-  private final AddressableLEDBufferView m_lightingView;
+  private final LightingBuffer m_lightingBuffer;
 
   /** Subset of the lights reserved to simulate an ICandle. */
   private final AddressableLEDBufferView m_candleView;
@@ -53,6 +53,9 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   /**
    * Constructor.
+   * 
+   * TODO: Change this to build a set of views against the underlying buffer,
+   * allowing for full logical segmentation of the strip.
    *
    * @param pwmPort             PWM port to which the LED strip is connected
    * @param numLights           number of (logical) lights on the LED strip
@@ -62,9 +65,9 @@ public class Lighting extends SubsystemBase implements ILighting {
     setName("Lighting");
 
     System.err.println(
-        "Setting up lighting: port=" + pwmPort +
-            ", length=" + numLights +
-            ", candle=" + enableCandleSupport);
+        "Setting up lighting: pwmPort=" + pwmPort +
+            ", numLights=" + numLights +
+            ", enableCandleSupport=" + enableCandleSupport);
 
     // Sanity-check inputs.
     if (pwmPort < 0 || pwmPort > 9) {
@@ -84,23 +87,34 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
 
     // Configure data members.
-    m_led = new AddressableLED(pwmPort);
     final int reservedCandleLength = enableCandleSupport
         ? ICandle.CANDLE_DEFAULT_LENGTH
         : 0;
+
     m_ledBuffer = new AddressableLEDBuffer(numLights);
-    m_lightingView = new AddressableLEDBufferView(
+
+    final AddressableLEDBufferView localView = new AddressableLEDBufferView(
         m_ledBuffer,
         0,
         numLights - (reservedCandleLength + 1));
+    m_lightingBuffer = new LightingBuffer(localView);
     m_candleView = enableCandleSupport
         ? new AddressableLEDBufferView(
             m_ledBuffer,
-            m_lightingView.getLength(),
+            localView.getLength(),
             numLights - 1)
         : null;
+
+    m_led = new AddressableLED(pwmPort);
     m_led.setLength(m_ledBuffer.getLength());
 
+    initializeStripColors();
+
+    // Start up the LED handling.
+    m_led.start();
+  }
+
+  private void initializeStripColors() {
     // Start-up lighting
     if (START_CHECKERBOARDED) {
       // On start-up, turn every other pixel on (white).
@@ -110,14 +124,15 @@ public class Lighting extends SubsystemBase implements ILighting {
       SetStripColor(StockColor.Green.toWpiColor());
     }
 
-    if (enableCandleSupport) {
+    if (m_candleView != null) {
       for (var i = 0; i < m_candleView.getLength(); i++) {
         m_candleView.setLED(i, StockColor.White.toWpiColor());
       }
     }
+  }
 
-    // Start up the LED handling.
-    m_led.start();
+  public void forceUpdate() {
+    m_led.setData(m_ledBuffer);
   }
 
   @Override
@@ -125,19 +140,9 @@ public class Lighting extends SubsystemBase implements ILighting {
     super.setDefaultCommand(defaultCommand);
   }
 
-  /**
-   * Sets the color for each LED in the strip, using the specified function to
-   * generate the values
-   * for each position.
-   *
-   * @param function Function generating the color for each LED
-   */
+  @Override
   public void SetStripColor(ColorSupplier function) {
-    for (var i = 0; i < m_lightingView.getLength(); i++) {
-      m_lightingView.setLED(i, function.getColorForLed(i));
-    }
-
-    m_led.setData(m_ledBuffer);
+    m_lightingBuffer.SetStripColor(function);
   }
 
   @Override
@@ -149,11 +154,7 @@ public class Lighting extends SubsystemBase implements ILighting {
       SetAlternatingColors(StockColor.Red, StockColor.Blue);
     }
 
-    if (m_candleView != null) {
-      // Refresh the whole strip, in case something has changed for the Candle
-      // simulation.
-      m_led.setData(m_ledBuffer);
-    }
+    forceUpdate();
   }
 
   /**

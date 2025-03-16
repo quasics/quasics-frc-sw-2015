@@ -7,6 +7,7 @@ package frc.robot.subsystems.live;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -40,6 +41,8 @@ public class Lighting extends SubsystemBase implements ILighting {
    */
   private final LightingBuffer m_lightingBuffer;
 
+  List<AddressableLEDBufferView> m_subViews;
+
   /**
    * Iff true, the robot will initialize LEDs to alternating black (off) and
    * white; otherwise, they will default to (Quasics) green.
@@ -55,28 +58,40 @@ public class Lighting extends SubsystemBase implements ILighting {
     this(
         config.lighting().pwmPort(),
         config.lighting().stripLength(),
-        (config.hasCandle() && config.candle().simulated()));
+        (config.hasCandle() && config.candle().simulated()),
+        config.lighting().subViews());
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param pwmPort             PWM port to which the LED strip is connected
+   * @param numLights           number of (logical) lights on the LED strip
+   * @param enableCandleSupport whether to enable support for a simulated CANdle
+   * @param subViews            list of lengths for desired subviews
+   */
+  @SuppressWarnings("unchecked")
+  private Lighting(int pwmPort, int numLights, boolean enableCandleSupport, List<Integer> subViews) {
+    this(
+        pwmPort, numLights,
+        Stream.concat(
+            Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH).stream(),
+            (subViews != null
+                ? subViews
+                : Collections.EMPTY_LIST).stream())
+            .toList());
   }
 
   /**
    * Constructor.
    * 
-   * TODO: Change this to build a set of views against the underlying buffer,
-   * allowing for full logical segmentation of the strip.
-   *
    * @param pwmPort             PWM port to which the LED strip is connected
    * @param numLights           number of (logical) lights on the LED strip
    * @param enableCandleSupport whether to enable support for a simulated CANdle
+   * @param subViews            list of lengths for desired subviews
    */
-  private Lighting(int pwmPort, int numLights, boolean enableCandleSupport) {
-    this(
-        pwmPort, numLights,
-        Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH));
-  }
 
-  List<AddressableLEDBufferView> m_subViews;
-
-  protected Lighting(int pwmPort, int numLights, List<Integer> subViews) {
+  public Lighting(int pwmPort, int numLights, List<Integer> subViews) {
     setName("Lighting");
 
     System.err.println(
@@ -84,7 +99,9 @@ public class Lighting extends SubsystemBase implements ILighting {
             ", numLights=" + numLights +
             ", subViews=" + subViews);
 
+    //
     // Sanity-check inputs.
+    //
     if (pwmPort < 0 || pwmPort > 9) {
       throw new IllegalArgumentException("Invalid PWM port: " + pwmPort);
     }
@@ -108,19 +125,28 @@ public class Lighting extends SubsystemBase implements ILighting {
     } else {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
+    final int unallocatedLeds = Math.max(numLights - subViewsSum, 0);
 
+    //
     // Configure data members.
+    //
     m_ledBuffer = new AddressableLEDBuffer(numLights);
+    m_led = new AddressableLED(pwmPort);
+    m_led.setLength(m_ledBuffer.getLength());
 
     // First (local) view is the set of LEDs not allocated to subviews.
-    m_lightingBuffer = new LightingBuffer(new AddressableLEDBufferView(
-        m_ledBuffer,
-        0,
-        numLights - (subViewsSum + 1)));
+    if (unallocatedLeds > 0) {
+      m_lightingBuffer = new LightingBuffer(new AddressableLEDBufferView(
+          m_ledBuffer,
+          0,
+          numLights - (subViewsSum + 1)));
+    } else {
+      m_lightingBuffer = null;
+    }
 
     // Allocate subviews from the remaining LEDs on the strip.
     var viewList = new ArrayList<AddressableLEDBufferView>(subViews.size());
-    int runningSum = m_lightingBuffer.getLength();
+    int runningSum = unallocatedLeds;
     for (int size : subViews) {
       viewList.add(
           new AddressableLEDBufferView(
@@ -131,15 +157,21 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
     m_subViews = Collections.unmodifiableList(viewList);
 
-    m_led = new AddressableLED(pwmPort);
-    m_led.setLength(m_ledBuffer.getLength());
+    //
+    // Finish setup
+    //
 
+    // Starting colors for each of the strips (selected more or less arbitrarily).
     initializeStripColors();
 
     // Start up the LED handling.
     m_led.start();
   }
 
+  /**
+   * Initializes the different blocks (views) of the strip to various
+   * colors/patterns.
+   */
   private void initializeStripColors() {
     // Start-up lighting for main (local) view.
     if (START_CHECKERBOARDED) {
@@ -167,14 +199,25 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
   }
 
+  /**
+   * @return the list of LED buffer views for the sub-views
+   */
   public List<AddressableLEDBufferView> getSubViews() {
     return m_subViews;
   }
 
+  /** Force the strip to update, reflecting the current buffer contents. */
   public void forceUpdate() {
     m_led.setData(m_ledBuffer);
   }
 
+  /////////////////////////////////////////////////////////////////
+  //
+  // ILighting methods
+  //
+  /////////////////////////////////////////////////////////////////
+
+  // Also defined by SubsystemBase
   @Override
   public void setDefaultCommand(Command defaultCommand) {
     super.setDefaultCommand(defaultCommand);
@@ -182,13 +225,25 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   @Override
   public void SetStripColor(ColorSupplier function) {
+    if (m_lightingBuffer == null) {
+      return;
+    }
     m_lightingBuffer.SetStripColor(function);
   }
 
   @Override
   public int getLength() {
+    if (m_lightingBuffer == null) {
+      return 0;
+    }
     return m_lightingBuffer.getLength();
   }
+
+  /////////////////////////////////////////////////////////////////
+  //
+  // Subsystem methods
+  //
+  /////////////////////////////////////////////////////////////////
 
   @Override
   public void periodic() {

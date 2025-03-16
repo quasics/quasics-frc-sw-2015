@@ -7,7 +7,7 @@ package frc.robot.utils;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 
-/** Add your docs here. */
+/** Misc. support functions for robot coding. */
 public class SupportFunctions {
   /**
    * Returns true if the measure x is between a and b, inclusive. (Ordering of a

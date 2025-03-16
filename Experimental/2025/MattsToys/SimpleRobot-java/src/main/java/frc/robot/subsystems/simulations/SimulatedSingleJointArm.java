@@ -6,6 +6,7 @@ package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import static frc.robot.utils.RevSupportFunctions.configureForRadians;
 
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase;
@@ -109,14 +110,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
         .i(pidConfig.kI())
         .d(pidConfig.kD());
 
-    // Note: under simulation, SparkSim derives the gear ratio based on the ratio
-    // between positionconversionfactor and velocityconversionfactor. As a result,
-    // we need to make sure that these are set in order for the simulation
-    // to work correctly. (And it doesn't hurt to have them set in the real world,
-    // either.)
-    final double tau = 2 * Math.PI;
-    motorConfig.encoder.positionConversionFactor(tau / GEARING);
-    motorConfig.encoder.velocityConversionFactor(tau / (60 * GEARING));
+    configureForRadians(motorConfig);
 
     m_motorController.configure(
         motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

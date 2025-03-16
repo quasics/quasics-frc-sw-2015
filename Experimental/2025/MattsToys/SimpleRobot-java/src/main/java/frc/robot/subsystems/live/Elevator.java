@@ -5,6 +5,7 @@
 package frc.robot.subsystems.live;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.utils.RevSupportFunctions.configureSparkMaxEncoderForDistance;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -103,7 +104,7 @@ public class Elevator extends AbstractElevator {
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     leaderConfig.inverted(false);
 
-    configureForDistance(leaderConfig);
+    configureSparkMaxEncoderForDistance(leaderConfig, kSprocketPitchDiameter, kGearingRatio);
 
     m_leader.configure(
         leaderConfig, ResetMode.kResetSafeParameters,
@@ -131,19 +132,6 @@ public class Elevator extends AbstractElevator {
     return m_resetEncoderWhenBottomDetected;
   }
 
-  /**
-   * Configures the SparkMax for RPM-centric reporting of encoder data.
-   * 
-   * Note: this isn't currently used, but I'm keeping it for reference.
-   * 
-   * @param sparkMaxConfig the configuration to update
-   */
-  protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {
-    sparkMaxConfig.encoder
-        .positionConversionFactor(1)
-        .velocityConversionFactor(1);
-  }
-
   // TODO: Update these constants to match the real hardware.
   //
   // Per Sean, "it’s a motor / gearbox that then runs a chain/sprocket. The
@@ -168,17 +156,6 @@ public class Elevator extends AbstractElevator {
    * Conversion factor from encoder units (rotation) to meters.
    */
   private static final double kEncoderMetersPerRotation = kSprocketPitchDiameter.abs(Meters) / kGearingRatio;
-
-  /**
-   * Configures the SparkMax for distance-based reporting of encoder data.
-   * 
-   * @param sparkMaxConfig the configuration to update
-   */
-  protected void configureForDistance(SparkMaxConfig sparkMaxConfig) {
-    sparkMaxConfig.encoder
-        .positionConversionFactor(kEncoderMetersPerRotation)
-        .velocityConversionFactor(kEncoderMetersPerRotation / 60);
-  }
 
   /**
    * Tests if the upper limit switch is triggered.

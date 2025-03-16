@@ -17,6 +17,10 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
     m_buffer = view;
   }
 
+  public int getLength() {
+    return m_buffer.getLength();
+  }
+
   @Override
   public void SetStripColor(ColorSupplier function) {
     for (var i = 0; i < m_buffer.getLength(); i++) {

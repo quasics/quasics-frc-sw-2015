@@ -21,6 +21,8 @@ import java.util.Map;
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
+  public static final int INVALID_CAN_ID = -1;
+
   /** The supported robots. */
   public enum Robot {
     /** Simulation-only */
@@ -327,7 +329,10 @@ public class RobotConfigs {
   public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
-  public static record CandleConfig(boolean simulated) {
+  public static record CandleConfig(int canId) {
+    public boolean simulated() {
+      return canId < 0;
+    }
   }
 
   /**
@@ -490,7 +495,7 @@ public class RobotConfigs {
             new PIDConfig(6.0, 0.00, 0.00),
             null),
         new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
-        new CandleConfig(true));
+        new CandleConfig(INVALID_CAN_ID));
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {

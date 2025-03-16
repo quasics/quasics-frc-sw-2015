@@ -494,7 +494,7 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      return new Candle();
+      return new Candle(config);
     } else {
       return new SimCandle((Lighting) lighting);
     }

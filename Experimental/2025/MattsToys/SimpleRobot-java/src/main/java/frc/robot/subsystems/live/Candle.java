@@ -6,19 +6,25 @@ package frc.robot.subsystems.live;
 
 import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.ICandle;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.
  */
 public class Candle extends SubsystemBase implements ICandle {
 
-  private final CANdle m_candle = new CANdle(Constants.OtherCanIds.CANDLE_ID);
+  private final CANdle m_candle;
 
-  /** Creates a new Candle. */
-  public Candle() {
+  /**
+   * Constructor.
+   *
+   * @param config the configuration for the robot being targeted
+   */
+  public Candle(RobotConfig config) {
     setName("Candle");
+
+    m_candle = new CANdle(config.candle().canId());
   }
 
   @Override

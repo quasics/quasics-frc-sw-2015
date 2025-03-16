@@ -64,7 +64,7 @@ public class RevSupportFunctions {
    * Updates a SparkMaxConfig to report radian-based values (radians/sec) for
    * distance/velocity, rather than the native units (rotations and RPM).
    * 
-   * @param sparkMaxConfig the configuration to update
+   * @param config the configuration to update
    */
   public static void configureForRadians(AbsoluteEncoderConfig config) {
     config

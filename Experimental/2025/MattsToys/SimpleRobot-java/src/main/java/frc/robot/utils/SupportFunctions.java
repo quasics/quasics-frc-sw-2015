@@ -16,9 +16,11 @@ public class SupportFunctions {
    * Note that this should work for any set of 3 measurements of the same logical
    * type (e.g., 3 distances, angles, voltages, etc.).
    * 
-   * @param x the value to check.
-   * @param a one bound
-   * @param b the other bound
+   * @param <T> the dimensional units associated with the measurements being
+   *            evaluated
+   * @param x   the value to check.
+   * @param a   one bound
+   * @param b   the other bound
    * 
    * @return true iff x is between a and b, inclusive.
    */

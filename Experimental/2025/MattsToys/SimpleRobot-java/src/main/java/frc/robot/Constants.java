@@ -214,6 +214,7 @@ public class Constants {
         });
   }
 
+  /** Field-related constants for Reefscape. */
   public static class FieldConstants {
     /** Center line is ~8.77m from the blue alliance wall. */
     final static public Distance CENTER_LINE = Meters.of(8.77);

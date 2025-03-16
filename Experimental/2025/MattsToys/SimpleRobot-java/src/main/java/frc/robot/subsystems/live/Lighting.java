@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
@@ -24,9 +25,12 @@ public class Lighting extends SubsystemBase implements ILighting {
   /** The buffer used to set the values for each pixel/LED on the strip. */
   private final AddressableLEDBuffer m_ledBuffer;
 
-  private static final int CANDLE_LENGTH = 8;
-
+  /**
+   * Subset of the lights controlled by this subsystem (may be the full strip).
+   */
   private final AddressableLEDBufferView m_lightingView;
+
+  /** Subset of the lights reserved to simulate an ICandle. */
   private final AddressableLEDBufferView m_candleView;
 
   /**
@@ -71,17 +75,19 @@ public class Lighting extends SubsystemBase implements ILighting {
       throw new IllegalArgumentException("Invalid LED strip length: " + numLights);
     } else if (numLights == 0) {
       System.err.println("WARNING: configuring LED strip support with 0 LEDs on it!");
-    } else if (enableCandleSupport && numLights <= CANDLE_LENGTH) {
+    } else if (enableCandleSupport && numLights <= ICandle.CANDLE_DEFAULT_LENGTH) {
       throw new IllegalArgumentException(
           "Invalid LED strip length for Candle support: " + numLights +
-              " (must be at least " + (CANDLE_LENGTH + 1) + ")");
+              " (must be at least " + (ICandle.CANDLE_DEFAULT_LENGTH + 1) + ")");
     } else {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
 
     // Configure data members.
     m_led = new AddressableLED(pwmPort);
-    final int reservedCandleLength = enableCandleSupport ? CANDLE_LENGTH : 0;
+    final int reservedCandleLength = enableCandleSupport
+        ? ICandle.CANDLE_DEFAULT_LENGTH
+        : 0;
     m_ledBuffer = new AddressableLEDBuffer(numLights);
     m_lightingView = new AddressableLEDBufferView(
         m_ledBuffer,
@@ -105,7 +111,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
 
     if (enableCandleSupport) {
-      for (var i = 0; i < CANDLE_LENGTH; i++) {
+      for (var i = 0; i < m_candleView.getLength(); i++) {
         m_candleView.setLED(i, StockColor.White.toWpiColor());
       }
     }

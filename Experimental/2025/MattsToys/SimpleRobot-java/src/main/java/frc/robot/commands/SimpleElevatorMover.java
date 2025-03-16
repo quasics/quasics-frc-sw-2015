@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,23 +7,36 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * A simple command that moves an elevator up or down.
+ */
 public class SimpleElevatorMover extends Command {
+  /** Elevator subsystem being controlled. */
   private final AbstractElevator m_elevator;
+
+  /** Direction in which the elevator should be moved. */
   private final Direction m_direction;
 
+  /** Direction of movement. */
   public enum Direction {
-    UP, DOWN
+    /** Move the elevator up. */
+    UP,
+    /** Move the elevator down. */
+    DOWN
   }
 
-  /** Creates a new SimpleElevatorMover. */
+  /**
+   * Constructor.
+   * 
+   * @param elevator  the elevator to be moved
+   * @param direction the direction in which it should move
+   */
   public SimpleElevatorMover(AbstractElevator elevator, Direction direction) {
     m_elevator = elevator;
     m_direction = direction;
     addRequirements(m_elevator);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     if (m_direction == Direction.UP) {
@@ -33,13 +46,11 @@ public class SimpleElevatorMover extends Command {
     }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_elevator.stop();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

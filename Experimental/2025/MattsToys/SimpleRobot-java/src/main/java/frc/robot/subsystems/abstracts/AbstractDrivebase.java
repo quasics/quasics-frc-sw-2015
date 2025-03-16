@@ -153,13 +153,6 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     getOdometry().resetPosition(position, leftPosition, rightPosition, pose);
     getPoseEstimator().resetPosition(
         position, leftPosition.in(Meters), rightPosition.in(Meters), pose);
-
-    // TODO: Should probably clear position data from Vision when we're running in
-    // the simulator, since we could be jumping significantly in a way that the
-    // vision stuff won't pick up (unlike in real-world movement).
-    //
-    // One option for this could be to publish a signal to the bulletin board, and
-    // have the Vision subsytem "notice" it.
   }
 
   @Override

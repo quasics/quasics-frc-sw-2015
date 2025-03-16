@@ -92,7 +92,11 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   /** Simulation driver for the motor controller. */
   private SparkMaxSim m_sparkSim = new SparkMaxSim(m_motorController, m_armPlant);
 
-  /** Creates a new SimulatedSingleJointArm. */
+  /**
+   * Creates a new SimulatedSingleJointArm.
+   * 
+   * @param robotConfig the configuration for the robot being targeted
+   */
   public SimulatedSingleJointArm(RobotConfig robotConfig) {
     setName(SUBSYSTEM_NAME);
 

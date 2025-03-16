@@ -112,7 +112,13 @@ public class RobotContainer {
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   * 
+   * @param robot the robot object to which this container is attached; used to
+   *              (optionally) set up a periodic operation to update the battery
+   *              data under simulation
+   */
   public RobotContainer(TimedRobot robot) {
     configureArcadeDrive();
     configureDashboard();
@@ -233,7 +239,8 @@ public class RobotContainer {
    * reset of odometry and explicit "stop" at the end.
    *
    * @param trajectoryName name of the trajectory being loaded
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
@@ -249,7 +256,8 @@ public class RobotContainer {
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>
@@ -266,7 +274,10 @@ public class RobotContainer {
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @param stopAtEnd      if true, explicitly stop the robot at the end of the
+   *                       trajectory
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>

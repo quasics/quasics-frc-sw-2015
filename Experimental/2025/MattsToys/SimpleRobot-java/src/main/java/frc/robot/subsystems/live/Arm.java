@@ -103,6 +103,10 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
     return RadiansPerSecond.of(m_throughBoreEncoder.getVelocity());
   }
 
+  /**
+   * Drives the arm to the setpoint (via PID/Feedforward), if a reference position
+   * has been set.
+   */
   protected void driveArmToSetpoint() {
     final boolean NOISY = false;
 
@@ -138,7 +142,15 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
   ////////////////////////////////////////////////////////////////////////////////////
 
   // TODO: Test these values using the real robot.
+
+  /**
+   * Angle returned by the encoder when the arm is fully extended (horizontal).
+   */
   public static final Angle ARM_DOWN_ANGLE = Degrees.of(0);
+
+  /**
+   * Angle returned by the encoder when the arm is fully upright.
+   */
   public static final Angle ARM_UP_ANGLE = Degrees.of(90);
 
   @Override

@@ -10,6 +10,7 @@ package frc.robot.subsystems.simulations;
 public interface SimulationPorts {
   /** PWM port used for left motor. */
   public final int LEFT_DRIVE_PWM_ID = 0;
+
   /** PWM port used for right motor. */
   public final int RIGHT_DRIVE_PWM_ID = 1;
 
@@ -19,6 +20,7 @@ public interface SimulationPorts {
   /** CAN ID used for elevator motor. */
   public final int ELEVATOR_CAN_ID = 1;
 
+  /** CAN ID used for single-joint arm's motor. */
   public final int ARM_CAN_ID = 2;
 
   /** Channel ID used for the gyro. */

@@ -21,6 +21,7 @@ import java.util.Map;
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
+  /** Invalid CAN ID. */
   public static final int INVALID_CAN_ID = -1;
 
   /** The supported robots. */
@@ -285,6 +286,14 @@ public class RobotConfigs {
    * @see frc.robot.subsystems.live.LightingBuffer
    */
   public static record LightingConfig(int pwmPort, int stripLength, List<Integer> subViews) {
+    /**
+     * Constructor (with sanity checking).
+     *
+     * @param pwmPort     the PWM port driving the LED strip
+     * @param stripLength the length (in pixels/cells) of the LED strip
+     * @param subViews    list of subviews for the strip (segments following the
+     *                    "main set")
+     */
     public LightingConfig {
       if (subViews != null) {
         final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
@@ -367,6 +376,11 @@ public class RobotConfigs {
    *              simulated
    */
   public static record CandleConfig(int canId) {
+    /**
+     * Determines if the CANdle is simulated.
+     * 
+     * @return true iff the CANdle is simulated (based on the CAN ID)
+     */
     public boolean simulated() {
       return canId < 0;
     }

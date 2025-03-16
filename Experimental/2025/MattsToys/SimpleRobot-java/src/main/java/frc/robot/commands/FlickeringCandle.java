@@ -13,24 +13,35 @@ import frc.robot.subsystems.interfaces.ILighting.StockColor;
  * Simple command that turns the ICandle on and off.
  */
 public class FlickeringCandle extends Command {
+  /** The ICandle object being controlled. */
   final ICandle m_candle;
+
+  /** Timer used to control changes. */
   Timer m_timer = new Timer();
+
+  /** Flag indicating whether the candle is currently on. */
   boolean m_isOn = false;
+
+  /** Period of time between visible state changes. */
   static final double FLICKER_PERIOD = 0.5;
 
-  /** Creates a new FlickeringCandle. */
+  /**
+   * Creates a new FlickeringCandle.
+   * 
+   * @param candle the ICandle object to control
+   */
   public FlickeringCandle(ICandle candle) {
     m_candle = candle;
     addRequirements(candle.asSubsystem());
   }
 
+  @Override
   public void initialize() {
     m_isOn = true;
     m_timer.reset();
     m_timer.start();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (m_candle == null) {
@@ -49,7 +60,6 @@ public class FlickeringCandle extends Command {
     }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     if (m_candle != null) {

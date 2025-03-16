@@ -13,9 +13,14 @@ import frc.robot.subsystems.interfaces.ICandle;
  * AddressableLEDBufferView from the Lighting subsystem).
  */
 public class SimCandle extends SubsystemBase implements ICandle {
+  /** The LED buffer view used to simulate the CANdle's functionality. */
   final AddressableLEDBufferView m_candleView;
 
-  /** Creates a new SimCandle. */
+  /**
+   * Creates a new SimCandle.
+   * 
+   * @param view the LED buffer view to use for the simulation
+   */
   public SimCandle(AddressableLEDBufferView view) {
     // The CANdle is assumed to be simulated as the 1st subview.
     m_candleView = view;

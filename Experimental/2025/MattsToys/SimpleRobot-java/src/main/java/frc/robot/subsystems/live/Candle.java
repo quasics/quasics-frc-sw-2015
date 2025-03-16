@@ -13,7 +13,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * Implementation of the ICandle interface, using a CANdle device.
  */
 public class Candle extends SubsystemBase implements ICandle {
-
+  /** Underlying CANdle object being manipulated. */
   private final CANdle m_candle;
 
   /**

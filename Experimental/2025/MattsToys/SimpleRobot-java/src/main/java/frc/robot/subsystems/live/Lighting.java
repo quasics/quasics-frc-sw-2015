@@ -217,12 +217,6 @@ public class Lighting extends SubsystemBase implements ILighting {
   //
   /////////////////////////////////////////////////////////////////
 
-  // Also defined by SubsystemBase
-  @Override
-  public void setDefaultCommand(Command defaultCommand) {
-    super.setDefaultCommand(defaultCommand);
-  }
-
   @Override
   public void SetStripColor(ColorSupplier function) {
     if (m_lightingBuffer == null) {

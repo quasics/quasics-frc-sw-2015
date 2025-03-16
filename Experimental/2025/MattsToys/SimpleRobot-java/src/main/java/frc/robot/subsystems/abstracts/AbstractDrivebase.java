@@ -279,11 +279,6 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     SmartDashboard.putData("Drive pid (R)", m_rightPidController);
   }
 
-  @Override
-  public void setDefaultCommand(Command defaultCommand) {
-    super.setDefaultCommand(defaultCommand);
-  }
-
   /**
    * Generates a confidence estimate (as standard deviations) for the vision
    * system's estimated pose, to be used in applying it to our estimate (based on

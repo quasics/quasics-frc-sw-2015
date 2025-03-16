@@ -119,7 +119,7 @@ public class RobotContainer {
     configureBindings();
     configurePeriodicOperations(robot);
 
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
     m_candle.asSubsystem().setDefaultCommand(new FlickeringCandle(m_candle));
   }
 

@@ -508,7 +508,11 @@ public class RobotContainer {
     if (Robot.isReal()) {
       return new Candle(config);
     } else {
-      return new SimCandle((Lighting) lighting);
+      Lighting realSubsystem = (Lighting) lighting;
+      if (realSubsystem.getSubViews().isEmpty()) {
+        return new ICandle.NullCandle();
+      }
+      return new SimCandle(realSubsystem.getSubViews().get(0));
     }
   }
 }

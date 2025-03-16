@@ -4,10 +4,15 @@
 
 package frc.robot.subsystems.live;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -29,9 +34,6 @@ public class Lighting extends SubsystemBase implements ILighting {
    * Subset of the lights controlled by this subsystem (may be the full strip).
    */
   private final LightingBuffer m_lightingBuffer;
-
-  /** Subset of the lights reserved to simulate an ICandle. */
-  private final AddressableLEDBufferView m_candleView;
 
   /**
    * Iff true, the robot will initialize LEDs to alternating black (off) and
@@ -62,12 +64,20 @@ public class Lighting extends SubsystemBase implements ILighting {
    * @param enableCandleSupport whether to enable support for a simulated CANdle
    */
   private Lighting(int pwmPort, int numLights, boolean enableCandleSupport) {
+    this(
+        pwmPort, numLights,
+        Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH));
+  }
+
+  List<AddressableLEDBufferView> m_subViews;
+
+  protected Lighting(int pwmPort, int numLights, List<Integer> subViews) {
     setName("Lighting");
 
     System.err.println(
         "Setting up lighting: pwmPort=" + pwmPort +
             ", numLights=" + numLights +
-            ", enableCandleSupport=" + enableCandleSupport);
+            ", subViews=" + subViews);
 
     // Sanity-check inputs.
     if (pwmPort < 0 || pwmPort > 9) {
@@ -78,32 +88,38 @@ public class Lighting extends SubsystemBase implements ILighting {
       throw new IllegalArgumentException("Invalid LED strip length: " + numLights);
     } else if (numLights == 0) {
       System.err.println("WARNING: configuring LED strip support with 0 LEDs on it!");
-    } else if (enableCandleSupport && numLights <= ICandle.CANDLE_DEFAULT_LENGTH) {
+    }
+
+    final int subViewsSum = subViews.stream().mapToInt(Integer::intValue).sum();
+    if (subViewsSum > 0 && numLights < subViewsSum) {
       throw new IllegalArgumentException(
-          "Invalid LED strip length for Candle support: " + numLights +
-              " (must be at least " + (ICandle.CANDLE_DEFAULT_LENGTH + 1) + ")");
+          "Invalid LED strip length for requested subviews: " + numLights +
+              " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
 
     // Configure data members.
-    final int reservedCandleLength = enableCandleSupport
-        ? ICandle.CANDLE_DEFAULT_LENGTH
-        : 0;
-
     m_ledBuffer = new AddressableLEDBuffer(numLights);
 
-    final AddressableLEDBufferView localView = new AddressableLEDBufferView(
+    // First (local) view is the set of LEDs not allocated to subviews.
+    m_lightingBuffer = new LightingBuffer(new AddressableLEDBufferView(
         m_ledBuffer,
         0,
-        numLights - (reservedCandleLength + 1));
-    m_lightingBuffer = new LightingBuffer(localView);
-    m_candleView = enableCandleSupport
-        ? new AddressableLEDBufferView(
-            m_ledBuffer,
-            localView.getLength(),
-            numLights - 1)
-        : null;
+        numLights - (subViewsSum + 1)));
+
+    // Allocate subviews from the remaining LEDs on the strip.
+    var viewList = new ArrayList<AddressableLEDBufferView>(subViews.size());
+    int runningSum = m_lightingBuffer.getLength();
+    for (int size : subViews) {
+      viewList.add(
+          new AddressableLEDBufferView(
+              m_ledBuffer,
+              runningSum,
+              runningSum + size - 1));
+      runningSum += size;
+    }
+    m_subViews = Collections.unmodifiableList(viewList);
 
     m_led = new AddressableLED(pwmPort);
     m_led.setLength(m_ledBuffer.getLength());
@@ -115,7 +131,7 @@ public class Lighting extends SubsystemBase implements ILighting {
   }
 
   private void initializeStripColors() {
-    // Start-up lighting
+    // Start-up lighting for main (local) view.
     if (START_CHECKERBOARDED) {
       // On start-up, turn every other pixel on (white).
       SetAlternatingColors(StockColor.White, StockColor.Black);
@@ -124,11 +140,25 @@ public class Lighting extends SubsystemBase implements ILighting {
       SetStripColor(StockColor.Green.toWpiColor());
     }
 
-    if (m_candleView != null) {
-      for (var i = 0; i < m_candleView.getLength(); i++) {
-        m_candleView.setLED(i, StockColor.White.toWpiColor());
+    // Initialize the other views.
+    if (m_subViews != null) {
+      int counter = 0;
+      for (var view : m_subViews) {
+        // Alternate between white and green.
+        final Color color = switch (++counter % 3) {
+          case 1 -> StockColor.White.toWpiColor();
+          case 2 -> StockColor.Purple.toWpiColor();
+          default -> StockColor.Orange.toWpiColor();
+        };
+        for (var i = 0; i < view.getLength(); i++) {
+          view.setLED(i, color);
+        }
       }
     }
+  }
+
+  public List<AddressableLEDBufferView> getSubViews() {
+    return m_subViews;
   }
 
   public void forceUpdate() {
@@ -146,6 +176,11 @@ public class Lighting extends SubsystemBase implements ILighting {
   }
 
   @Override
+  public int getLength() {
+    return m_lightingBuffer.getLength();
+  }
+
+  @Override
   public void periodic() {
     if (DriverStation.isDisabled()) {
       SetStripColor(StockColor.Green);
@@ -155,15 +190,5 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
 
     forceUpdate();
-  }
-
-  /**
-   * Returns a buffer view for the LED strip to be used in simulating a CANdle
-   * device on the robot.
-   * 
-   * @return the buffer view for use in simulating a CANdle device
-   */
-  public AddressableLEDBufferView getCandleBuffer() {
-    return m_candleView;
   }
 }

@@ -7,7 +7,6 @@ package frc.robot.subsystems.simulations;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.live.Lighting;
 
 /**
  * Simulated implementation of the ICandle interface (using an
@@ -17,8 +16,9 @@ public class SimCandle extends SubsystemBase implements ICandle {
   final AddressableLEDBufferView m_candleView;
 
   /** Creates a new SimCandle. */
-  public SimCandle(Lighting lighting) {
-    m_candleView = lighting.getCandleBuffer();
+  public SimCandle(AddressableLEDBufferView view) {
+    // The CANdle is assumed to be simulated as the 1st subview.
+    m_candleView = view;
   }
 
   @Override

@@ -204,7 +204,15 @@ public interface ILighting extends ISubsystem {
     public void setDefaultCommand(Command defaultCommand) {
       super.setDefaultCommand(defaultCommand);
     }
+
+    @Override
+    public int getLength() {
+      return 0;
+    }
   }
+
+  /** @return the length of the sequence supported by this object */
+  int getLength();
 
   /**
    * Exposes 'setDefaultCommand' from the WPILib Subsystem class.

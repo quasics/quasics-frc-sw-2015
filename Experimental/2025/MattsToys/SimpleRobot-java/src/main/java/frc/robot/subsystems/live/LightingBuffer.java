@@ -17,6 +17,7 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
     m_buffer = view;
   }
 
+  @Override
   public int getLength() {
     return m_buffer.getLength();
   }

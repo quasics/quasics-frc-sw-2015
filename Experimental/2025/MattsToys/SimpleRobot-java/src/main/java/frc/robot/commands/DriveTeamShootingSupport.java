@@ -55,11 +55,11 @@ public class DriveTeamShootingSupport extends Command {
     StockColor color = StockColor.Black;
     final Distance xPos = lastPose.getMeasureX();
     if (alliance == DriverStation.Alliance.Blue) {
-      if (isBetween(xPos, BLUE_FAR_RANGE, BLUE_NEAR_RANGE)) {
+      if (isBetween(xPos, BLUE_FAR_SHOOTING_RANGE, BLUE_NEAR_SHOOTING_RANGE)) {
         color = StockColor.Green;
       }
     } else if (alliance == DriverStation.Alliance.Red) {
-      if (isBetween(xPos, RED_FAR_RANGE, RED_NEAR_RANGE)) {
+      if (isBetween(xPos, RED_FAR_SHOOTING_RANGE, RED_NEAR_SHOOTING_RANGE)) {
         color = StockColor.Green;
       }
     } else {

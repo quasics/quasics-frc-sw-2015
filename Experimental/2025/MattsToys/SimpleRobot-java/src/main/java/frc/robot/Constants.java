@@ -225,21 +225,21 @@ public class Constants {
     final static public Distance RED_STARTING_LINE = Meters.of(9.96);
 
     /** How far away from the starting line we can shoot. */
-    final static public Distance FAR_RANGE = Meters.of(0.25);
+    final static public Distance FAR_SHOOTING_RANGE = Meters.of(0.25);
 
     /** How close in to the starting line we can shoot. */
-    final static public Distance NEAR_RANGE = Meters.of(0.0);
+    final static public Distance NEAR_SHOOTING_RANGE = Meters.of(0.0);
 
     /** Outer range for when we're on the blue alliance. */
-    final static public Distance BLUE_FAR_RANGE = BLUE_STARTING_LINE.minus(FAR_RANGE);
+    final static public Distance BLUE_FAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the blue alliance. */
-    final static public Distance BLUE_NEAR_RANGE = BLUE_STARTING_LINE.minus(NEAR_RANGE);
+    final static public Distance BLUE_NEAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
 
     /** Outer range for when we're on the red alliance. */
-    final static public Distance RED_FAR_RANGE = RED_STARTING_LINE.plus(FAR_RANGE);
+    final static public Distance RED_FAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the red alliance. */
-    final static public Distance RED_NEAR_RANGE = RED_STARTING_LINE.plus(NEAR_RANGE);
+    final static public Distance RED_NEAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
   }
 }

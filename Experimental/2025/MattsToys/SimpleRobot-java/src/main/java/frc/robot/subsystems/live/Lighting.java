@@ -22,6 +22,11 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 /**
  * An example subsystem for controlling an LED strip for custom lighting on the
  * robot.
+ * 
+ * This provides an interface that allows for both configuring the strip as a
+ * whole, and allocating "subviews" of the strip for independent control (with
+ * the unallocated LEDs at the front of the strip being used as the lights
+ * directly supported by this class).
  */
 public class Lighting extends SubsystemBase implements ILighting {
   /** The raw interface to the addressable LED strip connected to the Rio. */
@@ -88,6 +93,11 @@ public class Lighting extends SubsystemBase implements ILighting {
       throw new IllegalArgumentException("Invalid LED strip length: " + numLights);
     } else if (numLights == 0) {
       System.err.println("WARNING: configuring LED strip support with 0 LEDs on it!");
+    }
+
+    // For simplicity, make sure that we have *some* list of sub-views.
+    if (subViews == null) {
+      subViews = Collections.emptyList();
     }
 
     final int subViewsSum = subViews.stream().mapToInt(Integer::intValue).sum();

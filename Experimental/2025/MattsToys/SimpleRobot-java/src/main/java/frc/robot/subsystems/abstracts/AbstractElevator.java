@@ -86,17 +86,29 @@ public abstract class AbstractElevator extends SubsystemBase {
     setName(NAME);
   }
 
-  /** @param tf enables "safe mode" if true */
+  /**
+   * Turns "safe mode" on/off.
+   * 
+   * @param tf enables "safe mode" if true
+   */
   public void enableSafeMode(boolean tf) {
     m_safetyOn = tf;
   }
 
-  /** @return true if "safe mode" is enabled */
+  /**
+   * Indicates if "safe mode" is enabled.
+   * 
+   * @return true iff "safe mode" is enabled
+   */
   public boolean isSafeModeEnabled() {
     return m_safetyOn;
   }
 
-  /** @return current operating mode */
+  /**
+   * Returns the elevator's current operating mode.
+   * 
+   * @return current operating mode
+   */
   public Mode getMode() {
     return m_mode;
   }
@@ -176,6 +188,8 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   /**
+   * Determines if we are at our target position.
+   * 
    * @return true iff the elevator is currently at the target position (or if
    *         target is "don't care")
    */
@@ -193,7 +207,11 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Resets the underlying encoder on the elevator. */
   protected abstract void resetEncoder_impl();
 
-  /** @return the current elevator height (in meters). */
+  /**
+   * Determines the current height.
+   * 
+   * @return the current elevator height (in meters)
+   */
   protected abstract Distance getHeight_impl();
 
   /** Stops the actual motor on the elevator. */
@@ -205,6 +223,15 @@ public abstract class AbstractElevator extends SubsystemBase {
   /** Starts (actually) retracting the elevator. */
   protected abstract void retract_impl();
 
+  /**
+   * Calculates the voltage needed for the elevator (for PID control).
+   * 
+   * @param setpoint    the target position of the elevator
+   * @param encoder     the encoder providing the current height
+   * @param pid         PID controller for the elevator
+   * @param feedForward feed-forward for the elevator
+   * @return the voltage to be applied to continue moving toward the setpoing
+   */
   protected Voltage calculateMotorVoltage(Distance setpoint, TrivialEncoder encoder, PIDController pid,
       ElevatorFeedforward feedForward) {
     final boolean noisy = false;

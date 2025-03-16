@@ -12,7 +12,7 @@ import frc.robot.subsystems.ArmRoller;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class PulseKraken extends Command {
-  ArmRoller m_ArmRoller;
+  ArmRoller m_armRoller;
   Timer m_timer;
   double m_speed;
   double m_waitTime;
@@ -22,12 +22,13 @@ public class PulseKraken extends Command {
   /** Creates a new PulseKraken. */
   public PulseKraken(ArmRoller armRoller, double speed, double intakeTime, double waitTime) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_ArmRoller = armRoller;
+    m_armRoller = armRoller;
     m_speed = speed;
     m_intakeTime = intakeTime;
     m_waitTime = waitTime;
     m_timer = new Timer();
     m_timer.start();
+    addRequirements(m_armRoller);
   }
 
   // Called when the command is initially scheduled.
@@ -42,9 +43,9 @@ public class PulseKraken extends Command {
   public void execute() {
     System.out.println(m_currentlyIntaking);
     if (m_currentlyIntaking)
-      m_ArmRoller.setSpeed(m_speed);
+      m_armRoller.setSpeed(m_speed);
     else
-      m_ArmRoller.stop();
+      m_armRoller.stop();
 
     if (m_currentlyIntaking && m_timer.hasElapsed(m_intakeTime)) {
       m_currentlyIntaking = false;
@@ -58,7 +59,7 @@ public class PulseKraken extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_ArmRoller.stop();
+    m_armRoller.stop();
   }
 
   // Returns true when the command should end.

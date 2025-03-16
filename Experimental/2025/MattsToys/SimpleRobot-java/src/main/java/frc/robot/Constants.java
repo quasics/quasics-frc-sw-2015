@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Distance;
 
 /**
  * Defines some constants for the robot.
@@ -29,12 +32,22 @@ public class Constants {
 
   /** Other CAN IDs for Quasics' 2025 robot. */
   public static class OtherCanIds {
+    /** Following motor for the elevator. */
     public static final int FOLLOWER_ELEVATOR_ID = 7;
+    /** Leading motor for the elevator. */
     public static final int LEADER_ELEVATOR_ID = 8;
+    /** CAN ID for the single-joint arm. */
+    public static final int ARM_LEADER_ID = 9;
+
+    /** CAN ID for the CANdle. */
+    public static final int CANDLE_ID = 1;
   }
 
+  /** Digital IO IDs. */
   public static class DioIds {
+    /** ID for the elevator's "top" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_UP = 0;
+    /** ID for the elevator's "bottom" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_DOWN = 1;
   }
 
@@ -157,16 +170,19 @@ public class Constants {
     public static final int RightStickPress = 10;
   }
 
+  /** Constants associated with the vision class. */
   public static class VisionConstants {
-
-    public static boolean USE_VISION = true;
-
     /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+    /** Pose ambiguity compensation. */
     public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
+    /** Pose ambiguity compensation. */
     public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+    /** Distance (in meters) past which we'll ignore a target. */
     public static final double NOISY_DISTANCE_METERS = 2.5;
+    /** Weight associated with distance. */
     public static final double DISTANCE_WEIGHT = 7;
+    /** Confidence compensation weight. */
     public static final int TAG_PRESENCE_WEIGHT = 10;
 
     /**
@@ -196,6 +212,34 @@ public class Constants {
             .1, // y
             .1
         });
+  }
 
+  public static class FieldConstants {
+    /** Center line is ~8.77m from the blue alliance wall. */
+    final static public Distance CENTER_LINE = Meters.of(8.77);
+
+    /** Starting line for blue alliance is ~7.58m from the blue alliance wall. */
+    final static public Distance BLUE_STARTING_LINE = Meters.of(7.58);
+
+    /** Starting line for red alliance is ~9.96m from the red alliance wall. */
+    final static public Distance RED_STARTING_LINE = Meters.of(9.96);
+
+    /** How far away from the starting line we can shoot. */
+    final static public Distance FAR_SHOOTING_RANGE = Meters.of(0.25);
+
+    /** How close in to the starting line we can shoot. */
+    final static public Distance NEAR_SHOOTING_RANGE = Meters.of(0.0);
+
+    /** Outer range for when we're on the blue alliance. */
+    final static public Distance BLUE_FAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
+
+    /** Inner range for when we're on the blue alliance. */
+    final static public Distance BLUE_NEAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
+
+    /** Outer range for when we're on the red alliance. */
+    final static public Distance RED_FAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
+
+    /** Inner range for when we're on the red alliance. */
+    final static public Distance RED_NEAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
   }
 }

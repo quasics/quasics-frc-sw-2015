@@ -29,9 +29,6 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 /**
  * Completes the AbstractElevator class definition for the purpose of
  * controlling simulated hardware.
- * 
- * TODO: Combine the simulator (which uses SparkMax hardware) with the live
- * version.
  */
 public class SimulatedElevator extends AbstractElevator {
   /** Extension speed while running under manual control. */

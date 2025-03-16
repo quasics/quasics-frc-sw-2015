@@ -30,9 +30,10 @@ public class RealElevator extends AbstractElevator {
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
   private final double VELOCITY_DEADBAND = 10;
+  private int m_numCycles = 0;
 
   // TODO: Tune PID values.
-  private final PIDController m_pid = new PIDController(0.25, 0.00, 0.00);
+  private final PIDController m_pid = new PIDController(0.20, 0.00, 0.00);
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(0.00, 0.5, 0.00);
 
   /**
@@ -63,6 +64,7 @@ public class RealElevator extends AbstractElevator {
   public void setSpeed(double percentSpeed) {
     // do not use this when using pid, only for manual control
     m_targetPosition = TargetPosition.kDontCare;
+    m_numCycles = 0;
     // System.out.println("Calling setSpeeds: " + percentSpeed);
     if (ableToMove(percentSpeed)) {
       m_leader.set(percentSpeed);
@@ -103,23 +105,15 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    // Are we at the top limit?
-    if (m_limitSwitchUp.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed > 0; // We can move down (speed negative) from the top point, but not up.
-    }
-
-    // Are we at the bottom limit?
-    if (m_limitSwitchDown.get() == LIMIT_SWITCH_VALUE_WHEN_TRIGGERED) {
-      return speed < 0; // We can move up (speed positive) from the bottom point, but not down.
-    }
-
-    // Limit switches are both clear; any direction is OK
-    return true;
+    return !((m_limitSwitchUp.get() == false && speed < 0)
+        || (m_limitSwitchDown.get() == false && speed > 0));
   }
 
   @Override
   public void periodic() {
     super.periodic();
+
+    m_numCycles++;
 
     SmartDashboard.putBoolean("Limit switch Up", m_limitSwitchUp.get());
     SmartDashboard.putBoolean("Limit switch Down", m_limitSwitchDown.get());
@@ -133,10 +127,10 @@ public class RealElevator extends AbstractElevator {
       stop();
     }
 
-    if (m_limitSwitchDown.get()) {
-      // resetEncoders();
+    if (!m_limitSwitchDown.get()) {
+      resetEncoders();
     }
-    if (m_limitSwitchUp.get()) {
+    if (!m_limitSwitchUp.get()) {
       // resetEncoders(getRotationsForPosition(AbstractElevator.TargetPosition.kL2));
     }
 
@@ -146,13 +140,18 @@ public class RealElevator extends AbstractElevator {
       double pidOutput = m_pid.calculate(m_encoder.getPosition(), targetRotations);
       double feedforward = m_feedforward.calculate(velocity);
 
-      double output = MathUtil.clamp(pidOutput + feedforward, -12, 12);
-
-      System.out.printf(
-          "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
-          m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+      double voltClampBasedOnCycles = m_numCycles * 0.5;
+      double voltClamp = MathUtil.clamp(voltClampBasedOnCycles, -12, 12);
+      double output = MathUtil.clamp(pidOutput + feedforward, -voltClamp, voltClamp);
 
       setVoltage(output);
+
+      final boolean noisy = false;
+      if (noisy) {
+        System.out.printf(
+            "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
+            m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+      }
     }
   }
 
@@ -162,7 +161,7 @@ public class RealElevator extends AbstractElevator {
         return m_encoder.getPosition();
       // TODO: Make down negative and up positive
       case kBottom:
-        return 0;
+        return 5;
       case kL1:
         return -74;
       case kL2:
@@ -176,6 +175,7 @@ public class RealElevator extends AbstractElevator {
   }
 
   public void setTargetPosition(TargetPosition position) {
+    m_numCycles = 0;
     m_targetPosition = position;
 
   }

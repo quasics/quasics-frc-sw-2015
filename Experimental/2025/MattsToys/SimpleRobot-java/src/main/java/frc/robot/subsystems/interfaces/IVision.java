@@ -25,7 +25,7 @@ public interface IVision extends ISubsystem {
   /** Key used to post last estimated Pose timestamp to BulletinBoard. */
   static final String POSE_TIMESTAMP_KEY = SUBSYSTEM_NAME + ".Timestamp";
 
-  /** Key used to post "was Pose estimate recently updated?" to BulletinBoard. */
+  /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
   /** @return the most recent pose estimates (based on camera data) */

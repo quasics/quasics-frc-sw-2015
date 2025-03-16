@@ -33,6 +33,17 @@ import frc.robot.utils.BulletinBoard;
  * <li>Concrete types, which mostly serve to set up/access the underlying
  * hardware.
  * </ul>
+ * 
+ * Possible enhancements:
+ * <ul>
+ * <li>
+ * Use either the raw odometry or (unified) pose estimation to provide a signal
+ * to the drive team about the robot's position on the field (e.g., when it's
+ * oriented towards the barge and close enough to make the shot). This could be
+ * done by putting something on the dashboard, changing the lights on the robot,
+ * etc.
+ * </li>
+ * </ul>
  */
 public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
@@ -149,37 +160,63 @@ public interface IDrivebase extends ISubsystem {
     driveWithPid(getKinematics().toWheelSpeeds(speeds));
   }
 
-  /** @return The position reading from the left encoder */
+  /**
+   * Returns the left encoder's position.
+   * 
+   * @return The position reading from the left encoder
+   */
   default Distance getLeftPosition() {
     return getLeftEncoder().getPosition();
   }
 
-  /** @return The position reading from the right encoder */
+  /**
+   * Returns the right encoder's position.
+   * 
+   * @return The position reading from the right encoder
+   */
   default Distance getRightPosition() {
     return getRightEncoder().getPosition();
   }
 
-  /** @return The velocity reading from the left encoder */
+  /**
+   * Returns the left encoder's velocity.
+   * 
+   * @return The position reading from the left velocity
+   */
   default LinearVelocity getLeftVelocity() {
     return getLeftEncoder().getVelocity();
   }
 
-  /** @return The velocity reading from the right encoder */
+  /**
+   * Returns the right encoder's velocity.
+   * 
+   * @return The position reading from the right velocity
+   */
   default LinearVelocity getRightVelocity() {
     return getRightEncoder().getVelocity();
   }
 
-  /** @return the angular velocity of the robot (from the ALU) */
+  /**
+   * Returns the robot's angular velocity (from the ALU).
+   * 
+   * @return the angular velocity of the robot
+   */
   default AngularVelocity getTurnRate() {
     return getGyro().getRate();
   }
 
-  /** @return heading of the robot (as an Angle) */
+  /**
+   * Returns the robot's heading (from the ALU).
+   * 
+   * @return the heading of the robot
+   */
   default Angle getHeading() {
     return getGyro().getAngle();
   }
 
   /**
+   * Gets the robot's current speeds (wheels and turning).
+   * 
    * @return the current ChassisSpeeds of the robot (used for
    *         trajectory-following)
    */
@@ -187,7 +224,11 @@ public interface IDrivebase extends ISubsystem {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
   }
 
-  /** @return last posted odemetry pose, or null */
+  /**
+   * Returns the latest posted odemetry-based pose.
+   * 
+   * @return last posted odemetry pose, or null
+   */
   static Pose2d getPublishedLastPose() {
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
@@ -211,28 +252,60 @@ public interface IDrivebase extends ISubsystem {
    */
   void setMotorVoltages(Voltage left, Voltage right);
 
-  /** @return The applied voltage from the left motor */
+  /**
+   * Returns the voltage being applied to the left motor.
+   * 
+   * @return The applied voltage from the left motor
+   */
   Voltage getLeftVoltage();
 
-  /** @return The applied voltage from the right motor */
+  /**
+   * Returns the voltage being applied to the right motor.
+   * 
+   * @return The applied voltage from the right motor
+   */
   Voltage getRightVoltage();
 
-  /** @return TrivialEncoder exposing data for the left motors */
+  /**
+   * Returns a TrivialEncoder for the left motor.
+   * 
+   * @return TrivialEncoder exposing data for the left motors
+   */
   TrivialEncoder getLeftEncoder();
 
-  /** @return TrivialEncoder exposing data for the right motors */
+  /**
+   * Returns a TrivialEncoder for the right motor.
+   * 
+   * @return TrivialEncoder exposing data for the right motors
+   */
   TrivialEncoder getRightEncoder();
 
-  /** @return IGyro exposing data from the underlying ALU */
+  /**
+   * Exposes a gyro (providing heading/yaw) for the robot.
+   * 
+   * @return IGyro exposing data from the underlying ALU
+   */
   IGyro getGyro();
 
-  /** @return position/heading of the robot, based on odometry */
+  /**
+   * Gets the robot's pose (based on odometry alone).
+   * 
+   * @return position/heading of the robot, based on odometry
+   */
   Pose2d getPose();
 
-  /** @return position/heading of the robot, based on pose estimation */
+  /**
+   * Gets the robot's pose (based on pose estimation, fusing odometry and vision).
+   * 
+   * @return estimated pose of the robot
+   */
   Pose2d getEstimatedPose();
 
-  /** @return kinematics data for the robot */
+  /**
+   * Gets the robot's kinematics.
+   * 
+   * @return kinematics data for the robot
+   */
   DifferentialDriveKinematics getKinematics();
 
   /////////////////////////////////////////////////////////////////////////////////

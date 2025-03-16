@@ -25,6 +25,8 @@ public class RunKrakenForTime extends Command {
     m_stopTime = time;
     m_timer = new Timer();
     m_timer.start();
+
+    addRequirements(m_armRoller);
   }
 
   // Called when the command is initially scheduled.

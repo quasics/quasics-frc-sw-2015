@@ -23,7 +23,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -154,13 +153,6 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     getOdometry().resetPosition(position, leftPosition, rightPosition, pose);
     getPoseEstimator().resetPosition(
         position, leftPosition.in(Meters), rightPosition.in(Meters), pose);
-
-    // TODO: Should probably clear position data from Vision when we're running in
-    // the simulator, since we could be jumping significantly in a way that the
-    // vision stuff won't pick up (unlike in real-world movement).
-    //
-    // One option for this could be to publish a signal to the bulletin board, and
-    // have the Vision subsytem "notice" it.
   }
 
   @Override
@@ -279,15 +271,13 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     SmartDashboard.putData("Drive pid (R)", m_rightPidController);
   }
 
-  @Override
-  public void setDefaultCommand(Command defaultCommand) {
-    super.setDefaultCommand(defaultCommand);
-  }
-
   /**
    * Generates a confidence estimate (as standard deviations) for the vision
    * system's estimated pose, to be used in applying it to our estimate (based on
    * odometry data).
+   * 
+   * @param estimation estimated robot pose, for which confidence is to be
+   *                   calculated
    * 
    * @return matrix expressing the standard deviations to be used in applying the
    *         estimated position from vision to the drivebase's estimated.

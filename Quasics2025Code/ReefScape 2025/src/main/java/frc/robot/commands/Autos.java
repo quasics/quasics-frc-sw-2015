@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.controls.PositionVoltage;
-
 import edu.wpi.first.units.measure.Angle;
 
 import choreo.auto.AutoFactory;
@@ -145,7 +143,7 @@ public final class Autos {
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE),
                 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1),
-                0.5),
+                0.2),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.5));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
@@ -222,7 +220,7 @@ public final class Autos {
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
             runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 2.5));
       default:
-        return new PrintCommand("grabAlgaeFromReef failed?");
+        return new PrintCommand("scoreCoralInReef failed?");
     }
   }
 
@@ -231,15 +229,15 @@ public final class Autos {
       case AutonomousStartingPositions.TOP:
         return Commands.parallel(
             followPath("topreeftobarge", false, true),
-            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
+            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 8));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("middlereeftobarge", false, true),
-            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.2),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 5)),
+            Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 2.8)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             runCommandAfterTime(intakeThenExtake(), 8));
       default:

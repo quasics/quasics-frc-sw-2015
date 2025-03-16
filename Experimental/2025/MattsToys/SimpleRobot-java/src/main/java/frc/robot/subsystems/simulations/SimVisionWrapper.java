@@ -27,8 +27,17 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Implements a simulation wrapper on top of an AbstractCamera object.
+ *
+ * The published image streams (if enabled) follow the port order mentioned in
+ * the "Camera Stream Ports" section of the PhotonVision docs. For example, a
+ * single simulated camera will have its raw stream at http://localhost:1181
+ * and the processed stream at http://localhost:1182. These can also be found in
+ * the CameraServer tab of Shuffleboard, like a normal camera stream.
  */
 public class SimVisionWrapper extends SubsystemBase implements IVision {
+  /** Determines if simulated imagery will be streamed from the library. */
+  final static private boolean ENABLE_IMAGE_STREAMING = true;
+
   /** The primary vision object that's actually being used. */
   final private Vision m_realVision;
 
@@ -92,21 +101,14 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
         cameraData.camera(),
         getCameraProperties(cameraConfig));
 
-    // Enable the raw and processed streams. (These are enabled by default, but I'm
-    // making it explicit here, so that we can easily turn them off if we decide
-    // that's needed.)
-    //
-    // These streams follow the port order mentioned in Camera Stream Ports. For
-    // example, a single simulated camera will have its raw stream at localhost:1181
-    // and processed stream at localhost:1182, which can also be found in the
-    // CameraServer tab of Shuffleboard like a normal camera stream.
-    cameraSim.enableRawStream(true);
-    cameraSim.enableProcessedStream(true);
+    // Enable/disable the raw and processed streams. (These are enabled by default.)
+    cameraSim.enableRawStream(ENABLE_IMAGE_STREAMING);
+    cameraSim.enableProcessedStream(ENABLE_IMAGE_STREAMING);
 
     // Enable drawing a wireframe visualization of the field to the camera streams.
     //
     // Note: This is extremely resource-intensive and is disabled by default.
-    cameraSim.enableDrawWireframe(true);
+    cameraSim.enableDrawWireframe(ENABLE_IMAGE_STREAMING);
 
     // Add the camera to the vision system simulation with the given
     // robot-to-camera transform.
@@ -126,9 +128,12 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    */
   private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(cameraConfig.imaging().width(), cameraConfig.imaging().height(),
+    cameraProp.setCalibration(
+        cameraConfig.imaging().width(),
+        cameraConfig.imaging().height(),
         new Rotation2d(cameraConfig.imaging().fov()));
-    cameraProp.setFPS(cameraConfig.imaging().fps());
+    cameraProp.setFPS(
+        cameraConfig.imaging().fps());
 
     // Approximate detection noise with average and standard deviation error in
     // pixels.
@@ -141,7 +146,12 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     return cameraProp;
   }
 
-  // Note: this method will be called once per scheduler run
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // SubsystemBase methods
+  //
+  //////////////////////////////////////////////////////////////////////////////
+
   @Override
   public void simulationPeriodic() {
     // Should be a no-op, but good practice to call the base class.
@@ -186,12 +196,18 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
   }
 
   @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
-    return m_realVision.getEstimatedPoses();
-  }
-
-  @Override
   public void periodic() {
     m_realVision.periodic();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // IVision methods
+  //
+  //////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    return m_realVision.getEstimatedPoses();
   }
 }

@@ -134,6 +134,8 @@ public class Elevator extends AbstractElevator {
   /**
    * Configures the SparkMax for RPM-centric reporting of encoder data.
    * 
+   * Note: this isn't currently used, but I'm keeping it for reference.
+   * 
    * @param sparkMaxConfig the configuration to update
    */
   protected void configureForRpm(SparkMaxConfig sparkMaxConfig) {

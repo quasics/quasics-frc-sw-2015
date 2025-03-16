@@ -43,13 +43,20 @@ public class SimDrivebase extends AbstractDrivebase {
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   // "Hardware" allocation
+  /** Left motor. */
   private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
+  /** Right motor. */
   private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
+  /** Left (native) encoder. */
   private final Encoder m_leftEncoder = new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);
+  /** Right (native) encoder. */
   private final Encoder m_rightEncoder = new Encoder(RIGHT_DRIVE_ENCODER_PORT_A, RIGHT_DRIVE_ENCODER_PORT_B);
+  /** Gyro, providing "yaw" data. */
   private final IGyro m_wrappedGyro;
 
+  /** TrivialEncoder for left motor. */
   final private TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  /** TrivialEncoder for right motor. */
   final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
@@ -60,11 +67,35 @@ public class SimDrivebase extends AbstractDrivebase {
 
   /////////////////////////////////////////////////////////////////////////////////////
   // Simulated "hardware" and other simulation-specific objects.
+  /** Simulation driver for left encoder. */
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  /** Simulation driver for right encoder. */
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  /** Simulation driver for underlying gyro. */
   final AnalogGyroSim m_gyroSim;
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  /**
+   * Linear system describing the drive train.
+   * 
+   * Notice that this data will (had better!) look *remarkably* similar to the
+   * computed "feed forward" values for this simulated drive base, since they
+   * are... well, the actual/ideal values defining that.
+   * 
+   * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
+   */
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+      1.98,
+      0.2,
+      1.5,
+      0.3);
+
+  /** Simulation driver for the overall drive train. */
   final DifferentialDrivetrainSim m_drivetrainSimulator;
+
+  /**
+   * Field UX for showing simulated driving.
+   * 
+   * Note that this could be moved into the SimulationUxSupport class.
+   */
   final Field2d m_fieldSim = new Field2d();
 
   /**
@@ -77,10 +108,13 @@ public class SimDrivebase extends AbstractDrivebase {
 
     final var driveConfig = config.drive();
 
-    final double trackWidthMeters = driveConfig.trackWidth().in(Meters);
-
-    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2),
-        driveConfig.gearing(), driveConfig.trackWidth().in(Meters), trackWidthMeters, null);
+    m_drivetrainSimulator = new DifferentialDrivetrainSim(
+        m_drivetrainSystem,
+        DCMotor.getCIM(2),
+        driveConfig.gearing(),
+        driveConfig.trackWidth().in(Meters),
+        driveConfig.trackWidth().in(Meters),
+        null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -104,11 +138,18 @@ public class SimDrivebase extends AbstractDrivebase {
     m_wrappedGyro = IGyro.wrapGyro(rawGyro);
 
     // Set up the odometry and pose estimator
-    m_odometry = new DifferentialDriveOdometry(m_wrappedGyro.getRotation2d(),
-        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), new Pose2d());
-    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics,
-        m_wrappedGyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
-        new Pose2d(), VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
+    m_odometry = new DifferentialDriveOdometry(
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        new Pose2d());
+    m_poseEstimator = new DifferentialDrivePoseEstimator(
+        m_kinematics,
+        m_wrappedGyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        new Pose2d(),
+        VecBuilder.fill(0.05, 0.05, Radians.convertFrom(5, Degrees)),
         VecBuilder.fill(0.5, 0.5, Radians.convertFrom(30, Degrees)));
 
     //
@@ -120,15 +161,6 @@ public class SimDrivebase extends AbstractDrivebase {
     SmartDashboard.putData("Field", m_fieldSim);
   }
 
-  @Override
-  public void periodic() {
-    super.periodic();
-
-    // Update the field simulator to reflect refreshed odometry.
-    m_fieldSim.setRobotPose(getPose());
-    m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
-  }
-
   /**
    * Updates the simulation of the drive (position, encoders, current draw, etc.).
    */
@@ -137,7 +169,8 @@ public class SimDrivebase extends AbstractDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_left.get() * RoboRioSim.getVInVoltage(),
+    m_drivetrainSimulator.setInputs(
+        m_left.get() * RoboRioSim.getVInVoltage(),
         m_right.get() * RobotController.getInputVoltage());
 
     // Simulated clock ticks forward
@@ -159,6 +192,21 @@ public class SimDrivebase extends AbstractDrivebase {
     // SimulationUxSupport.instance.postCurrentDraw(m_drivetrainSimulator.getCurrentDrawAmps());
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // SubsystemBase methods
+  //
+  //////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    // Update the field simulator to reflect refreshed odometry.
+    m_fieldSim.setRobotPose(getPose());
+    m_fieldSim.getObject("Estimated pose").setPose(getEstimatedPose());
+  }
+
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
@@ -167,6 +215,12 @@ public class SimDrivebase extends AbstractDrivebase {
       updateSimulation();
     }
   }
+
+  //////////////////////////////////////////////////////////////////////////////
+  //
+  // IDrivebase / AbstractDrivebase methods
+  //
+  //////////////////////////////////////////////////////////////////////////////
 
   @Override
   public void setMotorVoltages(Voltage left, Voltage right) {

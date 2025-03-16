@@ -29,7 +29,7 @@ public final class Autos {
    * IMPORTANT POSITIONS FOR CHOREO
    * Robot size: 0.851 m by 0.993 m
    * Blue 1: (7.556m, 6.169m, 180deg)
-   * Blue 2: (7.556m, 3.937m, 180deg)
+   * Blue 2: (7.556m, 4.026, 180deg)
    * Blue 3: (7.556m, 1.883m, 180deg)
    * Top of reef: (5.230, 5.132, -120deg)
    * Middle of reef: (5.817m, 3.937m, 180deg)
@@ -136,8 +136,8 @@ public final class Autos {
             followPath("1toreef", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
-                0.5),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 1.8));
+                0.4),
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.2));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2toreef", true, true),
@@ -151,8 +151,8 @@ public final class Autos {
             followPath("3toreef", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
-                0.5),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 1.8));
+                0.4),
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.3));
       default:
         return new PrintCommand("grabAlgaeFromReef failed?");
     }
@@ -208,18 +208,18 @@ public final class Autos {
         return Commands.parallel(
             followPath("1toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 2.5));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 2));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)),
                 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 2.5));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 2));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 2.5));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 2));
       default:
         return new PrintCommand("scoreCoralInReef failed?");
     }
@@ -231,18 +231,24 @@ public final class Autos {
         return Commands.parallel(
             followPath("topreeftobarge", false, true),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 4),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.7)),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 3.3),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 4.1)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
-            runCommandAfterTime(intakeThenExtake(), 7));
+            Commands.sequence(
+                Commands.race(runCommandAfterTime(new PulseKraken(m_armRoller, -0.3, 0.3, 0.5), 0.0),
+                    new WaitCommand(4.5)),
+                runCommandAfterTime(intakeThenExtake(), 2.8)));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("middlereeftobarge", false, true),
             Commands.sequence(runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.5),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 4),
-                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.7)),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kTop), 3.3),
+                runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 4.1)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
-            runCommandAfterTime(intakeThenExtake(), 7));
+            Commands.sequence(
+                Commands.race(runCommandAfterTime(new PulseKraken(m_armRoller, -0.3, 0.3, 0.5), 0.0),
+                    new WaitCommand(4.5)),
+                runCommandAfterTime(intakeThenExtake(), 2.7)));
       default:
         return new PrintCommand("scoreAlgaeFromReefIntoBarge failed?");
     }
@@ -296,19 +302,19 @@ public final class Autos {
             followPath("1reefcoraltoreef", false, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.5));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2reefcoraltoreef", false, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL1), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.5));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3reefcoraltoreef", false, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 4.1));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.5));
       default:
         return new PrintCommand("grabAlgaeFromCoralPosition failed?");
     }

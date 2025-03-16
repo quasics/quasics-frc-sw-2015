@@ -57,8 +57,6 @@ import java.util.function.Supplier;
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
-  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
-
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
     /** Do nothing in auto mode. */
@@ -102,6 +100,8 @@ public class RobotContainer {
   // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
   // for details.)
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
+
+  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
   /** Factory object for Choreo trajectories. */
   private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,

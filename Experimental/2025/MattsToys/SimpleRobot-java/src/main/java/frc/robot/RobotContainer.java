@@ -57,7 +57,7 @@ import java.util.function.Supplier;
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
-  static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {

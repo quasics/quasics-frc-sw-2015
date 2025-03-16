@@ -476,6 +476,12 @@ public class RobotContainer {
     return new Lighting(config);
   }
 
+  /**
+   * Allocates a single-joint arm subsystem object.
+   *
+   * @param config the target robot's configuration
+   * @return a single-joint arm subsystem for this robot (may be trivial)
+   */
   private static ISingleJointArm allocateArm(RobotConfigs.RobotConfig config) {
     if (!config.hasArm()) {
       return new ISingleJointArm.NullArm();
@@ -488,6 +494,12 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates an ICandle subsystem object.
+   *
+   * @param config the target robot's configuration
+   * @return an ICandle subsystem for this robot (may be trivial)
+   */
   private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();

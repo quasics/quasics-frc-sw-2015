@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
-import frc.robot.commands.FlickeringCandle;
+import frc.robot.commands.DriveTeamShootingSupport;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
@@ -126,7 +126,7 @@ public class RobotContainer {
     configurePeriodicOperations(robot);
 
     m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
-    m_candle.asSubsystem().setDefaultCommand(new FlickeringCandle(m_candle));
+    m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
   }
 
   private void configurePeriodicOperations(TimedRobot robot) {

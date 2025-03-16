@@ -284,6 +284,9 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * system's estimated pose, to be used in applying it to our estimate (based on
    * odometry data).
    * 
+   * @param estimation estimated robot pose, for which confidence is to be
+   *                   calculated
+   * 
    * @return matrix expressing the standard deviations to be used in applying the
    *         estimated position from vision to the drivebase's estimated.
    * 

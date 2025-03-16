@@ -29,15 +29,22 @@ public class Constants {
 
   /** Other CAN IDs for Quasics' 2025 robot. */
   public static class OtherCanIds {
+    /** Following motor for the elevator. */
     public static final int FOLLOWER_ELEVATOR_ID = 7;
+    /** Leading motor for the elevator. */
     public static final int LEADER_ELEVATOR_ID = 8;
+    /** CAN ID for the single-joint arm. */
     public static final int ARM_LEADER_ID = 9;
 
+    /** CAN ID for the CANdle. */
     public static final int CANDLE_ID = 1;
   }
 
+  /** Digital IO IDs. */
   public static class DioIds {
+    /** ID for the elevator's "top" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_UP = 0;
+    /** ID for the elevator's "bottom" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_DOWN = 1;
   }
 
@@ -160,16 +167,19 @@ public class Constants {
     public static final int RightStickPress = 10;
   }
 
+  /** Constants associated with the vision class. */
   public static class VisionConstants {
-
-    public static boolean USE_VISION = true;
-
     /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+    /** Pose ambiguity compensation. */
     public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
+    /** Pose ambiguity compensation. */
     public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+    /** Distance (in meters) past which we'll ignore a target. */
     public static final double NOISY_DISTANCE_METERS = 2.5;
+    /** Weight associated with distance. */
     public static final double DISTANCE_WEIGHT = 7;
+    /** Confidence compensation weight. */
     public static final int TAG_PRESENCE_WEIGHT = 10;
 
     /**
@@ -199,6 +209,5 @@ public class Constants {
             .1, // y
             .1
         });
-
   }
 }

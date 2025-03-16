@@ -351,9 +351,21 @@ public class RobotConfigs {
     }
   }
 
+  /**
+   * Single-joint arm configuration settings.
+   * 
+   * @param pid         PID settings for the arm
+   * @param feedForward feedforward settings for the arm
+   */
   public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
+  /**
+   * CANdle configuration settings.
+   * 
+   * @param canId CAN ID for the device; if negative, the device should be
+   *              simulated
+   */
   public static record CandleConfig(int canId) {
     public boolean simulated() {
       return canId < 0;
@@ -368,6 +380,7 @@ public class RobotConfigs {
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
+   * @param candle   CANdle configuration (may be null)
    */
   public static record RobotConfig(
       DriveConfig drive,
@@ -384,6 +397,8 @@ public class RobotConfigs {
      * @param camera   camera configuration (may be null)
      * @param elevator elevator configuration (may be null)
      * @param lighting lighting configuration (may be null)
+     * @param arm      arm configuration (may be null)
+     * @param candle   CANdle configuration (may be null)
      */
     RobotConfig(
         DriveConfig drive,
@@ -395,35 +410,55 @@ public class RobotConfigs {
       this(drive, Collections.singletonList(camera), elevator, arm, lighting, candle);
     }
 
-    /** @return true iff the configuration includes data for the drivebase */
+    /**
+     * Determines if we have drive configuration data.
+     * 
+     * @return true iff the configuration includes data for the drivebase
+     */
     public boolean hasDrive() {
       return drive != null;
     }
 
-    /** @return true iff the configuration includes data for the camera */
+    /**
+     * Determines if we have camera configuration data.
+     * 
+     * @return true iff the configuration includes data for the camera
+     */
     public boolean hasCamera() {
       return (cameras() != null) && !cameras.isEmpty();
     }
 
-    /** @return true iff the configuration includes data for the elevator */
+    /**
+     * Determines if we have elevator configuration data.
+     * 
+     * @return true iff the configuration includes data for the elevator
+     */
     public boolean hasElevator() {
       return elevator != null;
     }
 
-    /** @return true iff the configuration includes data for the arm */
+    /**
+     * Determines if we have arm configuration data.
+     * 
+     * @return true iff the configuration includes data for the arm
+     */
     public boolean hasArm() {
       return arm != null;
     }
 
     /**
-     * @return true iff the configuration includes data for the lighting subsystem
+     * Determines if we have lighting configuration data.
+     * 
+     * @return true iff the configuration includes data for the lighting
      */
     public boolean hasLighting() {
       return lighting != null;
     }
 
     /**
-     * @return true iff the configuration includes data for the "candle" subsystem
+     * Determines if we have CANdle configuration data.
+     * 
+     * @return true iff the configuration includes data for the CANdle
      */
     public boolean hasCandle() {
       return candle != null;

@@ -36,6 +36,8 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  */
 public class Vision extends SubsystemBase implements IVision {
   /**
+   * Camera data set.
+   * 
    * @param camera      connection to the camera
    * @param transform3d defines the conversion from the robot's position, to the
    *                    cameras's

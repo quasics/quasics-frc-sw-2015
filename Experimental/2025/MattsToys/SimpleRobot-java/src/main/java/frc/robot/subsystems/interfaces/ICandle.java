@@ -8,13 +8,13 @@ package frc.robot.subsystems.interfaces;
  * Simple (trivial!) interface to a CTRE "CANdle" device that can be set to a
  * specific color.
  * 
+ * @see ILighting.StockColor
  * @see <a href="https://store.ctr-electronics.com/products/candle">Product
  *      page</a>
  * @see <a
  *      href=
  *      "https://api.ctr-electronics.com/phoenix/release/java/com/ctre/phoenix/led/CANdle.html">CANdle
- *      class
- * @see ILighting.StockColor
+ *      class</a>
  */
 public interface ICandle extends ISubsystem {
 

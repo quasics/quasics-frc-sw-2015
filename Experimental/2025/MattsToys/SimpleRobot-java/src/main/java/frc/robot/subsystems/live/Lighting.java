@@ -85,10 +85,9 @@ public class Lighting extends SubsystemBase implements ILighting {
   /**
    * Constructor.
    * 
-   * @param pwmPort             PWM port to which the LED strip is connected
-   * @param numLights           number of (logical) lights on the LED strip
-   * @param enableCandleSupport whether to enable support for a simulated CANdle
-   * @param subViews            list of lengths for desired subviews
+   * @param pwmPort   PWM port to which the LED strip is connected
+   * @param numLights number of (logical) lights on the LED strip
+   * @param subViews  list of lengths for desired subviews
    */
 
   public Lighting(int pwmPort, int numLights, List<Integer> subViews) {

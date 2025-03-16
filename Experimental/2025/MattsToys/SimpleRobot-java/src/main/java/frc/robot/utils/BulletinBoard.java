@@ -46,6 +46,36 @@ public class BulletinBoard {
   private Map<String, Object> values = new HashMap<String, Object>();
 
   /**
+   * Indicates if there is any data associated with the specified key.
+   *
+   * @param key the key being checked
+   * @return true iff the key is populated
+   *
+   * @see #updateValue(String, Object)
+   */
+  public synchronized boolean hasKey(String key) {
+    return values.containsKey(key);
+  }
+
+  /**
+   * Indicates if there is any data associated with the specified key, and removes
+   * it from the data set. (Useful for one subsystem asynchronously requesting an
+   * operation of another.)
+   *
+   * @param key the key being checked
+   * @return true iff the key was populated
+   *
+   * @see #updateValue(String, Object)
+   */
+  public synchronized boolean testAndClear(String key) {
+    boolean result = values.containsKey(key);
+    if (result) {
+      values.remove(key);
+    }
+    return result;
+  }
+
+  /**
    * Retrieves the value associated with the specified key (if any is present),
    * without any typing constraints being applied.
    *

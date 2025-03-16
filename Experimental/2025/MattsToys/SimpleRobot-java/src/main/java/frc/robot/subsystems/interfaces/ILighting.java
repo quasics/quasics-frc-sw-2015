@@ -5,7 +5,6 @@
 package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -33,16 +32,46 @@ public interface ILighting extends ISubsystem {
    * Convenience type, used to provide (named) values for different LED colors.
    */
   public enum StockColor {
-    /** Green. */
+    /** White. */
+    White(255, 255, 255),
+    /** Black (off). */
+    Black(0, 0, 0),
+    /** Green. (Actually "lime green".) */
     Green(0, 255, 0),
     /** Red. */
     Red(255, 0, 0),
     /** Blue. */
     Blue(0, 0, 255),
-    /** White. */
-    White(255, 255, 255),
-    /** Black (off). */
-    Black(0, 0, 0);
+    /** Fuchsia. */
+    Fuchsia(255, 0, 255),
+    /** Aqua. */
+    Aqua(0, 255, 255),
+    /** Gray. */
+    Gray(128, 128, 128),
+    /** Maroon. */
+    Maroon(128, 0, 0),
+    /** Dark green. */
+    DarkGreen(0, 128, 0),
+    /** Navy. */
+    Navy(0, 0, 128),
+    /** Olive. */
+    Olive(128, 128, 0),
+    /** Purple. */
+    Purple(128, 0, 128),
+    /** Silver. */
+    Silver(0xC0, 0xC0, 0xC0),
+    /** Teal. */
+    Teal(0, 128, 128),
+    /** Orange. */
+    Orange(0xFF, 0x78, 0x02),
+    /** Pink. (Specifically, "deep pink".) */
+    Pink(0xFF, 0x14, 0x93),
+    /** Gold. */
+    Gold(0xFF, 0xD7, 0x00),
+    /** Yellow. */
+    Yellow(0xFF, 0xFF, 0x00),
+    /** White smoke. */
+    WhiteSmoke(0xF5, 0xF5, 0xF5);
 
     /** RGB color values (ranging from 0-255 for each component). */
     public final int r, g, b;
@@ -179,15 +208,11 @@ public interface ILighting extends ISubsystem {
     }
 
     @Override
-    public void setDefaultCommand(Command defaultCommand) {
-      super.setDefaultCommand(defaultCommand);
+    public int getLength() {
+      return 0;
     }
   }
 
-  /**
-   * Exposes 'setDefaultCommand' from the WPILib Subsystem class.
-   *
-   * @param defaultCommand default command to be associated with this subsystem
-   */
-  void setDefaultCommand(Command defaultCommand);
+  /** @return the length of the sequence supported by this object */
+  int getLength();
 }

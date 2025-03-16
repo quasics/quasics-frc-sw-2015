@@ -21,6 +21,9 @@ import java.util.Map;
  * Defines various configuration data for robot subsystems.
  */
 public class RobotConfigs {
+  /** Invalid CAN ID. */
+  public static final int INVALID_CAN_ID = -1;
+
   /** The supported robots. */
   public enum Robot {
     /** Simulation-only */
@@ -276,8 +279,41 @@ public class RobotConfigs {
    *
    * @param pwmPort     the PWM port driving the LED strip
    * @param stripLength the length (in pixels/cells) of the LED strip
+   * @param subViews    list of subviews for the strip (segments following the
+   *                    "main set")
+   * 
+   * @see frc.robot.subsystems.live.Lighting
+   * @see frc.robot.subsystems.live.LightingBuffer
    */
-  public static record LightingConfig(int pwmPort, int stripLength) {
+  public static record LightingConfig(int pwmPort, int stripLength, List<Integer> subViews) {
+    /**
+     * Constructor (with sanity checking).
+     *
+     * @param pwmPort     the PWM port driving the LED strip
+     * @param stripLength the length (in pixels/cells) of the LED strip
+     * @param subViews    list of subviews for the strip (segments following the
+     *                    "main set")
+     */
+    public LightingConfig {
+      if (subViews != null) {
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        if (subViewTotalSize > stripLength) {
+          throw new IllegalArgumentException(
+              "Sub-view size (" + subViewTotalSize +
+                  ") exceeds strip length (" + stripLength + ")");
+        }
+      }
+    }
+
+    /**
+     * Convenience constructor.
+     * 
+     * @param pwmPort     the PWM port driving the LED strip
+     * @param stripLength the length (in pixels/cells) of the LED strip
+     */
+    public LightingConfig(int pwmPort, int stripLength) {
+      this(pwmPort, stripLength, null);
+    }
   }
 
   /**
@@ -324,10 +360,30 @@ public class RobotConfigs {
     }
   }
 
+  /**
+   * Single-joint arm configuration settings.
+   * 
+   * @param pid         PID settings for the arm
+   * @param feedForward feedforward settings for the arm
+   */
   public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
-  public static record CandleConfig() {
+  /**
+   * CANdle configuration settings.
+   * 
+   * @param canId CAN ID for the device; if negative, the device should be
+   *              simulated
+   */
+  public static record CandleConfig(int canId) {
+    /**
+     * Determines if the CANdle is simulated.
+     * 
+     * @return true iff the CANdle is simulated (based on the CAN ID)
+     */
+    public boolean simulated() {
+      return canId < 0;
+    }
   }
 
   /**
@@ -338,6 +394,7 @@ public class RobotConfigs {
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
+   * @param candle   CANdle configuration (may be null)
    */
   public static record RobotConfig(
       DriveConfig drive,
@@ -354,6 +411,8 @@ public class RobotConfigs {
      * @param camera   camera configuration (may be null)
      * @param elevator elevator configuration (may be null)
      * @param lighting lighting configuration (may be null)
+     * @param arm      arm configuration (may be null)
+     * @param candle   CANdle configuration (may be null)
      */
     RobotConfig(
         DriveConfig drive,
@@ -365,35 +424,55 @@ public class RobotConfigs {
       this(drive, Collections.singletonList(camera), elevator, arm, lighting, candle);
     }
 
-    /** @return true iff the configuration includes data for the drivebase */
+    /**
+     * Determines if we have drive configuration data.
+     * 
+     * @return true iff the configuration includes data for the drivebase
+     */
     public boolean hasDrive() {
       return drive != null;
     }
 
-    /** @return true iff the configuration includes data for the camera */
+    /**
+     * Determines if we have camera configuration data.
+     * 
+     * @return true iff the configuration includes data for the camera
+     */
     public boolean hasCamera() {
       return (cameras() != null) && !cameras.isEmpty();
     }
 
-    /** @return true iff the configuration includes data for the elevator */
+    /**
+     * Determines if we have elevator configuration data.
+     * 
+     * @return true iff the configuration includes data for the elevator
+     */
     public boolean hasElevator() {
       return elevator != null;
     }
 
-    /** @return true iff the configuration includes data for the arm */
+    /**
+     * Determines if we have arm configuration data.
+     * 
+     * @return true iff the configuration includes data for the arm
+     */
     public boolean hasArm() {
       return arm != null;
     }
 
     /**
-     * @return true iff the configuration includes data for the lighting subsystem
+     * Determines if we have lighting configuration data.
+     * 
+     * @return true iff the configuration includes data for the lighting
      */
     public boolean hasLighting() {
       return lighting != null;
     }
 
     /**
-     * @return true iff the configuration includes data for the "candle" subsystem
+     * Determines if we have CANdle configuration data.
+     * 
+     * @return true iff the configuration includes data for the CANdle
      */
     public boolean hasCandle() {
       return candle != null;
@@ -489,8 +568,10 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00),
             null),
-        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
-        new CandleConfig());
+        new LightingConfig(
+            SimulationPorts.LIGHTING_PWM_ID,
+            80),
+        new CandleConfig(INVALID_CAN_ID));
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {

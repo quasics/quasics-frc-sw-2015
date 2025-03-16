@@ -21,20 +21,24 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
+import frc.robot.commands.DriveTeamShootingSupport;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Arm;
+import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.Vision;
+import frc.robot.subsystems.simulations.SimCandle;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
@@ -53,8 +57,6 @@ import java.util.function.Supplier;
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
-  static final boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
-
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
     /** Do nothing in auto mode. */
@@ -83,6 +85,7 @@ public class RobotContainer {
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
+  final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
 
   // Controllers
   //
@@ -98,6 +101,8 @@ public class RobotContainer {
   // for details.)
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
+  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+
   /** Factory object for Choreo trajectories. */
   private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
       m_drivebase::followTrajectory,
@@ -107,14 +112,21 @@ public class RobotContainer {
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   * 
+   * @param robot the robot object to which this container is attached; used to
+   *              (optionally) set up a periodic operation to update the battery
+   *              data under simulation
+   */
   public RobotContainer(TimedRobot robot) {
     configureArcadeDrive();
     configureDashboard();
     configureBindings();
     configurePeriodicOperations(robot);
 
-    m_lighting.setDefaultCommand(new RainbowLighting(m_lighting));
+    m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
+    m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
   }
 
   private void configurePeriodicOperations(TimedRobot robot) {
@@ -227,7 +239,8 @@ public class RobotContainer {
    * reset of odometry and explicit "stop" at the end.
    *
    * @param trajectoryName name of the trajectory being loaded
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see #generateCommandForChoreoTrajectory(String, boolean)
    */
@@ -243,7 +256,8 @@ public class RobotContainer {
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>
@@ -260,7 +274,10 @@ public class RobotContainer {
    * @param resetOdometry  if true, reset the robot's pose before running the
    *                       trajectory, based on the starting point in the
    *                       trajectory's data
-   * @return a command for the trajectory, or a no-op if it couldn't be found
+   * @param stopAtEnd      if true, explicitly stop the robot at the end of the
+   *                       trajectory
+   * @return a command for the trajectory, or a no-op if it couldn't be found (in
+   *         which case, a message is printed to stderr)
    *
    * @see <a href="https://choreo.autos/choreolib/getting-started/">Choreo
    *      'Getting Started'</a>
@@ -470,6 +487,12 @@ public class RobotContainer {
     return new Lighting(config);
   }
 
+  /**
+   * Allocates a single-joint arm subsystem object.
+   *
+   * @param config the target robot's configuration
+   * @return a single-joint arm subsystem for this robot (may be trivial)
+   */
   private static ISingleJointArm allocateArm(RobotConfigs.RobotConfig config) {
     if (!config.hasArm()) {
       return new ISingleJointArm.NullArm();
@@ -479,6 +502,28 @@ public class RobotContainer {
       return new Arm(config);
     } else {
       return new SimulatedSingleJointArm(config);
+    }
+  }
+
+  /**
+   * Allocates an ICandle subsystem object.
+   *
+   * @param config the target robot's configuration
+   * @return an ICandle subsystem for this robot (may be trivial)
+   */
+  private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
+    if (!config.hasCandle()) {
+      return new ICandle.NullCandle();
+    }
+
+    if (Robot.isReal()) {
+      return new Candle(config);
+    } else {
+      Lighting realSubsystem = (Lighting) lighting;
+      if (realSubsystem.getSubViews().isEmpty()) {
+        return new ICandle.NullCandle();
+      }
+      return new SimCandle(realSubsystem.getSubViews().get(0));
     }
   }
 }

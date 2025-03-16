@@ -36,6 +36,8 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  */
 public class Vision extends SubsystemBase implements IVision {
   /**
+   * Camera data set.
+   * 
    * @param camera      connection to the camera
    * @param transform3d defines the conversion from the robot's position, to the
    *                    cameras's
@@ -117,10 +119,20 @@ public class Vision extends SubsystemBase implements IVision {
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
+  /**
+   * Returns the number of cameras on the robot.
+   * 
+   * @return the number of cameras on the robot
+   */
   public int getNumCameras() {
     return m_cameraData.size();
   }
 
+  /**
+   * Returns the camera data for all cameras on the robot.
+   * 
+   * @return the camera data for all cameras on the robot (unmodifiable)
+   */
   protected List<CameraData> getCameraData() {
     return m_cameraData;
   }
@@ -188,14 +200,14 @@ public class Vision extends SubsystemBase implements IVision {
     return lastEstimatedPose;
   }
 
-  protected static void publishDataToBulletinBoard(
-      boolean recentlyUpdated,
-      double lastTimestamp,
-      Optional<EstimatedRobotPose> lastPose) {
-    publishDataToBulletinBoard(recentlyUpdated, lastTimestamp,
-        lastPose.isPresent() ? Collections.singletonList(lastPose.get()) : null);
-  }
-
+  /**
+   * Publishes the latest pose data to the bulletin board from all cameras with
+   * available data.
+   * 
+   * @param recentlyUpdated true if the data was updated recently
+   * @param lastTimestamp   the timestamp of the last pose update
+   * @param lastPoses       the last computed poses (if any)
+   */
   protected static void publishDataToBulletinBoard(
       boolean recentlyUpdated,
       double lastTimestamp,

@@ -6,25 +6,25 @@ package frc.robot.subsystems.live;
 
 import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.ILighting.StockColor;
+import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.
  */
 public class Candle extends SubsystemBase implements ICandle {
+  /** Underlying CANdle object being manipulated. */
+  private final CANdle m_candle;
 
-  private final CANdle m_candle = new CANdle(Constants.OtherCanIds.CANDLE_ID);
-
-  /** Creates a new Candle. */
-  public Candle() {
+  /**
+   * Constructor.
+   *
+   * @param config the configuration for the robot being targeted
+   */
+  public Candle(RobotConfig config) {
     setName("Candle");
-  }
 
-  @Override
-  public void setColor(StockColor color) {
-    m_candle.setLEDs(color.r, color.g, color.b);
+    m_candle = new CANdle(config.candle().canId());
   }
 
   @Override

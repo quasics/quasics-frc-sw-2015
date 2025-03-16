@@ -8,18 +8,44 @@ package frc.robot.subsystems.interfaces;
  * Simple (trivial!) interface to a CTRE "CANdle" device that can be set to a
  * specific color.
  * 
+ * @see ILighting.StockColor
  * @see <a href="https://store.ctr-electronics.com/products/candle">Product
  *      page</a>
  * @see <a
  *      href=
  *      "https://api.ctr-electronics.com/phoenix/release/java/com/ctre/phoenix/led/CANdle.html">CANdle
- *      class
- * @see ILighting.StockColor
+ *      class</a>
  */
-public interface ICandle {
-  /** Sets all of the LEDs on the CANdle to the specified color. */
-  void setColor(ILighting.StockColor color);
+public interface ICandle extends ISubsystem {
 
-  /** Sets all of the LEDs on the CANdle to the specified color. */
+  /** The number of LEDs built into the CANdle hardware. */
+  final int CANDLE_DEFAULT_LENGTH = 8;
+
+  /**
+   * Sets all of the LEDs on the CANdle to the specified color.
+   * 
+   * @param color the new color for the CANdle's LEDs
+   */
+  default void setColor(ILighting.StockColor color) {
+    setColor(color.r, color.g, color.b);
+  }
+
+  /**
+   * Sets all of the LEDs on the CANdle to the specified color.
+   * 
+   * @param r the red component of the new color
+   * @param g the green component of the new color
+   * @param b the blue component of the new color
+   */
   void setColor(int r, int g, int b);
+
+  /**
+   * A "null object" implementation of the ICandle interface that does nothing.
+   */
+  public static class NullCandle implements ICandle {
+    @Override
+    public void setColor(int r, int g, int b) {
+      // No-op
+    }
+  }
 }

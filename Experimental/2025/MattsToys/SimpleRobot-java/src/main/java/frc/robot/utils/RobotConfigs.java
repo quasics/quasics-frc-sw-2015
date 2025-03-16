@@ -278,8 +278,27 @@ public class RobotConfigs {
    *
    * @param pwmPort     the PWM port driving the LED strip
    * @param stripLength the length (in pixels/cells) of the LED strip
+   * @param subViews    list of subviews for the strip (segments following the
+   *                    "main set")
+   * 
+   * @see frc.robot.subsystems.live.Lighting
+   * @see frc.robot.subsystems.live.LightingBuffer
    */
-  public static record LightingConfig(int pwmPort, int stripLength) {
+  public static record LightingConfig(int pwmPort, int stripLength, List<Integer> subViews) {
+    public LightingConfig {
+      if (subViews != null) {
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        if (subViewTotalSize > stripLength) {
+          throw new IllegalArgumentException(
+              "Sub-view size (" + subViewTotalSize +
+                  ") exceeds strip length (" + stripLength + ")");
+        }
+      }
+    }
+
+    public LightingConfig(int pwmPort, int stripLength) {
+      this(pwmPort, stripLength, null);
+    }
   }
 
   /**
@@ -494,7 +513,9 @@ public class RobotConfigs {
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00),
             null),
-        new LightingConfig(SimulationPorts.LIGHTING_PWM_ID, 80),
+        new LightingConfig(
+            SimulationPorts.LIGHTING_PWM_ID,
+            80),
         new CandleConfig(INVALID_CAN_ID));
   }
 

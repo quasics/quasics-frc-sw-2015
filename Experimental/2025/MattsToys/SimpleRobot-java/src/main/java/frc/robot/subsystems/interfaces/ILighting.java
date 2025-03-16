@@ -33,16 +33,38 @@ public interface ILighting extends ISubsystem {
    * Convenience type, used to provide (named) values for different LED colors.
    */
   public enum StockColor {
-    /** Green. */
+    /** White. */
+    White(255, 255, 255),
+    /** Black (off). */
+    Black(0, 0, 0),
+    /** Green. (Actually "lime green".) */
     Green(0, 255, 0),
     /** Red. */
     Red(255, 0, 0),
     /** Blue. */
     Blue(0, 0, 255),
-    /** White. */
-    White(255, 255, 255),
-    /** Black (off). */
-    Black(0, 0, 0);
+    /** Fuchsia. */
+    Fuchsia(255, 0, 255),
+    /** Aqua. */
+    Aqua(0, 255, 255),
+    /** Gray. */
+    Gray(128, 128, 128),
+    /** Maroon. */
+    Maroon(128, 0, 0),
+    /** Dark green. */
+    DarkGreen(0, 128, 0),
+    /** Navy. */
+    Navy(0, 0, 128),
+    /** Olive. */
+    Olive(128, 128, 0),
+    /** Purple. */
+    Purple(128, 0, 128),
+    /** Silver. */
+    Silver(0xC0, 0xC0, 0xC0),
+    /** Teal. */
+    Teal(0, 128, 128),
+    /** Orange. */
+    Orange(0xFF, 0x78, 0x02);
 
     /** RGB color values (ranging from 0-255 for each component). */
     public final int r, g, b;

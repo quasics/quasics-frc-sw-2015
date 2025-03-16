@@ -296,6 +296,12 @@ public class RobotConfigs {
       }
     }
 
+    /**
+     * Convenience constructor.
+     * 
+     * @param pwmPort     the PWM port driving the LED strip
+     * @param stripLength the length (in pixels/cells) of the LED strip
+     */
     public LightingConfig(int pwmPort, int stripLength) {
       this(pwmPort, stripLength, null);
     }

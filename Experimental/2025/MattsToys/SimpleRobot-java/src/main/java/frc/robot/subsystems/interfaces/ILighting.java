@@ -64,7 +64,15 @@ public interface ILighting extends ISubsystem {
     /** Teal. */
     Teal(0, 128, 128),
     /** Orange. */
-    Orange(0xFF, 0x78, 0x02);
+    Orange(0xFF, 0x78, 0x02),
+    /** Pink. (Specifically, "deep pink".) */
+    Pink(0xFF, 0x14, 0x93),
+    /** Gold. */
+    Gold(0xFF, 0xD7, 0x00),
+    /** Yellow. */
+    Yellow(0xFF, 0xFF, 0x00),
+    /** White smoke. */
+    WhiteSmoke(0xF5, 0xF5, 0xF5);
 
     /** RGB color values (ranging from 0-255 for each component). */
     public final int r, g, b;

@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Meters;
+import static frc.robot.Constants.FieldConstants.*;
 import static frc.robot.utils.SupportFunctions.isBetween;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -41,33 +41,6 @@ public class DriveTeamShootingSupport extends Command {
     m_candle = candle;
     addRequirements(m_candle.asSubsystem());
   }
-
-  /** Center line is ~8.77m from the blue alliance wall. */
-  final static Distance CENTER_LINE = Meters.of(8.77);
-
-  /** Starting line for blue alliance is ~7.58m from the blue alliance wall. */
-  final static Distance BLUE_STARTING_LINE = Meters.of(7.58);
-
-  /** Starting line for red alliance is ~9.96m from the red alliance wall. */
-  final static Distance RED_STARTING_LINE = Meters.of(9.96);
-
-  /** How far away from the starting line we can shoot. */
-  final static Distance FAR_RANGE = Meters.of(0.25);
-
-  /** How close in to the starting line we can shoot. */
-  final static Distance NEAR_RANGE = Meters.of(0.0);
-
-  /** Outer range for when we're on the blue alliance. */
-  final static Distance BLUE_FAR_RANGE = BLUE_STARTING_LINE.minus(FAR_RANGE);
-
-  /** Inner range for when we're on the blue alliance. */
-  final static Distance BLUE_NEAR_RANGE = BLUE_STARTING_LINE.minus(NEAR_RANGE);
-
-  /** Outer range for when we're on the red alliance. */
-  final static Distance RED_FAR_RANGE = RED_STARTING_LINE.plus(FAR_RANGE);
-
-  /** Inner range for when we're on the red alliance. */
-  final static Distance RED_NEAR_RANGE = RED_STARTING_LINE.plus(NEAR_RANGE);
 
   @Override
   public void execute() {

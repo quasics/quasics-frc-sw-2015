@@ -5,6 +5,7 @@
 package frc.robot.subsystems.live;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.utils.RevSupportFunctions.configureSparkMaxEncoderForDistance;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -52,7 +53,9 @@ public class Drivebase extends AbstractDrivebase {
   final private TrivialEncoder m_rightEncoder = new SparkMaxEncoderWrapper(m_rightLeader.getEncoder());
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
-  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
+  final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+      new Rotation2d(),
+      0, 0,
       new Pose2d());
 
   /** Drivetrain pose estimator. */
@@ -78,13 +81,8 @@ public class Drivebase extends AbstractDrivebase {
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
 
-    final double distanceScalingFactorForGearing = driveConfig.wheelRadius().div(driveConfig.gearing()).in(Meters);
-    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-
-    leftLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
-        .velocityConversionFactor(velocityScalingFactor);
-    rightLeaderConfig.encoder.positionConversionFactor(distanceScalingFactorForGearing)
-        .velocityConversionFactor(velocityScalingFactor);
+    configureSparkMaxEncoderForDistance(leftLeaderConfig, driveConfig.wheelRadius(), driveConfig.gearing());
+    configureSparkMaxEncoderForDistance(rightLeaderConfig, driveConfig.wheelRadius(), driveConfig.gearing());
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's

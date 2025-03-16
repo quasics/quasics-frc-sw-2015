@@ -5,6 +5,7 @@
 package frc.robot.subsystems.live;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.utils.RevSupportFunctions.configureForRadians;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -74,11 +75,8 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
 
     // Through-bore encoder configuration settings.
     final AbsoluteEncoderConfig throughBoreConfig = new AbsoluteEncoderConfig();
-    throughBoreConfig
-        .inverted(true)
-        // Convert from encoder units (revolutions/RPMs) to radians/radians per second.
-        .positionConversionFactor(2 * Math.PI)
-        .velocityConversionFactor(2 * Math.PI / 60);
+    throughBoreConfig.inverted(true);
+    configureForRadians(throughBoreConfig);
 
     // SparkMax configuration settings.
     final SparkMaxConfig controllerConfig = new SparkMaxConfig();

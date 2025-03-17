@@ -41,7 +41,6 @@ public class PulseKraken extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println(m_currentlyIntaking);
     if (m_currentlyIntaking)
       m_armRoller.setSpeed(m_speed);
     else

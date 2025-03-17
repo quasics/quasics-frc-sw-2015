@@ -91,12 +91,20 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
         PersistMode.kPersistParameters);
   }
 
-  /** @return current position in radians */
+  /**
+   * Gets the current angle of the arm.
+   * 
+   * @return current position in radians
+   */
   public Angle getPivotAngle() {
     return Radians.of(m_throughBoreEncoder.getPosition());
   }
 
-  /** @return current velocity in radians/sec */
+  /**
+   * Gets the current (rotational) velocity of the arm.
+   * 
+   * @return current velocity in radians/sec
+   */
   public AngularVelocity getPivotVelocity() {
     return RadiansPerSecond.of(m_throughBoreEncoder.getVelocity());
   }

@@ -28,7 +28,11 @@ public interface IVision extends ISubsystem {
   /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
-  /** @return the most recent pose estimates (based on camera data) */
+  /**
+   * Returns the most recent pose estimates, based on camera data.
+   * 
+   * @return the most recent pose estimates
+   */
   List<EstimatedRobotPose> getEstimatedPoses();
 
   /** Trivial implementation of IVision (e.g., if we don't have a camera). */

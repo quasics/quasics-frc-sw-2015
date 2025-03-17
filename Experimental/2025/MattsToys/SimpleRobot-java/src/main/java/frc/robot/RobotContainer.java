@@ -398,7 +398,9 @@ public class RobotContainer {
   }
 
   /**
-   * @return a command to be run in Auto mode, based on the configured option
+   * Returns the command to be run in Auto mode, based on the configured option.
+   * 
+   * @return a command to be run in Auto mode
    *
    * @see #AUTO_MODE_OPTION
    */

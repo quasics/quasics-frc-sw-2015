@@ -24,6 +24,7 @@ public class SysIdGenerator {
     Rotating
   }
 
+  /** If true, generates debugging output for logging to console. */
   final static boolean DUMP_SYSID_TO_CONSOLE = true;
 
   /**
@@ -93,6 +94,8 @@ public class SysIdGenerator {
   }
 
   /**
+   * Generates a "quasistatic" profiling command.
+   * 
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @param direction direction of movement being characterized
@@ -105,6 +108,8 @@ public class SysIdGenerator {
   }
 
   /**
+   * Generates a "dynamic" profiling command.
+   * 
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @param direction direction of movement being characterized

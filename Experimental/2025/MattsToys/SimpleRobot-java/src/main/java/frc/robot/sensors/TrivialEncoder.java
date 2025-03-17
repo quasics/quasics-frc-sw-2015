@@ -61,10 +61,18 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  *      pattern</a>
  */
 public interface TrivialEncoder {
-  /** @return the distance recorded by the encoder (in meters). */
+  /**
+   * Returns the distance recorded by the encoder.
+   * 
+   * @return the distance recorded by the encoder
+   */
   Distance getPosition();
 
-  /** @return the current speed reported by the encoder (in meters/sec). */
+  /**
+   * Returns the current speed reported by the encoder.
+   * 
+   * @return the current speed reported by the encoder
+   */
   LinearVelocity getVelocity();
 
   /** Resets the encoder's distance. */
@@ -139,6 +147,11 @@ public interface TrivialEncoder {
 
   /** A no-op implementation of the TrivialEncoder interface. */
   public static final class NullEncoder implements TrivialEncoder {
+    /** Constructor. */
+    public NullEncoder() {
+      System.out.println("INFO: allocating NullEncoder");
+    }
+
     @Override
     public Distance getPosition() {
       return Meters.of(0);

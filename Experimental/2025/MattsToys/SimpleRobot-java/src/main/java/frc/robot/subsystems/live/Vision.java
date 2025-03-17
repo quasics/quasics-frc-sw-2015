@@ -70,6 +70,7 @@ public class Vision extends SubsystemBase implements IVision {
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
 
+  /** Estimated poses (if any) from the most recent camera data. */
   private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
   /**
@@ -137,33 +138,6 @@ public class Vision extends SubsystemBase implements IVision {
     return m_cameraData;
   }
 
-  @Override
-  public void periodic() {
-    super.periodic();
-
-    // Where does the drive base think we are?
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
-    final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
-
-    // Update camera-specific estimators (and gather their results).
-    double lastTimestamp = 0;
-    List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
-    for (CameraData cameraData : m_cameraData) {
-      var estimate = updateEstimateForCamera(
-          cameraData.camera(), cameraData.estimator(),
-          drivePose);
-      if (!estimate.isEmpty()) {
-        var estimatedPose = estimate.get();
-        estimates.add(estimatedPose);
-        lastTimestamp = Math.max(estimatedPose.timestampSeconds, lastTimestamp);
-      }
-    }
-
-    // Save it, and publish it.
-    m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
-    publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
-  }
-
   /**
    * Applies any updates for the estimator on a camera, optionally integrating the
    * last/reference pose provided by the drivebase.
@@ -221,11 +195,6 @@ public class Vision extends SubsystemBase implements IVision {
     }
   }
 
-  @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
-    return m_latestEstimatedPoses;
-  }
-
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //
   // Functions exposed for simulation support.
@@ -233,18 +202,68 @@ public class Vision extends SubsystemBase implements IVision {
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * @return the list of CameraData (exposed as public only for use with
-   *         SimVisionWrapper)
+   * Returns the list of CameraData records being used by this object.
+   * 
+   * Note: this is exposed as public only for use with SimVisionWrapper.
+   * 
+   * @return a list of CameraData objects
    */
   public final List<CameraData> getCameraDataForSimulation() {
     return getCameraData();
   }
 
   /**
-   * @return the AprilTagFieldLayout (exposed as public only for use with
-   *         SimVisionWrapper)
+   * The AprilTagFieldLayout being used by this object.
+   * 
+   * Note: this is exposed as public only for use with SimVisionWrapper.
+   * 
+   * @return an AprilTagFieldLayout
    */
   public final AprilTagFieldLayout getFieldLayoutForSimulation() {
     return m_tagLayout;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // IVision functions.
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public List<EstimatedRobotPose> getEstimatedPoses() {
+    return m_latestEstimatedPoses;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // SubsystemBase functions.
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    // Where does the drive base think we are?
+    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
+    final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
+
+    // Update camera-specific estimators (and gather their results).
+    double lastTimestamp = 0;
+    List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
+    for (CameraData cameraData : m_cameraData) {
+      var estimate = updateEstimateForCamera(
+          cameraData.camera(), cameraData.estimator(),
+          drivePose);
+      if (!estimate.isEmpty()) {
+        var estimatedPose = estimate.get();
+        estimates.add(estimatedPose);
+        lastTimestamp = Math.max(estimatedPose.timestampSeconds, lastTimestamp);
+      }
+    }
+
+    // Save it, and publish it.
+    m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
+    publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
   }
 }

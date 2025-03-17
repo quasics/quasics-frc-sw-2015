@@ -43,6 +43,11 @@ public interface ICandle extends ISubsystem {
    * A "null object" implementation of the ICandle interface that does nothing.
    */
   public static class NullCandle implements ICandle {
+    /** Constructor. */
+    public NullCandle() {
+      System.out.println("INFO: allocating NullCandle");
+    }
+
     @Override
     public void setColor(int r, int g, int b) {
       // No-op

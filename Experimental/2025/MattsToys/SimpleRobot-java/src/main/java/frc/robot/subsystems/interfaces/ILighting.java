@@ -11,9 +11,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Basic interface to a lighting subsystem.
  */
 public interface ILighting extends ISubsystem {
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Primary functions/types
+  //
+  //////////////////////////////////////////////////////////////////////
+
   /** Interface to use in populating the data for each LED on the strip. */
   public interface ColorSupplier {
     /**
+     * Supplies a color for a given LED in a set.
+     * 
      * @param position the position of an LED on the strip
      * @return the color to be used for the LED
      */
@@ -27,6 +36,22 @@ public interface ILighting extends ISubsystem {
    *                 lights.
    */
   public void SetStripColor(ColorSupplier function);
+
+  /**
+   * Returns the number of LEDs controllable by this object's various functions.
+   * 
+   * Note that this may be different from the total number of LEDs in the strip,
+   * if the handling of a strip is divided between multiple objects.
+   * 
+   * @return the length of the sequence supported by this object
+   */
+  int getLength();
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Convenience functions/types
+  //
+  //////////////////////////////////////////////////////////////////////
 
   /**
    * Convenience type, used to provide (named) values for different LED colors.
@@ -89,14 +114,18 @@ public interface ILighting extends ISubsystem {
       this.b = b;
     }
 
-    /** @return the representation of this color used by WPILib. */
+    /**
+     * Converts the stock color to the "Color" class defined by WPILib.
+     * 
+     * @return a WPILib "Color" object equivalent to this stock color
+     */
     public Color toWpiColor() {
       return toWpiColor(1.0);
     }
 
     /**
-     * Converts the stock color to the representation used by WPILib, scaled to the
-     * specified intensity (brightness).
+     * Converts the stock color to the "Color" class defined by WPILib, scaled to
+     * the specified intensity (brightness).
      *
      * @param intensityPercent intensity to which the color should be scaled
      *                         (0.0-1.0)
@@ -212,7 +241,4 @@ public interface ILighting extends ISubsystem {
       return 0;
     }
   }
-
-  /** @return the length of the sequence supported by this object */
-  int getLength();
 }

@@ -50,6 +50,11 @@ public interface ISingleJointArm extends ISubsystem {
 
   /** Provides a trivial (no-op) version of the arm subsystem. */
   final static class NullArm extends SubsystemBase implements ISingleJointArm {
+    /** Constructor. */
+    public NullArm() {
+      System.out.println("INFO: allocating NullArm");
+    }
+
     @Override
     public void setTargetPosition(Angle targetPosition) {
       System.out.println("Null arm: setting target position to " + targetPosition);

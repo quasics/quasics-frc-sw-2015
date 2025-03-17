@@ -58,21 +58,27 @@ public interface IGyro {
   void calibrate();
 
   /**
-   * @return the heading of the robot; per WPILib convention, this is reported as
-   *         "clockwise positive" (CW+, or NED axis convention).
+   * Gets the current heading of the robot. Per WPILib convention, this is
+   * reported as "clockwise positive" (CW+, or NED axis convention).
+   * 
+   * @return the heading of the robot
    */
   Angle getAngle();
 
   /**
-   * @return the rate of rotation of the gyro; per WPILib convention, this is
-   *         reported as "clockwise positive" (CW+, or NED axis convention).
+   * Gets the current (rotational) velocity of the robot. Per WPILib convention,
+   * this is reported as "clockwise positive" (CW+, or NED axis convention).
+   * 
+   * @return the rate of rotation of the gyro
    */
   AngularVelocity getRate();
 
   /**
-   * @return the heading of the robot as a Rotation2d; per WPILib convention, this
-   *         is reported as "counter-clockwise positive" (CCW+, or NWU
-   *         axis convention), which is different from getAngle() and getRate().
+   * Gets the current heading of the robot. Per WPILib convention, this
+   * is reported as "counter-clockwise positive" (CCW+, or NWU axis convention),
+   * which is different from getAngle() and getRate().
+   * 
+   * @return the heading of the robot as a Rotation2d
    */
   Rotation2d getRotation2d();
 

@@ -36,9 +36,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * @see <a
  *      href=
  *      "https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/InternalButton.html">InternalButton</a>
+ * @see <a href=
+ *      "https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/NetworkButton.html">NetworkButton</a>
  */
 public interface ITriggerSensor {
-  /** @return true iff the sensor is in the "triggered" state */
+  /**
+   * Indicates if the sensor has been triggered.
+   * 
+   * @return true iff the sensor is in the "triggered" state
+   */
   boolean isTriggered();
 
   /**

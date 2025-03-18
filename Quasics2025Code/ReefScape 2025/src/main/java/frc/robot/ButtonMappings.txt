@@ -5,8 +5,8 @@ Driver controller (Logitech)
 * B - Switch drive
 * X - 
 * Y - Elevator Up
-* Left shoulder - Turtle mode (while held)
-* Right shoulder - Turbo mode (while held)
+* Left shoulder - Turbo mode (while held)
+* Right shoulder - Turtle mode (while held)
 * Left trigger - Intake algae
 * Right trigger - Pulse Intake
 * Start - Scoring position
@@ -14,7 +14,7 @@ Driver controller (Logitech)
 
 
 Operator controller (Xbox)
-* Left stick - Coral pickup
+* Left stick - Field algae pickup
 * Right stick - Processor PID
 * View button - Armpivot 95
 * Xbox button -

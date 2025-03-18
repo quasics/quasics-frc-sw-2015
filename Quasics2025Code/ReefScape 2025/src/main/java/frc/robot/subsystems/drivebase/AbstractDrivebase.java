@@ -48,7 +48,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3);
 
   // Max rotational speed is 1/2 rotations per second
-  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(8.42);
+  public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(6.5);
 
   protected static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);
 

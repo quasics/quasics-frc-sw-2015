@@ -405,7 +405,7 @@ public class RobotContainer {
      * // buttons on the controllers.
      */
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
-        .whileTrue(new RunKraken(m_armRoller, -0.3));
+        .whileTrue(new RunKraken(m_armRoller, -0.5));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))
         .whileTrue(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
 

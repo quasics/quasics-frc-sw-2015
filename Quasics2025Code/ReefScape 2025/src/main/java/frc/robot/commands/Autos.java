@@ -79,6 +79,10 @@ public final class Autos {
     return Commands.sequence(new WaitCommand(time), command);
   }
 
+  public static Command moveBackwards() {
+    return new DriveForDistance(m_drivebase, 0.2, Meters.of(-1));
+  }
+
   private static Command intakeThenExtake() {
     return Commands.sequence(new RunKrakenForTime(m_armRoller, -0.3, 0.2), new WaitCommand(0.1),
         new RunKrakenForTime(m_armRoller, 1.0, 0.5));
@@ -152,7 +156,7 @@ public final class Autos {
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, REEF_ALGAE_ANGLE), 0.0),
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kL2),
                 0.4),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.5), 2.3));
+            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.3, 0.6), 2.2));
       default:
         return new PrintCommand("grabAlgaeFromReef failed?");
     }
@@ -259,7 +263,7 @@ public final class Autos {
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("middlereeftoprocessor", false, true),
-            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
+            runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.7),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(21)), 0.3),
             Commands.sequence(
                 Commands.race(runCommandAfterTime(new PulseKraken(m_armRoller, -0.3, 0.3, 0.3), 0.0),
@@ -271,8 +275,9 @@ public final class Autos {
             runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 0.1),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(21)), 0.3),
             Commands.sequence(
+                new RunKrakenForTime(m_armRoller, -0.3, 1),
                 Commands.race(runCommandAfterTime(new PulseKraken(m_armRoller, -0.3, 0.3, 0.3), 0.0),
-                    new WaitCommand(3.5)),
+                    new WaitCommand(2.5)),
                 runCommandAfterTime(extakeInProcessor(), 1)));
       default:
         return new PrintCommand("scoreAlgaeFromReefIntoProcessor");
@@ -280,7 +285,7 @@ public final class Autos {
   }
 
   public static Command scoreAlgaeFromReefIntoBarge() {
-    return Commands.sequence(grabAlgaeFromReef(), scoreAtReefIntoBarge());
+    return Commands.sequence(grabAlgaeFromReef(), scoreAtReefIntoBarge(), moveBackwards());
   }
 
   public static Command scoreAlgaeFromReefIntoProcessor() {
@@ -288,7 +293,7 @@ public final class Autos {
   }
 
   public static Command scoreAlgaeFromFieldIntoBarge() {
-    return Commands.sequence(grabAlgaeFromField(), scoreAtFieldIntoBarge());
+    return Commands.sequence(grabAlgaeFromField(), scoreAtFieldIntoBarge(), moveBackwards());
   }
 
   public static Command scoreAlgaeFromFieldIntoProcessor() {

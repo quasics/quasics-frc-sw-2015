@@ -161,6 +161,8 @@ public final class Constants {
     }
 
     public static final int PIGEON2_CAN_ID = 1;
+
+    public static final int CANDLE_CAN_ID = 1;
   }
 
   public static class RobotSpeedScaling {

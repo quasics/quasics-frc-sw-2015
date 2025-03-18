@@ -31,6 +31,7 @@ import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
@@ -55,6 +56,8 @@ import choreo.auto.AutoFactory;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final boolean ENABLE_CANDLE = false;
+
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
   private final AbstractDrivebase m_drivebase = setupDriveBase();
@@ -63,6 +66,7 @@ public class RobotContainer {
   private final AbstractElevator m_elevator = setupElevator();
   @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
+  private final Candle m_candle = ENABLE_CANDLE ? new Candle() : null;
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
 
@@ -114,6 +118,10 @@ public class RobotContainer {
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
 
+    if (ENABLE_CANDLE) {
+      // Default to candle being green at startup.
+      m_candle.setColor(0, 255, 0);
+    }
   }
 
   private AbstractElevator setupElevator() {

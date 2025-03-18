@@ -120,7 +120,7 @@ public class RobotContainer {
 
     if (ENABLE_CANDLE) {
       // Default to candle being green at startup.
-      m_candle.setColor(0, 255, 0);
+      m_candle.setColor(Candle.GREEN);
     }
   }
 

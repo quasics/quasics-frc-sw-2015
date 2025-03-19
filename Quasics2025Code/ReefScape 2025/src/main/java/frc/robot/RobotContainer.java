@@ -30,6 +30,7 @@ import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
+import frc.robot.commands.StatusSensitiveCandle;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Vision;
@@ -387,6 +388,10 @@ public class RobotContainer {
         new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
     // m_armRoller.setDefaultCommand(new RunKraken(m_armRoller, -0.1));
     m_armRoller.setDefaultCommand(new PulseKraken(m_armRoller, -0.1, 0.2, 0.75));
+
+    if (m_candle != null) {
+      m_candle.setDefaultCommand(new StatusSensitiveCandle(m_candle));
+    }
   }
 
   private Command intakeThenExtake() {

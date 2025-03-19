@@ -108,6 +108,7 @@ public class SimDrivebase extends AbstractDrivebase {
 
     final var driveConfig = config.drive();
 
+    // TODO: Look at using DifferentialDrivetrainSim.createKitbotSim() method, instead.
     m_drivetrainSimulator = new DifferentialDrivetrainSim(
         m_drivetrainSystem,
         DCMotor.getCIM(2),

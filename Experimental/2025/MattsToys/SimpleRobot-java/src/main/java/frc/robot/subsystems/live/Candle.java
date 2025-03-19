@@ -8,8 +8,10 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
+import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
@@ -50,8 +52,73 @@ public class Candle extends SubsystemBase implements ICandle {
     m_candle.configAllSettings(configAll, 100);
   }
 
+  /**
+   * Sets the lighting intensity/brightness.
+   * 
+   * @param intensity new value of lighting brightness [0-1]
+   */
+  // TODO: Add this to the ICandle interface
+  public void setIntensity(double intensity) {
+    m_candle.configBrightnessScalar(intensity);
+  }
+
+  /**
+   * Set the state of the LEDs based on the overall state of the robot.
+   * 
+   * @see #periodic()
+   */
+  protected void updateLedsLocally() {
+    StockColor color = StockColor.Green;
+    double intensity = 1.0;
+
+    if (!DriverStation.isEnabled()) {
+      intensity = 0.2;
+    }
+
+    var optAlliance = DriverStation.getAlliance();
+    if (optAlliance.isEmpty()) {
+      color = StockColor.Green;
+    } else {
+      var alliance = optAlliance.get();
+      color = switch (alliance) {
+        case Blue -> StockColor.Blue;
+        case Red -> StockColor.Red;
+      };
+    }
+
+    // Override the color, based on other conditions
+    if (DriverStation.isEStopped()) {
+      color = StockColor.Orange;
+    }
+
+    setIntensity(intensity);
+    setColor(color);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // ICandle functions
+  //
+  //////////////////////////////////////////////////////////////////////
+
   @Override
   public void setColor(int r, int g, int b) {
     m_candle.setLEDs(r, g, b);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // SubsystemBase functions
+  //
+  //////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void periodic() {
+    super.periodic();
+
+    if (super.getCurrentCommand() == null) {
+      // No command is using us right now, so we'll do things for ourselves.
+      updateLedsLocally();
+    }
   }
 }

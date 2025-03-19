@@ -56,7 +56,7 @@ import choreo.auto.AutoFactory;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final boolean ENABLE_CANDLE = false;
+  private final boolean ENABLE_CANDLE = true;
 
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;

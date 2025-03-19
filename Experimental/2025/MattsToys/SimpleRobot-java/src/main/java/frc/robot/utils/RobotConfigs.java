@@ -10,6 +10,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 import frc.robot.subsystems.simulations.SimulationPorts;
 import java.util.Arrays;
 import java.util.Collections;
@@ -508,7 +509,7 @@ public class RobotConfigs {
             new PIDConfig(10.0, 0.00, 0.00),
             new ArmFeedForwardConfig(0.2, 0.25, 0)),
         NO_LIGHTING,
-        NO_CANDLE);
+        new CandleConfig(Constants.OtherCanIds.CANDLE_ID));
   }
 
   private static RobotConfig generateSallyConfig() {

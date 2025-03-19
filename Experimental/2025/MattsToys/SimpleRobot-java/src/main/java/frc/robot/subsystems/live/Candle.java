@@ -7,7 +7,6 @@ package frc.robot.subsystems.live;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -53,21 +52,10 @@ public class Candle extends SubsystemBase implements ICandle {
   }
 
   /**
-   * Sets the lighting intensity/brightness.
-   * 
-   * @param intensity new value of lighting brightness [0-1]
-   */
-  // TODO: Add this to the ICandle interface
-  public void setIntensity(double intensity) {
-    m_candle.configBrightnessScalar(intensity);
-  }
-
-  /**
    * Set the state of the LEDs based on the overall state of the robot.
-   * 
+   *
    * @see #periodic()
    */
-  // TODO: Consider making this a utility function someplace, for reuse.
   protected void updateLedsLocally() {
     StockColor color = StockColor.Green;
     double intensity = 1.0;
@@ -103,6 +91,11 @@ public class Candle extends SubsystemBase implements ICandle {
   //////////////////////////////////////////////////////////////////////
 
   @Override
+  public void setIntensity(double intensity) {
+    m_candle.configBrightnessScalar(intensity);
+  }
+
+  @Override
   public void setColor(int r, int g, int b) {
     m_candle.setLEDs(r, g, b);
   }
@@ -119,7 +112,7 @@ public class Candle extends SubsystemBase implements ICandle {
 
     if (super.getCurrentCommand() == null) {
       // No command is using us right now, so we'll do things for ourselves.
-      updateLedsLocally();
+      ICandle.updateCandleForAllianceAndStatus(this);
     }
   }
 }

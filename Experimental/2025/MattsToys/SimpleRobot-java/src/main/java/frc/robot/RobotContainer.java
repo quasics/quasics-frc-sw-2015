@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -48,15 +50,14 @@ import frc.robot.utils.DeadbandEnforcer;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.SysIdGenerator;
-
-import static edu.wpi.first.units.Units.Seconds;
-
 import java.util.function.Supplier;
 
 /**
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
+  public static final boolean CANDLE_SHOWS_SHOOTING_READY = false;
+
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
     /** Do nothing in auto mode. */
@@ -104,17 +105,17 @@ public class RobotContainer {
   static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
-      m_drivebase::followTrajectory,
-      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory =
+      new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose, m_drivebase::followTrajectory,
+          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+          m_drivebase.asSubsystem());
 
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
 
   /**
    * Constructor.
-   * 
+   *
    * @param robot the robot object to which this container is attached; used to
    *              (optionally) set up a periodic operation to update the battery
    *              data under simulation
@@ -126,7 +127,10 @@ public class RobotContainer {
     configurePeriodicOperations(robot);
 
     m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
-    m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
+
+    if (CANDLE_SHOWS_SHOOTING_READY) {
+      m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
+    }
   }
 
   private void configurePeriodicOperations(TimedRobot robot) {
@@ -184,10 +188,10 @@ public class RobotContainer {
     SmartDashboard.putData("Raise elevator (nowait)",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
 
-    SmartDashboard.putData("Elevator up",
-        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
-    SmartDashboard.putData("Elevator down",
-        new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.DOWN));
+    SmartDashboard.putData(
+        "Elevator up", new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
+    SmartDashboard.putData(
+        "Elevator down", new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.DOWN));
 
     // Trajectory commands
     SmartDashboard.putData("Demo path", generateCommandForChoreoTrajectory("Demo path"));
@@ -195,7 +199,8 @@ public class RobotContainer {
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer =
+        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -204,8 +209,12 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
+      forwardSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+      rotationSupplier = ()
+          ->
+          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
     } else {
       // Configure the simulated robot
       //
@@ -213,7 +222,7 @@ public class RobotContainer {
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
       forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> -deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -263,7 +272,8 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry) {
+  protected Command generateCommandForChoreoTrajectory(
+      String trajectoryName, boolean resetOdometry) {
     return generateCommandForChoreoTrajectory(trajectoryName, resetOdometry, true);
   }
 
@@ -283,16 +293,17 @@ public class RobotContainer {
    *      'Getting Started'</a>
    * @see <a href="https://choreo.autos/choreolib/auto-factory/">AutoFactory</a>
    */
-  protected Command generateCommandForChoreoTrajectory(String trajectoryName, boolean resetOdometry,
-      boolean stopAtEnd) {
+  protected Command generateCommandForChoreoTrajectory(
+      String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
     // Per https://choreo.autos/choreolib/auto-factory/
-    final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
+    final Command startCommand =
+        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
 
     // Don't let the drive base continue moving after the trajectory is done (e.g.,
     // due to PID settings being left in place).
-    final Command endCommand = (stopAtEnd ? new InstantCommand(() -> {
-      m_drivebase.stop();
-    }, m_drivebase.asSubsystem()) : Commands.none());
+    final Command endCommand =
+        (stopAtEnd ? new InstantCommand(() -> { m_drivebase.stop(); }, m_drivebase.asSubsystem())
+                   : Commands.none());
 
     // Generate the actual trajectory-following command.
     try {
@@ -399,7 +410,7 @@ public class RobotContainer {
 
   /**
    * Returns the command to be run in Auto mode, based on the configured option.
-   * 
+   *
    * @return a command to be run in Auto mode
    *
    * @see #AUTO_MODE_OPTION

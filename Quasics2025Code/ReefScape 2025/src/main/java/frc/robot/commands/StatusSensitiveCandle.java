@@ -9,17 +9,24 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Candle;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * Simple command to set the candle's color/intensity based on the alliance and
+ * whether or not the robot is enabled.
+ */
 public class StatusSensitiveCandle extends Command {
+  /** Subsystem being controlled. */
   private final Candle m_candle;
 
-  /** Creates a new StatusSensitiveCandle. */
+  /**
+   * Constructor.
+   * 
+   * @param candle the candle subsystem being controlled
+   */
   public StatusSensitiveCandle(Candle candle) {
     m_candle = candle;
     addRequirements(m_candle);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Color8Bit color = Candle.GREEN;

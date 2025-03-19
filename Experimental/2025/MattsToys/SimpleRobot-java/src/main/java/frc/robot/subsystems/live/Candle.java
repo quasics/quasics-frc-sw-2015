@@ -67,6 +67,7 @@ public class Candle extends SubsystemBase implements ICandle {
    * 
    * @see #periodic()
    */
+  // TODO: Consider making this a utility function someplace, for reuse.
   protected void updateLedsLocally() {
     StockColor color = StockColor.Green;
     double intensity = 1.0;

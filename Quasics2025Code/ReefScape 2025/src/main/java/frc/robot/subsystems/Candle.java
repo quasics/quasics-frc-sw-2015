@@ -16,6 +16,8 @@ import frc.robot.Constants;
 public class Candle extends SubsystemBase {
   static public final Color8Bit ORANGE = new Color8Bit(255, 165, 0);
   static public final Color8Bit GREEN = new Color8Bit(0, 255, 0);
+  static public final Color8Bit BLUE = new Color8Bit(0, 0, 255);
+  static public final Color8Bit RED = new Color8Bit(255, 0, 0);
 
   CANdle m_candle;
 
@@ -42,6 +44,10 @@ public class Candle extends SubsystemBase {
     configAll.v5Enabled = false;
 
     m_candle.configAllSettings(configAll, 100);
+  }
+
+  public void setIntensity(double intensity) {
+    m_candle.configBrightnessScalar(intensity);
   }
 
   public void setColor(Color8Bit color) {

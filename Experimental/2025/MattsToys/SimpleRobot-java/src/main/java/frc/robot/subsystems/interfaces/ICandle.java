@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+
 /**
  * Simple (trivial!) interface to a CTRE "CANdle" device that can be set to a
  * specific color.
@@ -20,6 +23,27 @@ public interface ICandle extends ISubsystem {
 
   /** The number of LEDs built into the CANdle hardware. */
   final int CANDLE_DEFAULT_LENGTH = 8;
+
+  /**
+   * Sets all of the LEDs on the CANdle to the specified WPI color.
+   * 
+   * @param color the new color for the CANdle's LEDs
+   */
+  default void setColor(Color color) {
+    setColor(
+        (int) (color.red * 255) & 0xFF,
+        (int) (color.green * 255) & 0xFF,
+        (int) (color.blue * 255) & 0xFF);
+  }
+
+  /**
+   * Sets all of the LEDs on the CANdle to the specified WPI 8-bit color.
+   * 
+   * @param color the new color for the CANdle's LEDs
+   */
+  default void setColor(Color8Bit color) {
+    setColor(color.red, color.green, color.blue);
+  }
 
   /**
    * Sets all of the LEDs on the CANdle to the specified color.

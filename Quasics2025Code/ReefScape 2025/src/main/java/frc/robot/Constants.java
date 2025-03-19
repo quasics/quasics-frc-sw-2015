@@ -166,9 +166,9 @@ public final class Constants {
   }
 
   public static class RobotSpeedScaling {
-    public static final double TURBO_MODE_SPEED_SCALING = 0.9;
+    public static final double TURBO_MODE_SPEED_SCALING = 1.5;
     public static final double TURTLE_MODE_SPEED_SCALING = 0.3;
-    public static final double NORMAL_MODE_SPEED_SCALING = 0.6;
+    public static final double NORMAL_MODE_SPEED_SCALING = 1.1;
   }
 
   public static class AutonomousStartingPositions {
@@ -190,7 +190,7 @@ public final class Constants {
     public static final String SCORE_ALGAE_REEF_PROCESSOR = "Score algae from reef into processor";
     public static final String SCORE_CORAL_GRAB_ALGAE = "Score coral then grab algae";
     public static final String SCORE_CORAL_SCORE_BARGE = "Score coral then score barge";
-    public static final String SCORE_CORAL_SCORE_PROCESSOR = "Score coral then score barge";
+    public static final String SCORE_CORAL_SCORE_PROCESSOR = "Score coral then score processor";
     public static final String GRAB_ALGAE_FROM_FIELD = "Grab algae from field";
     public static final String SCORE_ALGAE_FIELD_PROCESSOR = "Score algae from field into processor";
     public static final String SCORE_ALGAE_FIELD_BARGE = "Score algae from field into barge";

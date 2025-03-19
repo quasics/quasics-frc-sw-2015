@@ -58,12 +58,46 @@ public class Candle extends SubsystemBase {
     m_candle.setLEDs(r, g, b);
   }
 
+  /**
+   * Set the state of the LEDs based on the overall state of the robot.
+   * 
+   * @see #periodic()
+   */
+  private void updateLedsLocally() {
+    Color8Bit color = Candle.GREEN;
+    double intensity = 1.0;
+
+    if (!DriverStation.isEnabled()) {
+      intensity = 0.2;
+    }
+
+    var optAlliance = DriverStation.getAlliance();
+    if (optAlliance.isEmpty()) {
+      color = Candle.GREEN;
+    } else {
+      var alliance = optAlliance.get();
+      color = switch (alliance) {
+        case Blue -> Candle.BLUE;
+        case Red -> Candle.RED;
+      };
+    }
+
+    // Override the color, based on other conditions
+    if (DriverStation.isEStopped()) {
+      color = ORANGE;
+    }
+
+    setIntensity(intensity);
+    setColor(color);
+  }
+
   @Override
   public void periodic() {
-    if (DriverStation.isEStopped()) {
-      // Orange when e-stopped.
-      setColor(ORANGE);
+    super.periodic();
+
+    if (super.getCurrentCommand() == null) {
+      // No command is using us right now, so we'll do things for ourselves.
+      updateLedsLocally();
     }
-    // This method will be called once per scheduler run
   }
 }

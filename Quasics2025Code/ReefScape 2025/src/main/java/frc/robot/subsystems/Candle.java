@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdleConfiguration;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.ctre.phoenix.led.CANdle;
 
 public class Candle extends SubsystemBase {
   static public final Color8Bit ORANGE = new Color8Bit(255, 165, 0);
@@ -20,6 +22,26 @@ public class Candle extends SubsystemBase {
   /** Creates a new Candle. */
   public Candle() {
     m_candle = new CANdle(Constants.CanBusIds.CANDLE_CAN_ID);
+
+    CANdleConfiguration configAll = new CANdleConfiguration();
+
+    // LEDs built into the device are RGB
+    configAll.stripType = LEDStripType.RGB;
+
+    // Turn off Status LED when CANdle is actively being controlled
+    configAll.statusLedOffWhenActive = true;
+
+    // Leave LEDs on when Loss of Signal occurs
+    configAll.disableWhenLOS = false;
+
+    // Dim the LEDs to 50% brightness
+    configAll.brightnessScalar = 0.5;
+
+    // True to turn off the 5V rail. This turns off the on-board LEDs as well.
+    // (So if we're using the on-board LEDs, it should be false.)
+    configAll.v5Enabled = false;
+
+    m_candle.configAllSettings(configAll, 100);
   }
 
   public void setColor(Color8Bit color) {

@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * "Live" implementation of the ICandle interface.
+ */
 public class Candle extends SubsystemBase implements ICandle {
   static public final Color8Bit ORANGE = new Color8Bit(255, 165, 0);
   static public final Color8Bit GREEN = new Color8Bit(0, 255, 0);

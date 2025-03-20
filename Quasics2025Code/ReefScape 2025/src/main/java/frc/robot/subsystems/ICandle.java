@@ -6,9 +6,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-/** Add your docs here. */
+/** Generic interface to a CANdle, allowing both "real" and simulated support. */
 public interface ICandle {
-    void setIntensity(double value);
+  /**
+   * Sets the intensity/brightness (as a value from [0-1]).
+   * @param value new intensity value
+   */
+  void setIntensity(double value);
 
-    void setColor(Color8Bit color);
+  /**
+   * Sets the color shown on the LEDs.
+   * @param color new color value
+   */
+  void setColor(Color8Bit color);
 }

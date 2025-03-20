@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Implements the ICandle interface under simulation.  (Uses AddressableLED support to show up.)
+ */
 public class SimCandle extends SubsystemBase implements ICandle {
   double intensity = 1;
   Color8Bit color = new Color8Bit(255, 255, 255);
@@ -22,6 +25,7 @@ public class SimCandle extends SubsystemBase implements ICandle {
     updateLeds();
   }
 
+  /** Updates the LEDs (e.g., when color/intensity changes). */
   private void updateLeds() {
     Color8Bit useColor = new Color8Bit((int) (intensity * color.red),
         (int) (intensity * color.green), (int) (intensity * color.blue));

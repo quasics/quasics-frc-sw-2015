@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -47,8 +48,10 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.EventLogger;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import frc.robot.utils.StateChangeExecutor;
 import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
 
@@ -87,6 +90,8 @@ public class RobotContainer {
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+
+  final EventLogger m_eventLogger = new EventLogger.StringEventLogger();
 
   // Controllers
   //
@@ -140,6 +145,25 @@ public class RobotContainer {
       robot.addPeriodic(() -> {
         SimulationUxSupport.instance.updateBatteryVoltageFromDraws();
       }, COMMAND_CYCLE_PERIOD);
+    }
+
+    // Testing event logging: dump the contents whenever we're disabled
+    if (m_eventLogger != null && m_eventLogger instanceof EventLogger.StringEventLogger) {
+      final StateChangeExecutor executor = new StateChangeExecutor(
+          // State supplier
+          ()
+              -> { return DriverStation.isDisabled(); },
+          // Assumed initial state (i.e., assume we're disabled on startup)
+          true,
+          // Action
+          ()
+              -> {
+            System.err.println("Dumping event log:");
+            System.err.println(((EventLogger.StringEventLogger) m_eventLogger).getContents());
+          },
+          // Triggering mode
+          StateChangeExecutor.Mode.GoesTrue);
+      robot.addPeriodic(() -> { executor.check(); }, COMMAND_CYCLE_PERIOD);
     }
   }
 

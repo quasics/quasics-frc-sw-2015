@@ -17,17 +17,17 @@ public class SimCandle extends SubsystemBase implements ICandle {
 
   /** Creates a new SimCandle. */
   public SimCandle() {
+    led.setLength(buffer.getLength());
+    led.start();
   }
 
   @Override
   public void periodic() {
-    Color8Bit useColor = new Color8Bit(
-        (int) (intensity * color.red),
-        (int) (intensity * color.green),
-        (int) (intensity * color.blue));
+    Color8Bit useColor = new Color8Bit((int) (intensity * color.red),
+        (int) (intensity * color.green), (int) (intensity * color.blue));
 
     for (int i = 0; i < buffer.getLength(); ++i) {
-      buffer.setLED(0, useColor);
+      buffer.setLED(i, useColor);
     }
     led.setData(buffer);
   }
@@ -39,7 +39,6 @@ public class SimCandle extends SubsystemBase implements ICandle {
 
   @Override
   public void setColor(Color8Bit color) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setColor'");
+    this.color = color;
   }
 }

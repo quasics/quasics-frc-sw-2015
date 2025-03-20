@@ -2,26 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.candle;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * "Live" implementation of the ICandle interface.
+ * "Live" implementation of the AbstractCandle base type.
  */
-public class Candle extends SubsystemBase implements ICandle {
-  static public final Color8Bit ORANGE = new Color8Bit(255, 165, 0);
-  static public final Color8Bit GREEN = new Color8Bit(0, 255, 0);
-  static public final Color8Bit BLUE = new Color8Bit(0, 0, 255);
-  static public final Color8Bit RED = new Color8Bit(255, 0, 0);
-  static public final Color8Bit BLACK = new Color8Bit(0, 0, 0);
-
+public class Candle extends AbstractCandle {
   CANdle m_candle;
 
   /** Creates a new Candle. */

@@ -2,17 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.candle;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Implements the ICandle interface under simulation.  (Uses AddressableLED support to show up.)
+ * Implements the AbstractCandle base under simulation.  (Uses AddressableLED support to show up.)
  */
-public class SimCandle extends SubsystemBase implements ICandle {
+public class SimCandle extends AbstractCandle {
   double intensity = 1;
   Color8Bit color = new Color8Bit(255, 255, 255);
   final AddressableLED led = new AddressableLED(7);

@@ -9,9 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.Candle;
-import frc.robot.subsystems.ICandle;
+import frc.robot.subsystems.candle.AbstractCandle;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
 /* You should consider using the more terse Command factories API instead
@@ -19,18 +17,18 @@ import frc.robot.subsystems.drivebase.AbstractDrivebase;
  */
 public class DriveTeamCandle extends Command {
   /** Creates a new DriveTeamCandle. */
-  private final ICandle m_candle;
+  private final AbstractCandle m_candle;
   private final AbstractDrivebase m_drivebase;
 
   private final double CORRECT_X = 7.586;
   private final double ERROR = 0.1;
   private final double FIELD_LENGTH = 17.548;
 
-  public DriveTeamCandle(ICandle candle, AbstractDrivebase drivebase) {
+  public DriveTeamCandle(AbstractCandle candle, AbstractDrivebase drivebase) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_candle = candle;
     m_drivebase = drivebase;
-    addRequirements((Subsystem) m_candle);
+    addRequirements(m_candle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +36,7 @@ public class DriveTeamCandle extends Command {
   public void execute() {
     var optAlliance = DriverStation.getAlliance();
     DriverStation.Alliance alliance = optAlliance.orElse(null);
-    Color8Bit color = Candle.BLACK; // default to black
+    Color8Bit color = AbstractCandle.BLACK; // default to black
 
     Pose2d pose = m_drivebase.getPose();
     double currentX = pose.getX();
@@ -46,15 +44,15 @@ public class DriveTeamCandle extends Command {
 
     if (alliance == Alliance.Blue) {
       if (Math.abs(currentX - correctX) < ERROR) {
-        color = Candle.GREEN;
+        color = AbstractCandle.GREEN;
       } else {
-        color = Candle.BLUE;
+        color = AbstractCandle.BLUE;
       }
     } else if (alliance == Alliance.Red) {
       if (Math.abs(currentX - correctX) < ERROR) {
-        color = Candle.GREEN;
+        color = AbstractCandle.GREEN;
       } else {
-        color = Candle.RED;
+        color = AbstractCandle.RED;
       }
     }
 

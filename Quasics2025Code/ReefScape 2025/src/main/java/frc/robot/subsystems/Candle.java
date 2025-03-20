@@ -7,13 +7,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Candle extends SubsystemBase {
+public class Candle extends SubsystemBase implements ICandle {
   static public final Color8Bit ORANGE = new Color8Bit(255, 165, 0);
   static public final Color8Bit GREEN = new Color8Bit(0, 255, 0);
   static public final Color8Bit BLUE = new Color8Bit(0, 0, 255);
@@ -61,7 +60,7 @@ public class Candle extends SubsystemBase {
 
   /**
    * Set the state of the LEDs based on the overall state of the robot.
-   * 
+   *
    * @see #periodic()
    */
   private void updateLedsLocally() {

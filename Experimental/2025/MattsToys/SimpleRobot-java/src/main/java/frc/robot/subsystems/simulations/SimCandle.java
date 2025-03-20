@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.simulations;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -16,9 +17,11 @@ public class SimCandle extends SubsystemBase implements ICandle {
   /** The LED buffer view used to simulate the CANdle's functionality. */
   final AddressableLEDBufferView m_candleView;
 
+  private double m_intensity = 1.0;
+
   /**
    * Creates a new SimCandle.
-   * 
+   *
    * @param view the LED buffer view to use for the simulation
    */
   public SimCandle(AddressableLEDBufferView view) {
@@ -29,7 +32,20 @@ public class SimCandle extends SubsystemBase implements ICandle {
   @Override
   public void setColor(int r, int g, int b) {
     for (var i = 0; i < m_candleView.getLength(); i++) {
-      m_candleView.setRGB(i, r, g, b);
+      m_candleView.setRGB(
+          i, (int) (r * m_intensity), (int) (g * m_intensity), (int) (b * m_intensity));
+    }
+  }
+
+  @Override
+  public void setIntensity(double intensity) {
+    m_intensity = MathUtil.clamp(intensity, 0.0, 1.0);
+  }
+
+  @Override
+  public void periodic() {
+    if (this.getCurrentCommand() == null) {
+      ICandle.updateCandleForAllianceAndStatus(this);
     }
   }
 }

@@ -8,8 +8,23 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 
-/** Add your docs here. */
+/**
+ * Handle input from Logitech controllers in "Dualshock" mode, connected to the Driver Station.
+ *
+ * This class handles controller input that comes from the Driver Station. Each time a value is
+ * requested the most recent value is returned. There is a single class instance for each controller
+ * and the mapping of ports to hardware buttons depends on the code in the Driver Station.
+ *
+ * Note: these values assume that the switch on the bottom of the Logitech
+ * controller is in the "D" position, causing it to enumerate as a Logitech
+ * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and 3,
+ * respectively, and the left and right triggers show up as *buttons* 7 and
+ * 8.
+ *
+ * Note: this code is untested.
+ */
 public class LogitechDualshockController extends GenericHID {
+  /** Represents an axis on an LogitechF310Controller. */
   public enum Axis {
     /** Left joystick X axis. */
     LeftX(0),
@@ -32,6 +47,7 @@ public class LogitechDualshockController extends GenericHID {
     }
   }
 
+  /** Represents a button on an LogitechF310Controller. */
   public enum Button {
     /** ID for the "X" button. */
     X(1),

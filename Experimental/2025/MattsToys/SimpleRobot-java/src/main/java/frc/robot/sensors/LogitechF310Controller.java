@@ -8,8 +8,23 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 
-/** Add your docs here. */
+/**
+ * Handle input from Logitech controllers in "F310" mode, connected to the Driver Station.
+ *
+ * This class handles controller input that comes from the Driver Station. Each time a value is
+ * requested the most recent value is returned. There is a single class instance for each controller
+ * and the mapping of ports to hardware buttons depends on the code in the Driver Station.
+ *
+ * Note: these values assume that the switch on the bottom of the Logitech
+ * controller is in the "X" position, causing it to enumerate as a Logitech
+ * Gamepad F310. In this mode, the left and right triggers on the front
+ * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0], unlike
+ * regular joysticks.
+ *
+ * Note: this code is untested.
+ */
 public class LogitechF310Controller extends GenericHID {
+  /** Represents an axis on an LogitechF310Controller. */
   public enum Axis {
     /** Left joystick X axis. */
     LeftX(0),
@@ -24,8 +39,14 @@ public class LogitechF310Controller extends GenericHID {
     /** Left trigger X axis. (Provides 1/2 joystick range, [0..1].) */
     RightTrigger(3);
 
+    /** Axis ID/value. */
     public final int value;
 
+    /**
+     * Constructor.
+     *
+     * @param value axis ID/value
+     */
     Axis(int value) {
       this.value = value;
     }
@@ -36,6 +57,7 @@ public class LogitechF310Controller extends GenericHID {
     }
   }
 
+  /** Represents a button on an LogitechF310Controller. */
   public enum Button {
     /** ID for the "X" button. */
     X(3),
@@ -58,8 +80,14 @@ public class LogitechF310Controller extends GenericHID {
     /** ID for the button clicked by pressing on the right joystick. */
     RightStick(10);
 
+    /** Button ID/value. */
     public final int value;
 
+    /**
+     * Constructor.
+     *
+     * @param value button ID/value
+     */
     Button(int value) {
       this.value = value;
     }

@@ -19,10 +19,10 @@ public class SimCandle extends SubsystemBase implements ICandle {
   public SimCandle() {
     led.setLength(buffer.getLength());
     led.start();
+    updateLeds();
   }
 
-  @Override
-  public void periodic() {
+  private void updateLeds() {
     Color8Bit useColor = new Color8Bit((int) (intensity * color.red),
         (int) (intensity * color.green), (int) (intensity * color.blue));
 
@@ -35,10 +35,12 @@ public class SimCandle extends SubsystemBase implements ICandle {
   @Override
   public void setIntensity(double value) {
     this.intensity = value;
+    updateLeds();
   }
 
   @Override
   public void setColor(Color8Bit color) {
     this.color = color;
+    updateLeds();
   }
 }

@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -228,6 +229,11 @@ public class RobotContainer {
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
+    // Limiting the rate-of-change for velocity (i.e., acceleration) to constrain us from getting to
+    // 100% in anything less than 1/MAX_SLEW_RATE seconds.
+    SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+    SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+
     if (Robot.isReal()) {
       // Configure the real robot.
       //
@@ -235,18 +241,25 @@ public class RobotContainer {
       // negative values when we push forward.
       forwardSupplier = ()
           ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+          - forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
       rotationSupplier = ()
           ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      forwardSupplier = ()
+          -> forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(

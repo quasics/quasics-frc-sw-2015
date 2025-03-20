@@ -15,6 +15,11 @@ public abstract class AbstractCandle extends SubsystemBase {
   static public final Color8Bit RED = new Color8Bit(255, 0, 0);
   static public final Color8Bit BLACK = new Color8Bit(0, 0, 0);
 
+  /** Constructor. */
+  public AbstractCandle() {
+    setName("Candle");
+  }
+
   /**
    * Sets the intensity/brightness (as a value from [0-1]).
    * @param value new intensity value

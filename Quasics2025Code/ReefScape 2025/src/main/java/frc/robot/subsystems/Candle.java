@@ -18,6 +18,7 @@ public class Candle extends SubsystemBase {
   static public final Color8Bit GREEN = new Color8Bit(0, 255, 0);
   static public final Color8Bit BLUE = new Color8Bit(0, 0, 255);
   static public final Color8Bit RED = new Color8Bit(255, 0, 0);
+  static public final Color8Bit BLACK = new Color8Bit(0, 0, 0);
 
   CANdle m_candle;
 

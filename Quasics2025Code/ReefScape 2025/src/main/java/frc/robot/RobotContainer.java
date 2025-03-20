@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,6 +22,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmPivotToPositionOnController;
 import frc.robot.commands.ElevatorToPositionOnController;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveTeamCandle;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -32,6 +34,8 @@ import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Candle;
+import frc.robot.subsystems.ICandle;
+import frc.robot.subsystems.SimCandle;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
@@ -56,7 +60,7 @@ import choreo.auto.AutoFactory;
  * commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final boolean ENABLE_CANDLE = true;
+  private final static boolean ENABLE_CANDLE = true;
 
   // The robot's subsystems and commands are defined here...
   private boolean m_switchDrive = true;
@@ -66,7 +70,13 @@ public class RobotContainer {
   private final AbstractElevator m_elevator = setupElevator();
   @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
-  private final Candle m_candle = ENABLE_CANDLE ? new Candle() : null;
+  private final Candle m_candle = allocatCandle();
+
+  private static Candle allocatCandle() {
+    if (!ENABLE_CANDLE || RobotBase.isSimulation())
+      return null;
+    return new Candle();
+  }
 
   private static final RobotSettings.Robot SETTINGS_FOR_REAL_MODE = RobotSettings.Robot.Sally;
 
@@ -118,7 +128,7 @@ public class RobotContainer {
     ConfigureDriverButtons();
     ConfigureOperatorButtons();
 
-    if (ENABLE_CANDLE) {
+    if (m_candle != null) {
       // Default to candle being green at startup.
       m_candle.setColor(Candle.GREEN);
     }
@@ -383,6 +393,9 @@ public class RobotContainer {
           m_switchDrive = !m_switchDrive;
         }));
 
+    if (m_candle != null) {
+      ((SubsystemBase) m_candle).setDefaultCommand(new DriveTeamCandle(m_candle, m_drivebase));
+    }
     m_drivebase.setDefaultCommand(
         new ArcadeDrive((m_drivebase), m_arcadeDriveLeftStick, m_arcadeDriveRightStick));
     // m_armRoller.setDefaultCommand(new RunKraken(m_armRoller, -0.1));

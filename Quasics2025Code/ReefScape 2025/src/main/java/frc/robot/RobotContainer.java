@@ -5,6 +5,8 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -18,39 +20,36 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.ArmPivotToPositionOnController;
-import frc.robot.commands.ElevatorToPositionOnController;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DriveTeamCandle;
-import frc.robot.commands.MoveArmPivot;
-import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.Constants.AutonomousStartingPositions;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.ArmPivotToPositionOnController;
+import frc.robot.commands.Autos;
+import frc.robot.commands.DriveTeamCandle;
+import frc.robot.commands.ElevatorToPositionOnController;
+import frc.robot.commands.MoveArmPivot;
+import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
+import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.ICandle;
 import frc.robot.subsystems.SimCandle;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
 import frc.robot.subsystems.elevator.AbstractElevator;
+import frc.robot.subsystems.elevator.AbstractElevator.TargetPosition;
 import frc.robot.subsystems.elevator.RealElevator;
 import frc.robot.subsystems.elevator.SimulationElevator;
-import frc.robot.subsystems.elevator.AbstractElevator.TargetPosition;
 import frc.robot.utils.RobotSettings;
 import frc.robot.utils.SysIdGenerator;
-
 import java.util.function.Supplier;
-
-import choreo.auto.AutoFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -68,13 +67,15 @@ public class RobotContainer {
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
-  @SuppressWarnings("unused")
-  private final Vision m_vision = new Vision();
-  private final Candle m_candle = allocatCandle();
+  @SuppressWarnings("unused") private final Vision m_vision = new Vision();
+  private final ICandle m_candle = allocateCandle();
 
-  private static Candle allocatCandle() {
-    if (!ENABLE_CANDLE || RobotBase.isSimulation())
+  private static ICandle allocateCandle() {
+    if (!ENABLE_CANDLE) {
       return null;
+    } else if (RobotBase.isSimulation()) {
+      return new SimCandle();
+    }
     return new Candle();
   }
 
@@ -91,16 +92,18 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_operatorController =
+      new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
-  private final AutoFactory m_autoFactory = new AutoFactory(
-      m_drivebase::getPose, // A function that returns the current robot pose
-      m_drivebase::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
-      true, // flip path when on red side
-      m_drivebase // The drive subsystem
-  );
+  private final AutoFactory m_autoFactory =
+      new AutoFactory(m_drivebase::getPose, // A function that returns the current robot pose
+          m_drivebase::resetOdometry, // A function that resets the current robot pose to the
+                                      // provided Pose2d
+          m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+          true, // flip path when on red side
+          m_drivebase // The drive subsystem
+      );
 
   Trigger switchDriveTrigger;
 
@@ -119,7 +122,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     // Configure the trigger bindings
     configureBindings();
     addButtonsToSmartDashboard();
@@ -149,11 +151,15 @@ public class RobotContainer {
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
-      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis);
-      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis);
+      m_arcadeDriveLeftStick = ()
+          ->
+          - m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis);
+      m_arcadeDriveRightStick = ()
+          ->
+          - m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis);
     } else {
-      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(0);
-      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(1);
+      m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
+      m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
       drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
     }
     return drivebase;
@@ -175,25 +181,25 @@ public class RobotContainer {
      * SmartDashboard.putData(
      * "Reset odometry", new InstantCommand(() -> m_drivebase.resetOdometry(new
      * Pose2d())));
-     * 
+     *
      * SmartDashboard.putData("Reset odometry test",
      * new InstantCommand(
      * () -> m_drivebase.resetOdometry(new Pose2d(Meters.of(3), Meters.of(3), new
      * Rotation2d(Degrees.of(180))))));
-     * 
+     *
      * SmartDashboard.putData(
      * "Arm Pivot Up", new InstantCommand(() -> m_armPivot.setArmPivotSpeed(-0.1)));
      * SmartDashboard.putData(
      * "Arm Pivot Down", new InstantCommand(() ->
      * m_armPivot.setArmPivotSpeed(0.1)));
-     * 
+     *
      * SmartDashboard.putData("Arm Pivot PID Up", new
      * MoveArmPivotToPosition(m_armPivot, Degrees.of(95)));
      * SmartDashboard.putData("Arm Pivot PID Down", new
      * MoveArmPivotToPosition(m_armPivot, Degrees.of(1)));
      * SmartDashboard.putData("Arm Pivot 45", new MoveArmPivotToPosition(m_armPivot,
      * Degrees.of(45)));
-     * 
+     *
      * SmartDashboard.putData("Stop arm pivot", new InstantCommand(() ->
      * m_armPivot.stop()));
      */
@@ -201,18 +207,15 @@ public class RobotContainer {
         "Reset elevator encoders", new InstantCommand(() -> m_elevator.resetEncoders()));
 
     SmartDashboard.putData("Elevator to top",
-        new MoveElevatorToPosition(m_elevator,
-            AbstractElevator.TargetPosition.kTop));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop));
     SmartDashboard.putData("Elevator to L2",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL2));
     SmartDashboard.putData("Elevator to L1",
         new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kL1));
     SmartDashboard.putData("Elevator to bottom",
-        new MoveElevatorToPosition(m_elevator,
-            AbstractElevator.TargetPosition.kBottom));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kBottom));
     SmartDashboard.putData("Elevator to DC",
-        new MoveElevatorToPosition(m_elevator,
-            AbstractElevator.TargetPosition.kDontCare));
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kDontCare));
 
     SmartDashboard.putData("Test path", testTrajectory("testPath"));
 
@@ -223,9 +226,7 @@ public class RobotContainer {
   }
 
   private Command testTrajectory(String name) {
-    return Commands.sequence(
-        m_autoFactory.resetOdometry(name),
-        m_autoFactory.resetOdometry(name),
+    return Commands.sequence(m_autoFactory.resetOdometry(name), m_autoFactory.resetOdometry(name),
         m_autoFactory.trajectoryCmd(name));
   }
 
@@ -270,12 +271,11 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
     SmartDashboard.putData("SysID(rot): Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
-
   }
 
   private void addOverallSelectorToSmartDashboard() {
-    m_autonomousOperations.setDefaultOption(AutonomousSelectedOperation.DO_NOTHING,
-        AutonomousSelectedOperation.DO_NOTHING);
+    m_autonomousOperations.setDefaultOption(
+        AutonomousSelectedOperation.DO_NOTHING, AutonomousSelectedOperation.DO_NOTHING);
     m_autonomousOperations.addOption(
         AutonomousSelectedOperation.GTFO, AutonomousSelectedOperation.GTFO);
     m_autonomousOperations.addOption(
@@ -286,20 +286,15 @@ public class RobotContainer {
         AutonomousSelectedOperation.GRAB_ALGAE_FROM_REEF);
     m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_CORAL_IN_REEF,
         AutonomousSelectedOperation.SCORE_CORAL_IN_REEF);
-    m_autonomousOperations.addOption(
-        AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE,
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_BARGE);
-    m_autonomousOperations.addOption(
-        AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR,
         AutonomousSelectedOperation.SCORE_ALGAE_REEF_PROCESSOR);
-    m_autonomousOperations.addOption(
-        AutonomousSelectedOperation.SCORE_CORAL_GRAB_ALGAE,
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_CORAL_GRAB_ALGAE,
         AutonomousSelectedOperation.SCORE_CORAL_GRAB_ALGAE);
-    m_autonomousOperations.addOption(
-        AutonomousSelectedOperation.SCORE_CORAL_SCORE_BARGE,
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_CORAL_SCORE_BARGE,
         AutonomousSelectedOperation.SCORE_CORAL_SCORE_BARGE);
-    m_autonomousOperations.addOption(
-        AutonomousSelectedOperation.SCORE_CORAL_SCORE_PROCESSOR,
+    m_autonomousOperations.addOption(AutonomousSelectedOperation.SCORE_CORAL_SCORE_PROCESSOR,
         AutonomousSelectedOperation.SCORE_CORAL_SCORE_PROCESSOR);
     m_autonomousOperations.addOption(AutonomousSelectedOperation.GRAB_ALGAE_FROM_FIELD,
         AutonomousSelectedOperation.GRAB_ALGAE_FROM_FIELD);
@@ -312,15 +307,15 @@ public class RobotContainer {
   }
 
   private void addAutonomousStartingPositionsToSmartDashboard() {
-    m_positionOptions.setDefaultOption(AutonomousStartingPositions.VERY_TOP,
-        AutonomousStartingPositions.VERY_TOP);
+    m_positionOptions.setDefaultOption(
+        AutonomousStartingPositions.VERY_TOP, AutonomousStartingPositions.VERY_TOP);
     m_positionOptions.addOption(AutonomousStartingPositions.TOP, AutonomousStartingPositions.TOP);
-    m_positionOptions.addOption(AutonomousStartingPositions.MIDDLE,
-        AutonomousStartingPositions.MIDDLE);
-    m_positionOptions.addOption(AutonomousStartingPositions.BOTTOM,
-        AutonomousStartingPositions.BOTTOM);
-    m_positionOptions.addOption(AutonomousStartingPositions.VERY_BOTTOM,
-        AutonomousStartingPositions.VERY_BOTTOM);
+    m_positionOptions.addOption(
+        AutonomousStartingPositions.MIDDLE, AutonomousStartingPositions.MIDDLE);
+    m_positionOptions.addOption(
+        AutonomousStartingPositions.BOTTOM, AutonomousStartingPositions.BOTTOM);
+    m_positionOptions.addOption(
+        AutonomousStartingPositions.VERY_BOTTOM, AutonomousStartingPositions.VERY_BOTTOM);
 
     SmartDashboard.putData("Starting position", m_positionOptions);
   }
@@ -388,10 +383,9 @@ public class RobotContainer {
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-        .onTrue(new InstantCommand(() -> {
-          m_switchDrive = !m_switchDrive;
-        }));
+    switchDriveTrigger =
+        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
 
     if (m_candle != null) {
       ((SubsystemBase) m_candle).setDefaultCommand(new DriveTeamCandle(m_candle, m_drivebase));
@@ -408,7 +402,8 @@ public class RobotContainer {
   }
 
   private Command shootWithElevator() {
-    return Commands.parallel(new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop),
+    return Commands.parallel(
+        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.kTop),
         Commands.sequence(new WaitCommand(1.5), intakeThenExtake()));
   }
 
@@ -438,19 +433,16 @@ public class RobotContainer {
      * .whileTrue(new RunElevator(m_elevator, 0.3)); // DOWN
      */
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.YButton))
-        .whileTrue(new ElevatorToPositionOnController(m_elevator,
-            TargetPosition.kTop));
+        .whileTrue(new ElevatorToPositionOnController(m_elevator, TargetPosition.kTop));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.AButton))
-        .whileTrue(new ElevatorToPositionOnController(m_elevator,
-            TargetPosition.kBottom));
+        .whileTrue(new ElevatorToPositionOnController(m_elevator, TargetPosition.kBottom));
 
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.StartButton))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator,
-            Degrees.of(95), TargetPosition.kTop));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(
+            m_armPivot, m_elevator, Degrees.of(95), TargetPosition.kTop));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BackButton))
-        .whileTrue(
-            new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(0),
-                TargetPosition.kBottom));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(
+            m_armPivot, m_elevator, Degrees.of(0), TargetPosition.kBottom));
   }
 
   private void ConfigureOperatorButtons() {
@@ -468,23 +460,25 @@ public class RobotContainer {
 
     // PID controls (both armpivot and elevator)
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL1));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(
+            m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL1));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kY.value))
-        .whileTrue(new MoveArmPivotAndElevatorToPosition(m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL2));
+        .whileTrue(new MoveArmPivotAndElevatorToPosition(
+            m_armPivot, m_elevator, Degrees.of(33), TargetPosition.kL2));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kBack.value))
         .whileTrue(new ArmPivotToPositionOnController(m_armPivot, Degrees.of(95)));
 
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftStick.value))
-        .whileTrue(
-            new ArmPivotToPositionOnController(m_armPivot, Degrees.of(25)));
+        .whileTrue(new ArmPivotToPositionOnController(m_armPivot, Degrees.of(25)));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightStick.value))
-        .whileTrue(
-            new ArmPivotToPositionOnController(m_armPivot, Degrees.of(21)));
+        .whileTrue(new ArmPivotToPositionOnController(m_armPivot, Degrees.of(21)));
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
-    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
+    final boolean isTurbo =
+        m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurtle =
+        m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;
@@ -505,8 +499,7 @@ public class RobotContainer {
     String autonomousOperation = m_autonomousOperations.getSelected();
     String positionOption = m_positionOptions.getSelected();
 
-    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot, m_armRoller,
-        autonomousOperation,
-        positionOption);
+    return Autos.getAutonomousCommand(m_autoFactory, m_drivebase, m_elevator, m_armPivot,
+        m_armRoller, autonomousOperation, positionOption);
   }
 }

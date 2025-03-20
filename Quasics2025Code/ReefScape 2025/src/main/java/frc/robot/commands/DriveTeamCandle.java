@@ -9,26 +9,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.ICandle;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+ */
 public class DriveTeamCandle extends Command {
   /** Creates a new DriveTeamCandle. */
-  private final Candle m_candle;
+  private final ICandle m_candle;
   private final AbstractDrivebase m_drivebase;
 
   private final double CORRECT_X = 7.586;
   private final double ERROR = 0.1;
   private final double FIELD_LENGTH = 17.548;
 
-  public DriveTeamCandle(Candle candle, AbstractDrivebase drivebase) {
+  public DriveTeamCandle(ICandle candle, AbstractDrivebase drivebase) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_candle = candle;
     m_drivebase = drivebase;
-    addRequirements(m_candle);
+    addRequirements((Subsystem) m_candle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

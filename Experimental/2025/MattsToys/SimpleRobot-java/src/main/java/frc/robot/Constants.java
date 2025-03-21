@@ -55,6 +55,8 @@ public class Constants {
     public static final int ELEVATOR_LIMIT_SWITCH_UP = 0;
     /** ID for the elevator's "bottom" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_DOWN = 1;
+
+    public static final int LAST_NONSIM_DIO = ELEVATOR_LIMIT_SWITCH_DOWN;
   }
 
   /**

@@ -26,6 +26,7 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
+import frc.robot.utils.EventLogger;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.StateChangeExecutor;
 
@@ -106,7 +107,10 @@ public class SimulatedElevator extends AbstractElevator {
       true,
       // Action to take on triggering change
       ()
-          -> { this.resetEncoder_impl(); },
+          -> {
+        EventLogger.instance().log(NAME, "Bottom limit triggered, resetting encoder");
+        this.resetEncoder_impl();
+      },
       // Triggering mode
       StateChangeExecutor.Mode.GoesTrue);
 

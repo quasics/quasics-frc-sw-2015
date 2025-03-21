@@ -13,7 +13,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -127,6 +126,8 @@ public class RobotContainer {
    *              data under simulation
    */
   public RobotContainer(TimedRobot robot) {
+    EventLogger.setDefaultLogger(m_eventLogger);
+
     configureArcadeDrive();
     configureDashboard();
     configureBindings();

@@ -20,11 +20,14 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import frc.robot.Constants.DioIds;
+import frc.robot.sensors.ITriggerSensor;
 import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import frc.robot.utils.StateChangeExecutor;
 
 /**
  * Completes the AbstractElevator class definition for the purpose of
@@ -41,14 +44,18 @@ public class SimulatedElevator extends AbstractElevator {
 
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
-  private static final double kGearing = 20.0; // Arbitrary (but needs to be enough for the simulated physics to work)
+  private static final double kGearing =
+      20.0; // Arbitrary (but needs to be enough for the simulated physics to work)
   private static final Distance kDrumRadius = Inches.of(1);
-  private static final double kEncoderMetersPerPulse = 2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
+  private static final double kEncoderMetersPerPulse =
+      2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
-  private static final Distance kMinSimulationHeight = MIN_SAFE_HEIGHT.minus(Meters.of(-0.1)); // arbitrary: should be
-                                                                                               // <= min desired
-  private static final Distance kMaxSimulationHeight = MAX_SAFE_HEIGHT.plus(Meters.of(0.25)); // arbitrary: should be >=
-                                                                                              // max desired
+  private static final Distance kMinSimulationHeight =
+      MIN_SAFE_HEIGHT.minus(Meters.of(-0.1)); // arbitrary: should be
+                                              // <= min desired
+  private static final Distance kMaxSimulationHeight =
+      MAX_SAFE_HEIGHT.plus(Meters.of(0.25)); // arbitrary: should be >=
+                                             // max desired
   private static final Distance kStartingSimulationHeight = MIN_SAFE_HEIGHT;
 
   /** If true, enable gravity in the simulation calculations. */
@@ -58,7 +65,8 @@ public class SimulatedElevator extends AbstractElevator {
   private final DCMotor m_gearing = DCMotor.getNEO(2);
 
   /** Motor controller driving the elevator. */
-  private final SparkMax m_motor = new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
+  private final SparkMax m_motor =
+      new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
 
   /** Encoder tracking the current position of the elevator. */
   private final RelativeEncoder m_encoder = m_motor.getEncoder();
@@ -72,24 +80,46 @@ public class SimulatedElevator extends AbstractElevator {
   /** Feed forward for the elevator. */
   private final ElevatorFeedforward m_feedforward;
 
+  /**
+   * Value returned from the limits switches when they are activated by the
+   * elevator reaching them. (Per Ethan, they are currently "normally closed",
+   * and will go open when they are triggered.)
+   */
+  final static boolean LIMIT_SWITCH_ACTIVATED_VALUE = true;
+
+  /** Limit switch at the top point of the elevator's path. */
+  private final ITriggerSensor m_topLimitSwitch = ITriggerSensor.createForDigitalInput(
+      DioIds.ELEVATOR_LIMIT_SWITCH_UP, LIMIT_SWITCH_ACTIVATED_VALUE);
+
+  /** Limit switch at the bottom point of the elevator's path. */
+  private final ITriggerSensor m_bottomLimitSwitch = ITriggerSensor.createForDigitalInput(
+      DioIds.ELEVATOR_LIMIT_SWITCH_DOWN, LIMIT_SWITCH_ACTIVATED_VALUE);
+
+  /** Controls if we will reset the encoder when the bottom limit switch is triggered. */
+  private static final boolean RESET_POSITION_AT_BOTTOM = true;
+
+  private StateChangeExecutor m_bottomChangeExecutor = new StateChangeExecutor(
+      // Test for state
+      ()
+          -> this.atBottom(),
+      // Assume we're starting at the bottom
+      true,
+      // Action to take on triggering change
+      ()
+          -> { this.resetEncoder_impl(); },
+      // Triggering mode
+      StateChangeExecutor.Mode.GoesTrue);
+
   //////////////////////////////////////////////////////////////////////////////
   // Simulation support data/objects
 
   /** Simulation driver for the motor. */
-  private final SparkMaxSim m_motorSim = new SparkMaxSim(
-      m_motor,
-      DCMotor.getNEO(1));
+  private final SparkMaxSim m_motorSim = new SparkMaxSim(m_motor, DCMotor.getNEO(1));
 
   /** Physics simulation control. */
-  private final ElevatorSim m_sim = new ElevatorSim(
-      m_gearing,
-      kGearing,
-      kCarriageMass,
-      kDrumRadius.in(Meters),
-      kMinSimulationHeight.in(Meters),
-      kMaxSimulationHeight.in(Meters),
-      ENABLE_GRAVITY,
-      kStartingSimulationHeight.in(Meters));
+  private final ElevatorSim m_sim = new ElevatorSim(m_gearing, kGearing, kCarriageMass,
+      kDrumRadius.in(Meters), kMinSimulationHeight.in(Meters), kMaxSimulationHeight.in(Meters),
+      ENABLE_GRAVITY, kStartingSimulationHeight.in(Meters));
 
   /**
    * Creates a new SimulatedElevator.
@@ -100,17 +130,11 @@ public class SimulatedElevator extends AbstractElevator {
     var pidConfig = robotConfig.elevator().pid();
     var ffConfig = robotConfig.elevator().feedForward();
 
-    m_pid = new PIDController(
-        pidConfig.kP(),
-        pidConfig.kI(),
-        pidConfig.kD());
+    m_pid = new PIDController(pidConfig.kP(), pidConfig.kI(), pidConfig.kD());
     m_pid.setTolerance(0.02); // within 2cm is fine
 
     m_feedforward = new ElevatorFeedforward(
-        ffConfig.kS().in(Volts),
-        ffConfig.kG().in(Volts),
-        ffConfig.kV(),
-        ffConfig.kA());
+        ffConfig.kS().in(Volts), ffConfig.kG().in(Volts), ffConfig.kV(), ffConfig.kA());
 
     // Configure the motor.
     var motorConfig = new SparkMaxConfig();
@@ -122,8 +146,15 @@ public class SimulatedElevator extends AbstractElevator {
 
     // Simulation rendering setup.
     SimulationUxSupport.instance.updateElevator(
-        Meters.of(m_sim.getPositionMeters()),
-        DeviceStatus.Manual);
+        Meters.of(m_sim.getPositionMeters()), DeviceStatus.Manual);
+  }
+
+  protected boolean atTop() {
+    return m_topLimitSwitch.isTriggered();
+  }
+
+  protected boolean atBottom() {
+    return m_bottomLimitSwitch.isTriggered();
   }
 
   /** Updates our simulation of what our subsystem is doing. */
@@ -159,7 +190,7 @@ public class SimulatedElevator extends AbstractElevator {
 
   /**
    * Maps a logical target position to an actual height of the elevator.
-   * 
+   *
    * @param targetPosition the logical position to which the elevator should move
    * @return the height to which the elevator should move
    */
@@ -194,6 +225,10 @@ public class SimulatedElevator extends AbstractElevator {
   public void periodic() {
     super.periodic();
 
+    if (RESET_POSITION_AT_BOTTOM) {
+      m_bottomChangeExecutor.check();
+    }
+
     // Update the visualization of the climber positions.
     //
     // This might be done in simulationPeriodic(), since this class *is* purely
@@ -201,8 +236,8 @@ public class SimulatedElevator extends AbstractElevator {
     // that this same thing could be done to provide a rendering of the data for a
     // *real* elevator within the SmartDashboard at a match (e.g., as an aid to the
     // drive team).
-    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
-        DeviceStatus.Manual);
+    SimulationUxSupport.instance.updateElevator(
+        Meters.of(m_sim.getPositionMeters()), DeviceStatus.Manual);
 
     DeviceStatus status = null;
     if (m_target == TargetPosition.DontCare) {
@@ -212,8 +247,7 @@ public class SimulatedElevator extends AbstractElevator {
     } else {
       status = DeviceStatus.Manual;
     }
-    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()),
-        status);
+    SimulationUxSupport.instance.updateElevator(Meters.of(m_sim.getPositionMeters()), status);
   }
 
   /** Advance the simulation. */
@@ -234,7 +268,8 @@ public class SimulatedElevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
+    var voltage = calculateMotorVoltage(
+        getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
     m_motor.setVoltage(voltage);
   }
 

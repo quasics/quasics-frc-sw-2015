@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.simulations;
 
+import frc.robot.Constants;
+
 /**
  * Defines the ports used for the simulation of the robot.
  */
@@ -27,11 +29,11 @@ public interface SimulationPorts {
   public final int GYRO_CHANNEL = 0;
 
   /** "A" port used for the encoder on the left side of the drivebase. */
-  public final int LEFT_DRIVE_ENCODER_PORT_A = 0;
+  public final int LEFT_DRIVE_ENCODER_PORT_A = Constants.DioIds.LAST_NONSIM_DIO + 1;
   /** "B" port used for the encoder on the left side of the drivebase. */
-  public final int LEFT_DRIVE_ENCODER_PORT_B = 1;
+  public final int LEFT_DRIVE_ENCODER_PORT_B = LEFT_DRIVE_ENCODER_PORT_A + 1;
   /** "A" port used for the encoder on the right side of the drivebase. */
-  public final int RIGHT_DRIVE_ENCODER_PORT_A = 2;
+  public final int RIGHT_DRIVE_ENCODER_PORT_A = LEFT_DRIVE_ENCODER_PORT_B + 1;
   /** "B" port used for the encoder on the right side of the drivebase. */
-  public final int RIGHT_DRIVE_ENCODER_PORT_B = 3;
+  public final int RIGHT_DRIVE_ENCODER_PORT_B = RIGHT_DRIVE_ENCODER_PORT_A + 1;
 }

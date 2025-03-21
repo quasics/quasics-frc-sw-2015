@@ -14,29 +14,56 @@ import java.time.Instant;
 
 /** Add your docs here. */
 public abstract class EventLogger {
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Static stuff
+  //
+  //////////////////////////////////////////////////////////////////////
+
+  /** A default logger instance, for convenient access. */
+  private static EventLogger m_defaultLogger = new TextLogger(new NullWriter());
+
+  /**
+   * Returns the default logger.
+   * @return the default logger
+   */
+  public static synchronized EventLogger instance() {
+    return m_defaultLogger;
+  }
+
+  /**
+   * Sets a new default logger (which will be a no-op logger, if the provided value is null).
+   *
+   * @param logger new default logger; if null, a no-op logger will be instantiated
+   * @return the new default logger
+   */
+  public static synchronized EventLogger setDefaultLogger(EventLogger logger) {
+    if (logger == null) {
+      logger = new TextLogger(new NullWriter());
+    }
+    m_defaultLogger = logger;
+    m_defaultLogger.logText("New default logger registered");
+
+    return m_defaultLogger;
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Instance "stuff"
+  //
+  //////////////////////////////////////////////////////////////////////
+
+  /** Writer used by this logger. */
   final protected Writer m_output;
 
+  /**
+   * Constructor.
+   *
+   * @param output destination for logged data
+   */
   protected EventLogger(Writer output) {
     m_output = output;
   }
-
-  /** A convenience object, which will handle all writing as no-ops. */
-  public static final Writer NULL_WRITER = new Writer() {
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
-      // No-op
-    }
-
-    @Override
-    public void flush() throws IOException {
-      // No-op
-    }
-
-    @Override
-    public void close() throws IOException {
-      // No-op
-    }
-  };
 
   //////////////////////////////////////////////////////////////////////
   //
@@ -50,7 +77,7 @@ public abstract class EventLogger {
 
   //////////////////////////////////////////////////////////////////////
   //
-  // Implementations
+  // Implementation of the class
   //
   //////////////////////////////////////////////////////////////////////
 
@@ -75,6 +102,7 @@ public abstract class EventLogger {
         m_output.write(getEventPrefix());
         m_output.write(": ");
         m_output.write(text);
+        m_output.write('\n');
         m_output.flush();
       } catch (java.io.IOException ioe) {
         // No-op
@@ -104,19 +132,49 @@ public abstract class EventLogger {
    * TextLogger that will record data to file.
    */
   public static class FileLogger extends TextLogger {
+    /**
+     * Constructor.
+     * @param f the file to be written to
+     * @throws java.io.IOException
+     */
     public FileLogger(File f) throws java.io.IOException {
       super(new FileWriter(f));
     }
 
-    public FileLogger(File f, Object noThrow) throws java.io.IOException {
-      super(new FileWriter(f));
+    /**
+     * No-throw constructor.
+     *
+     * Note: If the underlying file can't be opened for writing, all logging will
+     * be handled as no-ops.
+     *
+     * @param f the file to be written to
+     * @param noThrow flag parameter, used to force "no-throw" behavior
+     */
+    public FileLogger(File f, Object noThrow) {
+      super(getWriterNoThrow(f));
     }
 
-    static Writer getWriterNoThrow(File f) {
+    /**
+     * Indicates if the object was set up for no-op logging, due a failure during "no-throw"
+     * construction.
+     *
+     * @return true if logging will not actually be written to files
+     */
+    public boolean isNoOp() {
+      return (m_output instanceof NullWriter);
+    }
+
+    /**
+     * Returns a Writer targeting the specified file, or a NullWriter on failure to target the file
+     * for output.
+     * @param f file to be written to (on success)
+     * @return FileWriter (on successful open) or NullWriter
+     */
+    static private Writer getWriterNoThrow(File f) {
       try {
         return new FileWriter(f);
-      } catch (java.io.IOException ioe) {
-        return NULL_WRITER;
+      } catch (Exception e) {
+        return new NullWriter();
       }
     }
   }

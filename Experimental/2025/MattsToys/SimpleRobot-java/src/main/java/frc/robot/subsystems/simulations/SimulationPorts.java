@@ -33,15 +33,17 @@ public interface SimulationPorts {
   /** Channel ID used for the gyro. */
   public final int GYRO_CHANNEL = 0;
 
-  /** ID usable for the first DIO port under simulation-only */
-  public final int FIRST_SIMULATION_PORT = Constants.DioIds.LAST_NONSIM_DIO + 1;
+  public static interface DioPorts {
+    /** ID usable for the first DIO port under simulation-only */
+    public final int FIRST_SIMULATION_PORT = Constants.DioIds.LAST_NONSIM_DIO + 1;
 
-  /** "A" port used for the encoder on the left side of the drivebase. */
-  public final int LEFT_DRIVE_ENCODER_PORT_A = FIRST_SIMULATION_PORT + 0;
-  /** "B" port used for the encoder on the left side of the drivebase. */
-  public final int LEFT_DRIVE_ENCODER_PORT_B = FIRST_SIMULATION_PORT + 1;
-  /** "A" port used for the encoder on the right side of the drivebase. */
-  public final int RIGHT_DRIVE_ENCODER_PORT_A = FIRST_SIMULATION_PORT + 2;
-  /** "B" port used for the encoder on the right side of the drivebase. */
-  public final int RIGHT_DRIVE_ENCODER_PORT_B = FIRST_SIMULATION_PORT + 3;
+    /** "A" port used for the encoder on the left side of the drivebase. */
+    public final int LEFT_DRIVE_ENCODER_PORT_A = FIRST_SIMULATION_PORT + 0;
+    /** "B" port used for the encoder on the left side of the drivebase. */
+    public final int LEFT_DRIVE_ENCODER_PORT_B = FIRST_SIMULATION_PORT + 1;
+    /** "A" port used for the encoder on the right side of the drivebase. */
+    public final int RIGHT_DRIVE_ENCODER_PORT_A = FIRST_SIMULATION_PORT + 2;
+    /** "B" port used for the encoder on the right side of the drivebase. */
+    public final int RIGHT_DRIVE_ENCODER_PORT_B = FIRST_SIMULATION_PORT + 3;
+  }
 }

@@ -22,11 +22,13 @@ public interface SimulationPorts {
     public final int LIGHTING_PWM_ID = 2;
   }
 
-  /** CAN ID used for elevator motor. */
-  public final int ELEVATOR_CAN_ID = 1;
+  public static interface CanIDs {
+    /** CAN ID used for elevator motor. */
+    public final int ELEVATOR_CAN_ID = 1;
 
-  /** CAN ID used for single-joint arm's motor. */
-  public final int ARM_CAN_ID = 2;
+    /** CAN ID used for single-joint arm's motor. */
+    public final int ARM_CAN_ID = 2;
+  }
 
   /** Channel ID used for the gyro. */
   public final int GYRO_CHANNEL = 0;

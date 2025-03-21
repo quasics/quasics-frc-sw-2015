@@ -66,7 +66,7 @@ public class SimulatedElevator extends AbstractElevator {
 
   /** Motor controller driving the elevator. */
   private final SparkMax m_motor =
-      new SparkMax(SimulationPorts.ELEVATOR_CAN_ID, MotorType.kBrushless);
+      new SparkMax(SimulationPorts.CanIDs.ELEVATOR_CAN_ID, MotorType.kBrushless);
 
   /** Encoder tracking the current position of the elevator. */
   private final RelativeEncoder m_encoder = m_motor.getEncoder();

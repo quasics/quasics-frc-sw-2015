@@ -44,9 +44,9 @@ public class SimDrivebase extends AbstractDrivebase {
 
   // "Hardware" allocation
   /** Left motor. */
-  private final PWMSparkMax m_left = new PWMSparkMax(LEFT_DRIVE_PWM_ID);
+  private final PWMSparkMax m_left = new PWMSparkMax(PwmPorts.LEFT_DRIVE_PWM_ID);
   /** Right motor. */
-  private final PWMSparkMax m_right = new PWMSparkMax(RIGHT_DRIVE_PWM_ID);
+  private final PWMSparkMax m_right = new PWMSparkMax(PwmPorts.RIGHT_DRIVE_PWM_ID);
   /** Left (native) encoder. */
   private final Encoder m_leftEncoder =
       new Encoder(LEFT_DRIVE_ENCODER_PORT_A, LEFT_DRIVE_ENCODER_PORT_B);

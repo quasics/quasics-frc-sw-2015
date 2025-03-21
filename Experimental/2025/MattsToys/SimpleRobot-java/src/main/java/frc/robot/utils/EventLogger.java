@@ -5,9 +5,9 @@
 package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.time.Instant;
@@ -65,14 +65,48 @@ public abstract class EventLogger {
     m_output = output;
   }
 
+  /**
+   * Convenice logging function.
+   *
+   * @param subsystem subsystem to be identified as the source of the message
+   * @param text text to be logged
+   * @return this logger object (for chained operations)
+   *
+   * @see edu.wpi.first.wpilibj2.command.Subsystem.getName()
+   */
+  public EventLogger log(Subsystem subsystem, String text) {
+    return log(subsystem.getName(), text);
+  }
+
   //////////////////////////////////////////////////////////////////////
   //
   // Abstract methods
   //
   //////////////////////////////////////////////////////////////////////
 
+  /**
+   *
+   * @param key
+   * @param value
+   * @return this logger object (for chained operations)
+   */
   public abstract EventLogger log(String key, String value);
+
+  /**
+   * Object to be logged (as appropriate for the underlying logger: this could be as a String, or
+   * serialized data, etc.)
+   *
+   * @param object object to be logged
+   * @return this logger object (for chained operations)
+   */
   public abstract EventLogger log(Object data);
+
+  /**
+   * Logs a text string.
+   *
+   * @param text text to be logged
+   * @return this logger object (for chained operations)
+   */
   public abstract EventLogger logText(String text);
 
   //////////////////////////////////////////////////////////////////////
@@ -85,10 +119,19 @@ public abstract class EventLogger {
    * Captures events as timestamped (both clock and event) text.
    */
   public static class TextLogger extends EventLogger {
+    /**
+     * Constructor
+     * @param w writer to use as a basis for operations
+     */
     public TextLogger(Writer w) {
       super(w);
     }
 
+    /**
+     * Generates a prefix for logged data, including timestamps (both calendar and match).
+     *
+     * @return prefix for logged data
+     */
     private String getEventPrefix() {
       Instant now = Instant.now();
       StringBuilder builder = new StringBuilder(now.toString());
@@ -134,6 +177,7 @@ public abstract class EventLogger {
   public static class FileLogger extends TextLogger {
     /**
      * Constructor.
+     *
      * @param f the file to be written to
      * @throws java.io.IOException
      */

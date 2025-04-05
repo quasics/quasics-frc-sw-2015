@@ -230,10 +230,22 @@ public interface IDrivebase extends ISubsystem {
    *
    * @return last posted odemetry pose, or null
    */
-  static Pose2d getPublishedLastPose() {
+  static Pose2d getPublishedLastPoseFromOdometry() {
     // Update the vision pose estimator with the latest robot pose from the drive
     // base.
-    var stored = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
+    var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
+    return (Pose2d) stored.orElse(null);
+  }
+
+  /**
+   * Returns the latest posted pose estimate, based on unified odometry/vision data.
+   *
+   * @return last posted unified pose estimate, or null
+   */
+  static Pose2d getPublishedLastUnifiedPoseEstimate() {
+    // Update the vision pose estimator with the latest robot pose from the drive
+    // base.
+    var stored = BulletinBoard.common.getValue(ESTIMATED_POSE_KEY, Pose2d.class);
     return (Pose2d) stored.orElse(null);
   }
 

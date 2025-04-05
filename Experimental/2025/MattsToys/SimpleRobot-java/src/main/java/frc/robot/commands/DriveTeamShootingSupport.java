@@ -18,12 +18,12 @@ import frc.robot.subsystems.interfaces.ILighting.StockColor;
 /**
  * A command that sets the color of the candle based on the robot's position on
  * the field, in order to aid the drive team in aiming for the barge.
- * 
+ *
  * Note that this example *only* looks at the robot's distance from the barge
  * (well, the center line of the field), and does not take its shooting angle
  * (relative to the barge) into account. (This would be a good improvement to
  * make, and is left as an exercise for the reader.)
- * 
+ *
  * Please also note that the values (and colors) I've chosen for this example
  * are somewhat arbitrary, and do not reflect discussions with the Quasics drive
  * team (or other sources of reality-based data).
@@ -44,7 +44,7 @@ public class DriveTeamShootingSupport extends Command {
 
   @Override
   public void execute() {
-    Pose2d lastPose = IDrivebase.getPublishedLastPose();
+    Pose2d lastPose = IDrivebase.getPublishedLastPoseFromOdometry();
     if (lastPose == null) {
       m_candle.setColor(StockColor.Black);
       return;

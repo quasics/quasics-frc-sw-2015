@@ -44,6 +44,10 @@ import frc.robot.utils.BulletinBoard;
  * etc.  (Note: an initial implementation of this type of functionality has been
  * implemented in the <code>DriveTeamShootingSupport</code> command.)
  * </li>
+ * <li>
+ * Use odemetry/pose estimation to automatically move the robot to the correct
+ * position/orientation for shooting algae into the barge.
+ * </li>
  * </ul>
  */
 public interface IDrivebase extends ISubsystem {

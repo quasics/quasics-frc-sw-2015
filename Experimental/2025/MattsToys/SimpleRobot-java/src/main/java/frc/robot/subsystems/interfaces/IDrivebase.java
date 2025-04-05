@@ -41,8 +41,8 @@ import frc.robot.utils.BulletinBoard;
  * to the drive team about the robot's position on the field (e.g., when it's
  * oriented towards the barge and close enough to make the shot). This could be
  * done by putting something on the dashboard, changing the lights on the robot,
- * etc.  (Note: an initial implementation of this type of functionality has been
- * implemented in the <code>DriveTeamShootingSupport</code> command.)
+ * etc.  (Note: a simple implementation of this type of functionality may be
+ * seen in the <code>DriveTeamShootingSupport</code> command.)
  * </li>
  * <li>
  * Use odemetry/pose estimation to automatically move the robot to the correct

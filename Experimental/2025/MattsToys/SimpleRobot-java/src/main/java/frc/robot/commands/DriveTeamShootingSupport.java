@@ -70,8 +70,6 @@ public class DriveTeamShootingSupport extends Command {
     final Distance xPos = lastPose.getMeasureX();
     final Angle angle = lastPose.getRotation().getMeasure();
 
-    System.out.println("Angle: " + angle.in(Degrees) + " degrees");
-
     // Figure out how close we are in terms of distance and angle.
     final boolean distanceOk = switch (alliance) {
       case Blue -> {

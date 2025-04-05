@@ -59,7 +59,7 @@ import java.util.function.Supplier;
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
-  public static final boolean CANDLE_SHOWS_SHOOTING_READY = false;
+  public static final boolean CANDLE_SHOWS_SHOOTING_READY = true;
 
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {

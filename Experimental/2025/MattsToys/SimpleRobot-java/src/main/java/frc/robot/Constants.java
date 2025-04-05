@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 /**
@@ -252,5 +254,28 @@ public class Constants {
     /** Inner range for when we're on the red alliance. */
     final static public Distance RED_NEAR_SHOOTING_RANGE =
         RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
+
+    /** Ideal angle for shooting at the barge from the red alliance. */
+    final static public Angle RED_BASE_SHOOTING_ANGLE = Degrees.of(180);
+    /** Ideal angle for shooting at the barge from the blue alliance. */
+    final static public Angle BLUE_BASE_SHOOTING_ANGLE = Degrees.of(0);
+    /** Tolerance for our shooting angle. */
+    final static public Angle SHOOTING_ANGLE_TOLERANCE = Degrees.of(4);
+
+    /** Outer range on the angle for when we're on the blue alliance. */
+    final static public Angle BLUE_FAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Inner range on the angle for when we're on the blue alliance. */
+    final static public Angle BLUE_NEAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Outer range on the angle for when we're on the blue alliance. */
+    final static public Angle RED_FAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Inner range on the angle for when we're on the blue alliance. */
+    final static public Angle RED_NEAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
   }
 }

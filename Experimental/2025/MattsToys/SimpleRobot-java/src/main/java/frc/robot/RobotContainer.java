@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import choreo.auto.AutoFactory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -47,8 +48,10 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
 import frc.robot.utils.DeadbandEnforcer;
+import frc.robot.utils.EventLogger;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import frc.robot.utils.StateChangeExecutor;
 import frc.robot.utils.SysIdGenerator;
 import java.util.function.Supplier;
 
@@ -56,7 +59,7 @@ import java.util.function.Supplier;
  * RobotContainer for a demo (mostly simulation-oriented) robot.
  */
 public class RobotContainer {
-  public static final boolean CANDLE_SHOWS_SHOOTING_READY = false;
+  public static final boolean CANDLE_SHOWS_SHOOTING_READY = true;
 
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
@@ -87,6 +90,8 @@ public class RobotContainer {
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+
+  final EventLogger m_eventLogger = new EventLogger.StringEventLogger();
 
   // Controllers
   //
@@ -121,6 +126,8 @@ public class RobotContainer {
    *              data under simulation
    */
   public RobotContainer(TimedRobot robot) {
+    EventLogger.setDefaultLogger(m_eventLogger);
+
     configureArcadeDrive();
     configureDashboard();
     configureBindings();
@@ -140,6 +147,25 @@ public class RobotContainer {
       robot.addPeriodic(() -> {
         SimulationUxSupport.instance.updateBatteryVoltageFromDraws();
       }, COMMAND_CYCLE_PERIOD);
+    }
+
+    // Testing event logging: dump the contents whenever we're disabled
+    if (m_eventLogger != null && m_eventLogger instanceof EventLogger.StringEventLogger) {
+      final StateChangeExecutor executor = new StateChangeExecutor(
+          // State supplier
+          ()
+              -> { return DriverStation.isDisabled(); },
+          // Assumed initial state (i.e., assume we're disabled on startup)
+          true,
+          // Action
+          ()
+              -> {
+            System.err.println("Dumping event log:");
+            System.err.println(((EventLogger.StringEventLogger) m_eventLogger).getContents());
+          },
+          // Triggering mode
+          StateChangeExecutor.Mode.GoesTrue);
+      robot.addPeriodic(() -> { executor.check(); }, COMMAND_CYCLE_PERIOD);
     }
   }
 
@@ -204,6 +230,11 @@ public class RobotContainer {
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
+    // Limiting the rate-of-change for velocity (i.e., acceleration) to constrain us from getting to
+    // 100% in anything less than 1/MAX_SLEW_RATE seconds.
+    SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+    SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
+
     if (Robot.isReal()) {
       // Configure the real robot.
       //
@@ -211,18 +242,25 @@ public class RobotContainer {
       // negative values when we push forward.
       forwardSupplier = ()
           ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis));
+          - forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
       rotationSupplier = ()
           ->
-          - deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis));
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      forwardSupplier = () -> deadbandEnforcer.limit(m_driveController.getRawAxis(0));
-      rotationSupplier = () -> - deadbandEnforcer.limit(m_driveController.getRawAxis(1));
+      forwardSupplier = ()
+          -> forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(

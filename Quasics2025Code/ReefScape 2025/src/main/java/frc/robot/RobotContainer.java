@@ -36,10 +36,10 @@ import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
-import frc.robot.subsystems.Candle;
-import frc.robot.subsystems.ICandle;
-import frc.robot.subsystems.SimCandle;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.candle.AbstractCandle;
+import frc.robot.subsystems.candle.Candle;
+import frc.robot.subsystems.candle.SimCandle;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
 import frc.robot.subsystems.drivebase.RealDrivebase;
 import frc.robot.subsystems.drivebase.SimulationDrivebase;
@@ -69,9 +69,9 @@ public class RobotContainer {
   private final AbstractElevator m_elevator = setupElevator();
   @SuppressWarnings("unused")
   private final Vision m_vision = new Vision();
-  private final ICandle m_candle = allocateCandle();
+  private final AbstractCandle m_candle = allocateCandle();
 
-  private static ICandle allocateCandle() {
+  private static AbstractCandle allocateCandle() {
     if (!ENABLE_CANDLE) {
       return null;
     } else if (RobotBase.isSimulation()) {

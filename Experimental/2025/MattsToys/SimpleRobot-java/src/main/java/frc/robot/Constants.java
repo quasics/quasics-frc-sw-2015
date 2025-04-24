@@ -4,18 +4,26 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 /**
  * Defines some constants for the robot.
  */
 public class Constants {
+  public static class Driving {
+    // Rate limits for accelerating the drive base: require a ramp-up of (no less
+    // than) 1/3 sec from 0 to 100% (or vice versa).
+    public static final double MAX_SLEW_RATE = 3;
+  }
+
   /** Common CAN IDs for Quasics' robots. */
   public static class QuasicsDrivebaseCanIds {
     /** CAN ID for a Pigeon2 ALU. */
@@ -49,6 +57,8 @@ public class Constants {
     public static final int ELEVATOR_LIMIT_SWITCH_UP = 0;
     /** ID for the elevator's "bottom" limit switch. */
     public static final int ELEVATOR_LIMIT_SWITCH_DOWN = 1;
+
+    public static final int LAST_NONSIM_DIO = ELEVATOR_LIMIT_SWITCH_DOWN;
   }
 
   /**
@@ -190,28 +200,26 @@ public class Constants {
      * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ, with
      * units in meters and radians, then meters.
      */
-    public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = new Matrix<N3, N1>(
-        Nat.N3(), Nat.N1(),
-        new double[] {
-            // if these numbers are less than one, multiplying will do bad things
-            1, // x
-            1, // y
-            1 * Math.PI // theta
-        });
+    public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
+        new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
+            new double[] {
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+            });
 
     /**
      * Standard deviations of the vision measurements. Increase these numbers to
      * trust global measurements from vision less. This matrix is in the form [x, y,
      * theta]ᵀ, with units in meters and radians.
      */
-    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = new Matrix<N3, N1>(
-        Nat.N3(), Nat.N1(),
-        new double[] {
-            // if these numbers are less than one, multiplying will do bad things
-            .1, // x
-            .1, // y
-            .1
-        });
+    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS =
+        new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
+            new double[] {// if these numbers are less than one, multiplying will do bad things
+                .1, // x
+                .1, // y
+                .1});
   }
 
   /** Field-related constants for Reefscape. */
@@ -232,15 +240,42 @@ public class Constants {
     final static public Distance NEAR_SHOOTING_RANGE = Meters.of(0.0);
 
     /** Outer range for when we're on the blue alliance. */
-    final static public Distance BLUE_FAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
+    final static public Distance BLUE_FAR_SHOOTING_RANGE =
+        BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the blue alliance. */
-    final static public Distance BLUE_NEAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
+    final static public Distance BLUE_NEAR_SHOOTING_RANGE =
+        BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
 
     /** Outer range for when we're on the red alliance. */
-    final static public Distance RED_FAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
+    final static public Distance RED_FAR_SHOOTING_RANGE =
+        RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the red alliance. */
-    final static public Distance RED_NEAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
+    final static public Distance RED_NEAR_SHOOTING_RANGE =
+        RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
+
+    /** Ideal angle for shooting at the barge from the red alliance. */
+    final static public Angle RED_BASE_SHOOTING_ANGLE = Degrees.of(180);
+    /** Ideal angle for shooting at the barge from the blue alliance. */
+    final static public Angle BLUE_BASE_SHOOTING_ANGLE = Degrees.of(0);
+    /** Tolerance for our shooting angle. */
+    final static public Angle SHOOTING_ANGLE_TOLERANCE = Degrees.of(4);
+
+    /** Outer range on the angle for when we're on the blue alliance. */
+    final static public Angle BLUE_FAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Inner range on the angle for when we're on the blue alliance. */
+    final static public Angle BLUE_NEAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Outer range on the angle for when we're on the blue alliance. */
+    final static public Angle RED_FAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+
+    /** Inner range on the angle for when we're on the blue alliance. */
+    final static public Angle RED_NEAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
   }
 }

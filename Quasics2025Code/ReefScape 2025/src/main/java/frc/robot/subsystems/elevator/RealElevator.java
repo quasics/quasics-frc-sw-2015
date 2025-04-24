@@ -4,14 +4,13 @@
 
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.MathUtil;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 /**
- * 
+ *
  */
 public class RealElevator extends AbstractElevator {
   private SparkMax m_leader = new SparkMax(SparkMaxIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
@@ -46,16 +45,15 @@ public class RealElevator extends AbstractElevator {
     followerConfig.follow(m_leader, true);
 
     try (SparkMax follower = new SparkMax(SparkMaxIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless)) {
-      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-          PersistMode.kPersistParameters);
+      follower.configure(
+          followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     // Configure the primary (leader) motor.
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     leaderConfig.inverted(false);
     m_leader.configure(
-        leaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+        leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_pid.setTolerance(1, 2);
   }
@@ -105,10 +103,16 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    boolean result = !((m_limitSwitchUp.get() == false && speed < 0)
+    return !((m_limitSwitchUp.get() == false && speed < 0)
         || (m_limitSwitchDown.get() == false && speed > 0));
-    // System.out.println(": " + result);
-    return result;
+  }
+
+  protected boolean atBottom() {
+    return !m_limitSwitchDown.get();
+  }
+
+  protected boolean atTop() {
+    return !m_limitSwitchUp.get();
   }
 
   @Override
@@ -125,11 +129,17 @@ public class RealElevator extends AbstractElevator {
     // SmartDashboard.putBoolean("Able to move", ableToMove());
     // System.out.println(m_targetPosition);
 
-    if (!ableToMove(m_encoder.getVelocity()) && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
+    if (!ableToMove(m_encoder.getVelocity())
+        && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
+      System.out.println("Stopping: at bottom=" + atBottom());
       stop();
+      if (m_targetPosition != TargetPosition.kDontCare) {
+        SmartDashboard.putString("StoppingFor" + m_targetPosition, "yes");
+      }
     }
 
     if (!m_limitSwitchDown.get()) {
+      // System.out.println("Resetting encoders");
       resetEncoders();
     }
     if (!m_limitSwitchUp.get()) {
@@ -148,11 +158,12 @@ public class RealElevator extends AbstractElevator {
 
       setVoltage(output);
 
-      final boolean noisy = false;
+      final boolean noisy = true;
       if (noisy) {
-        System.out.printf(
-            "PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, output: %.02f, atSetpoint: %b%n",
-            m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output, m_pid.atSetpoint());
+        System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
+                + "output: %.02f, atSetpoint: %b%n",
+            m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output,
+            m_pid.atSetpoint());
       }
     }
   }
@@ -179,6 +190,5 @@ public class RealElevator extends AbstractElevator {
   public void setTargetPosition(TargetPosition position) {
     m_numCycles = 0;
     m_targetPosition = position;
-
   }
 }

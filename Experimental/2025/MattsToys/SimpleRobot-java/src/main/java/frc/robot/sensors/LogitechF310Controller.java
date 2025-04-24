@@ -4,14 +4,27 @@
 
 package frc.robot.sensors;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 
-/** Add your docs here. */
+/**
+ * Handle input from Logitech controllers in "F310" mode, connected to the Driver Station.
+ *
+ * This class handles controller input that comes from the Driver Station. Each time a value is
+ * requested the most recent value is returned. There is a single class instance for each controller
+ * and the mapping of ports to hardware buttons depends on the code in the Driver Station.
+ *
+ * Note: these values assume that the switch on the bottom of the Logitech
+ * controller is in the "X" position, causing it to enumerate as a Logitech
+ * Gamepad F310. In this mode, the left and right triggers on the front
+ * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0], unlike
+ * regular joysticks.
+ *
+ * Note: this code is untested.
+ */
 public class LogitechF310Controller extends GenericHID {
+  /** Represents an axis on an LogitechF310Controller. */
   public enum Axis {
     /** Left joystick X axis. */
     LeftX(0),
@@ -26,8 +39,14 @@ public class LogitechF310Controller extends GenericHID {
     /** Left trigger X axis. (Provides 1/2 joystick range, [0..1].) */
     RightTrigger(3);
 
+    /** Axis ID/value. */
     public final int value;
 
+    /**
+     * Constructor.
+     *
+     * @param value axis ID/value
+     */
     Axis(int value) {
       this.value = value;
     }
@@ -38,34 +57,37 @@ public class LogitechF310Controller extends GenericHID {
     }
   }
 
+  /** Represents a button on an LogitechF310Controller. */
   public enum Button {
     /** ID for the "X" button. */
-    X(1),
+    X(3),
     /** ID for the "A" button. */
-    A(2),
+    A(1),
     /** ID for the "B" button. */
-    B(3),
+    B(2),
     /** ID for the "Y" button. */
     Y(4),
     /** ID for the left shoulder button. */
     LeftShoulder(5),
     /** ID for the right shoulder button. */
     RightShoulder(6),
-    /** Left trigger's X axis. */
-    LeftTrigger(7),
-    /** Right trigger's X axis. */
-    RightTrigger(8),
     /** ID for the back button. */
-    Back(9),
+    Back(7),
     /** ID for the start button. */
-    Start(10),
+    Start(8),
     /** ID for the button clicked by pressing on the left joystick. */
-    LeftStick(11),
+    LeftStick(9),
     /** ID for the button clicked by pressing on the right joystick. */
-    RightStick(12);
+    RightStick(10);
 
+    /** Button ID/value. */
     public final int value;
 
+    /**
+     * Constructor.
+     *
+     * @param value button ID/value
+     */
     Button(int value) {
       this.value = value;
     }
@@ -118,6 +140,24 @@ public class LogitechF310Controller extends GenericHID {
    */
   public double getRightY() {
     return getRawAxis(Axis.RightY.value);
+  }
+
+  /**
+   * Get the value of the left trigger.
+   *
+   * @return The value of the axis.
+   */
+  public double getLeftTrigger() {
+    return getRawAxis(Axis.LeftTrigger.value);
+  }
+
+  /**
+   * Get the value of the right trigger.
+   *
+   * @return The value of the axis.
+   */
+  public double getRightTrigger() {
+    return getRawAxis(Axis.RightTrigger.value);
   }
 
   ////////////////////////////////////////////////////////////
@@ -176,24 +216,6 @@ public class LogitechF310Controller extends GenericHID {
    */
   public boolean getRightShoulderButton() {
     return getRawButton(Button.RightShoulder.value);
-  }
-
-  /**
-   * Read the value of the left trigger button on the controller.
-   *
-   * @return The value of the button.
-   */
-  public boolean getLeftTriggerButton() {
-    return getRawButton(Button.LeftTrigger.value);
-  }
-
-  /**
-   * Read the value of the right trigger button on the controller.
-   *
-   * @return The value of the button.
-   */
-  public boolean getRightTriggerButton() {
-    return getRawButton(Button.RightTrigger.value);
   }
 
   /**
@@ -291,24 +313,6 @@ public class LogitechF310Controller extends GenericHID {
   }
 
   /**
-   * Whether the left trigger button was pressed since the last check.   *
-   *
-   * @return The value of the button.
-   */
-  public boolean getLeftTriggerButtonPressed() {
-    return getRawButtonPressed(Button.LeftTrigger.value);
-  }
-
-  /**
-   * Whether the right trigger button was pressed since the last check.   *
-   *
-   * @return The value of the button.
-   */
-  public boolean getRightTriggerButtonPressed() {
-    return getRawButtonPressed(Button.RightTrigger.value);
-  }
-
-  /**
    * Whether the Back button was pressed since the last check.   *
    *
    * @return The value of the button.
@@ -400,24 +404,6 @@ public class LogitechF310Controller extends GenericHID {
    */
   public boolean getRightShoulderButtonReleased() {
     return getRawButtonReleased(Button.RightShoulder.value);
-  }
-
-  /**
-   * Whether the left trigger button was pressed since the last check.   *
-   *
-   * @return The value of the button.
-   */
-  public boolean getLeftTriggerButtonReleased() {
-    return getRawButtonReleased(Button.LeftTrigger.value);
-  }
-
-  /**
-   * Whether the right trigger button was pressed since the last check.   *
-   *
-   * @return The value of the button.
-   */
-  public boolean getRightTriggerButtonReleased() {
-    return getRawButtonReleased(Button.RightTrigger.value);
   }
 
   /**
@@ -524,28 +510,6 @@ public class LogitechF310Controller extends GenericHID {
    */
   public BooleanEvent rightShoulder(EventLoop loop) {
     return button(Button.RightShoulder.value, loop);
-  }
-
-  /**
-   * Constructs an event instance around the left trigger button's digital signal.
-   *
-   * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the left trigger button's digital signal
-   *     attached to the given loop.
-   */
-  public BooleanEvent leftTrigger(EventLoop loop) {
-    return button(Button.LeftTrigger.value, loop);
-  }
-
-  /**
-   * Constructs an event instance around the right trigger button's digital signal.
-   *
-   * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the right trigger button's digital signal
-   *     attached to the given loop.
-   */
-  public BooleanEvent rightTrigger(EventLoop loop) {
-    return button(Button.RightTrigger.value, loop);
   }
 
   /**

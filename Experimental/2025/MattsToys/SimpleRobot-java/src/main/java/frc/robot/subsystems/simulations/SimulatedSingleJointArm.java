@@ -33,9 +33,9 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * https://github.com/aesatchien/FRC2429_2025/tree/main/test_robots/sparksim_test.
  */
 public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJointArm {
-
   /** Motor controller running the arm. */
-  protected final SparkMax m_motorController = new SparkMax(SimulationPorts.ARM_CAN_ID, MotorType.kBrushless);
+  protected final SparkMax m_motorController =
+      new SparkMax(SimulationPorts.CanIDs.ARM_CAN_ID, MotorType.kBrushless);
 
   ////////////////////////////////////////////////////////////////////////////////////
   // Values defining the arm's characteristics/physics
@@ -53,7 +53,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
   final Angle ARM_UP_ANGLE = Degrees.of(90);
 
   /** Gearing used to drive the arm's motion. */
-  final static double GEARING = 5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for simulated physics to work)
+  final static double GEARING =
+      5 * 5 * 3 * 4.44; // Arbitrary (but needs to be enough for simulated physics to work)
 
   /**
    * Length of the arm (used for simulation, but defined here because we'd want to
@@ -95,7 +96,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
   /**
    * Creates a new SimulatedSingleJointArm.
-   * 
+   *
    * @param robotConfig the configuration for the robot being targeted
    */
   public SimulatedSingleJointArm(RobotConfig robotConfig) {
@@ -105,10 +106,7 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
     // Configure the motor.
     var motorConfig = new SparkMaxConfig();
-    motorConfig.closedLoop
-        .p(pidConfig.kP())
-        .i(pidConfig.kI())
-        .d(pidConfig.kD());
+    motorConfig.closedLoop.p(pidConfig.kP()).i(pidConfig.kI()).d(pidConfig.kD());
 
     configureForRadians(motorConfig);
 
@@ -155,8 +153,8 @@ public class SimulatedSingleJointArm extends SubsystemBase implements ISingleJoi
 
     // Update the rendering.
     boolean closeEnough = postAngle.isNear(m_referencePosition, Degrees.of(0.5));
-    SimulationUxSupport.instance.updateArm(postAngle,
-        closeEnough ? DeviceStatus.AtSetpoint : DeviceStatus.NotAtSetpoint);
+    SimulationUxSupport.instance.updateArm(
+        postAngle, closeEnough ? DeviceStatus.AtSetpoint : DeviceStatus.NotAtSetpoint);
 
     // // Note: this should actually be calculated across *all* of the draws, which
     // // implies some sort of centralized physics would be useful.

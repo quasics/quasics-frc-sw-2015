@@ -33,7 +33,7 @@ import frc.robot.utils.BulletinBoard;
  * <li>Concrete types, which mostly serve to set up/access the underlying
  * hardware.
  * </ul>
- * 
+ *
  * Possible enhancements:
  * <ul>
  * <li>
@@ -41,7 +41,12 @@ import frc.robot.utils.BulletinBoard;
  * to the drive team about the robot's position on the field (e.g., when it's
  * oriented towards the barge and close enough to make the shot). This could be
  * done by putting something on the dashboard, changing the lights on the robot,
- * etc.
+ * etc.  (Note: a simple implementation of this type of functionality may be
+ * seen in the <code>DriveTeamShootingSupport</code> command.)
+ * </li>
+ * <li>
+ * Use odemetry/pose estimation to automatically move the robot to the correct
+ * position/orientation for shooting algae into the barge.
  * </li>
  * </ul>
  */
@@ -104,8 +109,8 @@ public interface IDrivebase extends ISubsystem {
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -162,7 +167,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the left encoder's position.
-   * 
+   *
    * @return The position reading from the left encoder
    */
   default Distance getLeftPosition() {
@@ -171,7 +176,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the right encoder's position.
-   * 
+   *
    * @return The position reading from the right encoder
    */
   default Distance getRightPosition() {
@@ -180,7 +185,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the left encoder's velocity.
-   * 
+   *
    * @return The position reading from the left velocity
    */
   default LinearVelocity getLeftVelocity() {
@@ -189,7 +194,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the right encoder's velocity.
-   * 
+   *
    * @return The position reading from the right velocity
    */
   default LinearVelocity getRightVelocity() {
@@ -198,7 +203,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the robot's angular velocity (from the ALU).
-   * 
+   *
    * @return the angular velocity of the robot
    */
   default AngularVelocity getTurnRate() {
@@ -207,7 +212,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the robot's heading (from the ALU).
-   * 
+   *
    * @return the heading of the robot
    */
   default Angle getHeading() {
@@ -216,7 +221,7 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Gets the robot's current speeds (wheels and turning).
-   * 
+   *
    * @return the current ChassisSpeeds of the robot (used for
    *         trajectory-following)
    */
@@ -226,13 +231,21 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the latest posted odemetry-based pose.
-   * 
+   *
    * @return last posted odemetry pose, or null
    */
-  static Pose2d getPublishedLastPose() {
-    // Update the vision pose estimator with the latest robot pose from the drive
-    // base.
-    var stored = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
+  static Pose2d getPublishedLastPoseFromOdometry() {
+    var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
+    return (Pose2d) stored.orElse(null);
+  }
+
+  /**
+   * Returns the latest posted pose estimate, based on unified odometry/vision data.
+   *
+   * @return last posted unified pose estimate, or null
+   */
+  static Pose2d getPublishedLastUnifiedPoseEstimate() {
+    var stored = BulletinBoard.common.getValue(ESTIMATED_POSE_KEY, Pose2d.class);
     return (Pose2d) stored.orElse(null);
   }
 
@@ -254,56 +267,56 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Returns the voltage being applied to the left motor.
-   * 
+   *
    * @return The applied voltage from the left motor
    */
   Voltage getLeftVoltage();
 
   /**
    * Returns the voltage being applied to the right motor.
-   * 
+   *
    * @return The applied voltage from the right motor
    */
   Voltage getRightVoltage();
 
   /**
    * Returns a TrivialEncoder for the left motor.
-   * 
+   *
    * @return TrivialEncoder exposing data for the left motors
    */
   TrivialEncoder getLeftEncoder();
 
   /**
    * Returns a TrivialEncoder for the right motor.
-   * 
+   *
    * @return TrivialEncoder exposing data for the right motors
    */
   TrivialEncoder getRightEncoder();
 
   /**
    * Exposes a gyro (providing heading/yaw) for the robot.
-   * 
+   *
    * @return IGyro exposing data from the underlying ALU
    */
   IGyro getGyro();
 
   /**
    * Gets the robot's pose (based on odometry alone).
-   * 
+   *
    * @return position/heading of the robot, based on odometry
    */
   Pose2d getPose();
 
   /**
    * Gets the robot's pose (based on pose estimation, fusing odometry and vision).
-   * 
+   *
    * @return estimated pose of the robot
    */
   Pose2d getEstimatedPose();
 
   /**
    * Gets the robot's kinematics.
-   * 
+   *
    * @return kinematics data for the robot
    */
   DifferentialDriveKinematics getKinematics();
@@ -331,12 +344,12 @@ public interface IDrivebase extends ISubsystem {
 
   /**
    * Resets the current pose to the specified value.
-   * 
+   *
    * This should ONLY be called when the robot's position on the field is known
    * (e.g., at the beginning of a match). The code for trajectory-following may
    * invoke this, because it assumes that pre-defined trajectories are started at
    * a well-defined/fixed place.
-   * 
+   *
    *
    * @param pose new pose to use as a basis for odometry/pose estimation
    */

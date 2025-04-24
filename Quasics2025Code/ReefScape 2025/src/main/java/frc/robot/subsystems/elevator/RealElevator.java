@@ -29,7 +29,7 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
-  private final double VELOCITY_DEADBAND = 10;
+  private final double VELOCITY_DEADBAND = 30;
   private int m_numCycles = 0;
 
   // TODO: Tune PID values.
@@ -105,8 +105,10 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    return !((m_limitSwitchUp.get() == false && speed < 0)
+    boolean result = !((m_limitSwitchUp.get() == false && speed < 0)
         || (m_limitSwitchDown.get() == false && speed > 0));
+    // System.out.println(": " + result);
+    return result;
   }
 
   @Override

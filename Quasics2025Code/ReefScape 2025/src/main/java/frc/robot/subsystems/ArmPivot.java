@@ -118,7 +118,7 @@ public class ArmPivot extends SubsystemBase {
   public void setArmPivotSpeed(double percentSpeed) {
     m_angleSetpoint = null;
     m_pivot.set(percentSpeed);
-    System.out.println(percentSpeed);
+    // System.out.println(percentSpeed);
   }
 
   public void stop() {

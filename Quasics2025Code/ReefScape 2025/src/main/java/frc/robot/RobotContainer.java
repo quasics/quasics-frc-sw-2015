@@ -67,7 +67,8 @@ public class RobotContainer {
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
-  @SuppressWarnings("unused") private final Vision m_vision = new Vision();
+  @SuppressWarnings("unused")
+  private final Vision m_vision = new Vision();
   private final AbstractCandle m_candle = allocateCandle();
 
   private static AbstractCandle allocateCandle() {
@@ -92,18 +93,17 @@ public class RobotContainer {
   private final SlewRateLimiter m_rotationLimiter = new SlewRateLimiter(1);
 
   private final Joystick m_driverController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-  private final Joystick m_operatorController =
-      new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(Constants.DriveTeam.OPERATOR_JOYSTICK_ID);
   private final double DEADBAND_CONSTANT = 0.08;
 
-  private final AutoFactory m_autoFactory =
-      new AutoFactory(m_drivebase::getPose, // A function that returns the current robot pose
-          m_drivebase::resetOdometry, // A function that resets the current robot pose to the
-                                      // provided Pose2d
-          m_drivebase::followTrajectory, // The drive subsystem trajectory follower
-          true, // flip path when on red side
-          m_drivebase // The drive subsystem
-      );
+  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, // A function that returns the current
+                                                                                  // robot pose
+      m_drivebase::resetOdometry, // A function that resets the current robot pose to the
+                                  // provided Pose2d
+      m_drivebase::followTrajectory, // The drive subsystem trajectory follower
+      true, // flip path when on red side
+      m_drivebase // The drive subsystem
+  );
 
   Trigger switchDriveTrigger;
 
@@ -151,15 +151,11 @@ public class RobotContainer {
     if (Robot.isReal()) {
       drivebase = new RealDrivebase(getRobotSettings());
 
-      m_arcadeDriveLeftStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis);
-      m_arcadeDriveRightStick = ()
-          ->
-          - m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis);
     } else {
-      m_arcadeDriveLeftStick = () -> - m_driverController.getRawAxis(0);
-      m_arcadeDriveRightStick = () -> - m_driverController.getRawAxis(1);
+      m_arcadeDriveLeftStick = () -> -m_driverController.getRawAxis(0);
+      m_arcadeDriveRightStick = () -> -m_driverController.getRawAxis(1);
       drivebase = new SimulationDrivebase(RobotSettings.Robot.Simulator);
     }
     return drivebase;
@@ -383,9 +379,10 @@ public class RobotContainer {
       return m_rotationLimiter.calculate(joystickPercentage);
     };
 
-    switchDriveTrigger =
-        new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
-            .onTrue(new InstantCommand(() -> { m_switchDrive = !m_switchDrive; }));
+    switchDriveTrigger = new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.BButton))
+        .onTrue(new InstantCommand(() -> {
+          m_switchDrive = !m_switchDrive;
+        }));
 
     if (m_candle != null) {
       ((SubsystemBase) m_candle).setDefaultCommand(new DriveTeamCandle(m_candle, m_drivebase));
@@ -454,9 +451,9 @@ public class RobotContainer {
 
     // Arm Pivot Controls
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-        .whileTrue(new MoveArmPivot(m_armPivot, 0.3));
+        .whileTrue(new MoveArmPivot(m_armPivot, 0.35));
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
-        .whileTrue(new MoveArmPivot(m_armPivot, -0.3));
+        .whileTrue(new MoveArmPivot(m_armPivot, -0.35));
 
     // PID controls (both armpivot and elevator)
     new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kA.value))
@@ -475,10 +472,8 @@ public class RobotContainer {
   }
 
   private double getDriveSpeedScalingFactor() {
-    final boolean isTurbo =
-        m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
-    final boolean isTurtle =
-        m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
 
     if (isTurbo) {
       return Constants.RobotSpeedScaling.TURBO_MODE_SPEED_SCALING;

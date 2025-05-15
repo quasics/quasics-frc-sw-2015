@@ -308,13 +308,14 @@ public class RobotContainer {
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 
-  public static Command shootingSequence(
+  private Command shootingSequence(
       TransitionRoller transitionRoller, Shooter shooter, double power) {
     return Commands.parallel(
-        transitionDelay(transitionRoller), new RunShooter(shooter, power, true));
+        //new RunTransitionRoller(transitionRoller, power, true), new RunShooter(shooter, power, true));
+        new RunTransitionRoller(m_transitionRoller, .5, true));
   }
 
-  public static Command transitionDelay(TransitionRoller transitionRoller) {
+  private Command transitionDelay(TransitionRoller transitionRoller) {
     return Commands.sequence(
         new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, true));
   }

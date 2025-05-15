@@ -211,18 +211,24 @@ public final class Autos {
         return Commands.parallel(
             followPath("1toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 2));
+            Commands.sequence(
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, 0, 2), 0),
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.4), 0)));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
             followPath("2toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)),
                 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 1.5));
+            Commands.sequence(
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, 0, 2), 0),
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.5), 0)));
       case AutonomousStartingPositions.BOTTOM:
         return Commands.parallel(
             followPath("3toreefcoral", true, true),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(0)), 0.0),
-            runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.2), 2));
+            Commands.sequence(
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, 0, 2), 0),
+                runCommandAfterTime(new RunKrakenForTime(m_armRoller, -0.15, 0.4), 0)));
       default:
         return new PrintCommand("scoreCoralInReef failed?");
     }
@@ -238,8 +244,9 @@ public final class Autos {
                 runCommandAfterTime(new MoveElevatorToPosition(m_elevator, TargetPosition.kBottom), 4.1)),
             runCommandAfterTime(new MoveArmPivotToPosition(m_armPivot, Degrees.of(95)), 1.0),
             Commands.sequence(
+                new RunKrakenForTime(m_armRoller, -0.3, 1),
                 Commands.race(runCommandAfterTime(new PulseKraken(m_armRoller, -0.3, 0.3, 0.5), 0.0),
-                    new WaitCommand(4.5)),
+                    new WaitCommand(3.5)),
                 runCommandAfterTime(intakeThenExtake(), 2.8)));
       case AutonomousStartingPositions.MIDDLE:
         return Commands.parallel(
@@ -329,11 +336,11 @@ public final class Autos {
   }
 
   public static Command scoreCoralThenScoreBarge() {
-    return Commands.sequence(scoreCoralThenGrabAlgae(), scoreAtReefIntoBarge());
+    return Commands.sequence(scoreCoralThenGrabAlgae(), scoreAtReefIntoBarge(), moveBackwards());
   }
 
   public static Command scoreCoralThenScoreProcessor() {
-    return Commands.sequence(scoreCoralThenGrabAlgae(), scoreAtReefIntoProcessor());
+    return Commands.sequence(scoreCoralThenGrabAlgae(), scoreAtReefIntoProcessor(), moveBackwards());
   }
 
   /** Example static factory for an autonomous command. */

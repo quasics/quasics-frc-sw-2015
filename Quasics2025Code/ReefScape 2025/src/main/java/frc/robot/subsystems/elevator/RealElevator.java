@@ -28,7 +28,6 @@ public class RealElevator extends AbstractElevator {
   private RelativeEncoder m_encoder;
   private TargetPosition m_targetPosition = TargetPosition.kDontCare;
 
-  private final double VELOCITY_DEADBAND = 30;
   private int m_numCycles = 0;
 
   // TODO: Tune PID values.
@@ -103,8 +102,15 @@ public class RealElevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_VALUE_WHEN_TRIGGERED = false;
 
   public boolean ableToMove(double speed) {
-    return !((m_limitSwitchUp.get() == false && speed < 0)
-        || (m_limitSwitchDown.get() == false && speed > 0));
+    if (speed < 0)
+      return ableToMove(true);
+    else
+      return ableToMove(false);
+  }
+
+  public boolean ableToMove(boolean upDirection) {
+    return !((m_limitSwitchUp.get() == false && upDirection)
+        || (m_limitSwitchDown.get() == false && !upDirection));
   }
 
   protected boolean atBottom() {
@@ -129,13 +135,20 @@ public class RealElevator extends AbstractElevator {
     // SmartDashboard.putBoolean("Able to move", ableToMove());
     // System.out.println(m_targetPosition);
 
-    if (!ableToMove(m_encoder.getVelocity())
-        && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
-      System.out.println("Stopping: at bottom=" + atBottom());
+    /*
+     * if (!ableToMove(m_encoder.getVelocity())
+     * && Math.abs(m_encoder.getVelocity()) > VELOCITY_DEADBAND) {
+     * System.out.println("Stopping: at bottom=" + atBottom());
+     * stop();
+     * if (m_targetPosition != TargetPosition.kDontCare) {
+     * SmartDashboard.putString("StoppingFor" + m_targetPosition, "yes");
+     * }
+     * }
+     */
+    boolean shouldBeMovingUp = getRotationsForPosition(m_targetPosition) < getPosition();
+    if (!ableToMove(shouldBeMovingUp)) {
+      System.out.println("Stopping: " + shouldBeMovingUp);
       stop();
-      if (m_targetPosition != TargetPosition.kDontCare) {
-        SmartDashboard.putString("StoppingFor" + m_targetPosition, "yes");
-      }
     }
 
     if (!m_limitSwitchDown.get()) {
@@ -161,7 +174,7 @@ public class RealElevator extends AbstractElevator {
       final boolean noisy = true;
       if (noisy) {
         System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-                + "output: %.02f, atSetpoint: %b%n",
+            + "output: %.02f, atSetpoint: %b%n",
             m_encoder.getPosition(), targetRotations, velocity, pidOutput, feedforward, output,
             m_pid.atSetpoint());
       }

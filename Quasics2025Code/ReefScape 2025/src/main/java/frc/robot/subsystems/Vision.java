@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.*;
 
 import org.photonvision.EstimatedRobotPose;
@@ -56,6 +57,8 @@ public class Vision extends SubsystemBase {
 
   private PhotonCamera camera = new PhotonCamera("USB_Camera");
   private final PhotonPoseEstimator visionEstimator;
+  private Supplier<Pose2d> poseSupplier;
+  private Pose2d pose;
 
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
@@ -89,7 +92,6 @@ public class Vision extends SubsystemBase {
     }
 
     setUpSimulationSupport();
-
     updateEstimatedGlobalPose();
   }
 
@@ -134,10 +136,9 @@ public class Vision extends SubsystemBase {
     }
   }
 
-  private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
-
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    return m_lastEstimatedPose;
+  private Pose2d getPose() {
+    pose = poseSupplier.get();
+    return pose;
   }
 
   private void updateEstimatedGlobalPose() {
@@ -145,6 +146,6 @@ public class Vision extends SubsystemBase {
       return;
     }
 
-    // lastEstimatedPose = visionEstimator.update();
+    visionSim.update(pose);
   }
 }

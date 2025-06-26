@@ -43,7 +43,7 @@ public class Vision extends SubsystemBase {
   /**
    * sim
    * The predefined tag field layout that should be loaded (or null, if the
-   * reefscape layour isn't being used).
+   * reefscape layout isn't being used).
    */
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
@@ -59,8 +59,10 @@ public class Vision extends SubsystemBase {
   private final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
+  private final AprilTagFieldLayout m_tagLayout;
 
-  public Vision() {
+  public Vision(Supplier<Pose2d> pSupplier) {
+    poseSupplier = pSupplier;
     AprilTagFieldLayout tagLayout = null;
     if (FIELD_LAYOUT != null) {
       try {
@@ -76,6 +78,9 @@ public class Vision extends SubsystemBase {
 
     visionEstimator = new PhotonPoseEstimator(
         tagLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
+
+    m_tagLayout = tagLayout;
+    setUpSimulationSupport();
   }
 
   @Override
@@ -83,6 +88,7 @@ public class Vision extends SubsystemBase {
     // var result = camera.getLatestResult();
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
+    simulationPeriodic();
   }
 
   @Override
@@ -90,8 +96,6 @@ public class Vision extends SubsystemBase {
     if (visionSim == null) {
       return;
     }
-
-    setUpSimulationSupport();
     updateEstimatedGlobalPose();
   }
 
@@ -108,7 +112,8 @@ public class Vision extends SubsystemBase {
     }
 
     visionSim = new VisionSystemSim("main");
-    visionSim.addAprilTags(null);
+    visionSim.addAprilTags(m_tagLayout);
+    getDebugField();
 
     cameraProp = new SimCameraProperties();
     cameraProp.setCalibration(1080, 720, Rotation2d.fromDegrees(78));
@@ -145,7 +150,8 @@ public class Vision extends SubsystemBase {
     if (camera == null) {
       return;
     }
-
+    getPose();
+    System.out.println(pose);
     visionSim.update(pose);
   }
 }

@@ -23,7 +23,7 @@ deploy {
             debug = project.frc.getDebugOrDefault(false)
 
             artifacts {
-                // First part is artifact name, 2nd is artifact type
+                // First part is artifact name, 2nd is artifact typezz
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {

@@ -68,7 +68,7 @@ public class RobotContainer {
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
   @SuppressWarnings("unused")
-  private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision(m_drivebase::getPose);
   private final AbstractCandle m_candle = allocateCandle();
 
   private static AbstractCandle allocateCandle() {

@@ -68,6 +68,18 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+  private double getSpeedScalingFactor() {
+    double scalingFactor;
+   if((driverController.getHID().getRightBumperButton())) {
+    scalingFactor = Constants.Speedscale.TURBO;
+  } else if((driverController.getHID().getLeftBumperButton())) {
+    scalingFactor = Constants.Speedscale.TURTLE;
+  } else {
+    scalingFactor = Constants.Speedscale.DEFAULT;
+  }
+  return scalingFactor;
+}
+
   private void configureBindings() {
     // Set the A button to run the "RollerCommand" command with a fixed
     // value ejecting the gamepiece while the button is held
@@ -82,9 +94,11 @@ public class RobotContainer {
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value). Similarly for the X axis where we need to flip the value so the
     // joystick matches the WPILib convention of counter-clockwise positive
+
     driveSubsystem.setDefaultCommand(new DriveCommand(
-        () -> -driverController.getLeftY() *
-            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
+        () -> -driverController.getLeftY() * getSpeedScalingFactor(),
+//          (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
+            
         () -> -driverController.getRightX(),
         driveSubsystem));
 

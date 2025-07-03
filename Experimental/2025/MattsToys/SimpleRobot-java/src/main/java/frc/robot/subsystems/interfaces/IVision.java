@@ -8,6 +8,8 @@ import edu.wpi.first.units.measure.Distance;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
@@ -46,6 +48,13 @@ public interface IVision extends ISubsystem {
    * @return a list of CameraData objects
    */
   List<CameraData> getCameraDataForSimulation();
+
+  /**
+   * Returns the most recent pose estimates, based on camera data.
+   *
+   * @return the most recent pose estimates
+   */
+  List<Pose2d> getEstimatedPoses();
 
   /**
    * The AprilTagFieldLayout being used by this object.
@@ -112,6 +121,11 @@ public interface IVision extends ISubsystem {
     @Override
     public AprilTagFieldLayout getFieldLayoutForSimulation() {
       return null;
+    }
+
+    @Override
+    public List<Pose2d> getEstimatedPoses() {
+      return Collections.emptyList();
     }
   }
 }

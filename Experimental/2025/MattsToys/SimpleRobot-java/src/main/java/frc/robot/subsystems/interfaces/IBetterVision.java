@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import java.util.Collections;
 import java.util.List;
-import org.photonvision.EstimatedRobotPose;
 
 /**
  * Basic interface for vision processing support.
@@ -27,13 +27,6 @@ public interface IBetterVision extends IVision {
   /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
-  /**
-   * Returns the most recent pose estimates, based on camera data.
-   *
-   * @return the most recent pose estimates
-   */
-  List<EstimatedRobotPose> getEstimatedPoses();
-
   /** Trivial implementation of IBetterVision (e.g., if we don't have a camera). */
   public class NullBetterVision extends IVision.NullVision implements IBetterVision {
     /** Constructor. */
@@ -42,7 +35,7 @@ public interface IBetterVision extends IVision {
     }
 
     @Override
-    public List<EstimatedRobotPose> getEstimatedPoses() {
+    public List<Pose2d> getEstimatedPoses() {
       return Collections.emptyList();
     }
   }

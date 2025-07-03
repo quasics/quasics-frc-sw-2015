@@ -18,6 +18,7 @@ import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -166,6 +167,12 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     }
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  //
+  // IVision functions.
+  //
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
   @Override
   public final List<CameraData> getCameraDataForSimulation() {
     return getCameraData();
@@ -176,15 +183,13 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     return m_tagLayout;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // IVision functions.
-  //
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-
   @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
-    return m_latestEstimatedPoses;
+  public List<Pose2d> getEstimatedPoses() {
+    List<Pose2d> poses = new ArrayList<Pose2d>(m_latestEstimatedPoses.size());
+    for (EstimatedRobotPose estimatedRobotPose : m_latestEstimatedPoses) {
+      poses.add(estimatedRobotPose.estimatedPose.toPose2d());
+    }
+    return poses;
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////

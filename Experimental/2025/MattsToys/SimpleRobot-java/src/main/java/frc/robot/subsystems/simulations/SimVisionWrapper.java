@@ -8,15 +8,13 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-import java.util.ArrayList;
 import java.util.List;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -30,12 +28,12 @@ import org.photonvision.simulation.VisionSystemSim;
  * and the processed stream at http://localhost:1182. These can also be found in
  * the CameraServer tab of Shuffleboard, like a normal camera stream.
  */
-public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
+public class SimVisionWrapper extends SubsystemBase implements IVision {
   /** Determines if simulated imagery will be streamed from the library. */
   final static private boolean ENABLE_IMAGE_STREAMING = true;
 
   /** The primary vision object that's actually being used. */
-  final private IBetterVision m_realVision;
+  final private IVision m_realVision;
 
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
@@ -49,7 +47,7 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
    * @param config     the robot's configuration
    * @param realVision the BetterVision object providing the core functionality
    */
-  public SimVisionWrapper(RobotConfig config, IBetterVision realVision) {
+  public SimVisionWrapper(RobotConfig config, IVision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
       throw new RuntimeException("Camera data mismatch:"
@@ -156,13 +154,9 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
     // Update the simulator to reflect where the (purely) vision-based pose estimate
     // suggests that we are located.
     final var debugField = m_visionSim.getDebugField();
-    var latestEstimates = getEstimatedPoses();
+    List<Pose2d> latestEstimates = getEstimatedPoses();
     if (!latestEstimates.isEmpty()) {
-      List<Pose2d> poses = new ArrayList<Pose2d>();
-      for (EstimatedRobotPose estimatedRobotPose : latestEstimates) {
-        poses.add(estimatedRobotPose.estimatedPose.toPose2d());
-      }
-      debugField.getObject("VisionEstimation").setPoses(poses);
+      debugField.getObject("VisionEstimation").setPoses(latestEstimates);
     } else {
       debugField.getObject("VisionEstimation").setPoses();
     }
@@ -201,7 +195,7 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
   }
 
   @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
+  public List<Pose2d> getEstimatedPoses() {
     return m_realVision.getEstimatedPoses();
   }
 

@@ -80,6 +80,16 @@ public class SimpleVision extends SubsystemBase implements IVision {
   }
 
   @Override
+  public List<Pose2d> getEstimatedPoses() {
+    var estimate = getEstimatedRobotPose();
+    if (estimate.isPresent()) {
+      return Collections.singletonList(estimate.get().toPose2d());
+    } else {
+      return Collections.emptyList();
+    }
+  }
+
+  @Override
   public boolean hasTargetsInView() {
     return getLatestResult().hasTargets();
   }
@@ -91,8 +101,7 @@ public class SimpleVision extends SubsystemBase implements IVision {
    * @param cameraData   camera information (providing visible targets and "robotToCamera" info)
    * @return estimate of where the robot is on the field, if we can see anything
    */
-  private Optional<Pose3d> getEstimatedRobotPose(
-      AprilTagFieldLayout fieldLayout, CameraData cameraData) {
+  private Optional<Pose3d> getEstimatedRobotPose() {
     final var latestResults = getLatestResult();
     final var bestTarget = latestResults.getBestTarget();
     if (bestTarget == null) {
@@ -101,15 +110,15 @@ public class SimpleVision extends SubsystemBase implements IVision {
     }
 
     var bestTargetId = bestTarget.getFiducialId();
-    if (!fieldLayout.getTagPose(bestTargetId).isPresent()) {
+    if (!m_tagLayout.getTagPose(bestTargetId).isPresent()) {
       // Target not in the field layout: huh?
       return Optional.empty();
     }
 
     // OK, do some math....
-    var cameraToRobot = cameraData.transform3d().inverse();
+    var cameraToRobot = m_cameraData.transform3d().inverse();
     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(bestTarget.getBestCameraToTarget(),
-        fieldLayout.getTagPose(bestTargetId).get(), cameraToRobot);
+        m_tagLayout.getTagPose(bestTargetId).get(), cameraToRobot);
     return Optional.of(robotPose);
   }
 
@@ -117,14 +126,14 @@ public class SimpleVision extends SubsystemBase implements IVision {
   public List<TargetData> getVisibleTargets(Pose2d robotPose) {
     // If the caller didn't give us a pose, then try to estimate it based on what we can see.
     if (robotPose == null) {
-      var estimatedPose = getEstimatedRobotPose(m_tagLayout, m_cameraData).orElse(null);
-      if (estimatedPose == null) {
+      var estimatedPose = getEstimatedRobotPose();
+      if (estimatedPose.isEmpty()) {
         // OK, can't estimate where we are, so bail out.
         return Collections.emptyList();
       }
 
       // Fine: now we think we know where we are.
-      robotPose = estimatedPose.toPose2d();
+      robotPose = estimatedPose.get().toPose2d();
     }
 
     final var latestResults = getLatestResult();

@@ -48,11 +48,12 @@ import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
 import frc.robot.utils.DeadbandEnforcer;
-import frc.robot.utils.EventLogger;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.StateChangeExecutor;
 import frc.robot.utils.SysIdGenerator;
+import frc.robot.utils.logging.EventLogger;
+import frc.robot.utils.logging.StringEventLogger;
 import java.util.function.Supplier;
 
 /**
@@ -91,7 +92,7 @@ public class RobotContainer {
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
 
-  final EventLogger m_eventLogger = new EventLogger.StringEventLogger();
+  final EventLogger m_eventLogger = new StringEventLogger();
 
   // Controllers
   //
@@ -150,7 +151,7 @@ public class RobotContainer {
     }
 
     // Testing event logging: dump the contents whenever we're disabled
-    if (m_eventLogger != null && m_eventLogger instanceof EventLogger.StringEventLogger) {
+    if (m_eventLogger != null && m_eventLogger instanceof StringEventLogger) {
       final StateChangeExecutor executor = new StateChangeExecutor(
           // State supplier
           ()
@@ -161,7 +162,7 @@ public class RobotContainer {
           ()
               -> {
             System.err.println("Dumping event log:");
-            System.err.println(((EventLogger.StringEventLogger) m_eventLogger).getContents());
+            System.err.println(((StringEventLogger) m_eventLogger).getContents());
           },
           // Triggering mode
           StateChangeExecutor.Mode.GoesTrue);

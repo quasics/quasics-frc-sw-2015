@@ -26,9 +26,9 @@ import frc.robot.sensors.SparkMaxEncoderWrapper;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.simulations.SimulationUxSupport.DeviceStatus;
-import frc.robot.utils.EventLogger;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import frc.robot.utils.StateChangeExecutor;
+import frc.robot.utils.logging.EventLogger;
 
 /**
  * Completes the AbstractElevator class definition for the purpose of

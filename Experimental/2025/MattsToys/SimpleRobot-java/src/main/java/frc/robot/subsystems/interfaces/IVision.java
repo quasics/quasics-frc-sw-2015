@@ -8,8 +8,6 @@ import edu.wpi.first.units.measure.Distance;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 

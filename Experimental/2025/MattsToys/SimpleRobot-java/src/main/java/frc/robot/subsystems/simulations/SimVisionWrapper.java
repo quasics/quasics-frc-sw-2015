@@ -4,26 +4,24 @@
 
 package frc.robot.subsystems.simulations;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
-import org.photonvision.simulation.VisionSystemSim;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.IBetterVision;
+import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.live.Vision;
 import frc.robot.subsystems.live.Vision.CameraData;
-import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import java.util.ArrayList;
+import java.util.List;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
 
 /**
  * Implements a simulation wrapper on top of an AbstractCamera object.
@@ -34,7 +32,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
  * and the processed stream at http://localhost:1182. These can also be found in
  * the CameraServer tab of Shuffleboard, like a normal camera stream.
  */
-public class SimVisionWrapper extends SubsystemBase implements IVision {
+public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
   /** Determines if simulated imagery will be streamed from the library. */
   final static private boolean ENABLE_IMAGE_STREAMING = true;
 
@@ -49,18 +47,16 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config     the robot's configuration
    * @param realVision the AbstractVision object providing the core functionality
    */
   public SimVisionWrapper(RobotConfig config, Vision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
-      throw new RuntimeException(
-          "Camera data mismatch:" +
-              " config has " + config.cameras().size() +
-              " but we only have " + realVision.getCameraDataForSimulation().size() +
-              " cameras allocated!");
+      throw new RuntimeException("Camera data mismatch:"
+          + " config has " + config.cameras().size() + " but we only have "
+          + realVision.getCameraDataForSimulation().size() + " cameras allocated!");
     }
 
     // Basic setup
@@ -81,25 +77,23 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     for (int index = 0; index < m_realVision.getCameraDataForSimulation().size(); ++index) {
       final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(index);
       final CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
-      m_visionSim.addCamera(
-          configureCameraSim(cameraConfig, cameraData),
-          cameraData.transform3d());
+      m_visionSim.addCamera(configureCameraSim(cameraConfig, cameraData), cameraData.transform3d());
     }
   }
 
   /**
    * Sets up simulation for the specified camera.
-   * 
+   *
    * @param cameraConfig camera configuration data
    * @param cameraData   the camera record from the underlying AbstractVision
    *                     object
    * @return the simulation controller for the camera
    */
-  private PhotonCameraSim configureCameraSim(RobotConfigs.CameraConfig cameraConfig, CameraData cameraData) {
+  private PhotonCameraSim configureCameraSim(
+      RobotConfigs.CameraConfig cameraConfig, CameraData cameraData) {
     // Set up the camera simulation
-    PhotonCameraSim cameraSim = new PhotonCameraSim(
-        cameraData.camera(),
-        getCameraProperties(cameraConfig));
+    PhotonCameraSim cameraSim =
+        new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
 
     // Enable/disable the raw and processed streams. (These are enabled by default.)
     cameraSim.enableRawStream(ENABLE_IMAGE_STREAMING);
@@ -128,12 +122,9 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    */
   private static SimCameraProperties getCameraProperties(CameraConfig cameraConfig) {
     SimCameraProperties cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(
-        cameraConfig.imaging().width(),
-        cameraConfig.imaging().height(),
+    cameraProp.setCalibration(cameraConfig.imaging().width(), cameraConfig.imaging().height(),
         new Rotation2d(cameraConfig.imaging().fov()));
-    cameraProp.setFPS(
-        cameraConfig.imaging().fps());
+    cameraProp.setFPS(cameraConfig.imaging().fps());
 
     // Approximate detection noise with average and standard deviation error in
     // pixels.
@@ -159,9 +150,9 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
 
     // Update the simulator to show where the drive base's (pure) odometry suggests
     // that we are located.
-    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common
-        .getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class)
-        .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters =
+        (Pose2d) BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class)
+            .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
     // Update the simulator to reflect where the (purely) vision-based pose estimate
@@ -180,17 +171,14 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
 
     // Update the simulator to reflect where the drivebase's (potentially composite)
     // pose estimate suggests that we are located.
-    var driveBaseEstimatedPose = BulletinBoard.common
-        .getValue(IDrivebase.ESTIMATED_POSE_KEY, Pose2d.class);
+    var driveBaseEstimatedPose =
+        BulletinBoard.common.getValue(IDrivebase.ESTIMATED_POSE_KEY, Pose2d.class);
     driveBaseEstimatedPose.ifPresentOrElse(
         // Do this with the estimated pose from drive base (if it has some)
-        est -> {
-          debugField.getObject("DriveEstimation").setPose((Pose2d) est);
-        },
+        est
+        -> { debugField.getObject("DriveEstimation").setPose((Pose2d) est); },
         // If we have no estimated pose from the drive base, do this
-        () -> {
-          debugField.getObject("DriveEstimation").setPoses();
-        });
+        () -> { debugField.getObject("DriveEstimation").setPoses(); });
   }
 
   @Override
@@ -207,5 +195,15 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
   @Override
   public List<EstimatedRobotPose> getEstimatedPoses() {
     return m_realVision.getEstimatedPoses();
+  }
+
+  @Override
+  public boolean hasTargetsInView() {
+    return m_realVision.hasTargetsInView();
+  }
+
+  @Override
+  public List<TargetData> getTargets() {
+    return m_realVision.getTargets();
   }
 }

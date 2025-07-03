@@ -30,11 +30,11 @@ import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
-import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
@@ -89,7 +89,7 @@ public class RobotContainer {
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   @SuppressWarnings("unused") // Vision interacts via BulletinBoard
-  final private IVision m_vision = allocateVision(m_robotConfig);
+  final private IBetterVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
 
   final EventLogger m_eventLogger = new StringEventLogger();
@@ -495,9 +495,9 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return a Vision subsystem for this robot (may be trivial)
    */
-  private static IVision allocateVision(RobotConfigs.RobotConfig config) {
+  private static IBetterVision allocateVision(RobotConfigs.RobotConfig config) {
     if (!config.hasCamera()) {
-      return new IVision.NullVision();
+      return new IBetterVision.NullVision();
     }
 
     if (Robot.isReal()) {

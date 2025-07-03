@@ -500,6 +500,8 @@ public class RobotContainer {
       return new IVision.NullVision();
     }
 
+    // TODO: Add code to switch between SimpleVision and BetterVision instances, depending
+    // on the number of cameras, so that both can be tested.
     if (Robot.isReal()) {
       return new BetterVision(config);
     } else {

@@ -192,6 +192,18 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     return poses;
   }
 
+  @Override
+  public boolean hasTargetsInView() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'hasTargetsInView'");
+  }
+
+  @Override
+  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getTargets'");
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //
   // SubsystemBase functions.
@@ -222,17 +234,5 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     // Save it, and publish it.
     m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
     publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
-  }
-
-  @Override
-  public boolean hasTargetsInView() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'hasTargetsInView'");
-  }
-
-  @Override
-  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getTargets'");
   }
 }

@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.interfaces;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import java.util.Collections;
 import java.util.List;
 import org.photonvision.EstimatedRobotPose;

@@ -27,16 +27,14 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+/**
+ * A simple class for handling a single camera and determining estimated distance/angle for any
+ * visible targets.
+ */
 public class SimpleVision extends SubsystemBase implements IVision {
   final private CameraData m_cameraData;
 
   /** TODO: Move layout-oriented stuff into a common base for Simple/BetterVision. */
-
-  /**
-   * The layout of the AprilTags on the field. This is used for the pose
-   * estimation (as well as in the simulator, when it's rendering the tag).
-   */
-  protected final AprilTagFieldLayout m_tagLayout;
 
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
@@ -45,8 +43,17 @@ public class SimpleVision extends SubsystemBase implements IVision {
                                            : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
       ;
+  /**
+   * The layout of the AprilTags on the field. This is used for the pose
+   * estimation (as well as in the simulator, when it's rendering the tag).
+   */
+  protected final AprilTagFieldLayout m_tagLayout;
 
-  /** Creates a new SimpleVision. */
+  /**
+   * Creates a new SimpleVision.
+   *
+   * @param config  configuration of the underlying robot (which *must* have at least 1 camera)
+   */
   public SimpleVision(RobotConfig config) {
     setName(IVision.SUBSYSTEM_NAME);
     m_tagLayout = IVision.loadLayout(FIELD_LAYOUT.m_resourceFile);

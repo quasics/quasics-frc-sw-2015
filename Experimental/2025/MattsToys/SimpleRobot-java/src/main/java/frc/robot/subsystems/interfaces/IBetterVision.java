@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import java.util.Collections;
 import java.util.List;
 import org.photonvision.EstimatedRobotPose;
@@ -13,7 +14,7 @@ import org.photonvision.EstimatedRobotPose;
  */
 public interface IBetterVision extends IVision {
   /** Name for the subsystem (and base for BulletinBoard keys). */
-  static final String SUBSYSTEM_NAME = "Vision";
+  static final String SUBSYSTEM_NAME = "BetterVision";
 
   /**
    * Key used to post multi-camera List of EstimatedRobotPose data to
@@ -52,7 +53,7 @@ public interface IBetterVision extends IVision {
     }
 
     @Override
-    public List<TargetData> getTargets() {
+    public List<TargetData> getVisibleTargets(Pose2d robotPose) {
       return Collections.emptyList();
     }
   }

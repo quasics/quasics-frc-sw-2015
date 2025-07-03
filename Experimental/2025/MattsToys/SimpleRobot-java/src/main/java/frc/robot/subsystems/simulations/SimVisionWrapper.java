@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.live.BetterVision;
-import frc.robot.subsystems.live.BetterVision.CameraData;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -203,7 +202,7 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
   }
 
   @Override
-  public List<TargetData> getTargets() {
-    return m_realVision.getTargets();
+  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+    return m_realVision.getVisibleTargets(robotPose);
   }
 }

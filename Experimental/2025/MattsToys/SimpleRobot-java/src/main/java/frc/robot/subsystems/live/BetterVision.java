@@ -13,11 +13,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,21 +33,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
  * Photonvision libraries/server.
  */
 public class BetterVision extends SubsystemBase implements IBetterVision {
-  /**
-   * Camera data set.
-   *
-   * @param camera      connection to the camera
-   * @param transform3d defines the conversion from the robot's position, to the
-   *                    cameras's
-   * @param estimator   pose estimator associated with this camera. Note that (per
-   *                    docs) the estimated poses can have a lot of
-   *                    uncertainty/error baked into them when you are further
-   *                    away from the targets.
-   */
-  public record CameraData(
-      PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
-
   /** Pose strategy to be used for resolving estimates. */
   protected static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -79,16 +64,7 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
    */
   public BetterVision(RobotConfig config) {
     setName(IBetterVision.SUBSYSTEM_NAME);
-
-    // Load the layout of the AprilTags on the field.
-    AprilTagFieldLayout tagLayout = null;
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
-    } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
-      ioe.printStackTrace();
-    }
-    m_tagLayout = tagLayout;
+    m_tagLayout = IVision.loadLayout(FIELD_LAYOUT.m_resourceFile);
 
     // Add each of the cameras to our known set.
     List<RobotConfigs.CameraConfig> cameras = config.cameras();
@@ -268,7 +244,7 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
   }
 
   @Override
-  public List<TargetData> getTargets() {
+  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getTargets'");
   }

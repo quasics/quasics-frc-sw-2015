@@ -497,7 +497,7 @@ public class RobotContainer {
    */
   private static IBetterVision allocateVision(RobotConfigs.RobotConfig config) {
     if (!config.hasCamera()) {
-      return new IBetterVision.NullVision();
+      return new IBetterVision.NullBetterVision();
     }
 
     if (Robot.isReal()) {

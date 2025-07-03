@@ -35,25 +35,15 @@ public interface IBetterVision extends IVision {
    */
   List<EstimatedRobotPose> getEstimatedPoses();
 
-  /** Trivial implementation of IVision (e.g., if we don't have a camera). */
-  public class NullVision implements IBetterVision {
+  /** Trivial implementation of IBetterVision (e.g., if we don't have a camera). */
+  public class NullBetterVision extends IVision.NullVision implements IBetterVision {
     /** Constructor. */
-    public NullVision() {
-      System.out.println("INFO: allocating NullVision");
+    public NullBetterVision() {
+      System.out.println("INFO: allocating NullBetterVision");
     }
 
     @Override
     public List<EstimatedRobotPose> getEstimatedPoses() {
-      return Collections.emptyList();
-    }
-
-    @Override
-    public boolean hasTargetsInView() {
-      return false;
-    }
-
-    @Override
-    public List<TargetData> getVisibleTargets(Pose2d robotPose) {
       return Collections.emptyList();
     }
   }

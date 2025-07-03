@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
@@ -66,5 +68,23 @@ public interface IVision extends ISubsystem {
    */
   public record CameraData(
       PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
+  }
+
+  /** Trivial implementation of IVision (e.g., if we don't have a camera). */
+  public class NullVision implements IVision {
+    /** Constructor. */
+    public NullVision() {
+      System.out.println("INFO: allocating NullVision");
+    }
+
+    @Override
+    public boolean hasTargetsInView() {
+      return false;
+    }
+
+    @Override
+    public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+      return Collections.emptyList();
+    }
   }
 }

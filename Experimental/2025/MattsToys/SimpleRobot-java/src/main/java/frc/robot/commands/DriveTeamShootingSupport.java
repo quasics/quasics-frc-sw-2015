@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static frc.robot.Constants.FieldConstants.*;
 import static frc.robot.utils.SupportFunctions.isBetween;
 

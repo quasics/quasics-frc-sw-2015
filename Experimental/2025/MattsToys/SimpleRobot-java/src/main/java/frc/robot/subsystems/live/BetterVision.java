@@ -32,7 +32,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
  * Vision processing implementation for a single/multiple cameras, using the
  * Photonvision libraries/server.
  */
-public class Vision extends SubsystemBase implements IBetterVision {
+public class BetterVision extends SubsystemBase implements IBetterVision {
   /**
    * Camera data set.
    *
@@ -77,7 +77,7 @@ public class Vision extends SubsystemBase implements IBetterVision {
    *
    * @param config robot configuration, including camera data
    */
-  public Vision(RobotConfig config) {
+  public BetterVision(RobotConfig config) {
     setName(IBetterVision.SUBSYSTEM_NAME);
 
     // Load the layout of the AprilTags on the field.

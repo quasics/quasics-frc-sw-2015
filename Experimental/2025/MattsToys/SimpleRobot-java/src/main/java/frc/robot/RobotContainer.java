@@ -36,11 +36,11 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.live.Arm;
+import frc.robot.subsystems.live.BetterVision;
 import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
-import frc.robot.subsystems.live.Vision;
 import frc.robot.subsystems.simulations.SimCandle;
 import frc.robot.subsystems.simulations.SimDrivebase;
 import frc.robot.subsystems.simulations.SimVisionWrapper;
@@ -501,9 +501,9 @@ public class RobotContainer {
     }
 
     if (Robot.isReal()) {
-      return new Vision(config);
+      return new BetterVision(config);
     } else {
-      return new SimVisionWrapper(config, new Vision(config));
+      return new SimVisionWrapper(config, new BetterVision(config));
     }
   }
 

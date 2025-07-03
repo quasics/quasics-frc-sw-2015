@@ -103,12 +103,12 @@ public class SimpleVision extends SubsystemBase implements IVision {
    */
   private Optional<Pose3d> getEstimatedRobotPose() {
     final var latestResults = getLatestResult();
-    final var bestTarget = latestResults.getBestTarget();
-    if (bestTarget == null) {
+    if (latestResults.hasTargets()) {
       // No targets in view
       return Optional.empty();
     }
 
+    final var bestTarget = latestResults.getBestTarget();
     var bestTargetId = bestTarget.getFiducialId();
     if (!m_tagLayout.getTagPose(bestTargetId).isPresent()) {
       // Target not in the field layout: huh?

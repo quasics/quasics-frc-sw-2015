@@ -166,30 +166,12 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  //
-  // Functions exposed for simulation support.
-  //
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Returns the list of CameraData records being used by this object.
-   *
-   * Note: this is exposed as public only for use with SimVisionWrapper.
-   *
-   * @return a list of CameraData objects
-   */
+  @Override
   public final List<CameraData> getCameraDataForSimulation() {
     return getCameraData();
   }
 
-  /**
-   * The AprilTagFieldLayout being used by this object.
-   *
-   * Note: this is exposed as public only for use with SimVisionWrapper.
-   *
-   * @return an AprilTagFieldLayout
-   */
+  @Override
   public final AprilTagFieldLayout getFieldLayoutForSimulation() {
     return m_tagLayout;
   }

@@ -38,6 +38,24 @@ public interface IVision extends ISubsystem {
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
 
+  /**
+   * Returns the list of CameraData records being used by this object.
+   *
+   * Note: this is exposed as public only for use with SimVisionWrapper.
+   *
+   * @return a list of CameraData objects
+   */
+  List<CameraData> getCameraDataForSimulation();
+
+  /**
+   * The AprilTagFieldLayout being used by this object.
+   *
+   * Note: this is exposed as public only for use with SimVisionWrapper.
+   *
+   * @return an AprilTagFieldLayout
+   */
+  AprilTagFieldLayout getFieldLayoutForSimulation();
+
   /////////////////////////////////////////////////////////////////////////////
   // default methods and static helpers
   //
@@ -77,6 +95,11 @@ public interface IVision extends ISubsystem {
     }
 
     @Override
+    public List<CameraData> getCameraDataForSimulation() {
+      return Collections.emptyList();
+    }
+
+    @Override
     public boolean hasTargetsInView() {
       return false;
     }
@@ -84,6 +107,11 @@ public interface IVision extends ISubsystem {
     @Override
     public List<TargetData> getVisibleTargets(Pose2d robotPose) {
       return Collections.emptyList();
+    }
+
+    @Override
+    public AprilTagFieldLayout getFieldLayoutForSimulation() {
+      return null;
     }
   }
 }

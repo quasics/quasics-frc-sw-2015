@@ -70,6 +70,16 @@ public class SimpleVision extends SubsystemBase implements IVision {
   }
 
   @Override
+  public AprilTagFieldLayout getFieldLayoutForSimulation() {
+    return m_tagLayout;
+  }
+
+  @Override
+  public List<CameraData> getCameraDataForSimulation() {
+    return Collections.singletonList(m_cameraData);
+  }
+
+  @Override
   public boolean hasTargetsInView() {
     return getLatestResult().hasTargets();
   }

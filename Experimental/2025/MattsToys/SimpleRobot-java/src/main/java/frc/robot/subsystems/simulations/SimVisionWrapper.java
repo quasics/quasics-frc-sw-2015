@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.live.BetterVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -36,7 +35,7 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
   final static private boolean ENABLE_IMAGE_STREAMING = true;
 
   /** The primary vision object that's actually being used. */
-  final private BetterVision m_realVision;
+  final private IBetterVision m_realVision;
 
   /**
    * Handles the nuts and bolts of the actual simulation, including wireframe
@@ -48,9 +47,9 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
    * Constructor.
    *
    * @param config     the robot's configuration
-   * @param realVision the AbstractVision object providing the core functionality
+   * @param realVision the BetterVision object providing the core functionality
    */
-  public SimVisionWrapper(RobotConfig config, BetterVision realVision) {
+  public SimVisionWrapper(RobotConfig config, IBetterVision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
       throw new RuntimeException("Camera data mismatch:"
@@ -182,7 +181,7 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
 
   @Override
   public void periodic() {
-    m_realVision.periodic();
+    ((SubsystemBase) m_realVision).periodic();
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -190,6 +189,16 @@ public class SimVisionWrapper extends SubsystemBase implements IBetterVision {
   // IVision methods
   //
   //////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public AprilTagFieldLayout getFieldLayoutForSimulation() {
+    return m_realVision.getFieldLayoutForSimulation();
+  }
+
+  @Override
+  public List<CameraData> getCameraDataForSimulation() {
+    return m_realVision.getCameraDataForSimulation();
+  }
 
   @Override
   public List<EstimatedRobotPose> getEstimatedPoses() {

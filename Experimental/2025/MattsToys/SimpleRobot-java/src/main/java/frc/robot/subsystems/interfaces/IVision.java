@@ -1,5 +1,8 @@
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -7,9 +10,12 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
  * Simple vision subsystem interface.
@@ -25,6 +31,21 @@ public interface IVision extends ISubsystem {
    * @param angle yaw to the angle (positive left)
    */
   record TargetData(int id, Angle angle, Distance distance) {
+  }
+
+  /**
+   * Camera data set.
+   *
+   * @param camera      connection to the camera
+   * @param transform3d defines the conversion from the robot's position, to the
+   *                    cameras's
+   * @param estimator   pose estimator associated with this camera. Note that (per
+   *                    docs) the estimated poses can have a lot of
+   *                    uncertainty/error baked into them when you are further
+   *                    away from the targets.
+   */
+  public record CameraData(
+      PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -79,19 +100,40 @@ public interface IVision extends ISubsystem {
     return tagLayout;
   }
 
-  /**
-   * Camera data set.
-   *
-   * @param camera      connection to the camera
-   * @param transform3d defines the conversion from the robot's position, to the
-   *                    cameras's
-   * @param estimator   pose estimator associated with this camera. Note that (per
-   *                    docs) the estimated poses can have a lot of
-   *                    uncertainty/error baked into them when you are further
-   *                    away from the targets.
-   */
-  public record CameraData(
-      PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
+  // Making this a helper function, since getLatestResult() is now deprecated, and
+  // I'm trying to cut down on the number of warnings.
+  static PhotonPipelineResult getLatestResult(CameraData cameraData) {
+    // TODO: look at replacing this with something in a reusable base class to try to
+    // cache data; when it's read in periodic() (at least under simulation), I frequently
+    // see 1+ targets being reported, and then "nothing visible" for 1-3 iteratons, and
+    // then the targets are visible again, despite the robot not moving.  As a result,
+    // I think that there's a possible interaction with how getAllUnreadResults() works,
+    // which is preventing the results from being cached, regardless of what the docs
+    // for "PhotonCamera.getLatestResult" seeming to suggest.
+    return cameraData.camera().getLatestResult();
+  }
+
+  static List<TargetData> getTargetDataForCamera(
+      CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+    final var latestResults = IVision.getLatestResult(cameraData);
+    List<TargetData> targets = new LinkedList<TargetData>();
+    for (var result : latestResults.targets) {
+      var tagPose = fieldLayout.getTagPose(result.fiducialId);
+      if (tagPose.isEmpty()) {
+        continue;
+      }
+
+      // Given where we *know* the target is on the field, and where we *think*
+      // that the robot is, how far away are we from the target?
+      final Distance distanceToTarget =
+          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+
+      TargetData curTargetData =
+          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      targets.add(curTargetData);
+    }
+
+    return targets;
   }
 
   /** Trivial implementation of IVision (e.g., if we don't have a camera). */

@@ -194,14 +194,49 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
 
   @Override
   public boolean hasTargetsInView() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'hasTargetsInView'");
+    for (CameraData cameraData : m_cameraData) {
+      if (IVision.getLatestResult(cameraData).hasTargets()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Pose2d getEstimatedPose() {
+    final Pose2d robotPose = m_latestEstimatedPoses.isEmpty()
+        ? null
+        : m_latestEstimatedPoses.get(0).estimatedPose.toPose2d();
+    return robotPose;
+  }
+
+  // Note that this can provide multiple readings for a given target, if it can be
+  // seen by more than 1 camera.
+  //
+  // TODO: Test this....
+  @Override
+  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+    // If the caller didn't give us a pose, then try to estimate it based on what we can see.
+    if (robotPose == null) {
+      var estimatedPose = getEstimatedPose();
+      if (estimatedPose == null) {
+        // OK, can't estimate where we are, so bail out.
+        return Collections.emptyList();
+      }
+
+      // Fine: now we think we know where we are.
+      robotPose = estimatedPose;
+    }
+
+    List<TargetData> targets = new LinkedList<TargetData>();
+    for (CameraData cameraData : m_cameraData) {
+      targets.addAll(IVision.getTargetDataForCamera(cameraData, m_tagLayout, robotPose));
+    }
+    return targets;
   }
 
   @Override
-  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getTargets'");
+  public List<TargetData> getVisibleTargets() {
+    return getVisibleTargets(getEstimatedPose());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,5 +269,7 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
     // Save it, and publish it.
     m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
     publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
+
+    System.out.println("Targets: " + getVisibleTargets());
   }
 }

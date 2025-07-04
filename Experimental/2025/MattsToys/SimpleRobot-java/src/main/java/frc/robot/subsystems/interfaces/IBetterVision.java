@@ -27,6 +27,8 @@ public interface IBetterVision extends IVision {
   /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
+  List<TargetData> getVisibleTargets();
+
   /** Trivial implementation of IBetterVision (e.g., if we don't have a camera). */
   public class NullBetterVision extends IVision.NullVision implements IBetterVision {
     /** Constructor. */
@@ -36,6 +38,11 @@ public interface IBetterVision extends IVision {
 
     @Override
     public List<Pose2d> getEstimatedPoses() {
+      return Collections.emptyList();
+    }
+
+    @Override
+    public List<TargetData> getVisibleTargets() {
       return Collections.emptyList();
     }
   }

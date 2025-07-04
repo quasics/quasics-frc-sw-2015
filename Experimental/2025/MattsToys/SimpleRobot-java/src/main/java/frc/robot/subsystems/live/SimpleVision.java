@@ -1,11 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.live;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -14,18 +11,15 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
  * A simple class for handling a single camera and determining estimated distance/angle for any
@@ -70,12 +64,6 @@ public class SimpleVision extends SubsystemBase implements IVision {
     m_cameraData = new CameraData(camera, robotToCamera, null);
   }
 
-  // Making this a helper function, since getLatestResult() is now deprecated, and
-  // I'm trying to cut down on the number of warnings.
-  private PhotonPipelineResult getLatestResult() {
-    return m_cameraData.camera().getLatestResult();
-  }
-
   @Override
   public AprilTagFieldLayout getFieldLayoutForSimulation() {
     return m_tagLayout;
@@ -98,7 +86,7 @@ public class SimpleVision extends SubsystemBase implements IVision {
 
   @Override
   public boolean hasTargetsInView() {
-    return getLatestResult().hasTargets();
+    return IVision.getLatestResult(m_cameraData).hasTargets();
   }
 
   /**
@@ -109,7 +97,7 @@ public class SimpleVision extends SubsystemBase implements IVision {
    * @return estimate of where the robot is on the field, if we can see anything
    */
   private Optional<Pose3d> getEstimatedRobotPose() {
-    final var latestResults = getLatestResult();
+    final var latestResults = IVision.getLatestResult(m_cameraData);
     if (latestResults.hasTargets()) {
       // No targets in view
       return Optional.empty();
@@ -144,23 +132,6 @@ public class SimpleVision extends SubsystemBase implements IVision {
       robotPose = estimatedPose.get().toPose2d();
     }
 
-    final var latestResults = getLatestResult();
-    List<TargetData> targets = new LinkedList<TargetData>();
-    for (var result : latestResults.targets) {
-      var tagPose = m_tagLayout.getTagPose(result.fiducialId);
-      if (tagPose.isEmpty()) {
-        continue;
-      }
-
-      // Given where we *know* the target is on the field, and where we *think*
-      // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget =
-          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
-
-      TargetData curTargetData =
-          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
-      targets.add(curTargetData);
-    }
-    return targets;
+    return IVision.getTargetDataForCamera(m_cameraData, m_tagLayout, robotPose);
   }
 }

@@ -175,7 +175,11 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
 
   @Override
   public void periodic() {
-    ((SubsystemBase) m_realVision).periodic();
+    super.periodic();
+
+    // Note that we aren't making a pass-through call to the periodic function on
+    // m_realVision here; its version will automatically be invoked as well by the
+    // framework, so we don't want to double-up on that.
   }
 
   //////////////////////////////////////////////////////////////////////////////

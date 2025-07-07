@@ -16,6 +16,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Simple vision subsystem interface.
@@ -116,8 +117,12 @@ public interface IVision extends ISubsystem {
   static List<TargetData> getTargetDataForCamera(
       CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
     final var latestResults = IVision.getLatestResult(cameraData);
+    if (!latestResults.hasTargets()) {
+      return Collections.emptyList();
+    }
+
     List<TargetData> targets = new LinkedList<TargetData>();
-    for (var result : latestResults.targets) {
+    for (PhotonTrackedTarget result : latestResults.targets) {
       var tagPose = fieldLayout.getTagPose(result.fiducialId);
       if (tagPose.isEmpty()) {
         continue;

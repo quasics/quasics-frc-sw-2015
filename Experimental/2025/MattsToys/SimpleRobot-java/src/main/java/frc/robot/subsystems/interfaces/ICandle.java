@@ -11,7 +11,8 @@ import frc.robot.subsystems.interfaces.ILighting.StockColor;
 
 /**
  * Simple (trivial!) interface to a CTRE "CANdle" device that can be set to a
- * specific color.
+ * specific color (e.g., for providing visual signals to the drive team about
+ * the robot's status/position/etc.).
  *
  * @see ILighting.StockColor
  * @see <a href="https://store.ctr-electronics.com/products/candle">Product
@@ -54,7 +55,24 @@ public interface ICandle extends ISubsystem {
   }
 
   /**
-   * Helper/sample function to set the candle's lighting based on the robot's current status.
+   * Sets all of the LEDs on the CANdle to the specified color.
+   *
+   * @param r the red component of the new color
+   * @param g the green component of the new color
+   * @param b the blue component of the new color
+   */
+  void setColor(int r, int g, int b);
+
+  /**
+   * Sets the lighting intensity/brightness.
+   *
+   * @param intensity new value of lighting brightness [0-1]
+   */
+  void setIntensity(double intensity);
+
+  /**
+   * Helper/sample function to set a candle's lighting, based on the robot's
+   * assigned alliance, "enabled" status, and whether or not it is e-stopped.
    *
    * @param candle the ICandle being manipulated
    */
@@ -87,23 +105,10 @@ public interface ICandle extends ISubsystem {
   }
 
   /**
-   * Sets all of the LEDs on the CANdle to the specified color.
-   *
-   * @param r the red component of the new color
-   * @param g the green component of the new color
-   * @param b the blue component of the new color
-   */
-  void setColor(int r, int g, int b);
-
-  /**
-   * Sets the lighting intensity/brightness.
-   *
-   * @param intensity new value of lighting brightness [0-1]
-   */
-  void setIntensity(double intensity);
-
-  /**
    * A "null object" implementation of the ICandle interface that does nothing.
+   * (For example, if we have some robots with an CANdle installed and others
+   * without, and don't want to have to check in code every time we might do
+   * something with the CANdle to see if we actually have one.)
    */
   public static class NullCandle implements ICandle {
     /** Constructor. */

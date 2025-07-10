@@ -25,20 +25,18 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
-
 import java.util.List;
 import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 
 /**
  * Basic implementation of chunks of the IDrivebase interface. Setup/retrieval
  * of the underlying hardware is left to derived classes.
- * 
+ *
  * Possible improvements:
  * <ul>
  * <li>
@@ -92,16 +90,11 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
     // PID and FF setup
     m_leftPidController = new PIDController(
-        driveConfig.leftPid().kP(),
-        driveConfig.leftPid().kI(),
-        driveConfig.leftPid().kD());
+        driveConfig.leftPid().kP(), driveConfig.leftPid().kI(), driveConfig.leftPid().kD());
     m_rightPidController = new PIDController(
-        driveConfig.rightPid().kP(),
-        driveConfig.rightPid().kI(),
-        driveConfig.rightPid().kD());
+        driveConfig.rightPid().kP(), driveConfig.rightPid().kI(), driveConfig.rightPid().kD());
     m_feedforward = new DifferentialDriveFeedforward(
-        driveConfig.feedForward().linear().kV().in(Volts),
-        driveConfig.feedForward().linear().kA(),
+        driveConfig.feedForward().linear().kV().in(Volts), driveConfig.feedForward().linear().kA(),
         driveConfig.feedForward().angular().kV().in(Volts),
         driveConfig.feedForward().angular().kA());
   }
@@ -227,9 +220,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // it into our estimate. (Note that some sources suggest *not* doing this while
     // the robot is in motion, since that's when you'll have the most significant
     // error introduced into the images.)
-    Optional<Object> optionalPoseList = BulletinBoard.common.getValue(
-        IVision.POSES_KEY,
-        List.class);
+    Optional<Object> optionalPoseList =
+        BulletinBoard.common.getValue(IBetterVision.POSES_KEY, List.class);
     if (optionalPoseList.isEmpty()) {
       return;
     }
@@ -238,14 +230,11 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // OK. Update the estimator based on the pose(s) and timestamp.
     for (EstimatedRobotPose estimate : poses) {
       if (USE_CONFIDENCE_SCALING) {
-        estimator.addVisionMeasurement(
-            estimate.estimatedPose.toPose2d(),
-            estimate.timestampSeconds,
+        estimator.addVisionMeasurement(estimate.estimatedPose.toPose2d(), estimate.timestampSeconds,
             confidenceCalculator(estimate));
       } else {
         estimator.addVisionMeasurement(
-            estimate.estimatedPose.toPose2d(),
-            estimate.timestampSeconds);
+            estimate.estimatedPose.toPose2d(), estimate.timestampSeconds);
       }
     }
   }
@@ -275,13 +264,13 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
    * Generates a confidence estimate (as standard deviations) for the vision
    * system's estimated pose, to be used in applying it to our estimate (based on
    * odometry data).
-   * 
+   *
    * @param estimation estimated robot pose, for which confidence is to be
    *                   calculated
-   * 
+   *
    * @return matrix expressing the standard deviations to be used in applying the
    *         estimated position from vision to the drivebase's estimated.
-   * 
+   *
    * @see <a href=
    *      "https://www.chiefdelphi.com/t/multi-camera-setup-and-photonvisions-pose-estimator-seeking-advice/431154/">CD
    *      thread</a>
@@ -295,7 +284,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     double smallestDistance = Double.POSITIVE_INFINITY;
     for (var target : estimation.targetsUsed) {
       var t3d = target.getBestCameraToTarget();
-      var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+      var distance =
+          Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
       if (distance < smallestDistance)
         smallestDistance = distance;
     }
@@ -303,20 +293,16 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // Calculate some factors to roll into the weighting of the estimate.
     double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
         ? 1
-        : Math.max(
-            1,
-            (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                + VisionConstants.POSE_AMBIGUITY_SHIFTER)
-                * VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
-    double confidenceMultiplier = Math.max(
-        1,
-        (Math.max(
-            1,
-            Math.max(0, smallestDistance - VisionConstants.NOISY_DISTANCE_METERS)
-                * VisionConstants.DISTANCE_WEIGHT)
+        : Math.max(1,
+              (estimation.targetsUsed.get(0).getPoseAmbiguity()
+                  + VisionConstants.POSE_AMBIGUITY_SHIFTER)
+                  * VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
+    double confidenceMultiplier = Math.max(1,
+        (Math.max(1,
+             Math.max(0, smallestDistance - VisionConstants.NOISY_DISTANCE_METERS)
+                 * VisionConstants.DISTANCE_WEIGHT)
             * poseAmbiguityFactor)
-            / (1
-                + ((estimation.targetsUsed.size() - 1) * VisionConstants.TAG_PRESENCE_WEIGHT)));
+            / (1 + ((estimation.targetsUsed.size() - 1) * VisionConstants.TAG_PRESENCE_WEIGHT)));
 
     return VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
   }

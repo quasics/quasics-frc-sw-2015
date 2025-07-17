@@ -37,4 +37,10 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
   }
+
+  public static class Speedscale {
+    public static final double TURTLE = 0.3;
+    public static final double DEFAULT = 0.6;
+    public static final double TURBO = 0.9;
+  }
 }

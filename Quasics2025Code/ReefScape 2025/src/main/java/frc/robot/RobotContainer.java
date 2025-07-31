@@ -67,9 +67,13 @@ public class RobotContainer {
   private final ArmPivot m_armPivot = new ArmPivot();
   private final ArmRoller m_armRoller = new ArmRoller();
   private final AbstractElevator m_elevator = setupElevator();
+<<<<<<< HEAD
+=======
   @SuppressWarnings("unused")
-  private final Vision m_vision = new Vision(m_drivebase::getPose);
+  private final Vision m_vision = new Vision();
+>>>>>>> a2de76e17bd7ae42774cfb7b012889081f5ec4ca
   private final AbstractCandle m_candle = allocateCandle();
+  private final Vision m_vision = new Vision(m_drivebase::getPose);
 
   private static AbstractCandle allocateCandle() {
     if (!ENABLE_CANDLE) {

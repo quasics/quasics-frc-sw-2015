@@ -310,11 +310,8 @@ public class RobotContainer {
 
   private Command shootingSequence(
       TransitionRoller transitionRoller, Shooter shooter, double power) {
-    return Commands.parallel(
-        //new RunTransitionRoller(transitionRoller, power, true), new RunShooter(shooter, power, true));
-        //new RunTransitionRoller(m_transitionRoller, .5, true)
-        transitionDelay(transitionRoller), new RunShooter(shooter, power, true));
-  }
+        return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, true),
+        new RunIntake(m_intakeRoller, .6, true));  }
 
   private Command transitionDelay(TransitionRoller transitionRoller) {
     return Commands.sequence(
@@ -346,14 +343,13 @@ public class RobotContainer {
   private void ConfigureOperatorButtons() {
     Trigger SpeakerScoringSequence =
         new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kX.value))
-            .whileTrue(shootingSequence(m_transitionRoller, m_shooter, 1.0));
+            .whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.75));
     Trigger AmpScoringSequence =
         new Trigger(() -> m_operatorController.getRawButton(XboxController.Button.kB.value))
             .whileTrue(shootingSequence(m_transitionRoller, m_shooter, 0.25));
     Trigger SpeakerScoring = new Trigger(
         () -> m_operatorController.getRawButton(XboxController.Button.kRightBumper.value))
-                                 .whileTrue(new RunShooter(m_shooter, 1.0
-                                 , true));
+                                 .whileTrue(new RunShooter(m_shooter, .75, true));
     Trigger AmpScoring = new Trigger(
         () -> m_operatorController.getRawButton(XboxController.Button.kLeftBumper.value))
                              .whileTrue(new RunShooter(m_shooter, .25, true));

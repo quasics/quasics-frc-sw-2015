@@ -4,18 +4,6 @@
 
 package frc.robot.subsystems.live;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,32 +11,29 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /**
  * Vision processing implementation for a single/multiple cameras, using the
  * Photonvision libraries/server.
  */
-public class Vision extends SubsystemBase implements IVision {
-  /**
-   * Camera data set.
-   * 
-   * @param camera      connection to the camera
-   * @param transform3d defines the conversion from the robot's position, to the
-   *                    cameras's
-   * @param estimator   pose estimator associated with this camera. Note that (per
-   *                    docs) the estimated poses can have a lot of
-   *                    uncertainty/error baked into them when you are further
-   *                    away from the targets.
-   */
-  public record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
-
+public class BetterVision extends SubsystemBase implements IBetterVision {
   /** Pose strategy to be used for resolving estimates. */
   protected static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -63,9 +48,9 @@ public class Vision extends SubsystemBase implements IVision {
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
+      ;
 
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
@@ -75,21 +60,12 @@ public class Vision extends SubsystemBase implements IVision {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config robot configuration, including camera data
    */
-  public Vision(RobotConfig config) {
-    setName(IVision.SUBSYSTEM_NAME);
-
-    // Load the layout of the AprilTags on the field.
-    AprilTagFieldLayout tagLayout = null;
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
-    } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
-      ioe.printStackTrace();
-    }
-    m_tagLayout = tagLayout;
+  public BetterVision(RobotConfig config) {
+    setName(IBetterVision.SUBSYSTEM_NAME);
+    m_tagLayout = IVision.loadLayout(FIELD_LAYOUT.m_resourceFile);
 
     // Add each of the cameras to our known set.
     List<RobotConfigs.CameraConfig> cameras = config.cameras();
@@ -100,9 +76,9 @@ public class Vision extends SubsystemBase implements IVision {
 
   /**
    * Adds a camera to the known set.
-   * 
+   *
    * Note: must be invoked *after* the tag layout has been loaded.
-   * 
+   *
    * @param cameraConfig the configuratin for the camera
    */
   private void addCameraToSet(CameraConfig cameraConfig) {
@@ -111,18 +87,18 @@ public class Vision extends SubsystemBase implements IVision {
     }
 
     final PhotonCamera camera = new PhotonCamera(cameraConfig.name());
-    final Transform3d robotToCamera = new Transform3d(new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(),
-        cameraConfig.pos().z()),
-        new Rotation3d(cameraConfig.orientation().roll(),
-            cameraConfig.orientation().pitch(), cameraConfig.orientation().yaw()));
-    final PhotonPoseEstimator estimator = new PhotonPoseEstimator(
-        m_tagLayout, POSE_STRATEGY, robotToCamera);
+    final Transform3d robotToCamera = new Transform3d(
+        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(), cameraConfig.pos().z()),
+        new Rotation3d(cameraConfig.orientation().roll(), cameraConfig.orientation().pitch(),
+            cameraConfig.orientation().yaw()));
+    final PhotonPoseEstimator estimator =
+        new PhotonPoseEstimator(m_tagLayout, POSE_STRATEGY, robotToCamera);
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
   /**
    * Returns the number of cameras on the robot.
-   * 
+   *
    * @return the number of cameras on the robot
    */
   public int getNumCameras() {
@@ -131,7 +107,7 @@ public class Vision extends SubsystemBase implements IVision {
 
   /**
    * Returns the camera data for all cameras on the robot.
-   * 
+   *
    * @return the camera data for all cameras on the robot (unmodifiable)
    */
   protected List<CameraData> getCameraData() {
@@ -141,16 +117,14 @@ public class Vision extends SubsystemBase implements IVision {
   /**
    * Applies any updates for the estimator on a camera, optionally integrating the
    * last/reference pose provided by the drivebase.
-   * 
+   *
    * @param camera    camera supplying data to use in the estimate
    * @param estimator pose estimator being updated
    * @param drivePose last reported pose from the drivebase (or null)
    * @return the updated estimate, based on the camera data
    */
   protected static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      final PhotonCamera camera,
-      final PhotonPoseEstimator estimator,
-      final Pose2d drivePose) {
+      final PhotonCamera camera, final PhotonPoseEstimator estimator, final Pose2d drivePose) {
     // Update the vision pose estimator with the latest robot pose from the drive
     // base (if we have one).
     if (drivePose != null) {
@@ -177,15 +151,13 @@ public class Vision extends SubsystemBase implements IVision {
   /**
    * Publishes the latest pose data to the bulletin board from all cameras with
    * available data.
-   * 
+   *
    * @param recentlyUpdated true if the data was updated recently
    * @param lastTimestamp   the timestamp of the last pose update
    * @param lastPoses       the last computed poses (if any)
    */
   protected static void publishDataToBulletinBoard(
-      boolean recentlyUpdated,
-      double lastTimestamp,
-      List<EstimatedRobotPose> lastPoses) {
+      boolean recentlyUpdated, double lastTimestamp, List<EstimatedRobotPose> lastPoses) {
     if (!recentlyUpdated || lastPoses == null || lastPoses.isEmpty()) {
       BulletinBoard.common.clearValue(POSE_TIMESTAMP_KEY);
       BulletinBoard.common.clearValue(POSES_KEY);
@@ -197,41 +169,74 @@ public class Vision extends SubsystemBase implements IVision {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   //
-  // Functions exposed for simulation support.
-  //
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Returns the list of CameraData records being used by this object.
-   * 
-   * Note: this is exposed as public only for use with SimVisionWrapper.
-   * 
-   * @return a list of CameraData objects
-   */
-  public final List<CameraData> getCameraDataForSimulation() {
-    return getCameraData();
-  }
-
-  /**
-   * The AprilTagFieldLayout being used by this object.
-   * 
-   * Note: this is exposed as public only for use with SimVisionWrapper.
-   * 
-   * @return an AprilTagFieldLayout
-   */
-  public final AprilTagFieldLayout getFieldLayoutForSimulation() {
-    return m_tagLayout;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////
-  //
   // IVision functions.
   //
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
-  public List<EstimatedRobotPose> getEstimatedPoses() {
-    return m_latestEstimatedPoses;
+  public final List<CameraData> getCameraDataForSimulation() {
+    return getCameraData();
+  }
+
+  @Override
+  public final AprilTagFieldLayout getFieldLayoutForSimulation() {
+    return m_tagLayout;
+  }
+
+  @Override
+  public List<Pose2d> getEstimatedPoses() {
+    List<Pose2d> poses = new ArrayList<Pose2d>(m_latestEstimatedPoses.size());
+    for (EstimatedRobotPose estimatedRobotPose : m_latestEstimatedPoses) {
+      poses.add(estimatedRobotPose.estimatedPose.toPose2d());
+    }
+    return poses;
+  }
+
+  @Override
+  public boolean hasTargetsInView() {
+    for (CameraData cameraData : m_cameraData) {
+      if (IVision.getLatestResult(cameraData).hasTargets()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Pose2d getEstimatedPose() {
+    final Pose2d robotPose = m_latestEstimatedPoses.isEmpty()
+        ? null
+        : m_latestEstimatedPoses.get(0).estimatedPose.toPose2d();
+    return robotPose;
+  }
+
+  // Note that this can provide multiple readings for a given target, if it can be
+  // seen by more than 1 camera.
+  //
+  // TODO: Test this....
+  @Override
+  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+    // If the caller didn't give us a pose, then try to estimate it based on what we can see.
+    if (robotPose == null) {
+      var estimatedPose = getEstimatedPose();
+      if (estimatedPose == null) {
+        // OK, can't estimate where we are, so bail out.
+        return Collections.emptyList();
+      }
+
+      // Fine: now we think we know where we are.
+      robotPose = estimatedPose;
+    }
+
+    List<TargetData> targets = new LinkedList<TargetData>();
+    for (CameraData cameraData : m_cameraData) {
+      targets.addAll(IVision.getTargetDataForCamera(cameraData, m_tagLayout, robotPose));
+    }
+    return targets;
+  }
+
+  @Override
+  public List<TargetData> getVisibleTargets() {
+    return getVisibleTargets(getEstimatedPose());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,9 +257,8 @@ public class Vision extends SubsystemBase implements IVision {
     double lastTimestamp = 0;
     List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
     for (CameraData cameraData : m_cameraData) {
-      var estimate = updateEstimateForCamera(
-          cameraData.camera(), cameraData.estimator(),
-          drivePose);
+      var estimate =
+          updateEstimateForCamera(cameraData.camera(), cameraData.estimator(), drivePose);
       if (!estimate.isEmpty()) {
         var estimatedPose = estimate.get();
         estimates.add(estimatedPose);
@@ -265,5 +269,7 @@ public class Vision extends SubsystemBase implements IVision {
     // Save it, and publish it.
     m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
     publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
+
+    System.out.println("Targets: " + getVisibleTargets());
   }
 }

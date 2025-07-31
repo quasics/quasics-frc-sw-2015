@@ -107,8 +107,8 @@ public class RobotConfigs {
   /**
    * Describes a camera's orientiation relative to the robot.
    *
-   * @param roll  The counterclockwise rotation angle around the X axis (roll).
    * @param pitch The counterclockwise rotation angle around the Y axis (pitch).
+   * @param roll  The counterclockwise rotation angle around the X axis (roll).
    * @param yaw   The counterclockwise rotation angle around the Z axis (yaw).
    */
   public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
@@ -515,8 +515,8 @@ public class RobotConfigs {
                     Meters.of(0.5)), // z
                 // ...pitched 15 degrees up, pointing straightforward and in plane with the
                 // robot,...
-                new Orientation(Degrees.of(0), // roll
-                    Degrees.of(-15), // pitch
+                new Orientation(Degrees.of(-15), // pitch
+                    Degrees.of(0), // roll
                     Degrees.of(0) // yaw
                     ),
                 // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
@@ -553,8 +553,8 @@ public class RobotConfigs {
                     Meters.of(0.5)), // z
                 // ...pitched 15 degrees up, pointing straightforward and in plane with the
                 // robot,...
-                new Orientation(Degrees.of(0), // roll
-                    Degrees.of(-15), // pitch
+                new Orientation(Degrees.of(-15), // pitch
+                    Degrees.of(0), // roll
                     Degrees.of(0) // yaw
                     ),
                 // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.

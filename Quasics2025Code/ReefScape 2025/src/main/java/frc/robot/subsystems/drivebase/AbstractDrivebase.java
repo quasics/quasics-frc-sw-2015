@@ -94,7 +94,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   protected AbstractDrivebase(Distance trackWidthMeters) {
     m_kinematics = new DifferentialDriveKinematics(trackWidthMeters);
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
-
     // TODO: Move drive base dimensions into new data from the subclasses
     m_driveBaseLengthWithBumpers = Inches.of(29);
     m_driveBaseWidthWithBumpers = Inches.of(26);

@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -77,7 +78,7 @@ public class Vision extends SubsystemBase {
     }
 
     visionEstimator = new PhotonPoseEstimator(
-        tagLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
+        tagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     m_tagLayout = tagLayout;
     setUpSimulationSupport();
@@ -97,6 +98,7 @@ public class Vision extends SubsystemBase {
       return;
     }
     updateEstimatedGlobalPose();
+    // updateEstimatedPoseToCamera();
   }
 
   private VisionSystemSim visionSim;
@@ -151,7 +153,24 @@ public class Vision extends SubsystemBase {
       return;
     }
     getPose();
-    System.out.println(pose);
     visionSim.update(pose);
+  }
+
+  private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
+    if (pose != null) {
+      visionEstimator.setLastPose(pose);
+      visionEstimator.setReferencePose(pose);
+    }
+
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      return Optional.empty();
+    }
+
+    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
+    for (PhotonPipelineResult result : results) {
+      lastEstimatedPose = visionEstimator.update(result);
+    }
+    return lastEstimatedPose;
   }
 }

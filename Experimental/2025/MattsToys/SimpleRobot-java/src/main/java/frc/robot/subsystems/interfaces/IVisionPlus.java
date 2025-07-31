@@ -30,10 +30,10 @@ public interface IVisionPlus extends IVision {
   List<TargetData> getVisibleTargets();
 
   /** Trivial implementation of IVisionPlus (e.g., if we don't have a camera). */
-  public class NullBetterVision extends IVision.NullVision implements IVisionPlus {
+  public class NullVisionPlus extends IVision.NullVision implements IVisionPlus {
     /** Constructor. */
-    public NullBetterVision() {
-      System.out.println("INFO: allocating NullBetterVision");
+    public NullVisionPlus() {
+      System.out.println("INFO: allocating NullVisionPlus");
     }
 
     @Override

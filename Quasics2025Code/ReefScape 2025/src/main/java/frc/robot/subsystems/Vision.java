@@ -19,19 +19,23 @@ import frc.robot.Robot;
 import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.*;
+import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
 // functionality?
 public class Vision extends SubsystemBase {
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
+  private Optional<EstimatedRobotPose> latestPose = Optional.empty();
 
   /** Custom tag positions for use in the Quasics workspace. */
   private static List<AprilTag> CUSTOM_TAGS = Arrays.asList(
@@ -56,7 +60,7 @@ public class Vision extends SubsystemBase {
   private final Transform3d robotToCam = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d());
 
   private PhotonCamera camera = new PhotonCamera("USB_Camera");
-  private final PhotonPoseEstimator visionEstimator;
+  public final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
   private final AprilTagFieldLayout m_tagLayout;
@@ -77,7 +81,7 @@ public class Vision extends SubsystemBase {
     }
 
     visionEstimator = new PhotonPoseEstimator(
-        tagLayout, PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
+        tagLayout, PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
 
     m_tagLayout = tagLayout;
     setUpSimulationSupport();
@@ -85,7 +89,18 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // var result = camera.getLatestResult();
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    for (PhotonPipelineResult change : results) {
+      latestPose = visionEstimator.update(change);
+    }
+
+    if (Robot.isSimulation()) {
+      latestPose.ifPresentOrElse(
+          est -> getDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()),
+          () -> {
+            getDebugField().getObject("VisionEstimation").setPoses();
+          });
+    }
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
     simulationPeriodic();
@@ -97,6 +112,7 @@ public class Vision extends SubsystemBase {
       return;
     }
     updateEstimatedGlobalPose();
+    // updateEstimatedPoseToCamera();
   }
 
   private VisionSystemSim visionSim;
@@ -153,5 +169,23 @@ public class Vision extends SubsystemBase {
     getPose();
     System.out.println(pose);
     visionSim.update(pose);
+  }
+
+  private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
+    if (pose != null) {
+      visionEstimator.setLastPose(pose);
+      visionEstimator.setReferencePose(pose);
+    }
+
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      return Optional.empty();
+    }
+
+    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
+    for (PhotonPipelineResult result : results) {
+      lastEstimatedPose = visionEstimator.update(result);
+    }
+    return lastEstimatedPose;
   }
 }

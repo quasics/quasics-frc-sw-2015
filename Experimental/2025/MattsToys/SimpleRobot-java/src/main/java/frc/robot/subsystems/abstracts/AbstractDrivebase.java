@@ -25,8 +25,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.List;
@@ -221,7 +221,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // the robot is in motion, since that's when you'll have the most significant
     // error introduced into the images.)
     Optional<Object> optionalPoseList =
-        BulletinBoard.common.getValue(IBetterVision.POSES_KEY, List.class);
+        BulletinBoard.common.getValue(IVisionPlus.POSES_KEY, List.class);
     if (optionalPoseList.isEmpty()) {
       return;
     }

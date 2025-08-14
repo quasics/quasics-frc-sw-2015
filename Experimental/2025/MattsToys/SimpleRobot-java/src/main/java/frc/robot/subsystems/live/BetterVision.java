@@ -11,9 +11,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IBetterVision;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -33,7 +33,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
  * Vision processing implementation for a single/multiple cameras, using the
  * Photonvision libraries/server.
  */
-public class BetterVision extends SubsystemBase implements IBetterVision {
+public class BetterVision extends SubsystemBase implements IVisionPlus {
   /** Pose strategy to be used for resolving estimates. */
   protected static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
@@ -64,7 +64,7 @@ public class BetterVision extends SubsystemBase implements IBetterVision {
    * @param config robot configuration, including camera data
    */
   public BetterVision(RobotConfig config) {
-    setName(IBetterVision.SUBSYSTEM_NAME);
+    setName(IVisionPlus.SUBSYSTEM_NAME);
     m_tagLayout = IVision.loadLayout(FIELD_LAYOUT.m_resourceFile);
 
     // Add each of the cameras to our known set.

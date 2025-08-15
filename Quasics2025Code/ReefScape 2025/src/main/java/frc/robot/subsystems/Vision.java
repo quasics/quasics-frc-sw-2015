@@ -14,20 +14,22 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.*;
-import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
 // functionality?
@@ -62,7 +64,9 @@ public class Vision extends SubsystemBase {
   public final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
+  private Pose3d robotPose3d;
   private final AprilTagFieldLayout m_tagLayout;
+  private PhotonTrackedTarget target;
 
   public Vision(Supplier<Pose2d> pSupplier) {
     poseSupplier = pSupplier;
@@ -88,17 +92,44 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
+     * if (Robot.isSimulation()) {
+     * latestPose.ifPresentOrElse(
+     * est ->
+     * getDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.
+     * toPose2d()),
+     * () -> {
+     * getDebugField().getObject("VisionEstimation").setPoses();
+     * });
+     * }
+     * }
+     */
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-    for (PhotonPipelineResult change : results) {
-      latestPose = visionEstimator.update(change);
+    if (results.isEmpty()) {
+      return;
+    } else {
+      for (PhotonPipelineResult result : results) {
+        latestPose = visionEstimator.update(result);
+        boolean hasTargets = result.hasTargets();
+        if (hasTargets == false) {
+          return;
+        } else {
+          List<PhotonTrackedTarget> targets = result.getTargets();
+          target = result.getBestTarget();
+        }
+      }
+    }
+
+    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+      robotPose3d = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+      System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " + target.getYaw() + " Target Pitch: "
+          + target.getPitch());
     }
 
     if (Robot.isSimulation()) {
-      latestPose.ifPresentOrElse(
-          est -> getDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()),
-          () -> {
-            getDebugField().getObject("VisionEstimation").setPoses();
-          });
+      Pose2d simPose = robotPose3d.toPose2d();
+      System.out.println(simPose);
     }
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");

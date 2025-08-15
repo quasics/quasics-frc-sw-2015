@@ -99,7 +99,7 @@ public class RobotContainer {
         () -> -driverController.getLeftY() * getSpeedScalingFactor(),
 //          (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
             
-        () -> -driverController.getRightX(),
+        () -> -driverController.getRightX() * getSpeedScalingFactor(),
         driveSubsystem));
 
     

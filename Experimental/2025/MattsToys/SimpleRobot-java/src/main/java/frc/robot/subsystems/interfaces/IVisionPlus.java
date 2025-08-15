@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Basic interface for vision processing support.
  */
-public interface IBetterVision extends IVision {
+public interface IVisionPlus extends IVision {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   static final String SUBSYSTEM_NAME = "BetterVision";
 
@@ -29,11 +29,11 @@ public interface IBetterVision extends IVision {
 
   List<TargetData> getVisibleTargets();
 
-  /** Trivial implementation of IBetterVision (e.g., if we don't have a camera). */
-  public class NullBetterVision extends IVision.NullVision implements IBetterVision {
+  /** Trivial implementation of IVisionPlus (e.g., if we don't have a camera). */
+  public class NullVisionPlus extends IVision.NullVision implements IVisionPlus {
     /** Constructor. */
-    public NullBetterVision() {
-      System.out.println("INFO: allocating NullBetterVision");
+    public NullVisionPlus() {
+      System.out.println("INFO: allocating NullVisionPlus");
     }
 
     @Override

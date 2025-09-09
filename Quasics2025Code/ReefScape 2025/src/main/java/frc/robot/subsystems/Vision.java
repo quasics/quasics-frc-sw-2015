@@ -128,6 +128,7 @@ public class Vision extends SubsystemBase {
           + target.getPitch());
     }
 
+    // TODO: "Verbose" mode (allow us to turn off debugging output if we want to debug something else)
     if (Robot.isSimulation()) {
       Pose2d simPose = robotPose3d.toPose2d();
       System.out.println(simPose);
@@ -151,8 +152,6 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim cameraSim;
   final boolean ENABLE_WIREFRAME_RENDERING = true;
 
-  // CODE_REVIEW/FIXME: This function is never called. Is it supposed to be called
-  // from somewhere else?
   private void setUpSimulationSupport() {
     if (Robot.isReal()) {
       return;
@@ -197,11 +196,16 @@ public class Vision extends SubsystemBase {
     if (camera == null) {
       return;
     }
+    // Fixme: Throwing out the return value
+    // Suggestion: Variable naming - "OdometryPose" vs "VisionEstimatedPose"?
+
     getPose();
+
     System.out.println(pose);
     visionSim.update(pose);
   }
 
+  // Review/fixme: Unused method
   private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
     if (pose != null) {
       visionEstimator.setLastPose(pose);

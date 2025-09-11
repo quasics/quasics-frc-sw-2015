@@ -31,8 +31,7 @@ public interface IVision extends ISubsystem {
    * @param id fiducial ID for the target
    * @param angle yaw to the angle (positive left)
    */
-  record TargetData(int id, Angle angle, Distance distance) {
-  }
+  record TargetData(int id, Angle angle, Distance distance) {}
 
   /**
    * Camera data set.
@@ -45,9 +44,8 @@ public interface IVision extends ISubsystem {
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record CameraData(
-      PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
+  public record
+      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -105,12 +103,7 @@ public interface IVision extends ISubsystem {
   // I'm trying to cut down on the number of warnings.
   static PhotonPipelineResult getLatestResult(CameraData cameraData) {
     // TODO: look at replacing this with something in a reusable base class to try to
-    // cache data; when it's read in periodic() (at least under simulation), I frequently
-    // see 1+ targets being reported, and then "nothing visible" for 1-3 iteratons, and
-    // then the targets are visible again, despite the robot not moving.  As a result,
-    // I think that there's a possible interaction with how getAllUnreadResults() works,
-    // which is preventing the results from being cached, regardless of what the docs
-    // for "PhotonCamera.getLatestResult" seeming to suggest.
+    // cache data, to handle the deprecation.
     return cameraData.camera().getLatestResult();
   }
 

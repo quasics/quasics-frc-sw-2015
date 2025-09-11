@@ -17,6 +17,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -269,6 +271,21 @@ public class SimulatedElevator extends AbstractElevator {
   // AbstractElevator methods
   //
   //////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void setMotorVoltage(Voltage volts) {
+    m_motor.setVoltage(volts);
+  }
+
+  @Override
+  public LinearVelocity getVelocity() {
+    return MetersPerSecond.of(m_encoder.getVelocity());
+  }
+
+  @Override
+  public Voltage getVoltage() {
+    return Volts.of(m_motor.getAppliedOutput());
+  }
 
   @Override
   protected void updateMotor_impl() {

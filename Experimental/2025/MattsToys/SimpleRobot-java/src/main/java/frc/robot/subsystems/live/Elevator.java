@@ -13,10 +13,11 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.DioIds;
 import frc.robot.Constants.OtherCanIds;
 import frc.robot.sensors.ITriggerSensor;
@@ -28,7 +29,7 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Subsystem representing the elevator on our real 2025 robot.
- * 
+ *
  * Note: per Ethan, the elevator is currently configures such that "up" for the
  * leader motor is negative. This feels... wrong, and is something that can be
  * fixed (e.g., by switching to using the current "follower" as the leader, or
@@ -44,17 +45,16 @@ public class Elevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_ACTIVATED_VALUE = false;
 
   /** Leading motor used to drive the elevator. */
-  private final SparkMax m_leader = new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
+  private final SparkMax m_leader =
+      new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
 
   /** Limit switch at the top point of the elevator's path. */
   private final ITriggerSensor m_topLimitSwitch = ITriggerSensor.createForDigitalInput(
-      DioIds.ELEVATOR_LIMIT_SWITCH_UP,
-      LIMIT_SWITCH_ACTIVATED_VALUE);
+      DioIds.ELEVATOR_LIMIT_SWITCH_UP, LIMIT_SWITCH_ACTIVATED_VALUE);
 
   /** Limit switch at the bottom point of the elevator's path. */
   private final ITriggerSensor m_bottomLimitSwitch = ITriggerSensor.createForDigitalInput(
-      DioIds.ELEVATOR_LIMIT_SWITCH_DOWN,
-      LIMIT_SWITCH_ACTIVATED_VALUE);
+      DioIds.ELEVATOR_LIMIT_SWITCH_DOWN, LIMIT_SWITCH_ACTIVATED_VALUE);
 
   /** Encoder on the elevator's motor. */
   private RelativeEncoder m_encoder = m_leader.getEncoder();
@@ -75,29 +75,25 @@ public class Elevator extends AbstractElevator {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config robot configuration
    */
   public Elevator(RobotConfig config) {
     // Configure the PID/FF controllers.
     ElevatorConfig elevatorConfig = config.elevator();
     m_pid = new PIDController(
-        elevatorConfig.pid().kP(),
-        elevatorConfig.pid().kI(),
-        elevatorConfig.pid().kD());
+        elevatorConfig.pid().kP(), elevatorConfig.pid().kI(), elevatorConfig.pid().kD());
     m_pid.setTolerance(0.02); // within 2cm is fine
-    m_feedforward = new ElevatorFeedforward(
-        elevatorConfig.feedForward().kS().in(Volts),
-        elevatorConfig.feedForward().kG().in(Volts),
-        elevatorConfig.feedForward().kV(),
+    m_feedforward = new ElevatorFeedforward(elevatorConfig.feedForward().kS().in(Volts),
+        elevatorConfig.feedForward().kG().in(Volts), elevatorConfig.feedForward().kV(),
         elevatorConfig.feedForward().kA());
 
     // Configure the "follower" motor.
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig.follow(m_leader, true);
     try (SparkMax follower = new SparkMax(OtherCanIds.FOLLOWER_ELEVATOR_ID, MotorType.kBrushless)) {
-      follower.configure(followerConfig, ResetMode.kResetSafeParameters,
-          PersistMode.kPersistParameters);
+      follower.configure(
+          followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     // Configure the primary (leader) motor.
@@ -107,14 +103,13 @@ public class Elevator extends AbstractElevator {
     configureSparkMaxEncoderForDistance(leaderConfig, kSprocketPitchDiameter, kGearingRatio);
 
     m_leader.configure(
-        leaderConfig, ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+        leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
    * Enable/disable resetting the encoder when the bottom limit switch is
    * triggered.
-   * 
+   *
    * @param resetWhenBottomDetected true to enable, false to disable
    */
   public void enableEncoderResetWhenBottomDetected(boolean resetWhenBottomDetected) {
@@ -124,7 +119,7 @@ public class Elevator extends AbstractElevator {
   /**
    * Indicates if the encoder will be reset when the bottom limit switch is
    * triggered.
-   * 
+   *
    * @return true iff the encoder will be reset when the bottom limit switch is
    *         triggered
    */
@@ -155,11 +150,12 @@ public class Elevator extends AbstractElevator {
   /**
    * Conversion factor from encoder units (rotation) to meters.
    */
-  private static final double kEncoderMetersPerRotation = kSprocketPitchDiameter.abs(Meters) / kGearingRatio;
+  private static final double kEncoderMetersPerRotation =
+      kSprocketPitchDiameter.abs(Meters) / kGearingRatio;
 
   /**
    * Tests if the upper limit switch is triggered.
-   * 
+   *
    * @return true if the elevator is at the top of its path (based on limit
    *         switch)
    */
@@ -169,7 +165,7 @@ public class Elevator extends AbstractElevator {
 
   /**
    * Tests if the lower limit switch is triggered.
-   * 
+   *
    * @return true if the elevator is at the bottom of its path (based on limit
    *         switch)
    */
@@ -180,7 +176,7 @@ public class Elevator extends AbstractElevator {
   /**
    * Determines if the elevator is safe to move, given the indicated speed (and
    * implied direction).
-   * 
+   *
    * @return if the elevator is safe to move, given the current speed (with sign
    *         indicating direction)
    */
@@ -210,7 +206,7 @@ public class Elevator extends AbstractElevator {
 
   /**
    * Returns the height that corresponds to the indicated target position.
-   * 
+   *
    * @param position the (logical) target position
    * @return the height that corresponds to the (logical) target position
    */
@@ -240,6 +236,21 @@ public class Elevator extends AbstractElevator {
   ////////////////////////////////////////////////////////////////////////////
 
   @Override
+  public void setMotorVoltage(Voltage volts) {
+    m_leader.setVoltage(volts);
+  }
+
+  @Override
+  public LinearVelocity getVelocity() {
+    return MetersPerSecond.of(m_encoder.getVelocity());
+  }
+
+  @Override
+  public Voltage getVoltage() {
+    return Volts.of(m_leader.getAppliedOutput());
+  }
+
+  @Override
   public void setTargetPosition(TargetPosition targetPosition) {
     if (targetPosition != m_target) {
       m_pid.reset();
@@ -259,7 +270,8 @@ public class Elevator extends AbstractElevator {
 
   @Override
   protected void updateMotor_impl() {
-    var voltage = calculateMotorVoltage(getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
+    var voltage = calculateMotorVoltage(
+        getPositionForTarget(m_target), m_wrappedEncoder, m_pid, m_feedforward);
     m_leader.setVoltage(voltage);
   }
 
@@ -313,8 +325,7 @@ public class Elevator extends AbstractElevator {
     //
     // Note that we don't do this when we're under PID control (for now, at
     // least).
-    if ((m_mode == Mode.Extending && isAtTop()) ||
-        (m_mode == Mode.Retracting && isAtBottom())) {
+    if ((m_mode == Mode.Extending && isAtTop()) || (m_mode == Mode.Retracting && isAtBottom())) {
       stop();
     }
 
@@ -325,11 +336,9 @@ public class Elevator extends AbstractElevator {
 
     // Debugging output.
     if (NOISY) {
-      System.out.println(NAME + " - " +
-          "mode" + m_mode +
-          " height: " + getHeight_impl() +
-          " atTop: " + isAtTop() +
-          " atBottom: " + isAtBottom());
+      System.out.println(NAME + " - "
+          + "mode" + m_mode + " height: " + getHeight_impl() + " atTop: " + isAtTop()
+          + " atBottom: " + isAtBottom());
     }
   }
 }

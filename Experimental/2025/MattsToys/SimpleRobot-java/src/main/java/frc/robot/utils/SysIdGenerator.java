@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 /**
@@ -47,17 +48,18 @@ public class SysIdGenerator {
    * @param mode      movement mode being characterized
    * @return a configured SysIdRoutine generator
    */
-  public static SysIdRoutine getSysIdRoutine(final SysIdRoutine.Config config, final IDrivebase drivebase,
-      final Mode mode) {
-    return new SysIdRoutine(
-        config,
+  public static SysIdRoutine getSysIdRoutine(
+      final SysIdRoutine.Config config, final IDrivebase drivebase, final Mode mode) {
+    return new SysIdRoutine(config,
         new SysIdRoutine.Mechanism(
-            (Voltage volts) -> {
+            (Voltage volts)
+                -> {
               drivebase.setMotorVoltages(volts, volts.times(mode == Mode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log -> {
+            log
+            -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();
@@ -94,8 +96,60 @@ public class SysIdGenerator {
   }
 
   /**
+   * Returns a SysIdRoutine generator for the specified drivebase/mode, using a
+   * default configuration (1 volt/sec ramp ramp, 7 volt step).
+   *
+   * @param drivebase drive base of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @return a configured SysIdRoutine generator
+   */
+  public static SysIdRoutine getSysIdRoutine(final AbstractElevator elevator, final Mode mode) {
+    return getSysIdRoutine(new SysIdRoutine.Config(), elevator, mode);
+  }
+
+  /**
+   * Returns a SysIdRoutine generator for the specified drivebase/mode.
+   *
+   * @param config    SysIdRoutine configuration data
+   * @param elevator elevator of the robot being characterized
+   * @param mode      movement mode being characterized
+   * @return a configured SysIdRoutine generator
+   */
+  public static SysIdRoutine getSysIdRoutine(
+      final SysIdRoutine.Config config, final AbstractElevator elevator, final Mode mode) {
+    return new SysIdRoutine(config,
+        new SysIdRoutine.Mechanism((Voltage volts)
+                                       -> { elevator.setMotorVoltage(volts); },
+            // Tell SysId how to record a frame of data for each motor on the
+            // mechanism being characterized.
+            log
+            -> {
+              final var position = elevator.getHeight();
+              final var velocity = elevator.getVelocity();
+              final var voltage = elevator.getVoltage();
+
+              if (DUMP_SYSID_TO_CONSOLE) {
+                System.err.println("Logging "
+                    + "elevator=" + String.format("%,.3f", voltage.in(Volts)) + "V, "
+                    + String.format("%,.3f", position.in(Meters)) + "m, "
+                    + String.format("%,.3f", velocity.in(MetersPerSecond)) + "m/s   ");
+              }
+
+              // Record a frame for the left motors. Since these share an encoder,
+              // we consider the entire group to be one motor.
+              log.motor("elevator")
+                  .voltage(voltage)
+                  .linearPosition(position)
+                  .linearVelocity(velocity);
+            },
+            // Tell SysId to make generated commands require this subsystem,
+            // suffix test state in WPILog with this subsystem's name (e.g., "drive")
+            elevator));
+  }
+
+  /**
    * Generates a "quasistatic" profiling command.
-   * 
+   *
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @param direction direction of movement being characterized
@@ -109,7 +163,7 @@ public class SysIdGenerator {
 
   /**
    * Generates a "dynamic" profiling command.
-   * 
+   *
    * @param drivebase drive base of the robot being characterized
    * @param mode      movement mode being characterized
    * @param direction direction of movement being characterized

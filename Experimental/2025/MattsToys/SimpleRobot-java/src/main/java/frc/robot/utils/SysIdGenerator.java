@@ -17,7 +17,7 @@ import frc.robot.subsystems.interfaces.IDrivebase;
  * characterization of a robot.
  */
 public class SysIdGenerator {
-  /** Profiling modes. */
+  /** Drive base profiling modes. */
   public enum DrivebaseProfilingMode {
     /** Profiling linear movement. */
     Linear,

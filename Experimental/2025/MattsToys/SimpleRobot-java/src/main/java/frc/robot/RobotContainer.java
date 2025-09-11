@@ -175,34 +175,45 @@ public class RobotContainer {
    * characterization.
    */
   private void addSysIdControlsToDashboard() {
-    SmartDashboard.putData("SysID: Quasistatic(fwd)",
+    // SysId commands for linear motion of the drive base.  (Basic speed control.)
+    SmartDashboard.putData("Drive SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("SysID: Quasistatic(rev)",
+    SmartDashboard.putData("Drive SysID: Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
-    SmartDashboard.putData("SysID: Dynamic(fwd)",
+    SmartDashboard.putData("Drive SysID: Dynamic(fwd)",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("SysID: Dynamic(rev)",
+    SmartDashboard.putData("Drive SysID: Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
 
     // SysId commands for rotational actions (used to calculate kA-angular), for use
     // in estimating the moment of inertia (MOI).
     // See: https://choreo.autos/usage/estimating-moi/
-    SmartDashboard.putData("SysID(rot): Quasistatic(fwd)",
+    SmartDashboard.putData("Drive SysID(rot): Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
-    SmartDashboard.putData("SysID(rot): Quasistatic(rev)",
+    SmartDashboard.putData("Drive SysID(rot): Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
-    SmartDashboard.putData("SysID(rot): Dynamic(fwd)",
+    SmartDashboard.putData("Drive SysID(rot): Dynamic(fwd)",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
-    SmartDashboard.putData("SysID(rot): Dynamic(rev)",
+    SmartDashboard.putData("Drive SysID(rot): Dynamic(rev)",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
+
+    // SysId commands for linear motion of the elevator.  (Basic speed control.)
+    SmartDashboard.putData("Elevator SysID: Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(m_elevator, Direction.kForward));
+    SmartDashboard.putData("Elevator SysID: Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(m_elevator, Direction.kReverse));
+    SmartDashboard.putData("Elevator SysID: Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_elevator, Direction.kForward));
+    SmartDashboard.putData("Elevator SysID: Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_elevator, Direction.kReverse));
   }
 
   /**

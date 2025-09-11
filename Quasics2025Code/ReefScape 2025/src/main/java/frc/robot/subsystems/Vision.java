@@ -14,14 +14,15 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.*;
-import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.PhotonPoseEstimator;
@@ -29,6 +30,7 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
 // functionality?
@@ -63,7 +65,9 @@ public class Vision extends SubsystemBase {
   public final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
+  private Pose3d robotPose3d;
   private final AprilTagFieldLayout m_tagLayout;
+  private PhotonTrackedTarget target;
 
   public Vision(Supplier<Pose2d> pSupplier) {
     poseSupplier = pSupplier;
@@ -89,17 +93,45 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
+     * if (Robot.isSimulation()) {
+     * latestPose.ifPresentOrElse(
+     * est ->
+     * getDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.
+     * toPose2d()),
+     * () -> {
+     * getDebugField().getObject("VisionEstimation").setPoses();
+     * });
+     * }
+     * }
+     */
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-    for (PhotonPipelineResult change : results) {
-      latestPose = visionEstimator.update(change);
+    if (results.isEmpty()) {
+      return;
+    } else {
+      for (PhotonPipelineResult result : results) {
+        latestPose = visionEstimator.update(result);
+        boolean hasTargets = result.hasTargets();
+        if (hasTargets == false) {
+          return;
+        } else {
+          List<PhotonTrackedTarget> targets = result.getTargets();
+          target = result.getBestTarget();
+        }
+      }
     }
 
+    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+      robotPose3d = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+      System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " + target.getYaw() + " Target Pitch: "
+          + target.getPitch());
+    }
+
+    // TODO: "Verbose" mode (allow us to turn off debugging output if we want to debug something else)
     if (Robot.isSimulation()) {
-      latestPose.ifPresentOrElse(
-          est -> getDebugField().getObject("VisionEstimation").setPose(est.estimatedPose.toPose2d()),
-          () -> {
-            getDebugField().getObject("VisionEstimation").setPoses();
-          });
+      Pose2d simPose = robotPose3d.toPose2d();
+      System.out.println(simPose);
     }
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
@@ -120,8 +152,6 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim cameraSim;
   final boolean ENABLE_WIREFRAME_RENDERING = true;
 
-  // CODE_REVIEW/FIXME: This function is never called. Is it supposed to be called
-  // from somewhere else?
   private void setUpSimulationSupport() {
     if (Robot.isReal()) {
       return;
@@ -132,9 +162,9 @@ public class Vision extends SubsystemBase {
     getDebugField();
 
     cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(1080, 720, Rotation2d.fromDegrees(78));
+    cameraProp.setCalibration(640, 320, Rotation2d.fromDegrees(78));
     // double check these numbers, most are placeholders
-    cameraProp.setCalibError(0.0, 0.0);
+    cameraProp.setCalibError(432.27, 0.0);
     cameraProp.setFPS(30);
     cameraProp.setAvgLatencyMs(0);
     cameraProp.setLatencyStdDevMs(0);
@@ -166,11 +196,16 @@ public class Vision extends SubsystemBase {
     if (camera == null) {
       return;
     }
+    // Fixme: Throwing out the return value
+    // Suggestion: Variable naming - "OdometryPose" vs "VisionEstimatedPose"?
+
     getPose();
+
     System.out.println(pose);
     visionSim.update(pose);
   }
 
+  // Review/fixme: Unused method
   private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
     if (pose != null) {
       visionEstimator.setLastPose(pose);

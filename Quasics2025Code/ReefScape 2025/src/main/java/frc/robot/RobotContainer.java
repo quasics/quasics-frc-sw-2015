@@ -373,7 +373,6 @@ public class RobotContainer {
 
     m_arcadeDriveRightStick = () -> {
       double scalingFactor = getDriveSpeedScalingFactor();
-
       double axis = -getDriverAxis(Constants.LogitechDualshock.RightXAxis);
       double joystickPercentage = axis * scalingFactor;
       return m_rotationLimiter.calculate(joystickPercentage);

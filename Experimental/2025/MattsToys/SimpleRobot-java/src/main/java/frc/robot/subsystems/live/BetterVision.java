@@ -20,8 +20,10 @@ import frc.robot.utils.RobotConfigs.CameraConfig;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -53,9 +55,16 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
       ;
 
   /** Entries for each of the cameras on the robot. */
-  protected final List<CameraData> m_cameraData = new LinkedList<CameraData>();
+  protected final List<CameraData> m_cameraData = new ArrayList<CameraData>();
 
-  /** Estimated poses (if any) from the most recent camera data. */
+  protected final Map<Integer, EstimatedRobotPose> m_estimatedPosesCache =
+      new HashMap<Integer, EstimatedRobotPose>();
+
+  /**
+   * Estimated poses (if any) from the most recent camera data.
+   *
+   * TODO: Replace this with the data from the cache.
+   */
   private List<EstimatedRobotPose> m_latestEstimatedPoses = Collections.emptyList();
 
   /**
@@ -118,34 +127,23 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
    * Applies any updates for the estimator on a camera, optionally integrating the
    * last/reference pose provided by the drivebase.
    *
-   * @param camera    camera supplying data to use in the estimate
+   * @param pipelineResult  latest pipeline results from a camera
    * @param estimator pose estimator being updated
    * @param drivePose last reported pose from the drivebase (or null)
    * @return the updated estimate, based on the camera data
    */
   protected static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      final PhotonCamera camera, final PhotonPoseEstimator estimator, final Pose2d drivePose) {
-    // Update the vision pose estimator with the latest robot pose from the drive
-    // base (if we have one).
+      final PhotonPipelineResult pipelineResult, final PhotonPoseEstimator estimator,
+      final Pose2d drivePose) {
+    if (pipelineResult == null) {
+      return Optional.empty();
+    }
+
     if (drivePose != null) {
       estimator.setLastPose(drivePose);
       estimator.setReferencePose(drivePose);
     }
-
-    // Update the pose estimator with the latest vision measurements from its
-    // camera.
-    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-    if (results.isEmpty()) {
-      // No results? Nothing to do.
-      return Optional.empty();
-    }
-
-    Optional<EstimatedRobotPose> lastEstimatedPose = Optional.empty();
-    for (PhotonPipelineResult photonPipelineResult : results) {
-      lastEstimatedPose = estimator.update(photonPipelineResult);
-    }
-
-    return lastEstimatedPose;
+    return estimator.update(pipelineResult);
   }
 
   /**
@@ -256,13 +254,33 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
     // Update camera-specific estimators (and gather their results).
     double lastTimestamp = 0;
     List<EstimatedRobotPose> estimates = new LinkedList<EstimatedRobotPose>();
-    for (CameraData cameraData : m_cameraData) {
-      var estimate =
-          updateEstimateForCamera(cameraData.camera(), cameraData.estimator(), drivePose);
-      if (!estimate.isEmpty()) {
-        var estimatedPose = estimate.get();
-        estimates.add(estimatedPose);
-        lastTimestamp = Math.max(estimatedPose.timestampSeconds, lastTimestamp);
+
+    for (int i = 0; i < m_cameraData.size(); ++i) {
+      final CameraData cameraData = m_cameraData.get(i);
+      List<PhotonPipelineResult> results = cameraData.camera().getAllUnreadResults();
+      if (results.isEmpty()) {
+        // We don't have a new frame for this camera: we should (presumably) keep
+        // the last results it supplied.  (Which means we need to do some caching per camera....)
+        EstimatedRobotPose cachedEstimatedRobotPose = m_estimatedPosesCache.get(i);
+        if (cachedEstimatedRobotPose != null) {
+          estimates.add(cachedEstimatedRobotPose);
+          lastTimestamp = Math.max(cachedEstimatedRobotPose.timestampSeconds, lastTimestamp);
+        }
+        continue;
+      }
+      // Camera processed a new frame since last
+      // Get the last one in the list.
+      PhotonPipelineResult result = results.get(results.size() - 1);
+      if (result.hasTargets()) {
+        var estimate = updateEstimateForCamera(result, cameraData.estimator(), drivePose);
+        if (!estimate.isEmpty()) {
+          var estimatedPose = estimate.get();
+          estimates.add(estimatedPose);
+          lastTimestamp = Math.max(estimatedPose.timestampSeconds, lastTimestamp);
+
+          // Update the cache
+          m_estimatedPosesCache.put(i, estimatedPose);
+        }
       }
     }
 

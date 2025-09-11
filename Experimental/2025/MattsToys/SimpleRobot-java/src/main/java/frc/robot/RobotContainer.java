@@ -177,28 +177,32 @@ public class RobotContainer {
   private void addSysIdControlsToDashboard() {
     SmartDashboard.putData("SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("SysID: Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
     SmartDashboard.putData("SysID: Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("SysID: Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
 
     // SysId commands for rotational actions (used to calculate kA-angular), for use
     // in estimating the moment of inertia (MOI).
     // See: https://choreo.autos/usage/estimating-moi/
     SmartDashboard.putData("SysID(rot): Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
     SmartDashboard.putData("SysID(rot): Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
     SmartDashboard.putData("SysID(rot): Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
     SmartDashboard.putData("SysID(rot): Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
   }
 
   /**

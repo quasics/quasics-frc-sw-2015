@@ -273,7 +273,7 @@ public class SimulatedElevator extends AbstractElevator {
   //////////////////////////////////////////////////////////////////////////////
 
   @Override
-  public void setMotorVoltage(Voltage volts) {
+  protected void setMotorVoltage_impl(Voltage volts) {
     m_motor.setVoltage(volts);
   }
 

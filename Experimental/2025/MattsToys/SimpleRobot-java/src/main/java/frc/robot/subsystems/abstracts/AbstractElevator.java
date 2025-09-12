@@ -70,7 +70,8 @@ public abstract class AbstractElevator extends SubsystemBase {
     /** Retracting (under manual control). */
     Retracting,
     /** Moving to (or at) a specified target position. */
-    Targeted
+    Targeted,
+    Profiling
   }
 
   /** Current operational mode. */
@@ -194,8 +195,12 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   public abstract LinearVelocity getVelocity();
   public abstract Voltage getVoltage();
+  public void setMotorVoltage(Voltage volts) {
+    m_mode = Mode.Profiling;
+    setMotorVoltage_impl(volts);
+  }
 
-  public abstract void setMotorVoltage(Voltage volts);
+  protected abstract void setMotorVoltage_impl(Voltage volts);
 
   /**
    * Determines if we are at our target position.
@@ -308,7 +313,7 @@ public abstract class AbstractElevator extends SubsystemBase {
     }
 
     @Override
-    public void setMotorVoltage(Voltage volts) {
+    protected void setMotorVoltage_impl(Voltage volts) {
       // No-op
     }
 

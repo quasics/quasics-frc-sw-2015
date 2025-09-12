@@ -288,6 +288,6 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
     m_latestEstimatedPoses = Collections.unmodifiableList(estimates);
     publishDataToBulletinBoard(!estimates.isEmpty(), lastTimestamp, m_latestEstimatedPoses);
 
-    System.out.println("Targets: " + getVisibleTargets());
+    // System.out.println("Targets: " + getVisibleTargets());
   }
 }

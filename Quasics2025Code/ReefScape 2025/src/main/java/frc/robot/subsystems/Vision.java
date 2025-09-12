@@ -133,8 +133,13 @@ public class Vision extends SubsystemBase {
       Pose2d simPose = robotPose3d.toPose2d();
       System.out.println(simPose);
     }
+    var result = camera.getLatestResult();
+    boolean hasTargets = result.hasTargets();
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
+
+    
+
     simulationPeriodic();
   }
 
@@ -200,12 +205,10 @@ public class Vision extends SubsystemBase {
     // Suggestion: Variable naming - "OdometryPose" vs "VisionEstimatedPose"?
 
     getPose();
-
-    System.out.println(pose);
+    // System.out.println(pose);
     visionSim.update(pose);
   }
 
-  // Review/fixme: Unused method
   private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
     if (pose != null) {
       visionEstimator.setLastPose(pose);

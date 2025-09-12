@@ -523,8 +523,11 @@ public class RobotConfigs {
                 new Imaging(960, 720, Degrees.of(100), 30)),
         }),
         new ElevatorConfig(
-            // Note: PID and FF values are arbitrary for simulation use.
-            new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+            new PIDConfig(10.0, 0, 0), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)
+            // Note: PID and FF values were calculated using SysId routines under simulation.
+            // new PIDConfig(0.16168, 0, 0),
+            // new ElevatorFeedForwardConfig(0.0015558, 0.05, 1.3321, 0.03958)
+            ),
         new ArmConfig(
             // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),

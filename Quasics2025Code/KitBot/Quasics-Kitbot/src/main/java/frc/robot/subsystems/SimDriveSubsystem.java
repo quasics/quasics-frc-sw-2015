@@ -14,12 +14,17 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SimDriveConstants;
+import frc.robot.utils.RobotSettings;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +40,12 @@ public class SimDriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive drive;
   // TODO: Update to use this
-  private final AnalogGyroSim m_gyroSim;
+  // Create our gyro object like we would on a real robot.
+  private AnalogGyro m_gyro = new AnalogGyro(1);
+  // Create the simulated gyro object, used for setting the gyro
+  // angle. Like EncoderSim, this does not need to be commented out
+  // when deploying code to the roboRIO.
+  private AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
 
   //TODO: Update to use these
   private Encoder m_leftEncoder;
@@ -57,8 +67,15 @@ public class SimDriveSubsystem extends SubsystemBase {
     m_rightFollower = new PWMSparkMax(SimDriveConstants.RIGHT_FOLLOWER_ID);
 
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html
-    m_leftEncoder = new Encoder(...);
-    m_rightEncoder = new Encoder(...);
+    // These represent our regular encoder objects, which we would
+    // create to use on a real robot.
+    m_leftEncoder = new Encoder(0, 1);
+    m_rightEncoder = new Encoder(2, 3);
+    // These are our EncoderSim objects, which we will only use in
+    // simulation. However, you do not need to comment out these
+    // declarations when you are deploying code to the roboRIO.
+    m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+    m_rightEncoderSim = new EncoderSim(m_rightEncoder);
 
     drive = new DifferentialDrive(m_leftLeader, m_rightLeader);
 

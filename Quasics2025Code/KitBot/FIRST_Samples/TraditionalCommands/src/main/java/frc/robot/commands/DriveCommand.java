@@ -5,8 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-// TODO: Accept AbstractDrivebase
-import frc.robot.subsystems.AbstractDrivebase;
+import frc.robot.subsystems.CANDriveSubsystem;
 import java.util.function.DoubleSupplier;
 
 // Command to drive the robot with joystick inputs

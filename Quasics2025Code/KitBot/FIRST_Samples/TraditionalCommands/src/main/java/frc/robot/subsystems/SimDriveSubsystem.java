@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 // Class to drive the robot over Sim
-// TODO: Extend AbstractDrivebase
 public class SimDriveSubsystem extends SubsystemBase {
   private final Field2d fieldSim = new Field2d();
   private final PWMSparkMax m_leftLeader;

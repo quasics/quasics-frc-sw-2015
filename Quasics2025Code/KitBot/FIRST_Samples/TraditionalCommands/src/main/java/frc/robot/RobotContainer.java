@@ -26,7 +26,8 @@ import frc.robot.subsystems.CANRollerSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final AbstractDrivebase driveSubsystem;
+  // The robot's subsystems
+  private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
 
   // The driver's controller
@@ -44,10 +45,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // The robot's subsystems
-    // TODO: Change to check Robot.isReal()
-    driveSubsystem = new CANDriveSubsystem();
-
     // Set up command bindings
     configureBindings();
 

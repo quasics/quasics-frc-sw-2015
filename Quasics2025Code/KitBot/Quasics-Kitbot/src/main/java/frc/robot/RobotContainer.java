@@ -26,7 +26,7 @@ import frc.robot.subsystems.CANRollerSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final AbstractDrivebase driveSubsystem;
+  private final CANDriveSubsystem driveSubsystem;
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
 
   // The driver's controller

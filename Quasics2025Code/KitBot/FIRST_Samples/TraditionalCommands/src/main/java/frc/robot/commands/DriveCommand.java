@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+// TODO: Accept AbstractDrivebase
 import frc.robot.subsystems.AbstractDrivebase;
 import java.util.function.DoubleSupplier;
 
@@ -12,11 +13,11 @@ import java.util.function.DoubleSupplier;
 public class DriveCommand extends Command {
   private final DoubleSupplier xSpeed;
   private final DoubleSupplier zRotation;
-  private final AbstractDrivebase driveSubsystem;
+  private final CANDriveSubsystem driveSubsystem;
 
   // Constructor. Runs only once when the command is first created.
   public DriveCommand(
-      DoubleSupplier xSpeed, DoubleSupplier zRotation, AbstractDrivebase driveSubsystem) {
+      DoubleSupplier xSpeed, DoubleSupplier zRotation, CANDriveSubsystem driveSubsystem) {
     // Save parameters to local variables for use later
     this.xSpeed = xSpeed;
     this.zRotation = zRotation;

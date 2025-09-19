@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
-public class CANDriveSubsystem extends AbstractDrivebase {
+// TODO: AbstractDrivebase
+public class CANDriveSubsystem extends SubsystemBase {
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
   private final SparkMax rightLeader;

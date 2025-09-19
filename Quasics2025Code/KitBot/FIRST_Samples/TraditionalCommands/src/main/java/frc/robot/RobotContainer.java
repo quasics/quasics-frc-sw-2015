@@ -13,11 +13,8 @@ import frc.robot.Constants.RollerConstants;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RollerCommand;
-import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANRollerSubsystem;
-import frc.robot.subsystems.SimDriveSubsystem;
-import frc.robot.utils.RobotSettings;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -48,12 +45,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // The robot's subsystems
-    if (Robot.isReal()) {
-      driveSubsystem = new CANDriveSubsystem();
-    }
-    else {
-      driveSubsystem = new SimDriveSubsystem(RobotSettings.Robot.Simulator);
-    }
+    // TODO: Change to check Robot.isReal()
+    driveSubsystem = new CANDriveSubsystem();
 
     // Set up command bindings
     configureBindings();

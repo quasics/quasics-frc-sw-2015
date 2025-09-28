@@ -44,6 +44,12 @@ public class SimulationUxSupport {
    */
   private final MechanismLigament2d m_armMech2d;
 
+  /** Color used to mark the upper boundary for the elevator's reach. */
+  private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(255, 0, 0);
+
+  /** Color used to mark the lower boundary for the elevator's reach. */
+  private static final Color8Bit LOWER_BOUND_COLOR = new Color8Bit(0, 0, 255);
+
   /** Color used to render the elevator when running under manual control. */
   private final static Color8Bit NO_SETPOINT = new Color8Bit(StockColor.Orange.toWpiColor());
 
@@ -83,14 +89,17 @@ public class SimulationUxSupport {
     updateElevator(Meters.of(0), DeviceStatus.Manual);
     updateArm(Degrees.of(0), DeviceStatus.Manual);
 
-    // Elevator bound markers
+    //
+    // Elevator boundary markers.  (These aren't saved because we'll never need to redraw them.)
+
+    // Rendering "lower bound" for elevator
     var lowerBoundRoot = rootMech2d.getRoot("FloorRoot", 0, 0);
-    var lowerBound =
-        lowerBoundRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, new Color8Bit(255, 0, 0)));
+    lowerBoundRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, LOWER_BOUND_COLOR));
+
+    // Rendering "upper bound" for elevator
     var topBoundRoot =
         rootMech2d.getRoot("TopRoot", 0, AbstractElevator.MAX_SAFE_HEIGHT.in(Meters));
-    var topBound =
-        topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, new Color8Bit(0, 0, 255)));
+    topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, UPPER_BOUND_COLOR));
   }
 
   /**

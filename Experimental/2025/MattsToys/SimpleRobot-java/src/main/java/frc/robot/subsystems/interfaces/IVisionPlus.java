@@ -29,6 +29,26 @@ public interface IVisionPlus extends IVision {
 
   List<TargetData> getVisibleTargets();
 
+  /**
+   * Helper method to see if the specified target is currently visible.
+   *
+   * @param targetId  the desired target's ID
+   * @return true iff the target is currently in view
+   */
+  default boolean isTargetVisible(int targetId) {
+    var visibleTargets = getVisibleTargets();
+    if (visibleTargets.isEmpty()) {
+      return false;
+    }
+
+    for (var target : visibleTargets) {
+      if (target.id() == targetId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /** Trivial implementation of IVisionPlus (e.g., if we don't have a camera). */
   public class NullVisionPlus extends IVision.NullVision implements IVisionPlus {
     /** Constructor. */

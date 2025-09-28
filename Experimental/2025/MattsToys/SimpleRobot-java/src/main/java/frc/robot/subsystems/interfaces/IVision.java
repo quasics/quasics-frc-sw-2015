@@ -111,6 +111,15 @@ public interface IVision extends ISubsystem {
     return cameraData.camera().getLatestResult();
   }
 
+  /**
+   * Returns estimated relative positioning data for all visible targets (if any).
+   *
+   * @param cameraData camera supplying the tracking data
+   * @param fieldLayout field layout, used to determine fixed (absolute) positions for targets in
+   *     view
+   * @param robotPose robot's estimated position (used to compute relative positioning for targets)
+   * @return estimated relative positioning data for all visible targets
+   */
   static List<TargetData> getTargetDataForCamera(
       CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
     final var latestResults = IVision.getLatestResultsWrapper(cameraData);

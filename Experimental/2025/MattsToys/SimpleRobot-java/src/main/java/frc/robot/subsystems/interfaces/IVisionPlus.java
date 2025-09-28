@@ -27,6 +27,13 @@ public interface IVisionPlus extends IVision {
   /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
+  /**
+   * Returns the list of targets that are currently in view.  (Computed using the robot's estimated
+   * pose as a basis for relative positions.)
+   *
+   * @see #getVisibleTargets(Pose2d)
+   * @see IVision.getTargetDataForCamera(CameraData, AprilTagFieldLayout, Pose2d)
+   */
   List<TargetData> getVisibleTargets();
 
   /**

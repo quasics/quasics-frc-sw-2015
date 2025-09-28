@@ -14,7 +14,7 @@ import frc.robot.utils.BulletinBoard;
  * Adds functionality to the basic IDrivebase interface, such as PID control, pose estimation, and
  * trajectory-following.
  */
-public interface IBetterDrivebase extends IDrivebase {
+public interface IDrivebasePlus extends IDrivebase {
   /** Key used to post odometry-based pose information to BulletinBoard. */
   final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
 
@@ -112,7 +112,7 @@ public interface IBetterDrivebase extends IDrivebase {
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /** Trivial implementation of the IDrivebase interface. */
-  public static class NullDrivebase extends IDrivebase.NullDrivebase implements IBetterDrivebase {
+  public static class NullDrivebase extends IDrivebase.NullDrivebase implements IDrivebasePlus {
     @Override
     public Pose2d getPose() {
       return new Pose2d();

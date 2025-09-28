@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -13,13 +13,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IVisionPlus;
 
-/* You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+/**
+ * Simple command to demonstrate using camera data to align with a target.
+ *
+ * Note that one nice improvement would be to scale our turning speed (or use PID control) to
+ * provide more refined motion control as we try to align with the target, once it's in view.
+ * (For example, scale using the measured angle to the target as our error.)
  */
 public class TurnToTarget extends Command {
+  /** Vision subsystem. */
   private final IVisionPlus m_vision;
+  /** Drive subsystem. */
   private final IDrivebase m_drivebase;
+  /** ID of the desired target. */
   private final int m_targetId;
+
+  /** (Command state) Are we aligned (pointed directly at) the target? */
   private boolean m_aligned = false;
 
   /** Determines if we'll print debugging output while command is active. */
@@ -49,23 +58,20 @@ public class TurnToTarget extends Command {
     addRequirements(vision.asSubsystem(), drivebase.asSubsystem());
   }
 
-  /**
-   * Updates driving and "m_aligned", based on camera data.
-   *
-   * @see #initialize()
-   * @see #execute()
-   */
-  private void update() {
+  @Override
+  public void initialize() {
+    // Assume that we can't see it at the moment.  (We'll figure out what to do in execute().)
+    m_aligned = false;
+  }
+
+  @Override
+  public void execute() {
     final var targetData = m_vision.getTargetData(m_targetId);
     if (targetData == null) {
       // Trivial case: it's not currently in view, so just turn until we (hopefully) find it
       m_drivebase.arcadeDrive(null, SEEKING_SPEED);
       return;
     }
-
-    // Note: One nice improvement here would be to scale our turning speed (or use PID control) to
-    // provide more refined motion as we try to align with the target (e.g., based on
-    // targetData.angle().minus(MIN_ACCEPTABLE_ANGLE)).
 
     String updateMsg = ""; // Used to summarize action
     AngularVelocity turnSpeed = null; // Speed we need to turn at
@@ -92,16 +98,6 @@ public class TurnToTarget extends Command {
 
     // Update drive base
     m_drivebase.arcadeDrive(null, turnSpeed);
-  }
-
-  @Override
-  public void initialize() {
-    m_aligned = false;
-  }
-
-  @Override
-  public void execute() {
-    update();
   }
 
   @Override

@@ -29,7 +29,7 @@ public interface IVision extends ISubsystem {
 
   /**
    * @param id fiducial ID for the target
-   * @param angle yaw to the angle (positive left)
+   * @param angle yaw to the angle (negative values means that it's to left of camera center)
    */
   record TargetData(int id, Angle angle, Distance distance) {}
 

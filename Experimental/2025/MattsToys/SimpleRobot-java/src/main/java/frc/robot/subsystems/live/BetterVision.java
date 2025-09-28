@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IBetterDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.utils.BulletinBoard;
@@ -248,7 +248,8 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
     super.periodic();
 
     // Where does the drive base think we are?
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class);
+    final var optDrivePose =
+        BulletinBoard.common.getValue(IBetterDrivebase.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Update camera-specific estimators (and gather their results).

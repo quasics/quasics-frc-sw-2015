@@ -31,8 +31,8 @@ import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.IBetterDrivebase;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
@@ -86,7 +86,7 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
-  final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
+  final private IBetterDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
   final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
@@ -554,9 +554,9 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return a drive base subsystem for this robot (may be trivial)
    */
-  private static IDrivebase allocateDrivebase(RobotConfigs.RobotConfig config) {
+  private static IBetterDrivebase allocateDrivebase(RobotConfigs.RobotConfig config) {
     if (!config.hasDrive()) {
-      return new IDrivebase.NullDrivebase();
+      return new IBetterDrivebase.NullDrivebase();
     }
 
     if (Robot.isReal()) {

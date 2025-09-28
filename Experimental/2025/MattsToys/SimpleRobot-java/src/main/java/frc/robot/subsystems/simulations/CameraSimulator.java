@@ -8,7 +8,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IBetterDrivebase;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
@@ -155,7 +155,7 @@ public class CameraSimulator extends SubsystemBase {
     // Update the simulator to show where the drive base's (pure) odometry suggests
     // that we are located.
     Pose2d driveBasePoseMeters =
-        (Pose2d) BulletinBoard.common.getValue(IDrivebase.ODOMETRY_KEY, Pose2d.class)
+        (Pose2d) BulletinBoard.common.getValue(IBetterDrivebase.ODOMETRY_KEY, Pose2d.class)
             .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
@@ -172,7 +172,7 @@ public class CameraSimulator extends SubsystemBase {
     // Update the simulator to reflect where the drivebase's (potentially composite)
     // pose estimate suggests that we are located.
     var driveBaseEstimatedPose =
-        BulletinBoard.common.getValue(IDrivebase.ESTIMATED_POSE_KEY, Pose2d.class);
+        BulletinBoard.common.getValue(IBetterDrivebase.ESTIMATED_POSE_KEY, Pose2d.class);
     driveBaseEstimatedPose.ifPresentOrElse(
         // Do this with the estimated pose from drive base (if it has some)
         est

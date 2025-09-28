@@ -34,8 +34,17 @@ public interface IDrivebasePlus extends IDrivebase {
     driveWithPid(getKinematics().toWheelSpeeds(speeds));
   }
 
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Pose estimation stuff
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
   /**
-   * Returns the latest posted odemetry-based pose.
+   * Returns the latest posted odemetry-based pose (from the bulletin board).
+   *
+   * Note: this is a static function, which means that client code doesn't interact directly with
+   * the actual subsystem (and thus doesn't need to include it in their requirements).
    *
    * @return last posted odemetry pose, or null
    */
@@ -45,7 +54,11 @@ public interface IDrivebasePlus extends IDrivebase {
   }
 
   /**
-   * Returns the latest posted pose estimate, based on unified odometry/vision data.
+   * Returns the latest posted pose estimate (from the bulletin board) based on unified
+   * odometry/vision data (from the bulletin board).
+   *
+   * Note: this is a static function, which means that client code doesn't interact directly with
+   * the actual subsystem (and thus doesn't need to include it in their requirements).
    *
    * @return last posted unified pose estimate, or null
    */
@@ -110,6 +123,12 @@ public interface IDrivebasePlus extends IDrivebase {
    * @param wheelSpeeds desired wheel speeds (based on trajectory planning)
    */
   public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Trivial implementation
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
   /** Trivial implementation of the IDrivebase interface. */
   public static class NullDrivebase extends IDrivebase.NullDrivebase implements IDrivebasePlus {

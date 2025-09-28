@@ -26,9 +26,9 @@ import frc.robot.sensors.TrivialEncoder;
  * Note that I'm currently breaking this out into:
  * <ul>
  * <li>A simple interface (this one) for truly core functionality (and default implementations of
- * simple things).
- * <li>A derived interface (IBetterDrivebase), which would be used to help define more advanced
- * functionality.
+ * some helpful stuff built directly on that).
+ * <li>A derived interface (IBetterDrivebase), which defines more advanced functionality (e.g.,
+ * support for pose estimation, PID control, and trajectory-following).
  * <li>An abstract class, which starts handling things like PID, etc.
  * <li>Concrete types, which mostly serve to set up/access the underlying hardware (real or
  * simulated).
@@ -65,6 +65,72 @@ public interface IDrivebase extends ISubsystem {
 
   /** Zero rotational velocity.  (A potentially useful constant.) */
   final AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // "Purely abstract methods", outlining pretty basic functionality for a drive
+  // base.
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Directly sets the voltages delivered to the motors, used as the basis for implenenting
+   * tank/arcade driving.
+   *
+   * Note: operates directly; no PID.
+   *
+   * @param left  voltage for the left-side motors
+   * @param right voltage for the right-side motors
+   */
+  void setMotorVoltages(Voltage left, Voltage right);
+
+  /**
+   * Returns the voltage being applied to the left motor.
+   *
+   * @return The applied voltage from the left motor
+   */
+  Voltage getLeftVoltage();
+
+  /**
+   * Returns the voltage being applied to the right motor.
+   *
+   * @return The applied voltage from the right motor
+   */
+  Voltage getRightVoltage();
+
+  /**
+   * Returns a TrivialEncoder for the left motor.
+   *
+   * @return TrivialEncoder exposing data for the left motors
+   */
+  TrivialEncoder getLeftEncoder();
+
+  /**
+   * Returns a TrivialEncoder for the right motor.
+   *
+   * @return TrivialEncoder exposing data for the right motors
+   */
+  TrivialEncoder getRightEncoder();
+
+  /**
+   * Exposes a gyro (providing heading/yaw) for the robot.
+   *
+   * @return IGyro exposing data from the underlying ALU
+   */
+  IGyro getGyro();
+
+  /**
+   * Gets the robot's kinematics.
+   *
+   * @return kinematics data for the robot
+   */
+  DifferentialDriveKinematics getKinematics();
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Some simple-ish functions built on top of the core interface.
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
   /** Utility method: stops the robot. */
   default void stop() {
@@ -226,61 +292,9 @@ public interface IDrivebase extends ISubsystem {
 
   /////////////////////////////////////////////////////////////////////////////////
   //
-  // "Purely abstract methods"
+  // Trivial implementation
   //
   /////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Directly sets the voltages delivered to the motors.
-   *
-   * Note: operates directly; no PID.
-   *
-   * @param left  voltage for the left-side motors
-   * @param right voltage for the right-side motors
-   */
-  void setMotorVoltages(Voltage left, Voltage right);
-
-  /**
-   * Returns the voltage being applied to the left motor.
-   *
-   * @return The applied voltage from the left motor
-   */
-  Voltage getLeftVoltage();
-
-  /**
-   * Returns the voltage being applied to the right motor.
-   *
-   * @return The applied voltage from the right motor
-   */
-  Voltage getRightVoltage();
-
-  /**
-   * Returns a TrivialEncoder for the left motor.
-   *
-   * @return TrivialEncoder exposing data for the left motors
-   */
-  TrivialEncoder getLeftEncoder();
-
-  /**
-   * Returns a TrivialEncoder for the right motor.
-   *
-   * @return TrivialEncoder exposing data for the right motors
-   */
-  TrivialEncoder getRightEncoder();
-
-  /**
-   * Exposes a gyro (providing heading/yaw) for the robot.
-   *
-   * @return IGyro exposing data from the underlying ALU
-   */
-  IGyro getGyro();
-
-  /**
-   * Gets the robot's kinematics.
-   *
-   * @return kinematics data for the robot
-   */
-  DifferentialDriveKinematics getKinematics();
 
   /** Trivial implementation of the IDrivebase interface. */
   public static class NullDrivebase implements IDrivebase {

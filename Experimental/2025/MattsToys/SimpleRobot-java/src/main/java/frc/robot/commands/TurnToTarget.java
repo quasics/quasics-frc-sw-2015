@@ -47,6 +47,7 @@ public class TurnToTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // TODO: Update this so that it's not just a question of visibility, but actual alignment.
     return vision.isTargetVisible(targetId);
   }
 }

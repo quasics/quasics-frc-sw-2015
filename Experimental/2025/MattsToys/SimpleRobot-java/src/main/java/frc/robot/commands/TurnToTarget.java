@@ -16,9 +16,9 @@ import frc.robot.subsystems.interfaces.IVisionPlus;
 /**
  * Simple command to demonstrate using camera data to align with a target.
  *
- * Note that one nice improvement would be to scale our turning speed (or use PID control) to
- * provide more refined motion control as we try to align with the target, once it's in view.
- * (For example, scale using the measured angle to the target as our error.)
+ * Note that one nice improvement would be to use full PID control (or at least less arbitrary
+ * values for "kP") to moderate our turning speed as we try to align with the target, once it's in
+ * view.
  */
 public class TurnToTarget extends Command {
   /** Vision subsystem. */
@@ -35,13 +35,13 @@ public class TurnToTarget extends Command {
   static private final boolean NOISY = true;
 
   /** How closely aligned (+/-) we need to be with the target before we'll stop turning. */
-  static private final Angle MIN_ACCEPTABLE_ANGLE = Degrees.of(3);
+  static private final Angle MIN_ACCEPTABLE_ANGLE = Degrees.of(2);
 
   // Note: positive values for turning are CCW in direction.
   /** How fast we should turn when we can't see the target at all. */
-  static private final AngularVelocity SEEKING_SPEED = DegreesPerSecond.of(30);
+  static private final AngularVelocity SEEKING_SPEED = DegreesPerSecond.of(45);
   /** Max speed we should turn when the target is in view. */
-  static private final AngularVelocity TRACKING_SPEED = DegreesPerSecond.of(5);
+  static private final AngularVelocity TRACKING_SPEED = DegreesPerSecond.of(10);
 
   /**
    * Creates a new TurnToTarget.
@@ -73,27 +73,33 @@ public class TurnToTarget extends Command {
       return;
     }
 
+    // We aren't doing full PID control here, but we'll at scale our speed in a way that's
+    // proportional to the error (i.e., relative angle in degrees from 0 to the target).
+    final double kP = 0.05;
+    final double errorVal = Math.abs(targetData.angle().in(Degrees));
+    final double errorScaling = Math.min(1.0, errorVal * kP); // Bound the multiplier to 1
     String updateMsg = ""; // Used to summarize action
-    AngularVelocity turnSpeed = null; // Speed we need to turn at
+    double turnSpeedMultiplier = 0; // Used to provide "P" (proportional) scaling of turning speed
     if (targetData.angle().gt(MIN_ACCEPTABLE_ANGLE)) {
       // Too far off (positive angle, so to the right of forward)
-      turnSpeed = TRACKING_SPEED.times(-1);
+      turnSpeedMultiplier = -1 * errorScaling;
       updateMsg = " - turning right (CW)";
     } else if (targetData.angle().lt(MIN_ACCEPTABLE_ANGLE.times(-1))) {
       // Too far off (negative angle, so to the left of forward)
-      turnSpeed = TRACKING_SPEED.times(+1);
+      turnSpeedMultiplier = +1 * errorScaling;
       updateMsg = " - turning left (CCW)";
     } else {
       // In the zone
       m_aligned = true;
-      turnSpeed = IDrivebase.ZERO_TURNING;
+      turnSpeedMultiplier = 0;
       updateMsg = " - stopping!";
     }
+    final AngularVelocity turnSpeed = TRACKING_SPEED.times(turnSpeedMultiplier);
 
     // Log results (if enabled)
     if (NOISY) {
       System.out.println("In view: " + targetData.angle().in(Degrees) + " (need +/-"
-          + MIN_ACCEPTABLE_ANGLE.in(Degrees) + ")" + updateMsg);
+          + MIN_ACCEPTABLE_ANGLE.in(Degrees) + ") " + turnSpeed + updateMsg);
     }
 
     // Update drive base

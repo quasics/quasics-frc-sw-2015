@@ -66,8 +66,11 @@ public interface IDrivebase extends ISubsystem {
   /** Maximum rotational velocity for arcade drive. */
   final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(180);
 
-  /** Zero velocity. (A potentially useful constant.) */
+  /** Zero linear velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+
+  /** Zero rotational velocity.  (A potentially useful constant.) */
+  final AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
 
   /** Utility method: stops the robot. */
   default void stop() {
@@ -108,6 +111,13 @@ public interface IDrivebase extends ISubsystem {
    * @param rotation The angular velocity to rotate at.
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
+    if (speed == null) {
+      speed = ZERO_MPS;
+    }
+    if (rotation == null) {
+      rotation = ZERO_TURNING;
+    }
+
     // Calculate the left and right wheel speeds based on the inputs.
     final DifferentialDriveWheelSpeeds wheelSpeeds =
         getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));

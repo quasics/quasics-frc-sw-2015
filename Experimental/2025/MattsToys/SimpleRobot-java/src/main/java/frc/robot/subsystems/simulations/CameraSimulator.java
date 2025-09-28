@@ -20,15 +20,23 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
 /**
- * Implements a simulation wrapper on top of an AbstractCamera object.
+ * Implements a subsystem that will inject simulated vision data into the setup for an actual
+ * IVision-based subsystem.
  *
  * The published image streams (if enabled) follow the port order mentioned in
  * the "Camera Stream Ports" section of the PhotonVision docs. For example, a
  * single simulated camera will have its raw stream at http://localhost:1181
  * and the processed stream at http://localhost:1182. These can also be found in
  * the CameraServer tab of Shuffleboard, like a normal camera stream.
+ *
+ * Note: this is implemented as an additional subsystem, itself, simply to ensure that we have
+ * the simPeriodic() function invoked on this class by the WPILib framework.  We do not actually
+ * expect any commands, etc., to interact with objects of this class.
  */
-public class SimVisionWrapper extends SubsystemBase implements IVision {
+public class CameraSimulator extends SubsystemBase {
+  /** Subsystem name. */
+  static public final String SUBSYSTEM_NAME = "CameraSimulator";
+
   /** Determines if simulated imagery will be streamed from the library. */
   final static private boolean ENABLE_IMAGE_STREAMING = true;
 
@@ -45,13 +53,13 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    * Constructor.
    *
    * @param config     the robot's configuration
-   * @param realVision the BetterVision object providing the core functionality
+   * @param realVision the IVision object with the cameras into which the data will be injected
    */
-  public SimVisionWrapper(RobotConfig config, IVision realVision) {
+  public CameraSimulator(RobotConfig config, IVision realVision) {
     // Sanity checking parameters.
     if (config.cameras().size() != realVision.getCameraDataForSimulation().size()) {
       throw new RuntimeException("Camera data mismatch:"
-          + " config has " + config.cameras().size() + " but we only have "
+          + " config has " + config.cameras().size() + " but we have "
           + realVision.getCameraDataForSimulation().size() + " cameras allocated!");
     }
 
@@ -72,7 +80,7 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     //
     for (int index = 0; index < m_realVision.getCameraDataForSimulation().size(); ++index) {
       final RobotConfigs.CameraConfig cameraConfig = config.cameras().get(index);
-      final CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
+      final IVision.CameraData cameraData = m_realVision.getCameraDataForSimulation().get(index);
       m_visionSim.addCamera(configureCameraSim(cameraConfig, cameraData), cameraData.transform3d());
     }
   }
@@ -86,7 +94,7 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
    * @return the simulation controller for the camera
    */
   private PhotonCameraSim configureCameraSim(
-      RobotConfigs.CameraConfig cameraConfig, CameraData cameraData) {
+      RobotConfigs.CameraConfig cameraConfig, IVision.CameraData cameraData) {
     // Set up the camera simulation
     PhotonCameraSim cameraSim =
         new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
@@ -154,7 +162,7 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
     // Update the simulator to reflect where the (purely) vision-based pose estimate
     // suggests that we are located.
     final var debugField = m_visionSim.getDebugField();
-    List<Pose2d> latestEstimates = getEstimatedPoses();
+    List<Pose2d> latestEstimates = m_realVision.getEstimatedPoses();
     if (!latestEstimates.isEmpty()) {
       debugField.getObject("VisionEstimation").setPoses(latestEstimates);
     } else {
@@ -171,45 +179,5 @@ public class SimVisionWrapper extends SubsystemBase implements IVision {
         -> { debugField.getObject("DriveEstimation").setPose((Pose2d) est); },
         // If we have no estimated pose from the drive base, do this
         () -> { debugField.getObject("DriveEstimation").setPoses(); });
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-
-    // Note that we aren't making a pass-through call to the periodic function on
-    // m_realVision here; its version will automatically be invoked as well by the
-    // framework, so we don't want to double-up on that.
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  //
-  // IVision methods
-  //
-  //////////////////////////////////////////////////////////////////////////////
-
-  @Override
-  public AprilTagFieldLayout getFieldLayoutForSimulation() {
-    return m_realVision.getFieldLayoutForSimulation();
-  }
-
-  @Override
-  public List<CameraData> getCameraDataForSimulation() {
-    return m_realVision.getCameraDataForSimulation();
-  }
-
-  @Override
-  public List<Pose2d> getEstimatedPoses() {
-    return m_realVision.getEstimatedPoses();
-  }
-
-  @Override
-  public boolean hasTargetsInView() {
-    return m_realVision.hasTargetsInView();
-  }
-
-  @Override
-  public List<TargetData> getVisibleTargets(Pose2d robotPose) {
-    return m_realVision.getVisibleTargets(robotPose);
   }
 }

@@ -29,21 +29,23 @@ import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
+import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.BetterVision;
 import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
+import frc.robot.subsystems.simulations.CameraSimulator;
 import frc.robot.subsystems.simulations.SimCandle;
 import frc.robot.subsystems.simulations.SimDrivebase;
-import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
@@ -88,9 +90,11 @@ public class RobotContainer {
   final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
-  @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+  @SuppressWarnings("unused") // Camera simulator is pure data injection
+  final private CameraSimulator m_cameraSimulator =
+      maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
   final EventLogger m_eventLogger = new StringEventLogger();
 
@@ -216,11 +220,20 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(m_elevator, Direction.kReverse));
   }
 
+  // Some commands only work with specific types of subsystems
+  private void maybeAddVisionCommandsToDashboard() {
+    if (m_vision instanceof IVisionPlus) {
+      SmartDashboard.putData(
+          "Turn to target 17", new TurnToTarget((BetterVision) m_vision, m_drivebase, 17));
+    }
+  }
+
   /**
    * Configures the buttons on the dashboard.
    */
   private void configureDashboard() {
     addSysIdControlsToDashboard();
+    maybeAddVisionCommandsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
     SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
@@ -504,6 +517,21 @@ public class RobotContainer {
     }
   }
 
+  private static CameraSimulator maybeAllocateCameraSimulator(
+      RobotConfigs.RobotConfig config, IVision vision) {
+    assert vision != null : "Vision subsystem must be allocated before camera simulation setup";
+    if (vision == null) {
+      throw new IllegalArgumentException(
+          "Vision subsystem must be allocated before camera simulation setup");
+    }
+
+    if (Robot.isReal()) {
+      return null;
+    }
+
+    return new CameraSimulator(config, vision);
+  }
+
   /**
    * Allocates a Vision subsystem object.
    *
@@ -517,11 +545,7 @@ public class RobotContainer {
 
     // TODO: Add code to switch between SimpleVision and BetterVision instances, depending
     // on the number of cameras, so that both can be tested.
-    if (Robot.isReal()) {
-      return new BetterVision(config);
-    } else {
-      return new SimVisionWrapper(config, new BetterVision(config));
-    }
+    return new BetterVision(config);
   }
 
   /**

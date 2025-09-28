@@ -101,7 +101,7 @@ public interface IVision extends ISubsystem {
 
   // Making this a helper function, since getLatestResult() is now deprecated, and
   // I'm trying to cut down on the number of warnings.
-  static PhotonPipelineResult getLatestResult(CameraData cameraData) {
+  static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
     // TODO: look at replacing this with something in a reusable base class to try to
     // cache data, to handle the deprecation.
     return cameraData.camera().getLatestResult();
@@ -109,7 +109,7 @@ public interface IVision extends ISubsystem {
 
   static List<TargetData> getTargetDataForCamera(
       CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
-    final var latestResults = IVision.getLatestResult(cameraData);
+    final var latestResults = IVision.getLatestResultsWrapper(cameraData);
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
     }

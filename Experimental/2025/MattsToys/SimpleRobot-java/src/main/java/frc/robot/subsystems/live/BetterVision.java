@@ -193,7 +193,7 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
   @Override
   public boolean hasTargetsInView() {
     for (CameraData cameraData : m_cameraData) {
-      if (IVision.getLatestResult(cameraData).hasTargets()) {
+      if (IVision.getLatestResultsWrapper(cameraData).hasTargets()) {
         return true;
       }
     }

@@ -86,7 +86,7 @@ public class SimpleVision extends SubsystemBase implements IVision {
 
   @Override
   public boolean hasTargetsInView() {
-    return IVision.getLatestResult(m_cameraData).hasTargets();
+    return IVision.getLatestResultsWrapper(m_cameraData).hasTargets();
   }
 
   /**
@@ -97,7 +97,7 @@ public class SimpleVision extends SubsystemBase implements IVision {
    * @return estimate of where the robot is on the field, if we can see anything
    */
   private Optional<Pose3d> getEstimatedRobotPose() {
-    final var latestResults = IVision.getLatestResult(m_cameraData);
+    final var latestResults = IVision.getLatestResultsWrapper(m_cameraData);
     if (latestResults.hasTargets()) {
       // No targets in view
       return Optional.empty();

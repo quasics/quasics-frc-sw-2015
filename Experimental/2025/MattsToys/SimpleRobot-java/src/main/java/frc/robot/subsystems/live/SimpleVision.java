@@ -90,7 +90,8 @@ public class SimpleVision extends SubsystemBase implements IVision {
   }
 
   /**
-   * Helper method to try to estimate where the robot is on the field, if we can see any targets.
+   * Helper method to try to estimate where the robot is on the field, using the best (single)
+   * target that we can see, if any.
    *
    * @param fieldLayout  field layout (specifying what tags are where)
    * @param cameraData   camera information (providing visible targets and "robotToCamera" info)

@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Basic interface for vision processing support.
+ * Interface for more advanced vision processing support (pose estimation based on a fusion of
+ * odometry and camera data, etc.).
  */
 public interface IVisionPlus extends IVision {
   /** Name for the subsystem (and base for BulletinBoard keys). */

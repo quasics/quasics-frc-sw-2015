@@ -25,8 +25,11 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Simple vision subsystem interface.
  *
- * Allows clients to determine what targets are seen and basic information, but
- * doesn't do position identification.
+ * Allows clients to determine what targets are seen and basic information, but doesn't do any
+ * detailed pose estimation.  (For example, if we can see *any* targets, we will use the best one
+ * and some basic trig to figure out where the robot might be.)
+ *
+ * Note: this interface generally assumes only a single camera is being used.
  */
 public interface IVision extends ISubsystem {
   static String SUBSYSTEM_NAME = "Vision";
@@ -58,7 +61,8 @@ public interface IVision extends ISubsystem {
   boolean hasTargetsInView();
 
   /**
-   * @param robotPose current position of the robot on the field (e.g., from odometery)
+   * @param robotPose current position of the robot on the field (e.g., from odometery), which is
+   *     used to compute robot-relative positioning of the targets
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
 
@@ -73,6 +77,9 @@ public interface IVision extends ISubsystem {
 
   /**
    * Returns the most recent pose estimates, based on camera data.
+   *
+   * Note: for classes that only implement IVision (and not IVisionPlus), this will be at most a
+   * list of a single estimate, as multi-camera support isn't enabled.)
    *
    * @return the most recent pose estimates
    */

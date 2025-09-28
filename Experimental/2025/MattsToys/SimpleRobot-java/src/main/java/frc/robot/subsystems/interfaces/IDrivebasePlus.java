@@ -15,12 +15,6 @@ import frc.robot.utils.BulletinBoard;
  * trajectory-following.
  */
 public interface IDrivebasePlus extends IDrivebase {
-  /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
-
-  /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
-
   /**
    * Sets the speeds for the robot.
    *
@@ -39,6 +33,12 @@ public interface IDrivebasePlus extends IDrivebase {
   // Pose estimation stuff
   //
   /////////////////////////////////////////////////////////////////////////////////
+
+  /** Key used to post odometry-based pose information to BulletinBoard. */
+  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
+
+  /** Key used to post odometry-based pose information to BulletinBoard. */
+  final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
 
   /**
    * Returns the latest posted odemetry-based pose (from the bulletin board).

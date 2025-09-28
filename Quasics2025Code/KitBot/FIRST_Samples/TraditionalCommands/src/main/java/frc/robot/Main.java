@@ -20,9 +20,6 @@ public final class Main {
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    // This is the start of the whole program.
-    // It uses the RobotBase library and our Robot class, defined in
-    // src\main\java\frc\robot\Robot.java
     RobotBase.startRobot(Robot::new);
   }
 }

@@ -20,11 +20,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveTeamShootingSupport;
+import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
@@ -223,8 +225,13 @@ public class RobotContainer {
   // Some commands only work with specific types of subsystems
   private void maybeAddVisionCommandsToDashboard() {
     if (m_vision instanceof IVisionPlus) {
-      SmartDashboard.putData(
-          "Turn to target 17", new TurnToTarget((BetterVision) m_vision, m_drivebase, 17));
+      final int targetId = 17;
+      SmartDashboard.putData("Turn to target " + targetId,
+          new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
+      SmartDashboard.putData("Turn & Drive to target " + targetId,
+          new SequentialCommandGroup(
+              new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId),
+              new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
     }
   }
 

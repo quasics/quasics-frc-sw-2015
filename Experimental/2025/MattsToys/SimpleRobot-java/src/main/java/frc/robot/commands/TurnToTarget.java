@@ -28,11 +28,11 @@ public class TurnToTarget extends Command {
   /** ID of the desired target. */
   private final int m_targetId;
 
+  /** Determines if we'll print debugging output while command is active. */
+  private final boolean m_noisy;
+
   /** (Command state) Are we aligned (pointed directly at) the target? */
   private boolean m_aligned = false;
-
-  /** Determines if we'll print debugging output while command is active. */
-  static private final boolean NOISY = true;
 
   /** How closely aligned (+/-) we need to be with the target before we'll stop turning. */
   static private final Angle MIN_ACCEPTABLE_ANGLE = Degrees.of(2);
@@ -41,7 +41,7 @@ public class TurnToTarget extends Command {
   /** How fast we should turn when we can't see the target at all. */
   static private final AngularVelocity SEEKING_SPEED = DegreesPerSecond.of(45);
   /** Max speed we should turn when the target is in view. */
-  static private final AngularVelocity TRACKING_SPEED = DegreesPerSecond.of(10);
+  static private final AngularVelocity TRACKING_SPEED = DegreesPerSecond.of(5);
 
   /**
    * Creates a new TurnToTarget.
@@ -51,9 +51,14 @@ public class TurnToTarget extends Command {
    * @param targetId ID for the desired target
    */
   public TurnToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId) {
+    this(vision, drivebase, targetId, false);
+  }
+
+  public TurnToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId, boolean noisy) {
     this.m_vision = vision;
     this.m_drivebase = drivebase;
     this.m_targetId = targetId;
+    this.m_noisy = noisy;
 
     addRequirements(vision.asSubsystem(), drivebase.asSubsystem());
   }
@@ -97,7 +102,7 @@ public class TurnToTarget extends Command {
     final AngularVelocity turnSpeed = TRACKING_SPEED.times(turnSpeedMultiplier);
 
     // Log results (if enabled)
-    if (NOISY) {
+    if (m_noisy) {
       System.out.println("In view: " + targetData.angle().in(Degrees) + " (need +/-"
           + MIN_ACCEPTABLE_ANGLE.in(Degrees) + ") " + turnSpeed + updateMsg);
     }

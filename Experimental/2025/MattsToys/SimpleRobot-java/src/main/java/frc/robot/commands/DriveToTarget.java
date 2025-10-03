@@ -60,7 +60,7 @@ public class DriveToTarget extends Command {
   private static final Distance DESIRED_DISTANCE = Meters.of(1.0);
 
   /** Maximum acceptable error in distance from the target. */
-  private static final Distance MAX_DISTANCE_ERR = Meters.of(0.03);
+  private static final Distance MAX_DISTANCE_ERR = Meters.of(0.02);
 
   /**
    * kP to use in adjusting the robot's linear speed as we get closer.  (Must be tuned, based on
@@ -72,7 +72,7 @@ public class DriveToTarget extends Command {
    * kP to use in adjusting the robot's turning speed as the target comes into alignment.  (Must be
    * tuned, based on speed.)
    */
-  private static final double TURNING_KP = 0.015;
+  private static final double TURNING_KP = 0.008;
 
   /**
    * Constructor.

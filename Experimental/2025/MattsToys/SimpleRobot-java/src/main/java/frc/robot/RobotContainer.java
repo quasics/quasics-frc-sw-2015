@@ -229,8 +229,8 @@ public class RobotContainer {
       SmartDashboard.putData("Turn to target " + targetId,
           new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
       SmartDashboard.putData("Turn & Drive to target " + targetId,
-          new SequentialCommandGroup(
-              new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId),
+          new SequentialCommandGroup(new TurnToTarget((BetterVision) m_vision, m_drivebase,
+                                         targetId, TurnToTarget.OpMode.TargetInView, false),
               new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
     }
   }

@@ -21,6 +21,8 @@ import frc.robot.subsystems.interfaces.IVisionPlus;
  * view.
  */
 public class TurnToTarget extends Command {
+  public enum OpMode { PointAtTarget, TargetInView }
+
   /** Vision subsystem. */
   private final IVisionPlus m_vision;
   /** Drive subsystem. */
@@ -28,11 +30,16 @@ public class TurnToTarget extends Command {
   /** ID of the desired target. */
   private final int m_targetId;
 
+  private final OpMode m_opMode;
+
   /** Determines if we'll print debugging output while command is active. */
   private final boolean m_noisy;
 
-  /** (Command state) Are we aligned (pointed directly at) the target? */
-  private boolean m_aligned = false;
+  /**
+   * (Command state) Are we sufficiently aligned (i.e., either the target is in view or we're
+   * pointed directly at) the target, depending on the op mode)?
+   */
+  private boolean m_finished = false;
 
   /** How closely aligned (+/-) we need to be with the target before we'll stop turning. */
   static private final Angle MIN_ACCEPTABLE_ANGLE = Degrees.of(2);
@@ -51,14 +58,16 @@ public class TurnToTarget extends Command {
    * @param targetId ID for the desired target
    */
   public TurnToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId) {
-    this(vision, drivebase, targetId, false);
+    this(vision, drivebase, targetId, OpMode.PointAtTarget, false);
   }
 
-  public TurnToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId, boolean noisy) {
+  public TurnToTarget(
+      IVisionPlus vision, IDrivebase drivebase, int targetId, OpMode opMode, boolean noisy) {
     this.m_vision = vision;
     this.m_drivebase = drivebase;
     this.m_targetId = targetId;
     this.m_noisy = noisy;
+    this.m_opMode = opMode;
 
     addRequirements(vision.asSubsystem(), drivebase.asSubsystem());
   }
@@ -66,7 +75,7 @@ public class TurnToTarget extends Command {
   @Override
   public void initialize() {
     // Assume that we can't see it at the moment.  (We'll figure out what to do in execute().)
-    m_aligned = false;
+    m_finished = false;
   }
 
   @Override
@@ -75,6 +84,11 @@ public class TurnToTarget extends Command {
     if (targetData == null) {
       // Trivial case: it's not currently in view, so just turn until we (hopefully) find it
       m_drivebase.arcadeDrive(null, SEEKING_SPEED);
+      return;
+    } else if (m_opMode == OpMode.TargetInView) {
+      // OK, we can see it, and that's all we were asked for.
+      m_drivebase.stop();
+      m_finished = true;
       return;
     }
 
@@ -95,7 +109,7 @@ public class TurnToTarget extends Command {
       updateMsg = " - turning left (CCW)";
     } else {
       // In the zone
-      m_aligned = true;
+      m_finished = true;
       turnSpeedMultiplier = 0;
       updateMsg = " - stopping!";
     }
@@ -118,6 +132,6 @@ public class TurnToTarget extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_aligned;
+    return m_finished;
   }
 }

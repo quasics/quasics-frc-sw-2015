@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
@@ -29,6 +30,7 @@ import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunTransitionRoller;
 import frc.robot.commands.RunTransitionUntilBeamBroken;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TimedRunShooter;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.IntakeRoller;
@@ -308,14 +310,31 @@ public class RobotContainer {
         new RunIntake(m_intakeRoller, .6, takingin));
   }
 
+  private Command transitionDelay(Shooter shooter, double speed) {
+    return Commands.sequence(
+        new WaitCommand(0.75), new TimedRunShooter(shooter, speed, Seconds.of(3.0), true));
+  }
+
   private Command shootingSequence(
       TransitionRoller transitionRoller, Shooter shooter, double power) {
-        return Commands.parallel(new RunTransitionRoller(m_transitionRoller, .5, true),
-        new RunIntake(m_intakeRoller, .6, true));  }
+        // Autos
+        return Commands.parallel(new TimedRunShooter(shooter, power, Seconds.of(4.0), true), 
+        intakeDelay(.6, true, 1.0), // Intake is running the transition?
+        transitionDelay(transitionRoller, 1.0));  }
 
   private Command transitionDelay(TransitionRoller transitionRoller) {
     return Commands.sequence(
         new WaitCommand(0.75), new RunTransitionRoller(transitionRoller, .5, true));
+  }
+
+  private Command transitionDelay(TransitionRoller transitionRoller, double delay) {
+    return Commands.sequence(
+        new WaitCommand(delay), new RunTransitionRoller(transitionRoller, .5, true));
+  }
+
+  private Command intakeDelay(double speed, Boolean intake, double delay) {
+    return Commands.sequence(
+        new WaitCommand(delay), new RunIntake(m_intakeRoller, speed, intake));
   }
 
   private void ConfigureDriverButtons() {

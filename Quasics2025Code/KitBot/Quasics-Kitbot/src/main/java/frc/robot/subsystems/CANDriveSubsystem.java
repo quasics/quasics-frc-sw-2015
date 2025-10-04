@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
-// TODO: AbstractDrivebase
+// TODO: subclass AbstractDrivebase instead of SubsystemBase
 public class CANDriveSubsystem extends SubsystemBase {
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;

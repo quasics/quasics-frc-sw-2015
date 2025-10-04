@@ -26,6 +26,7 @@ import frc.robot.subsystems.CANRollerSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  // TODO: Make this an AbstractDrivebase
   private final CANDriveSubsystem driveSubsystem;
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
 
@@ -45,8 +46,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // The robot's subsystems
-    // TODO: Change to check Robot.isReal()
-    driveSubsystem = new CANDriveSubsystem();
+    if (Robot.isReal()) {
+      driveSubsystem = new CANDriveSubsystem();
+    } else {
+      // TODO: SimDriveSubsystem
+    }
 
     // Set up command bindings
     configureBindings();
@@ -99,13 +103,13 @@ public class RobotContainer {
     // joystick matches the WPILib convention of counter-clockwise positive
 
     driveSubsystem.setDefaultCommand(new DriveCommand(
+      // NOTE: Left Y axis is axis 1 on an Xbox, Right X axis is axis 4.
+      // Therefore, to set up the keyboard correctly in sim
+      // Set "keyboard[0]" up to have W/S for axis 1 and A/D for axis 4
         () -> -driverController.getLeftY() * getSpeedScalingFactor(),
-//          (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
-            
         () -> -driverController.getRightX() * getSpeedScalingFactor(),
         driveSubsystem));
 
-    
     // Set the default command for the roller subsystem to an instance of
     // RollerCommand with the values provided by the triggers on the operator
     // controller

@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 // Class to drive the robot over Sim
-// TODO: Extend AbstractDrivebase
+// TODO: Extend AbstractDrivebase instead of SubsystemBase
 public class SimDriveSubsystem extends SubsystemBase {
   private final Field2d fieldSim = new Field2d();
   private final PWMSparkMax m_leftLeader;
@@ -40,12 +40,9 @@ public class SimDriveSubsystem extends SubsystemBase {
   private final PWMSparkMax m_rightFollower;
 
   private final DifferentialDrive drive;
-  // TODO: Update to use this
-  // Create our gyro object like we would on a real robot.
+
+  // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html
   private AnalogGyro m_gyro = new AnalogGyro(1);
-  // Create the simulated gyro object, used for setting the gyro
-  // angle. Like EncoderSim, this does not need to be commented out
-  // when deploying code to the roboRIO.
   private AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
 
   //TODO: Update to use these
@@ -59,6 +56,12 @@ public class SimDriveSubsystem extends SubsystemBase {
   private final Field2d m_fieldSim = new Field2d();
   private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
+  // TODO: Create DifferentialDriveOdometry
+  // 1. How to create:
+  //   docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html
+  // 2. How to use:
+  //   docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/odometry-simgui.html
+
   public SimDriveSubsystem(RobotSettings.Robot robot) {
 
     // create PWMSparkMax motors
@@ -67,16 +70,23 @@ public class SimDriveSubsystem extends SubsystemBase {
     m_rightLeader = new PWMSparkMax(SimDriveConstants.RIGHT_LEADER_ID);
     m_rightFollower = new PWMSparkMax(SimDriveConstants.RIGHT_FOLLOWER_ID);
 
-    // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html
-    // These represent our regular encoder objects, which we would
-    // create to use on a real robot.
+    // Encoders tell us where the motors are, so that we can estimate position and velocity
+    // docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html
     m_leftEncoder = new Encoder(0, 1);
     m_rightEncoder = new Encoder(2, 3);
-    // These are our EncoderSim objects, which we will only use in
-    // simulation. However, you do not need to comment out these
-    // declarations when you are deploying code to the roboRIO.
+
+    // TODO: Set up the 'DistancePerPulse' so that we can calculate how far we move based on encoder data:
+    //   docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
+
+
     m_leftEncoderSim = new EncoderSim(m_leftEncoder);
     m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+
+    // Gyros tell us the current angular velocity of the robot
+    // Extra: Gyros drift a LOT over time, so you cannot just "trust it". There's lots of
+    // internal fancy math that the libraries do for us to help filter this, which we can talk about one day!
+    // TODO: Create a gyroscope simulation so that we know our heading
+    //    docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html#simulating-gyroscopes
 
     drive = new DifferentialDrive(m_leftLeader, m_rightLeader);
 
@@ -95,6 +105,13 @@ public class SimDriveSubsystem extends SubsystemBase {
   public void driveArcade(double xSpeed, double zRotation) {
     // TODO: Look at setSpeeds_HAL and AbstractDriveBase arcadeDrive as an example
     drive.arcadeDrive(xSpeed, zRotation);
+  }
+
+
+  // docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/odometry-simgui.html
+  @Override
+  public void periodic() {
+    // TODO: get the simulated sensor readings and use them to update the odometry and field sim.
   }
 
   @Override

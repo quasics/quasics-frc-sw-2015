@@ -8,10 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static frc.robot.subsystems.live.Lighting.StockColor;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -21,16 +17,18 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.abstracts.AbstractElevator;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Support for the simulation's user interface (UX).
- * 
+ *
  * In the 2025 season, this class was created to allow the simulation (or Smart
  * Dashboard/Shuffleboard) to render the elevator and attached single-joint arm,
  * as well as the current draw of the robot.
  */
 public class SimulationUxSupport {
-
   /** List of all current draws across the simulation. */
   private final List<Double> m_currentDraws = new LinkedList<Double>();
 
@@ -45,6 +43,12 @@ public class SimulationUxSupport {
    * SmartDashboard, or the simulator).
    */
   private final MechanismLigament2d m_armMech2d;
+
+  /** Color used to mark the upper boundary for the elevator's reach. */
+  private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(255, 0, 0);
+
+  /** Color used to mark the lower boundary for the elevator's reach. */
+  private static final Color8Bit LOWER_BOUND_COLOR = new Color8Bit(0, 0, 255);
 
   /** Color used to render the elevator when running under manual control. */
   private final static Color8Bit NO_SETPOINT = new Color8Bit(StockColor.Orange.toWpiColor());
@@ -65,16 +69,17 @@ public class SimulationUxSupport {
 
   /** Constructor. */
   private SimulationUxSupport() {
-    // Simulation rendering setup.
-    Mechanism2d rootMech2d = new Mechanism2d(
-        9,
-        AbstractElevator.MAX_SAFE_HEIGHT.in(Meters) * 1.15 // Leave a little room at the top
-    );
-    m_elevatorMech2d = rootMech2d.getRoot("Root", 5, 0)
-        .append(new MechanismLigament2d("LeftClimber", 0, 90));
+    final double armLengthMeters = 1;
 
-    m_armMech2d = m_elevatorMech2d.append(
-        new MechanismLigament2d("Arm", 3, -90));
+    // Simulation rendering setup.
+    Mechanism2d rootMech2d = new Mechanism2d(9,
+        (AbstractElevator.MAX_SAFE_HEIGHT.in(Meters) + armLengthMeters)
+            * 1.15 // Leave a little room at the top
+    );
+    m_elevatorMech2d =
+        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
+
+    m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", armLengthMeters, -90));
 
     // Publish Mechanism2d to SmartDashboard.
     // To show the visualization, select Network Tables -> SmartDashboard
@@ -83,6 +88,18 @@ public class SimulationUxSupport {
 
     updateElevator(Meters.of(0), DeviceStatus.Manual);
     updateArm(Degrees.of(0), DeviceStatus.Manual);
+
+    //
+    // Elevator boundary markers.  (These aren't saved because we'll never need to redraw them.)
+
+    // Rendering "lower bound" for elevator
+    var lowerBoundRoot = rootMech2d.getRoot("FloorRoot", 0, 0);
+    lowerBoundRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, LOWER_BOUND_COLOR));
+
+    // Rendering "upper bound" for elevator
+    var topBoundRoot =
+        rootMech2d.getRoot("TopRoot", 0, AbstractElevator.MAX_SAFE_HEIGHT.in(Meters));
+    topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, UPPER_BOUND_COLOR));
   }
 
   /**
@@ -102,7 +119,7 @@ public class SimulationUxSupport {
 
   /**
    * Updates the arm's angle and status in the UX.
-   * 
+   *
    * @param angle  current angle of the arm
    * @param status current status of the arm
    */
@@ -113,7 +130,7 @@ public class SimulationUxSupport {
 
   /**
    * Updates the elevator's angle and status in the UX.
-   * 
+   *
    * @param height current height of the elevator
    * @param status current status of the elevator
    */
@@ -125,7 +142,7 @@ public class SimulationUxSupport {
   /**
    * Updates the color of a device (elevator or arm) in the UX in order to reflect
    * its status.
-   * 
+   *
    * @param mech
    * @param status
    */
@@ -140,7 +157,7 @@ public class SimulationUxSupport {
 
   /**
    * Adds a current draw to the known set for this cycle.
-   * 
+   *
    * @param currentDraw the current draw to add
    */
   public void postCurrentDraw(double currentDraw) {
@@ -149,7 +166,7 @@ public class SimulationUxSupport {
 
   /**
    * Retrieves list of known current draws.
-   * 
+   *
    * @return the known current draws in this cycle
    */
   public List<Double> getCurrentDraws() {
@@ -169,8 +186,7 @@ public class SimulationUxSupport {
   public void updateBatteryVoltageFromDraws() {
     if (m_currentDraws.size() > 0) {
       double drawsAsArray[] = m_currentDraws.stream().mapToDouble(Double::doubleValue).toArray();
-      RoboRioSim.setVInVoltage(
-          BatterySim.calculateDefaultBatteryLoadedVoltage(drawsAsArray));
+      RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(drawsAsArray));
       m_currentDraws.clear();
     }
   }

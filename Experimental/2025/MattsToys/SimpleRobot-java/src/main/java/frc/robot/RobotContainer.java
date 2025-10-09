@@ -20,30 +20,34 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.LogitechDualshock;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmWaveCommand;
 import frc.robot.commands.DriveTeamShootingSupport;
+import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
+import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.BetterVision;
 import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Drivebase;
 import frc.robot.subsystems.live.Elevator;
 import frc.robot.subsystems.live.Lighting;
+import frc.robot.subsystems.simulations.CameraSimulator;
 import frc.robot.subsystems.simulations.SimCandle;
 import frc.robot.subsystems.simulations.SimDrivebase;
-import frc.robot.subsystems.simulations.SimVisionWrapper;
 import frc.robot.subsystems.simulations.SimulatedElevator;
 import frc.robot.subsystems.simulations.SimulatedSingleJointArm;
 import frc.robot.subsystems.simulations.SimulationUxSupport;
@@ -84,13 +88,15 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
-  final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
+  final private IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
   final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
-  @SuppressWarnings("unused") // Vision interacts via BulletinBoard
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+  @SuppressWarnings("unused") // Camera simulator is pure data injection
+  final private CameraSimulator m_cameraSimulator =
+      maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
   final EventLogger m_eventLogger = new StringEventLogger();
 
@@ -175,30 +181,58 @@ public class RobotContainer {
    * characterization.
    */
   private void addSysIdControlsToDashboard() {
-    SmartDashboard.putData("SysID: Quasistatic(fwd)",
+    // SysId commands for linear motion of the drive base.  (Basic speed control.)
+    SmartDashboard.putData("Drive SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
-    SmartDashboard.putData("SysID: Quasistatic(rev)",
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
+    SmartDashboard.putData("Drive SysID: Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
-    SmartDashboard.putData("SysID: Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kForward));
-    SmartDashboard.putData("SysID: Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Linear, Direction.kReverse));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
+    SmartDashboard.putData("Drive SysID: Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
+    SmartDashboard.putData("Drive SysID: Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kReverse));
 
     // SysId commands for rotational actions (used to calculate kA-angular), for use
     // in estimating the moment of inertia (MOI).
     // See: https://choreo.autos/usage/estimating-moi/
-    SmartDashboard.putData("SysID(rot): Quasistatic(fwd)",
+    SmartDashboard.putData("Drive SysID(rot): Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
-    SmartDashboard.putData("SysID(rot): Quasistatic(rev)",
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
+    SmartDashboard.putData("Drive SysID(rot): Quasistatic(rev)",
         SysIdGenerator.sysIdQuasistatic(
-            m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
-    SmartDashboard.putData("SysID(rot): Dynamic(fwd)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kForward));
-    SmartDashboard.putData("SysID(rot): Dynamic(rev)",
-        SysIdGenerator.sysIdDynamic(m_drivebase, SysIdGenerator.Mode.Rotating, Direction.kReverse));
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
+    SmartDashboard.putData("Drive SysID(rot): Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kForward));
+    SmartDashboard.putData("Drive SysID(rot): Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
+
+    // SysId commands for linear motion of the elevator.  (Basic speed control.)
+    SmartDashboard.putData("Elevator SysID: Quasistatic(fwd)",
+        SysIdGenerator.sysIdQuasistatic(m_elevator, Direction.kForward));
+    SmartDashboard.putData("Elevator SysID: Quasistatic(rev)",
+        SysIdGenerator.sysIdQuasistatic(m_elevator, Direction.kReverse));
+    SmartDashboard.putData("Elevator SysID: Dynamic(fwd)",
+        SysIdGenerator.sysIdDynamic(m_elevator, Direction.kForward));
+    SmartDashboard.putData("Elevator SysID: Dynamic(rev)",
+        SysIdGenerator.sysIdDynamic(m_elevator, Direction.kReverse));
+  }
+
+  // Some commands only work with specific types of subsystems
+  private void maybeAddVisionCommandsToDashboard() {
+    if (m_vision instanceof IVisionPlus) {
+      final int targetId = 17;
+      SmartDashboard.putData("Turn to target " + targetId,
+          new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
+      SmartDashboard.putData("Turn & Drive to target " + targetId,
+          new SequentialCommandGroup(new TurnToTarget((BetterVision) m_vision, m_drivebase,
+                                         targetId, TurnToTarget.OpMode.TargetInView, false),
+              new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
+    }
   }
 
   /**
@@ -206,6 +240,7 @@ public class RobotContainer {
    */
   private void configureDashboard() {
     addSysIdControlsToDashboard();
+    maybeAddVisionCommandsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
     SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
@@ -489,6 +524,21 @@ public class RobotContainer {
     }
   }
 
+  private static CameraSimulator maybeAllocateCameraSimulator(
+      RobotConfigs.RobotConfig config, IVision vision) {
+    assert vision != null : "Vision subsystem must be allocated before camera simulation setup";
+    if (vision == null) {
+      throw new IllegalArgumentException(
+          "Vision subsystem must be allocated before camera simulation setup");
+    }
+
+    if (Robot.isReal()) {
+      return null;
+    }
+
+    return new CameraSimulator(config, vision);
+  }
+
   /**
    * Allocates a Vision subsystem object.
    *
@@ -502,11 +552,7 @@ public class RobotContainer {
 
     // TODO: Add code to switch between SimpleVision and BetterVision instances, depending
     // on the number of cameras, so that both can be tested.
-    if (Robot.isReal()) {
-      return new BetterVision(config);
-    } else {
-      return new SimVisionWrapper(config, new BetterVision(config));
-    }
+    return new BetterVision(config);
   }
 
   /**
@@ -515,9 +561,9 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return a drive base subsystem for this robot (may be trivial)
    */
-  private static IDrivebase allocateDrivebase(RobotConfigs.RobotConfig config) {
+  private static IDrivebasePlus allocateDrivebase(RobotConfigs.RobotConfig config) {
     if (!config.hasDrive()) {
-      return new IDrivebase.NullDrivebase();
+      return new IDrivebasePlus.NullDrivebase();
     }
 
     if (Robot.isReal()) {

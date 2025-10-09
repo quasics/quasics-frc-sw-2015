@@ -13,7 +13,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 
 /**
@@ -59,7 +59,7 @@ public class DriveTeamShootingSupport extends Command {
   @Override
   public void execute() {
     // Make sure we have data to work with.
-    Pose2d lastPose = IDrivebase.getPublishedLastPoseFromOdometry();
+    Pose2d lastPose = IDrivebasePlus.getPublishedLastPoseFromOdometry();
     DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(null);
     if (lastPose == null || alliance == null) {
       m_candle.setColor(ERROR);

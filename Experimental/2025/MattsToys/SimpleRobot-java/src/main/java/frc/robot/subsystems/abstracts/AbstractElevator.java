@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.TrivialEncoder;
@@ -69,7 +70,8 @@ public abstract class AbstractElevator extends SubsystemBase {
     /** Retracting (under manual control). */
     Retracting,
     /** Moving to (or at) a specified target position. */
-    Targeted
+    Targeted,
+    Profiling
   }
 
   /** Current operational mode. */
@@ -88,7 +90,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Turns "safe mode" on/off.
-   * 
+   *
    * @param tf enables "safe mode" if true
    */
   public void enableSafeMode(boolean tf) {
@@ -97,7 +99,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Indicates if "safe mode" is enabled.
-   * 
+   *
    * @return true iff "safe mode" is enabled
    */
   public boolean isSafeModeEnabled() {
@@ -106,7 +108,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Returns the elevator's current operating mode.
-   * 
+   *
    * @return current operating mode
    */
   public Mode getMode() {
@@ -187,9 +189,22 @@ public abstract class AbstractElevator extends SubsystemBase {
     m_target = targetPosition;
   }
 
+  public Distance getHeight() {
+    return getHeight_impl();
+  }
+
+  public abstract LinearVelocity getVelocity();
+  public abstract Voltage getVoltage();
+  public void setMotorVoltage(Voltage volts) {
+    m_mode = Mode.Profiling;
+    setMotorVoltage_impl(volts);
+  }
+
+  protected abstract void setMotorVoltage_impl(Voltage volts);
+
   /**
    * Determines if we are at our target position.
-   * 
+   *
    * @return true iff the elevator is currently at the target position (or if
    *         target is "don't care")
    */
@@ -209,7 +224,7 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Determines the current height.
-   * 
+   *
    * @return the current elevator height (in meters)
    */
   protected abstract Distance getHeight_impl();
@@ -225,15 +240,15 @@ public abstract class AbstractElevator extends SubsystemBase {
 
   /**
    * Calculates the voltage needed for the elevator (for PID control).
-   * 
+   *
    * @param setpoint    the target position of the elevator
    * @param encoder     the encoder providing the current height
    * @param pid         PID controller for the elevator
    * @param feedForward feed-forward for the elevator
    * @return the voltage to be applied to continue moving toward the setpoing
    */
-  protected Voltage calculateMotorVoltage(Distance setpoint, TrivialEncoder encoder, PIDController pid,
-      ElevatorFeedforward feedForward) {
+  protected Voltage calculateMotorVoltage(Distance setpoint, TrivialEncoder encoder,
+      PIDController pid, ElevatorFeedforward feedForward) {
     final boolean noisy = false;
 
     final double velocity = encoder.getVelocity().in(MetersPerSecond);
@@ -244,11 +259,9 @@ public abstract class AbstractElevator extends SubsystemBase {
 
     if (noisy) {
       System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-          + "output: %.02f, atSetpoint: %b%n",
-          encoder.getPosition(), setpoint.in(Meters),
-          velocity,
-          pidOutput, feedForwardOutput, output,
-          pid.atSetpoint());
+              + "output: %.02f, atSetpoint: %b%n",
+          encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForwardOutput,
+          output, pid.atSetpoint());
     }
 
     return Volts.of(output);
@@ -297,6 +310,22 @@ public abstract class AbstractElevator extends SubsystemBase {
     @Override
     protected void retract_impl() {
       // No-op
+    }
+
+    @Override
+    protected void setMotorVoltage_impl(Voltage volts) {
+      // No-op
+    }
+
+    @Override
+    public LinearVelocity getVelocity() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public Voltage getVoltage() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method 'getVoltage'");
     }
   }
 }

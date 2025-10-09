@@ -17,6 +17,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -46,8 +48,8 @@ public class SimulatedElevator extends AbstractElevator {
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
   private static final double kGearing =
-      20.0; // Arbitrary (but needs to be enough for the simulated physics to work)
-  private static final Distance kDrumRadius = Inches.of(1);
+      30.0; // Arbitrary (but needs to be enough for the simulated physics to work)
+  private static final Distance kDrumRadius = Inches.of(4);
   private static final double kEncoderMetersPerPulse =
       2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
@@ -269,6 +271,21 @@ public class SimulatedElevator extends AbstractElevator {
   // AbstractElevator methods
   //
   //////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  protected void setMotorVoltage_impl(Voltage volts) {
+    m_motor.setVoltage(volts);
+  }
+
+  @Override
+  public LinearVelocity getVelocity() {
+    return MetersPerSecond.of(m_encoder.getVelocity());
+  }
+
+  @Override
+  public Voltage getVoltage() {
+    return Volts.of(m_motor.getAppliedOutput());
+  }
 
   @Override
   protected void updateMotor_impl() {

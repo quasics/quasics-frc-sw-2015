@@ -1,3 +1,7 @@
+// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -21,18 +25,20 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Simple vision subsystem interface.
  *
- * Allows clients to determine what targets are seen and basic information, but
- * doesn't do position identification.
+ * Allows clients to determine what targets are seen and basic information, but doesn't do any
+ * detailed pose estimation.  (For example, if we can see *any* targets, we will use the best one
+ * and some basic trig to figure out where the robot might be.)
+ *
+ * Note: this interface generally assumes only a single camera is being used.
  */
 public interface IVision extends ISubsystem {
   static String SUBSYSTEM_NAME = "Vision";
 
   /**
    * @param id fiducial ID for the target
-   * @param angle yaw to the angle (positive left)
+   * @param angle yaw to the angle (negative values means that it's to left of camera center)
    */
-  record TargetData(int id, Angle angle, Distance distance) {
-  }
+  record TargetData(int id, Angle angle, Distance distance) {}
 
   /**
    * Camera data set.
@@ -45,9 +51,8 @@ public interface IVision extends ISubsystem {
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record CameraData(
-      PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
+  public record
+      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -56,7 +61,8 @@ public interface IVision extends ISubsystem {
   boolean hasTargetsInView();
 
   /**
-   * @param robotPose current position of the robot on the field (e.g., from odometery)
+   * @param robotPose current position of the robot on the field (e.g., from odometery), which is
+   *     used to compute robot-relative positioning of the targets
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
 
@@ -71,6 +77,9 @@ public interface IVision extends ISubsystem {
 
   /**
    * Returns the most recent pose estimates, based on camera data.
+   *
+   * Note: for classes that only implement IVision (and not IVisionPlus), this will be at most a
+   * list of a single estimate, as multi-camera support isn't enabled.)
    *
    * @return the most recent pose estimates
    */
@@ -103,20 +112,24 @@ public interface IVision extends ISubsystem {
 
   // Making this a helper function, since getLatestResult() is now deprecated, and
   // I'm trying to cut down on the number of warnings.
-  static PhotonPipelineResult getLatestResult(CameraData cameraData) {
+  static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
     // TODO: look at replacing this with something in a reusable base class to try to
-    // cache data; when it's read in periodic() (at least under simulation), I frequently
-    // see 1+ targets being reported, and then "nothing visible" for 1-3 iteratons, and
-    // then the targets are visible again, despite the robot not moving.  As a result,
-    // I think that there's a possible interaction with how getAllUnreadResults() works,
-    // which is preventing the results from being cached, regardless of what the docs
-    // for "PhotonCamera.getLatestResult" seeming to suggest.
+    // cache data, to handle the deprecation.
     return cameraData.camera().getLatestResult();
   }
 
+  /**
+   * Returns estimated relative positioning data for all visible targets (if any).
+   *
+   * @param cameraData camera supplying the tracking data
+   * @param fieldLayout field layout, used to determine fixed (absolute) positions for targets in
+   *     view
+   * @param robotPose robot's estimated position (used to compute relative positioning for targets)
+   * @return estimated relative positioning data for all visible targets
+   */
   static List<TargetData> getTargetDataForCamera(
       CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
-    final var latestResults = IVision.getLatestResult(cameraData);
+    final var latestResults = IVision.getLatestResultsWrapper(cameraData);
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
     }

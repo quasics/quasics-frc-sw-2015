@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.AutonomousSelectedOperation;
 import frc.robot.Constants.AutonomousStartingPositions;
+import frc.robot.commands.AimAtTarget;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmPivotToPositionOnController;
 import frc.robot.commands.Autos;
@@ -414,6 +415,10 @@ public class RobotContainer {
      * various
      * // buttons on the controllers.
      */
+    // new Trigger(() ->
+    // m_driverController.getRawButton(Constants.LogitechDualShock.XButton)).whileTrue(new
+    // AimAtTarget(m_drivebase, m_vision));
+
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.LeftTrigger))
         .whileTrue(new RunKraken(m_armRoller, -0.5));
     new Trigger(() -> m_driverController.getRawButton(Constants.LogitechDualshock.RightTrigger))

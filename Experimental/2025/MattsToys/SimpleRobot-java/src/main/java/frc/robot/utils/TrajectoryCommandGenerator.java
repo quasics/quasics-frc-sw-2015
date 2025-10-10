@@ -82,7 +82,7 @@ public class TrajectoryCommandGenerator {
         interiorWaypoints, end, resetTelemetryAtStart, new RamseteConfig());
   }
 
-  private static SimpleMotorFeedforward getMotorFeedforward(RobotConfigs.RobotConfig robotConfig) {
+  public static SimpleMotorFeedforward getMotorFeedforward(RobotConfigs.RobotConfig robotConfig) {
     var driveConfig = robotConfig.drive();
     var linearFFConfig = driveConfig.feedForward().linear();
 

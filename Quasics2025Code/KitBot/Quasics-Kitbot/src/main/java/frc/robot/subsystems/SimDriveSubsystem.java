@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SimDriveConstants;
 import frc.robot.utils.RobotSettings;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
@@ -61,6 +64,11 @@ public class SimDriveSubsystem extends SubsystemBase {
   //   docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/differential-drive-odometry.html
   // 2. How to use:
   //   docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/odometry-simgui.html
+DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+  m_gyro.getRotation2d(),
+  m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+  new Pose2d(5.0, 13.5, new Rotation2d()));
+  //Change coords to starting position(s) on field
 
   public SimDriveSubsystem(RobotSettings.Robot robot) {
 

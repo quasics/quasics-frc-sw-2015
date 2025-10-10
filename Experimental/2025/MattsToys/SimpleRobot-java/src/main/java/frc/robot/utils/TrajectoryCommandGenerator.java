@@ -82,6 +82,16 @@ public class TrajectoryCommandGenerator {
         interiorWaypoints, end, resetTelemetryAtStart, new RamseteConfig());
   }
 
+  public static PIDController getLeftController(RobotConfigs.RobotConfig robotConfig) {
+    var leftPid = robotConfig.drive().leftPid();
+    return new PIDController(leftPid.kP(), leftPid.kI(), leftPid.kD());
+  }
+
+  public static PIDController getRightController(RobotConfigs.RobotConfig robotConfig) {
+    var rightPid = robotConfig.drive().rightPid();
+    return new PIDController(rightPid.kP(), rightPid.kI(), rightPid.kD());
+  }
+
   public static SimpleMotorFeedforward getMotorFeedforward(RobotConfigs.RobotConfig robotConfig) {
     var driveConfig = robotConfig.drive();
     var linearFFConfig = driveConfig.feedForward().linear();
@@ -127,15 +137,10 @@ public class TrajectoryCommandGenerator {
       drive.setMotorVoltages(Volts.of(left), Volts.of(right));
     };
 
-    var leftPid = robotConfig.drive().leftPid();
-    var rightPid = robotConfig.drive().rightPid();
-
-    PIDController leftController = new PIDController(leftPid.kP(), leftPid.kI(), leftPid.kD());
-    PIDController rightController = new PIDController(rightPid.kP(), rightPid.kI(), rightPid.kD());
     RamseteCommand ramseteCommand = new RamseteCommand(trajectory, poseSupplier,
         new RamseteController(ramseteConfig.kRamseteB, ramseteConfig.kRamseteZeta), feedForward,
-        drive.getKinematics(), wheelSpeedSupplier, leftController, rightController,
-        motorVoltageConsumer, (Subsystem) drive);
+        drive.getKinematics(), wheelSpeedSupplier, getLeftController(robotConfig),
+        getRightController(robotConfig), motorVoltageConsumer, (Subsystem) drive);
 
     return new SequentialCommandGroup(
         new InstantCommand(

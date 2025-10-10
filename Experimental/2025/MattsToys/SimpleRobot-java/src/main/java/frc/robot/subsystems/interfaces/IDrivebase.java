@@ -290,6 +290,16 @@ public interface IDrivebase extends ISubsystem {
     return new ChassisSpeeds(getLeftVelocity(), getRightVelocity(), getTurnRate());
   }
 
+  /**
+   * Gets the robot's current speeds (wheels only, not turning).
+   *
+   * @return the current DifferentialDriveWheelSpeeds of the robot (used for
+   *         trajectory-following)
+   */
+  default DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Trivial implementation

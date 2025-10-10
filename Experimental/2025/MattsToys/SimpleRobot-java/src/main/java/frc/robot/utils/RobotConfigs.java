@@ -193,6 +193,8 @@ public class RobotConfigs {
   /**
    * Simple (i.e., not for elevators) feedforward data.
    *
+   * TODO: Add kS data to this as well.
+   *
    * @param kV kV, in V/(m/s); must be > 0
    * @param kA kA, in V/(m/s^2)
    */

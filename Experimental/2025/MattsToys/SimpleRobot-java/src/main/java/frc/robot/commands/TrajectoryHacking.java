@@ -37,7 +37,7 @@ import me.nabdev.pathfinding.utilities.FieldLoader.Field;
  * This is still not working right: we're consistently overshooting while driving under Ramsete
  * control, which suggests that the generation is somehow not using the correct characterization of
  * the robot, PID is screwy (e.g., kP too high), bad odometry, Ramsete params wrong (seems
- * unlikely).
+ * unlikely).  (https://www.google.com/search?q=frc+ramsetecommand+overshoots)
  */
 public class TrajectoryHacking extends Command {
   /// Values controlling for a RAMSETE follower in units of meters and
@@ -82,8 +82,8 @@ public class TrajectoryHacking extends Command {
   private Command buildCommandForTrajectory(Trajectory trajectory) {
     SimpleMotorFeedforward feedforward =
         TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
-    PIDController leftController = new PIDController(0, 0, 0);
-    PIDController rightController = new PIDController(0, 0, 0);
+    PIDController leftController = new PIDController(28, 0, 0);
+    PIDController rightController = new PIDController(28, 0, 0);
 
     RamseteCommand ramseteCommand = new RamseteCommand(
         // Trajectory to be followed

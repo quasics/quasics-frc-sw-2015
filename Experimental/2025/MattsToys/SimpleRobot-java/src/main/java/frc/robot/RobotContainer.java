@@ -31,6 +31,7 @@ import frc.robot.commands.MoveArmToAngle;
 import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
+import frc.robot.commands.TrajectoryHacking;
 import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -235,12 +236,21 @@ public class RobotContainer {
     }
   }
 
+  private void maybeAddHackingCommandsToDashboard() {
+    if (!(m_drivebase instanceof IDrivebasePlus)) {
+      return;
+    }
+
+    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(m_drivebase, m_robotConfig));
+  }
+
   /**
    * Configures the buttons on the dashboard.
    */
   private void configureDashboard() {
     addSysIdControlsToDashboard();
     maybeAddVisionCommandsToDashboard();
+    maybeAddHackingCommandsToDashboard();
 
     SmartDashboard.putData("Wave arm", new ArmWaveCommand(m_arm));
     SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));

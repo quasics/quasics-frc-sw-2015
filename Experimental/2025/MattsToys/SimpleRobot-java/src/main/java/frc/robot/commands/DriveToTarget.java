@@ -12,14 +12,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVisionPlus;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
+import frc.robot.subsystems.interfaces.vision.IVisionPlus;
 
 /**
  * Simple example of driving to a target.
  *
- * Note that this particular sample assumes that the target is starting out in the robot's field of
- * view.  This could be combined with code like that in <code>TurnToTarget</code> in order to find
+ * Note that this particular sample assumes that the target is starting out in
+ * the robot's field of
+ * view. This could be combined with code like that in <code>TurnToTarget</code>
+ * in order to find
  * a target and then drive to it.
  *
  * @see https://docs.photonvision.org/en/latest/docs/examples/aimandrange.html
@@ -37,19 +39,27 @@ public class DriveToTarget extends Command {
   /** Determines if we'll print debugging output while command is active. */
   private final boolean m_noisy;
 
-  /** Determines if the command is finished.  (Updated in initialize() and execute().) */
+  /**
+   * Determines if the command is finished. (Updated in initialize() and
+   * execute().)
+   */
   private boolean m_finished = false;
 
   /**
    * Angle in the view that we'd like to have on the target.
    *
-   * Note that this is the angle to the center line of the robot to which we'd like the target to be
-   * aligned (e.g., "10 degrees means that it should that many degrees off from our  front axis").
+   * Note that this is the angle to the center line of the robot to which we'd
+   * like the target to be
+   * aligned (e.g., "10 degrees means that it should that many degrees off from
+   * our front axis").
    *
-   * It does not guarantee that our robot's front face will be parallel (flat-on) to the target.
-   * This is basically because with a differential drive, we can't align our robot's front face to
-   * be parallel to the target, and then strafe from side-to-side in order to ensure that we're
-   * centered on it.  (We'd need swerve drive for that.)
+   * It does not guarantee that our robot's front face will be parallel (flat-on)
+   * to the target.
+   * This is basically because with a differential drive, we can't align our
+   * robot's front face to
+   * be parallel to the target, and then strafe from side-to-side in order to
+   * ensure that we're
+   * centered on it. (We'd need swerve drive for that.)
    */
   private static final Angle DESIRED_ANGLE = Degrees.of(0);
 
@@ -63,13 +73,15 @@ public class DriveToTarget extends Command {
   private static final Distance MAX_DISTANCE_ERR = Meters.of(0.02);
 
   /**
-   * kP to use in adjusting the robot's linear speed as we get closer.  (Must be tuned, based on
+   * kP to use in adjusting the robot's linear speed as we get closer. (Must be
+   * tuned, based on
    * speed.)
    */
   private static final double FORWARD_KP = 0.25;
 
   /**
-   * kP to use in adjusting the robot's turning speed as the target comes into alignment.  (Must be
+   * kP to use in adjusting the robot's turning speed as the target comes into
+   * alignment. (Must be
    * tuned, based on speed.)
    */
   private static final double TURNING_KP = 0.008;
@@ -77,9 +89,9 @@ public class DriveToTarget extends Command {
   /**
    * Constructor.
    *
-   * @param vision vision subsystem, supplying target data
+   * @param vision    vision subsystem, supplying target data
    * @param drivebase drive base subsystem, allowing movement
-   * @param targetId target to which we should align/approach
+   * @param targetId  target to which we should align/approach
    */
   public DriveToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId) {
     this(vision, drivebase, targetId, false);
@@ -88,10 +100,10 @@ public class DriveToTarget extends Command {
   /**
    * Constructor.
    *
-   * @param vision vision subsystem, supplying target data
+   * @param vision    vision subsystem, supplying target data
    * @param drivebase drive base subsystem, allowing movement
-   * @param targetId target to which we should align/approach
-   * @param noisy if true, generate debugging output
+   * @param targetId  target to which we should align/approach
+   * @param noisy     if true, generate debugging output
    */
   public DriveToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId, boolean noisy) {
     m_vision = vision;
@@ -140,10 +152,10 @@ public class DriveToTarget extends Command {
       return;
     }
 
-    final double yawScaler = MathUtil.clamp(yawError.in(Degrees) *TURNING_KP, -1.0, +1.0);
+    final double yawScaler = MathUtil.clamp(yawError.in(Degrees) * TURNING_KP, -1.0, +1.0);
     final var turnSpeed = IDrivebase.MAX_ROTATION.times(yawScaler);
 
-    final double forwardScaler = MathUtil.clamp(rangeError.in(Meters) *FORWARD_KP, -1.0, +1.0);
+    final double forwardScaler = MathUtil.clamp(rangeError.in(Meters) * FORWARD_KP, -1.0, +1.0);
     final var forwardSpeed = IDrivebase.MAX_SPEED.times(forwardScaler);
     if (m_noisy) {
       System.out.println("targetYaw: " + targetYaw + ", yawScaler: " + yawScaler

@@ -8,8 +8,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IDrivebasePlus;
-import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
+import frc.robot.subsystems.interfaces.vision.IVision;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.CameraConfig;
@@ -20,7 +20,8 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
 /**
- * Implements a subsystem that will inject simulated vision data into the setup for an actual
+ * Implements a subsystem that will inject simulated vision data into the setup
+ * for an actual
  * IVision-based subsystem.
  *
  * The published image streams (if enabled) follow the port order mentioned in
@@ -29,8 +30,10 @@ import org.photonvision.simulation.VisionSystemSim;
  * and the processed stream at http://localhost:1182. These can also be found in
  * the CameraServer tab of Shuffleboard, like a normal camera stream.
  *
- * Note: this is implemented as an additional subsystem, itself, simply to ensure that we have
- * the simPeriodic() function invoked on this class by the WPILib framework.  We do not actually
+ * Note: this is implemented as an additional subsystem, itself, simply to
+ * ensure that we have
+ * the simPeriodic() function invoked on this class by the WPILib framework. We
+ * do not actually
  * expect any commands, etc., to interact with objects of this class.
  */
 public class CameraSimulator extends SubsystemBase {
@@ -53,7 +56,8 @@ public class CameraSimulator extends SubsystemBase {
    * Constructor.
    *
    * @param config     the robot's configuration
-   * @param realVision the IVision object with the cameras into which the data will be injected
+   * @param realVision the IVision object with the cameras into which the data
+   *                   will be injected
    */
   public CameraSimulator(RobotConfig config, IVision realVision) {
     // Sanity checking parameters.
@@ -96,8 +100,7 @@ public class CameraSimulator extends SubsystemBase {
   private PhotonCameraSim configureCameraSim(
       RobotConfigs.CameraConfig cameraConfig, IVision.CameraData cameraData) {
     // Set up the camera simulation
-    PhotonCameraSim cameraSim =
-        new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
+    PhotonCameraSim cameraSim = new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
 
     // Enable/disable the raw and processed streams. (These are enabled by default.)
     cameraSim.enableRawStream(ENABLE_IMAGE_STREAMING);
@@ -154,9 +157,8 @@ public class CameraSimulator extends SubsystemBase {
 
     // Update the simulator to show where the drive base's (pure) odometry suggests
     // that we are located.
-    Pose2d driveBasePoseMeters =
-        (Pose2d) BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
-            .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
+        .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
     // Update the simulator to reflect where the (purely) vision-based pose estimate
@@ -171,13 +173,15 @@ public class CameraSimulator extends SubsystemBase {
 
     // Update the simulator to reflect where the drivebase's (potentially composite)
     // pose estimate suggests that we are located.
-    var driveBaseEstimatedPose =
-        BulletinBoard.common.getValue(IDrivebasePlus.ESTIMATED_POSE_KEY, Pose2d.class);
+    var driveBaseEstimatedPose = BulletinBoard.common.getValue(IDrivebasePlus.ESTIMATED_POSE_KEY, Pose2d.class);
     driveBaseEstimatedPose.ifPresentOrElse(
         // Do this with the estimated pose from drive base (if it has some)
-        est
-        -> { debugField.getObject("DriveEstimation").setPose((Pose2d) est); },
+        est -> {
+          debugField.getObject("DriveEstimation").setPose((Pose2d) est);
+        },
         // If we have no estimated pose from the drive base, do this
-        () -> { debugField.getObject("DriveEstimation").setPoses(); });
+        () -> {
+          debugField.getObject("DriveEstimation").setPoses();
+        });
   }
 }

@@ -2,14 +2,16 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.interfaces;
+package frc.robot.subsystems.interfaces.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Interface for more advanced vision processing support (pose estimation based on a fusion of
+ * Interface for more advanced vision processing support (pose estimation based
+ * on a fusion of
  * odometry and camera data, etc.).
  */
 public interface IVisionPlus extends IVision {
@@ -29,7 +31,8 @@ public interface IVisionPlus extends IVision {
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
   /**
-   * Returns the list of targets that are currently in view.  (Computed using the robot's estimated
+   * Returns the list of targets that are currently in view. (Computed using the
+   * robot's estimated
    * pose as a basis for relative positions.)
    *
    * @see #getVisibleTargets(Pose2d)
@@ -38,9 +41,10 @@ public interface IVisionPlus extends IVision {
   List<TargetData> getVisibleTargets();
 
   /**
-   * Helper method to get the data for the specified target, if it is currently in view.
+   * Helper method to get the data for the specified target, if it is currently in
+   * view.
    *
-   * @param targetId  the desired target's ID
+   * @param targetId the desired target's ID
    * @return the target data, or null if the target isn't currently in view
    */
   default TargetData getTargetData(int targetId) {
@@ -55,7 +59,7 @@ public interface IVisionPlus extends IVision {
   /**
    * Helper method to see if the specified target is currently visible.
    *
-   * @param targetId  the desired target's ID
+   * @param targetId the desired target's ID
    * @return true iff the target is currently in view
    */
   default boolean isTargetVisible(int targetId) {

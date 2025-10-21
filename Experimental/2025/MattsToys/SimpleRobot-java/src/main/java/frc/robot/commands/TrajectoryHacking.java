@@ -20,8 +20,8 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IDrivebasePlus;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.TrajectoryCommandGenerator;
 import java.util.ArrayList;
@@ -34,10 +34,13 @@ import me.nabdev.pathfinding.utilities.FieldLoader.Field;
  * Starting to play around with dynamic trajectory generation, using
  * Team 3044's Oxplorer.
  *
- * This is still not working right: we're consistently overshooting while driving under Ramsete
- * control, which suggests that the generation is somehow not using the correct characterization of
- * the robot, PID is screwy (e.g., kP too high), bad odometry, Ramsete params wrong (seems
- * unlikely).  (https://www.google.com/search?q=frc+ramsetecommand+overshoots)
+ * This is still not working right: we're consistently overshooting while
+ * driving under Ramsete
+ * control, which suggests that the generation is somehow not using the correct
+ * characterization of
+ * the robot, PID is screwy (e.g., kP too high), bad odometry, Ramsete params
+ * wrong (seems
+ * unlikely). (https://www.google.com/search?q=frc+ramsetecommand+overshoots)
  */
 public class TrajectoryHacking extends Command {
   /// Values controlling for a RAMSETE follower in units of meters and
@@ -80,8 +83,7 @@ public class TrajectoryHacking extends Command {
   }
 
   private Command buildCommandForTrajectory(Trajectory trajectory) {
-    SimpleMotorFeedforward feedforward =
-        TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
+    SimpleMotorFeedforward feedforward = TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
     PIDController leftController = new PIDController(28, 0, 0);
     PIDController rightController = new PIDController(28, 0, 0);
 
@@ -89,8 +91,7 @@ public class TrajectoryHacking extends Command {
         // Trajectory to be followed
         trajectory,
         // Pose supplier
-        ()
-            -> {
+        () -> {
           Pose2d p = m_drivebase.getPose();
           System.out.println("Currently at: " + p);
           return p;
@@ -106,8 +107,9 @@ public class TrajectoryHacking extends Command {
         // Left/right PID controller
         leftController, rightController,
         // RamseteCommand passes volts (as doubles) to the callback
-        (leftVolts, rightVolts)
-            -> { m_drivebase.setMotorVoltages(Volts.of(leftVolts), Volts.of(rightVolts)); },
+        (leftVolts, rightVolts) -> {
+          m_drivebase.setMotorVoltages(Volts.of(leftVolts), Volts.of(rightVolts));
+        },
         // Required subsystems
         m_drivebase.asSubsystem());
     return ramseteCommand;
@@ -123,12 +125,14 @@ public class TrajectoryHacking extends Command {
     Command ramseteCommand = buildCommandForTrajectory(trajectory);
 
     var actualCommand = ramseteCommand
-                            // Stop the motors
-                            .andThen(() -> { m_drivebase.stop(); }, m_drivebase.asSubsystem())
-                            // Display where we wound up
-                            .andThen(() -> {
-                              System.out.println("Final position: " + m_drivebase.getPose());
-                            }, m_drivebase.asSubsystem());
+        // Stop the motors
+        .andThen(() -> {
+          m_drivebase.stop();
+        }, m_drivebase.asSubsystem())
+        // Display where we wound up
+        .andThen(() -> {
+          System.out.println("Final position: " + m_drivebase.getPose());
+        }, m_drivebase.asSubsystem());
     actualCommand.schedule();
   }
 
@@ -138,15 +142,13 @@ public class TrajectoryHacking extends Command {
     Pose2d destinationPose = currentPose.plus(transform);
     System.out.println("Trying to route:\n   from " + currentPose + "\n   to " + destinationPose);
 
-    TrajectoryConfig trajectoryConfig =
-        new TrajectoryConfig(IDrivebase.MAX_SPEED.in(MetersPerSecond), 0.5);
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(IDrivebase.MAX_SPEED.in(MetersPerSecond), 0.5);
     final DifferentialDriveKinematics kDriveKinematics = m_drivebase.getKinematics();
 
-    final SimpleMotorFeedforward feedforward =
-        TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
+    final SimpleMotorFeedforward feedforward = TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
     // TrajectoryCommandGenerator.getMotorFeedforward(m_robotConfig);
-    final DifferentialDriveVoltageConstraint voltageConstraints =
-        new DifferentialDriveVoltageConstraint(feedforward, kDriveKinematics, MAX_VOLTAGE);
+    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(feedforward,
+        kDriveKinematics, MAX_VOLTAGE);
     TrajectoryConfig actualTrajectoryConfig = new TrajectoryConfig(
         trajectoryConfig.getMaxVelocity(), trajectoryConfig.getMaxAcceleration());
     actualTrajectoryConfig.setKinematics(kDriveKinematics);

@@ -35,11 +35,11 @@ import frc.robot.commands.TrajectoryHacking;
 import frc.robot.commands.TurnToTarget;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.ICandle;
-import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
-import frc.robot.subsystems.interfaces.IVision;
-import frc.robot.subsystems.interfaces.IVisionPlus;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
+import frc.robot.subsystems.interfaces.vision.IVision;
+import frc.robot.subsystems.interfaces.vision.IVisionPlus;
 import frc.robot.subsystems.live.Arm;
 import frc.robot.subsystems.live.BetterVision;
 import frc.robot.subsystems.live.Candle;
@@ -96,8 +96,7 @@ public class RobotContainer {
   final private IVision m_vision = allocateVision(m_robotConfig);
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
   @SuppressWarnings("unused") // Camera simulator is pure data injection
-  final private CameraSimulator m_cameraSimulator =
-      maybeAllocateCameraSimulator(m_robotConfig, m_vision);
+  final private CameraSimulator m_cameraSimulator = maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
   final EventLogger m_eventLogger = new StringEventLogger();
 
@@ -118,10 +117,10 @@ public class RobotContainer {
   static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory =
-      new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose, m_drivebase::followTrajectory,
-          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-          m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
+      m_drivebase::followTrajectory,
+      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+      m_drivebase.asSubsystem());
 
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
@@ -161,19 +160,21 @@ public class RobotContainer {
     if (m_eventLogger != null && m_eventLogger instanceof StringEventLogger) {
       final StateChangeExecutor executor = new StateChangeExecutor(
           // State supplier
-          ()
-              -> { return DriverStation.isDisabled(); },
+          () -> {
+            return DriverStation.isDisabled();
+          },
           // Assumed initial state (i.e., assume we're disabled on startup)
           true,
           // Action
-          ()
-              -> {
+          () -> {
             System.err.println("Dumping event log:");
             System.err.println(((StringEventLogger) m_eventLogger).getContents());
           },
           // Triggering mode
           StateChangeExecutor.Mode.GoesTrue);
-      robot.addPeriodic(() -> { executor.check(); }, COMMAND_CYCLE_PERIOD);
+      robot.addPeriodic(() -> {
+        executor.check();
+      }, COMMAND_CYCLE_PERIOD);
     }
   }
 
@@ -182,7 +183,7 @@ public class RobotContainer {
    * characterization.
    */
   private void addSysIdControlsToDashboard() {
-    // SysId commands for linear motion of the drive base.  (Basic speed control.)
+    // SysId commands for linear motion of the drive base. (Basic speed control.)
     SmartDashboard.putData("Drive SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Linear, Direction.kForward));
@@ -212,7 +213,7 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(
             m_drivebase, SysIdGenerator.DrivebaseProfilingMode.Rotating, Direction.kReverse));
 
-    // SysId commands for linear motion of the elevator.  (Basic speed control.)
+    // SysId commands for linear motion of the elevator. (Basic speed control.)
     SmartDashboard.putData("Elevator SysID: Quasistatic(fwd)",
         SysIdGenerator.sysIdQuasistatic(m_elevator, Direction.kForward));
     SmartDashboard.putData("Elevator SysID: Quasistatic(rev)",
@@ -231,7 +232,7 @@ public class RobotContainer {
           new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
       SmartDashboard.putData("Turn & Drive to target " + targetId,
           new SequentialCommandGroup(new TurnToTarget((BetterVision) m_vision, m_drivebase,
-                                         targetId, TurnToTarget.OpMode.TargetInView, false),
+              targetId, TurnToTarget.OpMode.TargetInView, false),
               new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
     }
   }
@@ -271,12 +272,12 @@ public class RobotContainer {
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer =
-        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
-    // Limiting the rate-of-change for velocity (i.e., acceleration) to constrain us from getting to
+    // Limiting the rate-of-change for velocity (i.e., acceleration) to constrain us
+    // from getting to
     // 100% in anything less than 1/MAX_SLEW_RATE seconds.
     SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
     SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(Constants.Driving.MAX_SLEW_RATE);
@@ -286,27 +287,20 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = ()
-          ->
-          - forwardSlewRateLimiter.calculate(
-              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
-      rotationSupplier = ()
-          ->
-          - rotationSlewRateLimiter.calculate(
-              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
+      forwardSupplier = () -> -forwardSlewRateLimiter.calculate(
+          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
+      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
+          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      forwardSupplier = ()
-          -> forwardSlewRateLimiter.calculate(
-              deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
-      rotationSupplier = ()
-          ->
-          - rotationSlewRateLimiter.calculate(
-              deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
+      forwardSupplier = () -> forwardSlewRateLimiter.calculate(
+          deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
+      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
+          deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(
@@ -380,14 +374,14 @@ public class RobotContainer {
   protected Command generateCommandForChoreoTrajectory(
       String trajectoryName, boolean resetOdometry, boolean stopAtEnd) {
     // Per https://choreo.autos/choreolib/auto-factory/
-    final Command startCommand =
-        (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
+    final Command startCommand = (resetOdometry ? m_autoFactory.resetOdometry(trajectoryName) : Commands.none());
 
     // Don't let the drive base continue moving after the trajectory is done (e.g.,
     // due to PID settings being left in place).
-    final Command endCommand =
-        (stopAtEnd ? new InstantCommand(() -> { m_drivebase.stop(); }, m_drivebase.asSubsystem())
-                   : Commands.none());
+    final Command endCommand = (stopAtEnd ? new InstantCommand(() -> {
+      m_drivebase.stop();
+    }, m_drivebase.asSubsystem())
+        : Commands.none());
 
     // Generate the actual trajectory-following command.
     try {
@@ -560,7 +554,8 @@ public class RobotContainer {
       return new IVision.NullVision();
     }
 
-    // TODO: Add code to switch between SimpleVision and BetterVision instances, depending
+    // TODO: Add code to switch between SimpleVision and BetterVision instances,
+    // depending
     // on the number of cameras, so that both can be tested.
     return new BetterVision(config);
   }

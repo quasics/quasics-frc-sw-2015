@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.abstracts.AbstractElevator;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 
 /**
  * Utility class to support generating commands used to gather data for SysId
@@ -55,15 +55,13 @@ public class SysIdGenerator {
       final IDrivebase drivebase, final DrivebaseProfilingMode mode) {
     return new SysIdRoutine(config,
         new SysIdRoutine.Mechanism(
-            (Voltage volts)
-                -> {
+            (Voltage volts) -> {
               drivebase.setMotorVoltages(
                   volts, volts.times(mode == DrivebaseProfilingMode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log
-            -> {
+            log -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();
@@ -141,19 +139,19 @@ public class SysIdGenerator {
   /**
    * Returns a SysIdRoutine generator for the specified elevator.
    *
-   * @param config    SysIdRoutine configuration data
+   * @param config   SysIdRoutine configuration data
    * @param elevator elevator of the robot being characterized
    * @return a configured SysIdRoutine generator
    */
   public static SysIdRoutine getSysIdRoutine(
       final SysIdRoutine.Config config, final AbstractElevator elevator) {
     return new SysIdRoutine(config,
-        new SysIdRoutine.Mechanism((Voltage volts)
-                                       -> { elevator.setMotorVoltage(volts); },
+        new SysIdRoutine.Mechanism((Voltage volts) -> {
+          elevator.setMotorVoltage(volts);
+        },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log
-            -> {
+            log -> {
               final var position = elevator.getHeight();
               final var velocity = elevator.getVelocity();
               final var voltage = elevator.getVoltage();
@@ -188,8 +186,12 @@ public class SysIdGenerator {
   public static Command sysIdQuasistatic(
       AbstractElevator elevator, SysIdRoutine.Direction direction) {
     Command setDontCareCommand = new InstantCommand(
-        () -> { elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare); }, elevator);
-    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator);
+        () -> {
+          elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare);
+        }, elevator);
+    Command stopCommand = new InstantCommand(() -> {
+      elevator.stop();
+    }, elevator);
     return new SequentialCommandGroup(
         setDontCareCommand, getSysIdRoutine(elevator).quasistatic(direction), stopCommand);
   }
@@ -204,8 +206,12 @@ public class SysIdGenerator {
    */
   public static Command sysIdDynamic(AbstractElevator elevator, SysIdRoutine.Direction direction) {
     Command setDontCareCommand = new InstantCommand(
-        () -> { elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare); }, elevator);
-    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator);
+        () -> {
+          elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare);
+        }, elevator);
+    Command stopCommand = new InstantCommand(() -> {
+      elevator.stop();
+    }, elevator);
     return new SequentialCommandGroup(
         setDontCareCommand, getSysIdRoutine(elevator).dynamic(direction), stopCommand);
   }

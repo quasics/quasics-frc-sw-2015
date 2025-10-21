@@ -2,16 +2,18 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.interfaces;
+package frc.robot.subsystems.interfaces.drivebase;
 
 import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase.NullDrivebase;
 import frc.robot.utils.BulletinBoard;
 
 /**
- * Adds functionality to the basic IDrivebase interface, such as PID control, pose estimation, and
+ * Adds functionality to the basic IDrivebase interface, such as PID control,
+ * pose estimation, and
  * trajectory-following.
  */
 public interface IDrivebasePlus extends IDrivebase {
@@ -43,8 +45,10 @@ public interface IDrivebasePlus extends IDrivebase {
   /**
    * Returns the latest posted odemetry-based pose (from the bulletin board).
    *
-   * Note: this is a static function, which means that client code doesn't interact directly with
-   * the actual subsystem (and thus doesn't need to include it in their requirements).
+   * Note: this is a static function, which means that client code doesn't
+   * interact directly with
+   * the actual subsystem (and thus doesn't need to include it in their
+   * requirements).
    *
    * @return last posted odemetry pose, or null
    */
@@ -54,11 +58,14 @@ public interface IDrivebasePlus extends IDrivebase {
   }
 
   /**
-   * Returns the latest posted pose estimate (from the bulletin board) based on unified
+   * Returns the latest posted pose estimate (from the bulletin board) based on
+   * unified
    * odometry/vision data (from the bulletin board).
    *
-   * Note: this is a static function, which means that client code doesn't interact directly with
-   * the actual subsystem (and thus doesn't need to include it in their requirements).
+   * Note: this is a static function, which means that client code doesn't
+   * interact directly with
+   * the actual subsystem (and thus doesn't need to include it in their
+   * requirements).
    *
    * @return last posted unified pose estimate, or null
    */

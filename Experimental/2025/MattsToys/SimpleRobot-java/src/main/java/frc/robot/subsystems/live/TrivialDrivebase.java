@@ -10,7 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.interfaces.ITrivialDrivebase;
+import frc.robot.subsystems.interfaces.drivebase.ITrivialDrivebase;
 
 /**
  * A really simple implementation of a drive base.

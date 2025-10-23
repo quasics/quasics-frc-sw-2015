@@ -6,8 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.live.BetterVision;
+import frc.robot.subsystems.simulations.CameraSimulator;
+import frc.robot.utils.RobotConfigs;
 
 public class RobotContainer {
+  final RobotConfigs.RobotConfig m_config = RobotConfigs.getConfig(RobotConfigs.Robot.Simulation);
+  final CameraSimulator m_cameraSim = new CameraSimulator(m_config, new BetterVision(m_config));
+  
   public RobotContainer() {
     configureBindings();
   }

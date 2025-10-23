@@ -135,7 +135,7 @@ public interface IElevator extends ISubsystem {
   public boolean atTargetPosition();
 
   /**
-   * Trivial implementation of an AbstractElevator. (Does nothing, but does it
+   * Trivial implementation of an IElevator. (Does nothing, but does it
    * well.... :-)
    */
   static public class NullElevator implements IElevator {

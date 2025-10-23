@@ -16,6 +16,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.subsystems.interfaces.IElevator;
 
 /**
  * Provides pretty basic control for a single-mechanism "elevator" that can be
@@ -38,42 +39,7 @@ import frc.robot.sensors.TrivialEncoder;
  *
  * TODO: Consider adjusting min/max safe height to reflect 2025 hardware.
  */
-public abstract class AbstractElevator extends SubsystemBase {
-  /** Subsystem name. */
-  public static final String NAME = "Elevator";
-
-  /** Minimum safe height. */
-  public static final Distance MAX_SAFE_HEIGHT = Meters.of(2.5);
-  /** Maximum safe height. */
-  public static final Distance MIN_SAFE_HEIGHT = Meters.of(0.0);
-
-  /** Supported target positions for the elevator. */
-  public enum TargetPosition {
-    /** No target set (manual control). */
-    DontCare,
-    /** Target MIN_SAFE_HEIGHT. */
-    Bottom,
-    /** Target MAX_SAFE_HEIGHT. */
-    Top,
-    /** Target L1 height. */
-    L1,
-    /** Target L2 height. */
-    L2
-  }
-
-  /** Operational modes for the elevator. */
-  public enum Mode {
-    /** Stopped (under manual control). */
-    Stopped,
-    /** Extending (under manual control). */
-    Extending,
-    /** Retracting (under manual control). */
-    Retracting,
-    /** Moving to (or at) a specified target position. */
-    Targeted,
-    Profiling
-  }
-
+public abstract class AbstractElevator extends SubsystemBase implements IElevator {
   /** Current operational mode. */
   protected Mode m_mode = Mode.Stopped;
 
@@ -194,7 +160,9 @@ public abstract class AbstractElevator extends SubsystemBase {
   }
 
   public abstract LinearVelocity getVelocity();
+
   public abstract Voltage getVoltage();
+
   public void setMotorVoltage(Voltage volts) {
     m_mode = Mode.Profiling;
     setMotorVoltage_impl(volts);
@@ -259,73 +227,11 @@ public abstract class AbstractElevator extends SubsystemBase {
 
     if (noisy) {
       System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-              + "output: %.02f, atSetpoint: %b%n",
+          + "output: %.02f, atSetpoint: %b%n",
           encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForwardOutput,
           output, pid.atSetpoint());
     }
 
     return Volts.of(output);
-  }
-
-  /**
-   * Trivial implementation of an AbstractElevator. (Does nothing, but does it
-   * well.... :-)
-   */
-  static public class NullElevator extends AbstractElevator {
-    /** Constructor. */
-    public NullElevator() {
-      System.out.println("INFO: Allocating NullElevator");
-    }
-
-    @Override
-    public boolean atTargetPosition() {
-      return true;
-    }
-
-    @Override
-    protected void updateMotor_impl() {
-      // No-op
-    }
-
-    @Override
-    protected void resetEncoder_impl() {
-      // No-op
-    }
-
-    @Override
-    protected Distance getHeight_impl() {
-      return Meters.of(0);
-    }
-
-    @Override
-    protected void stop_impl() {
-      // No-op
-    }
-
-    @Override
-    protected void extend_impl() {
-      // No-op
-    }
-
-    @Override
-    protected void retract_impl() {
-      // No-op
-    }
-
-    @Override
-    protected void setMotorVoltage_impl(Voltage volts) {
-      // No-op
-    }
-
-    @Override
-    public LinearVelocity getVelocity() {
-      return MetersPerSecond.of(0);
-    }
-
-    @Override
-    public Voltage getVoltage() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'getVoltage'");
-    }
   }
 }

@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.IElevator;
 
 /**
  * A simple command that moves an elevator up or down.
  */
 public class SimpleElevatorMover extends Command {
   /** Elevator subsystem being controlled. */
-  private final AbstractElevator m_elevator;
+  private final IElevator m_elevator;
 
   /** Direction in which the elevator should be moved. */
   private final Direction m_direction;
@@ -31,10 +31,10 @@ public class SimpleElevatorMover extends Command {
    * @param elevator  the elevator to be moved
    * @param direction the direction in which it should move
    */
-  public SimpleElevatorMover(AbstractElevator elevator, Direction direction) {
+  public SimpleElevatorMover(IElevator elevator, Direction direction) {
     m_elevator = elevator;
     m_direction = direction;
-    addRequirements(m_elevator);
+    addRequirements(m_elevator.asSubsystem());
   }
 
   @Override

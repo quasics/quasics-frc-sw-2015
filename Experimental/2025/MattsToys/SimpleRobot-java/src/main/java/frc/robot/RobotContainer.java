@@ -33,8 +33,8 @@ import frc.robot.commands.RainbowLighting;
 import frc.robot.commands.SimpleElevatorMover;
 import frc.robot.commands.TrajectoryHacking;
 import frc.robot.commands.TurnToTarget;
-import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.ICandle;
+import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
@@ -90,7 +90,7 @@ public class RobotContainer {
 
   // Subsystems
   final private IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
-  final private AbstractElevator m_elevator = allocateElevator(m_robotConfig);
+  final private IElevator m_elevator = allocateElevator(m_robotConfig);
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
   final private IVision m_vision = allocateVision(m_robotConfig);
@@ -257,9 +257,9 @@ public class RobotContainer {
     SmartDashboard.putData("Arm out", new MoveArmToAngle(m_arm, m_arm.getArmOutAngle()));
     SmartDashboard.putData("Arm up", new MoveArmToAngle(m_arm, m_arm.getArmUpAngle()));
     SmartDashboard.putData("Raise elevator (wait)",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, true));
+        new MoveElevatorToPosition(m_elevator, IElevator.TargetPosition.Top, true));
     SmartDashboard.putData("Raise elevator (nowait)",
-        new MoveElevatorToPosition(m_elevator, AbstractElevator.TargetPosition.Top, false));
+        new MoveElevatorToPosition(m_elevator, IElevator.TargetPosition.Top, false));
 
     SmartDashboard.putData(
         "Elevator up", new SimpleElevatorMover(m_elevator, SimpleElevatorMover.Direction.UP));
@@ -516,9 +516,9 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return an elevator subsystem for this robot (may be trivial)
    */
-  private static AbstractElevator allocateElevator(RobotConfigs.RobotConfig config) {
+  private static IElevator allocateElevator(RobotConfigs.RobotConfig config) {
     if (!config.hasElevator()) {
-      return new AbstractElevator.NullElevator();
+      return new IElevator.NullElevator();
     }
 
     if (Robot.isReal()) {

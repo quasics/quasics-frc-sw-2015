@@ -17,6 +17,8 @@ import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 /**
  * Utility class to support generating commands used to gather data for SysId
  * characterization of a robot.
+ * 
+ * TODO: Revise this class to use an IElevator interface, vs. AbstractElevator.
  */
 public class SysIdGenerator {
   /** Drive base profiling modes. */

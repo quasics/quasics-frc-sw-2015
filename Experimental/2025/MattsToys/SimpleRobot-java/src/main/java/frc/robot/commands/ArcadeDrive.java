@@ -5,7 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
+
 import java.util.function.Supplier;
 
 /**

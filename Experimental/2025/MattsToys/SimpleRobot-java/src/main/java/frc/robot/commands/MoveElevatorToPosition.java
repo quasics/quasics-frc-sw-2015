@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.IElevator;
 
 /**
  * Moves the elevator to a specified target height (using PID control), and
@@ -14,9 +14,9 @@ import frc.robot.subsystems.abstracts.AbstractElevator;
  */
 public class MoveElevatorToPosition extends Command {
   /** Elevator being controlled. */
-  final private AbstractElevator m_elevator;
+  final private IElevator m_elevator;
   /** Target position. */
-  final private AbstractElevator.TargetPosition m_target;
+  final private IElevator.TargetPosition m_target;
   /**
    * Iff true, command will wait to signal "finished" until the elevator has
    * reached the target.
@@ -30,7 +30,7 @@ public class MoveElevatorToPosition extends Command {
    * @param elevator elevator being controlled
    * @param target   target position
    */
-  public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target) {
+  public MoveElevatorToPosition(IElevator elevator, IElevator.TargetPosition target) {
     this(elevator, target, true);
   }
 
@@ -43,13 +43,15 @@ public class MoveElevatorToPosition extends Command {
    *                             "finished" until the elevator reaches the target
    *                             position
    */
-  public MoveElevatorToPosition(AbstractElevator elevator, AbstractElevator.TargetPosition target,
+  public MoveElevatorToPosition(
+      IElevator elevator,
+      IElevator.TargetPosition target,
       boolean waitForTargetReached) {
     m_elevator = elevator;
     m_target = target;
     m_waitForTargetReached = waitForTargetReached;
 
-    addRequirements(elevator);
+    addRequirements(elevator.asSubsystem());
   }
 
   @Override

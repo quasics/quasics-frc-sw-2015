@@ -10,18 +10,22 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.interfaces.IDrivebase;
-import frc.robot.subsystems.interfaces.IVisionPlus;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
+import frc.robot.subsystems.interfaces.vision.IVisionPlus;
 
 /**
  * Simple command to demonstrate using camera data to align with a target.
  *
- * Note that one nice improvement would be to use full PID control (or at least less arbitrary
- * values for "kP") to moderate our turning speed as we try to align with the target, once it's in
+ * Note that one nice improvement would be to use full PID control (or at least
+ * less arbitrary
+ * values for "kP") to moderate our turning speed as we try to align with the
+ * target, once it's in
  * view.
  */
 public class TurnToTarget extends Command {
-  public enum OpMode { PointAtTarget, TargetInView }
+  public enum OpMode {
+    PointAtTarget, TargetInView
+  }
 
   /** Vision subsystem. */
   private final IVisionPlus m_vision;
@@ -36,12 +40,16 @@ public class TurnToTarget extends Command {
   private final boolean m_noisy;
 
   /**
-   * (Command state) Are we sufficiently aligned (i.e., either the target is in view or we're
+   * (Command state) Are we sufficiently aligned (i.e., either the target is in
+   * view or we're
    * pointed directly at) the target, depending on the op mode)?
    */
   private boolean m_finished = false;
 
-  /** How closely aligned (+/-) we need to be with the target before we'll stop turning. */
+  /**
+   * How closely aligned (+/-) we need to be with the target before we'll stop
+   * turning.
+   */
   static private final Angle MIN_ACCEPTABLE_ANGLE = Degrees.of(2);
 
   // Note: positive values for turning are CCW in direction.
@@ -53,9 +61,9 @@ public class TurnToTarget extends Command {
   /**
    * Creates a new TurnToTarget.
    *
-   * @param vision vision subsystem (used to find the target)
+   * @param vision    vision subsystem (used to find the target)
    * @param drivebase drive subsystem (used to turn to target)
-   * @param targetId ID for the desired target
+   * @param targetId  ID for the desired target
    */
   public TurnToTarget(IVisionPlus vision, IDrivebase drivebase, int targetId) {
     this(vision, drivebase, targetId, OpMode.PointAtTarget, false);
@@ -74,7 +82,8 @@ public class TurnToTarget extends Command {
 
   @Override
   public void initialize() {
-    // Assume that we can't see it at the moment.  (We'll figure out what to do in execute().)
+    // Assume that we can't see it at the moment. (We'll figure out what to do in
+    // execute().)
     m_finished = false;
   }
 
@@ -82,7 +91,8 @@ public class TurnToTarget extends Command {
   public void execute() {
     final var targetData = m_vision.getTargetData(m_targetId);
     if (targetData == null) {
-      // Trivial case: it's not currently in view, so just turn until we (hopefully) find it
+      // Trivial case: it's not currently in view, so just turn until we (hopefully)
+      // find it
       m_drivebase.arcadeDrive(null, SEEKING_SPEED);
       return;
     } else if (m_opMode == OpMode.TargetInView) {
@@ -92,8 +102,10 @@ public class TurnToTarget extends Command {
       return;
     }
 
-    // We aren't doing full PID control here, but we'll at scale our speed in a way that's
-    // proportional to the error (i.e., relative angle in degrees from 0 to the target).
+    // We aren't doing full PID control here, but we'll at scale our speed in a way
+    // that's
+    // proportional to the error (i.e., relative angle in degrees from 0 to the
+    // target).
     final double kP = 0.05;
     final double errorVal = Math.abs(targetData.angle().in(Degrees));
     final double errorScaling = Math.min(1.0, errorVal * kP); // Bound the multiplier to 1

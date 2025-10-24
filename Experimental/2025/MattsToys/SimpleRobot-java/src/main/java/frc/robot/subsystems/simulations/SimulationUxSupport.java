@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.subsystems.abstracts.AbstractElevator;
+import frc.robot.subsystems.interfaces.IElevator;
+import frc.robot.subsystems.interfaces.ILighting.StockColor;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,11 +75,10 @@ public class SimulationUxSupport {
 
     // Simulation rendering setup.
     Mechanism2d rootMech2d = new Mechanism2d(9,
-        (AbstractElevator.MAX_SAFE_HEIGHT.in(Meters) + armLengthMeters)
+        (IElevator.MAX_SAFE_HEIGHT.in(Meters) + armLengthMeters)
             * 1.15 // Leave a little room at the top
     );
-    m_elevatorMech2d =
-        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
+    m_elevatorMech2d = rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
 
     m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", armLengthMeters, -90));
 
@@ -90,15 +91,15 @@ public class SimulationUxSupport {
     updateArm(Degrees.of(0), DeviceStatus.Manual);
 
     //
-    // Elevator boundary markers.  (These aren't saved because we'll never need to redraw them.)
+    // Elevator boundary markers. (These aren't saved because we'll never need to
+    // redraw them.)
 
     // Rendering "lower bound" for elevator
     var lowerBoundRoot = rootMech2d.getRoot("FloorRoot", 0, 0);
     lowerBoundRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, LOWER_BOUND_COLOR));
 
     // Rendering "upper bound" for elevator
-    var topBoundRoot =
-        rootMech2d.getRoot("TopRoot", 0, AbstractElevator.MAX_SAFE_HEIGHT.in(Meters));
+    var topBoundRoot = rootMech2d.getRoot("TopRoot", 0, IElevator.MAX_SAFE_HEIGHT.in(Meters));
     topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, UPPER_BOUND_COLOR));
   }
 

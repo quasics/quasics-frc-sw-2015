@@ -12,7 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.vision.IVision;
 import frc.robot.utils.RobotConfigs;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.Collections;
@@ -22,21 +22,24 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 
 /**
- * A simple class for handling a single camera and determining estimated distance/angle for any
+ * A simple class for handling a single camera and determining estimated
+ * distance/angle for any
  * visible targets.
  */
 public class SimpleVision extends SubsystemBase implements IVision {
   final private CameraData m_cameraData;
 
-  /** TODO: Move layout-oriented stuff into a common base for Simple/BetterVision. */
+  /**
+   * TODO: Move layout-oriented stuff into a common base for Simple/BetterVision.
+   */
 
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-      ;
+  ;
   /**
    * The layout of the AprilTags on the field. This is used for the pose
    * estimation (as well as in the simulator, when it's rendering the tag).
@@ -46,7 +49,8 @@ public class SimpleVision extends SubsystemBase implements IVision {
   /**
    * Creates a new SimpleVision.
    *
-   * @param config  configuration of the underlying robot (which *must* have at least 1 camera)
+   * @param config configuration of the underlying robot (which *must* have at
+   *               least 1 camera)
    */
   public SimpleVision(RobotConfig config) {
     setName(IVision.SUBSYSTEM_NAME);
@@ -90,11 +94,13 @@ public class SimpleVision extends SubsystemBase implements IVision {
   }
 
   /**
-   * Helper method to try to estimate where the robot is on the field, using the best (single)
+   * Helper method to try to estimate where the robot is on the field, using the
+   * best (single)
    * target that we can see, if any.
    *
-   * @param fieldLayout  field layout (specifying what tags are where)
-   * @param cameraData   camera information (providing visible targets and "robotToCamera" info)
+   * @param fieldLayout field layout (specifying what tags are where)
+   * @param cameraData  camera information (providing visible targets and
+   *                    "robotToCamera" info)
    * @return estimate of where the robot is on the field, if we can see anything
    */
   private Optional<Pose3d> getEstimatedRobotPose() {
@@ -121,7 +127,8 @@ public class SimpleVision extends SubsystemBase implements IVision {
   // TODO: Test this....
   @Override
   public List<TargetData> getVisibleTargets(Pose2d robotPose) {
-    // If the caller didn't give us a pose, then try to estimate it based on what we can see.
+    // If the caller didn't give us a pose, then try to estimate it based on what we
+    // can see.
     if (robotPose == null) {
       var estimatedPose = getEstimatedRobotPose();
       if (estimatedPose.isEmpty()) {

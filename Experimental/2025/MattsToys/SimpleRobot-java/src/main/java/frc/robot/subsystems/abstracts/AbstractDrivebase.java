@@ -25,8 +25,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.interfaces.IDrivebasePlus;
-import frc.robot.subsystems.interfaces.IVisionPlus;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
+import frc.robot.subsystems.interfaces.vision.IVisionPlus;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
 import java.util.List;
@@ -220,8 +220,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     // it into our estimate. (Note that some sources suggest *not* doing this while
     // the robot is in motion, since that's when you'll have the most significant
     // error introduced into the images.)
-    Optional<Object> optionalPoseList =
-        BulletinBoard.common.getValue(IVisionPlus.POSES_KEY, List.class);
+    Optional<Object> optionalPoseList = BulletinBoard.common.getValue(IVisionPlus.POSES_KEY, List.class);
     if (optionalPoseList.isEmpty()) {
       return;
     }
@@ -284,8 +283,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     double smallestDistance = Double.POSITIVE_INFINITY;
     for (var target : estimation.targetsUsed) {
       var t3d = target.getBestCameraToTarget();
-      var distance =
-          Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
+      var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
       if (distance < smallestDistance)
         smallestDistance = distance;
     }
@@ -294,13 +292,13 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
         ? 1
         : Math.max(1,
-              (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                  + VisionConstants.POSE_AMBIGUITY_SHIFTER)
-                  * VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
+            (estimation.targetsUsed.get(0).getPoseAmbiguity()
+                + VisionConstants.POSE_AMBIGUITY_SHIFTER)
+                * VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
     double confidenceMultiplier = Math.max(1,
         (Math.max(1,
-             Math.max(0, smallestDistance - VisionConstants.NOISY_DISTANCE_METERS)
-                 * VisionConstants.DISTANCE_WEIGHT)
+            Math.max(0, smallestDistance - VisionConstants.NOISY_DISTANCE_METERS)
+                * VisionConstants.DISTANCE_WEIGHT)
             * poseAmbiguityFactor)
             / (1 + ((estimation.targetsUsed.size() - 1) * VisionConstants.TAG_PRESENCE_WEIGHT)));
 

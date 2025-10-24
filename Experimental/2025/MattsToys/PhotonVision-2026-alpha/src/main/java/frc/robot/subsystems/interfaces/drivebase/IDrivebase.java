@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.interfaces;
+package frc.robot.subsystems.interfaces.drivebase;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -20,17 +20,21 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
 /**
- * Basic interface for relatively simple drive base functionality, including tank/arcade drive,
+ * Basic interface for relatively simple drive base functionality, including
+ * tank/arcade drive,
  * reading key sensors (encoders/ALU).
  *
  * Note that I'm currently breaking this out into:
  * <ul>
- * <li>A simple interface (this one) for truly core functionality (and default implementations of
+ * <li>A simple interface (this one) for truly core functionality (and default
+ * implementations of
  * some helpful stuff built directly on that).
- * <li>A derived interface (IBetterDrivebase), which defines more advanced functionality (e.g.,
+ * <li>A derived interface (IBetterDrivebase), which defines more advanced
+ * functionality (e.g.,
  * support for pose estimation, PID control, and trajectory-following).
  * <li>An abstract class, which starts handling things like PID, etc.
- * <li>Concrete types, which mostly serve to set up/access the underlying hardware (real or
+ * <li>Concrete types, which mostly serve to set up/access the underlying
+ * hardware (real or
  * simulated).
  * </ul>
  *
@@ -41,7 +45,7 @@ import frc.robot.sensors.TrivialEncoder;
  * to the drive team about the robot's position on the field (e.g., when it's
  * oriented towards the barge and close enough to make the shot). This could be
  * done by putting something on the dashboard, changing the lights on the robot,
- * etc.  (Note: a simple implementation of this type of functionality may be
+ * etc. (Note: a simple implementation of this type of functionality may be
  * seen in the <code>DriveTeamShootingSupport</code> command.)
  * </li>
  * <li>
@@ -50,22 +54,7 @@ import frc.robot.sensors.TrivialEncoder;
  * </li>
  * </ul>
  */
-public interface IDrivebase extends ISubsystem {
-  /** Name for the subsystem (and base for BulletinBoard keys). */
-  final String SUBSYSTEM_NAME = "Drivebase";
-
-  /** Maximum linear velocity that we'll allow/assume in our code. */
-  final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
-
-  /** Maximum rotational velocity for arcade drive. */
-  final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(180);
-
-  /** Zero linear velocity. (A potentially useful constant.) */
-  final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
-
-  /** Zero rotational velocity.  (A potentially useful constant.) */
-  final AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
-
+public interface IDrivebase extends ITrivialDrivebase {
   /////////////////////////////////////////////////////////////////////////////////
   //
   // "Purely abstract methods", outlining pretty basic functionality for a drive
@@ -74,8 +63,8 @@ public interface IDrivebase extends ISubsystem {
   /////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Directly sets the voltages delivered to the motors, used as the basis for implenenting
-   * tank/arcade driving.
+   * Directly sets the voltages delivered to the motors, used as the basis for
+   * implenenting tank/arcade driving.
    *
    * Note: operates directly; no PID.
    *
@@ -128,35 +117,18 @@ public interface IDrivebase extends ISubsystem {
 
   /////////////////////////////////////////////////////////////////////////////////
   //
-  // Some simple-ish functions built on top of the core interface.
+  // Default versions of the base type functions.
   //
   /////////////////////////////////////////////////////////////////////////////////
 
-  /** Utility method: stops the robot. */
-  default void stop() {
-    tankDrive(0, 0);
+  default void arcadeDrive(double speedPercentage, double rotationPercentage) {
+    // Don't let the values go outside of [-100%, +100%].
+    double clampedSpeedPercentage = MathUtil.clamp(speedPercentage, -1.0, +1.0);
+    double clampedRotationPercentage = MathUtil.clamp(rotationPercentage, -1.0, +1.0);
+
+    arcadeDrive(MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
-  /**
-   * Utility method: straight forward/backward. (Effectively, tank drive with a
-   * single speed for both sides.)
-   *
-   * @param percentage The percentage of MAX_SPEED to drive at (positive is forward).
-   *
-   * @see #tankDrive(double, double)
-   */
-  default void tankDrive(double percentage) {
-    tankDrive(percentage, percentage);
-  }
-
-  /**
-   * Drive the robot using tank drive (as a percentage of MAX_SPEED).
-   *
-   * Note: operates directly; no PID, but based on MAX_SPEED.
-   *
-   * @param leftPercentage  The percentage of MAX_SPEED for the left side (positive is forward).
-   * @param rightPercentage The percentage of MAX_SPEED for the right side (positive is forward).
-   */
   default void tankDrive(double leftPercentage, double rightPercentage) {
     // Don't let the values go outside of [-100%, +100%].
     double clampedLeftPercentage = MathUtil.clamp(leftPercentage, -1.0, +1.0);
@@ -165,6 +137,12 @@ public interface IDrivebase extends ISubsystem {
     setSpeeds(new DifferentialDriveWheelSpeeds(
         MAX_SPEED.times(clampedLeftPercentage), MAX_SPEED.times(clampedRightPercentage)));
   }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Some simple-ish functions built on top of the core interface.
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
   /**
    * Drive the robot using arcade drive.
@@ -183,8 +161,8 @@ public interface IDrivebase extends ISubsystem {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds =
-        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
+        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);

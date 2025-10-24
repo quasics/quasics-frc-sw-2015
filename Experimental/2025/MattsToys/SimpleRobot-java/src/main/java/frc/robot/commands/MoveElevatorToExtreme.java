@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.abstracts.AbstractElevator;
-import frc.robot.subsystems.abstracts.AbstractElevator.Mode;
+import frc.robot.subsystems.interfaces.IElevator;
+import frc.robot.subsystems.interfaces.IElevator.Mode;
 
 /**
  * Simple command to raise the elevator to its highest position (manually/not
@@ -16,7 +16,7 @@ import frc.robot.subsystems.abstracts.AbstractElevator.Mode;
  */
 public class MoveElevatorToExtreme extends Command {
   /** Elevator being controlled. */
-  final AbstractElevator m_elevator;
+  final IElevator m_elevator;
   /** Indicates if the elevator should be raised (true) or lowered (false). */
   final boolean m_fullyRaise;
 
@@ -27,7 +27,7 @@ public class MoveElevatorToExtreme extends Command {
      *
      * @param elevator elevator being controlled
      */
-    public LowerElevator(AbstractElevator elevator) {
+    public LowerElevator(IElevator elevator) {
       super(elevator, false);
     }
   }
@@ -39,7 +39,7 @@ public class MoveElevatorToExtreme extends Command {
      *
      * @param elevator elevator being controlled
      */
-    public RaiseElevator(AbstractElevator elevator) {
+    public RaiseElevator(IElevator elevator) {
       super(elevator, true);
     }
   }
@@ -50,10 +50,10 @@ public class MoveElevatorToExtreme extends Command {
    * @param elevator      elevator being controlled
    * @param raiseElevator if the elevator should be raised (or lowered, if false)
    */
-  public MoveElevatorToExtreme(AbstractElevator elevator, boolean raiseElevator) {
+  public MoveElevatorToExtreme(IElevator elevator, boolean raiseElevator) {
     m_elevator = elevator;
     m_fullyRaise = raiseElevator;
-    addRequirements(m_elevator);
+    addRequirements(m_elevator.asSubsystem());
   }
 
   @Override

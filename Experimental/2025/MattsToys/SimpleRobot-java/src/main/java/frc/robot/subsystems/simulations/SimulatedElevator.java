@@ -48,8 +48,8 @@ public class SimulatedElevator extends AbstractElevator {
   // TODO: Update these constants to better emulate the real behavior of the
   // hardware. (But for now, this will at least give us something we can use.)
   private static final double kGearing =
-      20.0; // Arbitrary (but needs to be enough for the simulated physics to work)
-  private static final Distance kDrumRadius = Inches.of(1);
+      30.0; // Arbitrary (but needs to be enough for the simulated physics to work)
+  private static final Distance kDrumRadius = Inches.of(4);
   private static final double kEncoderMetersPerPulse =
       2.0 * Math.PI * kDrumRadius.abs(Meters) / 4096;
   private static final double kCarriageMass = 1.0; // kg
@@ -273,7 +273,7 @@ public class SimulatedElevator extends AbstractElevator {
   //////////////////////////////////////////////////////////////////////////////
 
   @Override
-  public void setMotorVoltage(Voltage volts) {
+  protected void setMotorVoltage_impl(Voltage volts) {
     m_motor.setVoltage(volts);
   }
 

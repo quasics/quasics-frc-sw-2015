@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.abstracts.AbstractElevator;
 import frc.robot.subsystems.interfaces.IDrivebase;
@@ -185,7 +187,11 @@ public class SysIdGenerator {
    */
   public static Command sysIdQuasistatic(
       AbstractElevator elevator, SysIdRoutine.Direction direction) {
-    return getSysIdRoutine(elevator).quasistatic(direction);
+    Command setDontCareCommand = new InstantCommand(
+        () -> { elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare); }, elevator);
+    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator);
+    return new SequentialCommandGroup(
+        setDontCareCommand, getSysIdRoutine(elevator).quasistatic(direction), stopCommand);
   }
 
   /**
@@ -197,6 +203,10 @@ public class SysIdGenerator {
    *         specified direction.
    */
   public static Command sysIdDynamic(AbstractElevator elevator, SysIdRoutine.Direction direction) {
-    return getSysIdRoutine(elevator).dynamic(direction);
+    Command setDontCareCommand = new InstantCommand(
+        () -> { elevator.setTargetPosition(AbstractElevator.TargetPosition.DontCare); }, elevator);
+    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator);
+    return new SequentialCommandGroup(
+        setDontCareCommand, getSysIdRoutine(elevator).dynamic(direction), stopCommand);
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -13,12 +15,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import java.io.IOException;
 import java.util.function.Supplier;
+import java.util.List;
 import java.util.*;
 
 import org.photonvision.EstimatedRobotPose;
@@ -35,6 +40,9 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 // CODE_REVIEW/FIXME: Nothing is happening in this subsystem. Are you planning to make changes to add
 // functionality?
 public class Vision extends SubsystemBase {
+  record TargetData(int id, Angle angle, Distance distance) {
+  }
+
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
   private Optional<EstimatedRobotPose> latestPose = Optional.empty();
@@ -65,6 +73,7 @@ public class Vision extends SubsystemBase {
   public final PhotonPoseEstimator visionEstimator;
   private Supplier<Pose2d> poseSupplier;
   private Pose2d pose;
+  private Pose3d fieldPose;
   private Pose3d robotPose3d;
   private final AprilTagFieldLayout m_tagLayout;
   private PhotonTrackedTarget target;
@@ -105,27 +114,15 @@ public class Vision extends SubsystemBase {
      * }
      * }
      */
-    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
-    if (results.isEmpty()) {
-      return;
-    } else {
-      for (PhotonPipelineResult result : results) {
-        latestPose = visionEstimator.update(result);
-        boolean hasTargets = result.hasTargets();
-        if (hasTargets == false) {
-          return;
-        } else {
-          List<PhotonTrackedTarget> targets = result.getTargets();
-          target = result.getBestTarget();
-        }
+    findTargets();
+    if (target != null) {
+      if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+        robotPose3d = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+            m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+        System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " +
+            target.getYaw() + " Target Pitch: "
+            + target.getPitch());
       }
-    }
-
-    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-      robotPose3d = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
-          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
-      System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " + target.getYaw() + " Target Pitch: "
-          + target.getPitch());
     }
 
     // TODO: "Verbose" mode (allow us to turn off debugging output if we want to debug something else)
@@ -140,6 +137,14 @@ public class Vision extends SubsystemBase {
 
     
 
+    // TODO: "Verbose" mode (allow us to turn off debugging output if we want to
+    // debug something else)
+    /*
+     * if (Robot.isSimulation()) {
+     * Pose2d simPose = robotPose3d.toPose2d();
+     * System.out.println(simPose);
+     * }
+     */
     simulationPeriodic();
   }
 
@@ -149,6 +154,7 @@ public class Vision extends SubsystemBase {
       return;
     }
     updateEstimatedGlobalPose();
+    System.out.println(getFieldRobotPose());
     // updateEstimatedPoseToCamera();
   }
 
@@ -169,7 +175,7 @@ public class Vision extends SubsystemBase {
     cameraProp = new SimCameraProperties();
     cameraProp.setCalibration(640, 320, Rotation2d.fromDegrees(78));
     // double check these numbers, most are placeholders
-    cameraProp.setCalibError(432.27, 0.0);
+    cameraProp.setCalibError(0, 0.0);
     cameraProp.setFPS(30);
     cameraProp.setAvgLatencyMs(0);
     cameraProp.setLatencyStdDevMs(0);
@@ -209,6 +215,28 @@ public class Vision extends SubsystemBase {
     visionSim.update(pose);
   }
 
+  public Pose3d getFieldRobotPose() {
+    if (target == null) {
+      return null;
+    }
+    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+      fieldPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+    }
+    return fieldPose;
+  }
+
+  public Pose3d getFieldRobotPose() {
+    if (target == null) {
+      return null;
+    }
+    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+      fieldPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+    }
+    return fieldPose;
+  }
+
   private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
     if (pose != null) {
       visionEstimator.setLastPose(pose);
@@ -225,5 +253,52 @@ public class Vision extends SubsystemBase {
       lastEstimatedPose = visionEstimator.update(result);
     }
     return lastEstimatedPose;
+  }
+
+  public void findTargets() {
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      return;
+    } else {
+      for (PhotonPipelineResult result : results) {
+        latestPose = visionEstimator.update(result);
+        boolean hasTargets = result.hasTargets();
+        if (hasTargets == false) {
+          return;
+        } else {
+          List<PhotonTrackedTarget> targets = result.getTargets();
+          target = result.getBestTarget();
+        }
+        SmartDashboard.putString("found target?", result.hasTargets() ? "true" : "false");
+      }
+    }
+  }
+
+  public int getBestTargetID() {
+    findTargets();
+    int id = target.getFiducialId();
+    return id;
+  }
+
+  public Angle getTargetAngleDegrees(int id) {
+    Angle angle = null;
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      return null;
+    }
+    for (PhotonPipelineResult result : results) {
+      boolean hasTargets = result.hasTargets();
+      if (hasTargets == false) {
+        return null;
+      } else {
+        List<PhotonTrackedTarget> targets = result.getTargets();
+        for (PhotonTrackedTarget target : targets) {
+          if (id == target.getFiducialId()) {
+            angle = Degrees.of(target.getYaw());
+          }
+        }
+      }
+    }
+    return angle;
   }
 }

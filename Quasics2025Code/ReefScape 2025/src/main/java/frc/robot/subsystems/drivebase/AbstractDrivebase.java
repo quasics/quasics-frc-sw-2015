@@ -227,6 +227,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  public double getYawDegrees() {
+    return getPose().getRotation().getDegrees();
+  }
+
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
   }

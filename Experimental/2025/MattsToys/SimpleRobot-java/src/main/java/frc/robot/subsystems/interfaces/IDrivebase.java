@@ -6,9 +6,7 @@ package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.*;
 
-import choreo.trajectory.DifferentialSample;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -20,18 +18,20 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.utils.BulletinBoard;
 
 /**
- * Basic interface for drive base functionality.
+ * Basic interface for relatively simple drive base functionality, including tank/arcade drive,
+ * reading key sensors (encoders/ALU).
  *
  * Note that I'm currently breaking this out into:
  * <ul>
- * <li>An interface for the core functionality (and default implementations of
- * simple things)
+ * <li>A simple interface (this one) for truly core functionality (and default implementations of
+ * some helpful stuff built directly on that).
+ * <li>A derived interface (IBetterDrivebase), which defines more advanced functionality (e.g.,
+ * support for pose estimation, PID control, and trajectory-following).
  * <li>An abstract class, which starts handling things like PID, etc.
- * <li>Concrete types, which mostly serve to set up/access the underlying
- * hardware.
+ * <li>Concrete types, which mostly serve to set up/access the underlying hardware (real or
+ * simulated).
  * </ul>
  *
  * Possible enhancements:
@@ -54,20 +54,83 @@ public interface IDrivebase extends ISubsystem {
   /** Name for the subsystem (and base for BulletinBoard keys). */
   final String SUBSYSTEM_NAME = "Drivebase";
 
-  /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
-
-  /** Key used to post odometry-based pose information to BulletinBoard. */
-  final String ESTIMATED_POSE_KEY = SUBSYSTEM_NAME + ".PoseEstimate";
-
   /** Maximum linear velocity that we'll allow/assume in our code. */
   final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
 
   /** Maximum rotational velocity for arcade drive. */
   final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(180);
 
-  /** Zero velocity. (A potentially useful constant.) */
+  /** Zero linear velocity. (A potentially useful constant.) */
   final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+
+  /** Zero rotational velocity.  (A potentially useful constant.) */
+  final AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // "Purely abstract methods", outlining pretty basic functionality for a drive
+  // base.
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Directly sets the voltages delivered to the motors, used as the basis for implenenting
+   * tank/arcade driving.
+   *
+   * Note: operates directly; no PID.
+   *
+   * @param left  voltage for the left-side motors
+   * @param right voltage for the right-side motors
+   */
+  void setMotorVoltages(Voltage left, Voltage right);
+
+  /**
+   * Returns the voltage being applied to the left motor.
+   *
+   * @return The applied voltage from the left motor
+   */
+  Voltage getLeftVoltage();
+
+  /**
+   * Returns the voltage being applied to the right motor.
+   *
+   * @return The applied voltage from the right motor
+   */
+  Voltage getRightVoltage();
+
+  /**
+   * Returns a TrivialEncoder for the left motor.
+   *
+   * @return TrivialEncoder exposing data for the left motors
+   */
+  TrivialEncoder getLeftEncoder();
+
+  /**
+   * Returns a TrivialEncoder for the right motor.
+   *
+   * @return TrivialEncoder exposing data for the right motors
+   */
+  TrivialEncoder getRightEncoder();
+
+  /**
+   * Exposes a gyro (providing heading/yaw) for the robot.
+   *
+   * @return IGyro exposing data from the underlying ALU
+   */
+  IGyro getGyro();
+
+  /**
+   * Gets the robot's kinematics.
+   *
+   * @return kinematics data for the robot
+   */
+  DifferentialDriveKinematics getKinematics();
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Some simple-ish functions built on top of the core interface.
+  //
+  /////////////////////////////////////////////////////////////////////////////////
 
   /** Utility method: stops the robot. */
   default void stop() {
@@ -78,7 +141,7 @@ public interface IDrivebase extends ISubsystem {
    * Utility method: straight forward/backward. (Effectively, tank drive with a
    * single speed for both sides.)
    *
-   * @param percentage The percentage of MAX_SPEED to drive at.
+   * @param percentage The percentage of MAX_SPEED to drive at (positive is forward).
    *
    * @see #tankDrive(double, double)
    */
@@ -91,12 +154,16 @@ public interface IDrivebase extends ISubsystem {
    *
    * Note: operates directly; no PID, but based on MAX_SPEED.
    *
-   * @param leftPercentage  The percentage of MAX_SPEED for the left side.
-   * @param rightPercentage The percentage of MAX_SPEED for the right side.
+   * @param leftPercentage  The percentage of MAX_SPEED for the left side (positive is forward).
+   * @param rightPercentage The percentage of MAX_SPEED for the right side (positive is forward).
    */
   default void tankDrive(double leftPercentage, double rightPercentage) {
+    // Don't let the values go outside of [-100%, +100%].
+    double clampedLeftPercentage = MathUtil.clamp(leftPercentage, -1.0, +1.0);
+    double clampedRightPercentage = MathUtil.clamp(rightPercentage, -1.0, +1.0);
+
     setSpeeds(new DifferentialDriveWheelSpeeds(
-        MAX_SPEED.times(leftPercentage), MAX_SPEED.times(rightPercentage)));
+        MAX_SPEED.times(clampedLeftPercentage), MAX_SPEED.times(clampedRightPercentage)));
   }
 
   /**
@@ -108,6 +175,13 @@ public interface IDrivebase extends ISubsystem {
    * @param rotation The angular velocity to rotate at.
    */
   default void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
+    if (speed == null) {
+      speed = ZERO_MPS;
+    }
+    if (rotation == null) {
+      rotation = ZERO_TURNING;
+    }
+
     // Calculate the left and right wheel speeds based on the inputs.
     final DifferentialDriveWheelSpeeds wheelSpeeds =
         getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
@@ -150,19 +224,6 @@ public interface IDrivebase extends ISubsystem {
     final double referenceVoltage = RobotController.getInputVoltage();
     setMotorVoltages(Volts.of(referenceVoltage * MathUtil.clamp(leftPercentage, -1, +1)),
         Volts.of(referenceVoltage * MathUtil.clamp(rightPercentage, -1, +1)));
-  }
-
-  /**
-   * Sets the speeds for the robot.
-   *
-   * Used for trajectory-following (e.g., with Choreo).
-   *
-   * @param speeds desired left/right/rotational speeds
-   *
-   * @see #driveWithPid(DifferentialDriveWheelSpeeds)
-   */
-  default void driveWithPid(ChassisSpeeds speeds) {
-    driveWithPid(getKinematics().toWheelSpeeds(speeds));
   }
 
   /**
@@ -230,139 +291,20 @@ public interface IDrivebase extends ISubsystem {
   }
 
   /**
-   * Returns the latest posted odemetry-based pose.
+   * Gets the robot's current speeds (wheels only, not turning).
    *
-   * @return last posted odemetry pose, or null
+   * @return the current DifferentialDriveWheelSpeeds of the robot (used for
+   *         trajectory-following)
    */
-  static Pose2d getPublishedLastPoseFromOdometry() {
-    var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
-    return (Pose2d) stored.orElse(null);
-  }
-
-  /**
-   * Returns the latest posted pose estimate, based on unified odometry/vision data.
-   *
-   * @return last posted unified pose estimate, or null
-   */
-  static Pose2d getPublishedLastUnifiedPoseEstimate() {
-    var stored = BulletinBoard.common.getValue(ESTIMATED_POSE_KEY, Pose2d.class);
-    return (Pose2d) stored.orElse(null);
+  default DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
   }
 
   /////////////////////////////////////////////////////////////////////////////////
   //
-  // "Purely abstract methods"
+  // Trivial implementation
   //
   /////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Directly sets the voltages delivered to the motors.
-   *
-   * Note: operates directly; no PID.
-   *
-   * @param left  voltage for the left-side motors
-   * @param right voltage for the right-side motors
-   */
-  void setMotorVoltages(Voltage left, Voltage right);
-
-  /**
-   * Returns the voltage being applied to the left motor.
-   *
-   * @return The applied voltage from the left motor
-   */
-  Voltage getLeftVoltage();
-
-  /**
-   * Returns the voltage being applied to the right motor.
-   *
-   * @return The applied voltage from the right motor
-   */
-  Voltage getRightVoltage();
-
-  /**
-   * Returns a TrivialEncoder for the left motor.
-   *
-   * @return TrivialEncoder exposing data for the left motors
-   */
-  TrivialEncoder getLeftEncoder();
-
-  /**
-   * Returns a TrivialEncoder for the right motor.
-   *
-   * @return TrivialEncoder exposing data for the right motors
-   */
-  TrivialEncoder getRightEncoder();
-
-  /**
-   * Exposes a gyro (providing heading/yaw) for the robot.
-   *
-   * @return IGyro exposing data from the underlying ALU
-   */
-  IGyro getGyro();
-
-  /**
-   * Gets the robot's pose (based on odometry alone).
-   *
-   * @return position/heading of the robot, based on odometry
-   */
-  Pose2d getPose();
-
-  /**
-   * Gets the robot's pose (based on pose estimation, fusing odometry and vision).
-   *
-   * @return estimated pose of the robot
-   */
-  Pose2d getEstimatedPose();
-
-  /**
-   * Gets the robot's kinematics.
-   *
-   * @return kinematics data for the robot
-   */
-  DifferentialDriveKinematics getKinematics();
-
-  /////////////////////////////////////////////////////////////////////////////////
-  //
-  // Functionality required for AutoBuilder (in PathPlanner library) or
-  // AutoFactory (in Choreo library)
-  //
-  // See: https://choreo.autos/choreolib/getting-started/
-  // See: https://www.chiefdelphi.com/t/choreo-2025-beta/472224/23
-  // See: https://github.com/mjansen4857/pathplanner/tree/main/examples/java
-  //
-  /////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Follows (executes) a sample of a Choreo trajectory for a differential drive
-   * robot.
-   *
-   * @param sample component of the trajectory to be followed
-   *
-   * @see #driveWithPid(ChassisSpeeds)
-   */
-  void followTrajectory(DifferentialSample sample);
-
-  /**
-   * Resets the current pose to the specified value.
-   *
-   * This should ONLY be called when the robot's position on the field is known
-   * (e.g., at the beginning of a match). The code for trajectory-following may
-   * invoke this, because it assumes that pre-defined trajectories are started at
-   * a well-defined/fixed place.
-   *
-   *
-   * @param pose new pose to use as a basis for odometry/pose estimation
-   */
-  void resetPose(Pose2d pose);
-
-  /**
-   * Sets the wheel speeds (e.g., during trajectory following).
-   *
-   * Note: as suggested by the name, will use PID control for speed adjustments
-   *
-   * @param wheelSpeeds desired wheel speeds (based on trajectory planning)
-   */
-  public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds);
 
   /** Trivial implementation of the IDrivebase interface. */
   public static class NullDrivebase implements IDrivebase {
@@ -407,33 +349,8 @@ public interface IDrivebase extends ISubsystem {
     }
 
     @Override
-    public Pose2d getPose() {
-      return new Pose2d();
-    }
-
-    @Override
-    public Pose2d getEstimatedPose() {
-      return getPose();
-    }
-
-    @Override
     public DifferentialDriveKinematics getKinematics() {
       return new DifferentialDriveKinematics(Meters.of(0.5));
-    }
-
-    @Override
-    public void followTrajectory(DifferentialSample sample) {
-      // No-op
-    }
-
-    @Override
-    public void resetPose(Pose2d pose) {
-      // No-op
-    }
-
-    @Override
-    public void driveWithPid(DifferentialDriveWheelSpeeds wheelSpeeds) {
-      // No-op
     }
   }
 }

@@ -236,7 +236,7 @@ public class Elevator extends AbstractElevator {
   ////////////////////////////////////////////////////////////////////////////
 
   @Override
-  public void setMotorVoltage(Voltage volts) {
+  protected void setMotorVoltage_impl(Voltage volts) {
     m_leader.setVoltage(volts);
   }
 

@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Basic interface for vision processing support.
+ * Interface for more advanced vision processing support (pose estimation based on a fusion of
+ * odometry and camera data, etc.).
  */
 public interface IVisionPlus extends IVision {
   /** Name for the subsystem (and base for BulletinBoard keys). */
@@ -27,7 +28,39 @@ public interface IVisionPlus extends IVision {
   /** Value used to determine "was Pose estimate recently updated?" */
   static final double TIMESTAMP_RECENCY_THRESHOLD_SECS = 0.1;
 
+  /**
+   * Returns the list of targets that are currently in view.  (Computed using the robot's estimated
+   * pose as a basis for relative positions.)
+   *
+   * @see #getVisibleTargets(Pose2d)
+   * @see IVision.getTargetDataForCamera(CameraData, AprilTagFieldLayout, Pose2d)
+   */
   List<TargetData> getVisibleTargets();
+
+  /**
+   * Helper method to get the data for the specified target, if it is currently in view.
+   *
+   * @param targetId  the desired target's ID
+   * @return the target data, or null if the target isn't currently in view
+   */
+  default TargetData getTargetData(int targetId) {
+    for (var target : getVisibleTargets()) {
+      if (target.id() == targetId) {
+        return target;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Helper method to see if the specified target is currently visible.
+   *
+   * @param targetId  the desired target's ID
+   * @return true iff the target is currently in view
+   */
+  default boolean isTargetVisible(int targetId) {
+    return getTargetData(targetId) != null;
+  }
 
   /** Trivial implementation of IVisionPlus (e.g., if we don't have a camera). */
   public class NullVisionPlus extends IVision.NullVision implements IVisionPlus {

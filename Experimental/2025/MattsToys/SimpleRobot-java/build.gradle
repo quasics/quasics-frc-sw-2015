@@ -41,6 +41,17 @@ deploy {
     }
 }
 
+repositories {
+    // Required to use https://github.com/FRCTeam3044/Oxplorer
+    maven {
+        url = uri("https://maven.pkg.github.com/FRCTeam3044/Oxplorer")
+        credentials {
+            username = "3044-Packages-Bot"
+            password = "\u0067\u0068\u0070\u005f\u0038\u0055\u0068\u0037\u0061\u004f\u0062\u0049\u004a\u0041\u005a\u0045\u0059\u0073\u0041\u0055\u0033\u0063\u0041\u0037\u004f\u0065\u0070\u0037\u0053\u0074\u0073\u0058\u0058\u0059\u0031\u004e\u006e\u0056\u0030\u004a"
+        }
+    }
+}
+
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
 // Set to true to use debug for JNI.
@@ -55,6 +66,8 @@ dependencies {
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+
+    implementation 'me.nabdev.pathfinding:oxplorer:0.12.7'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)

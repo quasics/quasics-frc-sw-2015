@@ -25,7 +25,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.utils.BulletinBoard;
 import frc.robot.utils.RobotConfigs.RobotConfig;
@@ -45,7 +45,7 @@ import org.photonvision.EstimatedRobotPose;
  * </li>
  * </ul>
  */
-public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
+public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebasePlus {
   /** Controls if data should be logged to the dashboard. */
   final static boolean LOG_TO_DASHBOARD = true;
 

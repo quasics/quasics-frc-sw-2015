@@ -15,23 +15,18 @@ import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AimAtTarget extends Command {
-  public enum Mode {
-    LookingForTarget, TargetFound
-  }
 
   private final AbstractDrivebase m_drivebase;
   private final Vision m_vision;
   private boolean hasTarget = false;
   private boolean m_aligned = false;
   private int m_fiducialId;
-  private final Mode m_mode;
 
   /** Creates a new AimAtTarget. */
-  public AimAtTarget(AbstractDrivebase drivebase, Vision vision, int fiducialId, Mode mode) {
+  public AimAtTarget(AbstractDrivebase drivebase, Vision vision, int fiducialId) {
     m_drivebase = drivebase;
     m_vision = vision;
     m_fiducialId = fiducialId;
-    m_mode = mode;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivebase, vision);
   }
@@ -47,10 +42,14 @@ public class AimAtTarget extends Command {
   public void execute() {
     // if target is in view just align, if target is not in view then turn towards
     // it
-    AngularVelocity speed = DegreesPerSecond.of(0.5);
-    m_vision.getTargetAngleDegrees(m_fiducialId);
-    
-    m_drivebase.arcadeDrive(null, speed);
+    Angle angle = m_vision.getTargetAngleDegrees(m_fiducialId);
+    if (angle == null) {
+      System.out.println("cannot see target");
+    } else {
+      System.out.println("tag is in sight");
+      m_aligned = true;
+    }
+
   }
 
   // Called once the command ends or is interrupted.

@@ -220,6 +220,8 @@ public class RobotContainer {
     // Seconds.of(3), new
     // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
     // RadiansPerSecond.of(0))));
+
+    SmartDashboard.putData("Aim at target", new AimAtTarget(m_drivebase, m_vision, 20));
   }
 
   private Command testTrajectory(String name) {

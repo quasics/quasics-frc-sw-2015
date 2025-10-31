@@ -77,6 +77,7 @@ public class Vision extends SubsystemBase {
   private Pose3d robotPose3d;
   private final AprilTagFieldLayout m_tagLayout;
   private PhotonTrackedTarget target;
+  private Pose2d simPose;
 
   public Vision(Supplier<Pose2d> pSupplier) {
     poseSupplier = pSupplier;
@@ -119,23 +120,24 @@ public class Vision extends SubsystemBase {
       if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
         robotPose3d = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
             m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
-        System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " +
-            target.getYaw() + " Target Pitch: "
-            + target.getPitch());
+        // System.out.println("Target ID: " + target.getFiducialId() + " Target Yaw: " +
+        // target.getYaw() + " Target Pitch: "
+        // + target.getPitch());
       }
     }
 
-    // TODO: "Verbose" mode (allow us to turn off debugging output if we want to debug something else)
+    // TODO: "Verbose" mode (allow us to turn off debugging output if we want to
+    // debug something else)
     if (Robot.isSimulation()) {
-      Pose2d simPose = robotPose3d.toPose2d();
-      System.out.println(simPose);
+      if (simPose != null) {
+        simPose = robotPose3d.toPose2d();
+      }
+      // System.out.println(simPose);
     }
     var result = camera.getLatestResult();
     boolean hasTargets = result.hasTargets();
     // SmartDashboard.putString("found target?", result.hasTargets() ? "true" :
     // "false");
-
-    
 
     // TODO: "Verbose" mode (allow us to turn off debugging output if we want to
     // debug something else)
@@ -145,7 +147,7 @@ public class Vision extends SubsystemBase {
      * System.out.println(simPose);
      * }
      */
-    simulationPeriodic();
+    // simulationPeriodic();
   }
 
   @Override
@@ -154,7 +156,7 @@ public class Vision extends SubsystemBase {
       return;
     }
     updateEstimatedGlobalPose();
-    System.out.println(getFieldRobotPose());
+    // System.out.println(getFieldRobotPose());
     // updateEstimatedPoseToCamera();
   }
 
@@ -215,16 +217,19 @@ public class Vision extends SubsystemBase {
     visionSim.update(pose);
   }
 
-  public Pose3d getFieldRobotPose() {
-    if (target == null) {
-      return null;
-    }
-    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-      fieldPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
-          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
-    }
-    return fieldPose;
-  }
+  /*
+   * public Pose3d getFieldRobotPose() {
+   * if (target == null) {
+   * return null;
+   * }
+   * if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+   * fieldPose =
+   * PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
+   * m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
+   * }
+   * return fieldPose;
+   * }
+   */
 
   public Pose3d getFieldRobotPose() {
     if (target == null) {

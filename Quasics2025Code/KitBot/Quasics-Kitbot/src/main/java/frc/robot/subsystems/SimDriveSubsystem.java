@@ -35,7 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // Class to drive the robot over Sim
 // TODO: Extend AbstractDrivebase instead of SubsystemBase
-public class SimDriveSubsystem extends SubsystemBase {
+public class SimDriveSubsystem extends AbstractDrivebase {
   private final Field2d fieldSim = new Field2d();
   private final PWMSparkMax m_leftLeader;
   private final PWMSparkMax m_leftFollower;

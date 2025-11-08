@@ -160,7 +160,7 @@ public class TrajectoryHacking extends Command {
     runTrajectory(trajectory);
   }
 
-  private void setupOexplorePath() {
+  private void setupPathfinderExplorePath() {
     Pathfinder pathfinder = new PathfinderBuilder(Field.REEFSCAPE_2025).build();
 
     try {
@@ -183,7 +183,7 @@ public class TrajectoryHacking extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // setupOexplorePath();
+    // setupPathfinderExplorePath();
     setupAlternateTrajectory();
   }
 

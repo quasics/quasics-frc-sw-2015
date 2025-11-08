@@ -37,6 +37,7 @@ import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.vision.IVision;
 import frc.robot.subsystems.interfaces.vision.IVisionPlus;
@@ -102,7 +103,7 @@ public class RobotContainer {
 
   // Subsystems
   /** Interface to drive base. */
-  final private IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
+  final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
 
   /** Interface to elevator. */
   final private IElevator m_elevator = allocateElevator(m_robotConfig);
@@ -143,10 +144,13 @@ public class RobotContainer {
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
-      m_drivebase::followTrajectory,
-      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory = (m_drivebase instanceof IDrivebasePlus)
+      ? new AutoFactory(((IDrivebasePlus) m_drivebase)::getPose,
+          ((IDrivebasePlus) m_drivebase)::resetPose,
+          ((IDrivebasePlus) m_drivebase)::followTrajectory,
+          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+          m_drivebase.asSubsystem())
+      : null;
 
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
@@ -173,6 +177,12 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Configure anything that we want to have happen on a recurring process, which
+   * isn't bound to a specific subsystem (or command).
+   * 
+   * @param robot the robot whose overall scheduling is being hooked into
+   */
   private void configurePeriodicOperations(TimedRobot robot) {
     // Once per cycle (under simulation), update the battery voltage based on the
     // current draw.
@@ -250,25 +260,39 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(m_elevator, Direction.kReverse));
   }
 
-  // Some commands only work with specific types of subsystems
+  /**
+   * Add commands to the dashboard that depend on advanced vision capabilities.
+   */
   private void maybeAddVisionCommandsToDashboard() {
-    if (m_vision instanceof IVisionPlus) {
-      final int targetId = 17;
-      SmartDashboard.putData("Turn to target " + targetId,
-          new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
-      SmartDashboard.putData("Turn & Drive to target " + targetId,
-          new SequentialCommandGroup(new TurnToTarget((BetterVision) m_vision, m_drivebase,
-              targetId, TurnToTarget.OpMode.TargetInView, false),
-              new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
+    if (!(m_vision instanceof IVisionPlus)) {
+      return;
     }
+    final IVisionPlus visionPlus = ((IVisionPlus) m_vision);
+
+    final int targetId = 17;
+    SmartDashboard.putData("Turn to target " + targetId,
+        new TurnToTarget(visionPlus, m_drivebase, targetId));
+    SmartDashboard.putData("Turn & Drive to target " + targetId,
+        new SequentialCommandGroup(
+            // First, turn until it's in view...
+            new TurnToTarget(
+                visionPlus, m_drivebase,
+                targetId, TurnToTarget.OpMode.TargetInView, false),
+            // ...and then drive to it.
+            new DriveToTarget(visionPlus, m_drivebase, targetId, true)));
   }
 
+  /**
+   * Add commands to the dashboard for testing some commands I'm hacking together
+   * (if they can be supported).
+   */
   private void maybeAddHackingCommandsToDashboard() {
     if (!(m_drivebase instanceof IDrivebasePlus)) {
       return;
     }
 
-    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(m_drivebase, m_robotConfig));
+    final IDrivebasePlus drivebasePlus = ((IDrivebasePlus) m_drivebase);
+    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(drivebasePlus, m_robotConfig));
   }
 
   /**
@@ -554,6 +578,9 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates a camera simulation injector, if needed.
+   */
   private static CameraSimulator maybeAllocateCameraSimulator(
       RobotConfigs.RobotConfig config, IVision vision) {
     assert vision != null : "Vision subsystem must be allocated before camera simulation setup";
@@ -580,9 +607,8 @@ public class RobotContainer {
       return new IVision.NullVision();
     }
 
-    // TODO: Add code to switch between SimpleVision and BetterVision instances,
-    // depending
-    // on the number of cameras, so that both can be tested.
+    // TODO: Consider adding code to switch between SimpleVision and BetterVision
+    // instances, depending on the number of cameras, so that both can be tested.
     return new BetterVision(config);
   }
 

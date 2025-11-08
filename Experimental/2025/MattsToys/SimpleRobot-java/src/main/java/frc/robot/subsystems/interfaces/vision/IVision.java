@@ -122,8 +122,7 @@ public interface IVision extends ISubsystem {
   // I'm trying to cut down on the number of warnings.
   static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
     // TODO: look at replacing this with something in a reusable base class to try
-    // to
-    // cache data, to handle the deprecation.
+    // to cache data, to handle the deprecation.
     return cameraData.camera().getLatestResult();
   }
 

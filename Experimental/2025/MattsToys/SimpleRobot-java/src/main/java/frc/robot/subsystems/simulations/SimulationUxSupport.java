@@ -6,7 +6,6 @@ package frc.robot.subsystems.simulations;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
-import static frc.robot.subsystems.live.Lighting.StockColor;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;

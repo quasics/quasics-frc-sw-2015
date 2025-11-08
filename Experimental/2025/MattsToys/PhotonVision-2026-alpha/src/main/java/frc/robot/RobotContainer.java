@@ -10,7 +10,14 @@ import frc.robot.subsystems.live.BetterVision;
 import frc.robot.subsystems.simulations.CameraSimulator;
 import frc.robot.utils.RobotConfigs;
 
+/**
+ * This class serves as the central hub for the declarative setup of our "command-based"
+ * robot project, under the standard WPILib definition for this construct.
+ * 
+ * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
+ */
 public class RobotContainer {
+  /** Configuration settings for the hardware to be targeted. */
   final RobotConfigs.RobotConfig m_config = RobotConfigs.getConfig(RobotConfigs.Robot.Simulation);
   final CameraSimulator m_cameraSim = new CameraSimulator(m_config, new BetterVision(m_config));
   

@@ -62,10 +62,22 @@ import frc.robot.utils.logging.StringEventLogger;
 import java.util.function.Supplier;
 
 /**
- * RobotContainer for a demo (mostly simulation-oriented) robot.
+ * This class serves as the central hub for the declarative setup of our
+ * "command-based" robot project, under the standard WPILib definition for this
+ * construct.
+ * 
+ * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
  */
 public class RobotContainer {
-  public static final boolean CANDLE_SHOWS_SHOOTING_READY = true;
+
+  /** Iff true, allow Choreo to handle flipping any paths used with it. */
+  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+
+  /**
+   * Iff true, use the CANdl hardware to show when the robot is in position to
+   * take a shot at the barge.
+   */
+  public static final boolean CANDL_SHOWS_SHOOTING_READY = true;
 
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
@@ -89,32 +101,46 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
+  /** Interface to drive base. */
   final private IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
+
+  /** Interface to elevator. */
   final private IElevator m_elevator = allocateElevator(m_robotConfig);
+
+  /** Interface to arm. */
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
+
+  /** Interface to lighting subsystem. */
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
+
+  /** Interface to vision subsystem. */
   final private IVision m_vision = allocateVision(m_robotConfig);
+
+  /** Interface to CANdl hardware. */
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+
+  /** Camera simulation injector (if running in simulation mode). */
   @SuppressWarnings("unused") // Camera simulator is pure data injection
   final private CameraSimulator m_cameraSimulator = maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
+  /** Primary logger. */
   final EventLogger m_eventLogger = new StringEventLogger();
 
-  // Controllers
-  //
-  // Note that we can also consider using CommandJoystick class instead of
-  // Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
-  // possibly simplifying live vs simulation handling by not requiring custom
-  // value inversion), as well as directly providing "trigger factories" for
-  // commands.
-  //
-  // Note also that live joysticks generally follow a different
-  // orientation/coordinate system than the one used for the robot. (See
-  // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
-  // for details.)
+  /**
+   * Controller for the drive base.
+   * 
+   * Note that we can also consider using CommandJoystick class instead of
+   * Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
+   * possibly simplifying live vs simulation handling by not requiring custom
+   * value inversion), as well as directly providing "trigger factories" for
+   * commands.
+   *
+   * Note also that live joysticks generally follow a different
+   * orientation/coordinate system than the one used for the robot.
+   * 
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
+   */
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
-
-  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
   /** Factory object for Choreo trajectories. */
   private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
@@ -142,7 +168,7 @@ public class RobotContainer {
 
     m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
 
-    if (CANDLE_SHOWS_SHOOTING_READY) {
+    if (CANDL_SHOWS_SHOOTING_READY) {
       m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
     }
   }

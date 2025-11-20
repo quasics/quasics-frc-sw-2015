@@ -10,8 +10,14 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
-/* You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
+/**
+ * Implements a simple command to drive for a given distance, at a set speed.
+ *
+ * Suggestion from WPILib template: "You should consider using the more terse
+ * Command factories API instead."
+ *
+ * @see
+ *      https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands
  */
 public class DriveForDistance extends Command {
   /** The subsystem we're using to drive. */
@@ -46,7 +52,7 @@ public class DriveForDistance extends Command {
    *
    * Note that there's a bug in this constructor: it doesn't handle cases when the
    * speed says "move forward", but the distance says "move backward" or vice
-   * versa.
+   * versa. It would be good for someone to fix this.
    *
    * @param drivebase    The drivebase to use.
    * @param percentSpeed The speed to drive at, as a percentage of full speed
@@ -55,21 +61,35 @@ public class DriveForDistance extends Command {
    */
   public DriveForDistance(AbstractDrivebase drivebase, double percentSpeed, Distance distance) {
     m_drivebase = drivebase;
-    m_percentSpeed = (distance.baseUnitMagnitude() > 0 ? 1 : -1) * Math.abs(percentSpeed);
     m_distance = distance;
+
+    // Extract the underlying (signed) number for the distance. (Also demonstrates
+    // converting a "Distance" value to a specific kind of units.)
+    final double rawDistance = distance.in(Meters);
+
+    // Use the sign of the underlying number to make sure that the targeted speed
+    // has an appropriate (matching) sign (positive/negative)
+    m_percentSpeed = Math.signum(rawDistance) * Math.abs(percentSpeed);
+
+    // Tell WPILib that when this command is running, it's using the drive base (so
+    // no one else should be allowed to).
     addRequirements(m_drivebase);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Figure out what the stopping point is.
     m_stopAtPosition = m_drivebase.getLeftDistance().plus(m_distance);
+
+    // Start moving.
     m_drivebase.setSpeed(m_percentSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // (optional) Keep moving at that speed.
     m_drivebase.setSpeed(m_percentSpeed);
   }
 

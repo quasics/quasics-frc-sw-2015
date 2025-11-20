@@ -37,6 +37,7 @@ import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.subsystems.interfaces.drivebase.IDrivebase;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.vision.IVision;
 import frc.robot.subsystems.interfaces.vision.IVisionPlus;
@@ -62,10 +63,22 @@ import frc.robot.utils.logging.StringEventLogger;
 import java.util.function.Supplier;
 
 /**
- * RobotContainer for a demo (mostly simulation-oriented) robot.
+ * This class serves as the central hub for the declarative setup of our
+ * "command-based" robot project, under the standard WPILib definition for this
+ * construct.
+ * 
+ * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
  */
 public class RobotContainer {
-  public static final boolean CANDLE_SHOWS_SHOOTING_READY = true;
+
+  /** Iff true, allow Choreo to handle flipping any paths used with it. */
+  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
+
+  /**
+   * Iff true, use the CANdl hardware to show when the robot is in position to
+   * take a shot at the barge.
+   */
+  public static final boolean CANDL_SHOWS_SHOOTING_READY = true;
 
   /** Defines options for selecting auto mode commands. */
   enum AutoModeOperation {
@@ -89,38 +102,55 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigs.getConfig(DEPLOYED_ON);
 
   // Subsystems
-  final private IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
+  /** Interface to drive base. */
+  final private IDrivebase m_drivebase = allocateDrivebase(m_robotConfig);
+
+  /** Interface to elevator. */
   final private IElevator m_elevator = allocateElevator(m_robotConfig);
+
+  /** Interface to arm. */
   final private ISingleJointArm m_arm = allocateArm(m_robotConfig);
+
+  /** Interface to lighting subsystem. */
   final private ILighting m_lighting = allocateLighting(m_robotConfig);
+
+  /** Interface to vision subsystem. */
   final private IVision m_vision = allocateVision(m_robotConfig);
+
+  /** Interface to CANdl hardware. */
   final private ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+
+  /** Camera simulation injector (if running in simulation mode). */
   @SuppressWarnings("unused") // Camera simulator is pure data injection
   final private CameraSimulator m_cameraSimulator = maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
+  /** Primary logger. */
   final EventLogger m_eventLogger = new StringEventLogger();
 
-  // Controllers
-  //
-  // Note that we can also consider using CommandJoystick class instead of
-  // Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
-  // possibly simplifying live vs simulation handling by not requiring custom
-  // value inversion), as well as directly providing "trigger factories" for
-  // commands.
-  //
-  // Note also that live joysticks generally follow a different
-  // orientation/coordinate system than the one used for the robot. (See
-  // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
-  // for details.)
+  /**
+   * Controller for the drive base.
+   * 
+   * Note that we can also consider using CommandJoystick class instead of
+   * Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
+   * possibly simplifying live vs simulation handling by not requiring custom
+   * value inversion), as well as directly providing "trigger factories" for
+   * commands.
+   *
+   * Note also that live joysticks generally follow a different
+   * orientation/coordinate system than the one used for the robot.
+   * 
+   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
+   */
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
-  static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
-
   /** Factory object for Choreo trajectories. */
-  private final AutoFactory m_autoFactory = new AutoFactory(m_drivebase::getPose, m_drivebase::resetPose,
-      m_drivebase::followTrajectory,
-      CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
-      m_drivebase.asSubsystem());
+  private final AutoFactory m_autoFactory = (m_drivebase instanceof IDrivebasePlus)
+      ? new AutoFactory(((IDrivebasePlus) m_drivebase)::getPose,
+          ((IDrivebasePlus) m_drivebase)::resetPose,
+          ((IDrivebasePlus) m_drivebase)::followTrajectory,
+          CHOREO_SHOULD_HANDLE_PATH_FLIPPING, // If alliance flipping should be enabled
+          m_drivebase.asSubsystem())
+      : null;
 
   /** Normal cycle time on command-handling (50 Hz). */
   private static final Time COMMAND_CYCLE_PERIOD = Seconds.of(1.0 / 5.0);
@@ -142,11 +172,17 @@ public class RobotContainer {
 
     m_lighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_lighting));
 
-    if (CANDLE_SHOWS_SHOOTING_READY) {
+    if (CANDL_SHOWS_SHOOTING_READY) {
       m_candle.asSubsystem().setDefaultCommand(new DriveTeamShootingSupport(m_candle));
     }
   }
 
+  /**
+   * Configure anything that we want to have happen on a recurring process, which
+   * isn't bound to a specific subsystem (or command).
+   * 
+   * @param robot the robot whose overall scheduling is being hooked into
+   */
   private void configurePeriodicOperations(TimedRobot robot) {
     // Once per cycle (under simulation), update the battery voltage based on the
     // current draw.
@@ -224,25 +260,39 @@ public class RobotContainer {
         SysIdGenerator.sysIdDynamic(m_elevator, Direction.kReverse));
   }
 
-  // Some commands only work with specific types of subsystems
+  /**
+   * Add commands to the dashboard that depend on advanced vision capabilities.
+   */
   private void maybeAddVisionCommandsToDashboard() {
-    if (m_vision instanceof IVisionPlus) {
-      final int targetId = 17;
-      SmartDashboard.putData("Turn to target " + targetId,
-          new TurnToTarget((BetterVision) m_vision, m_drivebase, targetId));
-      SmartDashboard.putData("Turn & Drive to target " + targetId,
-          new SequentialCommandGroup(new TurnToTarget((BetterVision) m_vision, m_drivebase,
-              targetId, TurnToTarget.OpMode.TargetInView, false),
-              new DriveToTarget((BetterVision) m_vision, m_drivebase, targetId, true)));
+    if (!(m_vision instanceof IVisionPlus)) {
+      return;
     }
+    final IVisionPlus visionPlus = ((IVisionPlus) m_vision);
+
+    final int targetId = 17;
+    SmartDashboard.putData("Turn to target " + targetId,
+        new TurnToTarget(visionPlus, m_drivebase, targetId));
+    SmartDashboard.putData("Turn & Drive to target " + targetId,
+        new SequentialCommandGroup(
+            // First, turn until it's in view...
+            new TurnToTarget(
+                visionPlus, m_drivebase,
+                targetId, TurnToTarget.OpMode.TargetInView, false),
+            // ...and then drive to it.
+            new DriveToTarget(visionPlus, m_drivebase, targetId, true)));
   }
 
+  /**
+   * Add commands to the dashboard for testing some commands I'm hacking together
+   * (if they can be supported).
+   */
   private void maybeAddHackingCommandsToDashboard() {
     if (!(m_drivebase instanceof IDrivebasePlus)) {
       return;
     }
 
-    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(m_drivebase, m_robotConfig));
+    final IDrivebasePlus drivebasePlus = ((IDrivebasePlus) m_drivebase);
+    SmartDashboard.putData("TrajHacking", new TrajectoryHacking(drivebasePlus, m_robotConfig));
   }
 
   /**
@@ -528,6 +578,9 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates a camera simulation injector, if needed.
+   */
   private static CameraSimulator maybeAllocateCameraSimulator(
       RobotConfigs.RobotConfig config, IVision vision) {
     assert vision != null : "Vision subsystem must be allocated before camera simulation setup";
@@ -554,9 +607,8 @@ public class RobotContainer {
       return new IVision.NullVision();
     }
 
-    // TODO: Add code to switch between SimpleVision and BetterVision instances,
-    // depending
-    // on the number of cameras, so that both can be tested.
+    // TODO: Consider adding code to switch between SimpleVision and BetterVision
+    // instances, depending on the number of cameras, so that both can be tested.
     return new BetterVision(config);
   }
 

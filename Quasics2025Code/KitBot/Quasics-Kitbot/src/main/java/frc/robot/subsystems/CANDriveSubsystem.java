@@ -16,7 +16,7 @@ import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
 // TODO: subclass AbstractDrivebase instead of SubsystemBase
-public class CANDriveSubsystem extends SubsystemBase {
+public class CANDriveSubsystem extends AbstractDrivebase {
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
   private final SparkMax rightLeader;

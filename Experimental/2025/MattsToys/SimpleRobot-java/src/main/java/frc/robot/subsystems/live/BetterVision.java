@@ -208,7 +208,6 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
   // Note that this can provide multiple readings for a given target, if it can be
   // seen by more than 1 camera.
   //
-  // TODO: Test this....
   @Override
   public List<TargetData> getVisibleTargets(Pose2d robotPose) {
     // If the caller didn't give us a pose, then try to estimate it based on what we

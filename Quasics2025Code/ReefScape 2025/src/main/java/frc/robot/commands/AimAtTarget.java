@@ -16,14 +16,15 @@ import java.util.function.Supplier;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AimAtTarget extends Command {
   public enum Mode {
-    LookingForTarget, TargetFound
+    TargetInSight, PointAtTarget
   }
 
   private final AbstractDrivebase m_drivebase;
   private final Vision m_vision;
-  private boolean hasTarget = false;
-  private boolean m_aligned = false;
+  private boolean m_inSight = false;
   private int m_fiducialId;
+  private boolean m_aligned = false;
+  private boolean m_finished = false;
   private final Mode m_mode;
 
   /** Creates a new AimAtTarget. */
@@ -39,7 +40,7 @@ public class AimAtTarget extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_aligned = false;
+    m_finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,10 +48,29 @@ public class AimAtTarget extends Command {
   public void execute() {
     // if target is in view just align, if target is not in view then turn towards
     // it
-    AngularVelocity speed = DegreesPerSecond.of(0.5);
-    m_vision.getTargetAngleDegrees(m_fiducialId);
-    
-    m_drivebase.arcadeDrive(null, speed);
+    AngularVelocity av = DegreesPerSecond.of(10);
+    Angle angle = m_vision.getTargetAngleDegrees(m_fiducialId);
+    if (angle == null) {
+      System.out.println("cannot see target");
+      m_drivebase.arcadeDrive(MetersPerSecond.of(0), DegreesPerSecond.of(40));
+      return;
+    }
+    if (angle != null && m_mode == Mode.TargetInSight) {
+      System.out.println("tag is in sight");
+      m_finished = true;
+    }
+    if (angle != null && m_mode == Mode.PointAtTarget) {
+      if (angle.gt(Degrees.of(1))) {
+        m_drivebase.arcadeDrive(MetersPerSecond.of(0), DegreesPerSecond.of(8));
+      }
+      if (angle.lt(Degrees.of(1))) {
+        av = DegreesPerSecond.of(-8);
+        m_drivebase.arcadeDrive(MetersPerSecond.of(0), av);
+      } else {
+        m_drivebase.stop();
+        m_finished = true;
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -62,6 +82,6 @@ public class AimAtTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_aligned;
+    return m_finished;
   }
 }

@@ -18,9 +18,49 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * Abstract class for a drivebase. This class provides a common interface for
- * hardware-specific functionality, and builds on that to provide higher-level
- * functionality related to driving/navigation.
+ * Abstract class for a drivebase.
+ * 
+ * This class provides a common interface for hardware-specific functionality,
+ * and builds on that to provide higher-level functionality related to
+ * driving/navigation.
+ * 
+ * Note that abstract classes can't be created directly; you need to create a
+ * "derived" class that provides definitions for any methods marked as
+ * "abstract" in this one, and then allocate/use that.
+ * 
+ * Partial example of this:
+ * <code>
+ *   // In AbstractDrivebase.java:
+ *   public abstract class AbstractDrivebase {
+ *     . . . .
+ *     // Abstract method: anything that "extends" this type can be asked to do this.
+ *     public abstract void setSpeeds(double leftPercent, double rightPercent);
+ *     . . . .
+ *   }
+ * 
+ *   // In RealDrivebase.java:
+ *   public class RealDrivebase extends AbstractDrivebase {  // *Not* "abstract"
+ *     . . . .
+ *     // Non-abstract method, providing the implementation for a RealDrivebase
+ *     // object.
+ *     public void setSpeeds(double leftPercent, double rightPercent) {
+ *       // Do some stuff
+ *       . . . .
+ *     }
+ *     . . . .
+ *   }
+ * 
+ *   // In RobotContainer.java:
+ *   public class RobotContainer {
+ *     . . . .
+ *     AbstractDrivebase drivebase = new RealDrivebase(....);
+ *     . . . .
+ *   }
+ * </code>
+ * 
+ * See the "DriveForDistance" command as an example of how an abstract type can
+ * be used to define commands, etc., and then "plug in" the actual kind of
+ * object that you want to work with.
  */
 public abstract class AbstractDrivebase extends SubsystemBase {
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0);

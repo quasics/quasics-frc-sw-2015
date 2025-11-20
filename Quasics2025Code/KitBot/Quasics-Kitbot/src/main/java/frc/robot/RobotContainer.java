@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,8 +14,11 @@ import frc.robot.Constants.RollerConstants;
 import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RollerCommand;
+import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANRollerSubsystem;
+import frc.robot.subsystems.SimDriveSubsystem;
+import frc.robot.utils.RobotSettings;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,8 +31,10 @@ import frc.robot.subsystems.CANRollerSubsystem;
  */
 public class RobotContainer {
   // TODO: Make this an AbstractDrivebase
-  private final CANDriveSubsystem driveSubsystem;
-  private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
+  private final AbstractDrivebase driveSubsystem;
+  private final CANDriveSubsystem rollerSubsystem = new CANDriveSubsystem() {
+    
+  };
 
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
@@ -49,7 +55,8 @@ public class RobotContainer {
     if (Robot.isReal()) {
       driveSubsystem = new CANDriveSubsystem();
     } else {
-      // TODO: SimDriveSubsystem
+      
+      driveSubsystem = new SimDriveSubsystem(RobotSettings.Robot.Simulator);
     }
 
     // Set up command bindings

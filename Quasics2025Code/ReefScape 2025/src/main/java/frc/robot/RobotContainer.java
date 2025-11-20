@@ -35,6 +35,7 @@ import frc.robot.commands.MoveElevatorToPosition;
 import frc.robot.commands.PulseKraken;
 import frc.robot.commands.RunKraken;
 import frc.robot.commands.RunKrakenForTime;
+import frc.robot.commands.AimAtTarget.Mode;
 import frc.robot.subsystems.ArmPivot;
 import frc.robot.subsystems.ArmRoller;
 import frc.robot.subsystems.Vision;
@@ -220,6 +221,9 @@ public class RobotContainer {
     // Seconds.of(3), new
     // ChassisSpeeds(MetersPerSecond.of(3), MetersPerSecond.of(0),
     // RadiansPerSecond.of(0))));
+
+    SmartDashboard.putData("Look at target 20", new AimAtTarget(m_drivebase, m_vision, 20, Mode.TargetInSight));
+    SmartDashboard.putData("Aim at target 22", new AimAtTarget(m_drivebase, m_vision, 22, Mode.PointAtTarget));
   }
 
   private Command testTrajectory(String name) {

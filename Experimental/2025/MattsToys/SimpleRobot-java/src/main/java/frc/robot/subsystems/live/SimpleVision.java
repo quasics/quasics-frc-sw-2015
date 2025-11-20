@@ -124,7 +124,6 @@ public class SimpleVision extends SubsystemBase implements IVision {
     return Optional.of(robotPose);
   }
 
-  // TODO: Test this....
   @Override
   public List<TargetData> getVisibleTargets(Pose2d robotPose) {
     // If the caller didn't give us a pose, then try to estimate it based on what we

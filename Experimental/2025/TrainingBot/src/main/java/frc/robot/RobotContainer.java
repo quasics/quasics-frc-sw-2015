@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LogitechGamePad;
 import frc.robot.commands.DriveForDistance;
 import frc.robot.commands.TankDrive;
-import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedDrivebase;
@@ -75,14 +74,6 @@ public class RobotContainer {
         new DriveForDistance(drivebase, 0.30, 1), new DriveForDistance(drivebase, 0.30, -1));
   }
 
-  public static Command squarePart(AbstractDrivebase drivebase) {
-    return Commands.sequence(new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1), new DriveForDistance(drivebase, 0.3, 1),
-        new TurnCommand(drivebase, 74, 0.1));
-  }
-
   /**
    * Use this method to define your trigger->command mappings.
    *
@@ -104,11 +95,8 @@ public class RobotContainer {
     // Example of pushing a button on the SmartDashboard to run a command.
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));
     SmartDashboard.putData("-1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(-1)));
-    SmartDashboard.putData("90 degrees @ 30%", new TurnCommand(m_driveBase, 90, 0.30));
-    SmartDashboard.putData("-90 degrees @ 30%", new TurnCommand(m_driveBase, -90, 0.30));
 
     SmartDashboard.putData("Move forward then backward", moveForwardThenBackward(m_driveBase));
-    SmartDashboard.putData("Square??", squarePart(m_driveBase));
   }
 
   /**

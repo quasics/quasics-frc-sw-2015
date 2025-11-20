@@ -29,21 +29,24 @@ public class ExampleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // Nothing we need to do. (This function could actually be left out.)
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_subsystem.doSomething();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_subsystem.stopDoingThings();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_subsystem.exampleCondition();
   }
 }

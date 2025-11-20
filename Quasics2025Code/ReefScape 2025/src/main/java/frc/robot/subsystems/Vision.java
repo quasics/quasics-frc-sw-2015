@@ -226,17 +226,6 @@ public class Vision extends SubsystemBase {
     return fieldPose;
   }
 
-  public Pose3d getFieldRobotPose() {
-    if (target == null) {
-      return null;
-    }
-    if (m_tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-      fieldPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
-          m_tagLayout.getTagPose(target.getFiducialId()).get(), robotToCam);
-    }
-    return fieldPose;
-  }
-
   private Optional<EstimatedRobotPose> updateEstimatedPoseToCamera() {
     if (pose != null) {
       visionEstimator.setLastPose(pose);

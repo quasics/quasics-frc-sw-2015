@@ -37,6 +37,8 @@ public class RobotContainer {
   private final Supplier<Double> m_leftSupplier;
   private final Supplier<Double> m_rightSupplier;
 
+  private final boolean useButtonsOnController = Robot.isReal();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -88,9 +90,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(() -> m_driverController.getHID().getRawButton(1))
-        .onTrue(new PrintCommand("Driver button 1 pressed"));
+    if (useButtonsOnController) {
+      // Run a command (to print something) when someone pushes button #1 on the
+      // controller.
+      new Trigger(() -> m_driverController.getHID().getRawButton(1))
+          .onTrue(new PrintCommand("Driver button 1 pressed"));
+    }
 
     // Example of pushing a button on the SmartDashboard to run a command.
     SmartDashboard.putData("1m @ 10%", new DriveForDistance(m_driveBase, 0.10, Meters.of(1)));

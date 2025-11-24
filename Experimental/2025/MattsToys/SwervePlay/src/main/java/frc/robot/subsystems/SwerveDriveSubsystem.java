@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.Pigeon2; // Import the Pigeon2 class
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,8 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro; // Example Gyro
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DriveConstants;
 import frc.robot.ModuleConstants;
@@ -26,7 +25,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   // 3. Sensor (Gyroscope)
-  private final ADXRS450_Gyro gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS0);
+  private final Pigeon2 pigeon = new Pigeon2(DriveConstants.kPigeonCANId);
 
   public SwerveDriveSubsystem() {
     frontLeft = new SwerveModule(
@@ -60,9 +59,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         frontLeftLocation, frontRightLocation, rearLeftLocation, rearRightLocation);
 
     // Instantiate Odometry (Requires Gyro Angle and Initial Pose)
+    final double angle = -1 * pigeon.getYaw().getValueAsDouble(); // need to convert CW+ to CCW+
     odometry = new SwerveDriveOdometry(
         kinematics, // Kinematics
-        Rotation2d.fromDegrees(gyro.getAngle()), // Current gyro heading
+        Rotation2d.fromDegrees(angle), // Current gyro heading
         new SwerveModulePosition[] {
             frontLeft.getPosition(),
             frontRight.getPosition(),
@@ -130,12 +130,12 @@ public class SwerveDriveSubsystem extends SubsystemBase {
   public Rotation2d getGyroscopeRotation() {
     // Return the negative of the gyro angle if positive is clockwise
     // (WPILib standard is Counter-Clockwise positive)
-    return Rotation2d.fromDegrees(-gyro.getAngle());
+    return Rotation2d.fromDegrees(-pigeon.getYaw().getValueAsDouble());
   }
 
   /** Resets the Gyroscope angle and Odometry pose to zero. */
   public void resetDriveEncodersAndGyro() {
-    gyro.reset();
+    pigeon.reset();
     odometry.resetPosition(
         Rotation2d.fromDegrees(0),
         new SwerveModulePosition[] { new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(),

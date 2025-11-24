@@ -135,7 +135,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
   /** Resets the Gyroscope angle and Odometry pose to zero. */
   public void resetDriveEncodersAndGyro() {
-    pigeon.reset();
+    pigeon.setYaw(0);
     odometry.resetPosition(
         Rotation2d.fromDegrees(0),
         new SwerveModulePosition[] { new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(),

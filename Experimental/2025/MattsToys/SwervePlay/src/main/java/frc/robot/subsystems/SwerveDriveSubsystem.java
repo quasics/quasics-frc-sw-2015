@@ -108,6 +108,11 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     rearRight.setDesiredState(moduleStates[3]);
   }
 
+  /** Utility method to stop the drive base. */
+  public void stop() {
+    drive(0, 0, 0, true);
+  }
+
   @Override
   public void periodic() {
     // Update the odometry every cycle (crucial for localization)

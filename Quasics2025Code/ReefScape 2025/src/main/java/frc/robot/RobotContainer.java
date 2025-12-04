@@ -28,6 +28,7 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.ArmPivotToPositionOnController;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveTeamCandle;
+import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.ElevatorToPositionOnController;
 import frc.robot.commands.MoveArmPivot;
 import frc.robot.commands.MoveArmPivotAndElevatorToPosition;
@@ -224,6 +225,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Look at target 20", new AimAtTarget(m_drivebase, m_vision, 20, Mode.TargetInSight));
     SmartDashboard.putData("Aim at target 22", new AimAtTarget(m_drivebase, m_vision, 22, Mode.PointAtTarget));
+    SmartDashboard.putData("Drive to target 22", new DriveToTarget(m_drivebase, m_vision, 22, 1.0, 0.7));
   }
 
   private Command testTrajectory(String name) {

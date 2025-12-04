@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivebase.AbstractDrivebase;
@@ -17,14 +19,18 @@ public class DriveToTarget extends Command {
   private final Vision m_vision;
   private boolean m_finished = false;
   private int m_targetID;
-  private double m_howFarAway;
+  private double m_howFarAwayInMeters; // how far away do we want to stop
+  final double m_percentSpeed;
+  Distance m_stopPosition;
 
   /** Creates a new DriveToTarget. */
-  public DriveToTarget(AbstractDrivebase drivebase, Vision vision, int targetID, double howFarAway) {
+  public DriveToTarget(AbstractDrivebase drivebase, Vision vision, int targetID, double howFarAwayInMeters,
+      double percentSpeed) {
     m_drivebase = drivebase;
     m_vision = vision;
     m_targetID = targetID;
-    m_howFarAway = howFarAway;
+    m_howFarAwayInMeters = howFarAwayInMeters;
+    m_percentSpeed = percentSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivebase, vision);
   }
@@ -38,19 +44,29 @@ public class DriveToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LinearVelocity speed = MetersPerSecond.of(10);
 
-    m_drivebase.arcadeDrive(speed, null);
+    double rangeInMeters = m_vision.getTargetRange(m_targetID);
+    m_stopPosition = m_drivebase.getLeftPosition().plus(Meters.of(rangeInMeters))
+        .minus(Meters.of(m_howFarAwayInMeters));
+    if (rangeInMeters == 0.0) {
+      System.out
+          .println("quite literally on top of target or cannot see target \n try aim at target before running again");
+      m_finished = true;
+    }
+    if (rangeInMeters != 0.0) {
+      m_drivebase.setSpeeds(m_percentSpeed);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_drivebase.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_finished;
+    return m_finished || m_drivebase.getLeftPosition().gte(m_stopPosition);
   }
 }

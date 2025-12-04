@@ -295,4 +295,27 @@ public class Vision extends SubsystemBase {
     }
     return angle;
   }
+
+  public double getTargetRange(int id) {
+    double range = 0.0;
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.isEmpty()) {
+      return 0.0;
+    }
+    for (PhotonPipelineResult result : results) {
+      boolean hasTargets = result.hasTargets();
+      if (hasTargets == false) {
+        return 0.0;
+      } else {
+        List<PhotonTrackedTarget> targets = result.getTargets();
+        for (PhotonTrackedTarget target : targets) {
+          if (id == target.getFiducialId()) {
+            range = PhotonUtils.calculateDistanceToTargetMeters(0.0, 0.17, 0.0, target.getPitch()); // height changes
+                                                                                                    // based on target
+          }
+        }
+      }
+    }
+    return range;
+  }
 }

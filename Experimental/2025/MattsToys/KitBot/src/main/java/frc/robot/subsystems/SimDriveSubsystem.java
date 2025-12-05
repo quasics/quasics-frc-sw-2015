@@ -27,13 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class SimDriveSubsystem extends AbstractDriveSubsystem {
-
-    @Override
-    public void driveArcade(double xSpeed, double zRotation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'driveArcade'");
-    }
-
     /** Odometry for the robot, purely calculated from encoders/gyro. */
     final private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0,
             new Pose2d());
@@ -138,6 +131,11 @@ public class SimDriveSubsystem extends AbstractDriveSubsystem {
     }
 
     @Override
+    public void driveArcade(double xSpeed, double zRotation) {
+        drive.arcadeDrive(xSpeed, zRotation);
+    }
+
+    @Override
     public void periodic() {
         super.periodic();
 
@@ -173,5 +171,4 @@ public class SimDriveSubsystem extends AbstractDriveSubsystem {
         m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
         m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
     }
-
 }

@@ -22,6 +22,7 @@ public class DriveToTarget extends Command {
   private double m_howFarAwayInMeters; // how far away do we want to stop
   final double m_percentSpeed;
   Distance m_stopPosition;
+  private double m_rangeInMeters;
 
   /** Creates a new DriveToTarget. */
   public DriveToTarget(AbstractDrivebase drivebase, Vision vision, int targetID, double howFarAwayInMeters,
@@ -39,21 +40,21 @@ public class DriveToTarget extends Command {
   @Override
   public void initialize() {
     m_finished = false;
+    m_rangeInMeters = m_vision.getTargetRange(m_targetID);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    double rangeInMeters = m_vision.getTargetRange(m_targetID);
-    m_stopPosition = m_drivebase.getLeftPosition().plus(Meters.of(rangeInMeters))
+    System.out.println(m_rangeInMeters);
+    m_stopPosition = m_drivebase.getLeftPosition().plus(Meters.of(m_rangeInMeters))
         .minus(Meters.of(m_howFarAwayInMeters));
-    if (rangeInMeters == 0.0) {
+    if (m_rangeInMeters == 0.0) {
       System.out
           .println("quite literally on top of target or cannot see target \n try aim at target before running again");
       m_finished = true;
     }
-    if (rangeInMeters != 0.0) {
+    if (m_rangeInMeters != 0.0) {
       m_drivebase.setSpeeds(m_percentSpeed);
     }
   }

@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,9 +37,9 @@ public class RobotContainer {
       : new SimDriveSubsystem();
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
 
-  // The driver's controller
-  private final CommandXboxController driverController = new CommandXboxController(
-      OperatorConstants.DRIVER_CONTROLLER_PORT);
+  private final Supplier<Double> driveXSpeedSupplier;
+  private final Supplier<Double> driveRotationSpeedSupplier;
+  private final Supplier<Boolean> turtleModeSignalSupplier;
 
   // The operator's controller
   private final CommandXboxController operatorController = new CommandXboxController(
@@ -49,6 +52,29 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    if (Robot.isReal()) {
+      final CommandXboxController driverController = new CommandXboxController(
+          OperatorConstants.DRIVER_CONTROLLER_PORT);
+      // Set the speed suppliers for the drive subsystem using the values provided by
+      // the joystick axes on the driver controller.
+      //
+      // * The Y axis of the controller is inverted so that pushing the stick away
+      // from you (a negative value) drives the robot forwards (a positive value).
+      // * Similarly for the X axis where we need to flip the value so the joystick
+      // matches the WPILib convention of counter-clockwise positive.
+      driveXSpeedSupplier = () -> -driverController.getLeftY();
+      driveRotationSpeedSupplier = () -> -driverController.getRightX();
+      turtleModeSignalSupplier = () -> driverController.getHID().getRightBumperButton();
+    } else {
+      final Joystick simDriverController = new Joystick(
+          OperatorConstants.DRIVER_CONTROLLER_PORT);
+      // Note that we're assuming a keyboard-based controller is actually being
+      // used in the simulation environment (for now), and thus we want to use
+      // axis 0&1 (from the "Keyboard 0" configuration).
+      driveXSpeedSupplier = () -> simDriverController.getRawAxis(0);
+      driveRotationSpeedSupplier = () -> simDriverController.getRawAxis(1);
+      turtleModeSignalSupplier = () -> false; // TODO: Wire this into something.
+    }
     // Set up command bindings
     configureBindings();
 
@@ -81,15 +107,14 @@ public class RobotContainer {
         .whileTrue(new RollerCommand(() -> RollerConstants.ROLLER_EJECT_VALUE, () -> 0, rollerSubsystem));
 
     // Set the default command for the drive subsystem to an instance of the
-    // DriveCommand with the values provided by the joystick axes on the driver
-    // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value). Similarly for the X axis where we need to flip the value so the
-    // joystick matches the WPILib convention of counter-clockwise positive
+    // DriveCommand, using the suppliers set up in the constructor.
     driveSubsystem.setDefaultCommand(new DriveCommand(
-        () -> -driverController.getLeftY() *
-            (driverController.getHID().getRightBumperButton() ? 1 : 0.5),
-        () -> -driverController.getRightX(),
+        () -> {
+          final boolean inTurtleMode = turtleModeSignalSupplier.get();
+          final double speedModifier = (inTurtleMode ? 0.5 : 1);
+          return driveXSpeedSupplier.get() * speedModifier;
+        },
+        () -> driveRotationSpeedSupplier.get(),
         driveSubsystem));
 
     // Set the default command for the roller subsystem to an instance of

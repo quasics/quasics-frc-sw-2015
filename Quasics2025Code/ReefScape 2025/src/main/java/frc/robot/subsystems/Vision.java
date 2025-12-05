@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -310,8 +311,10 @@ public class Vision extends SubsystemBase {
         List<PhotonTrackedTarget> targets = result.getTargets();
         for (PhotonTrackedTarget target : targets) {
           if (id == target.getFiducialId()) {
-            range = PhotonUtils.calculateDistanceToTargetMeters(0.0, 0.17, 0.0, target.getPitch()); // height changes
-                                                                                                    // based on target
+            range = PhotonUtils.calculateDistanceToTargetMeters(0.0, 1.796542, Units.degreesToRadians(30.0),
+                target.getPitch()) * -1; // height
+            // changes
+            // based on target
           }
         }
       }

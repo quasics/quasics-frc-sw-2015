@@ -32,7 +32,7 @@ import frc.robot.utils.RobotSettings;
 public class RobotContainer {
   // TODO: Make this an AbstractDrivebase
   private final AbstractDrivebase driveSubsystem;
-  private final CANDriveSubsystem rollerSubsystem = new CANDriveSubsystem() {
+  private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem() {
     
   };
 

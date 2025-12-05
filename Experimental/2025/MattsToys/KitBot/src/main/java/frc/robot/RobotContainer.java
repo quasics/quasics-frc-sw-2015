@@ -16,6 +16,7 @@ import frc.robot.commands.RollerCommand;
 import frc.robot.subsystems.AbstractDriveSubsystem;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANRollerSubsystem;
+import frc.robot.subsystems.SimDriveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,7 +29,9 @@ import frc.robot.subsystems.CANRollerSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final AbstractDriveSubsystem driveSubsystem = new CANDriveSubsystem();
+  private final AbstractDriveSubsystem driveSubsystem = Robot.isReal()
+      ? new CANDriveSubsystem()
+      : new SimDriveSubsystem();
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem();
 
   // The driver's controller

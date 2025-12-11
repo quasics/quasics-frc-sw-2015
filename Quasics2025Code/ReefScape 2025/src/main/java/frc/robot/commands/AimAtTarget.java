@@ -57,6 +57,8 @@ public class AimAtTarget extends Command {
     }
     if (angle != null && m_mode == Mode.TargetInSight) {
       System.out.println("tag is in sight");
+      // TODO: Consider finishing when centered (otherwise, Drive To Target may drive
+      // out of sight...)
       m_finished = true;
     }
     if (angle != null && m_mode == Mode.PointAtTarget) {

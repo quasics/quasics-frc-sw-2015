@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,10 +29,9 @@ import frc.robot.utils.RobotSettings;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // TODO: Make this an AbstractDrivebase
   private final AbstractDrivebase driveSubsystem;
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem() {
-    
+
   };
 
   // The driver's controller

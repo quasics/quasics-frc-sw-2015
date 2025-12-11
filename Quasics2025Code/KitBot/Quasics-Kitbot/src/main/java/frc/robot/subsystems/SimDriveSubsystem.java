@@ -4,16 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SimDriveConstants;
 import frc.robot.utils.RobotSettings;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,18 +22,13 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 // Class to drive the robot over Sim
-// TODO: Extend AbstractDrivebase instead of SubsystemBase
 public class SimDriveSubsystem extends AbstractDrivebase {
-  private final Field2d fieldSim = new Field2d();
   private final PWMSparkMax m_leftLeader;
-  private final PWMSparkMax m_leftFollower;
   private final PWMSparkMax m_rightLeader;
-  private final PWMSparkMax m_rightFollower;
 
   private final DifferentialDrive drive;
 
@@ -57,7 +45,6 @@ public class SimDriveSubsystem extends AbstractDrivebase {
   // TODO: Update to use these
   private final DifferentialDrivetrainSim m_driveSim;
   private final Field2d m_fieldSim = new Field2d();
-  private static final int kEncoderResolutionTicksPerRevolution = -4096;
 
   // TODO: Create DifferentialDriveOdometry
   // 1. How to create:
@@ -74,9 +61,7 @@ DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
 
     // create PWMSparkMax motors
     m_leftLeader = new PWMSparkMax(SimDriveConstants.LEFT_LEADER_ID);
-    m_leftFollower = new PWMSparkMax(SimDriveConstants.LEFT_FOLLOWER_ID);
     m_rightLeader = new PWMSparkMax(SimDriveConstants.RIGHT_LEADER_ID);
-    m_rightFollower = new PWMSparkMax(SimDriveConstants.RIGHT_FOLLOWER_ID);
 
     // Encoders tell us where the motors are, so that we can estimate position and velocity
     // docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/simulation-instance.html

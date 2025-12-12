@@ -36,6 +36,7 @@ public class DriveCommand extends Command {
   @Override
   public void execute() {
     driveSubsystem.driveArcade(xSpeed.getAsDouble(), zRotation.getAsDouble());
+    System.out.println("Drive Command execute" +xSpeed.getAsDouble() +" " +zRotation.getAsDouble());
     //get the speed and send a printed msg if speed=0
   }
 

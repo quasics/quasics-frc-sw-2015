@@ -4,17 +4,15 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix.motorcontrol.VictorSRX;
+import com.ctre.phoenix.motorcontrol.WPI_VictorSRX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
-public class CANDriveSubsystem extends AbstractDrivebase {
+public class CANDriveSubsystemVictor extends AbstractDrivebase {
   private final SparkMax leftLeader;
   private final SparkMax leftFollower;
   private final SparkMax rightLeader;
@@ -22,7 +20,7 @@ public class CANDriveSubsystem extends AbstractDrivebase {
 
   private final DifferentialDrive drive;
 
-  public CANDriveSubsystem() {
+  public CANDriveSubsystemVictor() {
     // create brushed motors for drive
     leftLeader = new SparkMax(DriveConstants.LEFT_LEADER_ID, MotorType.kBrushless);
     leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushless);
@@ -73,5 +71,6 @@ public class CANDriveSubsystem extends AbstractDrivebase {
   // sets the speed of the drive motors
   public void driveArcade(double xSpeed, double zRotation) {
     drive.arcadeDrive(xSpeed, zRotation);
+    System.out.println("CAN Drive Subsystem execute" +xSpeed +" " +zRotation);
   }
 }

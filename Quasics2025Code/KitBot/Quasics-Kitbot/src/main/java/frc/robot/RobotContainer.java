@@ -14,7 +14,7 @@ import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RollerCommand;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.CANDriveSubsystemSpark;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.SimDriveSubsystem;
 import frc.robot.utils.RobotSettings;
@@ -51,7 +51,7 @@ public class RobotContainer {
   public RobotContainer() {
     // The robot's subsystems
     if (Robot.isReal()) {
-      driveSubsystem = new CANDriveSubsystem();
+      driveSubsystem = new CANDriveSubsystemSpark();
     } else {
       
       driveSubsystem = new SimDriveSubsystem(RobotSettings.Robot.Simulator);

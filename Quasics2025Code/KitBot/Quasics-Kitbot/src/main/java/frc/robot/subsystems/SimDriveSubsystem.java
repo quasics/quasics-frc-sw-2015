@@ -98,6 +98,7 @@ DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
   public void driveArcade(double xSpeed, double zRotation) {
     // TODO: Look at setSpeeds_HAL and AbstractDriveBase arcadeDrive as an example
     drive.arcadeDrive(xSpeed, zRotation);
+    System.out.println("Sim execute" +xSpeed +" " +zRotation);
   }
 
 

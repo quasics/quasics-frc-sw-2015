@@ -4,64 +4,58 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.VictorSRX;
-import com.ctre.phoenix.motorcontrol.WPI_VictorSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.InvertType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Constants.DriveConstants;
 
 // Class to drive the robot over CAN
 public class CANDriveSubsystemVictor extends AbstractDrivebase {
-  private final SparkMax leftLeader;
-  private final SparkMax leftFollower;
-  private final SparkMax rightLeader;
-  private final SparkMax rightFollower;
+  // https://www.frczero.org/electronics/components-and-sensors/victor-spx/
+  private final WPI_VictorSPX leftLeader;
+  private final WPI_VictorSPX leftFollower;
+  private final WPI_VictorSPX rightLeader;
+  private final WPI_VictorSPX rightFollower;
 
   private final DifferentialDrive drive;
 
   public CANDriveSubsystemVictor() {
     // create brushed motors for drive
-    leftLeader = new SparkMax(DriveConstants.LEFT_LEADER_ID, MotorType.kBrushless);
-    leftFollower = new SparkMax(DriveConstants.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    rightLeader = new SparkMax(DriveConstants.RIGHT_LEADER_ID, MotorType.kBrushless);
-    rightFollower = new SparkMax(DriveConstants.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
-
-    // set up differential drive class
-    drive = new DifferentialDrive(leftLeader, rightLeader);
-
-    // Set can timeout. Because this project only sets parameters once on
-    // construction, the timeout can be long without blocking robot operation. Code
-    // which sets or gets parameters during operation may need a shorter timeout.
-    leftLeader.setCANTimeout(250);
-    rightLeader.setCANTimeout(250);
-    leftFollower.setCANTimeout(250);
-    rightFollower.setCANTimeout(250);
+    leftLeader = new WPI_VictorSPX(DriveConstants.LEFT_LEADER_ID);
+    leftFollower = new WPI_VictorSPX(DriveConstants.LEFT_FOLLOWER_ID);
+    rightLeader = new WPI_VictorSPX(DriveConstants.RIGHT_LEADER_ID);
+    rightFollower = new WPI_VictorSPX(DriveConstants.RIGHT_FOLLOWER_ID);
 
     // Create the configuration to apply to motors. Voltage compensation
     // helps the robot perform more similarly on different
     // battery voltages (at the cost of a little bit of top speed on a fully charged
     // battery). The current limit helps prevent tripping
     // breakers.
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.voltageCompensation(12);
-    config.smartCurrentLimit(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT);
+    VictorSPXConfiguration config = new VictorSPXConfiguration();
+    config.voltageCompSaturation = 12;
+    // No current limiting for VictorSPX
 
     // Set configuration to follow leader and then apply it to corresponding
     // follower. Resetting in case a new controller is swapped
     // in and persisting in case of a controller reset due to breaker trip
-    config.follow(leftLeader);
-    leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    config.follow(rightLeader);
-    rightFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollower.follow(leftLeader);
+    rightFollower.follow(rightLeader);
 
-    // Remove following, then apply config to right leader
-    config.disableFollowerMode();
-    leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Set conifg to inverted and then apply to left leader. Set Left side inverted
-    // so that postive values drive both sides forward
-    config.inverted(true);
-    rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // TODO: Which side should be inverted?
+
+    leftFollower.configAllSettings(config);
+    rightFollower.configAllSettings(config);
+
+    // set up differential drive class
+    drive = new DifferentialDrive(leftLeader, rightLeader);
   }
 
   @Override
@@ -71,6 +65,23 @@ public class CANDriveSubsystemVictor extends AbstractDrivebase {
   // sets the speed of the drive motors
   public void driveArcade(double xSpeed, double zRotation) {
     drive.arcadeDrive(xSpeed, zRotation);
-    System.out.println("CAN Drive Subsystem execute" +xSpeed +" " +zRotation);
+    System.out.println("Victor execute" +xSpeed +" " +zRotation + " " + drive.isAlive() + " " + drive.isSafetyEnabled());
+
+    // Get faults
+    Faults faults = new Faults();
+    leftLeader.getFaults(faults);
+
+    System.out.println("Motor Output: " + leftLeader.getMotorOutputPercent());
+    System.out.println("Bus Voltage: " + leftLeader.getBusVoltage());
+    System.out.println("Control Mode: " + leftLeader.getControlMode());
+
+    // Check for faults
+    if (faults.hasAnyFault()) {
+        System.out.println("FAULTS DETECTED:");
+        System.out.println("Hardware Failure: " + faults.HardwareFailure);
+        System.out.println("Forward Limit: " + faults.ForwardLimitSwitch);
+        System.out.println("Reverse Limit: " + faults.ReverseLimitSwitch);
+        System.out.println("Under Voltage: " + faults.UnderVoltage);
+    }
   }
 }

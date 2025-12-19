@@ -50,6 +50,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // The robot's subsystems
+    // TODO: Allow this to be selected based on RobotSettings
+    // TODO: This should be CANDriveSubsystemVictor
     if (Robot.isReal()) {
       driveSubsystem = new CANDriveSubsystemSpark();
     } else {

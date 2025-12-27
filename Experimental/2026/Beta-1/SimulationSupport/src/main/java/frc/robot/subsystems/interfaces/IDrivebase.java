@@ -5,7 +5,8 @@ public interface IDrivebase extends ISubsystem {
   String SUBSYSTEM_NAME = "Drivebase";
 
   /**
-   * Drives the robot using arcade controls.
+   * "Classic" arcade-style driving, based on percentages. (Note: operates
+   * directly; no PID.)
    * 
    * @param forward  forward speed (-1.0 to 1.0)
    * @param rotation rotation rate (-1.0 to 1.0)
@@ -13,7 +14,8 @@ public interface IDrivebase extends ISubsystem {
   void driveArcade(double forward, double rotation);
 
   /**
-   * Drives the robot using tank controls.
+   * "Classic" tank-style driving, based on percentages. (Note: operates directly;
+   * no PID.)
    * 
    * @param leftSpeed  speed for the left side (-1.0 to 1.0)
    * @param rightSpeed speed for the right side (-1.0 to 1.0)

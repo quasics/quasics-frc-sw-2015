@@ -136,25 +136,53 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     rightLeader.set(clampedRightSpeed);
   }
 
+  /**
+   * Sets the speeds of the left and right sides of the drivetrain. (Note:
+   * operates directly; no PID.)
+   * 
+   * Note that this is an alternative to using "classic" tank driving; this method
+   * uses physical wheel speeds, and winds up passing them through to driveTank().
+   * 
+   * @param speeds the desired wheel speeds
+   * 
+   * @see #driveTank(double, double)
+   */
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+    if (speeds == null) {
+      speeds = new DifferentialDriveWheelSpeeds(0.0, 0.0);
+    }
+
+    // Convert the wheel speeds to motor power levels.
+    final double leftOutput = speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double rightOutput = speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+
+    // Set the motor outputs.
+    driveTank(leftOutput, rightOutput);
+  }
+
   @Override
   public void driveArcade(double forward, double rotation) {
     // Don't let the values go outside of [-100%, +100%].
     double clampedSpeedPercentage = MathUtil.clamp(forward, -1.0, +1.0);
     double clampedRotationPercentage = MathUtil.clamp(rotation, -1.0, +1.0);
 
-    arcadeDrive(
+    driveArcade(
         MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
   /**
-   * Drive the robot using arcade drive.
-   *
-   * Note: operates directly; no PID, but clamped to MAX_SPEED.
+   * Drive the robot using arcade drive. (Note: operates directly; no PID.)
+   * 
+   * Note that this is an alternative to using "classic" arcade driving; this
+   * method uses physical wheel speeds, and winds up passing them through to
+   * driveArcade().
    *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
+   * 
+   * @see #driveArcade(double, double)
    */
-  public void arcadeDrive(LinearVelocity speed, AngularVelocity rotation) {
+  public void driveArcade(LinearVelocity speed, AngularVelocity rotation) {
     if (speed == null) {
       speed = ZERO_MPS;
     }
@@ -168,15 +196,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
-  }
-
-  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-    // Convert the wheel speeds to motor power levels.
-    double leftOutput = speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
-    double rightOutput = speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
-
-    // Set the motor outputs.
-    driveTank(leftOutput, rightOutput);
   }
 
   @Override

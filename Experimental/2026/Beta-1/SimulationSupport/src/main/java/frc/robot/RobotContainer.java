@@ -14,8 +14,8 @@ public class RobotContainer {
   IDrivebase drivebase = new Drivebase();
 
   public RobotContainer() {
-    drivebase.asSubsystem()
-        .setDefaultCommand(new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
+    drivebase.asSubsystem().setDefaultCommand(
+        new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
 
     configureBindings();
   }

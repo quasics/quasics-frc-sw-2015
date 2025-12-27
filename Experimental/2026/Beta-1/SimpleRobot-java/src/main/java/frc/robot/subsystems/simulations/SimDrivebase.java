@@ -49,18 +49,20 @@ public class SimDrivebase extends AbstractDrivebase {
   /** Right motor. */
   private final PWMSparkMax m_right = new PWMSparkMax(PwmPorts.RIGHT_DRIVE_PWM_ID);
   /** Left (native) encoder. */
-  private final Encoder m_leftEncoder = new Encoder(DioPorts.LEFT_DRIVE_ENCODER_PORT_A,
-      DioPorts.LEFT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_leftEncoder =
+      new Encoder(DioPorts.LEFT_DRIVE_ENCODER_PORT_A, DioPorts.LEFT_DRIVE_ENCODER_PORT_B);
   /** Right (native) encoder. */
-  private final Encoder m_rightEncoder = new Encoder(DioPorts.RIGHT_DRIVE_ENCODER_PORT_A,
-      DioPorts.RIGHT_DRIVE_ENCODER_PORT_B);
+  private final Encoder m_rightEncoder =
+      new Encoder(DioPorts.RIGHT_DRIVE_ENCODER_PORT_A, DioPorts.RIGHT_DRIVE_ENCODER_PORT_B);
   /** Gyro, providing "yaw" data. */
   private final IGyro m_wrappedGyro;
 
   /** TrivialEncoder for left motor. */
-  final private TrivialEncoder m_leftTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  final private TrivialEncoder m_leftTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
   /** TrivialEncoder for right motor. */
-  final private TrivialEncoder m_rightTrivialEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  final private TrivialEncoder m_rightTrivialEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   /** Odometry for the robot, purely calculated from encoders/gyro. */
   final private DifferentialDriveOdometry m_odometry;
@@ -85,7 +87,8 @@ public class SimDrivebase extends AbstractDrivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
   final DifferentialDrivetrainSim m_drivetrainSimulator;
@@ -109,8 +112,9 @@ public class SimDrivebase extends AbstractDrivebase {
 
     // Note that we could also use the DifferentialDrivetrainSim.createKitbotSim()
     // method, instead, even though we're not intentionally simulating a kitbot.
-    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), driveConfig.gearing(),
-        driveConfig.trackWidth().in(Meters), driveConfig.trackWidth().in(Meters), null);
+    m_drivetrainSimulator =
+        new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), driveConfig.gearing(),
+            driveConfig.trackWidth().in(Meters), driveConfig.trackWidth().in(Meters), null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -158,8 +162,8 @@ public class SimDrivebase extends AbstractDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_left.get() * RoboRioSim.getVInVoltage(),
-        m_right.get() * RoboRioSim.getVInVoltage());
+    m_drivetrainSimulator.setInputs(
+        m_left.get() * RoboRioSim.getVInVoltage(), m_right.get() * RoboRioSim.getVInVoltage());
 
     // Simulated clock ticks forward
     m_drivetrainSimulator.update(0.02);

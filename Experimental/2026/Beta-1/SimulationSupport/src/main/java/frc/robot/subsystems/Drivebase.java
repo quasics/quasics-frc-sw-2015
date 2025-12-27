@@ -9,13 +9,12 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -61,7 +60,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final private SparkMax leftLeader = new SparkMax(1, MotorType.kBrushless);
   final private SparkMax rightLeader = new SparkMax(2, MotorType.kBrushless);
 
-  final private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  final private DifferentialDriveKinematics m_kinematics =
+      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   //
   // Simulation support
@@ -78,18 +78,16 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
-      m_drivetrainSystem,
-      // Drive motor type and count
-      DCMotor.getNEO(4),
-      GEAR_RATIO,
-      TRACK_WIDTH.in(Meters),
-      WHEEL_DIAMETER_INCHES.in(Meters),
-      // configure for no noise in measurements
-      null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem,
+          // Drive motor type and count
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters), WHEEL_DIAMETER_INCHES.in(Meters),
+          // configure for no noise in measurements
+          null);
 
   /**
    * Updates a SparkMaxConfig to work with distance-based values (meters and
@@ -122,8 +120,10 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     rightConfig.apply(leftConfig);
     rightConfig.inverted(true);
 
-    leftLeader.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightLeader.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeader.configure(
+        leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightLeader.configure(
+        rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -139,12 +139,12 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   /**
    * Sets the speeds of the left and right sides of the drivetrain. (Note:
    * operates directly; no PID.)
-   * 
+   *
    * Note that this is an alternative to using "classic" tank driving; this method
    * uses physical wheel speeds, and winds up passing them through to driveTank().
-   * 
+   *
    * @param speeds the desired wheel speeds
-   * 
+   *
    * @see #driveTank(double, double)
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
@@ -172,14 +172,14 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   /**
    * Drive the robot using arcade drive. (Note: operates directly; no PID.)
-   * 
+   *
    * Note that this is an alternative to using "classic" arcade driving; this
    * method uses physical wheel speeds, and winds up passing them through to
    * driveArcade().
    *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
-   * 
+   *
    * @see #driveArcade(double, double)
    */
   public void driveArcade(LinearVelocity speed, AngularVelocity rotation) {
@@ -191,8 +191,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -212,14 +212,14 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     // Simulated clock ticks forward
     m_drivetrainSimulator.update(0.02);
 
-    leftLeaderSim.getAbsoluteEncoderSim()
-        .setPosition(m_drivetrainSimulator.getLeftPositionMeters());
-    rightLeaderSim.getAbsoluteEncoderSim()
-        .setPosition(m_drivetrainSimulator.getRightPositionMeters());
+    leftLeaderSim.getAbsoluteEncoderSim().setPosition(
+        m_drivetrainSimulator.getLeftPositionMeters());
+    rightLeaderSim.getAbsoluteEncoderSim().setPosition(
+        m_drivetrainSimulator.getRightPositionMeters());
 
-    leftLeaderSim.getAbsoluteEncoderSim()
-        .setVelocity(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-    rightLeaderSim.getAbsoluteEncoderSim()
-        .setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    leftLeaderSim.getAbsoluteEncoderSim().setVelocity(
+        m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+    rightLeaderSim.getAbsoluteEncoderSim().setVelocity(
+        m_drivetrainSimulator.getRightVelocityMetersPerSecond());
   }
 }

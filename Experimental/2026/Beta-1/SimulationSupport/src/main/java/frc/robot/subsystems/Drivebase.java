@@ -9,7 +9,8 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class Drivebase extends SubsystemBase implements IDrivebase {
   /** Creates a new Drivebase. */
-  public Drivebase() {}
+  public Drivebase() {
+  }
 
   @Override
   public void periodic() {

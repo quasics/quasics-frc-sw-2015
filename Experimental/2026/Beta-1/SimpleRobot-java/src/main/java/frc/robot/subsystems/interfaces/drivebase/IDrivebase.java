@@ -126,7 +126,8 @@ public interface IDrivebase extends ITrivialDrivebase {
     double clampedSpeedPercentage = MathUtil.clamp(speedPercentage, -1.0, +1.0);
     double clampedRotationPercentage = MathUtil.clamp(rotationPercentage, -1.0, +1.0);
 
-    arcadeDrive(MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
+    arcadeDrive(
+        MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
   default void tankDrive(double leftPercentage, double rightPercentage) {
@@ -161,8 +162,8 @@ public interface IDrivebase extends ITrivialDrivebase {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        getKinematics().toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);

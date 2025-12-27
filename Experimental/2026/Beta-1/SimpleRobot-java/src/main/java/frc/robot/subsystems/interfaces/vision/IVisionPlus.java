@@ -5,7 +5,6 @@
 package frc.robot.subsystems.interfaces.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
-
 import java.util.Collections;
 import java.util.List;
 

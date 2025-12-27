@@ -45,7 +45,8 @@ public class Elevator extends AbstractElevator {
   final static boolean LIMIT_SWITCH_ACTIVATED_VALUE = false;
 
   /** Leading motor used to drive the elevator. */
-  private final SparkMax m_leader = new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
+  private final SparkMax m_leader =
+      new SparkMax(OtherCanIds.LEADER_ELEVATOR_ID, MotorType.kBrushless);
 
   /** Limit switch at the top point of the elevator's path. */
   private final ITriggerSensor m_topLimitSwitch = ITriggerSensor.createForDigitalInput(
@@ -149,7 +150,8 @@ public class Elevator extends AbstractElevator {
   /**
    * Conversion factor from encoder units (rotation) to meters.
    */
-  private static final double kEncoderMetersPerRotation = kSprocketPitchDiameter.abs(Meters) / kGearingRatio;
+  private static final double kEncoderMetersPerRotation =
+      kSprocketPitchDiameter.abs(Meters) / kGearingRatio;
 
   /**
    * Tests if the upper limit switch is triggered.

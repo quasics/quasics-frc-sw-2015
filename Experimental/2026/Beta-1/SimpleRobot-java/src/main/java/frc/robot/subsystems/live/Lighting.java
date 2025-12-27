@@ -4,11 +4,6 @@
 
 package frc.robot.subsystems.live;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
@@ -18,11 +13,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.utils.RobotConfigs.RobotConfig;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * An example subsystem for controlling an LED strip for custom lighting on the
  * robot.
- * 
+ *
  * This provides an interface that allows for both configuring the strip as a
  * whole, and allocating "subviews" of the strip for independent control (with
  * the unallocated LEDs at the front of the strip being used as the lights
@@ -54,11 +53,8 @@ public class Lighting extends SubsystemBase implements ILighting {
    * @param config the configuration for the robot being targeted
    */
   public Lighting(RobotConfig config) {
-    this(
-        config.lighting().pwmPort(),
-        config.lighting().stripLength(),
-        (config.hasCandle() && config.candle().simulated()),
-        config.lighting().subViews());
+    this(config.lighting().pwmPort(), config.lighting().stripLength(),
+        (config.hasCandle() && config.candle().simulated()), config.lighting().subViews());
   }
 
   /**
@@ -70,20 +66,18 @@ public class Lighting extends SubsystemBase implements ILighting {
    * @param subViews            list of lengths for desired subviews
    */
   @SuppressWarnings("unchecked")
-  private Lighting(int pwmPort, int numLights, boolean enableCandleSupport, List<Integer> subViews) {
-    this(
-        pwmPort, numLights,
-        Stream.concat(
-            Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH).stream(),
-            (subViews != null
-                ? subViews
-                : Collections.EMPTY_LIST).stream())
+  private Lighting(
+      int pwmPort, int numLights, boolean enableCandleSupport, List<Integer> subViews) {
+    this(pwmPort, numLights,
+        Stream
+            .concat(Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH).stream(),
+                (subViews != null ? subViews : Collections.EMPTY_LIST).stream())
             .toList());
   }
 
   /**
    * Constructor.
-   * 
+   *
    * @param pwmPort   PWM port to which the LED strip is connected
    * @param numLights number of (logical) lights on the LED strip
    * @param subViews  list of lengths for desired subviews
@@ -92,10 +86,8 @@ public class Lighting extends SubsystemBase implements ILighting {
   public Lighting(int pwmPort, int numLights, List<Integer> subViews) {
     setName("Lighting");
 
-    System.err.println(
-        "Setting up lighting: pwmPort=" + pwmPort +
-            ", numLights=" + numLights +
-            ", subViews=" + subViews);
+    System.err.println("Setting up lighting: pwmPort=" + pwmPort + ", numLights=" + numLights
+        + ", subViews=" + subViews);
 
     //
     // Sanity-check inputs.
@@ -117,9 +109,8 @@ public class Lighting extends SubsystemBase implements ILighting {
 
     final int subViewsSum = subViews.stream().mapToInt(Integer::intValue).sum();
     if (subViewsSum > 0 && numLights < subViewsSum) {
-      throw new IllegalArgumentException(
-          "Invalid LED strip length for requested subviews: " + numLights +
-              " (must be at least " + subViewsSum + ")");
+      throw new IllegalArgumentException("Invalid LED strip length for requested subviews: "
+          + numLights + " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println("INFO: configuring LED strip support with " + numLights + " LEDs");
     }
@@ -134,10 +125,8 @@ public class Lighting extends SubsystemBase implements ILighting {
 
     // First (local) view is the set of LEDs not allocated to subviews.
     if (unallocatedLeds > 0) {
-      m_lightingBuffer = new LightingBuffer(new AddressableLEDBufferView(
-          m_ledBuffer,
-          0,
-          numLights - (subViewsSum + 1)));
+      m_lightingBuffer = new LightingBuffer(
+          new AddressableLEDBufferView(m_ledBuffer, 0, numLights - (subViewsSum + 1)));
     } else {
       m_lightingBuffer = null;
     }
@@ -146,11 +135,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     var viewList = new ArrayList<AddressableLEDBufferView>(subViews.size());
     int runningSum = unallocatedLeds;
     for (int size : subViews) {
-      viewList.add(
-          new AddressableLEDBufferView(
-              m_ledBuffer,
-              runningSum,
-              runningSum + size - 1));
+      viewList.add(new AddressableLEDBufferView(m_ledBuffer, runningSum, runningSum + size - 1));
       runningSum += size;
     }
     m_subViews = Collections.unmodifiableList(viewList);
@@ -199,7 +184,7 @@ public class Lighting extends SubsystemBase implements ILighting {
 
   /**
    * Returns the list of LED buffer views for any configured sub-views.
-   * 
+   *
    * @return the list of LED buffer views
    */
   public List<AddressableLEDBufferView> getSubViews() {

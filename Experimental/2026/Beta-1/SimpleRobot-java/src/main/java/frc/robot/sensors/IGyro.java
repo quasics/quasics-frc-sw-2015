@@ -60,7 +60,7 @@ public interface IGyro {
   /**
    * Gets the current heading of the robot. Per WPILib convention, this is
    * reported as "clockwise positive" (CW+, or NED axis convention).
-   * 
+   *
    * @return the heading of the robot
    */
   Angle getAngle();
@@ -68,7 +68,7 @@ public interface IGyro {
   /**
    * Gets the current (rotational) velocity of the robot. Per WPILib convention,
    * this is reported as "clockwise positive" (CW+, or NED axis convention).
-   * 
+   *
    * @return the rate of rotation of the gyro
    */
   AngularVelocity getRate();
@@ -77,7 +77,7 @@ public interface IGyro {
    * Gets the current heading of the robot. Per WPILib convention, this
    * is reported as "counter-clockwise positive" (CCW+, or NWU axis convention),
    * which is different from getAngle() and getRate().
-   * 
+   *
    * @return the heading of the robot as a Rotation2d
    */
   Rotation2d getRotation2d();
@@ -98,13 +98,9 @@ public interface IGyro {
   static IGyro readOnlyGyro(IGyro g) {
     return new FunctionalGyro(
         // Most functions are passed through to the gyro being wrapped...
-        g::calibrate,
-        g::getAngle,
-        g::getRate,
-        g::getRotation2d,
+        g::calibrate, g::getAngle, g::getRate, g::getRotation2d,
         // ...but reset() is replaced with a no-op.
-        () -> {
-        });
+        () -> {});
   }
 
   /**
@@ -176,14 +172,10 @@ public interface IGyro {
    * @return an IGyro wrapping the supplied object
    */
   static IGyro wrapGyro(AnalogGyro g) {
-    return new FunctionalGyro(
-        g::calibrate,
-        () -> Degrees.of(g
-            .getAngle()),
-        () -> DegreesPerSecond.of(g
-            .getRate()),
-        g::getRotation2d,
-        g::reset);
+    return new FunctionalGyro(g::calibrate,
+        ()
+            -> Degrees.of(g.getAngle()),
+        () -> DegreesPerSecond.of(g.getRate()), g::getRotation2d, g::reset);
   }
 
   /**

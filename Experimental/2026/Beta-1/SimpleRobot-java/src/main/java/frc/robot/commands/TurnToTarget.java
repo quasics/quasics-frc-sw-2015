@@ -23,9 +23,7 @@ import frc.robot.subsystems.interfaces.vision.IVisionPlus;
  * view.
  */
 public class TurnToTarget extends Command {
-  public enum OpMode {
-    PointAtTarget, TargetInView
-  }
+  public enum OpMode { PointAtTarget, TargetInView }
 
   /** Vision subsystem. */
   private final IVisionPlus m_vision;

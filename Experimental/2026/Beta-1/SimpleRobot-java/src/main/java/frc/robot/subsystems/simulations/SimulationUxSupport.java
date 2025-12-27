@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,7 +76,8 @@ public class SimulationUxSupport {
         (IElevator.MAX_SAFE_HEIGHT.in(Meters) + armLengthMeters)
             * 1.15 // Leave a little room at the top
     );
-    m_elevatorMech2d = rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
+    m_elevatorMech2d =
+        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
 
     m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", armLengthMeters, -90));
 

@@ -49,7 +49,7 @@ public interface ITrivialDrivebase extends ISubsystem {
 
   /**
    * Drivates the robot using arcade drive.
-   * 
+   *
    * @param speedPercentage    The percentage of maximum speed forward/backward
    *                           (positive is forward).
    * @param rotationPercentage The percentage of maximum rotation speed.

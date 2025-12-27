@@ -100,7 +100,8 @@ public class CameraSimulator extends SubsystemBase {
   private PhotonCameraSim configureCameraSim(
       RobotConfigs.CameraConfig cameraConfig, IVision.CameraData cameraData) {
     // Set up the camera simulation
-    PhotonCameraSim cameraSim = new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
+    PhotonCameraSim cameraSim =
+        new PhotonCameraSim(cameraData.camera(), getCameraProperties(cameraConfig));
 
     // Enable/disable the raw and processed streams. (These are enabled by default.)
     cameraSim.enableRawStream(ENABLE_IMAGE_STREAMING);
@@ -157,8 +158,9 @@ public class CameraSimulator extends SubsystemBase {
 
     // Update the simulator to show where the drive base's (pure) odometry suggests
     // that we are located.
-    Pose2d driveBasePoseMeters = (Pose2d) BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
-        .orElse(new Pose2d());
+    Pose2d driveBasePoseMeters =
+        (Pose2d) BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class)
+            .orElse(new Pose2d());
     m_visionSim.update(driveBasePoseMeters);
 
     // Update the simulator to reflect where the (purely) vision-based pose estimate
@@ -173,15 +175,13 @@ public class CameraSimulator extends SubsystemBase {
 
     // Update the simulator to reflect where the drivebase's (potentially composite)
     // pose estimate suggests that we are located.
-    var driveBaseEstimatedPose = BulletinBoard.common.getValue(IDrivebasePlus.ESTIMATED_POSE_KEY, Pose2d.class);
+    var driveBaseEstimatedPose =
+        BulletinBoard.common.getValue(IDrivebasePlus.ESTIMATED_POSE_KEY, Pose2d.class);
     driveBaseEstimatedPose.ifPresentOrElse(
         // Do this with the estimated pose from drive base (if it has some)
-        est -> {
-          debugField.getObject("DriveEstimation").setPose((Pose2d) est);
-        },
+        est
+        -> { debugField.getObject("DriveEstimation").setPose((Pose2d) est); },
         // If we have no estimated pose from the drive base, do this
-        () -> {
-          debugField.getObject("DriveEstimation").setPoses();
-        });
+        () -> { debugField.getObject("DriveEstimation").setPoses(); });
   }
 }

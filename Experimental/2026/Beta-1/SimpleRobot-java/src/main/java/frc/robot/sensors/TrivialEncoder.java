@@ -63,14 +63,14 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 public interface TrivialEncoder {
   /**
    * Returns the distance recorded by the encoder.
-   * 
+   *
    * @return the distance recorded by the encoder
    */
   Distance getPosition();
 
   /**
    * Returns the current speed reported by the encoder.
-   * 
+   *
    * @return the current speed reported by the encoder
    */
   LinearVelocity getVelocity();

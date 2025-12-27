@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public interface ISubsystem {
   /**
    * Returns the subsystem for the object (usually expected to just be a cast).
-   * 
+   *
    * @return the object cast to a subsystem (for listing in requirements).
    */
   default Subsystem asSubsystem() {

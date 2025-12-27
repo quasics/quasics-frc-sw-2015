@@ -55,13 +55,15 @@ public class SysIdGenerator {
       final IDrivebase drivebase, final DrivebaseProfilingMode mode) {
     return new SysIdRoutine(config,
         new SysIdRoutine.Mechanism(
-            (Voltage volts) -> {
+            (Voltage volts)
+                -> {
               drivebase.setMotorVoltages(
                   volts, volts.times(mode == DrivebaseProfilingMode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log -> {
+            log
+            -> {
               final var leftPosition = drivebase.getLeftPosition();
               final var leftVelocity = drivebase.getLeftVelocity();
               final var leftVoltage = drivebase.getLeftVoltage();
@@ -146,12 +148,12 @@ public class SysIdGenerator {
   public static SysIdRoutine getSysIdRoutine(
       final SysIdRoutine.Config config, final IElevator elevator) {
     return new SysIdRoutine(config,
-        new SysIdRoutine.Mechanism((Voltage volts) -> {
-          elevator.setMotorVoltage(volts);
-        },
+        new SysIdRoutine.Mechanism((Voltage volts)
+                                       -> { elevator.setMotorVoltage(volts); },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
-            log -> {
+            log
+            -> {
               final var position = elevator.getHeight();
               final var velocity = elevator.getVelocity();
               final var voltage = elevator.getVoltage();
@@ -183,15 +185,11 @@ public class SysIdGenerator {
    * @return a Command for use in running quasistatic profiling in the
    *         specified direction.
    */
-  public static Command sysIdQuasistatic(
-      IElevator elevator, SysIdRoutine.Direction direction) {
-    Command setDontCareCommand = new InstantCommand(
-        () -> {
-          elevator.setTargetPosition(IElevator.TargetPosition.DontCare);
-        }, elevator.asSubsystem());
-    Command stopCommand = new InstantCommand(() -> {
-      elevator.stop();
+  public static Command sysIdQuasistatic(IElevator elevator, SysIdRoutine.Direction direction) {
+    Command setDontCareCommand = new InstantCommand(() -> {
+      elevator.setTargetPosition(IElevator.TargetPosition.DontCare);
     }, elevator.asSubsystem());
+    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem());
     return new SequentialCommandGroup(
         setDontCareCommand, getSysIdRoutine(elevator).quasistatic(direction), stopCommand);
   }
@@ -205,13 +203,10 @@ public class SysIdGenerator {
    *         specified direction.
    */
   public static Command sysIdDynamic(IElevator elevator, SysIdRoutine.Direction direction) {
-    Command setDontCareCommand = new InstantCommand(
-        () -> {
-          elevator.setTargetPosition(IElevator.TargetPosition.DontCare);
-        }, elevator.asSubsystem());
-    Command stopCommand = new InstantCommand(() -> {
-      elevator.stop();
+    Command setDontCareCommand = new InstantCommand(() -> {
+      elevator.setTargetPosition(IElevator.TargetPosition.DontCare);
     }, elevator.asSubsystem());
+    Command stopCommand = new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem());
     return new SequentialCommandGroup(
         setDontCareCommand, getSysIdRoutine(elevator).dynamic(direction), stopCommand);
   }

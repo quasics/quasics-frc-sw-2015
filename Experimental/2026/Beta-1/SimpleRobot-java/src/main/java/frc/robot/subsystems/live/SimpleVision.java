@@ -37,9 +37,9 @@ public class SimpleVision extends SubsystemBase implements IVision {
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
+      ;
   /**
    * The layout of the AprilTags on the field. This is used for the pose
    * estimation (as well as in the simulator, when it's rendering the tag).

@@ -18,7 +18,7 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
 
   /**
    * Creates a new LightingBuffer.
-   * 
+   *
    * @param view the buffer view to be manipulated by this subsystem
    */
   public LightingBuffer(AddressableLEDBufferView view) {

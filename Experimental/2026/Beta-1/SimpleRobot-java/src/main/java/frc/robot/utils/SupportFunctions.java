@@ -14,16 +14,16 @@ public class SupportFunctions {
   /**
    * Returns true if the measure x is between a and b, inclusive. (Ordering of a
    * and b does not matter.)
-   * 
+   *
    * Note that this should work for any set of 3 measurements of the same logical
    * type (e.g., 3 distances, angles, voltages, etc.).
-   * 
+   *
    * @param <T> the dimensional units associated with the measurements being
    *            evaluated
    * @param x   the value to check.
    * @param a   one bound
    * @param b   the other bound
-   * 
+   *
    * @return true iff x is between a and b, inclusive.
    */
   public static <T> boolean isBetween(T x, T a, T b) {

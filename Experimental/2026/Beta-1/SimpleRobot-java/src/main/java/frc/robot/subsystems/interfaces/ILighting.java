@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Basic interface to a lighting subsystem.
  */
 public interface ILighting extends ISubsystem {
-
   //////////////////////////////////////////////////////////////////////
   //
   // Primary functions/types
@@ -22,7 +21,7 @@ public interface ILighting extends ISubsystem {
   public interface ColorSupplier {
     /**
      * Supplies a color for a given LED in a set.
-     * 
+     *
      * @param position the position of an LED on the strip
      * @return the color to be used for the LED
      */
@@ -39,10 +38,10 @@ public interface ILighting extends ISubsystem {
 
   /**
    * Returns the number of LEDs controllable by this object's various functions.
-   * 
+   *
    * Note that this may be different from the total number of LEDs in the strip,
    * if the handling of a strip is divided between multiple objects.
-   * 
+   *
    * @return the length of the sequence supported by this object
    */
   int getLength();
@@ -116,7 +115,7 @@ public interface ILighting extends ISubsystem {
 
     /**
      * Converts the stock color to the "Color" class defined by WPILib.
-     * 
+     *
      * @return a WPILib "Color" object equivalent to this stock color
      */
     public Color toWpiColor() {
@@ -180,20 +179,18 @@ public interface ILighting extends ISubsystem {
   /**
    * Sets the strip to an alternating pair of colors, with even pixels set to
    * color1, and odd pixels set to color2.
-   * 
+   *
    * @param color1 color to use for even pixels (starting at 0)
    * @param color2 color to use for odd pixels (starting at 1)
    */
   public default void SetAlternatingColors(Color color1, Color color2) {
-    SetStripColor((int position) -> {
-      return (position % 2 == 0) ? color1 : color2;
-    });
+    SetStripColor((int position) -> { return (position % 2 == 0) ? color1 : color2; });
   }
 
   /**
    * Sets the strip to an alternating pair of colors, with even pixels set to
    * color1, and odd pixels set to color2.
-   * 
+   *
    * @param color1 color to use for even pixels (starting at 0)
    * @param color2 color to use for odd pixels (starting at 1)
    */

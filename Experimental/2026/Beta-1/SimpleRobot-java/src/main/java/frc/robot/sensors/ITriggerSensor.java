@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
  * Interface for a sensor that can be in a "triggered" state or not.
- * 
+ *
  * Context: the goal is to allow us to hide the logic for how to evaluate the
  * state of the switch, such as:
  * <ul>
@@ -26,10 +26,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
  * a controller), with each representing a distinct "triggered" state.
  * </li>
  * </ul>
- * 
+ *
  * For other options, see the WPILib docs for things like POVButton,
  * InternalButton, etc.
- * 
+ *
  * @see <a
  *      href=
  *      "https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/POVButton.html">POVButton</a>
@@ -42,7 +42,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public interface ITriggerSensor {
   /**
    * Indicates if the sensor has been triggered.
-   * 
+   *
    * @return true iff the sensor is in the "triggered" state
    */
   boolean isTriggered();
@@ -50,7 +50,7 @@ public interface ITriggerSensor {
   /**
    * Create a sensor that is triggered when the given digital input returns the
    * specified value.
-   * 
+   *
    * @param port         the port number of the digital input
    * @param triggerValue the "triggered" value of the digital input
    * @return a sensor that is triggered when the given digital input returns the

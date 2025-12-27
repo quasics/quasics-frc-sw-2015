@@ -14,7 +14,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
@@ -28,13 +27,14 @@ import frc.robot.utils.RobotConfigs.RobotConfig;
 
 /**
  * Subsystem representing the arm on our real 2025 robot.
- * 
+ *
  * TODO: Test this class on the real robot.
  */
 public class Arm extends SubsystemBase implements ISingleJointArm {
-
   /** Motor controller running the arm. */
-  protected final SparkMax m_motorController = new SparkMax(Constants.OtherCanIds.ARM_LEADER_ID, MotorType.kBrushless);;
+  protected final SparkMax m_motorController =
+      new SparkMax(Constants.OtherCanIds.ARM_LEADER_ID, MotorType.kBrushless);
+  ;
 
   /** Encoder providing readings from the through-bore. */
   protected final AbsoluteEncoder m_throughBoreEncoder = m_motorController.getAbsoluteEncoder();
@@ -53,25 +53,19 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
 
   /**
    * Constructor.
-   * 
+   *
    * @param config robot configuration
    */
   public Arm(RobotConfig config) {
     setName(SUBSYSTEM_NAME);
 
     final PIDConfig pidConfig = config.arm().pid();
-    m_armPIDController = new PIDController(
-        pidConfig.kP(),
-        pidConfig.kI(),
-        pidConfig.kD());
+    m_armPIDController = new PIDController(pidConfig.kP(), pidConfig.kI(), pidConfig.kD());
     m_armPIDController.setTolerance(0.5, 1);
 
     final ArmFeedForwardConfig ffConfig = config.arm().feedForward();
     m_feedForward = new ArmFeedforward(
-        ffConfig.kS().in(Volts),
-        ffConfig.kG().in(Volts),
-        ffConfig.kV(),
-        ffConfig.kA());
+        ffConfig.kS().in(Volts), ffConfig.kG().in(Volts), ffConfig.kV(), ffConfig.kA());
 
     // Through-bore encoder configuration settings.
     final AbsoluteEncoderConfig throughBoreConfig = new AbsoluteEncoderConfig();
@@ -80,20 +74,16 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
 
     // SparkMax configuration settings.
     final SparkMaxConfig controllerConfig = new SparkMaxConfig();
-    controllerConfig
-        .inverted(false)
-        .apply(throughBoreConfig);
+    controllerConfig.inverted(false).apply(throughBoreConfig);
 
     // Apply the configuration settings.
     m_motorController.configure(
-        controllerConfig,
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
+        controllerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**
    * Gets the current angle of the arm.
-   * 
+   *
    * @return current position in radians
    */
   public Angle getPivotAngle() {
@@ -102,7 +92,7 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
 
   /**
    * Gets the current (rotational) velocity of the arm.
-   * 
+   *
    * @return current velocity in radians/sec
    */
   public AngularVelocity getPivotVelocity() {
@@ -122,17 +112,16 @@ public class Arm extends SubsystemBase implements ISingleJointArm {
 
     final double currentAngleRadians = getPivotAngle().in(Radians);
     final double currentVelocity_radiansPerSec = getPivotVelocity().in(RadiansPerSecond);
-    double pidOutput = m_armPIDController.calculate(currentAngleRadians, m_referencePosition.in(Radians));
-    double feedForwardOutput = m_feedForward.calculate(currentAngleRadians, currentVelocity_radiansPerSec);
+    double pidOutput =
+        m_armPIDController.calculate(currentAngleRadians, m_referencePosition.in(Radians));
+    double feedForwardOutput =
+        m_feedForward.calculate(currentAngleRadians, currentVelocity_radiansPerSec);
     double output = feedForwardOutput + pidOutput;
     m_motorController.setVoltage(output);
 
     if (NOISY) {
-      System.out.printf(
-          "pid: %.02f, feedforward: %.02f, output: %.02f, setpoint: %.02f\n",
-          pidOutput,
-          feedForwardOutput,
-          output, m_referencePosition.in(Degrees));
+      System.out.printf("pid: %.02f, feedforward: %.02f, output: %.02f, setpoint: %.02f\n",
+          pidOutput, feedForwardOutput, output, m_referencePosition.in(Degrees));
     }
   }
 

@@ -27,7 +27,7 @@ public class FlickeringCandle extends Command {
 
   /**
    * Creates a new FlickeringCandle.
-   * 
+   *
    * @param candle the ICandle object to control
    */
   public FlickeringCandle(ICandle candle) {

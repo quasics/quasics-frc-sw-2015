@@ -61,11 +61,11 @@ import java.util.function.Supplier;
  * This class serves as the central hub for the declarative setup of our
  * "command-based" robot project, under the standard WPILib definition for this
  * construct.
- * 
- * @see https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
+ *
+ * @see
+ *     https://docs.wpilib.org/en/stable/docs/software/commandbased/structuring-command-based-project.html#robotcontainer
  */
 public class RobotContainer {
-
   /** Iff true, allow Choreo to handle flipping any paths used with it. */
   static final private boolean CHOREO_SHOULD_HANDLE_PATH_FLIPPING = false;
 
@@ -117,14 +117,15 @@ public class RobotContainer {
 
   /** Camera simulation injector (if running in simulation mode). */
   @SuppressWarnings("unused") // Camera simulator is pure data injection
-  final private CameraSimulator m_cameraSimulator = maybeAllocateCameraSimulator(m_robotConfig, m_vision);
+  final private CameraSimulator m_cameraSimulator =
+      maybeAllocateCameraSimulator(m_robotConfig, m_vision);
 
   /** Primary logger. */
   final EventLogger m_eventLogger = new StringEventLogger();
 
   /**
    * Controller for the drive base.
-   * 
+   *
    * Note that we can also consider using CommandJoystick class instead of
    * Joystick. This would allow explicitly bind specific channels for X/Y (e.g.,
    * possibly simplifying live vs simulation handling by not requiring custom
@@ -133,8 +134,9 @@ public class RobotContainer {
    *
    * Note also that live joysticks generally follow a different
    * orientation/coordinate system than the one used for the robot.
-   * 
-   * @see https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
+   *
+   * @see
+   *     https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#joystick-and-controller-coordinate-system
    */
   private final Joystick m_driveController = new Joystick(Constants.DriveTeam.DRIVER_JOYSTICK_ID);
 
@@ -166,7 +168,7 @@ public class RobotContainer {
   /**
    * Configure anything that we want to have happen on a recurring process, which
    * isn't bound to a specific subsystem (or command).
-   * 
+   *
    * @param robot the robot whose overall scheduling is being hooked into
    */
   private void configurePeriodicOperations(TimedRobot robot) {
@@ -182,21 +184,19 @@ public class RobotContainer {
     if (m_eventLogger != null && m_eventLogger instanceof StringEventLogger) {
       final StateChangeExecutor executor = new StateChangeExecutor(
           // State supplier
-          () -> {
-            return DriverStation.isDisabled();
-          },
+          ()
+              -> { return DriverStation.isDisabled(); },
           // Assumed initial state (i.e., assume we're disabled on startup)
           true,
           // Action
-          () -> {
+          ()
+              -> {
             System.err.println("Dumping event log:");
             System.err.println(((StringEventLogger) m_eventLogger).getContents());
           },
           // Triggering mode
           StateChangeExecutor.Mode.GoesTrue);
-      robot.addPeriodic(() -> {
-        executor.check();
-      }, COMMAND_CYCLE_PERIOD);
+      robot.addPeriodic(() -> { executor.check(); }, COMMAND_CYCLE_PERIOD);
     }
   }
 
@@ -256,14 +256,13 @@ public class RobotContainer {
     final IVisionPlus visionPlus = ((IVisionPlus) m_vision);
 
     final int targetId = 17;
-    SmartDashboard.putData("Turn to target " + targetId,
-        new TurnToTarget(visionPlus, m_drivebase, targetId));
+    SmartDashboard.putData(
+        "Turn to target " + targetId, new TurnToTarget(visionPlus, m_drivebase, targetId));
     SmartDashboard.putData("Turn & Drive to target " + targetId,
         new SequentialCommandGroup(
             // First, turn until it's in view...
             new TurnToTarget(
-                visionPlus, m_drivebase,
-                targetId, TurnToTarget.OpMode.TargetInView, false),
+                visionPlus, m_drivebase, targetId, TurnToTarget.OpMode.TargetInView, false),
             // ...and then drive to it.
             new DriveToTarget(visionPlus, m_drivebase, targetId, true)));
   }
@@ -305,7 +304,8 @@ public class RobotContainer {
 
   /** Sets "arcade drive" as the default operation for the drivebase. */
   private void configureArcadeDrive() {
-    final DeadbandEnforcer deadbandEnforcer = new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
+    final DeadbandEnforcer deadbandEnforcer =
+        new DeadbandEnforcer(Constants.DriveTeam.DRIVER_DEADBAND);
     Supplier<Double> forwardSupplier;
     Supplier<Double> rotationSupplier;
 
@@ -320,20 +320,27 @@ public class RobotContainer {
       //
       // Note that we're inverting the values because Xbox controllers return
       // negative values when we push forward.
-      forwardSupplier = () -> -forwardSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
-      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
+      forwardSupplier = ()
+          ->
+          - forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.LeftYAxis)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(LogitechDualshock.RightXAxis)));
     } else {
       // Configure the simulated robot
       //
       // Note that we're assuming a keyboard-based controller is actually being
       // used in the simulation environment (for now), and thus we want to use
       // axis 0&1 (from the "Keyboard 0" configuration).
-      forwardSupplier = () -> forwardSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
-      rotationSupplier = () -> -rotationSlewRateLimiter.calculate(
-          deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
+      forwardSupplier = ()
+          -> forwardSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(0)));
+      rotationSupplier = ()
+          ->
+          - rotationSlewRateLimiter.calculate(
+              deadbandEnforcer.limit(m_driveController.getRawAxis(1)));
     }
 
     m_drivebase.asSubsystem().setDefaultCommand(

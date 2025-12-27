@@ -152,10 +152,10 @@ public class DriveToTarget extends Command {
       return;
     }
 
-    final double yawScaler = MathUtil.clamp(yawError.in(Degrees) * TURNING_KP, -1.0, +1.0);
+    final double yawScaler = MathUtil.clamp(yawError.in(Degrees) *TURNING_KP, -1.0, +1.0);
     final var turnSpeed = IDrivebase.MAX_ROTATION.times(yawScaler);
 
-    final double forwardScaler = MathUtil.clamp(rangeError.in(Meters) * FORWARD_KP, -1.0, +1.0);
+    final double forwardScaler = MathUtil.clamp(rangeError.in(Meters) *FORWARD_KP, -1.0, +1.0);
     final var forwardSpeed = IDrivebase.MAX_SPEED.times(forwardScaler);
     if (m_noisy) {
       System.out.println("targetYaw: " + targetYaw + ", yawScaler: " + yawScaler

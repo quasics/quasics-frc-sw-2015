@@ -27,7 +27,7 @@ public class SimpleElevatorMover extends Command {
 
   /**
    * Constructor.
-   * 
+   *
    * @param elevator  the elevator to be moved
    * @param direction the direction in which it should move
    */

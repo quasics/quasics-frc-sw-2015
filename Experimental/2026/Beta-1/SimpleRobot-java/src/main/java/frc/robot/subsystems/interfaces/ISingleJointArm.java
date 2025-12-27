@@ -27,7 +27,7 @@ public interface ISingleJointArm extends ISubsystem {
 
   /**
    * Returns the angle when the arm is fully extended out of the robot's frame.
-   * 
+   *
    * @return the angle of the arm when it is extended out from the robot's
    *         centerline
    */
@@ -35,7 +35,7 @@ public interface ISingleJointArm extends ISubsystem {
 
   /**
    * Returns the angle when the arm is fully upright within the robot's frame.
-   * 
+   *
    * @return the angle of the arm when it is extended up along the robot's
    *         centerline
    */

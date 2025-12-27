@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystems.interfaces.ISubsystem;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,8 +42,7 @@ public interface IVision extends ISubsystem {
    * @param angle yaw to the angle (negative values means that it's to left of
    *              camera center)
    */
-  record TargetData(int id, Angle angle, Distance distance) {
-  }
+  record TargetData(int id, Angle angle, Distance distance) {}
 
   /**
    * Camera data set.
@@ -57,8 +55,8 @@ public interface IVision extends ISubsystem {
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
+  public record
+      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -153,9 +151,11 @@ public interface IVision extends ISubsystem {
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget = Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget =
+          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData = new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData =
+          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 

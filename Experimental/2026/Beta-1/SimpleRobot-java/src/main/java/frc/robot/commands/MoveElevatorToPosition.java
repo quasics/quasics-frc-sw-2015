@@ -44,9 +44,7 @@ public class MoveElevatorToPosition extends Command {
    *                             position
    */
   public MoveElevatorToPosition(
-      IElevator elevator,
-      IElevator.TargetPosition target,
-      boolean waitForTargetReached) {
+      IElevator elevator, IElevator.TargetPosition target, boolean waitForTargetReached) {
     m_elevator = elevator;
     m_target = target;
     m_waitForTargetReached = waitForTargetReached;

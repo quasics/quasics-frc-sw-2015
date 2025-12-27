@@ -50,14 +50,15 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
 
   private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on last year's game
-  ;
+      ;
 
   /** Entries for each of the cameras on the robot. */
   protected final List<CameraData> m_cameraData = new ArrayList<CameraData>();
 
-  protected final Map<Integer, EstimatedRobotPose> m_estimatedPosesCache = new HashMap<Integer, EstimatedRobotPose>();
+  protected final Map<Integer, EstimatedRobotPose> m_estimatedPosesCache =
+      new HashMap<Integer, EstimatedRobotPose>();
 
   /**
    * Estimated poses (if any) from the most recent camera data.
@@ -99,7 +100,8 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
         new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(), cameraConfig.pos().z()),
         new Rotation3d(cameraConfig.orientation().roll(), cameraConfig.orientation().pitch(),
             cameraConfig.orientation().yaw()));
-    final PhotonPoseEstimator estimator = new PhotonPoseEstimator(m_tagLayout, POSE_STRATEGY, robotToCamera);
+    final PhotonPoseEstimator estimator =
+        new PhotonPoseEstimator(m_tagLayout, POSE_STRATEGY, robotToCamera);
     m_cameraData.add(new CameraData(camera, robotToCamera, estimator));
   }
 
@@ -246,7 +248,8 @@ public class BetterVision extends SubsystemBase implements IVisionPlus {
     super.periodic();
 
     // Where does the drive base think we are?
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
+    final var optDrivePose =
+        BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Update camera-specific estimators (and gather their results).

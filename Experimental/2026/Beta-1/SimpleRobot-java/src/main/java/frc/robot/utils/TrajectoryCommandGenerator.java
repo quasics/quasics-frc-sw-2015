@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.interfaces.drivebase.IDrivebasePlus;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -103,15 +102,14 @@ public class TrajectoryCommandGenerator {
   }
 
   private static SequentialCommandGroup GenerateCommandFromDiscreteSegments(
-      RobotConfigs.RobotConfig robotConfig,
-      IDrivebasePlus drive,
-      TrajectoryConfig trajectoryConfig, Pose2d start, List<Translation2d> interiorWaypoints,
-      Pose2d end, boolean resetTelemetryAtStart, RamseteConfig ramseteConfig) {
+      RobotConfigs.RobotConfig robotConfig, IDrivebasePlus drive, TrajectoryConfig trajectoryConfig,
+      Pose2d start, List<Translation2d> interiorWaypoints, Pose2d end,
+      boolean resetTelemetryAtStart, RamseteConfig ramseteConfig) {
     final DifferentialDriveKinematics kDriveKinematics = drive.getKinematics();
 
     final SimpleMotorFeedforward feedForward = getMotorFeedforward(robotConfig);
-    final DifferentialDriveVoltageConstraint voltageConstraints = new DifferentialDriveVoltageConstraint(feedForward,
-        kDriveKinematics, MAX_VOLTAGE);
+    final DifferentialDriveVoltageConstraint voltageConstraints =
+        new DifferentialDriveVoltageConstraint(feedForward, kDriveKinematics, MAX_VOLTAGE);
 
     TrajectoryConfig actualTrajectoryConfig = new TrajectoryConfig(
         trajectoryConfig.getMaxVelocity(), trajectoryConfig.getMaxAcceleration());
@@ -146,15 +144,14 @@ public class TrajectoryCommandGenerator {
 
     return new SequentialCommandGroup(
         new InstantCommand(
-            () -> {
-              // if (resetTelemetryAtStart) {
-              // System.out.println("Resetting robot odometry");
-              // drive.resetOdometry(trajectory.getInitialPose());
-              // }
-            },
+            ()
+                -> {
+                    // if (resetTelemetryAtStart) {
+                    // System.out.println("Resetting robot odometry");
+                    // drive.resetOdometry(trajectory.getInitialPose());
+                    // }
+                },
             drive.asSubsystem()),
-        ramseteCommand, new InstantCommand(() -> {
-          drive.stop();
-        }, drive.asSubsystem()));
+        ramseteCommand, new InstantCommand(() -> { drive.stop(); }, drive.asSubsystem()));
   }
 }

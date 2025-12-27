@@ -13,7 +13,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 /**
  * Wrapper around an IGyro, allowing us to reset it "locally", without affecting
  * the original gyro's data.
- * 
+ *
  * I foresee this as being useful under at least two different circumstances:
  * <ol>
  * <li>

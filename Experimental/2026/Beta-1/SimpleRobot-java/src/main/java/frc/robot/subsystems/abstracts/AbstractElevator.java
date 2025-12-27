@@ -227,7 +227,7 @@ public abstract class AbstractElevator extends SubsystemBase implements IElevato
 
     if (noisy) {
       System.out.printf("PID -> pos: %.02f, set: %.02f, vel: %.02f, pidOut: %.02f, ff: %.02f, "
-          + "output: %.02f, atSetpoint: %b%n",
+              + "output: %.02f, atSetpoint: %b%n",
           encoder.getPosition(), setpoint.in(Meters), velocity, pidOutput, feedForwardOutput,
           output, pid.atSetpoint());
     }

@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import java.util.function.Consumer;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.simulation.SendableChooserSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,9 +16,11 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class RobotContainer {
-  IDrivebase drivebase = new Drivebase();
+  private final IDrivebase drivebase = new Drivebase();
   private final Joystick m_driveController = new Joystick(OperatorConstants.DRIVER_JOYSTICK_ID);
+  private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
 
+  /** Constructor. */
   public RobotContainer() {
     drivebase.asSubsystem().setDefaultCommand(
         new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
@@ -29,11 +28,34 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private void configureBindings() {
+    setupDriveControlSelection();
+
+    // Set up autonomous command chooser
+    autoCommandChooser.setDefaultOption("No Auto", Commands.print("No autonomous command configured"));
+    autoCommandChooser.addOption("Do something", Commands.print("Do something"));
+    SmartDashboard.putData("Autonomous Command", autoCommandChooser);
+  }
+
+  /** Returns the command to run in autonomous mode. */
+  public Command getAutonomousCommand() {
+    if (autoCommandChooser.getSelected() != null) {
+      return autoCommandChooser.getSelected();
+    }
+    return Commands.print("No selection found for autonomous command");
+  }
+
+  //
+  // Drivebase control support
+  //
+
+  /** Enumeration of available drive control schemes. */
   private enum DriveControl {
     KEYBOARD1,
     ALT_KEYBOARD1,
     LOGITECH_CONTROLLER;
 
+    /** Returns the name of the control scheme. */
     public String getControlSchemeName() {
       switch (this) {
         case KEYBOARD1:
@@ -48,14 +70,8 @@ public class RobotContainer {
     }
   }
 
-  DriveControl currentControlScheme = DriveControl.KEYBOARD1;
-
-  private void updateControlScheme(DriveControl controlScheme) {
-    currentControlScheme = controlScheme;
-    System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
-  }
-
-  private void configureBindings() {
+  /** Sets up the drive control selection on the SmartDashboard. */
+  private void setupDriveControlSelection() {
     SendableChooser<DriveControl> driveInputChooser = new SendableChooser<DriveControl>();
     for (var option : DriveControl.values()) {
       if (option.ordinal() == 0) {
@@ -67,23 +83,24 @@ public class RobotContainer {
     driveInputChooser.onChange(this::updateControlScheme);
     currentControlScheme = driveInputChooser.getSelected();
     SmartDashboard.putData("Drive control", driveInputChooser);
-
-    SendableChooser<Command> chooser = new SendableChooser<Command>();
-    chooser.setDefaultOption("No Auto", Commands.print("No autonomous command configured"));
-    chooser.addOption("Do something", Commands.print("Do something"));
-    SmartDashboard.putData("Autonomous Command", chooser);
-
-    // SendableChooserSim chooserSim = new SendableChooserSim("choosersim");
-    // SmartDashboard.putData("Chooser sim", chooserSim);
   }
 
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+  /** The currently selected drive control scheme. */
+  DriveControl currentControlScheme = DriveControl.KEYBOARD1;
+
+  /** Updates the current control scheme based on user selection. */
+  private void updateControlScheme(DriveControl controlScheme) {
+    currentControlScheme = controlScheme;
+    System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
   }
 
   private final SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
   private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
+  /**
+   * Returns the forward value for arcade drive based on the current control
+   * scheme.
+   */
   public Double getArcadeForward() {
     final double forward = switch (currentControlScheme) {
       case KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
@@ -93,10 +110,14 @@ public class RobotContainer {
     return forwardSlewRateLimiter.calculate(MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD));
   }
 
+  /**
+   * Returns the rotation value for arcade drive based on the current control
+   * scheme.
+   */
   public Double getArcadeRotation() {
     final double rotation = switch (currentControlScheme) {
-      case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
       case KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
+      case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
       case LOGITECH_CONTROLLER -> -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightXAxis);
     };
     return rotationSlewRateLimiter.calculate(MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD));

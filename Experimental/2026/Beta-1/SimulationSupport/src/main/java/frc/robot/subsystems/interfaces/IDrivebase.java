@@ -2,6 +2,8 @@ package frc.robot.subsystems.interfaces;
 
 /** Interface for a drivebase subsystem. */
 public interface IDrivebase extends ISubsystem {
+  String SUBSYSTEM_NAME = "Drivebase";
+
   /**
    * Drives the robot using arcade controls.
    * 

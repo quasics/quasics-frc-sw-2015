@@ -113,6 +113,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   /** Creates a new Drivebase. */
   public Drivebase() {
+    setName(SUBSYSTEM_NAME);
+
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     configureSparkMaxEncoderForDistance(leftConfig, WHEEL_DIAMETER_INCHES, GEAR_RATIO);
 

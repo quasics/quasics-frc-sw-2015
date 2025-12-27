@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,11 +36,11 @@ public class RobotContainer {
 
   public Double getArcadeForward() {
     final double forward = m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
-    return forwardSlewRateLimiter.calculate(forward);
+    return forwardSlewRateLimiter.calculate(MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD));
   }
 
   public Double getArcadeRotation() {
     final double rotation = m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftXAxis);
-    return rotationSlewRateLimiter.calculate(rotation);
+    return rotationSlewRateLimiter.calculate(MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD));
   }
 }

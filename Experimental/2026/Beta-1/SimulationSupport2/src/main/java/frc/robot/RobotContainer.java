@@ -35,12 +35,12 @@ public class RobotContainer {
   private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
   public Double getArcadeForward() {
-    final double forward = m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
+    final double forward = m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftXAxis);
     return forwardSlewRateLimiter.calculate(MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD));
   }
 
   public Double getArcadeRotation() {
-    final double rotation = m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftXAxis);
+    final double rotation = -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
     return rotationSlewRateLimiter.calculate(MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD));
   }
 }

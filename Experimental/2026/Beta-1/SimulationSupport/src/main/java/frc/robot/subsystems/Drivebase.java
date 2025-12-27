@@ -85,7 +85,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
       m_drivetrainSystem,
       // Drive motor type and count
       DCMotor.getNEO(4),
-      // gearing reduction
       GEAR_RATIO,
       TRACK_WIDTH.in(Meters),
       WHEEL_DIAMETER_INCHES.in(Meters),

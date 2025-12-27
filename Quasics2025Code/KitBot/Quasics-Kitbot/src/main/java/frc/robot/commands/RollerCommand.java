@@ -12,7 +12,6 @@ import java.util.function.DoubleSupplier;
 public class RollerCommand extends Command {
   private final DoubleSupplier forward;
   private final DoubleSupplier reverse;
-  // private final CANRollerSubsystem rollerSubsystem;
   private final CANRollerSubsystem rollerSubsystem;
 
   public RollerCommand(

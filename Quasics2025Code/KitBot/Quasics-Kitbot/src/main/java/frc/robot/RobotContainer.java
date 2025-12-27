@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -15,7 +14,7 @@ import frc.robot.commands.AutoCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.RollerCommand;
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.CANDriveSubsystemSpark;
 import frc.robot.subsystems.CANRollerSubsystem;
 import frc.robot.subsystems.SimDriveSubsystem;
 import frc.robot.utils.RobotSettings;
@@ -30,10 +29,9 @@ import frc.robot.utils.RobotSettings;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // TODO: Make this an AbstractDrivebase
   private final AbstractDrivebase driveSubsystem;
   private final CANRollerSubsystem rollerSubsystem = new CANRollerSubsystem() {
-    
+
   };
 
   // The driver's controller
@@ -52,8 +50,10 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // The robot's subsystems
+    // TODO: Allow this to be selected based on RobotSettings
+    // TODO: This should be CANDriveSubsystemVictor
     if (Robot.isReal()) {
-      driveSubsystem = new CANDriveSubsystem();
+      driveSubsystem = new CANDriveSubsystemSpark();
     } else {
       
       driveSubsystem = new SimDriveSubsystem(RobotSettings.Robot.Simulator);

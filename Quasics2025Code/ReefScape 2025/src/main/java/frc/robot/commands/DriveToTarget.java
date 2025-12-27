@@ -46,6 +46,16 @@ public class DriveToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // TODO: Continue checking for target to verify distance calculation
+    // (Also, with not being centered, we may not drive directly towards it)
+    // Related TODO: Handle unseen cleanly (allow X failures before deciding it is
+    // truly out of sight)
+    // Realistically, 0 means we didn't see it
+
+    // TODO(Eventually): Consider cartesian (x/y/z) dimension.
+    // Go to a position which is aligned with the target
+    // TODO: Why is this minus? We're moving forward here, so we expect the position
+    // to increase
     System.out.println(m_rangeInMeters);
     m_stopPosition = m_drivebase.getLeftPosition().plus(Meters.of(m_rangeInMeters))
         .minus(Meters.of(m_howFarAwayInMeters));
@@ -54,6 +64,7 @@ public class DriveToTarget extends Command {
           .println("quite literally on top of target or cannot see target \n try aim at target before running again");
       m_finished = true;
     }
+    // TODO: We should probably be comparing against m_howFarAwayInMeters
     if (m_rangeInMeters != 0.0) {
       m_drivebase.setSpeeds(m_percentSpeed);
     }

@@ -4,10 +4,9 @@
 
 package frc.robot.commands;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import java.util.function.Supplier;
 
 /** A command that controls the robot using arcade-style driving. */
 public class ArcadeDrive extends Command {
@@ -20,15 +19,13 @@ public class ArcadeDrive extends Command {
 
   /**
    * Creates a new ArcadeDrive command.
-   * 
+   *
    * @param drivebase        drivebase subsystem to use
    * @param speedSupplier    supplier for forward speed
    * @param rotationSupplier supplier for rotation rate
    */
   public ArcadeDrive(
-      IDrivebase drivebase,
-      Supplier<Double> speedSupplier,
-      Supplier<Double> rotationSupplier) {
+      IDrivebase drivebase, Supplier<Double> speedSupplier, Supplier<Double> rotationSupplier) {
     this.drivebase = drivebase;
     this.speedSupplier = speedSupplier;
     this.rotationSupplier = rotationSupplier;

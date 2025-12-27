@@ -9,13 +9,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -28,13 +21,21 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
 /** Drivebase subsystem for a differential (tank) drive robot. */
 public class Drivebase extends SubsystemBase implements IDrivebase {
+  private static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
   /** Wheel diameter in inches. */
   final static Distance WHEEL_DIAMETER_INCHES = Inches.of(6);
   /** Gearing ratio from motor to wheel. */
@@ -58,16 +59,22 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   // Core definitions
   //
 
-  final private SparkMax leftLeader = new SparkMax(1, MotorType.kBrushless);
-  final private SparkMax rightLeader = new SparkMax(2, MotorType.kBrushless);
+  final private PWMSparkMax leftController = new PWMSparkMax(Ports.LEFT_MOTOR_PWM_PORT);
+  final private PWMSparkMax rightController = new PWMSparkMax(Ports.RIGHT_MOTOR_PWM_PORT);
+
+  private final Encoder leftEncoder = new Encoder(Ports.LEFT_ENCODER_A_DIO_PORT, Ports.LEFT_ENCODER_B_DIO_PORT);
+  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_ENCODER_A_DIO_PORT, Ports.RIGHT_ENCODER_B_DIO_PORT);
+
+  final AnalogGyro rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
   final private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   //
   // Simulation support
   //
-  private final SparkMaxSim leftLeaderSim = new SparkMaxSim(leftLeader, DCMotor.getNEO(1));
-  private final SparkMaxSim rightLeaderSim = new SparkMaxSim(rightLeader, DCMotor.getNEO(1));
+  final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
+  final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
+  final AnalogGyroSim m_gyroSim = new AnalogGyroSim(rawGyro);
 
   /**
    * Linear system describing the drive train.
@@ -81,15 +88,18 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
-      m_drivetrainSystem,
+  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
       // Drive motor type and count
-      DCMotor.getNEO(4),
-      GEAR_RATIO,
-      TRACK_WIDTH.in(Meters),
-      WHEEL_DIAMETER_INCHES.in(Meters),
+      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters), WHEEL_DIAMETER_INCHES.in(Meters),
       // configure for no noise in measurements
       null);
+
+  /**
+   * Field UX for showing simulated driving.
+   *
+   * Note that this could be moved into the SimulationUxSupport class.
+   */
+  final Field2d m_fieldSim = new Field2d();
 
   /**
    * Updates a SparkMaxConfig to work with distance-based values (meters and
@@ -102,28 +112,22 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    *                      (i.e., given a ratio of 1 turn of the external object
    *                      for every N turns of the motor, this would be N)
    */
-  public static void configureSparkMaxEncoderForDistance(
-      SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
-    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-
-    config.encoder.positionConversionFactor(distanceScalingFactorForGearing)
-        .velocityConversionFactor(velocityScalingFactor);
+  private static void configureEncoderForDistance(Encoder encoder, Distance outerDiameter) {
+    encoder.setDistancePerPulse(
+        Math.PI * WHEEL_DIAMETER_INCHES.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
   }
 
   /** Creates a new Drivebase. */
   public Drivebase() {
     setName(SUBSYSTEM_NAME);
 
-    SparkMaxConfig leftConfig = new SparkMaxConfig();
-    configureSparkMaxEncoderForDistance(leftConfig, WHEEL_DIAMETER_INCHES, GEAR_RATIO);
+    rightEncoder.setReverseDirection(true);
 
-    SparkMaxConfig rightConfig = new SparkMaxConfig();
-    rightConfig.apply(leftConfig);
-    rightConfig.inverted(true);
+    configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER_INCHES);
+    configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER_INCHES);
 
-    leftLeader.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightLeader.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Add the simulated field to the smart dashboard
+    SmartDashboard.putData("Field", m_fieldSim);
   }
 
   @Override
@@ -132,19 +136,19 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     double clampedLeftSpeed = MathUtil.clamp(leftSpeed, -1.0, +1.0);
     double clampedRightSpeed = MathUtil.clamp(rightSpeed, -1.0, +1.0);
 
-    leftLeader.set(clampedLeftSpeed);
-    rightLeader.set(clampedRightSpeed);
+    leftController.set(clampedLeftSpeed);
+    rightController.set(clampedRightSpeed);
   }
 
   /**
    * Sets the speeds of the left and right sides of the drivetrain. (Note:
    * operates directly; no PID.)
-   * 
+   *
    * Note that this is an alternative to using "classic" tank driving; this method
    * uses physical wheel speeds, and winds up passing them through to driveTank().
-   * 
+   *
    * @param speeds the desired wheel speeds
-   * 
+   *
    * @see #driveTank(double, double)
    */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
@@ -172,14 +176,14 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   /**
    * Drive the robot using arcade drive. (Note: operates directly; no PID.)
-   * 
+   *
    * Note that this is an alternative to using "classic" arcade driving; this
    * method uses physical wheel speeds, and winds up passing them through to
    * driveArcade().
    *
    * @param speed    The linear velocity to drive at.
    * @param rotation The angular velocity to rotate at.
-   * 
+   *
    * @see #driveArcade(double, double)
    */
   public void driveArcade(LinearVelocity speed, AngularVelocity rotation) {
@@ -206,20 +210,20 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(leftLeader.get() * RoboRioSim.getVInVoltage(),
-        rightLeader.get() * RoboRioSim.getVInVoltage());
+    m_drivetrainSimulator.setInputs(leftController.get() * RoboRioSim.getVInVoltage(),
+        rightController.get() * RoboRioSim.getVInVoltage());
 
     // Simulated clock ticks forward
     m_drivetrainSimulator.update(0.02);
 
-    leftLeaderSim.getAbsoluteEncoderSim()
-        .setPosition(m_drivetrainSimulator.getLeftPositionMeters());
-    rightLeaderSim.getAbsoluteEncoderSim()
-        .setPosition(m_drivetrainSimulator.getRightPositionMeters());
+    // Update the simulated encoders and gyro
+    leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+    rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+    leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+    rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
-    leftLeaderSim.getAbsoluteEncoderSim()
-        .setVelocity(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-    rightLeaderSim.getAbsoluteEncoderSim()
-        .setVelocity(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    // Update the field simulation
+    m_fieldSim.setRobotPose(m_drivetrainSimulator.getPose());
   }
 }

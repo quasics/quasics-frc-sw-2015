@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ArcadeDrive;
@@ -12,10 +13,11 @@ import frc.robot.subsystems.interfaces.IDrivebase;
 
 public class RobotContainer {
   IDrivebase drivebase = new Drivebase();
+  private final Joystick m_driveController = new Joystick(OperatorConstants.DRIVER_JOYSTICK_ID);
 
   public RobotContainer() {
-    drivebase.asSubsystem()
-        .setDefaultCommand(new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
+    drivebase.asSubsystem().setDefaultCommand(
+        new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
 
     configureBindings();
   }
@@ -28,12 +30,10 @@ public class RobotContainer {
   }
 
   public Double getArcadeForward() {
-    // TODO: Replace with real input
-    return 0.0;
+    return m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
   }
 
   public Double getArcadeRotation() {
-    // TODO: Replace with real input
-    return 0.0;
+    return m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftXAxis);
   }
 }

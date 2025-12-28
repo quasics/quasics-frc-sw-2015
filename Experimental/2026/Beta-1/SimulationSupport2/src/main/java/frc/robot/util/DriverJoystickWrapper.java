@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.LogitechConstants;
-import frc.robot.constants.OperatorConstants;
 
 /**
  * Wrapper around the driver's joystick to provide different control schemes.
@@ -49,6 +48,8 @@ public final class DriverJoystickWrapper {
   /** The currently selected drive control scheme. */
   private ControllerType currentControlScheme = ControllerType.KEYBOARD1;
 
+  private double m_deadbandThreshold = 0.05;
+
   /**
    * Constructor. (Also adds the drive control selection to the SmartDashboard.)
    * 
@@ -67,7 +68,7 @@ public final class DriverJoystickWrapper {
    *                          preferences
    */
   public DriverJoystickWrapper(int joystickId, boolean saveToPreferences) {
-    m_driveController = new Joystick(OperatorConstants.DRIVER_JOYSTICK_ID);
+    m_driveController = new Joystick(joystickId);
     m_saveToPreferences = saveToPreferences;
 
     // Optionally load the last-selected control scheme from preferences
@@ -90,6 +91,15 @@ public final class DriverJoystickWrapper {
   /** Returns the currently selected control scheme. */
   public ControllerType getCurrentControlScheme() {
     return currentControlScheme;
+  }
+
+  /**
+   * Sets the deadband threshold for joystick inputs.
+   * 
+   * @param threshold the deadband threshold to set
+   */
+  public void setDeadbandThreshold(double threshold) {
+    m_deadbandThreshold = threshold;
   }
 
   /** Sets up the drive control selection on the SmartDashboard. */
@@ -133,7 +143,7 @@ public final class DriverJoystickWrapper {
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
     };
-    return MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD);
+    return MathUtil.applyDeadband(forward, m_deadbandThreshold);
   }
 
   /**
@@ -149,6 +159,38 @@ public final class DriverJoystickWrapper {
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_X);
     };
-    return MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD);
+    return MathUtil.applyDeadband(rotation, m_deadbandThreshold);
+  }
+
+  /**
+   * Returns the "left" value for tank drive based on the current control
+   * scheme.
+   */
+  public Double getTankLeft() {
+    final double left = switch (currentControlScheme) {
+      case KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
+      case ALT_KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
+      case LOGITECH_CONTROLLER ->
+        -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
+      case GAMESIR_CONTROLLER ->
+        -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
+    };
+    return MathUtil.applyDeadband(left, m_deadbandThreshold);
+  }
+
+  /**
+   * Returns the "right" value for tank drive based on the current control
+   * scheme.
+   */
+  public Double getTankRight() {
+    final double right = switch (currentControlScheme) {
+      case KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
+      case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
+      case LOGITECH_CONTROLLER ->
+        -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightYAxis);
+      case GAMESIR_CONTROLLER ->
+        -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_Y);
+    };
+    return MathUtil.applyDeadband(right, m_deadbandThreshold);
   }
 }

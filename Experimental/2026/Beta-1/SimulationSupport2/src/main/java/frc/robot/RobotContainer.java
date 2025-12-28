@@ -10,12 +10,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 
 public class RobotContainer {
+  /** Whether to use arcade drive or tank drive for robot navigation. */
+  private static final boolean USE_ARCADE_DRIVE = true;
+
   private final IDrivebase drivebase = new Drivebase();
   private final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
       OperatorConstants.DRIVER_JOYSTICK_ID);
@@ -23,8 +27,13 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
-    drivebase.asSubsystem().setDefaultCommand(
-        new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
+    if (USE_ARCADE_DRIVE) {
+      drivebase.asSubsystem().setDefaultCommand(
+          new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
+    } else {
+      drivebase.asSubsystem().setDefaultCommand(
+          new TankDrive(drivebase, this::getTankLeftSpeed, this::getTankRightSpeed));
+    }
 
     configureBindings();
   }
@@ -69,5 +78,25 @@ public class RobotContainer {
    */
   public Double getArcadeRotation() {
     return rotationSlewRateLimiter.calculate(m_driverWrapper.getArcadeRotation());
+  }
+
+  /** Slew rate limiter for left tank-drive control. */
+  private final SlewRateLimiter leftTankDriveSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+
+  /**
+   * Returns the left speed for tank drive based on the current control scheme.
+   */
+  public Double getTankLeftSpeed() {
+    return leftTankDriveSlewRateLimiter.calculate(m_driverWrapper.getTankLeft());
+  }
+
+  /** Slew rate limiter for right tank-drive control. */
+  private final SlewRateLimiter rightTankDriveSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+
+  /**
+   * Returns the right speed for tank drive based on the current control scheme.
+   */
+  public Double getTankRightSpeed() {
+    return rightTankDriveSlewRateLimiter.calculate(m_driverWrapper.getTankRight());
   }
 }

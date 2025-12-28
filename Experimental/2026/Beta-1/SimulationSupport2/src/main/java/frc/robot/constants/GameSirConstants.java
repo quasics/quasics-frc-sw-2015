@@ -12,17 +12,17 @@ public class GameSirConstants {
   // report to the driver's station software as if they're joysticks (with a
   // range of [0.0, 1.0], unlike regular joysticks).
   public class Axes {
-    /** Left joystick X axis. */
+    /** Left joystick X axis. (Right is positive.) */
     public static final int LEFT_X = 0;
-    /** Left joystick Y axis. */
+    /** Left joystick Y axis. (Forward is negative.) */
     public static final int LEFT_Y = 1;
-    /** Left trigger axis. */
-    public static final int LEFT_TRIGGER = 2; // Range is [0,1]
-    /** Right trigger axis. */
-    public static final int RIGHT_TRIGGER = 3; // Range is [0,1]
-    /** Right joystick X axis. */
+    /** Left trigger axis. (Range is [0,1].) */
+    public static final int LEFT_TRIGGER = 2;
+    /** Right trigger axis. (Range is [0,1].) */
+    public static final int RIGHT_TRIGGER = 3;
+    /** Right joystick X axis. (Right is positive.) */
     public static final int RIGHT_X = 4;
-    /** Right joystick Y axis. */
+    /** Right joystick Y axis. (Forward is negative.) */
     public static final int RIGHT_Y = 5;
   }
 

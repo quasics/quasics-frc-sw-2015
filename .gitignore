@@ -179,6 +179,7 @@ ctre_sim/
 
 # Other simulation files
 networktables.json
+networktables.json.bck
 simgui-ds.json
 simgui.json
 imgui.ini

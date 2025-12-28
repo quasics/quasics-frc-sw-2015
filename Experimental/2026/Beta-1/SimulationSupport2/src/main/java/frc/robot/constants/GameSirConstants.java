@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 /**
  * Constants associated with the controls on a GameSir G4 Pro Bluetooth Game

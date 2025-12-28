@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.ArcadeDrive;
+import frc.robot.constants.LogitechConstants;
+import frc.robot.constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 
@@ -95,10 +97,8 @@ public class RobotContainer {
     System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
   }
 
-  private final SlewRateLimiter forwardSlewRateLimiter =
-      new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-  private final SlewRateLimiter rotationSlewRateLimiter =
-      new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+  private final SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+  private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
   /**
    * Returns the forward value for arcade drive based on the current control

@@ -25,9 +25,17 @@ public final class DriverJoystickWrapper {
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
+    /**
+     * Keyboard control scheme 1 (D/A for the "left" control, W/S for the "right").
+     */
     KEYBOARD1,
+    /**
+     * Keyboard control scheme 1 (W/S for the "left" control, D/A for the "right").
+     */
     ALT_KEYBOARD1,
-    LOGITECH_CONTROLLER,
+    /** Logitech DualShock controller. */
+    LOGITECH_DUALSHOCK_CONTROLLER,
+    /** GameSir Pro controller. */
     GAMESIR_CONTROLLER;
 
     /** Returns the name of the control scheme. */
@@ -35,8 +43,8 @@ public final class DriverJoystickWrapper {
       return switch (this) {
         case KEYBOARD1 -> "Keyboard1";
         case ALT_KEYBOARD1 -> "Alt-Keyboard1";
-        case LOGITECH_CONTROLLER -> "Logitech Controller";
-        case GAMESIR_CONTROLLER -> "GameSir Controller";
+        case LOGITECH_DUALSHOCK_CONTROLLER -> "Logitech DualShock";
+        case GAMESIR_CONTROLLER -> "GameSir Pro";
       };
     }
   }
@@ -76,7 +84,7 @@ public final class DriverJoystickWrapper {
 
     if (Robot.isReal()) {
       // In real robot, default to the Logitech controller scheme
-      currentControlScheme = ControllerType.LOGITECH_CONTROLLER;
+      currentControlScheme = ControllerType.LOGITECH_DUALSHOCK_CONTROLLER;
     } else if (m_saveToPreferences) {
       // Load the last-selected control scheme from preferences
       int savedControlSchemeOrdinal = m_saveToPreferences
@@ -90,6 +98,7 @@ public final class DriverJoystickWrapper {
       }
       currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
     }
+    System.out.println("Driving control scheme set to: " + currentControlScheme.getControlSchemeName());
 
     addDriveControlSelectionToSmartDashboard();
   }
@@ -129,7 +138,7 @@ public final class DriverJoystickWrapper {
   /** Updates the current control scheme based on user selection. */
   private void updateControlScheme(ControllerType controlScheme) {
     currentControlScheme = controlScheme;
-    System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
+    System.out.println("Driving control scheme set to: " + currentControlScheme.getControlSchemeName());
 
     if (m_saveToPreferences) {
       Preferences.setInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, controlScheme.ordinal());
@@ -144,7 +153,7 @@ public final class DriverJoystickWrapper {
     final double forward = switch (currentControlScheme) {
       case KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
       case ALT_KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
-      case LOGITECH_CONTROLLER ->
+      case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
@@ -160,7 +169,7 @@ public final class DriverJoystickWrapper {
     final double rotation = switch (currentControlScheme) {
       case KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
       case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
-      case LOGITECH_CONTROLLER ->
+      case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightXAxis);
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_X);
@@ -176,7 +185,7 @@ public final class DriverJoystickWrapper {
     final double left = switch (currentControlScheme) {
       case KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
       case ALT_KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
-      case LOGITECH_CONTROLLER ->
+      case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
@@ -192,7 +201,7 @@ public final class DriverJoystickWrapper {
     final double right = switch (currentControlScheme) {
       case KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
       case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
-      case LOGITECH_CONTROLLER ->
+      case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightYAxis);
       case GAMESIR_CONTROLLER ->
         -m_driveController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_Y);

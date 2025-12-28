@@ -31,6 +31,7 @@ public class RobotContainer {
     configureBindings();
   }
 
+  /** Configures the driving behavior. */
   private void configureDriving() {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
     if (USE_ARCADE_DRIVE) {

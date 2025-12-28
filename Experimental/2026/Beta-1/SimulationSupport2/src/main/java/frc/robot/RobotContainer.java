@@ -20,11 +20,16 @@ public class RobotContainer {
   /** Whether to use arcade drive or tank drive for robot navigation. */
   private static final boolean USE_ARCADE_DRIVE = true;
 
+  /** The drivebase subsystem. */
   private final IDrivebase drivebase = new Drivebase();
+
+  /** The driver joystick wrapper. */
   private final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
       OperatorConstants.DRIVER_JOYSTICK_ID,
       // Only load from/save to preferences when in simulation
       Robot.isSimulation());
+
+  /** The autonomous command chooser. */
   private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
 
   /** Constructor. */

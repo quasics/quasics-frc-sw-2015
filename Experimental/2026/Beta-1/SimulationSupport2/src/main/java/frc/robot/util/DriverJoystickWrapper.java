@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.constants.LogitechConstants;
 
 /**
@@ -71,8 +72,11 @@ public final class DriverJoystickWrapper {
     m_driveController = new Joystick(joystickId);
     m_saveToPreferences = saveToPreferences;
 
-    // Optionally load the last-selected control scheme from preferences
-    if (m_saveToPreferences) {
+    if (Robot.isReal()) {
+      // In real robot, default to the Logitech controller scheme
+      currentControlScheme = ControllerType.LOGITECH_CONTROLLER;
+    } else if (m_saveToPreferences) {
+      // Load the last-selected control scheme from preferences
       int savedControlSchemeOrdinal = m_saveToPreferences
           // Load the last-selected control scheme from preferences
           ? Preferences.getInt(

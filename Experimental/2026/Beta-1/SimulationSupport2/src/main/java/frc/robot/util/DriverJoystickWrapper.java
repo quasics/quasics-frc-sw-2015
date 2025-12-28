@@ -9,20 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.LogitechConstants;
 import frc.robot.constants.OperatorConstants;
 
+/**
+ * Wrapper around the driver's joystick to provide different control schemes.
+ * 
+ * This also includes the SmartDashboard integration to allow the user to select
+ * the desired control scheme at runtime, and the ability to save/load the last
+ * selected scheme to/from preferences.
+ */
 public final class DriverJoystickWrapper {
-  private final Joystick m_driveController;
-  private final boolean m_saveToPreferences;
-
-  public DriverJoystickWrapper(int joystickId) {
-    this(joystickId, true);
-  }
-
-  public DriverJoystickWrapper(int joystickId, boolean saveToPreferences) {
-    m_driveController = new Joystick(OperatorConstants.DRIVER_JOYSTICK_ID);
-    m_saveToPreferences = saveToPreferences;
-
-    addDriveControlSelectionToSmartDashboard();
-  }
+  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
@@ -42,8 +37,52 @@ public final class DriverJoystickWrapper {
     }
   }
 
+  /** The underlying joystick being wrapped. */
+  private final Joystick m_driveController;
+
+  /** Whether to save/load the selected control scheme to/from preferences. */
+  private final boolean m_saveToPreferences;
+
   /** The currently selected drive control scheme. */
   private ControllerType currentControlScheme = ControllerType.KEYBOARD1;
+
+  /**
+   * Constructor. (Also adds the drive control selection to the SmartDashboard.)
+   * 
+   * @param joystickId the ID of the joystick to wrap
+   */
+  public DriverJoystickWrapper(int joystickId) {
+    this(joystickId, true);
+  }
+
+  /**
+   * Constructor. (Also adds the drive control selection to the SmartDashboard.)
+   * 
+   * @param joystickId        the ID of the joystick to wrap
+   * @param saveToPreferences whether to save/load the selected control scheme
+   *                          to/from
+   *                          preferences
+   */
+  public DriverJoystickWrapper(int joystickId, boolean saveToPreferences) {
+    m_driveController = new Joystick(OperatorConstants.DRIVER_JOYSTICK_ID);
+    m_saveToPreferences = saveToPreferences;
+
+    // Optionally load the last-selected control scheme from preferences
+    if (m_saveToPreferences) {
+      int savedControlSchemeOrdinal = m_saveToPreferences
+          // Load the last-selected control scheme from preferences
+          ? Preferences.getInt(
+              PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, 0)
+          // Default to 0 if not working with preferences
+          : 0;
+      if (savedControlSchemeOrdinal < 0 || savedControlSchemeOrdinal >= ControllerType.values().length) {
+        savedControlSchemeOrdinal = 0;
+      }
+      currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
+    }
+
+    addDriveControlSelectionToSmartDashboard();
+  }
 
   /** Returns the currently selected control scheme. */
   public ControllerType getCurrentControlScheme() {
@@ -52,17 +91,6 @@ public final class DriverJoystickWrapper {
 
   /** Sets up the drive control selection on the SmartDashboard. */
   private void addDriveControlSelectionToSmartDashboard() {
-    // Load the last-selected control scheme from preferences
-    int savedControlSchemeOrdinal = m_saveToPreferences
-        // Load the last-selected control scheme from preferences
-        ? Preferences.getInt("DriveControlScheme", 0)
-        // Default to 0 if not working with preferences
-        : 0;
-    if (savedControlSchemeOrdinal < 0 || savedControlSchemeOrdinal >= ControllerType.values().length) {
-      savedControlSchemeOrdinal = 0;
-    }
-    currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
-
     // Build/install the chooser, establishing the saved scheme as the default
     SendableChooser<ControllerType> driveInputChooser = new SendableChooser<ControllerType>();
     for (var option : ControllerType.values()) {
@@ -85,7 +113,7 @@ public final class DriverJoystickWrapper {
     System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
 
     if (m_saveToPreferences) {
-      Preferences.setInt("DriveControlScheme", controlScheme.ordinal());
+      Preferences.setInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, controlScheme.ordinal());
     }
   }
 
@@ -105,9 +133,6 @@ public final class DriverJoystickWrapper {
     return MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD);
   }
 
-  /** Slew rate limiter for rotation control. */
-  private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-
   /**
    * Returns the "rotation" value for arcade drive based on the current control
    * scheme.
@@ -123,5 +148,4 @@ public final class DriverJoystickWrapper {
     };
     return MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD);
   }
-
 }

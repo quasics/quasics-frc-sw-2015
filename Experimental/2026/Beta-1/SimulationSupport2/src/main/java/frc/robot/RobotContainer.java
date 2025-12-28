@@ -41,12 +41,20 @@ public class RobotContainer {
   /** Configures the driving behavior. */
   private void configureDriving() {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
+    SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     if (USE_ARCADE_DRIVE) {
       drivebase.asSubsystem().setDefaultCommand(
-          new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
+          new ArcadeDrive(
+              drivebase,
+              () -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
+              () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
     } else {
       drivebase.asSubsystem().setDefaultCommand(
-          new TankDrive(drivebase, this::getTankLeftSpeed, this::getTankRightSpeed));
+          new TankDrive(
+              drivebase,
+              () -> limiter1.calculate(m_driverWrapper.getTankLeft()),
+              () -> limiter2.calculate(m_driverWrapper.getTankRight())));
     }
   }
 
@@ -64,51 +72,5 @@ public class RobotContainer {
       return autoCommandChooser.getSelected();
     }
     return Commands.print("No selection found for autonomous command");
-  }
-
-  //
-  // Drivebase control support
-  //
-
-  /** Slew rate limiter for forward control. */
-  private final SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-
-  /**
-   * Returns the "forward" value for arcade drive based on the current control
-   * scheme.
-   */
-  public Double getArcadeForward() {
-    return forwardSlewRateLimiter.calculate(m_driverWrapper.getArcadeForward());
-  }
-
-  /** Slew rate limiter for rotation control. */
-  private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-
-  /**
-   * Returns the "rotation" value for arcade drive based on the current control
-   * scheme.
-   */
-  public Double getArcadeRotation() {
-    return rotationSlewRateLimiter.calculate(m_driverWrapper.getArcadeRotation());
-  }
-
-  /** Slew rate limiter for left tank-drive control. */
-  private final SlewRateLimiter leftTankDriveSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-
-  /**
-   * Returns the left speed for tank drive based on the current control scheme.
-   */
-  public Double getTankLeftSpeed() {
-    return leftTankDriveSlewRateLimiter.calculate(m_driverWrapper.getTankLeft());
-  }
-
-  /** Slew rate limiter for right tank-drive control. */
-  private final SlewRateLimiter rightTankDriveSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-
-  /**
-   * Returns the right speed for tank drive based on the current control scheme.
-   */
-  public Double getTankRightSpeed() {
-    return rightTankDriveSlewRateLimiter.calculate(m_driverWrapper.getTankRight());
   }
 }

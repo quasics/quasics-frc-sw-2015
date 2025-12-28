@@ -62,12 +62,15 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final private PWMSparkMax leftController = new PWMSparkMax(Ports.LEFT_MOTOR_PWM_PORT);
   final private PWMSparkMax rightController = new PWMSparkMax(Ports.RIGHT_MOTOR_PWM_PORT);
 
-  private final Encoder leftEncoder = new Encoder(Ports.LEFT_ENCODER_A_DIO_PORT, Ports.LEFT_ENCODER_B_DIO_PORT);
-  private final Encoder rightEncoder = new Encoder(Ports.RIGHT_ENCODER_A_DIO_PORT, Ports.RIGHT_ENCODER_B_DIO_PORT);
+  private final Encoder leftEncoder =
+      new Encoder(Ports.LEFT_ENCODER_A_DIO_PORT, Ports.LEFT_ENCODER_B_DIO_PORT);
+  private final Encoder rightEncoder =
+      new Encoder(Ports.RIGHT_ENCODER_A_DIO_PORT, Ports.RIGHT_ENCODER_B_DIO_PORT);
 
   final AnalogGyro rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
-  final private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  final private DifferentialDriveKinematics m_kinematics =
+      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   //
   // Simulation support
@@ -85,14 +88,16 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      // Drive motor type and count
-      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters), WHEEL_DIAMETER_INCHES.in(Meters),
-      // configure for no noise in measurements
-      null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem,
+          // Drive motor type and count
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters), WHEEL_DIAMETER_INCHES.in(Meters),
+          // configure for no noise in measurements
+          null);
 
   /**
    * Field UX for showing simulated driving.
@@ -195,8 +200,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);

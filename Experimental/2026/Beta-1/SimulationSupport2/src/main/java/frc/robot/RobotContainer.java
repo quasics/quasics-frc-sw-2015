@@ -32,7 +32,8 @@ public class RobotContainer {
     setupDriveControlSelection();
 
     // Set up autonomous command chooser
-    autoCommandChooser.setDefaultOption("No Auto", Commands.print("No autonomous command configured"));
+    autoCommandChooser.setDefaultOption(
+        "No Auto", Commands.print("No autonomous command configured"));
     autoCommandChooser.addOption("Do something", Commands.print("Do something"));
     SmartDashboard.putData("Autonomous Command", autoCommandChooser);
   }
@@ -94,8 +95,10 @@ public class RobotContainer {
     System.out.println("Control scheme set to: " + controlScheme.getControlSchemeName());
   }
 
-  private final SlewRateLimiter forwardSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-  private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+  private final SlewRateLimiter forwardSlewRateLimiter =
+      new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+  private final SlewRateLimiter rotationSlewRateLimiter =
+      new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
   /**
    * Returns the forward value for arcade drive based on the current control
@@ -105,9 +108,11 @@ public class RobotContainer {
     final double forward = switch (currentControlScheme) {
       case KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
       case ALT_KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
-      case LOGITECH_CONTROLLER -> -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
+      case LOGITECH_CONTROLLER ->
+        -m_driveController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
     };
-    return forwardSlewRateLimiter.calculate(MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD));
+    return forwardSlewRateLimiter.calculate(
+        MathUtil.applyDeadband(forward, OperatorConstants.DEADBAND_THRESHOLD));
   }
 
   /**
@@ -118,8 +123,10 @@ public class RobotContainer {
     final double rotation = switch (currentControlScheme) {
       case KEYBOARD1 -> -m_driveController.getRawAxis(1); // Mapped to W/S keys
       case ALT_KEYBOARD1 -> m_driveController.getRawAxis(0); // Mapped to D/A keys
-      case LOGITECH_CONTROLLER -> -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightXAxis);
+      case LOGITECH_CONTROLLER ->
+        -m_driveController.getRawAxis(LogitechConstants.Dualshock.RightXAxis);
     };
-    return rotationSlewRateLimiter.calculate(MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD));
+    return rotationSlewRateLimiter.calculate(
+        MathUtil.applyDeadband(rotation, OperatorConstants.DEADBAND_THRESHOLD));
   }
 }

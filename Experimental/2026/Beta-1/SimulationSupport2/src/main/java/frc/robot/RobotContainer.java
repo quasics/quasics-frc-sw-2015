@@ -24,10 +24,10 @@ public class RobotContainer {
   private final IDrivebase drivebase = new Drivebase();
 
   /** The driver joystick wrapper. */
-  private final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
-      OperatorConstants.DRIVER_JOYSTICK_ID,
-      // Only load from/save to preferences when in simulation
-      Robot.isSimulation());
+  private final DriverJoystickWrapper m_driverWrapper =
+      new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
+          // Only load from/save to preferences when in simulation
+          Robot.isSimulation());
 
   /** The autonomous command chooser. */
   private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
@@ -44,17 +44,15 @@ public class RobotContainer {
     SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     if (USE_ARCADE_DRIVE) {
-      drivebase.asSubsystem().setDefaultCommand(
-          new ArcadeDrive(
-              drivebase,
-              () -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
-              () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
+      drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(drivebase,
+          ()
+              -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
+          () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
     } else {
-      drivebase.asSubsystem().setDefaultCommand(
-          new TankDrive(
-              drivebase,
-              () -> limiter1.calculate(m_driverWrapper.getTankLeft()),
-              () -> limiter2.calculate(m_driverWrapper.getTankRight())));
+      drivebase.asSubsystem().setDefaultCommand(new TankDrive(drivebase,
+          ()
+              -> limiter1.calculate(m_driverWrapper.getTankLeft()),
+          () -> limiter2.calculate(m_driverWrapper.getTankRight())));
     }
   }
 

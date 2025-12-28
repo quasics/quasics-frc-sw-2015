@@ -14,7 +14,7 @@ import frc.robot.constants.LogitechConstants;
 
 /**
  * Wrapper around the driver's joystick to provide different control schemes.
- * 
+ *
  * This also includes the SmartDashboard integration to allow the user to select
  * the desired control scheme at runtime, and the ability to save/load the last
  * selected scheme to/from preferences.
@@ -53,7 +53,7 @@ public final class DriverJoystickWrapper {
 
   /**
    * Constructor. (Also adds the drive control selection to the SmartDashboard.)
-   * 
+   *
    * @param joystickId the ID of the joystick to wrap
    */
   public DriverJoystickWrapper(int joystickId) {
@@ -62,7 +62,7 @@ public final class DriverJoystickWrapper {
 
   /**
    * Constructor. (Also adds the drive control selection to the SmartDashboard.)
-   * 
+   *
    * @param joystickId        the ID of the joystick to wrap
    * @param saveToPreferences whether to save/load the selected control scheme
    *                          to/from
@@ -79,11 +79,11 @@ public final class DriverJoystickWrapper {
       // Load the last-selected control scheme from preferences
       int savedControlSchemeOrdinal = m_saveToPreferences
           // Load the last-selected control scheme from preferences
-          ? Preferences.getInt(
-              PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, 0)
+          ? Preferences.getInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, 0)
           // Default to 0 if not working with preferences
           : 0;
-      if (savedControlSchemeOrdinal < 0 || savedControlSchemeOrdinal >= ControllerType.values().length) {
+      if (savedControlSchemeOrdinal < 0
+          || savedControlSchemeOrdinal >= ControllerType.values().length) {
         savedControlSchemeOrdinal = 0;
       }
       currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
@@ -99,7 +99,7 @@ public final class DriverJoystickWrapper {
 
   /**
    * Sets the deadband threshold for joystick inputs.
-   * 
+   *
    * @param threshold the deadband threshold to set
    */
   public void setDeadbandThreshold(double threshold) {

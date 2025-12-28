@@ -27,6 +27,12 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
+    configureDriving();
+    configureBindings();
+  }
+
+  private void configureDriving() {
+    m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
     if (USE_ARCADE_DRIVE) {
       drivebase.asSubsystem().setDefaultCommand(
           new ArcadeDrive(drivebase, this::getArcadeForward, this::getArcadeRotation));
@@ -34,8 +40,6 @@ public class RobotContainer {
       drivebase.asSubsystem().setDefaultCommand(
           new TankDrive(drivebase, this::getTankLeftSpeed, this::getTankRightSpeed));
     }
-
-    configureBindings();
   }
 
   private void configureBindings() {

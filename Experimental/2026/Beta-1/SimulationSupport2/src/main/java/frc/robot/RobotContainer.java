@@ -22,7 +22,7 @@ public class RobotContainer {
 
   private final IDrivebase drivebase = new Drivebase();
   private final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
-      OperatorConstants.DRIVER_JOYSTICK_ID);
+      OperatorConstants.DRIVER_JOYSTICK_ID, Robot.isSimulation());
   private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
 
   /** Constructor. */

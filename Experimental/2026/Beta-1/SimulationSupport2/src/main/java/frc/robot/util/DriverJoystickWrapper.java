@@ -20,6 +20,7 @@ import frc.robot.constants.LogitechConstants;
  * selected scheme to/from preferences.
  */
 public final class DriverJoystickWrapper {
+  /** The preference key for saving/loading the drive control scheme. */
   private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
 
   /** Enumeration of available drive control schemes. */
@@ -49,6 +50,7 @@ public final class DriverJoystickWrapper {
   /** The currently selected drive control scheme. */
   private ControllerType currentControlScheme = ControllerType.KEYBOARD1;
 
+  /** The deadband threshold for joystick inputs. */
   private double m_deadbandThreshold = 0.05;
 
   /**

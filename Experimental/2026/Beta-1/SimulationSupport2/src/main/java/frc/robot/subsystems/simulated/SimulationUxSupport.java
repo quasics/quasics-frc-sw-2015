@@ -37,21 +37,13 @@ public class SimulationUxSupport {
   /** Color used to render the elevator when running under manual control. */
   private final static Color8Bit NO_SETPOINT = new Color8Bit("#FFA500");
 
-  /**
-   * Color used to render the elevator when we've reached the target position .
-   */
+  /** Color used to render the elevator when we've reached the target position. */
   private final static Color8Bit AT_SETPOINT = new Color8Bit("#00FF00");
 
-  /**
-   * Color used to render the elevator when we're driving towards the target
-   * position .
-   */
+  /** Color used to render the elevator when we're driving towards the target position. */
   private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit("#FF0000");
 
-  /**
-   * Color used to render the elevator when we're driving towards the target
-   * position .
-   */
+  /** Color used to render the elevator when it's in the "idle" state. */
   private final static Color8Bit IDLE = new Color8Bit("#808080");
 
   /** Singleton instance of this class. */

@@ -26,7 +26,9 @@ import frc.robot.constants.LogitechConstants;
  * Note:
  * <ul>
  * <li>The "Keyboard1" and "Alt-Keyboard1" schemes assume that system "keyboard 0" and "keyboard 1"
- * are mapped to "Joystick 0" and "Joystick 1" (respectively), e.g., in the simulator.
+ * are mapped to "Joystick 0" and "Joystick 1" (respectively), e.g., in the simulator.  Keyboard 0
+ * defaults to using "D/A" and "W/S" as up/down pairs, while Keyboard 1 defaults to "I/J" and "K/L".
+ *
  * <li>The "GameSir Pro" scheme is based on the GameSir Pro controller's default axis mapping, and
  * represents a Mac-compatible Bluetooth controller that I have handy.
  * </ul>
@@ -37,13 +39,9 @@ public final class DriverJoystickWrapper {
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
-    /**
-     * Keyboard control scheme 1 (D/A for the "left" control, W/S for the "right").
-     */
+    /** Keyboard control scheme 1. */
     KEYBOARD1,
-    /**
-     * Keyboard control scheme 1 (W/S for the "left" control, D/A for the "right").
-     */
+    /** Alternate version of KEYBOARD1, swapping the axis pairs on joystick 0. */
     ALT_KEYBOARD1,
     /** Logitech DualShock controller. */
     LOGITECH_DUALSHOCK_CONTROLLER,
@@ -90,8 +88,7 @@ public final class DriverJoystickWrapper {
    *
    * @param joystickId        the ID of the joystick to wrap
    * @param saveToPreferences whether to save/load the selected control scheme
-   *                          to/from
-   *                          preferences
+   *                          to/from preferences
    */
   public DriverJoystickWrapper(int joystickId, boolean saveToPreferences) {
     m_driveController = new Joystick(joystickId);
@@ -214,6 +211,7 @@ public final class DriverJoystickWrapper {
     return MathUtil.applyDeadband(right, m_deadbandThreshold);
   }
 
+  /** Returns the left X axis value based on the current control scheme.*/
   public Double getLeftX() {
     final double leftX = switch (currentControlScheme) {
       case KEYBOARD1 -> 0.0;
@@ -227,6 +225,7 @@ public final class DriverJoystickWrapper {
     return MathUtil.applyDeadband(leftX, m_deadbandThreshold);
   }
 
+  /** Returns the left Y axis value based on the current control scheme.*/
   public Double getLeftY() {
     final double leftY = switch (currentControlScheme) {
       case KEYBOARD1 -> 0.0;
@@ -240,6 +239,7 @@ public final class DriverJoystickWrapper {
     return MathUtil.applyDeadband(leftY, m_deadbandThreshold);
   }
 
+  /** Returns the right X axis value based on the current control scheme.*/
   public double getRightX() {
     final double rightX = switch (currentControlScheme) {
       case KEYBOARD1 -> 0.0;
@@ -253,6 +253,7 @@ public final class DriverJoystickWrapper {
     return MathUtil.applyDeadband(rightX, m_deadbandThreshold);
   }
 
+  /** Returns the right Y axis value based on the current control scheme.*/
   public double getRightY() {
     final double rightY = switch (currentControlScheme) {
       case KEYBOARD1 -> 0.0;

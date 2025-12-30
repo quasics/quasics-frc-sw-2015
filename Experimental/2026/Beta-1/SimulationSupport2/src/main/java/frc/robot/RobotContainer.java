@@ -9,11 +9,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IElevator;
+import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
 import frc.robot.util.DriverJoystickWrapper;
 
 public class RobotContainer {
@@ -22,6 +25,8 @@ public class RobotContainer {
 
   /** The drivebase subsystem. */
   private final IDrivebase drivebase = new Drivebase();
+
+  private final IElevator elevator = new frc.robot.subsystems.simulated.SimElevator();
 
   /** The driver joystick wrapper. */
   private final DriverJoystickWrapper m_driverWrapper =
@@ -36,6 +41,15 @@ public class RobotContainer {
   public RobotContainer() {
     configureDriving();
     configureBindings();
+
+    SmartDashboard.putData("Cmd: Elevator up", new InstantCommand(() -> {
+      elevator.setTargetPosition(ElevatorPosition.HIGH);
+    }, elevator.asSubsystem()));
+    SmartDashboard.putData("Cmd: Elevator down", new InstantCommand(() -> {
+      elevator.setTargetPosition(ElevatorPosition.BOTTOM);
+    }, elevator.asSubsystem()));
+    SmartDashboard.putData("Cmd: Elevator stop",
+        new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem()));
   }
 
   /** Configures the driving behavior. */

@@ -28,10 +28,9 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.simulated.SimulationUxSupport;
 
 /** Drivebase subsystem for a differential (tank) drive robot. */
 public class Drivebase extends SubsystemBase implements IDrivebase {
@@ -100,13 +99,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
           null);
 
   /**
-   * Field UX for showing simulated driving.
-   *
-   * Note that this could be moved into the SimulationUxSupport class.
-   */
-  final Field2d m_fieldSim = new Field2d();
-
-  /**
    * Updates a SparkMaxConfig to work with distance-based values (meters and
    * meters/sec), rather than the native rotation-based units (rotations and RPM).
    *
@@ -130,9 +122,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
     configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER_INCHES);
     configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER_INCHES);
-
-    // Add the simulated field to the smart dashboard
-    SmartDashboard.putData("Field", m_fieldSim);
   }
 
   @Override
@@ -227,6 +216,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Update the field simulation
-    m_fieldSim.setRobotPose(m_drivetrainSimulator.getPose());
+    SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
   }
 }

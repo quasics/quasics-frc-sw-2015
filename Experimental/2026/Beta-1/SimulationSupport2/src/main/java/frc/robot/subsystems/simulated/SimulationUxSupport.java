@@ -4,14 +4,27 @@
 
 package frc.robot.subsystems.simulated;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.interfaces.IElevator;
 
-/** Support for simulation user experience (UX). */
+/**
+ * Support for simulation user experience (UX).
+ *
+ * <ul>
+ * <li>To show the elevator's visualization, select Network Tables -> SmartDashboard -> Elevator Sim
+ *
+ * <li>To show the field visualization, select Network Tables -> SmartDashboard -> Field
+ * </ul>
+ */
 public class SimulationUxSupport {
+  private static final String ELEVATOR_KEY = "Elevator Sim";
+  private static final String FIELD_KEY = "Field";
+
   /** Color used to mark the upper boundary for the elevator's reach. */
   private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(255, 0, 0);
 
@@ -47,11 +60,25 @@ public class SimulationUxSupport {
    */
   private final MechanismLigament2d m_elevatorMech2d;
 
-  /** Constructor. */
+  private final Mechanism2d rootMech2d;
+
+  /**
+   * Field UX for showing simulated driving.
+   *
+   * Note that this could be moved into the SimulationUxSupport class.
+   */
+  final Field2d m_fieldSim = new Field2d();
+
+  /**
+   * Constructor.
+   *
+   * Note that we are "lazy", and won't publish the Mechanism2d or Field2d unless they are actually
+   * being used/updated by the various subsystems.  (This helps to avoid cluttering up the
+   * SmartDashboard, and also helps to highlight when we've failed to allocate a subsystem.)
+   */
   private SimulationUxSupport() {
     // Simulation rendering setup.
-    @SuppressWarnings("resource")
-    Mechanism2d rootMech2d = new Mechanism2d(9,
+    rootMech2d = new Mechanism2d(9,
         (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
             * 1.15) // Leave a little room at the top
     );
@@ -72,13 +99,6 @@ public class SimulationUxSupport {
     var topBoundRoot = rootMech2d.getRoot(
         "TopRoot", 0, SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.HIGH));
     topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, UPPER_BOUND_COLOR));
-
-    // Publish Mechanism2d to SmartDashboard.
-    // To show the visualization, select Network Tables -> SmartDashboard
-    // -> Elevator Sim
-    SmartDashboard.putData("Elevator Sim", rootMech2d);
-
-    updateElevator(0.0, 0.0, DeviceStatus.Manual);
   }
 
   /**
@@ -118,6 +138,20 @@ public class SimulationUxSupport {
       } else {
         m_elevatorMech2d.setColor(NOT_AT_SETPOINT);
       }
+    }
+
+    if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
+      // Publish the simulation of the elevator to SmartDashboard.
+      SmartDashboard.putData(ELEVATOR_KEY, rootMech2d);
+    }
+  }
+
+  public void updateFieldRobotPose(Pose2d robotPose) {
+    m_fieldSim.setRobotPose(robotPose);
+
+    if (!SmartDashboard.containsKey(FIELD_KEY)) {
+      // Publish the simulated field to the smart dashboard
+      SmartDashboard.putData(FIELD_KEY, m_fieldSim);
     }
   }
 }

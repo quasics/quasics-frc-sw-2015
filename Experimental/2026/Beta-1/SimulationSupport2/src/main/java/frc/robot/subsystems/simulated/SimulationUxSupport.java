@@ -22,8 +22,11 @@ import frc.robot.subsystems.interfaces.IElevator;
  * </ul>
  */
 public class SimulationUxSupport {
-  private static final String ELEVATOR_KEY = "Elevator Sim";
+  /** Name used to publish the field simulation UX to SmartDashboard. */
   private static final String FIELD_KEY = "Field";
+
+  /** Name used to publish the elevator simulation UX to SmartDashboard. */
+  private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + " Sim";
 
   /** Color used to mark the upper boundary for the elevator's reach. */
   private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(255, 0, 0);

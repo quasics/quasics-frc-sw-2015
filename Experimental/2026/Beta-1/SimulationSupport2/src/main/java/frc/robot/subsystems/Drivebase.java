@@ -29,7 +29,8 @@ import frc.robot.subsystems.interfaces.IDrivebase;
  * Notes:
  *
  * <li>I'm using PWMSparkMax controllers in this code because of a bug in the current (Beta1)
- * version of RevLib, which is causing crashes during simulation, at least under MacOS.
+ * version of RevLib, which is causing crashes during simulation, at least under MacOS.  (A [bug
+ * report](https://github.com/wpilibsuite/2026Beta/issues/29) has been filed.)
  *
  * <li>This class implements "open loop" control only; there is no PID
  * control or other feedback mechanisms here.

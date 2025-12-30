@@ -91,6 +91,17 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   final protected DifferentialDriveKinematics m_kinematics =
       new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
+  /** Creates a new Drivebase. */
+  public Drivebase() {
+    setName(SUBSYSTEM_NAME);
+
+    // Set up the encoders
+    rightEncoder.setReverseDirection(true);
+    leftEncoder.setReverseDirection(false);
+    configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER);
+    configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER);
+  }
+
   /**
    * Updates a SparkMaxConfig to work with distance-based values (meters and
    * meters/sec), rather than the native rotation-based units (rotations and RPM).
@@ -104,37 +115,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    */
   protected static void configureEncoderForDistance(Encoder encoder, Distance outerDiameter) {
     encoder.setDistancePerPulse(Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
-  }
-
-  /** Creates a new Drivebase. */
-  public Drivebase() {
-    setName(SUBSYSTEM_NAME);
-
-    // Set up the encoders
-    rightEncoder.setReverseDirection(true);
-    leftEncoder.setReverseDirection(false);
-    configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER);
-    configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER);
-  }
-
-  @Override
-  public void driveTank(double leftSpeed, double rightSpeed) {
-    // Don't let the values go outside of [-100%, +100%].
-    double clampedLeftSpeed = MathUtil.clamp(leftSpeed, -1.0, +1.0);
-    double clampedRightSpeed = MathUtil.clamp(rightSpeed, -1.0, +1.0);
-
-    leftController.set(clampedLeftSpeed);
-    rightController.set(clampedRightSpeed);
-  }
-
-  @Override
-  public void driveArcade(double forward, double rotation) {
-    // Don't let the values go outside of [-100%, +100%].
-    double clampedSpeedPercentage = MathUtil.clamp(forward, -1.0, +1.0);
-    double clampedRotationPercentage = MathUtil.clamp(rotation, -1.0, +1.0);
-
-    driveArcade(
-        MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
   /**
@@ -187,5 +167,29 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
+  }
+
+  //
+  // Methods from IDrivebase
+  //
+
+  @Override
+  public void driveTank(double leftSpeed, double rightSpeed) {
+    // Don't let the values go outside of [-100%, +100%].
+    double clampedLeftSpeed = MathUtil.clamp(leftSpeed, -1.0, +1.0);
+    double clampedRightSpeed = MathUtil.clamp(rightSpeed, -1.0, +1.0);
+
+    leftController.set(clampedLeftSpeed);
+    rightController.set(clampedRightSpeed);
+  }
+
+  @Override
+  public void driveArcade(double forward, double rotation) {
+    // Don't let the values go outside of [-100%, +100%].
+    double clampedSpeedPercentage = MathUtil.clamp(forward, -1.0, +1.0);
+    double clampedRotationPercentage = MathUtil.clamp(rotation, -1.0, +1.0);
+
+    driveArcade(
+        MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 }

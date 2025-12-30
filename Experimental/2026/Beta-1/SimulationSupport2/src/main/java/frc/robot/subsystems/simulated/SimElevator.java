@@ -58,6 +58,26 @@ public class SimElevator extends SubsystemBase implements IElevator {
     };
   }
 
+  /** Update the simulated display elements. */
+  private void updateSimulatedDisplay() {
+    SimulationUxSupport.DeviceStatus status = switch (elevatorState) {
+      case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
+      case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
+      case MOVING_TO_POSITION ->
+        (Math.abs(currentHeight - getHeightForPosition(targetPosition)) < SETPOINT_TOLERANCE)
+            ? SimulationUxSupport.DeviceStatus.AtSetpoint
+            : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
+    };
+
+    // Update any simulated display elements here, if needed
+    SimulationUxSupport.instance.updateElevator(
+        currentHeight, getHeightForPosition(targetPosition), status);
+  }
+
+  //
+  // Methods from IElevator
+  //
+
   @Override
   public void setTargetPosition(ElevatorPosition position) {
     targetPosition = position;
@@ -108,21 +128,9 @@ public class SimElevator extends SubsystemBase implements IElevator {
     };
   }
 
-  /** Update the simulated display elements. */
-  private void updateSimulatedDisplay() {
-    SimulationUxSupport.DeviceStatus status = switch (elevatorState) {
-      case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
-      case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
-      case MOVING_TO_POSITION ->
-        (Math.abs(currentHeight - getHeightForPosition(targetPosition)) < SETPOINT_TOLERANCE)
-            ? SimulationUxSupport.DeviceStatus.AtSetpoint
-            : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
-    };
-
-    // Update any simulated display elements here, if needed
-    SimulationUxSupport.instance.updateElevator(
-        currentHeight, getHeightForPosition(targetPosition), status);
-  }
+  //
+  // Methods from SubsystemBase
+  //
 
   @Override
   public void simulationPeriodic() {

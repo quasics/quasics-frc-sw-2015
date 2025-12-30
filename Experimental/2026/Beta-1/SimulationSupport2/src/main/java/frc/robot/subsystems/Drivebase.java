@@ -209,8 +209,6 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
   @Override
   public void simulationPeriodic() {
-    super.simulationPeriodic();
-
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive

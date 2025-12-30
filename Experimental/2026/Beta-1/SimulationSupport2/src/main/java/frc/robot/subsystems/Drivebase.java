@@ -90,7 +90,7 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
    * Updates a SparkMaxConfig to work with distance-based values (meters and
    * meters/sec), rather than the native rotation-based units (rotations and RPM).
    *
-   * @param config        the object being configured
+   * @param config        the encoder being configured
    * @param outerDiameter distance of the object (wheel, sprocket, etc.) being
    *                      turned
    * @param gearRatio     gearing ratio of the motor to the object being turned

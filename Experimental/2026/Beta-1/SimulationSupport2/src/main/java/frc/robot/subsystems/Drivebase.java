@@ -38,6 +38,11 @@ import frc.robot.subsystems.interfaces.IDrivebase;
  * </ul>
  */
 public class Drivebase extends SubsystemBase implements IDrivebase {
+  //
+  // Constants
+  //
+
+  /** Encoder ticks per revolution. */
   protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
   /** Wheel diameter in inches. */
@@ -105,8 +110,9 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   public Drivebase() {
     setName(SUBSYSTEM_NAME);
 
+    // Set up the encoders
     rightEncoder.setReverseDirection(true);
-
+    leftEncoder.setReverseDirection(false);
     configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER);
     configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER);
   }

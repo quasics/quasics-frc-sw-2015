@@ -29,10 +29,16 @@ public class SimulationUxSupport {
   private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + " Sim";
 
   /** Color used to mark the upper boundary for the elevator's reach. */
-  private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(255, 0, 0);
+  private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(0, 0, 255);
 
   /** Color used to mark the lower boundary for the elevator's reach. */
   private static final Color8Bit LOWER_BOUND_COLOR = new Color8Bit(0, 0, 255);
+
+  /**
+   * Color used to mark the elevator's floor ("zero point", which may be different from the lower
+   * bound).
+   */
+  private static final Color8Bit FLOOR_COLOR = new Color8Bit(255, 0, 0);
 
   /** Color used to render the elevator when running under manual control. */
   private final static Color8Bit NO_SETPOINT = new Color8Bit("#FFA500");
@@ -86,9 +92,13 @@ public class SimulationUxSupport {
     // redraw them.)
 
     // Rendering "lower bound" for elevator
-    var lowerBoundRoot = rootMech2d.getRoot(
-        "FloorRoot", 0, SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.BOTTOM));
-    lowerBoundRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, LOWER_BOUND_COLOR));
+    var floorRoot = rootMech2d.getRoot("FloorRoot", 0, 0);
+    floorRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, FLOOR_COLOR));
+
+    // Rendering "lower bound" for elevator
+    var lowerBoundRoot = rootMech2d.getRoot("BottomRoot", 0,
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.BOTTOM));
+    lowerBoundRoot.append(new MechanismLigament2d("Bottom", 10, 0, 3, LOWER_BOUND_COLOR));
 
     // Rendering "upper bound" for elevator
     var topBoundRoot = rootMech2d.getRoot(

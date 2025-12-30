@@ -49,12 +49,12 @@ public class SimElevator extends SubsystemBase implements IElevator {
    */
   public static double getDefinedHeightForPosition(ElevatorPosition position) {
     return switch (position) {
-      case BOTTOM -> 0.0;
+      case BOTTOM -> 0.2;
       case LOW -> 1.0;
       case MEDIUM -> 2.0;
       case HIGH -> 3.0;
       case TOP -> 3.2;
-      case MANUAL_CONTROL -> 0.0;
+      case MANUAL_CONTROL -> Double.NaN;
     };
   }
 

@@ -7,7 +7,7 @@ package frc.robot.subsystems.interfaces;
 /** Interface for a simple elevator subsystem. */
 public interface IElevator extends ISubsystem {
   /** The name of the elevator subsystem. */
-  final String NAME = "Elevator";
+  final String SUBSYSTEM_NAME = "Elevator";
 
   /** The state of the elevator. */
   enum ElevatorState { IDLE, MOVING_TO_POSITION, MANUAL_CONTROL }

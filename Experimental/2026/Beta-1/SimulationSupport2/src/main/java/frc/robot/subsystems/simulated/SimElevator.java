@@ -33,7 +33,7 @@ public class SimElevator extends SubsystemBase implements IElevator {
 
   /** Constructor. */
   public SimElevator() {
-    setName(NAME);
+    setName(SUBSYSTEM_NAME);
     currentHeight = getHeightForPosition(ElevatorPosition.BOTTOM);
   }
 

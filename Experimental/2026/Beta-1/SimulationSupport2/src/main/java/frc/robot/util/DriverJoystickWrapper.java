@@ -31,6 +31,9 @@ import frc.robot.constants.LogitechConstants;
  *
  * <li>The "GameSir Pro" scheme is based on the GameSir Pro controller's default axis mapping, and
  * represents a Mac-compatible Bluetooth controller that I have handy.
+ *
+ * <li>Values for the Logitech, GameSir, and XBox joystick readings are being inverted (negated)
+ * from their raw values because these controllers return negative values when we push forward.
  * </ul>
  */
 public final class DriverJoystickWrapper {

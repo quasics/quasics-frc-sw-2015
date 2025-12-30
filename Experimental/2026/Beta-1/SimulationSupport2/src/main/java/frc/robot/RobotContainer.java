@@ -27,6 +27,7 @@ public class RobotContainer {
   /** The drivebase subsystem. */
   private final IDrivebase drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
 
+  /** The elevator subsystem.  (At present, always simulated.) */
   private final IElevator elevator = new frc.robot.subsystems.simulated.SimElevator();
 
   /** The driver joystick wrapper. */

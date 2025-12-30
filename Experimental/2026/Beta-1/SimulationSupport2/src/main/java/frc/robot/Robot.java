@@ -78,4 +78,12 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {
   }
+
+  @Override
+  public void simulationPeriodic() {
+    // Custom override, to prevent the warning "Default simulationPeriodic() method... Override me!"
+    // from being logged in IterativeRobotBase.
+
+    // Do nothing!
+  }
 }

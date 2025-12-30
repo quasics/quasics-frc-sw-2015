@@ -17,6 +17,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
+import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 
 public class RobotContainer {
@@ -24,7 +25,7 @@ public class RobotContainer {
   private static final boolean USE_ARCADE_DRIVE = true;
 
   /** The drivebase subsystem. */
-  private final IDrivebase drivebase = new Drivebase();
+  private final IDrivebase drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
 
   private final IElevator elevator = new frc.robot.subsystems.simulated.SimElevator();
 

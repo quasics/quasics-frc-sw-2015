@@ -110,12 +110,18 @@ public class SimElevator extends SubsystemBase implements IElevator {
 
   /** Update the simulated display elements. */
   private void updateSimulatedDisplay() {
-    // Update any simulated display elements here, if needed
-    SimulationUxSupport.instance.updateElevator(currentHeight, getHeightForPosition(targetPosition),
-        (elevatorState == ElevatorState.MANUAL_CONTROL) ? SimulationUxSupport.DeviceStatus.Manual
-            : (Math.abs(currentHeight - getHeightForPosition(targetPosition)) < SETPOINT_TOLERANCE)
+    SimulationUxSupport.DeviceStatus status = switch (elevatorState) {
+      case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
+      case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
+      case MOVING_TO_POSITION ->
+        (Math.abs(currentHeight - getHeightForPosition(targetPosition)) < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
-            : SimulationUxSupport.DeviceStatus.NotAtSetpoint);
+            : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
+    };
+
+    // Update any simulated display elements here, if needed
+    SimulationUxSupport.instance.updateElevator(
+        currentHeight, getHeightForPosition(targetPosition), status);
   }
 
   @Override

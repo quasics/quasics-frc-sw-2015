@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
+import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 
@@ -29,6 +31,9 @@ public class RobotContainer {
 
   /** The elevator subsystem.  (At present, always simulated.) */
   private final IElevator elevator = new frc.robot.subsystems.simulated.SimElevator();
+
+  /** The arm subsystem.  (At present, always simulated.) */
+  private final ISingleJointArm arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** The driver joystick wrapper. */
   private final DriverJoystickWrapper m_driverWrapper =
@@ -52,6 +57,27 @@ public class RobotContainer {
     }, elevator.asSubsystem()));
     SmartDashboard.putData("Cmd: Elevator stop",
         new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem()));
+
+    Command waveCommand =
+        // Move out
+        new InstantCommand(
+            () -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem())
+            // Wait a bit
+            .andThen(new WaitCommand(3))
+            //
+            .andThen(() -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem())
+            // Wait a bit
+            .andThen(new WaitCommand(3))
+            .repeatedly();
+    SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
+      arm.setTargetPosition(arm.getArmOutAngle());
+    }, arm.asSubsystem()));
+    SmartDashboard.putData("Cmd: Arm up", new InstantCommand(() -> {
+      arm.setTargetPosition(arm.getArmUpAngle());
+    }, arm.asSubsystem()));
+    SmartDashboard.putData("Cmd: Arm wave", waveCommand);
+    SmartDashboard.putData(
+        "Cmd: Arm stop", new InstantCommand(() -> { arm.stop(); }, arm.asSubsystem()));
   }
 
   /** Configures the driving behavior. */

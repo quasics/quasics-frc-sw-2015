@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems.simulated;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -28,17 +31,14 @@ public class SimulationUxSupport {
   /** Name used to publish the elevator simulation UX to SmartDashboard. */
   private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + " Sim";
 
-  /** Color used to mark the upper boundary for the elevator's reach. */
-  private static final Color8Bit UPPER_BOUND_COLOR = new Color8Bit(0, 0, 255);
-
-  /** Color used to mark the lower boundary for the elevator's reach. */
-  private static final Color8Bit LOWER_BOUND_COLOR = new Color8Bit(0, 0, 255);
+  /** Color used to mark a fixed target position for the elevator's reach. */
+  private static final Color8Bit FIXED_POSITION_COLOR = new Color8Bit(0, 0, 255);
 
   /**
    * Color used to mark the elevator's floor ("zero point", which may be different from the lower
    * bound).
    */
-  private static final Color8Bit FLOOR_COLOR = new Color8Bit(255, 0, 0);
+  private static final Color8Bit LIMIT_COLOR = new Color8Bit(255, 0, 0);
 
   /** Color used to render the elevator when running under manual control. */
   private final static Color8Bit NO_SETPOINT = new Color8Bit("#FFA500");
@@ -55,13 +55,24 @@ public class SimulationUxSupport {
   /** Singleton instance of this class. */
   public static final SimulationUxSupport instance = new SimulationUxSupport();
 
+  /** Length to use for the arm in the simulation UX. */
+  final double ARM_LENGTH = 1;
+
   /**
-   * Mechanism2d visualization of the elevator (for rendering in SmartDashboard,
-   * or the simulator).
+   * Root of the simulation.
+   */
+  private final Mechanism2d rootMech2d;
+
+  /**
+   * Mechanism2d visualization of the elevator (for rendering in SmartDashboard, or the simulator).
    */
   private final MechanismLigament2d m_elevatorMech2d;
 
-  private final Mechanism2d rootMech2d;
+  /**
+   * Mechanism2d visualization of the single-joint arm (for rendering in SmartDashboard,
+   * or the simulator).
+   */
+  private final MechanismLigament2d m_armMech2d;
 
   /**
    * Field UX for showing simulated driving.
@@ -85,25 +96,56 @@ public class SimulationUxSupport {
     );
 
     m_elevatorMech2d =
-        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("LeftClimber", 0, 90));
+        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("Elevator", 0, 90));
+
+    m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", ARM_LENGTH, 0));
 
     //
     // Elevator boundary markers. (These aren't saved because we'll never need to
     // redraw them.)
+    addElevatorLevel("Floor", 0, LIMIT_COLOR);
+    addElevatorLevel("Bottom",
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.BOTTOM),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("Low", SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.LOW),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("Medium",
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.MEDIUM),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("High",
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.HIGH),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("Top", SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP),
+        FIXED_POSITION_COLOR);
 
-    // Rendering "lower bound" for elevator
-    var floorRoot = rootMech2d.getRoot("FloorRoot", 0, 0);
-    floorRoot.append(new MechanismLigament2d("Floor", 10, 0, 3, FLOOR_COLOR));
+    //
+    // Arm boundary markers
+    //
+    addArmMarker("ArmMin", SimArm.ARM_MIN, LIMIT_COLOR);
+    addArmMarker("ArmMax", SimArm.ARM_MAX, LIMIT_COLOR);
+  }
 
-    // Rendering "lower bound" for elevator
-    var lowerBoundRoot = rootMech2d.getRoot("BottomRoot", 0,
-        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.BOTTOM));
-    lowerBoundRoot.append(new MechanismLigament2d("Bottom", 10, 0, 3, LOWER_BOUND_COLOR));
+  /**
+   * Adds a marker line for a given level of the elevator.
+   *
+   * @param name name for the marker
+   * @param height height of the marker
+   * @param color color to use for the marker
+   */
+  private void addElevatorLevel(String name, double height, Color8Bit color) {
+    rootMech2d.getRoot(name + "Root", 0, height)
+        .append(new MechanismLigament2d(name, 10, 0, 1, color));
+  }
 
-    // Rendering "upper bound" for elevator
-    var topBoundRoot = rootMech2d.getRoot(
-        "TopRoot", 0, SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.HIGH));
-    topBoundRoot.append(new MechanismLigament2d("Top", 10, 0, 3, UPPER_BOUND_COLOR));
+  /**
+   * Adds a marker line for a given angle of the arm.
+   *
+   * @param name name for the marker
+   * @param angle angle of the marker
+   * @param color color to use for the marker
+   */
+  private void addArmMarker(String name, Angle angle, Color8Bit color) {
+    m_elevatorMech2d.append(new MechanismLigament2d(name, ARM_LENGTH, angle.in(Degrees), 1, color));
   }
 
   /**
@@ -143,6 +185,23 @@ public class SimulationUxSupport {
       } else {
         m_elevatorMech2d.setColor(NOT_AT_SETPOINT);
       }
+    }
+
+    if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
+      // Publish the simulation of the elevator to SmartDashboard.
+      SmartDashboard.putData(ELEVATOR_KEY, rootMech2d);
+    }
+  }
+
+  public void updateArm(Angle currentAngle, DeviceStatus status) {
+    m_armMech2d.setAngle(currentAngle.in(Degrees));
+
+    if (status == DeviceStatus.Idle) {
+      m_armMech2d.setColor(IDLE);
+    } else if (status == DeviceStatus.AtSetpoint) {
+      m_armMech2d.setColor(AT_SETPOINT);
+    } else if (status == DeviceStatus.NotAtSetpoint) {
+      m_armMech2d.setColor(NOT_AT_SETPOINT);
     }
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {

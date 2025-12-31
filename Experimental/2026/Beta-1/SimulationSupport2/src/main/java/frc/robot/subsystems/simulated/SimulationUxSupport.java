@@ -61,7 +61,7 @@ public class SimulationUxSupport {
   /**
    * Root of the simulation.
    */
-  private final Mechanism2d rootMech2d;
+  private final Mechanism2d m_rootMech2d;
 
   /**
    * Mechanism2d visualization of the elevator (for rendering in SmartDashboard, or the simulator).
@@ -90,12 +90,12 @@ public class SimulationUxSupport {
    */
   private SimulationUxSupport() {
     // Simulation rendering setup.
-    rootMech2d = new Mechanism2d(9,
+    m_rootMech2d = new Mechanism2d(9,
         (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
             * 1.15) // Leave a little room at the top
     );
     m_elevatorMech2d =
-        rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("Elevator", 0, 90));
+        m_rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("Elevator", 0, 90));
     m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", ARM_LENGTH, 0));
 
     //
@@ -131,7 +131,7 @@ public class SimulationUxSupport {
    * @param color color to use for the marker
    */
   private void addElevatorLevel(String name, double height, Color8Bit color) {
-    rootMech2d.getRoot(name + "Root", 0, height)
+    m_rootMech2d.getRoot(name + "Root", 0, height)
         .append(new MechanismLigament2d(name, 10, 0, 1, color));
   }
 
@@ -187,7 +187,7 @@ public class SimulationUxSupport {
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
       // Publish the simulation of the elevator to SmartDashboard.
-      SmartDashboard.putData(ELEVATOR_KEY, rootMech2d);
+      SmartDashboard.putData(ELEVATOR_KEY, m_rootMech2d);
     }
   }
 
@@ -204,7 +204,7 @@ public class SimulationUxSupport {
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
       // Publish the simulation of the elevator to SmartDashboard.
-      SmartDashboard.putData(ELEVATOR_KEY, rootMech2d);
+      SmartDashboard.putData(ELEVATOR_KEY, m_rootMech2d);
     }
   }
 

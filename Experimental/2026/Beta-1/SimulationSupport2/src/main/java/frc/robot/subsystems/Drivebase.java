@@ -75,21 +75,21 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   //
 
   /** Left-side motor controller. */
-  final protected PWMSparkMax leftController = new PWMSparkMax(Ports.LEFT_MOTOR_PWM_PORT);
+  final protected PWMSparkMax m_leftController = new PWMSparkMax(Ports.LEFT_MOTOR_PWM_PORT);
 
   /** Right-side motor controller. */
-  final protected PWMSparkMax rightController = new PWMSparkMax(Ports.RIGHT_MOTOR_PWM_PORT);
+  final protected PWMSparkMax m_rightController = new PWMSparkMax(Ports.RIGHT_MOTOR_PWM_PORT);
 
   /** Left-side encoder. */
-  protected final Encoder leftEncoder =
+  protected final Encoder m_leftEncoder =
       new Encoder(Ports.LEFT_ENCODER_A_DIO_PORT, Ports.LEFT_ENCODER_B_DIO_PORT);
 
   /** Right-side encoder. */
-  protected final Encoder rightEncoder =
+  protected final Encoder m_rightEncoder =
       new Encoder(Ports.RIGHT_ENCODER_A_DIO_PORT, Ports.RIGHT_ENCODER_B_DIO_PORT);
 
   /** Gyro sensor. */
-  final protected AnalogGyro rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
+  final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
   /** Kinematics calculator for the drivebase. */
   final protected DifferentialDriveKinematics m_kinematics =
@@ -100,10 +100,10 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     setName(SUBSYSTEM_NAME);
 
     // Set up the encoders
-    rightEncoder.setReverseDirection(true);
-    leftEncoder.setReverseDirection(false);
-    configureEncoderForDistance(leftEncoder, WHEEL_DIAMETER);
-    configureEncoderForDistance(rightEncoder, WHEEL_DIAMETER);
+    m_rightEncoder.setReverseDirection(true);
+    m_leftEncoder.setReverseDirection(false);
+    configureEncoderForDistance(m_leftEncoder, WHEEL_DIAMETER);
+    configureEncoderForDistance(m_rightEncoder, WHEEL_DIAMETER);
   }
 
   /**
@@ -183,8 +183,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
     double clampedLeftSpeed = MathUtil.clamp(leftSpeed, -1.0, +1.0);
     double clampedRightSpeed = MathUtil.clamp(rightSpeed, -1.0, +1.0);
 
-    leftController.set(clampedLeftSpeed);
-    rightController.set(clampedRightSpeed);
+    m_leftController.set(clampedLeftSpeed);
+    m_rightController.set(clampedRightSpeed);
   }
 
   @Override

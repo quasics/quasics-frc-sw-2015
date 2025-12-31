@@ -27,35 +27,35 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   final public static Angle ARM_UP = Degrees.of(0);
 
   /** Current control state for the arm. */
-  private State state = State.IDLE;
+  private State m_state = State.IDLE;
 
   /** Target angle for the arm, if set. */
-  private Angle targetAngle;
+  private Angle m_targetAngle;
 
   /** Current angle of the arm. */
-  private Angle currentAngle;
+  private Angle m_currentAngle;
 
   /** PID controller for automatic positioning. */
-  private PIDController pidController = new PIDController(1, 0, 0);
+  private PIDController m_pidController = new PIDController(1, 0, 0);
 
   /** Constructor. */
   public SimArm() {
     setName(SUBSYSTEM_NAME);
-    currentAngle = Degrees.of(45);
+    m_currentAngle = Degrees.of(45);
   }
 
   /** Update the simulated display elements. */
   private void updateSimulatedDisplay() {
-    SimulationUxSupport.DeviceStatus status = switch (state) {
+    SimulationUxSupport.DeviceStatus status = switch (m_state) {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MOVING_TO_POSITION ->
-        (Math.abs(currentAngle.minus(targetAngle).in(Degrees)) < SETPOINT_TOLERANCE)
+        (Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
 
     // Update any simulated display elements here, if needed
-    SimulationUxSupport.instance.updateArm(currentAngle, status);
+    SimulationUxSupport.instance.updateArm(m_currentAngle, status);
   }
 
   //
@@ -64,25 +64,23 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
 
   @Override
   public void simulationPeriodic() {
-    if (state == State.IDLE) {
+    if (m_state == State.IDLE) {
       // Nothing to do.
-    } else if (state == State.MOVING_TO_POSITION) {
+    } else if (m_state == State.MOVING_TO_POSITION) {
       if (USE_PID) {
         // Simple PID control to move to target angle
-        double output = pidController.calculate(currentAngle.in(Degrees), targetAngle.in(Degrees));
-        System.out.println("Current: " + currentAngle.in(Degrees)
-            + ", target: " + targetAngle.in(Degrees) + ", output: " + output);
-        currentAngle = currentAngle.plus(Degrees.of(output * 0.02)); // Simulate movement over 20ms
+        double output =
+            m_pidController.calculate(m_currentAngle.in(Degrees), m_targetAngle.in(Degrees));
+        m_currentAngle =
+            m_currentAngle.plus(Degrees.of(output * 0.02)); // Simulate movement over 20ms
       } else {
-        final double errorDegrees = targetAngle.minus(currentAngle).in(Degrees);
+        final double errorDegrees = m_targetAngle.minus(m_currentAngle).in(Degrees);
         final double sign = Math.signum(errorDegrees);
         double delta = NON_PID_SPEED * sign;
         if (Math.abs(errorDegrees) < Math.abs(delta)) {
           delta = errorDegrees;
         }
-        System.out.println("Current: " + currentAngle.in(Degrees)
-            + ", target: " + targetAngle.in(Degrees) + ", delta: " + delta);
-        currentAngle = currentAngle.plus(Degrees.of(delta)); // Simulate movement over 20ms
+        m_currentAngle = m_currentAngle.plus(Degrees.of(delta)); // Simulate movement over 20ms
       }
     }
 
@@ -95,19 +93,19 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
 
   @Override
   public void stop() {
-    state = State.IDLE;
-    targetAngle = null;
+    m_state = State.IDLE;
+    m_targetAngle = null;
   }
 
   @Override
   public void setTargetPosition(Angle targetPosition) {
-    state = State.MOVING_TO_POSITION;
-    targetAngle = targetPosition;
+    m_state = State.MOVING_TO_POSITION;
+    m_targetAngle = targetPosition;
   }
 
   @Override
   public Angle getCurrentAngle() {
-    return currentAngle;
+    return m_currentAngle;
   }
 
   @Override

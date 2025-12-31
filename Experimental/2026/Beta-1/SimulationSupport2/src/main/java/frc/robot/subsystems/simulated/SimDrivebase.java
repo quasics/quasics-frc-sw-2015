@@ -19,9 +19,9 @@ import frc.robot.subsystems.Drivebase;
  * implemented this way), but I'm keeping it separate (for now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends Drivebase {
-  final EncoderSim leftEncoderSim = new EncoderSim(leftEncoder);
-  final EncoderSim rightEncoderSim = new EncoderSim(rightEncoder);
-  final AnalogGyroSim m_gyroSim = new AnalogGyroSim(rawGyro);
+  final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  final AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_rawGyro);
 
   /**
    * Linear system describing the drive train.
@@ -54,17 +54,17 @@ public class SimDrivebase extends Drivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(leftController.get() * RoboRioSim.getVInVoltage(),
-        rightController.get() * RoboRioSim.getVInVoltage());
+    m_drivetrainSimulator.setInputs(m_leftController.get() * RoboRioSim.getVInVoltage(),
+        m_rightController.get() * RoboRioSim.getVInVoltage());
 
     // Simulated clock ticks forward
     m_drivetrainSimulator.update(0.02);
 
     // Update the simulated encoders and gyro
-    leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
-    rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
-    leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-    rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+    m_rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+    m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Update the field simulation

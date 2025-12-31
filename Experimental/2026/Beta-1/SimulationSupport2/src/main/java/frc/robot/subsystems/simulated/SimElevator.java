@@ -14,27 +14,27 @@ public class SimElevator extends SubsystemBase implements IElevator {
   final static double SETPOINT_TOLERANCE = 0.01;
 
   /** Current state of the elevator. */
-  private ElevatorState elevatorState = ElevatorState.IDLE;
+  private ElevatorState m_elevatorState = ElevatorState.IDLE;
 
   /** Target position for the elevator. */
-  private ElevatorPosition targetPosition = ElevatorPosition.BOTTOM;
+  private ElevatorPosition m_targetPosition = ElevatorPosition.BOTTOM;
 
   /** Directions for the manual control handling (needed for computation). */
   private enum ManualControlDirection { UP, DOWN, UNDEFINED }
 
-  /** Current manual direction; only valid when elevatorState is MANUAL_CONTROL. */
+  /** Current manual direction; only valid when m_elevatorState is MANUAL_CONTROL. */
   private ManualControlDirection manualControlDirection = ManualControlDirection.UNDEFINED;
 
   /** Current height of the elevator in meters. */
-  private double currentHeight;
+  private double m_currentHeight;
 
   /** PID controller for automatic positioning. */
-  private PIDController pidController = new PIDController(1, 0, 0);
+  private PIDController m_pidController = new PIDController(1, 0, 0);
 
   /** Constructor. */
   public SimElevator() {
     setName(SUBSYSTEM_NAME);
-    currentHeight = getHeightForPosition(ElevatorPosition.BOTTOM);
+    m_currentHeight = getHeightForPosition(ElevatorPosition.BOTTOM);
   }
 
   /**
@@ -60,18 +60,18 @@ public class SimElevator extends SubsystemBase implements IElevator {
 
   /** Update the simulated display elements. */
   private void updateSimulatedDisplay() {
-    SimulationUxSupport.DeviceStatus status = switch (elevatorState) {
+    SimulationUxSupport.DeviceStatus status = switch (m_elevatorState) {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
       case MOVING_TO_POSITION ->
-        (Math.abs(currentHeight - getHeightForPosition(targetPosition)) < SETPOINT_TOLERANCE)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
 
     // Update any simulated display elements here, if needed
     SimulationUxSupport.instance.updateElevator(
-        currentHeight, getHeightForPosition(targetPosition), status);
+        m_currentHeight, getHeightForPosition(m_targetPosition), status);
   }
 
   //
@@ -80,51 +80,51 @@ public class SimElevator extends SubsystemBase implements IElevator {
 
   @Override
   public void setTargetPosition(ElevatorPosition position) {
-    targetPosition = position;
+    m_targetPosition = position;
     manualControlDirection = ManualControlDirection.UNDEFINED;
-    elevatorState = ElevatorState.MOVING_TO_POSITION;
+    m_elevatorState = ElevatorState.MOVING_TO_POSITION;
   }
 
   @Override
   public ElevatorPosition getTargetPosition() {
-    return targetPosition;
+    return m_targetPosition;
   }
 
   @Override
   public void stop() {
-    elevatorState = ElevatorState.IDLE;
+    m_elevatorState = ElevatorState.IDLE;
     manualControlDirection = ManualControlDirection.UNDEFINED;
   }
 
   @Override
   public ElevatorState getElevatorState() {
-    return elevatorState;
+    return m_elevatorState;
   }
 
   @Override
   public void down() {
     manualControlDirection = ManualControlDirection.DOWN;
-    elevatorState = ElevatorState.MANUAL_CONTROL;
-    targetPosition = ElevatorPosition.MANUAL_CONTROL;
+    m_elevatorState = ElevatorState.MANUAL_CONTROL;
+    m_targetPosition = ElevatorPosition.MANUAL_CONTROL;
   }
 
   @Override
   public void up() {
     manualControlDirection = ManualControlDirection.UP;
-    elevatorState = ElevatorState.MANUAL_CONTROL;
-    targetPosition = ElevatorPosition.MANUAL_CONTROL;
+    m_elevatorState = ElevatorState.MANUAL_CONTROL;
+    m_targetPosition = ElevatorPosition.MANUAL_CONTROL;
   }
 
   @Override
   public double getCurrentHeight() {
-    return currentHeight;
+    return m_currentHeight;
   }
 
   @Override
   public double getHeightForPosition(ElevatorPosition position) {
     return switch (position) {
       case BOTTOM, LOW, MEDIUM, HIGH, TOP -> getDefinedHeightForPosition(position);
-      case MANUAL_CONTROL -> currentHeight;
+      case MANUAL_CONTROL -> m_currentHeight;
     };
   }
 
@@ -134,23 +134,23 @@ public class SimElevator extends SubsystemBase implements IElevator {
 
   @Override
   public void simulationPeriodic() {
-    if (elevatorState == ElevatorState.MOVING_TO_POSITION) {
+    if (m_elevatorState == ElevatorState.MOVING_TO_POSITION) {
       // Simple PID control to move to target position
-      double targetHeight = getHeightForPosition(targetPosition);
-      double output = pidController.calculate(currentHeight, targetHeight);
-      currentHeight += output * 0.02; // Simulate movement over 20ms
-      if (Math.abs(currentHeight - targetHeight) < 0.01) {
-        currentHeight = targetHeight;
-        elevatorState = ElevatorState.IDLE;
+      double targetHeight = getHeightForPosition(m_targetPosition);
+      double output = m_pidController.calculate(m_currentHeight, targetHeight);
+      m_currentHeight += output * 0.02; // Simulate movement over 20ms
+      if (Math.abs(m_currentHeight - targetHeight) < 0.01) {
+        m_currentHeight = targetHeight;
+        m_elevatorState = ElevatorState.IDLE;
       }
-    } else if (elevatorState == ElevatorState.MANUAL_CONTROL) {
+    } else if (m_elevatorState == ElevatorState.MANUAL_CONTROL) {
       // Simulate manual control movement, including hard stops at upper/lower limits
       if (manualControlDirection == ManualControlDirection.UP) {
-        currentHeight += MANUAL_CONTROL_SPEED;
-        currentHeight = Math.min(currentHeight, getHeightForPosition(ElevatorPosition.HIGH));
+        m_currentHeight += MANUAL_CONTROL_SPEED;
+        m_currentHeight = Math.min(m_currentHeight, getHeightForPosition(ElevatorPosition.HIGH));
       } else if (manualControlDirection == ManualControlDirection.DOWN) {
-        currentHeight -= MANUAL_CONTROL_SPEED;
-        currentHeight = Math.max(currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
+        m_currentHeight -= MANUAL_CONTROL_SPEED;
+        m_currentHeight = Math.max(m_currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
       }
     }
 

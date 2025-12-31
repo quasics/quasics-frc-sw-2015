@@ -94,10 +94,8 @@ public class SimulationUxSupport {
         (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
             * 1.15) // Leave a little room at the top
     );
-
     m_elevatorMech2d =
         rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("Elevator", 0, 90));
-
     m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", ARM_LENGTH, 0));
 
     //

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.TankDrive;
@@ -58,16 +60,17 @@ public class RobotContainer {
     SmartDashboard.putData("Cmd: Elevator stop",
         new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem()));
 
+    // Note that the delays will not be enough to get the arm *absolutely* into position,
+    // but that's OK: I'm just trying to make it wave back and forth....
     Command waveCommand =
         // Move out
-        new InstantCommand(
-            () -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem())
-            // Wait a bit
-            .andThen(new WaitCommand(3))
-            //
-            .andThen(() -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem())
-            // Wait a bit
-            .andThen(new WaitCommand(3))
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem()),
+            new PrintCommand("Waiting for out"), new WaitCommand(2),
+            new InstantCommand(
+                () -> { arm.setTargetPosition(arm.getArmUpAngle()); }, arm.asSubsystem()),
+            new PrintCommand("Waiting for up"), new WaitCommand(2))
             .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
       arm.setTargetPosition(arm.getArmOutAngle());

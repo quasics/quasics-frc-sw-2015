@@ -8,25 +8,37 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 
 /**
+ * Simulated arm subsystem.
  *
  * Note: arm angles are measured from the vertical.
  */
 public class SimArm extends SubsystemBase implements ISingleJointArm {
-  final static double MANUAL_CONTROL_SPEED = 0.05;
+  final static boolean USE_PID = true;
+  final static double NON_PID_SPEED = 0.05;
   final static double SETPOINT_TOLERANCE = 0.01;
 
-  final public static Angle ARM_MIN = Degrees.of(100);
-  final public static Angle ARM_MAX = Degrees.of(-10);
+  /** Minimum limit on arm movement. */
+  final public static Angle ARM_MAX = Degrees.of(100);
+  /** Minimum limit on arm movement. */
+  final public static Angle ARM_MIN = Degrees.of(-10);
+  /** Arm position when fully extended from the robot. */
   final public static Angle ARM_OUT = Degrees.of(90);
+  /** Arm position when fully raised. */
   final public static Angle ARM_UP = Degrees.of(0);
 
+  /** Current control state for the arm. */
   private State state = State.IDLE;
-  private Angle targetAngle = null;
-  private Angle currentAngle = null;
+
+  /** Target angle for the arm, if set. */
+  private Angle targetAngle;
+
+  /** Current angle of the arm. */
+  private Angle currentAngle;
 
   /** PID controller for automatic positioning. */
   private PIDController pidController = new PIDController(1, 0, 0);
 
+  /** Constructor. */
   public SimArm() {
     setName(SUBSYSTEM_NAME);
     currentAngle = Degrees.of(45);
@@ -46,7 +58,9 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
     SimulationUxSupport.instance.updateArm(currentAngle, status);
   }
 
-  final static boolean USE_PID = true;
+  //
+  // SubsystemBase methods
+  //
 
   @Override
   public void simulationPeriodic() {
@@ -62,7 +76,7 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
       } else {
         final double errorDegrees = targetAngle.minus(currentAngle).in(Degrees);
         final double sign = Math.signum(errorDegrees);
-        double delta = MANUAL_CONTROL_SPEED * sign;
+        double delta = NON_PID_SPEED * sign;
         if (Math.abs(errorDegrees) < Math.abs(delta)) {
           delta = errorDegrees;
         }
@@ -74,6 +88,10 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
 
     updateSimulatedDisplay();
   }
+
+  //
+  // ISingleArm methods
+  //
 
   @Override
   public void stop() {

@@ -55,28 +55,28 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Encoder ticks per revolution. */
-  protected static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
+  public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
   /** Wheel diameter in inches. */
-  final protected static Distance WHEEL_DIAMETER = Inches.of(6);
+  public final static Distance WHEEL_DIAMETER = Inches.of(6);
 
   /** Gearing ratio from motor to wheel. */
-  final protected static double GEAR_RATIO = 8.45;
+  public final static double GEAR_RATIO = 8.45;
 
   /** Track width (distance between left and right wheels) in meters. */
-  final protected static Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 in (from 2024) */
+  public final static Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 in (from 2024) */
 
   /** Zero linear velocity. (A potentially useful constant.) */
-  final protected static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+  public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
   /** Zero rotational velocity. (A potentially useful constant.) */
-  final protected static AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
+  public final static AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
-  final protected static LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
+  public final static LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
 
   /** Maximum rotational velocity for arcade drive. */
-  final protected static AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(120.0);
+  public final static AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(120.0);
 
   /** Kinematics calculator for the drivebase. */
   final protected static DifferentialDriveKinematics m_kinematics =

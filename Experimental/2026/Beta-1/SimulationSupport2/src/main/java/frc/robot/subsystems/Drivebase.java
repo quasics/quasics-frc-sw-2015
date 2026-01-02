@@ -48,11 +48,12 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * </ul>
  */
 public class Drivebase extends SubsystemBase implements IDrivebasePlus {
-  protected static final Pose2d DEFAULT_STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
-
   //
   // Constants
   //
+
+  /** Default starting pose for the robot. */
+  protected static final Pose2d DEFAULT_STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
 
   /** Encoder ticks per revolution. */
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
@@ -104,7 +105,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
   protected DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(new Rotation2d(), 0, 0, DEFAULT_STARTING_POSE);
+      new DifferentialDriveOdometry(new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
+          m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), DEFAULT_STARTING_POSE);
 
   /** Creates a new Drivebase. */
   public Drivebase() {

@@ -101,8 +101,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   /** Gyro sensor. */
   final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
-  protected DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-      new Rotation2d(), 0, 0, new Pose2d(1, 1, new Rotation2d(Degrees.of(90))));
+  protected DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
 
   /** Creates a new Drivebase. */
   public Drivebase() {

@@ -10,6 +10,7 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -25,16 +26,37 @@ import frc.robot.subsystems.Drivebase;
  * implemented this way), but I'm keeping it separate (for now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends Drivebase {
-  public enum StartingPoint {
-    Default,
-    Blue1,
-    Red1;
+  final static Angle FACING_BLUE = Degrees.of(180);
+  final static Angle FACING_RED = Degrees.of(0);
 
+  /** Supported (pre-defined) starting positions for the robot. */
+  public enum StartingPosition {
+    // Default robot position
+    Default,
+    // Facing Blue at starting game element 1
+    Blue1,
+    // Facing Blue at starting game element 2
+    Blue2,
+    // Facing Blue at starting game element 3
+    Blue3,
+    // Facing Red at starting game element 1
+    Red1,
+    // Facing Red at starting game element 2
+    Red2,
+    // Facing Red at starting game element 3
+    Red3,
+    ;
+
+    /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
       return switch (this) {
         case Default -> new Pose2d(0, 0, new Rotation2d());
-        case Blue1 -> new Pose2d(2, 6, new Rotation2d(Degrees.of(180)));
-        case Red1 -> new Pose2d(15.25, 2, new Rotation2d(Degrees.of(0)));
+        case Blue1 -> new Pose2d(2, 6, new Rotation2d(FACING_BLUE));
+        case Blue2 -> new Pose2d(2, 4, new Rotation2d(FACING_BLUE));
+        case Blue3 -> new Pose2d(2, 2, new Rotation2d(FACING_BLUE));
+        case Red1 -> new Pose2d(15.25, 2, new Rotation2d(FACING_RED));
+        case Red2 -> new Pose2d(15.25, 4, new Rotation2d(FACING_RED));
+        case Red3 -> new Pose2d(15.25, 6, new Rotation2d(FACING_RED));
       };
     }
   }
@@ -67,9 +89,9 @@ public class SimDrivebase extends Drivebase {
   public SimDrivebase() {
     super();
 
-    SendableChooser<StartingPoint> positionChooser = new SendableChooser<StartingPoint>();
-    for (var pos : StartingPoint.values()) {
-      if (pos == StartingPoint.Default) {
+    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    for (var pos : StartingPosition.values()) {
+      if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.toString(), pos);
       } else {
         positionChooser.addOption(pos.toString(), pos);
@@ -79,16 +101,20 @@ public class SimDrivebase extends Drivebase {
     positionChooser.onChange(this::updateStartingPoint);
   }
 
-  private void updateStartingPoint(StartingPoint position) {
-    // Update position data
-    Pose2d pose = position.getPose();
-    // m_leftEncoderSim.setDistance(0);
-    // m_rightEncoderSim.setDistance(0);
-    m_gyroSim.setAngle(pose.getRotation().getDegrees());
+  /**
+   * Listener method, used to handle changes to the "starting point" chooser.
+   *
+   * @param position new selected position
+   */
+  private void updateStartingPoint(StartingPosition position) {
+    final Pose2d pose = position.getPose();
+    final Rotation2d facing = pose.getRotation();
+
+    m_gyroSim.setAngle(facing.getDegrees());
     m_drivetrainSimulator.setPose(pose);
 
     m_odometry = new DifferentialDriveOdometry(
-        pose.getRotation(), m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
+        facing, m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
   }
 
   @Override
@@ -98,6 +124,9 @@ public class SimDrivebase extends Drivebase {
     // Update the field simulation
     SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
     SimulationUxSupport.instance.updateEstimatedRobotPose("Odometry", getEstimatedPose());
+
+    SmartDashboard.putString("Robot pos",
+        m_drivetrainSimulator.getPose().getX() + ", " + m_drivetrainSimulator.getPose().getY());
   }
 
   @Override

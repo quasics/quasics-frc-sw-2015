@@ -61,8 +61,13 @@ public class SimDrivebase extends Drivebase {
     }
   }
 
+  /** Controls the base class's left encoder under simulation. */
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+
+  /** Controls the base class's right encoder under simulation. */
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+
+  /** Controls the base class's gyro under simulation. */
   final AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_rawGyro);
 
   /**

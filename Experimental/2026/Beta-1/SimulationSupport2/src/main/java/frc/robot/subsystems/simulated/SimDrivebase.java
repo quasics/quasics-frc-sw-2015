@@ -11,6 +11,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -26,8 +27,20 @@ import frc.robot.subsystems.Drivebase;
  * implemented this way), but I'm keeping it separate (for now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends Drivebase {
+  /** Robot heading when facing the Blue alliance. */
   final static Angle FACING_BLUE = Degrees.of(180);
+  /** Robot heading when facing the Red alliance. */
   final static Angle FACING_RED = Degrees.of(0);
+  /** Robot distance from east side of the field when on the Blue alliance's "starting line". */
+  final static Distance BLUE_STARTING_LINE = Meters.of(2);
+  /** Robot distance from east side of the field when on the Red alliance's "starting line". */
+  final static Distance RED_STARTING_LINE = Meters.of(15.25);
+  /** Robot distance from south side of the field when in front of the "top-most" ball. */
+  final static Distance TOP_BALL_HEIGHT = Meters.of(6);
+  /** Robot distance from south side of the field when in front of the "middle" ball. */
+  final static Distance MIDDLE_BALL_HEIGHT = Meters.of(4);
+  /** Robot distance from south side of the field when in front of the "bottom-most" ball. */
+  final static Distance BOTTOM_BALL_HEIGHT = Meters.of(2);
 
   /** Supported (pre-defined) starting positions for the robot. */
   public enum StartingPosition {
@@ -51,12 +64,24 @@ public class SimDrivebase extends Drivebase {
     public Pose2d getPose() {
       return switch (this) {
         case Default -> new Pose2d(0, 0, new Rotation2d());
-        case Blue1 -> new Pose2d(2, 6, new Rotation2d(FACING_BLUE));
-        case Blue2 -> new Pose2d(2, 4, new Rotation2d(FACING_BLUE));
-        case Blue3 -> new Pose2d(2, 2, new Rotation2d(FACING_BLUE));
-        case Red1 -> new Pose2d(15.25, 2, new Rotation2d(FACING_RED));
-        case Red2 -> new Pose2d(15.25, 4, new Rotation2d(FACING_RED));
-        case Red3 -> new Pose2d(15.25, 6, new Rotation2d(FACING_RED));
+        case Blue1 ->
+          new Pose2d(BLUE_STARTING_LINE.in(Meters), TOP_BALL_HEIGHT.in(Meters),
+              new Rotation2d(FACING_BLUE));
+        case Blue2 ->
+          new Pose2d(BLUE_STARTING_LINE.in(Meters), MIDDLE_BALL_HEIGHT.in(Meters),
+              new Rotation2d(FACING_BLUE));
+        case Blue3 ->
+          new Pose2d(BLUE_STARTING_LINE.in(Meters), BOTTOM_BALL_HEIGHT.in(Meters),
+              new Rotation2d(FACING_BLUE));
+        case Red1 ->
+          new Pose2d(RED_STARTING_LINE.in(Meters), BOTTOM_BALL_HEIGHT.in(Meters),
+              new Rotation2d(FACING_RED));
+        case Red2 ->
+          new Pose2d(RED_STARTING_LINE.in(Meters), MIDDLE_BALL_HEIGHT.in(Meters),
+              new Rotation2d(FACING_RED));
+        case Red3 ->
+          new Pose2d(
+              RED_STARTING_LINE.in(Meters), TOP_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_RED));
       };
     }
   }

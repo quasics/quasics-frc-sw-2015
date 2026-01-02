@@ -1,7 +1,10 @@
 package frc.robot.subsystems.simulated;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -10,6 +13,8 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivebase;
 
 /**
@@ -19,6 +24,20 @@ import frc.robot.subsystems.Drivebase;
  * implemented this way), but I'm keeping it separate (for now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends Drivebase {
+  public enum StartingPoint {
+    Default,
+    Blue1,
+    Red1;
+
+    public Pose2d getPose() {
+      return switch (this) {
+        case Default -> new Pose2d(0, 0, new Rotation2d());
+        case Blue1 -> new Pose2d(2, 6, new Rotation2d(Degrees.of(-180)));
+        case Red1 -> new Pose2d(15.25, 2, new Rotation2d(Degrees.of(0)));
+      };
+    }
+  }
+
   final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   final AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_rawGyro);
@@ -46,6 +65,28 @@ public class SimDrivebase extends Drivebase {
   /** Constructor. */
   public SimDrivebase() {
     super();
+
+    SendableChooser<StartingPoint> positionChooser = new SendableChooser<StartingPoint>();
+    for (var pos : StartingPoint.values()) {
+      if (pos == StartingPoint.Default) {
+        positionChooser.setDefaultOption(pos.toString(), pos);
+      } else {
+        positionChooser.addOption(pos.toString(), pos);
+      }
+    }
+    SmartDashboard.putData("Starting point", positionChooser);
+    positionChooser.onChange(this::updateStartingPoint);
+  }
+
+  private void updateStartingPoint(StartingPoint position) {
+    // Update position data
+    m_leftEncoderSim.setDistance(0);
+    m_rightEncoderSim.setDistance(0);
+    m_gyroSim.setAngle(0);
+    m_drivetrainSimulator.setPose(position.getPose());
+
+    // Update the field simulation
+    SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
   }
 
   @Override

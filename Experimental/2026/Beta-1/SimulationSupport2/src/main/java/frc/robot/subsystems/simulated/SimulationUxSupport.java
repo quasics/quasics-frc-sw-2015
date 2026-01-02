@@ -191,6 +191,12 @@ public class SimulationUxSupport {
     }
   }
 
+  /**
+   * Updates the rendering of the arm's position and status.
+   *
+   * @param currentAngle current angle of the arm
+   * @param status current status of the arm
+   */
   public void updateArm(Angle currentAngle, DeviceStatus status) {
     m_armMech2d.setAngle(currentAngle.in(Degrees));
 
@@ -208,8 +214,28 @@ public class SimulationUxSupport {
     }
   }
 
+  /**
+   * Updates the robot's actual pose on the field (based on pure simulation data).
+   *
+   * @param robotPose current pose of the robot
+   */
   public void updateFieldRobotPose(Pose2d robotPose) {
     m_fieldSim.setRobotPose(robotPose);
+
+    if (!SmartDashboard.containsKey(FIELD_KEY)) {
+      // Publish the simulated field to the smart dashboard
+      SmartDashboard.putData(FIELD_KEY, m_fieldSim);
+    }
+  }
+
+  /**
+   * Updates the robot's estimated pose on the field (based on some approach for doing so).
+   *
+   * @param label label associated with the estimated pose (e.g., "Odometry")
+   * @param robotPose current estimated pose of the robot
+   */
+  public void updateEstimatedRobotPose(String label, Pose2d robotPose) {
+    m_fieldSim.getObject(label).setPose(robotPose);
 
     if (!SmartDashboard.containsKey(FIELD_KEY)) {
       // Publish the simulated field to the smart dashboard

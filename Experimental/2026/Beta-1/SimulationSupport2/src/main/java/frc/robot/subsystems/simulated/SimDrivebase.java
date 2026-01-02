@@ -63,7 +63,7 @@ public class SimDrivebase extends Drivebase {
     /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
       return switch (this) {
-        case Default -> new Pose2d(0, 0, new Rotation2d());
+        case Default -> DEFAULT_STARTING_POSE;
         case Blue1 ->
           new Pose2d(BLUE_STARTING_LINE.in(Meters), TOP_BALL_HEIGHT.in(Meters),
               new Rotation2d(FACING_BLUE));

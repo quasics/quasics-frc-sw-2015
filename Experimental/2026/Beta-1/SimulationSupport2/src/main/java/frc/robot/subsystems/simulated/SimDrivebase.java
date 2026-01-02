@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -32,7 +33,7 @@ public class SimDrivebase extends Drivebase {
     public Pose2d getPose() {
       return switch (this) {
         case Default -> new Pose2d(0, 0, new Rotation2d());
-        case Blue1 -> new Pose2d(2, 6, new Rotation2d(Degrees.of(-180)));
+        case Blue1 -> new Pose2d(2, 6, new Rotation2d(Degrees.of(180)));
         case Red1 -> new Pose2d(15.25, 2, new Rotation2d(Degrees.of(0)));
       };
     }
@@ -80,13 +81,23 @@ public class SimDrivebase extends Drivebase {
 
   private void updateStartingPoint(StartingPoint position) {
     // Update position data
-    m_leftEncoderSim.setDistance(0);
-    m_rightEncoderSim.setDistance(0);
-    m_gyroSim.setAngle(0);
-    m_drivetrainSimulator.setPose(position.getPose());
+    Pose2d pose = position.getPose();
+    // m_leftEncoderSim.setDistance(0);
+    // m_rightEncoderSim.setDistance(0);
+    m_gyroSim.setAngle(pose.getRotation().getDegrees());
+    m_drivetrainSimulator.setPose(pose);
+
+    m_odometry = new DifferentialDriveOdometry(
+        pose.getRotation(), m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
 
     // Update the field simulation
     SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
+    SimulationUxSupport.instance.updateEstimatedRobotPose("Odometry", getEstimatedPose());
   }
 
   @Override
@@ -107,8 +118,5 @@ public class SimDrivebase extends Drivebase {
     m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
     m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
-
-    // Update the field simulation
-    SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
   }
 }

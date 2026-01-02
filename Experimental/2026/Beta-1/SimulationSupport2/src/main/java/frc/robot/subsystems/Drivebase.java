@@ -4,14 +4,19 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -22,6 +27,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebase;
+import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**
  * Drivebase subsystem for a differential (tank) drive robot.
@@ -41,7 +47,7 @@ import frc.robot.subsystems.interfaces.IDrivebase;
  *
  * </ul>
  */
-public class Drivebase extends SubsystemBase implements IDrivebase {
+public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
   // Constants
   //
@@ -70,6 +76,10 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   /** Maximum rotational velocity for arcade drive. */
   final protected static AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(120.0);
 
+  /** Kinematics calculator for the drivebase. */
+  final protected static DifferentialDriveKinematics m_kinematics =
+      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+
   //
   // Core definitions
   //
@@ -91,9 +101,8 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   /** Gyro sensor. */
   final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
 
-  /** Kinematics calculator for the drivebase. */
-  final protected DifferentialDriveKinematics m_kinematics =
-      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  protected DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+      new Rotation2d(), 0, 0, new Pose2d(1, 1, new Rotation2d(Degrees.of(90))));
 
   /** Creates a new Drivebase. */
   public Drivebase() {
@@ -174,6 +183,16 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
   }
 
   //
+  // Methods from SubsystemBase
+  //
+  @Override
+  public void periodic() {
+    m_odometry.update(m_rawGyro.getRotation2d(),
+        new DifferentialDriveWheelPositions(
+            m_leftEncoder.getDistance(), m_rightEncoder.getDistance()));
+  }
+
+  //
   // Methods from IDrivebase
   //
 
@@ -195,5 +214,14 @@ public class Drivebase extends SubsystemBase implements IDrivebase {
 
     driveArcade(
         MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
+  }
+
+  //
+  // Methods from IDrivebasePlus
+  //
+
+  @Override
+  public Pose2d getEstimatedPose() {
+    return m_odometry.getPoseMeters();
   }
 }

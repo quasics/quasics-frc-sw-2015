@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -141,7 +143,12 @@ public class RobotContainer {
     autoCommandChooser.setDefaultOption(
         "No Auto", Commands.print("No autonomous command configured"));
     autoCommandChooser.addOption("Do something", Commands.print("Do something"));
-    autoCommandChooser.addOption("Sample trajectory", getSampleTrajectoryCommand());
+    autoCommandChooser.addOption(
+        "Trajectory (Linear)", getSampleTrajectoryCommand(TrajectoryShape.Linear));
+    autoCommandChooser.addOption(
+        "Trajectory (Curved)", getSampleTrajectoryCommand(TrajectoryShape.SimpleCurve));
+    autoCommandChooser.addOption(
+        "Trajectory (S-curve)", getSampleTrajectoryCommand(TrajectoryShape.SCurve));
     SmartDashboard.putData("Autonomous Command", autoCommandChooser);
   }
 
@@ -153,7 +160,9 @@ public class RobotContainer {
     return Commands.print("No selection found for autonomous command");
   }
 
-  Command getSampleTrajectoryCommand() {
+  enum TrajectoryShape { Linear, SimpleCurve, SCurve }
+
+  Command getSampleTrajectoryCommand(TrajectoryShape shape) {
     // Note: all of the following are *example* values only, and would need to be
     // appropriately generated (e.g., via SysId profiling, etc.).
     final double ksVolts = 0.014183;
@@ -173,18 +182,39 @@ public class RobotContainer {
                                   .setKinematics(Drivebase.KINEMATICS)
                                   // Apply the voltage constraint
                                   .addConstraint(autoVoltageConstraint);
-
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(),
-        // List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        // Pass config
-        config);
+    Trajectory exampleTrajectory = switch (shape) {
+      case Linear ->
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // No interior waypoints - just a straight line
+            List.of(),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 0, new Rotation2d(0)),
+            // Pass config
+            config);
+      case SimpleCurve ->
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // No interior waypoints - just a straight line
+            List.of(),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 3, new Rotation2d(Degrees.of(90))),
+            // Pass config
+            config);
+      case SCurve ->
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(6, 0, new Rotation2d(0)),
+            // Pass config
+            config);
+    };
     return new FollowTrajectoryCommand(drivebase, exampleTrajectory);
   }
 }

@@ -66,12 +66,16 @@ public class RobotContainer {
   /** Constructor. */
   public RobotContainer() {
     configureDriving();
-    configureBindings();
+    setupAutonomousChooser();
     configureSysIdCommands();
     configureElevatorCommands();
     configureArmCommands();
+    configureBindings();
   }
 
+  /**
+   * Adds various sample commands for controlling the single-joint arm to the dashboard.
+   */
   private void configureArmCommands() {
     // Note that the delays will not be enough to get the arm *absolutely* into position,
     // but that's OK: I'm just trying to make it wave back and forth....
@@ -96,6 +100,9 @@ public class RobotContainer {
         "Cmd: Arm stop", new InstantCommand(() -> { m_arm.stop(); }, m_arm.asSubsystem()));
   }
 
+  /**
+   * Adds various sample commands for controlling the elevator to the dashboard.
+   */
   private void configureElevatorCommands() {
     SmartDashboard.putData("Cmd: Elevator up", new InstantCommand(() -> {
       m_elevator.setTargetPosition(ElevatorPosition.HIGH);
@@ -125,6 +132,9 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Adds commands for profiling the drive base to the dashboard.
+   */
   private void configureSysIdCommands() {
     SmartDashboard.putData("Cmd: DynamicFwd",
         SysIdGenerator.sysIdDynamic(
@@ -140,8 +150,10 @@ public class RobotContainer {
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
   }
 
-  private void configureBindings() {
-    // Set up autonomous command chooser
+  /**
+   * Configures the autonomous command chooser and adds it to the dashboard.
+   */
+  private void setupAutonomousChooser() {
     m_autoCommandChooser.setDefaultOption(
         "No Auto", Commands.print("No autonomous command configured"));
     m_autoCommandChooser.addOption("Do something", Commands.print("Do something"));
@@ -156,6 +168,11 @@ public class RobotContainer {
     SmartDashboard.putData("Autonomous Command", m_autoCommandChooser);
   }
 
+  /** Configures any additional bindings that are needed. */
+  private void configureBindings() {
+    // Add any additional bindings here.
+  }
+
   /** Returns the command to run in autonomous mode. */
   public Command getAutonomousCommand() {
     if (m_autoCommandChooser.getSelected() != null) {
@@ -164,7 +181,31 @@ public class RobotContainer {
     return Commands.print("No selection found for autonomous command");
   }
 
+  //
+  // Trajectory-following stuff
+  //
+
+  /** Defines shapes supported for trajectory-following example commands. */
   enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
+
+  /** Maximum desired voltage draw when performing trajectory-following. */
+  private final static double kMaxVoltageForSampleTrajectories = 10;
+
+  /** Maximum desired acceleration when performing trajectory-following. */
+  private final static LinearAcceleration maxAccelerationForSampleTrajectories =
+      MetersPerSecondPerSecond.of(3);
+
+  /** Configuration for use in generating sample trajectories. */
+  private final TrajectoryConfig m_trajectoryConfig =
+      // Base configuration (max speed/accelleration)
+      new TrajectoryConfig(m_drivebase.getMaxLinearSpeed(), maxAccelerationForSampleTrajectories)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(m_drivebase.getKinematics())
+          // Apply a voltage constraint to ensure we don't accelerate too fast (and brown us out)
+          .addConstraint(
+              new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_drivebase.getKs(),
+                                                         m_drivebase.getKv(), m_drivebase.getKa()),
+                  m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
 
   /**
    * Generates a robot-relative trajectory for a given shape.
@@ -218,18 +259,4 @@ public class RobotContainer {
             m_trajectoryConfig);
     };
   }
-
-  private final static double kMaxVoltageForSampleTrajectories = 10;
-  private final static LinearAcceleration maxAccelerationForSampleTrajectories =
-      MetersPerSecondPerSecond.of(3);
-
-  private final TrajectoryConfig m_trajectoryConfig =
-      new TrajectoryConfig(m_drivebase.getMaxLinearSpeed(), maxAccelerationForSampleTrajectories)
-          // Add kinematics to ensure max speed is actually obeyed
-          .setKinematics(m_drivebase.getKinematics())
-          // Apply a voltage constraint to ensure we don't accelerate too fast
-          .addConstraint(
-              new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_drivebase.getKs(),
-                                                         m_drivebase.getKv(), m_drivebase.getKa()),
-                  m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
 }

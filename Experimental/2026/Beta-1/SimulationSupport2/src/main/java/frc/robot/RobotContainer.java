@@ -148,6 +148,8 @@ public class RobotContainer {
     autoCommandChooser.addOption(
         "Trajectory (Curved)", getSampleTrajectoryCommand(TrajectoryShape.SimpleCurve));
     autoCommandChooser.addOption(
+        "Trajectory (Circle)", getSampleTrajectoryCommand(TrajectoryShape.Circle));
+    autoCommandChooser.addOption(
         "Trajectory (S-curve)", getSampleTrajectoryCommand(TrajectoryShape.SCurve));
     SmartDashboard.putData("Autonomous Command", autoCommandChooser);
   }
@@ -160,7 +162,7 @@ public class RobotContainer {
     return Commands.print("No selection found for autonomous command");
   }
 
-  enum TrajectoryShape { Linear, SimpleCurve, SCurve }
+  enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
 
   Command getSampleTrajectoryCommand(TrajectoryShape shape) {
     // Note: all of the following are *example* values only, and would need to be
@@ -212,6 +214,16 @@ public class RobotContainer {
             List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
             // End 6 meters straight ahead of where we started, facing forward
             new Pose2d(6, 0, new Rotation2d(0)),
+            // Pass config
+            config);
+      case Circle ->
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these three interior waypoints along the perimeter of a circle
+            List.of(new Translation2d(2, 2), new Translation2d(0, 4), new Translation2d(-2, 2)),
+            // End back where we started, facing forward
+            new Pose2d(0, 0, new Rotation2d(0)),
             // Pass config
             config);
     };

@@ -46,13 +46,13 @@ public class RobotContainer {
   private static final boolean USE_ARCADE_DRIVE = true;
 
   /** The drivebase subsystem. */
-  private final IDrivebasePlus drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
+  private final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
 
   /** The elevator subsystem.  (At present, always simulated.) */
-  private final IElevator elevator = new frc.robot.subsystems.simulated.SimElevator();
+  private final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
 
   /** The arm subsystem.  (At present, always simulated.) */
-  private final ISingleJointArm arm = new frc.robot.subsystems.simulated.SimArm();
+  private final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** The driver joystick wrapper. */
   private final DriverJoystickWrapper m_driverWrapper =
@@ -61,7 +61,7 @@ public class RobotContainer {
           Robot.isSimulation());
 
   /** The autonomous command chooser. */
-  private final SendableChooser<Command> autoCommandChooser = new SendableChooser<Command>();
+  private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
 
   /** Constructor. */
   public RobotContainer() {
@@ -79,32 +79,32 @@ public class RobotContainer {
         // Move out
         new SequentialCommandGroup(
             new InstantCommand(
-                () -> { arm.setTargetPosition(arm.getArmOutAngle()); }, arm.asSubsystem()),
+                () -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); }, m_arm.asSubsystem()),
             new PrintCommand("Waiting for out"), new WaitCommand(2),
             new InstantCommand(
-                () -> { arm.setTargetPosition(arm.getArmUpAngle()); }, arm.asSubsystem()),
+                () -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); }, m_arm.asSubsystem()),
             new PrintCommand("Waiting for up"), new WaitCommand(2))
             .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
-      arm.setTargetPosition(arm.getArmOutAngle());
-    }, arm.asSubsystem()));
+      m_arm.setTargetPosition(m_arm.getArmOutAngle());
+    }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm up", new InstantCommand(() -> {
-      arm.setTargetPosition(arm.getArmUpAngle());
-    }, arm.asSubsystem()));
+      m_arm.setTargetPosition(m_arm.getArmUpAngle());
+    }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm wave", waveCommand);
     SmartDashboard.putData(
-        "Cmd: Arm stop", new InstantCommand(() -> { arm.stop(); }, arm.asSubsystem()));
+        "Cmd: Arm stop", new InstantCommand(() -> { m_arm.stop(); }, m_arm.asSubsystem()));
   }
 
   private void configureElevatorCommands() {
     SmartDashboard.putData("Cmd: Elevator up", new InstantCommand(() -> {
-      elevator.setTargetPosition(ElevatorPosition.HIGH);
-    }, elevator.asSubsystem()));
+      m_elevator.setTargetPosition(ElevatorPosition.HIGH);
+    }, m_elevator.asSubsystem()));
     SmartDashboard.putData("Cmd: Elevator down", new InstantCommand(() -> {
-      elevator.setTargetPosition(ElevatorPosition.BOTTOM);
-    }, elevator.asSubsystem()));
+      m_elevator.setTargetPosition(ElevatorPosition.BOTTOM);
+    }, m_elevator.asSubsystem()));
     SmartDashboard.putData("Cmd: Elevator stop",
-        new InstantCommand(() -> { elevator.stop(); }, elevator.asSubsystem()));
+        new InstantCommand(() -> { m_elevator.stop(); }, m_elevator.asSubsystem()));
   }
 
   /** Configures the driving behavior. */
@@ -113,12 +113,12 @@ public class RobotContainer {
     SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     if (USE_ARCADE_DRIVE) {
-      drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(drivebase,
+      m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase,
           ()
               -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
           () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
     } else {
-      drivebase.asSubsystem().setDefaultCommand(new TankDrive(drivebase,
+      m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(m_drivebase,
           ()
               -> limiter1.calculate(m_driverWrapper.getTankLeft()),
           () -> limiter2.calculate(m_driverWrapper.getTankRight())));
@@ -127,65 +127,52 @@ public class RobotContainer {
 
   private void configureSysIdCommands() {
     SmartDashboard.putData("Cmd: DynamicFwd",
-        SysIdGenerator.sysIdDynamic(drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("Cmd: DynamicRev",
-        SysIdGenerator.sysIdDynamic(drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
     SmartDashboard.putData("Cmd: QStaticFwd",
         SysIdGenerator.sysIdQuasistatic(
-            drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
+            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
     SmartDashboard.putData("Cmd: QStaticRev",
         SysIdGenerator.sysIdQuasistatic(
-            drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
+            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
   }
 
   private void configureBindings() {
     // Set up autonomous command chooser
-    autoCommandChooser.setDefaultOption(
+    m_autoCommandChooser.setDefaultOption(
         "No Auto", Commands.print("No autonomous command configured"));
-    autoCommandChooser.addOption("Do something", Commands.print("Do something"));
-    autoCommandChooser.addOption(
-        "Trajectory (Linear)", getSampleTrajectoryCommand(TrajectoryShape.Linear));
-    autoCommandChooser.addOption(
-        "Trajectory (Curved)", getSampleTrajectoryCommand(TrajectoryShape.SimpleCurve));
-    autoCommandChooser.addOption(
-        "Trajectory (Circle)", getSampleTrajectoryCommand(TrajectoryShape.Circle));
-    autoCommandChooser.addOption(
-        "Trajectory (S-curve)", getSampleTrajectoryCommand(TrajectoryShape.SCurve));
-    SmartDashboard.putData("Autonomous Command", autoCommandChooser);
+    m_autoCommandChooser.addOption("Do something", Commands.print("Do something"));
+    m_autoCommandChooser.addOption("Trajectory (Linear)",
+        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.Linear)));
+    m_autoCommandChooser.addOption("Trajectory (Curved)",
+        createTrajectoryCommand(generateTrajectory(TrajectoryShape.SimpleCurve)));
+    m_autoCommandChooser.addOption(
+        "Trajectory (Circle)", createTrajectoryCommand(generateTrajectory(TrajectoryShape.Circle)));
+    m_autoCommandChooser.addOption("Trajectory (S-curve)",
+        createTrajectoryCommand(generateTrajectory(TrajectoryShape.SCurve)));
+    SmartDashboard.putData("Autonomous Command", m_autoCommandChooser);
   }
 
   /** Returns the command to run in autonomous mode. */
   public Command getAutonomousCommand() {
-    if (autoCommandChooser.getSelected() != null) {
-      return autoCommandChooser.getSelected();
+    if (m_autoCommandChooser.getSelected() != null) {
+      return m_autoCommandChooser.getSelected();
     }
     return Commands.print("No selection found for autonomous command");
   }
 
   enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
 
-  Command getSampleTrajectoryCommand(TrajectoryShape shape) {
-    // Note: all of the following are *example* values only, and would need to be
-    // appropriately generated (e.g., via SysId profiling, etc.).
-    final double ksVolts = 0.014183;
-    final double kvVoltSecondsPerMeter = 1.9804;
-    final double kaVoltSecondsSquaredPerMeter = 0.19169;
-    final double kMaxVoltage = 10;
-    final LinearAcceleration maxAcceleration = MetersPerSecondPerSecond.of(3);
-
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter),
-        Drivebase.KINEMATICS, kMaxVoltage);
-
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(Drivebase.MAX_SPEED, maxAcceleration)
-                                  // Add kinematics to ensure max speed is actually obeyed
-                                  .setKinematics(Drivebase.KINEMATICS)
-                                  // Apply the voltage constraint
-                                  .addConstraint(autoVoltageConstraint);
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = switch (shape) {
+  /**
+   * Generates a robot-relative trajectory for a given shape.
+   *
+   * @param shape the desired shape of the trajectory
+   */
+  Trajectory generateTrajectory(TrajectoryShape shape) {
+    return switch (shape) {
       case Linear ->
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -195,7 +182,8 @@ public class RobotContainer {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(3, 0, new Rotation2d(0)),
             // Pass config
-            config);
+            m_trajectoryConfig);
+
       case SimpleCurve ->
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -205,7 +193,8 @@ public class RobotContainer {
             // End 3 meters straight ahead of where we started, facing forward
             new Pose2d(3, 3, new Rotation2d(Degrees.of(90))),
             // Pass config
-            config);
+            m_trajectoryConfig);
+
       case SCurve ->
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -215,7 +204,8 @@ public class RobotContainer {
             // End 6 meters straight ahead of where we started, facing forward
             new Pose2d(6, 0, new Rotation2d(0)),
             // Pass config
-            config);
+            m_trajectoryConfig);
+
       case Circle ->
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
@@ -225,8 +215,31 @@ public class RobotContainer {
             // End back where we started, facing forward
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass config
-            config);
+            m_trajectoryConfig);
     };
-    return new FollowTrajectoryCommand(drivebase, exampleTrajectory);
+  }
+
+  private final static double kMaxVoltageForSampleTrajectories = 10;
+  private final static LinearAcceleration maxAccelerationForSampleTrajectories =
+      MetersPerSecondPerSecond.of(3);
+
+  private final TrajectoryConfig m_trajectoryConfig =
+      new TrajectoryConfig(m_drivebase.getMaxLinearSpeed(), maxAccelerationForSampleTrajectories)
+          // Add kinematics to ensure max speed is actually obeyed
+          .setKinematics(m_drivebase.getKinematics())
+          // Apply a voltage constraint to ensure we don't accelerate too fast
+          .addConstraint(
+              new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_drivebase.getKs(),
+                                                         m_drivebase.getKv(), m_drivebase.getKa()),
+                  m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
+
+  /**
+   * Generates a command to drive along a trajectory of the specified shape.
+   *
+   * @param shape the desired shape of the trajectory
+   * @return
+   */
+  Command createTrajectoryCommand(Trajectory trajectory) {
+    return new FollowTrajectoryCommand(m_drivebase, generateTrajectory(shape));
   }
 }

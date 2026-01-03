@@ -84,6 +84,30 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static DifferentialDriveKinematics KINEMATICS =
       new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
+  /**
+   * Value for voltage required to overcome static friction (used in feedforward calculations;
+   * computed via SysID tool).
+   */
+  public final static double Ks = 0.014183;
+
+  /**
+   * Velocity gain (in volts/(m/s)) to move at a given velocity (used in feedforward
+   * calculations; computed via SysID tool).
+   */
+  public final static double Kv = 1.9804;
+
+  /**
+   * Acceleration gain (in volts/(m/s^2)) to accelerate at a given rate (used in feedforward
+   * calculations; computed via SysID tool).
+   */
+  public final static double Ka = 0.19169;
+
+  /**
+   * Value for the "unit converter" from velocity error (m/s) to motor effort (Volts) under PID
+   * control, computed via SysID.
+   */
+  public final static double Kp = 1.6662;
+
   //
   // Core definitions
   //
@@ -273,5 +297,25 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_rightController.getVoltage());
+  }
+
+  @Override
+  public double getKa() {
+    return Ka;
+  }
+
+  @Override
+  public double getKs() {
+    return Ks;
+  }
+
+  @Override
+  public double getKv() {
+    return Kv;
+  }
+
+  @Override
+  public double getKp() {
+    return Kp;
   }
 }

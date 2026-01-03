@@ -20,4 +20,19 @@ public interface IDrivebasePlus extends IDrivebase {
   Distance getRightPosition();
   LinearVelocity getRightVelocity();
   Voltage getRightVoltage();
+
+  /** Returns the static gain for the drivebase (generally computed using the SysID tool). */
+  double getKs();
+
+  /** Returns the velocity gain for the drivebase (generally computed using the SysID tool). */
+  double getKv();
+
+  /** Returns the acceleration gain for the drivebase (generally computed using the SysID tool). */
+  double getKa();
+
+  /**
+   * Returns the kP value for the drivebase to convert velocity errors (in m/s) to voltages
+   * (generally computed using the SysID tool).
+   */
+  double getKp();
 }

@@ -243,6 +243,21 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
         MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
+  @Override
+  public LinearVelocity getMaxLinearSpeed() {
+    return MAX_SPEED;
+  }
+
+  @Override
+  public AngularVelocity getMaxRotationalSpeed() {
+    return MAX_ROTATION;
+  }
+
+  @Override
+  public DifferentialDriveKinematics getKinematics() {
+    return KINEMATICS;
+  }
+
   //
   // Methods from IDrivebasePlus
   //

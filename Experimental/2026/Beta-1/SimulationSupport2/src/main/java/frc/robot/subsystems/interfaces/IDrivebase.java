@@ -4,9 +4,23 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
+
 /** Interface for a drivebase subsystem. */
 public interface IDrivebase extends ISubsystem {
+  /** Canonical name for the subsystem. */
   String SUBSYSTEM_NAME = "Drivebase";
+
+  /** Returns the maximum linear speed for the robot. */
+  LinearVelocity getMaxLinearSpeed();
+
+  /** Returns the maximum rotational speed for the robot. */
+  AngularVelocity getMaxRotationalSpeed();
+
+  /** Returns the robot's kinematics. */
+  DifferentialDriveKinematics getKinematics();
 
   /**
    * "Classic" arcade-style driving, based on percentages. (Note: operates

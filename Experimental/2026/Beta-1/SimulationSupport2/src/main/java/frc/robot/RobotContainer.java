@@ -41,6 +41,13 @@ import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
 import java.util.List;
 
+/**
+ * Core definitions for sample robot code (focused on demonstrating simulation support).
+ *
+ * This is where the robot's subsystems, operator interfaces (joysticks, gamepads, etc.), and the
+ * high-level commands that link them together are defined and configured. It serves as the central
+ * hub for the declarative setup of a command-based robot project using the WPILib software library
+ */
 public class RobotContainer {
   /** Whether to use arcade drive or tank drive for robot navigation. */
   private static final boolean USE_ARCADE_DRIVE = true;

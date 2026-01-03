@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.subsystems.Drivebase;
 
 /**
@@ -31,58 +32,52 @@ public class SimDrivebase extends Drivebase {
   final static Angle FACING_BLUE = Degrees.of(180);
   /** Robot heading when facing the Red alliance. */
   final static Angle FACING_RED = Degrees.of(0);
-  /** Robot distance from east side of the field when on the Blue alliance's "starting line". */
-  final static Distance BLUE_STARTING_LINE = Meters.of(2);
-  /** Robot distance from east side of the field when on the Red alliance's "starting line". */
-  final static Distance RED_STARTING_LINE = Meters.of(15.25);
-  /** Robot distance from south side of the field when in front of the "top-most" ball. */
-  final static Distance TOP_BALL_HEIGHT = Meters.of(6);
-  /** Robot distance from south side of the field when in front of the "middle" ball. */
-  final static Distance MIDDLE_BALL_HEIGHT = Meters.of(4);
-  /** Robot distance from south side of the field when in front of the "bottom-most" ball. */
-  final static Distance BOTTOM_BALL_HEIGHT = Meters.of(2);
 
   /** Supported (pre-defined) starting positions for the robot. */
   public enum StartingPosition {
     // Default robot position
     Default,
     // Facing Blue at starting game element 1
-    Blue1,
+    Reefscape__Blue1,
     // Facing Blue at starting game element 2
-    Blue2,
+    Reefscape__Blue2,
     // Facing Blue at starting game element 3
-    Blue3,
+    Reefscape__Blue3,
     // Facing Red at starting game element 1
-    Red1,
+    Reefscape__Red1,
     // Facing Red at starting game element 2
-    Red2,
+    Reefscape__Red2,
     // Facing Red at starting game element 3
-    Red3,
+    Reefscape__Red3,
     ;
 
     /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
       return switch (this) {
         case Default -> DEFAULT_STARTING_POSE;
-        case Blue1 ->
-          new Pose2d(BLUE_STARTING_LINE.in(Meters), TOP_BALL_HEIGHT.in(Meters),
-              new Rotation2d(FACING_BLUE));
-        case Blue2 ->
-          new Pose2d(BLUE_STARTING_LINE.in(Meters), MIDDLE_BALL_HEIGHT.in(Meters),
-              new Rotation2d(FACING_BLUE));
-        case Blue3 ->
-          new Pose2d(BLUE_STARTING_LINE.in(Meters), BOTTOM_BALL_HEIGHT.in(Meters),
-              new Rotation2d(FACING_BLUE));
-        case Red1 ->
-          new Pose2d(RED_STARTING_LINE.in(Meters), BOTTOM_BALL_HEIGHT.in(Meters),
-              new Rotation2d(FACING_RED));
-        case Red2 ->
-          new Pose2d(RED_STARTING_LINE.in(Meters), MIDDLE_BALL_HEIGHT.in(Meters),
-              new Rotation2d(FACING_RED));
-        case Red3 ->
-          new Pose2d(
-              RED_STARTING_LINE.in(Meters), TOP_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_RED));
+        case Reefscape__Blue1 ->
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_BLUE));
+        case Reefscape__Blue2 ->
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+              ReefscapeConstants.MIDDLE_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_BLUE));
+        case Reefscape__Blue3 ->
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+              ReefscapeConstants.BOTTOM_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_BLUE));
+        case Reefscape__Red1 ->
+          new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
+              ReefscapeConstants.BOTTOM_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_RED));
+        case Reefscape__Red2 ->
+          new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
+              ReefscapeConstants.MIDDLE_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_RED));
+        case Reefscape__Red3 ->
+          new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_RED));
       };
+    }
+
+    public String getName() {
+      return this.toString().replaceFirst(".*__", "");
     }
   }
 
@@ -122,9 +117,9 @@ public class SimDrivebase extends Drivebase {
     SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
-        positionChooser.setDefaultOption(pos.toString(), pos);
+        positionChooser.setDefaultOption(pos.getName(), pos);
       } else {
-        positionChooser.addOption(pos.toString(), pos);
+        positionChooser.addOption(pos.getName(), pos);
       }
     }
     SmartDashboard.putData("Starting point", positionChooser);
@@ -142,6 +137,8 @@ public class SimDrivebase extends Drivebase {
 
     m_gyroSim.setAngle(facing.getDegrees());
     m_drivetrainSimulator.setPose(pose);
+    m_leftEncoderSim.setDistance(0);
+    m_rightEncoderSim.setDistance(0);
 
     m_odometry = new DifferentialDriveOdometry(
         facing, m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);

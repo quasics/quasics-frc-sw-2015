@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.LTVUnicycleController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,8 +38,8 @@ public class FollowTrajectoryCommand extends Command {
   /**
    * Constructor.
    *
-   * @param drivebase
-   * @param trajectory
+   * @param drivebase   drivebase being controlled
+   * @param trajectory  trajectory to be followed (assumed to be robot-relative)
    */
   public FollowTrajectoryCommand(IDrivebasePlus drivebase, Trajectory trajectory) {
     m_drivebase = drivebase;
@@ -51,7 +53,8 @@ public class FollowTrajectoryCommand extends Command {
 
     // Convert the base trajectory into something relative to the robot's initial pose when the
     // command starts running.
-    m_currentTrajectory = m_baseTrajectory.relativeTo(m_drivebase.getEstimatedPose());
+    Transform2d transform = new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
+    m_currentTrajectory = m_baseTrajectory.transformBy(transform);
   }
 
   @Override

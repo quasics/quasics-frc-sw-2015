@@ -4,22 +4,45 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.LTVUnicycleController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**
- * Command to follow a specified trajectory.
+ * Command to follow a specified (robot-relative) trajectory.
  */
 public class FollowTrajectoryCommand extends Command {
+  /** Drive base being controlled. */
   final IDrivebasePlus m_drivebase;
+
+  /** Robot-relative trajectory to be followed. */
   final Trajectory m_baseTrajectory;
+
+  /** Timer used to identify samples from the trajectory. */
   final Timer m_timer = new Timer();
+
+  /** Feedforward configuration used for the drivebase. */
+  final SimpleMotorFeedforward m_feedforward;
+
+  /** PID controller used to adjust power to the left side of the drivebase. */
+  final PIDController m_leftPID;
+
+  /** PID controller used to adjust power to the right side of the drivebase. */
+  final PIDController m_rightPID;
+
+  /** Field-relative version of m_baseTrajectory, [re]computed when the command starts running. */
   Trajectory m_currentTrajectory;
 
   /**
@@ -39,17 +62,23 @@ public class FollowTrajectoryCommand extends Command {
    * Constructor.
    *
    * @param drivebase   drivebase being controlled
-   * @param trajectory  trajectory to be followed (assumed to be robot-relative)
+   * @param trajectory  robot-relative trajectory to be followed
    */
   public FollowTrajectoryCommand(IDrivebasePlus drivebase, Trajectory trajectory) {
     m_drivebase = drivebase;
     m_baseTrajectory = trajectory;
+    m_feedforward =
+        new SimpleMotorFeedforward(m_drivebase.getKs(), m_drivebase.getKv(), m_drivebase.getKa());
+    m_leftPID = new PIDController(m_drivebase.getKp(), 0, 0);
+    m_rightPID = new PIDController(m_drivebase.getKp(), 0, 0);
     addRequirements(m_drivebase.asSubsystem());
   }
 
   @Override
   public void initialize() {
     m_timer.restart();
+    m_leftPID.reset();
+    m_rightPID.reset();
 
     // Convert the base trajectory into something relative to the robot's initial pose when the
     // command starts running.
@@ -63,10 +92,34 @@ public class FollowTrajectoryCommand extends Command {
     double elapsed = m_timer.get();
     var referencePosition = m_currentTrajectory.sample(elapsed);
 
-    // OK, let's do that
+    //
+    // OK, let's make that happen.
+    //
+
+    // 1. Compute the wheel speeds required at this point.
     ChassisSpeeds newSpeeds =
         m_controller.calculate(m_drivebase.getEstimatedPose(), referencePosition);
-    m_drivebase.setSpeeds(newSpeeds);
+    DifferentialDriveWheelSpeeds wheelSpeeds = Drivebase.KINEMATICS.toWheelSpeeds(newSpeeds);
+
+    // 2. Calculate Feedforward (Predictive Volts)
+    // kV is Volts per m/s, so (m/s * kV) = Volts
+    double leftFFVolts = m_feedforward.calculate(wheelSpeeds.leftMetersPerSecond);
+    double rightFFVolts = m_feedforward.calculate(wheelSpeeds.rightMetersPerSecond);
+
+    // 3. Calculate PID (Correction Volts)
+    // Since the Kp is assumed to be tuned to output Volts, this result is also in Volts
+    double leftPIDVolts =
+        m_leftPID.calculate(m_drivebase.getLeftVelocity().in(MetersPerSecond), // Current m/s
+            wheelSpeeds.leftMetersPerSecond // Target m/s
+        );
+    double rightPIDVolts =
+        m_rightPID.calculate(m_drivebase.getRightVelocity().in(MetersPerSecond), // Current m/s
+            wheelSpeeds.rightMetersPerSecond // Target m/s
+        );
+
+    // 4. Combine and apply
+    m_drivebase.tankDriveVolts(
+        Volts.of(leftFFVolts + leftPIDVolts), Volts.of(rightFFVolts + rightPIDVolts));
   }
 
   @Override

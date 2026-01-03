@@ -148,11 +148,11 @@ public class RobotContainer {
     m_autoCommandChooser.addOption("Trajectory (Linear)",
         new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.Linear)));
     m_autoCommandChooser.addOption("Trajectory (Curved)",
-        createTrajectoryCommand(generateTrajectory(TrajectoryShape.SimpleCurve)));
-    m_autoCommandChooser.addOption(
-        "Trajectory (Circle)", createTrajectoryCommand(generateTrajectory(TrajectoryShape.Circle)));
+        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.SimpleCurve)));
+    m_autoCommandChooser.addOption("Trajectory (Circle)",
+        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.Circle)));
     m_autoCommandChooser.addOption("Trajectory (S-curve)",
-        createTrajectoryCommand(generateTrajectory(TrajectoryShape.SCurve)));
+        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.SCurve)));
     SmartDashboard.putData("Autonomous Command", m_autoCommandChooser);
   }
 
@@ -232,14 +232,4 @@ public class RobotContainer {
               new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_drivebase.getKs(),
                                                          m_drivebase.getKv(), m_drivebase.getKa()),
                   m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
-
-  /**
-   * Generates a command to drive along a trajectory of the specified shape.
-   *
-   * @param shape the desired shape of the trajectory
-   * @return
-   */
-  Command createTrajectoryCommand(Trajectory trajectory) {
-    return new FollowTrajectoryCommand(m_drivebase, generateTrajectory(shape));
-  }
 }

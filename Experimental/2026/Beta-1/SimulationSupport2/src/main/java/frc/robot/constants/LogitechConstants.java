@@ -4,6 +4,9 @@
 
 package frc.robot.constants;
 
+/**
+ * Constants for the controls on a Logitech gamepad.
+ */
 public class LogitechConstants {
   /**
    * Defines constants for the different controls on a Logitech gamepad when used

@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +23,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -79,7 +81,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(120.0);
 
   /** Kinematics calculator for the drivebase. */
-  final protected static DifferentialDriveKinematics m_kinematics =
+  public final static DifferentialDriveKinematics KINEMATICS =
       new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   //
@@ -177,7 +179,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
     // Calculate the left and right wheel speeds based on the inputs.
     final DifferentialDriveWheelSpeeds wheelSpeeds =
-        m_kinematics.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+        KINEMATICS.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -224,5 +226,52 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   @Override
   public Pose2d getEstimatedPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  @Override
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(
+        MetersPerSecond.of(m_leftEncoder.getRate()), MetersPerSecond.of(m_rightEncoder.getRate()));
+  }
+
+  @Override
+  public void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage) {
+    m_leftController.setVoltage(leftVoltage);
+    m_rightController.setVoltage(rightVoltage);
+  }
+
+  @Override
+  public void setSpeeds(ChassisSpeeds speeds) {
+    setSpeeds(KINEMATICS.toWheelSpeeds(speeds));
+  }
+
+  @Override
+  public Distance getLeftPosition() {
+    return Meters.of(m_leftEncoder.getDistance());
+  }
+
+  @Override
+  public LinearVelocity getLeftVelocity() {
+    return MetersPerSecond.of(m_leftEncoder.getRate());
+  }
+
+  @Override
+  public Voltage getLeftVoltage() {
+    return Volts.of(m_leftController.getVoltage());
+  }
+
+  @Override
+  public Distance getRightPosition() {
+    return Meters.of(m_rightEncoder.getDistance());
+  }
+
+  @Override
+  public LinearVelocity getRightVelocity() {
+    return MetersPerSecond.of(m_rightEncoder.getRate());
+  }
+
+  @Override
+  public Voltage getRightVoltage() {
+    return Volts.of(m_rightController.getVoltage());
   }
 }

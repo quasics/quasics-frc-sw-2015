@@ -33,4 +33,6 @@ public interface ISingleJointArm extends ISubsystem {
    * @param targetPosition position to which the arm should move
    */
   void setTargetPosition(Angle targetPosition);
+
+  boolean atTargetPosition();
 }

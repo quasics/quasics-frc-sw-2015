@@ -92,18 +92,6 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   //
 
   @Override
-  public void stop() {
-    m_state = State.IDLE;
-    m_targetAngle = null;
-  }
-
-  @Override
-  public void setTargetPosition(Angle targetPosition) {
-    m_state = State.MOVING_TO_POSITION;
-    m_targetAngle = targetPosition;
-  }
-
-  @Override
   public Angle getCurrentAngle() {
     return m_currentAngle;
   }
@@ -126,5 +114,28 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   @Override
   public Angle getArmUpAngle() {
     return ARM_UP;
+  }
+
+  @Override
+  public void stop() {
+    m_state = State.IDLE;
+    m_targetAngle = null;
+  }
+
+  @Override
+  public void setTargetPosition(Angle targetPosition) {
+    if (targetPosition == null) {
+      stop();
+      return;
+    }
+    m_state = State.MOVING_TO_POSITION;
+    m_targetAngle = targetPosition;
+  }
+
+  @Override
+  public boolean atTargetPosition() {
+    // Consider the arm at the target if IDLE or within tolerance
+    return m_state == State.IDLE
+        || Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE;
   }
 }

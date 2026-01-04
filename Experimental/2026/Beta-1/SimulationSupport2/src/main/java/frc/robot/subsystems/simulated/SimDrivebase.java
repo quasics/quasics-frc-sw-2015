@@ -109,8 +109,11 @@ public class SimDrivebase extends Drivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+      // Linear components (velocity, acceleration)
+      1.98, 0.2,
+      // Angular components (velocity, acceleration)
+      1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
   final DifferentialDrivetrainSim m_drivetrainSimulator =
@@ -168,6 +171,11 @@ public class SimDrivebase extends Drivebase {
 
   @Override
   public void simulationPeriodic() {
+    final double dtSeconds = 0.02;
+
+    // Save off the old heading for angular velocity computation.
+    final var oldHeading = m_drivetrainSimulator.getHeading();
+
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
@@ -176,7 +184,7 @@ public class SimDrivebase extends Drivebase {
         m_rightController.get() * RoboRioSim.getVInVoltage());
 
     // Simulated clock ticks forward
-    m_drivetrainSimulator.update(0.02);
+    m_drivetrainSimulator.update(dtSeconds);
 
     // Update the simulated encoders and gyro
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
@@ -184,5 +192,11 @@ public class SimDrivebase extends Drivebase {
     m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
     m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+
+    // Angular velocity is not computed by the drive train simulator, but it's just the derivative
+    // of heading (change in heading over time), so we can compute it here.
+    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    m_gyroSim.setRate(angularVelocity);
   }
 }

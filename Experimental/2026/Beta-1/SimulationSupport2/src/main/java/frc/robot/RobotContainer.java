@@ -142,6 +142,7 @@ public class RobotContainer {
    * Adds commands for profiling the drive base to the dashboard.
    */
   private void configureSysIdCommands() {
+    // Dynamic and quasistatic commands for linear drivebase profiling
     SmartDashboard.putData("Cmd: DynamicFwd",
         SysIdGenerator.sysIdDynamic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
@@ -154,6 +155,20 @@ public class RobotContainer {
     SmartDashboard.putData("Cmd: QStaticRev",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
+
+    // Dynamic and quasistatic commands for angular drivebase profiling
+    SmartDashboard.putData("Cmd: DynamicFwd - Angular",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
+    SmartDashboard.putData("Cmd: DynamicRev - Angular",
+        SysIdGenerator.sysIdDynamic(
+            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
+    SmartDashboard.putData("Cmd: QStaticFwd - Angular",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
+    SmartDashboard.putData("Cmd: QStaticRev - Angular",
+        SysIdGenerator.sysIdQuasistatic(
+            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
   }
 
   /**

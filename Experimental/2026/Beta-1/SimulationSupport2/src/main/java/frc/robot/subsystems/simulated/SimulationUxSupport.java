@@ -158,6 +158,12 @@ public class SimulationUxSupport {
     Idle
   }
 
+  /**
+   * Sets the color of a mechanism based on its status.
+   *
+   * @param mech mechanism to set the color for
+   * @param status current status of the device
+   */
   private static void setMechanismColor(MechanismLigament2d mech, DeviceStatus status) {
     switch (status) {
       case Manual:

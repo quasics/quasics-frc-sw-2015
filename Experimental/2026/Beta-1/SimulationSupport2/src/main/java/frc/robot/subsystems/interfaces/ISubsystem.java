@@ -6,7 +6,17 @@ package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
+/**
+ * Basic interface for subsystems.
+ *
+ * I like using a pure interface for subsystems, rather than extending SubsystemBase directly,
+ * because it helps to separate the "interface" from the "implementation" and allows for more
+ * flexible designs.  It also allows me to define wrapper types that can add functionality to
+ * existing subsystems without modifying their core behavior, and without requiring a direct
+ * inheritance relationship.
+ */
 public interface ISubsystem {
+  /** Returns a Subsystem instance for this interface. */
   default Subsystem asSubsystem() {
     return (Subsystem) this;
   }

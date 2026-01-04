@@ -158,6 +158,23 @@ public class SimulationUxSupport {
     Idle
   }
 
+  private static void setMechanismColor(MechanismLigament2d mech, DeviceStatus status) {
+    switch (status) {
+      case Manual:
+        mech.setColor(NO_SETPOINT);
+        break;
+      case Idle:
+        mech.setColor(IDLE);
+        break;
+      case AtSetpoint:
+        mech.setColor(AT_SETPOINT);
+        break;
+      case NotAtSetpoint:
+        mech.setColor(NOT_AT_SETPOINT);
+        break;
+    }
+  }
+
   /**
    * Updates the rendering of the elevator's position in the simulation UX.
    *
@@ -167,22 +184,7 @@ public class SimulationUxSupport {
    */
   public void updateElevator(double currentHeight, double targetHeight, DeviceStatus status) {
     m_elevatorMech2d.setLength(currentHeight);
-
-    // Update color based on state.
-    switch (status) {
-      case Manual:
-        m_elevatorMech2d.setColor(NO_SETPOINT);
-        break;
-      case Idle:
-        m_elevatorMech2d.setColor(IDLE);
-        break;
-      case AtSetpoint:
-        m_elevatorMech2d.setColor(AT_SETPOINT);
-        break;
-      case NotAtSetpoint:
-        m_elevatorMech2d.setColor(NOT_AT_SETPOINT);
-        break;
-    }
+    setMechanismColor(m_elevatorMech2d, status);
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
       // Publish the simulation of the elevator to SmartDashboard.
@@ -198,14 +200,7 @@ public class SimulationUxSupport {
    */
   public void updateArm(Angle currentAngle, DeviceStatus status) {
     m_armMech2d.setAngle(currentAngle.in(Degrees));
-
-    if (status == DeviceStatus.Idle) {
-      m_armMech2d.setColor(IDLE);
-    } else if (status == DeviceStatus.AtSetpoint) {
-      m_armMech2d.setColor(AT_SETPOINT);
-    } else if (status == DeviceStatus.NotAtSetpoint) {
-      m_armMech2d.setColor(NOT_AT_SETPOINT);
-    }
+    setMechanismColor(m_armMech2d, status);
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
       // Publish the simulation of the elevator to SmartDashboard.

@@ -4,17 +4,13 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-
 import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**

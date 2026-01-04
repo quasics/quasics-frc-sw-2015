@@ -118,6 +118,18 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static double Ka = 0.19169;
 
   /**
+   * Velocity gain for angular/rotational movement at a given velocity (used in feedforward
+   * calculations; computed via SysID tool).
+   */
+  public final static double Kv_Angular = 2.6332;
+
+  /**
+   * Acceleration gain for angular acceleration (used in feedforward calculations; computed via
+   * SysID tool).
+   */
+  public final static double Ka_Angular = 0.5226;
+
+  /**
    * Value for the "unit converter" from velocity error (m/s) to motor effort (Volts) under PID
    * control, computed via SysID.
    */

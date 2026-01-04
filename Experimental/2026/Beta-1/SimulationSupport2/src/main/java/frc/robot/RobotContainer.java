@@ -91,10 +91,12 @@ public class RobotContainer {
         new SequentialCommandGroup(
             new InstantCommand(
                 () -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); }, m_arm.asSubsystem()),
-            new PrintCommand("Waiting for out"), new WaitCommand(2),
+            // Wait for some motion
+            new WaitCommand(2),
             new InstantCommand(
                 () -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); }, m_arm.asSubsystem()),
-            new PrintCommand("Waiting for up"), new WaitCommand(2))
+            // Wait for some motion
+            new WaitCommand(2))
             .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmOutAngle());

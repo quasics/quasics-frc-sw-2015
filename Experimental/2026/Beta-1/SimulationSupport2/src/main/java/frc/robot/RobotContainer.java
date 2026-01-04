@@ -86,18 +86,16 @@ public class RobotContainer {
   private void configureArmCommands() {
     // Note that the delays will not be enough to get the arm *absolutely* into position,
     // but that's OK: I'm just trying to make it wave back and forth....
-    Command waveCommand =
-        // Move out
-        new SequentialCommandGroup(
-            new InstantCommand(
-                () -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); }, m_arm.asSubsystem()),
-            // Wait for some motion
-            new WaitCommand(2),
-            new InstantCommand(
-                () -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); }, m_arm.asSubsystem()),
-            // Wait for some motion
-            new WaitCommand(2))
-            .repeatedly();
+    Command waveCommand = new SequentialCommandGroup(
+        new InstantCommand(
+            () -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); }, m_arm.asSubsystem()),
+        // Wait for some motion
+        new WaitCommand(2),
+        new InstantCommand(
+            () -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); }, m_arm.asSubsystem()),
+        // Wait for some motion
+        new WaitCommand(2))
+                              .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmOutAngle());
     }, m_arm.asSubsystem()));

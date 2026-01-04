@@ -61,35 +61,64 @@ public class SysIdGenerator {
             // mechanism being characterized.
             log
             -> {
-              final var leftPosition = drivebase.getLeftPosition();
-              final var leftVelocity = drivebase.getLeftVelocity();
-              final var leftVoltage = drivebase.getLeftVoltage();
-              final var rightPosition = drivebase.getRightPosition();
-              final var rightVelocity = drivebase.getRightVelocity();
-              final var rightVoltage = drivebase.getRightVoltage();
+              if (mode == DrivebaseProfilingMode.Angular) {
+                final var velocity = drivebase.getAngularVelocity();
+                final var leftVoltage = drivebase.getLeftVoltage();
+                final var rightVoltage = drivebase.getRightVoltage();
+                final var heading =
+                    Radians.of(drivebase.getEstimatedPose().getRotation().getRadians());
 
-              if (DUMP_SYSID_TO_CONSOLE) {
-                System.err.println("Logging "
-                    + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
-                    + String.format("%,.3f", leftPosition.in(Meters)) + "m, "
-                    + String.format("%,.3f", leftVelocity.in(MetersPerSecond)) + "m/s   "
-                    + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
-                    + String.format("%,.3f", rightPosition.in(Meters)) + "m, "
-                    + String.format("%,.3f", rightVelocity.in(MetersPerSecond)) + "m/s   ");
+                if (DUMP_SYSID_TO_CONSOLE) {
+                  System.err.println("Logging "
+                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
+                      + String.format("%,.3f", heading.in(Radians)) + "rad, "
+                      + String.format("%,.3f", velocity.in(RadiansPerSecond)) + "rad/s   "
+                      + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
+                      + String.format("%,.3f", heading.in(Radians)) + "rad, "
+                      + String.format("%,.3f", velocity.in(RadiansPerSecond)) + "rad/s");
+                }
+
+                // Record a frame (each) for the left and right motors. Since each group shares an
+                // encoder, we consider the entire group to be one motor.
+                log.motor("drive-rot-left")
+                    .voltage(leftVoltage)
+                    .angularPosition(heading)
+                    .angularVelocity(velocity);
+                log.motor("drive-rot-right")
+                    .voltage(rightVoltage)
+                    .angularPosition(heading)
+                    .angularVelocity(velocity);
+              } else {
+                final var leftPosition = drivebase.getLeftPosition();
+                final var leftVelocity = drivebase.getLeftVelocity();
+                final var leftVoltage = drivebase.getLeftVoltage();
+                final var rightPosition = drivebase.getRightPosition();
+                final var rightVelocity = drivebase.getRightVelocity();
+                final var rightVoltage = drivebase.getRightVoltage();
+
+                if (DUMP_SYSID_TO_CONSOLE) {
+                  System.err.println("Logging "
+                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
+                      + String.format("%,.3f", leftPosition.in(Meters)) + "m, "
+                      + String.format("%,.3f", leftVelocity.in(MetersPerSecond)) + "m/s   "
+                      + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
+                      + String.format("%,.3f", rightPosition.in(Meters)) + "m, "
+                      + String.format("%,.3f", rightVelocity.in(MetersPerSecond)) + "m/s   ");
+                }
+
+                // Record a frame for the left motors. Since these share an encoder,
+                // we consider the entire group to be one motor.
+                log.motor("drive-left")
+                    .voltage(leftVoltage)
+                    .linearPosition(leftPosition)
+                    .linearVelocity(leftVelocity);
+                // Record a frame for the right motors. Since these share an
+                // encoder, we consider the entire group to be one motor.
+                log.motor("drive-right")
+                    .voltage(rightVoltage)
+                    .linearPosition(rightPosition)
+                    .linearVelocity(rightVelocity);
               }
-
-              // Record a frame for the left motors. Since these share an encoder,
-              // we consider the entire group to be one motor.
-              log.motor("drive-left")
-                  .voltage(leftVoltage)
-                  .linearPosition(leftPosition)
-                  .linearVelocity(leftVelocity);
-              // Record a frame for the right motors. Since these share an
-              // encoder, we consider the entire group to be one motor.
-              log.motor("drive-right")
-                  .voltage(rightVoltage)
-                  .linearPosition(rightPosition)
-                  .linearVelocity(rightVelocity);
             },
             // Tell SysId to make generated commands require this subsystem,
             // suffix test state in WPILog with this subsystem's name (e.g., "drive")

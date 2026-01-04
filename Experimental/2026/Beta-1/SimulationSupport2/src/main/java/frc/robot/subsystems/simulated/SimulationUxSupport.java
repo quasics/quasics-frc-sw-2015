@@ -58,9 +58,7 @@ public class SimulationUxSupport {
   /** Length to use for the arm in the simulation UX. */
   private static final double ARM_LENGTH = 1;
 
-  /**
-   * Root of the simulation.
-   */
+  /** Root of the simulation. */
   private final Mechanism2d m_rootMech2d;
 
   /**
@@ -171,18 +169,19 @@ public class SimulationUxSupport {
     m_elevatorMech2d.setLength(currentHeight);
 
     // Update color based on state.
-    if (status == DeviceStatus.Manual) {
-      m_elevatorMech2d.setColor(NO_SETPOINT);
-    } else if (status == DeviceStatus.Idle) {
-      // Idle state
-      m_elevatorMech2d.setColor(IDLE);
-    } else {
-      // Automatic position control
-      if (Math.abs(currentHeight - targetHeight) < 0.01) {
+    switch (status) {
+      case Manual:
+        m_elevatorMech2d.setColor(NO_SETPOINT);
+        break;
+      case Idle:
+        m_elevatorMech2d.setColor(IDLE);
+        break;
+      case AtSetpoint:
         m_elevatorMech2d.setColor(AT_SETPOINT);
-      } else {
+        break;
+      case NotAtSetpoint:
         m_elevatorMech2d.setColor(NOT_AT_SETPOINT);
-      }
+        break;
     }
 
     if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {

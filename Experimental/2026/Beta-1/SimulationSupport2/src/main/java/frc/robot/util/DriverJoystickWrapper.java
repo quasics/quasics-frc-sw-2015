@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.XboxController;
@@ -42,6 +43,9 @@ import frc.robot.constants.LogitechConstants;
  * </ul>
  */
 public final class DriverJoystickWrapper {
+  /** Whether to disable the joystick (and simply return 0 values) in autonomous mode. */
+  private static final boolean DISABLED_IN_AUTONOMOUS = true;
+
   /** The preference key for saving/loading the drive control scheme. */
   private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
 
@@ -179,6 +183,10 @@ public final class DriverJoystickWrapper {
    * scheme.
    */
   public Double getArcadeForward() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double forward = switch (currentControlScheme) {
       case ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
       case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
@@ -192,6 +200,10 @@ public final class DriverJoystickWrapper {
    * scheme.
    */
   public Double getArcadeRotation() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double rotation = switch (currentControlScheme) {
       case ALT_KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
       case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
@@ -205,6 +217,10 @@ public final class DriverJoystickWrapper {
    * scheme.
    */
   public Double getTankLeft() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double left = switch (currentControlScheme) {
       case KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
       case ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
@@ -218,6 +234,10 @@ public final class DriverJoystickWrapper {
    * scheme.
    */
   public Double getTankRight() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double right = switch (currentControlScheme) {
       case KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
       case ALT_KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
@@ -228,6 +248,10 @@ public final class DriverJoystickWrapper {
 
   /** Returns the left X axis value based on the current control scheme.*/
   public Double getLeftX() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double leftX = switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(0); // Mapped to A/D keys;
       case LOGITECH_DUALSHOCK_CONTROLLER ->
@@ -241,6 +265,10 @@ public final class DriverJoystickWrapper {
 
   /** Returns the left Y axis value based on the current control scheme.*/
   public Double getLeftY() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double leftY = switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys;
       case LOGITECH_DUALSHOCK_CONTROLLER ->
@@ -254,6 +282,10 @@ public final class DriverJoystickWrapper {
 
   /** Returns the right X axis value based on the current control scheme.*/
   public double getRightX() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double rightX = switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> -m_secondaryController.getRawAxis(0); // Mapped to J/L keys
       case LOGITECH_DUALSHOCK_CONTROLLER ->
@@ -267,6 +299,10 @@ public final class DriverJoystickWrapper {
 
   /** Returns the right Y axis value based on the current control scheme.*/
   public double getRightY() {
+    if (DISABLED_IN_AUTONOMOUS && DriverStation.isAutonomous()) {
+      return 0.0;
+    }
+
     final double rightY = switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> -m_secondaryController.getRawAxis(1); // Mapped to I/K keys
       case LOGITECH_DUALSHOCK_CONTROLLER ->

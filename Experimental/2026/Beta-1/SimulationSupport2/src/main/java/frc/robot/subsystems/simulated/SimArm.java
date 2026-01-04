@@ -138,4 +138,9 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
     return m_state == State.IDLE
         || Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE;
   }
+
+  @Override
+  public State getState() {
+    return m_state;
+  }
 }

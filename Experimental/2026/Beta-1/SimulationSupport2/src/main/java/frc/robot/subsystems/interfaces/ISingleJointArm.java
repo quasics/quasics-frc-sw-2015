@@ -12,7 +12,12 @@ public interface ISingleJointArm extends ISubsystem {
   String SUBSYSTEM_NAME = "Arm";
 
   /** The state of the arm. */
-  enum State { IDLE, MOVING_TO_POSITION }
+  enum State {
+    /** The arm is idle (not moving). */
+    IDLE,
+    /** The arm is moving to a target position. */
+    MOVING_TO_POSITION,
+  }
 
   /** Stops the arm. */
   void stop();
@@ -39,5 +44,9 @@ public interface ISingleJointArm extends ISubsystem {
    */
   void setTargetPosition(Angle targetPosition);
 
+  /** Returns true if the arm is at its target position (or is idle). */
   boolean atTargetPosition();
+
+  /** Returns the current state of the arm. */
+  State getState();
 }

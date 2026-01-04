@@ -157,11 +157,15 @@ public class SimDrivebase extends Drivebase {
         facing, m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
   }
 
+  //
+  // SubsystemBase methods
+  //
+
   @Override
   public void periodic() {
     super.periodic();
 
-    // Update the field simulation
+    // Update the field simulation (based on calculations in simulationPeriodic).
     SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
     SimulationUxSupport.instance.updateEstimatedRobotPose("Odometry", getEstimatedPose());
 

@@ -27,19 +27,23 @@ import frc.robot.constants.LogitechConstants;
  * Note:
  * <ul>
  * <li>The "Keyboard1" and "Alt-Keyboard1" schemes assume that system "keyboard 0" and "keyboard 1"
- * are mapped to "Joystick 0" and "Joystick 1" (respectively), e.g., in the simulator.  Keyboard 0
- * defaults to using "D/A" and "W/S" as up/down pairs, while Keyboard 1 defaults to "I/J" and "K/L".
+ *     are mapped to "Joystick 0" and "Joystick 1" (respectively), e.g., in the simulator.  Keyboard
+ *     0 defaults to using "D/A" and "W/S" as up/down pairs, while Keyboard 1 defaults to "I/J" and
+ *     "K/L".
  *
  * <li>In the "Alt-Keyboard1" scheme, the "tank*" and "arcade*" commands all work from a single
- * controller (Joystick 0), and should default to using "D/A" for forward control and "W/S" for
- * rotation.  In the other modes, the "left" and "right" sticks on a combined controller (or
- * keyboard 0 and 1 in the "Keyboard1" scheme) are used.
+ *     controller (Joystick 0), and should default to using "D/A" for forward control and "W/S" for
+ *     rotation.  In the other modes, the "left" and "right" sticks on a combined controller (or
+ *     keyboard 0 and 1 in the "Keyboard1" scheme) are used.
  *
  * <li>The "GameSir Pro" scheme is based on the GameSir Pro controller's default axis mapping, and
- * represents a Mac-compatible Bluetooth controller that I have handy.
+ *     represents a Mac-compatible Bluetooth controller that I have handy.
  *
  * <li>Values for the Logitech, GameSir, and XBox joystick readings are being inverted (negated)
- * from their raw values because these controllers return negative values when we push forward.
+ *     from their raw values because these controllers return negative values when we push forward.
+ *
+ * <li>In all control schemes, if DISABLED_IN_AUTONOMOUS is true, the joystick inputs will be
+ *     ignored (returning 0.0) when the robot is in autonomous mode.
  * </ul>
  */
 public final class DriverJoystickWrapper {

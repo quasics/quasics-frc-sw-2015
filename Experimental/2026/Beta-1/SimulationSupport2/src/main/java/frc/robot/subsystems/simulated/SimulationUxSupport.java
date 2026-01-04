@@ -41,22 +41,22 @@ public class SimulationUxSupport {
   private static final Color8Bit LIMIT_COLOR = new Color8Bit(255, 0, 0);
 
   /** Color used to render the elevator when running under manual control. */
-  private final static Color8Bit NO_SETPOINT = new Color8Bit("#FFA500");
+  private static final Color8Bit NO_SETPOINT = new Color8Bit("#FFA500");
 
   /** Color used to render the elevator when we've reached the target position. */
-  private final static Color8Bit AT_SETPOINT = new Color8Bit("#00FF00");
+  private static final Color8Bit AT_SETPOINT = new Color8Bit("#00FF00");
 
   /** Color used to render the elevator when we're driving towards the target position. */
-  private final static Color8Bit NOT_AT_SETPOINT = new Color8Bit("#FF0000");
+  private static final Color8Bit NOT_AT_SETPOINT = new Color8Bit("#FF0000");
 
   /** Color used to render the elevator when it's in the "idle" state. */
-  private final static Color8Bit IDLE = new Color8Bit("#808080");
+  private static final Color8Bit IDLE = new Color8Bit("#808080");
 
   /** Singleton instance of this class. */
   public static final SimulationUxSupport instance = new SimulationUxSupport();
 
   /** Length to use for the arm in the simulation UX. */
-  final double ARM_LENGTH = 1;
+  private static final double ARM_LENGTH = 1;
 
   /**
    * Root of the simulation.

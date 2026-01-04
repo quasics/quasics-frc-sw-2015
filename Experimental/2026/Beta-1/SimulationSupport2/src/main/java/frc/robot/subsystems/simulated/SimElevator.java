@@ -10,8 +10,8 @@ import frc.robot.subsystems.interfaces.IElevator;
 
 /** Simulated elevator subsystem. */
 public class SimElevator extends SubsystemBase implements IElevator {
-  final static double MANUAL_CONTROL_SPEED = 0.05;
-  final static double SETPOINT_TOLERANCE = 0.01;
+  static final double MANUAL_CONTROL_SPEED = 0.05;
+  static final double SETPOINT_TOLERANCE = 0.01;
 
   /** Current state of the elevator. */
   private ElevatorState m_elevatorState = ElevatorState.IDLE;

@@ -71,72 +71,72 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
   /** Wheel diameter in inches. */
-  public final static Distance WHEEL_DIAMETER = Inches.of(6);
+  public static final Distance WHEEL_DIAMETER = Inches.of(6);
 
   /** Gearing ratio from motor to wheel. */
-  public final static double GEAR_RATIO = 8.45;
+  public static final double GEAR_RATIO = 8.45;
 
   /** Track width (distance between left and right wheels) in meters. */
-  public final static Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Zero linear velocity. (A potentially useful constant.) */
-  public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
+  public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
 
   /** Zero rotational velocity. (A potentially useful constant.) */
-  public final static AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
+  public static final AngularVelocity ZERO_TURNING = RadiansPerSecond.of(0.0);
 
   /** Maximum linear velocity that we'll allow/assume in our code. */
-  public final static LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
+  public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(3.5);
 
   /** Maximum rotational velocity for arcade drive. */
-  public final static AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(720.0);
+  public static final AngularVelocity MAX_ROTATION = Units.DegreesPerSecond.of(720.0);
 
   /** Kinematics calculator for the drivebase. */
-  public final static DifferentialDriveKinematics KINEMATICS =
+  public static final DifferentialDriveKinematics KINEMATICS =
       new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   /** Zero wheel speeds. (A potentially useful constant.) */
-  private final static DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
+  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
       new DifferentialDriveWheelSpeeds(0.0, 0.0);
 
   /**
    * Value for voltage required to overcome static friction (used in feedforward calculations;
    * computed via SysID tool).
    */
-  public final static double Ks = 0.014183;
+  public static final double Ks = 0.014183;
 
   /**
    * Velocity gain (in volts/(m/s)) for linear movement at a given velocity (used in feedforward
    * calculations; computed via SysID tool).
    */
-  public final static double Kv = 1.9804;
+  public static final double Kv = 1.9804;
 
   /**
    * Acceleration gain (in volts/(m/s^2)) for linear acceleration (used in feedforward
    * calculations; computed via SysID tool).
    */
-  public final static double Ka = 0.19169;
+  public static final double Ka = 0.19169;
 
   /**
    * Velocity gain for angular/rotational movement at a given velocity (used in feedforward
    * calculations; computed via SysID tool).
    */
-  public final static double Kv_Angular = 2.6332;
+  public static final double Kv_Angular = 2.6332;
 
   /**
    * Acceleration gain for angular acceleration (used in feedforward calculations; computed via
    * SysID tool).
    */
-  public final static double Ka_Angular = 0.5226;
+  public static final double Ka_Angular = 0.5226;
 
   /**
    * Value for the "unit converter" from velocity error (m/s) to motor effort (Volts) under PID
    * control, computed via SysID.
    */
-  public final static double Kp = 1.6662;
+  public static final double Kp = 1.6662;
 
   /** Feedforward calculator for the drivebase. */
-  public final static SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(Ks, Kv, Ka);
+  public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(Ks, Kv, Ka);
 
   //
   // Core definitions

@@ -14,11 +14,11 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
  */
 public class SimArm extends SubsystemBase implements ISingleJointArm {
   /** Whether to use PID control or simple proportional control. */
-  final static boolean USE_PID = true;
+  static final boolean USE_PID = true;
   /** Speed to use for non-PID control. */
-  final static double NON_PID_SPEED = 0.05;
+  static final double NON_PID_SPEED = 0.05;
   /** Tolerance for considering the arm "at" the setpoint. */
-  final static double SETPOINT_TOLERANCE = 0.01;
+  static final double SETPOINT_TOLERANCE = 0.01;
 
   /** Minimum limit on arm movement. */
   final public static Angle ARM_MAX = Degrees.of(100);

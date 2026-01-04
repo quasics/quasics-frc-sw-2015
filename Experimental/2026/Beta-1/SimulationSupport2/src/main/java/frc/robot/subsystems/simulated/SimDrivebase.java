@@ -32,9 +32,9 @@ import frc.robot.subsystems.Drivebase;
  */
 public class SimDrivebase extends Drivebase {
   /** Robot heading when facing the Blue alliance. */
-  final static Angle FACING_BLUE = Degrees.of(180);
+  static final Angle FACING_BLUE = Degrees.of(180);
   /** Robot heading when facing the Red alliance. */
-  final static Angle FACING_RED = Degrees.of(0);
+  static final Angle FACING_RED = Degrees.of(0);
 
   /**
    * Supported (pre-defined) starting positions for the robot.

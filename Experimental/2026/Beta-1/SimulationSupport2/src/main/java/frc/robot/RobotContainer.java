@@ -210,10 +210,10 @@ public class RobotContainer {
   enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
 
   /** Maximum desired voltage draw when performing trajectory-following. */
-  private final static double kMaxVoltageForSampleTrajectories = 10;
+  private static final double kMaxVoltageForSampleTrajectories = 10;
 
   /** Maximum desired acceleration when performing trajectory-following. */
-  private final static LinearAcceleration maxAccelerationForSampleTrajectories =
+  private static final LinearAcceleration maxAccelerationForSampleTrajectories =
       MetersPerSecondPerSecond.of(3);
 
   /** Configuration for use in generating sample trajectories. */

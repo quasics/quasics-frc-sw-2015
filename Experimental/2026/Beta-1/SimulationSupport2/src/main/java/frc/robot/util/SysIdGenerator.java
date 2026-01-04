@@ -25,7 +25,7 @@ public class SysIdGenerator {
   }
 
   /** If true, generates debugging output for logging to console. */
-  final static boolean DUMP_SYSID_TO_CONSOLE = true;
+  static final boolean DUMP_SYSID_TO_CONSOLE = true;
 
   /**
    * Returns a SysIdRoutine generator for the specified drivebase/mode, using a

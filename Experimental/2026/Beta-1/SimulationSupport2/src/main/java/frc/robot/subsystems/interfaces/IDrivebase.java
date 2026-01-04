@@ -13,10 +13,10 @@ public interface IDrivebase extends ISubsystem {
   /** Canonical name for the subsystem. */
   String SUBSYSTEM_NAME = "Drivebase";
 
-  /** Returns the maximum linear speed for the robot. */
+  /** Returns the maximum linear speed allowed for the robot (under direct control). */
   LinearVelocity getMaxLinearSpeed();
 
-  /** Returns the maximum rotational speed for the robot. */
+  /** Returns the maximum rotational speed allowed for the robot (under direct control). */
   AngularVelocity getMaxRotationalSpeed();
 
   /** Returns the robot's kinematics. */

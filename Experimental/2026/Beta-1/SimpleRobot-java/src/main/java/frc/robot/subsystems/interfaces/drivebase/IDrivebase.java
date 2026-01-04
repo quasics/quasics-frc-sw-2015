@@ -64,7 +64,7 @@ public interface IDrivebase extends ITrivialDrivebase {
 
   /**
    * Directly sets the voltages delivered to the motors, used as the basis for
-   * implenenting tank/arcade driving.
+   * implementing tank/arcade driving.
    *
    * Note: operates directly; no PID.
    *

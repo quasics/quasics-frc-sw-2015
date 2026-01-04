@@ -13,8 +13,11 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
  * Note: arm angles are measured from the vertical.
  */
 public class SimArm extends SubsystemBase implements ISingleJointArm {
+  /** Whether to use PID control or simple proportional control. */
   final static boolean USE_PID = true;
+  /** Speed to use for non-PID control. */
   final static double NON_PID_SPEED = 0.05;
+  /** Tolerance for considering the arm "at" the setpoint. */
   final static double SETPOINT_TOLERANCE = 0.01;
 
   /** Minimum limit on arm movement. */

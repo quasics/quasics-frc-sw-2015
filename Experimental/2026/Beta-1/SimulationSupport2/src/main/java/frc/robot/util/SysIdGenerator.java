@@ -21,7 +21,7 @@ public class SysIdGenerator {
     /** Profiling linear movement. */
     Linear,
     /** Profiling rotational movement. */
-    Rotating
+    Angular
   }
 
   /** If true, generates debugging output for logging to console. */

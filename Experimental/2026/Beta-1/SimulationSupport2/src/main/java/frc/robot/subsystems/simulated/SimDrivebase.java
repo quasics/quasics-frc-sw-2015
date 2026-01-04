@@ -36,21 +36,26 @@ public class SimDrivebase extends Drivebase {
   /** Robot heading when facing the Red alliance. */
   final static Angle FACING_RED = Degrees.of(0);
 
-  /** Supported (pre-defined) starting positions for the robot. */
+  /**
+   * Supported (pre-defined) starting positions for the robot.
+   *
+   * Note that game-specific starting positions are pre-fixed with the game name
+   * (e.g., "Reefscape__").
+   */
   public enum StartingPosition {
-    // Default robot position
+    /** Default robot position (0, 0, 0). */
     Default,
-    // Facing Blue at starting game element 1
+    /** Facing Blue and aligned with starting game element 1 in Reefscape. */
     Reefscape__Blue1,
-    // Facing Blue at starting game element 2
+    /** Facing Blue and aligned with starting game element 2 in Reefscape. */
     Reefscape__Blue2,
-    // Facing Blue at starting game element 3
+    /** Facing Blue and aligned with starting game element 3 in Reefscape. */
     Reefscape__Blue3,
-    // Facing Red at starting game element 1
+    /** Facing Red and aligned with starting game element 1 in Reefscape.*/
     Reefscape__Red1,
-    // Facing Red at starting game element 2
+    /** Facing Red and aligned with starting game element 2 in Reefscape. */
     Reefscape__Red2,
-    // Facing Red at starting game element 3
+    /** Facing Red and aligned with starting game element 3 in Reefscape. */
     Reefscape__Red3,
     ;
 
@@ -58,6 +63,7 @@ public class SimDrivebase extends Drivebase {
     public Pose2d getPose() {
       return switch (this) {
         case Default -> DEFAULT_STARTING_POSE;
+
         case Reefscape__Blue1 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters), new Rotation2d(FACING_BLUE));
@@ -79,6 +85,7 @@ public class SimDrivebase extends Drivebase {
       };
     }
 
+    /** Returns the user-facing name of this starting position (e.g., for use in a chooser). */
     public String getName() {
       return this.toString().replaceFirst(".*__", "");
     }
@@ -96,9 +103,9 @@ public class SimDrivebase extends Drivebase {
   /**
    * Linear system describing the drive train.
    *
-   * Notice that this data will (had better!) look *remarkably* similar to the
-   * computed "feed forward" values for this simulated drive base, since they
-   * are... well, the actual/ideal values defining that.
+   * Notice that this data will (had better!) look *remarkably* similar to the computed "feed
+   * forward" values for this simulated drive base when it is profiled, since they are... well, the
+   * actual/ideal values defining that.
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */

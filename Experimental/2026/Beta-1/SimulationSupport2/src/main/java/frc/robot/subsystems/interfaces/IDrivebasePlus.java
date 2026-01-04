@@ -6,6 +6,7 @@ package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -85,4 +86,7 @@ public interface IDrivebasePlus extends IDrivebase {
    * Returns the current voltage reported by the right controller. (Useful for profiling the robot.)
    */
   Voltage getRightVoltage();
+
+  /** Returns the current angular velocity of the robot. */
+  AngularVelocity getAngularVelocity();
 }

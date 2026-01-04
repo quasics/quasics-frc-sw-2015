@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -76,7 +77,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static double GEAR_RATIO = 8.45;
 
   /** Track width (distance between left and right wheels) in meters. */
-  public final static Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 in (from 2024) */
+  public final static Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Zero linear velocity. (A potentially useful constant.) */
   public final static LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
@@ -105,13 +106,13 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static double Ks = 0.014183;
 
   /**
-   * Velocity gain (in volts/(m/s)) to move at a given velocity (used in feedforward
+   * Velocity gain (in volts/(m/s)) for linear movement at a given velocity (used in feedforward
    * calculations; computed via SysID tool).
    */
   public final static double Kv = 1.9804;
 
   /**
-   * Acceleration gain (in volts/(m/s^2)) to accelerate at a given rate (used in feedforward
+   * Acceleration gain (in volts/(m/s^2)) for linear acceleration (used in feedforward
    * calculations; computed via SysID tool).
    */
   public final static double Ka = 0.19169;
@@ -365,6 +366,11 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   @Override
   public Voltage getRightVoltage() {
     return Volts.of(m_rightController.getVoltage());
+  }
+
+  @Override
+  public AngularVelocity getAngularVelocity() {
+    return DegreesPerSecond.of(m_rawGyro.getRate());
   }
 
   @Override

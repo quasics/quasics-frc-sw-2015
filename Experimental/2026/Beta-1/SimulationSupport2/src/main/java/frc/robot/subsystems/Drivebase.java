@@ -12,6 +12,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,9 +48,17 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * simulation-specific code separate from "real" robot code, in order to provide greater clarity as
  * an example; this functionality could easily be merged into this class instead.
  *
+ * <li>This class adds explicit PID-based velocity control, in addition to the basic "direct"
+ * control.  All direct control driving methods route through ther tankDrive(double, double) method,
+ * which sets the mode accordingly; the new method tankDriveWithPID() switches to PID control
+ * mode.  When switching to PID control mode, the PID controllers are reset to avoid sudden jumps.
+ *
  * </ul>
  */
 public class Drivebase extends SubsystemBase implements IDrivebasePlus {
+  // Supported control modes.
+  enum Mode { DIRECT_CONTROL, PID_CONTROL }
+
   //
   // Constants
   //
@@ -84,6 +94,10 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public final static DifferentialDriveKinematics KINEMATICS =
       new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
+  /** Zero wheel speeds. (A potentially useful constant.) */
+  private final static DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
+      new DifferentialDriveWheelSpeeds(0.0, 0.0);
+
   /**
    * Value for voltage required to overcome static friction (used in feedforward calculations;
    * computed via SysID tool).
@@ -107,6 +121,9 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
    * control, computed via SysID.
    */
   public final static double Kp = 1.6662;
+
+  /** Feedforward calculator for the drivebase. */
+  public final static SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(Ks, Kv, Ka);
 
   //
   // Core definitions
@@ -133,6 +150,15 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   protected DifferentialDriveOdometry m_odometry =
       new DifferentialDriveOdometry(new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
           m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), DEFAULT_STARTING_POSE);
+
+  /** Current driving control mode. */
+  protected Mode m_mode = Mode.DIRECT_CONTROL;
+
+  /** PID controller for left side velocity control. */
+  PIDController m_leftPID = new PIDController(Kp, 0.0, 0.0);
+
+  /** PID controller for right side velocity control. */
+  PIDController m_rightPID = new PIDController(Kp, 0.0, 0.0);
 
   /** Creates a new Drivebase. */
   public Drivebase() {
@@ -225,6 +251,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
   @Override
   public void driveTank(double leftSpeed, double rightSpeed) {
+    m_mode = Mode.DIRECT_CONTROL;
+
     // Don't let the values go outside of [-100%, +100%].
     double clampedLeftSpeed = MathUtil.clamp(leftSpeed, -1.0, +1.0);
     double clampedRightSpeed = MathUtil.clamp(rightSpeed, -1.0, +1.0);
@@ -268,15 +296,40 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   }
 
   @Override
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(
-        MetersPerSecond.of(m_leftEncoder.getRate()), MetersPerSecond.of(m_rightEncoder.getRate()));
-  }
-
-  @Override
   public void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage) {
     m_leftController.setVoltage(leftVoltage);
     m_rightController.setVoltage(rightVoltage);
+  }
+
+  @Override
+  public void driveTankWithPID(ChassisSpeeds speeds) {
+    // If we've just switched to PID control, reset the controllers.
+    if (m_mode != Mode.PID_CONTROL) {
+      m_leftPID.reset();
+      m_rightPID.reset();
+    }
+    m_mode = Mode.PID_CONTROL;
+
+    // Convert speeds to m/s.
+    DifferentialDriveWheelSpeeds wheelSpeeds;
+    if (speeds != null) {
+      wheelSpeeds = KINEMATICS.toWheelSpeeds(speeds);
+    } else {
+      wheelSpeeds = ZERO_WHEEL_SPEEDS;
+    }
+
+    // Calculate feedforward and PID outputs.
+    final double leftFeedforward = FEEDFORWARD.calculate(wheelSpeeds.leftMetersPerSecond);
+    final double rightFeedforward = FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
+
+    final double leftOutput =
+        m_leftPID.calculate(m_leftEncoder.getRate(), wheelSpeeds.leftMetersPerSecond);
+    final double rightOutput =
+        m_rightPID.calculate(m_rightEncoder.getRate(), wheelSpeeds.rightMetersPerSecond);
+
+    // Apply voltages to the motors.
+    tankDriveVolts(
+        Volts.of(leftOutput + leftFeedforward), Volts.of(rightOutput + rightFeedforward));
   }
 
   @Override

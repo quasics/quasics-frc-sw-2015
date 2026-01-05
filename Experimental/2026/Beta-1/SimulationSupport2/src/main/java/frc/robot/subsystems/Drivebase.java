@@ -39,26 +39,32 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * Notes:
  *
  * <li>I'm using PWMSparkMax controllers in this code because of a bug in the current (Beta1)
- * version of RevLib, which is causing crashes during simulation, at least under MacOS.  (A [bug
- * report](https://github.com/wpilibsuite/2026Beta/issues/29) has been filed.)
+ *     version of RevLib, which is causing crashes during simulation, at least under MacOS.  (A [bug
+ *     report](https://github.com/wpilibsuite/2026Beta/issues/29) has been filed.)
  *
  * <li>This class implements "open loop" control only; there is no PID
- * control or other feedback mechanisms here.
+ *     control or other feedback mechanisms here.
  *
  * <li>Simulation support is provided in a subclass, SimDrivebase.  This is simply to keep
- * simulation-specific code separate from "real" robot code, in order to provide greater clarity as
- * an example; this functionality could easily be merged into this class instead.
+ *     simulation-specific code separate from "real" robot code, in order to provide greater clarity
+ *     as an example; this functionality could easily be merged into this class instead.
  *
  * <li>This class adds explicit PID-based velocity control, in addition to the basic "direct"
- * control.  All direct control driving methods route through ther tankDrive(double, double) method,
- * which sets the mode accordingly; the new method tankDriveWithPID() switches to PID control
- * mode.  When switching to PID control mode, the PID controllers are reset to avoid sudden jumps.
+ *     control.  All direct control driving methods route through ther tankDrive(double, double)
+ *     method, which sets the mode accordingly; the new method tankDriveWithPID() switches to PID
+ *     control mode.  When switching to PID control mode, the PID controllers are reset to avoid
+ *     sudden jumps.
  *
  * </ul>
  */
 public class Drivebase extends SubsystemBase implements IDrivebasePlus {
-  // Supported control modes.
-  enum Mode { DIRECT_CONTROL, PID_CONTROL }
+  /** Supported control modes. */
+  enum Mode {
+    /** Direct control mode (no PID). */
+    DIRECT_CONTROL,
+    /** PID-based velocity control mode. */
+    PID_CONTROL,
+  }
 
   //
   // Constants
@@ -248,6 +254,17 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     setSpeeds(wheelSpeeds);
   }
 
+  /**
+   * Utility method to set the motor voltages.  (Shared by several methods.)
+   *
+   * @param leftVoltage  voltage for the left side
+   * @param rightVoltage voltage for the right side
+   */
+  private void setMotorVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+    m_leftController.setVoltage(leftVoltage);
+    m_rightController.setVoltage(rightVoltage);
+  }
+
   //
   // Methods from SubsystemBase
   //
@@ -310,8 +327,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
   @Override
   public void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage) {
-    m_leftController.setVoltage(leftVoltage);
-    m_rightController.setVoltage(rightVoltage);
+    m_mode = Mode.DIRECT_CONTROL;
+    setMotorVoltages(leftVoltage, rightVoltage);
   }
 
   @Override
@@ -341,7 +358,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
         m_rightPID.calculate(m_rightEncoder.getRate(), wheelSpeeds.rightMetersPerSecond);
 
     // Apply voltages to the motors.
-    tankDriveVolts(
+    setMotorVoltages(
         Volts.of(leftOutput + leftFeedforward), Volts.of(rightOutput + rightFeedforward));
   }
 

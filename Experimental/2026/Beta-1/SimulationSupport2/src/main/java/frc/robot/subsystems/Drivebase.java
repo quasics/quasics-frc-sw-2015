@@ -149,21 +149,21 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Left-side motor controller. */
-  final protected PWMSparkMax m_leftController = new PWMSparkMax(Ports.LEFT_MOTOR_PWM_PORT);
+  final protected PWMSparkMax m_leftController = new PWMSparkMax(Ports.PWM.LEFT_MOTOR_PORT);
 
   /** Right-side motor controller. */
-  final protected PWMSparkMax m_rightController = new PWMSparkMax(Ports.RIGHT_MOTOR_PWM_PORT);
+  final protected PWMSparkMax m_rightController = new PWMSparkMax(Ports.PWM.RIGHT_MOTOR_PORT);
 
   /** Left-side encoder. */
   protected final Encoder m_leftEncoder =
-      new Encoder(Ports.LEFT_ENCODER_A_DIO_PORT, Ports.LEFT_ENCODER_B_DIO_PORT);
+      new Encoder(Ports.DIO.LEFT_ENCODER_A_PORT, Ports.DIO.LEFT_ENCODER_B_PORT);
 
   /** Right-side encoder. */
   protected final Encoder m_rightEncoder =
-      new Encoder(Ports.RIGHT_ENCODER_A_DIO_PORT, Ports.RIGHT_ENCODER_B_DIO_PORT);
+      new Encoder(Ports.DIO.RIGHT_ENCODER_A_PORT, Ports.DIO.RIGHT_ENCODER_B_PORT);
 
   /** Gyro sensor. */
-  final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.GYRO_CHANNEL_PORT);
+  final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.Channel.GYRO_PORT);
 
   /** Odometry calculator. */
   protected DifferentialDriveOdometry m_odometry =

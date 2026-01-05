@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -182,6 +183,18 @@ public class SimulationUxSupport {
   }
 
   /**
+   * Lazily publishes a mechanism to SmartDashboard if it hasn't already been published.
+   *
+   * @param key  key to use for SmartDashboard
+   * @param sendable item to publish
+   */
+  private static void lazyPublishToSmartDashboard(String key, Sendable item) {
+    if (!SmartDashboard.containsKey(key)) {
+      SmartDashboard.putData(key, item);
+    }
+  }
+
+  /**
    * Updates the rendering of the elevator's position in the simulation UX.
    *
    * @param currentHeight current height of the elevator
@@ -191,11 +204,7 @@ public class SimulationUxSupport {
   public void updateElevator(double currentHeight, double targetHeight, DeviceStatus status) {
     m_elevatorMech2d.setLength(currentHeight);
     setMechanismColor(m_elevatorMech2d, status);
-
-    if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
-      // Publish the simulation of the elevator to SmartDashboard.
-      SmartDashboard.putData(ELEVATOR_KEY, m_rootMech2d);
-    }
+    lazyPublishToSmartDashboard(ELEVATOR_KEY, m_rootMech2d);
   }
 
   /**
@@ -207,11 +216,7 @@ public class SimulationUxSupport {
   public void updateArm(Angle currentAngle, DeviceStatus status) {
     m_armMech2d.setAngle(currentAngle.in(Degrees));
     setMechanismColor(m_armMech2d, status);
-
-    if (!SmartDashboard.containsKey(ELEVATOR_KEY)) {
-      // Publish the simulation of the elevator to SmartDashboard.
-      SmartDashboard.putData(ELEVATOR_KEY, m_rootMech2d);
-    }
+    lazyPublishToSmartDashboard(ELEVATOR_KEY, m_rootMech2d);
   }
 
   /**
@@ -221,11 +226,7 @@ public class SimulationUxSupport {
    */
   public void updateFieldRobotPose(Pose2d robotPose) {
     m_fieldSim.setRobotPose(robotPose);
-
-    if (!SmartDashboard.containsKey(FIELD_KEY)) {
-      // Publish the simulated field to the smart dashboard
-      SmartDashboard.putData(FIELD_KEY, m_fieldSim);
-    }
+    lazyPublishToSmartDashboard(FIELD_KEY, m_fieldSim);
   }
 
   /**
@@ -236,10 +237,6 @@ public class SimulationUxSupport {
    */
   public void updateEstimatedRobotPose(String label, Pose2d robotPose) {
     m_fieldSim.getObject(label).setPose(robotPose);
-
-    if (!SmartDashboard.containsKey(FIELD_KEY)) {
-      // Publish the simulated field to the smart dashboard
-      SmartDashboard.putData(FIELD_KEY, m_fieldSim);
-    }
+    lazyPublishToSmartDashboard(FIELD_KEY, m_fieldSim);
   }
 }

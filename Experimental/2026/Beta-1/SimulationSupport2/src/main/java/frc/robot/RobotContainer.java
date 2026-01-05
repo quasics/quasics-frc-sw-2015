@@ -138,9 +138,7 @@ public class RobotContainer {
     }
   }
 
-  /**
-   * Adds commands for profiling the drive base to the dashboard.
-   */
+  /** Adds commands for profiling the drive base to the dashboard. */
   private void configureSysIdCommands() {
     // Dynamic and quasistatic commands for linear drivebase profiling
     SmartDashboard.putData("Cmd: DynamicFwd",
@@ -171,9 +169,7 @@ public class RobotContainer {
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
   }
 
-  /**
-   * Configures the autonomous command chooser and adds it to the dashboard.
-   */
+  /** Configures the autonomous command chooser and adds it to the dashboard. */
   private void setupAutonomousChooser() {
     m_autoCommandChooser.setDefaultOption(
         "No Auto", Commands.print("No autonomous command configured"));

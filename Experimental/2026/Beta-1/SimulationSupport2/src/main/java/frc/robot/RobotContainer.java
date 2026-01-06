@@ -30,12 +30,16 @@ import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
+import frc.robot.util.RobotConfigLibrary;
 import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
 import java.util.List;
@@ -52,16 +56,22 @@ public class RobotContainer {
   private static final boolean USE_ARCADE_DRIVE = true;
 
   /** The drivebase subsystem. */
-  private final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
+  final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
 
   /** The elevator subsystem.  (At present, always simulated.) */
-  private final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
+  final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
 
   /** The arm subsystem.  (At present, always simulated.) */
-  private final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
+  final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
+
+  final frc.robot.util.RobotConfigs.RobotConfig RobotConfig =
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
+
+  final IVision m_vision = new frc.robot.subsystems.PhotonVision(
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation).cameras().get(0));
 
   /** The driver joystick wrapper. */
-  private final DriverJoystickWrapper m_driverWrapper =
+  final DriverJoystickWrapper m_driverWrapper =
       new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
           // Only load from/save to preferences when in simulation
           Robot.isSimulation());
@@ -77,6 +87,10 @@ public class RobotContainer {
     configureElevatorCommands();
     configureArmCommands();
     configureBindings();
+
+    if (Robot.isSimulation()) {
+      new CameraSimulator(RobotConfig, (PhotonVision) m_vision);
+    }
   }
 
   /**

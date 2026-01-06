@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
+import frc.robot.util.BulletinBoard;
 
 /**
  * Drivebase subsystem for a differential (tank) drive robot.
@@ -276,6 +277,9 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     m_odometry.update(m_rawGyro.getRotation2d(),
         new DifferentialDriveWheelPositions(
             m_leftEncoder.getDistance(), m_rightEncoder.getDistance()));
+
+    // Publish the odometry-based pose to the bulletin board.
+    BulletinBoard.common.updateValue(ODOMETRY_KEY, getEstimatedPose());
   }
 
   //

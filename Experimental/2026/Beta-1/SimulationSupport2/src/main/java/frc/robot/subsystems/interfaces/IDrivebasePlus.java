@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.util.BulletinBoard;
 
 /** Interface for a drivebase subsystem with additional functionality. */
 public interface IDrivebasePlus extends IDrivebase {
@@ -89,4 +90,26 @@ public interface IDrivebasePlus extends IDrivebase {
 
   /** Returns the current angular velocity of the robot. */
   AngularVelocity getAngularVelocity();
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
+  // Data published to BulletinBoard
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /** Key used to post odometry-based pose information to BulletinBoard. */
+  final String ODOMETRY_KEY = SUBSYSTEM_NAME + ".Pose";
+
+  /**
+   * Returns the latest posted odemetry-based pose (from the bulletin board).
+   *
+   * Note: this is a static function, which means that client code doesn't interact directly with
+   * the actual subsystem (and thus doesn't need to include it in their requirements).
+   *
+   * @return last posted odemetry pose, or null
+   */
+  static Pose2d getPublishedLastPoseFromOdometry() {
+    var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
+    return (Pose2d) stored.orElse(null);
+  }
 }

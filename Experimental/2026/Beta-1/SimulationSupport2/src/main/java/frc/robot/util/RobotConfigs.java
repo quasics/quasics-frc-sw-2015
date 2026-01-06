@@ -389,7 +389,7 @@ public interface RobotConfigs {
     }
   }
 
-  @SuppressWarnings("unused") public static final DriveConfig NO_DRIVE = null;
+  public static final DriveConfig NO_DRIVE = null;
   public static final CameraConfig NO_CAMERA = null;
   public static final ElevatorConfig NO_ELEVATOR = null;
   public static final LightingConfig NO_LIGHTING = null;

@@ -17,12 +17,12 @@ public final class RobotConfigLibrary {
   public enum Robot {
     /** Simulation-only */
     Simulation,
-    /** Simulation-only */
-    SimulationWithTwoCameras,
-    /** "Naked" drivebase used by the coding sub-team */
-    Sally,
-    /** 2025 ("Reefscape") robot */
-    Amelia
+    // /** Simulation-only */
+    // SimulationWithTwoCameras,
+    // /** "Naked" drivebase used by the coding sub-team */
+    // Sally,
+    // /** 2025 ("Reefscape") robot */
+    // Amelia
   }
 
   /**

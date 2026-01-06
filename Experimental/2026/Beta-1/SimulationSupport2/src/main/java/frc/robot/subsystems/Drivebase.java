@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**
@@ -149,21 +150,23 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Left-side motor controller. */
-  final protected PWMSparkMax m_leftController = new PWMSparkMax(Ports.PWM.LEFT_MOTOR_PORT);
+  final protected PWMSparkMax m_leftController =
+      new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
 
   /** Right-side motor controller. */
-  final protected PWMSparkMax m_rightController = new PWMSparkMax(Ports.PWM.RIGHT_MOTOR_PORT);
+  final protected PWMSparkMax m_rightController =
+      new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
 
   /** Left-side encoder. */
   protected final Encoder m_leftEncoder =
-      new Encoder(Ports.DIO.LEFT_ENCODER_A_PORT, Ports.DIO.LEFT_ENCODER_B_PORT);
+      new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT, SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
 
   /** Right-side encoder. */
-  protected final Encoder m_rightEncoder =
-      new Encoder(Ports.DIO.RIGHT_ENCODER_A_PORT, Ports.DIO.RIGHT_ENCODER_B_PORT);
+  protected final Encoder m_rightEncoder = new Encoder(
+      SimulationPorts.DIO.RIGHT_ENCODER_A_PORT, SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
 
   /** Gyro sensor. */
-  final protected AnalogGyro m_rawGyro = new AnalogGyro(Ports.Channel.GYRO_PORT);
+  final protected AnalogGyro m_rawGyro = new AnalogGyro(SimulationPorts.Channel.GYRO_PORT);
 
   /** Odometry calculator. */
   protected DifferentialDriveOdometry m_odometry =

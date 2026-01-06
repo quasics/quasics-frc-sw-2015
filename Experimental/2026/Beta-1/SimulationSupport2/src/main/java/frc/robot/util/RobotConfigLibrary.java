@@ -1,0 +1,119 @@
+package frc.robot.util;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.util.RobotConfigs.*;
+
+import frc.robot.constants.robots.SimulationPorts;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+public final class RobotConfigLibrary {
+  /** The supported robots. */
+  public enum Robot {
+    /** Simulation-only */
+    Simulation,
+    /** Simulation-only */
+    SimulationWithTwoCameras,
+    /** "Naked" drivebase used by the coding sub-team */
+    Sally,
+    /** 2025 ("Reefscape") robot */
+    Amelia
+  }
+
+  /**
+   * Returns the configuration for a specific robot.
+   *
+   * @param robot the targeted robot
+   * @return the configuration associated with the targeted robot
+   */
+  public static RobotConfig getConfig(Robot robot) {
+    return m_map.get(robot);
+  }
+
+  /** Stores the actual mapping of robot IDs to configurations. */
+  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
+
+  /**
+   * Helper function, used to construct the underlying map. (Java doesn't support
+   * inline specification of Map data.)
+   *
+   * @return the mapping of robots to configurations to be exposed to clients
+   */
+  static private Map<Robot, RobotConfig> createMap() {
+    var map = new HashMap<Robot, RobotConfig>();
+    map.put(Robot.Simulation, generateSingleCameraSimulationConfig());
+
+    //
+    // Sanity checks to make sure that we have entries for all known robots.
+
+    // Note that assertions are disabled by default. :-(
+    // See
+    // https://docs.oracle.com/javase/8/docs/technotes/guides/language/assert.html.
+    assert (map.size() == Robot.values().length)
+        : "Configurations for one or more robots are missing!";
+
+    // Back up the assertion with something that can't be disabled.
+    if (map.size() != Robot.values().length) {
+      final int numRobotsWithoutConfigs = Robot.values().length - map.size();
+      throw new RuntimeException(
+          "Configurations are missing for " + numRobotsWithoutConfigs + " robot(s)!");
+    }
+    return map;
+  }
+
+  private static RobotConfig generateSingleCameraSimulationConfig() {
+    final var driveConfig = new DriveConfig(Inches.of(3), // Wheel radius
+        Meters.of(0.381 * 2), // Trackwidth
+        8.0, // Gearing
+        new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
+        new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
+        new DriveFeedForwardConfig(
+            // Linear data
+            Volts.of(1.9801), 0.19198,
+            // Angular data
+            Volts.of(1.4999), 0.29835));
+
+    final var cameraConfig = new CameraConfig("USBCamera1",
+        // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+        // pose (which is considered to be its center of rotation at the floor level, or
+        // Z = 0)...
+        new Position(Meters.of(0.1), // x
+            Meters.of(0.0), // y
+            Meters.of(0.5)), // z
+        // ...pitched 15 degrees up, pointing straightforward and in plane with the
+        // robot,...
+        new Orientation(Degrees.of(-15), // pitch
+            Degrees.of(0), // roll
+            Degrees.of(0) // yaw
+            ),
+        // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+        new Imaging(960, 720, Degrees.of(100), 30));
+
+    final var elevatorConfig = new ElevatorConfig(
+        new PIDConfig(10.0, 0, 1), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)
+        // Note: PID and FF values were calculated using SysId routines under simulation.
+        // new PIDConfig(0.16168, 0, 0),
+        // new ElevatorFeedForwardConfig(0.0015558, 0.05, 1.3321, 0.03958)
+        // end of calibrated data
+    );
+
+    final var armConfig = new ArmConfig(
+        // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+        new PIDConfig(6.0, 0.00, 0.00), null);
+
+    final var lightingConfig = new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80);
+
+    final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
+
+    return new RobotConfig(driveConfig,
+        Arrays.asList(new CameraConfig[] {
+            cameraConfig,
+        }),
+        elevatorConfig, armConfig, lightingConfig, candleConfig);
+  }
+}

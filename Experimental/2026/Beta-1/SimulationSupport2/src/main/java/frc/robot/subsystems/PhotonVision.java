@@ -93,16 +93,6 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
     return tagLayout;
   }
 
-  @Override
-  public List<CameraData> getCameraDataForSimulation() {
-    return List.of(m_cameraData);
-  }
-
-  @Override
-  public AprilTagFieldLayout getFieldLayoutForSimulation() {
-    return m_tagLayout;
-  }
-
   // Making this a helper function, since getLatestResult() is now deprecated, and
   // I'm trying to cut down on the number of warnings.
   private static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
@@ -180,5 +170,19 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
     }
 
     return getTargetDataForCamera(m_cameraData, m_tagLayout, robotPose);
+  }
+
+  //
+  // Methods from IPhotonVision
+  //
+
+  @Override
+  public List<CameraData> getCameraDataForSimulation() {
+    return List.of(m_cameraData);
+  }
+
+  @Override
+  public AprilTagFieldLayout getFieldLayoutForSimulation() {
+    return m_tagLayout;
   }
 }

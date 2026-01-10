@@ -102,7 +102,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
   /** Maximum rotational velocity for arcade drive. */
   public static final AngularVelocity MAX_ROTATION =
-      Units.DegreesPerSecond.of(720.0);
+      RadiansPerSecond.of(12.5664);
 
   /** Kinematics calculator for the drivebase. */
   public static final DifferentialDriveKinematics KINEMATICS =

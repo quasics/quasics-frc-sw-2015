@@ -13,6 +13,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
 import frc.robot.subsystems.real.SingleMotorThingSpark;
+import frc.robot.subsystems.real.SingleMotorThingTalon;
 import frc.robot.subsystems.simulation.SingleMotorThingSim;
 
 /**
@@ -23,7 +24,7 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
  */
 public class RobotContainer {
   /** Supported hardware configurations. */
-  enum HardwareConfig { Simulated, Spark }
+  enum HardwareConfig { Simulated, Spark, Talon }
 
   /** Selected hardware configuration. */
   final HardwareConfig m_hardware =
@@ -33,6 +34,7 @@ public class RobotContainer {
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
     case Simulated -> new SingleMotorThingSim();
     case Spark -> new SingleMotorThingSpark();
+    case Talon -> new SingleMotorThingTalon();
   };
 
   // The robot's subsystems and commands are defined here...

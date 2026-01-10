@@ -24,6 +24,10 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    * This is defined a a single unit, so that if these things are "connected" in subclasses (e.g.,
    * need to ask the controller for its encoder), we can do that easily.
    *
+   * Note: despite the name, this isn't *really* just for derived classes (which is why this is
+   * public, rather than protected).  (There's an example in the RobotContainer of how a
+   * SingleMotorThing could be built directly by a client.)
+   *
    * @see frc.robot.subsystems.real.SingleMotorThingPwmSpark for an example
    */
   public record DerivedClassData(MotorController controller, TrivialEncoder encoder) {}

@@ -25,7 +25,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
         TrivialEncoder.forWpiLibEncoder(new Encoder(3, 4)));
   }
 
-  /** Creates a new SingleMotorThingSparkMax. */
+  /** Creates a new SingleMotorThingSpark. */
   public SingleMotorThingSpark() {
     super(getStuffForBaseClassSetup());
   }

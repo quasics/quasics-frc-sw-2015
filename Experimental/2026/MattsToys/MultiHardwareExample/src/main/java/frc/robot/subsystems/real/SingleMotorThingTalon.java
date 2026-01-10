@@ -20,9 +20,15 @@ import frc.robot.subsystems.implementation.SingleMotorThing;
  * to set up the hardware-specific stuff.
  */
 public class SingleMotorThingTalon extends SingleMotorThing {
+  /** Wheel diameter on this implementation of a SingleMotorThing. */
   final static Distance WHEEL_DIAMETER = Inches.of(4);
+
+  /** Encoder ticks/revolution for this hardware. */
   final static double ENCODER_TICKS_PER_REVOLUTION = 4096;
 
+  /**
+   * Builds the actual hardware wrappers that will be passed to a base class.
+   */
   static DerivedClassData getStuffForBaseClassSetup() {
     final Encoder rawEncoder = new Encoder(3, 4);
     configureEncoderForDistance(rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);

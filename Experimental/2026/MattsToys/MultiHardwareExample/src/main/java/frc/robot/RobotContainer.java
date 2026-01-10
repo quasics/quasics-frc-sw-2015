@@ -4,13 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.interfaces.ISingleMotorThing;
+import frc.robot.subsystems.real.SingleMotorThingSpark;
+import frc.robot.subsystems.simulation.SingleMotorThingSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,6 +22,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  /** Supported hardware configurations. */
+  enum HardwareConfig { Simulated, Spark }
+
+  /** Selected hardware configuration. */
+  final HardwareConfig m_hardware =
+      Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
+
+  // Sets up a "single motor thing", based on the selected hardware configuration.
+  final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
+    case Simulated -> new SingleMotorThingSim();
+    case Spark -> new SingleMotorThingSpark();
+  };
+
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 

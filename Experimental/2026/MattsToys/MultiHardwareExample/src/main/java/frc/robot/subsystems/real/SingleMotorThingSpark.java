@@ -34,7 +34,6 @@ public class SingleMotorThingSpark extends SingleMotorThing {
         // TODO: Replace with CAN-based SparkMax stuff (when it works on Mac)
         new PWMSparkMax(1),
         // TODO: Replace with a wrapped RelativeEncoder, when we've moved to CAN controller
-        // TODO: Configure the encoder
         TrivialEncoder.forWpiLibEncoder(rawEncoder));
   }
 

@@ -26,6 +26,9 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   /** Wheel diameter in inches. */
   public static final Distance WHEEL_DIAMETER = Inches.of(6);
 
+  /**
+   * Builds the actual hardware wrappers that will be passed to the base class.
+   */
   static DerivedClassData getStuffForBaseClassSetup() {
     Encoder rawEncoder = new Encoder(3, 4);
     configureEncoderForDistance(rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);

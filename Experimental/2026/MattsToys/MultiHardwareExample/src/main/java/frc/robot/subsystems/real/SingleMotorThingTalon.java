@@ -27,7 +27,7 @@ public class SingleMotorThingTalon extends SingleMotorThing {
   final static double ENCODER_TICKS_PER_REVOLUTION = 4096;
 
   /**
-   * Builds the actual hardware wrappers that will be passed to a base class.
+   * Builds the actual hardware wrappers that will be passed to the base class.
    */
   static DerivedClassData getStuffForBaseClassSetup() {
     final Encoder rawEncoder = new Encoder(3, 4);

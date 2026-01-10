@@ -46,9 +46,10 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
   /**
    * Creates a new AbstractSingleMotorThing.
    *
-   * This would be called from the derived class.
+   * This would usually be called from the derived class, but you could theoretically do this
+   * directly from a client that builds its own DerivedClassData record.
    */
-  protected SingleMotorThing(DerivedClassData data) {
+  public SingleMotorThing(DerivedClassData data) {
     this.controller = data.controller;
     this.encoder = data.encoder;
   }

@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.subsystems.implementation.SingleMotorThing;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
 import frc.robot.subsystems.real.SingleMotorThingSpark;
 import frc.robot.subsystems.real.SingleMotorThingTalon;
@@ -19,7 +23,7 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
  */
 public class RobotContainer {
   /** Supported hardware configurations. */
-  enum HardwareConfig { Simulated, Spark, Talon }
+  enum HardwareConfig { Simulated, Spark, Talon, Victor }
 
   /** Selected hardware configuration. */
   final HardwareConfig m_hardware =
@@ -30,6 +34,14 @@ public class RobotContainer {
     case Simulated -> new SingleMotorThingSim();
     case Spark -> new SingleMotorThingSpark();
     case Talon -> new SingleMotorThingTalon();
+    case Victor ->
+      // Sample of how to use the SingleMotorThing class without needing
+      // to derive a class for hardware-specific setup.
+      new SingleMotorThing(new SingleMotorThing.DerivedClassData(
+          // Use a Victor motor controller...
+          new VictorSP(8),
+          // ...and a bog-standard WPILib encoder.
+          TrivialEncoder.forWpiLibEncoder(new Encoder(1, 2))));
   };
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

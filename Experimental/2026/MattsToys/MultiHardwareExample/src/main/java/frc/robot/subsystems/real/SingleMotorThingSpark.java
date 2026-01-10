@@ -9,6 +9,12 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
+/**
+ * Provides a simple example of a "SingleMotorThing" that uses Spark controllers.
+ *
+ * Note that all of the "actual functionality" takes place in the base class; this class only exists
+ * to set up the hardware-specific stuff.
+ */
 public class SingleMotorThingSpark extends SingleMotorThing {
   static DerivedClassData getStuffForBaseClassSetup() {
     return new DerivedClassData(

@@ -10,14 +10,19 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
+
 import static frc.robot.Constants.FuelConstants.*;
 
 public class CANFuelSubsystem extends SubsystemBase {
-  private final SparkMax feederRoller;
-  private final SparkMax intakeLauncherRoller;
+  private final MotorController feederRoller;
+  private final MotorController intakeLauncherRoller;
 
   final static String INTAKING_FEEDER_VOLTAGE_KEY = "Intaking feeder roller value";
   final static String INTAKING_INTAKE_VOLTAGE_KEY = "Intaking intake roller value";
@@ -25,11 +30,48 @@ public class CANFuelSubsystem extends SubsystemBase {
   final static String LAUNCHING_LAUNCHER_VOLTAGE_KEY = "Launching launcher roller value";
   final static String SPIN_UP_FEEDER_VOLTAGE_KEY = "Spin-up feeder roller value";
 
+  private static MotorController allocateIntakeLauncherRoller() {
+    if (Constants.USE_SPARK_MAX_OVER_CAN) {
+      SparkMax rawIntakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
+      // create the configuration for the launcher roller, set a current limit, set
+      // the motor to inverted so that positive values are used for both intaking and
+      // launching, and apply the config to the controller
+      SparkMaxConfig launcherConfig = new SparkMaxConfig();
+      launcherConfig.inverted(true);
+      launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
+      rawIntakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+      return rawIntakeLauncherRoller;
+    } else {
+      PWMSparkMax rawRoller = new PWMSparkMax(INTAKE_LAUNCHER_MOTOR_ID);
+      rawRoller.setInverted(true);
+      return rawRoller;
+    }
+  }
+
+  private static MotorController allocateFeederRoller() {
+    if (Constants.USE_SPARK_MAX_OVER_CAN) {
+      SparkMax rawFeederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+
+      // create the configuration for the feeder roller, set a current limit and apply
+      // the config to the controller
+      SparkMaxConfig feederConfig = new SparkMaxConfig();
+      feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
+      rawFeederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+      return rawFeederRoller;
+    } else {
+      PWMSparkMax rawFeederRoller = new PWMSparkMax(FEEDER_MOTOR_ID);
+      rawFeederRoller.setInverted(false);
+      return rawFeederRoller;
+    }
+  }
+
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
-    intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
-    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+    intakeLauncherRoller = allocateIntakeLauncherRoller();
+    feederRoller = allocateFeederRoller();
 
     // put default values for various fuel operations onto the dashboard
     // all methods in this subsystem pull their values from the dashbaord to allow
@@ -40,20 +82,6 @@ public class CANFuelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE);
     SmartDashboard.putNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE);
     SmartDashboard.putNumber(SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE);
-
-    // create the configuration for the feeder roller, set a current limit and apply
-    // the config to the controller
-    SparkMaxConfig feederConfig = new SparkMaxConfig();
-    feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-    feederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    // create the configuration for the launcher roller, set a current limit, set
-    // the motor to inverted so that positive values are used for both intaking and
-    // launching, and apply the config to the controller
-    SparkMaxConfig launcherConfig = new SparkMaxConfig();
-    launcherConfig.inverted(true);
-    launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-    intakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   // A method to set the rollers to values for intaking

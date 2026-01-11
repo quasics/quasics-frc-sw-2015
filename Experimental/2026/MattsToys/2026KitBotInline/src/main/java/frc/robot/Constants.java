@@ -15,6 +15,11 @@ package frc.robot;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  // For now, we're going to use PWMSparkMax configurations in simulation, due to
+  // a "crash bug" in Rev's code on Mac OS (which is where Mr. Healy most often
+  // develops his "toys").
+  public static final boolean USE_SPARK_MAX_OVER_CAN = Robot.isReal();
+
   public static final class DriveConstants {
     // Motor controller IDs for drivetrain motors
     public static final int LEFT_LEADER_ID = 1;

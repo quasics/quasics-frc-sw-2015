@@ -124,12 +124,22 @@ public interface RobotConfigs {
   /**
    * Simple (i.e., not for elevators) feedforward data.
    *
-   * TODO: Add kS data to this as well.
-   *
+   * @param kS kS, in V
    * @param kV kV, in V/(m/s); must be > 0
    * @param kA kA, in V/(m/s^2)
    */
-  public static record SimpleFeedForwardConfig(Voltage kV, double kA) {
+  public static record SimpleFeedForwardConfig(Voltage kS, Voltage kV,
+                                               double kA) {
+    /**
+     * Overloaded constructor.
+     *
+     * @param kV kV, in V/(m/s); must be > 0
+     * @param kA kA, in V/(m/s^2)
+     */
+    public SimpleFeedForwardConfig(Voltage kV, double kA) {
+      this(Volts.of(0), kV, kA);
+    }
+
     /**
      * Overloaded constructor.
      *
@@ -137,7 +147,17 @@ public interface RobotConfigs {
      * @param kA kA, in V/(m/s^2)
      */
     public SimpleFeedForwardConfig(double kV, double kA) {
-      this(Volts.of(kV), kA);
+      this(Volts.of(0), Volts.of(kV), kA);
+    }
+
+    /**
+     * Overloaded constructor.
+     *
+     * @param kV kV, in V/(m/s); must be > 0
+     * @param kA kA, in V/(m/s^2)
+     */
+    public SimpleFeedForwardConfig(Voltage kS, double kV, double kA) {
+      this(kS, Volts.of(kV), kA);
     }
   }
 

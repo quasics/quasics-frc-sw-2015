@@ -86,11 +86,13 @@ public class RobotContainer {
   /** The arm subsystem. (At present, always simulated.) */
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
+  /** Vision-processing subsystem. */
   final IVision m_vision = new frc.robot.subsystems.PhotonVision(
       RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
           .cameras()
           .get(0));
 
+  /** Lighting subystem. */
   final ILighting m_lighting = new Lighting(m_robotConfig);
 
   /** The driver joystick wrapper. */

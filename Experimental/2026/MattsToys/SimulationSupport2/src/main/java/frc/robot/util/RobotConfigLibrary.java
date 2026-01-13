@@ -8,7 +8,11 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.util.RobotConfigs.NO_ARM;
+import static frc.robot.util.RobotConfigs.NO_CAMERA;
 import static frc.robot.util.RobotConfigs.NO_CANDLE;
+import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
+import static frc.robot.util.RobotConfigs.NO_LIGHTING;
 
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;
@@ -42,8 +46,8 @@ public final class RobotConfigLibrary {
     Simulation,
     /** Simulation-only */
     SimulationWithTwoCameras,
-    // /** "Naked" drivebase used by the coding sub-team */
-    // Sally,
+    /** "Naked" drivebase used by the coding sub-team */
+    Sally,
     // /** 2025 ("Reefscape") robot */
     // Amelia
   }
@@ -71,6 +75,7 @@ public final class RobotConfigLibrary {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, generateSingleCameraSimulationConfig());
     map.put(Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
+    map.put(Robot.Sally, generateSallyConfig());
 
     //
     // Sanity checks to make sure that we have entries for all known robots.
@@ -194,5 +199,21 @@ public final class RobotConfigLibrary {
             new PIDConfig(6.0, 0.00, 0.00), null),
         new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80),
         NO_CANDLE);
+  }
+
+  private static RobotConfig generateSallyConfig() {
+    return new RobotConfig(
+        new DriveConfig(Inches.of(3), // Wheel radius
+            Meters.of(0.5588) /* 22 in (from 2024) */,
+            8.45, // Gearing (from 2024)
+            // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile,
+            // including independent left/right PID.
+            new PIDConfig(0.29613), // Left PID (from 2024)
+            new PIDConfig(0.29613), // Right PID (from 2024)
+            // TODO: Add kS value for Sally's drivebase.
+            new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
+                Volts.of(0.19529), 0.01) // Angular data (FAKE)
+        ),
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);
   }
 }

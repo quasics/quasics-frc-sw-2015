@@ -16,13 +16,14 @@ public interface IPhotonVision extends IVision {
    * @param camera      connection to the camera
    * @param transform3d defines the conversion from the robot's position, to the
    *                    cameras's
-   * @param estimator   pose estimator associated with this camera. Note that (per
+   * @param estimator   pose estimator associated with this camera. Note that
+   *     (per
    *                    docs) the estimated poses can have a lot of
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record
-      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
+  public record CameraData(PhotonCamera camera, Transform3d transform3d,
+                           PhotonPoseEstimator estimator) {}
 
   /**
    * Returns the list of CameraData records being used by this object.

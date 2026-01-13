@@ -28,10 +28,14 @@ public interface ISingleJointArm extends ISubsystem {
   /** Returns the maximum angle of the arm. */
   Angle getArmMaxAngle();
 
-  /** Returns the angle when the arm is fully extended out of the robot's frame. */
+  /**
+   * Returns the angle when the arm is fully extended out of the robot's frame.
+   */
   Angle getArmOutAngle();
 
-  /** Returns the angle when the arm is fully upright within the robot's frame. */
+  /**
+   * Returns the angle when the arm is fully upright within the robot's frame.
+   */
   Angle getArmUpAngle();
 
   /** Returns the current angle of the arm. */

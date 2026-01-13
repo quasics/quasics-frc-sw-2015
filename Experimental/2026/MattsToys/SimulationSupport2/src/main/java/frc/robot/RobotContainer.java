@@ -45,18 +45,21 @@ import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
 import java.util.List;
 
 /**
- * Core definitions for sample robot code (focused on demonstrating simulation support).
+ * Core definitions for sample robot code (focused on demonstrating simulation
+ * support).
  *
- * This is where the robot's subsystems, operator interfaces (joysticks, gamepads, etc.), and the
- * high-level commands that link them together are defined and configured. It serves as the central
- * hub for the declarative setup of a command-based robot project using the WPILib software library
+ * This is where the robot's subsystems, operator interfaces (joysticks,
+ * gamepads, etc.), and the high-level commands that link them together are
+ * defined and configured. It serves as the central hub for the declarative
+ * setup of a command-based robot project using the WPILib software library
  */
 public class RobotContainer {
   /** Whether to use arcade drive or tank drive for robot navigation. */
   private static final boolean USE_ARCADE_DRIVE = true;
 
   /** The drivebase subsystem. */
-  final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
+  final IDrivebasePlus m_drivebase =
+      Robot.isReal() ? new Drivebase() : new SimDrivebase();
 
   /** The elevator subsystem.  (At present, always simulated.) */
   final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
@@ -68,16 +71,19 @@ public class RobotContainer {
       RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
 
   final IVision m_vision = new frc.robot.subsystems.PhotonVision(
-      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation).cameras().get(0));
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
+          .cameras()
+          .get(0));
 
   /** The driver joystick wrapper. */
-  final DriverJoystickWrapper m_driverWrapper =
-      new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
-          // Only load from/save to preferences when in simulation
-          Robot.isSimulation());
+  final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
+      OperatorConstants.DRIVER_JOYSTICK_ID,
+      // Only load from/save to preferences when in simulation
+      Robot.isSimulation());
 
   /** The autonomous command chooser. */
-  private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
+  private final SendableChooser<Command> m_autoCommandChooser =
+      new SendableChooser<Command>();
 
   /** Constructor. */
   public RobotContainer() {
@@ -89,35 +95,43 @@ public class RobotContainer {
     configureBindings();
 
     if (Robot.isSimulation()) {
-      new CameraSimulator(RobotConfig, (PhotonVision) m_vision);
+      new CameraSimulator(RobotConfig, (PhotonVision)m_vision);
     }
   }
 
   /**
-   * Adds various sample commands for controlling the single-joint arm to the dashboard.
+   * Adds various sample commands for controlling the single-joint arm to the
+   * dashboard.
    */
   private void configureArmCommands() {
-    // Note that the delays will not be enough to get the arm *absolutely* into position,
-    // but that's OK: I'm just trying to make it wave back and forth....
-    Command waveCommand = new SequentialCommandGroup(
-        new InstantCommand(
-            () -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); }, m_arm.asSubsystem()),
-        // Wait for some motion
-        new WaitCommand(2),
-        new InstantCommand(
-            () -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); }, m_arm.asSubsystem()),
-        // Wait for some motion
-        new WaitCommand(2))
-                              .repeatedly();
+    // Note that the delays will not be enough to get the arm *absolutely* into
+    // position, but that's OK: I'm just trying to make it wave back and
+    // forth....
+    Command waveCommand =
+        new SequentialCommandGroup(
+            new InstantCommand(
+                ()
+                    -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); },
+                m_arm.asSubsystem()),
+            // Wait for some motion
+            new WaitCommand(2),
+            new InstantCommand(
+                ()
+                    -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); },
+                m_arm.asSubsystem()),
+            // Wait for some motion
+            new WaitCommand(2))
+            .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
-      m_arm.setTargetPosition(m_arm.getArmOutAngle());
-    }, m_arm.asSubsystem()));
+                             m_arm.setTargetPosition(m_arm.getArmOutAngle());
+                           }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm up", new InstantCommand(() -> {
-      m_arm.setTargetPosition(m_arm.getArmUpAngle());
-    }, m_arm.asSubsystem()));
+                             m_arm.setTargetPosition(m_arm.getArmUpAngle());
+                           }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm wave", waveCommand);
-    SmartDashboard.putData(
-        "Cmd: Arm stop", new InstantCommand(() -> { m_arm.stop(); }, m_arm.asSubsystem()));
+    SmartDashboard.putData("Cmd: Arm stop", new InstantCommand(() -> {
+                             m_arm.stop();
+                           }, m_arm.asSubsystem()));
   }
 
   /**
@@ -125,27 +139,34 @@ public class RobotContainer {
    */
   private void configureElevatorCommands() {
     SmartDashboard.putData("Cmd: Elevator up", new InstantCommand(() -> {
-      m_elevator.setTargetPosition(ElevatorPosition.HIGH);
-    }, m_elevator.asSubsystem()));
+                             m_elevator.setTargetPosition(
+                                 ElevatorPosition.HIGH);
+                           }, m_elevator.asSubsystem()));
     SmartDashboard.putData("Cmd: Elevator down", new InstantCommand(() -> {
-      m_elevator.setTargetPosition(ElevatorPosition.BOTTOM);
-    }, m_elevator.asSubsystem()));
-    SmartDashboard.putData("Cmd: Elevator stop",
-        new InstantCommand(() -> { m_elevator.stop(); }, m_elevator.asSubsystem()));
+                             m_elevator.setTargetPosition(
+                                 ElevatorPosition.BOTTOM);
+                           }, m_elevator.asSubsystem()));
+    SmartDashboard.putData("Cmd: Elevator stop", new InstantCommand(() -> {
+                             m_elevator.stop();
+                           }, m_elevator.asSubsystem()));
   }
 
   /** Configures the driving behavior. */
   private void configureDriving() {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
-    SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-    SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter1 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter2 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     if (USE_ARCADE_DRIVE) {
-      m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase,
+      m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(
+          m_drivebase,
           ()
               -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
           () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
     } else {
-      m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(m_drivebase,
+      m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(
+          m_drivebase,
           ()
               -> limiter1.calculate(m_driverWrapper.getTankLeft()),
           () -> limiter2.calculate(m_driverWrapper.getTankRight())));
@@ -155,30 +176,38 @@ public class RobotContainer {
   /** Adds commands for profiling the drive base to the dashboard. */
   private void configureSysIdCommands() {
     // Dynamic and quasistatic commands for linear drivebase profiling
-    SmartDashboard.putData("Cmd: DynamicFwd",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("Cmd: DynamicRev",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
-    SmartDashboard.putData("Cmd: QStaticFwd",
+    SmartDashboard.putData(
+        "Cmd: DynamicFwd",
+        SysIdGenerator.sysIdDynamic(m_drivebase, DrivebaseProfilingMode.Linear,
+                                    Direction.kForward));
+    SmartDashboard.putData(
+        "Cmd: DynamicRev",
+        SysIdGenerator.sysIdDynamic(m_drivebase, DrivebaseProfilingMode.Linear,
+                                    Direction.kReverse));
+    SmartDashboard.putData(
+        "Cmd: QStaticFwd",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kForward));
-    SmartDashboard.putData("Cmd: QStaticRev",
+    SmartDashboard.putData(
+        "Cmd: QStaticRev",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Linear, Direction.kReverse));
 
     // Dynamic and quasistatic commands for angular drivebase profiling
-    SmartDashboard.putData("Cmd: DynamicFwd - Angular",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
-    SmartDashboard.putData("Cmd: DynamicRev - Angular",
-        SysIdGenerator.sysIdDynamic(
-            m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
-    SmartDashboard.putData("Cmd: QStaticFwd - Angular",
+    SmartDashboard.putData(
+        "Cmd: DynamicFwd - Angular",
+        SysIdGenerator.sysIdDynamic(m_drivebase, DrivebaseProfilingMode.Angular,
+                                    Direction.kForward));
+    SmartDashboard.putData(
+        "Cmd: DynamicRev - Angular",
+        SysIdGenerator.sysIdDynamic(m_drivebase, DrivebaseProfilingMode.Angular,
+                                    Direction.kReverse));
+    SmartDashboard.putData(
+        "Cmd: QStaticFwd - Angular",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kForward));
-    SmartDashboard.putData("Cmd: QStaticRev - Angular",
+    SmartDashboard.putData(
+        "Cmd: QStaticRev - Angular",
         SysIdGenerator.sysIdQuasistatic(
             m_drivebase, DrivebaseProfilingMode.Angular, Direction.kReverse));
   }
@@ -187,15 +216,24 @@ public class RobotContainer {
   private void setupAutonomousChooser() {
     m_autoCommandChooser.setDefaultOption(
         "No Auto", Commands.print("No autonomous command configured"));
-    m_autoCommandChooser.addOption("Do something", Commands.print("Do something"));
-    m_autoCommandChooser.addOption("Trajectory (Linear)",
-        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.Linear)));
-    m_autoCommandChooser.addOption("Trajectory (Curved)",
-        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.SimpleCurve)));
-    m_autoCommandChooser.addOption("Trajectory (Circle)",
-        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.Circle)));
-    m_autoCommandChooser.addOption("Trajectory (S-curve)",
-        new FollowTrajectoryCommand(m_drivebase, generateTrajectory(TrajectoryShape.SCurve)));
+    m_autoCommandChooser.addOption("Do something",
+                                   Commands.print("Do something"));
+    m_autoCommandChooser.addOption(
+        "Trajectory (Linear)",
+        new FollowTrajectoryCommand(
+            m_drivebase, generateTrajectory(TrajectoryShape.Linear)));
+    m_autoCommandChooser.addOption(
+        "Trajectory (Curved)",
+        new FollowTrajectoryCommand(
+            m_drivebase, generateTrajectory(TrajectoryShape.SimpleCurve)));
+    m_autoCommandChooser.addOption(
+        "Trajectory (Circle)",
+        new FollowTrajectoryCommand(
+            m_drivebase, generateTrajectory(TrajectoryShape.Circle)));
+    m_autoCommandChooser.addOption(
+        "Trajectory (S-curve)",
+        new FollowTrajectoryCommand(
+            m_drivebase, generateTrajectory(TrajectoryShape.SCurve)));
     SmartDashboard.putData("Autonomous Command", m_autoCommandChooser);
   }
 
@@ -229,14 +267,17 @@ public class RobotContainer {
   /** Configuration for use in generating sample trajectories. */
   private final TrajectoryConfig m_trajectoryConfig =
       // Base configuration (max speed/accelleration)
-      new TrajectoryConfig(m_drivebase.getMaxLinearSpeed(), maxAccelerationForSampleTrajectories)
+      new TrajectoryConfig(m_drivebase.getMaxLinearSpeed(),
+                           maxAccelerationForSampleTrajectories)
           // Add kinematics to ensure max speed is actually obeyed
           .setKinematics(m_drivebase.getKinematics())
-          // Apply a voltage constraint to ensure we don't accelerate too fast (and brown us out)
-          .addConstraint(
-              new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(m_drivebase.getKs(),
-                                                         m_drivebase.getKv(), m_drivebase.getKa()),
-                  m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
+          // Apply a voltage constraint to ensure we don't accelerate too fast
+          // (and brown us out)
+          .addConstraint(new DifferentialDriveVoltageConstraint(
+              new SimpleMotorFeedforward(m_drivebase.getKs(),
+                                         m_drivebase.getKv(),
+                                         m_drivebase.getKa()),
+              m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
 
   /**
    * Generates a robot-relative trajectory for a given shape.
@@ -271,7 +312,8 @@ public class RobotContainer {
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
+            // Pass through these two interior waypoints, making an 's' curve
+            // path
             List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
             // End 6 meters straight ahead of where we started, facing forward
             new Pose2d(6, 0, new Rotation2d(0)),
@@ -282,8 +324,10 @@ public class RobotContainer {
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these three interior waypoints along the perimeter of a circle
-            List.of(new Translation2d(2, 2), new Translation2d(0, 4), new Translation2d(-2, 2)),
+            // Pass through these three interior waypoints along the perimeter
+            // of a circle
+            List.of(new Translation2d(2, 2), new Translation2d(0, 4),
+                    new Translation2d(-2, 2)),
             // End back where we started, facing forward
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass config

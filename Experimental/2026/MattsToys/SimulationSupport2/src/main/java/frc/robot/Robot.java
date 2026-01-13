@@ -13,9 +13,7 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  public Robot() {
-    m_robotContainer = new RobotContainer();
-  }
+  public Robot() { m_robotContainer = new RobotContainer(); }
 
   @Override
   public void robotPeriodic() {
@@ -23,16 +21,13 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-  }
+  public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {
-  }
+  public void disabledPeriodic() {}
 
   @Override
-  public void disabledExit() {
-  }
+  public void disabledExit() {}
 
   @Override
   public void autonomousInit() {
@@ -44,12 +39,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {
-  }
+  public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
@@ -59,12 +52,10 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {
-  }
+  public void teleopExit() {}
 
   @Override
   public void testInit() {
@@ -72,17 +63,15 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   @Override
-  public void testExit() {
-  }
+  public void testExit() {}
 
   @Override
   public void simulationPeriodic() {
-    // Custom override, to prevent the warning "Default simulationPeriodic() method... Override me!"
-    // from being logged in IterativeRobotBase.
+    // Custom override, to prevent the warning "Default simulationPeriodic()
+    // method... Override me!" from being logged in IterativeRobotBase.
 
     // Do nothing!
   }

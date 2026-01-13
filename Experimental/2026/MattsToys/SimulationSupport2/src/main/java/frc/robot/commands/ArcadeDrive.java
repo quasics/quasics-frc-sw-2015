@@ -24,8 +24,8 @@ public class ArcadeDrive extends Command {
    * @param speedSupplier    supplier for forward speed
    * @param rotationSupplier supplier for rotation rate
    */
-  public ArcadeDrive(
-      IDrivebase drivebase, Supplier<Double> speedSupplier, Supplier<Double> rotationSupplier) {
+  public ArcadeDrive(IDrivebase drivebase, Supplier<Double> speedSupplier,
+                     Supplier<Double> rotationSupplier) {
     this.drivebase = drivebase;
     this.speedSupplier = speedSupplier;
     this.rotationSupplier = rotationSupplier;

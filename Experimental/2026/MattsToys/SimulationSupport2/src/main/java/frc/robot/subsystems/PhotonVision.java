@@ -31,23 +31,29 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  */
 public class PhotonVision extends SubsystemBase implements IPhotonVision {
   /**
-   * TODO: Move layout-oriented stuff into a common base for different PhotonVision options.
+   * TODO: Move layout-oriented stuff into a common base for different
+   * PhotonVision options.
    */
 
-  /** If true, use the Reefscape layout from 2025; if false, use the Crescendo layout from 2024. */
+  /**
+   * If true, use the Reefscape layout from 2025; if false, use the Crescendo
+   * layout from 2024.
+   */
   private static final boolean USE_REEFSCAPE_LAYOUT = true;
 
   /**
-   * If true, use the AndyMark configuration for the Reefscape layout; if false, use the "welded"
-   * configuration.
+   * If true, use the AndyMark configuration for the Reefscape layout; if false,
+   * use the "welded" configuration.
    */
   private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
 
   /** The field layout to use for vision processing/emulation. */
-  private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
+  private static final AprilTagFields FIELD_LAYOUT =
+      USE_REEFSCAPE_LAYOUT
+          ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
+                 ? AprilTagFields.k2025ReefscapeAndyMark
+                 : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
       ;
 
   /** Data about a single camera used for vision tracking. */
@@ -68,9 +74,11 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
     // (Note that this assumes that we *have* at least one camera.)
     final PhotonCamera camera = new PhotonCamera(cameraConfig.name());
     final Transform3d robotToCamera = new Transform3d(
-        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(), cameraConfig.pos().z()),
-        new Rotation3d(cameraConfig.orientation().roll(), cameraConfig.orientation().pitch(),
-            cameraConfig.orientation().yaw()));
+        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(),
+                          cameraConfig.pos().z()),
+        new Rotation3d(cameraConfig.orientation().roll(),
+                       cameraConfig.orientation().pitch(),
+                       cameraConfig.orientation().yaw()));
 
     m_cameraData = new CameraData(camera, robotToCamera, null);
   }
@@ -87,33 +95,38 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
     } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + resourcePath + ")");
+      System.err.println("Warning: failed to load April Tags layout (" +
+                         resourcePath + ")");
       ioe.printStackTrace();
     }
     return tagLayout;
   }
 
-  // Making this a helper function, since getLatestResult() is now deprecated, and
-  // I'm trying to cut down on the number of warnings.
-  private static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
-    // TODO: look at replacing this with something in a reusable base class to try
-    // to cache data, to handle the deprecation.
+  // Making this a helper function, since getLatestResult() is now deprecated,
+  // and I'm trying to cut down on the number of warnings.
+  private static PhotonPipelineResult
+  getLatestResultsWrapper(CameraData cameraData) {
+    // TODO: look at replacing this with something in a reusable base class to
+    // try to cache data, to handle the deprecation.
     return cameraData.camera().getLatestResult();
   }
 
   /**
-   * Returns estimated relative positioning data for all visible targets (if any).
+   * Returns estimated relative positioning data for all visible targets (if
+   * any).
    *
    * @param cameraData  camera supplying the tracking data
-   * @param fieldLayout field layout, used to determine fixed (absolute) positions
+   * @param fieldLayout field layout, used to determine fixed (absolute)
+   *     positions
    *                    for targets in
    *                    view
    * @param robotPose   robot's estimated position (used to compute relative
    *                    positioning for targets)
    * @return estimated relative positioning data for all visible targets
    */
-  static List<TargetData> getTargetDataForCamera(
-      CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+  static List<TargetData>
+  getTargetDataForCamera(CameraData cameraData, AprilTagFieldLayout fieldLayout,
+                         Pose2d robotPose) {
     final var latestResults = getLatestResultsWrapper(cameraData);
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
@@ -128,11 +141,11 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget =
-          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget = Meters.of(
+          PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData =
-          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData = new TargetData(
+          result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 
@@ -162,8 +175,8 @@ public class PhotonVision extends SubsystemBase implements IPhotonVision {
 
   @Override
   public List<TargetData> getVisibleTargets(Pose2d robotPose) {
-    // If the caller didn't give us a pose, then try to estimate it based on what we
-    // can see.
+    // If the caller didn't give us a pose, then try to estimate it based on
+    // what we can see.
     if (robotPose == null) {
       // OK, can't estimate where we are, so bail out.
       return Collections.emptyList();

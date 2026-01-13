@@ -18,31 +18,41 @@ public interface IDrivebasePlus extends IDrivebase {
   // Methods to return constants for the drivebase.
   //
 
-  /** Returns the static gain for the drivebase (generally computed using the SysID tool). */
+  /**
+   * Returns the static gain for the drivebase (generally computed using the
+   * SysID tool).
+   */
   double getKs();
 
-  /** Returns the velocity gain for the drivebase (generally computed using the SysID tool). */
+  /**
+   * Returns the velocity gain for the drivebase (generally computed using the
+   * SysID tool).
+   */
   double getKv();
 
-  /** Returns the acceleration gain for the drivebase (generally computed using the SysID tool). */
+  /**
+   * Returns the acceleration gain for the drivebase (generally computed using
+   * the SysID tool).
+   */
   double getKa();
 
   /**
-   * Returns the kP value for the drivebase to convert velocity errors (in m/s) to voltages
-   * (generally computed using the SysID tool).
+   * Returns the kP value for the drivebase to convert velocity errors (in m/s)
+   * to voltages (generally computed using the SysID tool).
    */
   double getKp();
 
   //
-  // Methods to support more advanced control of the drivebase (e.g., profiling, trajectory
-  // following, etc.).
+  // Methods to support more advanced control of the drivebase (e.g., profiling,
+  // trajectory following, etc.).
   //
 
   /** Returns the (odometry-based) estimate of the robot's position. */
   public Pose2d getEstimatedPose();
 
   /**
-   * Directly sets the voltages for the drivebase. (Note: operates directly; no PID.)
+   * Directly sets the voltages for the drivebase. (Note: operates directly; no
+   * PID.)
    *
    * This is useful for motion profiling and other advanced control techniques.
    *
@@ -73,7 +83,8 @@ public interface IDrivebasePlus extends IDrivebase {
   LinearVelocity getLeftVelocity();
 
   /**
-   * Returns the current voltage reported by the left controller. (Useful for profiling the robot.)
+   * Returns the current voltage reported by the left controller. (Useful for
+   * profiling the robot.)
    */
   Voltage getLeftVoltage();
 
@@ -84,7 +95,8 @@ public interface IDrivebasePlus extends IDrivebase {
   LinearVelocity getRightVelocity();
 
   /**
-   * Returns the current voltage reported by the right controller. (Useful for profiling the robot.)
+   * Returns the current voltage reported by the right controller. (Useful for
+   * profiling the robot.)
    */
   Voltage getRightVoltage();
 
@@ -103,13 +115,14 @@ public interface IDrivebasePlus extends IDrivebase {
   /**
    * Returns the latest posted odemetry-based pose (from the bulletin board).
    *
-   * Note: this is a static function, which means that client code doesn't interact directly with
-   * the actual subsystem (and thus doesn't need to include it in their requirements).
+   * Note: this is a static function, which means that client code doesn't
+   * interact directly with the actual subsystem (and thus doesn't need to
+   * include it in their requirements).
    *
    * @return last posted odemetry pose, or null
    */
   static Pose2d getPublishedLastPoseFromOdometry() {
     var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
-    return (Pose2d) stored.orElse(null);
+    return (Pose2d)stored.orElse(null);
   }
 }

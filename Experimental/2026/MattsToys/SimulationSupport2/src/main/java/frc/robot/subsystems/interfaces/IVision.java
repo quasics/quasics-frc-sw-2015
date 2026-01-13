@@ -18,7 +18,7 @@ public interface IVision extends ISubsystem {
 
   /**
    * Holds data about a detected vision target.
-   * 
+   *
    * @param id    fiducial ID for the target
    * @param angle yaw to the angle (negative values means that it's to left of
    *              camera center)

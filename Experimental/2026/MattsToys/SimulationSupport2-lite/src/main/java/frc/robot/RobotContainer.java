@@ -34,7 +34,6 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
-import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;

@@ -54,6 +54,9 @@ public class RobotContainer {
   /** Whether to use arcade drive or tank drive for robot navigation. */
   private static final boolean USE_ARCADE_DRIVE = true;
 
+  final frc.robot.util.RobotConfigs.RobotConfig RobotConfig =
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
+
   /** The drivebase subsystem. */
   final IDrivebasePlus m_drivebase =
       Robot.isReal() ? new Drivebase() : new SimDrivebase();
@@ -63,9 +66,6 @@ public class RobotContainer {
 
   /** The arm subsystem.  (At present, always simulated.) */
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
-
-  final frc.robot.util.RobotConfigs.RobotConfig RobotConfig =
-      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
 
   // final IVision m_vision = new frc.robot.subsystems.PhotonVision(
   //     RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation).cameras().get(0));

@@ -30,10 +30,12 @@ import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
+import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulated.CameraSimulator;
@@ -57,6 +59,9 @@ public class RobotContainer {
   /** Whether to use arcade drive or tank drive for robot navigation. */
   private static final boolean USE_ARCADE_DRIVE = true;
 
+  final frc.robot.util.RobotConfigs.RobotConfig m_robotConfig =
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
+
   /** The drivebase subsystem. */
   final IDrivebasePlus m_drivebase =
       Robot.isReal() ? new Drivebase() : new SimDrivebase();
@@ -67,13 +72,12 @@ public class RobotContainer {
   /** The arm subsystem.  (At present, always simulated.) */
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
-  final frc.robot.util.RobotConfigs.RobotConfig RobotConfig =
-      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
-
   final IVision m_vision = new frc.robot.subsystems.PhotonVision(
       RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
           .cameras()
           .get(0));
+
+  final ILighting m_lighting = new Lighting(m_robotConfig);
 
   /** The driver joystick wrapper. */
   final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(
@@ -95,7 +99,7 @@ public class RobotContainer {
     configureBindings();
 
     if (Robot.isSimulation()) {
-      new CameraSimulator(RobotConfig, (PhotonVision)m_vision);
+      new CameraSimulator(m_robotConfig, (PhotonVision)m_vision);
     }
   }
 

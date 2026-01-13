@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.configs.LEDConfigs;
+import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.Enable5VRailValue;
 import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -24,6 +26,8 @@ public class Candle extends SubsystemBase implements ICandle {
   /** Underlying CANdle object being manipulated. */
   private final CANdle m_candle;
 
+  private CANdleConfiguration m_configAll = new CANdleConfiguration();
+
   /**
    * Constructor.
    *
@@ -34,25 +38,23 @@ public class Candle extends SubsystemBase implements ICandle {
 
     m_candle = new CANdle(config.candle().canId());
 
-    CANdleConfiguration configAll = new CANdleConfiguration();
-
     // LEDs built into the device are RGB
-    configAll.LED.StripType = StripTypeValue.RGB;
+    m_configAll.LED.StripType = StripTypeValue.RGB;
 
     // Turn off Status LED when CANdle is actively being controlled
-    configAll.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
+    m_configAll.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
     
     // Leave LEDs on when Loss of Signal occurs
-    configAll.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
+    m_configAll.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
     // Dim the LEDs to 50% brightness
-    configAll.LED.BrightnessScalar = 0.5;
+    m_configAll.LED.BrightnessScalar = 0.5;
 
     // True to turn off the 5V rail. This turns off the on-board LEDs as well.
     // (So if we're using the on-board LEDs, it should be false.)
-    configAll.CANdleFeatures.Enable5VRail = Enable5VRailValue.Disabled;
+    m_configAll.CANdleFeatures.Enable5VRail = Enable5VRailValue.Disabled;
 
-    m_candle.getConfigurator().apply(configAll);
+    m_candle.getConfigurator().apply(m_configAll);
   }
 
   /**
@@ -96,12 +98,15 @@ public class Candle extends SubsystemBase implements ICandle {
 
   @Override
   public void setIntensity(double intensity) {
-    m_candle.configBrightnessScalar(intensity);
+    m_configAll.LED.BrightnessScalar = intensity;
+    m_candle.getConfigurator().apply(m_configAll.LED);
   }
 
   @Override
   public void setColor(int r, int g, int b) {
-    m_candle.setLEDs(r, g, b);
+    SolidColor color = new SolidColor(0, 7);
+    color.Color = new RGBWColor(r, g, b);
+    m_candle.setControl(color);
   }
 
   //////////////////////////////////////////////////////////////////////

@@ -22,8 +22,12 @@ public class SimElevator extends SubsystemBase implements IElevator {
   /** Directions for the manual control handling (needed for computation). */
   private enum ManualControlDirection { UP, DOWN, UNDEFINED }
 
-  /** Current manual direction; only valid when m_elevatorState is MANUAL_CONTROL. */
-  private ManualControlDirection manualControlDirection = ManualControlDirection.UNDEFINED;
+  /**
+   * Current manual direction; only valid when m_elevatorState is
+   * MANUAL_CONTROL.
+   */
+  private ManualControlDirection manualControlDirection =
+      ManualControlDirection.UNDEFINED;
 
   /** Current height of the elevator in meters. */
   private double m_currentHeight;
@@ -40,9 +44,9 @@ public class SimElevator extends SubsystemBase implements IElevator {
   /**
    * Static helper to get the defined height for a given elevator position.
    *
-   * This is mostly redundant with IElevator.getHeightForPosition(), but that method is
-   * non-static, and we need this functionality in static contexts (e.g., for setting up the
-   * simulation UX).
+   * This is mostly redundant with IElevator.getHeightForPosition(), but that
+   * method is non-static, and we need this functionality in static contexts
+   * (e.g., for setting up the simulation UX).
    *
    * @param position the elevator position.
    * @return the defined height for the given position.
@@ -64,7 +68,8 @@ public class SimElevator extends SubsystemBase implements IElevator {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
       case MOVING_TO_POSITION ->
-        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < SETPOINT_TOLERANCE)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) <
+         SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
@@ -123,7 +128,8 @@ public class SimElevator extends SubsystemBase implements IElevator {
   @Override
   public double getHeightForPosition(ElevatorPosition position) {
     return switch (position) {
-      case BOTTOM, LOW, MEDIUM, HIGH, TOP -> getDefinedHeightForPosition(position);
+      case BOTTOM, LOW, MEDIUM, HIGH, TOP ->
+        getDefinedHeightForPosition(position);
       case MANUAL_CONTROL -> m_currentHeight;
     };
   }
@@ -144,13 +150,16 @@ public class SimElevator extends SubsystemBase implements IElevator {
         m_elevatorState = ElevatorState.IDLE;
       }
     } else if (m_elevatorState == ElevatorState.MANUAL_CONTROL) {
-      // Simulate manual control movement, including hard stops at upper/lower limits
+      // Simulate manual control movement, including hard stops at upper/lower
+      // limits
       if (manualControlDirection == ManualControlDirection.UP) {
         m_currentHeight += MANUAL_CONTROL_SPEED;
-        m_currentHeight = Math.min(m_currentHeight, getHeightForPosition(ElevatorPosition.HIGH));
+        m_currentHeight = Math.min(m_currentHeight,
+                                   getHeightForPosition(ElevatorPosition.HIGH));
       } else if (manualControlDirection == ManualControlDirection.DOWN) {
         m_currentHeight -= MANUAL_CONTROL_SPEED;
-        m_currentHeight = Math.max(m_currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
+        m_currentHeight = Math.max(
+            m_currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
       }
     }
 

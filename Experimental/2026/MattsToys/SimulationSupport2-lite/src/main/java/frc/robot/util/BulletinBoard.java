@@ -50,10 +50,11 @@ import java.util.Optional;
  * pattern sometimes used in software development for this sort of purpose.  In
  * this model, message senders ("publishers") can organize information (e.g.,
  * changes in their state, external readings from sensors, etc.) into categories
- * (classes, topics, etc.) of messages, and send them without needing to know what
- * other pieces of code will work with this data. Message recipients
+ * (classes, topics, etc.) of messages, and send them without needing to know
+ * what other pieces of code will work with this data. Message recipients
  * ("subscribers"), express interest in one or more categories and only receive
- * messages of that type, without needing to know the identity of the publishers.
+ * messages of that type, without needing to know the identity of the
+ * publishers.
  *
  * This often involves a message "broker" (like the US post office) to which the
  * publishers send their updates, and then the broker actively relays copies of
@@ -65,15 +66,16 @@ import java.util.Optional;
  *
  * The full "pub/sub" model feels like a bit of overkill for my current needs.
  *
- * For one thing, I don't want to have a full message broker sitting in the middle (either one that
- * I pull off of a shelf, or something else that I implement).
+ * For one thing, I don't want to have a full message broker sitting in the
+ * middle (either one that I pull off of a shelf, or something else that I
+ * implement).
  *
  * For another, given the timing constraints on different pieces of code on an
  * FRC bot, it could be tough to figure out when it's "safe" for it to try to
- * send data out to everything that's interested. After all, commands, periodic()
- * functions, etc. are supposed to run *fast* and get out of the way of other
- * stuff; knowing when to do that could be hard.  (And while I could handle a
- * lot of this risk by introducing additional threads of execution and
+ * send data out to everything that's interested. After all, commands,
+ * periodic() functions, etc. are supposed to run *fast* and get out of the way
+ * of other stuff; knowing when to do that could be hard.  (And while I could
+ * handle a lot of this risk by introducing additional threads of execution and
  * synchronization/atomics, that involves another set of stuff that FRC
  * programs generally avoid by having a single primary thread of execution
  * where the WPILib code "does its thing".)
@@ -125,9 +127,9 @@ public class BulletinBoard {
   }
 
   /**
-   * Indicates if there is any data associated with the specified key, and removes
-   * it from the data set. (Useful for one subsystem asynchronously requesting an
-   * operation of another.)
+   * Indicates if there is any data associated with the specified key, and
+   * removes it from the data set. (Useful for one subsystem asynchronously
+   * requesting an operation of another.)
    *
    * @param key the key being checked
    * @return true iff the key was populated
@@ -159,8 +161,8 @@ public class BulletinBoard {
   }
 
   /**
-   * Retrieves the value associated with the specified key (if any is present, and
-   * if it is compliant with the specified type).
+   * Retrieves the value associated with the specified key (if any is present,
+   * and if it is compliant with the specified type).
    *
    * @param key  the key for the desired value
    * @param type the type of data expected for the value
@@ -185,9 +187,7 @@ public class BulletinBoard {
    *
    * @param key the key for the targeted value
    */
-  public synchronized void clearValue(String key) {
-    values.remove(key);
-  }
+  public synchronized void clearValue(String key) { values.remove(key); }
 
   /**
    * Sets/updates the value associated with the specified key, allowing later

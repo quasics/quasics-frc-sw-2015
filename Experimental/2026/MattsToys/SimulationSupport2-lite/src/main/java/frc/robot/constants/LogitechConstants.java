@@ -9,13 +9,13 @@ package frc.robot.constants;
  */
 public class LogitechConstants {
   /**
-   * Defines constants for the different controls on a Logitech gamepad when used
-   * in "Dualshock" mode.
+   * Defines constants for the different controls on a Logitech gamepad when
+   * used in "Dualshock" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "D" position, causing it to enumerate as a Logitech
-   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and 3,
-   * respectively, and the left and right triggers show up as *buttons* 7 and
+   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and
+   * 3, respectively, and the left and right triggers show up as *buttons* 7 and
    * 8.
    */
   public static class Dualshock {
@@ -62,14 +62,14 @@ public class LogitechConstants {
   }
 
   /**
-   * Defines constants for the different controls on a Logitech gamepad, when used
-   * in "F310" mode.
+   * Defines constants for the different controls on a Logitech gamepad, when
+   * used in "F310" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "X" position, causing it to enumerate as a Logitech
    * Gamepad F310. In this mode, the left and right triggers on the front
-   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0], unlike
-   * regular joysticks.
+   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0],
+   * unlike regular joysticks.
    */
   public static class GamePadF310 {
     //

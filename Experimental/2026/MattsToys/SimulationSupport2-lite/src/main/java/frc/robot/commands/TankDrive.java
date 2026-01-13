@@ -25,7 +25,7 @@ public class TankDrive extends Command {
    * @param rightSpeedSupplier supplier for right speed
    */
   public TankDrive(IDrivebase drivebase, Supplier<Double> leftSpeedSupplier,
-      Supplier<Double> rightSpeedSupplier) {
+                   Supplier<Double> rightSpeedSupplier) {
     this.drivebase = drivebase;
     this.leftSpeedSupplier = leftSpeedSupplier;
     this.rightSpeedSupplier = rightSpeedSupplier;

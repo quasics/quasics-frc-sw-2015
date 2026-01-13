@@ -31,7 +31,10 @@ public interface IElevator extends ISubsystem {
     HIGH,
     /** The elevator is at the top (upper limit). */
     TOP,
-    /** The elevator is under manual control (so, it could be anywhere right now). */
+    /**
+       The elevator is under manual control (so, it could be anywhere right
+       now).
+     */
     MANUAL_CONTROL,
   }
 
@@ -56,14 +59,14 @@ public interface IElevator extends ISubsystem {
   ElevatorState getElevatorState();
 
   /**
-   * Moves the elevator down (under manual control).  It will automatically stop when it reaches
-   * its bottom limit.
+   * Moves the elevator down (under manual control).  It will automatically stop
+   * when it reaches its bottom limit.
    */
   void down();
 
   /**
-   * Moves the elevator up (under manual control). It will automatically stop when it reaches its
-   * top limit.
+   * Moves the elevator up (under manual control). It will automatically stop
+   * when it reaches its top limit.
    */
   void up();
 

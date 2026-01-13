@@ -26,7 +26,10 @@ public class FollowTrajectoryCommand extends Command {
   /** Timer used to identify samples from the trajectory. */
   final Timer m_timer = new Timer();
 
-  /** Field-relative version of m_baseTrajectory, [re]computed when the command starts running. */
+  /**
+   * Field-relative version of m_baseTrajectory, [re]computed when the command
+   * starts running.
+   */
   Trajectory m_currentTrajectory;
 
   /**
@@ -34,8 +37,8 @@ public class FollowTrajectoryCommand extends Command {
    *
    * Notes:
    * <ul>
-   * <li>We should consider updating the controller's allocation to also specify the maximum
-   * velocity (in m/s).
+   * <li>We should consider updating the controller's allocation to also specify
+   * the maximum velocity (in m/s).
    *
    * <li>This is the replacement for the RamseteController (deprecated in 2025).
    * </ul>
@@ -48,7 +51,8 @@ public class FollowTrajectoryCommand extends Command {
    * @param drivebase   drivebase being controlled
    * @param trajectory  robot-relative trajectory to be followed
    */
-  public FollowTrajectoryCommand(IDrivebasePlus drivebase, Trajectory trajectory) {
+  public FollowTrajectoryCommand(IDrivebasePlus drivebase,
+                                 Trajectory trajectory) {
     m_drivebase = drivebase;
     m_baseTrajectory = trajectory;
     addRequirements(m_drivebase.asSubsystem());
@@ -58,9 +62,10 @@ public class FollowTrajectoryCommand extends Command {
   public void initialize() {
     m_timer.restart();
 
-    // Convert the base trajectory into something relative to the robot's initial pose when the
-    // command starts running.
-    Transform2d transform = new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
+    // Convert the base trajectory into something relative to the robot's
+    // initial pose when the command starts running.
+    Transform2d transform =
+        new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
     m_currentTrajectory = m_baseTrajectory.transformBy(transform);
   }
 
@@ -69,8 +74,8 @@ public class FollowTrajectoryCommand extends Command {
     // Calculate how fast we should be moving at this point along the trajectory
     double elapsed = m_timer.get();
     var referencePosition = m_currentTrajectory.sample(elapsed);
-    ChassisSpeeds newSpeeds =
-        m_controller.calculate(m_drivebase.getEstimatedPose(), referencePosition);
+    ChassisSpeeds newSpeeds = m_controller.calculate(
+        m_drivebase.getEstimatedPose(), referencePosition);
 
     // Move the drivebase accordingly.
     m_drivebase.driveTankWithPID(newSpeeds);

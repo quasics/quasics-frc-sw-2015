@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot.util.RobotConfigs.NO_CANDLE;
 
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;
@@ -39,8 +40,8 @@ public final class RobotConfigLibrary {
   public enum Robot {
     /** Simulation-only */
     Simulation,
-    // /** Simulation-only */
-    // SimulationWithTwoCameras,
+    /** Simulation-only */
+    SimulationWithTwoCameras,
     // /** "Naked" drivebase used by the coding sub-team */
     // Sally,
     // /** 2025 ("Reefscape") robot */
@@ -69,6 +70,7 @@ public final class RobotConfigLibrary {
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, generateSingleCameraSimulationConfig());
+    map.put(Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
 
     //
     // Sanity checks to make sure that we have entries for all known robots.
@@ -88,19 +90,23 @@ public final class RobotConfigLibrary {
     return map;
   }
 
-  private static RobotConfig generateSingleCameraSimulationConfig() {
-    final var driveConfig = new DriveConfig(
-        Inches.of(3), // Wheel radius
-        Meters.of(0.381 * 2), // Trackwidth
-        8.0, // Gearing
-        new PIDConfig(1.6662),
-        new PIDConfig(1.6662),
-        new DriveFeedForwardConfig(
-            // Linear data
-            Volts.of(0.014183), Volts.of(1.9804), 0.19169,
-            // Angular data
-            Volts.of(2.6332), 0.5226));
+  /**
+   * Drive config shared by our simulated drive base hardware (in multiple robot
+   * configurations).
+   */
+  private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG = new DriveConfig(
+      Inches.of(3), // Wheel radius
+      Meters.of(0.381 * 2), // Trackwidth
+      8.0, // Gearing
+      new PIDConfig(1.6662),
+      new PIDConfig(1.6662),
+      new DriveFeedForwardConfig(
+          // Linear data
+          Volts.of(0.014183), Volts.of(1.9804), 0.19169,
+          // Angular data
+          Volts.of(2.6332), 0.5226));
 
+  private static RobotConfig generateSingleCameraSimulationConfig() {
     final var cameraConfig = new CameraConfig(
         "USBCamera1",
         // Our camera is mounted 0.1 meters forward and 0.5 meters up from the
@@ -137,11 +143,56 @@ public final class RobotConfigLibrary {
 
     final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
 
-    return new RobotConfig(driveConfig,
+    return new RobotConfig(
+        SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
         elevatorConfig, armConfig, lightingConfig,
         candleConfig);
+  }
+
+  private static RobotConfig generateTwoCameraSimulationConfig() {
+    return new RobotConfig(SIMULATED_DRIVE_BASE_CONFIG,
+        Arrays.asList(new CameraConfig[] {
+            new CameraConfig("USBCamera1",
+                // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
+                new Position(Meters.of(0.1), // x
+                    Meters.of(0.0), // y
+                    Meters.of(0.5)), // z
+                // ...pitched 15 degrees up, pointing straightforward and in plane with the
+                // robot,...
+                new Orientation(Degrees.of(-15), // pitch
+                    Degrees.of(0), // roll
+                    Degrees.of(0) // yaw
+                ),
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                new Imaging(960, 720, Degrees.of(100), 30)),
+            new CameraConfig("USBCamera2",
+                // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the robot
+                // pose (which is considered to be its center of rotation at the floor level, or
+                // Z = 0)...
+                new Position(Meters.of(-0.25), // x
+                    Meters.of(0.0), // y
+                    Meters.of(1.0)), // z
+                // ...pitched 0 degrees up, pointing straight backward and in plane with the
+                // robot,...
+                new Orientation(Degrees.of(0), // roll
+                    Degrees.of(0), // pitch
+                    Degrees.of(180) // yaw
+                ),
+                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                new Imaging(960, 720, Degrees.of(100), 30)),
+        }),
+        new ElevatorConfig(
+            // Note: PID and FF values are arbitrary for simulation use.
+            new PIDConfig(10.0, 0, 1), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+        new ArmConfig(
+            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            new PIDConfig(6.0, 0.00, 0.00), null),
+        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80),
+        NO_CANDLE);
   }
 }

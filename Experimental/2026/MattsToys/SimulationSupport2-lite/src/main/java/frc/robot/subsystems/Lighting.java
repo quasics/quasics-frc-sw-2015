@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting;
-import frc.robot.util.RobotConfigs;
 import frc.robot.util.RobotConfigs.RobotConfig;
 import java.util.ArrayList;
 import java.util.Collections;

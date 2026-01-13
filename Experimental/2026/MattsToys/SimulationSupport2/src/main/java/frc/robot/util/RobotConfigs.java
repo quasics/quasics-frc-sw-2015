@@ -1,4 +1,4 @@
-// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -36,7 +36,8 @@ public interface RobotConfigs {
    *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system">Robot
    *      coordinate system</a>
    */
-  public static record Position(Distance x, Distance y, Distance z) {}
+  public static record Position(Distance x, Distance y, Distance z) {
+  }
 
   /**
    * Describes a camera's orientiation relative to the robot.
@@ -45,7 +46,8 @@ public interface RobotConfigs {
    * @param roll  The counterclockwise rotation angle around the X axis (roll).
    * @param yaw   The counterclockwise rotation angle around the Z axis (yaw).
    */
-  public static record Orientation(Angle pitch, Angle roll, Angle yaw) {}
+  public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
+  }
 
   /**
    * Defines the image-related characteristics of a camera on the robot.
@@ -58,7 +60,8 @@ public interface RobotConfigs {
    * @param fov    field of view (e.g., 100 degrees)
    * @param fps    frames per second produced by the video stream
    */
-  public static record Imaging(int width, int height, Angle fov, double fps) {}
+  public static record Imaging(int width, int height, Angle fov, double fps) {
+  }
 
   /**
    * Describes the camera's configuration.
@@ -70,7 +73,8 @@ public interface RobotConfigs {
    * @param imaging     characteristics of the camera's image feed
    */
   public static record CameraConfig(String name, Position pos,
-                                    Orientation orientation, Imaging imaging) {}
+      Orientation orientation, Imaging imaging) {
+  }
 
   /**
    * PID configuration settings.
@@ -85,7 +89,9 @@ public interface RobotConfigs {
      *
      * @param kP proportional constant
      */
-    public PIDConfig(double kP) { this(kP, 0.0, 0.0); }
+    public PIDConfig(double kP) {
+      this(kP, 0.0, 0.0);
+    }
   }
 
   /**
@@ -97,7 +103,7 @@ public interface RobotConfigs {
    * @param kA kA, in V/(m/s^2)
    */
   public static record ElevatorFeedForwardConfig(Voltage kS, Voltage kG,
-                                                 double kV, double kA) {
+      double kV, double kA) {
     /**
      * Overloaded constructor.
      *
@@ -107,7 +113,7 @@ public interface RobotConfigs {
      * @param kA kA, in V/(m/s^2)
      */
     public ElevatorFeedForwardConfig(double kS, double kG, double kV,
-                                     double kA) {
+        double kA) {
       this(Volts.of(kS), Volts.of(kG), kV, kA);
     }
   }
@@ -119,7 +125,8 @@ public interface RobotConfigs {
    * @param feedForward feedforward data for the elevator
    */
   public static record ElevatorConfig(PIDConfig pid,
-                                      ElevatorFeedForwardConfig feedForward) {}
+      ElevatorFeedForwardConfig feedForward) {
+  }
 
   /**
    * Simple (i.e., not for elevators) feedforward data.
@@ -129,7 +136,7 @@ public interface RobotConfigs {
    * @param kA kA, in V/(m/s^2)
    */
   public static record SimpleFeedForwardConfig(Voltage kS, Voltage kV,
-                                               double kA) {
+      double kA) {
     /**
      * Overloaded constructor.
      *
@@ -168,20 +175,21 @@ public interface RobotConfigs {
    * @param angular angular (rotational) feedforward settings
    */
   public static record DriveFeedForwardConfig(SimpleFeedForwardConfig linear,
-                                              SimpleFeedForwardConfig angular) {
+      SimpleFeedForwardConfig angular) {
     /**
      * Overloaded constructor.
      * 
-     * @para, ksLinear  linear feedforward kS value
+     * @para, ksLinear linear feedforward kS value
+     * 
      * @param kvLinear  linear feedforward kV value
      * @param kaLinear  linear feedforward kA value
      * @param kvAngular angular (rotational) feedforward kV value
      * @param kaAngular angular (rotational) feedforward kA value
      */
     public DriveFeedForwardConfig(Voltage ksLinear, Voltage kvLinear, double kaLinear,
-                                  Voltage kvAngular, double kaAngular) {
+        Voltage kvAngular, double kaAngular) {
       this(new SimpleFeedForwardConfig(ksLinear, kvLinear, kaLinear),
-           new SimpleFeedForwardConfig(kvAngular, kaAngular));
+          new SimpleFeedForwardConfig(kvAngular, kaAngular));
     }
 
     /**
@@ -193,9 +201,9 @@ public interface RobotConfigs {
      * @param kaAngular angular (rotational) feedforward kA value
      */
     public DriveFeedForwardConfig(Voltage kvLinear, double kaLinear,
-                                  Voltage kvAngular, double kaAngular) {
+        Voltage kvAngular, double kaAngular) {
       this(new SimpleFeedForwardConfig(kvLinear, kaLinear),
-           new SimpleFeedForwardConfig(kvAngular, kaAngular));
+          new SimpleFeedForwardConfig(kvAngular, kaAngular));
     }
   }
 
@@ -210,9 +218,9 @@ public interface RobotConfigs {
    * @param feedForward feedforward configuration for the drivebase
    */
   public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
-                                   double gearing, PIDConfig leftPid,
-                                   PIDConfig rightPid,
-                                   DriveFeedForwardConfig feedForward) {
+      double gearing, PIDConfig leftPid,
+      PIDConfig rightPid,
+      DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left
      * and right.
@@ -224,8 +232,8 @@ public interface RobotConfigs {
      * @param feedForward feedforward configuration for the drivebase
      */
     public DriveConfig(Distance wheelRadius, Distance trackWidth,
-                       double gearing, PIDConfig commonPid,
-                       DriveFeedForwardConfig feedForward) {
+        double gearing, PIDConfig commonPid,
+        DriveFeedForwardConfig feedForward) {
       this(wheelRadius, trackWidth, gearing, commonPid, commonPid, feedForward);
     }
   }
@@ -242,7 +250,7 @@ public interface RobotConfigs {
    * @see frc.robot.subsystems.live.LightingBuffer
    */
   public static record LightingConfig(int pwmPort, int stripLength,
-                                      List<Integer> subViews) {
+      List<Integer> subViews) {
     /**
      * Constructor (with sanity checking).
      *
@@ -253,12 +261,11 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize =
-            subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException(
               "Sub-view size (" + subViewTotalSize +
-              ") exceeds strip length (" + stripLength + ")");
+                  ") exceeds strip length (" + stripLength + ")");
         }
       }
     }
@@ -283,7 +290,7 @@ public interface RobotConfigs {
    * @param kA kA, in V/(m/s^2)
    */
   public static record ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV,
-                                            double kA) {
+      double kA) {
     /**
      * Overloaded constructor (no kA).
      *
@@ -326,7 +333,8 @@ public interface RobotConfigs {
    * @param feedForward feedforward settings for the arm
    */
   public static record ArmConfig(PIDConfig pid,
-                                 ArmFeedForwardConfig feedForward) {}
+      ArmFeedForwardConfig feedForward) {
+  }
 
   /**
    * CANdle configuration settings.
@@ -340,7 +348,9 @@ public interface RobotConfigs {
      *
      * @return true iff the CANdle is simulated (based on the CAN ID)
      */
-    public boolean simulated() { return canId < 0; }
+    public boolean simulated() {
+      return canId < 0;
+    }
   }
 
   /**
@@ -354,10 +364,10 @@ public interface RobotConfigs {
    * @param candle   CANdle configuration (may be null)
    */
   public static record RobotConfig(DriveConfig drive,
-                                   List<CameraConfig> cameras,
-                                   ElevatorConfig elevator, ArmConfig arm,
-                                   LightingConfig lighting,
-                                   CandleConfig candle) {
+      List<CameraConfig> cameras,
+      ElevatorConfig elevator, ArmConfig arm,
+      LightingConfig lighting,
+      CandleConfig candle) {
     /**
      * Utility constructor fo a single-camera robot.
      *
@@ -369,9 +379,9 @@ public interface RobotConfigs {
      * @param candle   CANdle configuration (may be null)
      */
     RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator,
-                ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
+        ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
       this(drive, Collections.singletonList(camera), elevator, arm, lighting,
-           candle);
+          candle);
     }
 
     /**
@@ -379,7 +389,9 @@ public interface RobotConfigs {
      *
      * @return true iff the configuration includes data for the drivebase
      */
-    public boolean hasDrive() { return drive != null; }
+    public boolean hasDrive() {
+      return drive != null;
+    }
 
     /**
      * Determines if we have camera configuration data.
@@ -395,28 +407,36 @@ public interface RobotConfigs {
      *
      * @return true iff the configuration includes data for the elevator
      */
-    public boolean hasElevator() { return elevator != null; }
+    public boolean hasElevator() {
+      return elevator != null;
+    }
 
     /**
      * Determines if we have arm configuration data.
      *
      * @return true iff the configuration includes data for the arm
      */
-    public boolean hasArm() { return arm != null; }
+    public boolean hasArm() {
+      return arm != null;
+    }
 
     /**
      * Determines if we have lighting configuration data.
      *
      * @return true iff the configuration includes data for the lighting
      */
-    public boolean hasLighting() { return lighting != null; }
+    public boolean hasLighting() {
+      return lighting != null;
+    }
 
     /**
      * Determines if we have CANdle configuration data.
      *
      * @return true iff the configuration includes data for the CANdle
      */
-    public boolean hasCandle() { return candle != null; }
+    public boolean hasCandle() {
+      return candle != null;
+    }
   }
 
   public static final DriveConfig NO_DRIVE = null;

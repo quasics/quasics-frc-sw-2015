@@ -4,9 +4,22 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.util.RobotConfigs.*;
 
 import frc.robot.constants.robots.SimulationPorts;
+import frc.robot.util.RobotConfigs.ArmConfig;
+import frc.robot.util.RobotConfigs.CameraConfig;
+import frc.robot.util.RobotConfigs.CandleConfig;
+import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.RobotConfigs.DriveFeedForwardConfig;
+import frc.robot.util.RobotConfigs.ElevatorConfig;
+import frc.robot.util.RobotConfigs.ElevatorFeedForwardConfig;
+import frc.robot.util.RobotConfigs.Imaging;
+import frc.robot.util.RobotConfigs.LightingConfig;
+import frc.robot.util.RobotConfigs.Orientation;
+import frc.robot.util.RobotConfigs.PIDConfig;
+import frc.robot.util.RobotConfigs.Position;
+import frc.robot.util.RobotConfigs.RobotConfig;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,16 +80,16 @@ public final class RobotConfigLibrary {
 
   private static RobotConfig generateSingleCameraSimulationConfig() {
     final var driveConfig = new DriveConfig(
-        Inches.of(3),          // Wheel radius
-        Meters.of(0.381 * 2),  // Trackwidth
-        8.0,                   // Gearing
-        new PIDConfig(1.3973), // Left: 1.683 angular, 1.3973 linear
-        new PIDConfig(1.3974), // Right: 1.683 angular, 1.3974 linear
+        Inches.of(3),  // Wheel radius
+        Meters.of(0.381 * 2),     // Trackwidth
+        8.0,             // Gearing
+        new PIDConfig(1.6662),
+        new PIDConfig(1.6662),
         new DriveFeedForwardConfig(
             // Linear data
-            Volts.of(1.9801), 0.19198,
+            Volts.of(0.014183), Volts.of(1.9804), 0.19169,
             // Angular data
-            Volts.of(1.4999), 0.29835));
+            Volts.of(2.6332), 0.5226));
 
     final var cameraConfig = new CameraConfig(
         "USBCamera1",

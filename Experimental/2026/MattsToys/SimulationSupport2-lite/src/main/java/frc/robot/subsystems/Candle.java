@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.Enable5VRailValue;
+import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
+import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
+import com.ctre.phoenix6.signals.StripTypeValue;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -33,22 +37,22 @@ public class Candle extends SubsystemBase implements ICandle {
     CANdleConfiguration configAll = new CANdleConfiguration();
 
     // LEDs built into the device are RGB
-    configAll.stripType = LEDStripType.RGB;
+    configAll.LED.StripType = StripTypeValue.RGB;
 
     // Turn off Status LED when CANdle is actively being controlled
-    configAll.statusLedOffWhenActive = true;
-
+    configAll.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
+    
     // Leave LEDs on when Loss of Signal occurs
-    configAll.disableWhenLOS = false;
+    configAll.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
     // Dim the LEDs to 50% brightness
-    configAll.brightnessScalar = 0.5;
+    configAll.LED.BrightnessScalar = 0.5;
 
     // True to turn off the 5V rail. This turns off the on-board LEDs as well.
     // (So if we're using the on-board LEDs, it should be false.)
-    configAll.v5Enabled = false;
+    configAll.CANdleFeatures.Enable5VRail = Enable5VRailValue.Disabled;
 
-    m_candle.configAllSettings(configAll, 100);
+    m_candle.getConfigurator().apply(configAll);
   }
 
   /**

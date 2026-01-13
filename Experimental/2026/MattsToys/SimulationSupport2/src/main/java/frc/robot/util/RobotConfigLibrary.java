@@ -29,6 +29,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Library of predefined robot configurations.
+ * 
+ * @see frc.robot.util.RobotConfigs
+ */
 public final class RobotConfigLibrary {
   /** The supported robots. */
   public enum Robot {

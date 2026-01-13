@@ -42,15 +42,27 @@ public class Lighting extends SubsystemBase implements ILighting {
   List<AddressableLEDBufferView> m_subViews;
 
   /**
+   * Optional ColorSupplier used to control the lighting while we're disabled
+   * (e.g., to provide signalling to the drive team while positioning the robot on
+   * the field before a match, etc.).
+   */
+  private ColorSupplier m_disabledColorSupplier = null;
+
+  /**
    * Iff true, the robot will initialize LEDs to alternating black (off) and
    * white; otherwise, they will default to (Quasics) green.
    */
   private static final boolean START_CHECKERBOARDED = false;
 
+  /**
+   * Constructor.
+   * 
+   * @param config robot configuration with the lighting subsystem parameters
+   */
   public Lighting(RobotConfig config) {
     this(config.lighting().pwmPort(), config.lighting().stripLength(),
-         (config.hasCandle() && config.candle().simulated()),
-         config.lighting().subViews());
+        (config.hasCandle() && config.candle().simulated()),
+        config.lighting().subViews());
   }
 
   /**
@@ -63,7 +75,7 @@ public class Lighting extends SubsystemBase implements ILighting {
    */
   @SuppressWarnings("unchecked")
   public Lighting(int pwmPort, int numLights, boolean enableCandleSupport,
-                  List<Integer> subViews) {
+      List<Integer> subViews) {
     this(
         pwmPort, numLights,
         Stream
@@ -86,7 +98,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     setName("Lighting");
 
     System.err.println("Setting up lighting: pwmPort=" + pwmPort +
-                       ", numLights=" + numLights + ", subViews=" + subViews);
+        ", numLights=" + numLights + ", subViews=" + subViews);
 
     //
     // Sanity-check inputs.
@@ -97,7 +109,7 @@ public class Lighting extends SubsystemBase implements ILighting {
 
     if (numLights < 0) {
       throw new IllegalArgumentException("Invalid LED strip length: " +
-                                         numLights);
+          numLights);
     } else if (numLights == 0) {
       System.err.println(
           "WARNING: configuring LED strip support with 0 LEDs on it!");
@@ -112,10 +124,10 @@ public class Lighting extends SubsystemBase implements ILighting {
     if (subViewsSum > 0 && numLights < subViewsSum) {
       throw new IllegalArgumentException(
           "Invalid LED strip length for requested subviews: " + numLights +
-          " (must be at least " + subViewsSum + ")");
+              " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println("INFO: configuring LED strip support with " +
-                         numLights + " LEDs");
+          numLights + " LEDs");
     }
     final int unallocatedLeds = Math.max(numLights - subViewsSum, 0);
 
@@ -139,7 +151,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     int runningSum = unallocatedLeds;
     for (int size : subViews) {
       viewList.add(new AddressableLEDBufferView(m_ledBuffer, runningSum,
-                                                runningSum + size - 1));
+          runningSum + size - 1));
       runningSum += size;
     }
     m_subViews = Collections.unmodifiableList(viewList);
@@ -192,10 +204,14 @@ public class Lighting extends SubsystemBase implements ILighting {
    *
    * @return the list of LED buffer views
    */
-  public List<AddressableLEDBufferView> getSubViews() { return m_subViews; }
+  public List<AddressableLEDBufferView> getSubViews() {
+    return m_subViews;
+  }
 
   /** Force the strip to update, reflecting the current buffer contents. */
-  public void forceUpdate() { m_led.setData(m_ledBuffer); }
+  public void forceUpdate() {
+    m_led.setData(m_ledBuffer);
+  }
 
   /////////////////////////////////////////////////////////////////
   //
@@ -209,6 +225,11 @@ public class Lighting extends SubsystemBase implements ILighting {
       return;
     }
     m_lightingBuffer.SetStripColor(function);
+  }
+
+  @Override
+  public void SetDisabledSupplier(ColorSupplier function) {
+    m_disabledColorSupplier = function;
   }
 
   @Override
@@ -228,7 +249,11 @@ public class Lighting extends SubsystemBase implements ILighting {
   @Override
   public void periodic() {
     if (DriverStation.isDisabled()) {
-      SetStripColor(StockColor.Green);
+      if (m_disabledColorSupplier != null) {
+        SetStripColor(m_disabledColorSupplier);
+      } else {
+        SetStripColor(StockColor.Green);
+      }
     } else if (DriverStation.isEStopped()) {
       // If we're e-stopped, reflect that....
       SetAlternatingColors(StockColor.Red, StockColor.Blue);

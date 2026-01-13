@@ -37,6 +37,8 @@ public interface ILighting extends ISubsystem {
    */
   public void SetStripColor(ColorSupplier function);
 
+  public void SetDisabledSupplier(ColorSupplier function);
+
   /**
    * Returns the number of LEDs controllable by this object's various functions.
    * 
@@ -239,6 +241,11 @@ public interface ILighting extends ISubsystem {
     @Override
     public int getLength() {
       return 0;
+    }
+
+    @Override
+    public void SetDisabledSupplier(ColorSupplier function) {
+      // Do nothing.
     }
   }
 }

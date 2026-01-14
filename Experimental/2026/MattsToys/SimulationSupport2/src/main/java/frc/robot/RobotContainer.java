@@ -115,29 +115,34 @@ public class RobotContainer {
     configureSysIdCommands();
     configureElevatorCommands();
     configureArmCommands();
+    maybeConfigureLightingWhenDisabled();
     configureBindings();
-
-    if (m_lighting != null) {
-      if (OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED) {
-        // Repeating the definition for "Blue1" from the SimDrivebase options. Note that
-        // for real use in positioning based on a trajectory to be followed in auto
-        // mode, we might actually... you know, use the first position in that
-        // trajectory.
-        final Pose2d BLUE_1_POSE = new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
-            ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
-            new Rotation2d(ReefscapeConstants.FACING_BLUE));
-
-        m_lighting.SetDisabledSupplier(
-            new FieldPlacementColorFunction(
-                // targetPoseSupplier
-                () -> BLUE_1_POSE,
-                // currentPoseSupplier
-                () -> IDrivebasePlus.getPublishedLastPoseFromOdometry()));
-      }
-    }
 
     if (Robot.isSimulation()) {
       new CameraSimulator(m_robotConfig, (PhotonVision) m_vision);
+    }
+  }
+
+  private void maybeConfigureLightingWhenDisabled() {
+    if (m_lighting == null) {
+      return;
+    }
+
+    if (OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED) {
+      // Repeating the definition for "Blue1" from the SimDrivebase options. Note that
+      // for real use in positioning based on a trajectory to be followed in auto
+      // mode, we might actually... you know, use the first position in that
+      // trajectory.
+      final Pose2d BLUE_1_POSE = new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+          ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
+          new Rotation2d(ReefscapeConstants.FACING_BLUE));
+
+      m_lighting.SetDisabledSupplier(
+          new FieldPlacementColorFunction(
+              // targetPoseSupplier
+              () -> BLUE_1_POSE,
+              // currentPoseSupplier
+              () -> IDrivebasePlus.getPublishedLastPoseFromOdometry()));
     }
   }
 

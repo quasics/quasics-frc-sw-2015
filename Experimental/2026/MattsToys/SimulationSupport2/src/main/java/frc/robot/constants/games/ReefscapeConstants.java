@@ -4,12 +4,20 @@
 
 package frc.robot.constants.games;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 /** Defines various constants for the 2025 game, "Reefscape". */
 final public class ReefscapeConstants {
+  /** Robot heading when facing the Blue alliance. */
+  static final public Angle FACING_BLUE = Degrees.of(180);
+
+  /** Robot heading when facing the Red alliance. */
+  static final public Angle FACING_RED = Degrees.of(0);
+
   /** Length (x) of the field. */
   static final public Distance FIELD_LENGTH = Meters.of(17.55);
 
@@ -26,15 +34,13 @@ final public class ReefscapeConstants {
    * Robot distance from east side of the field when on the Blue alliance's
    * starting line.
    */
-  static final public Distance BLUE_STARTING_LINE =
-      FIELD_LENGTH.div(2).minus(STARTING_LINE_OFFSET);
+  static final public Distance BLUE_STARTING_LINE = FIELD_LENGTH.div(2).minus(STARTING_LINE_OFFSET);
 
   /**
    * Robot distance from east side of the field when on the Red alliance's
    * starting line.
    */
-  static final public Distance RED_STARTING_LINE =
-      FIELD_LENGTH.div(2).plus(STARTING_LINE_OFFSET);
+  static final public Distance RED_STARTING_LINE = FIELD_LENGTH.div(2).plus(STARTING_LINE_OFFSET);
 
   /**
    * Robot distance from south side of the field when in front of the

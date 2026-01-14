@@ -25,14 +25,22 @@ public class RobotContainer {
 
   private void addPowerButton(String label, double percent) {
     SmartDashboard.putData(label, new FunctionalCommand(
-      ()->{m_singleMotor.setSpeed(percent);},
-      null,
-      // end
-      (Boolean b) -> { m_singleMotor.stop(); },
-      // isFinished
-      null,
-      // Dependency
-      m_singleMotor));
+        // onInit (can't be null)
+        () -> {
+          m_singleMotor.setSpeed(percent);
+        },
+        // onExecute (can't be null)
+        () -> {
+          m_singleMotor.setSpeed(percent);
+        },
+        // onEnd (can't be null)
+        (Boolean b) -> {
+          m_singleMotor.stop();
+        },
+        // isFinished (can't be null)
+        () -> false,
+        // Dependency
+        m_singleMotor));
   }
 
   public Command getAutonomousCommand() {

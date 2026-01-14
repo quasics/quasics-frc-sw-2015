@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
@@ -29,6 +30,8 @@ import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.TankDrive;
 import frc.robot.constants.OperatorConstants;
+import frc.robot.constants.games.ReefscapeConstants;
+import frc.robot.misc.FieldPlacementColorFunction;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.PhotonVision;
@@ -61,9 +64,10 @@ public class RobotContainer {
 
   /**
    * If true, override the default configuration used for the lighting subsystem
-   * while we're disabled. (This is intended to provide a demo of this
-   * functionality, and I expect to extend it to provide "drive team position
-   * signalling" in the near future.)
+   * while we're disabled. This provides an example of how the robot can provide
+   * information to the drive team to indicate if it is correctly positioned on
+   * the field, based on where a trajectory that will be run in Auto mode will
+   * start.
    */
   private static final boolean OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED = false;
 
@@ -113,8 +117,23 @@ public class RobotContainer {
     configureArmCommands();
     configureBindings();
 
-    if (m_lighting != null && OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED) {
-      m_lighting.SetDisabledSupplier((var position) -> ILighting.StockColor.Aqua.toWpiColor());
+    if (m_lighting != null) {
+      if (OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED) {
+        // Repeating the definition for "Blue1" from the SimDrivebase options. Note that
+        // for real use in positioning based on a trajectory to be followed in auto
+        // mode, we might actually... you know, use the first position in that
+        // trajectory.
+        final Pose2d BLUE_1_POSE = new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+            ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
+            new Rotation2d(ReefscapeConstants.FACING_BLUE));
+
+        m_lighting.SetDisabledSupplier(
+            new FieldPlacementColorFunction(
+                // targetPoseSupplier
+                () -> BLUE_1_POSE,
+                // currentPoseSupplier
+                () -> IDrivebasePlus.getPublishedLastPoseFromOdometry()));
+      }
     }
 
     if (Robot.isSimulation()) {

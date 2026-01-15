@@ -142,6 +142,13 @@ public class RobotContainer {
               // targetPoseSupplier
               () -> BLUE_1_POSE,
               // currentPoseSupplier
+              //
+              // Note: this should actually be coming from *vision* pose estimation, since
+              // (while we're in "disabled" mode) we'll have no actual odometry data to use
+              // for pose estimation. In this simulation example, we *do*, because the
+              // selector used to start the robot at different points on the field is also
+              // (currently) forcibly updating the odometry data so that the field simulation
+              // will work; however, this won't be the case for *real* robots.
               () -> IDrivebasePlus.getPublishedLastPoseFromOdometry()));
     }
   }

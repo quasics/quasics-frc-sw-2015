@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,5 +61,40 @@ public class SpeedModeScalerTest {
         assertEquals(TURTLE_SCALING * 0, speedModeScaler.apply(0.0), DELTA);
         assertEquals(TURTLE_SCALING * +.5, speedModeScaler.apply(+.5), DELTA);
         assertEquals(TURTLE_SCALING * -.5, speedModeScaler.apply(-.5), DELTA);
+    }
+
+    @Test
+    void constructionTests() {
+        //
+        // Invalid constructions
+        //
+
+        // SpeedMode supplier is null (invalid)
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SpeedModeScaler(null /* invalid! */, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
+        });
+
+        // Normal and turbo scaling are swapped
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SpeedModeScaler(() -> SpeedMode.Normal, TURBO_SCALING, NORMAL_SCALING, TURTLE_SCALING);
+        });
+
+        // Normal and turtle scaling are swapped
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SpeedModeScaler(() -> SpeedMode.Normal, TURTLE_SCALING, TURBO_SCALING, NORMAL_SCALING);
+        });
+
+        //
+        // These should *not* throw, as they're potentially valid
+        //
+
+        // All scaling factors the same (so, all scaling is disabled)
+        new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, NORMAL_SCALING);
+
+        // Turbo and normal scaling the same (i.e., turbo mode is disabled)
+        new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, TURTLE_SCALING);
+
+        // Turtle and normal scaling the same (i.e., turtle mode is disabled)
+        new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, TURBO_SCALING, NORMAL_SCALING);
     }
 }

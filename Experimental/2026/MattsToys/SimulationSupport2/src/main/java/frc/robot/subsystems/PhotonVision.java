@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.util.RobotConfigs.CameraConfig;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +41,7 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
   /** Creates a new PhotonVision. */
   public PhotonVision(CameraConfig cameraConfig) {
     setName(SUBSYSTEM_NAME);
-    m_tagLayout = loadLayout(FIELD_LAYOUT.m_resourceFile);
+    m_tagLayout = IPhotonVision.loadLayout(FIELD_LAYOUT.m_resourceFile);
 
     // Add the first camera to our known set.
     // (Note that this assumes that we *have* at least one camera.)
@@ -56,25 +54,6 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
             cameraConfig.orientation().yaw()));
 
     m_cameraData = new CameraData(camera, robotToCamera, null);
-  }
-
-  /**
-   * Helper method to load a field layout.
-   *
-   * @param resourcePath path for the layout
-   * @return the loaded field layout (or null on errors)
-   */
-  static AprilTagFieldLayout loadLayout(String resourcePath) {
-    // Load the layout of the AprilTags on the field.
-    AprilTagFieldLayout tagLayout = null;
-    try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
-    } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" +
-          resourcePath + ")");
-      ioe.printStackTrace();
-    }
-    return tagLayout;
   }
 
   // Making this a helper function, since getLatestResult() is now deprecated,

@@ -7,6 +7,8 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
+
+import java.io.IOException;
 import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -18,31 +20,6 @@ import org.photonvision.PhotonPoseEstimator;
  * "mix-in".
  */
 public interface IPhotonVision {
-  /**
-   * TODO: Move layout-oriented stuff into a common base for different
-   * PhotonVision options.
-   */
-
-  /**
-   * If true, use the Reefscape layout from 2025; if false, use the Crescendo
-   * layout from 2024.
-   */
-  static final boolean USE_REEFSCAPE_LAYOUT = true;
-
-  /**
-   * If true, use the AndyMark configuration for the Reefscape layout; if false,
-   * use the "welded" configuration.
-   */
-  static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
-
-  /** The field layout to use for vision processing/emulation. */
-  static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
-          ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
-  ;
-
   /**
    * Camera data set.
    *
@@ -76,4 +53,48 @@ public interface IPhotonVision {
    * @return an AprilTagFieldLayout
    */
   AprilTagFieldLayout getFieldLayoutForSimulation();
+
+  //
+  // Field layout constants and helper functions.
+  //
+
+  /**
+   * If true, use the Reefscape layout from 2025; if false, use the Crescendo
+   * layout from 2024.
+   */
+  static final boolean USE_REEFSCAPE_LAYOUT = true;
+
+  /**
+   * If true, use the AndyMark configuration for the Reefscape layout; if false,
+   * use the "welded" configuration.
+   */
+  static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
+
+  /** The field layout to use for vision processing/emulation. */
+  static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
+      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
+          ? AprilTagFields.k2025ReefscapeAndyMark
+          : AprilTagFields.k2025ReefscapeWelded)
+      : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
+  ;
+
+  /**
+   * Helper method to load a field layout.
+   *
+   * @param resourcePath path for the layout
+   * @return the loaded field layout (or null on errors)
+   */
+  static AprilTagFieldLayout loadLayout(String resourcePath) {
+    // Load the layout of the AprilTags on the field.
+    AprilTagFieldLayout tagLayout = null;
+    try {
+      tagLayout = AprilTagFieldLayout.loadFromResource(resourcePath);
+    } catch (IOException ioe) {
+      System.err.println("Warning: failed to load April Tags layout (" +
+          resourcePath + ")");
+      ioe.printStackTrace();
+    }
+    return tagLayout;
+  }
+
 }

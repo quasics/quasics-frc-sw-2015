@@ -32,13 +32,13 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  */
 public class PhotonVision extends SubsystemBase implements IVision, IPhotonVision {
   /** Data about a single camera used for vision tracking. */
-  final private CameraData m_cameraData;
+  private final CameraData m_cameraData;
 
   /**
    * The layout of the AprilTags on the field. This is used for the pose
    * estimation (as well as in the simulator, when it's rendering the tag).
    */
-  protected final AprilTagFieldLayout m_tagLayout;
+  private final AprilTagFieldLayout m_tagLayout;
 
   /** Creates a new PhotonVision. */
   public PhotonVision(CameraConfig cameraConfig) {

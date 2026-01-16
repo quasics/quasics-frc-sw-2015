@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -246,6 +248,11 @@ public interface ILighting extends ISubsystem {
     @Override
     public void SetDisabledSupplier(ColorSupplier function) {
       // Do nothing.
+    }
+
+    @Override
+    public void close() throws IOException {
+      // No-op
     }
   }
 }

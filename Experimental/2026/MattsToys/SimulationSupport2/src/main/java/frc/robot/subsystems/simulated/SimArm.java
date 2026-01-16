@@ -6,6 +6,8 @@ package frc.robot.subsystems.simulated;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.io.IOException;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,7 +16,11 @@ import frc.robot.subsystems.interfaces.ISingleJointArm;
 /**
  * Simulated arm subsystem.
  *
- * Note: arm angles are measured from the vertical.
+ * Notes:
+ * <ul>
+ * <li>Arm angles are measured from the vertical.
+ * <li>This is a *pure* simulation (all counting, no motor controllers, etc.).
+ * </ul>
  */
 public class SimArm extends SubsystemBase implements ISingleJointArm {
   /** Whether to use PID control or simple proportional control. */
@@ -150,5 +156,10 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   @Override
   public State getState() {
     return m_state;
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: this class has no resources to release/close.
   }
 }

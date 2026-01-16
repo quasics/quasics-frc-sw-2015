@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,5 +52,10 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
     if (m_disabledColorSupplier != null && DriverStation.isDisabled()) {
       SetStripColor(m_disabledColorSupplier);
     }
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: we have no resources to be closed.
   }
 }

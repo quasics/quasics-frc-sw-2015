@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -122,5 +124,16 @@ public class Candle extends SubsystemBase implements ICandle {
       // No command is using us right now, so we'll do things for ourselves.
       ICandle.updateCandleForAllianceAndStatus(this);
     }
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  //
+  // Closeable functions
+  //
+  //////////////////////////////////////////////////////////////////////
+
+  @Override
+  public void close() throws IOException {
+    m_candle.close();
   }
 }

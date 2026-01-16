@@ -1,14 +1,21 @@
-// Copyright (c) 2025, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2025-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.simulated;
 
+import java.io.IOException;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IElevator;
 
-/** Simulated elevator subsystem. */
+/**
+ * Simulated elevator subsystem.
+ * 
+ * Note that this is a *pure* simulation (all counting, no motor controllers,
+ * etc.).
+ */
 public class SimElevator extends SubsystemBase implements IElevator {
   static final double MANUAL_CONTROL_SPEED = 0.05;
   static final double SETPOINT_TOLERANCE = 0.01;
@@ -20,14 +27,15 @@ public class SimElevator extends SubsystemBase implements IElevator {
   private ElevatorPosition m_targetPosition = ElevatorPosition.BOTTOM;
 
   /** Directions for the manual control handling (needed for computation). */
-  private enum ManualControlDirection { UP, DOWN, UNDEFINED }
+  private enum ManualControlDirection {
+    UP, DOWN, UNDEFINED
+  }
 
   /**
    * Current manual direction; only valid when m_elevatorState is
    * MANUAL_CONTROL.
    */
-  private ManualControlDirection manualControlDirection =
-      ManualControlDirection.UNDEFINED;
+  private ManualControlDirection manualControlDirection = ManualControlDirection.UNDEFINED;
 
   /** Current height of the elevator in meters. */
   private double m_currentHeight;
@@ -68,8 +76,7 @@ public class SimElevator extends SubsystemBase implements IElevator {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
       case MOVING_TO_POSITION ->
-        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) <
-         SETPOINT_TOLERANCE)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
@@ -155,7 +162,7 @@ public class SimElevator extends SubsystemBase implements IElevator {
       if (manualControlDirection == ManualControlDirection.UP) {
         m_currentHeight += MANUAL_CONTROL_SPEED;
         m_currentHeight = Math.min(m_currentHeight,
-                                   getHeightForPosition(ElevatorPosition.HIGH));
+            getHeightForPosition(ElevatorPosition.HIGH));
       } else if (manualControlDirection == ManualControlDirection.DOWN) {
         m_currentHeight -= MANUAL_CONTROL_SPEED;
         m_currentHeight = Math.max(
@@ -164,5 +171,14 @@ public class SimElevator extends SubsystemBase implements IElevator {
     }
 
     updateSimulatedDisplay();
+  }
+
+  //
+  // Methods from Closeable interface (primarily for unit testing support)
+  //
+
+  @Override
+  public void close() throws IOException {
+    // No-op: we have no resources that need to be released.
   }
 }

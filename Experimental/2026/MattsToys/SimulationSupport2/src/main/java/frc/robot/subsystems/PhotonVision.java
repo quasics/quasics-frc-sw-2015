@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.util.RobotConfigs.CameraConfig;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,5 +151,10 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
   @Override
   public AprilTagFieldLayout getFieldLayoutForSimulation() {
     return m_tagLayout;
+  }
+
+  @Override
+  public void close() throws IOException {
+    m_cameraData.camera().close();
   }
 }

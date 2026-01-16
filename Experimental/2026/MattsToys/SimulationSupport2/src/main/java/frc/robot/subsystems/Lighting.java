@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.util.RobotConfigs.RobotConfig;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -260,5 +262,14 @@ public class Lighting extends SubsystemBase implements ILighting {
     }
 
     forceUpdate();
+  }
+
+  //
+  // Methods from Closeable interface (primarily for unit testing support)
+  //
+
+  @Override
+  public void close() throws IOException {
+    m_led.close();
   }
 }

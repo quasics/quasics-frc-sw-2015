@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -123,6 +125,11 @@ public interface ICandle extends ISubsystem {
 
     @Override
     public void setIntensity(double intensity) {
+      // No-op
+    }
+
+    @Override
+    public void close() throws IOException {
       // No-op
     }
   }

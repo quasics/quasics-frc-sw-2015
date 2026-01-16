@@ -7,13 +7,24 @@ import org.junit.jupiter.api.Test;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
 
+/**
+ * Provides basic unit testing for the SpeedModeScaler class.
+ * 
+ * @see frc.robot.util.SpeedModeScaler
+ */
 public class SpeedModeScalerTest {
 
+    /** Scaler instance being used for testing. */
     SpeedModeScaler speedModeScaler;
+
+    /** Basic value for "turtle" scaling. */
     static final double TURTLE_SCALING = 0.50;
+    /** Basic value for "normal" scaling. */
     static final double NORMAL_SCALING = 0.65;
+    /** Basic value for "turbo" scaling. */
     static final double TURBO_SCALING = 0.80;
-    static final double DELTA = 1e-2; // acceptable deviation range
+    /** Acceptable deviation range when testing scaling outputs. */
+    static final double DELTA = 1e-2;
 
     @BeforeEach
     void setup() {

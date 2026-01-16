@@ -31,31 +31,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  * Implements a PhotonVision-based (single-camera) vision subsystem.
  */
 public class PhotonVision extends SubsystemBase implements IVision, IPhotonVision {
-  /**
-   * TODO: Move layout-oriented stuff into a common base for different
-   * PhotonVision options.
-   */
-
-  /**
-   * If true, use the Reefscape layout from 2025; if false, use the Crescendo
-   * layout from 2024.
-   */
-  private static final boolean USE_REEFSCAPE_LAYOUT = true;
-
-  /**
-   * If true, use the AndyMark configuration for the Reefscape layout; if false,
-   * use the "welded" configuration.
-   */
-  private static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
-
-  /** The field layout to use for vision processing/emulation. */
-  private static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
-          ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
-  ;
-
   /** Data about a single camera used for vision tracking. */
   final private CameraData m_cameraData;
 

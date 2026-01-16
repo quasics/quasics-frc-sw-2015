@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 
 /**
@@ -15,5 +17,5 @@ import edu.wpi.first.math.geometry.Pose2d;
  */
 public interface IPoseEstimator {
     /** @return the estimated pose of the robot */
-    public Pose2d getEstimatedPose();
+    public Optional<Pose2d> getEstimatedPose();
 }

@@ -45,9 +45,12 @@ import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
+import frc.robot.util.SpeedMode;
+import frc.robot.util.SpeedModeScaler;
 import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Core definitions for sample robot code (focused on demonstrating simulation
@@ -206,21 +209,46 @@ public class RobotContainer {
     }, m_elevator.asSubsystem()));
   }
 
+  /** Basic value for "turtle" scaling. */
+  static final double TURTLE_DRIVE_SCALING = 0.250;
+  /** Basic value for "normal" scaling. */
+  static final double NORMAL_DRIVE_SCALING = 0.50;
+  /** Basic value for "turbo" scaling. */
+  static final double TURBO_DRIVE_SCALING = 0.80;
+
   /** Configures the driving behavior. */
   private void configureDriving() {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
+
+    // Slew rate controls: don't let things ramp up too quickly.
     SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
     SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+
+    // Drive "speed mode" decisions/scaling.
+    Supplier<SpeedMode> speedModeSupplier = () -> {
+      if (m_driverWrapper.isXButtonPressed()) {
+        return SpeedMode.Turbo;
+      } else if (m_driverWrapper.isYButtonPressed()) {
+        return SpeedMode.Turtle;
+      } else {
+        return SpeedMode.Normal;
+      }
+    };
+    final SpeedModeScaler scaler = new SpeedModeScaler(speedModeSupplier, NORMAL_DRIVE_SCALING, TURBO_DRIVE_SCALING,
+        TURTLE_DRIVE_SCALING);
+
+    // Order of application: raw values are speed scaled, and then filtered by slew
+    // limits.
     if (USE_ARCADE_DRIVE) {
       m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(
           m_drivebase,
-          () -> limiter1.calculate(m_driverWrapper.getArcadeForward()),
-          () -> limiter2.calculate(m_driverWrapper.getArcadeRotation())));
+          () -> limiter1.calculate(scaler.apply(m_driverWrapper.getArcadeForward())),
+          () -> limiter2.calculate(scaler.apply(m_driverWrapper.getArcadeRotation()))));
     } else {
       m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(
           m_drivebase,
-          () -> limiter1.calculate(m_driverWrapper.getTankLeft()),
-          () -> limiter2.calculate(m_driverWrapper.getTankRight())));
+          () -> limiter1.calculate(scaler.apply(m_driverWrapper.getTankLeft())),
+          () -> limiter2.calculate(scaler.apply(m_driverWrapper.getTankRight()))));
     }
   }
 

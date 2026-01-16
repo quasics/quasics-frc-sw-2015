@@ -11,9 +11,12 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
 /**
- * Interface for an explicitly PhotonVision-based vision subsystem.
+ * Interface for explicitly PhotonVision-based vision subsystems.
+ * 
+ * Note that this is *separate* from IVision, and thus can be used as a
+ * "mix-in".
  */
-public interface IPhotonVision extends IVision {
+public interface IPhotonVision {
   /**
    * Camera data set.
    *

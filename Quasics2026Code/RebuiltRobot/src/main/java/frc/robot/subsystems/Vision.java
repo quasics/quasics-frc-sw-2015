@@ -12,7 +12,7 @@ public class Vision extends SubsystemBase implements IVision {
   public Vision() {
   }
 
-  PhotonCamera camera = new PhotonCamera("camera1");
+  protected PhotonCamera camera = new PhotonCamera("camera1");
 
   @Override
   public void periodic() {

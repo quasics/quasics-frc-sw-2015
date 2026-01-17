@@ -35,17 +35,19 @@ import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Lighting;
-import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.PhotonVisionSingleCamera;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
 import frc.robot.subsystems.interfaces.ILighting;
+import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
+import frc.robot.util.RobotConfigs.RobotConfig;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
 import frc.robot.util.SysIdGenerator;
@@ -96,7 +98,7 @@ public class RobotContainer {
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** Vision-processing subsystem. */
-  final IVision m_vision = new frc.robot.subsystems.PhotonVision(
+  final IVision m_vision = new frc.robot.subsystems.PhotonVisionSingleCamera(
       RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
           .cameras()
           .get(0));
@@ -124,7 +126,7 @@ public class RobotContainer {
     configureBindings();
 
     if (Robot.isSimulation()) {
-      new CameraSimulator(m_robotConfig, (PhotonVision) m_vision);
+      new CameraSimulator(m_robotConfig, (IPhotonVision) m_vision);
     }
   }
 

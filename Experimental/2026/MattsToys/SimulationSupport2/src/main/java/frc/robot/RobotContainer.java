@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.TankDrive;
+import frc.robot.commands.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
@@ -120,6 +121,10 @@ public class RobotContainer {
     configureArmCommands();
     maybeConfigureLightingWhenDisabled();
     configureBindings();
+
+    SmartDashboard.putData("Target lighting", new TargetingSupportCommand(m_lighting, new Pose2d(
+        ReefscapeConstants.MIDLINE, ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()), Meters.of(2),
+        Meters.of(1), Degrees.of(5)));
 
     if (Robot.isSimulation()) {
       new CameraSimulator(m_robotConfig, (PhotonVision) m_vision);

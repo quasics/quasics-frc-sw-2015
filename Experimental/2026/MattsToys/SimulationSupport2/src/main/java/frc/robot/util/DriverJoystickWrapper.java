@@ -60,7 +60,8 @@ public final class DriverJoystickWrapper {
   private static final boolean DISABLED_IN_AUTONOMOUS = true;
 
   /** The preference key for saving/loading the drive control scheme. */
-  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
+  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME =
+      "DriveControlScheme";
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
@@ -138,14 +139,14 @@ public final class DriverJoystickWrapper {
           ? Preferences.getInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, 0)
           // Default to 0 if not working with preferences
           : 0;
-      if (savedControlSchemeOrdinal < 0 ||
-          savedControlSchemeOrdinal >= ControllerType.values().length) {
+      if (savedControlSchemeOrdinal < 0
+          || savedControlSchemeOrdinal >= ControllerType.values().length) {
         savedControlSchemeOrdinal = 0;
       }
       currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
     }
-    System.out.println("Driving control scheme set to: " +
-        currentControlScheme.getControlSchemeName());
+    System.out.println("Driving control scheme set to: "
+        + currentControlScheme.getControlSchemeName());
 
     addDriveControlSelectionToSmartDashboard();
   }
@@ -167,11 +168,12 @@ public final class DriverJoystickWrapper {
   /** Sets up the drive control selection on the SmartDashboard. */
   private void addDriveControlSelectionToSmartDashboard() {
     // Build/install the chooser, establishing the saved scheme as the default
-    SendableChooser<ControllerType> driveInputChooser = new SendableChooser<ControllerType>();
+    SendableChooser<ControllerType> driveInputChooser =
+        new SendableChooser<ControllerType>();
     for (var option : ControllerType.values()) {
       if (option == currentControlScheme) {
-        driveInputChooser.setDefaultOption(option.getControlSchemeName(),
-            option);
+        driveInputChooser.setDefaultOption(
+            option.getControlSchemeName(), option);
       } else {
         driveInputChooser.addOption(option.getControlSchemeName(), option);
       }
@@ -186,12 +188,12 @@ public final class DriverJoystickWrapper {
   /** Updates the current control scheme based on user selection. */
   private void updateControlScheme(ControllerType controlScheme) {
     currentControlScheme = controlScheme;
-    System.out.println("Driving control scheme set to: " +
-        currentControlScheme.getControlSchemeName());
+    System.out.println("Driving control scheme set to: "
+        + currentControlScheme.getControlSchemeName());
 
     if (m_saveToPreferences) {
-      Preferences.setInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME,
-          controlScheme.ordinal());
+      Preferences.setInt(
+          PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, controlScheme.ordinal());
     }
   }
 
@@ -359,13 +361,15 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val = m_primaryController.getRawButton(2); // Mapped to X key by default
+        boolean val =
+            m_primaryController.getRawButton(2); // Mapped to X key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.XButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.X);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.X);
       case XBOX_CONTROLLER ->
         m_primaryController.getRawButton(XboxController.Button.kX.value);
     };
@@ -378,13 +382,15 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val = m_primaryController.getRawButton(1); // Mapped to Z key by default
+        boolean val =
+            m_primaryController.getRawButton(1); // Mapped to Z key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.YButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.Y);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.Y);
       case XBOX_CONTROLLER ->
         m_primaryController.getRawButton(XboxController.Button.kY.value);
     };
@@ -401,7 +407,8 @@ public final class DriverJoystickWrapper {
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.AButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.A);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.A);
       case XBOX_CONTROLLER ->
         m_primaryController.getRawButton(XboxController.Button.kA.value);
     };
@@ -418,7 +425,8 @@ public final class DriverJoystickWrapper {
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.BButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.B);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.B);
       case XBOX_CONTROLLER ->
         m_primaryController.getRawButton(XboxController.Button.kB.value);
     };

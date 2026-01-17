@@ -187,7 +187,9 @@ public class BulletinBoard {
    *
    * @param key the key for the targeted value
    */
-  public synchronized void clearValue(String key) { values.remove(key); }
+  public synchronized void clearValue(String key) {
+    values.remove(key);
+  }
 
   /**
    * Sets/updates the value associated with the specified key, allowing later

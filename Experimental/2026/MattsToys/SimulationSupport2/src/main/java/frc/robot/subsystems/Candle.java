@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
-
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -19,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.util.RobotConfigs.RobotConfig;
+import java.io.IOException;
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.
@@ -43,10 +42,12 @@ public class Candle extends SubsystemBase implements ICandle {
     m_configAll.LED.StripType = StripTypeValue.RGB;
 
     // Turn off Status LED when CANdle is actively being controlled
-    m_configAll.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
+    m_configAll.CANdleFeatures.StatusLedWhenActive =
+        StatusLedWhenActiveValue.Disabled;
 
     // Leave LEDs on when Loss of Signal occurs
-    m_configAll.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
+    m_configAll.LED.LossOfSignalBehavior =
+        LossOfSignalBehaviorValue.DisableLEDs;
 
     // Dim the LEDs to 50% brightness
     m_configAll.LED.BrightnessScalar = 0.5;

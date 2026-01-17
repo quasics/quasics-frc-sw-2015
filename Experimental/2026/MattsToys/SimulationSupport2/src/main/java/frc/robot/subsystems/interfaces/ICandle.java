@@ -4,12 +4,11 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
+import java.io.IOException;
 
 /**
  * Simple (trivial!) interface to a CTRE "CANdle" device that can be set to a

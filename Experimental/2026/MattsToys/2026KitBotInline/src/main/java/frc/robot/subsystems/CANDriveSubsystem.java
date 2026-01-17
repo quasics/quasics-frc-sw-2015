@@ -4,22 +4,20 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
+import static frc.robot.Constants.DriveConstants.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import static frc.robot.Constants.DriveConstants.*;
+import java.util.function.DoubleSupplier;
 
 public class CANDriveSubsystem extends SubsystemBase {
   private record MotorSet(MotorController left, MotorController right) {}
@@ -57,9 +55,11 @@ public class CANDriveSubsystem extends SubsystemBase {
       // follower. Resetting in case a new controller is swapped
       // in and persisting in case of a controller reset due to breaker trip
       config.follow(leftLeader);
-      leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      leftFollower.configure(
+          config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
       config.follow(rightLeader);
-      rightFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      rightFollower.configure(
+          config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       // Remove following, then apply config to right leader
       config.disableFollowerMode();
@@ -68,7 +68,7 @@ public class CANDriveSubsystem extends SubsystemBase {
       // so that postive values drive both sides forward
       config.inverted(true);
       leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-      
+
       return new MotorSet(leftLeader, rightLeader);
     } else {
       PWMSparkMax leftLeader = new PWMSparkMax(LEFT_LEADER_ID);
@@ -100,7 +100,6 @@ public class CANDriveSubsystem extends SubsystemBase {
 
   // Command factory to create command to drive the robot with joystick inputs.
   public Command driveArcade(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-    return this.run(
-        () -> drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()));
+    return this.run(() -> drive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble()));
   }
 }

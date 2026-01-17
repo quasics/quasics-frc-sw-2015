@@ -4,15 +4,14 @@
 
 package frc.robot.subsystems.simulated;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IElevator;
+import java.io.IOException;
 
 /**
  * Simulated elevator subsystem.
- * 
+ *
  * Note that this is a *pure* simulation (all counting, no motor controllers,
  * etc.).
  */
@@ -27,15 +26,14 @@ public class SimElevator extends SubsystemBase implements IElevator {
   private ElevatorPosition m_targetPosition = ElevatorPosition.BOTTOM;
 
   /** Directions for the manual control handling (needed for computation). */
-  private enum ManualControlDirection {
-    UP, DOWN, UNDEFINED
-  }
+  private enum ManualControlDirection { UP, DOWN, UNDEFINED }
 
   /**
    * Current manual direction; only valid when m_elevatorState is
    * MANUAL_CONTROL.
    */
-  private ManualControlDirection manualControlDirection = ManualControlDirection.UNDEFINED;
+  private ManualControlDirection manualControlDirection =
+      ManualControlDirection.UNDEFINED;
 
   /** Current height of the elevator in meters. */
   private double m_currentHeight;
@@ -76,7 +74,8 @@ public class SimElevator extends SubsystemBase implements IElevator {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MANUAL_CONTROL -> SimulationUxSupport.DeviceStatus.Manual;
       case MOVING_TO_POSITION ->
-        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition)) < SETPOINT_TOLERANCE)
+        (Math.abs(m_currentHeight - getHeightForPosition(m_targetPosition))
+            < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
@@ -161,8 +160,8 @@ public class SimElevator extends SubsystemBase implements IElevator {
       // limits
       if (manualControlDirection == ManualControlDirection.UP) {
         m_currentHeight += MANUAL_CONTROL_SPEED;
-        m_currentHeight = Math.min(m_currentHeight,
-            getHeightForPosition(ElevatorPosition.HIGH));
+        m_currentHeight = Math.min(
+            m_currentHeight, getHeightForPosition(ElevatorPosition.HIGH));
       } else if (manualControlDirection == ManualControlDirection.DOWN) {
         m_currentHeight -= MANUAL_CONTROL_SPEED;
         m_currentHeight = Math.max(

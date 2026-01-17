@@ -54,8 +54,8 @@ public class SysIdGenerator {
         new SysIdRoutine.Mechanism(
             (Voltage volts)
                 -> {
-              drivebase.tankDriveVolts(
-                  volts, volts.times(mode == DrivebaseProfilingMode.Linear ? 1 : -1));
+              drivebase.tankDriveVolts(volts,
+                  volts.times(mode == DrivebaseProfilingMode.Linear ? 1 : -1));
             },
             // Tell SysId how to record a frame of data for each motor on the
             // mechanism being characterized.
@@ -65,17 +65,21 @@ public class SysIdGenerator {
                 final var velocity = drivebase.getAngularVelocity();
                 final var leftVoltage = drivebase.getLeftVoltage();
                 final var rightVoltage = drivebase.getRightVoltage();
-                final var heading =
-                    Radians.of(drivebase.getEstimatedPose().getRotation().getRadians());
+                final var heading = Radians.of(
+                    drivebase.getEstimatedPose().getRotation().getRadians());
 
                 if (DUMP_SYSID_TO_CONSOLE) {
                   System.err.println("Logging "
-                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
+                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts))
+                      + "V, " + String.format("%,.3f", heading.in(Radians))
+                      + "rad, "
+                      + String.format("%,.3f", velocity.in(RadiansPerSecond))
+                      + "rad/s   "
+                      + "right="
+                      + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
                       + String.format("%,.3f", heading.in(Radians)) + "rad, "
-                      + String.format("%,.3f", velocity.in(RadiansPerSecond)) + "rad/s   "
-                      + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
-                      + String.format("%,.3f", heading.in(Radians)) + "rad, "
-                      + String.format("%,.3f", velocity.in(RadiansPerSecond)) + "rad/s");
+                      + String.format("%,.3f", velocity.in(RadiansPerSecond))
+                      + "rad/s");
                 }
 
                 // Record a frame (each) for the left and right motors. Since
@@ -99,12 +103,17 @@ public class SysIdGenerator {
 
                 if (DUMP_SYSID_TO_CONSOLE) {
                   System.err.println("Logging "
-                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts)) + "V, "
+                      + "left=" + String.format("%,.3f", leftVoltage.in(Volts))
+                      + "V, "
                       + String.format("%,.3f", leftPosition.in(Meters)) + "m, "
-                      + String.format("%,.3f", leftVelocity.in(MetersPerSecond)) + "m/s   "
-                      + "right=" + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
+                      + String.format("%,.3f", leftVelocity.in(MetersPerSecond))
+                      + "m/s   "
+                      + "right="
+                      + String.format("%,.3f", rightVoltage.in(Volts)) + "V, "
                       + String.format("%,.3f", rightPosition.in(Meters)) + "m, "
-                      + String.format("%,.3f", rightVelocity.in(MetersPerSecond)) + "m/s   ");
+                      + String.format(
+                          "%,.3f", rightVelocity.in(MetersPerSecond))
+                      + "m/s   ");
                 }
 
                 // Record a frame for the left motors. Since these share an
@@ -136,8 +145,8 @@ public class SysIdGenerator {
    * @return a Command for use in running quasistatic profiling in the
    *         specified direction.
    */
-  public static Command sysIdQuasistatic(
-      IDrivebasePlus drivebase, DrivebaseProfilingMode mode, SysIdRoutine.Direction direction) {
+  public static Command sysIdQuasistatic(IDrivebasePlus drivebase,
+      DrivebaseProfilingMode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).quasistatic(direction);
   }
 
@@ -150,8 +159,8 @@ public class SysIdGenerator {
    * @return a Command for use in running dynamic profiling in the
    *         specified direction.
    */
-  public static Command sysIdDynamic(
-      IDrivebasePlus drivebase, DrivebaseProfilingMode mode, SysIdRoutine.Direction direction) {
+  public static Command sysIdDynamic(IDrivebasePlus drivebase,
+      DrivebaseProfilingMode mode, SysIdRoutine.Direction direction) {
     return getSysIdRoutine(drivebase, mode).dynamic(direction);
   }
 }

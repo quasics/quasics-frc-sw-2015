@@ -8,3 +8,6 @@ SpacesInParentheses: 'false'
 UseTab: Never
 AllowShortFunctionsOnASingleLine: 'false'
 Language: Cpp
+
+ColumnLimit: '80'
+TabWidth: '2'

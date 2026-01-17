@@ -126,16 +126,16 @@ public interface ILighting extends ISubsystem {
     }
 
     /**
-     * Converts the stock color to the "Color" class defined by WPILib, scaled to
-     * the specified intensity (brightness).
+     * Converts the stock color to the "Color" class defined by WPILib, scaled
+     * to the specified intensity (brightness).
      *
      * @param intensityPercent intensity to which the color should be scaled
      *                         (0.0-1.0)
      * @return the scaled value of this color, as used by WPILib
      */
     public Color toWpiColor(double intensityPercent) {
-      return new Color(
-          intensityPercent * r / 255.0, intensityPercent * g / 255.0, intensityPercent * b / 255.0);
+      return new Color(intensityPercent * r / 255.0,
+          intensityPercent * g / 255.0, intensityPercent * b / 255.0);
     }
   }
 
@@ -163,9 +163,8 @@ public interface ILighting extends ISubsystem {
   }
 
   /**
-   * Convenience function: sets all controlled lights to a solid color, specified
-   * as an RGB tripet
-   * of values (each [0..255]).
+   * Convenience function: sets all controlled lights to a solid color,
+   * specified as an RGB tripet of values (each [0..255]).
    *
    * @param red   red component (0-255)
    * @param green green component (0-255)
@@ -187,7 +186,8 @@ public interface ILighting extends ISubsystem {
    * @param color2 color to use for odd pixels (starting at 1)
    */
   public default void SetAlternatingColors(Color color1, Color color2) {
-    SetStripColor((int position) -> { return (position % 2 == 0) ? color1 : color2; });
+    SetStripColor(
+        (int position) -> { return (position % 2 == 0) ? color1 : color2; });
   }
 
   /**
@@ -197,7 +197,8 @@ public interface ILighting extends ISubsystem {
    * @param color1 color to use for even pixels (starting at 0)
    * @param color2 color to use for odd pixels (starting at 1)
    */
-  public default void SetAlternatingColors(StockColor color1, StockColor color2) {
+  public default void SetAlternatingColors(
+      StockColor color1, StockColor color2) {
     SetAlternatingColors(color1.toWpiColor(), color2.toWpiColor());
   }
 
@@ -205,8 +206,8 @@ public interface ILighting extends ISubsystem {
    * Convenience function: sets all controlled lights to a solid color.
    *
    * <p>
-   * Note: unlike with various other APIs, the component values for WPI's version
-   * of color specification are all as percentages (0.0-1.0).
+   * Note: unlike with various other APIs, the component values for WPI's
+   * version of color specification are all as percentages (0.0-1.0).
    *
    * @param color the color to make all of the lights in the strip
    */
@@ -221,11 +222,12 @@ public interface ILighting extends ISubsystem {
   }
 
   /**
-   * Trivial implementation of the interface, for use on robots that don't support
-   * lighting (but want to have a subsystem available for convenience/common
-   * code).
+   * Trivial implementation of the interface, for use on robots that don't
+   * support lighting (but want to have a subsystem available for
+   * convenience/common code).
    */
-  public static final class NullLighting extends SubsystemBase implements ILighting {
+  public static final class NullLighting
+      extends SubsystemBase implements ILighting {
     /** Constructor. */
     public NullLighting() {
       setName("NullLighting");

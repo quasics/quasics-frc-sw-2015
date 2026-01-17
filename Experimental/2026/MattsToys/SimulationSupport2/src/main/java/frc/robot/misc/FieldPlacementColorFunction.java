@@ -38,7 +38,8 @@ public class FieldPlacementColorFunction implements ILighting.ColorSupplier {
   final static double ROTATION_ACCEPTABLE_ERROR_DEGREES = 1;
 
   /** Acceptable distance error (in meters). */
-  final static double DISTANCE_ACCEPTABLE_ERROR_METERS = Inches.of(4).in(Meters);
+  final static double DISTANCE_ACCEPTABLE_ERROR_METERS =
+      Inches.of(4).in(Meters);
 
   /** How many lights are used for each pose component (rotation, x, y). */
   final static int SIGNAL_BAND_WIDTH = 4;
@@ -62,12 +63,12 @@ public class FieldPlacementColorFunction implements ILighting.ColorSupplier {
    * Constructor.
    *
    * @param targetPoseSupplier  supplies the target pose (e.g., based on the
-   *                            starting position for a trajectory to be followed
-   *                            in auto mode)
+   *                            starting position for a trajectory to be
+   * followed in auto mode)
    * @param currentPoseSupplier supplies the robot's current pose on the field
    */
-  public FieldPlacementColorFunction(
-      Supplier<Pose2d> targetPoseSupplier, Supplier<Pose2d> currentPoseSupplier) {
+  public FieldPlacementColorFunction(Supplier<Pose2d> targetPoseSupplier,
+      Supplier<Pose2d> currentPoseSupplier) {
     if (targetPoseSupplier == null) {
       throw new IllegalArgumentException("targetPoseSupplier can't be null");
     }
@@ -91,23 +92,27 @@ public class FieldPlacementColorFunction implements ILighting.ColorSupplier {
     var delta = PoseHelpers.computePoseDelta(targetPose, currentPose);
     if (position < SIGNAL_BAND_WIDTH) {
       // "Rotation" error
-      if (delta.rotationDelta().getDegrees() > ROTATION_ACCEPTABLE_ERROR_DEGREES) {
+      if (delta.rotationDelta().getDegrees()
+          > ROTATION_ACCEPTABLE_ERROR_DEGREES) {
         result = POSITIVE_ERROR_COLOR;
-      } else if (delta.rotationDelta().getDegrees() < -ROTATION_ACCEPTABLE_ERROR_DEGREES) {
+      } else if (delta.rotationDelta().getDegrees()
+          < -ROTATION_ACCEPTABLE_ERROR_DEGREES) {
         result = NEGATIVE_ERROR_COLOR;
       }
     } else if (position < (SIGNAL_BAND_WIDTH * 2)) {
       // "X" error
       if (delta.xDelta().in(Meters) > DISTANCE_ACCEPTABLE_ERROR_METERS) {
         result = POSITIVE_ERROR_COLOR;
-      } else if (delta.xDelta().in(Meters) < -DISTANCE_ACCEPTABLE_ERROR_METERS) {
+      } else if (delta.xDelta().in(Meters)
+          < -DISTANCE_ACCEPTABLE_ERROR_METERS) {
         result = NEGATIVE_ERROR_COLOR;
       }
     } else if (position < (SIGNAL_BAND_WIDTH * 3)) {
       // "Y" error
       if (delta.yDelta().in(Meters) > DISTANCE_ACCEPTABLE_ERROR_METERS) {
         result = POSITIVE_ERROR_COLOR;
-      } else if (delta.yDelta().in(Meters) < -DISTANCE_ACCEPTABLE_ERROR_METERS) {
+      } else if (delta.yDelta().in(Meters)
+          < -DISTANCE_ACCEPTABLE_ERROR_METERS) {
         result = NEGATIVE_ERROR_COLOR;
       }
     }

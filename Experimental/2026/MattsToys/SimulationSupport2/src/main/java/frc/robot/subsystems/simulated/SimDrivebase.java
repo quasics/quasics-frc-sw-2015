@@ -89,11 +89,13 @@ public class SimDrivebase extends Drivebase {
         case Reefscape__Extra1 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
-              new Rotation2d(ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
+              new Rotation2d(
+                  ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
         case Reefscape__Extra2 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) + .5,
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) + .5,
-              new Rotation2d(ReefscapeConstants.FACING_BLUE.plus(Degrees.of(5))));
+              new Rotation2d(
+                  ReefscapeConstants.FACING_BLUE.plus(Degrees.of(5))));
       };
     }
 
@@ -124,17 +126,19 @@ public class SimDrivebase extends Drivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
-      // Linear components (velocity, acceleration)
-      1.98, 0.2,
-      // Angular components (velocity, acceleration)
-      1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(
+          // Linear components (velocity, acceleration)
+          1.98, 0.2,
+          // Angular components (velocity, acceleration)
+          1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
   final DifferentialDrivetrainSim m_drivetrainSimulator =
       new DifferentialDrivetrainSim(m_drivetrainSystem,
           // Drive motor type and count
-          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters), WHEEL_DIAMETER.in(Meters),
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+          WHEEL_DIAMETER.in(Meters),
           // configure for no noise in measurements
           null);
 
@@ -142,7 +146,8 @@ public class SimDrivebase extends Drivebase {
   public SimDrivebase() {
     super();
 
-    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser =
+        new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.getName(), pos);
@@ -168,8 +173,8 @@ public class SimDrivebase extends Drivebase {
     m_leftEncoderSim.setDistance(0);
     m_rightEncoderSim.setDistance(0);
 
-    m_odometry = new DifferentialDriveOdometry(
-        facing, m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
+    m_odometry = new DifferentialDriveOdometry(facing,
+        m_leftEncoderSim.getDistance(), m_rightEncoderSim.getDistance(), pose);
   }
 
   //
@@ -182,11 +187,14 @@ public class SimDrivebase extends Drivebase {
 
     // Update the field simulation (based on calculations in
     // simulationPeriodic).
-    SimulationUxSupport.instance.updateFieldRobotPose(m_drivetrainSimulator.getPose());
-    SimulationUxSupport.instance.updateEstimatedRobotPose("Odometry", getEstimatedPose());
+    SimulationUxSupport.instance.updateFieldRobotPose(
+        m_drivetrainSimulator.getPose());
+    SimulationUxSupport.instance.updateEstimatedRobotPose(
+        "Odometry", getEstimatedPose());
 
     SmartDashboard.putString("Robot pos",
-        m_drivetrainSimulator.getPose().getX() + ", " + m_drivetrainSimulator.getPose().getY());
+        m_drivetrainSimulator.getPose().getX() + ", "
+            + m_drivetrainSimulator.getPose().getY());
   }
 
   @Override
@@ -200,7 +208,8 @@ public class SimDrivebase extends Drivebase {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(m_leftController.get() * RoboRioSim.getVInVoltage(),
+    m_drivetrainSimulator.setInputs(
+        m_leftController.get() * RoboRioSim.getVInVoltage(),
         m_rightController.get() * RoboRioSim.getVInVoltage());
 
     // Simulated clock ticks forward
@@ -208,16 +217,21 @@ public class SimDrivebase extends Drivebase {
 
     // Update the simulated encoders and gyro
     m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
-    m_rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
-    m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
-    m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistance(
+        m_drivetrainSimulator.getRightPositionMeters());
+    m_leftEncoderSim.setRate(
+        m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setRate(
+        m_drivetrainSimulator.getRightVelocityMetersPerSecond());
     m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading =
+        m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity =
+        deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

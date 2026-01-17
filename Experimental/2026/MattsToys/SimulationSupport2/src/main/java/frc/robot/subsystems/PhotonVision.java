@@ -35,8 +35,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
  */
-public class PhotonVision
-    extends SubsystemBase implements IVisionPlus, IPhotonVision, IPoseEstimator {
+public class PhotonVision extends SubsystemBase
+    implements IVisionPlus, IPhotonVision, IPoseEstimator {
   /** Data about a single camera used for vision tracking. */
   private final CameraData m_cameraData;
 
@@ -56,10 +56,12 @@ public class PhotonVision
     // Add the first camera to our known set.
     // (Note that this assumes that we *have* at least one camera.)
     final PhotonCamera camera = new PhotonCamera(cameraConfig.name());
-    final Transform3d robotToCamera = new Transform3d(
-        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(), cameraConfig.pos().z()),
-        new Rotation3d(cameraConfig.orientation().roll(), cameraConfig.orientation().pitch(),
-            cameraConfig.orientation().yaw()));
+    final Transform3d robotToCamera =
+        new Transform3d(new Translation3d(cameraConfig.pos().x(),
+                            cameraConfig.pos().y(), cameraConfig.pos().z()),
+            new Rotation3d(cameraConfig.orientation().roll(),
+                cameraConfig.orientation().pitch(),
+                cameraConfig.orientation().yaw()));
     var estimator = new PhotonPoseEstimator(m_tagLayout, robotToCamera);
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
   }
@@ -71,17 +73,20 @@ public class PhotonVision
       Collections.unmodifiableList(Collections.emptyList());
 
   /**
-   * Note: rthis should be invoked "exactly ONCE per loop of your robot code", per
-   * PhotonVision docs. (Not frequently enough, and data is missed; too
+   * Updates cached results from the vision pipeline for our (single) camera.
+   *
+   * Note: rthis should be invoked "exactly ONCE per loop of your robot code",
+   * per PhotonVision docs. (Not frequently enough, and data is missed; too
    * frequently, and we'll drop frames within a loop.)
    */
   private void updateResultCache() {
-    m_pipelineResultsCache =
-        Collections.unmodifiableList(m_cameraData.camera().getAllUnreadResults());
+    m_pipelineResultsCache = Collections.unmodifiableList(
+        m_cameraData.camera().getAllUnreadResults());
   }
 
   /**
-   * @return the latest vision pipeline results, based on m_pipelineResultsCache.
+   * @return the latest vision pipeline results, based on
+   *         m_pipelineResultsCache.
    */
   private PhotonPipelineResult getLatestResults() {
     if (m_pipelineResultsCache.isEmpty()) {
@@ -90,17 +95,19 @@ public class PhotonVision
 
     final boolean SANITY_CHECK_ORDER = true;
     if (SANITY_CHECK_ORDER) {
-      // Order *should* be well-defined, but it's unclear from docs if it's newest
-      // first, or oldest.
+      // Order *should* be well-defined, but it's unclear from docs if it's
+      // newest first, or oldest.
       PhotonPipelineResult prior = null;
       for (var entry : m_pipelineResultsCache) {
-        assert (prior == null || entry.getTimestampSeconds() <= prior.getTimestampSeconds());
+        assert (prior == null
+            || entry.getTimestampSeconds() <= prior.getTimestampSeconds());
         prior = entry;
       }
     }
 
     // Get the last one in the list, which *should* be the newest.
-    PhotonPipelineResult result = m_pipelineResultsCache.get(m_pipelineResultsCache.size() - 1);
+    PhotonPipelineResult result =
+        m_pipelineResultsCache.get(m_pipelineResultsCache.size() - 1);
     return result;
   }
 
@@ -116,7 +123,8 @@ public class PhotonVision
    *                    positioning for targets)
    * @return estimated relative positioning data for all visible targets
    */
-  List<TargetData> getTargetData(AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+  List<TargetData> getTargetData(
+      AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
     final var latestResults = getLatestResults();
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
@@ -131,11 +139,11 @@ public class PhotonVision
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget =
-          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget = Meters.of(
+          PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData =
-          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData = new TargetData(
+          result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 
@@ -143,8 +151,8 @@ public class PhotonVision
   }
 
   /**
-   * Applies any updates for the estimator on a camera, optionally integrating the
-   * last/reference pose provided by the drivebase.
+   * Applies any updates for the estimator on a camera, optionally integrating
+   * the last/reference pose provided by the drivebase.
    *
    * @param pipelineResult latest pipeline results from a camera
    * @param estimator      pose estimator being updated
@@ -153,8 +161,8 @@ public class PhotonVision
    * @return the updated estimate, based on the camera data
    */
   protected static Optional<EstimatedRobotPose> updateEstimateForCamera(
-      final PhotonPipelineResult pipelineResult, final PhotonPoseEstimator estimator,
-      final Pose2d referencePose) {
+      final PhotonPipelineResult pipelineResult,
+      final PhotonPoseEstimator estimator, final Pose2d referencePose) {
     if (pipelineResult == null) {
       return Optional.empty();
     }
@@ -162,17 +170,17 @@ public class PhotonVision
     // Note that per the PhotonVision docs
     // (https://docs.photonvision.org/en/latest/docs/apriltag-pipelines/multitag.html#multitag-localization),
     // using estimateCoprocMultiTagPose is preferred. However, this requires
-    // calibration of the camera(s), as well as enabling 3D-mode in the PhotonVision
-    // UI.
+    // calibration of the camera(s), as well as enabling 3D-mode in the
+    // PhotonVision UI.
     //
-    // The docs also The recommended way to use the estimatePose methods is to do
-    // estimation with one of MultiTag methods, check if the result is empty, then
-    // fallback to single tag estimation using a method like
+    // The docs also The recommended way to use the estimatePose methods is to
+    // do estimation with one of MultiTag methods, check if the result is empty,
+    // then fallback to single tag estimation using a method like
     // estimateLowestAmbiguityPose.
     //
     // If we have the drive pose (or some other reference, such as a prior fused
-    // estimate) in which we have decent confidence, then we could also use methods
-    // like estimateClosestToReferencePose as a fallback.
+    // estimate) in which we have decent confidence, then we could also use
+    // methods like estimateClosestToReferencePose as a fallback.
     var result = estimator.estimateCoprocMultiTagPose(
         pipelineResult); // Or
                          // estimator.estimateAverageBestTargetsPose(pipelineResult),
@@ -184,17 +192,18 @@ public class PhotonVision
   }
 
   /**
-   * Updates pose estimation data posted to the BulletinBoard class, based on the
-   * latest results.
+   * Updates pose estimation data posted to the BulletinBoard class, based on
+   * the latest results.
    */
   private void updateBulletinBoard() {
     EstimatedPoseData estimate = null;
     if (m_lastEstimatedPose.isPresent()) {
       var lastPose = m_lastEstimatedPose.get();
-      estimate =
-          new EstimatedPoseData(lastPose.estimatedPose.toPose2d(), lastPose.timestampSeconds);
+      estimate = new EstimatedPoseData(
+          lastPose.estimatedPose.toPose2d(), lastPose.timestampSeconds);
       BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, estimate);
-      BulletinBoard.common.updateValue(ESTIMATED_POSE_SET_KEY, Collections.singletonList(estimate));
+      BulletinBoard.common.updateValue(
+          ESTIMATED_POSE_SET_KEY, Collections.singletonList(estimate));
     } else {
       BulletinBoard.common.clearValue(ESTIMATED_POSE_KEY);
       BulletinBoard.common.clearValue(ESTIMATED_POSE_SET_KEY);
@@ -205,26 +214,30 @@ public class PhotonVision
    * Updates m_lastEstimatedPose, based on current target data.
    */
   private void updateEstimatedPose() {
-    // Where does the drive base think we are? (Note that if we're not going to use
-    // this as a reference pose, then we don't need to get this data.)
+    // Where does the drive base think we are? (Note that if we're not going to
+    // use this as a reference pose, then we don't need to get this data.)
     //
-    // Note also that absent drive base data, we *could* also use a prior estimate
-    // from vision, but having an *independent* reference can be useful.
-    final var optDrivePose =
-        BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
-    final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
+    // Note also that absent drive base data, we *could* also use a prior
+    // estimate from vision, but having an *independent* reference can be
+    // useful.
+    final var optDrivePose = BulletinBoard.common.getValue(
+        IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
+    final var drivePose =
+        (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Build the estimate from the vision pipeline.
     List<PhotonPipelineResult> pipelineResultsList = m_pipelineResultsCache;
     if (!pipelineResultsList.isEmpty()) {
       // Camera processed a new frame since last
       // Get the last one in the list.
-      PhotonPipelineResult result = pipelineResultsList.get(pipelineResultsList.size() - 1);
-      m_lastEstimatedPose = updateEstimateForCamera(result, m_cameraData.estimator(), drivePose);
+      PhotonPipelineResult result =
+          pipelineResultsList.get(pipelineResultsList.size() - 1);
+      m_lastEstimatedPose =
+          updateEstimateForCamera(result, m_cameraData.estimator(), drivePose);
     } else {
-      // We don't have a new frame for this camera: we should consider either caching
-      // the last result frame we got, or the last estimated position (and allowing
-      // whichever we cache to age out after some period).
+      // We don't have a new frame for this camera: we should consider either
+      // caching the last result frame we got, or the last estimated position
+      // (and allowing whichever we cache to age out after some period).
       //
       // For now, we'll just hold onto the last estimate, since it includes a
       // timestamp that anything that wants to use it can check for "freshness".
@@ -296,8 +309,8 @@ public class PhotonVision
     }
 
     // Notice that we're losing exposure to the "freshness timestamp" on the
-    // estimate. This is something that we'd probably want to be careful about in
-    // non-sample code....
+    // estimate. This is something that we'd probably want to be careful about
+    // in non-sample code....
     var lastPose = m_lastEstimatedPose.get();
     return Optional.of(lastPose.estimatedPose.toPose2d());
   }

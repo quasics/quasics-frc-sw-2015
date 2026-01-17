@@ -41,10 +41,12 @@ public class SpeedModeScaler implements UnaryOperator<Double> {
       throw new IllegalArgumentException("modeSupplier cannot be null");
     }
     if (turtleScaling > normalScaling) {
-      throw new IllegalArgumentException("turtleScaling must be <= normalScaling");
+      throw new IllegalArgumentException(
+          "turtleScaling must be <= normalScaling");
     }
     if (normalScaling > turboScaling) {
-      throw new IllegalArgumentException("normalScaling must be <= turboScaling");
+      throw new IllegalArgumentException(
+          "normalScaling must be <= turboScaling");
     }
     m_modeSupplier = modeSupplier;
     m_normalScaling = normalScaling;

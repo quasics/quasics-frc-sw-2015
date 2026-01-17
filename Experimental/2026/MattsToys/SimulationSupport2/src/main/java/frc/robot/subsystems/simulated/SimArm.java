@@ -61,7 +61,8 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
     SimulationUxSupport.DeviceStatus status = switch (m_state) {
       case IDLE -> SimulationUxSupport.DeviceStatus.Idle;
       case MOVING_TO_POSITION ->
-        (Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE)
+        (Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees))
+            < SETPOINT_TOLERANCE)
             ? SimulationUxSupport.DeviceStatus.AtSetpoint
             : SimulationUxSupport.DeviceStatus.NotAtSetpoint;
     };
@@ -81,18 +82,20 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
     } else if (m_state == State.MOVING_TO_POSITION) {
       if (USE_PID) {
         // Simple PID control to move to target angle
-        double output =
-            m_pidController.calculate(m_currentAngle.in(Degrees), m_targetAngle.in(Degrees));
-        m_currentAngle =
-            m_currentAngle.plus(Degrees.of(output * 0.02)); // Simulate movement over 20ms
+        double output = m_pidController.calculate(
+            m_currentAngle.in(Degrees), m_targetAngle.in(Degrees));
+        m_currentAngle = m_currentAngle.plus(
+            Degrees.of(output * 0.02)); // Simulate movement over 20ms
       } else {
-        final double errorDegrees = m_targetAngle.minus(m_currentAngle).in(Degrees);
+        final double errorDegrees =
+            m_targetAngle.minus(m_currentAngle).in(Degrees);
         final double sign = Math.signum(errorDegrees);
         double delta = NON_PID_SPEED * sign;
         if (Math.abs(errorDegrees) < Math.abs(delta)) {
           delta = errorDegrees;
         }
-        m_currentAngle = m_currentAngle.plus(Degrees.of(delta)); // Simulate movement over 20ms
+        m_currentAngle = m_currentAngle.plus(
+            Degrees.of(delta)); // Simulate movement over 20ms
       }
     }
 
@@ -148,7 +151,8 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   public boolean atTargetPosition() {
     // Consider the arm at the target if IDLE or within tolerance
     return m_state == State.IDLE
-        || Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE;
+        || Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees))
+        < SETPOINT_TOLERANCE;
   }
 
   @Override

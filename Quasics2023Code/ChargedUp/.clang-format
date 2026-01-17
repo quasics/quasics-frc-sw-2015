@@ -8,3 +8,6 @@ SpaceInEmptyParentheses: 'false'
 SpacesInParentheses: 'false'
 UseTab: Never
 AllowShortFunctionsOnASingleLine: 'false'
+
+ColumnLimit: '80'
+TabWidth: '2'

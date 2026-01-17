@@ -60,7 +60,8 @@ public final class DriverJoystickWrapper {
   private static final boolean DISABLED_IN_AUTONOMOUS = true;
 
   /** The preference key for saving/loading the drive control scheme. */
-  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME = "DriveControlScheme";
+  private static final String PREFERENCE_KEY_DRIVE_CONTROL_SCHEME =
+      "DriveControlScheme";
 
   /** Enumeration of available drive control schemes. */
   public enum ControllerType {
@@ -144,8 +145,8 @@ public final class DriverJoystickWrapper {
       }
       currentControlScheme = ControllerType.values()[savedControlSchemeOrdinal];
     }
-    System.out.println(
-        "Driving control scheme set to: " + currentControlScheme.getControlSchemeName());
+    System.out.println("Driving control scheme set to: "
+        + currentControlScheme.getControlSchemeName());
 
     addDriveControlSelectionToSmartDashboard();
   }
@@ -167,10 +168,12 @@ public final class DriverJoystickWrapper {
   /** Sets up the drive control selection on the SmartDashboard. */
   private void addDriveControlSelectionToSmartDashboard() {
     // Build/install the chooser, establishing the saved scheme as the default
-    SendableChooser<ControllerType> driveInputChooser = new SendableChooser<ControllerType>();
+    SendableChooser<ControllerType> driveInputChooser =
+        new SendableChooser<ControllerType>();
     for (var option : ControllerType.values()) {
       if (option == currentControlScheme) {
-        driveInputChooser.setDefaultOption(option.getControlSchemeName(), option);
+        driveInputChooser.setDefaultOption(
+            option.getControlSchemeName(), option);
       } else {
         driveInputChooser.addOption(option.getControlSchemeName(), option);
       }
@@ -185,11 +188,12 @@ public final class DriverJoystickWrapper {
   /** Updates the current control scheme based on user selection. */
   private void updateControlScheme(ControllerType controlScheme) {
     currentControlScheme = controlScheme;
-    System.out.println(
-        "Driving control scheme set to: " + currentControlScheme.getControlSchemeName());
+    System.out.println("Driving control scheme set to: "
+        + currentControlScheme.getControlSchemeName());
 
     if (m_saveToPreferences) {
-      Preferences.setInt(PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, controlScheme.ordinal());
+      Preferences.setInt(
+          PREFERENCE_KEY_DRIVE_CONTROL_SCHEME, controlScheme.ordinal());
     }
   }
 
@@ -203,8 +207,10 @@ public final class DriverJoystickWrapper {
     }
 
     final double forward = switch (currentControlScheme) {
-      case ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
-      case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
+      case ALT_KEYBOARD1 ->
+        -m_primaryController.getRawAxis(1); // Mapped to W/S keys
+      case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER,
+          GAMESIR_CONTROLLER ->
         getLeftY();
     };
     return MathUtil.applyDeadband(forward, m_deadbandThreshold);
@@ -220,8 +226,10 @@ public final class DriverJoystickWrapper {
     }
 
     final double rotation = switch (currentControlScheme) {
-      case ALT_KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
-      case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
+      case ALT_KEYBOARD1 ->
+        m_primaryController.getRawAxis(0); // Mapped to D/A keys
+      case KEYBOARD1, LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER,
+          GAMESIR_CONTROLLER ->
         getRightX();
     };
     return MathUtil.applyDeadband(rotation, m_deadbandThreshold);
@@ -238,8 +246,10 @@ public final class DriverJoystickWrapper {
 
     final double left = switch (currentControlScheme) {
       case KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
-      case ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
-      case LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER -> getLeftY();
+      case ALT_KEYBOARD1 ->
+        -m_primaryController.getRawAxis(1); // Mapped to W/S keys
+      case LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
+        getLeftY();
     };
     return MathUtil.applyDeadband(left, m_deadbandThreshold);
   }
@@ -254,9 +264,12 @@ public final class DriverJoystickWrapper {
     }
 
     final double right = switch (currentControlScheme) {
-      case KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys
-      case ALT_KEYBOARD1 -> m_primaryController.getRawAxis(0); // Mapped to D/A keys
-      case LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER -> getRightY();
+      case KEYBOARD1 ->
+        -m_primaryController.getRawAxis(1); // Mapped to W/S keys
+      case ALT_KEYBOARD1 ->
+        m_primaryController.getRawAxis(0); // Mapped to D/A keys
+      case LOGITECH_DUALSHOCK_CONTROLLER, XBOX_CONTROLLER, GAMESIR_CONTROLLER ->
+        getRightY();
     };
     return MathUtil.applyDeadband(right, m_deadbandThreshold);
   }
@@ -268,12 +281,15 @@ public final class DriverJoystickWrapper {
     }
 
     final double leftX = switch (currentControlScheme) {
-      case KEYBOARD1, ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(0); // Mapped to A/D keys;
+      case KEYBOARD1, ALT_KEYBOARD1 ->
+        -m_primaryController.getRawAxis(0); // Mapped to A/D keys;
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_primaryController.getRawAxis(LogitechConstants.Dualshock.LeftXAxis);
       case GAMESIR_CONTROLLER ->
-        -m_primaryController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_X);
-      case XBOX_CONTROLLER -> -m_primaryController.getRawAxis(XboxController.Axis.kLeftX.value);
+        -m_primaryController.getRawAxis(
+            frc.robot.constants.GameSirConstants.Axes.LEFT_X);
+      case XBOX_CONTROLLER ->
+        -m_primaryController.getRawAxis(XboxController.Axis.kLeftX.value);
     };
     return MathUtil.applyDeadband(leftX, m_deadbandThreshold);
   }
@@ -285,12 +301,15 @@ public final class DriverJoystickWrapper {
     }
 
     final double leftY = switch (currentControlScheme) {
-      case KEYBOARD1, ALT_KEYBOARD1 -> -m_primaryController.getRawAxis(1); // Mapped to W/S keys;
+      case KEYBOARD1, ALT_KEYBOARD1 ->
+        -m_primaryController.getRawAxis(1); // Mapped to W/S keys;
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_primaryController.getRawAxis(LogitechConstants.Dualshock.LeftYAxis);
       case GAMESIR_CONTROLLER ->
-        -m_primaryController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
-      case XBOX_CONTROLLER -> -m_primaryController.getRawAxis(XboxController.Axis.kLeftY.value);
+        -m_primaryController.getRawAxis(
+            frc.robot.constants.GameSirConstants.Axes.LEFT_Y);
+      case XBOX_CONTROLLER ->
+        -m_primaryController.getRawAxis(XboxController.Axis.kLeftY.value);
     };
     return MathUtil.applyDeadband(leftY, m_deadbandThreshold);
   }
@@ -302,12 +321,15 @@ public final class DriverJoystickWrapper {
     }
 
     final double rightX = switch (currentControlScheme) {
-      case KEYBOARD1, ALT_KEYBOARD1 -> -m_secondaryController.getRawAxis(0); // Mapped to J/L keys
+      case KEYBOARD1, ALT_KEYBOARD1 ->
+        -m_secondaryController.getRawAxis(0); // Mapped to J/L keys
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_primaryController.getRawAxis(LogitechConstants.Dualshock.RightXAxis);
       case GAMESIR_CONTROLLER ->
-        -m_primaryController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_X);
-      case XBOX_CONTROLLER -> -m_primaryController.getRawAxis(XboxController.Axis.kRightX.value);
+        -m_primaryController.getRawAxis(
+            frc.robot.constants.GameSirConstants.Axes.RIGHT_X);
+      case XBOX_CONTROLLER ->
+        -m_primaryController.getRawAxis(XboxController.Axis.kRightX.value);
     };
     return MathUtil.applyDeadband(rightX, m_deadbandThreshold);
   }
@@ -319,12 +341,15 @@ public final class DriverJoystickWrapper {
     }
 
     final double rightY = switch (currentControlScheme) {
-      case KEYBOARD1, ALT_KEYBOARD1 -> -m_secondaryController.getRawAxis(1); // Mapped to I/K keys
+      case KEYBOARD1, ALT_KEYBOARD1 ->
+        -m_secondaryController.getRawAxis(1); // Mapped to I/K keys
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         -m_primaryController.getRawAxis(LogitechConstants.Dualshock.RightYAxis);
       case GAMESIR_CONTROLLER ->
-        -m_primaryController.getRawAxis(frc.robot.constants.GameSirConstants.Axes.RIGHT_Y);
-      case XBOX_CONTROLLER -> -m_primaryController.getRawAxis(XboxController.Axis.kRightY.value);
+        -m_primaryController.getRawAxis(
+            frc.robot.constants.GameSirConstants.Axes.RIGHT_Y);
+      case XBOX_CONTROLLER ->
+        -m_primaryController.getRawAxis(XboxController.Axis.kRightY.value);
     };
     return MathUtil.applyDeadband(rightY, m_deadbandThreshold);
   }
@@ -336,14 +361,17 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val = m_primaryController.getRawButton(2); // Mapped to X key by default
+        boolean val =
+            m_primaryController.getRawButton(2); // Mapped to X key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.XButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.X);
-      case XBOX_CONTROLLER -> m_primaryController.getRawButton(XboxController.Button.kX.value);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.X);
+      case XBOX_CONTROLLER ->
+        m_primaryController.getRawButton(XboxController.Button.kX.value);
     };
   }
 
@@ -354,14 +382,17 @@ public final class DriverJoystickWrapper {
 
     return switch (currentControlScheme) {
       case KEYBOARD1, ALT_KEYBOARD1 -> {
-        boolean val = m_primaryController.getRawButton(1); // Mapped to Z key by default
+        boolean val =
+            m_primaryController.getRawButton(1); // Mapped to Z key by default
         yield val;
       }
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.YButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.Y);
-      case XBOX_CONTROLLER -> m_primaryController.getRawButton(XboxController.Button.kY.value);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.Y);
+      case XBOX_CONTROLLER ->
+        m_primaryController.getRawButton(XboxController.Button.kY.value);
     };
   }
 
@@ -376,8 +407,10 @@ public final class DriverJoystickWrapper {
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.AButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.A);
-      case XBOX_CONTROLLER -> m_primaryController.getRawButton(XboxController.Button.kA.value);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.A);
+      case XBOX_CONTROLLER ->
+        m_primaryController.getRawButton(XboxController.Button.kA.value);
     };
   }
 
@@ -392,8 +425,10 @@ public final class DriverJoystickWrapper {
       case LOGITECH_DUALSHOCK_CONTROLLER ->
         m_primaryController.getRawButton(LogitechConstants.Dualshock.BButton);
       case GAMESIR_CONTROLLER ->
-        m_primaryController.getRawButton(frc.robot.constants.GameSirConstants.Buttons.B);
-      case XBOX_CONTROLLER -> m_primaryController.getRawButton(XboxController.Button.kB.value);
+        m_primaryController.getRawButton(
+            frc.robot.constants.GameSirConstants.Buttons.B);
+      case XBOX_CONTROLLER ->
+        m_primaryController.getRawButton(XboxController.Button.kB.value);
     };
   }
 }

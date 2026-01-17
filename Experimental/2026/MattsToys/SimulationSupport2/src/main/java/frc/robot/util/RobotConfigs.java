@@ -102,7 +102,8 @@ public interface RobotConfigs {
    * @param kV kV, in V/(m/s)
    * @param kA kA, in V/(m/s^2)
    */
-  public static record ElevatorFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+  public static record ElevatorFeedForwardConfig(
+      Voltage kS, Voltage kG, double kV, double kA) {
     /**
      * Overloaded constructor.
      *
@@ -111,7 +112,8 @@ public interface RobotConfigs {
      * @param kV kV, in V/(m/s)
      * @param kA kA, in V/(m/s^2)
      */
-    public ElevatorFeedForwardConfig(double kS, double kG, double kV, double kA) {
+    public ElevatorFeedForwardConfig(
+        double kS, double kG, double kV, double kA) {
       this(Volts.of(kS), Volts.of(kG), kV, kA);
     }
   }
@@ -122,7 +124,8 @@ public interface RobotConfigs {
    * @param pid         PID configuration settings for the elevator's motors
    * @param feedForward feedforward data for the elevator
    */
-  public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
+  public static record ElevatorConfig(
+      PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
   }
 
   /**
@@ -132,7 +135,8 @@ public interface RobotConfigs {
    * @param kV kV, in V/(m/s); must be > 0
    * @param kA kA, in V/(m/s^2)
    */
-  public static record SimpleFeedForwardConfig(Voltage kS, Voltage kV, double kA) {
+  public static record SimpleFeedForwardConfig(
+      Voltage kS, Voltage kV, double kA) {
     /**
      * Overloaded constructor.
      *
@@ -182,8 +186,8 @@ public interface RobotConfigs {
      * @param kvAngular angular (rotational) feedforward kV value
      * @param kaAngular angular (rotational) feedforward kA value
      */
-    public DriveFeedForwardConfig(
-        Voltage ksLinear, Voltage kvLinear, double kaLinear, Voltage kvAngular, double kaAngular) {
+    public DriveFeedForwardConfig(Voltage ksLinear, Voltage kvLinear,
+        double kaLinear, Voltage kvAngular, double kaAngular) {
       this(new SimpleFeedForwardConfig(ksLinear, kvLinear, kaLinear),
           new SimpleFeedForwardConfig(kvAngular, kaAngular));
     }
@@ -196,8 +200,8 @@ public interface RobotConfigs {
      * @param kvAngular angular (rotational) feedforward kV value
      * @param kaAngular angular (rotational) feedforward kA value
      */
-    public DriveFeedForwardConfig(
-        Voltage kvLinear, double kaLinear, Voltage kvAngular, double kaAngular) {
+    public DriveFeedForwardConfig(Voltage kvLinear, double kaLinear,
+        Voltage kvAngular, double kaAngular) {
       this(new SimpleFeedForwardConfig(kvLinear, kaLinear),
           new SimpleFeedForwardConfig(kvAngular, kaAngular));
     }
@@ -213,8 +217,9 @@ public interface RobotConfigs {
    * @param rightPid    PID configuration for the drivebase's right motors
    * @param feedForward feedforward configuration for the drivebase
    */
-  public static record DriveConfig(Distance wheelRadius, Distance trackWidth, double gearing,
-      PIDConfig leftPid, PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
+  public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
+      double gearing, PIDConfig leftPid, PIDConfig rightPid,
+      DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left
      * and right.
@@ -225,8 +230,9 @@ public interface RobotConfigs {
      * @param commonPid   shared PID configuration for the drivebase
      * @param feedForward feedforward configuration for the drivebase
      */
-    public DriveConfig(Distance wheelRadius, Distance trackWidth, double gearing,
-        PIDConfig commonPid, DriveFeedForwardConfig feedForward) {
+    public DriveConfig(Distance wheelRadius, Distance trackWidth,
+        double gearing, PIDConfig commonPid,
+        DriveFeedForwardConfig feedForward) {
       this(wheelRadius, trackWidth, gearing, commonPid, commonPid, feedForward);
     }
   }
@@ -242,7 +248,8 @@ public interface RobotConfigs {
    * @see frc.robot.subsystems.live.Lighting
    * @see frc.robot.subsystems.live.LightingBuffer
    */
-  public static record LightingConfig(int pwmPort, int stripLength, List<Integer> subViews) {
+  public static record LightingConfig(
+      int pwmPort, int stripLength, List<Integer> subViews) {
     /**
      * Constructor (with sanity checking).
      *
@@ -253,10 +260,12 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize =
+            subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
-          throw new IllegalArgumentException("Sub-view size (" + subViewTotalSize
-              + ") exceeds strip length (" + stripLength + ")");
+          throw new IllegalArgumentException("Sub-view size ("
+              + subViewTotalSize + ") exceeds strip length (" + stripLength
+              + ")");
         }
       }
     }
@@ -280,7 +289,8 @@ public interface RobotConfigs {
    * @param kV kV, in V/(m/s)
    * @param kA kA, in V/(m/s^2)
    */
-  public static record ArmFeedForwardConfig(Voltage kS, Voltage kG, double kV, double kA) {
+  public static record ArmFeedForwardConfig(
+      Voltage kS, Voltage kG, double kV, double kA) {
     /**
      * Overloaded constructor (no kA).
      *
@@ -322,7 +332,8 @@ public interface RobotConfigs {
    * @param pid         PID settings for the arm
    * @param feedForward feedforward settings for the arm
    */
-  public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
+  public static record ArmConfig(
+      PIDConfig pid, ArmFeedForwardConfig feedForward) {
   }
 
   /**
@@ -352,8 +363,9 @@ public interface RobotConfigs {
    * @param arm      arm configuration (may be null)
    * @param candle   CANdle configuration (may be null)
    */
-  public static record RobotConfig(DriveConfig drive, List<CameraConfig> cameras,
-      ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
+  public static record RobotConfig(DriveConfig drive,
+      List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
+      LightingConfig lighting, CandleConfig candle) {
     /**
      * Utility constructor fo a single-camera robot.
      *
@@ -364,9 +376,10 @@ public interface RobotConfigs {
      * @param arm      arm configuration (may be null)
      * @param candle   CANdle configuration (may be null)
      */
-    RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator, ArmConfig arm,
-        LightingConfig lighting, CandleConfig candle) {
-      this(drive, Collections.singletonList(camera), elevator, arm, lighting, candle);
+    RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator,
+        ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
+      this(drive, Collections.singletonList(camera), elevator, arm, lighting,
+          candle);
     }
 
     /**

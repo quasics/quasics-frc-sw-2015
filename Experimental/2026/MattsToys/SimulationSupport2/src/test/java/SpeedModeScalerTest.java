@@ -37,14 +37,14 @@ public class SpeedModeScalerTest {
 
   @AfterEach
   void shutdown() throws Exception {
-    // Do any common post-test cleanup in here (e.g., calling "close()" on subsystem
-    // objects)
+    // Do any common post-test cleanup in here (e.g., calling "close()" on
+    // subsystem objects)
   }
 
   @Test
   void normalScalingTest() {
-    speedModeScaler =
-        new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
+    speedModeScaler = new SpeedModeScaler(
+        () -> SpeedMode.Normal, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
     assertEquals(NORMAL_SCALING * 0, speedModeScaler.apply(0.0), DELTA);
     assertEquals(NORMAL_SCALING * +.5, speedModeScaler.apply(+.5), DELTA);
     assertEquals(NORMAL_SCALING * -.5, speedModeScaler.apply(-.5), DELTA);
@@ -52,8 +52,8 @@ public class SpeedModeScalerTest {
 
   @Test
   void turboScalingTest() {
-    speedModeScaler =
-        new SpeedModeScaler(() -> SpeedMode.Turbo, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
+    speedModeScaler = new SpeedModeScaler(
+        () -> SpeedMode.Turbo, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
     assertEquals(TURBO_SCALING * 0, speedModeScaler.apply(0.0), DELTA);
     assertEquals(TURBO_SCALING * +.5, speedModeScaler.apply(+.5), DELTA);
     assertEquals(TURBO_SCALING * -.5, speedModeScaler.apply(-.5), DELTA);
@@ -61,8 +61,8 @@ public class SpeedModeScalerTest {
 
   @Test
   void turtleScalingTest() {
-    speedModeScaler =
-        new SpeedModeScaler(() -> SpeedMode.Turtle, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
+    speedModeScaler = new SpeedModeScaler(
+        () -> SpeedMode.Turtle, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
     assertEquals(TURTLE_SCALING * 0, speedModeScaler.apply(0.0), DELTA);
     assertEquals(TURTLE_SCALING * +.5, speedModeScaler.apply(+.5), DELTA);
     assertEquals(TURTLE_SCALING * -.5, speedModeScaler.apply(-.5), DELTA);
@@ -76,17 +76,22 @@ public class SpeedModeScalerTest {
 
     // SpeedMode supplier is null (invalid)
     assertThrows(IllegalArgumentException.class, () -> {
-      new SpeedModeScaler(null /* invalid! */, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
+      new SpeedModeScaler(
+          null /* invalid! */, NORMAL_SCALING, TURBO_SCALING, TURTLE_SCALING);
     });
 
     // Normal and turbo scaling are swapped
     assertThrows(IllegalArgumentException.class, () -> {
-      new SpeedModeScaler(() -> SpeedMode.Normal, TURBO_SCALING, NORMAL_SCALING, TURTLE_SCALING);
+      new SpeedModeScaler(()
+                              -> SpeedMode.Normal,
+          TURBO_SCALING, NORMAL_SCALING, TURTLE_SCALING);
     });
 
     // Normal and turtle scaling are swapped
     assertThrows(IllegalArgumentException.class, () -> {
-      new SpeedModeScaler(() -> SpeedMode.Normal, TURTLE_SCALING, TURBO_SCALING, NORMAL_SCALING);
+      new SpeedModeScaler(()
+                              -> SpeedMode.Normal,
+          TURTLE_SCALING, TURBO_SCALING, NORMAL_SCALING);
     });
 
     //
@@ -94,12 +99,15 @@ public class SpeedModeScalerTest {
     //
 
     // All scaling factors the same (so, all scaling is disabled)
-    new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, NORMAL_SCALING);
+    new SpeedModeScaler(
+        () -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, NORMAL_SCALING);
 
     // Turbo and normal scaling the same (i.e., turbo mode is disabled)
-    new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, TURTLE_SCALING);
+    new SpeedModeScaler(
+        () -> SpeedMode.Normal, NORMAL_SCALING, NORMAL_SCALING, TURTLE_SCALING);
 
     // Turtle and normal scaling the same (i.e., turtle mode is disabled)
-    new SpeedModeScaler(() -> SpeedMode.Normal, NORMAL_SCALING, TURBO_SCALING, NORMAL_SCALING);
+    new SpeedModeScaler(
+        () -> SpeedMode.Normal, NORMAL_SCALING, TURBO_SCALING, NORMAL_SCALING);
   }
 }

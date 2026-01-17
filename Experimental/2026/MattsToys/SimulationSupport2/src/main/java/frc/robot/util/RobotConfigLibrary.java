@@ -62,7 +62,8 @@ public final class RobotConfigLibrary {
   }
 
   /** Stores the actual mapping of robot IDs to configurations. */
-  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
+  static private final Map<Robot, RobotConfig> m_map =
+      Collections.unmodifiableMap(createMap());
 
   /**
    * Helper function, used to construct the underlying map. (Java doesn't
@@ -73,7 +74,8 @@ public final class RobotConfigLibrary {
   static private Map<Robot, RobotConfig> createMap() {
     var map = new HashMap<Robot, RobotConfig>();
     map.put(Robot.Simulation, generateSingleCameraSimulationConfig());
-    map.put(Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
+    map.put(
+        Robot.SimulationWithTwoCameras, generateTwoCameraSimulationConfig());
     map.put(Robot.Sally, generateSallyConfig());
 
     //
@@ -88,8 +90,8 @@ public final class RobotConfigLibrary {
     // Back up the assertion with something that can't be disabled.
     if (map.size() != Robot.values().length) {
       final int numRobotsWithoutConfigs = Robot.values().length - map.size();
-      throw new RuntimeException(
-          "Configurations are missing for " + numRobotsWithoutConfigs + " robot(s)!");
+      throw new RuntimeException("Configurations are missing for "
+          + numRobotsWithoutConfigs + " robot(s)!");
     }
     return map;
   }
@@ -127,8 +129,8 @@ public final class RobotConfigLibrary {
         // FPS.
         new Imaging(960, 720, Degrees.of(100), 30));
 
-    final var elevatorConfig = new ElevatorConfig(
-        new PIDConfig(10.0, 0, 1), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)
+    final var elevatorConfig = new ElevatorConfig(new PIDConfig(10.0, 0, 1),
+        new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)
         // Note: PID and FF values were calculated using
         // SysId routines under simulation. new
         // PIDConfig(0.16168, 0, 0), new
@@ -141,7 +143,8 @@ public final class RobotConfigLibrary {
         // 15Mar2025.
         new PIDConfig(6.0, 0.00, 0.00), null);
 
-    final var lightingConfig = new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80);
+    final var lightingConfig =
+        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80);
 
     final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
 
@@ -156,41 +159,45 @@ public final class RobotConfigLibrary {
     return new RobotConfig(SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             new CameraConfig("USBCamera1",
-                // Our camera is mounted 0.1 meters forward and 0.5 meters up from the robot
-                // pose (which is considered to be its center of rotation at the floor level, or
-                // Z = 0)...
+                // Our camera is mounted 0.1 meters forward and 0.5 meters up
+                // from the robot pose (which is considered to be its center of
+                // rotation at the floor level, or Z = 0)...
                 new Position(Meters.of(0.1), // x
                     Meters.of(0.0), // y
                     Meters.of(0.5)), // z
-                // ...pitched 15 degrees up, pointing straightforward and in plane with the
-                // robot,...
+                // ...pitched 15 degrees up, pointing straightforward and in
+                // plane with the robot,...
                 new Orientation(Degrees.of(-15), // pitch
                     Degrees.of(0), // roll
                     Degrees.of(0) // yaw
                     ),
-                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view,
+                // and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
             new CameraConfig("USBCamera2",
-                // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up from the robot
-                // pose (which is considered to be its center of rotation at the floor level, or
-                // Z = 0)...
+                // Our 2nd camera is mounted 0.25 meters back and 1.0 meters up
+                // from the robot pose (which is considered to be its center of
+                // rotation at the floor level, or Z = 0)...
                 new Position(Meters.of(-0.25), // x
                     Meters.of(0.0), // y
                     Meters.of(1.0)), // z
-                // ...pitched 0 degrees up, pointing straight backward and in plane with the
-                // robot,...
+                // ...pitched 0 degrees up, pointing straight backward and in
+                // plane with the robot,...
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(0), // pitch
                     Degrees.of(180) // yaw
                     ),
-                // ...with image dimensions 960x720, 100 degree field of view, and 30 FPS.
+                // ...with image dimensions 960x720, 100 degree field of view,
+                // and 30 FPS.
                 new Imaging(960, 720, Degrees.of(100), 30)),
         }),
         new ElevatorConfig(
             // Note: PID and FF values are arbitrary for simulation use.
-            new PIDConfig(10.0, 0, 1), new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
+            new PIDConfig(10.0, 0, 1),
+            new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)),
         new ArmConfig(
-            // Note: PID and FF values are based on the Reefscape code base as of 15Mar2025.
+            // Note: PID and FF values are based on the Reefscape code base as
+            // of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),
         new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE);
   }
@@ -200,12 +207,13 @@ public final class RobotConfigLibrary {
         new DriveConfig(Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024)
-            // TODO: Update DriveConfig data to match Sally's 2025 configuration/profile,
-            // including independent left/right PID.
+            // TODO: Update DriveConfig data to match Sally's 2025
+            // configuration/profile, including independent left/right PID.
             new PIDConfig(0.29613), // Left PID (from 2024)
             new PIDConfig(0.29613), // Right PID (from 2024)
             // TODO: Add kS value for Sally's drivebase.
-            new DriveFeedForwardConfig(Volts.of(0.19529), 0.01, // Linear data (from 2024)
+            new DriveFeedForwardConfig(Volts.of(0.19529),
+                0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
             ),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);

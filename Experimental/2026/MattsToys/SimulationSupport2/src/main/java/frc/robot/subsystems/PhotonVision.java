@@ -7,19 +7,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -33,11 +20,23 @@ import frc.robot.subsystems.interfaces.IPoseEstimator;
 import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.RobotConfigs.CameraConfig;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
  */
-public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonVision, IPoseEstimator {
+public class PhotonVision
+    extends SubsystemBase implements IVisionPlus, IPhotonVision, IPoseEstimator {
   /** Data about a single camera used for vision tracking. */
   private final CameraData m_cameraData;
 
@@ -65,7 +64,8 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
   }
 
-  List<PhotonPipelineResult> m_pipelineResultsCache = Collections.unmodifiableList(Collections.emptyList());
+  List<PhotonPipelineResult> m_pipelineResultsCache =
+      Collections.unmodifiableList(Collections.emptyList());
 
   /**
    * Note: rthis should be invoked "exactly ONCE per loop of your robot code", per
@@ -73,7 +73,8 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
    * frequently, and we'll drop frames within a loop.)
    */
   private void updateResultCache() {
-    m_pipelineResultsCache = Collections.unmodifiableList(m_cameraData.camera().getAllUnreadResults());
+    m_pipelineResultsCache =
+        Collections.unmodifiableList(m_cameraData.camera().getAllUnreadResults());
   }
 
   /**
@@ -112,8 +113,7 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
    *                    positioning for targets)
    * @return estimated relative positioning data for all visible targets
    */
-  List<TargetData> getTargetData(
-      AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+  List<TargetData> getTargetData(AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
     final var latestResults = getLatestResults();
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
@@ -128,9 +128,11 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget = Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget =
+          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData = new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData =
+          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 
@@ -186,7 +188,8 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     EstimatedPoseData estimate = null;
     if (m_lastEstimatedPose.isPresent()) {
       var lastPose = m_lastEstimatedPose.get();
-      estimate = new EstimatedPoseData(lastPose.estimatedPose.toPose2d(), lastPose.timestampSeconds);
+      estimate =
+          new EstimatedPoseData(lastPose.estimatedPose.toPose2d(), lastPose.timestampSeconds);
       BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, estimate);
       BulletinBoard.common.updateValue(ESTIMATED_POSE_SET_KEY, Collections.singletonList(estimate));
     } else {
@@ -204,7 +207,8 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     //
     // Note also that absent drive base data, we *could* also use a prior estimate
     // from vision, but having an *independent* reference can be useful.
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
+    final var optDrivePose =
+        BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Build the estimate from the vision pipeline.

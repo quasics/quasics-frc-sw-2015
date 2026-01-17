@@ -4,16 +4,15 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystems.interfaces.IVision.TargetData;
-
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,8 +42,8 @@ public interface IPhotonVision {
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
-  }
+  public record
+      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
 
   /**
    * Returns the list of CameraData records being used by this object.
@@ -83,9 +82,9 @@ public interface IPhotonVision {
   /** The field layout to use for vision processing/emulation. */
   static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded)
+                                           : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
-  ;
+      ;
 
   /**
    * Helper method to load a field layout.
@@ -144,9 +143,11 @@ public interface IPhotonVision {
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget = Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget =
+          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData = new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData =
+          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 

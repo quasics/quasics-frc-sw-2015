@@ -12,23 +12,20 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 public class ThriftyEncoderWrapper implements TrivialEncoder {
+  public ThriftyEncoderWrapper() {
+  }
 
-    public ThriftyEncoderWrapper() {
+  @Override
+  public Distance getPosition() {
+    return Meters.of(0);
+  }
 
-    }
+  @Override
+  public LinearVelocity getVelocity() {
+    return MetersPerSecond.of(0);
+  }
 
-    @Override
-    public Distance getPosition() {
-      return Meters.of(0);
-    }
-
-    @Override
-    public LinearVelocity getVelocity() {
-      return MetersPerSecond.of(0);
-    }
-
-    @Override
-    public void reset() {
-    }
-    
+  @Override
+  public void reset() {
+  }
 }

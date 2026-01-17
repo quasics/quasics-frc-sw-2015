@@ -9,11 +9,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 /**
  * Extends IVision to include (implicit promise to) support publishing
  * vision-based pose estimate(s) to BulletinBoard.
- * 
+ *
  * @see frc.robot.util.BulletinBoard
  */
 public interface IVisionPlus extends IVision {
-
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Data published to BulletinBoard
@@ -39,6 +38,5 @@ public interface IVisionPlus extends IVision {
    * @param timestamp the estimated time the data used to derive the robot pose
    *                  was taken
    */
-  record EstimatedPoseData(Pose2d pose, double timestamp) {
-  }
+  record EstimatedPoseData(Pose2d pose, double timestamp) {}
 }

@@ -4,13 +4,13 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.FuelConstants.*;
+import static frc.robot.Constants.OperatorConstants.*;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import static frc.robot.Constants.OperatorConstants.*;
-import static frc.robot.Constants.FuelConstants.*;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
@@ -28,12 +28,12 @@ public class RobotContainer {
   private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
 
   // The driver's controller
-  private final CommandXboxController driverController = new CommandXboxController(
-      DRIVER_CONTROLLER_PORT);
+  private final CommandXboxController driverController =
+      new CommandXboxController(DRIVER_CONTROLLER_PORT);
 
   // The operator's controller
-  private final CommandXboxController operatorController = new CommandXboxController(
-      OPERATOR_CONTROLLER_PORT);
+  private final CommandXboxController operatorController =
+      new CommandXboxController(OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -62,20 +62,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
     // While the left bumper on operator controller is held, intake Fuel
-    operatorController.leftBumper()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
+    operatorController.leftBumper().whileTrue(
+        ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
-    operatorController.rightBumper()
-        .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
+    operatorController.rightBumper().whileTrue(ballSubsystem.spinUpCommand()
+            .withTimeout(SPIN_UP_SECONDS)
             .andThen(ballSubsystem.launchCommand())
             .finallyDo(() -> ballSubsystem.stop()));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
-    operatorController.a()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
+    operatorController.a().whileTrue(
+        ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
 
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver
@@ -84,10 +83,10 @@ public class RobotContainer {
     // value). The X-axis is also inverted so a positive value (stick to the right)
     // results in clockwise rotation (front of the robot turning right). Both axes
     // are also scaled down so the rotation is more easily controllable.
-    driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveArcade(
-            () -> -driverController.getLeftY() * DRIVE_SCALING,
-            () -> -driverController.getRightX() * ROTATION_SCALING));
+    driveSubsystem.setDefaultCommand(driveSubsystem.driveArcade(()
+                                                                    ->
+        - driverController.getLeftY() * DRIVE_SCALING,
+        () -> - driverController.getRightX() * ROTATION_SCALING));
   }
 
   /**

@@ -4,12 +4,13 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.FuelConstants.*;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
-
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,8 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-
-import static frc.robot.Constants.FuelConstants.*;
 
 public class CANFuelSubsystem extends SubsystemBase {
   private final MotorController feederRoller;
@@ -39,7 +38,8 @@ public class CANFuelSubsystem extends SubsystemBase {
       SparkMaxConfig launcherConfig = new SparkMaxConfig();
       launcherConfig.inverted(true);
       launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-      rawIntakeLauncherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      rawIntakeLauncherRoller.configure(
+          launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       return rawIntakeLauncherRoller;
     } else {
@@ -57,7 +57,8 @@ public class CANFuelSubsystem extends SubsystemBase {
       // the config to the controller
       SparkMaxConfig feederConfig = new SparkMaxConfig();
       feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-      rawFeederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      rawFeederRoller.configure(
+          feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       return rawFeederRoller;
     } else {
@@ -86,25 +87,27 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   // A method to set the rollers to values for intaking
   public void intake() {
-    feederRoller.setVoltage(SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
-    intakeLauncherRoller
-        .setVoltage(SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
+    feederRoller.setVoltage(
+        SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(
+        SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
   }
 
   // A method to set the rollers to values for ejecting fuel out the intake. Uses
   // the same values as intaking, but in the opposite direction.
   public void eject() {
-    feederRoller
-        .setVoltage(-1 * SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
-    intakeLauncherRoller
-        .setVoltage(-1 * SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
+    feederRoller.setVoltage(
+        -1 * SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(
+        -1 * SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
   }
 
   // A method to set the rollers to values for launching.
   public void launch() {
-    feederRoller.setVoltage(SmartDashboard.getNumber(LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE));
-    intakeLauncherRoller
-        .setVoltage(SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
+    feederRoller.setVoltage(
+        SmartDashboard.getNumber(LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(
+        SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
 
   // A method to stop the rollers
@@ -116,10 +119,10 @@ public class CANFuelSubsystem extends SubsystemBase {
   // A method to spin up the launcher roller while spinning the feeder roller to
   // push Fuel away from the launcher
   public void spinUp() {
-    feederRoller
-        .setVoltage(SmartDashboard.getNumber(SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE));
-    intakeLauncherRoller
-        .setVoltage(SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
+    feederRoller.setVoltage(
+        SmartDashboard.getNumber(SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(
+        SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
 
   // A command factory to turn the spinUp method into a command that requires this

@@ -22,6 +22,12 @@ import frc.robot.util.PoseHelpers;
  * A sample of how we might control the lights to signal when the robot is "in
  * range" to make a shot (given a min/max distance), and facing the target (with
  * some margin of error).
+ * 
+ * Some notes:
+ * <ul>
+ * <li>This code assumes that there are no other factors limiting our ability to
+ * take a shot (e.g., obstacles on the field such as the net in )
+ * </ul>
  */
 public class TargetingSupportCommand extends Command {
   final ILighting m_lighting;

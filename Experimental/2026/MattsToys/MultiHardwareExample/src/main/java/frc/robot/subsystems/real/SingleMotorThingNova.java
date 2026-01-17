@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems.real;
 
-import com.thethriftybot.ThriftyNova;
+// import com.thethriftybot.Conversion;
+import com.thethriftybot.devices.ThriftyNova;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 public class SingleMotorThingNova extends SingleMotorThing {
@@ -13,9 +14,9 @@ public class SingleMotorThingNova extends SingleMotorThing {
    */
   static DerivedClassData getStuffForBaseClassSetup() {
     ThriftyNova motorController = new ThriftyNova(1, ThriftyNova.MotorType.NEO);
+    
     // Velocity reading examples
-    // Conversion shooterConverter =
-    //     new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
+    // Conversion shooterConverter = new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
     // double currentRPM = shooterConverter.fromMotor(motor.getVelocity());
 
     // return new DerivedClassData(motorController, encoder);

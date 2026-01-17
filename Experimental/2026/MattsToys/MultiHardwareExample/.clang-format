@@ -20,3 +20,4 @@ UseTab: Never
 
 # Allow really short functions to go on a single line (e.g., "int f() { return 0; }").
 AllowShortFunctionsOnASingleLine: 'false'
+

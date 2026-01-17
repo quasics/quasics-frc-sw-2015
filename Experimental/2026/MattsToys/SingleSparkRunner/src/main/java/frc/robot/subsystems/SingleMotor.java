@@ -12,7 +12,8 @@ public class SingleMotor extends SubsystemBase {
   SparkMax m_controller = new SparkMax(1, MotorType.kBrushless);
 
   /** Creates a new SingleMotor. */
-  public SingleMotor() {}
+  public SingleMotor() {
+  }
 
   public void stop() {
     m_controller.set(0);

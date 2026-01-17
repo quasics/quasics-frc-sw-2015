@@ -95,7 +95,8 @@ public class CANDriveSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
   // Command factory to create command to drive the robot with joystick inputs.
   public Command driveArcade(DoubleSupplier xSpeed, DoubleSupplier zRotation) {

@@ -36,7 +36,8 @@ public interface RobotConfigs {
    *      "https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#robot-coordinate-system">Robot
    *      coordinate system</a>
    */
-  public static record Position(Distance x, Distance y, Distance z) {}
+  public static record Position(Distance x, Distance y, Distance z) {
+  }
 
   /**
    * Describes a camera's orientiation relative to the robot.
@@ -45,7 +46,8 @@ public interface RobotConfigs {
    * @param roll  The counterclockwise rotation angle around the X axis (roll).
    * @param yaw   The counterclockwise rotation angle around the Z axis (yaw).
    */
-  public static record Orientation(Angle pitch, Angle roll, Angle yaw) {}
+  public static record Orientation(Angle pitch, Angle roll, Angle yaw) {
+  }
 
   /**
    * Defines the image-related characteristics of a camera on the robot.
@@ -58,7 +60,8 @@ public interface RobotConfigs {
    * @param fov    field of view (e.g., 100 degrees)
    * @param fps    frames per second produced by the video stream
    */
-  public static record Imaging(int width, int height, Angle fov, double fps) {}
+  public static record Imaging(int width, int height, Angle fov, double fps) {
+  }
 
   /**
    * Describes the camera's configuration.
@@ -70,7 +73,8 @@ public interface RobotConfigs {
    * @param imaging     characteristics of the camera's image feed
    */
   public static record CameraConfig(
-      String name, Position pos, Orientation orientation, Imaging imaging) {}
+      String name, Position pos, Orientation orientation, Imaging imaging) {
+  }
 
   /**
    * PID configuration settings.
@@ -118,7 +122,8 @@ public interface RobotConfigs {
    * @param pid         PID configuration settings for the elevator's motors
    * @param feedForward feedforward data for the elevator
    */
-  public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {}
+  public static record ElevatorConfig(PIDConfig pid, ElevatorFeedForwardConfig feedForward) {
+  }
 
   /**
    * Simple (i.e., not for elevators) feedforward data.
@@ -317,7 +322,8 @@ public interface RobotConfigs {
    * @param pid         PID settings for the arm
    * @param feedForward feedforward settings for the arm
    */
-  public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {}
+  public static record ArmConfig(PIDConfig pid, ArmFeedForwardConfig feedForward) {
+  }
 
   /**
    * CANdle configuration settings.

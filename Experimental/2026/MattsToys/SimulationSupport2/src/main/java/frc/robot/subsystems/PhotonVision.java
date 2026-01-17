@@ -64,6 +64,9 @@ public class PhotonVision
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
   }
 
+  /**
+   * Cached results from the vision pipeline for our (single) camera.
+   */
   List<PhotonPipelineResult> m_pipelineResultsCache =
       Collections.unmodifiableList(Collections.emptyList());
 

@@ -12,8 +12,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.util.BulletinBoard;
+import java.io.IOException;
 
 /**
  * Drivebase subsystem for a differential (tank) drive robot.
@@ -105,10 +104,12 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public static final AngularVelocity MAX_ROTATION = RadiansPerSecond.of(12.5664);
 
   /** Kinematics calculator for the drivebase. */
-  public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  public static final DifferentialDriveKinematics KINEMATICS =
+      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   /** Zero wheel speeds. (A potentially useful constant.) */
-  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS = new DifferentialDriveWheelSpeeds(0.0, 0.0);
+  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
+      new DifferentialDriveWheelSpeeds(0.0, 0.0);
 
   /**
    * Value for voltage required to overcome static friction (used in feedforward
@@ -154,27 +155,28 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Left-side motor controller. */
-  final protected PWMSparkMax m_leftController = new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
+  final protected PWMSparkMax m_leftController =
+      new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
 
   /** Right-side motor controller. */
-  final protected PWMSparkMax m_rightController = new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
+  final protected PWMSparkMax m_rightController =
+      new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
 
   /** Left-side encoder. */
-  protected final Encoder m_leftEncoder = new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-      SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
+  protected final Encoder m_leftEncoder =
+      new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT, SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
 
   /** Right-side encoder. */
-  protected final Encoder m_rightEncoder = new Encoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-      SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
+  protected final Encoder m_rightEncoder = new Encoder(
+      SimulationPorts.DIO.RIGHT_ENCODER_A_PORT, SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
 
   /** Gyro sensor. */
   final protected AnalogGyro m_rawGyro = new AnalogGyro(SimulationPorts.Channel.GYRO_PORT);
 
   /** Odometry calculator. */
-  protected DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-      new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
-      m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
-      DEFAULT_STARTING_POSE);
+  protected DifferentialDriveOdometry m_odometry =
+      new DifferentialDriveOdometry(new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
+          m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), DEFAULT_STARTING_POSE);
 
   /** Current driving control mode. */
   protected Mode m_mode = Mode.DIRECT_CONTROL;
@@ -205,10 +207,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
    * @param outerDiameter distance of the object (wheel, sprocket, etc.) being
    *                      turned
    */
-  protected static void configureEncoderForDistance(Encoder encoder,
-      Distance outerDiameter) {
-    encoder.setDistancePerPulse(Math.PI * WHEEL_DIAMETER.in(Meters) /
-        ENCODER_TICKS_PER_REVOLUTION);
+  protected static void configureEncoderForDistance(Encoder encoder, Distance outerDiameter) {
+    encoder.setDistancePerPulse(Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
   }
 
   /**
@@ -257,8 +257,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = KINEMATICS
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        KINEMATICS.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -280,10 +280,9 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
   @Override
   public void periodic() {
-    m_odometry.update(
-        m_rawGyro.getRotation2d(),
-        new DifferentialDriveWheelPositions(m_leftEncoder.getDistance(),
-            m_rightEncoder.getDistance()));
+    m_odometry.update(m_rawGyro.getRotation2d(),
+        new DifferentialDriveWheelPositions(
+            m_leftEncoder.getDistance(), m_rightEncoder.getDistance()));
 
     // Publish the odometry-based pose to the bulletin board.
     BulletinBoard.common.updateValue(ODOMETRY_KEY, getEstimatedPose());
@@ -311,8 +310,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     double clampedSpeedPercentage = MathUtil.clamp(forward, -1.0, +1.0);
     double clampedRotationPercentage = MathUtil.clamp(rotation, -1.0, +1.0);
 
-    driveArcade(MAX_SPEED.times(clampedSpeedPercentage),
-        MAX_ROTATION.times(clampedRotationPercentage));
+    driveArcade(
+        MAX_SPEED.times(clampedSpeedPercentage), MAX_ROTATION.times(clampedRotationPercentage));
   }
 
   @Override
@@ -366,14 +365,14 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     final double leftFeedforward = FEEDFORWARD.calculate(wheelSpeeds.leftMetersPerSecond);
     final double rightFeedforward = FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
 
-    final double leftOutput = m_leftPID.calculate(
-        m_leftEncoder.getRate(), wheelSpeeds.leftMetersPerSecond);
-    final double rightOutput = m_rightPID.calculate(
-        m_rightEncoder.getRate(), wheelSpeeds.rightMetersPerSecond);
+    final double leftOutput =
+        m_leftPID.calculate(m_leftEncoder.getRate(), wheelSpeeds.leftMetersPerSecond);
+    final double rightOutput =
+        m_rightPID.calculate(m_rightEncoder.getRate(), wheelSpeeds.rightMetersPerSecond);
 
     // Apply voltages to the motors.
-    setMotorVoltages(Volts.of(leftOutput + leftFeedforward),
-        Volts.of(rightOutput + rightFeedforward));
+    setMotorVoltages(
+        Volts.of(leftOutput + leftFeedforward), Volts.of(rightOutput + rightFeedforward));
   }
 
   @Override

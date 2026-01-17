@@ -4,9 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.io.Closeable;
-
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import java.io.Closeable;
 
 /**
  * Basic interface for subsystems.

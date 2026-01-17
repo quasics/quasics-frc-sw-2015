@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
-
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
@@ -19,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.util.RobotConfigs.RobotConfig;
+import java.io.IOException;
 
 /**
  * Implementation of the ICandle interface, using a CANdle device.

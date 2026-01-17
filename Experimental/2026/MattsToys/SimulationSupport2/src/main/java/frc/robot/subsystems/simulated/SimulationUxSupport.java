@@ -32,12 +32,12 @@ public class SimulationUxSupport {
   private static final String FIELD_KEY = "Field";
 
   /** Name used to publish the elevator simulation UX to SmartDashboard. */
-  private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME + (" Si" +
-                                                                         "m");
+  private static final String ELEVATOR_KEY = IElevator.SUBSYSTEM_NAME
+      + (" Si"
+          + "m");
 
   /** Color used to mark a fixed target position for the elevator's reach. */
-  private static final Color8Bit FIXED_POSITION_COLOR =
-      new Color8Bit(0, 0, 255);
+  private static final Color8Bit FIXED_POSITION_COLOR = new Color8Bit(0, 0, 255);
 
   /**
    * Color used to mark the elevator's floor ("zero point", which may be
@@ -101,38 +101,29 @@ public class SimulationUxSupport {
   private SimulationUxSupport() {
     // Simulation rendering setup.
     m_rootMech2d = new Mechanism2d(9,
-                                   (SimElevator.getDefinedHeightForPosition(
-                                        IElevator.ElevatorPosition.TOP) *
-                                    1.15) // Leave a little room at the top
+        (SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP)
+            * 1.15) // Leave a little room at the top
     );
-    m_elevatorMech2d = m_rootMech2d.getRoot("Root", 5, 0)
-                           .append(new MechanismLigament2d("Elevator", 0, 90));
-    m_armMech2d =
-        m_elevatorMech2d.append(new MechanismLigament2d("Arm", ARM_LENGTH, 0));
+    m_elevatorMech2d =
+        m_rootMech2d.getRoot("Root", 5, 0).append(new MechanismLigament2d("Elevator", 0, 90));
+    m_armMech2d = m_elevatorMech2d.append(new MechanismLigament2d("Arm", ARM_LENGTH, 0));
 
     //
     // Elevator boundary markers. (These aren't saved because we'll never need
     // to redraw them.)
     addElevatorLevel("Floor", 0, LIMIT_COLOR);
     addElevatorLevel("Bottom",
-                     SimElevator.getDefinedHeightForPosition(
-                         IElevator.ElevatorPosition.BOTTOM),
-                     FIXED_POSITION_COLOR);
-    addElevatorLevel(
-        "Low",
-        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.LOW),
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.BOTTOM),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("Low", SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.LOW),
         FIXED_POSITION_COLOR);
     addElevatorLevel("Medium",
-                     SimElevator.getDefinedHeightForPosition(
-                         IElevator.ElevatorPosition.MEDIUM),
-                     FIXED_POSITION_COLOR);
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.MEDIUM),
+        FIXED_POSITION_COLOR);
     addElevatorLevel("High",
-                     SimElevator.getDefinedHeightForPosition(
-                         IElevator.ElevatorPosition.HIGH),
-                     FIXED_POSITION_COLOR);
-    addElevatorLevel(
-        "Top",
-        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP),
+        SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.HIGH),
+        FIXED_POSITION_COLOR);
+    addElevatorLevel("Top", SimElevator.getDefinedHeightForPosition(IElevator.ElevatorPosition.TOP),
         FIXED_POSITION_COLOR);
 
     //
@@ -162,8 +153,7 @@ public class SimulationUxSupport {
    * @param color color to use for the marker
    */
   private void addArmMarker(String name, Angle angle, Color8Bit color) {
-    m_elevatorMech2d.append(
-        new MechanismLigament2d(name, ARM_LENGTH, angle.in(Degrees), 1, color));
+    m_elevatorMech2d.append(new MechanismLigament2d(name, ARM_LENGTH, angle.in(Degrees), 1, color));
   }
 
   /**
@@ -186,21 +176,20 @@ public class SimulationUxSupport {
    * @param mech mechanism to set the color for
    * @param status current status of the device
    */
-  private static void setMechanismColor(MechanismLigament2d mech,
-                                        DeviceStatus status) {
+  private static void setMechanismColor(MechanismLigament2d mech, DeviceStatus status) {
     switch (status) {
-    case Manual:
-      mech.setColor(NO_SETPOINT);
-      break;
-    case Idle:
-      mech.setColor(IDLE);
-      break;
-    case AtSetpoint:
-      mech.setColor(AT_SETPOINT);
-      break;
-    case NotAtSetpoint:
-      mech.setColor(NOT_AT_SETPOINT);
-      break;
+      case Manual:
+        mech.setColor(NO_SETPOINT);
+        break;
+      case Idle:
+        mech.setColor(IDLE);
+        break;
+      case AtSetpoint:
+        mech.setColor(AT_SETPOINT);
+        break;
+      case NotAtSetpoint:
+        mech.setColor(NOT_AT_SETPOINT);
+        break;
     }
   }
 
@@ -224,8 +213,7 @@ public class SimulationUxSupport {
    * @param targetHeight target height of the elevator
    * @param status current status of the elevator
    */
-  public void updateElevator(double currentHeight, double targetHeight,
-                             DeviceStatus status) {
+  public void updateElevator(double currentHeight, double targetHeight, DeviceStatus status) {
     m_elevatorMech2d.setLength(currentHeight);
     setMechanismColor(m_elevatorMech2d, status);
     lazyPublishToSmartDashboard(ELEVATOR_KEY, m_rootMech2d);

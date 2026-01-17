@@ -6,12 +6,11 @@ package frc.robot.subsystems.simulated;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
+import java.io.IOException;
 
 /**
  * Simulated arm subsystem.
@@ -82,10 +81,10 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
     } else if (m_state == State.MOVING_TO_POSITION) {
       if (USE_PID) {
         // Simple PID control to move to target angle
-        double output = m_pidController.calculate(m_currentAngle.in(Degrees),
-            m_targetAngle.in(Degrees));
-        m_currentAngle = m_currentAngle.plus(
-            Degrees.of(output * 0.02)); // Simulate movement over 20ms
+        double output =
+            m_pidController.calculate(m_currentAngle.in(Degrees), m_targetAngle.in(Degrees));
+        m_currentAngle =
+            m_currentAngle.plus(Degrees.of(output * 0.02)); // Simulate movement over 20ms
       } else {
         final double errorDegrees = m_targetAngle.minus(m_currentAngle).in(Degrees);
         final double sign = Math.signum(errorDegrees);
@@ -93,8 +92,7 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
         if (Math.abs(errorDegrees) < Math.abs(delta)) {
           delta = errorDegrees;
         }
-        m_currentAngle = m_currentAngle.plus(
-            Degrees.of(delta)); // Simulate movement over 20ms
+        m_currentAngle = m_currentAngle.plus(Degrees.of(delta)); // Simulate movement over 20ms
       }
     }
 
@@ -149,8 +147,8 @@ public class SimArm extends SubsystemBase implements ISingleJointArm {
   @Override
   public boolean atTargetPosition() {
     // Consider the arm at the target if IDLE or within tolerance
-    return m_state == State.IDLE ||
-        Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE;
+    return m_state == State.IDLE
+        || Math.abs(m_currentAngle.minus(m_targetAngle).in(Degrees)) < SETPOINT_TOLERANCE;
   }
 
   @Override

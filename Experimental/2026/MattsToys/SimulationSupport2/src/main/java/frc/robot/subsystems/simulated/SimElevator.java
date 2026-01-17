@@ -4,15 +4,14 @@
 
 package frc.robot.subsystems.simulated;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IElevator;
+import java.io.IOException;
 
 /**
  * Simulated elevator subsystem.
- * 
+ *
  * Note that this is a *pure* simulation (all counting, no motor controllers,
  * etc.).
  */
@@ -27,9 +26,7 @@ public class SimElevator extends SubsystemBase implements IElevator {
   private ElevatorPosition m_targetPosition = ElevatorPosition.BOTTOM;
 
   /** Directions for the manual control handling (needed for computation). */
-  private enum ManualControlDirection {
-    UP, DOWN, UNDEFINED
-  }
+  private enum ManualControlDirection { UP, DOWN, UNDEFINED }
 
   /**
    * Current manual direction; only valid when m_elevatorState is
@@ -135,8 +132,7 @@ public class SimElevator extends SubsystemBase implements IElevator {
   @Override
   public double getHeightForPosition(ElevatorPosition position) {
     return switch (position) {
-      case BOTTOM, LOW, MEDIUM, HIGH, TOP ->
-        getDefinedHeightForPosition(position);
+      case BOTTOM, LOW, MEDIUM, HIGH, TOP -> getDefinedHeightForPosition(position);
       case MANUAL_CONTROL -> m_currentHeight;
     };
   }
@@ -161,12 +157,10 @@ public class SimElevator extends SubsystemBase implements IElevator {
       // limits
       if (manualControlDirection == ManualControlDirection.UP) {
         m_currentHeight += MANUAL_CONTROL_SPEED;
-        m_currentHeight = Math.min(m_currentHeight,
-            getHeightForPosition(ElevatorPosition.HIGH));
+        m_currentHeight = Math.min(m_currentHeight, getHeightForPosition(ElevatorPosition.HIGH));
       } else if (manualControlDirection == ManualControlDirection.DOWN) {
         m_currentHeight -= MANUAL_CONTROL_SPEED;
-        m_currentHeight = Math.max(
-            m_currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
+        m_currentHeight = Math.max(m_currentHeight, getHeightForPosition(ElevatorPosition.BOTTOM));
       }
     }
 

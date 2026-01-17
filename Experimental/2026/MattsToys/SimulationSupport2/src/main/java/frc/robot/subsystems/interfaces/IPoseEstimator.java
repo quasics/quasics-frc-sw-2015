@@ -4,18 +4,17 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
+import java.util.Optional;
 
 /**
  * Defines an interface for retrieval of an estimated pose.
- * 
+ *
  * This could be used in the definition of a purely vision-based estimate,
  * or purely odometry, or some fusion of the two. (Or of other sources, of
  * course.)
  */
 public interface IPoseEstimator {
-    /** @return the estimated pose of the robot */
-    public Optional<Pose2d> getEstimatedPose();
+  /** @return the estimated pose of the robot */
+  public Optional<Pose2d> getEstimatedPose();
 }

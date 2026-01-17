@@ -123,6 +123,6 @@ public interface IDrivebasePlus extends IDrivebase {
    */
   static Pose2d getPublishedLastPoseFromOdometry() {
     var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
-    return (Pose2d)stored.orElse(null);
+    return (Pose2d) stored.orElse(null);
   }
 }

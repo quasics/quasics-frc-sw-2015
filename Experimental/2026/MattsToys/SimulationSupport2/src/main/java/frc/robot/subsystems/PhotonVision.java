@@ -7,19 +7,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -33,6 +20,17 @@ import frc.robot.subsystems.interfaces.IPoseEstimator;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.RobotConfigs.CameraConfig;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
@@ -58,10 +56,8 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
     // (Note that this assumes that we *have* at least one camera.)
     final PhotonCamera camera = new PhotonCamera(cameraConfig.name());
     final Transform3d robotToCamera = new Transform3d(
-        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(),
-            cameraConfig.pos().z()),
-        new Rotation3d(cameraConfig.orientation().roll(),
-            cameraConfig.orientation().pitch(),
+        new Translation3d(cameraConfig.pos().x(), cameraConfig.pos().y(), cameraConfig.pos().z()),
+        new Rotation3d(cameraConfig.orientation().roll(), cameraConfig.orientation().pitch(),
             cameraConfig.orientation().yaw()));
     var estimator = new PhotonPoseEstimator(m_tagLayout, robotToCamera);
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
@@ -88,8 +84,8 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
    *                    positioning for targets)
    * @return estimated relative positioning data for all visible targets
    */
-  static List<TargetData> getTargetDataForCamera(CameraData cameraData, AprilTagFieldLayout fieldLayout,
-      Pose2d robotPose) {
+  static List<TargetData> getTargetDataForCamera(
+      CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
     final var latestResults = getLatestResultsWrapper(cameraData);
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
@@ -104,11 +100,11 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget = Meters.of(
-          PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget =
+          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData = new TargetData(
-          result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData =
+          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 
@@ -146,9 +142,10 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
     // If we have the drive pose (or some other reference, such as a prior fused
     // estimate) in which we have decent confidence, then we could also use methods
     // like estimateClosestToReferencePose as a fallback.
-    var result = estimator.estimateCoprocMultiTagPose(pipelineResult); // Or
-                                                                       // estimator.estimateAverageBestTargetsPose(pipelineResult),
-                                                                       // etc.
+    var result = estimator.estimateCoprocMultiTagPose(
+        pipelineResult); // Or
+                         // estimator.estimateAverageBestTargetsPose(pipelineResult),
+                         // etc.
     if (result.isEmpty()) {
       result = estimator.estimateLowestAmbiguityPose(pipelineResult);
     }
@@ -163,7 +160,8 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
   public void periodic() {
     // This method will be called once per scheduler run
     // Where does the drive base think we are?
-    final var optDrivePose = BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
+    final var optDrivePose =
+        BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     List<PhotonPipelineResult> pipelineResultsList = m_cameraData.camera().getAllUnreadResults();

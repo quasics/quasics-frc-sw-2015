@@ -51,8 +51,7 @@ public class FollowTrajectoryCommand extends Command {
    * @param drivebase  drivebase being controlled
    * @param trajectory robot-relative trajectory to be followed
    */
-  public FollowTrajectoryCommand(IDrivebasePlus drivebase,
-      Trajectory trajectory) {
+  public FollowTrajectoryCommand(IDrivebasePlus drivebase, Trajectory trajectory) {
     m_drivebase = drivebase;
     m_baseTrajectory = trajectory;
     addRequirements(m_drivebase.asSubsystem());
@@ -73,8 +72,8 @@ public class FollowTrajectoryCommand extends Command {
     // Calculate how fast we should be moving at this point along the trajectory
     double elapsed = m_timer.get();
     var referencePosition = m_currentTrajectory.sample(elapsed);
-    ChassisSpeeds newSpeeds = m_controller.calculate(
-        m_drivebase.getEstimatedPose(), referencePosition);
+    ChassisSpeeds newSpeeds =
+        m_controller.calculate(m_drivebase.getEstimatedPose(), referencePosition);
 
     // Move the drivebase accordingly.
     m_drivebase.driveTankWithPID(newSpeeds);

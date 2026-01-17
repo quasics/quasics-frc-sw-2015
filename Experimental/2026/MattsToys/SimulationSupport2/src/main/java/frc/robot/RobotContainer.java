@@ -128,12 +128,18 @@ public class RobotContainer {
     }
   }
 
+  /** Adds lighting commands to the SmartDashboard. */
   private void configureLightingCommands() {
     SmartDashboard.putData("Target lighting", new TargetingSupportCommand(m_lighting, new Pose2d(
         ReefscapeConstants.MIDLINE, ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()), Meters.of(2),
         Meters.of(1), Degrees.of(5)));
   }
 
+  /**
+   * Optionally configures the lighting when the robot is disabled, so that it
+   * indicates location vs. a "planned starting point", allowing the drive team to
+   * ensure that the robot is correctly placed for Auto mode.
+   */
   private void maybeConfigureLightingWhenDisabled() {
     if (m_lighting == null) {
       return;

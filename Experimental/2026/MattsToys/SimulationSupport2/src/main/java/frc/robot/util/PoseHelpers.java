@@ -4,14 +4,17 @@
 
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 /** Helper functions/types for working with Pose2d data. */
 public final class PoseHelpers {
-  public record
-      PoseDelta(Rotation2d rotationDelta, Distance xDelta, Distance yDelta) {}
+  public record PoseDelta(Rotation2d rotationDelta, Distance xDelta, Distance yDelta) {
+  }
 
   /**
    * Computes the difference between a target pose (e.g., how a trajectory is
@@ -24,12 +27,27 @@ public final class PoseHelpers {
    */
   public static PoseDelta computePoseDelta(
       Pose2d targetPose, Pose2d actualPose) {
-    final Rotation2d rotationDelta =
-        targetPose.getRotation().minus(actualPose.getRotation());
-    final Distance xDelta =
-        targetPose.getMeasureX().minus(actualPose.getMeasureX());
-    final Distance yDelta =
-        targetPose.getMeasureY().minus(actualPose.getMeasureY());
+    final Rotation2d rotationDelta = targetPose.getRotation().minus(actualPose.getRotation());
+    final Distance xDelta = targetPose.getMeasureX().minus(actualPose.getMeasureX());
+    final Distance yDelta = targetPose.getMeasureY().minus(actualPose.getMeasureY());
     return new PoseDelta(rotationDelta, xDelta, yDelta);
+  }
+
+  /**
+   * Computes the angle from a reference pose (e.g., the robot's field position)
+   * to a target pose (e.g., something we want to be facing).
+   * 
+   * @param reference reference pose/position
+   * @param target    reference pose/position
+   * @return the angle from "reference" to "target"
+   */
+  public static Angle computeAngleToTarget(Pose2d reference, Pose2d target) {
+    double angle = Math.toDegrees(Math.atan2(
+        reference.getY() - target.getY(), reference.getX() - target.getX()));
+
+    // Normalize to [0, 360)
+    angle = (angle % 360 + 360) % 360;
+
+    return Degrees.of(angle);
   }
 }

@@ -224,8 +224,8 @@ public class RobotContainer {
     // RadiansPerSecond.of(0))));
 
     SmartDashboard.putData("Look at target 20", new AimAtTarget(m_drivebase, m_vision, 20, Mode.TargetInSight));
-    SmartDashboard.putData("Aim at target 15", new AimAtTarget(m_drivebase, m_vision, 15, Mode.PointAtTarget));
-    SmartDashboard.putData("Drive to target 15", new DriveToTarget(m_drivebase, m_vision, 15, 0.5, 0.2));
+    SmartDashboard.putData("Aim at target 17", new AimAtTarget(m_drivebase, m_vision, 17, Mode.PointAtTarget));
+    SmartDashboard.putData("Drive to target 17", new DriveToTarget(m_drivebase, m_vision, 17, 0.0, 0.2));
   }
 
   private Command testTrajectory(String name) {

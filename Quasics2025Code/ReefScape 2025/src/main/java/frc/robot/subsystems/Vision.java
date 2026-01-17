@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -311,14 +312,8 @@ public class Vision extends SubsystemBase {
         List<PhotonTrackedTarget> targets = result.getTargets();
         for (PhotonTrackedTarget target : targets) {
           if (id == target.getFiducialId()) {
-            // distance = (targetHeight - cameraHeight) / tan(cameraPitch + targetPitch)
-            // TODO: In the case that this is negative, throw it out. Happens if we have a
-            // bad camera pitch.
-            // TODO: Our camera is not on the ground (it it were,the pitch would not be 0.)
-            // This causes big calculation errors when straight on (tan(0) -> div by 0)
-            // This may also occur on errors detecting the target pitch.
-            range = PhotonUtils.calculateDistanceToTargetMeters(0.0, 1.796542, Units.degreesToRadians(30.0),
-                target.getPitch()) * -1; // height
+            range = PhotonUtils.calculateDistanceToTargetMeters(0.0, 0.22225, Units.degreesToRadians(0.0),
+                target.getPitch()); // height
             // changes
             // based on target
           }

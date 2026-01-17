@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.Distance;
 
 /** Helper functions/types for working with Pose2d data. */
 public final class PoseHelpers {
+  /** Result type returned from computePoseDelta. */
   public record PoseDelta(Rotation2d rotationDelta, Distance xDelta, Distance yDelta) {
   }
 

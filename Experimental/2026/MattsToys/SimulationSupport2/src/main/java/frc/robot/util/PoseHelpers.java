@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,5 +50,18 @@ public final class PoseHelpers {
     angle = (angle % 360 + 360) % 360;
 
     return Degrees.of(angle);
+  }
+
+  /**
+   * Computes the distance from a reference pose (e.g., the robot's field
+   * position) to a target pose (e.g., something we want to shoot at/drive to).
+   * 
+   * @param reference reference pose/position
+   * @param target    reference pose/position
+   * @return the distance from "reference" to "target"
+   */
+  public static Distance computeDistanceToTarget(Pose2d reference, Pose2d target) {
+    double distanceMeters = Math.hypot(reference.getX() - target.getX(), reference.getY() - target.getY());
+    return Meters.of(distanceMeters);
   }
 }

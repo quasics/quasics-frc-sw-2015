@@ -35,6 +35,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
         .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
+
+    // TODO: Give the motors (it is okay that they are not real, their set/get
+    // functions still work) the wheel speeds
   }
 
   /** Creates a new SimulationDrivebase. */
@@ -45,4 +48,14 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void simulationPeriodic() {
+    // TODO: Read tutorial
+    // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
+
+    // TODO: inputs to driveSim
+    // TODO: update driveSim
+
+  }
+
 }

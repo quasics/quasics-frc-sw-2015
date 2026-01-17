@@ -7,12 +7,11 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.CANBusIds.SparkMax.*;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -33,6 +32,8 @@ public class Drivebase extends SubsystemBase {
 
   final SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
   final SparkMaxConfig rightFollowerConfig = new SparkMaxConfig();
+  final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
+  final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();
 
   private final RelativeEncoder m_leftEncoder;
   private final RelativeEncoder m_rightEncoder;
@@ -40,8 +41,8 @@ public class Drivebase extends SubsystemBase {
 
   /** Creates a new Drivebase. */
   public Drivebase() {
-    m_rightLeader.setInverted(true);
-    m_rightFollower.setInverted(true);
+    rightLeaderConfig.inverted(true);
+    rightFollowerConfig.inverted(true);
 
     leftFollowerConfig.follow(LEFT_LEADER_ID);
     rightFollowerConfig.follow(RIGHT_LEADER_ID);
@@ -50,6 +51,12 @@ public class Drivebase extends SubsystemBase {
         leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightFollower.configure(
         rightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // Left Leader is effectively a no-op, no config changes, but for our sanity configure it along with the rest. 
+    m_leftLeader.configure(
+        leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightLeader.configure(
+        rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_leftEncoder = m_leftLeader.getEncoder();
     m_rightEncoder = m_rightLeader.getEncoder();
@@ -60,12 +67,6 @@ public class Drivebase extends SubsystemBase {
   }
 
   private void configureEncoders() {
-    // Default for the encoders is to report distance and velocity in
-    // revolutions and rev/minute; we want that in meters and meters/sec.
-    final double distanceScalingFactorForGearing =
-        WHEEL_CIRCUMFERENCE_METERS / DRIVEBASE_GEAR_RATIO;
-    final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
-
     resetEncoders();
   }
 

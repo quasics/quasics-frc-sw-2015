@@ -6,13 +6,11 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lights;
-import java.util.function.Function;
 
 public class RunningLights extends Command {
   private final Time m_stepTime;

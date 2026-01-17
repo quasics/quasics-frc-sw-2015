@@ -119,16 +119,19 @@ public class RobotContainer {
     configureSysIdCommands();
     configureElevatorCommands();
     configureArmCommands();
+    configureLightingCommands();
     maybeConfigureLightingWhenDisabled();
     configureBindings();
-
-    SmartDashboard.putData("Target lighting", new TargetingSupportCommand(m_lighting, new Pose2d(
-        ReefscapeConstants.MIDLINE, ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()), Meters.of(2),
-        Meters.of(1), Degrees.of(5)));
 
     if (Robot.isSimulation()) {
       new CameraSimulator(m_robotConfig, (PhotonVision) m_vision);
     }
+  }
+
+  private void configureLightingCommands() {
+    SmartDashboard.putData("Target lighting", new TargetingSupportCommand(m_lighting, new Pose2d(
+        ReefscapeConstants.MIDLINE, ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()), Meters.of(2),
+        Meters.of(1), Degrees.of(5)));
   }
 
   private void maybeConfigureLightingWhenDisabled() {

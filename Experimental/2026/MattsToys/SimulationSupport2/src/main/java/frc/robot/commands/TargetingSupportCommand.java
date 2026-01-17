@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
@@ -35,13 +36,30 @@ import frc.robot.util.PoseHelpers;
  * out. Using a "fused" estimate (based on both vision and odometry) would be
  * significantly better for a real implementation.
  * 
+ * <li>The angular margin of error is somewhat simplified, since this would
+ * likely be different depending on how far out we are. (But for this example,
+ * it works; and a sufficiently tightly constrained value could be used on a
+ * real field.)
+ * 
  * </ul>
  */
 public class TargetingSupportCommand extends Command {
+  /** If true, generate debugging output. */
+  static final boolean NOISY = false;
+
+  /** Lighting subsystem being controlled. */
   final ILighting m_lighting;
+
+  /** Field-oriented position of the target we care about. */
   final Pose2d m_targetPos;
+
+  /** Maximum range from which we can take a shot. */
   final Distance m_maxRange;
+
+  /** Minimum range from which we can take a shot. */
   final Distance m_minRange;
+
+  /** Margin of error we'll tolerate for "are we pointed at the target". */
   final Angle m_angleRange;
 
   /**
@@ -88,20 +106,32 @@ public class TargetingSupportCommand extends Command {
 
     final var robotPose = ((IVisionPlus.EstimatedPoseData) positionOpt.get()).pose();
 
-    Distance distance = PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
+    // Note: native pose heading is treating flat-left as 0 (in -180 to +180), while
+    // angleToTarget is computing that as 180 (in 0 to 360). As a result, some
+    // adjustments are needed.
 
-    // Need to convert "-180 to +180" to "0 to 360"
+    // Convert "-180 to +180" to "0 to 360"
     final double robotAngleDegrees = robotPose.getRotation().getDegrees() + 180;
-    Angle angle = PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
+
+    // Compute how far off we are.
+    final Angle angle = PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
     final double angleDeltaDegrees = angle.in(Degrees) - robotAngleDegrees;
     final double angleDeltaDegreesAbs = Math.abs(angleDeltaDegrees);
 
-    // Note: heading is treating flat-left as 0 (in -180 to +180), while
-    // angleToTarget is treating that as 180 (in 0 to 360)
+    // How far away from the target are we?
+    Distance distance = PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
 
-    System.out.println("Heading: " + robotAngleDegrees + ", to target: " + angle.in(Degrees)
-        + ", delta: " + angleDeltaDegreesAbs);
+    if (NOISY) {
+      System.out.println(
+          "Distance: " + distance.in(Meters) + ", heading: " + robotAngleDegrees + ", to target: " + angle.in(Degrees)
+              + ", delta: " + angleDeltaDegrees);
+    }
 
+    // Set the lights, based on some *simple* evaluations.
+    //
+    // As commented at the class level, this would likely need to be improved for
+    // deployment on the field at an event, but it works as an (overly) simple
+    // example of what can be done.
     final boolean angleOK = angleDeltaDegreesAbs <= m_angleRange.in(Degrees);
     final boolean distanceOK = distance.lte(m_maxRange) && distance.gte(m_minRange);
     if (angleOK && distanceOK) {

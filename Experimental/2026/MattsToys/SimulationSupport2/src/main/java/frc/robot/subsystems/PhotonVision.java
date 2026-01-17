@@ -207,6 +207,15 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
   }
 
   //
+  // Methods from ISubsystem
+  //
+
+  @Override
+  public void close() throws IOException {
+    m_cameraData.camera().close();
+  }
+
+  //
   // Methods from IVision
   //
 
@@ -242,11 +251,6 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
   @Override
   public AprilTagFieldLayout getFieldLayoutForSimulation() {
     return m_tagLayout;
-  }
-
-  @Override
-  public void close() throws IOException {
-    m_cameraData.camera().close();
   }
 
   @Override

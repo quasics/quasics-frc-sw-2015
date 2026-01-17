@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;

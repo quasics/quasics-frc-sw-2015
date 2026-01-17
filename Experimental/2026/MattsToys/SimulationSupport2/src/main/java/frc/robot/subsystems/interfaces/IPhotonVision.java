@@ -6,11 +6,23 @@ package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.units.measure.Distance;
+import frc.robot.subsystems.interfaces.IVision.TargetData;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Interface for explicitly PhotonVision-based vision subsystems.
@@ -31,8 +43,8 @@ public interface IPhotonVision {
    *                    uncertainty/error baked into them when you are further
    *                    away from the targets.
    */
-  public record
-      CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {}
+  public record CameraData(PhotonCamera camera, Transform3d transform3d, PhotonPoseEstimator estimator) {
+  }
 
   /**
    * Returns the list of CameraData records being used by this object.
@@ -71,9 +83,9 @@ public interface IPhotonVision {
   /** The field layout to use for vision processing/emulation. */
   static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
       ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE ? AprilTagFields.k2025ReefscapeAndyMark
-                                           : AprilTagFields.k2025ReefscapeWelded)
+          : AprilTagFields.k2025ReefscapeWelded)
       : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
-      ;
+  ;
 
   /**
    * Helper method to load a field layout.
@@ -91,5 +103,53 @@ public interface IPhotonVision {
       ioe.printStackTrace();
     }
     return tagLayout;
+  }
+
+  //
+  // Possibly obsolete functions (carried in from 2025)
+  //
+
+  // Making this a helper function, since getLatestResult() is now deprecated,
+  // and I'm trying to cut down on the number of warnings.
+  static PhotonPipelineResult getLatestResultsWrapper_deprecated(CameraData cameraData) {
+    return cameraData.camera().getLatestResult();
+  }
+
+  /**
+   * Returns estimated relative positioning data for all visible targets (if
+   * any).
+   *
+   * @param cameraData  camera supplying the tracking data
+   * @param fieldLayout field layout, used to determine fixed (absolute)
+   *                    positions
+   *                    for targets in
+   *                    view
+   * @param robotPose   robot's estimated position (used to compute relative
+   *                    positioning for targets)
+   * @return estimated relative positioning data for all visible targets
+   */
+  static List<TargetData> getTargetDataForCamera_deprecated(
+      CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+    final var latestResults = getLatestResultsWrapper_deprecated(cameraData);
+    if (!latestResults.hasTargets()) {
+      return Collections.emptyList();
+    }
+
+    List<TargetData> targets = new LinkedList<TargetData>();
+    for (PhotonTrackedTarget result : latestResults.targets) {
+      var tagPose = fieldLayout.getTagPose(result.fiducialId);
+      if (tagPose.isEmpty()) {
+        continue;
+      }
+
+      // Given where we *know* the target is on the field, and where we *think*
+      // that the robot is, how far away are we from the target?
+      final Distance distanceToTarget = Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+
+      TargetData curTargetData = new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      targets.add(curTargetData);
+    }
+
+    return targets;
   }
 }

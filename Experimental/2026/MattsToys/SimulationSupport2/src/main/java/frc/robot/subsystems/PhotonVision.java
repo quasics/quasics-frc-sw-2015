@@ -7,6 +7,19 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -20,17 +33,6 @@ import frc.robot.subsystems.interfaces.IPoseEstimator;
 import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.RobotConfigs.CameraConfig;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
@@ -63,19 +65,45 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
   }
 
-  // Making this a helper function, since getLatestResult() is now deprecated,
-  // and I'm trying to cut down on the number of warnings.
-  private static PhotonPipelineResult getLatestResultsWrapper(CameraData cameraData) {
-    // TODO: look at replacing this with something in a reusable base class to
-    // try to cache data, to handle the deprecation.
-    return cameraData.camera().getLatestResult();
+  List<PhotonPipelineResult> m_pipelineResultsCache = Collections.unmodifiableList(Collections.emptyList());
+
+  /**
+   * Note: rthis should be invoked "exactly ONCE per loop of your robot code", per
+   * PhotonVision docs. (Not frequently enough, and data is missed; too
+   * frequently, and we'll drop frames within a loop.)
+   */
+  private void updateResultCache() {
+    m_pipelineResultsCache = Collections.unmodifiableList(m_cameraData.camera().getAllUnreadResults());
+  }
+
+  /**
+   * @return the latest vision pipeline results, based on m_pipelineResultsCache.
+   */
+  private PhotonPipelineResult getLatestResults() {
+    if (m_pipelineResultsCache.isEmpty()) {
+      return new PhotonPipelineResult();
+    }
+
+    final boolean SANITY_CHECK_ORDER = true;
+    if (SANITY_CHECK_ORDER) {
+      // Order *should* be well-defined, but it's unclear from docs if it's newest
+      // first, or oldest.
+      PhotonPipelineResult prior = null;
+      for (var entry : m_pipelineResultsCache) {
+        assert (prior == null || entry.getTimestampSeconds() <= prior.getTimestampSeconds());
+        prior = entry;
+      }
+    }
+
+    // Get the last one in the list, which *should* be the newest.
+    PhotonPipelineResult result = m_pipelineResultsCache.get(m_pipelineResultsCache.size() - 1);
+    return result;
   }
 
   /**
    * Returns estimated relative positioning data for all visible targets (if
    * any).
    *
-   * @param cameraData  camera supplying the tracking data
    * @param fieldLayout field layout, used to determine fixed (absolute)
    *                    positions
    *                    for targets in
@@ -84,9 +112,9 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
    *                    positioning for targets)
    * @return estimated relative positioning data for all visible targets
    */
-  static List<TargetData> getTargetDataForCamera(
-      CameraData cameraData, AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
-    final var latestResults = getLatestResultsWrapper(cameraData);
+  List<TargetData> getTargetData(
+      AprilTagFieldLayout fieldLayout, Pose2d robotPose) {
+    final var latestResults = getLatestResults();
     if (!latestResults.hasTargets()) {
       return Collections.emptyList();
     }
@@ -180,7 +208,7 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Build the estimate from the vision pipeline.
-    List<PhotonPipelineResult> pipelineResultsList = m_cameraData.camera().getAllUnreadResults();
+    List<PhotonPipelineResult> pipelineResultsList = m_pipelineResultsCache;
     if (!pipelineResultsList.isEmpty()) {
       // Camera processed a new frame since last
       // Get the last one in the list.
@@ -202,6 +230,7 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
 
   @Override
   public void periodic() {
+    updateResultCache();
     updateEstimatedPose();
     updateBulletinBoard();
   }
@@ -224,7 +253,7 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
     if (m_cameraData == null) {
       return false;
     }
-    return getLatestResultsWrapper(m_cameraData).hasTargets();
+    return getLatestResults().hasTargets();
   }
 
   @Override
@@ -236,7 +265,7 @@ public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonV
       return Collections.emptyList();
     }
 
-    return getTargetDataForCamera(m_cameraData, m_tagLayout, robotPose);
+    return getTargetData(m_tagLayout, robotPose);
   }
 
   //

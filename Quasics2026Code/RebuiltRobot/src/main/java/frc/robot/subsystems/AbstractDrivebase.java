@@ -6,9 +6,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AbstractDrivebase extends SubsystemBase {
+public abstract class AbstractDrivebase extends SubsystemBase {
   /** Creates a new AbstractDrivebase. */
-  public AbstractDrivebase() {}
+  public AbstractDrivebase() {
+  }
+
+  public abstract void arcadeDrive(float forwardspeed, float turnspeed);
 
   @Override
   public void periodic() {

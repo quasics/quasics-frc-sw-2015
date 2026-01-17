@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
@@ -11,7 +13,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public AbstractDrivebase() {
   }
 
-  public abstract void arcadeDrive(float forwardspeed, float turnspeed);
+  public abstract void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
   @Override
   public void periodic() {

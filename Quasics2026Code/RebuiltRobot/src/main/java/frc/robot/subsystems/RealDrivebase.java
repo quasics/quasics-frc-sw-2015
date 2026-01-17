@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,9 +31,9 @@ public class RealDrivebase extends AbstractDrivebase {
     // add thriftynova support
   }
 
-  public void arcadeDrive(float forwardspeed, float turnspeed) {
+  public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     // TODO: use diffDrive class to drive w arcade
-    m_robotDrive.arcadeDrive(forwardspeed, turnspeed);
+    m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
   @Override

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.IPoseEstimator;
-import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.interfaces.IVisionPlus;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.RobotConfigs.CameraConfig;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
  */
-public class PhotonVision extends SubsystemBase implements IVision, IPhotonVision, IPoseEstimator {
+public class PhotonVision extends SubsystemBase implements IVisionPlus, IPhotonVision, IPoseEstimator {
   /** Data about a single camera used for vision tracking. */
   private final CameraData m_cameraData;
 
@@ -100,11 +100,9 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
 
       // Given where we *know* the target is on the field, and where we *think*
       // that the robot is, how far away are we from the target?
-      final Distance distanceToTarget =
-          Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
+      final Distance distanceToTarget = Meters.of(PhotonUtils.getDistanceToPose(robotPose, tagPose.get().toPose2d()));
 
-      TargetData curTargetData =
-          new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
+      TargetData curTargetData = new TargetData(result.fiducialId, Degrees.of(result.yaw), distanceToTarget);
       targets.add(curTargetData);
     }
 
@@ -152,18 +150,36 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
     return result;
   }
 
-  //
-  // Methods from SubsystemBase
-  //
+  /**
+   * Updates pose estimation data posted to the BulletinBoard class, based on the
+   * latest results.
+   */
+  private void updateBulletinBoard() {
+    EstimatedPoseData estimate = null;
+    if (m_lastEstimatedPose.isPresent()) {
+      var lastPose = m_lastEstimatedPose.get();
+      estimate = new EstimatedPoseData(lastPose.estimatedPose.toPose2d(), lastPose.timestampSeconds);
+      BulletinBoard.common.updateValue(ESTIMATED_POSE_KEY, estimate);
+      BulletinBoard.common.updateValue(ESTIMATED_POSE_SET_KEY, Collections.singletonList(estimate));
+    } else {
+      BulletinBoard.common.clearValue(ESTIMATED_POSE_KEY);
+      BulletinBoard.common.clearValue(ESTIMATED_POSE_SET_KEY);
+    }
+  }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    // Where does the drive base think we are?
-    final var optDrivePose =
-        BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
+  /**
+   * Updates m_lastEstimatedPose, based on current target data.
+   */
+  private void updateEstimatedPose() {
+    // Where does the drive base think we are? (Note that if we're not going to use
+    // this as a reference pose, then we don't need to get this data.)
+    //
+    // Note also that absent drive base data, we *could* also use a prior estimate
+    // from vision, but having an *independent* reference can be useful.
+    final var optDrivePose = BulletinBoard.common.getValue(IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
     final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
+    // Build the estimate from the vision pipeline.
     List<PhotonPipelineResult> pipelineResultsList = m_cameraData.camera().getAllUnreadResults();
     if (!pipelineResultsList.isEmpty()) {
       // Camera processed a new frame since last
@@ -178,6 +194,16 @@ public class PhotonVision extends SubsystemBase implements IVision, IPhotonVisio
       // For now, we'll just hold onto the last estimate, since it includes a
       // timestamp that anything that wants to use it can check for "freshness".
     }
+  }
+
+  //
+  // Methods from SubsystemBase
+  //
+
+  @Override
+  public void periodic() {
+    updateEstimatedPose();
+    updateBulletinBoard();
   }
 
   //

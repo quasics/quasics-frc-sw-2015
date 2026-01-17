@@ -35,7 +35,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 /**
  * Implements a PhotonVision-based (single-camera) vision subsystem.
  */
-public class PhotonVision extends SubsystemBase
+public class PhotonVisionSingleCamera extends SubsystemBase
     implements IVisionPlus, IPhotonVision, IPoseEstimator {
   /** Data about a single camera used for vision tracking. */
   private final CameraData m_cameraData;
@@ -48,20 +48,19 @@ public class PhotonVision extends SubsystemBase
 
   private Optional<EstimatedRobotPose> m_lastEstimatedPose = Optional.empty();
 
-  /** Creates a new PhotonVision. */
-  public PhotonVision(CameraConfig cameraConfig) {
+  /** Constructor. */
+  public PhotonVisionSingleCamera(CameraConfig cameraConfig) {
     setName(SUBSYSTEM_NAME);
     m_tagLayout = IPhotonVision.loadLayout(FIELD_LAYOUT.m_resourceFile);
 
     // Add the first camera to our known set.
     // (Note that this assumes that we *have* at least one camera.)
     final PhotonCamera camera = new PhotonCamera(cameraConfig.name());
-    final Transform3d robotToCamera =
-        new Transform3d(new Translation3d(cameraConfig.pos().x(),
-                            cameraConfig.pos().y(), cameraConfig.pos().z()),
-            new Rotation3d(cameraConfig.orientation().roll(),
-                cameraConfig.orientation().pitch(),
-                cameraConfig.orientation().yaw()));
+    final Transform3d robotToCamera = new Transform3d(new Translation3d(cameraConfig.pos().x(),
+        cameraConfig.pos().y(), cameraConfig.pos().z()),
+        new Rotation3d(cameraConfig.orientation().roll(),
+            cameraConfig.orientation().pitch(),
+            cameraConfig.orientation().yaw()));
     var estimator = new PhotonPoseEstimator(m_tagLayout, robotToCamera);
     m_cameraData = new CameraData(camera, robotToCamera, estimator);
   }
@@ -69,8 +68,7 @@ public class PhotonVision extends SubsystemBase
   /**
    * Cached results from the vision pipeline for our (single) camera.
    */
-  List<PhotonPipelineResult> m_pipelineResultsCache =
-      Collections.unmodifiableList(Collections.emptyList());
+  List<PhotonPipelineResult> m_pipelineResultsCache = Collections.unmodifiableList(Collections.emptyList());
 
   /**
    * Updates cached results from the vision pipeline for our (single) camera.
@@ -106,8 +104,7 @@ public class PhotonVision extends SubsystemBase
     }
 
     // Get the last one in the list, which *should* be the newest.
-    PhotonPipelineResult result =
-        m_pipelineResultsCache.get(m_pipelineResultsCache.size() - 1);
+    PhotonPipelineResult result = m_pipelineResultsCache.get(m_pipelineResultsCache.size() - 1);
     return result;
   }
 
@@ -222,18 +219,15 @@ public class PhotonVision extends SubsystemBase
     // useful.
     final var optDrivePose = BulletinBoard.common.getValue(
         IDrivebasePlus.ODOMETRY_KEY, Pose2d.class);
-    final var drivePose =
-        (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
+    final var drivePose = (Pose2d) (optDrivePose.isPresent() ? optDrivePose.get() : null);
 
     // Build the estimate from the vision pipeline.
     List<PhotonPipelineResult> pipelineResultsList = m_pipelineResultsCache;
     if (!pipelineResultsList.isEmpty()) {
       // Camera processed a new frame since last
       // Get the last one in the list.
-      PhotonPipelineResult result =
-          pipelineResultsList.get(pipelineResultsList.size() - 1);
-      m_lastEstimatedPose =
-          updateEstimateForCamera(result, m_cameraData.estimator(), drivePose);
+      PhotonPipelineResult result = pipelineResultsList.get(pipelineResultsList.size() - 1);
+      m_lastEstimatedPose = updateEstimateForCamera(result, m_cameraData.estimator(), drivePose);
     } else {
       // We don't have a new frame for this camera: we should consider either
       // caching the last result frame we got, or the last estimated position

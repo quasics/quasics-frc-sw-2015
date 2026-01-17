@@ -5,13 +5,25 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.photonvision.PhotonCamera;
 
-public class Vision extends SubsystemBase {
+public class Vision extends SubsystemBase implements IVision {
   /** Creates a new Vision. */
-  public Vision() {}
+  public Vision() {
+  }
+
+  PhotonCamera camera = new PhotonCamera("camera1");
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+  public boolean canSeeTargets() {
+    boolean hasTargets;
+    var result = camera.getLatestResult();
+    hasTargets = result.hasTargets();
+    return hasTargets;
   }
 }

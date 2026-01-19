@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.live;
 
+import static frc.robot.util.ThriftySupportFunctions.configureFollower;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.MotorType;
@@ -64,18 +66,4 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
         QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
   }
 
-  /**
-   * Configures a motor (specified via CAN ID) to follow another motor.
-   *
-   * @param followerId CAN ID for the motor to be configured as a follower
-   * @param leader     the motor that should serve as leader
-   */
-  private static void configureFollower(int followerId, ThriftyNova leader) {
-    try (ThriftyNova follower = new ThriftyNova(followerId, MotorType.NEO)) {
-      follower.follow(leader.getID());
-      follower.setInverted(leader.getInversion());
-    } catch (Exception e) { // Failures on ThriftyNova.close()
-      throw new RuntimeException(e);
-    }
-  }
 }

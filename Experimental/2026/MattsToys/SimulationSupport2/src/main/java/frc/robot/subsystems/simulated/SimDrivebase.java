@@ -198,7 +198,7 @@ public class SimDrivebase extends DrivebaseBase {
   }
 
   protected static SimulatedControllerPair getSimulatedControllerPair(int portId1, int portId2, boolean inverted) {
-    Encoder e = getConfiguredController(portId1, portId2, inverted);
+    Encoder e = getConfiguredEncoder(portId1, portId2, inverted);
     EncoderSim sim = new EncoderSim(e);
     return new SimulatedControllerPair(e, sim);
   }

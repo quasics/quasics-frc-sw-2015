@@ -36,11 +36,11 @@ public class PWMSparkMaxDrivebase extends DrivebaseBase {
                                                 SimulationPorts.PWM.LEFT_MOTOR_PORT)),
                                 IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(
                                                 SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
-                                TrivialEncoder.forWpiLibEncoder(getConfiguredController(
+                                TrivialEncoder.forWpiLibEncoder(getConfiguredEncoder(
                                                 SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
                                                 SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
                                                 config.orientation().isLeftInverted())),
-                                TrivialEncoder.forWpiLibEncoder(getConfiguredController(
+                                TrivialEncoder.forWpiLibEncoder(getConfiguredEncoder(
                                                 SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
                                                 SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, config.orientation()
                                                                 .isRightInverted())),

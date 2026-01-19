@@ -208,7 +208,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     m_rightPID = new PIDController(m_config.rightPid().kP(), m_config.rightPid().kI(), m_config.rightPid().kD());
   }
 
-  protected static Encoder getConfiguredController(int portId1, int portId2, boolean inverted) {
+  protected static Encoder getConfiguredEncoder(int portId1, int portId2, boolean inverted) {
     final Encoder encoder = new Encoder(portId1, portId2);
     encoder.setReverseDirection(inverted);
     configureEncoderForDistance(encoder, WHEEL_DIAMETER);

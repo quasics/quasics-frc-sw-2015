@@ -7,6 +7,8 @@ package frc.robot.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.io.IOException;
+
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.util.Conversion;
@@ -68,5 +70,10 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   @Override
   public void reset() {
     m_motorController.setEncoderPosition(0);
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: ThriftyNova should be closed through the MotorController interface.
   }
 }

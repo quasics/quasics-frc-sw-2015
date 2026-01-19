@@ -6,6 +6,9 @@ package frc.robot.sensors;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
@@ -62,7 +65,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
  * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
  *      pattern</a>
  */
-public interface TrivialEncoder {
+public interface TrivialEncoder extends Closeable {
   /**
    * Returns the distance recorded by the encoder.
    *
@@ -107,6 +110,11 @@ public interface TrivialEncoder {
       public void reset() {
         encoder.reset();
       }
+
+      @Override
+      public void close() throws IOException {
+        encoder.close();
+      }
     };
   }
 
@@ -144,6 +152,11 @@ public interface TrivialEncoder {
         encoder.reset();
         encoderSim.setCount(0);
       }
+
+      @Override
+      public void close() throws IOException {
+        encoder.close();
+      }
     };
   }
 
@@ -166,6 +179,10 @@ public interface TrivialEncoder {
 
     @Override
     public void reset() {
+    }
+
+    @Override
+    public void close() throws IOException {
     }
   }
 }

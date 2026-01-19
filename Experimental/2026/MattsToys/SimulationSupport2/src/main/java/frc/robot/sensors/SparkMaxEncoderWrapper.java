@@ -7,6 +7,8 @@ package frc.robot.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import java.io.IOException;
+
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -41,5 +43,10 @@ public class SparkMaxEncoderWrapper implements TrivialEncoder {
   @Override
   public LinearVelocity getVelocity() {
     return MetersPerSecond.of(encoder.getVelocity());
+  }
+
+  @Override
+  public void close() throws IOException {
+    // No-op: SparkMax encoder doesn't expose this method.
   }
 }

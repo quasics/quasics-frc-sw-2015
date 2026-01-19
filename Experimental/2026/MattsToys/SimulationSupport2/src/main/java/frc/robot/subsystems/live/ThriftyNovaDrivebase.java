@@ -8,6 +8,7 @@ import static frc.robot.util.ThriftySupportFunctions.configureFollower;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
+import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.MotorType;
 
 import frc.robot.constants.robots.QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds;
@@ -58,7 +59,10 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
     // Note: this should be redundant to work in the base class. (But it shouldn't
     // hurt.)
     leftLeader.setInverted(config.orientation().isLeftInverted());
+    leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
+
     rightLeader.setInverted(config.orientation().isRightInverted());
+    leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
 
     // Configure the other motors to follow their leader
     configureFollower(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);

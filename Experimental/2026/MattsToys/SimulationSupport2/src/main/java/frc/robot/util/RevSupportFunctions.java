@@ -6,6 +6,10 @@ package frc.robot.util;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -70,5 +74,21 @@ public class RevSupportFunctions {
     config
         .positionConversionFactor(2 * Math.PI)
         .velocityConversionFactor(2 * Math.PI / 60);
+  }
+
+  /**
+   * Configures a motor (specified via CAN ID) to follow another motor.
+   *
+   * @param followerId CAN ID for the motor to be configured as a follower
+   * @param leader     the motor that should serve as leader
+   */
+  public static void configureMotorToFollow(int followerId, SparkMax leader) {
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    followerConfig.follow(leader, true);
+
+    try (SparkMax follower = new SparkMax(followerId, MotorType.kBrushless)) {
+      follower.configure(
+          followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 }

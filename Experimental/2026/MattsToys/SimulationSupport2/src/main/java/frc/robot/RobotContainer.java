@@ -93,7 +93,7 @@ public class RobotContainer {
   final RobotConfig m_robotConfig = RobotConfigLibrary.getConfig(m_robotSelection);
 
   /** The drivebase subsystem. */
-  final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotSelection, m_robotConfig);
+  final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
 
   /** The elevator subsystem. (At present, always simulated.) */
   final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
@@ -134,16 +134,21 @@ public class RobotContainer {
     }
   }
 
-  private static IDrivebasePlus allocateDrivebase(RobotConfigLibrary.Robot selectedRobot, RobotConfig config) {
-    assert Robot.isSimulation() == config.isSimulated() : "Simation setting mismatch (runtime vs. config)";
-    if (Robot.isSimulation() != config.isSimulated()) {
-      throw new RuntimeException("Simation setting mismatch (runtime vs. config)");
+  /**
+   * Allocates the drivebase for the robot.
+   * 
+   * @param config robot configuration
+   * @return the drivebase object to use for the robot
+   */
+  private static IDrivebasePlus allocateDrivebase(RobotConfig config) {
+    if (config.drive() == null) {
+      return new IDrivebasePlus.NullDrivebase();
     }
 
-    return switch (selectedRobot) {
-      case Simulation, SimulationWithTwoCameras ->
+    return switch (config.drive().driveType()) {
+      case Simulated ->
         new SimDrivebase(config.drive());
-      case Sally ->
+      case CanSparkMax ->
         new CANSparkMaxDrivebase(config.drive());
     };
   }

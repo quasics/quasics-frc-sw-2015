@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -11,6 +14,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.BulletinBoard;
+import frc.robot.util.RobotConfigs.DriveConfig;
 
 /** Interface for a drivebase subsystem with additional functionality. */
 public interface IDrivebasePlus extends IDrivebase {
@@ -19,28 +23,18 @@ public interface IDrivebasePlus extends IDrivebase {
   //
 
   /**
-   * Returns the static gain for the drivebase (generally computed using the
-   * SysID tool).
+   * @return the configuration data for the drivebase, including PID-oriented
+   *         constants.
    */
-  double getKs();
+  DriveConfig getConfig();
 
-  /**
-   * Returns the velocity gain for the drivebase (generally computed using the
-   * SysID tool).
-   */
-  double getKv();
-
-  /**
-   * Returns the acceleration gain for the drivebase (generally computed using
-   * the SysID tool).
-   */
-  double getKa();
-
-  /**
-   * Returns the kP value for the drivebase to convert velocity errors (in m/s)
-   * to voltages (generally computed using the SysID tool).
-   */
-  double getKp();
+  default SimpleMotorFeedforward getFeedForward() {
+    return new SimpleMotorFeedforward(getConfig().feedForward().linear().kS().in(Volts),
+        getConfig().feedForward().linear()
+            .kV().in(Volts),
+        getConfig().feedForward().linear()
+            .kA());
+  }
 
   //
   // Methods to support more advanced control of the drivebase (e.g., profiling,

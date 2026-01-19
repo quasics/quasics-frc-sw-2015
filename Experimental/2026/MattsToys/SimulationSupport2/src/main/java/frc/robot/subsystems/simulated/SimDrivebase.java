@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.subsystems.Drivebase;
+import frc.robot.util.RobotConfigs.DriveConfig;
 
 /**
  * Extension of the Drivebase subsystem for simulation support.
@@ -87,8 +88,8 @@ public class SimDrivebase extends Drivebase {
               new Rotation2d(ReefscapeConstants.FACING_RED));
 
         case Reefscape__Extra1 ->
-          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
-              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) - .5,
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) - .5,
               new Rotation2d(
                   ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
         case Reefscape__Extra2 ->
@@ -126,28 +127,25 @@ public class SimDrivebase extends Drivebase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(
-          // Linear components (velocity, acceleration)
-          1.98, 0.2,
-          // Angular components (velocity, acceleration)
-          1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+      // Linear components (velocity, acceleration)
+      1.98, 0.2,
+      // Angular components (velocity, acceleration)
+      1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator =
-      new DifferentialDrivetrainSim(m_drivetrainSystem,
-          // Drive motor type and count
-          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
-          WHEEL_DIAMETER.in(Meters),
-          // configure for no noise in measurements
-          null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+      // Drive motor type and count
+      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+      WHEEL_DIAMETER.in(Meters),
+      // configure for no noise in measurements
+      null);
 
   /** Constructor. */
-  public SimDrivebase() {
-    super();
+  public SimDrivebase(DriveConfig config) {
+    super(config);
 
-    SendableChooser<StartingPosition> positionChooser =
-        new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.getName(), pos);
@@ -228,10 +226,8 @@ public class SimDrivebase extends Drivebase {
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading =
-        m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity =
-        deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

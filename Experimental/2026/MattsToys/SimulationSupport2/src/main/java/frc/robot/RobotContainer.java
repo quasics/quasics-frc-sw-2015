@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -85,11 +84,13 @@ public class RobotContainer {
    * SmartDashboard.reportWarning()), or at least an indicator for the current
    * value.
    */
-  final frc.robot.util.RobotConfigs.RobotConfig m_robotConfig = RobotConfigLibrary
+  final RobotConfig m_robotConfig = RobotConfigLibrary
       .getConfig(RobotConfigLibrary.Robot.Simulation);
 
   /** The drivebase subsystem. */
-  final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase() : new SimDrivebase();
+  final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase(m_robotConfig.drive())
+      : new SimDrivebase(
+          m_robotConfig.drive());
 
   /** The elevator subsystem. (At present, always simulated.) */
   final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
@@ -98,7 +99,7 @@ public class RobotContainer {
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** Vision-processing subsystem. */
-  final IVision m_vision = new frc.robot.subsystems.PhotonVisionSingleCamera(
+  final IVision m_vision = new PhotonVisionSingleCamera(
       RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
           .cameras()
           .get(0));
@@ -358,9 +359,7 @@ public class RobotContainer {
           .setKinematics(m_drivebase.getKinematics())
           // Apply a voltage constraint to ensure we don't accelerate too fast
           // (and brown us out)
-          .addConstraint(new DifferentialDriveVoltageConstraint(
-              new SimpleMotorFeedforward(m_drivebase.getKs(),
-                  m_drivebase.getKv(), m_drivebase.getKa()),
+          .addConstraint(new DifferentialDriveVoltageConstraint(m_drivebase.getFeedForward(),
               m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
 
   /**

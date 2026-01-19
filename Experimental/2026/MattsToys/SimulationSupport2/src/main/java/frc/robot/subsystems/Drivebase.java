@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.util.BulletinBoard;
+import frc.robot.util.RobotConfigs.DriveConfig;
+
 import java.io.IOException;
 
 /**
@@ -152,6 +154,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   // Core definitions
   //
 
+  protected final DriveConfig m_config;
+
   /** Left-side motor controller. */
   protected final PWMSparkMax m_leftController;
 
@@ -180,8 +184,9 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   protected Mode m_mode = Mode.DIRECT_CONTROL;
 
   /** Creates a new Drivebase. */
-  public Drivebase() {
+  public Drivebase(DriveConfig config) {
     setName(SUBSYSTEM_NAME);
+    m_config = config;
 
     //
     // Allocate the hardware components
@@ -205,10 +210,10 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
         DEFAULT_STARTING_POSE);
 
     /** PID controller for left side velocity control. */
-    m_leftPID = new PIDController(Kp, 0.0, 0.0);
+    m_leftPID = new PIDController(m_config.leftPid().kP(), m_config.leftPid().kI(), m_config.leftPid().kD());
 
     /** PID controller for right side velocity control. */
-    m_rightPID = new PIDController(Kp, 0.0, 0.0);
+    m_rightPID = new PIDController(m_config.rightPid().kP(), m_config.rightPid().kI(), m_config.rightPid().kD());
 
     // Set up the encoders
     m_rightEncoder.setReverseDirection(true);
@@ -438,23 +443,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   }
 
   @Override
-  public double getKa() {
-    return Ka;
-  }
-
-  @Override
-  public double getKs() {
-    return Ks;
-  }
-
-  @Override
-  public double getKv() {
-    return Kv;
-  }
-
-  @Override
-  public double getKp() {
-    return Kp;
+  public DriveConfig getConfig() {
+    return m_config;
   }
 
   //

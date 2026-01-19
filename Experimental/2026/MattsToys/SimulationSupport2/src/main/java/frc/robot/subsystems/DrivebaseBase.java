@@ -178,21 +178,16 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     setName(SUBSYSTEM_NAME);
     m_config = config;
 
-    //
-    // Allocate the hardware components
-    //
-
     m_leftController = leftController;
     m_rightController = rightController;
 
-    // Set up the encoders
+    m_leftController.setInverted(config.orientation().isLeftInverted());
+    m_rightController.setInverted(config.orientation().isRightInverted());
+
     m_leftTrivialEncoder = leftEncoder;
     m_rightTrivialEncoder = rightEncoder;
 
     m_rawGyro = gyro;
-
-    //
-    //
 
     /** Odometry calculator. */
     m_odometry = new DifferentialDriveOdometry(

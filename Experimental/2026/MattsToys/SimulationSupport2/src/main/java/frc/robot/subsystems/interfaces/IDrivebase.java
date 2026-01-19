@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import java.io.IOException;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -55,5 +61,37 @@ public interface IDrivebase extends ISubsystem {
   /** Stops all motion of the drivebase. */
   default void stop() {
     driveTank(0.0, 0.0);
+  }
+
+  public class NullDrivebase implements IDrivebase {
+    @Override
+    public void close() throws IOException {
+      // No-op
+    }
+
+    @Override
+    public LinearVelocity getMaxLinearSpeed() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public AngularVelocity getMaxRotationalSpeed() {
+      return RadiansPerSecond.of(0);
+    }
+
+    @Override
+    public DifferentialDriveKinematics getKinematics() {
+      return new DifferentialDriveKinematics(Meters.of(1.5));
+    }
+
+    @Override
+    public void driveArcade(double forward, double rotation) {
+      // No-op
+    }
+
+    @Override
+    public void driveTank(double leftSpeed, double rightSpeed) {
+      // No-op
+    }
   }
 }

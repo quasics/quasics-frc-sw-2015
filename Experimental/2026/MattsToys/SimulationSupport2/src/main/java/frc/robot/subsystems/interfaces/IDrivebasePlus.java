@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -117,5 +120,67 @@ public interface IDrivebasePlus extends IDrivebase {
   static Pose2d getPublishedLastPoseFromOdometry() {
     var stored = BulletinBoard.common.getValue(ODOMETRY_KEY, Pose2d.class);
     return (Pose2d) stored.orElse(null);
+  }
+
+  public class NullDrivebase extends IDrivebase.NullDrivebase implements IDrivebasePlus {
+    @Override
+    public DriveConfig getConfig() {
+      return null;
+    }
+
+    @Override
+    public Pose2d getEstimatedPose() {
+      return new Pose2d();
+    }
+
+    @Override
+    public void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage) {
+      // No-op
+    }
+
+    @Override
+    public void setSpeeds(ChassisSpeeds speeds) {
+      // No-op
+    }
+
+    @Override
+    public void driveTankWithPID(ChassisSpeeds speeds) {
+      // No-op
+    }
+
+    @Override
+    public Distance getLeftPosition() {
+      return Meters.of(0);
+    }
+
+    @Override
+    public LinearVelocity getLeftVelocity() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public Voltage getLeftVoltage() {
+      return Volts.of(0);
+    }
+
+    @Override
+    public Distance getRightPosition() {
+      return Meters.of(0);
+    }
+
+    @Override
+    public LinearVelocity getRightVelocity() {
+      return MetersPerSecond.of(0);
+    }
+
+    @Override
+    public Voltage getRightVoltage() {
+      return Volts.of(0);
+    }
+
+    @Override
+    public AngularVelocity getAngularVelocity() {
+      return RadiansPerSecond.of(0);
+    }
   }
 }

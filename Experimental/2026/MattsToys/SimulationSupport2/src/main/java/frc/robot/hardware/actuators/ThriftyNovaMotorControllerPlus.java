@@ -6,9 +6,9 @@ import com.thethriftybot.devices.ThriftyNova;
 import java.io.Closeable;
 import java.io.IOException;
 
-public class ThiftyNovaMotorControllerPlus
+public class ThriftyNovaMotorControllerPlus
     extends IMotorControllerPlus.MotorControllerPlus {
-  public ThiftyNovaMotorControllerPlus(ThriftyNova controller) {
+  public ThriftyNovaMotorControllerPlus(ThriftyNova controller) {
     super(controller, () -> Volts.of(controller.getVoltage()), new Closeable() {
       public void close() throws IOException {
         try {

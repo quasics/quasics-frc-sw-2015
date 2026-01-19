@@ -7,8 +7,6 @@ package frc.robot.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.io.IOException;
-
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.util.Conversion;
@@ -16,6 +14,7 @@ import com.thethriftybot.util.Conversion.PositionUnit;
 import com.thethriftybot.util.Conversion.VelocityUnit;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a ThriftyNova to be read in the same (general)
@@ -34,37 +33,42 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   /**
    * Thrifty conversion object, used to translate native velocity units to RPMs.
    */
-  final Conversion m_shooterConverter = new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
+  final Conversion m_shooterConverter =
+      new Conversion(VelocityUnit.ROTATIONS_PER_MIN, EncoderType.INTERNAL);
 
   /**
    * Thrifty conversion object, used to translate native positional units to
    * rotations.
    */
-  final Conversion m_distanceConverter = new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
+  final Conversion m_distanceConverter =
+      new Conversion(PositionUnit.ROTATIONS, EncoderType.INTERNAL);
 
   /**
    * Constructor.
-   * 
+   *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
    *                           motor
    */
-  public ThriftyEncoderWrapper(ThriftyNova motorController, Distance wheelOuterDiameter) {
+  public ThriftyEncoderWrapper(
+      ThriftyNova motorController, Distance wheelOuterDiameter) {
     m_rotationDistance = wheelOuterDiameter.times(Math.PI);
     m_motorController = motorController;
   }
 
   @Override
   public Distance getPosition() {
-    final double currentRevolutions = m_distanceConverter.fromMotor(m_motorController.getPosition());
+    final double currentRevolutions =
+        m_distanceConverter.fromMotor(m_motorController.getPosition());
     return m_rotationDistance.times(currentRevolutions);
   }
 
   @Override
   public LinearVelocity getVelocity() {
-    final double currentRPM = m_shooterConverter.fromMotor(m_motorController.getVelocity());
+    final double currentRPM =
+        m_shooterConverter.fromMotor(m_motorController.getVelocity());
     final double revsPerSec = currentRPM * 60;
-    return MetersPerSecond.of(m_rotationDistance.in(Meters) * revsPerSec);
+    return MetersPerSecond.of(m_rotationDistance.in(Meters) *revsPerSec);
   }
 
   @Override
@@ -74,6 +78,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
 
   @Override
   public void close() throws IOException {
-    // No-op: ThriftyNova should be closed through the MotorController interface.
+    // No-op: ThriftyNova should be closed through the MotorController
+    // interface.
   }
 }

@@ -37,11 +37,11 @@ import frc.robot.subsystems.PhotonVisionSingleCamera;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
-import frc.robot.subsystems.live.PWMSparkMaxDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.live.PWMSparkMaxDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
@@ -84,13 +84,13 @@ public class RobotContainer {
    * SmartDashboard.reportWarning()), or at least an indicator for the current
    * value.
    */
-  final RobotConfig m_robotConfig = RobotConfigLibrary
-      .getConfig(RobotConfigLibrary.Robot.Simulation);
+  final RobotConfig m_robotConfig =
+      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation);
 
   /** The drivebase subsystem. */
-  final IDrivebasePlus m_drivebase = Robot.isReal() ? new PWMSparkMaxDrivebase(m_robotConfig.drive())
-      : new SimDrivebase(
-          m_robotConfig.drive());
+  final IDrivebasePlus m_drivebase = Robot.isReal()
+      ? new PWMSparkMaxDrivebase(m_robotConfig.drive())
+      : new SimDrivebase(m_robotConfig.drive());
 
   /** The elevator subsystem. (At present, always simulated.) */
   final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
@@ -108,12 +108,14 @@ public class RobotContainer {
   final ILighting m_lighting = new Lighting(m_robotConfig);
 
   /** The driver joystick wrapper. */
-  final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
-      // Only load from/save to preferences when in simulation
-      Robot.isSimulation());
+  final DriverJoystickWrapper m_driverWrapper =
+      new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
+          // Only load from/save to preferences when in simulation
+          Robot.isSimulation());
 
   /** The autonomous command chooser. */
-  private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
+  private final SendableChooser<Command> m_autoCommandChooser =
+      new SendableChooser<Command>();
 
   /** Constructor. */
   public RobotContainer() {
@@ -133,15 +135,17 @@ public class RobotContainer {
 
   /** Adds lighting commands to the SmartDashboard. */
   private void configureLightingCommands() {
-    SmartDashboard.putData("Target lighting", new TargetingSupportCommand(m_lighting, new Pose2d(
-        ReefscapeConstants.MIDLINE, ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()), Meters.of(2),
-        Meters.of(1), Degrees.of(5)));
+    SmartDashboard.putData("Target lighting",
+        new TargetingSupportCommand(m_lighting,
+            new Pose2d(ReefscapeConstants.MIDLINE,
+                ReefscapeConstants.FIELD_WIDTH.div(2), new Rotation2d()),
+            Meters.of(2), Meters.of(1), Degrees.of(5)));
   }
 
   /**
    * Optionally configures the lighting when the robot is disabled, so that it
-   * indicates location vs. a "planned starting point", allowing the drive team to
-   * ensure that the robot is correctly placed for Auto mode.
+   * indicates location vs. a "planned starting point", allowing the drive team
+   * to ensure that the robot is correctly placed for Auto mode.
    */
   private void maybeConfigureLightingWhenDisabled() {
     if (m_lighting == null) {
@@ -153,13 +157,15 @@ public class RobotContainer {
       // Note that for real use in positioning based on a trajectory to be
       // followed in auto mode, we might actually... you know, use the first
       // position in that trajectory.
-      final Pose2d BLUE_1_POSE = new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
-          ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
-          new Rotation2d(ReefscapeConstants.FACING_BLUE));
+      final Pose2d BLUE_1_POSE =
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
+              new Rotation2d(ReefscapeConstants.FACING_BLUE));
 
       m_lighting.SetDisabledSupplier(new FieldPlacementColorFunction(
           // targetPoseSupplier
-          () -> BLUE_1_POSE,
+          ()
+              -> BLUE_1_POSE,
           // currentPoseSupplier
           //
           // Note: this should actually be coming from *vision* pose estimation,
@@ -183,20 +189,18 @@ public class RobotContainer {
     // forth....
     Command waveCommand = new SequentialCommandGroup(
         new InstantCommand(
-            () -> {
-              m_arm.setTargetPosition(m_arm.getArmOutAngle());
-            },
+            ()
+                -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); },
             m_arm.asSubsystem()),
         // Wait for some motion
         new WaitCommand(2),
         new InstantCommand(
-            () -> {
-              m_arm.setTargetPosition(m_arm.getArmUpAngle());
-            },
+            ()
+                -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); },
             m_arm.asSubsystem()),
         // Wait for some motion
         new WaitCommand(2))
-        .repeatedly();
+                              .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmOutAngle());
     }, m_arm.asSubsystem()));
@@ -205,9 +209,7 @@ public class RobotContainer {
     }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm wave", waveCommand);
     SmartDashboard.putData("Cmd: Arm stop",
-        new InstantCommand(() -> {
-          m_arm.stop();
-        }, m_arm.asSubsystem()));
+        new InstantCommand(() -> { m_arm.stop(); }, m_arm.asSubsystem()));
   }
 
   /**
@@ -237,8 +239,10 @@ public class RobotContainer {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
 
     // Slew rate controls: don't let things ramp up too quickly.
-    SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-    SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter1 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter2 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
     // Drive "speed mode" decisions/scaling.
     Supplier<SpeedMode> speedModeSupplier = () -> {
@@ -257,16 +261,20 @@ public class RobotContainer {
     // slew limits.
     if (USE_ARCADE_DRIVE) {
       m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase,
-          () -> limiter1.calculate(
-              scaler.apply(m_driverWrapper.getArcadeForward())),
-          () -> limiter2.calculate(
-              scaler.apply(m_driverWrapper.getArcadeRotation()))));
+          ()
+              -> limiter1.calculate(
+                  scaler.apply(m_driverWrapper.getArcadeForward())),
+          ()
+              -> limiter2.calculate(
+                  scaler.apply(m_driverWrapper.getArcadeRotation()))));
     } else {
       m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(m_drivebase,
-          () -> limiter1.calculate(
-              scaler.apply(m_driverWrapper.getTankLeft())),
-          () -> limiter2.calculate(
-              scaler.apply(m_driverWrapper.getTankRight()))));
+          ()
+              -> limiter1.calculate(
+                  scaler.apply(m_driverWrapper.getTankLeft())),
+          ()
+              -> limiter2.calculate(
+                  scaler.apply(m_driverWrapper.getTankRight()))));
     }
   }
 
@@ -340,15 +348,14 @@ public class RobotContainer {
   //
 
   /** Defines shapes supported for trajectory-following example commands. */
-  enum TrajectoryShape {
-    Linear, SimpleCurve, SCurve, Circle
-  }
+  enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
 
   /** Maximum desired voltage draw when performing trajectory-following. */
   private static final double kMaxVoltageForSampleTrajectories = 10;
 
   /** Maximum desired acceleration when performing trajectory-following. */
-  private static final LinearAcceleration maxAccelerationForSampleTrajectories = MetersPerSecondPerSecond.of(3);
+  private static final LinearAcceleration maxAccelerationForSampleTrajectories =
+      MetersPerSecondPerSecond.of(3);
 
   /** Configuration for use in generating sample trajectories. */
   private final TrajectoryConfig m_trajectoryConfig =
@@ -359,8 +366,9 @@ public class RobotContainer {
           .setKinematics(m_drivebase.getKinematics())
           // Apply a voltage constraint to ensure we don't accelerate too fast
           // (and brown us out)
-          .addConstraint(new DifferentialDriveVoltageConstraint(m_drivebase.getFeedForward(),
-              m_drivebase.getKinematics(), kMaxVoltageForSampleTrajectories));
+          .addConstraint(new DifferentialDriveVoltageConstraint(
+              m_drivebase.getFeedForward(), m_drivebase.getKinematics(),
+              kMaxVoltageForSampleTrajectories));
 
   /**
    * Generates a robot-relative trajectory for a given shape.

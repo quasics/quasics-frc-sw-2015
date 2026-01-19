@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -57,7 +56,9 @@ import java.util.function.Supplier;
  *      pattern</a>
  */
 public interface IGyro extends Closeable {
-  /** Tells the gyro to perform any calibration processing (e.g., on power-up). */
+  /**
+   * Tells the gyro to perform any calibration processing (e.g., on power-up).
+   */
   void calibrate();
 
   /**
@@ -103,9 +104,7 @@ public interface IGyro extends Closeable {
         // Most functions are passed through to the gyro being wrapped...
         g::calibrate, g::getAngle, g::getRate, g::getRotation2d,
         // ...but reset() is replaced with a no-op.
-        () -> {
-        }, () -> {
-        });
+        () -> {}, () -> {});
   }
 
   /**
@@ -137,8 +136,9 @@ public interface IGyro extends Closeable {
      * @param closer           close function
      */
     FunctionalGyro(Runnable calibrator, Supplier<Angle> angleSupplier,
-        Supplier<AngularVelocity> rateSupplier, Supplier<Rotation2d> rotationSupplier,
-        Runnable resetter, Closeable closer) {
+        Supplier<AngularVelocity> rateSupplier,
+        Supplier<Rotation2d> rotationSupplier, Runnable resetter,
+        Closeable closer) {
       m_calibrator = calibrator;
       m_angleSupplier = angleSupplier;
       m_rateSupplier = rateSupplier;
@@ -186,8 +186,11 @@ public interface IGyro extends Closeable {
    */
   static IGyro wrapGyro(AnalogGyro g) {
     return new FunctionalGyro(g::calibrate,
-        () -> Degrees.of(g.getAngle()),
-        () -> DegreesPerSecond.of(g.getRate()), g::getRotation2d, g::reset, g::close);
+        ()
+            -> Degrees.of(g.getAngle()),
+        ()
+            -> DegreesPerSecond.of(g.getRate()),
+        g::getRotation2d, g::reset, g::close);
   }
 
   /**

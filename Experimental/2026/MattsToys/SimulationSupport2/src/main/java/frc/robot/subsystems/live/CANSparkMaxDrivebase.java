@@ -8,12 +8,11 @@ import static frc.robot.util.RevSupportFunctions.configureMotorToFollow;
 import static frc.robot.util.RevSupportFunctions.configureSparkMaxEncoderForDistance;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.actuators.SparkMaxMotorControllerPlus;
 import frc.robot.constants.robots.QuasicsSparkMaxConstants.QuasicsDrivebaseCanIds;
 import frc.robot.sensors.Pigeon2Wrapper;
@@ -29,31 +28,37 @@ import frc.robot.util.RobotConfigs.DriveConfig;
 public class CANSparkMaxDrivebase extends DrivebaseBase {
   /**
    * Basic constructor.
-   * 
-   * Note that this passes through to a more detailed constructor, so that we can
-   * configure the leaders/followers without mucking around with unsafe casts,
-   * etc.
-   * 
+   *
+   * Note that this passes through to a more detailed constructor, so that we
+   * can configure the leaders/followers without mucking around with unsafe
+   * casts, etc.
+   *
    * @param config drive base configuration
    */
   public CANSparkMaxDrivebase(DriveConfig config) {
-    this(config, new SparkMax(QuasicsDrivebaseCanIds.LEFT_LEADER_ID, MotorType.kBrushless),
-        new SparkMax(QuasicsDrivebaseCanIds.RIGHT_LEADER_ID, MotorType.kBrushless),
+    this(config,
+        new SparkMax(
+            QuasicsDrivebaseCanIds.LEFT_LEADER_ID, MotorType.kBrushless),
+        new SparkMax(
+            QuasicsDrivebaseCanIds.RIGHT_LEADER_ID, MotorType.kBrushless),
         new Pigeon2(QuasicsDrivebaseCanIds.PIGEON2_CAN_ID));
   }
 
   /**
    * Constructor. Passes wrapped hardware up to the base class, and also sets up
    * the left/right follower motors on the drive base.
-   * 
+   *
    * @param config      drive base configuration
    * @param leftLeader  "leader" motor on the left side
    * @param rightLeader "leader" motor on the right side
    * @param rawGyro     the Pigeon2 ALU used on this drive base
    */
-  protected CANSparkMaxDrivebase(DriveConfig config, SparkMax leftLeader, SparkMax rightLeader, Pigeon2 rawGyro) {
-    super(config, new SparkMaxMotorControllerPlus(leftLeader), new SparkMaxMotorControllerPlus(rightLeader),
-        new SparkMaxEncoderWrapper(leftLeader.getEncoder()), new SparkMaxEncoderWrapper(rightLeader.getEncoder()),
+  protected CANSparkMaxDrivebase(DriveConfig config, SparkMax leftLeader,
+      SparkMax rightLeader, Pigeon2 rawGyro) {
+    super(config, new SparkMaxMotorControllerPlus(leftLeader),
+        new SparkMaxMotorControllerPlus(rightLeader),
+        new SparkMaxEncoderWrapper(leftLeader.getEncoder()),
+        new SparkMaxEncoderWrapper(rightLeader.getEncoder()),
         new Pigeon2Wrapper(rawGyro));
 
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
@@ -70,14 +75,14 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
     rightLeaderConfig.inverted(config.orientation().isRightInverted());
     leftLeaderConfig.inverted(config.orientation().isLeftInverted());
 
-    leftLeader.configure(
-        leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightLeader.configure(
-        rightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+    rightLeader.configure(rightLeaderConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
     // Configure the other motors to follow their leader
     configureMotorToFollow(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);
-    configureMotorToFollow(QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
+    configureMotorToFollow(
+        QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
   }
-
 }

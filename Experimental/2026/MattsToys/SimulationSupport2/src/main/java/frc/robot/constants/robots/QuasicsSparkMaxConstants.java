@@ -20,8 +20,8 @@ import edu.wpi.first.units.measure.Distance;
  */
 public class QuasicsSparkMaxConstants {
   public static class Driving {
-    // Rate limits for accelerating the drive base: require a ramp-up of (no less
-    // than) 1/3 sec from 0 to 100% (or vice versa).
+    // Rate limits for accelerating the drive base: require a ramp-up of (no
+    // less than) 1/3 sec from 0 to 100% (or vice versa).
     public static final double MAX_SLEW_RATE = 3;
   }
 
@@ -76,13 +76,13 @@ public class QuasicsSparkMaxConstants {
   }
 
   /**
-   * Defines constants for the different controls on a Logitech gamepad when used
-   * in "Dualshock" mode.
+   * Defines constants for the different controls on a Logitech gamepad when
+   * used in "Dualshock" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "D" position, causing it to enumerate as a Logitech
-   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and 3,
-   * respectively, and the left and right triggers show up as *buttons* 7 and
+   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and
+   * 3, respectively, and the left and right triggers show up as *buttons* 7 and
    * 8.
    */
   public static class LogitechDualshock {
@@ -129,14 +129,14 @@ public class QuasicsSparkMaxConstants {
   }
 
   /**
-   * Defines constants for the different controls on a Logitech gamepad, when used
-   * in "F310" mode.
+   * Defines constants for the different controls on a Logitech gamepad, when
+   * used in "F310" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "X" position, causing it to enumerate as a Logitech
    * Gamepad F310. In this mode, the left and right triggers on the front
-   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0], unlike
-   * regular joysticks.
+   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0],
+   * unlike regular joysticks.
    */
   public static class LogitechGamePadF310 {
     //
@@ -183,7 +183,10 @@ public class QuasicsSparkMaxConstants {
 
   /** Constants associated with the vision class. */
   public static class VisionConstants {
-    /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
+    /**
+     * Minimum target ambiguity. Targets with higher ambiguity will be
+     * discarded
+     */
     public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
     /** Pose ambiguity compensation. */
     public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
@@ -198,27 +201,31 @@ public class QuasicsSparkMaxConstants {
 
     /**
      * Standard deviations of model states. Increase these numbers to trust your
-     * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ, with
-     * units in meters and radians, then meters.
+     * model's state estimates less. This matrix is in the form [x, y, theta]ᵀ,
+     * with units in meters and radians, then meters.
      */
-    public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
-        new double[] {
-            // if these numbers are less than one, multiplying will do bad things
-            1, // x
-            1, // y
-            1 * Math.PI // theta
-        });
+    public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS =
+        new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
+            new double[] {
+                // if these numbers are less than one, multiplying will do bad
+                // things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+            });
 
     /**
      * Standard deviations of the vision measurements. Increase these numbers to
-     * trust global measurements from vision less. This matrix is in the form [x, y,
-     * theta]ᵀ, with units in meters and radians.
+     * trust global measurements from vision less. This matrix is in the form
+     * [x, y, theta]ᵀ, with units in meters and radians.
      */
-    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
-        new double[] { // if these numbers are less than one, multiplying will do bad things
-            .1, // x
-            .1, // y
-            .1 });
+    public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS =
+        new Matrix<N3, N1>(Nat.N3(), Nat.N1(),
+            new double[] {// if these numbers are less than one, multiplying
+                          // will do bad things
+                .1, // x
+                .1, // y
+                .1});
   }
 
   /** Field-related constants for Reefscape. */
@@ -226,7 +233,9 @@ public class QuasicsSparkMaxConstants {
     /** Center line is ~8.77m from the blue alliance wall. */
     final static public Distance CENTER_LINE = Meters.of(8.77);
 
-    /** Starting line for blue alliance is ~7.58m from the blue alliance wall. */
+    /**
+     * Starting line for blue alliance is ~7.58m from the blue alliance wall.
+     */
     final static public Distance BLUE_STARTING_LINE = Meters.of(7.58);
 
     /** Starting line for red alliance is ~9.96m from the red alliance wall. */
@@ -239,16 +248,20 @@ public class QuasicsSparkMaxConstants {
     final static public Distance NEAR_SHOOTING_RANGE = Meters.of(0.0);
 
     /** Outer range for when we're on the blue alliance. */
-    final static public Distance BLUE_FAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
+    final static public Distance BLUE_FAR_SHOOTING_RANGE =
+        BLUE_STARTING_LINE.minus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the blue alliance. */
-    final static public Distance BLUE_NEAR_SHOOTING_RANGE = BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
+    final static public Distance BLUE_NEAR_SHOOTING_RANGE =
+        BLUE_STARTING_LINE.minus(NEAR_SHOOTING_RANGE);
 
     /** Outer range for when we're on the red alliance. */
-    final static public Distance RED_FAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
+    final static public Distance RED_FAR_SHOOTING_RANGE =
+        RED_STARTING_LINE.plus(FAR_SHOOTING_RANGE);
 
     /** Inner range for when we're on the red alliance. */
-    final static public Distance RED_NEAR_SHOOTING_RANGE = RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
+    final static public Distance RED_NEAR_SHOOTING_RANGE =
+        RED_STARTING_LINE.plus(NEAR_SHOOTING_RANGE);
 
     /** Ideal angle for shooting at the barge from the red alliance. */
     final static public Angle RED_BASE_SHOOTING_ANGLE = Degrees.of(180);
@@ -258,15 +271,19 @@ public class QuasicsSparkMaxConstants {
     final static public Angle SHOOTING_ANGLE_TOLERANCE = Degrees.of(4);
 
     /** Outer range on the angle for when we're on the blue alliance. */
-    final static public Angle BLUE_FAR_SHOOTING_ANGLE = BLUE_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+    final static public Angle BLUE_FAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
 
     /** Inner range on the angle for when we're on the blue alliance. */
-    final static public Angle BLUE_NEAR_SHOOTING_ANGLE = BLUE_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
+    final static public Angle BLUE_NEAR_SHOOTING_ANGLE =
+        BLUE_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
 
     /** Outer range on the angle for when we're on the blue alliance. */
-    final static public Angle RED_FAR_SHOOTING_ANGLE = RED_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
+    final static public Angle RED_FAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.minus(SHOOTING_ANGLE_TOLERANCE);
 
     /** Inner range on the angle for when we're on the blue alliance. */
-    final static public Angle RED_NEAR_SHOOTING_ANGLE = RED_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
+    final static public Angle RED_NEAR_SHOOTING_ANGLE =
+        RED_BASE_SHOOTING_ANGLE.plus(SHOOTING_ANGLE_TOLERANCE);
   }
 }

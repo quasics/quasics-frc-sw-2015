@@ -6,13 +6,12 @@ package frc.robot.sensors;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * This defines a "wrapper" type that can be used so that any arbitrary type of

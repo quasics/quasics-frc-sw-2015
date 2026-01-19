@@ -242,9 +242,8 @@ public interface RobotConfigs {
    * @param feedForward feedforward configuration for the drivebase
    */
   public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
-      double gearing,
-      DriveOrientation orientation, PIDConfig leftPid, PIDConfig rightPid,
-      DriveFeedForwardConfig feedForward) {
+      double gearing, DriveOrientation orientation, PIDConfig leftPid,
+      PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left
      * and right.
@@ -257,10 +256,10 @@ public interface RobotConfigs {
      * @param feedForward feedforward configuration for the drivebase
      */
     public DriveConfig(Distance wheelRadius, Distance trackWidth,
-        double gearing, DriveOrientation orientation,
-        PIDConfig commonPid,
+        double gearing, DriveOrientation orientation, PIDConfig commonPid,
         DriveFeedForwardConfig feedForward) {
-      this(wheelRadius, trackWidth, gearing, orientation, commonPid, commonPid, feedForward);
+      this(wheelRadius, trackWidth, gearing, orientation, commonPid, commonPid,
+          feedForward);
     }
   }
 
@@ -287,7 +286,8 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize =
+            subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength

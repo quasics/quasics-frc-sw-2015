@@ -29,11 +29,10 @@ public interface IDrivebasePlus extends IDrivebase {
   DriveConfig getConfig();
 
   default SimpleMotorFeedforward getFeedForward() {
-    return new SimpleMotorFeedforward(getConfig().feedForward().linear().kS().in(Volts),
-        getConfig().feedForward().linear()
-            .kV().in(Volts),
-        getConfig().feedForward().linear()
-            .kA());
+    return new SimpleMotorFeedforward(
+        getConfig().feedForward().linear().kS().in(Volts),
+        getConfig().feedForward().linear().kV().in(Volts),
+        getConfig().feedForward().linear().kA());
   }
 
   //

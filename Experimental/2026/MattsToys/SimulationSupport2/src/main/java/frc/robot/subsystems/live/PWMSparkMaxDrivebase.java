@@ -16,7 +16,7 @@ import frc.robot.util.RobotConfigs.DriveConfig;
 /**
  * Sample implementation of the drivebase functionality, based on PWMSparkMax
  * controllers.
- * 
+ *
  * I'm using PWMSparkMax controllers in this code because of a bug in the
  * original releases of RevLib, which caused crashes during simulation, at least
  * under MacOS. (I filed a [bug
@@ -29,21 +29,21 @@ import frc.robot.util.RobotConfigs.DriveConfig;
  * easily be merged into this class instead.
  */
 public class PWMSparkMaxDrivebase extends DrivebaseBase {
-        /** Creates a new Drivebase. */
-        public PWMSparkMaxDrivebase(DriveConfig config) {
-                super(config,
-                                IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(
-                                                SimulationPorts.PWM.LEFT_MOTOR_PORT)),
-                                IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(
-                                                SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
-                                TrivialEncoder.forWpiLibEncoder(getConfiguredEncoder(
-                                                SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-                                                SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
-                                                config.orientation().isLeftInverted())),
-                                TrivialEncoder.forWpiLibEncoder(getConfiguredEncoder(
-                                                SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-                                                SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, config.orientation()
-                                                                .isRightInverted())),
-                                IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)));
-        }
+  /** Creates a new Drivebase. */
+  public PWMSparkMaxDrivebase(DriveConfig config) {
+    super(config,
+        IMotorControllerPlus.forPWMMotorController(
+            new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
+        IMotorControllerPlus.forPWMMotorController(
+            new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
+        TrivialEncoder.forWpiLibEncoder(
+            getConfiguredEncoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+                SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
+                config.orientation().isLeftInverted())),
+        TrivialEncoder.forWpiLibEncoder(
+            getConfiguredEncoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+                SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
+                config.orientation().isRightInverted())),
+        IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)));
+  }
 }

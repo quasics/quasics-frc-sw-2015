@@ -7,11 +7,10 @@ package frc.robot.sensors;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import java.io.IOException;
-
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.io.IOException;
 
 /**
  * Convenience wrapper, allowing a CANSparkMax's RelativeEncoder to be used as a

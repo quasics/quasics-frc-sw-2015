@@ -61,7 +61,8 @@ public class SimDrivebase extends DrivebaseBase {
     /** Facing Red and aligned with starting game element 3 in Reefscape. */
     Reefscape__Red3,
     Reefscape__Extra1,
-    Reefscape__Extra2,;
+    Reefscape__Extra2,
+    ;
 
     /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
@@ -94,8 +95,8 @@ public class SimDrivebase extends DrivebaseBase {
               new Rotation2d(ReefscapeConstants.FACING_RED));
 
         case Reefscape__Extra1 ->
-          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) - .5,
-              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) - .5,
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
               new Rotation2d(
                   ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
         case Reefscape__Extra2 ->
@@ -133,46 +134,52 @@ public class SimDrivebase extends DrivebaseBase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
-      // Linear components (velocity, acceleration)
-      1.98, 0.2,
-      // Angular components (velocity, acceleration)
-      1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(
+          // Linear components (velocity, acceleration)
+          1.98, 0.2,
+          // Angular components (velocity, acceleration)
+          1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      // Drive motor type and count
-      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
-      WHEEL_DIAMETER.in(Meters),
-      // configure for no noise in measurements
-      null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem,
+          // Drive motor type and count
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+          WHEEL_DIAMETER.in(Meters),
+          // configure for no noise in measurements
+          null);
 
   /** Constructor. */
   public SimDrivebase(DriveConfig config) {
     this(config,
         // Left encoder
         getSimulatedEncoderPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, config.orientation().isLeftInverted()),
+            SimulationPorts.DIO.LEFT_ENCODER_B_PORT,
+            config.orientation().isLeftInverted()),
         // Right encoder
         getSimulatedEncoderPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, config.orientation().isRightInverted()),
+            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
+            config.orientation().isRightInverted()),
         // Gyro
         new AnalogGyro(SimulationPorts.Channel.GYRO_PORT));
   }
 
   /**
    * Actual constructor for this class.
-   * 
+   *
    * @param config  drive configuration
    * @param left    left encoder/simulator pair
    * @param right   right encoder/simulator pair
    * @param rawGyro gyro
    */
-  protected SimDrivebase(DriveConfig config, SimulatedEncoderPair left, SimulatedEncoderPair right,
-      AnalogGyro rawGyro) {
+  protected SimDrivebase(DriveConfig config, SimulatedEncoderPair left,
+      SimulatedEncoderPair right, AnalogGyro rawGyro) {
     super(config,
-        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
-        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
+        IMotorControllerPlus.forPWMMotorController(
+            new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
+        IMotorControllerPlus.forPWMMotorController(
+            new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
         TrivialEncoder.forWpiLibEncoder(left.encoder, left.encoderSim),
         TrivialEncoder.forWpiLibEncoder(right.encoder, right.encoderSim),
         IGyro.wrapGyro(rawGyro));
@@ -181,7 +188,8 @@ public class SimDrivebase extends DrivebaseBase {
     m_rightEncoderSim = right.encoderSim;
     m_gyroSim = new AnalogGyroSim(rawGyro);
 
-    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser =
+        new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.getName(), pos);
@@ -191,13 +199,12 @@ public class SimDrivebase extends DrivebaseBase {
     }
     SmartDashboard.putData("Starting point", positionChooser);
     positionChooser.onChange(this::updateStartingPoint);
-
   }
 
-  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {
-  }
+  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {}
 
-  protected static SimulatedEncoderPair getSimulatedEncoderPair(int portId1, int portId2, boolean inverted) {
+  protected static SimulatedEncoderPair getSimulatedEncoderPair(
+      int portId1, int portId2, boolean inverted) {
     Encoder e = getConfiguredEncoder(portId1, portId2, inverted);
     EncoderSim sim = new EncoderSim(e);
     return new SimulatedEncoderPair(e, sim);
@@ -272,8 +279,10 @@ public class SimDrivebase extends DrivebaseBase {
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading =
+        m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity =
+        deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

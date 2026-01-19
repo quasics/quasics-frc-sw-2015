@@ -25,13 +25,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.actuators.IMotorControllerPlus;
-import frc.robot.actuators.SparkMaxMotorControllerPlus;
-import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
@@ -45,19 +41,8 @@ import java.io.IOException;
  *
  * Notes:
  *
- * <li>I'm using PWMSparkMax controllers in this code because of a bug in the
- * current (Beta1) version of RevLib, which is causing crashes during
- * simulation, at least under MacOS. (A [bug
- * report](https://github.com/wpilibsuite/2026Beta/issues/29) has been
- * filed.)
- *
  * <li>This class implements "open loop" control only; there is no PID
  * control or other feedback mechanisms here.
- *
- * <li>Simulation support is provided in a subclass, SimDrivebase. This is
- * simply to keep simulation-specific code separate from "real" robot code, in
- * order to provide greater clarity as an example; this functionality could
- * easily be merged into this class instead.
  *
  * <li>This class adds explicit PID-based velocity control, in addition to the
  * basic "direct" control. All direct control driving methods route through
@@ -68,7 +53,7 @@ import java.io.IOException;
  *
  * </ul>
  */
-public class Drivebase extends SubsystemBase implements IDrivebasePlus {
+public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   /** Supported control modes. */
   enum Mode {
     /** Direct control mode (no PID). */
@@ -187,19 +172,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   protected Mode m_mode = Mode.DIRECT_CONTROL;
 
   /** Creates a new Drivebase. */
-  public Drivebase(DriveConfig config) {
-    this(config,
-        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
-        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
-        TrivialEncoder.forWpiLibEncoder(getConfiguredController(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, true)),
-        TrivialEncoder.forWpiLibEncoder(getConfiguredController(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, false)),
-        IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)));
-  }
-
-  /** Creates a new Drivebase. */
-  protected Drivebase(DriveConfig config,
+  protected DrivebaseBase(DriveConfig config,
       IMotorControllerPlus leftController, IMotorControllerPlus rightController,
       TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro) {
     setName(SUBSYSTEM_NAME);

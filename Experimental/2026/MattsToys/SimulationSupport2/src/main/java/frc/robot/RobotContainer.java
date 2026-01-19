@@ -32,12 +32,12 @@ import frc.robot.commands.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
-import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Lighting;
 import frc.robot.subsystems.PhotonVisionSingleCamera;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
+import frc.robot.subsystems.live.PWMSparkMaxDrivebase;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
@@ -88,7 +88,7 @@ public class RobotContainer {
       .getConfig(RobotConfigLibrary.Robot.Simulation);
 
   /** The drivebase subsystem. */
-  final IDrivebasePlus m_drivebase = Robot.isReal() ? new Drivebase(m_robotConfig.drive())
+  final IDrivebasePlus m_drivebase = Robot.isReal() ? new PWMSparkMaxDrivebase(m_robotConfig.drive())
       : new SimDrivebase(
           m_robotConfig.drive());
 

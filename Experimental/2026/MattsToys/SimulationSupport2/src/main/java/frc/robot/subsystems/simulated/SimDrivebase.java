@@ -28,7 +28,7 @@ import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.DrivebaseBase;
 import frc.robot.util.RobotConfigs.DriveConfig;
 
 /**
@@ -38,7 +38,7 @@ import frc.robot.util.RobotConfigs.DriveConfig;
  * (and initially *was* implemented this way), but I'm keeping it separate (for
  * now) to isolate simulation-specific code.
  */
-public class SimDrivebase extends Drivebase {
+public class SimDrivebase extends DrivebaseBase {
   /**
    * Supported (pre-defined) starting positions for the robot.
    *

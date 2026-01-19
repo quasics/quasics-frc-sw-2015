@@ -4,6 +4,9 @@
 
 package frc.robot.constants.robots;
 
+/**
+ * Defines some constants for use with Quasics' Thrifty Nova-based robots.
+ */
 public class QuasicsThriftyNovaConstants {
 
   /** Common CAN IDs for Quasics' robots. */

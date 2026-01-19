@@ -207,18 +207,43 @@ public interface RobotConfigs {
     }
   }
 
+  /** Orientation of the motors on the drive base. */
+  public enum DriveOrientation {
+    /** Neither left/right motors are inverted. */
+    NotInverted,
+    /** Both Left/right motors are inverted. */
+    FullyInverted,
+    /** Right motor (only) is inverted. */
+    RightInverted,
+    /** Left motor (only) is inverted. */
+    LeftInverted,
+    ;
+
+    /** @return true iff the motors on the right side are inverted */
+    public boolean isRightInverted() {
+      return this == FullyInverted || this == RightInverted;
+    }
+
+    /** @return true iff the motors on the left side are inverted */
+    public boolean isLeftInverted() {
+      return this == FullyInverted || this == LeftInverted;
+    }
+  }
+
   /**
    * Drive base configuration data.
    *
    * @param wheelRadius radius of the drive base wheels
    * @param trackWidth  maximum width between drive base wheels
    * @param gearing     gearing between motor and wheel axel (>=1)
+   * @param orientation orientation of the drivebase's motors
    * @param leftPid     PID configuration for the drivebase's left motors
    * @param rightPid    PID configuration for the drivebase's right motors
    * @param feedForward feedforward configuration for the drivebase
    */
   public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
-      double gearing, PIDConfig leftPid, PIDConfig rightPid,
+      double gearing,
+      DriveOrientation orientation, PIDConfig leftPid, PIDConfig rightPid,
       DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left
@@ -227,13 +252,15 @@ public interface RobotConfigs {
      * @param wheelRadius radius of the drive base wheels
      * @param trackWidth  maximum width between drive base wheels
      * @param gearing     gearing between motor and wheel axel (>=1)
+     * @param orientation orientation of the drivebase's motors
      * @param commonPid   shared PID configuration for the drivebase
      * @param feedForward feedforward configuration for the drivebase
      */
     public DriveConfig(Distance wheelRadius, Distance trackWidth,
-        double gearing, PIDConfig commonPid,
+        double gearing, DriveOrientation orientation,
+        PIDConfig commonPid,
         DriveFeedForwardConfig feedForward) {
-      this(wheelRadius, trackWidth, gearing, commonPid, commonPid, feedForward);
+      this(wheelRadius, trackWidth, gearing, orientation, commonPid, commonPid, feedForward);
     }
   }
 
@@ -260,8 +287,7 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize =
-            subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength

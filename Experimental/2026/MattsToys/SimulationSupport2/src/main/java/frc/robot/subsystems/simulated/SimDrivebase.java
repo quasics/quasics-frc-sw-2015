@@ -152,10 +152,10 @@ public class SimDrivebase extends DrivebaseBase {
     this(config,
         // Left encoder
         getSimulatedControllerPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, true),
+            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, config.orientation().isLeftInverted()),
         // Right encoder
         getSimulatedControllerPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, false),
+            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, config.orientation().isRightInverted()),
         // Gyro
         new AnalogGyro(SimulationPorts.Channel.GYRO_PORT));
   }

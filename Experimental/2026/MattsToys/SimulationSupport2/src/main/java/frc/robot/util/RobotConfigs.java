@@ -230,9 +230,15 @@ public interface RobotConfigs {
     }
   }
 
+  /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
+  public enum DriveType {
+    Simulated, CanSparkMax
+  }
+
   /**
    * Drive base configuration data.
    *
+   * @param driveType   drive type (simulated, CAN-based SparkMax)
    * @param wheelRadius radius of the drive base wheels
    * @param trackWidth  maximum width between drive base wheels
    * @param gearing     gearing between motor and wheel axel (>=1)
@@ -241,13 +247,15 @@ public interface RobotConfigs {
    * @param rightPid    PID configuration for the drivebase's right motors
    * @param feedForward feedforward configuration for the drivebase
    */
-  public static record DriveConfig(Distance wheelRadius, Distance trackWidth,
-      double gearing, DriveOrientation orientation, PIDConfig leftPid,
-      PIDConfig rightPid, DriveFeedForwardConfig feedForward) {
+  public static record DriveConfig(DriveType driveType, Distance wheelRadius,
+      Distance trackWidth, double gearing, DriveOrientation orientation,
+      PIDConfig leftPid, PIDConfig rightPid,
+      DriveFeedForwardConfig feedForward) {
     /**
      * Convenience constructor, using a single set of PID values for both left
      * and right.
      *
+     * @param driveType   drive type (simulated, CAN-based SparkMax)
      * @param wheelRadius radius of the drive base wheels
      * @param trackWidth  maximum width between drive base wheels
      * @param gearing     gearing between motor and wheel axel (>=1)
@@ -255,11 +263,11 @@ public interface RobotConfigs {
      * @param commonPid   shared PID configuration for the drivebase
      * @param feedForward feedforward configuration for the drivebase
      */
-    public DriveConfig(Distance wheelRadius, Distance trackWidth,
-        double gearing, DriveOrientation orientation, PIDConfig commonPid,
-        DriveFeedForwardConfig feedForward) {
-      this(wheelRadius, trackWidth, gearing, orientation, commonPid, commonPid,
-          feedForward);
+    public DriveConfig(DriveType driveType, Distance wheelRadius,
+        Distance trackWidth, double gearing, DriveOrientation orientation,
+        PIDConfig commonPid, DriveFeedForwardConfig feedForward) {
+      this(driveType, wheelRadius, trackWidth, gearing, orientation, commonPid,
+          commonPid, feedForward);
     }
   }
 
@@ -286,8 +294,7 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize =
-            subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength
@@ -392,6 +399,26 @@ public interface RobotConfigs {
   public static record RobotConfig(boolean isSimulated, DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
       LightingConfig lighting, CandleConfig candle) {
+
+    public RobotConfig(boolean isSimulated, DriveConfig drive,
+        List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
+        LightingConfig lighting, CandleConfig candle) {
+      if (drive != null) {
+        assert (isSimulated == (drive.driveType() == DriveType.Simulated))
+            : "Simulation setting mismatch (robot vs. drive)";
+        if (isSimulated != (drive.driveType() == DriveType.Simulated)) {
+          throw new RuntimeException("Simation setting mismatch (runtime vs. config)");
+        }
+      }
+      this.isSimulated = isSimulated;
+      this.drive = drive;
+      this.cameras = cameras;
+      this.elevator = elevator;
+      this.arm = arm;
+      this.lighting = lighting;
+      this.candle = candle;
+    }
+
     /**
      * Utility constructor fo a single-camera robot.
      *

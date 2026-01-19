@@ -21,6 +21,7 @@ import frc.robot.util.RobotConfigs.CandleConfig;
 import frc.robot.util.RobotConfigs.DriveConfig;
 import frc.robot.util.RobotConfigs.DriveFeedForwardConfig;
 import frc.robot.util.RobotConfigs.DriveOrientation;
+import frc.robot.util.RobotConfigs.DriveType;
 import frc.robot.util.RobotConfigs.ElevatorConfig;
 import frc.robot.util.RobotConfigs.ElevatorFeedForwardConfig;
 import frc.robot.util.RobotConfigs.Imaging;
@@ -61,7 +62,9 @@ public final class RobotConfigLibrary {
    * configurations).
    */
   private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG =
-      new DriveConfig(Inches.of(3), // Wheel radius
+      new DriveConfig(DriveType.Simulated,
+          // Wheel radius
+          Inches.of(3),
           Meters.of(0.381 * 2), // Trackwidth
           8.0, // Gearing
           DriveOrientation.RightInverted, new PIDConfig(1.6662),
@@ -123,6 +126,7 @@ public final class RobotConfigLibrary {
       throw new RuntimeException("Configurations are missing for "
           + numRobotsWithoutConfigs + " robot(s)!");
     }
+
     return map;
   }
 
@@ -227,7 +231,7 @@ public final class RobotConfigLibrary {
 
   private static RobotConfig generateSallyConfig() {
     return new RobotConfig(false,
-        new DriveConfig(Inches.of(3), // Wheel radius
+        new DriveConfig(DriveType.CanSparkMax, Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024),
             DriveOrientation.RightInverted,

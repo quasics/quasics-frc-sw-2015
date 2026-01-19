@@ -389,7 +389,7 @@ public interface RobotConfigs {
    * @param arm      arm configuration (may be null)
    * @param candle   CANdle configuration (may be null)
    */
-  public static record RobotConfig(DriveConfig drive,
+  public static record RobotConfig(boolean isSimulated, DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
       LightingConfig lighting, CandleConfig candle) {
     /**
@@ -402,10 +402,11 @@ public interface RobotConfigs {
      * @param arm      arm configuration (may be null)
      * @param candle   CANdle configuration (may be null)
      */
-    RobotConfig(DriveConfig drive, CameraConfig camera, ElevatorConfig elevator,
-        ArmConfig arm, LightingConfig lighting, CandleConfig candle) {
-      this(drive, Collections.singletonList(camera), elevator, arm, lighting,
-          candle);
+    RobotConfig(boolean isSimulated, DriveConfig drive, CameraConfig camera,
+        ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
+        CandleConfig candle) {
+      this(isSimulated, drive, Collections.singletonList(camera), elevator, arm,
+          lighting, candle);
     }
 
     /**

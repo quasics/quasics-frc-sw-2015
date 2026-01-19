@@ -163,7 +163,7 @@ public final class RobotConfigLibrary {
 
     final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
 
-    return new RobotConfig(SIMULATED_DRIVE_BASE_CONFIG,
+    return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
@@ -171,7 +171,7 @@ public final class RobotConfigLibrary {
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
-    return new RobotConfig(SIMULATED_DRIVE_BASE_CONFIG,
+    return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             new CameraConfig("USBCamera1",
                 // Our camera is mounted 0.1 meters forward and 0.5
@@ -226,7 +226,7 @@ public final class RobotConfigLibrary {
   }
 
   private static RobotConfig generateSallyConfig() {
-    return new RobotConfig(
+    return new RobotConfig(false,
         new DriveConfig(Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
             8.45, // Gearing (from 2024),

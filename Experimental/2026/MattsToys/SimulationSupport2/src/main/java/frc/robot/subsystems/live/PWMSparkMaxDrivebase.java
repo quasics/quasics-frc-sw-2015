@@ -6,10 +6,10 @@ package frc.robot.subsystems.live;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import frc.robot.actuators.IMotorControllerPlus;
 import frc.robot.constants.robots.SimulationPorts;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.DrivebaseBase;
 import frc.robot.util.RobotConfigs.DriveConfig;
 

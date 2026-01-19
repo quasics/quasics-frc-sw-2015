@@ -13,10 +13,10 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import frc.robot.actuators.SparkMaxMotorControllerPlus;
 import frc.robot.constants.robots.QuasicsSparkMaxConstants.QuasicsDrivebaseCanIds;
-import frc.robot.sensors.Pigeon2Wrapper;
-import frc.robot.sensors.SparkMaxEncoderWrapper;
+import frc.robot.hardware.actuators.SparkMaxMotorControllerPlus;
+import frc.robot.hardware.sensors.Pigeon2Wrapper;
+import frc.robot.hardware.sensors.SparkMaxEncoderWrapper;
 import frc.robot.subsystems.DrivebaseBase;
 import frc.robot.util.RobotConfigs.DriveConfig;
 

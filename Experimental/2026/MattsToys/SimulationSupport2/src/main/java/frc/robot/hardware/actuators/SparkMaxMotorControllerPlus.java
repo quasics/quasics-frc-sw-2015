@@ -1,4 +1,4 @@
-package frc.robot.actuators;
+package frc.robot.hardware.actuators;
 
 import static edu.wpi.first.units.Units.Volts;
 

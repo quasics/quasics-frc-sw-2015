@@ -23,11 +23,11 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.actuators.IMotorControllerPlus;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.constants.robots.SimulationPorts;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
+import frc.robot.hardware.actuators.IMotorControllerPlus;
+import frc.robot.hardware.sensors.IGyro;
+import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.DrivebaseBase;
 import frc.robot.util.RobotConfigs.DriveConfig;
 
@@ -95,8 +95,8 @@ public class SimDrivebase extends DrivebaseBase {
               new Rotation2d(ReefscapeConstants.FACING_RED));
 
         case Reefscape__Extra1 ->
-          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) - .5,
-              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) - .5,
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
               new Rotation2d(
                   ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
         case Reefscape__Extra2 ->
@@ -134,23 +134,25 @@ public class SimDrivebase extends DrivebaseBase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
-      // Linear components (velocity, acceleration)
-      1.98, 0.2,
-      // Angular components (velocity, acceleration)
-      1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(
+          // Linear components (velocity, acceleration)
+          1.98, 0.2,
+          // Angular components (velocity, acceleration)
+          1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      // Drive motor type and count
-      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
-      WHEEL_DIAMETER.in(Meters),
-      // configure for no noise in measurements
-      null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem,
+          // Drive motor type and count
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+          WHEEL_DIAMETER.in(Meters),
+          // configure for no noise in measurements
+          null);
 
   /**
    * Constructor.
-   * 
+   *
    * @param config the configuration for this drive base
    */
   public SimDrivebase(DriveConfig config) {
@@ -190,7 +192,8 @@ public class SimDrivebase extends DrivebaseBase {
     m_rightEncoderSim = right.encoderSim;
     m_gyroSim = new AnalogGyroSim(rawGyro);
 
-    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser =
+        new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.getName(), pos);
@@ -203,12 +206,11 @@ public class SimDrivebase extends DrivebaseBase {
   }
 
   /** Used to hold a WPI encoder and its paired EncoderSim object. */
-  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {
-  }
+  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {}
 
   /**
    * Allocates an encoder and a paired simulator object.
-   * 
+   *
    * @param portId1  "A" port for the encoder
    * @param portId2  "B" port for the encoder
    * @param inverted if true, the motor is in an inverted configuration
@@ -290,8 +292,10 @@ public class SimDrivebase extends DrivebaseBase {
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading =
+        m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity =
+        deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

@@ -151,10 +151,10 @@ public class SimDrivebase extends DrivebaseBase {
   public SimDrivebase(DriveConfig config) {
     this(config,
         // Left encoder
-        getSimulatedControllerPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+        getSimulatedEncoderPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
             SimulationPorts.DIO.LEFT_ENCODER_B_PORT, config.orientation().isLeftInverted()),
         // Right encoder
-        getSimulatedControllerPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+        getSimulatedEncoderPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
             SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, config.orientation().isRightInverted()),
         // Gyro
         new AnalogGyro(SimulationPorts.Channel.GYRO_PORT));
@@ -168,7 +168,7 @@ public class SimDrivebase extends DrivebaseBase {
    * @param right   right encoder/simulator pair
    * @param rawGyro gyro
    */
-  protected SimDrivebase(DriveConfig config, SimulatedControllerPair left, SimulatedControllerPair right,
+  protected SimDrivebase(DriveConfig config, SimulatedEncoderPair left, SimulatedEncoderPair right,
       AnalogGyro rawGyro) {
     super(config,
         IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
@@ -194,13 +194,13 @@ public class SimDrivebase extends DrivebaseBase {
 
   }
 
-  private record SimulatedControllerPair(Encoder encoder, EncoderSim encoderSim) {
+  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {
   }
 
-  protected static SimulatedControllerPair getSimulatedControllerPair(int portId1, int portId2, boolean inverted) {
+  protected static SimulatedEncoderPair getSimulatedEncoderPair(int portId1, int portId2, boolean inverted) {
     Encoder e = getConfiguredEncoder(portId1, portId2, inverted);
     EncoderSim sim = new EncoderSim(e);
-    return new SimulatedControllerPair(e, sim);
+    return new SimulatedEncoderPair(e, sim);
   }
 
   /**

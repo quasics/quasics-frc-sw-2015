@@ -153,44 +153,67 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Left-side motor controller. */
-  final protected PWMSparkMax m_leftController = new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
+  protected final PWMSparkMax m_leftController;
 
   /** Right-side motor controller. */
-  final protected PWMSparkMax m_rightController = new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
+  protected final PWMSparkMax m_rightController;
 
   /** Left-side encoder. */
-  protected final Encoder m_leftEncoder = new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-      SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
+  protected final Encoder m_leftEncoder;
 
   /** Right-side encoder. */
-  protected final Encoder m_rightEncoder = new Encoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-      SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
+  protected final Encoder m_rightEncoder;
 
   /** Gyro sensor. */
-  final protected AnalogGyro m_rawGyro = new AnalogGyro(SimulationPorts.Channel.GYRO_PORT);
+  protected final AnalogGyro m_rawGyro;
 
   /** Odometry calculator. */
-  protected DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-      new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
-      m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
-      DEFAULT_STARTING_POSE);
+  protected DifferentialDriveOdometry m_odometry;
+
+  /** PID controller for left side velocity control. */
+  private final PIDController m_leftPID;
+
+  /** PID controller for right side velocity control. */
+  private final PIDController m_rightPID;
 
   /** Current driving control mode. */
   protected Mode m_mode = Mode.DIRECT_CONTROL;
-
-  /** PID controller for left side velocity control. */
-  PIDController m_leftPID = new PIDController(Kp, 0.0, 0.0);
-
-  /** PID controller for right side velocity control. */
-  PIDController m_rightPID = new PIDController(Kp, 0.0, 0.0);
 
   /** Creates a new Drivebase. */
   public Drivebase() {
     setName(SUBSYSTEM_NAME);
 
+    //
+    // Allocate the hardware components
+    //
+
+    m_leftController = new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
+    m_rightController = new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
+    m_leftEncoder = new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+        SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
+    m_rightEncoder = new Encoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+        SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
+    m_rawGyro = new AnalogGyro(SimulationPorts.Channel.GYRO_PORT);
+
+    //
+    //
+
+    /** Odometry calculator. */
+    m_odometry = new DifferentialDriveOdometry(
+        new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
+        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        DEFAULT_STARTING_POSE);
+
+    /** PID controller for left side velocity control. */
+    m_leftPID = new PIDController(Kp, 0.0, 0.0);
+
+    /** PID controller for right side velocity control. */
+    m_rightPID = new PIDController(Kp, 0.0, 0.0);
+
     // Set up the encoders
     m_rightEncoder.setReverseDirection(true);
     m_leftEncoder.setReverseDirection(false);
+
     configureEncoderForDistance(m_leftEncoder, WHEEL_DIAMETER);
     configureEncoderForDistance(m_rightEncoder, WHEEL_DIAMETER);
   }

@@ -14,6 +14,9 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
@@ -21,6 +24,10 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.games.ReefscapeConstants;
+import frc.robot.constants.robots.SimulationPorts;
+import frc.robot.hardware.IMotorControllerPlus;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.util.RobotConfigs.DriveConfig;
 
@@ -54,8 +61,7 @@ public class SimDrivebase extends Drivebase {
     /** Facing Red and aligned with starting game element 3 in Reefscape. */
     Reefscape__Red3,
     Reefscape__Extra1,
-    Reefscape__Extra2,
-    ;
+    Reefscape__Extra2,;
 
     /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
@@ -110,13 +116,13 @@ public class SimDrivebase extends Drivebase {
   }
 
   /** Controls the base class's left encoder under simulation. */
-  final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  final EncoderSim m_leftEncoderSim;
 
   /** Controls the base class's right encoder under simulation. */
-  final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  final EncoderSim m_rightEncoderSim;
 
   /** Controls the base class's gyro under simulation. */
-  final AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_rawGyro);
+  final AnalogGyroSim m_gyroSim;
 
   /**
    * Linear system describing the drive train.
@@ -143,7 +149,37 @@ public class SimDrivebase extends Drivebase {
 
   /** Constructor. */
   public SimDrivebase(DriveConfig config) {
-    super(config);
+    this(config,
+        // Left encoder
+        getSimulatedControllerPair(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, true),
+        // Right encoder
+        getSimulatedControllerPair(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, false),
+        // Gyro
+        new AnalogGyro(SimulationPorts.Channel.GYRO_PORT));
+  }
+
+  /**
+   * Actual constructor for this class.
+   * 
+   * @param config  drive configuration
+   * @param left    left encoder/simulator pair
+   * @param right   right encoder/simulator pair
+   * @param rawGyro gyro
+   */
+  protected SimDrivebase(DriveConfig config, SimulatedControllerPair left, SimulatedControllerPair right,
+      AnalogGyro rawGyro) {
+    super(config,
+        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
+        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
+        TrivialEncoder.forWpiLibEncoder(left.encoder, left.encoderSim),
+        TrivialEncoder.forWpiLibEncoder(right.encoder, right.encoderSim),
+        IGyro.wrapGyro(rawGyro));
+
+    m_leftEncoderSim = left.encoderSim;
+    m_rightEncoderSim = right.encoderSim;
+    m_gyroSim = new AnalogGyroSim(rawGyro);
 
     SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
@@ -155,6 +191,16 @@ public class SimDrivebase extends Drivebase {
     }
     SmartDashboard.putData("Starting point", positionChooser);
     positionChooser.onChange(this::updateStartingPoint);
+
+  }
+
+  private record SimulatedControllerPair(Encoder encoder, EncoderSim encoderSim) {
+  }
+
+  protected static SimulatedControllerPair getSimulatedControllerPair(int portId1, int portId2, boolean inverted) {
+    Encoder e = getConfiguredController(portId1, portId2, inverted);
+    EncoderSim sim = new EncoderSim(e);
+    return new SimulatedControllerPair(e, sim);
   }
 
   /**

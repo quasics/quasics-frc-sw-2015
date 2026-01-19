@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -31,6 +30,10 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.robots.SimulationPorts;
+import frc.robot.hardware.IMotorControllerPlus;
+import frc.robot.hardware.SparkMaxMotorControllerPlus;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.util.BulletinBoard;
 import frc.robot.util.RobotConfigs.DriveConfig;
@@ -157,19 +160,19 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   protected final DriveConfig m_config;
 
   /** Left-side motor controller. */
-  protected final PWMSparkMax m_leftController;
+  protected final IMotorControllerPlus m_leftController;
 
   /** Right-side motor controller. */
-  protected final PWMSparkMax m_rightController;
+  protected final IMotorControllerPlus m_rightController;
 
   /** Left-side encoder. */
-  protected final Encoder m_leftEncoder;
+  protected final TrivialEncoder m_leftTrivialEncoder;
 
   /** Right-side encoder. */
-  protected final Encoder m_rightEncoder;
+  protected final TrivialEncoder m_rightTrivialEncoder;
 
   /** Gyro sensor. */
-  protected final AnalogGyro m_rawGyro;
+  protected final IGyro m_rawGyro;
 
   /** Odometry calculator. */
   protected DifferentialDriveOdometry m_odometry;
@@ -185,6 +188,20 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
   /** Creates a new Drivebase. */
   public Drivebase(DriveConfig config) {
+    this(config,
+        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT)),
+        IMotorControllerPlus.forPWMMotorController(new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
+        TrivialEncoder.forWpiLibEncoder(getConfiguredController(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
+            SimulationPorts.DIO.LEFT_ENCODER_B_PORT, true)),
+        TrivialEncoder.forWpiLibEncoder(getConfiguredController(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
+            SimulationPorts.DIO.RIGHT_ENCODER_B_PORT, false)),
+        IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)));
+  }
+
+  /** Creates a new Drivebase. */
+  protected Drivebase(DriveConfig config,
+      IMotorControllerPlus leftController, IMotorControllerPlus rightController,
+      TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro) {
     setName(SUBSYSTEM_NAME);
     m_config = config;
 
@@ -192,21 +209,23 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     // Allocate the hardware components
     //
 
-    m_leftController = new PWMSparkMax(SimulationPorts.PWM.LEFT_MOTOR_PORT);
-    m_rightController = new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT);
-    m_leftEncoder = new Encoder(SimulationPorts.DIO.LEFT_ENCODER_A_PORT,
-        SimulationPorts.DIO.LEFT_ENCODER_B_PORT);
-    m_rightEncoder = new Encoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
-        SimulationPorts.DIO.RIGHT_ENCODER_B_PORT);
-    m_rawGyro = new AnalogGyro(SimulationPorts.Channel.GYRO_PORT);
+    m_leftController = leftController;
+    m_rightController = rightController;
+
+    // Set up the encoders
+    m_leftTrivialEncoder = leftEncoder;
+    m_rightTrivialEncoder = rightEncoder;
+
+    m_rawGyro = gyro;
 
     //
     //
 
     /** Odometry calculator. */
     m_odometry = new DifferentialDriveOdometry(
-        new Rotation2d(Degrees.of(m_rawGyro.getAngle())),
-        m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+        new Rotation2d(m_rawGyro.getAngle()),
+        m_leftTrivialEncoder.getPosition().in(Meters), m_rightTrivialEncoder.getPosition().in(
+            Meters),
         DEFAULT_STARTING_POSE);
 
     /** PID controller for left side velocity control. */
@@ -214,13 +233,13 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
     /** PID controller for right side velocity control. */
     m_rightPID = new PIDController(m_config.rightPid().kP(), m_config.rightPid().kI(), m_config.rightPid().kD());
+  }
 
-    // Set up the encoders
-    m_rightEncoder.setReverseDirection(true);
-    m_leftEncoder.setReverseDirection(false);
-
-    configureEncoderForDistance(m_leftEncoder, WHEEL_DIAMETER);
-    configureEncoderForDistance(m_rightEncoder, WHEEL_DIAMETER);
+  protected static Encoder getConfiguredController(int portId1, int portId2, boolean inverted) {
+    final Encoder encoder = new Encoder(portId1, portId2);
+    encoder.setReverseDirection(inverted);
+    configureEncoderForDistance(encoder, WHEEL_DIAMETER);
+    return encoder;
   }
 
   /**
@@ -309,7 +328,7 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
   public void periodic() {
     m_odometry.update(m_rawGyro.getRotation2d(),
         new DifferentialDriveWheelPositions(
-            m_leftEncoder.getDistance(), m_rightEncoder.getDistance()));
+            m_leftTrivialEncoder.getPosition(), m_rightTrivialEncoder.getPosition()));
 
     // Publish the odometry-based pose to the bulletin board.
     BulletinBoard.common.updateValue(ODOMETRY_KEY, getEstimatedPose());
@@ -393,9 +412,9 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     final double rightFeedforward = FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
 
     final double leftOutput = m_leftPID.calculate(
-        m_leftEncoder.getRate(), wheelSpeeds.leftMetersPerSecond);
+        m_leftTrivialEncoder.getVelocity().in(MetersPerSecond), wheelSpeeds.leftMetersPerSecond);
     final double rightOutput = m_rightPID.calculate(
-        m_rightEncoder.getRate(), wheelSpeeds.rightMetersPerSecond);
+        m_rightTrivialEncoder.getVelocity().in(MetersPerSecond), wheelSpeeds.rightMetersPerSecond);
 
     // Apply voltages to the motors.
     setMotorVoltages(Volts.of(leftOutput + leftFeedforward),
@@ -409,37 +428,37 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
 
   @Override
   public Distance getLeftPosition() {
-    return Meters.of(m_leftEncoder.getDistance());
+    return m_leftTrivialEncoder.getPosition();
   }
 
   @Override
   public LinearVelocity getLeftVelocity() {
-    return MetersPerSecond.of(m_leftEncoder.getRate());
+    return m_leftTrivialEncoder.getVelocity();
   }
 
   @Override
   public Voltage getLeftVoltage() {
-    return Volts.of(m_leftController.getVoltage());
+    return m_leftController.getVoltage();
   }
 
   @Override
   public Distance getRightPosition() {
-    return Meters.of(m_rightEncoder.getDistance());
+    return m_rightTrivialEncoder.getPosition();
   }
 
   @Override
   public LinearVelocity getRightVelocity() {
-    return MetersPerSecond.of(m_rightEncoder.getRate());
+    return m_rightTrivialEncoder.getVelocity();
   }
 
   @Override
   public Voltage getRightVoltage() {
-    return Volts.of(m_rightController.getVoltage());
+    return m_rightController.getVoltage();
   }
 
   @Override
   public AngularVelocity getAngularVelocity() {
-    return DegreesPerSecond.of(m_rawGyro.getRate());
+    return m_rawGyro.getRate();
   }
 
   @Override
@@ -456,8 +475,8 @@ public class Drivebase extends SubsystemBase implements IDrivebasePlus {
     // Close (destroy) our various components.
     m_leftController.close();
     m_rightController.close();
-    m_leftEncoder.close();
-    m_rightEncoder.close();
+    m_leftTrivialEncoder.close();
+    m_rightTrivialEncoder.close();
     m_rawGyro.close();
   }
 }

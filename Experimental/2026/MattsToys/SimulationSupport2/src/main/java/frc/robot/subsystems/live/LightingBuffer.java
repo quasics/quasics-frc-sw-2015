@@ -37,8 +37,15 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
   }
 
   /**
-   * Sets the logical direction for indices of the buffer (true == 0 -> size-1;
-   * false == size-1 to 0).
+   * Sets the logical direction for indices of the buffer:
+   * <ul>
+   * <li>true indicates that index 0 is the first light in the sequence when
+   * updating LEDs
+   * <li>false indicates that index 0 is the last light in the sequence when
+   * updating LEDs
+   * </ul>
+   * 
+   * @see #SetStripColor(frc.robot.subsystems.interfaces.ILighting.ColorSupplier)
    */
   public void setForward(boolean forward) {
     m_forward = forward;

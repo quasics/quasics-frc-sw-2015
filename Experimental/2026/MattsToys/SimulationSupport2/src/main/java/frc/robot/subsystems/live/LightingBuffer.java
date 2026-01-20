@@ -18,7 +18,14 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
   /** The buffer view being manipulated by this subsystem. */
   private final AddressableLEDBufferView m_buffer;
 
+  /** Optional function used to supply color values while robot is disabled. */
   private ColorSupplier m_disabledColorSupplier = null;
+
+  /**
+   * If true, the logical direction for indices of the buffer (true == 0 ->
+   * size-1; false == size-1 to 0).
+   */
+  private boolean m_forward = true;
 
   /**
    * Creates a new LightingBuffer.
@@ -29,6 +36,14 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
     m_buffer = view;
   }
 
+  /**
+   * Sets the logical direction for indices of the buffer (true == 0 -> size-1;
+   * false == size-1 to 0).
+   */
+  public void setForward(boolean forward) {
+    m_forward = forward;
+  }
+
   @Override
   public int getLength() {
     return m_buffer.getLength();
@@ -36,8 +51,10 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
 
   @Override
   public void SetStripColor(ColorSupplier function) {
+    final int maxIndex = getLength() - 1;
     for (var i = 0; i < m_buffer.getLength(); i++) {
-      m_buffer.setLED(i, function.getColorForLed(i));
+      int pos = (m_forward ? i : (maxIndex - i));
+      m_buffer.setLED(pos, function.getColorForLed(i));
     }
   }
 

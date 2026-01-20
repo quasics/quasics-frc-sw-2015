@@ -231,9 +231,7 @@ public interface RobotConfigs {
   }
 
   /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
-  public enum DriveType {
-    Simulated, CanSparkMax
-  }
+  public enum DriveType { Simulated, CanSparkMax }
 
   /**
    * Drive base configuration data.
@@ -294,7 +292,8 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize =
+            subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength
@@ -399,7 +398,6 @@ public interface RobotConfigs {
   public static record RobotConfig(boolean isSimulated, DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
       LightingConfig lighting, CandleConfig candle) {
-
     public RobotConfig(boolean isSimulated, DriveConfig drive,
         List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
         LightingConfig lighting, CandleConfig candle) {
@@ -407,7 +405,8 @@ public interface RobotConfigs {
         assert (isSimulated == (drive.driveType() == DriveType.Simulated))
             : "Simulation setting mismatch (robot vs. drive)";
         if (isSimulated != (drive.driveType() == DriveType.Simulated)) {
-          throw new RuntimeException("Simation setting mismatch (runtime vs. config)");
+          throw new RuntimeException(
+              "Simation setting mismatch (runtime vs. config)");
         }
       }
       this.isSimulated = isSimulated;

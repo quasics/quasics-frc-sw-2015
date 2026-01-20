@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.driving;
 
 import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,8 +64,7 @@ public class FollowTrajectoryCommand extends Command {
 
     // Convert the base trajectory into something relative to the robot's
     // initial pose when the command starts running.
-    Transform2d transform =
-        new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
+    Transform2d transform = new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
     m_currentTrajectory = m_baseTrajectory.transformBy(transform);
   }
 

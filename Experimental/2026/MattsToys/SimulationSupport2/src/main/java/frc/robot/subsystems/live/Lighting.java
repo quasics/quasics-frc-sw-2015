@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.live;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * allocation of a subview of the appropriate size during construction, which
  * can then be used with SimCandle.
  * 
- * @see frc.robot.subsystems.LightingBuffer
+ * @see frc.robot.subsystems.live.LightingBuffer
  * @see frc.robot.subsystems.simulated.SimCandle
  */
 public class Lighting extends SubsystemBase implements ILighting {
@@ -52,7 +52,7 @@ public class Lighting extends SubsystemBase implements ILighting {
    * Views of subsets of the lights that may be assigned to LightingBuffer
    * objects.
    * 
-   * @see frc.robot.subsystems.LightingBuffer
+   * @see frc.robot.subsystems.live.LightingBuffer
    */
   List<AddressableLEDBufferView> m_subViews;
 

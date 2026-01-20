@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.live;
 
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.SolidColor;
@@ -42,12 +42,10 @@ public class Candle extends SubsystemBase implements ICandle {
     m_configAll.LED.StripType = StripTypeValue.RGB;
 
     // Turn off Status LED when CANdle is actively being controlled
-    m_configAll.CANdleFeatures.StatusLedWhenActive =
-        StatusLedWhenActiveValue.Disabled;
+    m_configAll.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
 
     // Leave LEDs on when Loss of Signal occurs
-    m_configAll.LED.LossOfSignalBehavior =
-        LossOfSignalBehaviorValue.DisableLEDs;
+    m_configAll.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
     // Dim the LEDs to 50% brightness
     m_configAll.LED.BrightnessScalar = 0.5;

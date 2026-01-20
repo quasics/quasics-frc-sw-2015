@@ -32,20 +32,26 @@ import frc.robot.commands.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Lighting;
+import frc.robot.subsystems.LightingBuffer;
 import frc.robot.subsystems.PhotonVisionSingleCamera;
+import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
+import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.subsystems.interfaces.ILighting;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
 import frc.robot.subsystems.live.CANSparkMaxDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
+import frc.robot.subsystems.simulated.SimCandle;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
+import frc.robot.util.RobotConfigs;
 import frc.robot.util.RobotConfigs.RobotConfig;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
@@ -110,6 +116,15 @@ public class RobotContainer {
   /** Lighting subystem. */
   final ILighting m_lighting = new Lighting(m_robotConfig);
 
+  /** CANdle */
+  final ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
+
+  /** Left-side righting. */
+  final ILighting m_leftLighting = allocateSideLighting(m_robotConfig, m_lighting, true);
+
+  /** Right-side righting. */
+  final ILighting m_rightLighting = allocateSideLighting(m_robotConfig, m_lighting, false);
+
   /** The driver joystick wrapper. */
   final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
       // Only load from/save to preferences when in simulation
@@ -155,6 +170,9 @@ public class RobotContainer {
 
   /** Adds lighting commands to the SmartDashboard. */
   private void configureLightingCommands() {
+    m_leftLighting.SetStripColor(StockColor.Gold);
+    m_rightLighting.SetStripColor(StockColor.Maroon);
+
     SmartDashboard.putData("Target lighting",
         new TargetingSupportCommand(m_lighting,
             new Pose2d(ReefscapeConstants.MIDLINE,
@@ -441,5 +459,38 @@ public class RobotContainer {
             // Pass config
             m_trajectoryConfig);
     };
+  }
+
+  /**
+   * Allocates an ICandle subsystem object.
+   *
+   * @param config the target robot's configuration
+   * @return an ICandle subsystem for this robot (may be trivial)
+   */
+  private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
+    if (!config.hasCandle()) {
+      return new ICandle.NullCandle();
+    }
+
+    if (Robot.isReal()) {
+      return new Candle(config);
+    } else {
+      Lighting realSubsystem = (Lighting) lighting;
+      if (realSubsystem.getSubViews().isEmpty()) {
+        return new ICandle.NullCandle();
+      }
+      return new SimCandle(realSubsystem.getSubViews().get(0));
+    }
+  }
+
+  private static ILighting allocateSideLighting(RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+    Lighting realSubsystem = (Lighting) lighting;
+    final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
+    // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right
+    final int viewIndex = (simulatingCandle ? 1 : 0) + (leftSide ? 0 : 1);
+    if (realSubsystem.getSubViews().size() < (viewIndex + 1)) {
+      return new ILighting.NullLighting();
+    }
+    return new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
   }
 }

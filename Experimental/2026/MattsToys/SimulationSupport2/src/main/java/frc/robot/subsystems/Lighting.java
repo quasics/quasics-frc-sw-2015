@@ -1,4 +1,4 @@
-// Copyright (c) 2024-2025, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2024-2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -26,7 +26,15 @@ import java.util.stream.Stream;
  * This provides an interface that allows for both configuring the strip as a
  * whole, and allocating "subviews" of the strip for independent control (with
  * the unallocated LEDs at the front of the strip being used as the lights
- * directly supported by this class).
+ * directly supported by this class), which can be assigned to LightingBuffer
+ * objects.
+ * 
+ * This class also provides support for simulating a CANdle by injecting the
+ * allocation of a subview of the appropriate size during construction, which
+ * can then be used with SimCandle.
+ * 
+ * @see frc.robot.subsystems.LightingBuffer
+ * @see frc.robot.subsystems.simulated.SimCandle
  */
 public class Lighting extends SubsystemBase implements ILighting {
   /** The raw interface to the addressable LED strip connected to the Rio. */
@@ -40,6 +48,12 @@ public class Lighting extends SubsystemBase implements ILighting {
    */
   private final LightingBuffer m_lightingBuffer;
 
+  /**
+   * Views of subsets of the lights that may be assigned to LightingBuffer
+   * objects.
+   * 
+   * @see frc.robot.subsystems.LightingBuffer
+   */
   List<AddressableLEDBufferView> m_subViews;
 
   /**
@@ -80,7 +94,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     this(pwmPort, numLights,
         Stream
             .concat(Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH)
-                        .stream(),
+                .stream(),
                 (subViews != null ? subViews : Collections.EMPTY_LIST).stream())
             .toList());
   }
@@ -123,7 +137,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     if (subViewsSum > 0 && numLights < subViewsSum) {
       throw new IllegalArgumentException(
           "Invalid LED strip length for requested subviews: " + numLights
-          + " (must be at least " + subViewsSum + ")");
+              + " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println(
           "INFO: configuring LED strip support with " + numLights + " LEDs");

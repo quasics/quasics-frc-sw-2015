@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.TankDrive;
+import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.constants.games.ReefscapeConstants;
@@ -172,6 +173,8 @@ public class RobotContainer {
   private void configureLightingCommands() {
     m_leftLighting.SetStripColor(StockColor.Gold);
     m_rightLighting.SetStripColor(StockColor.Maroon);
+
+    m_leftLighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_leftLighting, 0, 20));
 
     SmartDashboard.putData("Target lighting",
         new TargetingSupportCommand(m_lighting,

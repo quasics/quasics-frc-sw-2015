@@ -175,6 +175,7 @@ public class RobotContainer {
     m_rightLighting.SetStripColor(StockColor.Maroon);
 
     m_leftLighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_leftLighting, 0, 20));
+    m_rightLighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_rightLighting, 0, 20));
 
     SmartDashboard.putData("Target lighting",
         new TargetingSupportCommand(m_lighting,
@@ -494,6 +495,8 @@ public class RobotContainer {
     if (realSubsystem.getSubViews().size() < (viewIndex + 1)) {
       return new ILighting.NullLighting();
     }
-    return new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
+    LightingBuffer buffer = new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
+    buffer.setForward(leftSide);
+    return buffer;
   }
 }

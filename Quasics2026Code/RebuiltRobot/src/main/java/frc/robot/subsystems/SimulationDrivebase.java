@@ -11,6 +11,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
@@ -19,10 +21,16 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
+  private PWMSparkMax m_left = new PWMSparkMax(1);
+  private PWMSparkMax m_right = new PWMSparkMax(2);
+
+  private DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
+
   private Encoder m_leftEncoder = new Encoder(1, 2);
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
       KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a new diffDrivetrain sim
@@ -35,9 +43,17 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
         .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
+    // public DifferentialDriveWheelSpeeds(double leftMetersPerSecond, double
+    // rightMetersPerSecond)
+
+    // public DifferentialDriveWheelSpeeds hey = new DifferentialDriveWheelSpeeds();
+    // hey.arcadeDrive(forwardspeed, turnspeed);
 
     // TODO: Give the motors (it is okay that they are not real, their set/get
     // functions still work) the wheel speeds
+
+    // Ok, so: get what the wheel speed should be and send it to RealDrivebase
+    // "Hint": use wheelspeed.leftMetersPerSecond & wheelspeed.rightMetersPerSecond
   }
 
   /** Creates a new SimulationDrivebase. */

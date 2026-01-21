@@ -52,7 +52,9 @@ public final class RobotConfigLibrary {
     /** "Naked" drivebase used by the coding sub-team */
     Sally,
     // /** 2025 ("Reefscape") robot */
-    // Amelia
+    // Amelia,
+    // /** 2026 ("Rebuilt") robot */
+    // Rebuilt2026, // 20.25" trackwidth (roughly)
   }
 
   //
@@ -251,5 +253,25 @@ public final class RobotConfigLibrary {
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);
+  }
+
+  private static RobotConfig generate2026Config() {
+    // TODO: Update 2026 drive configuration data with real numbers.
+    DriveConfig drive = new DriveConfig(DriveType.ThriftyNova,
+        Inches.of(3),
+        Inches.of(20.25), // Hand-wavy.....
+        8.45,
+        DriveOrientation.RightInverted,
+        // TODO: Compute left/right PID and FF data for 2026 robot
+        new PIDConfig(0.29613), // Left PID
+        new PIDConfig(0.29613), // Right PID
+        new DriveFeedForwardConfig(
+            Volts.of(0), // Ks (linear)
+            Volts.of(0.19529), // kV (Linear)
+            0.01, // Ka (Linear)
+            Volts.of(0.19529), 0.01) // Angular data (FAKE)
+    );
+
+    return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);
   }
 }

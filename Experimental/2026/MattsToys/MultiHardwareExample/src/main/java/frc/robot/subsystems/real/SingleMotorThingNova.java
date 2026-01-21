@@ -7,7 +7,6 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.thethriftybot.devices.ThriftyNova;
-
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.subsystems.implementation.SingleMotorThing;
@@ -21,7 +20,8 @@ public class SingleMotorThingNova extends SingleMotorThing {
    */
   static DerivedClassData getStuffForBaseClassSetup() {
     ThriftyNova motorController = new ThriftyNova(1, ThriftyNova.MotorType.NEO);
-    return new DerivedClassData(motorController, new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
+    return new DerivedClassData(
+        motorController, new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
   public SingleMotorThingNova() {

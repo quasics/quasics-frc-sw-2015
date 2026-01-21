@@ -8,11 +8,10 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.io.IOException;
 
 /**
  * Interface for a drivebase subsystem.

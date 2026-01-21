@@ -33,8 +33,9 @@ public class CANDriveSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(leftLeader, rightLeader);
 
     // Set can timeout. Because this project only sets parameters once on
-    // construction, the timeout can be long without blocking robot operation. Code
-    // which sets or gets parameters during operation may need a shorter timeout.
+    // construction, the timeout can be long without blocking robot operation.
+    // Code which sets or gets parameters during operation may need a shorter
+    // timeout.
     leftLeader.setCANTimeout(250);
     rightLeader.setCANTimeout(250);
     leftFollower.setCANTimeout(250);
@@ -42,28 +43,31 @@ public class CANDriveSubsystem extends SubsystemBase {
 
     // Create the configuration to apply to motors. Voltage compensation
     // helps the robot perform more similarly on different
-    // battery voltages (at the cost of a little bit of top speed on a fully charged
-    // battery). The current limit helps prevent tripping
-    // breakers.
+    // battery voltages (at the cost of a little bit of top speed on a fully
+    // charged battery). The current limit helps prevent tripping breakers.
     SparkMaxConfig config = new SparkMaxConfig();
     config.voltageCompensation(12);
     config.smartCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
 
-    // Set configuration to follow each leader and then apply it to corresponding
-    // follower. Resetting in case a new controller is swapped
-    // in and persisting in case of a controller reset due to breaker trip
+    // Set configuration to follow each leader and then apply it to
+    // corresponding follower. Resetting in case a new controller is swapped in
+    // and persisting in case of a controller reset due to breaker trip
     config.follow(leftLeader);
-    leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollower.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.follow(rightLeader);
-    rightFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightFollower.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // Remove following, then apply config to right leader
     config.disableFollowerMode();
-    rightLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Set config to inverted and then apply to left leader. Set Left side inverted
-    // so that postive values drive both sides forward
+    rightLeader.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // Set config to inverted and then apply to left leader. Set Left side
+    // inverted so that postive values drive both sides forward
     config.inverted(true);
-    leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeader.configure(
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

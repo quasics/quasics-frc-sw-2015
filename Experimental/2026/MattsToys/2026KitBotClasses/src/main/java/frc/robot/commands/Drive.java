@@ -18,7 +18,8 @@ public class Drive extends Command {
   CANDriveSubsystem driveSubsystem;
   CommandXboxController controller;
 
-  public Drive(CANDriveSubsystem driveSystem, CommandXboxController driverController) {
+  public Drive(
+      CANDriveSubsystem driveSystem, CommandXboxController driverController) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
@@ -32,13 +33,13 @@ public class Drive extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   // The Y axis of the controller is inverted so that pushing the
-  // stick away from you (a negative value) drives the robot forwards (a positive
-  // value). The X axis is scaled down so the rotation is more easily
+  // stick away from you (a negative value) drives the robot forwards (a
+  // positive value). The X axis is scaled down so the rotation is more easily
   // controllable.
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(
-        -controller.getLeftY() * DRIVE_SCALING, -controller.getRightX() * ROTATION_SCALING);
+    driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING,
+        -controller.getRightX() * ROTATION_SCALING);
   }
 
   // Called once the command ends or is interrupted.

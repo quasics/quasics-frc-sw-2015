@@ -47,18 +47,19 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    // Set the options to show up in the Dashboard for selecting auto modes. If you
-    // add additional auto modes you can add additional lines here with
+    // Set the options to show up in the Dashboard for selecting auto modes. If
+    // you add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.setDefaultOption(
+        "Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
   }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the {@link Trigger#Trigger(java.util.function.BooleanSupplier)}
    * constructor with an arbitrary predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
-   * for {@link CommandXboxController Xbox}/
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s
+   * subclasses for {@link CommandXboxController Xbox}/
    * {@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
@@ -69,19 +70,22 @@ public class RobotContainer {
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
-    operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
-    // While the A button is held on the operator controller, eject fuel back out
-    // the intake
+    operatorController.rightBumper().whileTrue(
+        new LaunchSequence(fuelSubsystem));
+    // While the A button is held on the operator controller, eject fuel back
+    // out the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
 
-    // Set the default command for the drive subsystem to the command provided by
-    // factory with the values provided by the joystick axes on the driver
+    // Set the default command for the drive subsystem to the command provided
+    // by factory with the values provided by the joystick axes on the driver
     // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value)
-    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
+    // stick away from you (a negative value) drives the robot forwards (a
+    // positive value)
+    driveSubsystem.setDefaultCommand(
+        new Drive(driveSubsystem, driverController));
 
-    fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
+    fuelSubsystem.setDefaultCommand(
+        fuelSubsystem.run(() -> fuelSubsystem.stop()));
   }
 
   /**

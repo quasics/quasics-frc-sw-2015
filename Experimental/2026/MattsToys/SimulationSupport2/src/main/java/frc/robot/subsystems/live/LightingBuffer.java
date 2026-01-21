@@ -44,8 +44,9 @@ public class LightingBuffer extends SubsystemBase implements ILighting {
    * <li>false indicates that index 0 is the last light in the sequence when
    * updating LEDs
    * </ul>
-   * 
-   * @see #SetStripColor(frc.robot.subsystems.interfaces.ILighting.ColorSupplier)
+   *
+   * @see
+   *     #SetStripColor(frc.robot.subsystems.interfaces.ILighting.ColorSupplier)
    */
   public void setForward(boolean forward) {
     m_forward = forward;

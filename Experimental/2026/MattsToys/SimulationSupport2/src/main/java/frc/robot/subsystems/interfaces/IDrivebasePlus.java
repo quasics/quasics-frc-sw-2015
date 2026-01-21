@@ -122,7 +122,8 @@ public interface IDrivebasePlus extends IDrivebase {
     return (Pose2d) stored.orElse(null);
   }
 
-  public class NullDrivebase extends IDrivebase.NullDrivebase implements IDrivebasePlus {
+  public class NullDrivebase
+      extends IDrivebase.NullDrivebase implements IDrivebasePlus {
     @Override
     public DriveConfig getConfig() {
       return null;

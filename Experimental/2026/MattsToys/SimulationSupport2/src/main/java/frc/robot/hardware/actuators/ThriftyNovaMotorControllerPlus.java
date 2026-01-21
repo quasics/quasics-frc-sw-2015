@@ -15,7 +15,7 @@ public class ThriftyNovaMotorControllerPlus
     extends IMotorControllerPlus.MotorControllerPlus {
   /**
    * Constructor.
-   * 
+   *
    * @param controller the motor controller being wrapped
    */
   public ThriftyNovaMotorControllerPlus(ThriftyNova controller) {

@@ -4,12 +4,11 @@
 
 package frc.robot.subsystems.simulated;
 
-import java.io.IOException;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.ICandle;
+import java.io.IOException;
 
 /**
  * Simulated implementation of the ICandle interface (using an
@@ -34,8 +33,8 @@ public class SimCandle extends SubsystemBase implements ICandle {
   @Override
   public void setColor(int r, int g, int b) {
     for (var i = 0; i < m_candleView.getLength(); i++) {
-      m_candleView.setRGB(
-          i, (int) (r * m_intensity), (int) (g * m_intensity), (int) (b * m_intensity));
+      m_candleView.setRGB(i, (int) (r * m_intensity), (int) (g * m_intensity),
+          (int) (b * m_intensity));
     }
   }
 

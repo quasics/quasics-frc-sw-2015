@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.MotorType;
-
 import frc.robot.constants.robots.QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds;
 import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
@@ -56,8 +55,8 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
         new ThriftyEncoderWrapper(rightLeader, WHEEL_DIAMETER),
         new Pigeon2Wrapper(rawGyro));
 
-    // Note: this should be redundant to work in the base class. (But it shouldn't
-    // hurt.)
+    // Note: this should be redundant to work in the base class. (But it
+    // shouldn't hurt.)
     leftLeader.setInverted(config.orientation().isLeftInverted());
     leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
 
@@ -66,8 +65,6 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
 
     // Configure the other motors to follow their leader
     configureFollower(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);
-    configureFollower(
-        QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
+    configureFollower(QuasicsDrivebaseCanIds.RIGHT_FOLLOWER_ID, rightLeader);
   }
-
 }

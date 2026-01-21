@@ -8,7 +8,6 @@ package frc.robot.constants.robots;
  * Defines some constants for use with Quasics' Thrifty Nova-based robots.
  */
 public class QuasicsThriftyNovaConstants {
-
   /** Common CAN IDs for Quasics' robots. */
   public static class QuasicsDrivebaseCanIds {
     /** CAN ID for a Pigeon2 ALU. */
@@ -23,5 +22,4 @@ public class QuasicsThriftyNovaConstants {
     /** CAN ID for the "following" motor on the drive base's right side. */
     public static final int RIGHT_FOLLOWER_ID = 3;
   }
-
 }

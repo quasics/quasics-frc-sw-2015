@@ -28,11 +28,11 @@ import java.util.stream.Stream;
  * the unallocated LEDs at the front of the strip being used as the lights
  * directly supported by this class), which can be assigned to LightingBuffer
  * objects.
- * 
+ *
  * This class also provides support for simulating a CANdle by injecting the
  * allocation of a subview of the appropriate size during construction, which
  * can then be used with SimCandle.
- * 
+ *
  * @see frc.robot.subsystems.live.LightingBuffer
  * @see frc.robot.subsystems.simulated.SimCandle
  */
@@ -51,7 +51,7 @@ public class Lighting extends SubsystemBase implements ILighting {
   /**
    * Views of subsets of the lights that may be assigned to LightingBuffer
    * objects.
-   * 
+   *
    * @see frc.robot.subsystems.live.LightingBuffer
    */
   List<AddressableLEDBufferView> m_subViews;
@@ -94,7 +94,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     this(pwmPort, numLights,
         Stream
             .concat(Collections.singletonList(ICandle.CANDLE_DEFAULT_LENGTH)
-                .stream(),
+                        .stream(),
                 (subViews != null ? subViews : Collections.EMPTY_LIST).stream())
             .toList());
   }
@@ -137,7 +137,7 @@ public class Lighting extends SubsystemBase implements ILighting {
     if (subViewsSum > 0 && numLights < subViewsSum) {
       throw new IllegalArgumentException(
           "Invalid LED strip length for requested subviews: " + numLights
-              + " (must be at least " + subViewsSum + ")");
+          + " (must be at least " + subViewsSum + ")");
     } else {
       System.err.println(
           "INFO: configuring LED strip support with " + numLights + " LEDs");

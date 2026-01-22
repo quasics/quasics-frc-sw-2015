@@ -15,19 +15,26 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**
- * Provides a simple example of a "SingleMotorThing" that uses Spark controllers.
+ * Provides a simple example of a "SingleMotorThing" that uses Spark
+ * controllers.
  *
- * Note that all of the "actual functionality" takes place in the base class; this class only exists
+ * Note that all of the "actual functionality" takes place in the base class;
+ * this class only exists
  * to set up the hardware-specific stuff.
  */
 public class SingleMotorThingSpark extends SingleMotorThing {
   /** Encoder ticks per revolution. */
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
+  /**
+   * Gearing ratio used to drive the actual wheel to which we assume we're
+   * attached. (This is used to configure the encoder.)
+   */
   public static final double GEAR_RATIO = 8.45;
 
   /** Wheel diameter in inches. */
   public static final Distance WHEEL_DIAMETER = Inches.of(6);
+
   /**
    * Updates a SparkMaxConfig to work with distance-based values (meters and
    * meters/sec), rather than the native rotation-based units (rotations and RPM).
@@ -52,8 +59,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
   static DerivedClassData getStuffForBaseClassSetup() {
-    SparkMax motorController =
-        new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+    SparkMax motorController = new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
     motorController.configure(config, com.revrobotics.ResetMode.kNoResetSafeParameters,

@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -32,6 +33,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
   private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
+  private AnalogGyroSim m_GyroSim = new AnalogGyroSim(0);
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -64,6 +66,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   public void simulationPeriodic() {
     m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(), m_rightMotor.get() * RobotController.getInputVoltage());
+    m_driveSim.update(0.02);
+    //getHeading returns counterclockwise positive, Gyros are clockwise positive
+    m_GyroSim.setAngle(m_driveSim.getHeading().getDegrees());
+    //m_leftEncoderSim.setDistance(m_driveSim().getLeftPosition).setRate();
     // TODO: Read tutorial
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
 

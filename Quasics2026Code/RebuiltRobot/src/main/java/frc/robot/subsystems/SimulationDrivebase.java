@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -24,12 +25,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private PWMSparkMax m_left = new PWMSparkMax(1);
   private PWMSparkMax m_right = new PWMSparkMax(2);
 
-  private DifferentialDrive m_drive = new DifferentialDrive(m_left, m_right);
 
   private Encoder m_leftEncoder = new Encoder(1, 2);
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
+  private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -43,17 +45,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
         .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
-    // public DifferentialDriveWheelSpeeds(double leftMetersPerSecond, double
-    // rightMetersPerSecond)
-
-    // public DifferentialDriveWheelSpeeds hey = new DifferentialDriveWheelSpeeds();
-    // hey.arcadeDrive(forwardspeed, turnspeed);
-
-    // TODO: Give the motors (it is okay that they are not real, their set/get
-    // functions still work) the wheel speeds
-
-    // Ok, so: get what the wheel speed should be and send it to RealDrivebase
-    // "Hint": use wheelspeed.leftMetersPerSecond & wheelspeed.rightMetersPerSecond
+        double leftPercent;
+        double rightPercent;
+        leftPercent = mpsToPercent(wheelSpeeds.leftMetersPerSecond);
+        rightPercent = mpsToPercent(wheelSpeeds.rightMetersPerSecond);
+        m_leftMotor.set(leftPercent);
+        m_rightMotor.set(rightPercent);
   }
 
   /** Creates a new SimulationDrivebase. */
@@ -66,6 +63,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   public void simulationPeriodic() {
+    m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(), m_rightMotor.get() * RobotController.getInputVoltage());
     // TODO: Read tutorial
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
 

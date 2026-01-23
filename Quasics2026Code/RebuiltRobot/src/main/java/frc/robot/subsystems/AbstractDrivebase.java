@@ -9,6 +9,9 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
+  //TODO: this should come from a robot config
+  private double m_maxMotorSpeedMPS = 3;
+
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
   }
@@ -18,5 +21,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public double mpsToPercent (double speed) {
+    return speed / m_maxMotorSpeedMPS;
   }
 }

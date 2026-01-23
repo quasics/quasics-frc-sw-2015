@@ -15,15 +15,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
 
 public class Vision extends SubsystemBase implements IVision {
   /** Creates a new Vision. */
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
+  protected PhotonCamera camera = new PhotonCamera("camera1");
+  protected PhotonPoseEstimator photonEstimator;
 
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
@@ -33,15 +37,20 @@ public class Vision extends SubsystemBase implements IVision {
       System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
+    photonEstimator = new PhotonPoseEstimator(tagLayout, new Transform3d()); // should be robotToCam, update whenever
+                                                                             // real camera mounted
     m_tagLayout = tagLayout;
   }
-
-  protected PhotonCamera camera = new PhotonCamera("camera1");
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    getTargetData();
+    var result = camera.getLatestResult();
+    Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
+    visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
+    if (visionEstimate.isEmpty()) {
+      visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
+    }
   }
 
   @Override

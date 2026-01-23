@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,6 +41,7 @@ public class Vision extends SubsystemBase implements IVision {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    getTargetData();
   }
 
   @Override
@@ -59,7 +61,14 @@ public class Vision extends SubsystemBase implements IVision {
     }
     if (results.hasTargets()) {
       PhotonTrackedTarget target = results.getBestTarget();
-      targetData = new TargetData(target.getFiducialId(), target.getYaw(), target.getPitch(), target.getSkew());
+      Optional<Pose3d> tagPose = m_tagLayout.getTagPose(target.getFiducialId());
+      Pose3d tagPose3d = new Pose3d();
+      if (!tagPose.isEmpty()) {
+        tagPose3d = tagPose.get();
+      }
+      Pose2d tagPose2d = tagPose3d.toPose2d();
+      double distanceToTargetPose = PhotonUtils.getDistanceToPose(new Pose2d(), tagPose2d);
+      targetData = new TargetData(target.getFiducialId(), target.getYaw(), target.getPitch(), distanceToTargetPose);
     }
     System.out.println(targetData);
     return targetData;

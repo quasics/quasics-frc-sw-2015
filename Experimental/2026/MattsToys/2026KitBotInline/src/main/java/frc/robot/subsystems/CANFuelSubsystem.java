@@ -23,23 +23,29 @@ public class CANFuelSubsystem extends SubsystemBase {
   private final MotorController feederRoller;
   private final MotorController intakeLauncherRoller;
 
-  final static String INTAKING_FEEDER_VOLTAGE_KEY = "Intaking feeder roller value";
-  final static String INTAKING_INTAKE_VOLTAGE_KEY = "Intaking intake roller value";
-  final static String LAUNCHING_FEEDER_VOLTAGE_KEY = "Launching feeder roller value";
-  final static String LAUNCHING_LAUNCHER_VOLTAGE_KEY = "Launching launcher roller value";
-  final static String SPIN_UP_FEEDER_VOLTAGE_KEY = "Spin-up feeder roller value";
+  final static String INTAKING_FEEDER_VOLTAGE_KEY =
+      "Intaking feeder roller value";
+  final static String INTAKING_INTAKE_VOLTAGE_KEY =
+      "Intaking intake roller value";
+  final static String LAUNCHING_FEEDER_VOLTAGE_KEY =
+      "Launching feeder roller value";
+  final static String LAUNCHING_LAUNCHER_VOLTAGE_KEY =
+      "Launching launcher roller value";
+  final static String SPIN_UP_FEEDER_VOLTAGE_KEY =
+      "Spin-up feeder roller value";
 
   private static MotorController allocateIntakeLauncherRoller() {
     if (Constants.USE_SPARK_MAX_OVER_CAN) {
-      SparkMax rawIntakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
-      // create the configuration for the launcher roller, set a current limit, set
-      // the motor to inverted so that positive values are used for both intaking and
-      // launching, and apply the config to the controller
+      SparkMax rawIntakeLauncherRoller =
+          new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushed);
+      // create the configuration for the launcher roller, set a current limit,
+      // set the motor to inverted so that positive values are used for both
+      // intaking and launching, and apply the config to the controller
       SparkMaxConfig launcherConfig = new SparkMaxConfig();
       launcherConfig.inverted(true);
       launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
-      rawIntakeLauncherRoller.configure(
-          launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      rawIntakeLauncherRoller.configure(launcherConfig,
+          ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       return rawIntakeLauncherRoller;
     } else {
@@ -51,14 +57,15 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   private static MotorController allocateFeederRoller() {
     if (Constants.USE_SPARK_MAX_OVER_CAN) {
-      SparkMax rawFeederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+      SparkMax rawFeederRoller =
+          new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
 
-      // create the configuration for the feeder roller, set a current limit and apply
-      // the config to the controller
+      // create the configuration for the feeder roller, set a current limit and
+      // apply the config to the controller
       SparkMaxConfig feederConfig = new SparkMaxConfig();
       feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
-      rawFeederRoller.configure(
-          feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      rawFeederRoller.configure(feederConfig, ResetMode.kResetSafeParameters,
+          PersistMode.kPersistParameters);
 
       return rawFeederRoller;
     } else {
@@ -75,39 +82,47 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederRoller = allocateFeederRoller();
 
     // put default values for various fuel operations onto the dashboard
-    // all methods in this subsystem pull their values from the dashbaord to allow
-    // you to tune the values easily, and then replace the values in Constants.java
-    // with your new values. For more information, see the Software Guide.
-    SmartDashboard.putNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE);
-    SmartDashboard.putNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE);
-    SmartDashboard.putNumber(LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE);
-    SmartDashboard.putNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE);
-    SmartDashboard.putNumber(SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE);
+    // all methods in this subsystem pull their values from the dashbaord to
+    // allow you to tune the values easily, and then replace the values in
+    // Constants.java with your new values. For more information, see the
+    // Software Guide.
+    SmartDashboard.putNumber(
+        INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE);
+    SmartDashboard.putNumber(
+        INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE);
+    SmartDashboard.putNumber(
+        LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE);
+    SmartDashboard.putNumber(
+        LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE);
+    SmartDashboard.putNumber(
+        SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE);
   }
 
   // A method to set the rollers to values for intaking
   public void intake() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
-    intakeLauncherRoller.setVoltage(
-        SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
+    feederRoller.setVoltage(SmartDashboard.getNumber(
+        INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(SmartDashboard.getNumber(
+        INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
   }
 
-  // A method to set the rollers to values for ejecting fuel out the intake. Uses
-  // the same values as intaking, but in the opposite direction.
+  // A method to set the rollers to values for ejecting fuel out the intake.
+  // Uses the same values as intaking, but in the opposite direction.
   public void eject() {
-    feederRoller.setVoltage(
-        -1 * SmartDashboard.getNumber(INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
-    intakeLauncherRoller.setVoltage(
-        -1 * SmartDashboard.getNumber(INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
+    feederRoller.setVoltage(-1
+        * SmartDashboard.getNumber(
+            INTAKING_FEEDER_VOLTAGE_KEY, INTAKING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(-1
+        * SmartDashboard.getNumber(
+            INTAKING_INTAKE_VOLTAGE_KEY, INTAKING_INTAKE_VOLTAGE));
   }
 
   // A method to set the rollers to values for launching.
   public void launch() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber(LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE));
-    intakeLauncherRoller.setVoltage(
-        SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
+    feederRoller.setVoltage(SmartDashboard.getNumber(
+        LAUNCHING_FEEDER_VOLTAGE_KEY, LAUNCHING_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(SmartDashboard.getNumber(
+        LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
 
   // A method to stop the rollers
@@ -119,20 +134,20 @@ public class CANFuelSubsystem extends SubsystemBase {
   // A method to spin up the launcher roller while spinning the feeder roller to
   // push Fuel away from the launcher
   public void spinUp() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber(SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE));
-    intakeLauncherRoller.setVoltage(
-        SmartDashboard.getNumber(LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
+    feederRoller.setVoltage(SmartDashboard.getNumber(
+        SPIN_UP_FEEDER_VOLTAGE_KEY, SPIN_UP_FEEDER_VOLTAGE));
+    intakeLauncherRoller.setVoltage(SmartDashboard.getNumber(
+        LAUNCHING_LAUNCHER_VOLTAGE_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
 
-  // A command factory to turn the spinUp method into a command that requires this
-  // subsystem
+  // A command factory to turn the spinUp method into a command that requires
+  // this subsystem
   public Command spinUpCommand() {
     return this.run(() -> spinUp());
   }
 
-  // A command factory to turn the launch method into a command that requires this
-  // subsystem
+  // A command factory to turn the launch method into a command that requires
+  // this subsystem
   public Command launchCommand() {
     return this.run(() -> launch());
   }

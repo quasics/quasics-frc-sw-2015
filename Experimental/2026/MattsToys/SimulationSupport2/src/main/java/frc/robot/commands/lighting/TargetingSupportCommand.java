@@ -105,7 +105,8 @@ public class TargetingSupportCommand extends Command {
       return;
     }
 
-    final var robotPose = ((IVisionPlus.EstimatedPoseData) positionOpt.get()).pose();
+    final var robotPose =
+        ((IVisionPlus.EstimatedPoseData) positionOpt.get()).pose();
 
     // Note: native pose heading is treating flat-left as 0 (in -180 to +180),
     // while angleToTarget is computing that as 180 (in 0 to 360). As a result,
@@ -115,12 +116,14 @@ public class TargetingSupportCommand extends Command {
     final double robotAngleDegrees = robotPose.getRotation().getDegrees() + 180;
 
     // Compute how far off we are.
-    final Angle angle = PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
-    final double angleDeltaDegrees = angle.in(Degrees) - robotAngleDegrees;
+    final Angle angle =
+        PoseHelpers.computeAngleToTarget(robotPose, m_targetPos);
+    final double angleDeltaDegrees = angle.in(Degrees) -robotAngleDegrees;
     final double angleDeltaDegreesAbs = Math.abs(angleDeltaDegrees);
 
     // How far away from the target are we?
-    Distance distance = PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
+    Distance distance =
+        PoseHelpers.computeDistanceToTarget(robotPose, m_targetPos);
 
     if (NOISY) {
       System.out.println("Distance: " + distance.in(Meters) + ", heading: "
@@ -134,7 +137,8 @@ public class TargetingSupportCommand extends Command {
     // for deployment on the field at an event, but it works as an (overly)
     // simple example of what can be done.
     final boolean angleOK = angleDeltaDegreesAbs <= m_angleRange.in(Degrees);
-    final boolean distanceOK = distance.lte(m_maxRange) && distance.gte(m_minRange);
+    final boolean distanceOK =
+        distance.lte(m_maxRange) && distance.gte(m_minRange);
     if (angleOK && distanceOK) {
       m_lighting.SetStripColor(StockColor.Green);
     } else if (angleOK) {

@@ -27,7 +27,7 @@ public interface IMotorControllerPlus extends MotorController {
 
   /**
    * Wraps the provided WPILib controller with this interface.
-   * 
+   *
    * @param controller the ("raw") motor controller being wrapped
    * @return a wrapped controller, implementing IMotorControllerPlus
    */
@@ -39,8 +39,8 @@ public interface IMotorControllerPlus extends MotorController {
 
   /**
    * A class implementing the IMotorControllerPlus, passing through base type
-   * functionality to an underlying controller, and using functors to provide the
-   * implementations of the extra functionality.
+   * functionality to an underlying controller, and using functors to provide
+   * the implementations of the extra functionality.
    */
   public class MotorControllerPlus implements IMotorControllerPlus {
     /** An underlying (wrapped/"raw") motor controller. */
@@ -48,21 +48,21 @@ public interface IMotorControllerPlus extends MotorController {
 
     /**
      * Supplies the voltage being sent to the motor.
-     * 
+     *
      * @see #getVoltage()
      */
     final Supplier<Voltage> m_voltageSupplier;
 
     /**
      * Used to close the underlying motor controller.
-     * 
+     *
      * @see #close()
      */
     final Closeable m_closer;
 
     /**
      * Constructor.
-     * 
+     *
      * @param controller      an underlying (wrapped/"raw") motor controller
      * @param voltageSupplier spplies the voltage being sent to the motor
      * @param closer          used to close the underlying motor controller

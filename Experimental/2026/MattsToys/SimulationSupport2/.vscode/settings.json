@@ -62,5 +62,6 @@
   "java.dependency.enableDependencyCheckup": false,
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false
 }

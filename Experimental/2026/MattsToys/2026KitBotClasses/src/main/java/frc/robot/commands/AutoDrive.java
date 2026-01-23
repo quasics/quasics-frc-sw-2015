@@ -15,7 +15,8 @@ public class AutoDrive extends Command {
   CANDriveSubsystem driveSubsystem;
   double xSpeed, zRotation;
 
-  public AutoDrive(CANDriveSubsystem driveSystem, double xSpeed, double zRotation) {
+  public AutoDrive(
+      CANDriveSubsystem driveSystem, double xSpeed, double zRotation) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;

@@ -37,8 +37,8 @@ import frc.robot.subsystems.interfaces.ICandle;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
-import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.subsystems.interfaces.ILighting;
+import frc.robot.subsystems.interfaces.ILighting.StockColor;
 import frc.robot.subsystems.interfaces.IPhotonVision;
 import frc.robot.subsystems.interfaces.ISingleJointArm;
 import frc.robot.subsystems.interfaces.IVision;
@@ -47,6 +47,7 @@ import frc.robot.subsystems.live.Candle;
 import frc.robot.subsystems.live.Lighting;
 import frc.robot.subsystems.live.LightingBuffer;
 import frc.robot.subsystems.live.PhotonVisionSingleCamera;
+import frc.robot.subsystems.live.ThriftyNovaDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimCandle;
 import frc.robot.subsystems.simulated.SimDrivebase;
@@ -152,7 +153,7 @@ public class RobotContainer {
 
   /**
    * Allocates the drivebase for the robot.
-   * 
+   *
    * @param config robot configuration
    * @return the drivebase object to use for the robot
    */
@@ -162,10 +163,9 @@ public class RobotContainer {
     }
 
     return switch (config.drive().driveType()) {
-      case Simulated ->
-        new SimDrivebase(config.drive());
-      case CanSparkMax ->
-        new CANSparkMaxDrivebase(config.drive());
+      case Simulated -> new SimDrivebase(config.drive());
+      case CanSparkMax -> new CANSparkMaxDrivebase(config.drive());
+      case ThriftyNova -> new ThriftyNovaDrivebase(config.drive());
     };
   }
 
@@ -174,8 +174,10 @@ public class RobotContainer {
     m_leftLighting.SetStripColor(StockColor.Gold);
     m_rightLighting.SetStripColor(StockColor.Maroon);
 
-    m_leftLighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_leftLighting, 0, 20));
-    m_rightLighting.asSubsystem().setDefaultCommand(new RainbowLighting(m_rightLighting, 0, 20));
+    m_leftLighting.asSubsystem().setDefaultCommand(
+        new RainbowLighting(m_leftLighting, 0, 20));
+    m_rightLighting.asSubsystem().setDefaultCommand(
+        new RainbowLighting(m_rightLighting, 0, 20));
 
     SmartDashboard.putData("Target lighting",
         new TargetingSupportCommand(m_lighting,
@@ -471,7 +473,8 @@ public class RobotContainer {
    * @param config the target robot's configuration
    * @return an ICandle subsystem for this robot (may be trivial)
    */
-  private static ICandle allocateCandle(RobotConfigs.RobotConfig config, ILighting lighting) {
+  private static ICandle allocateCandle(
+      RobotConfigs.RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();
     }
@@ -487,7 +490,8 @@ public class RobotContainer {
     }
   }
 
-  private static ILighting allocateSideLighting(RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+  private static ILighting allocateSideLighting(
+      RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
     Lighting realSubsystem = (Lighting) lighting;
     final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right

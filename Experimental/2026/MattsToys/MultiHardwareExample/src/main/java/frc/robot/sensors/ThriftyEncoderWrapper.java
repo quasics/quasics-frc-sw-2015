@@ -1,4 +1,4 @@
-// Copyright (c) 2024, Matthew J. Healy and other Quasics contributors.
+// Copyright (c) 2026, Matthew J. Healy and other Quasics contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -42,7 +42,7 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
 
   /**
    * Constructor.
-   * 
+   *
    * @param motorController    ThriftyNova object being wrapped for "normal" use
    * @param wheelOuterDiameter outer diameter of the wheel being turned by the
    *                           motor

@@ -66,7 +66,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   //
 
   /** Default starting pose for the robot. */
-  protected static final Pose2d DEFAULT_STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
+  protected static final Pose2d DEFAULT_STARTING_POSE =
+      new Pose2d(0, 0, new Rotation2d());
 
   /** Encoder ticks per revolution. */
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
@@ -78,7 +79,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   public static final double GEAR_RATIO = 8.45;
 
   /** Track width (distance between left and right wheels) in meters. */
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH =
+      Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Zero linear velocity. (A potentially useful constant.) */
   public static final LinearVelocity ZERO_MPS = MetersPerSecond.of(0.0);
@@ -93,10 +95,12 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   public static final AngularVelocity MAX_ROTATION = DegreesPerSecond.of(360);
 
   /** Kinematics calculator for the drivebase. */
-  public static final DifferentialDriveKinematics KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  public static final DifferentialDriveKinematics KINEMATICS =
+      new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
   /** Zero wheel speeds. (A potentially useful constant.) */
-  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS = new DifferentialDriveWheelSpeeds(0.0, 0.0);
+  private static final DifferentialDriveWheelSpeeds ZERO_WHEEL_SPEEDS =
+      new DifferentialDriveWheelSpeeds(0.0, 0.0);
 
   /**
    * Value for voltage required to overcome static friction (used in feedforward
@@ -135,7 +139,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   public static final double Kp = 1.6662;
 
   /** Feedforward calculator for the drivebase. */
-  public static final SimpleMotorFeedforward FEEDFORWARD = new SimpleMotorFeedforward(Ks, Kv, Ka);
+  public static final SimpleMotorFeedforward FEEDFORWARD =
+      new SimpleMotorFeedforward(Ks, Kv, Ka);
 
   //
   // Core definitions
@@ -172,10 +177,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
 
   /**
    * Creates a new Drivebase.
-   * 
-   * Note that this will also call "setInverted()" on the left/right controllers,
-   * based on the data in config.
-   * 
+   *
+   * Note that this will also call "setInverted()" on the left/right
+   * controllers, based on the data in config.
+   *
    * @param config          drive configuration
    * @param leftController  motor controller for the left side of the drivebase
    * @param rightController motor controller for the right side of the drivebase
@@ -217,7 +222,7 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
 
   /**
    * Helper function to allocate/configure a WPILib Encoder.
-   * 
+   *
    * @param portId1  "A" port for the encoder
    * @param portId2  "B" port for the encoder
    * @param inverted indicates if the encoder is inverted
@@ -264,8 +269,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Convert the wheel speeds to motor power levels.
-    final double leftOutput = speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
-    final double rightOutput = speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double leftOutput =
+        speeds.leftMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
+    final double rightOutput =
+        speeds.rightMetersPerSecond / MAX_SPEED.in(MetersPerSecond);
 
     // Set the motor outputs.
     driveTank(leftOutput, rightOutput);
@@ -292,8 +299,8 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Calculate the left and right wheel speeds based on the inputs.
-    final DifferentialDriveWheelSpeeds wheelSpeeds = KINEMATICS
-        .toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
+    final DifferentialDriveWheelSpeeds wheelSpeeds =
+        KINEMATICS.toWheelSpeeds(new ChassisSpeeds(speed, ZERO_MPS, rotation));
 
     // Set the speeds of the left and right sides of the drivetrain.
     setSpeeds(wheelSpeeds);
@@ -398,8 +405,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     }
 
     // Calculate feedforward and PID outputs.
-    final double leftFeedforward = FEEDFORWARD.calculate(wheelSpeeds.leftMetersPerSecond);
-    final double rightFeedforward = FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
+    final double leftFeedforward =
+        FEEDFORWARD.calculate(wheelSpeeds.leftMetersPerSecond);
+    final double rightFeedforward =
+        FEEDFORWARD.calculate(wheelSpeeds.rightMetersPerSecond);
 
     final double leftOutput = m_leftPID.calculate(
         m_leftTrivialEncoder.getVelocity().in(MetersPerSecond),

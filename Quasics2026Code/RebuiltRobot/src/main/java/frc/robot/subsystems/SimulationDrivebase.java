@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
@@ -61,10 +62,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
-  private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(26));
-
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
-    DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
+    DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
         .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
     double leftPercent;
     double rightPercent;
@@ -79,6 +78,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     AnalogGyro gyro = new AnalogGyro(0);
     m_GyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
+    SmartDashboard.putData("Field", m_field);
   }
 
   @Override

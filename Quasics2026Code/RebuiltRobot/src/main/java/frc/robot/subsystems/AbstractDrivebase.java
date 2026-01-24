@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.controller.DifferentialDriveAccelerationLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -15,11 +19,12 @@ import frc.robot.sensors.TrivialEncoder;
 public abstract class AbstractDrivebase extends SubsystemBase {
   // TODO: this should come from a robot config
   private double m_maxMotorSpeedMPS = 3;
+  private DifferentialDriveOdometry m_odometry;
+  private DifferentialDriveKinematics m_kinematics;
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
-    // DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(0, 0,
-    // 0);
+    m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
   }
 
   public abstract void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
@@ -30,8 +35,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   protected abstract IGyro getGyro();
 
+  protected final DifferentialDriveKinematics getKinematics() {
+    return m_kinematics;
+  }
+
   @Override
   public void periodic() {
+    m_odometry.update(getGyro().getRotation2d(), getLeftEncoder().getPosition()
+        .in(Meters), getRightEncoder().getPosition().in(Meters));
     // This method will be called once per scheduler run
   }
 

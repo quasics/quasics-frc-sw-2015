@@ -20,13 +20,12 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private PWMSparkMax m_left = new PWMSparkMax(1);
   private PWMSparkMax m_right = new PWMSparkMax(2);
-
-
   private Encoder m_leftEncoder = new Encoder(1, 2);
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
@@ -34,6 +33,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
   private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
   private AnalogGyroSim m_GyroSim = new AnalogGyroSim(0);
+  private final Field2d m_field = new Field2d();
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -47,12 +47,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics
         .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
-        double leftPercent;
-        double rightPercent;
-        leftPercent = mpsToPercent(wheelSpeeds.leftMetersPerSecond);
-        rightPercent = mpsToPercent(wheelSpeeds.rightMetersPerSecond);
-        m_leftMotor.set(leftPercent);
-        m_rightMotor.set(rightPercent);
+    double leftPercent;
+    double rightPercent;
+    leftPercent = mpsToPercent(wheelSpeeds.leftMetersPerSecond);
+    rightPercent = mpsToPercent(wheelSpeeds.rightMetersPerSecond);
+    m_leftMotor.set(leftPercent);
+    m_rightMotor.set(rightPercent);
   }
 
   /** Creates a new SimulationDrivebase. */
@@ -61,15 +61,20 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   @Override
   public void periodic() {
+
     // This method will be called once per scheduler run
   }
 
   public void simulationPeriodic() {
-    m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(), m_rightMotor.get() * RobotController.getInputVoltage());
+    m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(),
+        m_rightMotor.get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
-    //getHeading returns counterclockwise positive, Gyros are clockwise positive
-    m_GyroSim.setAngle(m_driveSim.getHeading().getDegrees());
-    //m_leftEncoderSim.setDistance(m_driveSim().getLeftPosition).setRate();
+    // getHeading returns counterclockwise positive, Gyros are clockwise positive
+    m_GyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+    m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
+    m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
+    m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
     // TODO: Read tutorial
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
 

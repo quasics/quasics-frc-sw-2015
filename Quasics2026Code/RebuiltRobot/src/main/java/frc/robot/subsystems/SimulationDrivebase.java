@@ -29,8 +29,6 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.AbstractDrivebase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  private PWMSparkMax m_left = new PWMSparkMax(1);
-  private PWMSparkMax m_right = new PWMSparkMax(2);
   private Encoder m_leftEncoder = new Encoder(1, 2);
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
@@ -78,7 +76,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
     AnalogGyro gyro = new AnalogGyro(0);
     m_GyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
-    SmartDashboard.putData("Field", m_field);
   }
 
   @Override

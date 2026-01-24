@@ -9,16 +9,17 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
 
@@ -28,6 +29,8 @@ public class Vision extends SubsystemBase implements IVision {
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("camera1");
   protected PhotonPoseEstimator photonEstimator;
+  private Pose3d latestPose3d = new Pose3d();
+  private Pose2d latestPose2d = new Pose2d();
 
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
@@ -47,10 +50,18 @@ public class Vision extends SubsystemBase implements IVision {
     // This method will be called once per scheduler run
     var result = camera.getLatestResult();
     Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
-    visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
-    if (visionEstimate.isEmpty()) {
-      visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
+    if (result != null) {
+      visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
+      if (visionEstimate.isEmpty()) {
+        visionEstimate = photonEstimator.estimateLowestAmbiguityPose(result);
+      }
     }
+    if (visionEstimate.isPresent()) {
+      latestPose3d = visionEstimate.get().estimatedPose;
+      latestPose2d = latestPose3d.toPose2d();
+    }
+
+    getTargetData();
   }
 
   @Override
@@ -61,25 +72,30 @@ public class Vision extends SubsystemBase implements IVision {
     return hasTargets;
   }
 
-  public TargetData getTargetData() {
+  public List<TargetData> getTargetData() {
     var results = camera.getLatestResult();
-    TargetData targetData = new TargetData(0, 0.0, 0.0, 0.0);
+    List<TargetData> listTargetData = new LinkedList<>();
+    List<PhotonTrackedTarget> targets = results.getTargets();
     if (!results.hasTargets()) {
       System.out.println("NO TARGET DATA RETRIEVED");
-      return targetData;
+      return listTargetData;
     }
     if (results.hasTargets()) {
-      PhotonTrackedTarget target = results.getBestTarget();
-      Optional<Pose3d> tagPose = m_tagLayout.getTagPose(target.getFiducialId());
-      Pose3d tagPose3d = new Pose3d();
-      if (!tagPose.isEmpty()) {
-        tagPose3d = tagPose.get();
+      for (PhotonTrackedTarget target : targets) {
+        Optional<Pose3d> tagPose = m_tagLayout.getTagPose(target.getFiducialId());
+        Pose3d tagPose3d = new Pose3d();
+        if (!tagPose.isEmpty()) {
+          tagPose3d = tagPose.get();
+        }
+        Pose2d tagPose2d = tagPose3d.toPose2d();
+        double distanceToTargetPose = PhotonUtils.getDistanceToPose(latestPose2d, tagPose2d);
+        TargetData targetData = new TargetData(target.getFiducialId(), target.getYaw(), target.getPitch(),
+            distanceToTargetPose);
+        listTargetData.add(targetData);
       }
-      Pose2d tagPose2d = tagPose3d.toPose2d();
-      double distanceToTargetPose = PhotonUtils.getDistanceToPose(new Pose2d(), tagPose2d);
-      targetData = new TargetData(target.getFiducialId(), target.getYaw(), target.getPitch(), distanceToTargetPose);
     }
-    System.out.println(targetData);
-    return targetData;
+
+    System.out.println(listTargetData);
+    return listTargetData;
   }
 }

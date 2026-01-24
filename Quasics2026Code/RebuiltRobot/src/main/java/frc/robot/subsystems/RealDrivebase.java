@@ -12,6 +12,13 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.subsystems.AbstractDrivebase;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 
 public class RealDrivebase extends AbstractDrivebase {
   private SparkMax m_leftleader;
@@ -19,6 +26,23 @@ public class RealDrivebase extends AbstractDrivebase {
   private SparkMax m_rightleader;
   private SparkMax m_rightfollower;
   private DifferentialDrive m_robotDrive;
+  private Encoder m_leftEncoder = new Encoder(1, 2);
+  private Encoder m_rightEncoder = new Encoder(3, 4);
+  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private IGyro m_mainGyro;
+
+  protected final IGyro getGyro() {
+    return m_mainGyro;
+  }
+
+  protected final TrivialEncoder getLeftEncoder() {
+    return m_mainLeftEncoder;
+  }
+
+  protected final TrivialEncoder getRightEncoder() {
+    return m_mainRightEncoder;
+  }
 
   /** Creates a new RealDrivebase. */
   public RealDrivebase() {
@@ -28,6 +52,8 @@ public class RealDrivebase extends AbstractDrivebase {
     m_rightleader = new SparkMax(3, MotorType.kBrushless);
     m_rightfollower = new SparkMax(4, MotorType.kBrushless);
     m_robotDrive = new DifferentialDrive(m_leftleader, m_rightleader);
+    AnalogGyro gyro = new AnalogGyro(0);
+    m_mainGyro = IGyro.wrapGyro(gyro);
     // add thriftynova support
   }
 

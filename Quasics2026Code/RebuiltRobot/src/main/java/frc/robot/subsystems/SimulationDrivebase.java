@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.RobotController;
@@ -22,6 +23,9 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSiz
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
+import frc.robot.subsystems.AbstractDrivebase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private PWMSparkMax m_left = new PWMSparkMax(1);
@@ -32,8 +36,23 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
   private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
   private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
-  private AnalogGyroSim m_GyroSim = new AnalogGyroSim(0);
+  private AnalogGyroSim m_GyroSim;
+  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
+  private IGyro m_mainGyro;
   private final Field2d m_field = new Field2d();
+
+  protected final IGyro getGyro() {
+    return m_mainGyro;
+  }
+
+  protected final TrivialEncoder getLeftEncoder() {
+    return m_mainLeftEncoder;
+  }
+
+  protected final TrivialEncoder getRightEncoder() {
+    return m_mainRightEncoder;
+  }
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -57,6 +76,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
+    AnalogGyro gyro = new AnalogGyro(0);
+    m_GyroSim = new AnalogGyroSim(gyro);
+    m_mainGyro = IGyro.wrapGyro(gyro);
   }
 
   @Override
@@ -75,6 +97,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
     m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
+
     // TODO: Read tutorial
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
 

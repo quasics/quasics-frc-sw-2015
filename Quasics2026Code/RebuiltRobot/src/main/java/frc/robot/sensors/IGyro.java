@@ -72,7 +72,8 @@ public interface IGyro {
   void reset();
 
   /**
-   * An internal helper class that implements IGyro, and makes it easier to wrap arbitrary
+   * An internal helper class that implements IGyro, and makes it easier to wrap
+   * arbitrary
    * types within this interface.
    */
   public class FunctionalGyro implements IGyro {
@@ -139,8 +140,4 @@ public interface IGyro {
 
   // TODO: Helper function to wrap the Pigeon2 type from CTRE.
 
-  // Convenient overload.
-  static IGyro wrapGyro(Pigeon2 g) {
-    return wrapYawGyro(g);
-  }
 }

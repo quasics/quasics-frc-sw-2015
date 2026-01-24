@@ -37,14 +37,14 @@ public class SimulatedVision extends Vision {
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
   private final AprilTagFieldLayout m_tagLayout;
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2025ReefscapeAndyMark;
+  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
   public SimulatedVision() {
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025ReefscapeAndyMark.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2026RebuiltAndymark.m_resourceFile);
     } catch (IOException ioe) {
       System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();

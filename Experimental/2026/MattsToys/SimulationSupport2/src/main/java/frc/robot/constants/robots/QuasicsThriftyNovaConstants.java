@@ -14,12 +14,12 @@ public class QuasicsThriftyNovaConstants {
     public static final int PIGEON2_CAN_ID = 1;
 
     /** CAN ID for the "leading" motor on the drive base's left side. */
-    public static final int LEFT_LEADER_ID = 2;
+    public static final int LEFT_LEADER_ID = 1;
     /** CAN ID for the "following" motor on the drive base's left side. */
-    public static final int LEFT_FOLLOWER_ID = 1;
+    public static final int LEFT_FOLLOWER_ID = 2;
     /** CAN ID for the "leading" motor on the drive base's right side. */
-    public static final int RIGHT_LEADER_ID = 4;
+    public static final int RIGHT_LEADER_ID = 3;
     /** CAN ID for the "following" motor on the drive base's right side. */
-    public static final int RIGHT_FOLLOWER_ID = 3;
+    public static final int RIGHT_FOLLOWER_ID = 4;
   }
 }

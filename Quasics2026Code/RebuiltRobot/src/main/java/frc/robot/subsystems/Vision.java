@@ -23,8 +23,10 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
 
+/**
+ * Vision subsystem implementation.
+ */
 public class Vision extends SubsystemBase implements IVision {
-  /** Creates a new Vision. */
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("camera1");
@@ -32,6 +34,7 @@ public class Vision extends SubsystemBase implements IVision {
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
 
+  /** Constructor. */
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
     try {

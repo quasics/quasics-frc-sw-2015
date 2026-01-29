@@ -108,15 +108,9 @@ public class SimulatedVision extends Vision {
     // because that will rapidly accumulate drift from errors, uncertainty, etc.
     m_visionSim.update(new Pose2d());
 
-    // 2. Add code here to *also* tell the vision simulator, "Hey, display <this>
-    // pose as the (vision-based) estimated position for the robot."
-    // Update the simulator to reflect where the (purely) vision-based pose
+    // 2. Update the simulator to reflect where the (purely) vision-based pose
     // estimate suggests that we are located.
     List<Pose2d> estimatedPoses = Collections.emptyList();
-    // TODO: Replace the following line with something that creates a non-empty list
-    // of poses (e.g., using "Collections.singletonList(....)").
-    // estimatedPoses = Collections.singletonList(new Pose2d(2, 2, new
-    // Rotation2d()));
     if (latestPose2d != null) {
       estimatedPoses = Collections.singletonList(latestPose2d);
     }

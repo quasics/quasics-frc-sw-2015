@@ -30,7 +30,7 @@ public class Vision extends SubsystemBase implements IVision {
   protected PhotonCamera camera = new PhotonCamera("camera1");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
-  private Pose2d latestPose2d = new Pose2d();
+  protected Pose2d latestPose2d = new Pose2d();
 
   public Vision() {
     AprilTagFieldLayout tagLayout = null;

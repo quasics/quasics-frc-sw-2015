@@ -12,6 +12,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -44,7 +48,7 @@ public class SimulatedVision extends Vision {
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2026RebuiltAndymark.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
     } catch (IOException ioe) {
       System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
@@ -94,16 +98,31 @@ public class SimulatedVision extends Vision {
 
   @Override
   public void simulationPeriodic() {
-    // FIND_ME(Rylie): This is the piece that you were missing, and is why you
-    // weren't seeing any of the AprilTags in the simulation of the vision data.
-    // Since you weren't telling the VisionSim object, "Hey, this is where the robot
-    // is", it wasn't doing the work to put the markers in place, etc.
-    //
-    // TODO: Add something to say where the drive base thinks it is located (since
-    // we will eventually be able to drive). For now, we'll just be staying in the
-    // bottom-left corner of the field, since that's what "new Pose2d()" translates
-    // to....
+    // FIND_ME(Rylie): Next steps here would probably be:
+    // 1. Update this next line to take a report of the robot's current, actual
+    // position on the field (e.g., based on odometry from the drive base, or
+    // "fused" pose estimation that ties together the drive base odometry data and
+    // vision estimates). This piece is what tells the camera simulation stuff "Hey,
+    // pretend we're here, and inject the data into the camera for what we'd see".
+    // Note that we do not want to use the estimate solely based on vision here,
+    // because that will rapidly accumulate drift from errors, uncertainty, etc.
     m_visionSim.update(new Pose2d());
+
+    // 2. Add code here to *also* tell the vision simulator, "Hey, display <this>
+    // pose as the (vision-based) estimated position for the robot."
+    // Update the simulator to reflect where the (purely) vision-based pose
+    // estimate suggests that we are located.
+    List<Pose2d> estimatedPoses = Collections.emptyList();
+    // TODO: Replace the following line with something that creates a non-empty list
+    // of poses (e.g., using "Collections.singletonList(....)").
+    // estimatedPoses = Collections.singletonList(new Pose2d(2, 2, new
+    // Rotation2d()));
+    if (latestPose2d != null) {
+      estimatedPoses = Collections.singletonList(latestPose2d);
+    }
+
+    final var debugField = m_visionSim.getDebugField();
+    debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
   }
 
 }

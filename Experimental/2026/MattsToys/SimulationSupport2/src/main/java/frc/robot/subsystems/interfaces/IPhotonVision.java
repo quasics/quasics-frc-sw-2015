@@ -12,6 +12,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.constants.games.Game;
 import frc.robot.subsystems.interfaces.IVision.TargetData;
 import java.io.IOException;
 import java.util.Collections;
@@ -43,7 +44,8 @@ public interface IPhotonVision {
    *                    away from the targets.
    */
   public record CameraData(PhotonCamera camera, Transform3d transform3d,
-      PhotonPoseEstimator estimator) {}
+      PhotonPoseEstimator estimator) {
+  }
 
   /**
    * Returns the list of CameraData records being used by this object.
@@ -67,9 +69,7 @@ public interface IPhotonVision {
   // Field layout constants and helper functions.
   //
 
-  enum LayoutSelection { Rebuilt, Reefscape, Crescendo }
-
-  static final LayoutSelection SELECTED_LAYOUT = LayoutSelection.Rebuilt;
+  static final Game SELECTED_LAYOUT = Game.Rebuilt;
 
   /**
    * If true, use the AndyMark configuration for the Reefscape layout; if false,
@@ -81,10 +81,10 @@ public interface IPhotonVision {
   static final AprilTagFields FIELD_LAYOUT = switch (SELECTED_LAYOUT) {
     case Rebuilt ->
       (USE_ANDYMARK_CONFIG ? AprilTagFields.k2026RebuiltAndymark
-                           : AprilTagFields.k2026RebuiltWelded);
+          : AprilTagFields.k2026RebuiltWelded);
     case Reefscape ->
       (USE_ANDYMARK_CONFIG ? AprilTagFields.k2025ReefscapeAndyMark
-                           : AprilTagFields.k2025ReefscapeWelded);
+          : AprilTagFields.k2025ReefscapeWelded);
     case Crescendo -> AprilTagFields.k2024Crescendo;
   };
 

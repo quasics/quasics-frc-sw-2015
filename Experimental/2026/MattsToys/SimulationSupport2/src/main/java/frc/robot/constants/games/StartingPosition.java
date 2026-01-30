@@ -26,14 +26,20 @@ public enum StartingPosition {
 
   /** Facing Blue and aligned with the middle of the lower trench in Rebuilt. */
   Rebuilt__BlueMidTrench1,
+  /** Facing Blue and aligned with the middle of the upper trench in Rebuilt. */
   Rebuilt__BlueMidTrench2,
+  /** Facing Blue and aligned with the middle of the lower bump in Rebuilt. */
   Rebuilt__BlueMidBump1,
+  /** Facing Blue and aligned with the middle of the upper bump in Rebuilt. */
   Rebuilt__BlueMidBump2,
 
   /** Facing Red and aligned with the middle of the lower trench in Rebuilt. */
   Rebuilt__RedMidTrench1,
+  /** Facing Red and aligned with the middle of the upper trench in Rebuilt. */
   Rebuilt__RedMidTrench2,
+  /** Facing Red and aligned with the middle of the lower bump in Rebuilt. */
   Rebuilt__RedMidBump1,
+  /** Facing Red and aligned with the middle of the upper bump in Rebuilt. */
   Rebuilt__RedMidBump2,
 
   //
@@ -62,6 +68,9 @@ public enum StartingPosition {
     return switch (this) {
       case Default -> DEFAULT_STARTING_POSE;
 
+      //
+      // "Rebuilt" positions
+      //
       case Rebuilt__BlueMidTrench1 ->
         new Pose2d(
             RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
@@ -104,6 +113,9 @@ public enum StartingPosition {
             RebuiltConstants.MID_BUMP2_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
 
+      //
+      // "Reefscape" positions
+      //
       case Reefscape__Blue1 ->
         new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
             ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),

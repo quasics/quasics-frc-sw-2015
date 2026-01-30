@@ -231,9 +231,7 @@ public interface RobotConfigs {
   }
 
   /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
-  public enum DriveType {
-    Simulated, CanSparkMax, ThriftyNova
-  }
+  public enum DriveType { Simulated, CanSparkMax, ThriftyNova }
 
   /**
    * Drive base configuration data.
@@ -294,7 +292,8 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize =
+            subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength

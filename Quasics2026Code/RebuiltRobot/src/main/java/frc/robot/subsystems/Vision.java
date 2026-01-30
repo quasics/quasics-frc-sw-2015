@@ -9,7 +9,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.io.IOException;
@@ -23,15 +22,18 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
 
+/**
+ * Vision subsystem implementation.
+ */
 public class Vision extends SubsystemBase implements IVision {
-  /** Creates a new Vision. */
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("camera1");
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
-  private Pose2d latestPose2d = new Pose2d();
+  protected Pose2d latestPose2d = new Pose2d();
 
+  /** Constructor. */
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
     try {

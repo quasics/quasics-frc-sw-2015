@@ -67,25 +67,26 @@ public interface IPhotonVision {
   // Field layout constants and helper functions.
   //
 
-  /**
-   * If true, use the Reefscape layout from 2025; if false, use the Crescendo
-   * layout from 2024.
-   */
-  static final boolean USE_REEFSCAPE_LAYOUT = true;
+  enum LayoutSelection { Rebuilt, Reefscape, Crescendo }
+
+  static final LayoutSelection SELECTED_LAYOUT = LayoutSelection.Rebuilt;
 
   /**
    * If true, use the AndyMark configuration for the Reefscape layout; if false,
    * use the "welded" configuration.
    */
-  static final boolean USE_ANDYMARK_CONFIG_FOR_REEFSCAPE = false;
+  static final boolean USE_ANDYMARK_CONFIG = false;
 
   /** The field layout to use for vision processing/emulation. */
-  static final AprilTagFields FIELD_LAYOUT = USE_REEFSCAPE_LAYOUT
-      ? (USE_ANDYMARK_CONFIG_FOR_REEFSCAPE
-                ? AprilTagFields.k2025ReefscapeAndyMark
-                : AprilTagFields.k2025ReefscapeWelded)
-      : AprilTagFields.k2024Crescendo // Fall back on the 2024 game
-      ;
+  static final AprilTagFields FIELD_LAYOUT = switch (SELECTED_LAYOUT) {
+    case Rebuilt ->
+      (USE_ANDYMARK_CONFIG ? AprilTagFields.k2026RebuiltAndymark
+                           : AprilTagFields.k2026RebuiltWelded);
+    case Reefscape ->
+      (USE_ANDYMARK_CONFIG ? AprilTagFields.k2025ReefscapeAndyMark
+                           : AprilTagFields.k2025ReefscapeWelded);
+    case Crescendo -> AprilTagFields.k2024Crescendo;
+  };
 
   /**
    * Helper method to load a field layout.

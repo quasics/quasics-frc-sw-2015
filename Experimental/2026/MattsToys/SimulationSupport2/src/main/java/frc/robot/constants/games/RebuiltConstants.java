@@ -1,3 +1,7 @@
+// Copyright (c) 2026, Matthew J. Healy and other Quasics contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.constants.games;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -7,6 +11,7 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
+/** Defines various constants for the 2026 game, "Rebuilt". */
 public final class RebuiltConstants {
   /** Robot heading when facing the Blue alliance. */
   public static final Angle FACING_BLUE = Degrees.of(180);

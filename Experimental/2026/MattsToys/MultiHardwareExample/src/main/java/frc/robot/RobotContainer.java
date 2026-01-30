@@ -28,11 +28,11 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
 public class RobotContainer {
   /** Supported hardware configurations. */
   enum HardwareConfig {
-    Simulated, Spark, Talon, Victor, Thrifty
+    Simulated, Thrifty, Spark, Talon, Victor
   }
 
   /** Selected hardware configuration. */
-  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
+  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Thrifty;
 
   // Sets up a "single motor thing", based on the selected hardware configuration.
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {

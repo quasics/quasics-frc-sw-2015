@@ -83,6 +83,15 @@ public final class RebuiltConstants {
   /** Width (y) of the bump. */
   public static final Distance BUMP_WIDTH = Inches.of(73.0);
 
+  /**
+   * Y-position of the mid-point on the lower bumps on the blue/red sides of the
+   * field.
+   */
   public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+
+  /**
+   * Y-position of the mid-point on the upper bumps on the blue/red sides of the
+   * field.
+   */
   public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 }

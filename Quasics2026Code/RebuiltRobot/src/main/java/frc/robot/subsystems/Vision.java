@@ -61,7 +61,7 @@ public class Vision extends SubsystemBase implements IVision {
       latestPose2d = latestPose3d.toPose2d();
     }
 
-    getTargetData();
+    // getTargetData();
   }
 
   @Override

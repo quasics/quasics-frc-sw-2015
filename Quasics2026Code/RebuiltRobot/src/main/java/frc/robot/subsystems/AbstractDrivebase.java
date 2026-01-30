@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.math.controller.DifferentialDriveAccelerationLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -23,11 +25,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private double m_maxMotorSpeedMPS = 3;
   private DifferentialDriveOdometry m_odometry;
   private DifferentialDriveKinematics m_kinematics;
+  private final DifferentialDrivePoseEstimator m_poseEstimator;
   private final Field2d m_field = new Field2d();
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
     m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
+    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
   }
 
@@ -43,15 +47,37 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_kinematics;
   }
 
+  public void setSpeeds(double leftSpeed, double rightSpeed) {
+
+  }
+
+  protected final DifferentialDriveOdometry getOdometry() {
+    return m_odometry;
+  }
+
   @Override
   public void periodic() {
     m_odometry.update(getGyro().getRotation2d(), getLeftEncoder().getPosition()
         .in(Meters), getRightEncoder().getPosition().in(Meters));
     m_field.setRobotPose(m_odometry.getPoseMeters());
+    m_poseEstimator.update(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
+        getRightEncoder().getPosition().in(Meters));
     // This method will be called once per scheduler run
+
   }
 
   public double mpsToPercent(double speed) {
     return speed / m_maxMotorSpeedMPS;
+  }
+
+  public Pose2d getEstimatedPose() {
+    return m_poseEstimator.getEstimatedPosition();
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    getOdometry().resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition(),
+        getRightEncoder().getPosition(), pose);
+    m_poseEstimator.resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
+        getRightEncoder().getPosition().in(Meters), pose);
   }
 }

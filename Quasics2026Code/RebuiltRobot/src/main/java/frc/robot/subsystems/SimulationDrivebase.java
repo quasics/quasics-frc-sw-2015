@@ -80,7 +80,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   @Override
   public void periodic() {
-
+    var pose = getOdometry().getPoseMeters();
+    m_field.setRobotPose(pose);
+    m_field.getObject("Estimated Drivebase Pose").setPose(getEstimatedPose());
     // This method will be called once per scheduler run
   }
 

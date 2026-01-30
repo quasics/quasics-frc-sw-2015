@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.hardware.actuators.IMotorControllerPlus;
@@ -43,63 +44,80 @@ public class SimDrivebase extends DrivebaseBase {
    * Supported (pre-defined) starting positions for the robot.
    *
    * Note that game-specific starting positions are pre-fixed with the game name
-   * (e.g., "Reefscape__").
+   * (e.g., "Reefscape_").
    */
   public enum StartingPosition {
     /** Default robot position (0, 0, 0). */
     Default,
+
+    Rebuilt_BlueStart1,
+    Rebuilt_RedStart1,
+
     /** Facing Blue and aligned with starting game element 1 in Reefscape. */
-    Reefscape__Blue1,
+    Reefscape_Blue1,
     /** Facing Blue and aligned with starting game element 2 in Reefscape. */
-    Reefscape__Blue2,
+    Reefscape_Blue2,
     /** Facing Blue and aligned with starting game element 3 in Reefscape. */
-    Reefscape__Blue3,
+    Reefscape_Blue3,
     /** Facing Red and aligned with starting game element 1 in Reefscape. */
-    Reefscape__Red1,
+    Reefscape_Red1,
     /** Facing Red and aligned with starting game element 2 in Reefscape. */
-    Reefscape__Red2,
+    Reefscape_Red2,
     /** Facing Red and aligned with starting game element 3 in Reefscape. */
-    Reefscape__Red3,
-    Reefscape__Extra1,
-    Reefscape__Extra2,
+    Reefscape_Red3,
+    Reefscape_Extra1,
+    Reefscape_Extra2,
     ;
 
     /** Returns the robot pose associated with this starting point. */
     public Pose2d getPose() {
+
       return switch (this) {
         case Default -> DEFAULT_STARTING_POSE;
 
-        case Reefscape__Blue1 ->
+        case Rebuilt_BlueStart1 ->
+          new Pose2d(
+              RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+              RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
+              new Rotation2d(RebuiltConstants.FACING_BLUE));
+
+        case Rebuilt_RedStart1 ->
+          new Pose2d(
+              RebuiltConstants.RED_STARTING_LINE.in(Meters),
+              RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
+              new Rotation2d(RebuiltConstants.FACING_RED));
+
+        case Reefscape_Blue1 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_BLUE));
-        case Reefscape__Blue2 ->
+        case Reefscape_Blue2 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
               ReefscapeConstants.MIDDLE_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_BLUE));
-        case Reefscape__Blue3 ->
+        case Reefscape_Blue3 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
               ReefscapeConstants.BOTTOM_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_BLUE));
-        case Reefscape__Red1 ->
+        case Reefscape_Red1 ->
           new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
               ReefscapeConstants.BOTTOM_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_RED));
-        case Reefscape__Red2 ->
+        case Reefscape_Red2 ->
           new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
               ReefscapeConstants.MIDDLE_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_RED));
-        case Reefscape__Red3 ->
+        case Reefscape_Red3 ->
           new Pose2d(ReefscapeConstants.RED_STARTING_LINE.in(Meters),
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
               new Rotation2d(ReefscapeConstants.FACING_RED));
 
-        case Reefscape__Extra1 ->
-          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
-              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
+        case Reefscape_Extra1 ->
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) - .5,
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) - .5,
               new Rotation2d(
                   ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
-        case Reefscape__Extra2 ->
+        case Reefscape_Extra2 ->
           new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) + .5,
               ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) + .5,
               new Rotation2d(
@@ -134,21 +152,19 @@ public class SimDrivebase extends DrivebaseBase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(
-          // Linear components (velocity, acceleration)
-          1.98, 0.2,
-          // Angular components (velocity, acceleration)
-          1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+      // Linear components (velocity, acceleration)
+      1.98, 0.2,
+      // Angular components (velocity, acceleration)
+      1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator =
-      new DifferentialDrivetrainSim(m_drivetrainSystem,
-          // Drive motor type and count
-          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
-          WHEEL_DIAMETER.in(Meters),
-          // configure for no noise in measurements
-          null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
+      // Drive motor type and count
+      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+      WHEEL_DIAMETER.in(Meters),
+      // configure for no noise in measurements
+      null);
 
   /**
    * Constructor.
@@ -192,8 +208,7 @@ public class SimDrivebase extends DrivebaseBase {
     m_rightEncoderSim = right.encoderSim;
     m_gyroSim = new AnalogGyroSim(rawGyro);
 
-    SendableChooser<StartingPosition> positionChooser =
-        new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       if (pos == StartingPosition.Default) {
         positionChooser.setDefaultOption(pos.getName(), pos);
@@ -206,7 +221,8 @@ public class SimDrivebase extends DrivebaseBase {
   }
 
   /** Used to hold a WPI encoder and its paired EncoderSim object. */
-  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {}
+  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {
+  }
 
   /**
    * Allocates an encoder and a paired simulator object.
@@ -292,10 +308,8 @@ public class SimDrivebase extends DrivebaseBase {
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading =
-        m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity =
-        deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

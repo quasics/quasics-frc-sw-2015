@@ -10,26 +10,33 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.subsystems.AbstractDrivebase;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 
 public class RealDrivebase extends AbstractDrivebase {
+  // TODO: add thriftynova support. (This might be done in a derived class, or be
+  // based on some information about the robot's configuration.)
   private SparkMax m_leftleader;
   private SparkMax m_leftfollower;
   private SparkMax m_rightleader;
   private SparkMax m_rightfollower;
-  private DifferentialDrive m_robotDrive;
+
+  // TODO: Change these to use the encoders that are associated with the real
+  // hardware (i.e., either the relative encoders that are built into the Spark
+  // Max hardware, or else the functions that are built into the ThriftyNova motor
+  // controller class).
+  //
+  // Note that Mr. Healy has updated the "TrivialEncoder" class (and some derived
+  // classes) so that it can be used with Thrifty Novas (new code this year), as
+  // well as the Spark Max controllers, etc.
   private Encoder m_leftEncoder = new Encoder(1, 2);
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
   private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+
+  private DifferentialDrive m_robotDrive;
   private IGyro m_mainGyro;
 
   protected final IGyro getGyro() {
@@ -54,13 +61,14 @@ public class RealDrivebase extends AbstractDrivebase {
     m_robotDrive = new DifferentialDrive(m_leftleader, m_rightleader);
     AnalogGyro gyro = new AnalogGyro(0);
     m_mainGyro = IGyro.wrapGyro(gyro);
-    // add thriftynova support
+
+    // TODO: Configure the motor controllers on the left/right sides (e.g., ensuring
+    // that "leader/follower" is set up in case a controller gets swapped out,
+    // making sure that "inverted" is set correctly for each side, etc.).
   }
 
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
-    // TODO: use diffDrive class to drive w arcade
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
-
   }
 
   @Override

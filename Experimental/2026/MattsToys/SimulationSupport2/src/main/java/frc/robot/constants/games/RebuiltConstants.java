@@ -11,7 +11,14 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
-/** Defines various constants for the 2026 game, "Rebuilt". */
+/**
+ * Defines various constants for the 2026 game, "Rebuilt".
+ * 
+ * Note that "length" dimensions are along the X-axis (i.e., the long axis) of
+ * the field, while "width" dimensions are along the Y-axis (short axis) of the
+ * playing field. Values are taken from the published field dimensions and the
+ * game manual.
+ */
 public final class RebuiltConstants {
   /** Robot heading when facing the Blue alliance. */
   public static final Angle FACING_BLUE = Degrees.of(180);
@@ -50,11 +57,10 @@ public final class RebuiltConstants {
   public static final Distance HUB_PLEXIGLASS_DEPTH_X = HUB_DEPTH;
 
   /** Length (x) of the trench. */
-
-  public static final Distance TRENCH_LENGTH = Inches.of(65.65);
+  public static final Distance TRENCH_LENGTH = Inches.of(47.0);
 
   /** Width (y) of the trench. */
-  public static final Distance TRENCH_WIDTH = Inches.of(47.0);
+  public static final Distance TRENCH_WIDTH = Inches.of(65.65);
 
   /** Distance (x) from the alliance walls to the closest side of the hub. */
   public static final Distance HUB_DISTANCE_TO_ALLIANCE_WALL = Inches.of(158.6);
@@ -71,4 +77,12 @@ public final class RebuiltConstants {
   /** Height (y) of the depot. */
   public static final Distance DEPOT_HEIGHT = Inches.of(42.0);
 
+  /** Length (x) of the bump. */
+  public static final Distance BUMP_LENGTH = Inches.of(44.40);
+
+  /** Width (y) of the bump. */
+  public static final Distance BUMP_WIDTH = Inches.of(73.0);
+
+  public static final Distance MID_BUMP1_Y = FIELD_WIDTH.div(2).minus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
+  public static final Distance MID_BUMP2_Y = FIELD_WIDTH.div(2).plus(HUB_DEPTH.plus(BUMP_WIDTH).div(2));
 }

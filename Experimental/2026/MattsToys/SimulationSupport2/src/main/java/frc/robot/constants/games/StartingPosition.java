@@ -25,10 +25,16 @@ public enum StartingPosition {
   //
 
   /** Facing Blue and aligned with the middle of the lower trench in Rebuilt. */
-  Rebuilt__BlueStart1,
+  Rebuilt__BlueMidTrench1,
+  Rebuilt__BlueMidTrench2,
+  Rebuilt__BlueMidBump1,
+  Rebuilt__BlueMidBump2,
 
   /** Facing Red and aligned with the middle of the lower trench in Rebuilt. */
-  Rebuilt__RedStart1,
+  Rebuilt__RedMidTrench1,
+  Rebuilt__RedMidTrench2,
+  Rebuilt__RedMidBump1,
+  Rebuilt__RedMidBump2,
 
   //
   // Sample starting positions for Reefscape (2025).
@@ -56,16 +62,46 @@ public enum StartingPosition {
     return switch (this) {
       case Default -> DEFAULT_STARTING_POSE;
 
-      case Rebuilt__BlueStart1 ->
+      case Rebuilt__BlueMidTrench1 ->
         new Pose2d(
             RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
             RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
             new Rotation2d(RebuiltConstants.FACING_BLUE));
+      case Rebuilt__BlueMidTrench2 ->
+        new Pose2d(
+            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+            RebuiltConstants.FIELD_WIDTH.minus(RebuiltConstants.TRENCH_WIDTH.div(2)).in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_BLUE));
+      case Rebuilt__BlueMidBump1 ->
+        new Pose2d(
+            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+            RebuiltConstants.MID_BUMP1_Y.in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_BLUE));
+      case Rebuilt__BlueMidBump2 ->
+        new Pose2d(
+            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+            RebuiltConstants.MID_BUMP2_Y.in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_BLUE));
 
-      case Rebuilt__RedStart1 ->
+      case Rebuilt__RedMidTrench1 ->
         new Pose2d(
             RebuiltConstants.RED_STARTING_LINE.in(Meters),
             RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_RED));
+      case Rebuilt__RedMidTrench2 ->
+        new Pose2d(
+            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+            RebuiltConstants.FIELD_WIDTH.minus(RebuiltConstants.TRENCH_WIDTH.div(2)).in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_RED));
+      case Rebuilt__RedMidBump1 ->
+        new Pose2d(
+            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+            RebuiltConstants.MID_BUMP1_Y.in(Meters),
+            new Rotation2d(RebuiltConstants.FACING_RED));
+      case Rebuilt__RedMidBump2 ->
+        new Pose2d(
+            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+            RebuiltConstants.MID_BUMP2_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
 
       case Reefscape__Blue1 ->

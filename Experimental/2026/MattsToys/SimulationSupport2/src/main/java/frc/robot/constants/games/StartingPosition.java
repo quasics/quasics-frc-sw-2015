@@ -130,4 +130,25 @@ public enum StartingPosition {
       return toString();
     }
   }
+
+  /**
+   * Returns the user-facing name of this starting position, optionally removing a
+   * game-specific prefix.
+   * 
+   * @param game if non-null, the game for which prefixes should be removed from
+   *             names
+   */
+  public String getNameWithoutGamePrefix(Game game) {
+    final String rawName = toString();
+    if (game == null) {
+      return rawName;
+    }
+
+    final String prefixString = game.toString() + "__";
+    if (rawName.startsWith(prefixString)) {
+      return rawName.substring(prefixString.length());
+    }
+
+    return rawName;
+  }
 }

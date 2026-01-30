@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.games.Game;
 import frc.robot.constants.games.StartingPosition;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.hardware.actuators.IMotorControllerPlus;
@@ -112,16 +113,7 @@ public class SimDrivebase extends DrivebaseBase {
     m_rightEncoderSim = right.encoderSim;
     m_gyroSim = new AnalogGyroSim(rawGyro);
 
-    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
-    for (var pos : StartingPosition.values()) {
-      if (pos == StartingPosition.Default) {
-        positionChooser.setDefaultOption(pos.getName(), pos);
-      } else {
-        positionChooser.addOption(pos.getName(), pos);
-      }
-    }
-    SmartDashboard.putData("Starting point", positionChooser);
-    positionChooser.onChange(this::updateStartingPoint);
+    updateStartingPointSelector(null);
   }
 
   /** Used to hold a WPI encoder and its paired EncoderSim object. */
@@ -141,6 +133,31 @@ public class SimDrivebase extends DrivebaseBase {
     Encoder e = getConfiguredEncoder(portId1, portId2, inverted);
     EncoderSim sim = new EncoderSim(e);
     return new SimulatedEncoderPair(e, sim);
+  }
+
+  /**
+   * Configures the "starting point" selector.
+   * 
+   * @param game if non-null, specifies the game for which starting positions
+   *             should have the prefix removed from their names when shown to the
+   *             user (for faster identification)
+   */
+  private void updateStartingPointSelector(Game game) {
+    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    for (var pos : StartingPosition.values()) {
+      String name = pos.getNameWithoutGamePrefix(game);
+      if (pos == StartingPosition.Default) {
+        positionChooser.setDefaultOption(name, pos);
+      } else {
+        positionChooser.addOption(name, pos);
+      }
+    }
+    SmartDashboard.putData("Starting point", positionChooser);
+    positionChooser.onChange(this::updateStartingPoint);
+  }
+
+  public void setGame(Game game) {
+    updateStartingPointSelector(game);
   }
 
   /**

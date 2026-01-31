@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.PowerDistribution;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -231,7 +233,9 @@ public interface RobotConfigs {
   }
 
   /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
-  public enum DriveType { Simulated, CanSparkMax, ThriftyNova }
+  public enum DriveType {
+    Simulated, CanSparkMax, ThriftyNova
+  }
 
   /**
    * Drive base configuration data.
@@ -292,8 +296,7 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize =
-            subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength
@@ -386,6 +389,27 @@ public interface RobotConfigs {
   }
 
   /**
+   * Power distribution configuration settings.
+   * 
+   * @param type  power distribution panel type
+   * @param canId CAN ID for the device
+   */
+  public static record PowerDistributor(PowerDistribution.ModuleType type, int canId) {
+    /**
+     * Constructor, which will set the CAN ID based on the default for the specified
+     * module type.
+     * 
+     * @param type power distribution panel type
+     */
+    public PowerDistributor(PowerDistribution.ModuleType type) {
+      this(type, switch (type) {
+        case kCTRE -> 0;
+        case kRev -> 1;
+      });
+    }
+  }
+
+  /**
    * Collective robot configuration data.
    *
    * @param drive    drive base configuration (may be null)
@@ -394,13 +418,14 @@ public interface RobotConfigs {
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
    * @param candle   CANdle configuration (may be null)
+   * @param power    power distribution configuration (may be null)
    */
   public static record RobotConfig(boolean isSimulated, DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-      LightingConfig lighting, CandleConfig candle) {
+      LightingConfig lighting, CandleConfig candle, PowerDistributor power) {
     public RobotConfig(boolean isSimulated, DriveConfig drive,
         List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-        LightingConfig lighting, CandleConfig candle) {
+        LightingConfig lighting, CandleConfig candle, PowerDistributor power) {
       if (drive != null) {
         assert (isSimulated == (drive.driveType() == DriveType.Simulated))
             : "Simulation setting mismatch (robot vs. drive)";
@@ -416,6 +441,7 @@ public interface RobotConfigs {
       this.arm = arm;
       this.lighting = lighting;
       this.candle = candle;
+      this.power = power;
     }
 
     /**
@@ -427,12 +453,23 @@ public interface RobotConfigs {
      * @param lighting lighting configuration (may be null)
      * @param arm      arm configuration (may be null)
      * @param candle   CANdle configuration (may be null)
+     * @param power    power distribution configuration (may be null)
      */
     RobotConfig(boolean isSimulated, DriveConfig drive, CameraConfig camera,
         ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
-        CandleConfig candle) {
+        CandleConfig candle, PowerDistributor power) {
       this(isSimulated, drive, Collections.singletonList(camera), elevator, arm,
-          lighting, candle);
+          lighting, candle, power);
+    }
+
+    /**
+     * Determines if we have power distribution configuration data.
+     *
+     * @return true iff the configuration includes data for the power distribution
+     *         setup
+     */
+    public boolean hasPowerDistributor() {
+      return power != null;
     }
 
     /**
@@ -496,4 +533,5 @@ public interface RobotConfigs {
   public static final LightingConfig NO_LIGHTING = null;
   public static final ArmConfig NO_ARM = null;
   public static final CandleConfig NO_CANDLE = null;
+  public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
 }

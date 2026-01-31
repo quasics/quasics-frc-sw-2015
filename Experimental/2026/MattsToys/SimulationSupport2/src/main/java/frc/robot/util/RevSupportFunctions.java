@@ -92,7 +92,7 @@ public class RevSupportFunctions {
     if (baseConfig != null) {
       followerConfig.apply(baseConfig);
     }
-    followerConfig.follow(leader, true);
+    followerConfig.follow(leader);
 
     try (SparkMax follower = new SparkMax(followerId, MotorType.kBrushless)) {
       follower.configure(followerConfig, ResetMode.kResetSafeParameters,

@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +33,11 @@ public class Vision extends SubsystemBase implements IVision {
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
+  protected Supplier<Pose2d> m_drivebasePoseSupplier;
 
   /** Constructor. */
-  public Vision() {
+  public Vision(Supplier<Pose2d> drivebasePoseSupplier) {
+    m_drivebasePoseSupplier = drivebasePoseSupplier;
     AprilTagFieldLayout tagLayout = null;
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile);
@@ -99,5 +102,10 @@ public class Vision extends SubsystemBase implements IVision {
 
     System.out.println(listTargetData);
     return listTargetData;
+  }
+
+  public Pose2d getDrivebasePose() {
+    Pose2d dbPose = m_drivebasePoseSupplier.get();
+    return dbPose;
   }
 }

@@ -29,8 +29,6 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private AbstractDrivebase m_drivebase;
-
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -41,7 +39,6 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
     CommandXboxController operatorController = new CommandXboxController(1); // Creates a CommandXboxController on port
                                                                              // 1.
     Trigger aButton = operatorController.a(); // Creates a new Trigger object for the `A` button on operatorController
@@ -55,6 +52,7 @@ public class Robot extends TimedRobot {
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
+   *
    *
    * <p>
    * This runs after the mode specific periodic functions, but before LiveWindow

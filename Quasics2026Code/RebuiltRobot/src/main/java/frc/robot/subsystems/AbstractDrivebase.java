@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,10 +33,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /** Kinematics calculator for the drivebase. */
   private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
 
-  // abstract only cares abt left and right, subclasses will need leader/follower
-  // specification
-  protected MotorController m_leftMotor;
-  protected MotorController m_rightMotor;
+  // Abstract only cares about Leaders
+  // subclasses will do the configuration
+  private MotorController m_leftMotor;
+  private MotorController m_rightMotor;
+
+  private DifferentialDrive m_robotDrive;
 
   private DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
@@ -45,13 +48,15 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public AbstractDrivebase(MotorController leftController, MotorController rightController) {
     m_leftMotor = leftController;
     m_rightMotor = rightController;
-
+    m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
   }
 
-  public abstract void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
+  public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+    m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
+  }
 
   protected abstract TrivialEncoder getLeftEncoder();
 
@@ -78,7 +83,18 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   }
 
-  protected void setSpeeds(double leftSpeed, double rightSpeed) {
+  // Slight code design complexity:
+  // AbstractDrivebase is going to maintain
+  // complete control over leaders
+  protected MotorController getLeftLeader() {
+    return m_leftMotor;
+  }
+
+  protected MotorController getRightLeader() {
+    return m_rightMotor;
+  }
+
+  public void setSpeeds(double leftSpeed, double rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
     m_rightMotor.set(mpsToPercent(rightSpeed));
   }
@@ -96,5 +112,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         getRightEncoder().getPosition(), pose);
     m_poseEstimator.resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters), pose);
+
   }
 }

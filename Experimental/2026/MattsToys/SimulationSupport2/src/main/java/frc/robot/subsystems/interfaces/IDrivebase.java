@@ -11,6 +11,8 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import java.io.IOException;
 
 /**
@@ -62,7 +64,11 @@ public interface IDrivebase extends ISubsystem {
     driveTank(0.0, 0.0);
   }
 
-  public class NullDrivebase implements IDrivebase {
+  public class NullDrivebase extends SubsystemBase implements IDrivebase {
+    public NullDrivebase() {
+      setName(SUBSYSTEM_NAME);
+    }
+
     @Override
     public void close() throws IOException {
       // No-op

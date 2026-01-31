@@ -413,7 +413,7 @@ public interface RobotConfigs {
    * Collective robot configuration data.
    *
    * @param drive    drive base configuration (may be null)
-   * @param cameras  list of camera configurations (may be null)
+   * @param cameras  list of camera configurations (may be null/empty)
    * @param elevator elevator configuration (may be null)
    * @param lighting lighting configuration (may be null)
    * @param arm      arm configuration (may be null)
@@ -458,7 +458,8 @@ public interface RobotConfigs {
     RobotConfig(boolean isSimulated, DriveConfig drive, CameraConfig camera,
         ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
         CandleConfig candle, PowerDistributor power) {
-      this(isSimulated, drive, Collections.singletonList(camera), elevator, arm,
+      this(isSimulated, drive,
+          camera != null ? Collections.singletonList(camera) : null, elevator, arm,
           lighting, candle, power);
     }
 

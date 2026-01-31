@@ -34,7 +34,7 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    *
    * @see frc.robot.subsystems.real.SingleMotorThingPwmSpark for an example
    */
-  public record DerivedClassData(MotorController controller, TrivialEncoder encoder) {
+  public record ConstructionData(MotorController controller, TrivialEncoder encoder) {
   }
 
   /**
@@ -61,7 +61,7 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    * theoretically do this directly from a client that builds its own
    * DerivedClassData record.
    */
-  public SingleMotorThing(DerivedClassData data) {
+  public SingleMotorThing(ConstructionData data) {
     this.controller = data.controller;
     this.encoder = data.encoder;
   }

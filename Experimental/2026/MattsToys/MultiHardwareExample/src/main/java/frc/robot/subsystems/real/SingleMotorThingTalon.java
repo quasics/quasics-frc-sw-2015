@@ -14,9 +14,11 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**
- * Provides a simple example of a "SingleMotorThing" that uses Talon controllers.
+ * Provides a simple example of a "SingleMotorThing" that uses Talon
+ * controllers.
  *
- * Note that all of the "actual functionality" takes place in the base class; this class only exists
+ * Note that all of the "actual functionality" takes place in the base class;
+ * this class only exists
  * to set up the hardware-specific stuff.
  */
 public class SingleMotorThingTalon extends SingleMotorThing {
@@ -29,11 +31,11 @@ public class SingleMotorThingTalon extends SingleMotorThing {
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static DerivedClassData getStuffForBaseClassSetup() {
+  static ConstructionData getStuffForBaseClassSetup() {
     final Encoder rawEncoder = new Encoder(3, 4);
     configureEncoderForDistance(rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
 
-    return new DerivedClassData(
+    return new ConstructionData(
         // Motor controller
         new PWMTalonFX(6),
         // Encoder

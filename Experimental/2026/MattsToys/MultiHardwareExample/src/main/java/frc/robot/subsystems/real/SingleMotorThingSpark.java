@@ -58,7 +58,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static DerivedClassData getStuffForBaseClassSetup() {
+  static ConstructionData getStuffForBaseClassSetup() {
     SparkMax motorController = new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
@@ -66,7 +66,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
         com.revrobotics.PersistMode.kNoPersistParameters);
     TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 
-    return new DerivedClassData(motorController, encoder);
+    return new ConstructionData(motorController, encoder);
   }
 
   /** Creates a new SingleMotorThingSpark. */

@@ -85,7 +85,7 @@ public class RevSupportFunctions {
    *
    * @param followerId CAN ID for the motor to be configured as a follower
    * @param leader     the motor that should serve as leader
-   * @param baseConfig the based configuration (from the leader) to pass through
+   * @param baseConfig the base configuration to pass through
    */
   public static void configureMotorToFollow(int followerId, SparkMax leader, SparkMaxConfig baseConfig) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();

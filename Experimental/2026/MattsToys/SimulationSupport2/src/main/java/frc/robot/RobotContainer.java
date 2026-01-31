@@ -170,6 +170,9 @@ public class RobotContainer {
     if (m_drivebase instanceof SimDrivebase) {
       ((SimDrivebase) m_drivebase).setGame(GAME);
     }
+    if (m_pdp != null) {
+      SmartDashboard.putData(m_pdp);
+    }
   }
 
   /**

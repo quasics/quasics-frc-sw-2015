@@ -5,18 +5,16 @@
 package frc.robot;
 
 import com.thethriftybot.devices.ThriftyNova;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.List;
-
 
 public class ThriftyRunner extends SubsystemBase {
   private ThriftyNova motor; // motor instance
 
   /** Creates a new ThriftyRunner. */
   public ThriftyRunner() {
-    motor = new ThriftyNova(1);
+    motor = new ThriftyNova(7);
     List<ThriftyNova.Error> errors = motor.getErrors();
     for (var err : errors) {
       System.out.println(err.toString());

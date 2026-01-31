@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -133,6 +134,11 @@ public class RobotContainer {
 
   /** Right-side righting. */
   final ILighting m_rightLighting = allocateSideLighting(m_robotConfig, m_lighting, false);
+
+  /** Power distribution panel (or null, such as under simulation). */
+  final PowerDistribution m_pdp = m_robotConfig.hasPowerDistributor()
+      ? new PowerDistribution(m_robotConfig.power().canId(), m_robotConfig.power().type())
+      : null;
 
   /** The driver joystick wrapper. */
   final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,

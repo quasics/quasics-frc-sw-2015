@@ -13,6 +13,7 @@ import static frc.robot.util.RobotConfigs.NO_CAMERA;
 import static frc.robot.util.RobotConfigs.NO_CANDLE;
 import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
 import static frc.robot.util.RobotConfigs.NO_LIGHTING;
+import static frc.robot.util.RobotConfigs.NO_POWER_DISTRIBUTOR;
 
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;
@@ -29,6 +30,7 @@ import frc.robot.util.RobotConfigs.LightingConfig;
 import frc.robot.util.RobotConfigs.Orientation;
 import frc.robot.util.RobotConfigs.PIDConfig;
 import frc.robot.util.RobotConfigs.Position;
+import frc.robot.util.RobotConfigs.PowerDistributor;
 import frc.robot.util.RobotConfigs.RobotConfig;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +38,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 /**
  * Library of predefined robot configurations.
@@ -180,7 +184,7 @@ public final class RobotConfigLibrary {
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
-        elevatorConfig, armConfig, lightingConfig, candleConfig);
+        elevatorConfig, armConfig, lightingConfig, candleConfig, NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
@@ -235,10 +239,12 @@ public final class RobotConfigLibrary {
             // Note: PID and FF values are based on the Reefscape code base as
             // of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),
-        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE);
+        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE, NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateSallyConfig() {
+    PowerDistributor power = new PowerDistributor(ModuleType.kRev);
+
     return new RobotConfig(false,
         new DriveConfig(DriveType.CanSparkMax, Inches.of(3), // Wheel radius
             Meters.of(0.5588) /* 22 in (from 2024) */,
@@ -253,7 +259,7 @@ public final class RobotConfigLibrary {
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
   }
 
   private static RobotConfig generate2026Config() {
@@ -270,7 +276,9 @@ public final class RobotConfigLibrary {
             Volts.of(0.19529), 0.01) // Angular data (FAKE)
     );
 
+    PowerDistributor power = new PowerDistributor(ModuleType.kRev);
+
     return new RobotConfig(
-        false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE);
+        false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
   }
 }

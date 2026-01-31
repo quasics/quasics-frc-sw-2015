@@ -5,10 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulationDrivebase;
@@ -38,11 +41,14 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   public Robot() {
+    // private m_arcadeDrive = new ArcadeDrive(null, null, m_drivebase) {}
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+    LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
+    SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
     CommandXboxController operatorController = new CommandXboxController(1); // Creates a CommandXboxController on port
                                                                              // 1.
     Trigger aButton = operatorController.a(); // Creates a new Trigger object for the `A` button on operatorController

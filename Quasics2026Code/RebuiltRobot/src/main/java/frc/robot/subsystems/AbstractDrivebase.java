@@ -66,9 +66,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   }
 
-  protected void setSpeeds(double leftSpeed, double rightSpeed) {
+  public void setSpeeds(double leftSpeed, double rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
+    System.out.println("Setting the left motor!");
     m_rightMotor.set(mpsToPercent(rightSpeed));
+    System.out.println("Setting the right motor!");
   }
 
   public double mpsToPercent(double speed) {

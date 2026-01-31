@@ -6,22 +6,24 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
-import edu.wpi.first.wpilibj.Joystick;
+
+import java.util.function.Supplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArcadeDrive extends Command {
-  private final Joystick m_joystick;
-  private int m_xAxis;
-  private int m_yAxis;
   AbstractDrivebase m_drivebase;
+  private final Supplier<Double> m_linearSpeedSupplier;
+  private final Supplier<Double> m_turnSpeedSupplier;
 
   /** Creates a new ArcadeDrive. */
-  public ArcadeDrive(Joystick joystick, int xAxis, int yAxis, AbstractDrivebase drivebase) {
-    m_joystick = joystick;
-    m_xAxis = xAxis;
-    m_yAxis = yAxis;
+
+  public ArcadeDrive(Supplier<Double> linearSpeedSupplier, Supplier<Double> turnSpeedSupplier,
+      AbstractDrivebase drivebase) {
     m_drivebase = drivebase;
+    m_linearSpeedSupplier = linearSpeedSupplier;
+    m_turnSpeedSupplier = turnSpeedSupplier;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivebase);
   }
 
   // Called when the command is initially scheduled.
@@ -39,9 +41,4 @@ public class ArcadeDrive extends Command {
   public void end(boolean interrupted) {
   }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }

@@ -18,9 +18,9 @@ import edu.wpi.first.wpilibj.Encoder;
 public class RealDrivebase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or be
   // based on some information about the robot's configuration.)
-  private SparkMax m_leftleader;
+  private SparkMax m_leftMotor;
   private SparkMax m_leftfollower;
-  private SparkMax m_rightleader;
+  private SparkMax m_rightMotor;
   private SparkMax m_rightfollower;
 
   // TODO: Change these to use the encoders that are associated with the real
@@ -54,11 +54,11 @@ public class RealDrivebase extends AbstractDrivebase {
   /** Creates a new RealDrivebase. */
   public RealDrivebase() {
     // TODO: find actual SparkMax IDs, currents are placeholders.
-    m_leftleader = new SparkMax(1, MotorType.kBrushless);
+    m_leftMotor = new SparkMax(1, MotorType.kBrushless);
     m_leftfollower = new SparkMax(2, MotorType.kBrushless);
-    m_rightleader = new SparkMax(3, MotorType.kBrushless);
+    m_rightMotor = new SparkMax(3, MotorType.kBrushless);
     m_rightfollower = new SparkMax(4, MotorType.kBrushless);
-    m_robotDrive = new DifferentialDrive(m_leftleader, m_rightleader);
+    m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     AnalogGyro gyro = new AnalogGyro(0);
     m_mainGyro = IGyro.wrapGyro(gyro);
 

@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.IGyro;
@@ -26,6 +27,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private DifferentialDriveKinematics m_kinematics;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
   private final Field2d m_field = new Field2d();
+  // abstract only cares abt left and right, subclasses will need leader/follower
+  // specification
+  protected MotorController m_leftMotor;
+  protected MotorController m_rightMotor;
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase() {
@@ -46,10 +51,6 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return m_kinematics;
   }
 
-  public void setSpeeds(double leftSpeed, double rightSpeed) {
-
-  }
-
   protected final DifferentialDriveOdometry getOdometry() {
     return m_odometry;
   }
@@ -63,6 +64,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         getRightEncoder().getPosition().in(Meters));
     // This method will be called once per scheduler run
 
+  }
+
+  protected void setSpeeds(double leftSpeed, double rightSpeed) {
+    m_leftMotor.set(mpsToPercent(leftSpeed));
+    m_rightMotor.set(mpsToPercent(rightSpeed));
   }
 
   public double mpsToPercent(double speed) {

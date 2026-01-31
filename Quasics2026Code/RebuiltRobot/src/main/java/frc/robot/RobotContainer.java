@@ -56,8 +56,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ArcadeDrive` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    // .onTrue(new ArcadeDrive(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition).onTrue(new
+    // ArcadeDrive(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.

@@ -6,6 +6,8 @@ package frc.robot.subsystems.interfaces;
 
 import java.io.IOException;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /** Interface for a simple elevator subsystem. */
 public interface IElevator extends ISubsystem {
   /** The canonical name of the elevator subsystem. */
@@ -78,7 +80,11 @@ public interface IElevator extends ISubsystem {
   /** Gets the height for a given position. */
   double getHeightForPosition(ElevatorPosition position);
 
-  public class NullElevator implements IElevator {
+  public class NullElevator extends SubsystemBase implements IElevator {
+    public NullElevator() {
+      setName(SUBSYSTEM_NAME);
+    }
+
     @Override
     public void close() throws IOException {
       // No-op.

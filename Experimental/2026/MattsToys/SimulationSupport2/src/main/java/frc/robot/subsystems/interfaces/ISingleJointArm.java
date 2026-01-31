@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import java.io.IOException;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Simple interface for a single-joint arm subsystem. */
 public interface ISingleJointArm extends ISubsystem {
@@ -58,7 +59,11 @@ public interface ISingleJointArm extends ISubsystem {
   /** Returns the current state of the arm. */
   State getState();
 
-  public class NullArm implements ISingleJointArm {
+  public class NullArm extends SubsystemBase implements ISingleJointArm {
+    public NullArm() {
+      setName(SUBSYSTEM_NAME);
+    }
+
     @Override
     public void close() throws IOException {
       // No-op.

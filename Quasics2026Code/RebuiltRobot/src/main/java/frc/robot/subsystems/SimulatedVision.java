@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,7 +44,8 @@ public class SimulatedVision extends Vision {
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
-  public SimulatedVision() {
+  public SimulatedVision(Supplier<Pose2d> drivebasePoseSupplier) {
+    super(drivebasePoseSupplier);
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
@@ -105,7 +107,7 @@ public class SimulatedVision extends Vision {
     // pretend we're here, and inject the data into the camera for what we'd see".
     // Note that we do not want to use the estimate solely based on vision here,
     // because that will rapidly accumulate drift from errors, uncertainty, etc.
-    m_visionSim.update(new Pose2d());
+    m_visionSim.update(getDrivebasePose());
 
     // 2. Update the simulator to reflect where the (purely) vision-based pose
     // estimate suggests that we are located.

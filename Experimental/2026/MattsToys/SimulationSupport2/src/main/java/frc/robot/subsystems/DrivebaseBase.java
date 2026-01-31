@@ -180,18 +180,23 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
    * @param leftEncoder     encoder for the left side of the drivebase
    * @param rightEncoder    encoder for the right side of the drivebase
    * @param gyro            the gyro/ALU being used on this drivebase
+   * @param configureMotors if true, set motor configuration (i.e., inversion); if
+   *                        false, then we'll assume that this is done externally,
+   *                        or in the derived class.
    */
   protected DrivebaseBase(DriveConfig config,
       IMotorControllerPlus leftController, IMotorControllerPlus rightController,
-      TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro) {
+      TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro, boolean configureMotors) {
     setName(SUBSYSTEM_NAME);
     m_config = config;
 
     m_leftController = leftController;
     m_rightController = rightController;
 
-    m_leftController.setInverted(config.orientation().isLeftInverted());
-    m_rightController.setInverted(config.orientation().isRightInverted());
+    if (configureMotors) {
+      m_leftController.setInverted(config.orientation().isLeftInverted());
+      m_rightController.setInverted(config.orientation().isRightInverted());
+    }
 
     m_leftTrivialEncoder = leftEncoder;
     m_rightTrivialEncoder = rightEncoder;

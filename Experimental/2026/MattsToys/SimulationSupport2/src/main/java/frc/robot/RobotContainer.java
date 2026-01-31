@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -107,10 +108,14 @@ public class RobotContainer {
   final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
 
   /** The elevator subsystem. (At present, always simulated.) */
-  final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
+  final IElevator m_elevator = m_robotConfig.hasElevator()
+      ? new frc.robot.subsystems.simulated.SimElevator()
+      : new IElevator.NullElevator();
 
   /** The arm subsystem. (At present, always simulated.) */
-  final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
+  final ISingleJointArm m_arm = m_robotConfig.hasArm()
+      ? new frc.robot.subsystems.simulated.SimArm()
+      : new ISingleJointArm.NullArm();
 
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()
@@ -133,6 +138,11 @@ public class RobotContainer {
 
   /** Right-side righting. */
   final ILighting m_rightLighting = allocateSideLighting(m_robotConfig, m_lighting, false);
+
+  /** Power distribution panel (or null, such as under simulation). */
+  final PowerDistribution m_pdp = m_robotConfig.hasPowerDistributor()
+      ? new PowerDistribution(m_robotConfig.power().canId(), m_robotConfig.power().type())
+      : null;
 
   /** The driver joystick wrapper. */
   final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
@@ -159,6 +169,9 @@ public class RobotContainer {
     }
     if (m_drivebase instanceof SimDrivebase) {
       ((SimDrivebase) m_drivebase).setGame(GAME);
+    }
+    if (m_pdp != null) {
+      SmartDashboard.putData(m_pdp);
     }
   }
 
@@ -435,7 +448,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing forward
+            // End 3 meters straight ahead of where we started, facing the same direction as
+            // at start
             new Pose2d(3, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -446,7 +460,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing forward
+            // End 3 meters straight ahead of where we started, facing +90 degrees from when
+            // we started
             new Pose2d(3, 3, new Rotation2d(Degrees.of(90))),
             // Pass config
             m_trajectoryConfig);
@@ -458,7 +473,8 @@ public class RobotContainer {
             // Pass through these two interior waypoints, making an 's' curve
             // path
             List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
-            // End 6 meters straight ahead of where we started, facing forward
+            // End 6 meters straight ahead of where we started, facing the same direction as
+            // at start
             new Pose2d(6, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -471,7 +487,7 @@ public class RobotContainer {
             // of a circle
             List.of(new Translation2d(2, 2), new Translation2d(0, 4),
                 new Translation2d(-2, 2)),
-            // End back where we started, facing forward
+            // End back where we started, facing the same direction as at start
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -501,9 +517,21 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates "side panel" lighting for the robot, using a subset of the primary
+   * LED strip.
+   * 
+   * @param config   the target robot's configuration
+   * @param lighting the base Lighting system
+   * @param leftSide if true, we're allocating the left side panel lighting;
+   *                 otherwise, it's the right side panel's
+   * @return a lighting buffer for the side panel (or NullLighting, if we couldn't
+   *         allocate a buffer)
+   */
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
-    if (!config.hasLighting()) {
+    if (!config.hasLighting() || lighting == null || !(lighting instanceof Lighting)) {
+      // Can't do it....
       return new ILighting.NullLighting();
     }
 
@@ -511,9 +539,12 @@ public class RobotContainer {
     final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right
     final int viewIndex = (simulatingCandle ? 1 : 0) + (leftSide ? 0 : 1);
+
     if (realSubsystem.getSubViews().size() < (viewIndex + 1)) {
+      // Don't have a subview (lighting subset) that we can use for this.
       return new ILighting.NullLighting();
     }
+
     LightingBuffer buffer = new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
     buffer.setForward(leftSide);
     return buffer;

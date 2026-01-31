@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -47,7 +48,10 @@ public interface IVision extends ISubsystem {
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
 
-  public class NullVision implements IVision {
+  public class NullVision extends SubsystemBase implements IVision {
+    public NullVision() {
+      setName(SUBSYSTEM_NAME);
+    }
 
     @Override
     public void close() throws IOException {

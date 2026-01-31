@@ -9,7 +9,9 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SingleMotor extends SubsystemBase {
-  SparkMax m_controller = new SparkMax(1, MotorType.kBrushless);
+  private static final int CAN_ID = 4;
+
+  SparkMax m_controller = new SparkMax(CAN_ID, MotorType.kBrushless);
 
   /** Creates a new SingleMotor. */
   public SingleMotor() {

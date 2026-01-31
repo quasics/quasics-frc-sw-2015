@@ -53,7 +53,8 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
         new ThriftyNovaMotorControllerPlus(rightLeader),
         new ThriftyEncoderWrapper(leftLeader, WHEEL_DIAMETER),
         new ThriftyEncoderWrapper(rightLeader, WHEEL_DIAMETER),
-        new Pigeon2Wrapper(rawGyro));
+        new Pigeon2Wrapper(rawGyro),
+        true);
 
     // Note: this should be redundant to work in the base class. (But it
     // shouldn't hurt.)

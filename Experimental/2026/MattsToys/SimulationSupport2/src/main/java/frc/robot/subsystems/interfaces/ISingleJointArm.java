@@ -4,7 +4,12 @@
 
 package frc.robot.subsystems.interfaces;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import java.io.IOException;
+
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Simple interface for a single-joint arm subsystem. */
 public interface ISingleJointArm extends ISubsystem {
@@ -53,4 +58,60 @@ public interface ISingleJointArm extends ISubsystem {
 
   /** Returns the current state of the arm. */
   State getState();
+
+  public class NullArm extends SubsystemBase implements ISingleJointArm {
+    public NullArm() {
+      setName(SUBSYSTEM_NAME);
+    }
+
+    @Override
+    public void close() throws IOException {
+      // No-op.
+    }
+
+    @Override
+    public void stop() {
+      // No-op.
+    }
+
+    @Override
+    public Angle getArmMinAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getArmMaxAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getArmOutAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getArmUpAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public Angle getCurrentAngle() {
+      return Degrees.of(0);
+    }
+
+    @Override
+    public void setTargetPosition(Angle targetPosition) {
+      // No-op
+    }
+
+    @Override
+    public boolean atTargetPosition() {
+      return true;
+    }
+
+    @Override
+    public State getState() {
+      return State.IDLE;
+    }
+  }
 }

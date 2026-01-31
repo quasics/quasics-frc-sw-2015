@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -27,8 +30,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
-  private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
   private AnalogGyroSim m_GyroSim;
   private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
   private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
@@ -54,19 +55,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
-  public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
-    DifferentialDriveWheelSpeeds wheelSpeeds = getKinematics()
-        .toWheelSpeeds(new ChassisSpeeds(forwardspeed, LinearVelocity.ofBaseUnits(0.0, null), turnspeed));
-    double leftPercent;
-    double rightPercent;
-    leftPercent = mpsToPercent(wheelSpeeds.leftMetersPerSecond);
-    rightPercent = mpsToPercent(wheelSpeeds.rightMetersPerSecond);
-    m_leftMotor.set(leftPercent);
-    m_rightMotor.set(rightPercent);
-  }
-
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
+    super(new PWMSparkMax(0), new PWMSparkMax(1));
     AnalogGyro gyro = new AnalogGyro(0);
     m_GyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
@@ -81,8 +72,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
   }
 
   public void simulationPeriodic() {
-    m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(),
-        m_rightMotor.get() * RobotController.getInputVoltage());
+    // TODO: Add abstractDriveBase getDriveSpeeds
+    m_driveSim.setInputs(getLeftLeader().get() * RobotController.getInputVoltage(),
+        getRightLeader().get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
     // getHeading returns counterclockwise positive, Gyros are clockwise positive
     m_GyroSim.setAngle(-m_driveSim.getHeading().getDegrees());

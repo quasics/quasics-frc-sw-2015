@@ -9,8 +9,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.AbstractDrivebase;
 import frc.robot.subsystems.IVision;
+import frc.robot.subsystems.RealDrivebase;
 import frc.robot.subsystems.SimulatedVision;
+import frc.robot.subsystems.SimulationDrivebase;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -28,11 +31,15 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
+  private AbstractDrivebase m_drivebase;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
    */
   public RobotContainer() {
+    m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+
     // Configure the trigger bindings
     configureBindings();
   }

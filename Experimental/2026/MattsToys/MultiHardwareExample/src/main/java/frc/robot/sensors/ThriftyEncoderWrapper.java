@@ -69,4 +69,5 @@ public class ThriftyEncoderWrapper implements TrivialEncoder {
   public void reset() {
     m_motorController.setEncoderPosition(0);
   }
+
 }

@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.Constants;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private Encoder m_leftEncoder = new Encoder(1, 2);
@@ -31,6 +33,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
   private IGyro m_mainGyro;
   private final Field2d m_field = new Field2d();
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
   protected final IGyro getGyro() {
     return m_mainGyro;
@@ -79,19 +82,19 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_driveSim.setInputs(getLeftLeader().get() * RobotController.getInputVoltage(),
         getRightLeader().get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
-    System.out.println("Left motor controller = " + getLeftLeader().get());
-    System.out.println("Right motor controller = " + getRightLeader().get());
+    m_logger.log("Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
+    m_logger.log("Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
     // getHeading returns counterclockwise positive, Gyros are clockwise positive
     m_GyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
-    System.out.println("Gyro = " + getGyro().getRate());
+    m_logger.log("Gyro = " + getGyro().getRate(), Verbosity.Debug);
     m_leftEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
     m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
     m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
     m_rightEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
     m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
-    System.out.println("Left encoder = " + getLeftEncoder().getPosition());
-    System.out.println("Right encoder = " + getRightEncoder().getPosition());
+    m_logger.log("Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);
+    m_logger.log("Right encoder = " + getRightEncoder().getPosition(), Verbosity.Debug);
   }
 
 }

@@ -119,7 +119,9 @@ public class RobotContainer {
           .get(0));
 
   /** Lighting subystem. */
-  final ILighting m_lighting = new Lighting(m_robotConfig);
+  final ILighting m_lighting = (m_robotConfig.hasLighting()
+      ? new Lighting(m_robotConfig)
+      : new ILighting.NullLighting());
 
   /** CANdle */
   final ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
@@ -499,6 +501,10 @@ public class RobotContainer {
 
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+    if (!config.hasLighting()) {
+      return new ILighting.NullLighting();
+    }
+
     Lighting realSubsystem = (Lighting) lighting;
     final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right

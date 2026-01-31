@@ -88,7 +88,7 @@ public class RobotContainer {
   private static final boolean OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED = false;
 
   private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT = RobotConfigLibrary.Robot.Simulation;
-  private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.Simulation;
+  private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.Sally;
 
   /**
    * The robot being targeted.
@@ -113,13 +113,17 @@ public class RobotContainer {
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** Vision-processing subsystem. */
-  final IVision m_vision = new PhotonVisionSingleCamera(
-      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
-          .cameras()
-          .get(0));
+  final IVision m_vision = m_robotConfig.hasCamera()
+      ? new PhotonVisionSingleCamera(
+          RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
+              .cameras()
+              .get(0))
+      : new IVision.NullVision();
 
   /** Lighting subystem. */
-  final ILighting m_lighting = new Lighting(m_robotConfig);
+  final ILighting m_lighting = (m_robotConfig.hasLighting()
+      ? new Lighting(m_robotConfig)
+      : new ILighting.NullLighting());
 
   /** CANdle */
   final ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
@@ -140,6 +144,7 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
+    System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***");
     configureDriving();
     setupAutonomousChooser();
     configureSysIdCommands();
@@ -498,6 +503,10 @@ public class RobotContainer {
 
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+    if (!config.hasLighting()) {
+      return new ILighting.NullLighting();
+    }
+
     Lighting realSubsystem = (Lighting) lighting;
     final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right

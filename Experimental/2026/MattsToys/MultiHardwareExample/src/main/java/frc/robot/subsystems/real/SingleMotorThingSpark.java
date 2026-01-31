@@ -19,10 +19,14 @@ import frc.robot.subsystems.implementation.SingleMotorThing;
  * controllers.
  *
  * Note that all of the "actual functionality" takes place in the base class;
- * this class only exists
- * to set up the hardware-specific stuff.
+ * this class only exists to set up the hardware-specific stuff (i.e., the
+ * SparkMax motor controller and an encoder that will work with it).
  */
 public class SingleMotorThingSpark extends SingleMotorThing {
+  //
+  // Data about the underlying hardware.
+  //
+
   /** Encoder ticks per revolution. */
   public static final int ENCODER_TICKS_PER_REVOLUTION = -4096;
 
@@ -35,9 +39,40 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   /** Wheel diameter in inches. */
   public static final Distance WHEEL_DIAMETER = Inches.of(6);
 
+  //
+  // Functions
+  //
+
+  /** Creates a new SingleMotorThingSpark. */
+  public SingleMotorThingSpark() {
+    super(getStuffForBaseClassSetup());
+  }
+
   /**
-   * Updates a SparkMaxConfig to work with distance-based values (meters and
-   * meters/sec), rather than the native rotation-based units (rotations and RPM).
+   * Builds the actual hardware wrappers that will be passed to the base class.
+   */
+  static ConstructionData getStuffForBaseClassSetup() {
+    // Set up the basic configuration for our motor controller.
+    SparkMaxConfig config = new SparkMaxConfig();
+    configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
+    config.inverted(false);
+
+    // Allocate the motor controller and apply the configuration to it.
+    SparkMax motorController = new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+    motorController.configure(config, com.revrobotics.ResetMode.kNoResetSafeParameters,
+        com.revrobotics.PersistMode.kNoPersistParameters);
+
+    // Set up our encoder
+    TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
+
+    // OK, we've got the stuff to build a SingleMotorThing!
+    return new ConstructionData(motorController, encoder);
+  }
+
+  /**
+   * Helper function to update a SparkMaxConfig to work with distance-based values
+   * (meters and meters/sec), rather than the native rotation-based units
+   * (rotations and RPM).
    *
    * @param config        the object being configured
    * @param outerDiameter distance of the object (wheel, sprocket, etc.) being
@@ -53,24 +88,5 @@ public class SingleMotorThingSpark extends SingleMotorThing {
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)
         .velocityConversionFactor(velocityScalingFactor);
-  }
-
-  /**
-   * Builds the actual hardware wrappers that will be passed to the base class.
-   */
-  static DerivedClassData getStuffForBaseClassSetup() {
-    SparkMax motorController = new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    SparkMaxConfig config = new SparkMaxConfig();
-    configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
-    motorController.configure(config, com.revrobotics.ResetMode.kNoResetSafeParameters,
-        com.revrobotics.PersistMode.kNoPersistParameters);
-    TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
-
-    return new DerivedClassData(motorController, encoder);
-  }
-
-  /** Creates a new SingleMotorThingSpark. */
-  public SingleMotorThingSpark() {
-    super(getStuffForBaseClassSetup());
   }
 }

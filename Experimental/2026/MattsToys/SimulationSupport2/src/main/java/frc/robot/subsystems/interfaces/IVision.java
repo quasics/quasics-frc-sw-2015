@@ -7,6 +7,9 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +26,8 @@ public interface IVision extends ISubsystem {
    * @param angle yaw to the angle (negative values means that it's to left of
    *              camera center)
    */
-  record TargetData(int id, Angle angle, Distance distance) {}
+  record TargetData(int id, Angle angle, Distance distance) {
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // Abstract methods
@@ -42,4 +46,23 @@ public interface IVision extends ISubsystem {
    *                  used to compute robot-relative positioning of the targets
    */
   List<TargetData> getVisibleTargets(Pose2d robotPose);
+
+  public class NullVision implements IVision {
+
+    @Override
+    public void close() throws IOException {
+      // No-op.
+    }
+
+    @Override
+    public boolean hasTargetsInView() {
+      return false;
+    }
+
+    @Override
+    public List<TargetData> getVisibleTargets(Pose2d robotPose) {
+      return Collections.emptyList();
+    }
+
+  }
 }

@@ -45,7 +45,7 @@ public class RobotContainer {
     case Victor ->
       // Sample of how to use the SingleMotorThing class without needing
       // to derive a class for hardware-specific setup.
-      new SingleMotorThing(new SingleMotorThing.DerivedClassData(
+      new SingleMotorThing(new SingleMotorThing.ConstructionData(
           // Use a Victor motor controller...
           new VictorSP(8),
           // ...and a bog-standard WPILib encoder.

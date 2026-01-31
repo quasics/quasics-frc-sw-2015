@@ -34,14 +34,14 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    *
    * @see frc.robot.subsystems.real.SingleMotorThingPwmSpark for an example
    */
-  public record DerivedClassData(MotorController controller, TrivialEncoder encoder) {
+  public record ConstructionData(MotorController controller, TrivialEncoder encoder) {
   }
 
   /**
    * The motor controller used for this "thing". This will be allocated by the
    * "leaf" derived class.
    */
-  final MotorController controller;
+  final protected MotorController controller;
 
   /**
    * The encoder used for this "thing". This will be allocated by the "leaf"
@@ -61,7 +61,7 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    * theoretically do this directly from a client that builds its own
    * DerivedClassData record.
    */
-  public SingleMotorThing(DerivedClassData data) {
+  public SingleMotorThing(ConstructionData data) {
     this.controller = data.controller;
     this.encoder = data.encoder;
   }
@@ -69,6 +69,7 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
   @Override
   public void setSpeed(double percent) {
     controller.set(percent);
+    System.out.println("Setting speed to " + percent);
   }
 
   @Override

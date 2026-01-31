@@ -108,10 +108,14 @@ public class RobotContainer {
   final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
 
   /** The elevator subsystem. (At present, always simulated.) */
-  final IElevator m_elevator = new frc.robot.subsystems.simulated.SimElevator();
+  final IElevator m_elevator = m_robotConfig.hasElevator()
+      ? new frc.robot.subsystems.simulated.SimElevator()
+      : new IElevator.NullElevator();
 
   /** The arm subsystem. (At present, always simulated.) */
-  final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
+  final ISingleJointArm m_arm = m_robotConfig.hasArm()
+      ? new frc.robot.subsystems.simulated.SimArm()
+      : new ISingleJointArm.NullArm();
 
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()

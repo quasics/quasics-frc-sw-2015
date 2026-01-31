@@ -26,12 +26,18 @@ public class SingleMotorThingNova extends SingleMotorThing {
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
   static DerivedClassData getStuffForBaseClassSetup() {
-    ThriftyNova motorController = new ThriftyNova(1, ThriftyNova.MotorType.NEO);
+    ThriftyNova motorController = new ThriftyNova(1);   // , ThriftyNova.MotorType.NEO
     return new DerivedClassData(
         motorController, new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
   public SingleMotorThingNova() {
     super(getStuffForBaseClassSetup());
+    System.out.println("Set up SingleMotorThingNova!");
+  }
+
+
+  @Override public void periodic() {
+    // ((ThriftyNova)super.controller).setPercent(0.5);
   }
 }

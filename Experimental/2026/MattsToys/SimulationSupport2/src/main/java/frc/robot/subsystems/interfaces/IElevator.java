@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.io.IOException;
+
 /** Interface for a simple elevator subsystem. */
 public interface IElevator extends ISubsystem {
   /** The canonical name of the elevator subsystem. */
@@ -32,8 +34,8 @@ public interface IElevator extends ISubsystem {
     /** The elevator is at the top (upper limit). */
     TOP,
     /**
-       The elevator is under manual control (so, it could be anywhere right
-       now).
+     * The elevator is under manual control (so, it could be anywhere right
+     * now).
      */
     MANUAL_CONTROL,
   }
@@ -59,7 +61,7 @@ public interface IElevator extends ISubsystem {
   ElevatorState getElevatorState();
 
   /**
-   * Moves the elevator down (under manual control).  It will automatically stop
+   * Moves the elevator down (under manual control). It will automatically stop
    * when it reaches its bottom limit.
    */
   void down();
@@ -75,4 +77,51 @@ public interface IElevator extends ISubsystem {
 
   /** Gets the height for a given position. */
   double getHeightForPosition(ElevatorPosition position);
+
+  public class NullElevator implements IElevator {
+    @Override
+    public void close() throws IOException {
+      // No-op.
+    }
+
+    @Override
+    public void stop() {
+      // No-op.
+    }
+
+    @Override
+    public void setTargetPosition(ElevatorPosition position) {
+      // No-op.
+    }
+
+    @Override
+    public ElevatorPosition getTargetPosition() {
+      return ElevatorPosition.MANUAL_CONTROL;
+    }
+
+    @Override
+    public ElevatorState getElevatorState() {
+      return ElevatorState.IDLE;
+    }
+
+    @Override
+    public void down() {
+      // No-op.
+    }
+
+    @Override
+    public void up() {
+      // No-op.
+    }
+
+    @Override
+    public double getCurrentHeight() {
+      return 0;
+    }
+
+    @Override
+    public double getHeightForPosition(ElevatorPosition position) {
+      return 0;
+    }
+  }
 }

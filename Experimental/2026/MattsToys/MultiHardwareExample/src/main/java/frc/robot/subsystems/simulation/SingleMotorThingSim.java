@@ -15,8 +15,8 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 
 /**
- * An example of how the subsystem might be set up under simulation, but still
- * use the same base class as the "live" hardware.
+ * An example of how the subsystem might be set up for use under simulation, but
+ * still use the same base class as the "live" hardware.
  */
 public class SingleMotorThingSim extends SingleMotorThing {
   /** Arbitrary value for under simulation. */

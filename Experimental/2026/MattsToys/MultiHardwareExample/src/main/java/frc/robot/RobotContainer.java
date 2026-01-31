@@ -6,8 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.implementation.SingleMotorThing;
 import frc.robot.subsystems.interfaces.ISingleMotorThing;
@@ -28,11 +30,11 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
 public class RobotContainer {
   /** Supported hardware configurations. */
   enum HardwareConfig {
-    Simulated, Spark, Talon, Victor, Thrifty
+    Simulated, Thrifty, Spark, Talon, Victor
   }
 
   /** Selected hardware configuration. */
-  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
+  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Thrifty;
 
   // Sets up a "single motor thing", based on the selected hardware configuration.
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
@@ -54,15 +56,39 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    addPowerButton("Stop!", 0);
+    addPowerButton("-25% power", -.25);
+    addPowerButton("-50% power", -.5);
+    addPowerButton("-100% power", -1.0);
+    addPowerButton("+25% power", +.25);
+    addPowerButton("+50% power", +.5);
+    addPowerButton("+100% power", +1.0);
+
+    SmartDashboard.putData(m_singleMotorThing.asSendable());
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  private void addPowerButton(String label, double percent) {
+    SmartDashboard.putData(label,
+        new FunctionalCommand(
+            // onInit (can't be null)
+            () -> {
+              m_singleMotorThing.setSpeed(percent);
+            },
+            // onExecute (can't be null)
+            () -> {
+              m_singleMotorThing.setSpeed(percent);
+            },
+            // onEnd (can't be null)
+            (Boolean b) -> {
+              m_singleMotorThing.stop();
+            },
+            // isFinished (can't be null)
+            () -> false,
+            // Dependency
+            m_singleMotorThing.asSubsystem()));
+  }
+
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return new PrintCommand("We should do something....");
+    return Commands.print("No autonomous command configured");
   }
 }

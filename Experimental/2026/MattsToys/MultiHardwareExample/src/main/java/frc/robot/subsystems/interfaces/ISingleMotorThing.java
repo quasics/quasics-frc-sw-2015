@@ -5,14 +5,33 @@
 package frc.robot.subsystems.interfaces;
 
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Defines a simple interface to something running on a single motor.
  *
- * This is intended to be an example of an interface to some aspect of the robot, which would then
+ * This is intended to be an example of an interface to some aspect of the
+ * robot, which would then
  * be implemented for specific hardware variants.
  */
 public interface ISingleMotorThing {
+  /**
+   * Casts this object to a Subsystem. (Since anything implementing it should be
+   * one.)
+   */
+  default Subsystem asSubsystem() {
+    return (Subsystem) this;
+  }
+
+  /**
+   * Casts this object to a Sendable. (Since anything implementing it should be
+   * deriving from SubsystemBase, which is one.)
+   */
+  default Sendable asSendable() {
+    return (Sendable) this;
+  }
+
   /**
    * Sets the speed of the motor.
    *
@@ -23,7 +42,10 @@ public interface ISingleMotorThing {
   /** Returns the motor speed. */
   double getSpeed();
 
-  /** Returns the current position reading for the encoder on the "single motor thing". */
+  /**
+   * Returns the current position reading for the encoder on the "single motor
+   * thing".
+   */
   Distance getPosition();
 
   /** Utility method to stop the motor. */

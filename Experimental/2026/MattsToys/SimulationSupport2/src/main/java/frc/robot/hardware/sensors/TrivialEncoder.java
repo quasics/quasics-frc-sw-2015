@@ -32,6 +32,7 @@ import java.io.IOException;
  * (and implementation) assume that a specific type of electrical/signalling
  * interface will be used to communicate with it.
  * </li>
+ * 
  * <li>
  * Other types of encoders (e.g., for the REV SparkMax controllers) provide
  * similar functionality, but don't have a common base class (which would allow
@@ -40,14 +41,16 @@ import java.io.IOException;
  * (which further restricts their drop-in use via other mechanisms, such as
  * templates in C++ or Java "generics").
  * </li>
+ * 
  * <li>
  * However, they're *all* doing the same basic thing: keeping track of the data
  * for a motor/wheel (distance, velocity/rate, acceleration, etc.).
  * </li>
+ * 
  * <li>
  * An additional concern is that the WPILib team is taking active steps to move
  * some other kinds of classes *further* away from having a common type (see the
- * comments on the IGyro class), which would suggest that this state of affairs
+ * comments on my "IGyro" type), which would suggest that this state of affairs
  * is unlikely to change for the better anytime soon.
  * </li>
  * </ul>
@@ -59,9 +62,9 @@ import java.io.IOException;
  *
  * TODO: Consider adding genericized "safe" access to underlying controller.
  *
- * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
- *      pattern</a>
  * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter
+ *      pattern</a>
+ * @see <a href="https://refactoring.guru/design-patterns/decorator">Decorator
  *      pattern</a>
  */
 public interface TrivialEncoder extends Closeable {

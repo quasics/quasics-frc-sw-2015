@@ -12,6 +12,7 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -22,18 +23,29 @@ import frc.robot.sensors.TrivialEncoder;
 
 public abstract class AbstractDrivebase extends SubsystemBase {
   // TODO: this should come from a robot config
-  private double m_maxMotorSpeedMPS = 3;
-  private DifferentialDriveOdometry m_odometry;
-  private DifferentialDriveKinematics m_kinematics;
-  private final DifferentialDrivePoseEstimator m_poseEstimator;
-  private final Field2d m_field = new Field2d();
+  private static final double m_maxMotorSpeedMPS = 3;
+
+  /** Track width (distance between left and right wheels) in meters. */
+  // TODO: this should come from a robot config
+  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+
+  /** Kinematics calculator for the drivebase. */
+  private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+
   // abstract only cares abt left and right, subclasses will need leader/follower
   // specification
   protected MotorController m_leftMotor;
   protected MotorController m_rightMotor;
 
+  private DifferentialDriveOdometry m_odometry;
+  private final DifferentialDrivePoseEstimator m_poseEstimator;
+  private final Field2d m_field = new Field2d();
+
   /** Creates a new AbstractDrivebase. */
-  public AbstractDrivebase() {
+  public AbstractDrivebase(MotorController leftController, MotorController rightController) {
+    m_leftMotor = leftController;
+    m_rightMotor = rightController;
+
     m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
     m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);

@@ -105,7 +105,12 @@ public class SingleMotorThingSim extends SingleMotorThing {
   // Methods from SubsystemBase
   //
 
-  // We do simulation things here...
+  // We do simulation things here. But notice that we're doing them in a pretty
+  // simple way, vs. what we might do for more complex systems (or if we wanted to
+  // better model real-world behavior). For example, we're assuming "instantaneous
+  // accelleration", rather than factoring in intertia, etc., as could be done
+  // with some of the WPILib support classes (or other "physics simulation" stuff
+  // from REV, etc.).
   @Override
   public void simulationPeriodic() {
     // The standard loop time is 20ms.
@@ -116,7 +121,7 @@ public class SingleMotorThingSim extends SingleMotorThing {
     double initialPosition = m_encoder.getDistance();
 
     // How far would we move in one cycle of the loop? (Note that we're assuming
-    // instantaneous acceleration, but this is a *simple* simulation.... :-)
+    // instantaneous acceleration.)
     double currentSpeedMetersPerSec = percentSpeed * MAX_SPEED_METERS_PER_SEC;
     double distanceTravelled = currentSpeedMetersPerSec * timeIncrement;
 

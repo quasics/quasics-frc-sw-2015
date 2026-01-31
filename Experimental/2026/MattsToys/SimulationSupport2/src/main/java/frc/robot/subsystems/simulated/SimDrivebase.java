@@ -107,7 +107,8 @@ public class SimDrivebase extends DrivebaseBase {
             new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
         TrivialEncoder.forWpiLibEncoder(left.encoder, left.encoderSim),
         TrivialEncoder.forWpiLibEncoder(right.encoder, right.encoderSim),
-        IGyro.wrapGyro(rawGyro));
+        IGyro.wrapGyro(rawGyro),
+        true);
 
     m_leftEncoderSim = left.encoderSim;
     m_rightEncoderSim = right.encoderSim;

@@ -44,6 +44,7 @@ public class PWMSparkMaxDrivebase extends DrivebaseBase {
             getConfiguredEncoder(SimulationPorts.DIO.RIGHT_ENCODER_A_PORT,
                 SimulationPorts.DIO.RIGHT_ENCODER_B_PORT,
                 config.orientation().isRightInverted())),
-        IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)));
+        IGyro.wrapGyro(new AnalogGyro(SimulationPorts.Channel.GYRO_PORT)),
+        true);
   }
 }

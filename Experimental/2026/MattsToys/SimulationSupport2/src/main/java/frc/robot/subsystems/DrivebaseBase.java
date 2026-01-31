@@ -190,6 +190,9 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     m_leftController = leftController;
     m_rightController = rightController;
 
+    // TODO: SparkMax controllers get cranky if we use "setInverted" (debugging
+    // reports), so we need to tighten this up, and maybe defer it to derived
+    // classes (or some other wrapper :-/)
     m_leftController.setInverted(config.orientation().isLeftInverted());
     m_rightController.setInverted(config.orientation().isRightInverted());
 

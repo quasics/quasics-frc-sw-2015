@@ -25,20 +25,19 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final IVision m_vision = (Robot.isReal()) ? new Vision(m_drivebase::getEstimatedPose)
+      : new SimulatedVision(m_drivebase::getEstimatedPose);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-
-  private AbstractDrivebase m_drivebase;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
    */
   public RobotContainer() {
-    m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
 
     // Configure the trigger bindings
     configureBindings();

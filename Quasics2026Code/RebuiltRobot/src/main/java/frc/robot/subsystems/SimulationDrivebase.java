@@ -6,18 +6,10 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
@@ -100,13 +92,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
     System.out.println("Left encoder = " + getLeftEncoder().getPosition());
     System.out.println("Right encoder = " + getRightEncoder().getPosition());
-
-    // TODO: Read tutorial
-    // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html
-
-    // TODO: inputs to driveSim
-    // TODO: update driveSim
-
   }
 
 }

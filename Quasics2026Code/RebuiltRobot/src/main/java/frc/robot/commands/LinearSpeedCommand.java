@@ -5,13 +5,10 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
 public class LinearSpeedCommand extends Command {
-  @SuppressWarnings("PMD.UnusedPrivateField")
   private final AbstractDrivebase m_drivebase;
 
   /**

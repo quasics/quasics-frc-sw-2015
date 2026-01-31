@@ -76,7 +76,7 @@ public class RobotContainer {
             },
             // onExecute (can't be null)
             () -> {
-              m_singleMotorThing.setSpeed(percent);
+              // No-op: speed was set in initialization
             },
             // onEnd (can't be null)
             (Boolean b) -> {

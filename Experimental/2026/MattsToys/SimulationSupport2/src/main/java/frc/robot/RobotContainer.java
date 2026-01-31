@@ -113,10 +113,12 @@ public class RobotContainer {
   final ISingleJointArm m_arm = new frc.robot.subsystems.simulated.SimArm();
 
   /** Vision-processing subsystem. */
-  final IVision m_vision = m_robotConfig.hasCamera() ? new PhotonVisionSingleCamera(
-      RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
-          .cameras()
-          .get(0)) : new IVision;
+  final IVision m_vision = m_robotConfig.hasCamera()
+      ? new PhotonVisionSingleCamera(
+          RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
+              .cameras()
+              .get(0))
+      : new IVision.NullVision();
 
   /** Lighting subystem. */
   final ILighting m_lighting = (m_robotConfig.hasLighting()
@@ -142,7 +144,7 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
-    System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***")
+    System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***");
     configureDriving();
     setupAutonomousChooser();
     configureSysIdCommands();

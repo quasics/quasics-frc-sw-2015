@@ -514,9 +514,21 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Allocates "side panel" lighting for the robot, using a subset of the primary
+   * LED strip.
+   * 
+   * @param config   the target robot's configuration
+   * @param lighting the base Lighting system
+   * @param leftSide if true, we're allocating the left side panel lighting;
+   *                 otherwise, it's the right side panel's
+   * @return a lighting buffer for the side panel (or NullLighting, if we couldn't
+   *         allocate a buffer)
+   */
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
-    if (!config.hasLighting()) {
+    if (!config.hasLighting() || lighting == null || !(lighting instanceof Lighting)) {
+      // Can't do it....
       return new ILighting.NullLighting();
     }
 
@@ -524,9 +536,12 @@ public class RobotContainer {
     final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right
     final int viewIndex = (simulatingCandle ? 1 : 0) + (leftSide ? 0 : 1);
+
     if (realSubsystem.getSubViews().size() < (viewIndex + 1)) {
+      // Don't have a subview (lighting subset) that we can use for this.
       return new ILighting.NullLighting();
     }
+
     LightingBuffer buffer = new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
     buffer.setForward(leftSide);
     return buffer;

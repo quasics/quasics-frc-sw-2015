@@ -140,6 +140,7 @@ public class RobotContainer {
 
   /** Constructor. */
   public RobotContainer() {
+    System.out.println("***\n*** Setting up for " + m_robotSelection + "\n***")
     configureDriving();
     setupAutonomousChooser();
     configureSysIdCommands();

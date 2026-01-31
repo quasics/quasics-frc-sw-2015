@@ -58,10 +58,11 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
     // Note: this should be redundant to work in the base class. (But it
     // shouldn't hurt.)
     leftLeader.setInverted(config.orientation().isLeftInverted());
-    leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
-
     rightLeader.setInverted(config.orientation().isRightInverted());
+
+    // Make sure that they're using the correct encoder setup.
     leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
+    rightLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
 
     // Configure the other motors to follow their leader
     configureFollower(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);

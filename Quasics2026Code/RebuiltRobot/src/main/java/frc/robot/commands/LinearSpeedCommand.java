@@ -34,14 +34,12 @@ public class LinearSpeedCommand extends Command {
   @Override
   public void execute() {
     m_drivebase.setSpeeds(1, 1);
-    System.out.println("Starting Command!");
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_drivebase.setSpeeds(0, 0);
-    System.out.println("Ending Command!");
   }
 
   // Returns true when the command should end.

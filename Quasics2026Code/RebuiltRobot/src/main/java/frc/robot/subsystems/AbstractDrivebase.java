@@ -79,6 +79,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     m_field.setRobotPose(m_odometry.getPoseMeters());
     m_poseEstimator.update(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters));
+
     // This method will be called once per scheduler run
 
   }
@@ -99,6 +100,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     System.out.println("Setting the left motor!");
     m_rightMotor.set(mpsToPercent(rightSpeed));
     System.out.println("Setting the right motor!");
+    System.out.println("Left Speed set to " + leftSpeed);
+    System.out.println("Left Speed set to " + rightSpeed);
   }
 
   public double mpsToPercent(double speed) {

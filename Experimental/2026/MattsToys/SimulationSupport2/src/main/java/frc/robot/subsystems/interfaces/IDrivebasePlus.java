@@ -99,6 +99,9 @@ public interface IDrivebasePlus extends IDrivebase {
   /** Returns the current angular velocity of the robot. */
   AngularVelocity getAngularVelocity();
 
+  /** Enables/disables brake mode (if ) */
+  void setBrakeMode(boolean enabled);
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Data published to BulletinBoard
@@ -182,6 +185,11 @@ public interface IDrivebasePlus extends IDrivebase {
     @Override
     public AngularVelocity getAngularVelocity() {
       return RadiansPerSecond.of(0);
+    }
+
+    @Override
+    public void setBrakeMode(boolean enabled) {
+      // No-op
     }
   }
 }

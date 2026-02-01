@@ -461,6 +461,12 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     return m_config;
   }
 
+  @Override
+  public void setBrakeMode(boolean enabled) {
+    m_leftController.setBrakeMode(enabled);
+    m_rightController.setBrakeMode(enabled);
+  }
+
   //
   // Methods from Closeable interface (primarily for unit testing support)
   //

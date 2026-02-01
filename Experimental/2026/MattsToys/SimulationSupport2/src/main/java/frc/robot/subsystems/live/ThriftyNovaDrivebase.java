@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.MotorType;
+import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
+
 import frc.robot.constants.robots.QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds;
 import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
@@ -42,28 +44,33 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
    * Constructor. Passes wrapped hardware up to the base class, and also sets up
    * the left/right follower motors on the drive base.
    *
-   * @param config      drive base configuration
+   * @param driveConfig drive base configuration
    * @param leftLeader  "leader" motor on the left side
    * @param rightLeader "leader" motor on the right side
    * @param rawGyro     the Pigeon2 ALU used on this drive base
    */
-  protected ThriftyNovaDrivebase(DriveConfig config, ThriftyNova leftLeader,
+  protected ThriftyNovaDrivebase(DriveConfig driveConfig, ThriftyNova leftLeader,
       ThriftyNova rightLeader, Pigeon2 rawGyro) {
-    super(config, new ThriftyNovaMotorControllerPlus(leftLeader),
+    super(driveConfig, new ThriftyNovaMotorControllerPlus(leftLeader),
         new ThriftyNovaMotorControllerPlus(rightLeader),
         new ThriftyEncoderWrapper(leftLeader, WHEEL_DIAMETER),
         new ThriftyEncoderWrapper(rightLeader, WHEEL_DIAMETER),
         new Pigeon2Wrapper(rawGyro),
         true);
 
-    // Note: this should be redundant to work in the base class. (But it
-    // shouldn't hurt.)
-    leftLeader.setInverted(config.orientation().isLeftInverted());
-    rightLeader.setInverted(config.orientation().isRightInverted());
+    ThriftyNovaConfig leftMotorConfig = new ThriftyNovaConfig();
+    ThriftyNovaConfig rightMotorConfig = new ThriftyNovaConfig();
 
-    // Make sure that they're using the correct encoder setup.
-    leftLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
-    rightLeader.useEncoderType(EncoderType.INTERNAL); // Built-in NEO encoder
+    leftMotorConfig.encoderType = EncoderType.INTERNAL; // Built-in NEO encoder
+    rightMotorConfig.encoderType = EncoderType.INTERNAL; // Built-in NEO encoder
+
+    // Note: motor inversion should be redundant to work done in the base class.
+    // (But it shouldn't hurt.)
+    leftMotorConfig.inverted = driveConfig.orientation().isLeftInverted();
+    rightMotorConfig.inverted = driveConfig.orientation().isRightInverted();
+
+    leftLeader.applyConfig(leftMotorConfig);
+    rightLeader.applyConfig(rightMotorConfig);
 
     // Configure the other motors to follow their leader
     configureFollower(QuasicsDrivebaseCanIds.LEFT_FOLLOWER_ID, leftLeader);

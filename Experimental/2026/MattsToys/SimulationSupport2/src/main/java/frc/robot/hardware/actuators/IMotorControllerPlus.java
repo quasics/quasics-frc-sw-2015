@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * This interface extends the standard WPILib MotorController type so that it
- * also supports retrieving the motor voltage (e.g., for use during
- * characterization) and closure.
+ * also supports additional functionality (e.g., retrieving the motor voltage
+ * for use during characterization, closure, etc.).
  */
 public interface IMotorControllerPlus extends MotorController {
   /** @return the voltage currently being applied to the motor. */
@@ -24,6 +25,21 @@ public interface IMotorControllerPlus extends MotorController {
 
   /** Closes the motor. (Duplicates the signature for java.lang.Closeable.) */
   void close() throws IOException;
+
+  /**
+   * @return true iff this motor controller supports "braking mode".
+   * 
+   * @see #setBrakeMode(boolean)
+   */
+  boolean canSetBrakeMode();
+
+  /**
+   * Enabled/disables "brake mode" on the motor, if supported by the underlying
+   * hardware.
+   * 
+   * @param enabled if true, sets brake mode on the motor
+   */
+  void setBrakeMode(boolean enabled);
 
   /**
    * Wraps the provided WPILib controller with this interface.
@@ -34,7 +50,8 @@ public interface IMotorControllerPlus extends MotorController {
   static IMotorControllerPlus forPWMMotorController(
       PWMMotorController controller) {
     return new MotorControllerPlus(controller,
-        () -> Volts.of(controller.getVoltage()), () -> controller.close());
+        () -> Volts.of(controller.getVoltage()), () -> controller.close(), false, (Boolean b) -> {
+        });
   }
 
   /**
@@ -60,6 +77,9 @@ public interface IMotorControllerPlus extends MotorController {
      */
     final Closeable m_closer;
 
+    final boolean m_brakeModeSupported;
+    final Consumer<Boolean> m_brakeModeSetter;
+
     /**
      * Constructor.
      *
@@ -68,10 +88,13 @@ public interface IMotorControllerPlus extends MotorController {
      * @param closer          used to close the underlying motor controller
      */
     public MotorControllerPlus(MotorController controller,
-        Supplier<Voltage> voltageSupplier, Closeable closer) {
+        Supplier<Voltage> voltageSupplier, Closeable closer, boolean brakeModeSupported,
+        Consumer<Boolean> brakeModeSetter) {
       m_controller = controller;
       m_voltageSupplier = voltageSupplier;
       m_closer = closer;
+      m_brakeModeSetter = brakeModeSetter;
+      m_brakeModeSupported = brakeModeSupported;
     }
 
     //
@@ -119,6 +142,16 @@ public interface IMotorControllerPlus extends MotorController {
     @Override
     public void close() throws IOException {
       m_closer.close();
+    }
+
+    @Override
+    public boolean canSetBrakeMode() {
+      return m_brakeModeSupported;
+    }
+
+    @Override
+    public void setBrakeMode(boolean enabled) {
+      m_brakeModeSetter.accept(enabled);
     }
   }
 }

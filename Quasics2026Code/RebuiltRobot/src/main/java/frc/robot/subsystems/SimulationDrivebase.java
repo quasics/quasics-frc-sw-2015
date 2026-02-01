@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.Constants;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private Encoder m_leftEncoder = new Encoder(1, 2);
@@ -63,6 +67,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_mainGyro = IGyro.wrapGyro(gyro);
   }
 
+  // public double encoderDistance(Encoder encoder) {
+  // // 4 and 6 are currently placeholders for the wheel radius and
+  // ticks/revolution
+  // // respectively
+  // return ((2 * Math.PI * Constants.wheelRadius.in(Meters) * encoder.) / -4096);
+  // }
+
   @Override
   public void periodic() {
     var pose = getOdometry().getPoseMeters();
@@ -76,12 +87,19 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_driveSim.setInputs(getLeftLeader().get() * RobotController.getInputVoltage(),
         getRightLeader().get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
+    System.out.println("Left motor controller = " + getLeftLeader().get());
+    System.out.println("Right motor controller = " + getRightLeader().get());
     // getHeading returns counterclockwise positive, Gyros are clockwise positive
     m_GyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+    System.out.println("Gyro = " + getGyro().getRate());
+    m_leftEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
     m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
     m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
+    m_rightEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
     m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
+    System.out.println("Left encoder = " + getLeftEncoder().getPosition());
+    System.out.println("Right encoder = " + getRightEncoder().getPosition());
 
     // TODO: Read tutorial
     // https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/drivesim-tutorial/updating-drivetrain-model.html

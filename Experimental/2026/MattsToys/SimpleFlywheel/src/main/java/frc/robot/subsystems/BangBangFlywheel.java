@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RevolutionsPerSecond;
 
@@ -30,9 +29,6 @@ public class BangBangFlywheel extends SubsystemBase {
   private static final int kEncoderBChannel = 1;
 
   private double m_setpointRadiansPerSec = 0.0;
-
-  // Max setpoint for joystick control in RPM
-  private static final AngularVelocity kMaxSetpointValue = RevolutionsPerSecond.of(6000.0);
 
   private final PWMSparkMax m_flywheelMotor = new PWMSparkMax(kMotorPort);
   private final Encoder m_encoder = new Encoder(kEncoderAChannel, kEncoderBChannel);

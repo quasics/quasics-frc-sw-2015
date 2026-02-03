@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -34,6 +36,8 @@ public class Vision extends SubsystemBase implements IVision {
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
   protected Supplier<Pose2d> m_drivebasePoseSupplier;
+
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
   /** Constructor. */
   public Vision(Supplier<Pose2d> drivebasePoseSupplier) {
@@ -82,7 +86,7 @@ public class Vision extends SubsystemBase implements IVision {
     List<TargetData> listTargetData = new LinkedList<>();
     List<PhotonTrackedTarget> targets = results.getTargets();
     if (!results.hasTargets()) {
-      System.out.println("NO TARGET DATA RETRIEVED");
+      m_logger.log("NO TARGET DATA RETRIEVED", Verbosity.Info);
       return listTargetData;
     }
     if (results.hasTargets()) {
@@ -100,7 +104,7 @@ public class Vision extends SubsystemBase implements IVision {
       }
     }
 
-    System.out.println(listTargetData);
+    m_logger.log("TargetData: " + listTargetData, Verbosity.Info);
     return listTargetData;
   }
 

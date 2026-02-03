@@ -57,9 +57,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ArcadeDrive` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition).onTrue(new
-    // ArcadeDrive(m_exampleSubsystem));
+    // TODO: Schedule ArcadeDrive as our default command using
+    // m_drivebase.setDefaultCommand(new ArcadeDrive(...));
+
+    // Syntax for speed suppliers:
+    // () -> m_driverController.getRawAxis(0)
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.

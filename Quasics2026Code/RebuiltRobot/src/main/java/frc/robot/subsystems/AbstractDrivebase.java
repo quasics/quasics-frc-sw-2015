@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.logging.Logger;
+import frc.robot.logging.Logger.Verbosity;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
@@ -44,8 +47,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   private final DifferentialDrivePoseEstimator m_poseEstimator;
   private final Field2d m_field = new Field2d();
 
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+
   /** Creates a new AbstractDrivebase. */
-  public AbstractDrivebase(MotorController leftController, MotorController rightController) {
+  public AbstractDrivebase(
+      MotorController leftController, MotorController rightController) {
     m_leftMotor = leftController;
     m_rightMotor = rightController;
     m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -56,6 +62,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
+  }
+
+  // TODO(DISCUSS): Why might we want this function?
+  // Alternatively, give the encoders to the ADB constructor
+  protected double getDistancePerPulse() {
+    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 
   protected abstract TrivialEncoder getLeftEncoder();
@@ -97,11 +109,11 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
-    System.out.println("Setting the left motor!");
     m_rightMotor.set(mpsToPercent(rightSpeed));
-    System.out.println("Setting the right motor!");
-    System.out.println("Left Speed set to " + leftSpeed);
-    System.out.println("Left Speed set to " + rightSpeed);
+    m_logger.log("Left Speed set to " + leftSpeed, Verbosity.Debug);
+    m_logger.log("Right Speed set to " + rightSpeed, Verbosity.Debug);
+
+    m_robotDrive.feed();
   }
 
   public double mpsToPercent(double speed) {

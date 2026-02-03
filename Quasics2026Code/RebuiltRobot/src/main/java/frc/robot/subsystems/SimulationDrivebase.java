@@ -68,6 +68,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // - How many times is it called?
     // - Why wouldn't we want to keep calling this? (mjh: you don't.)
     // - EncoderSim vs Encoder
+    //
+    // FINDME(Robert) - Take another look at these two lines. Are you configuring
+    // the correct things? (mjh: hint - you aren't.)
     m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
     m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
   }

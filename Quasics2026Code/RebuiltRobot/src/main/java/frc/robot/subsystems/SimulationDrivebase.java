@@ -54,6 +54,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
+  private static final double TICKS_PER_REVOLUTION = -4096;
+
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
     super(new PWMSparkMax(0), new PWMSparkMax(1));
@@ -64,10 +66,10 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // TODO(DISCUSS): Difference between putting this call up here vs
     // simulationPeriodic.
     // - How many times is it called?
-    // - Why wouldn't we want to keep calling this?
+    // - Why wouldn't we want to keep calling this? (mjh: you don't.)
     // - EncoderSim vs Encoder
-    m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
-    m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
+    m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
+    m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
   }
 
   // TODO(DISCUSS): What changes when we remove this override? Why?

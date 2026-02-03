@@ -58,6 +58,8 @@ public class RealDrivebase extends AbstractDrivebase {
     // TODO: Configure the motor controllers on the left/right sides (e.g., ensuring
     // that "leader/follower" is set up in case a controller gets swapped out,
     // making sure that "inverted" is set correctly for each side, etc.).
+
+    // TODO(DISCUSS): What about our encoders are missing information here...
   }
 
   @Override

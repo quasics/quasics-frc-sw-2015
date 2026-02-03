@@ -65,8 +65,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     // simulationPeriodic.
     // - How many times is it called?
     // - Why wouldn't we want to keep calling this?
-    m_leftEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
-    m_rightEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
+    // - EncoderSim vs Encoder
+    m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
+    m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
   }
 
   // TODO(DISCUSS): What changes when we remove this override? Why?

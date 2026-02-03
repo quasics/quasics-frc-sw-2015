@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.sensors.IGyro;
@@ -61,6 +62,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
+  }
+
+  // TODO(DISCUSS): Why might we want this function?
+  // Alternatively, give the encoders to the ADB constructor
+  protected double getDistancePerPulse() {
+    return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 
   protected abstract TrivialEncoder getLeftEncoder();

@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.Encoder;
 
 public class RealDrivebase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or be
-  // based on some information about the robot's configuration.)
+  // based on some information about the robot's configuration. I'd recommend the
+  // former approach.)
   private SparkMax m_leftfollower;
   private SparkMax m_rightfollower;
 

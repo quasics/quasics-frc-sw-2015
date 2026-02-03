@@ -7,22 +7,25 @@ package frc.robot.commands;
 import frc.robot.subsystems.AbstractDrivebase;
 import edu.wpi.first.wpilibj2.command.Command;
 
-/** An example command that uses an example subsystem. */
+/** A simple command to test the drivebase (by driving forward). */
 public class LinearSpeedCommand extends Command {
   private final AbstractDrivebase m_drivebase;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new o.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param drivebase The subsystem used by this command.
    */
   public LinearSpeedCommand(AbstractDrivebase drivebase) {
     m_drivebase = drivebase;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivebase);
   }
 
   // Called when the command is initially scheduled.
+  // FINDME(Robert): Do you need this? If not, then it should probably be removed,
+  // in order to simplify your code. (It's auto-generated when you create a new
+  // command, to make things easier for you if you *do* need it, but you can get
+  // rid of it if it doesn't do anything.)
   @Override
   public void initialize() {
   }

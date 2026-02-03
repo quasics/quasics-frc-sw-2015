@@ -138,5 +138,9 @@ public interface IGyro {
   }
 
   // TODO: Helper function to wrap the Pigeon2 type from CTRE.
+  //
+  // FINDME(Rylie): Mr. Healy has already provided you with this as sample code
+  // from last year. You can also find it in his "SimulationSupport2" program from
+  // this year. (It's in a stand-alone class.)
 
 }

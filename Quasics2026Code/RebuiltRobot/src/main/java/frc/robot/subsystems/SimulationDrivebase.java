@@ -60,15 +60,25 @@ public class SimulationDrivebase extends AbstractDrivebase {
     AnalogGyro gyro = new AnalogGyro(0);
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
+
+    // TODO(DISCUSS): Difference between putting this call up here vs
+    // simulationPeriodic.
+    // - How many times is it called?
+    // - Why wouldn't we want to keep calling this?
+    m_leftEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
+    m_rightEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
   }
 
-  @Override
-  public void periodic() {
-    var pose = getOdometry().getPoseMeters();
-    m_field.setRobotPose(pose);
-    m_field.getObject("Estimated Drivebase Pose").setPose(getEstimatedPose());
-    // This method will be called once per scheduler run
-  }
+  // TODO(DISCUSS): What changes when we remove this override? Why?
+  /*
+   * @Override
+   * public void periodic() {
+   * var pose = getOdometry().getPoseMeters();
+   * m_field.setRobotPose(pose);
+   * m_field.getObject("Estimated Drivebase Pose").setPose(getEstimatedPose());
+   * // This method will be called once per scheduler run
+   * }
+   */
 
   public void simulationPeriodic() {
     // TODO: Add abstractDriveBase getDriveSpeeds
@@ -78,12 +88,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_logger.log("Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
     m_logger.log("Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
     // getHeading returns counterclockwise positive, Gyros are clockwise positive
-    m_GyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
-    m_logger.log("Gyro = " + getGyro().getRate(), Verbosity.Debug);
-    m_leftEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
+    m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
     m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
     m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
-    m_rightEncoderSim.setDistancePerPulse(2 * Math.PI * Constants.wheelRadius.in(Meters) / -4096);
     m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
     m_logger.log("Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);

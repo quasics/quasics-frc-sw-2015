@@ -24,28 +24,26 @@ import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  private Encoder m_leftEncoder = new Encoder(1, 2);
-  private Encoder m_rightEncoder = new Encoder(3, 4);
-  private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
-  private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private AnalogGyroSim m_gyroSim;
-  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
-  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
-  private IGyro m_mainGyro;
-  private final Field2d m_field = new Field2d();
+  private static final double TICKS_PER_REVOLUTION = -4096;
+  private static final int LEFT_MOTOR_CHANNEL = 0;
+  private static final int RIGHT_MOTOR_CHANNEL = 1;
+  private static final int GYRO_CHANNEL = 0;
+  private static final int LEFT_ENCODER_CHANNEL_A = 1;
+  private static final int LEFT_ENCODER_CHANNEL_B = 2;
+  private static final int RIGHT_ENCODER_CHANNEL_A = 3;
+  private static final int RIGHT_ENCODER_CHANNEL_B = 4;
+
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
-  protected final IGyro getGyro() {
-    return m_mainGyro;
-  }
+  private Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+  private Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+  private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
 
-  protected final TrivialEncoder getLeftEncoder() {
-    return m_mainLeftEncoder;
-  }
-
-  protected final TrivialEncoder getRightEncoder() {
-    return m_mainRightEncoder;
-  }
+  private IGyro m_mainGyro;
+  private AnalogGyroSim m_gyroSim;
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
@@ -54,12 +52,13 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
-  private static final double TICKS_PER_REVOLUTION = -4096;
+  // FINDME(Robert): You're not using this, so why have it in here?
+  private final Field2d m_field = new Field2d();
 
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
-    super(new PWMSparkMax(0), new PWMSparkMax(1));
-    AnalogGyro gyro = new AnalogGyro(0);
+    super(new PWMSparkMax(LEFT_MOTOR_CHANNEL), new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
+    AnalogGyro gyro = new AnalogGyro(GYRO_CHANNEL);
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
 
@@ -75,6 +74,21 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
   }
 
+  @Override
+  protected final IGyro getGyro() {
+    return m_mainGyro;
+  }
+
+  @Override
+  protected final TrivialEncoder getLeftEncoder() {
+    return m_mainLeftEncoder;
+  }
+
+  @Override
+  protected final TrivialEncoder getRightEncoder() {
+    return m_mainRightEncoder;
+  }
+
   // TODO(DISCUSS): What changes when we remove this override? Why?
   /*
    * @Override
@@ -86,19 +100,29 @@ public class SimulationDrivebase extends AbstractDrivebase {
    * }
    */
 
+  @Override
   public void simulationPeriodic() {
+    // Log starting conditions
+    m_logger.log("Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
+    m_logger.log("Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
+
+    // Update the simulation (m_driveSim), based on 1/50th of a second passing
     // TODO: Add abstractDriveBase getDriveSpeeds
     m_driveSim.setInputs(getLeftLeader().get() * RobotController.getInputVoltage(),
         getRightLeader().get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
-    m_logger.log("Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
-    m_logger.log("Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
-    // getHeading returns counterclockwise positive, Gyros are clockwise positive
+
+    // getHeading returns counterclockwise positive, Gyros are clockwise positive,
+    // so we need to invert the measurement
     m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+
+    // Update the encoders
     m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
     m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
     m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
+
+    // Log the ending conditions
     m_logger.log("Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);
     m_logger.log("Right encoder = " + getRightEncoder().getPosition(), Verbosity.Debug);
   }

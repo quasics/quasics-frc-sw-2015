@@ -35,15 +35,15 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
-  private Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
-  private Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
-  private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
-  private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
-  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+  private final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+  private final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
 
-  private IGyro m_mainGyro;
-  private AnalogGyroSim m_gyroSim;
+  private final IGyro m_mainGyro;
+  private final AnalogGyroSim m_gyroSim;
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
       KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.

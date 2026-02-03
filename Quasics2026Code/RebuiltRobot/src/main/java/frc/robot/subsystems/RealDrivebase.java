@@ -16,8 +16,8 @@ public class RealDrivebase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or be
   // based on some information about the robot's configuration. I'd recommend the
   // former approach.)
-  private SparkMax m_leftfollower;
-  private SparkMax m_rightfollower;
+  private final SparkMax m_leftfollower;
+  private final SparkMax m_rightfollower;
 
   // TODO: Change these to use the encoders that are associated with the real
   // hardware (i.e., either the relative encoders that are built into the Spark
@@ -27,12 +27,12 @@ public class RealDrivebase extends AbstractDrivebase {
   // Note that Mr. Healy has updated the "TrivialEncoder" class (and some derived
   // classes) so that it can be used with Thrifty Novas (new code this year), as
   // well as the Spark Max controllers, etc.
-  private Encoder m_leftEncoder = new Encoder(1, 2);
-  private Encoder m_rightEncoder = new Encoder(3, 4);
-  private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final Encoder m_leftEncoder = new Encoder(1, 2);
+  private final Encoder m_rightEncoder = new Encoder(3, 4);
+  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
-  private IGyro m_mainGyro;
+  private final IGyro m_mainGyro;
 
   protected final IGyro getGyro() {
     return m_mainGyro;

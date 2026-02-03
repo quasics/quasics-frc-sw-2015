@@ -38,12 +38,12 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   // Abstract only cares about Leaders
   // subclasses will do the configuration
-  private MotorController m_leftMotor;
-  private MotorController m_rightMotor;
+  private final MotorController m_leftMotor;
+  private final MotorController m_rightMotor;
 
-  private DifferentialDrive m_robotDrive;
+  private final DifferentialDrive m_robotDrive;
 
-  private DifferentialDriveOdometry m_odometry;
+  private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
   // FINDME(Robert): Do you need/want to be doing this for the real hardware?

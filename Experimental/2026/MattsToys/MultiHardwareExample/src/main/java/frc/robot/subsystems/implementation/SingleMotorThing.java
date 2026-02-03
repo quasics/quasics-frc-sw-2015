@@ -26,6 +26,11 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    * This is defined a a single unit, so that if these things are "connected" in
    * subclasses (e.g., need to ask the controller for its encoder), we can do that
    * easily.
+   * 
+   * For example, the Spark Max provides an encoder directly from the controller,
+   * so saying things like: "new SingleMotorThing(new SparkMax(....), <encoder>)"
+   * doesn't work, because I can't get the encoder without accessing the motor
+   * controller (which isn't syntactically possible in that example)
    *
    * Note: despite the name, this isn't *really* just for derived classes (which
    * is why this is public, rather than protected). (There's an example in the

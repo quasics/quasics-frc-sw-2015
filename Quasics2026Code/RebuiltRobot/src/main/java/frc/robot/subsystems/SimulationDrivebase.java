@@ -28,7 +28,7 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private Encoder m_rightEncoder = new Encoder(3, 4);
   private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private AnalogGyroSim m_GyroSim;
+  private AnalogGyroSim m_gyroSim;
   private TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
   private TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
   private IGyro m_mainGyro;
@@ -58,16 +58,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
   public SimulationDrivebase() {
     super(new PWMSparkMax(0), new PWMSparkMax(1));
     AnalogGyro gyro = new AnalogGyro(0);
-    m_GyroSim = new AnalogGyroSim(gyro);
+    m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
   }
-
-  // public double encoderDistance(Encoder encoder) {
-  // // 4 and 6 are currently placeholders for the wheel radius and
-  // ticks/revolution
-  // // respectively
-  // return ((2 * Math.PI * Constants.wheelRadius.in(Meters) * encoder.) / -4096);
-  // }
 
   @Override
   public void periodic() {

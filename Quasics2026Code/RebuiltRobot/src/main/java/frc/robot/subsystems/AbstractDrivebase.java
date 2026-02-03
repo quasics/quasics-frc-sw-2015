@@ -102,11 +102,9 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));
-    m_logger.log("Setting the left motor!", Verbosity.Debug);
     m_rightMotor.set(mpsToPercent(rightSpeed));
-    m_logger.log("Setting the right motor!", Verbosity.Debug);
     m_logger.log("Left Speed set to " + leftSpeed, Verbosity.Debug);
-    m_logger.log("Left Speed set to " + rightSpeed, Verbosity.Debug);
+    m_logger.log("Right Speed set to " + rightSpeed, Verbosity.Debug);
 
     m_robotDrive.feed();
   }

@@ -34,7 +34,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
-  private DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
+  private final DifferentialDriveKinematics m_kinematics;
 
   // Abstract only cares about Leaders
   // subclasses will do the configuration
@@ -45,6 +45,13 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   private DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
+
+  // FINDME(Robert): Do you need/want to be doing this for the real hardware?
+  // Putting it another way, are you expecting to need to use the simulation of
+  // the field shown on the dashboard during match play?
+  //
+  // If so, then that's fine; if not, then this might be better in
+  // simulation-specific code.
   private final Field2d m_field = new Field2d();
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
@@ -52,6 +59,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
       MotorController leftController, MotorController rightController) {
+    m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH.in(Meters));
     m_leftMotor = leftController;
     m_rightMotor = rightController;
     m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
@@ -86,14 +94,14 @@ public abstract class AbstractDrivebase extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Update the odometry/pose estimation
     m_odometry.update(getGyro().getRotation2d(), getLeftEncoder().getPosition()
         .in(Meters), getRightEncoder().getPosition().in(Meters));
-    m_field.setRobotPose(m_odometry.getPoseMeters());
     m_poseEstimator.update(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters));
 
-    // This method will be called once per scheduler run
-
+    // Update the field simulation shown on the smart dashboard
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   // Slight code design complexity:
@@ -120,6 +128,10 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     return speed / m_maxMotorSpeedMPS;
   }
 
+  public Pose2d getOdometryPose() {
+    return m_odometry.getPoseMeters();
+  }
+
   public Pose2d getEstimatedPose() {
     return m_poseEstimator.getEstimatedPosition();
   }
@@ -129,6 +141,5 @@ public abstract class AbstractDrivebase extends SubsystemBase {
         getRightEncoder().getPosition(), pose);
     m_poseEstimator.resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters), pose);
-
   }
 }

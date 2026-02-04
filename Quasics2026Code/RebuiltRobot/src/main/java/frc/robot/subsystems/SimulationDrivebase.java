@@ -89,17 +89,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
     return m_mainRightEncoder;
   }
 
-  // TODO(DISCUSS): What changes when we remove this override? Why?
-  /*
-   * @Override
-   * public void periodic() {
-   * var pose = getOdometry().getPoseMeters();
-   * m_field.setRobotPose(pose);
-   * m_field.getObject("Estimated Drivebase Pose").setPose(getEstimatedPose());
-   * // This method will be called once per scheduler run
-   * }
-   */
-
   @Override
   public void simulationPeriodic() {
     // Log starting conditions

@@ -62,16 +62,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
 
-    // TODO(DISCUSS): Difference between putting this call up here vs
-    // simulationPeriodic.
-    // - How many times is it called?
-    // - Why wouldn't we want to keep calling this? (mjh: you don't.)
-    // - EncoderSim vs Encoder
-    //
-    // FINDME(Robert) - Take another look at these two lines. Are you configuring
-    // the correct things? (mjh: hint - you aren't.)
-    m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
-    m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
+    m_leftEncoder.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
+    m_rightEncoder.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
   }
 
   @Override

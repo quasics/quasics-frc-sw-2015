@@ -4,7 +4,12 @@
 
 package frc.robot.commands.driving;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.List;
+
+import org.opencv.core.Point;
+import org.opencv.core.Rect2d;
 
 import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**
@@ -26,6 +32,22 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * <li>For safety reasons, this command should probably only be used under
  * simulation, as it doesn't care about anything that might be in the way on the
  * field (e.g., field elements, other robots, etc.).
+ * 
+ * <li>The preceding is because WPILib's TrajectoryGenerator does not "pathfind"
+ * around constraints automatically. For example, if you tried to specify a
+ * RectangularRegionConstraint and set the maximum velocity within that area to
+ * 0, and the straightline path identified by TrajectoryGenerator ran through
+ * it, the generator will likely throw an error or produce an impossible path.
+ * As a result, handling a more complex case (e.g., avoiding field elements)
+ * would also require writing code to identify such potential problems and then
+ * defining waypoints that moved around them, that could be specified in the
+ * interiorWaypoints list passed into the TrajectoryGenerator.
+ * 
+ * <li>On the other hand, this could work as something thqt could simply be
+ * triggered by the drive team when the robot was in some general region of the
+ * field (and could include a safeguard test for this, either in a precondition,
+ * or in "isFinished()", or even as part of a ParallelCommandGroup that could
+ * force termination if we were in an unsafe/unsuitable region of the field,)
  * </ul>
  */
 public class PushbuttonTrajectory extends Command {
@@ -76,26 +98,77 @@ public class PushbuttonTrajectory extends Command {
     addRequirements(drivebase.asSubsystem());
   }
 
+  /** (Roughly) defines the Blue alliance's end of the field. */
+  final static Rect2d BLUE_ZONE = new Rect2d(0, 0,
+      RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+      RebuiltConstants.FIELD_LENGTH.in(Meters));
+
+  /** (Roughly) defines the Red alliance's end of the field. */
+  final static Rect2d RED_ZONE = new Rect2d(
+      // X, Y
+      RebuiltConstants.RED_STARTING_LINE.in(Meters), 0,
+      // Width, height
+      RebuiltConstants.FIELD_WIDTH.minus(RebuiltConstants.RED_STARTING_LINE).in(Meters),
+      RebuiltConstants.FIELD_LENGTH.in(Meters));
+
+  /**
+   * @return true iff the specified point is contained within a target rectangle.
+   */
+  private static final boolean isPoseInRect(Pose2d pose, Rect2d rect) {
+    return rect.contains(new Point(pose.getX(), pose.getY()));
+  }
+
+  /**
+   * Simple test to see if the robot's path should only lie in a "known safe"
+   * region. (Note that this is only an *example*; code for the playing field
+   * would likely need to be more complex.)
+   * 
+   * @return true if the start and end points are both in the blue zone or the red
+   *         zone
+   */
+  protected boolean robotIsInSafeArea() {
+    Pose2d curPose = m_drivebase.getEstimatedPose();
+    if (isPoseInRect(m_targetPose, BLUE_ZONE) && isPoseInRect(curPose, BLUE_ZONE)) {
+      return true;
+    } else if (isPoseInRect(m_targetPose, RED_ZONE) && isPoseInRect(curPose, RED_ZONE)) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public void initialize() {
-    // Build a trajectory from where we *are* to where we *want to be*.
-    Pose2d startingPose = m_drivebase.getEstimatedPose();
-    m_currentTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Starting where we are right now...
-        startingPose,
-        // No interior waypoints - just a simplest path/straight line
-        List.of(),
-        // End point
-        m_targetPose,
-        // Pass config
-        m_trajectoryConfig);
+    final Pose2d startingPose = m_drivebase.getEstimatedPose();
+    if (robotIsInSafeArea()) {
+      // Build a trajectory from where we *are* to where we *want to be*.
+      m_currentTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Starting where we are right now...
+          startingPose,
+          // No interior waypoints - just a simplest path/straight line
+          List.of(),
+          // End point
+          m_targetPose,
+          // Pass config
+          m_trajectoryConfig);
 
-    // Restart the timer (used for sampling in execute()).
-    m_timer.restart();
+      // Restart the timer (used for sampling in execute()).
+      m_timer.restart();
+      System.out.println("Running pushbutton trajectory from " + startingPose
+          + " to " + m_targetPose);
+    } else {
+      m_timer.stop();
+      m_currentTrajectory = null;
+      System.err.println("Can't run pushbutton trajectory from " + startingPose
+          + " to " + m_targetPose);
+    }
   }
 
   @Override
   public void execute() {
+    if (!m_timer.isRunning() || m_currentTrajectory == null) {
+      return;
+    }
+
     // Calculate how fast the wheels should be moving at this point along the
     // trajectory
     double elapsed = m_timer.get();
@@ -115,6 +188,6 @@ public class PushbuttonTrajectory extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(m_currentTrajectory.getTotalTimeSeconds());
+    return !m_timer.isRunning() || m_timer.hasElapsed(m_currentTrajectory.getTotalTimeSeconds());
   }
 }

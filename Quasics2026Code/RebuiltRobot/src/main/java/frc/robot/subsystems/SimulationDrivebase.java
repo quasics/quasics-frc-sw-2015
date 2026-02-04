@@ -59,8 +59,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
 
-    m_leftEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
-    m_rightEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
+    m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
   }
 
   @Override

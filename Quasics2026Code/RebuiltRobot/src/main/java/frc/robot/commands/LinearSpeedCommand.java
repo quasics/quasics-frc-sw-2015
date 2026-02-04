@@ -21,12 +21,6 @@ public class LinearSpeedCommand extends Command {
     addRequirements(drivebase);
   }
 
-  // Called when the command is initially scheduled.
-  // FINDME(Robert): Do you need this? If not, then it should probably be removed,
-  // in order to simplify your code. (It's auto-generated when you create a new
-  // command, to make things easier for you if you *do* need it, but you can get
-  // rid of it if it doesn't do anything.)
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

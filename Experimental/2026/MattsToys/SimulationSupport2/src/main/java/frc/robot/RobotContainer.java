@@ -28,11 +28,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
+import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
 import frc.robot.constants.games.Game;
+import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
 import frc.robot.subsystems.interfaces.ICandle;
@@ -397,6 +399,12 @@ public class RobotContainer {
   /** Configures any additional bindings that are needed. */
   private void configureBindings() {
     // Add any additional bindings here.
+    Pose2d targetPose = new Pose2d(
+        RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
+        RebuiltConstants.FIELD_WIDTH.div(2),
+        new Rotation2d(RebuiltConstants.FACING_RED));
+    SmartDashboard.putData("Cmd: Pushbutton trajectory",
+        new PushbuttonTrajectory(m_drivebase, m_trajectoryConfig, targetPose));
   }
 
   /** Returns the command to run in autonomous mode. */

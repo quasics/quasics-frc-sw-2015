@@ -49,8 +49,16 @@ public class Vision extends SubsystemBase implements IVision {
       System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
-    photonEstimator = new PhotonPoseEstimator(tagLayout, new Transform3d()); // should be robotToCam, update whenever
-                                                                             // real camera mounted
+
+    photonEstimator = new PhotonPoseEstimator(
+        tagLayout,
+        // FINDME(Rylie): This should ideally match the "robotToCamera" configuration
+        // being used under simulation.
+        // FINDME(Rylie): This should ideally be coming from a robot configuration data
+        // block, to give us a well-defined place to swap stuff around. (Doesn't *have*
+        // to, but it's a good idea....)
+        new Transform3d()); // should be robotToCam, update whenever
+                            // real camera mounted
     m_tagLayout = tagLayout;
   }
 

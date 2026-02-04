@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
 /**
+ * Example of how we could write a simple (arguably overly-so) command to allow
+ * for on-the-fly path generation from any point on the field to a specified
+ * location, which could then be tied to a single button for execution.
  * 
  * Note:
  * <ul>
@@ -26,8 +29,13 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * </ul>
  */
 public class PushbuttonTrajectory extends Command {
+  /** Drivebase being controlled. (Must support PID control.) */
   final IDrivebasePlus m_drivebase;
+
+  /** Trajectory configuration settings. */
   final TrajectoryConfig m_trajectoryConfig;
+
+  /** Target pose that the command should take us to. */
   final Pose2d m_targetPose;
 
   /** Timer used to identify samples from the trajectory. */
@@ -52,7 +60,14 @@ public class PushbuttonTrajectory extends Command {
    */
   Trajectory m_currentTrajectory;
 
-  /** Creates a new PushbuttonTrajectory. */
+  /**
+   * Constructor.
+   * 
+   * @param drivebase        drivebase being controlled
+   * @param trajectoryConfig trajectory-generation configuration/settings
+   * @param targetPose       target pose on the field (i.e., where we want to end
+   *                         up, and the direction we should be facing)
+   */
   public PushbuttonTrajectory(IDrivebasePlus drivebase, TrajectoryConfig trajectoryConfig, Pose2d targetPose) {
     m_drivebase = drivebase;
     m_trajectoryConfig = trajectoryConfig;
@@ -63,6 +78,7 @@ public class PushbuttonTrajectory extends Command {
 
   @Override
   public void initialize() {
+    // Build a trajectory from where we *are* to where we *want to be*.
     Pose2d startingPose = m_drivebase.getEstimatedPose();
     m_currentTrajectory = TrajectoryGenerator.generateTrajectory(
         // Starting where we are right now...
@@ -73,6 +89,8 @@ public class PushbuttonTrajectory extends Command {
         m_targetPose,
         // Pass config
         m_trajectoryConfig);
+
+    // Restart the timer (used for sampling in execute()).
     m_timer.restart();
   }
 

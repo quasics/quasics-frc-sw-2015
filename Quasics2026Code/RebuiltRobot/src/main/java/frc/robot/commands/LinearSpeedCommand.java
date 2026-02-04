@@ -26,9 +26,6 @@ public class LinearSpeedCommand extends Command {
   // in order to simplify your code. (It's auto-generated when you create a new
   // command, to make things easier for you if you *do* need it, but you can get
   // rid of it if it doesn't do anything.)
-  @Override
-  public void initialize() {
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

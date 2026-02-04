@@ -63,17 +63,6 @@ public class RealDrivebase extends AbstractDrivebase {
     // TODO(DISCUSS): What about our encoders are missing information here...
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-
-    // FINDME(Robert): You're not calling the version of "periodic" in
-    // the base class (AbstractDrivebase) from here (which would be done by saying
-    // "super.periodic();").
-    //
-    // Questions:
-    // * Is this OK? (Hint: it isn't.)
-    // * Why isn't it OK? (Hint: is the base class doing something that you still
-    // need to happen when this class is used?)
-  }
+  // We've removed @Override periodic, but be sure to use super.periodic if we
+  // ever need to resurrect it.
 }

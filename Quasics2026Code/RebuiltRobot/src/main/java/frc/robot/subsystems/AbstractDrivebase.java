@@ -72,9 +72,7 @@ public abstract class AbstractDrivebase extends SubsystemBase {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
-  // TODO(DISCUSS): Why might we want this function?
-  // Alternatively, give the encoders to the ADB constructor
-  protected double getDistancePerPulse() {
+  protected static double getDistancePerPulse() {
     return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
 

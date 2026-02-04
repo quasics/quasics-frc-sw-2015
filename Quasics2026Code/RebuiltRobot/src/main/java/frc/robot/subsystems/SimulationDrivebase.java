@@ -52,9 +52,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
-  // FINDME(Robert): You're not using this, so why have it in here?
-  private final Field2d m_field = new Field2d();
-
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
     super(new PWMSparkMax(LEFT_MOTOR_CHANNEL), new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
@@ -62,8 +59,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
 
-    m_leftEncoder.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
-    m_rightEncoder.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
+    m_leftEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
+    m_rightEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
   }
 
   @Override

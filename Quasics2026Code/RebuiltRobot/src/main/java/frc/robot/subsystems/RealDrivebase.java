@@ -16,6 +16,12 @@ public class RealDrivebase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or be
   // based on some information about the robot's configuration. I'd recommend the
   // former approach.)
+  //
+  // FINDME(Robert): Do you actually need these to be member variables? (Hint: you
+  // don't, though you *may* want to have access to the followers temporarily in
+  // the constructor, during setup/configuration. But if you don't need them after
+  // that, then don't keep them as members of the class; just use local
+  // variables.)
   private final SparkMax m_leftfollower;
   private final SparkMax m_rightfollower;
 
@@ -50,10 +56,16 @@ public class RealDrivebase extends AbstractDrivebase {
   public RealDrivebase() {
     super(new SparkMax(1, MotorType.kBrushless), new SparkMax(3, MotorType.kBrushless));
     // TODO: find actual SparkMax IDs, currents are placeholders.
+    //
+    // FINDME(Robert): the SparkMax CAN IDs have been held stable for the last few
+    // years, in order to let us continue using Sally as a test bed that is
+    // compatible with a new year's robot. As a result, you should be able to copy
+    // them over from named constants defined in last year's code. (Look in
+    // Constants.java for the "Constants.CanBusIds.SparkMaxIds" definitions.)
     m_leftfollower = new SparkMax(2, MotorType.kBrushless);
     m_rightfollower = new SparkMax(4, MotorType.kBrushless);
-    m_leftEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
-    m_rightEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
+    m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
 
     AnalogGyro gyro = new AnalogGyro(0);
     m_mainGyro = IGyro.wrapGyro(gyro);

@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
+import frc.robot.subsystems.interfaces.IVision;
 
 import java.io.IOException;
 import java.util.function.Supplier;

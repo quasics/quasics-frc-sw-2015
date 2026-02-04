@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
@@ -16,15 +14,12 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.Constants;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  private static final double TICKS_PER_REVOLUTION = -4096;
   private static final int LEFT_MOTOR_CHANNEL = 0;
   private static final int RIGHT_MOTOR_CHANNEL = 1;
   private static final int GYRO_CHANNEL = 0;

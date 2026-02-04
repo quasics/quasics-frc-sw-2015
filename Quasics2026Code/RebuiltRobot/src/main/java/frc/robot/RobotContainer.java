@@ -40,7 +40,6 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
-
     // Configure the trigger bindings
     configureBindings();
   }

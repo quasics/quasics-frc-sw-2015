@@ -40,7 +40,6 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private final AprilTagFieldLayout m_tagLayout;
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
@@ -60,8 +59,6 @@ public class SimulatedVision extends Vision {
     } else {
       System.err.println("Warning: no April Tags layout loaded.");
     }
-
-    m_tagLayout = tagLayout;
 
     // Set up the properties selected for our simulated camera (e.g., 640x480
     // images, etc.).

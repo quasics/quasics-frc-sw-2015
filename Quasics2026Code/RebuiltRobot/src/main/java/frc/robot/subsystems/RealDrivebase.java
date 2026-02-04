@@ -52,6 +52,8 @@ public class RealDrivebase extends AbstractDrivebase {
     // TODO: find actual SparkMax IDs, currents are placeholders.
     m_leftfollower = new SparkMax(2, MotorType.kBrushless);
     m_rightfollower = new SparkMax(4, MotorType.kBrushless);
+    m_leftEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
+    m_rightEncoder.setDistancePerPulse(AbstractDrivebase.getDistancePerPulse());
 
     AnalogGyro gyro = new AnalogGyro(0);
     m_mainGyro = IGyro.wrapGyro(gyro);

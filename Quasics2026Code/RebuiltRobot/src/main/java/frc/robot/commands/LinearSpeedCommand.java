@@ -18,7 +18,7 @@ public class LinearSpeedCommand extends Command {
    * @param drivebase The subsystem used by this command.
    */
   public LinearSpeedCommand(AbstractDrivebase drivebase) {
-    this(drivebase, 1.0);
+    this(drivebase, 0.2);
   }
 
   /**

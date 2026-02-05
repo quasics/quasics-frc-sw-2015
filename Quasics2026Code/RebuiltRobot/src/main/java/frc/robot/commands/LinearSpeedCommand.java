@@ -33,21 +33,13 @@ public class LinearSpeedCommand extends Command {
     addRequirements(drivebase);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     m_drivebase.setSpeeds(m_percentSpeed, m_percentSpeed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivebase.setSpeeds(0, 0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    m_drivebase.stop();
   }
 }

@@ -32,7 +32,8 @@ public class RealDrivebase extends AbstractDrivebase {
   //
   // Note that Mr. Healy has updated the "TrivialEncoder" class (and some derived
   // classes) so that it can be used with Thrifty Novas (new code this year), as
-  // well as the Spark Max controllers, etc.
+  // well as the Spark Max controllers, etc. (This stuff is in the sample code
+  // under "Experimental/2026/MattsToys/SimulationSupport".)
   private final Encoder m_leftEncoder = new Encoder(1, 2);
   private final Encoder m_rightEncoder = new Encoder(3, 4);
   private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);

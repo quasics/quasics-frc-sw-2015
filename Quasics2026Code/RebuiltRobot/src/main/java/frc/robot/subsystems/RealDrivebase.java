@@ -41,14 +41,17 @@ public class RealDrivebase extends AbstractDrivebase {
 
   private final IGyro m_mainGyro;
 
+  @Override
   protected final IGyro getGyro() {
     return m_mainGyro;
   }
 
+  @Override
   protected final TrivialEncoder getLeftEncoder() {
     return m_mainLeftEncoder;
   }
 
+  @Override
   protected final TrivialEncoder getRightEncoder() {
     return m_mainRightEncoder;
   }

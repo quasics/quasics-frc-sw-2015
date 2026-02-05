@@ -11,14 +11,10 @@ import java.util.List;
 import org.opencv.core.Point;
 import org.opencv.core.Rect2d;
 
-import edu.wpi.first.math.controller.LTVUnicycleController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 
@@ -50,37 +46,12 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * force termination if we were in an unsafe/unsuitable region of the field,)
  * </ul>
  */
-public class PushbuttonTrajectory extends Command {
-  /** Drivebase being controlled. (Must support PID control.) */
-  final IDrivebasePlus m_drivebase;
-
+public class PushbuttonTrajectory extends BaseTrajectoryCommand {
   /** Trajectory configuration settings. */
   final TrajectoryConfig m_trajectoryConfig;
 
   /** Target pose that the command should take us to. */
   final Pose2d m_targetPose;
-
-  /** Timer used to identify samples from the trajectory. */
-  final Timer m_timer = new Timer();
-
-  /**
-   * Unicycle controller, used to calculate wheel speeds along the way.
-   *
-   * Notes:
-   * <ul>
-   * <li>We should consider updating the controller's allocation to also specify
-   * the maximum velocity (in m/s).
-   *
-   * <li>This is the replacement for the RamseteController (deprecated in 2025).
-   * </ul>
-   */
-  final LTVUnicycleController m_controller = new LTVUnicycleController(0.2);
-
-  /**
-   * Computed trajectory for the robot, based on where we are when the command
-   * starts running, and the end point specified in the constructor.
-   */
-  Trajectory m_currentTrajectory;
 
   /**
    * Constructor.
@@ -91,11 +62,9 @@ public class PushbuttonTrajectory extends Command {
    *                         up, and the direction we should be facing)
    */
   public PushbuttonTrajectory(IDrivebasePlus drivebase, TrajectoryConfig trajectoryConfig, Pose2d targetPose) {
-    m_drivebase = drivebase;
+    super(drivebase);
     m_trajectoryConfig = trajectoryConfig;
     m_targetPose = targetPose;
-
-    addRequirements(drivebase.asSubsystem());
   }
 
   /** (Roughly) defines the Blue alliance's end of the field. */
@@ -137,11 +106,14 @@ public class PushbuttonTrajectory extends Command {
   }
 
   @Override
-  public void initialize() {
+  protected Trajectory getTrajectory() {
     final Pose2d startingPose = m_drivebase.getEstimatedPose();
     if (robotIsInSafeArea()) {
+      System.out.println("Running pushbutton trajectory from " + startingPose
+          + " to " + m_targetPose);
+
       // Build a trajectory from where we *are* to where we *want to be*.
-      m_currentTrajectory = TrajectoryGenerator.generateTrajectory(
+      return TrajectoryGenerator.generateTrajectory(
           // Starting where we are right now...
           startingPose,
           // No interior waypoints - just a simplest path/straight line
@@ -150,44 +122,10 @@ public class PushbuttonTrajectory extends Command {
           m_targetPose,
           // Pass config
           m_trajectoryConfig);
-
-      // Restart the timer (used for sampling in execute()).
-      m_timer.restart();
-      System.out.println("Running pushbutton trajectory from " + startingPose
-          + " to " + m_targetPose);
     } else {
-      m_timer.stop();
-      m_currentTrajectory = null;
       System.err.println("Can't run pushbutton trajectory from " + startingPose
           + " to " + m_targetPose);
+      return null;
     }
-  }
-
-  @Override
-  public void execute() {
-    if (!m_timer.isRunning() || m_currentTrajectory == null) {
-      return;
-    }
-
-    // Calculate how fast the wheels should be moving at this point along the
-    // trajectory
-    double elapsed = m_timer.get();
-    var referencePosition = m_currentTrajectory.sample(elapsed);
-    ChassisSpeeds newSpeeds = m_controller.calculate(
-        m_drivebase.getEstimatedPose(), referencePosition);
-
-    // Move the drivebase accordingly.
-    m_drivebase.driveTankWithPID(newSpeeds);
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    m_drivebase.stop();
-    m_timer.stop();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return !m_timer.isRunning() || m_timer.hasElapsed(m_currentTrajectory.getTotalTimeSeconds());
   }
 }

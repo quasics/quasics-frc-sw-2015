@@ -13,8 +13,12 @@ public class Logger {
   }
 
   // Annoyingly, need to query m_chooser every time for get selected
+  //
+  // FINDME(Nicole): Actually, no, you don't. You can register a callback with the
+  // chooser, allowing you to avoid this. (I've made this change to the code.)
   private String m_name;
   private final SendableChooser<Verbosity> m_chooser = new SendableChooser<>();
+  Verbosity m_level = Verbosity.Notice;
 
   public Logger(Verbosity verbosity, String name) {
     m_name = name;
@@ -26,6 +30,12 @@ public class Logger {
     m_chooser.addOption("Info", Verbosity.Info);
     m_chooser.addOption("Notice", Verbosity.Notice);
     m_chooser.addOption("Warn", Verbosity.Warn);
+
+    m_chooser.onChange(this::setVerbosity);
+  }
+
+  private void setVerbosity(Verbosity level) {
+    m_level = level;
   }
 
   public String toString(Verbosity verbosity) {
@@ -45,8 +55,14 @@ public class Logger {
   }
 
   public void log(String out, Verbosity verbosity) {
-    if (verbosity.ordinal() >= m_chooser.getSelected().ordinal()) {
+    if (verbosity.ordinal() >= m_level.ordinal()) {
       System.out.println(m_name + " [" + verbosity + "]: " + out);
+    }
+  }
+
+  public void logError(String out, Verbosity verbosity) {
+    if (verbosity.ordinal() >= m_level.ordinal()) {
+      System.err.println(m_name + " [" + verbosity + "]: " + out);
     }
   }
 }

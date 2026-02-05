@@ -7,8 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -33,16 +31,8 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our
-    // autonomous chooser on the dashboard.
+    // and put our autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    CommandXboxController operatorController = new CommandXboxController(1); // Creates a CommandXboxController on port
-                                                                             // 1.
-    Trigger aButton = operatorController.a(); // Creates a new Trigger object for the `A` button on operatorController
-    // m_shooter and revUpCommand do not exist yet
-    // operatorController.a().onTrue(m_shooter.revUpCommand());
-    // operatorController.a().onTrue(m_printRev);
-    // operatorController.a().onFalse(m_printNoRev);
   }
 
   /**

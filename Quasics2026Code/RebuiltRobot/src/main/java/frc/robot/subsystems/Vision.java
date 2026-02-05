@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2026, Quasics Robotics and other contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
+import frc.robot.subsystems.interfaces.IVision;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -47,8 +48,16 @@ public class Vision extends SubsystemBase implements IVision {
       System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
-    photonEstimator = new PhotonPoseEstimator(tagLayout, new Transform3d()); // should be robotToCam, update whenever
-                                                                             // real camera mounted
+
+    photonEstimator = new PhotonPoseEstimator(
+        tagLayout,
+        // FINDME(Rylie): This should ideally match the "robotToCamera" configuration
+        // being used under simulation.
+        // FINDME(Rylie): This should ideally be coming from a robot configuration data
+        // block, to give us a well-defined place to swap stuff around. (Doesn't *have*
+        // to, but it's a good idea....)
+        new Transform3d()); // should be robotToCam, update whenever
+                            // real camera mounted
     m_tagLayout = tagLayout;
   }
 
@@ -100,6 +109,7 @@ public class Vision extends SubsystemBase implements IVision {
     return hasTargets;
   }
 
+  @Override
   public List<TargetData> getTargetData() {
     var results = camera.getLatestResult();
     List<TargetData> listTargetData = new LinkedList<>();

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2026, Quasics Robotics and other contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -10,41 +10,36 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** A simple command to test the drivebase (by driving forward). */
 public class LinearSpeedCommand extends Command {
   private final AbstractDrivebase m_drivebase;
+  private final double m_percentSpeed;
 
   /**
-   * Creates a new o.
+   * Creates a new LinearSpeedCommand, with a default speed of 100% of max.
    *
    * @param drivebase The subsystem used by this command.
    */
   public LinearSpeedCommand(AbstractDrivebase drivebase) {
+    this(drivebase, 1.0);
+  }
+
+  /**
+   * Creates a new LinearSpeedCommand, with the specified % of max speed to be
+   * used while running.
+   *
+   * @param drivebase The subsystem used by this command.
+   */
+  public LinearSpeedCommand(AbstractDrivebase drivebase, double percentSpeed) {
     m_drivebase = drivebase;
+    m_percentSpeed = percentSpeed;
     addRequirements(drivebase);
   }
 
-  // Called when the command is initially scheduled.
-  // FINDME(Robert): Do you need this? If not, then it should probably be removed,
-  // in order to simplify your code. (It's auto-generated when you create a new
-  // command, to make things easier for you if you *do* need it, but you can get
-  // rid of it if it doesn't do anything.)
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivebase.setSpeeds(1, 1);
+    m_drivebase.setSpeeds(m_percentSpeed, m_percentSpeed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivebase.setSpeeds(0, 0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    m_drivebase.stop();
   }
 }

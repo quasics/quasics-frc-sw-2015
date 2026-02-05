@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2026, Quasics Robotics and other contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -40,7 +40,6 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private final AprilTagFieldLayout m_tagLayout;
   private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
@@ -59,8 +58,6 @@ public class SimulatedVision extends Vision {
     } else {
       System.err.println("Warning: no April Tags layout loaded.");
     }
-
-    m_tagLayout = tagLayout;
 
     // Set up the properties selected for our simulated camera (e.g., 640x480
     // images, etc.).
@@ -82,6 +79,8 @@ public class SimulatedVision extends Vision {
     Rotation3d robotToCameraRot = new Rotation3d(0, Math.toRadians(-15), 0);
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
+    // FINDME(Rylie): This should ideally match the "robotToCamera" configuration
+    // being used in the base ("Vision") subsystem class's code.
     Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
 
     // Allocate the camera simulation object.

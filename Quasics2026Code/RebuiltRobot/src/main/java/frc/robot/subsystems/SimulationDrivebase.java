@@ -1,10 +1,8 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) 2026, Quasics Robotics and other contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-
-import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -16,15 +14,12 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
-import frc.robot.Constants;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 
 public class SimulationDrivebase extends AbstractDrivebase {
-  private static final double TICKS_PER_REVOLUTION = -4096;
   private static final int LEFT_MOTOR_CHANNEL = 0;
   private static final int RIGHT_MOTOR_CHANNEL = 1;
   private static final int GYRO_CHANNEL = 0;
@@ -52,9 +47,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
       null // No measurement noise.
   );
 
-  // FINDME(Robert): You're not using this, so why have it in here?
-  private final Field2d m_field = new Field2d();
-
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
     super(new PWMSparkMax(LEFT_MOTOR_CHANNEL), new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
@@ -62,16 +54,8 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
 
-    // TODO(DISCUSS): Difference between putting this call up here vs
-    // simulationPeriodic.
-    // - How many times is it called?
-    // - Why wouldn't we want to keep calling this? (mjh: you don't.)
-    // - EncoderSim vs Encoder
-    //
-    // FINDME(Robert) - Take another look at these two lines. Are you configuring
-    // the correct things? (mjh: hint - you aren't.)
-    m_leftEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
-    m_rightEncoderSim.setDistancePerPulse(2.0 * Math.PI * Constants.wheelRadius.in(Meters) / TICKS_PER_REVOLUTION);
+    m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
   }
 
   @Override
@@ -88,17 +72,6 @@ public class SimulationDrivebase extends AbstractDrivebase {
   protected final TrivialEncoder getRightEncoder() {
     return m_mainRightEncoder;
   }
-
-  // TODO(DISCUSS): What changes when we remove this override? Why?
-  /*
-   * @Override
-   * public void periodic() {
-   * var pose = getOdometry().getPoseMeters();
-   * m_field.setRobotPose(pose);
-   * m_field.getObject("Estimated Drivebase Pose").setPose(getEstimatedPose());
-   * // This method will be called once per scheduler run
-   * }
-   */
 
   @Override
   public void simulationPeriodic() {

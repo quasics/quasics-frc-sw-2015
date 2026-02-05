@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems.interfaces;
 
+import java.util.List;
+
 public interface IVision {
   record TargetData(int id, double yaw, double pitch, double distanceToTarget) {
   }
 
   boolean canSeeTargets();
+
+  List<TargetData> getTargetData();
 }

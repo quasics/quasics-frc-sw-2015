@@ -90,6 +90,7 @@ public class Vision extends SubsystemBase implements IVision {
     return hasTargets;
   }
 
+  @Override
   public List<TargetData> getTargetData() {
     var results = camera.getLatestResult();
     List<TargetData> listTargetData = new LinkedList<>();
@@ -117,7 +118,7 @@ public class Vision extends SubsystemBase implements IVision {
     return listTargetData;
   }
 
-  public Pose2d getDrivebasePose() {
+  protected Pose2d getDrivebasePose() {
     Pose2d dbPose = m_drivebasePoseSupplier.get();
     return dbPose;
   }

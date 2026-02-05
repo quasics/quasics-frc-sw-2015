@@ -9,15 +9,19 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 public interface IDrivebase {
-  public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
+  void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
 
-  public void setSpeeds(double leftSpeed, double rightSpeed);
+  void setSpeeds(double leftSpeed, double rightSpeed);
 
-  public double mpsToPercent(double speed);
+  double mpsToPercent(double speed);
 
-  public Pose2d getOdometryPose();
+  Pose2d getOdometryPose();
 
-  public Pose2d getEstimatedPose();
+  Pose2d getEstimatedPose();
 
-  public void resetOdometry(Pose2d pose);
+  void resetOdometry(Pose2d pose);
+
+  default void stop() {
+    setSpeeds(0, 0);
+  }
 }

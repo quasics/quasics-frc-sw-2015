@@ -43,7 +43,9 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
  * triggered by the drive team when the robot was in some general region of the
  * field (and could include a safeguard test for this, either in a precondition,
  * or in "isFinished()", or even as part of a ParallelCommandGroup that could
- * force termination if we were in an unsafe/unsuitable region of the field,)
+ * force termination if we were in an unsafe/unsuitable region of the field). I
+ * have included a simple example of this type of check in this command, and it
+ * is indirectly supported by the BaseTrajectoryCommand class.
  * </ul>
  */
 public class PushbuttonTrajectory extends BaseTrajectoryCommand {

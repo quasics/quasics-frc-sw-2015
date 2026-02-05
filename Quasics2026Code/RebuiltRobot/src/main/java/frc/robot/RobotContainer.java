@@ -28,8 +28,8 @@ import frc.robot.subsystems.interfaces.IVision;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
-  private final IVision m_vision = (Robot.isReal()) ? new Vision(m_drivebase::getEstimatedPose)
-      : new SimulatedVision(m_drivebase::getEstimatedPose);
+  private final IVision m_vision = (Robot.isReal()) ? new Vision()
+      : new SimulatedVision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -40,6 +40,16 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
+    // Connect cross-subsystem suppliers (so that the systems don't know about each
+    // other directly)
+    m_vision.setReferencePositionSupplier(() -> {
+      if (m_drivebase != null) {
+        return m_drivebase.getEstimatedPose();
+      } else {
+        return null;
+      }
+    });
+
     // Configure the trigger bindings
     configureBindings();
   }

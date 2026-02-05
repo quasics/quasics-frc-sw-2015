@@ -36,13 +36,11 @@ public class Vision extends SubsystemBase implements IVision {
   protected PhotonPoseEstimator photonEstimator;
   private Pose3d latestPose3d = new Pose3d();
   protected Pose2d latestPose2d = new Pose2d();
-  protected Supplier<Pose2d> m_drivebasePoseSupplier;
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "Vision");
 
   /** Constructor. */
-  public Vision(Supplier<Pose2d> drivebasePoseSupplier) {
-    m_drivebasePoseSupplier = drivebasePoseSupplier;
+  public Vision() {
     AprilTagFieldLayout tagLayout = null;
     try {
       tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile);
@@ -68,6 +66,12 @@ public class Vision extends SubsystemBase implements IVision {
     // This method will be called once per scheduler run
     var result = camera.getLatestResult();
     Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
+    // if (m_referencePositionSupplier != null) {
+    // Pose2d refPose = m_referencePositionSupplier.get();
+    // if (refPose != null) {
+    // photonEstimator.estimateClosestToReferencePose(result, new Pose3d(refPose));
+    // }
+    // }
     if (result != null) {
       visionEstimate = photonEstimator.estimateCoprocMultiTagPose(result);
       if (visionEstimate.isEmpty()) {
@@ -80,6 +84,21 @@ public class Vision extends SubsystemBase implements IVision {
     }
 
     // getTargetData();
+  }
+
+  public Pose2d getVisionLatestPose() {
+    if (latestPose2d != null) {
+      return latestPose2d;
+    } else {
+      return null;
+    }
+  }
+
+  Supplier<Pose2d> m_referencePositionSupplier = null;
+
+  @Override
+  public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
+    m_referencePositionSupplier = supplier;
   }
 
   @Override
@@ -118,8 +137,11 @@ public class Vision extends SubsystemBase implements IVision {
     return listTargetData;
   }
 
-  protected Pose2d getDrivebasePose() {
-    Pose2d dbPose = m_drivebasePoseSupplier.get();
-    return dbPose;
+  public Pose2d getDrivebasePose() {
+    if (m_referencePositionSupplier != null) {
+      return m_referencePositionSupplier.get();
+    } else {
+      return null;
+    }
   }
 }

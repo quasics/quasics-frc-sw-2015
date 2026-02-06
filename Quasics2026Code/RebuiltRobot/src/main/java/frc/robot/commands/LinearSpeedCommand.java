@@ -12,13 +12,16 @@ public class LinearSpeedCommand extends Command {
   private final AbstractDrivebase m_drivebase;
   private final double m_percentSpeed;
 
+  public final static double DEFAULT_SPEED_PERCENT = 0.2;
+
   /**
-   * Creates a new LinearSpeedCommand, with a default speed of 100% of max.
+   * Creates a new LinearSpeedCommand, with a default speed of
+   * DEFAULT_SPEED_PERCENT of the supported maximum.
    *
    * @param drivebase The subsystem used by this command.
    */
   public LinearSpeedCommand(AbstractDrivebase drivebase) {
-    this(drivebase, 0.2);
+    this(drivebase, DEFAULT_SPEED_PERCENT);
   }
 
   /**

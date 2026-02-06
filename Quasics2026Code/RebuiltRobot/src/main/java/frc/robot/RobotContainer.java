@@ -27,7 +27,7 @@ import frc.robot.subsystems.interfaces.IVision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
   private final IVision m_vision = (Robot.isReal()) ? new Vision()
       : new SimulatedVision();
 
@@ -45,6 +45,14 @@ public class RobotContainer {
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
+      } else {
+        return null;
+      }
+    });
+
+    m_drivebase.setReferencePositionSupplier(() -> {
+      if (m_vision != null) {
+        return m_vision.getVisionLatestPose();
       } else {
         return null;
       }

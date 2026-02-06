@@ -141,6 +141,20 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   //
   // Methods from SubsystemBase
   //
+  Supplier<Pose2d> m_referencePositionSupplier = null;
+
+  @Override
+  public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
+    m_referencePositionSupplier = supplier;
+  }
+
+  public Pose2d getVisionPose() {
+    if (m_referencePositionSupplier != null) {
+      return m_referencePositionSupplier.get();
+    } else {
+      return null;
+    }
+  }
 
   @Override
   public void periodic() {
@@ -152,5 +166,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
+    if (getVisionPose() != null) {
+      m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp());
+    }
   }
 }

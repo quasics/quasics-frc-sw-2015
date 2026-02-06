@@ -18,4 +18,6 @@ public interface IVision {
   List<TargetData> getTargetData();
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
+
+  Pose2d getVisionLatestPose();
 }

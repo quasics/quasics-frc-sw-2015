@@ -80,6 +80,12 @@ public class RobotContainer {
         new ArcadeDrive(
             () -> m_driverController.getRawAxis(0),
             // FINDME(ROBERT): What's the problem here?
+            //
+            // FINDME(ROBERT): Don't use numbers for the axis values. Use named constants.
+            // We have a bunch of these defined for the Logitech controller, which we've
+            // been using for the last N years, and Mr. Healy has copied them into the
+            // "Constants" class from last year's code. (And, hint: doing this might help to
+            // solve the problem that you're being asked about, above. :-)
             () -> m_driverController.getRawAxis(0),
             m_drivebase));
 

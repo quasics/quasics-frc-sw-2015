@@ -11,6 +11,7 @@ import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
+import frc.robot.Constants.CanBusIds.SparkMaxIds;
 
 public class RealDrivebase extends AbstractDrivebase {
   // TODO: add thriftynova support. (This might be done in a derived class, or be
@@ -58,7 +59,8 @@ public class RealDrivebase extends AbstractDrivebase {
 
   /** Creates a new RealDrivebase. */
   public RealDrivebase() {
-    super(new SparkMax(1, MotorType.kBrushless), new SparkMax(3, MotorType.kBrushless));
+    super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
+        new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
     // TODO: find actual SparkMax IDs, currents are placeholders.
     //
     // FINDME(Robert): the SparkMax CAN IDs have been held stable for the last few
@@ -66,8 +68,8 @@ public class RealDrivebase extends AbstractDrivebase {
     // compatible with a new year's robot. As a result, you should be able to copy
     // them over from named constants defined in last year's code. (Look in
     // Constants.java for the "Constants.CanBusIds.SparkMaxIds" definitions.)
-    m_leftfollower = new SparkMax(2, MotorType.kBrushless);
-    m_rightfollower = new SparkMax(4, MotorType.kBrushless);
+    m_leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    m_rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
     m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
     m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
 

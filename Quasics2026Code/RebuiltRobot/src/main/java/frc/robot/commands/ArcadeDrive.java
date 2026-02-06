@@ -35,6 +35,15 @@ public class ArcadeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // FINDME(Robert): I don't think this is what you want to do. If the values are
+    // coming straight from the joystick, then the robot will never be able to move
+    // more than 1 m/s (or turn faster than 1 radian/sec), since the joysticks only
+    // provide values from -1.0 to +1.0.
+    //
+    // Suggestion: one option would be to take the values from the speed suppliers
+    // as a "% of top speed", and then multiply them by the top speeds that the team
+    // is comfortable setting for movement/turning, in the same way that you're
+    // doing for the LinearSpeedCommand.
     m_drivebase.arcadeDrive(MetersPerSecond.of(m_linearSpeedSupplier.get()),
         RadiansPerSecond.of(m_turnSpeedSupplier.get()));
   }
@@ -43,6 +52,9 @@ public class ArcadeDrive extends Command {
   @Override
   public void end(boolean interrupted) {
     // TODO: Implement and Call m_drivebase.stop()
+    // FINDME(Robert): I've done this for you, because it's important. (And because
+    // what to do was already on the line above. :-) -mjh
+    m_drivebase.stop();
   }
 
 }

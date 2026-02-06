@@ -116,7 +116,7 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_referencePositionSupplier = supplier;
   }
 
-  public Pose2d getVisionPose() {
+  protected Pose2d getVisionPose() {
     if (m_referencePositionSupplier != null) {
       return m_referencePositionSupplier.get();
     } else {

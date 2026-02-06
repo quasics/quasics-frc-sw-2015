@@ -7,6 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.function.Supplier;
 
 public class ArcadeDrive extends Command {
@@ -32,7 +35,8 @@ public class ArcadeDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Call m_drivebase.setSpeeds()
+    m_drivebase.arcadeDrive(MetersPerSecond.of(m_linearSpeedSupplier.get()),
+        RadiansPerSecond.of(m_turnSpeedSupplier.get()));
   }
 
   // Called once the command ends or is interrupted.

@@ -57,19 +57,21 @@ public class SimDrivebase extends DrivebaseBase {
    *
    * @see frc.robot.utils.RobotConfigs.DriveFeedForwardConfig
    */
-  final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
-      // Linear components (velocity, acceleration)
-      1.98, 0.2,
-      // Angular components (velocity, acceleration)
-      1.5, 0.3);
+  final LinearSystem<N2, N2, N2> m_drivetrainSystem =
+      LinearSystemId.identifyDrivetrainSystem(
+          // Linear components (velocity, acceleration)
+          1.98, 0.2,
+          // Angular components (velocity, acceleration)
+          1.5, 0.3);
 
   /** Simulation driver for the overall drive train. */
-  final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem,
-      // Drive motor type and count
-      DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
-      WHEEL_DIAMETER.in(Meters),
-      // configure for no noise in measurements
-      null);
+  final DifferentialDrivetrainSim m_drivetrainSimulator =
+      new DifferentialDrivetrainSim(m_drivetrainSystem,
+          // Drive motor type and count
+          DCMotor.getNEO(4), GEAR_RATIO, TRACK_WIDTH.in(Meters),
+          WHEEL_DIAMETER.in(Meters),
+          // configure for no noise in measurements
+          null);
 
   /**
    * Constructor.
@@ -107,8 +109,7 @@ public class SimDrivebase extends DrivebaseBase {
             new PWMSparkMax(SimulationPorts.PWM.RIGHT_MOTOR_PORT)),
         TrivialEncoder.forWpiLibEncoder(left.encoder, left.encoderSim),
         TrivialEncoder.forWpiLibEncoder(right.encoder, right.encoderSim),
-        IGyro.wrapGyro(rawGyro),
-        true);
+        IGyro.wrapGyro(rawGyro), true);
 
     m_leftEncoderSim = left.encoderSim;
     m_rightEncoderSim = right.encoderSim;
@@ -118,8 +119,7 @@ public class SimDrivebase extends DrivebaseBase {
   }
 
   /** Used to hold a WPI encoder and its paired EncoderSim object. */
-  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {
-  }
+  private record SimulatedEncoderPair(Encoder encoder, EncoderSim encoderSim) {}
 
   /**
    * Allocates an encoder and a paired simulator object.
@@ -138,13 +138,14 @@ public class SimDrivebase extends DrivebaseBase {
 
   /**
    * Configures the "starting point" selector.
-   * 
+   *
    * @param game if non-null, specifies the game for which starting positions
-   *             should have the prefix removed from their names when shown to the
-   *             user (for faster identification)
+   *             should have the prefix removed from their names when shown to
+   * the user (for faster identification)
    */
   private void updateStartingPointSelector(Game game) {
-    SendableChooser<StartingPosition> positionChooser = new SendableChooser<StartingPosition>();
+    SendableChooser<StartingPosition> positionChooser =
+        new SendableChooser<StartingPosition>();
     for (var pos : StartingPosition.values()) {
       String name = pos.getNameWithoutGamePrefix(game);
       if (pos == StartingPosition.Default) {
@@ -230,8 +231,10 @@ public class SimDrivebase extends DrivebaseBase {
     // Angular velocity is not computed by the drive train simulator, but it's
     // just the derivative of heading (change in heading over time), so we can
     // compute it here.
-    final var deltaHeading = m_drivetrainSimulator.getHeading().minus(oldHeading);
-    final double angularVelocity = deltaHeading.getDegrees() / dtSeconds; // degrees per second
+    final var deltaHeading =
+        m_drivetrainSimulator.getHeading().minus(oldHeading);
+    final double angularVelocity =
+        deltaHeading.getDegrees() / dtSeconds; // degrees per second
     m_gyroSim.setRate(angularVelocity);
   }
 }

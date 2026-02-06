@@ -11,7 +11,6 @@ import com.thethriftybot.devices.ThriftyNova;
 import com.thethriftybot.devices.ThriftyNova.EncoderType;
 import com.thethriftybot.devices.ThriftyNova.MotorType;
 import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
-
 import frc.robot.constants.robots.QuasicsThriftyNovaConstants.QuasicsDrivebaseCanIds;
 import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
@@ -49,14 +48,13 @@ public class ThriftyNovaDrivebase extends DrivebaseBase {
    * @param rightLeader "leader" motor on the right side
    * @param rawGyro     the Pigeon2 ALU used on this drive base
    */
-  protected ThriftyNovaDrivebase(DriveConfig driveConfig, ThriftyNova leftLeader,
-      ThriftyNova rightLeader, Pigeon2 rawGyro) {
+  protected ThriftyNovaDrivebase(DriveConfig driveConfig,
+      ThriftyNova leftLeader, ThriftyNova rightLeader, Pigeon2 rawGyro) {
     super(driveConfig, new ThriftyNovaMotorControllerPlus(leftLeader),
         new ThriftyNovaMotorControllerPlus(rightLeader),
         new ThriftyEncoderWrapper(leftLeader, WHEEL_DIAMETER),
         new ThriftyEncoderWrapper(rightLeader, WHEEL_DIAMETER),
-        new Pigeon2Wrapper(rawGyro),
-        true);
+        new Pigeon2Wrapper(rawGyro), true);
 
     ThriftyNovaConfig leftMotorConfig = new ThriftyNovaConfig();
     ThriftyNovaConfig rightMotorConfig = new ThriftyNovaConfig();

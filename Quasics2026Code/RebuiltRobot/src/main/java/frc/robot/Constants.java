@@ -25,8 +25,8 @@ public final class Constants {
 
   public static class CanBusIds {
     public static class SparkMaxIds {
-      // Note: Drive base motor IDs are based on those Quasics has used over the last
-      // couple of years.
+      // Note: Drive base motor IDs are based on those Quasics has used over the
+      // last couple of years.
       public static final int LEFT_LEADER_ID = 2;
       public static final int LEFT_FOLLOWER_ID = 1;
       public static final int RIGHT_LEADER_ID = 4;
@@ -39,13 +39,13 @@ public final class Constants {
   }
 
   /**
-   * Defines constants for the different controls on a Logitech gamepad when used
-   * in "Dualshock" mode.
+   * Defines constants for the different controls on a Logitech gamepad when
+   * used in "Dualshock" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "D" position, causing it to enumerate as a Logitech
-   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and 3,
-   * respectively, and the left and right triggers show up as *buttons* 7 and
+   * Dualshock controller. In this mode, the right joystick X/Y axes are 2 and
+   * 3, respectively, and the left and right triggers show up as *buttons* 7 and
    * 8.
    */
   public static class LogitechDualshock {
@@ -92,14 +92,14 @@ public final class Constants {
   }
 
   /**
-   * Defines constants for the different controls on a Logitech gamepad, when used
-   * in "F310" mode.
+   * Defines constants for the different controls on a Logitech gamepad, when
+   * used in "F310" mode.
    *
    * Note: these values assume that the switch on the bottom of the Logitech
    * controller is in the "X" position, causing it to enumerate as a Logitech
    * Gamepad F310. In this mode, the left and right triggers on the front
-   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0], unlike
-   * regular joysticks.
+   * enumerate as single-axis joysticks 2 and 3 with a range of [0.0, 1.0],
+   * unlike regular joysticks.
    */
   public static class LogitechGamePadF310 {
     //
@@ -143,5 +143,4 @@ public final class Constants {
     /** ID for the button clicked by pressing on the right joystick. */
     public static final int RightStickPress = 10;
   }
-
 }

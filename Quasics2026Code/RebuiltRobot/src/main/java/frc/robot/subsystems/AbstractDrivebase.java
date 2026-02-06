@@ -6,19 +6,19 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.logging.Logger;
@@ -28,13 +28,15 @@ import frc.robot.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebase;
 import java.util.function.Supplier;
 
-public abstract class AbstractDrivebase extends SubsystemBase implements IDrivebase {
+public abstract class AbstractDrivebase
+    extends SubsystemBase implements IDrivebase {
   // TODO: this should come from a robot config
   private static final double m_maxMotorSpeedMPS = 3;
 
   /** Track width (distance between left and right wheels) in meters. */
   // TODO: this should come from a robot config
-  public static final Distance TRACK_WIDTH = Meters.of(0.5588); /* 22 inches (from 2024) */
+  public static final Distance TRACK_WIDTH =
+      Meters.of(0.5588); /* 22 inches (from 2024) */
 
   /** Kinematics calculator for the drivebase. */
   private final DifferentialDriveKinematics m_kinematics;
@@ -57,7 +59,8 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   // simulation-specific code.
   private final Field2d m_field = new Field2d();
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
 
   /** Creates a new AbstractDrivebase. */
   public AbstractDrivebase(
@@ -67,12 +70,14 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
     m_rightMotor = rightController;
     m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     m_odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0);
-    m_poseEstimator = new DifferentialDrivePoseEstimator(m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
+    m_poseEstimator = new DifferentialDrivePoseEstimator(
+        m_kinematics, new Rotation2d(), 0, 0, new Pose2d());
     SmartDashboard.putData("Field", m_field);
   }
 
   @Override
-  public void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed) {
+  public void arcadeDrive(
+      LinearVelocity forwardspeed, AngularVelocity turnspeed) {
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
@@ -103,9 +108,10 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
 
   @Override
   public void resetOdometry(Pose2d pose) {
-    getOdometry().resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition(),
-        getRightEncoder().getPosition(), pose);
-    m_poseEstimator.resetPosition(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
+    getOdometry().resetPosition(getGyro().getRotation2d(),
+        getLeftEncoder().getPosition(), getRightEncoder().getPosition(), pose);
+    m_poseEstimator.resetPosition(getGyro().getRotation2d(),
+        getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters), pose);
   }
 
@@ -160,15 +166,18 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   @Override
   public void periodic() {
     // Update the odometry/pose estimation
-    m_odometry.update(getGyro().getRotation2d(), getLeftEncoder().getPosition()
-        .in(Meters), getRightEncoder().getPosition().in(Meters));
-    m_poseEstimator.update(getGyro().getRotation2d(), getLeftEncoder().getPosition().in(Meters),
+    m_odometry.update(getGyro().getRotation2d(),
+        getLeftEncoder().getPosition().in(Meters),
+        getRightEncoder().getPosition().in(Meters));
+    m_poseEstimator.update(getGyro().getRotation2d(),
+        getLeftEncoder().getPosition().in(Meters),
         getRightEncoder().getPosition().in(Meters));
 
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
     if (getVisionPose() != null) {
-      m_poseEstimator.addVisionMeasurement(getVisionPose(), Timer.getFPGATimestamp());
+      m_poseEstimator.addVisionMeasurement(
+          getVisionPose(), Timer.getFPGATimestamp());
     }
   }
 }

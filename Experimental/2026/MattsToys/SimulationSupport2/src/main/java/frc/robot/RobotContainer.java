@@ -90,8 +90,10 @@ public class RobotContainer {
    */
   private static final boolean OVERRIDE_DEFAULT_LIGHTING_WHILE_DISABLED = false;
 
-  private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT = RobotConfigLibrary.Robot.Simulation;
-  private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT = RobotConfigLibrary.Robot.Sally;
+  private static final RobotConfigLibrary.Robot DEFAULT_SIMULATION_ROBOT =
+      RobotConfigLibrary.Robot.Simulation;
+  private static final RobotConfigLibrary.Robot DEFAULT_LIVE_ROBOT =
+      RobotConfigLibrary.Robot.Sally;
 
   /**
    * The robot being targeted.
@@ -101,10 +103,12 @@ public class RobotContainer {
    * SmartDashboard.reportWarning()), or at least an indicator for the current
    * value.
    */
-  final RobotConfigLibrary.Robot m_robotSelection = Robot.isReal() ? DEFAULT_LIVE_ROBOT : DEFAULT_SIMULATION_ROBOT;
+  final RobotConfigLibrary.Robot m_robotSelection =
+      Robot.isReal() ? DEFAULT_LIVE_ROBOT : DEFAULT_SIMULATION_ROBOT;
 
   /** Selected robot's configuration data. */
-  final RobotConfig m_robotConfig = RobotConfigLibrary.getConfig(m_robotSelection);
+  final RobotConfig m_robotConfig =
+      RobotConfigLibrary.getConfig(m_robotSelection);
 
   /** The drivebase subsystem. */
   final IDrivebasePlus m_drivebase = allocateDrivebase(m_robotConfig);
@@ -122,37 +126,42 @@ public class RobotContainer {
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()
       ? new PhotonVisionSingleCamera(
-          RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
-              .cameras()
-              .get(0))
+            RobotConfigLibrary.getConfig(RobotConfigLibrary.Robot.Simulation)
+                .cameras()
+                .get(0))
       : new IVision.NullVision();
 
   /** Lighting subystem. */
-  final ILighting m_lighting = (m_robotConfig.hasLighting()
-      ? new Lighting(m_robotConfig)
-      : new ILighting.NullLighting());
+  final ILighting m_lighting =
+      (m_robotConfig.hasLighting() ? new Lighting(m_robotConfig)
+                                   : new ILighting.NullLighting());
 
   /** CANdle */
   final ICandle m_candle = allocateCandle(m_robotConfig, m_lighting);
 
   /** Left-side righting. */
-  final ILighting m_leftLighting = allocateSideLighting(m_robotConfig, m_lighting, true);
+  final ILighting m_leftLighting =
+      allocateSideLighting(m_robotConfig, m_lighting, true);
 
   /** Right-side righting. */
-  final ILighting m_rightLighting = allocateSideLighting(m_robotConfig, m_lighting, false);
+  final ILighting m_rightLighting =
+      allocateSideLighting(m_robotConfig, m_lighting, false);
 
   /** Power distribution panel (or null, such as under simulation). */
   final PowerDistribution m_pdp = m_robotConfig.hasPowerDistributor()
-      ? new PowerDistribution(m_robotConfig.power().canId(), m_robotConfig.power().type())
+      ? new PowerDistribution(
+            m_robotConfig.power().canId(), m_robotConfig.power().type())
       : null;
 
   /** The driver joystick wrapper. */
-  final DriverJoystickWrapper m_driverWrapper = new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
-      // Only load from/save to preferences when in simulation
-      Robot.isSimulation());
+  final DriverJoystickWrapper m_driverWrapper =
+      new DriverJoystickWrapper(OperatorConstants.DRIVER_JOYSTICK_ID,
+          // Only load from/save to preferences when in simulation
+          Robot.isSimulation());
 
   /** The autonomous command chooser. */
-  private final SendableChooser<Command> m_autoCommandChooser = new SendableChooser<Command>();
+  private final SendableChooser<Command> m_autoCommandChooser =
+      new SendableChooser<Command>();
 
   /** Constructor. */
   public RobotContainer() {
@@ -227,13 +236,15 @@ public class RobotContainer {
       // Note that for real use in positioning based on a trajectory to be
       // followed in auto mode, we might actually... you know, use the first
       // position in that trajectory.
-      final Pose2d BLUE_1_POSE = new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
-          ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
-          new Rotation2d(ReefscapeConstants.FACING_BLUE));
+      final Pose2d BLUE_1_POSE =
+          new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters),
+              ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters),
+              new Rotation2d(ReefscapeConstants.FACING_BLUE));
 
       m_lighting.SetDisabledSupplier(new FieldPlacementColorFunction(
           // targetPoseSupplier
-          () -> BLUE_1_POSE,
+          ()
+              -> BLUE_1_POSE,
           // currentPoseSupplier
           //
           // Note: this should actually be coming from *vision* pose estimation,
@@ -257,20 +268,18 @@ public class RobotContainer {
     // forth....
     Command waveCommand = new SequentialCommandGroup(
         new InstantCommand(
-            () -> {
-              m_arm.setTargetPosition(m_arm.getArmOutAngle());
-            },
+            ()
+                -> { m_arm.setTargetPosition(m_arm.getArmOutAngle()); },
             m_arm.asSubsystem()),
         // Wait for some motion
         new WaitCommand(2),
         new InstantCommand(
-            () -> {
-              m_arm.setTargetPosition(m_arm.getArmUpAngle());
-            },
+            ()
+                -> { m_arm.setTargetPosition(m_arm.getArmUpAngle()); },
             m_arm.asSubsystem()),
         // Wait for some motion
         new WaitCommand(2))
-        .repeatedly();
+                              .repeatedly();
     SmartDashboard.putData("Cmd: Arm out", new InstantCommand(() -> {
       m_arm.setTargetPosition(m_arm.getArmOutAngle());
     }, m_arm.asSubsystem()));
@@ -279,9 +288,7 @@ public class RobotContainer {
     }, m_arm.asSubsystem()));
     SmartDashboard.putData("Cmd: Arm wave", waveCommand);
     SmartDashboard.putData("Cmd: Arm stop",
-        new InstantCommand(() -> {
-          m_arm.stop();
-        }, m_arm.asSubsystem()));
+        new InstantCommand(() -> { m_arm.stop(); }, m_arm.asSubsystem()));
   }
 
   /**
@@ -311,8 +318,10 @@ public class RobotContainer {
     m_driverWrapper.setDeadbandThreshold(OperatorConstants.DEADBAND_THRESHOLD);
 
     // Slew rate controls: don't let things ramp up too quickly.
-    SlewRateLimiter limiter1 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
-    SlewRateLimiter limiter2 = new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter1 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
+    SlewRateLimiter limiter2 =
+        new SlewRateLimiter(OperatorConstants.MAX_SLEW_RATE);
 
     // Drive "speed mode" decisions/scaling.
     Supplier<SpeedMode> speedModeSupplier = () -> {
@@ -331,16 +340,20 @@ public class RobotContainer {
     // slew limits.
     if (USE_ARCADE_DRIVE) {
       m_drivebase.asSubsystem().setDefaultCommand(new ArcadeDrive(m_drivebase,
-          () -> limiter1.calculate(
-              scaler.apply(m_driverWrapper.getArcadeForward())),
-          () -> limiter2.calculate(
-              scaler.apply(m_driverWrapper.getArcadeRotation()))));
+          ()
+              -> limiter1.calculate(
+                  scaler.apply(m_driverWrapper.getArcadeForward())),
+          ()
+              -> limiter2.calculate(
+                  scaler.apply(m_driverWrapper.getArcadeRotation()))));
     } else {
       m_drivebase.asSubsystem().setDefaultCommand(new TankDrive(m_drivebase,
-          () -> limiter1.calculate(
-              scaler.apply(m_driverWrapper.getTankLeft())),
-          () -> limiter2.calculate(
-              scaler.apply(m_driverWrapper.getTankRight()))));
+          ()
+              -> limiter1.calculate(
+                  scaler.apply(m_driverWrapper.getTankLeft())),
+          ()
+              -> limiter2.calculate(
+                  scaler.apply(m_driverWrapper.getTankRight()))));
     }
   }
 
@@ -399,10 +412,10 @@ public class RobotContainer {
   /** Configures any additional bindings that are needed. */
   private void configureBindings() {
     // Add any additional bindings here.
-    Pose2d targetPose = new Pose2d(
-        RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
-        RebuiltConstants.FIELD_WIDTH.div(2),
-        new Rotation2d(RebuiltConstants.FACING_RED));
+    Pose2d targetPose =
+        new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
+            RebuiltConstants.FIELD_WIDTH.div(2),
+            new Rotation2d(RebuiltConstants.FACING_RED));
     SmartDashboard.putData("Cmd: Pushbutton trajectory",
         new PushbuttonTrajectory(m_drivebase, m_trajectoryConfig, targetPose));
   }
@@ -420,15 +433,14 @@ public class RobotContainer {
   //
 
   /** Defines shapes supported for trajectory-following example commands. */
-  enum TrajectoryShape {
-    Linear, SimpleCurve, SCurve, Circle
-  }
+  enum TrajectoryShape { Linear, SimpleCurve, SCurve, Circle }
 
   /** Maximum desired voltage draw when performing trajectory-following. */
   private static final double kMaxVoltageForSampleTrajectories = 10;
 
   /** Maximum desired acceleration when performing trajectory-following. */
-  private static final LinearAcceleration maxAccelerationForSampleTrajectories = MetersPerSecondPerSecond.of(3);
+  private static final LinearAcceleration maxAccelerationForSampleTrajectories =
+      MetersPerSecondPerSecond.of(3);
 
   /** Configuration for use in generating sample trajectories. */
   private final TrajectoryConfig m_trajectoryConfig =
@@ -456,8 +468,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing the same direction as
-            // at start
+            // End 3 meters straight ahead of where we started, facing the same
+            // direction as at start
             new Pose2d(3, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -468,8 +480,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing +90 degrees from when
-            // we started
+            // End 3 meters straight ahead of where we started, facing +90
+            // degrees from when we started
             new Pose2d(3, 3, new Rotation2d(Degrees.of(90))),
             // Pass config
             m_trajectoryConfig);
@@ -481,8 +493,8 @@ public class RobotContainer {
             // Pass through these two interior waypoints, making an 's' curve
             // path
             List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
-            // End 6 meters straight ahead of where we started, facing the same direction as
-            // at start
+            // End 6 meters straight ahead of where we started, facing the same
+            // direction as at start
             new Pose2d(6, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -526,25 +538,28 @@ public class RobotContainer {
   }
 
   /**
-   * Allocates "side panel" lighting for the robot, using a subset of the primary
-   * LED strip.
-   * 
+   * Allocates "side panel" lighting for the robot, using a subset of the
+   * primary LED strip.
+   *
    * @param config   the target robot's configuration
    * @param lighting the base Lighting system
    * @param leftSide if true, we're allocating the left side panel lighting;
    *                 otherwise, it's the right side panel's
-   * @return a lighting buffer for the side panel (or NullLighting, if we couldn't
+   * @return a lighting buffer for the side panel (or NullLighting, if we
+   *     couldn't
    *         allocate a buffer)
    */
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
-    if (!config.hasLighting() || lighting == null || !(lighting instanceof Lighting)) {
+    if (!config.hasLighting() || lighting == null
+        || !(lighting instanceof Lighting)) {
       // Can't do it....
       return new ILighting.NullLighting();
     }
 
     Lighting realSubsystem = (Lighting) lighting;
-    final boolean simulatingCandle = (config.hasCandle() && config.candle().simulated());
+    final boolean simulatingCandle =
+        (config.hasCandle() && config.candle().simulated());
     // Sub-view 0 is CANdle (if enabled); next sub-view is left, then right
     final int viewIndex = (simulatingCandle ? 1 : 0) + (leftSide ? 0 : 1);
 
@@ -553,7 +568,8 @@ public class RobotContainer {
       return new ILighting.NullLighting();
     }
 
-    LightingBuffer buffer = new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
+    LightingBuffer buffer =
+        new LightingBuffer(realSubsystem.getSubViews().get(viewIndex));
     buffer.setForward(leftSide);
     return buffer;
   }

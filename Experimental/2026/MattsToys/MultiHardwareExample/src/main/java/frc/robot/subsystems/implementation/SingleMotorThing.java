@@ -18,19 +18,21 @@ import frc.robot.subsystems.interfaces.ISingleMotorThing;
  * @see frc.robot.subsystems.real.SingleMotorThingSpark
  * @see frc.robot.subsystems.real.SingleMotorThingTalon
  */
-public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing {
+public class SingleMotorThing
+    extends SubsystemBase implements ISingleMotorThing {
   /**
    * Defines the set of data needed for constructing this class (from derived
    * classes).
    *
    * This is defined a a single unit, so that if these things are "connected" in
-   * subclasses (e.g., need to ask the controller for its encoder), we can do that
-   * easily.
-   * 
-   * For example, the Spark Max provides an encoder directly from the controller,
-   * so saying things like: "new SingleMotorThing(new SparkMax(....), <encoder>)"
-   * doesn't work, because I can't get the encoder without accessing the motor
-   * controller (which isn't syntactically possible in that example)
+   * subclasses (e.g., need to ask the controller for its encoder), we can do
+   * that easily.
+   *
+   * For example, the Spark Max provides an encoder directly from the
+   * controller, so saying things like: "new SingleMotorThing(new
+   * SparkMax(....), <encoder>)" doesn't work, because I can't get the encoder
+   * without accessing the motor controller (which isn't syntactically possible
+   * in that example)
    *
    * Note: despite the name, this isn't *really* just for derived classes (which
    * is why this is public, rather than protected). (There's an example in the
@@ -39,8 +41,8 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    *
    * @see frc.robot.subsystems.real.SingleMotorThingPwmSpark for an example
    */
-  public record ConstructionData(MotorController controller, TrivialEncoder encoder) {
-  }
+  public record
+      ConstructionData(MotorController controller, TrivialEncoder encoder) {}
 
   /**
    * The motor controller used for this "thing". This will be allocated by the
@@ -53,9 +55,9 @@ public class SingleMotorThing extends SubsystemBase implements ISingleMotorThing
    * derived class.
    *
    * Note that I'm using the "TrivialEncoder" wrapper that I put together some
-   * years back. This is because there isn't a WPILib-standard interface (or base
-   * class) used for all encoders, and thus this lets us handle any sort of an
-   * encoder as a common type in code.
+   * years back. This is because there isn't a WPILib-standard interface (or
+   * base class) used for all encoders, and thus this lets us handle any sort of
+   * an encoder as a common type in code.
    */
   final TrivialEncoder encoder;
 

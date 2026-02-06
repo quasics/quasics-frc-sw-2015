@@ -4,9 +4,8 @@
 
 package frc.robot.subsystems.interfaces;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.IOException;
 
 /** Interface for a simple elevator subsystem. */
 public interface IElevator extends ISubsystem {

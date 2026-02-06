@@ -59,8 +59,7 @@ public class CANSparkMaxDrivebase extends DrivebaseBase {
         new SparkMaxMotorControllerPlus(rightLeader),
         new SparkMaxEncoderWrapper(leftLeader.getEncoder()),
         new SparkMaxEncoderWrapper(rightLeader.getEncoder()),
-        new Pigeon2Wrapper(rawGyro),
-        false);
+        new Pigeon2Wrapper(rawGyro), false);
 
     final SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
     final SparkMaxConfig rightLeaderConfig = new SparkMaxConfig();

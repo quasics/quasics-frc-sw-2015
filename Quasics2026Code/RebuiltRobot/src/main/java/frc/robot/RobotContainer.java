@@ -28,21 +28,22 @@ import frc.robot.subsystems.interfaces.IVision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
-  private final IVision m_vision = (Robot.isReal()) ? new Vision()
-      : new SimulatedVision();
+  private final AbstractDrivebase m_drivebase =
+      Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final IVision m_vision =
+      (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController =
+      new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
    * commands.
    */
   public RobotContainer() {
-    // Connect cross-subsystem suppliers (so that the systems don't know about each
-    // other directly)
+    // Connect cross-subsystem suppliers (so that the systems don't know about
+    // each other directly)
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
@@ -77,17 +78,17 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: Schedule ArcadeDrive as our default command using
     m_drivebase.setDefaultCommand(
-        new ArcadeDrive(
-            () -> m_driverController.getRawAxis(0),
+        new ArcadeDrive(()
+                            -> m_driverController.getRawAxis(0),
             // FINDME(ROBERT): What's the problem here?
             //
-            // FINDME(ROBERT): Don't use numbers for the axis values. Use named constants.
-            // We have a bunch of these defined for the Logitech controller, which we've
-            // been using for the last N years, and Mr. Healy has copied them into the
-            // "Constants" class from last year's code. (And, hint: doing this might help to
-            // solve the problem that you're being asked about, above. :-)
-            () -> m_driverController.getRawAxis(0),
-            m_drivebase));
+            // FINDME(ROBERT): Don't use numbers for the axis values. Use named
+            // constants. We have a bunch of these defined for the Logitech
+            // controller, which we've been using for the last N years, and Mr.
+            // Healy has copied them into the "Constants" class from last year's
+            // code. (And, hint: doing this might help to solve the problem that
+            // you're being asked about, above. :-)
+            () -> m_driverController.getRawAxis(0), m_drivebase));
 
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)

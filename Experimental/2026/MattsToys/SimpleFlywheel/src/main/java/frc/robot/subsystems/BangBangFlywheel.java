@@ -30,16 +30,19 @@ public class BangBangFlywheel extends SubsystemBase {
   private double m_setpointRadiansPerSec = 0.0;
 
   private final PWMSparkMax m_flywheelMotor = new PWMSparkMax(kMotorPort);
-  private final Encoder m_encoder = new Encoder(kEncoderAChannel, kEncoderBChannel);
+  private final Encoder m_encoder =
+      new Encoder(kEncoderAChannel, kEncoderBChannel);
 
-  private final BangBangController m_bangBangController = new BangBangController();
+  private final BangBangController m_bangBangController =
+      new BangBangController();
 
-  // Gains are for example purposes only - must be determined for your own robot!
+  // Gains are for example purposes only - must be determined for your own
+  // robot!
   public static final double kFlywheelKs = 0.0001; // V
   public static final double kFlywheelKv = 0.000195; // V/RPM
   public static final double kFlywheelKa = 0.0003; // V/(RPM/s)
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(kFlywheelKs, kFlywheelKv,
-      kFlywheelKa);
+  private final SimpleMotorFeedforward m_feedforward =
+      new SimpleMotorFeedforward(kFlywheelKs, kFlywheelKv, kFlywheelKa);
 
   // Simulation classes help us simulate our robot
 
@@ -52,8 +55,9 @@ public class BangBangFlywheel extends SubsystemBase {
 
   private final DCMotor m_gearbox = DCMotor.getNEO(1);
 
-  private final LinearSystem<N1, N1, N1> m_plant = LinearSystemId.createFlywheelSystem(m_gearbox, kFlywheelGearing,
-      kFlywheelMomentOfInertia);
+  private final LinearSystem<N1, N1, N1> m_plant =
+      LinearSystemId.createFlywheelSystem(
+          m_gearbox, kFlywheelGearing, kFlywheelMomentOfInertia);
 
   private final FlywheelSim m_flywheelSim = new FlywheelSim(m_plant, m_gearbox);
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
@@ -76,19 +80,20 @@ public class BangBangFlywheel extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // Set setpoint and measurement of the bang-bang controller
-    double bangOutput = m_bangBangController.calculate(m_encoder.getRate(), m_setpointRadiansPerSec) * 12.0;
+    double bangOutput = m_bangBangController.calculate(
+                            m_encoder.getRate(), m_setpointRadiansPerSec)
+        * 12.0;
 
     // Controls a motor with the output of the BangBang controller and a
     // feedforward. The feedforward is reduced slightly to avoid overspeeding
     // the shooter.
-    final double volts = bangOutput + 0.9 * m_feedforward.calculate(m_setpointRadiansPerSec);
+    final double volts =
+        bangOutput + 0.9 * m_feedforward.calculate(m_setpointRadiansPerSec);
     m_flywheelMotor.setVoltage(volts);
 
-    SmartDashboard.putNumber(
-        "Flywheel speed (RPM)",
+    SmartDashboard.putNumber("Flywheel speed (RPM)",
         Units.radiansPerSecondToRotationsPerMinute(m_encoder.getRate()));
-    SmartDashboard.putNumber(
-        "Flywheel setpoint (RPM)",
+    SmartDashboard.putNumber("Flywheel setpoint (RPM)",
         Units.radiansPerSecondToRotationsPerMinute(m_setpointRadiansPerSec));
     SmartDashboard.putNumber("Flywheel volts", volts);
   }
@@ -97,7 +102,8 @@ public class BangBangFlywheel extends SubsystemBase {
   public void simulationPeriodic() {
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated velocities to our simulated encoder
-    m_flywheelSim.setInputVoltage(m_flywheelMotor.get() * RobotController.getInputVoltage());
+    m_flywheelSim.setInputVoltage(
+        m_flywheelMotor.get() * RobotController.getInputVoltage());
     m_flywheelSim.update(0.02);
     m_encoderSim.setRate(m_flywheelSim.getAngularVelocityRadPerSec());
   }

@@ -20,6 +20,7 @@ public final class EncoderSupport {
    */
   public static void configureEncoderForDistance(
       Encoder encoder, Distance outerDiameter, double ticksPerRevolution) {
-    encoder.setDistancePerPulse(Math.PI * outerDiameter.in(Meters) / ticksPerRevolution);
+    encoder.setDistancePerPulse(
+        Math.PI * outerDiameter.in(Meters) / ticksPerRevolution);
   }
 }

@@ -58,20 +58,23 @@ public class SingleMotorThingSpark extends SingleMotorThing {
     config.inverted(false);
 
     // Allocate the motor controller and apply the configuration to it.
-    SparkMax motorController = new SparkMax(1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    motorController.configure(config, com.revrobotics.ResetMode.kNoResetSafeParameters,
+    SparkMax motorController = new SparkMax(
+        1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+    motorController.configure(config,
+        com.revrobotics.ResetMode.kNoResetSafeParameters,
         com.revrobotics.PersistMode.kNoPersistParameters);
 
     // Set up our encoder
-    TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
+    TrivialEncoder encoder =
+        new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 
     // OK, we've got the stuff to build a SingleMotorThing!
     return new ConstructionData(motorController, encoder);
   }
 
   /**
-   * Helper function to update a SparkMaxConfig to work with distance-based values
-   * (meters and meters/sec), rather than the native rotation-based units
+   * Helper function to update a SparkMaxConfig to work with distance-based
+   * values (meters and meters/sec), rather than the native rotation-based units
    * (rotations and RPM).
    *
    * @param config        the object being configured
@@ -83,7 +86,8 @@ public class SingleMotorThingSpark extends SingleMotorThing {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing =
+        outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)

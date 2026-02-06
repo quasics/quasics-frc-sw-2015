@@ -6,18 +6,18 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import frc.robot.sensors.IGyro;
-import frc.robot.sensors.TrivialEncoder;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
+import frc.robot.sensors.IGyro;
+import frc.robot.sensors.TrivialEncoder;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private static final int LEFT_MOTOR_CHANNEL = 0;
@@ -28,28 +28,36 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final int RIGHT_ENCODER_CHANNEL_A = 3;
   private static final int RIGHT_ENCODER_CHANNEL_B = 4;
 
-  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
+  private final Logger m_logger =
+      new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
-  private final Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
-  private final Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+  private final Encoder m_leftEncoder =
+      new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+  private final Encoder m_rightEncoder =
+      new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
   private final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
-  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
+  private final TrivialEncoder m_mainLeftEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+  private final TrivialEncoder m_mainRightEncoder =
+      TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
 
   private final IGyro m_mainGyro;
   private final AnalogGyroSim m_gyroSim;
 
-  private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
-      KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-      KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a new diffDrivetrain sim
-      KitbotWheelSize.kSixInch, // 6" diameter wheels.
-      null // No measurement noise.
-  );
+  private DifferentialDrivetrainSim m_driveSim =
+      DifferentialDrivetrainSim.createKitbotSim(
+          KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
+          KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
+                                // new diffDrivetrain sim
+          KitbotWheelSize.kSixInch, // 6" diameter wheels.
+          null // No measurement noise.
+      );
 
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {
-    super(new PWMSparkMax(LEFT_MOTOR_CHANNEL), new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
+    super(new PWMSparkMax(LEFT_MOTOR_CHANNEL),
+        new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
     AnalogGyro gyro = new AnalogGyro(GYRO_CHANNEL);
     m_gyroSim = new AnalogGyroSim(gyro);
     m_mainGyro = IGyro.wrapGyro(gyro);
@@ -76,17 +84,20 @@ public class SimulationDrivebase extends AbstractDrivebase {
   @Override
   public void simulationPeriodic() {
     // Log starting conditions
-    m_logger.log("Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
-    m_logger.log("Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
+    m_logger.log(
+        "Left motor controller = " + getLeftLeader().get(), Verbosity.Debug);
+    m_logger.log(
+        "Right motor controller = " + getRightLeader().get(), Verbosity.Debug);
 
     // Update the simulation (m_driveSim), based on 1/50th of a second passing
     // TODO: Add abstractDriveBase getDriveSpeeds
-    m_driveSim.setInputs(getLeftLeader().get() * RobotController.getInputVoltage(),
+    m_driveSim.setInputs(
+        getLeftLeader().get() * RobotController.getInputVoltage(),
         getRightLeader().get() * RobotController.getInputVoltage());
     m_driveSim.update(0.02);
 
-    // getHeading returns counterclockwise positive, Gyros are clockwise positive,
-    // so we need to invert the measurement
+    // getHeading returns counterclockwise positive, Gyros are clockwise
+    // positive, so we need to invert the measurement
     m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
 
     // Update the encoders
@@ -96,8 +107,9 @@ public class SimulationDrivebase extends AbstractDrivebase {
     m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
 
     // Log the ending conditions
-    m_logger.log("Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);
-    m_logger.log("Right encoder = " + getRightEncoder().getPosition(), Verbosity.Debug);
+    m_logger.log(
+        "Left encoder = " + getLeftEncoder().getPosition(), Verbosity.Debug);
+    m_logger.log(
+        "Right encoder = " + getRightEncoder().getPosition(), Verbosity.Debug);
   }
-
 }

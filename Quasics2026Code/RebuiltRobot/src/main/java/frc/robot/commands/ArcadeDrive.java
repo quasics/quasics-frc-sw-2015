@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AbstractDrivebase;
 import java.util.function.Supplier;
 
+/**
+ * Implements "arcade drive" support for the drivebase.
+ */
 public class ArcadeDrive extends Command {
   AbstractDrivebase m_drivebase;
   private final Supplier<Double> m_linearSpeedSupplier;
@@ -22,7 +25,6 @@ public class ArcadeDrive extends Command {
     m_drivebase = drivebase;
     m_linearSpeedSupplier = linearSpeedSupplier;
     m_turnSpeedSupplier = turnSpeedSupplier;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivebase);
   }
 

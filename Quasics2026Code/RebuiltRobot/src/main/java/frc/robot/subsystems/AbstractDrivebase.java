@@ -109,6 +109,21 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
         getRightEncoder().getPosition().in(Meters), pose);
   }
 
+  private Supplier<Pose2d> m_referencePositionSupplier = null;
+
+  @Override
+  public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
+    m_referencePositionSupplier = supplier;
+  }
+
+  public Pose2d getVisionPose() {
+    if (m_referencePositionSupplier != null) {
+      return m_referencePositionSupplier.get();
+    } else {
+      return null;
+    }
+  }
+
   protected static double getDistancePerPulse() {
     return 2.0 * Math.PI * Constants.wheelRadius.in(Meters) / -4096.0;
   }
@@ -141,20 +156,6 @@ public abstract class AbstractDrivebase extends SubsystemBase implements IDriveb
   //
   // Methods from SubsystemBase
   //
-  Supplier<Pose2d> m_referencePositionSupplier = null;
-
-  @Override
-  public void setReferencePositionSupplier(Supplier<Pose2d> supplier) {
-    m_referencePositionSupplier = supplier;
-  }
-
-  public Pose2d getVisionPose() {
-    if (m_referencePositionSupplier != null) {
-      return m_referencePositionSupplier.get();
-    } else {
-      return null;
-    }
-  }
 
   @Override
   public void periodic() {

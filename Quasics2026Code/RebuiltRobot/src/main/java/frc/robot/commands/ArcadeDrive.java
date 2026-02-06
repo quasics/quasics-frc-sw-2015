@@ -44,7 +44,12 @@ public class ArcadeDrive extends Command {
     // Suggestion: one option would be to take the values from the speed
     // suppliers as a "% of top speed", and then multiply them by the top speeds
     // that the team is comfortable setting for movement/turning, in the same
-    // way that you're doing for the LinearSpeedCommand.
+    // way that you're doing for the LinearSpeedCommand. This will let you define
+    // maximum speeds someplace safely (e.g., in AbstractDrivebase), and then have
+    // the code work in terms of those values. It will also let you (easily) write
+    // code that checks the values, to make sure that someone doesn't specify
+    // something that's "overspeed" for the robot (e.g., the %age #s should always
+    // be between -1.0 and +1.0, and then you just use stuff like )
     m_drivebase.arcadeDrive(MetersPerSecond.of(m_linearSpeedSupplier.get()),
         RadiansPerSecond.of(m_turnSpeedSupplier.get()));
   }

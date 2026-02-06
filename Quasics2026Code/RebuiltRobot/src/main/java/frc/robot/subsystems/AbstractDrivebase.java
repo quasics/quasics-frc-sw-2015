@@ -79,6 +79,8 @@ public abstract class AbstractDrivebase
     m_robotDrive.arcadeDrive(forwardspeed.magnitude(), turnspeed.magnitude());
   }
 
+  // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
+  // least in terms of how it's being used from LinearSpeedCommand.
   @Override
   public void setSpeeds(double leftSpeed, double rightSpeed) {
     m_leftMotor.set(mpsToPercent(leftSpeed));

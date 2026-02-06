@@ -77,7 +77,11 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: Schedule ArcadeDrive as our default command using
     m_drivebase.setDefaultCommand(
-        new ArcadeDrive(() -> m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(0), m_drivebase));
+        new ArcadeDrive(
+            () -> m_driverController.getRawAxis(0),
+            // FINDME(ROBERT): What's the problem here?
+            () -> m_driverController.getRawAxis(0),
+            m_drivebase));
 
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)

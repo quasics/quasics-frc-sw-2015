@@ -74,13 +74,15 @@ public final class RobotConfigLibrary {
       Meters.of(0.381 * 2), // Trackwidth
       8.0, // Gearing
       DriveOrientation.RightInverted, new PIDConfig(1.6662),
-      new PIDConfig(1.6662),
+      new PIDConfig(2.5662),
       new DriveFeedForwardConfig(
           // Linear data
-          Volts.of(0.014183), Volts.of(1.9804), 0.19169,
+          Volts.of(0.011404), Volts.of(2.2002), 0.56983,
           // Angular data
-          Volts.of(2.6332), 0.5226));
+          Volts.of(3.8643), 1.7422));
   /**
+   * Pre-change:
+   * --------------
    * kP: 1.6403
    * kS: 0.01417
    * kV: 1.9803
@@ -89,6 +91,16 @@ public final class RobotConfigLibrary {
    * kS (Ang): 0.021613
    * kV (Ang): 2.6333
    * kA (Ang): 0.52163
+   * 
+   * Post-change:
+   * kP: 2.5662
+   * kS: 0.011404
+   * kV: 2.2002
+   * kA: 0.56983
+   * 
+   * kS (Ang): 0.019793
+   * kV (Ang): 3.8643
+   * kA (Ang): 1.7422
    */
 
   /**

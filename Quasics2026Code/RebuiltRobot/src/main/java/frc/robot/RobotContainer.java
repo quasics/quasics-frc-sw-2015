@@ -87,24 +87,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO: Schedule ArcadeDrive as our default command using
-    if (Robot.isReal()) {
-      m_arcadeDriveLeftStick = () -> {
-        double scaling = getDriveSpeedScalingFactor();
-        double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
-        double joystickPercent = -axis * scaling;
-        return m_speedSlewRateLimiter.calculate(joystickPercent);
-      };
-      m_arcadeDriveRightStick = () -> {
-        double scaling = getDriveSpeedScalingFactor();
-        double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
-        double joystickPercent = -axis * scaling;
-        return m_rotSlewRateLimiter.calculate(joystickPercent);
-      };
-    } else {
-      m_drivebase.setDefaultCommand(
-          new ArcadeDrive(() -> m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(1), m_drivebase));
-    }
+    m_arcadeDriveLeftStick = () -> {
+      double scaling = getDriveSpeedScalingFactor();
+      double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
+      double joystickPercent = -axis * scaling;
+      return m_speedSlewRateLimiter.calculate(joystickPercent);
+    };
+    m_arcadeDriveRightStick = () -> {
+      double scaling = getDriveSpeedScalingFactor();
+      double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
+      double joystickPercent = -axis * scaling;
+      return m_rotSlewRateLimiter.calculate(joystickPercent);
+    };
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

@@ -4,12 +4,18 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.DriveteamConstants;
+import frc.robot.Constants.LogitechDualshock;
+import frc.robot.Constants.RobotSpeedScaling;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.AbstractDrivebase;
@@ -32,8 +38,15 @@ public class RobotContainer {
   private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
+  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+
+  private final double DEADBAND_CONSTANT = 0.08;
+  private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
+
+  Supplier<Double> m_arcadeDriveLeftStick;
+  Supplier<Double> m_arcadeDriveRightStick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -76,9 +89,18 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: Schedule ArcadeDrive as our default command using
     if (Robot.isReal()) {
-      m_drivebase.setDefaultCommand(
-          new ArcadeDrive(() -> m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis),
-              () -> m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis), m_drivebase));
+      m_arcadeDriveLeftStick = () -> {
+        double scaling = getDriveSpeedScalingFactor();
+        double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
+        double joystickPercent = -axis * scaling;
+        return m_speedSlewRateLimiter.calculate(joystickPercent);
+      };
+      m_arcadeDriveRightStick = () -> {
+        double scaling = getDriveSpeedScalingFactor();
+        double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
+        double joystickPercent = -axis * scaling;
+        return m_rotSlewRateLimiter.calculate(joystickPercent);
+      };
     } else {
       m_drivebase.setDefaultCommand(
           new ArcadeDrive(() -> m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(1), m_drivebase));
@@ -89,8 +111,28 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
+  }
+
+  private double getDriveSpeedScalingFactor() {
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
+
+    if (isTurtle) {
+      return Constants.RobotSpeedScaling.TURTLE_SPEED_SCALING;
+    } else if (isTurbo) {
+      return Constants.RobotSpeedScaling.TURBO_SPEED_SCALING;
+    } else {
+      return Constants.RobotSpeedScaling.NORMAL_SPEED_SCALING;
+    }
+  }
+
+  private double getDriverAxis(int controller) {
+    double axis = m_driverController.getRawAxis(controller);
+    return (Math.abs(axis) < DEADBAND_CONSTANT) ? 0 : axis;
   }
 
   /**

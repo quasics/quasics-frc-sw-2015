@@ -39,16 +39,14 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private static final AprilTagFields FIELD_LAYOUT =
-      AprilTagFields.k2026RebuiltAndymark;
+  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
   public SimulatedVision() {
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout =
-          AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
     } catch (IOException ioe) {
       System.err.println(
           "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
@@ -64,7 +62,7 @@ public class SimulatedVision extends Vision {
     // Set up the properties selected for our simulated camera (e.g., 640x480
     // images, etc.).
     cameraProp = new SimCameraProperties();
-    cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(100));
+    cameraProp.setCalibration(480, 640, Rotation2d.fromDegrees(55));
     cameraProp.setCalibError(0.25, 0.08);
     cameraProp.setFPS(20);
     cameraProp.setAvgLatencyMs(35);
@@ -76,15 +74,14 @@ public class SimulatedVision extends Vision {
     //
 
     // Where is the camera located, relative to the center of the robot's base?
-    Translation3d robotToCameraTr = new Translation3d(0.1, 0, 0.5);
+    Translation3d robotToCameraTr = new Translation3d(0.0762, -0.17145, 0.53975);
     // What is the angling of the camera, relative to the drive base?
-    Rotation3d robotToCameraRot = new Rotation3d(0, Math.toRadians(-15), 0);
+    Rotation3d robotToCameraRot = new Rotation3d();
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
     // FINDME(Rylie): This should ideally match the "robotToCamera"
     // configuration being used in the base ("Vision") subsystem class's code.
-    Transform3d robotToCamera =
-        new Transform3d(robotToCameraTr, robotToCameraRot);
+    Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
 
     // Allocate the camera simulation object.
     cameraSim = new PhotonCameraSim(camera, cameraProp);

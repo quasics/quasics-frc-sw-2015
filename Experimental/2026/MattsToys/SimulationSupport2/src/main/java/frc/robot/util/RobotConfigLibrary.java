@@ -68,19 +68,28 @@ public final class RobotConfigLibrary {
    * Drive config shared by our simulated drive base hardware (in multiple robot
    * configurations).
    */
-  private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG =
-      new DriveConfig(DriveType.Simulated,
-          // Wheel radius
-          Inches.of(3),
-          Meters.of(0.381 * 2), // Trackwidth
-          8.0, // Gearing
-          DriveOrientation.RightInverted, new PIDConfig(1.6662),
-          new PIDConfig(1.6662),
-          new DriveFeedForwardConfig(
-              // Linear data
-              Volts.of(0.014183), Volts.of(1.9804), 0.19169,
-              // Angular data
-              Volts.of(2.6332), 0.5226));
+  private final static DriveConfig SIMULATED_DRIVE_BASE_CONFIG = new DriveConfig(DriveType.Simulated,
+      // Wheel radius
+      Inches.of(3),
+      Meters.of(0.381 * 2), // Trackwidth
+      8.0, // Gearing
+      DriveOrientation.RightInverted, new PIDConfig(1.6662),
+      new PIDConfig(1.6662),
+      new DriveFeedForwardConfig(
+          // Linear data
+          Volts.of(0.014183), Volts.of(1.9804), 0.19169,
+          // Angular data
+          Volts.of(2.6332), 0.5226));
+  /**
+   * kP: 1.6403
+   * kS: 0.01417
+   * kV: 1.9803
+   * kA: 0.19186
+   * 
+   * kS (Ang): 0.021613
+   * kV (Ang): 2.6333
+   * kA (Ang): 0.52163
+   */
 
   /**
    * Stores the actual mapping of robot IDs to configurations.
@@ -88,8 +97,7 @@ public final class RobotConfigLibrary {
    * Note that this must come after any other data members, in order to ensure
    * correct ordering of construction.
    */
-  static private final Map<Robot, RobotConfig> m_map =
-      Collections.unmodifiableMap(createMap());
+  static private final Map<Robot, RobotConfig> m_map = Collections.unmodifiableMap(createMap());
 
   //
   // Static methods
@@ -151,18 +159,18 @@ public final class RobotConfigLibrary {
         new Orientation(Degrees.of(-15), // pitch
             Degrees.of(0), // roll
             Degrees.of(0) // yaw
-            ),
+        ),
         // ...with image dimensions 960x720, 100 degree field of view, and 30
         // FPS.
         new Imaging(960, 720, Degrees.of(100), 30));
 
     final var elevatorConfig = new ElevatorConfig(new PIDConfig(10.0, 0, 1),
         new ElevatorFeedForwardConfig(0.01, 0.05, 0.20, 0)
-        // Note: PID and FF values were calculated using
-        // SysId routines under simulation. new
-        // PIDConfig(0.16168, 0, 0), new
-        // ElevatorFeedForwardConfig(0.0015558, 0.05, 1.3321,
-        // 0.03958) end of calibrated data
+    // Note: PID and FF values were calculated using
+    // SysId routines under simulation. new
+    // PIDConfig(0.16168, 0, 0), new
+    // ElevatorFeedForwardConfig(0.0015558, 0.05, 1.3321,
+    // 0.03958) end of calibrated data
     );
 
     final var armConfig = new ArmConfig(
@@ -207,7 +215,7 @@ public final class RobotConfigLibrary {
                 new Orientation(Degrees.of(-15), // pitch
                     Degrees.of(0), // roll
                     Degrees.of(0) // yaw
-                    ),
+                ),
                 // ...with image dimensions 960x720, 100 degree field of
                 // view,
                 // and 30 FPS.
@@ -227,7 +235,7 @@ public final class RobotConfigLibrary {
                 new Orientation(Degrees.of(0), // roll
                     Degrees.of(0), // pitch
                     Degrees.of(180) // yaw
-                    ),
+                ),
                 // ...with image dimensions 960x720, 100 degree field of
                 // view,
                 // and 30 FPS.
@@ -261,7 +269,7 @@ public final class RobotConfigLibrary {
             new DriveFeedForwardConfig(Volts.of(0.19529),
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
-            ),
+        ),
         NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
   }
 

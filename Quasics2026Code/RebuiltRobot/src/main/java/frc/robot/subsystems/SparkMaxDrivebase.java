@@ -8,15 +8,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
-import frc.robot.Constants.CanBusIds.SparkMaxIds;
+import frc.robot.Constants.CanBusIds;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
 
-public class RealDrivebase extends AbstractDrivebase {
-  // TODO: add thriftynova support. (This might be done in a derived class, or
-  // be based on some information about the robot's configuration. I'd recommend
-  // the former approach.)
-  //
+public class SparkMaxDrivebase extends AbstractDrivebase {
   // FINDME(Robert): Do you actually need these to be member variables? (Hint:
   // you don't, though you *may* want to have access to the followers
   // temporarily in the constructor, during setup/configuration. But if you
@@ -36,10 +32,8 @@ public class RealDrivebase extends AbstractDrivebase {
   // sample code under "Experimental/2026/MattsToys/SimulationSupport".)
   private final Encoder m_leftEncoder = new Encoder(1, 2);
   private final Encoder m_rightEncoder = new Encoder(3, 4);
-  private final TrivialEncoder m_mainLeftEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_mainRightEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   private final IGyro m_mainGyro;
 
@@ -59,13 +53,11 @@ public class RealDrivebase extends AbstractDrivebase {
   }
 
   /** Creates a new RealDrivebase. */
-  public RealDrivebase() {
-    super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
-        new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
-    m_leftfollower =
-        new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    m_rightfollower =
-        new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+  public SparkMaxDrivebase() {
+    super(new SparkMax(CanBusIds.LEFT_LEADER_ID, MotorType.kBrushless),
+        new SparkMax(CanBusIds.RIGHT_LEADER_ID, MotorType.kBrushless));
+    m_leftfollower = new SparkMax(CanBusIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    m_rightfollower = new SparkMax(CanBusIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
     m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
     m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
 

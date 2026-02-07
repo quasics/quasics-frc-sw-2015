@@ -4,12 +4,18 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.DriveteamConstants;
+import frc.robot.Constants.LogitechDualshock;
+import frc.robot.Constants.RobotSpeedScaling;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
 import frc.robot.subsystems.AbstractDrivebase;
@@ -28,14 +34,19 @@ import frc.robot.subsystems.interfaces.IVision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final AbstractDrivebase m_drivebase =
-      Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
-  private final IVision m_vision =
-      (Robot.isReal()) ? new Vision() : new SimulatedVision();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final Joystick m_driverController = new Joystick(DriveteamConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick m_operatorController = new Joystick(DriveteamConstants.OPERATOR_JOYSTICK_ID);
+
+  private final double DEADBAND_CONSTANT = 0.08;
+  private final SlewRateLimiter m_speedSlewRateLimiter = new SlewRateLimiter(1);
+  private final SlewRateLimiter m_rotSlewRateLimiter = new SlewRateLimiter(1);
+
+  Supplier<Double> m_arcadeDriveLeftStick;
+  Supplier<Double> m_arcadeDriveRightStick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and
@@ -76,28 +87,46 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO: Schedule ArcadeDrive as our default command using
-    m_drivebase.setDefaultCommand(
-        new ArcadeDrive(()
-                            -> m_driverController.getRawAxis(0),
-            // FINDME(ROBERT): What's the problem here?
-            //
-            // FINDME(ROBERT): Don't use numbers for the axis values. Use named
-            // constants. We have a bunch of these defined for the Logitech
-            // controller, which we've been using for the last N years, and Mr.
-            // Healy has copied them into the "Constants" class from last year's
-            // code. (And, hint: doing this might help to solve the problem that
-            // you're being asked about, above. :-)
-            () -> m_driverController.getRawAxis(0), m_drivebase));
-
+    m_arcadeDriveLeftStick = () -> {
+      double scaling = getDriveSpeedScalingFactor();
+      double axis = getDriverAxis(Constants.LogitechDualshock.LeftYAxis);
+      double joystickPercent = -axis * scaling;
+      return m_speedSlewRateLimiter.calculate(joystickPercent);
+    };
+    m_arcadeDriveRightStick = () -> {
+      double scaling = getDriveSpeedScalingFactor();
+      double axis = getDriverAxis(Constants.LogitechDualshock.RightXAxis);
+      double joystickPercent = -axis * scaling;
+      return m_rotSlewRateLimiter.calculate(joystickPercent);
+    };
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed, cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_drivebase.setDefaultCommand(
+        new ArcadeDrive(m_arcadeDriveLeftStick, m_arcadeDriveRightStick, m_drivebase));
     LinearSpeedCommand setLinearSpeed = new LinearSpeedCommand(m_drivebase);
     SmartDashboard.putData("LinearSpeedCommand", setLinearSpeed);
+  }
+
+  private double getDriveSpeedScalingFactor() {
+    final boolean isTurtle = m_driverController.getRawButton(Constants.LogitechDualshock.LeftShoulder);
+    final boolean isTurbo = m_driverController.getRawButton(Constants.LogitechDualshock.RightShoulder);
+
+    if (isTurtle) {
+      return Constants.RobotSpeedScaling.TURTLE_SPEED_SCALING;
+    } else if (isTurbo) {
+      return Constants.RobotSpeedScaling.TURBO_SPEED_SCALING;
+    } else {
+      return Constants.RobotSpeedScaling.NORMAL_SPEED_SCALING;
+    }
+  }
+
+  private double getDriverAxis(int controller) {
+    double axis = m_driverController.getRawAxis(controller);
+    return (Math.abs(axis) < DEADBAND_CONSTANT) ? 0 : axis;
   }
 
   /**

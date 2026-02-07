@@ -34,8 +34,9 @@ public final class Constants {
     }
   }
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+  public static class DriveteamConstants {
+    public static final int DRIVER_JOYSTICK_ID = 0;
+    public static final int OPERATOR_JOYSTICK_ID = 1;
   }
 
   /**
@@ -142,5 +143,11 @@ public final class Constants {
     public static final int LeftStickPress = 9;
     /** ID for the button clicked by pressing on the right joystick. */
     public static final int RightStickPress = 10;
+  }
+
+  public static class RobotSpeedScaling {
+    public static final double TURTLE_SPEED_SCALING = 0.3;
+    public static final double NORMAL_SPEED_SCALING = 0.6;
+    public static final double TURBO_SPEED_SCALING = 0.9;
   }
 }

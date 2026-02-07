@@ -4,17 +4,18 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -50,12 +51,9 @@ public abstract class AbstractDrivebase
   private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
-  // FINDME(Robert): Do you need/want to be doing this for the real hardware?
-  // Putting it another way, are you expecting to need to use the simulation of
-  // the field shown on the dashboard during match play?
-  //
-  // If so, then that's fine; if not, then this might be better in
-  // simulation-specific code.
+  // Thoughts on this from Robert: Might be helpful for driveteam to have a backup
+  // of being able to see the field display sometimes, so leave field implemented
+  // for all cases
   private final Field2d m_field = new Field2d();
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");
@@ -91,6 +89,8 @@ public abstract class AbstractDrivebase
     m_robotDrive.feed();
   }
 
+  // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
+  // Probably print a warning too so that we can fix whatever is commanding us too high.
   @Override
   public double mpsToPercent(double speed) {
     // FINDME(Robert): This isn't doing what I think *you* think it's doing, at
@@ -178,8 +178,8 @@ public abstract class AbstractDrivebase
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
     if (getVisionPose() != null) {
-      m_poseEstimator.addVisionMeasurement(
-          getVisionPose(), Timer.getFPGATimestamp());
+      // m_poseEstimator.addVisionMeasurement(getVisionPose(),
+      // Timer.getFPGATimestamp());
     }
   }
 }

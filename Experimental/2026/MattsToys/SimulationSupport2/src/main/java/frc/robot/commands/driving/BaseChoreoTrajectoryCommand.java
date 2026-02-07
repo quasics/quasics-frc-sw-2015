@@ -67,7 +67,7 @@ public class BaseChoreoTrajectoryCommand extends Command {
     m_timer.restart();
   }
 
-  public void followTrajectory(DifferentialSample sample) {
+  private void followTrajectory(DifferentialSample sample) {
     // Get the current pose of the robot
     Pose2d pose = m_drivebase.getEstimatedPose();
 

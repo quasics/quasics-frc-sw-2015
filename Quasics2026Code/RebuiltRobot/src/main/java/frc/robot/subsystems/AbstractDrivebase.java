@@ -50,12 +50,9 @@ public abstract class AbstractDrivebase
   private final DifferentialDriveOdometry m_odometry;
   private final DifferentialDrivePoseEstimator m_poseEstimator;
 
-  // FINDME(Robert): Do you need/want to be doing this for the real hardware?
-  // Putting it another way, are you expecting to need to use the simulation of
-  // the field shown on the dashboard during match play?
-  //
-  // If so, then that's fine; if not, then this might be better in
-  // simulation-specific code.
+  // Thoughts on this from Robert: Might be helpful for driveteam to have a backup
+  // of being able to see the field display sometimes, so leave field implemented
+  // for all cases
   private final Field2d m_field = new Field2d();
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "AbstractDriveBase");

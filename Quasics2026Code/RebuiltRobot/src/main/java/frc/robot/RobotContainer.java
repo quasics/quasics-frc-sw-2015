@@ -28,9 +28,8 @@ import frc.robot.subsystems.interfaces.IVision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
-  private final IVision m_vision = (Robot.isReal()) ? new Vision()
-      : new SimulatedVision();
+  private final AbstractDrivebase m_drivebase = Robot.isReal() ? new RealDrivebase() : new SimulationDrivebase();
+  private final IVision m_vision = (Robot.isReal()) ? new Vision() : new SimulatedVision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -41,11 +40,19 @@ public class RobotContainer {
    * commands.
    */
   public RobotContainer() {
-    // Connect cross-subsystem suppliers (so that the systems don't know about each
-    // other directly)
+    // Connect cross-subsystem suppliers (so that the systems don't know about
+    // each other directly)
     m_vision.setReferencePositionSupplier(() -> {
       if (m_drivebase != null) {
         return m_drivebase.getEstimatedPose();
+      } else {
+        return null;
+      }
+    });
+
+    m_drivebase.setReferencePositionSupplier(() -> {
+      if (m_vision != null) {
+        return m_vision.getVisionLatestPose();
       } else {
         return null;
       }
@@ -68,9 +75,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // TODO: Schedule ArcadeDrive as our default command using
-    m_drivebase.setDefaultCommand(
-        new ArcadeDrive(() -> m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(0), m_drivebase));
-
+    if (Robot.isReal()) {
+      m_drivebase.setDefaultCommand(
+          new ArcadeDrive(() -> m_driverController.getRawAxis(Constants.LogitechDualshock.LeftYAxis),
+              () -> m_driverController.getRawAxis(Constants.LogitechDualshock.RightXAxis), m_drivebase));
+    } else {
+      m_drivebase.setDefaultCommand(
+          new ArcadeDrive(() -> m_driverController.getRawAxis(0), () -> m_driverController.getRawAxis(1), m_drivebase));
+    }
     // Syntax for speed suppliers:
     // () -> m_driverController.getRawAxis(0)
 

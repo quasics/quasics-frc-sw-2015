@@ -15,6 +15,7 @@ import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
 import static frc.robot.util.RobotConfigs.NO_LIGHTING;
 import static frc.robot.util.RobotConfigs.NO_POWER_DISTRIBUTOR;
 
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;
 import frc.robot.util.RobotConfigs.CameraConfig;
@@ -38,8 +39,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 /**
  * Library of predefined robot configurations.
@@ -75,12 +74,34 @@ public final class RobotConfigLibrary {
       Meters.of(0.381 * 2), // Trackwidth
       8.0, // Gearing
       DriveOrientation.RightInverted, new PIDConfig(1.6662),
-      new PIDConfig(1.6662),
+      new PIDConfig(2.5662),
       new DriveFeedForwardConfig(
           // Linear data
-          Volts.of(0.014183), Volts.of(1.9804), 0.19169,
+          Volts.of(0.011404), Volts.of(2.2002), 0.56983,
           // Angular data
-          Volts.of(2.6332), 0.5226));
+          Volts.of(3.8643), 1.7422));
+  /**
+   * Pre-change:
+   * --------------
+   * kP: 1.6403
+   * kS: 0.01417
+   * kV: 1.9803
+   * kA: 0.19186
+   * 
+   * kS (Ang): 0.021613
+   * kV (Ang): 2.6333
+   * kA (Ang): 0.52163
+   * 
+   * Post-change:
+   * kP: 2.5662
+   * kS: 0.011404
+   * kV: 2.2002
+   * kA: 0.56983
+   * 
+   * kS (Ang): 0.019793
+   * kV (Ang): 3.8643
+   * kA (Ang): 1.7422
+   */
 
   /**
    * Stores the actual mapping of robot IDs to configurations.
@@ -184,7 +205,8 @@ public final class RobotConfigLibrary {
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
-        elevatorConfig, armConfig, lightingConfig, candleConfig, NO_POWER_DISTRIBUTOR);
+        elevatorConfig, armConfig, lightingConfig, candleConfig,
+        NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateTwoCameraSimulationConfig() {
@@ -239,7 +261,8 @@ public final class RobotConfigLibrary {
             // Note: PID and FF values are based on the Reefscape code base as
             // of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),
-        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE, NO_POWER_DISTRIBUTOR);
+        new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE,
+        NO_POWER_DISTRIBUTOR);
   }
 
   private static RobotConfig generateSallyConfig() {
@@ -278,7 +301,7 @@ public final class RobotConfigLibrary {
 
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
-    return new RobotConfig(
-        false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
+    return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
+        NO_LIGHTING, NO_CANDLE, power);
   }
 }

@@ -9,13 +9,12 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import java.io.IOException;
-import java.util.function.Supplier;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.function.Supplier;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -40,16 +39,19 @@ public class SimulatedVision extends Vision {
   private VisionSystemSim m_visionSim;
   private SimCameraProperties cameraProp;
   private PhotonCameraSim cameraSim;
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.k2026RebuiltAndymark;
+  private static final AprilTagFields FIELD_LAYOUT =
+      AprilTagFields.k2026RebuiltAndymark;
 
   /** Creates a new SimulatedVision. */
   public SimulatedVision() {
     m_visionSim = new VisionSystemSim("main");
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
+      tagLayout =
+          AprilTagFieldLayout.loadFromResource(FIELD_LAYOUT.m_resourceFile);
     } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
+      System.err.println(
+          "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
 
@@ -69,8 +71,8 @@ public class SimulatedVision extends Vision {
     cameraProp.setLatencyStdDevMs(5);
 
     //
-    // Set up the camera simulation object (using the "cameraProp" configuration),
-    // and add it to the overall vision simulator.
+    // Set up the camera simulation object (using the "cameraProp"
+    // configuration), and add it to the overall vision simulator.
     //
 
     // Where is the camera located, relative to the center of the robot's base?
@@ -79,9 +81,10 @@ public class SimulatedVision extends Vision {
     Rotation3d robotToCameraRot = new Rotation3d(0, Math.toRadians(-15), 0);
     // Create the overall transformation used to convert data from the robot's
     // perspective to the camera's.
-    // FINDME(Rylie): This should ideally match the "robotToCamera" configuration
-    // being used in the base ("Vision") subsystem class's code.
-    Transform3d robotToCamera = new Transform3d(robotToCameraTr, robotToCameraRot);
+    // FINDME(Rylie): This should ideally match the "robotToCamera"
+    // configuration being used in the base ("Vision") subsystem class's code.
+    Transform3d robotToCamera =
+        new Transform3d(robotToCameraTr, robotToCameraRot);
 
     // Allocate the camera simulation object.
     cameraSim = new PhotonCameraSim(camera, cameraProp);
@@ -100,11 +103,12 @@ public class SimulatedVision extends Vision {
     // FIND_ME(Rylie): Next steps here would probably be:
     // 1. Update this next line to take a report of the robot's current, actual
     // position on the field (e.g., based on odometry from the drive base, or
-    // "fused" pose estimation that ties together the drive base odometry data and
-    // vision estimates). This piece is what tells the camera simulation stuff "Hey,
-    // pretend we're here, and inject the data into the camera for what we'd see".
-    // Note that we do not want to use the estimate solely based on vision here,
-    // because that will rapidly accumulate drift from errors, uncertainty, etc.
+    // "fused" pose estimation that ties together the drive base odometry data
+    // and vision estimates). This piece is what tells the camera simulation
+    // stuff "Hey, pretend we're here, and inject the data into the camera for
+    // what we'd see". Note that we do not want to use the estimate solely based
+    // on vision here, because that will rapidly accumulate drift from errors,
+    // uncertainty, etc.
     Pose2d drivePose = getDrivebasePose();
     if (drivePose != null) {
       m_visionSim.update(getDrivebasePose());
@@ -119,5 +123,4 @@ public class SimulatedVision extends Vision {
     final var debugField = m_visionSim.getDebugField();
     debugField.getObject("VisionEstimate").setPoses(estimatedPoses);
   }
-
 }

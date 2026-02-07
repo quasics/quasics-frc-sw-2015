@@ -35,8 +35,8 @@ public class SingleMotorThingSim extends SingleMotorThing {
   private final PWMSparkMax m_motor;
 
   /**
-   * Our own, direct access to the encoder (vs. the base class's access to it via
-   * a TrivialEncoder).
+   * Our own, direct access to the encoder (vs. the base class's access to it
+   * via a TrivialEncoder).
    */
   private final Encoder m_encoder;
 
@@ -45,14 +45,18 @@ public class SingleMotorThingSim extends SingleMotorThing {
    */
   private final EncoderSim m_encoderSim;
 
-  /** Helper function to configure the encoder, based on an assumed wheel size. */
-  protected static void configureEncoderForDistance(Encoder encoder, Distance outerDiameter) {
-    encoder.setDistancePerPulse(Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
+  /**
+   * Helper function to configure the encoder, based on an assumed wheel size.
+   */
+  protected static void configureEncoderForDistance(
+      Encoder encoder, Distance outerDiameter) {
+    encoder.setDistancePerPulse(
+        Math.PI * WHEEL_DIAMETER.in(Meters) / ENCODER_TICKS_PER_REVOLUTION);
   }
 
   /** Data we use to actually create one of these things. */
-  private record SimulationClassData(PWMSparkMax controller, Encoder encoder, EncoderSim encoderSim) {
-  }
+  private record SimulationClassData(
+      PWMSparkMax controller, Encoder encoder, EncoderSim encoderSim) {}
 
   /** Helper function used to allocate the underlying controllers, etc. */
   private static SimulationClassData allocateSimulationData() {
@@ -65,9 +69,9 @@ public class SingleMotorThingSim extends SingleMotorThing {
 
   /**
    * Basic contructor, externally visible.
-   * 
+   *
    * Note that the real work is done by the *other* (private) constructor.
-   * 
+   *
    * @see #SingleMotorThingSim(SimulationClassData)
    */
   public SingleMotorThingSim() {
@@ -76,24 +80,26 @@ public class SingleMotorThingSim extends SingleMotorThing {
 
   /**
    * Constructor that does the "heavy lifting" for setup.
-   * 
+   *
    * We need to go through this "dance" because the base class part gets built
    * before *this* class does, which means that it needs to be given the motor
    * controller and trivial encoder (wrapped around the real encoder) before we
    * can get stuff done in this class's code. But we will need to have access to
    * the motor controller and the (raw) trivial encoder in order to set up
    * simulation support.
-   * 
-   * By allocating/configuring stuff in the helper function, we can then use that
-   * data to set up the base class, *and* still have direct access to the "raw
-   * stuff" that's needed to handle simulating things.
-   * 
-   * @param data the SimulationClassData (controller, encoder, encoder simulation
+   *
+   * By allocating/configuring stuff in the helper function, we can then use
+   * that data to set up the base class, *and* still have direct access to the
+   * "raw stuff" that's needed to handle simulating things.
+   *
+   * @param data the SimulationClassData (controller, encoder, encoder
+   *     simulation
    *             hook) used to set up the object
    */
   private SingleMotorThingSim(SimulationClassData data) {
     // Build our base class part, using the data we're given
-    super(new ConstructionData(data.controller, TrivialEncoder.forWpiLibEncoder(data.encoder, data.encoderSim)));
+    super(new ConstructionData(data.controller,
+        TrivialEncoder.forWpiLibEncoder(data.encoder, data.encoderSim)));
 
     // Hang onto the "raw pieces" for use in simulationPeriodic()
     m_motor = data.controller;
@@ -106,11 +112,11 @@ public class SingleMotorThingSim extends SingleMotorThing {
   //
 
   // We do simulation things here. But notice that we're doing them in a pretty
-  // simple way, vs. what we might do for more complex systems (or if we wanted to
-  // better model real-world behavior). For example, we're assuming "instantaneous
-  // accelleration", rather than factoring in intertia, etc., as could be done
-  // with some of the WPILib support classes (or other "physics simulation" stuff
-  // from REV, etc.).
+  // simple way, vs. what we might do for more complex systems (or if we wanted
+  // to better model real-world behavior). For example, we're assuming
+  // "instantaneous accelleration", rather than factoring in intertia, etc., as
+  // could be done with some of the WPILib support classes (or other "physics
+  // simulation" stuff from REV, etc.).
   @Override
   public void simulationPeriodic() {
     // The standard loop time is 20ms.

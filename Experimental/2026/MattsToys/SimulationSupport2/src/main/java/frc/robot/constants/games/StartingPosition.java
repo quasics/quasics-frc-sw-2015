@@ -57,14 +57,17 @@ public enum StartingPosition {
   /** Facing Red and aligned with starting game element 2 in Reefscape. */
   Reefscape__Red2,
   /** Facing Red and aligned with starting game element 3 in Reefscape. */
-  Reefscape__Red3, Reefscape__Extra1, Reefscape__Extra2,;
+  Reefscape__Red3,
+  Reefscape__Extra1,
+  Reefscape__Extra2,
+  ;
 
   /** Default starting pose for the robot. */
-  public static final Pose2d DEFAULT_STARTING_POSE = new Pose2d(0, 0, new Rotation2d());
+  public static final Pose2d DEFAULT_STARTING_POSE =
+      new Pose2d(0, 0, new Rotation2d());
 
   /** Returns the robot pose associated with this starting point. */
   public Pose2d getPose() {
-
     return switch (this) {
       case Default -> DEFAULT_STARTING_POSE;
 
@@ -72,44 +75,40 @@ public enum StartingPosition {
       // "Rebuilt" positions
       //
       case Rebuilt__BlueMidTrench1 ->
-        new Pose2d(
-            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
             RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
             new Rotation2d(RebuiltConstants.FACING_BLUE));
       case Rebuilt__BlueMidTrench2 ->
-        new Pose2d(
-            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
-            RebuiltConstants.FIELD_WIDTH.minus(RebuiltConstants.TRENCH_WIDTH.div(2)).in(Meters),
+        new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+            RebuiltConstants.FIELD_WIDTH
+                .minus(RebuiltConstants.TRENCH_WIDTH.div(2))
+                .in(Meters),
             new Rotation2d(RebuiltConstants.FACING_BLUE));
       case Rebuilt__BlueMidBump1 ->
-        new Pose2d(
-            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
             RebuiltConstants.MID_BUMP1_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_BLUE));
       case Rebuilt__BlueMidBump2 ->
-        new Pose2d(
-            RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.in(Meters),
             RebuiltConstants.MID_BUMP2_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_BLUE));
 
       case Rebuilt__RedMidTrench1 ->
-        new Pose2d(
-            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.RED_STARTING_LINE.in(Meters),
             RebuiltConstants.TRENCH_WIDTH.div(2).in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
       case Rebuilt__RedMidTrench2 ->
-        new Pose2d(
-            RebuiltConstants.RED_STARTING_LINE.in(Meters),
-            RebuiltConstants.FIELD_WIDTH.minus(RebuiltConstants.TRENCH_WIDTH.div(2)).in(Meters),
+        new Pose2d(RebuiltConstants.RED_STARTING_LINE.in(Meters),
+            RebuiltConstants.FIELD_WIDTH
+                .minus(RebuiltConstants.TRENCH_WIDTH.div(2))
+                .in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
       case Rebuilt__RedMidBump1 ->
-        new Pose2d(
-            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.RED_STARTING_LINE.in(Meters),
             RebuiltConstants.MID_BUMP1_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
       case Rebuilt__RedMidBump2 ->
-        new Pose2d(
-            RebuiltConstants.RED_STARTING_LINE.in(Meters),
+        new Pose2d(RebuiltConstants.RED_STARTING_LINE.in(Meters),
             RebuiltConstants.MID_BUMP2_Y.in(Meters),
             new Rotation2d(RebuiltConstants.FACING_RED));
 
@@ -142,22 +141,21 @@ public enum StartingPosition {
             new Rotation2d(ReefscapeConstants.FACING_RED));
 
       case Reefscape__Extra1 ->
-        new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) - .5,
-            ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) - .5,
+        new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) -.5,
+            ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) -.5,
             new Rotation2d(
                 ReefscapeConstants.FACING_BLUE.minus(Degrees.of(5))));
       case Reefscape__Extra2 ->
         new Pose2d(ReefscapeConstants.BLUE_STARTING_LINE.in(Meters) + .5,
             ReefscapeConstants.TOP_BALL_HEIGHT.in(Meters) + .5,
-            new Rotation2d(
-                ReefscapeConstants.FACING_BLUE.plus(Degrees.of(5))));
+            new Rotation2d(ReefscapeConstants.FACING_BLUE.plus(Degrees.of(5))));
     };
   }
 
   /**
    * Returns the user-facing name of this starting position (e.g., for use in
    * a chooser).
-   * 
+   *
    * @see #getName(boolean)
    */
   public String getName() {
@@ -167,7 +165,7 @@ public enum StartingPosition {
   /**
    * Returns the user-facing name of this starting position (e.g., for use in
    * a chooser).
-   * 
+   *
    * @param stripGameFromName if true, remove any game-specific prefix (e.g.,
    *                          "Reefscape__") from the name
    */
@@ -180,9 +178,9 @@ public enum StartingPosition {
   }
 
   /**
-   * Returns the user-facing name of this starting position, optionally removing a
-   * game-specific prefix.
-   * 
+   * Returns the user-facing name of this starting position, optionally removing
+   * a game-specific prefix.
+   *
    * @param game if non-null, the game for which prefixes should be removed from
    *             names
    */

@@ -14,7 +14,7 @@ import frc.robot.subsystems.interfaces.IDrivebasePlus;
 /**
  * Base class for commands that provide relatively simple support for trajectory
  * following.
- * 
+ *
  * Derived classes will need to implement the "getTrajectory()" method, which
  * will be called during command initialization (i.e., when the command is
  * triggered) to get the trajectory that should be followed (or null, if there
@@ -42,14 +42,14 @@ public abstract class BaseTrajectoryCommand extends Command {
 
   /**
    * Trajectory for the robot to follow while the command is running.
-   * 
+   *
    * @see #getTrajectory()
    */
   Trajectory m_currentTrajectory;
 
   /**
    * Constructor.
-   * 
+   *
    * @param drivebase drivebase being controlled
    */
   public BaseTrajectoryCommand(IDrivebasePlus drivebase) {
@@ -61,10 +61,11 @@ public abstract class BaseTrajectoryCommand extends Command {
   /**
    * Function used by derived classes to provide the trajectory to be followed.
    * (Invoked each time that the command is started.)
-   * 
-   * @return the trajectory to be followed by the robot, or null if no trajectory
+   *
+   * @return the trajectory to be followed by the robot, or null if no
+   *     trajectory
    *         can be computed
-   * 
+   *
    * @see #initialize()
    */
   protected abstract Trajectory getTrajectory();
@@ -106,6 +107,7 @@ public abstract class BaseTrajectoryCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return !m_timer.isRunning() || m_timer.hasElapsed(m_currentTrajectory.getTotalTimeSeconds());
+    return !m_timer.isRunning()
+        || m_timer.hasElapsed(m_currentTrajectory.getTotalTimeSeconds());
   }
 }

@@ -34,13 +34,15 @@ public final class ReefscapeConstants {
    * Robot distance from east side of the field when on the Blue alliance's
    * starting line.
    */
-  public static final Distance BLUE_STARTING_LINE = FIELD_LENGTH.div(2).minus(STARTING_LINE_OFFSET);
+  public static final Distance BLUE_STARTING_LINE =
+      FIELD_LENGTH.div(2).minus(STARTING_LINE_OFFSET);
 
   /**
    * Robot distance from east side of the field when on the Red alliance's
    * starting line.
    */
-  public static final Distance RED_STARTING_LINE = FIELD_LENGTH.div(2).plus(STARTING_LINE_OFFSET);
+  public static final Distance RED_STARTING_LINE =
+      FIELD_LENGTH.div(2).plus(STARTING_LINE_OFFSET);
 
   /**
    * Robot distance from south side of the field when in front of the

@@ -22,20 +22,11 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    SmartDashboard.putData(
-        "Flywheel - 2000 RPM",
-        new InstantCommand(
-            () -> {
-              m_flywheel.setSpeed(RevolutionsPerSecond.of(2000.0 / 60.0));
-            },
-            m_flywheel));
-    SmartDashboard.putData(
-        "Shooter - 3000 RPM",
-        new InstantCommand(
-            () -> {
-              m_shooter.setRPM(3000);
-            },
-            m_shooter));
+    SmartDashboard.putData("Flywheel - 2000 RPM", new InstantCommand(() -> {
+      m_flywheel.setSpeed(RevolutionsPerSecond.of(2000.0 / 60.0));
+    }, m_flywheel));
+    SmartDashboard.putData("Shooter - 3000 RPM",
+        new InstantCommand(() -> { m_shooter.setRPM(3000); }, m_shooter));
   }
 
   public Command getAutonomousCommand() {

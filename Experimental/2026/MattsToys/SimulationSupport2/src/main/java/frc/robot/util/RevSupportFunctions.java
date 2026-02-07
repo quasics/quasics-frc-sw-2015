@@ -30,7 +30,8 @@ public class RevSupportFunctions {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing =
+        outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)
@@ -87,7 +88,8 @@ public class RevSupportFunctions {
    * @param leader     the motor that should serve as leader
    * @param baseConfig the base configuration to pass through
    */
-  public static void configureMotorToFollow(int followerId, SparkMax leader, SparkMaxConfig baseConfig) {
+  public static void configureMotorToFollow(
+      int followerId, SparkMax leader, SparkMaxConfig baseConfig) {
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     if (baseConfig != null) {
       followerConfig.apply(baseConfig);

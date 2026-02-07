@@ -44,8 +44,7 @@ public interface IPhotonVision {
    *                    away from the targets.
    */
   public record CameraData(PhotonCamera camera, Transform3d transform3d,
-      PhotonPoseEstimator estimator) {
-  }
+      PhotonPoseEstimator estimator) {}
 
   /**
    * Returns the list of CameraData records being used by this object.
@@ -81,10 +80,10 @@ public interface IPhotonVision {
   static final AprilTagFields FIELD_LAYOUT = switch (SELECTED_LAYOUT) {
     case Rebuilt ->
       (USE_ANDYMARK_CONFIG ? AprilTagFields.k2026RebuiltAndymark
-          : AprilTagFields.k2026RebuiltWelded);
+                           : AprilTagFields.k2026RebuiltWelded);
     case Reefscape ->
       (USE_ANDYMARK_CONFIG ? AprilTagFields.k2025ReefscapeAndyMark
-          : AprilTagFields.k2025ReefscapeWelded);
+                           : AprilTagFields.k2025ReefscapeWelded);
     case Crescendo -> AprilTagFields.k2024Crescendo;
   };
 

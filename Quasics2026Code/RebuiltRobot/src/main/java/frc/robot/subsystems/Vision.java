@@ -13,24 +13,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.subsystems.interfaces.IVision;
-
 import java.io.IOException;
-import java.util.function.Supplier;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Vision subsystem implementation.
  */
 public class Vision extends SubsystemBase implements IVision {
-  private static final AprilTagFields FIELD_LAYOUT = AprilTagFields.kDefaultField;
+  private static final AprilTagFields FIELD_LAYOUT =
+      AprilTagFields.kDefaultField;
   private final AprilTagFieldLayout m_tagLayout;
   protected PhotonCamera camera = new PhotonCamera("camera1");
   protected PhotonPoseEstimator photonEstimator;
@@ -43,19 +42,20 @@ public class Vision extends SubsystemBase implements IVision {
   public Vision() {
     AprilTagFieldLayout tagLayout = null;
     try {
-      tagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.kDefaultField.m_resourceFile);
+      tagLayout = AprilTagFieldLayout.loadFromResource(
+          AprilTagFields.kDefaultField.m_resourceFile);
     } catch (IOException ioe) {
-      System.err.println("Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
+      System.err.println(
+          "Warning: failed to load April Tags layout (" + FIELD_LAYOUT + ")");
       ioe.printStackTrace();
     }
 
-    photonEstimator = new PhotonPoseEstimator(
-        tagLayout,
-        // FINDME(Rylie): This should ideally match the "robotToCamera" configuration
-        // being used under simulation.
-        // FINDME(Rylie): This should ideally be coming from a robot configuration data
-        // block, to give us a well-defined place to swap stuff around. (Doesn't *have*
-        // to, but it's a good idea....)
+    photonEstimator = new PhotonPoseEstimator(tagLayout,
+        // FINDME(Rylie): This should ideally match the "robotToCamera"
+        // configuration being used under simulation. FINDME(Rylie): This should
+        // ideally be coming from a robot configuration data block, to give us a
+        // well-defined place to swap stuff around. (Doesn't *have* to, but it's
+        // a good idea....)
         new Transform3d()); // should be robotToCam, update whenever
                             // real camera mounted
     m_tagLayout = tagLayout;
@@ -69,7 +69,8 @@ public class Vision extends SubsystemBase implements IVision {
     // if (m_referencePositionSupplier != null) {
     // Pose2d refPose = m_referencePositionSupplier.get();
     // if (refPose != null) {
-    // photonEstimator.estimateClosestToReferencePose(result, new Pose3d(refPose));
+    // photonEstimator.estimateClosestToReferencePose(result, new
+    // Pose3d(refPose));
     // }
     // }
     if (result != null) {
@@ -120,15 +121,17 @@ public class Vision extends SubsystemBase implements IVision {
     }
     if (results.hasTargets()) {
       for (PhotonTrackedTarget target : targets) {
-        Optional<Pose3d> tagPose = m_tagLayout.getTagPose(target.getFiducialId());
+        Optional<Pose3d> tagPose =
+            m_tagLayout.getTagPose(target.getFiducialId());
         Pose3d tagPose3d = new Pose3d();
         if (!tagPose.isEmpty()) {
           tagPose3d = tagPose.get();
         }
         Pose2d tagPose2d = tagPose3d.toPose2d();
-        double distanceToTargetPose = PhotonUtils.getDistanceToPose(latestPose2d, tagPose2d);
-        TargetData targetData = new TargetData(target.getFiducialId(), target.getYaw(), target.getPitch(),
-            distanceToTargetPose);
+        double distanceToTargetPose =
+            PhotonUtils.getDistanceToPose(latestPose2d, tagPose2d);
+        TargetData targetData = new TargetData(target.getFiducialId(),
+            target.getYaw(), target.getPitch(), distanceToTargetPose);
         listTargetData.add(targetData);
       }
     }

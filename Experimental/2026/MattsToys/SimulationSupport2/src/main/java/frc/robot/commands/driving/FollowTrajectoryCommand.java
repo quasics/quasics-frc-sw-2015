@@ -32,7 +32,8 @@ public class FollowTrajectoryCommand extends BaseTrajectoryCommand {
   protected Trajectory getTrajectory() {
     // Convert the base trajectory into something relative to the robot's
     // initial pose when the command starts running.
-    Transform2d transform = new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
+    Transform2d transform =
+        new Transform2d(new Pose2d(), m_drivebase.getEstimatedPose());
     return m_baseTrajectory.transformBy(transform);
   }
 }

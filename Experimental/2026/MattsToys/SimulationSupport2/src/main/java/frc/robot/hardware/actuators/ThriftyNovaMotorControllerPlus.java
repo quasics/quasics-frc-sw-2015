@@ -19,10 +19,10 @@ public class ThriftyNovaMotorControllerPlus
    * @param controller the motor controller being wrapped
    */
   public ThriftyNovaMotorControllerPlus(ThriftyNova controller) {
-    super(
-        controller,
+    super(controller,
         // Voltage retrieval
-        () -> Volts.of(controller.getVoltage()),
+        ()
+            -> Volts.of(controller.getVoltage()),
         // Closer
         new Closeable() {
           public void close() throws IOException {
@@ -36,8 +36,6 @@ public class ThriftyNovaMotorControllerPlus
         // Is brake mode supported?
         true,
         // "Set brake mode (on/off)"
-        (Boolean b) -> {
-          controller.setBrakeMode(b);
-        });
+        (Boolean b) -> { controller.setBrakeMode(b); });
   }
 }

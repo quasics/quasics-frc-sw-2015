@@ -28,7 +28,7 @@ public interface IMotorControllerPlus extends MotorController {
 
   /**
    * @return true iff this motor controller supports "braking mode".
-   * 
+   *
    * @see #setBrakeMode(boolean)
    */
   boolean canSetBrakeMode();
@@ -36,7 +36,7 @@ public interface IMotorControllerPlus extends MotorController {
   /**
    * Enabled/disables "brake mode" on the motor, if supported by the underlying
    * hardware.
-   * 
+   *
    * @param enabled if true, sets brake mode on the motor
    */
   void setBrakeMode(boolean enabled);
@@ -50,8 +50,9 @@ public interface IMotorControllerPlus extends MotorController {
   static IMotorControllerPlus forPWMMotorController(
       PWMMotorController controller) {
     return new MotorControllerPlus(controller,
-        () -> Volts.of(controller.getVoltage()), () -> controller.close(), false, (Boolean b) -> {
-        });
+        ()
+            -> Volts.of(controller.getVoltage()),
+        () -> controller.close(), false, (Boolean b) -> {});
   }
 
   /**
@@ -88,8 +89,8 @@ public interface IMotorControllerPlus extends MotorController {
      * @param closer          used to close the underlying motor controller
      */
     public MotorControllerPlus(MotorController controller,
-        Supplier<Voltage> voltageSupplier, Closeable closer, boolean brakeModeSupported,
-        Consumer<Boolean> brakeModeSetter) {
+        Supplier<Voltage> voltageSupplier, Closeable closer,
+        boolean brakeModeSupported, Consumer<Boolean> brakeModeSetter) {
       m_controller = controller;
       m_voltageSupplier = voltageSupplier;
       m_closer = closer;

@@ -52,7 +52,9 @@ import java.util.function.Supplier;
  * @see https://en.wikipedia.org/wiki/Adapter_pattern
  */
 public interface IGyro {
-  /** Tells the gyro to perform any calibration processing (e.g., on power-up). */
+  /**
+   * Tells the gyro to perform any calibration processing (e.g., on power-up).
+   */
   void calibrate();
 
   /** Returns the heading of the robot in degrees. */
@@ -87,8 +89,8 @@ public interface IGyro {
      * operations.
      */
     FunctionalGyro(Runnable calibrator, Supplier<Angle> angleSupplier,
-        Supplier<AngularVelocity> rateSupplier, Supplier<Rotation2d> rotationSupplier,
-        Runnable resetter) {
+        Supplier<AngularVelocity> rateSupplier,
+        Supplier<Rotation2d> rotationSupplier, Runnable resetter) {
       m_calibrator = calibrator;
       m_angleSupplier = angleSupplier;
       m_rateSupplier = rateSupplier;
@@ -128,19 +130,20 @@ public interface IGyro {
       g.calibrate();
     };
     final Supplier<Angle> angleSupplier = () -> Degrees.of(g.getAngle());
-    final Supplier<AngularVelocity> rateSupplier = () -> DegreesPerSecond.of(g.getRate());
+    final Supplier<AngularVelocity> rateSupplier =
+        () -> DegreesPerSecond.of(g.getRate());
     final Supplier<Rotation2d> rotationSupplier = () -> g.getRotation2d();
     final Runnable resetter = () -> {
       g.reset();
     };
 
-    return new FunctionalGyro(calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
+    return new FunctionalGyro(
+        calibrator, angleSupplier, rateSupplier, rotationSupplier, resetter);
   }
 
   // TODO: Helper function to wrap the Pigeon2 type from CTRE.
   //
   // FINDME(Rylie): Mr. Healy has already provided you with this as sample code
-  // from last year. You can also find it in his "SimulationSupport2" program from
-  // this year. (It's in a stand-alone class.)
-
+  // from last year. You can also find it in his "SimulationSupport2" program
+  // from this year. (It's in a stand-alone class.)
 }

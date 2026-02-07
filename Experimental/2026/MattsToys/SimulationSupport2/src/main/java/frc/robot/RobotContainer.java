@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.driving.ArcadeDrive;
+import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
@@ -128,8 +129,7 @@ public class RobotContainer {
       : new IVision.NullVision();
 
   /** Lighting subystem. */
-  final ILighting m_lighting = (m_robotConfig.hasLighting()
-      ? new Lighting(m_robotConfig)
+  final ILighting m_lighting = (m_robotConfig.hasLighting() ? new Lighting(m_robotConfig)
       : new ILighting.NullLighting());
 
   /** CANdle */
@@ -143,7 +143,8 @@ public class RobotContainer {
 
   /** Power distribution panel (or null, such as under simulation). */
   final PowerDistribution m_pdp = m_robotConfig.hasPowerDistributor()
-      ? new PowerDistribution(m_robotConfig.power().canId(), m_robotConfig.power().type())
+      ? new PowerDistribution(
+          m_robotConfig.power().canId(), m_robotConfig.power().type())
       : null;
 
   /** The driver joystick wrapper. */
@@ -164,6 +165,7 @@ public class RobotContainer {
     configureArmCommands();
     configureLightingCommands();
     maybeConfigureLightingWhenDisabled();
+    maybeConfigureChoreoCommands();
     configureBindings();
 
     if (Robot.isSimulation()) {
@@ -175,6 +177,11 @@ public class RobotContainer {
     if (m_pdp != null) {
       SmartDashboard.putData(m_pdp);
     }
+  }
+
+  private void maybeConfigureChoreoCommands() {
+    SmartDashboard.putData("Choreo: Blue Trench1 to Hub",
+        new BaseChoreoTrajectoryCommand("BlueTrench1ToHub", m_drivebase));
   }
 
   /**
@@ -399,8 +406,7 @@ public class RobotContainer {
   /** Configures any additional bindings that are needed. */
   private void configureBindings() {
     // Add any additional bindings here.
-    Pose2d targetPose = new Pose2d(
-        RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
+    Pose2d targetPose = new Pose2d(RebuiltConstants.BLUE_STARTING_LINE.minus(Meters.of(1)),
         RebuiltConstants.FIELD_WIDTH.div(2),
         new Rotation2d(RebuiltConstants.FACING_RED));
     SmartDashboard.putData("Cmd: Pushbutton trajectory",
@@ -456,8 +462,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing the same direction as
-            // at start
+            // End 3 meters straight ahead of where we started, facing the same
+            // direction as at start
             new Pose2d(3, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -468,8 +474,8 @@ public class RobotContainer {
             new Pose2d(0, 0, new Rotation2d(0)),
             // No interior waypoints - just a straight line
             List.of(),
-            // End 3 meters straight ahead of where we started, facing +90 degrees from when
-            // we started
+            // End 3 meters straight ahead of where we started, facing +90
+            // degrees from when we started
             new Pose2d(3, 3, new Rotation2d(Degrees.of(90))),
             // Pass config
             m_trajectoryConfig);
@@ -481,8 +487,8 @@ public class RobotContainer {
             // Pass through these two interior waypoints, making an 's' curve
             // path
             List.of(new Translation2d(2, 1), new Translation2d(4, -1)),
-            // End 6 meters straight ahead of where we started, facing the same direction as
-            // at start
+            // End 6 meters straight ahead of where we started, facing the same
+            // direction as at start
             new Pose2d(6, 0, new Rotation2d(0)),
             // Pass config
             m_trajectoryConfig);
@@ -526,19 +532,21 @@ public class RobotContainer {
   }
 
   /**
-   * Allocates "side panel" lighting for the robot, using a subset of the primary
-   * LED strip.
-   * 
+   * Allocates "side panel" lighting for the robot, using a subset of the
+   * primary LED strip.
+   *
    * @param config   the target robot's configuration
    * @param lighting the base Lighting system
    * @param leftSide if true, we're allocating the left side panel lighting;
    *                 otherwise, it's the right side panel's
-   * @return a lighting buffer for the side panel (or NullLighting, if we couldn't
+   * @return a lighting buffer for the side panel (or NullLighting, if we
+   *         couldn't
    *         allocate a buffer)
    */
   private static ILighting allocateSideLighting(
       RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
-    if (!config.hasLighting() || lighting == null || !(lighting instanceof Lighting)) {
+    if (!config.hasLighting() || lighting == null
+        || !(lighting instanceof Lighting)) {
       // Can't do it....
       return new ILighting.NullLighting();
     }

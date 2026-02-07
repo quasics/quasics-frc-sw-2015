@@ -7,6 +7,7 @@ package frc.robot.subsystems.interfaces;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import java.util.function.Supplier;
 
 public interface IDrivebase {
   void arcadeDrive(LinearVelocity forwardspeed, AngularVelocity turnspeed);
@@ -24,4 +25,6 @@ public interface IDrivebase {
   default void stop() {
     setSpeeds(0, 0);
   }
+
+  void setReferencePositionSupplier(Supplier<Pose2d> supplier);
 }

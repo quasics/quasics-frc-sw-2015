@@ -180,13 +180,15 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
    * @param leftEncoder     encoder for the left side of the drivebase
    * @param rightEncoder    encoder for the right side of the drivebase
    * @param gyro            the gyro/ALU being used on this drivebase
-   * @param configureMotors if true, set motor configuration (i.e., inversion); if
-   *                        false, then we'll assume that this is done externally,
-   *                        or in the derived class.
+   * @param configureMotors if true, set motor configuration (i.e., inversion);
+   *                        if
+   *                        false, then we'll assume that this is done
+   *                        externally, or in the derived class.
    */
   protected DrivebaseBase(DriveConfig config,
       IMotorControllerPlus leftController, IMotorControllerPlus rightController,
-      TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro, boolean configureMotors) {
+      TrivialEncoder leftEncoder, TrivialEncoder rightEncoder, IGyro gyro,
+      boolean configureMotors) {
     setName(SUBSYSTEM_NAME);
     m_config = config;
 
@@ -204,10 +206,10 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
     m_rawGyro = gyro;
 
     /** Odometry calculator. */
-    m_odometry = new DifferentialDriveOdometry(
-        new Rotation2d(m_rawGyro.getAngle()),
+    m_odometry = new DifferentialDriveOdometry(new Rotation2d(m_rawGyro.getAngle()),
         m_leftTrivialEncoder.getPosition().in(Meters),
-        m_rightTrivialEncoder.getPosition().in(Meters), StartingPosition.DEFAULT_STARTING_POSE);
+        m_rightTrivialEncoder.getPosition().in(Meters),
+        StartingPosition.DEFAULT_STARTING_POSE);
 
     /** PID controller for left side velocity control. */
     m_leftPID = new PIDController(m_config.leftPid().kP(),
@@ -375,6 +377,11 @@ public class DrivebaseBase extends SubsystemBase implements IDrivebasePlus {
   @Override
   public Pose2d getEstimatedPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  @Override
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPose(pose);
   }
 
   @Override

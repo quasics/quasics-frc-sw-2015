@@ -14,8 +14,9 @@ public class Logger {
 
   // Annoyingly, need to query m_chooser every time for get selected
   //
-  // FINDME(Nicole): Actually, no, you don't. You can register a callback with the
-  // chooser, allowing you to avoid this. (I've made this change to the code.)
+  // FINDME(Nicole): Actually, no, you don't. You can register a callback with
+  // the chooser, allowing you to avoid this. (I've made this change to the
+  // code.)
   private String m_name;
   private final SendableChooser<Verbosity> m_chooser = new SendableChooser<>();
   Verbosity m_level = Verbosity.Notice;

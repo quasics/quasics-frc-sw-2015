@@ -10,7 +10,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.PowerDistribution;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -233,9 +232,7 @@ public interface RobotConfigs {
   }
 
   /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
-  public enum DriveType {
-    Simulated, CanSparkMax, ThriftyNova
-  }
+  public enum DriveType { Simulated, CanSparkMax, ThriftyNova }
 
   /**
    * Drive base configuration data.
@@ -296,7 +293,8 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize =
+            subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength
@@ -390,15 +388,16 @@ public interface RobotConfigs {
 
   /**
    * Power distribution configuration settings.
-   * 
+   *
    * @param type  power distribution panel type
    * @param canId CAN ID for the device
    */
-  public static record PowerDistributor(PowerDistribution.ModuleType type, int canId) {
+  public static record PowerDistributor(
+      PowerDistribution.ModuleType type, int canId) {
     /**
-     * Constructor, which will set the CAN ID based on the default for the specified
-     * module type.
-     * 
+     * Constructor, which will set the CAN ID based on the default for the
+     * specified module type.
+     *
      * @param type power distribution panel type
      */
     public PowerDistributor(PowerDistribution.ModuleType type) {
@@ -459,14 +458,15 @@ public interface RobotConfigs {
         ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
         CandleConfig candle, PowerDistributor power) {
       this(isSimulated, drive,
-          camera != null ? Collections.singletonList(camera) : null, elevator, arm,
-          lighting, candle, power);
+          camera != null ? Collections.singletonList(camera) : null, elevator,
+          arm, lighting, candle, power);
     }
 
     /**
      * Determines if we have power distribution configuration data.
      *
-     * @return true iff the configuration includes data for the power distribution
+     * @return true iff the configuration includes data for the power
+     *     distribution
      *         setup
      */
     public boolean hasPowerDistributor() {

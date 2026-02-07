@@ -33,7 +33,8 @@ public class SingleMotorThingTalon extends SingleMotorThing {
    */
   static ConstructionData getStuffForBaseClassSetup() {
     final Encoder rawEncoder = new Encoder(3, 4);
-    configureEncoderForDistance(rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
+    configureEncoderForDistance(
+        rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
 
     return new ConstructionData(
         // Motor controller

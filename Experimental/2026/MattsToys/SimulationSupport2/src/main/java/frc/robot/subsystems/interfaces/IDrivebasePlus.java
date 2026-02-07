@@ -44,7 +44,7 @@ public interface IDrivebasePlus extends IDrivebase {
   //
 
   /** Returns the (odometry-based) estimate of the robot's position. */
-  public Pose2d getEstimatedPose();
+  Pose2d getEstimatedPose();
 
   /**
    * Directly sets the voltages for the drivebase. (Note: operates directly; no
@@ -55,7 +55,7 @@ public interface IDrivebasePlus extends IDrivebase {
    * @param leftVoltage  voltage for the left side
    * @param rightVoltage voltage for the right side
    */
-  public void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage);
+  void tankDriveVolts(Voltage leftVoltage, Voltage rightVoltage);
 
   /**
    * Sets the speeds for the drivebase using chassis speeds. (Note: operates
@@ -101,6 +101,12 @@ public interface IDrivebasePlus extends IDrivebase {
 
   /** Enables/disables brake mode (if ) */
   void setBrakeMode(boolean enabled);
+
+  //
+  // Needed for Choreo (maybe)
+  //
+
+  void resetOdometry(Pose2d pose);
 
   /////////////////////////////////////////////////////////////////////////////////
   //
@@ -189,6 +195,11 @@ public interface IDrivebasePlus extends IDrivebase {
 
     @Override
     public void setBrakeMode(boolean enabled) {
+      // No-op
+    }
+
+    @Override
+    public void resetOdometry(Pose2d pose) {
       // No-op
     }
   }

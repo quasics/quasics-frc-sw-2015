@@ -4,10 +4,9 @@
 
 package frc.robot.subsystems.interfaces;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import java.util.List;
 import java.util.function.Supplier;
-
-import edu.wpi.first.math.geometry.Pose2d;
 
 public interface IVision {
   record TargetData(int id, double yaw, double pitch, double distanceToTarget) {
@@ -18,4 +17,6 @@ public interface IVision {
   List<TargetData> getTargetData();
 
   void setReferencePositionSupplier(Supplier<Pose2d> supplier);
+
+  Pose2d getVisionLatestPose();
 }

@@ -6,10 +6,9 @@ package frc.robot.subsystems.interfaces;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.io.IOException;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.io.IOException;
 
 /** Simple interface for a single-joint arm subsystem. */
 public interface ISingleJointArm extends ISubsystem {

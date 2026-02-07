@@ -55,6 +55,7 @@ public class BaseChoreoTrajectoryCommand extends Command {
     Optional<Pose2d> initialPose = m_trajectory.get().getInitialPose(m_mirrorPoses);
 
     if (initialPose.isPresent()) {
+      m_drivebase.resetOdometry(initialPose.get());
       // TODO: Consider some of the following options.
       // 1) Providing an indication of how closely the initial pose matches the
       // current drivebase pose.

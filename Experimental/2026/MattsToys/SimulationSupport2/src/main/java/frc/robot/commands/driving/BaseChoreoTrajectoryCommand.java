@@ -60,6 +60,7 @@ public class BaseChoreoTrajectoryCommand extends Command {
       // 1) Providing an indication of how closely the initial pose matches the
       // current drivebase pose.
       // 2) Adapting the trajectory (somehow) to the current pose.
+      // 3) (Longshot) First, get us to the targeted initial pose, and then....
     }
 
     // Reset and start the timer when the autonomous period begins

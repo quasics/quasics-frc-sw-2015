@@ -47,6 +47,10 @@ public class DriveForDistance extends Command {
     this(drivebase, percentSpeed, Meters.of(meters));
   }
 
+  public DriveForDistance(AbstractDrivebase drivebase, Distance distance) {
+    this(drivebase, .5, distance);
+  }
+
   /**
    * Creates a new DriveForDistance.
    *

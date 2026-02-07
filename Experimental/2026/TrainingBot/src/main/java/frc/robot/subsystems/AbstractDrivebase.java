@@ -105,6 +105,8 @@ public abstract class AbstractDrivebase extends SubsystemBase {
   /**
    * Sets the speeds for the left- and right-side motors to the same percentage
    * (which should drive us straight forward or backward).
+   * 
+   * @param percentage percentage of drive speed (-1.0 to +1.0)
    */
   public void setSpeed(double percentage) {
     tankDrive(percentage, percentage);

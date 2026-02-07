@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -178,8 +178,8 @@ public abstract class AbstractDrivebase
     // Update the field simulation shown on the smart dashboard
     m_field.setRobotPose(m_odometry.getPoseMeters());
     if (getVisionPose() != null) {
-      m_poseEstimator.addVisionMeasurement(
-          getVisionPose(), Timer.getFPGATimestamp());
+      // m_poseEstimator.addVisionMeasurement(getVisionPose(),
+      // Timer.getFPGATimestamp());
     }
   }
 }

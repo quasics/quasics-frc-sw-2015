@@ -7,6 +7,8 @@ package frc.robot.subsystems.interfaces;
 /**
  * Interface for controlling the indexing of balls (between the intake and
  * shooter).
+ * 
+ * TODO: Define the indexer interface (and then implement it).
  */
 public interface IIndexer {
 

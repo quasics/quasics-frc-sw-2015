@@ -6,6 +6,8 @@ package frc.robot.subsystems.interfaces;
 
 /**
  * Interface for controlling the climbing hardware.
+ * 
+ * TODO: Define the climber interface (and then implement it).
  */
 public interface IClimber {
 

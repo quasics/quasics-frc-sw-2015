@@ -29,6 +29,8 @@ package frc.robot.subsystems.interfaces;
  * closer to 45 degree hood angle for feeding; probably closer to 75 degree hood
  * angle for shooting at the hub (I would assume these will be more definitively
  * defined after some further trial and error)
+ * 
+ * TODO: Define the shooter interface (and then implement it).
  */
 public interface IShooter {
 

@@ -12,18 +12,40 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Lightweight interface to work with a climber.
  */
 public interface IClimber extends ISubsystem {
+  /** Subsystem name. */
   static final String SUBSYSTEM_NAME = "Climber";
 
   /** Operating states for the climber. */
   enum State {
-    Rising, Descending, PidControlled, Idle
+    /** Climber is rising under manual control. */
+    Rising,
+    /** Climber is descending under manual control. */
+    Descending,
+    /** Climber is moving under PID control to a defined position. */
+    PidControlled,
+    /** Climber is not moving. */
+    Idle
   }
 
   /** Known/fixed positions for the climber. */
   enum Position {
-    Retracted, Extended, PulledUp, DontCare
+    /** Fully retracted position. */
+    Retracted,
+    /** Fully extended position. */
+    Extended,
+    /**
+     * Position should be lifting the robot off the ground (if climbers are hooked
+     * into place on the rung).
+     */
+    PulledUp,
+    /**
+     * Don't care about the position; used for manual control and for cases where we
+     * don't have a defined position to move to.
+     */
+    DontCare
   }
 
+  /** Returns the current operating state of the climber. */
   State getCurrentState();
 
   /** Moves the climber into the specified position. */
@@ -38,6 +60,7 @@ public interface IClimber extends ISubsystem {
   /** Stops the climber's movement. */
   void stop();
 
+  /** Trivial implementation of the IClimber interface. */
   public class NullClimber extends SubsystemBase implements IClimber {
     @Override
     public void close() throws IOException {

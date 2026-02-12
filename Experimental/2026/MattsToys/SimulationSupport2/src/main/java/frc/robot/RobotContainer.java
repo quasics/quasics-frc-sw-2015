@@ -39,6 +39,7 @@ import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
 import frc.robot.subsystems.interfaces.ICandle;
+import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
@@ -55,6 +56,7 @@ import frc.robot.subsystems.live.PhotonVisionSingleCamera;
 import frc.robot.subsystems.live.ThriftyNovaDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimCandle;
+import frc.robot.subsystems.simulated.SimClimber;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
@@ -119,6 +121,10 @@ public class RobotContainer {
   final ISingleJointArm m_arm = m_robotConfig.hasArm()
       ? new frc.robot.subsystems.simulated.SimArm()
       : new ISingleJointArm.NullArm();
+
+  // TODO: Update this to look at config to see if a climber is present. (If not,
+  // use a NullClimber.)
+  final IClimber m_climber = new SimClimber();
 
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()

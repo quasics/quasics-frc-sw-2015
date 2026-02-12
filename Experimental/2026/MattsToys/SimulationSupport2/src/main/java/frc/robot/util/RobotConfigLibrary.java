@@ -11,15 +11,18 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.util.RobotConfigs.NO_ARM;
 import static frc.robot.util.RobotConfigs.NO_CAMERA;
 import static frc.robot.util.RobotConfigs.NO_CANDLE;
+import static frc.robot.util.RobotConfigs.NO_CLIMBER;
 import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
 import static frc.robot.util.RobotConfigs.NO_LIGHTING;
 import static frc.robot.util.RobotConfigs.NO_POWER_DISTRIBUTOR;
 
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;
 import frc.robot.util.RobotConfigs.CameraConfig;
 import frc.robot.util.RobotConfigs.CandleConfig;
+import frc.robot.util.RobotConfigs.ClimberConfig;
 import frc.robot.util.RobotConfigs.DriveConfig;
 import frc.robot.util.RobotConfigs.DriveFeedForwardConfig;
 import frc.robot.util.RobotConfigs.DriveOrientation;
@@ -33,6 +36,8 @@ import frc.robot.util.RobotConfigs.PIDConfig;
 import frc.robot.util.RobotConfigs.Position;
 import frc.robot.util.RobotConfigs.PowerDistributor;
 import frc.robot.util.RobotConfigs.RobotConfig;
+import frc.robot.util.RobotConfigs.SimpleFeedForwardConfig;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -201,11 +206,14 @@ public final class RobotConfigLibrary {
 
     final var candleConfig = new CandleConfig(RobotConfigs.INVALID_CAN_ID);
 
+    ClimberConfig climberConfig = new ClimberConfig(new PIDConfig(1.0, 0, 0),
+        new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20));
+
     return new RobotConfig(true, SIMULATED_DRIVE_BASE_CONFIG,
         Arrays.asList(new CameraConfig[] {
             cameraConfig,
         }),
-        elevatorConfig, armConfig, lightingConfig, candleConfig,
+        elevatorConfig, armConfig, lightingConfig, candleConfig, climberConfig,
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -262,6 +270,8 @@ public final class RobotConfigLibrary {
             // of 15Mar2025.
             new PIDConfig(6.0, 0.00, 0.00), null),
         new LightingConfig(SimulationPorts.PWM.LIGHTING_PORT, 80), NO_CANDLE,
+        new ClimberConfig(new PIDConfig(1.0, 0, 0),
+            new SimpleFeedForwardConfig(Volts.of(0.01), Volts.of(0.05), 0.20)),
         NO_POWER_DISTRIBUTOR);
   }
 
@@ -282,7 +292,7 @@ public final class RobotConfigLibrary {
                 0.01, // Linear data (from 2024)
                 Volts.of(0.19529), 0.01) // Angular data (FAKE)
         ),
-        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, power);
+        NO_CAMERA, NO_ELEVATOR, NO_ARM, NO_LIGHTING, NO_CANDLE, NO_CLIMBER, power);
   }
 
   private static RobotConfig generate2026Config() {
@@ -302,6 +312,6 @@ public final class RobotConfigLibrary {
     PowerDistributor power = new PowerDistributor(ModuleType.kRev);
 
     return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
-        NO_LIGHTING, NO_CANDLE, power);
+        NO_LIGHTING, NO_CANDLE, NO_CLIMBER, power);
   }
 }

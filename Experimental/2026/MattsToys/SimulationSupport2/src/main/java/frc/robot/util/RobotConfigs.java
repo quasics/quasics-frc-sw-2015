@@ -232,7 +232,9 @@ public interface RobotConfigs {
   }
 
   /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
-  public enum DriveType { Simulated, CanSparkMax, ThriftyNova }
+  public enum DriveType {
+    Simulated, CanSparkMax, ThriftyNova
+  }
 
   /**
    * Drive base configuration data.
@@ -293,8 +295,7 @@ public interface RobotConfigs {
      */
     public LightingConfig {
       if (subViews != null) {
-        final int subViewTotalSize =
-            subViews.stream().mapToInt(Integer::intValue).sum();
+        final int subViewTotalSize = subViews.stream().mapToInt(Integer::intValue).sum();
         if (subViewTotalSize > stripLength) {
           throw new IllegalArgumentException("Sub-view size ("
               + subViewTotalSize + ") exceeds strip length (" + stripLength
@@ -408,6 +409,10 @@ public interface RobotConfigs {
     }
   }
 
+  public static record ClimberConfig(
+      PIDConfig pid, SimpleFeedForwardConfig feedForward) {
+  }
+
   /**
    * Collective robot configuration data.
    *
@@ -421,10 +426,10 @@ public interface RobotConfigs {
    */
   public static record RobotConfig(boolean isSimulated, DriveConfig drive,
       List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-      LightingConfig lighting, CandleConfig candle, PowerDistributor power) {
+      LightingConfig lighting, CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
     public RobotConfig(boolean isSimulated, DriveConfig drive,
         List<CameraConfig> cameras, ElevatorConfig elevator, ArmConfig arm,
-        LightingConfig lighting, CandleConfig candle, PowerDistributor power) {
+        LightingConfig lighting, CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
       if (drive != null) {
         assert (isSimulated == (drive.driveType() == DriveType.Simulated))
             : "Simulation setting mismatch (robot vs. drive)";
@@ -440,6 +445,7 @@ public interface RobotConfigs {
       this.arm = arm;
       this.lighting = lighting;
       this.candle = candle;
+      this.climber = climber;
       this.power = power;
     }
 
@@ -456,17 +462,17 @@ public interface RobotConfigs {
      */
     RobotConfig(boolean isSimulated, DriveConfig drive, CameraConfig camera,
         ElevatorConfig elevator, ArmConfig arm, LightingConfig lighting,
-        CandleConfig candle, PowerDistributor power) {
+        CandleConfig candle, ClimberConfig climber, PowerDistributor power) {
       this(isSimulated, drive,
           camera != null ? Collections.singletonList(camera) : null, elevator,
-          arm, lighting, candle, power);
+          arm, lighting, candle, climber, power);
     }
 
     /**
      * Determines if we have power distribution configuration data.
      *
      * @return true iff the configuration includes data for the power
-     *     distribution
+     *         distribution
      *         setup
      */
     public boolean hasPowerDistributor() {
@@ -535,4 +541,5 @@ public interface RobotConfigs {
   public static final ArmConfig NO_ARM = null;
   public static final CandleConfig NO_CANDLE = null;
   public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
+  public static final ClimberConfig NO_CLIMBER = null;
 }

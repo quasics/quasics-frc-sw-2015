@@ -71,6 +71,10 @@ public abstract class AbstractDrivebase
     SmartDashboard.putData("Field", m_field);
   }
 
+  public double getMaxMotorSpeed() {
+    return m_maxMotorSpeedMPS;
+  }
+
   @Override
   public void arcadeDrive(
       LinearVelocity forwardspeed, AngularVelocity turnspeed) {
@@ -90,7 +94,8 @@ public abstract class AbstractDrivebase
   }
 
   // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
-  // Probably print a warning too so that we can fix whatever is commanding us too high.
+  // Probably print a warning too so that we can fix whatever is commanding us too
+  // high.
   @Override
   public double mpsToPercent(double speed) {
     // FINDME(Robert): This isn't doing what I think *you* think it's doing, at

@@ -122,9 +122,9 @@ public class RobotContainer {
       ? new frc.robot.subsystems.simulated.SimArm()
       : new ISingleJointArm.NullArm();
 
-  // TODO: Update this to look at config to see if a climber is present. (If not,
-  // use a NullClimber.)
-  final IClimber m_climber = new SimClimber();
+  final IClimber m_climber = m_robotConfig.hasClimber()
+      ? new SimClimber(m_robotConfig.climber())
+      : new IClimber.NullClimber();
 
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()

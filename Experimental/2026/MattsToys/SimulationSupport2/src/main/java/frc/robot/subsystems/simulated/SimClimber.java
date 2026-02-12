@@ -5,6 +5,7 @@ import java.io.IOException;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IClimber;
+import frc.robot.util.RobotConfigs.ClimberConfig;
 
 public class SimClimber extends SubsystemBase implements IClimber {
   private static final boolean SIMULATE_LIMIT_SWITCHES = true;
@@ -25,8 +26,12 @@ public class SimClimber extends SubsystemBase implements IClimber {
   /** PID controller for automatic positioning. */
   private PIDController m_pidController = new PIDController(1, 0, 0);
 
-  public SimClimber() {
+  public SimClimber(ClimberConfig config) {
     setName(SUBSYSTEM_NAME);
+    m_pidController = new PIDController(config.pid().kP(), config.pid().kI(), config.pid().kD());
+    // Note that I'm ignoring the feedforward term here, since we're simulating the
+    // built-in PID on the motor controller, which doesn't have a feedforward
+    // component.
   }
 
   // Exposed for simulation purposes

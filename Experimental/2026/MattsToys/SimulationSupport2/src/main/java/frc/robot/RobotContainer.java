@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.MoveClimberToPositionCommand;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
@@ -172,6 +173,7 @@ public class RobotContainer {
     configureLightingCommands();
     maybeConfigureLightingWhenDisabled();
     maybeConfigureChoreoCommands();
+    maybeConfigureClimberCommands();
     configureBindings();
 
     if (Robot.isSimulation()) {
@@ -183,6 +185,21 @@ public class RobotContainer {
     if (m_pdp != null) {
       SmartDashboard.putData(m_pdp);
     }
+  }
+
+  private void maybeConfigureClimberCommands() {
+    if (!m_robotConfig.hasClimber()) {
+      return;
+    }
+
+    SmartDashboard.putData("Cmd: Climber - Extended",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.Extended, false));
+    SmartDashboard.putData("Cmd: Climber - Retracted",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.Retracted, false));
+    SmartDashboard.putData("Cmd: Climber - Pulled up",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.PulledUp, true));
+    SmartDashboard.putData("Cmd: Climber - Stop",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.DontCare, true));
   }
 
   private void maybeConfigureChoreoCommands() {

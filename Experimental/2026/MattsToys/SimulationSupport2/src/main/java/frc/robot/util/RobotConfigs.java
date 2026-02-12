@@ -532,6 +532,15 @@ public interface RobotConfigs {
     public boolean hasCandle() {
       return candle != null;
     }
+
+    /**
+     * Determines if we have climber configuration data.
+     *
+     * @return true iff the configuration includes data for the climber
+     */
+    public boolean hasClimber() {
+      return climber != null;
+    }
   }
 
   public static final DriveConfig NO_DRIVE = null;

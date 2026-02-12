@@ -106,8 +106,14 @@ public class SimClimber extends SubsystemBase implements IClimber {
 
   @Override
   public void moveToPosition(Position position) {
-    m_state = State.PidControlled;
-    m_targetPosition = position;
+    if (position == Position.DontCare) {
+      // Don't have a defined position to move to; ignore the command
+      stop();
+    } else {
+      // Move to the specified position under PID control
+      m_state = State.PidControlled;
+      m_targetPosition = position;
+    }
   }
 
   @Override
@@ -123,6 +129,7 @@ public class SimClimber extends SubsystemBase implements IClimber {
   @Override
   public void stop() {
     m_state = State.Idle;
+    m_targetPosition = Position.DontCare;
   }
 
   @Override

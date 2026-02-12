@@ -16,7 +16,6 @@ import static frc.robot.util.RobotConfigs.NO_ELEVATOR;
 import static frc.robot.util.RobotConfigs.NO_LIGHTING;
 import static frc.robot.util.RobotConfigs.NO_POWER_DISTRIBUTOR;
 
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.constants.robots.SimulationPorts;
 import frc.robot.util.RobotConfigs.ArmConfig;

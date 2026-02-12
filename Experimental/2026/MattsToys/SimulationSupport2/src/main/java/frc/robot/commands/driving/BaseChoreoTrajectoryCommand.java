@@ -48,8 +48,8 @@ public class BaseChoreoTrajectoryCommand extends Command {
       return;
     }
 
-    m_mirrorPoses = SHOULD_MIRROR_POSES_FOR_RED_ALLIANCE
-        && DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+    m_mirrorPoses = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)
+        && SHOULD_MIRROR_POSES_FOR_RED_ALLIANCE;
 
     // Get the initial pose of the trajectory
     Optional<Pose2d> initialPose = m_trajectory.get().getInitialPose(m_mirrorPoses);

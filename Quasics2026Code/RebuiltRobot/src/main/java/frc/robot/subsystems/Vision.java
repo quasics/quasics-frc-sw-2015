@@ -24,6 +24,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
@@ -64,10 +65,14 @@ public class Vision extends SubsystemBase implements IVision {
     m_tagLayout = tagLayout;
   }
 
+  private PhotonPipelineResult getLatestPipelineResults() {
+    return camera.getLatestResult();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    var result = camera.getLatestResult();
+    var result = getLatestPipelineResults();
     Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
     // if (m_referencePositionSupplier != null) {
     // Pose2d refPose = m_referencePositionSupplier.get();
@@ -108,14 +113,14 @@ public class Vision extends SubsystemBase implements IVision {
   @Override
   public boolean canSeeTargets() {
     boolean hasTargets;
-    var result = camera.getLatestResult();
+    var result = getLatestPipelineResults();
     hasTargets = result.hasTargets();
     return hasTargets;
   }
 
   @Override
   public List<TargetData> getTargetData() {
-    var results = camera.getLatestResult();
+    var results = getLatestPipelineResults();
     List<TargetData> listTargetData = new LinkedList<>();
     List<PhotonTrackedTarget> targets = results.getTargets();
     if (!results.hasTargets()) {

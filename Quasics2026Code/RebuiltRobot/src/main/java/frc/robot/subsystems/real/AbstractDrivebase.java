@@ -2,11 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.real;
 
-import static edu.wpi.first.units.Units.Meter;
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +14,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -71,6 +70,10 @@ public abstract class AbstractDrivebase
     SmartDashboard.putData("Field", m_field);
   }
 
+  public double getMaxMotorSpeed() {
+    return m_maxMotorSpeedMPS;
+  }
+
   @Override
   public void arcadeDrive(
       LinearVelocity forwardspeed, AngularVelocity turnspeed) {
@@ -89,8 +92,16 @@ public abstract class AbstractDrivebase
     m_robotDrive.feed();
   }
 
+  @Override
+  public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+    // TODO(Robert): Implement this method (and then use it for characterization,
+    // trajectory following, etc.). (It should be pretty straightforward, doable
+    // with 2 lines of code.)
+  }
+
   // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.
-  // Probably print a warning too so that we can fix whatever is commanding us too high.
+  // Probably print a warning too so that we can fix whatever is commanding us too
+  // high.
   @Override
   public double mpsToPercent(double speed) {
     // FINDME(Robert): This isn't doing what I think *you* think it's doing, at

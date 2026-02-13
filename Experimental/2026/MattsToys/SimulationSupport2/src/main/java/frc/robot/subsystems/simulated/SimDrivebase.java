@@ -29,7 +29,7 @@ import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.DrivebaseBase;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
 
 /**
  * Extension of the Drivebase subsystem for simulation support.
@@ -39,7 +39,7 @@ import frc.robot.util.RobotConfigs.DriveConfig;
  * now) to isolate simulation-specific code.
  */
 public class SimDrivebase extends DrivebaseBase {
-  final static boolean USE_MASS_AND_MOI_FOR_SIM_SETUP = true;
+  final static boolean USE_MASS_AND_MOI_FOR_SIM_SETUP = false;
 
   /** Controls the base class's left encoder under simulation. */
   final EncoderSim m_leftEncoderSim;

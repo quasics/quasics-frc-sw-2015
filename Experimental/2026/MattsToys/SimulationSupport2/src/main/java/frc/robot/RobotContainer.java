@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.MoveClimberToPositionCommand;
 import frc.robot.commands.driving.ArcadeDrive;
 import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
@@ -39,6 +40,7 @@ import frc.robot.constants.games.RebuiltConstants;
 import frc.robot.constants.games.ReefscapeConstants;
 import frc.robot.misc.FieldPlacementColorFunction;
 import frc.robot.subsystems.interfaces.ICandle;
+import frc.robot.subsystems.interfaces.IClimber;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IElevator;
 import frc.robot.subsystems.interfaces.IElevator.ElevatorPosition;
@@ -55,15 +57,16 @@ import frc.robot.subsystems.live.PhotonVisionSingleCamera;
 import frc.robot.subsystems.live.ThriftyNovaDrivebase;
 import frc.robot.subsystems.simulated.CameraSimulator;
 import frc.robot.subsystems.simulated.SimCandle;
+import frc.robot.subsystems.simulated.SimClimber;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
-import frc.robot.util.RobotConfigs;
-import frc.robot.util.RobotConfigs.RobotConfig;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
 import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
+import frc.robot.util.config.RobotConfig;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -120,6 +123,10 @@ public class RobotContainer {
       ? new frc.robot.subsystems.simulated.SimArm()
       : new ISingleJointArm.NullArm();
 
+  final IClimber m_climber = m_robotConfig.hasClimber()
+      ? new SimClimber(m_robotConfig.climber())
+      : new IClimber.NullClimber();
+
   /** Vision-processing subsystem. */
   final IVision m_vision = m_robotConfig.hasCamera()
       ? new PhotonVisionSingleCamera(
@@ -166,6 +173,7 @@ public class RobotContainer {
     configureLightingCommands();
     maybeConfigureLightingWhenDisabled();
     maybeConfigureChoreoCommands();
+    maybeConfigureClimberCommands();
     configureBindings();
 
     if (Robot.isSimulation()) {
@@ -177,6 +185,21 @@ public class RobotContainer {
     if (m_pdp != null) {
       SmartDashboard.putData(m_pdp);
     }
+  }
+
+  private void maybeConfigureClimberCommands() {
+    if (!m_robotConfig.hasClimber()) {
+      return;
+    }
+
+    SmartDashboard.putData("Cmd: Climber - Extended",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.Extended, false));
+    SmartDashboard.putData("Cmd: Climber - Retracted",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.Retracted, false));
+    SmartDashboard.putData("Cmd: Climber - Pulled up",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.PulledUp, true));
+    SmartDashboard.putData("Cmd: Climber - Stop",
+        new MoveClimberToPositionCommand(m_climber, IClimber.Position.DontCare, true));
   }
 
   private void maybeConfigureChoreoCommands() {
@@ -515,7 +538,7 @@ public class RobotContainer {
    * @return an ICandle subsystem for this robot (may be trivial)
    */
   private static ICandle allocateCandle(
-      RobotConfigs.RobotConfig config, ILighting lighting) {
+      RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();
     }
@@ -544,7 +567,7 @@ public class RobotContainer {
    *         allocate a buffer)
    */
   private static ILighting allocateSideLighting(
-      RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+      RobotConfig config, ILighting lighting, boolean leftSide) {
     if (!config.hasLighting() || lighting == null
         || !(lighting instanceof Lighting)) {
       // Can't do it....

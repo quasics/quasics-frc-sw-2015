@@ -33,7 +33,8 @@ import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.util.BulletinBoard;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
+
 import java.io.IOException;
 
 /**

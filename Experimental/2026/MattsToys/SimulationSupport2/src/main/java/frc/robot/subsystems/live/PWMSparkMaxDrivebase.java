@@ -11,7 +11,7 @@ import frc.robot.hardware.actuators.IMotorControllerPlus;
 import frc.robot.hardware.sensors.IGyro;
 import frc.robot.hardware.sensors.TrivialEncoder;
 import frc.robot.subsystems.DrivebaseBase;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
 
 /**
  * Sample implementation of the drivebase functionality, based on PWMSparkMax

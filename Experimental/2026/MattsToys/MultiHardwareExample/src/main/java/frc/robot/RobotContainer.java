@@ -29,19 +29,20 @@ import frc.robot.subsystems.simulation.SingleMotorThingSim;
  */
 public class RobotContainer {
   /** Supported hardware configurations. */
-  enum HardwareConfig { Simulated, Thrifty, Spark, Talon, Victor }
+  enum HardwareConfig {
+    Simulated, Thrifty, Spark, Talon, Victor
+  }
 
   /** Selected hardware configuration. */
-  final HardwareConfig m_hardware =
-      Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Thrifty;
+  final HardwareConfig m_hardware = Robot.isSimulation() ? HardwareConfig.Simulated : HardwareConfig.Spark;
 
   // Sets up a "single motor thing", based on the selected hardware
   // configuration.
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
     case Simulated -> new SingleMotorThingSim();
-    case Spark -> new SingleMotorThingSpark();
-    case Talon -> new SingleMotorThingTalon();
-    case Thrifty -> new SingleMotorThingNova();
+    case Spark -> new SingleMotorThingSpark(5);
+    case Talon -> new SingleMotorThingTalon(6);
+    case Thrifty -> new SingleMotorThingNova(5);
     case Victor ->
       // Sample of how to use the SingleMotorThing class without needing
       // to derive a class for hardware-specific setup.
@@ -56,6 +57,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    System.out.println("Hardware configuration: " + m_hardware);
+
     addPowerButton("Stop!", 0);
     addPowerButton("-25% power", -.25);
     addPowerButton("-50% power", -.5);
@@ -71,19 +74,19 @@ public class RobotContainer {
     SmartDashboard.putData(label,
         new FunctionalCommand(
             // onInit (can't be null)
-            ()
-                -> { m_singleMotorThing.setSpeed(percent); },
+            () -> {
+              m_singleMotorThing.setSpeed(percent);
+            },
             // onExecute (can't be null)
-            ()
-                -> {
-                    // No-op: speed was set in initialization
-                },
+            () -> {
+              // No-op: speed was set in initialization
+            },
             // onEnd (can't be null)
-            (Boolean b)
-                -> { m_singleMotorThing.stop(); },
+            (Boolean b) -> {
+              m_singleMotorThing.stop();
+            },
             // isFinished (can't be null)
-            ()
-                -> false,
+            () -> false,
             // Dependency
             m_singleMotorThing.asSubsystem()));
   }

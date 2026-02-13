@@ -31,20 +31,20 @@ public class SingleMotorThingTalon extends SingleMotorThing {
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup() {
+  static ConstructionData getStuffForBaseClassSetup(int channel) {
     final Encoder rawEncoder = new Encoder(3, 4);
     configureEncoderForDistance(
         rawEncoder, WHEEL_DIAMETER, ENCODER_TICKS_PER_REVOLUTION);
 
     return new ConstructionData(
         // Motor controller
-        new PWMTalonFX(6),
+        new PWMTalonFX(channel),
         // Encoder
         TrivialEncoder.forWpiLibEncoder(rawEncoder));
   }
 
   /** Creates a new SingleMotorThingTalon. */
-  public SingleMotorThingTalon() {
-    super(getStuffForBaseClassSetup());
+  public SingleMotorThingTalon(int channel) {
+    super(getStuffForBaseClassSetup(channel));
   }
 }

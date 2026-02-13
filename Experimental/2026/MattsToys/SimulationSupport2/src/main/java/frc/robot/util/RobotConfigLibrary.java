@@ -61,6 +61,26 @@ public final class RobotConfigLibrary {
   // Static data members
   //
 
+  /** Invalid CAN ID. */
+  public static final int INVALID_CAN_ID = -1;
+
+  /** Convenience constant for no drive configuration. */
+  public static final DriveConfig NO_DRIVE = null;
+  /** Convenience constant for no camera configuration. */
+  public static final CameraConfig NO_CAMERA = null;
+  /** Convenience constant for no elevator configuration. */
+  public static final ElevatorConfig NO_ELEVATOR = null;
+  /** Convenience constant for no lighting configuration. */
+  public static final LightingConfig NO_LIGHTING = null;
+  /** Convenience constant for no arm configuration. */
+  public static final ArmConfig NO_ARM = null;
+  /** Convenience constant for no CANdle configuration. */
+  public static final CandleConfig NO_CANDLE = null;
+  /** Convenience constant for no power distribution configuration. */
+  public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
+  /** Convenience constant for no climber configuration. */
+  public static final ClimberConfig NO_CLIMBER = null;
+
   /**
    * Drive config shared by our simulated drive base hardware (in multiple robot
    * configurations).
@@ -306,28 +326,4 @@ public final class RobotConfigLibrary {
     return new RobotConfig(false, drive, NO_CAMERA, NO_ELEVATOR, NO_ARM,
         NO_LIGHTING, NO_CANDLE, NO_CLIMBER, power);
   }
-
-  /** Invalid CAN ID. */
-  public static final int INVALID_CAN_ID = -1;
-
-  //
-  // Convenience constants for "no config" cases.
-  //
-
-  /** Convenience constant for no drive configuration. */
-  public static final DriveConfig NO_DRIVE = null;
-  /** Convenience constant for no camera configuration. */
-  public static final CameraConfig NO_CAMERA = null;
-  /** Convenience constant for no elevator configuration. */
-  public static final ElevatorConfig NO_ELEVATOR = null;
-  /** Convenience constant for no lighting configuration. */
-  public static final LightingConfig NO_LIGHTING = null;
-  /** Convenience constant for no arm configuration. */
-  public static final ArmConfig NO_ARM = null;
-  /** Convenience constant for no CANdle configuration. */
-  public static final CandleConfig NO_CANDLE = null;
-  /** Convenience constant for no power distribution configuration. */
-  public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
-  /** Convenience constant for no climber configuration. */
-  public static final ClimberConfig NO_CLIMBER = null;
 }

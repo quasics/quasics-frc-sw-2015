@@ -51,6 +51,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   /** Creates a new SingleMotorThingSpark. */
   public SingleMotorThingSpark(int deviceID, boolean inverted) {
     super(getStuffForBaseClassSetup(deviceID, inverted));
+    System.out.println("Set up SingleMotorThingSpark!");
   }
 
   /**

@@ -7,6 +7,9 @@ package frc.robot.subsystems.real;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.thethriftybot.devices.ThriftyNova;
+import com.thethriftybot.devices.ThriftyNova.EncoderType;
+import com.thethriftybot.devices.ThriftyNova.ThriftyNovaConfig;
+
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.sensors.ThriftyEncoderWrapper;
 import frc.robot.subsystems.implementation.SingleMotorThing;
@@ -25,14 +28,24 @@ public class SingleMotorThingNova extends SingleMotorThing {
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup(int deviceID) {
+  static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     ThriftyNova motorController = new ThriftyNova(deviceID); // , ThriftyNova.MotorType.NEO
+    ThriftyNovaConfig config = new ThriftyNovaConfig();
+
+    config.encoderType = EncoderType.INTERNAL; // Built-in NEO encoder
+    config.inverted = inverted;
+    motorController.applyConfig(config);
+
     return new ConstructionData(motorController,
         new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
   public SingleMotorThingNova(int deviceID) {
-    super(getStuffForBaseClassSetup(deviceID));
+    this(deviceID, false);
+  }
+
+  public SingleMotorThingNova(int deviceID, boolean inverted) {
+    super(getStuffForBaseClassSetup(deviceID, inverted));
     System.out.println("Set up SingleMotorThingNova!");
   }
 }

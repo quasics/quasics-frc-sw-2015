@@ -45,17 +45,22 @@ public class SingleMotorThingSpark extends SingleMotorThing {
 
   /** Creates a new SingleMotorThingSpark. */
   public SingleMotorThingSpark(int deviceID) {
-    super(getStuffForBaseClassSetup(deviceID));
+    this(deviceID, false);
+  }
+
+  /** Creates a new SingleMotorThingSpark. */
+  public SingleMotorThingSpark(int deviceID, boolean inverted) {
+    super(getStuffForBaseClassSetup(deviceID, inverted));
   }
 
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup(int deviceID) {
+  static ConstructionData getStuffForBaseClassSetup(int deviceID, boolean inverted) {
     // Set up the basic configuration for our motor controller.
     SparkMaxConfig config = new SparkMaxConfig();
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
-    config.inverted(false);
+    config.inverted(inverted);
 
     // Allocate the motor controller and apply the configuration to it.
     SparkMax motorController = new SparkMax(

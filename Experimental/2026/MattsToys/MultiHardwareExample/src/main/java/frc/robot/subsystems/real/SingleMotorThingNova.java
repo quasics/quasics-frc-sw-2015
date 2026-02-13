@@ -35,9 +35,4 @@ public class SingleMotorThingNova extends SingleMotorThing {
     super(getStuffForBaseClassSetup(deviceID));
     System.out.println("Set up SingleMotorThingNova!");
   }
-
-  @Override
-  public void periodic() {
-    // ((ThriftyNova)super.controller).setPercent(0.5);
-  }
 }

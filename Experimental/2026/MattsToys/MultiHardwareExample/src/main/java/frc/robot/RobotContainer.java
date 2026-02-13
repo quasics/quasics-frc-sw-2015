@@ -40,7 +40,7 @@ public class RobotContainer {
   // configuration.
   final ISingleMotorThing m_singleMotorThing = switch (m_hardware) {
     case Simulated -> new SingleMotorThingSim();
-    case Spark -> new SingleMotorThingSpark(5);
+    case Spark -> new SingleMotorThingSpark(5, true);
     case Talon -> new SingleMotorThingTalon(6);
     case Thrifty -> new SingleMotorThingNova(5);
     case Victor ->

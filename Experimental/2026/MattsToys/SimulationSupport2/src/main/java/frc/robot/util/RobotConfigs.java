@@ -17,9 +17,6 @@ import java.util.List;
  * Defines various configuration data for robot subsystems.
  */
 public interface RobotConfigs {
-  /** Invalid CAN ID. */
-  public static final int INVALID_CAN_ID = -1;
-
   /**
    * Location of something in terms of the robot's center (in terms of the robot
    * coordinate system).
@@ -543,12 +540,27 @@ public interface RobotConfigs {
     }
   }
 
+  /** Invalid CAN ID. */
+  public static final int INVALID_CAN_ID = -1;
+
+  //
+  // Convenience constants for "no config" cases.
+  //
+
+  /** Convenience constant for no drive configuration. */
   public static final DriveConfig NO_DRIVE = null;
+  /** Convenience constant for no camera configuration. */
   public static final CameraConfig NO_CAMERA = null;
+  /** Convenience constant for no elevator configuration. */
   public static final ElevatorConfig NO_ELEVATOR = null;
+  /** Convenience constant for no lighting configuration. */
   public static final LightingConfig NO_LIGHTING = null;
+  /** Convenience constant for no arm configuration. */
   public static final ArmConfig NO_ARM = null;
+  /** Convenience constant for no CANdle configuration. */
   public static final CandleConfig NO_CANDLE = null;
+  /** Convenience constant for no power distribution configuration. */
   public static final PowerDistributor NO_POWER_DISTRIBUTOR = null;
+  /** Convenience constant for no climber configuration. */
   public static final ClimberConfig NO_CLIMBER = null;
 }

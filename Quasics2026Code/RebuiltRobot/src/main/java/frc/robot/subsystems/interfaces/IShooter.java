@@ -33,5 +33,11 @@ package frc.robot.subsystems.interfaces;
  * TODO: Define the shooter interface (and then implement it).
  */
 public interface IShooter {
+  /*
+   * (1 motor for flywheels, 1 motor for kicker wheels, 1 motor for hood angle;
+   * rotary (absolute) encoder for hood position)
+   * Spin flywheels and kicker wheels in either direction (independently)
+   * Adjust hood angle (with limits) - forward and backward
+   */
 
 }

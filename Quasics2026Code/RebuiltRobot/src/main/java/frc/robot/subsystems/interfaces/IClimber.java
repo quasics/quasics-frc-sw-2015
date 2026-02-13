@@ -10,5 +10,10 @@ package frc.robot.subsystems.interfaces;
  * TODO: Define the climber interface (and then implement it).
  */
 public interface IClimber {
-
+  /*
+   * (1 motor)
+   * Extend and retract the climber
+   * 
+   * Need to talk to folks about limit switches, etc.
+   */
 }

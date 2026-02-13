@@ -11,5 +11,7 @@ package frc.robot.subsystems.interfaces;
  * TODO: Define the indexer interface (and then implement it).
  */
 public interface IIndexer {
-
+  /*
+   * Spin rollers in both directions (1 motor)
+   */
 }

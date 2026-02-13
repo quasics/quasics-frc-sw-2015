@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.simulated;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
@@ -18,6 +18,7 @@ import frc.robot.logging.Logger;
 import frc.robot.logging.Logger.Verbosity;
 import frc.robot.sensors.IGyro;
 import frc.robot.sensors.TrivialEncoder;
+import frc.robot.subsystems.real.AbstractDrivebase;
 
 public class SimulationDrivebase extends AbstractDrivebase {
   private static final int LEFT_MOTOR_CHANNEL = 0;
@@ -28,31 +29,25 @@ public class SimulationDrivebase extends AbstractDrivebase {
   private static final int RIGHT_ENCODER_CHANNEL_A = 3;
   private static final int RIGHT_ENCODER_CHANNEL_B = 4;
 
-  private final Logger m_logger =
-      new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
+  private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
-  private final Encoder m_leftEncoder =
-      new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
-  private final Encoder m_rightEncoder =
-      new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+  private final Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+  private final Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
   private final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
   private final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private final TrivialEncoder m_mainLeftEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
-  private final TrivialEncoder m_mainRightEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
+  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
+  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
 
   private final IGyro m_mainGyro;
   private final AnalogGyroSim m_gyroSim;
 
-  private DifferentialDrivetrainSim m_driveSim =
-      DifferentialDrivetrainSim.createKitbotSim(
-          KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
-          KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
-                                // new diffDrivetrain sim
-          KitbotWheelSize.kSixInch, // 6" diameter wheels.
-          null // No measurement noise.
-      );
+  private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
+      KitbotMotor.kDualCIMPerSide, // 2 CIMs per side.
+      KitbotGearing.k12p75, // 12.75:1 if this changes, we may have to use a
+                            // new diffDrivetrain sim
+      KitbotWheelSize.kSixInch, // 6" diameter wheels.
+      null // No measurement noise.
+  );
 
   /** Creates a new SimulationDrivebase. */
   public SimulationDrivebase() {

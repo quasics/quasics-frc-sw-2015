@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.real;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -36,10 +36,8 @@ public class RealDrivebase extends AbstractDrivebase {
   // sample code under "Experimental/2026/MattsToys/SimulationSupport".)
   private final Encoder m_leftEncoder = new Encoder(1, 2);
   private final Encoder m_rightEncoder = new Encoder(3, 4);
-  private final TrivialEncoder m_mainLeftEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
-  private final TrivialEncoder m_mainRightEncoder =
-      TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
+  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder);
+  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder);
 
   private final IGyro m_mainGyro;
 
@@ -62,10 +60,8 @@ public class RealDrivebase extends AbstractDrivebase {
   public RealDrivebase() {
     super(new SparkMax(SparkMaxIds.LEFT_LEADER_ID, MotorType.kBrushless),
         new SparkMax(SparkMaxIds.RIGHT_LEADER_ID, MotorType.kBrushless));
-    m_leftfollower =
-        new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
-    m_rightfollower =
-        new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
+    m_leftfollower = new SparkMax(SparkMaxIds.LEFT_FOLLOWER_ID, MotorType.kBrushless);
+    m_rightfollower = new SparkMax(SparkMaxIds.RIGHT_FOLLOWER_ID, MotorType.kBrushless);
     m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
     m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
 

@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DriveteamConstants;
 import frc.robot.commands.ArcadeDrive;
 import frc.robot.commands.LinearSpeedCommand;
-import frc.robot.subsystems.AbstractDrivebase;
-import frc.robot.subsystems.RealDrivebase;
-import frc.robot.subsystems.SimulatedVision;
-import frc.robot.subsystems.SimulationDrivebase;
-import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.interfaces.IVision;
+import frc.robot.subsystems.real.AbstractDrivebase;
+import frc.robot.subsystems.real.RealDrivebase;
+import frc.robot.subsystems.real.Vision;
+import frc.robot.subsystems.simulated.SimulatedVision;
+import frc.robot.subsystems.simulated.SimulationDrivebase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

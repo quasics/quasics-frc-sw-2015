@@ -22,20 +22,17 @@ public class SingleMotorThingNova extends SingleMotorThing {
   /** Wheel diameter in inches. */
   public static final Distance WHEEL_DIAMETER = Inches.of(6);
 
-  public static final int CAN_ID = 7;
-
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup() {
-    ThriftyNova motorController =
-        new ThriftyNova(CAN_ID); // , ThriftyNova.MotorType.NEO
+  static ConstructionData getStuffForBaseClassSetup(int deviceID) {
+    ThriftyNova motorController = new ThriftyNova(deviceID); // , ThriftyNova.MotorType.NEO
     return new ConstructionData(motorController,
         new ThriftyEncoderWrapper(motorController, WHEEL_DIAMETER));
   }
 
-  public SingleMotorThingNova() {
-    super(getStuffForBaseClassSetup());
+  public SingleMotorThingNova(int deviceID) {
+    super(getStuffForBaseClassSetup(deviceID));
     System.out.println("Set up SingleMotorThingNova!");
   }
 

@@ -44,14 +44,14 @@ public class SingleMotorThingSpark extends SingleMotorThing {
   //
 
   /** Creates a new SingleMotorThingSpark. */
-  public SingleMotorThingSpark() {
-    super(getStuffForBaseClassSetup());
+  public SingleMotorThingSpark(int deviceID) {
+    super(getStuffForBaseClassSetup(deviceID));
   }
 
   /**
    * Builds the actual hardware wrappers that will be passed to the base class.
    */
-  static ConstructionData getStuffForBaseClassSetup() {
+  static ConstructionData getStuffForBaseClassSetup(int deviceID) {
     // Set up the basic configuration for our motor controller.
     SparkMaxConfig config = new SparkMaxConfig();
     configureSparkMaxEncoderForDistance(config, WHEEL_DIAMETER, GEAR_RATIO);
@@ -59,14 +59,13 @@ public class SingleMotorThingSpark extends SingleMotorThing {
 
     // Allocate the motor controller and apply the configuration to it.
     SparkMax motorController = new SparkMax(
-        1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+        deviceID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     motorController.configure(config,
         com.revrobotics.ResetMode.kNoResetSafeParameters,
         com.revrobotics.PersistMode.kNoPersistParameters);
 
     // Set up our encoder
-    TrivialEncoder encoder =
-        new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
+    TrivialEncoder encoder = new SparkMaxEncoderWrapper(motorController.getAlternateEncoder());
 
     // OK, we've got the stuff to build a SingleMotorThing!
     return new ConstructionData(motorController, encoder);
@@ -86,8 +85,7 @@ public class SingleMotorThingSpark extends SingleMotorThing {
    */
   public static void configureSparkMaxEncoderForDistance(
       SparkMaxConfig config, Distance outerDiameter, double gearRatio) {
-    final double distanceScalingFactorForGearing =
-        outerDiameter.div(gearRatio).in(Meters);
+    final double distanceScalingFactorForGearing = outerDiameter.div(gearRatio).in(Meters);
     final double velocityScalingFactor = distanceScalingFactorForGearing / 60;
 
     config.encoder.positionConversionFactor(distanceScalingFactorForGearing)

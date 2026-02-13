@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.live;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IShooterHood;
@@ -27,16 +28,23 @@ import com.revrobotics.spark.SparkMax;
  * feedback, and uses a PID controller to move to the desired angle.
  */
 public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood {
+  /**
+   * CAN ID for the hood motor.
+   * 
+   * TODO: Move this into robot configuration, and update based on the actual
+   * wiring of the robot.
+   */
   protected static final int kHoodMotorCanId = 10;
 
-  // Note that the PID constants (kP, kI, kD) would need to be tuned for the
-  // actual mechanism; these are just starting points.
-  //
-  // Note also that the P-gain is adjusted for degree units (would be more like
-  // 0.1 if we were using rotations).
+  /**
+   * PID settings for the shooter hood.
+   * Note that the PID constants (kP, kI, kD) would need to be tuned for the
+   * actual mechanism; these are just starting points.
+   *
+   * Note also that the P-gain is adjusted for degree units (would be more like
+   * 0.1 if we were using rotations).
+   */
   protected static final double kP = 0.05, kI = 0, kD = 0;
-  protected static final double kMinPosDegrees = 15.0;
-  protected static final double kMaxPosDegrees = 85.0;
 
   protected final SparkMax m_motor;
   protected final SparkAbsoluteEncoder m_absoluteEncoder;
@@ -80,7 +88,7 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
   @Override
   public void setPosition(Angle targetAngle) {
     final double positionDegrees = targetAngle.in(Degrees);
-    final double clampedPosition = Math.max(kMinPosDegrees, Math.min(kMaxPosDegrees, positionDegrees));
+    final double clampedPosition = MathUtil.clamp(positionDegrees, kMinPos.in(Degrees), kMaxPos.in(Degrees));
     m_pidController.setSetpoint(clampedPosition, SparkMax.ControlType.kPosition);
   }
 
@@ -100,7 +108,6 @@ public class ShooterHoodSubsystem extends SubsystemBase implements IShooterHood 
 
   @Override
   public void close() throws IOException {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'close'");
+    m_motor.close();
   }
 }

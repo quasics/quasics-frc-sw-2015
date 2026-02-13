@@ -13,8 +13,8 @@ import edu.wpi.first.units.measure.Angle;
  * TODO: Update min/max angles based on the actual mechanism design and testing.
  */
 public interface IShooterHood extends ISubsystem {
-  static final Angle kMinPosDegrees = Degrees.of(15.0);
-  static final Angle kMaxPosDegrees = Degrees.of(85.0);
+  static final Angle kMinPos = Degrees.of(15.0);
+  static final Angle kMaxPos = Degrees.of(85.0);
 
   /**
    * Sets the target position for the shooter hood. The hood will then move to the

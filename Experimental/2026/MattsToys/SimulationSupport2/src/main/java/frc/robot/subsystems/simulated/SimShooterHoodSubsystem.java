@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.simulated;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkMaxSim;
 
@@ -52,10 +54,10 @@ public class SimShooterHoodSubsystem extends ShooterHoodSubsystem {
         100.0,
         0.01,
         0.2,
-        Units.degreesToRadians(kMinPosDegrees),
-        Units.degreesToRadians(kMaxPosDegrees),
+        kMinPos.in(Radians),
+        kMaxPos.in(Radians),
         true,
-        Units.degreesToRadians(kMinPosDegrees));
+        kMinPos.in(Radians));
   }
 
   @Override

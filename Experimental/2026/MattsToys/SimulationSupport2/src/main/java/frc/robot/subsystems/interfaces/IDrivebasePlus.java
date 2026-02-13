@@ -17,7 +17,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.BulletinBoard;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
 
 /** Interface for a drivebase subsystem with additional functionality. */
 public interface IDrivebasePlus extends IDrivebase {

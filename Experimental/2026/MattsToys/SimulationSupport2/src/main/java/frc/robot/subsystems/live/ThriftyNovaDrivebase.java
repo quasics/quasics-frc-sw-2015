@@ -16,7 +16,7 @@ import frc.robot.hardware.actuators.ThriftyNovaMotorControllerPlus;
 import frc.robot.hardware.sensors.Pigeon2Wrapper;
 import frc.robot.hardware.sensors.ThriftyEncoderWrapper;
 import frc.robot.subsystems.DrivebaseBase;
-import frc.robot.util.RobotConfigs.DriveConfig;
+import frc.robot.util.config.DriveConfig;
 
 /**
  * Sample implementation of the drivebase functionality, based on CAN-based

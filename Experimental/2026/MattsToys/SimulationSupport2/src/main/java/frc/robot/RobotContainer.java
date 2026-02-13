@@ -61,12 +61,12 @@ import frc.robot.subsystems.simulated.SimClimber;
 import frc.robot.subsystems.simulated.SimDrivebase;
 import frc.robot.util.DriverJoystickWrapper;
 import frc.robot.util.RobotConfigLibrary;
-import frc.robot.util.RobotConfigs;
-import frc.robot.util.RobotConfigs.RobotConfig;
 import frc.robot.util.SpeedMode;
 import frc.robot.util.SpeedModeScaler;
 import frc.robot.util.SysIdGenerator;
 import frc.robot.util.SysIdGenerator.DrivebaseProfilingMode;
+import frc.robot.util.config.RobotConfig;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -538,7 +538,7 @@ public class RobotContainer {
    * @return an ICandle subsystem for this robot (may be trivial)
    */
   private static ICandle allocateCandle(
-      RobotConfigs.RobotConfig config, ILighting lighting) {
+      RobotConfig config, ILighting lighting) {
     if (!config.hasCandle()) {
       return new ICandle.NullCandle();
     }
@@ -567,7 +567,7 @@ public class RobotContainer {
    *         allocate a buffer)
    */
   private static ILighting allocateSideLighting(
-      RobotConfigs.RobotConfig config, ILighting lighting, boolean leftSide) {
+      RobotConfig config, ILighting lighting, boolean leftSide) {
     if (!config.hasLighting() || lighting == null
         || !(lighting instanceof Lighting)) {
       // Can't do it....

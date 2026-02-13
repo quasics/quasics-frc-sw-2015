@@ -9,7 +9,7 @@ import java.io.IOException;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.interfaces.IClimber;
-import frc.robot.util.RobotConfigs.ClimberConfig;
+import frc.robot.util.config.ClimberConfig;
 
 /**
  * Simulated climber subsystem.

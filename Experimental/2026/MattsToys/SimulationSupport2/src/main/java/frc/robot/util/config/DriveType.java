@@ -6,5 +6,13 @@ package frc.robot.util.config;
 
 /** Drive hardware type (simulated, CAN-based SparkMax, etc.). */
 public enum DriveType {
-  Simulated, CanSparkMax, ThriftyNova
+  /**
+   * Drive hardware is simulated. (This may include simulation of physical
+   * hardware, or be "pure math".)
+   */
+  Simulated,
+  /** Drive hardware is a CAN-based SparkMax motor controller. */
+  CanSparkMax,
+  /** Drive hardware is a ThriftyNova motor controller. */
+  ThriftyNova
 }

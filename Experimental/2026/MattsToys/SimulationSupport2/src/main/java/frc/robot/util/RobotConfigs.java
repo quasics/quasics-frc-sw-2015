@@ -406,6 +406,12 @@ public interface RobotConfigs {
     }
   }
 
+  /**
+   * Climber configuration settings.
+   *
+   * @param pid         PID settings for the climber
+   * @param feedForward feedforward settings for the climber
+   */
   public static record ClimberConfig(
       PIDConfig pid, SimpleFeedForwardConfig feedForward) {
   }

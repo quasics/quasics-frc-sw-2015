@@ -9,7 +9,7 @@ import frc.robot.subsystems.interfaces.IShooterHood;
 
 public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
-  /** Creates a new RealHood. */
+  /** Creates a new RealShooterHood. */
   public RealShooterHood() {
   }
 

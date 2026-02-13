@@ -34,10 +34,10 @@ package frc.robot.subsystems.interfaces;
  */
 public interface IShooter {
   /*
-   * (1 motor for flywheels, 1 motor for kicker wheels, 1 motor for hood angle;
-   * rotary (absolute) encoder for hood position)
+   * (1 motor for flywheels, 1 motor for kicker wheels)
    * Spin flywheels and kicker wheels in either direction (independently)
-   * Adjust hood angle (with limits) - forward and backward
+   * PID control for flywheels to maintain constant RPM from ball to ball; kicker
+   * wheels may or may not need PID control
    */
 
 }

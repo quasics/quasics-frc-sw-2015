@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.interfaces;
 
-public interface IHood {
+public interface IShooterHood {
   /*
    * (1 motor for hood angle; rotary (absolute) encoder for hood position)
    * Adjust hood angle (with limits) - forward and backward
@@ -12,9 +12,7 @@ public interface IHood {
    * FINDME(Daniel): Some suggested reading for this subsystem:
    * * SparkMax controllers with different encoders:
    * https://docs.revrobotics.com/brushless/spark-max/encoders
-   * * Through Bore encoder application notes:
-   * https://docs.revrobotics.com/rev-crossover-products/sensors/tbe/application-
-   * examples
+   * * Through Bore encoder application notes: https://shorturl.at/wm3tF
    */
   // TODO: Add methods for controlling the hood (and then implement them).
 }

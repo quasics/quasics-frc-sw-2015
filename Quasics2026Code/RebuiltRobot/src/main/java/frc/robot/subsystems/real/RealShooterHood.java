@@ -5,12 +5,12 @@
 package frc.robot.subsystems.real;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.interfaces.IHood;
+import frc.robot.subsystems.interfaces.IShooterHood;
 
-public class RealHood extends SubsystemBase implements IHood {
+public class RealShooterHood extends SubsystemBase implements IShooterHood {
 
   /** Creates a new RealHood. */
-  public RealHood() {
+  public RealShooterHood() {
   }
 
   @Override

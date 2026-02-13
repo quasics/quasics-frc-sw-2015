@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -89,6 +90,13 @@ public abstract class AbstractDrivebase
     m_logger.log("Right Speed set to " + rightSpeed, Verbosity.Debug);
 
     m_robotDrive.feed();
+  }
+
+  @Override
+  public void setVoltages(Voltage leftVoltage, Voltage rightVoltage) {
+    // TODO(Robert): Implement this method (and then use it for characterization,
+    // trajectory following, etc.). (It should be pretty straightforward, doable
+    // with 2 lines of code.)
   }
 
   // TODO(ROBERT): Cap this - it shouldn't be greater than max speed.

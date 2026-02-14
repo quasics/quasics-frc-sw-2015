@@ -8,13 +8,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.interfaces.IDrivebasePlus;
 import frc.robot.subsystems.interfaces.IVision;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * A command that turns the robot in place until a target with a given ID is in
+ * view of the vision system.
+ */
 public class TurnUntilTargetInView extends Command {
+  /** Vision subsystem. */
   private final IVision m_vision;
+  /** Drive base subsystem. */
   private final IDrivebasePlus m_drivebase;
+  /** The ID of the target to look for. */
   private final int m_targetId;
 
-  /** Creates a new TurnToTarget. */
+  /**
+   * Constructor.
+   * 
+   * @param vision    vision subsystem
+   * @param drivebase drive base subsystem
+   * @param targetId  the ID of the target to look for
+   */
   public TurnUntilTargetInView(IVision vision, IDrivebasePlus drivebase, int targetId) {
     m_vision = vision;
     m_drivebase = drivebase;

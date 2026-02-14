@@ -32,6 +32,7 @@ import frc.robot.commands.driving.BaseChoreoTrajectoryCommand;
 import frc.robot.commands.driving.FollowTrajectoryCommand;
 import frc.robot.commands.driving.PushbuttonTrajectory;
 import frc.robot.commands.driving.TankDrive;
+import frc.robot.commands.driving.TurnUntilTargetInView;
 import frc.robot.commands.lighting.RainbowLighting;
 import frc.robot.commands.lighting.TargetingSupportCommand;
 import frc.robot.constants.OperatorConstants;
@@ -174,6 +175,7 @@ public class RobotContainer {
     maybeConfigureLightingWhenDisabled();
     maybeConfigureChoreoCommands();
     maybeConfigureClimberCommands();
+    configureVisionCommands();
     configureBindings();
 
     if (Robot.isSimulation()) {
@@ -185,6 +187,11 @@ public class RobotContainer {
     if (m_pdp != null) {
       SmartDashboard.putData(m_pdp);
     }
+  }
+
+  private void configureVisionCommands() {
+    SmartDashboard.putData("Cmd: Get target 26 in view",
+        new TurnUntilTargetInView(m_vision, m_drivebase, 26));
   }
 
   private void maybeConfigureClimberCommands() {

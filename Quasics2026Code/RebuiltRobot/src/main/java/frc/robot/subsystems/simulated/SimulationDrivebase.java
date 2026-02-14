@@ -31,14 +31,12 @@ public class SimulationDrivebase extends AbstractDrivebase {
 
   private final Logger m_logger = new Logger(Logger.Verbosity.Info, "SimulatedDriveBase");
 
-  private final Encoder m_leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
-  private final Encoder m_rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
-  private final EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
-  private final EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-  private final TrivialEncoder m_mainLeftEncoder = TrivialEncoder.forWpiLibEncoder(m_leftEncoder, m_leftEncoderSim);
-  private final TrivialEncoder m_mainRightEncoder = TrivialEncoder.forWpiLibEncoder(m_rightEncoder, m_rightEncoderSim);
+  private final TrivialEncoder m_leftEncoder;
+  private final TrivialEncoder m_rightEncoder;
+  private final EncoderSim m_leftEncoderSim;
+  private final EncoderSim m_rightEncoderSim;
 
-  private final IGyro m_mainGyro;
+  private final IGyro m_gyro;
   private final AnalogGyroSim m_gyroSim;
 
   private DifferentialDrivetrainSim m_driveSim = DifferentialDrivetrainSim.createKitbotSim(
@@ -55,25 +53,33 @@ public class SimulationDrivebase extends AbstractDrivebase {
         new PWMSparkMax(RIGHT_MOTOR_CHANNEL));
     AnalogGyro gyro = new AnalogGyro(GYRO_CHANNEL);
     m_gyroSim = new AnalogGyroSim(gyro);
-    m_mainGyro = IGyro.wrapGyro(gyro);
+    m_gyro = IGyro.wrapGyro(gyro);
 
-    m_leftEncoder.setDistancePerPulse(getDistancePerPulse());
-    m_rightEncoder.setDistancePerPulse(getDistancePerPulse());
+    Encoder leftEncoder = new Encoder(LEFT_ENCODER_CHANNEL_A, LEFT_ENCODER_CHANNEL_B);
+    Encoder rightEncoder = new Encoder(RIGHT_ENCODER_CHANNEL_A, RIGHT_ENCODER_CHANNEL_B);
+
+    leftEncoder.setDistancePerPulse(getDistancePerPulse());
+    rightEncoder.setDistancePerPulse(getDistancePerPulse());
+
+    m_leftEncoderSim = new EncoderSim(leftEncoder);
+    m_rightEncoderSim = new EncoderSim(rightEncoder);
+    m_leftEncoder = TrivialEncoder.forWpiLibEncoder(leftEncoder, m_leftEncoderSim);
+    m_rightEncoder = TrivialEncoder.forWpiLibEncoder(rightEncoder, m_rightEncoderSim);
   }
 
   @Override
   protected final IGyro getGyro() {
-    return m_mainGyro;
+    return m_gyro;
   }
 
   @Override
   protected final TrivialEncoder getLeftEncoder() {
-    return m_mainLeftEncoder;
+    return m_leftEncoder;
   }
 
   @Override
   protected final TrivialEncoder getRightEncoder() {
-    return m_mainRightEncoder;
+    return m_rightEncoder;
   }
 
   @Override
